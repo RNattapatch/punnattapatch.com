@@ -54,6 +54,8 @@ const valueProps = [
             formats={['avif', 'webp']}
             quality={85}
             loading="eager"
+            fetchpriority="high"
+            decoding="sync"
             fallbackFormat="webp"
             class="h-full w-full object-cover"
           />
