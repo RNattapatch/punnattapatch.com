@@ -1,6 +1,8 @@
 ---
+import { Picture } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE, SERVICES, PROOF_STATS } from '../data/site';
+import avatar from '../assets/pun-avatar.png';
 
 const heroHeadline = 'ที่ปรึกษาการขาย B2B';
 const heroHeadlineAccent = 'เชี่ยวชาญ Agentic AI Transformation';
@@ -44,13 +46,15 @@ const valueProps = [
         <div
           class="mx-auto aspect-square w-56 overflow-hidden rounded-full ring-4 ring-base-100 md:w-72 lg:w-80"
         >
-          <img
-            src="/pun-avatar.png"
+          <Picture
+            src={avatar}
             alt="ปัน ณัฐพัชร์ — B2B Sales Consultant"
-            width="320"
-            height="320"
+            widths={[224, 288, 320, 448, 576, 640]}
+            sizes="(min-width: 1024px) 320px, (min-width: 768px) 288px, 224px"
+            formats={['avif', 'webp']}
+            quality={85}
             loading="eager"
-            fetchpriority="high"
+            fallbackFormat="webp"
             class="h-full w-full object-cover"
           />
         </div>

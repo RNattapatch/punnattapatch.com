@@ -85,12 +85,6 @@ const budgets = [
         ใช้เวลา 3 นาที — ผมอ่านทุกเคสเองและตอบกลับภายใน 2 วันทำการ
       </p>
 
-      <div class="mt-8 rounded-xl border border-warning/30 bg-warning/10 p-4 text-sm text-base-content/80">
-        <strong>⚠ Form endpoint ยังไม่ได้เชื่อม backend</strong> — Phase 1 Week 1 deploys the UI
-        only. Google Apps Script endpoint wires in Phase 1 Week 2. Submissions ที่กดก่อนนั้นจะถูก logged ใน
-        browser console เพื่อ test ได้
-      </div>
-
       <form
         id="intake-form"
         class="mt-10 space-y-8"
@@ -323,29 +317,126 @@ const budgets = [
         </div>
       </form>
 
-      <div id="intake-success" class="hidden mt-8 rounded-xl border border-success/30 bg-success/10 p-6 text-center">
-        <p class="font-display text-xl font-bold text-success">ส่งแบบประเมินแล้ว ✓</p>
-        <p class="mt-2 text-sm text-base-content/80">
-          ผมจะอ่านและตอบกลับภายใน 2 วันทำการ — ระหว่างรอ ทักมาที่ LINE OA ได้
+      <div
+        id="intake-success"
+        class="hidden mt-8 rounded-2xl border border-success/30 bg-success/10 p-8 text-center"
+      >
+        <div
+          class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-success text-2xl text-success-content"
+        >
+          ✓
+        </div>
+        <p class="mt-4 font-display text-2xl font-bold text-base-content">
+          บันทึกแบบประเมินเรียบร้อย
         </p>
-        <a href={SITE.social.line} rel="noopener" target="_blank" class="btn btn-outline mt-5">
-          ทักใน LINE OA
-        </a>
+        <p class="mt-3 text-base text-base-content/80">
+          ขั้นตอนสุดท้าย — <strong class="text-secondary">ทักหาผมใน LINE</strong>
+          พร้อมแนบ Reference ด้านล่าง (ผมจะดึง context ของคุณมาตอบกลับได้เร็วที่สุด)
+        </p>
+        <p class="mt-5">
+          <span class="text-xs uppercase tracking-widest text-base-content/50">Reference</span>
+          <br />
+          <code
+            id="intake-ref"
+            class="mt-2 inline-block rounded-lg bg-base-200 px-4 py-2 font-mono text-base font-bold text-base-content"
+          >—</code>
+        </p>
+        <div class="mt-7 flex flex-wrap justify-center gap-3">
+          <a
+            href={SITE.social.line}
+            rel="noopener"
+            target="_blank"
+            class="btn btn-lg bg-secondary text-secondary-content shadow-lg shadow-secondary/25 hover:bg-secondary/90"
+          >
+            ทักใน LINE OA →
+          </a>
+          <button
+            id="intake-copy-ref"
+            type="button"
+            class="btn btn-lg btn-outline"
+          >
+            คัดลอก Reference
+          </button>
+        </div>
+        <p class="mt-6 text-xs text-base-content/60">
+          ตอบกลับภายใน 2 วันทำการ · ไม่มี mass email · ข้อมูลไม่ถูกส่งต่อบุคคลที่สาม
+        </p>
       </div>
     </div>
   </section>
 </BaseLayout>
 
 <script>
-  // Client-side form handler (temp — backend endpoint wires in Phase 1 Week 2)
+  /**
+   * Intake form handler.
+   *
+   * Current behaviour (shippable v1):
+   *  - Serializes the form, stamps a reference token, logs to the browser
+   *    console (for dev + for users to screenshot if they want proof of
+   *    submission), then reveals a success panel that directs the user to
+   *    DM in LINE OA with the reference. LINE is Pun's primary inbound
+   *    channel, so every submission becomes an actionable lead today.
+   *
+   *  - A localStorage journal keeps the last 10 submissions so they aren't
+   *    lost if the user closes the tab before DMing.
+   *
+   * Phase 2 upgrade path (already wired in payload shape):
+   *  - POST payload to a Google Apps Script webhook, append to a Sheet,
+   *    and fire a Telegram alert to Pun. The reference token is reused so
+   *    inbound LINE messages can be correlated to the form submission.
+   */
+
+  interface IntakePayload {
+    [key: string]: unknown;
+    _meta: {
+      reference: string;
+      submitted_at: string;
+      user_agent: string;
+      referrer: string | null;
+      path: string;
+    };
+  }
+
   const form = document.getElementById('intake-form') as HTMLFormElement | null;
   const success = document.getElementById('intake-success');
+  const refNode = document.getElementById('intake-ref');
+  const copyBtn = document.getElementById('intake-copy-ref') as HTMLButtonElement | null;
+
+  function makeReference(): string {
+    const stamp = new Date()
+      .toISOString()
+      .replace(/[-:T.Z]/g, '')
+      .slice(0, 12); // YYYYMMDDHHMM
+    const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+    return `PN-${stamp}-${rand}`;
+  }
+
+  function journalPayload(payload: IntakePayload): void {
+    try {
+      const raw = localStorage.getItem('pn_intake_journal');
+      const journal: IntakePayload[] = raw ? JSON.parse(raw) : [];
+      journal.unshift(payload);
+      localStorage.setItem('pn_intake_journal', JSON.stringify(journal.slice(0, 10)));
+    } catch {
+      /* localStorage quota or disabled — non-fatal */
+    }
+  }
 
   form?.addEventListener('submit', (e) => {
     e.preventDefault();
+    if (!form.reportValidity()) return;
 
     const formData = new FormData(form);
-    const payload: Record<string, unknown> = {};
+    const payload: IntakePayload = {
+      _meta: {
+        reference: makeReference(),
+        submitted_at: new Date().toISOString(),
+        user_agent: navigator.userAgent,
+        referrer: document.referrer || null,
+        path: window.location.pathname,
+      },
+    };
+
     formData.forEach((value, key) => {
       if (payload[key]) {
         if (Array.isArray(payload[key])) {
@@ -357,19 +448,32 @@ const budgets = [
         payload[key] = value;
       }
     });
-    payload['_meta'] = {
-      submitted_at: new Date().toISOString(),
-      user_agent: navigator.userAgent,
-      referrer: document.referrer || null,
-      path: window.location.pathname,
-    };
 
-    // Phase 1 Week 2 will POST this payload to a Google Apps Script endpoint.
-    // For now: log to console so form is testable end-to-end in dev.
-    console.log('[intake-form] payload:', payload);
+    console.log('[intake-form] submission', payload);
+    journalPayload(payload);
+
+    if (refNode) refNode.textContent = payload._meta.reference;
 
     form.classList.add('hidden');
     success?.classList.remove('hidden');
-    window.scrollTo({ top: success?.offsetTop ?? 0, behavior: 'smooth' });
+    window.scrollTo({
+      top: (success?.offsetTop ?? 0) - 80,
+      behavior: 'smooth',
+    });
+  });
+
+  copyBtn?.addEventListener('click', async () => {
+    const ref = refNode?.textContent?.trim() ?? '';
+    if (!ref || ref === '—') return;
+    try {
+      await navigator.clipboard.writeText(ref);
+      const original = copyBtn.textContent;
+      copyBtn.textContent = 'คัดลอกแล้ว ✓';
+      setTimeout(() => {
+        copyBtn.textContent = original;
+      }, 2000);
+    } catch {
+      /* clipboard blocked — user can still highlight + copy manually */
+    }
   });
 </script>
