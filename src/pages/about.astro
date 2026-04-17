@@ -1,0 +1,259 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/site';
+
+const title = 'เกี่ยวกับปัน ณัฐพัชร์';
+const description =
+  'B2B Sales Consultant + Agentic AI Transformation Specialist สำหรับ SME ไทย — ประสบการณ์ 10+ ปี วางระบบทีมขายที่สร้างยอดรวมกว่า 100 ล้านบาท';
+
+const expertise = [
+  {
+    area: 'B2B Sales Consulting',
+    detail:
+      'ออกแบบ KPI + Commission structure ที่ fair + วัดได้จริง สำหรับทีมขาย 5-30 คน ทั้ง telesales, chat commerce, field sales',
+  },
+  {
+    area: 'Agentic AI Transformation',
+    detail:
+      'Build AI workflow ที่เชื่อม Google Sheets / CRM / LINE / Email ด้วย Claude Code + n8n + Apps Script — maintain ได้เอง ไม่ติด vendor',
+  },
+  {
+    area: 'Value-Based Selling',
+    detail:
+      'เปลี่ยนทีมจากขายของเป็นที่ปรึกษา ใช้ Jobs to be Done framework + จิตวิทยาการตัดสินใจแทน script สำเร็จรูป',
+  },
+  {
+    area: 'Sales Psychology',
+    detail:
+      'สอนกระบวนการตัดสินใจ Functional / Emotional / Social — ปิด deal ด้วยคุณค่าไม่ใช่ส่วนลด',
+  },
+];
+
+const principles = [
+  {
+    title: 'ส่ง finished product เท่านั้น',
+    body: 'ไม่ส่งคำว่า "ทีหลัง" หรือ "รอบหน้า" — เอกสารและระบบต้องใช้ได้ตั้งแต่ส่งมอบครั้งแรก',
+  },
+  {
+    title: 'AI ที่ทำงานได้จริง ไม่ใช่ demo',
+    body: 'Stack ที่ผมใช้ช่วย client: Claude Code + n8n + Google Apps Script — ไม่มี no-code ราคาแพงให้ติดกับ vendor',
+  },
+  {
+    title: '100% upfront',
+    body: 'ไม่มีข้อยกเว้น — ชำระครบก่อนเริ่มงาน ทั้ง 2 ฝ่าย commit เต็มที่ตั้งแต่วันแรก',
+  },
+  {
+    title: 'ทุกเคสได้ workflow อย่างน้อย 1 ตัว',
+    body: 'กลับออกจากห้อง client ต้องมี tool ใช้งานได้จริง — วัดผลก่อน-หลังเห็นชัดในวันเดียวกัน',
+  },
+];
+
+const credentials = [
+  '10+ active clients — SME รายได้ 30-200M THB (วัสดุก่อสร้าง, ค้าปลีก, ที่พัก, บริการ)',
+  'ระบบที่วาง generate ยอดขายรวมกว่า 100 ล้านบาท',
+  'ลูกค้าเพิ่มยอดขายเฉลี่ย 40%+ หลังใช้ระบบ',
+  'ประสบการณ์ sales field 10+ ปีก่อนเปิดที่ปรึกษา',
+];
+
+const faqItems = [
+  {
+    question: 'ต่างจากเอเจนซี่ AI หรือที่ปรึกษาการขายทั่วไปยังไง',
+    answer:
+      'เอเจนซี่ส่งสไลด์ ผมส่งระบบ — client ทุกรายออกจากงานพร้อม AI workflow ใช้งานได้จริงอย่างน้อย 1 ตัว ไม่ใช่ roadmap หรือรายงาน 200 หน้า',
+  },
+  {
+    question: 'ต้องมีทีม tech ก่อนไหม',
+    answer:
+      'ไม่ต้อง — ผมออกแบบให้ maintain ด้วย Google Sheets + n8n + Apps Script ซึ่ง non-tech ดูแลได้หลัง hand-over',
+  },
+  {
+    question: 'เริ่มเล็กได้ไหม',
+    answer:
+      'ได้ — เริ่มจาก AI Day Workshop 1 วัน ฿30,000 เห็นผลจริงก่อนค่อยลงทุนต่อ ไม่มีสัญญาผูกมัดยาว',
+  },
+  {
+    question: 'ทำในต่างจังหวัดได้ไหม',
+    answer:
+      'ได้ทั้ง on-site (บวกค่าเดินทาง) และ online — workshop สายที่ต้อง on-site คือ sale training ที่ต้อง role-play',
+  },
+  {
+    question: 'มี case study ให้ดูไหม',
+    answer:
+      'มี — ขอคุยผ่าน discovery call 15 นาที ผมจะ share case ที่ตรงกับ industry + team size ของคุณ ไม่ public เพราะบาง client ไม่ต้องการเปิดเผย',
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  schema={{
+    types: ['Person', 'WebPage', 'FAQPage', 'BreadcrumbList'],
+    title,
+    description,
+    faq: faqItems,
+    breadcrumbs: [
+      { name: 'หน้าแรก', url: SITE.url },
+      { name: 'เกี่ยวกับปัน', url: `${SITE.url}/about` },
+    ],
+  }}
+>
+  <!-- ===== HEADER ===== -->
+  <section class="px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-4xl">
+      <p class="text-sm uppercase tracking-widest text-base-content/50">About</p>
+      <h1 class="mt-3 font-display text-4xl font-bold tracking-tight md:text-5xl">
+        {title}
+      </h1>
+      <p class="mt-5 max-w-2xl text-lg text-base-content/75">
+        B2B Sales Consultant & Agentic AI Transformation Specialist · {SITE.author.city}, Thailand
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== ORIGIN STORY ===== -->
+  <section class="border-y border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-3xl space-y-5 text-lg leading-relaxed text-base-content/85">
+      <p>
+        ผมเริ่มทำที่ปรึกษาเต็มตัวปี 2025 หลังจากทำงานใน field sales มา 10+ ปี
+        เห็นปัญหาเดิมซ้ำแล้วซ้ำอีก: เจ้าของ SME แบกยอดขายคนเดียว ทีมไม่ run เอง ระบบไม่มี
+        — พอไปจ้างเอเจนซี่ก็ได้แต่สไลด์กลับมา ทีมไม่ได้ใช้
+      </p>
+      <p>
+        พอ Claude Code + n8n เข้ามา ผมเห็นทางว่ามันไม่ใช่แค่ automation ธรรมดาแล้ว
+        AI ช่วย build ระบบขายจริงได้ในเวลาที่เคยต้องจ้างทีม 5 คน ผมเลยเอามาลองกับ client รายแรก
+        ได้ผลจริง จึง pivot เต็มตัวเป็น "Agentic AI Transformation" สำหรับฝ่ายขาย SME
+      </p>
+      <p>
+        ตอนนี้ทุก engagement ของผม client ต้องออกไปพร้อม AI workflow ที่ใช้งานได้ตั้งแต่วันที่ส่งมอบ
+        ไม่ใช่ roadmap หรือ presentation — นั่นคือ standard ที่ผมตั้งไว้
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== EXPERTISE ===== -->
+  <section class="px-4 py-20 lg:px-8">
+    <div class="mx-auto max-w-5xl">
+      <h2 class="font-display text-3xl font-bold tracking-tight md:text-4xl">
+        สิ่งที่ผมลงลึก
+      </h2>
+      <p class="mt-3 max-w-2xl text-base-content/70">
+        4 หมวดหลักที่เวลาเจอปัญหาจริง ผมสามารถ build, train, และ hand over ได้เอง
+      </p>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        {
+          expertise.map((item) => (
+            <div class="rounded-2xl border border-base-content/10 bg-base-100 p-6">
+              <h3 class="font-display text-xl font-bold text-secondary">{item.area}</h3>
+              <p class="mt-3 text-base leading-relaxed text-base-content/80">
+                {item.detail}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRINCIPLES ===== -->
+  <section class="bg-base-200/40 px-4 py-20 lg:px-8">
+    <div class="mx-auto max-w-5xl">
+      <h2 class="font-display text-3xl font-bold tracking-tight md:text-4xl">
+        หลักการทำงาน
+      </h2>
+      <p class="mt-3 max-w-2xl text-base-content/70">
+        4 ข้อที่ผมใช้กับทุก engagement — ไม่มีข้อยกเว้นเพราะเร่งด่วนหรือขนาดงานเล็ก
+      </p>
+
+      <ol class="mt-10 space-y-5">
+        {
+          principles.map((p, i) => (
+            <li class="flex gap-5 rounded-2xl bg-base-100 p-6 shadow-sm">
+              <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-secondary font-display text-lg font-bold text-secondary-content">
+                {i + 1}
+              </span>
+              <div>
+                <h3 class="font-display text-lg font-bold">{p.title}</h3>
+                <p class="mt-2 text-base leading-relaxed text-base-content/75">{p.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===== CREDENTIALS ===== -->
+  <section class="px-4 py-20 lg:px-8">
+    <div class="mx-auto max-w-4xl">
+      <h2 class="font-display text-3xl font-bold tracking-tight md:text-4xl">
+        ที่ผ่านมา
+      </h2>
+      <ul class="mt-8 space-y-4">
+        {
+          credentials.map((c) => (
+            <li class="flex items-start gap-3 text-base leading-relaxed text-base-content/85">
+              <span class="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-secondary" />
+              <span>{c}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-6 text-sm text-base-content/60">
+        Client บางรายไม่ขอเปิดเผย — case study ตรงกับ industry คุณ ขอคุยผ่าน discovery call
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="border-t border-base-content/10 bg-base-200/30 px-4 py-20 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="font-display text-3xl font-bold tracking-tight md:text-4xl">
+        คำถามที่เจอบ่อย
+      </h2>
+      <div class="mt-8 space-y-3">
+        {
+          faqItems.map((item) => (
+            <details class="group rounded-xl border border-base-content/10 bg-base-100 p-5 open:shadow-md">
+              <summary class="cursor-pointer list-none text-base font-semibold group-open:text-secondary">
+                <span class="mr-2 font-display text-secondary">Q.</span>
+                {item.question}
+                <span class="float-right text-base-content/40 transition-transform group-open:rotate-180">▾</span>
+              </summary>
+              <p class="mt-3 text-base leading-relaxed text-base-content/75">
+                {item.answer}
+              </p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="px-4 py-20 lg:px-8">
+    <div class="mx-auto max-w-4xl rounded-3xl bg-primary px-6 py-12 text-primary-content md:px-12">
+      <h2 class="font-display text-2xl font-bold leading-tight md:text-3xl">
+        อ่านถึงตรงนี้ = อาจตรงกับที่คุณมองหา
+      </h2>
+      <p class="mt-4 max-w-2xl text-primary-content/80">
+        ตอบแบบประเมิน 3 นาที ผมอ่านแล้วส่งคำตอบกลับใน 2 วันทำการ บอกว่าเคสคุณเหมาะกับ package ไหน
+      </p>
+      <div class="mt-7 flex flex-wrap gap-4">
+        <a
+          href="/intake-form"
+          class="btn btn-lg bg-secondary text-secondary-content shadow-lg shadow-secondary/30 hover:bg-secondary/90"
+        >
+          ประเมินปัญหาทีมขาย
+        </a>
+        <a
+          href="/services"
+          class="btn btn-lg btn-outline text-primary-content hover:bg-primary-content hover:text-primary"
+        >
+          ดูบริการทั้งหมด
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

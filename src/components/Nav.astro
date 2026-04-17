@@ -1,0 +1,73 @@
+---
+import { SITE } from '../data/site';
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+function isActive(href: string): boolean {
+  if (href === '/') return currentPath === '/';
+  return currentPath === href || currentPath.startsWith(`${href}/`);
+}
+---
+
+<nav
+  class="navbar sticky top-0 z-50 border-b border-base-content/5 bg-base-100/80 px-4 backdrop-blur-md lg:px-8"
+  aria-label="หลัก"
+>
+  <div class="navbar-start">
+    <a href="/" class="font-display text-lg font-bold tracking-tight" aria-label="กลับหน้าแรก">
+      <span class="text-base-content">Pun</span><span class="text-secondary"> Nattapatch</span>
+    </a>
+  </div>
+
+  <div class="navbar-center hidden md:flex">
+    <ul class="menu menu-horizontal gap-1 text-base">
+      {
+        SITE.nav
+          .filter((item) => !item.cta)
+          .map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={[
+                  'rounded-md px-3 py-2 font-medium transition-colors',
+                  isActive(item.href) && 'text-secondary',
+                ]}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+      }
+    </ul>
+  </div>
+
+  <div class="navbar-end gap-2">
+    <a
+      href="/intake-form"
+      class="btn btn-sm bg-secondary text-secondary-content shadow-md shadow-secondary/20 hover:bg-secondary/90 sm:btn-md"
+    >
+      ประเมินปัญหาทีมขาย
+    </a>
+  </div>
+</nav>
+
+<!-- Mobile menu (below nav) -->
+<details class="menu-mobile md:hidden border-b border-base-content/5 bg-base-100/80 backdrop-blur-md">
+  <summary class="cursor-pointer px-4 py-2 text-sm font-medium text-base-content/70">
+    เมนู ▾
+  </summary>
+  <ul class="menu px-2 pb-3">
+    {
+      SITE.nav
+        .filter((item) => !item.cta)
+        .map((item) => (
+          <li>
+            <a href={item.href} class={isActive(item.href) ? 'text-secondary' : ''}>
+              {item.label}
+            </a>
+          </li>
+        ))
+    }
+  </ul>
+</details>

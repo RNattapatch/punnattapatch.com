@@ -1,0 +1,216 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE, SERVICES, PROOF_STATS } from '../data/site';
+
+const heroHeadline = 'ที่ปรึกษาการขาย B2B';
+const heroHeadlineAccent = 'เชี่ยวชาญ Agentic AI Transformation';
+const heroSub =
+  'ผมไม่ใช่โค้ชมาให้กำลังใจทีม ผมคือคนที่จับมือสร้างระบบขายด้วย AI ให้ SME ไทย — ระบบที่รันได้จริง ไม่ใช่ slide สวยๆ';
+
+const valueProps = [
+  {
+    icon: '→',
+    title: 'ส่งระบบ ไม่ใช่ slide',
+    body: 'ทุก engagement client ออกไปพร้อม AI workflow ใช้งานได้จริงอย่างน้อย 1 ตัว — ไม่ใช่รายงานหรือ roadmap',
+  },
+  {
+    icon: '→',
+    title: 'Agentic AI จริง ไม่ใช่ ChatGPT สำเร็จรูป',
+    body: 'Claude Code + n8n + Apps Script — stack ที่ maintain ต่อได้หลัง engagement จบ ไม่ติด vendor',
+  },
+  {
+    icon: '→',
+    title: '100% upfront แลกกับความมั่นใจ',
+    body: 'ไม่มี retainer, ไม่มี สัญญาผูกมัดยาว — จ่ายครั้งเดียวเริ่มเลย ส่งมอบตามสัญญา',
+  },
+];
+---
+
+<BaseLayout
+  title={SITE.titleDefault}
+  description={SITE.description}
+  schema={{ types: ['Person', 'WebPage', 'ServiceList'] }}
+>
+  <!-- ===== HERO ===== -->
+  <section class="relative overflow-hidden px-4 py-16 sm:py-20 lg:px-8 lg:py-28">
+    <div
+      class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_20%_10%,rgba(7,43,78,0.12),transparent_60%),radial-gradient(ellipse_60%_50%_at_85%_80%,rgba(221,65,85,0.08),transparent_55%)]"
+    >
+    </div>
+
+    <div class="mx-auto flex max-w-6xl flex-col items-center gap-10 lg:flex-row lg:gap-16">
+      <!-- Avatar -->
+      <div class="flex-shrink-0 lg:w-2/5">
+        <div
+          class="mx-auto aspect-square w-56 overflow-hidden rounded-full ring-4 ring-base-100 md:w-72 lg:w-80"
+        >
+          <img
+            src="/pun-avatar.png"
+            alt="ปัน ณัฐพัชร์ — B2B Sales Consultant"
+            width="320"
+            height="320"
+            loading="eager"
+            fetchpriority="high"
+            class="h-full w-full object-cover"
+          />
+        </div>
+      </div>
+
+      <!-- Text -->
+      <div class="lg:w-3/5">
+        <span
+          class="inline-flex items-center gap-2 rounded-full border border-base-content/10 bg-base-200/50 px-4 py-1.5 text-sm font-medium text-base-content/70"
+        >
+          <span class="h-2 w-2 animate-pulse rounded-full bg-success"></span>
+          รับงานที่ปรึกษาปี 2026
+        </span>
+
+        <h1
+          class="mt-6 font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl lg:text-6xl"
+        >
+          {heroHeadline}
+          <br />
+          <span class="text-secondary">{heroHeadlineAccent}</span>
+        </h1>
+
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-base-content/75 md:text-xl">
+          {heroSub}
+        </p>
+
+        <div class="mt-10 flex flex-wrap gap-4">
+          <a
+            href="/intake-form"
+            class="btn btn-lg bg-secondary text-secondary-content shadow-lg shadow-secondary/25 hover:bg-secondary/90"
+          >
+            ประเมินปัญหาทีมขาย
+          </a>
+          <a
+            href="/services"
+            class="btn btn-lg btn-ghost border border-base-content/20 hover:bg-base-200"
+          >
+            ดูบริการทั้งหมด
+          </a>
+        </div>
+
+        <!-- Proof stats -->
+        <dl
+          class="mt-12 flex flex-wrap gap-x-10 gap-y-6 border-t border-base-content/10 pt-8"
+        >
+          {
+            PROOF_STATS.map((stat) => (
+              <div>
+                <dt class="text-xs uppercase tracking-widest text-base-content/50">
+                  {stat.label}
+                </dt>
+                <dd class="mt-1 font-display text-3xl font-bold text-secondary md:text-4xl">
+                  {stat.value}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== VALUE PROPS ===== -->
+  <section class="bg-base-200/40 px-4 py-20 lg:px-8">
+    <div class="mx-auto max-w-5xl">
+      <h2 class="font-display text-3xl font-bold tracking-tight md:text-4xl">
+        ทำไมต้องปัน
+      </h2>
+      <p class="mt-3 max-w-2xl text-base-content/70">
+        ที่ปรึกษาการขายในตลาดไทยเยอะมาก แต่ไม่มีใคร deliver ระบบจริงที่รันต่อได้หลังจบงาน
+      </p>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-3">
+        {
+          valueProps.map((vp) => (
+            <div class="rounded-2xl border border-base-content/10 bg-base-100 p-6 shadow-sm">
+              <p class="font-display text-2xl font-bold text-secondary">{vp.icon}</p>
+              <h3 class="mt-3 font-display text-lg font-bold">{vp.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-base-content/75">{vp.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SERVICES TEASER ===== -->
+  <section id="services-teaser" class="px-4 py-20 lg:px-8">
+    <div class="mx-auto max-w-6xl">
+      <div class="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+        <div>
+          <h2 class="font-display text-3xl font-bold tracking-tight md:text-4xl">
+            4 บริการหลัก
+          </h2>
+          <p class="mt-3 max-w-2xl text-base-content/70">
+            เลือกตามปัญหาจริงของทีม ไม่ใช่ตามว่ามีอะไรใน catalog
+          </p>
+        </div>
+        <a href="/services" class="btn btn-sm btn-ghost hover:bg-base-200">
+          ดูรายละเอียดทุก package →
+        </a>
+      </div>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        {
+          SERVICES.map((svc) => (
+            <a
+              href={`/services#${svc.slug}`}
+              class="group rounded-2xl border border-base-content/10 bg-base-100 p-6 transition-all hover:border-secondary/50 hover:shadow-lg hover:shadow-secondary/10"
+            >
+              <p class="text-xs uppercase tracking-widest text-base-content/50">
+                {svc.subtitle}
+              </p>
+              <h3 class="mt-2 font-display text-xl font-bold leading-tight group-hover:text-secondary">
+                {svc.title}
+              </h3>
+              <p class="mt-3 text-sm leading-relaxed text-base-content/70">“{svc.hook}”</p>
+              <div class="mt-5 flex items-center justify-between border-t border-base-content/10 pt-4">
+                <span class="font-display text-lg font-bold text-secondary">
+                  {svc.priceLabel}
+                </span>
+                <span class="text-sm text-base-content/60 group-hover:text-secondary">
+                  ดูรายละเอียด →
+                </span>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA BOTTOM ===== -->
+  <section class="px-4 py-20 lg:px-8">
+    <div
+      class="mx-auto max-w-4xl rounded-3xl bg-primary px-6 py-14 text-primary-content shadow-xl md:px-12"
+    >
+      <h2 class="font-display text-3xl font-bold leading-tight md:text-4xl">
+        พร้อมให้ทีมขายของคุณ<br />ได้เวลาและยอดคืน?
+      </h2>
+      <p class="mt-4 max-w-2xl text-primary-content/80">
+        ไม่ต้องตัดสินใจตอนนี้ ตอบแบบประเมิน 3 นาที — ผมดูว่าเคสคุณควรเริ่มจาก package ไหน
+        แล้วส่ง follow-up ให้ภายใน 2 วันทำการ
+      </p>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a
+          href="/intake-form"
+          class="btn btn-lg bg-secondary text-secondary-content shadow-lg shadow-secondary/30 hover:bg-secondary/90"
+        >
+          ประเมินปัญหาทีมขาย
+        </a>
+        <a
+          href={SITE.social.line}
+          rel="noopener"
+          target="_blank"
+          class="btn btn-lg btn-outline text-primary-content hover:bg-primary-content hover:text-primary"
+        >
+          ทักมาคุยใน LINE OA
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

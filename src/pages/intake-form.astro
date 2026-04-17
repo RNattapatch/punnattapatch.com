@@ -1,0 +1,375 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/site';
+
+const title = 'ประเมินปัญหาทีมขาย';
+const description =
+  'แบบประเมินปัญหาทีมขาย 3 นาที — ผมอ่านเองทุกเคสและตอบกลับภายใน 2 วันทำการ พร้อมบอกว่าคุณเหมาะกับ package ไหน';
+
+const teamSizes = [
+  '1-2 คน (เจ้าของ + ผู้ช่วย)',
+  '3-5 คน',
+  '6-10 คน',
+  '11-20 คน',
+  '20+ คน',
+];
+
+const revenueBands = [
+  'น้อยกว่า 10M THB/ปี',
+  '10-30M THB/ปี',
+  '30-100M THB/ปี',
+  '100-200M THB/ปี',
+  '200M+ THB/ปี',
+];
+
+const painPoints = [
+  'ทีมเสียเวลากับงาน manual ซ้ำๆ (report, follow-up, data entry)',
+  'เจ้าของแบกยอดขายเอง ทีมไม่ run เอง',
+  'ไม่มีระบบ KPI / Commission ที่ fair + วัดได้',
+  'ทีมปิดการขายด้วยลดราคาเป็นหลัก',
+  'เคยจ่าย workshop แล้วทีมเลิกใช้ภายใน 2 สัปดาห์',
+  'อยากเริ่มใช้ AI แต่ไม่รู้จะเริ่มจากไหน',
+];
+
+const aiSources = [
+  { value: 'chatgpt', label: 'ChatGPT (รวม GPT-4o, o1)' },
+  { value: 'claude', label: 'Claude (claude.ai, Claude API)' },
+  { value: 'gemini', label: 'Gemini / Google AI Overview' },
+  { value: 'perplexity', label: 'Perplexity' },
+  { value: 'ai-search-other', label: 'AI Search อื่น' },
+  { value: 'tiktok', label: 'TikTok (@pun_nattapatch)' },
+  { value: 'instagram', label: 'Instagram (@pun_nattapatch)' },
+  { value: 'facebook', label: 'Facebook / กลุ่ม' },
+  { value: 'google-search', label: 'Google (ผลลัพธ์ปกติ)' },
+  { value: 'referral', label: 'เพื่อน / ลูกค้าเก่าแนะนำ' },
+  { value: 'event', label: 'งานสัมมนา / event' },
+  { value: 'other', label: 'อื่นๆ' },
+];
+
+const timelines = [
+  'เริ่มภายใน 2 สัปดาห์',
+  'เริ่มภายใน 1 เดือน',
+  'เริ่มภายใน 2-3 เดือน',
+  'ยังไม่มีกำหนด — ศึกษาข้อมูลก่อน',
+];
+
+const budgets = [
+  '< ฿50,000',
+  '฿50,000 - ฿100,000',
+  '฿100,000 - ฿300,000',
+  '฿300,000+',
+  'ยังไม่ได้ตั้ง budget',
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  schema={{
+    types: ['WebPage', 'BreadcrumbList'],
+    title,
+    description,
+    breadcrumbs: [
+      { name: 'หน้าแรก', url: SITE.url },
+      { name: 'ประเมินปัญหา', url: `${SITE.url}/intake-form` },
+    ],
+  }}
+>
+  <section class="px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-sm uppercase tracking-widest text-base-content/50">Assessment</p>
+      <h1 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+        {title}
+      </h1>
+      <p class="mt-4 text-lg text-base-content/75">
+        ใช้เวลา 3 นาที — ผมอ่านทุกเคสเองและตอบกลับภายใน 2 วันทำการ
+      </p>
+
+      <div class="mt-8 rounded-xl border border-warning/30 bg-warning/10 p-4 text-sm text-base-content/80">
+        <strong>⚠ Form endpoint ยังไม่ได้เชื่อม backend</strong> — Phase 1 Week 1 deploys the UI
+        only. Google Apps Script endpoint wires in Phase 1 Week 2. Submissions ที่กดก่อนนั้นจะถูก logged ใน
+        browser console เพื่อ test ได้
+      </div>
+
+      <form
+        id="intake-form"
+        class="mt-10 space-y-8"
+        novalidate
+      >
+        <!-- ===== Contact ===== -->
+        <fieldset class="space-y-5 rounded-2xl border border-base-content/10 bg-base-100 p-6">
+          <legend class="px-2 font-display text-lg font-bold">1. ติดต่อ</legend>
+
+          <div class="form-control">
+            <label for="name" class="label">
+              <span class="label-text font-medium">ชื่อ-นามสกุล *</span>
+            </label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              required
+              class="input input-bordered w-full"
+              placeholder="ปัน ณัฐพัชร์"
+            />
+          </div>
+
+          <div class="grid gap-5 md:grid-cols-2">
+            <div class="form-control">
+              <label for="email" class="label">
+                <span class="label-text font-medium">อีเมล *</span>
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                class="input input-bordered w-full"
+                placeholder="you@company.co.th"
+              />
+            </div>
+
+            <div class="form-control">
+              <label for="phone" class="label">
+                <span class="label-text font-medium">เบอร์ติดต่อ / LINE ID *</span>
+              </label>
+              <input
+                id="phone"
+                name="phone"
+                type="text"
+                required
+                class="input input-bordered w-full"
+                placeholder="081-xxx-xxxx หรือ LINE ID"
+              />
+            </div>
+          </div>
+
+          <div class="form-control">
+            <label for="company" class="label">
+              <span class="label-text font-medium">ชื่อบริษัท *</span>
+            </label>
+            <input
+              id="company"
+              name="company"
+              type="text"
+              required
+              class="input input-bordered w-full"
+            />
+          </div>
+
+          <div class="form-control">
+            <label for="industry" class="label">
+              <span class="label-text font-medium">อุตสาหกรรม</span>
+            </label>
+            <input
+              id="industry"
+              name="industry"
+              type="text"
+              class="input input-bordered w-full"
+              placeholder="เช่น วัสดุก่อสร้าง, ที่พัก, ค้าปลีก"
+            />
+          </div>
+        </fieldset>
+
+        <!-- ===== Team context ===== -->
+        <fieldset class="space-y-5 rounded-2xl border border-base-content/10 bg-base-100 p-6">
+          <legend class="px-2 font-display text-lg font-bold">2. Context ทีมขาย</legend>
+
+          <div class="form-control">
+            <label for="team-size" class="label">
+              <span class="label-text font-medium">ขนาดทีมขาย *</span>
+            </label>
+            <select
+              id="team-size"
+              name="team_size"
+              required
+              class="select select-bordered w-full"
+            >
+              <option value="">เลือก...</option>
+              {teamSizes.map((t) => <option value={t}>{t}</option>)}
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label for="revenue" class="label">
+              <span class="label-text font-medium">รายได้บริษัทต่อปี</span>
+            </label>
+            <select id="revenue" name="revenue" class="select select-bordered w-full">
+              <option value="">ไม่ระบุ</option>
+              {revenueBands.map((r) => <option value={r}>{r}</option>)}
+            </select>
+          </div>
+
+          <div class="form-control">
+            <span class="label">
+              <span class="label-text font-medium">ปัญหาหลักที่เจอ (เลือกได้หลายข้อ) *</span>
+            </span>
+            <div class="space-y-2">
+              {
+                painPoints.map((p) => (
+                  <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-base-content/10 p-3 transition hover:bg-base-200/50">
+                    <input
+                      type="checkbox"
+                      name="pain_points"
+                      value={p}
+                      class="checkbox checkbox-sm mt-0.5"
+                    />
+                    <span class="text-sm">{p}</span>
+                  </label>
+                ))
+              }
+            </div>
+          </div>
+
+          <div class="form-control">
+            <label for="goal" class="label">
+              <span class="label-text font-medium">
+                เป้าหมายใน 6 เดือนข้างหน้า (1-2 ประโยค)
+              </span>
+            </label>
+            <textarea
+              id="goal"
+              name="goal"
+              rows="3"
+              class="textarea textarea-bordered w-full"
+              placeholder="เช่น เพิ่มยอดขาย 30% โดยไม่จ้างเซลล์เพิ่ม / ลดเวลาทีมทำ manual report จาก 10 ชม. เหลือ 1 ชม."
+            ></textarea>
+          </div>
+        </fieldset>
+
+        <!-- ===== Fit & timing ===== -->
+        <fieldset class="space-y-5 rounded-2xl border border-base-content/10 bg-base-100 p-6">
+          <legend class="px-2 font-display text-lg font-bold">3. Timing + Budget</legend>
+
+          <div class="form-control">
+            <label for="timeline" class="label">
+              <span class="label-text font-medium">อยากเริ่มเมื่อไหร่ *</span>
+            </label>
+            <select id="timeline" name="timeline" required class="select select-bordered w-full">
+              <option value="">เลือก...</option>
+              {timelines.map((t) => <option value={t}>{t}</option>)}
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label for="budget" class="label">
+              <span class="label-text font-medium">Budget โดยประมาณ</span>
+            </label>
+            <select id="budget" name="budget" class="select select-bordered w-full">
+              <option value="">ยังไม่ระบุ</option>
+              {budgets.map((b) => <option value={b}>{b}</option>)}
+            </select>
+          </div>
+        </fieldset>
+
+        <!-- ===== AI source (attribution) ===== -->
+        <fieldset class="space-y-5 rounded-2xl border border-secondary/30 bg-secondary/5 p-6">
+          <legend class="px-2 font-display text-lg font-bold">4. คุณเจอผมจากไหน</legend>
+          <p class="-mt-3 text-sm text-base-content/70">
+            ข้อมูลนี้ช่วยผมรู้ว่า AI รู้จักผมมากแค่ไหน ใช้ในการประเมิน content strategy ของเว็บ
+          </p>
+
+          <div class="form-control">
+            <label for="source" class="label">
+              <span class="label-text font-medium">เจอเว็บนี้ผ่าน *</span>
+            </label>
+            <select
+              id="source"
+              name="ai_source"
+              required
+              class="select select-bordered w-full"
+            >
+              <option value="">เลือก...</option>
+              {aiSources.map((s) => <option value={s.value}>{s.label}</option>)}
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label for="source-note" class="label">
+              <span class="label-text font-medium">
+                ถ้าเป็น AI chat: ขอ screenshot / ข้อความที่ AI ตอบ (optional)
+              </span>
+            </label>
+            <textarea
+              id="source-note"
+              name="ai_source_note"
+              rows="3"
+              class="textarea textarea-bordered w-full"
+              placeholder="เช่น 'ถาม ChatGPT ว่าที่ปรึกษา AI ขาย SME ไทยมีใครบ้าง แล้วเจอผม' — ช่วยผมรู้ว่า AEO ทำงานไหม"
+            ></textarea>
+          </div>
+        </fieldset>
+
+        <!-- ===== Submit ===== -->
+        <div class="space-y-4 rounded-2xl border border-base-content/10 bg-base-200/40 p-6">
+          <label class="flex cursor-pointer items-start gap-3">
+            <input type="checkbox" name="consent" required class="checkbox mt-1" />
+            <span class="text-sm text-base-content/80">
+              ยินยอมให้ Pun Nattapatch เก็บข้อมูลตามแบบฟอร์มเพื่อวัตถุประสงค์ในการตอบกลับและประเมินเคสเท่านั้น ไม่ส่งต่อให้บุคคลที่สาม
+              (PDPA compliance) *
+            </span>
+          </label>
+
+          <button
+            type="submit"
+            class="btn btn-lg w-full bg-secondary text-secondary-content shadow-lg shadow-secondary/25 hover:bg-secondary/90"
+          >
+            ส่งแบบประเมิน
+          </button>
+
+          <p class="text-center text-xs text-base-content/60">
+            ปันอ่านเองทุกเคสและตอบกลับภายใน 2 วันทำการ · ไม่มี mass email
+          </p>
+        </div>
+      </form>
+
+      <div id="intake-success" class="hidden mt-8 rounded-xl border border-success/30 bg-success/10 p-6 text-center">
+        <p class="font-display text-xl font-bold text-success">ส่งแบบประเมินแล้ว ✓</p>
+        <p class="mt-2 text-sm text-base-content/80">
+          ผมจะอ่านและตอบกลับภายใน 2 วันทำการ — ระหว่างรอ ทักมาที่ LINE OA ได้
+        </p>
+        <a href={SITE.social.line} rel="noopener" target="_blank" class="btn btn-outline mt-5">
+          ทักใน LINE OA
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Client-side form handler (temp — backend endpoint wires in Phase 1 Week 2)
+  const form = document.getElementById('intake-form') as HTMLFormElement | null;
+  const success = document.getElementById('intake-success');
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const payload: Record<string, unknown> = {};
+    formData.forEach((value, key) => {
+      if (payload[key]) {
+        if (Array.isArray(payload[key])) {
+          (payload[key] as unknown[]).push(value);
+        } else {
+          payload[key] = [payload[key], value];
+        }
+      } else {
+        payload[key] = value;
+      }
+    });
+    payload['_meta'] = {
+      submitted_at: new Date().toISOString(),
+      user_agent: navigator.userAgent,
+      referrer: document.referrer || null,
+      path: window.location.pathname,
+    };
+
+    // Phase 1 Week 2 will POST this payload to a Google Apps Script endpoint.
+    // For now: log to console so form is testable end-to-end in dev.
+    console.log('[intake-form] payload:', payload);
+
+    form.classList.add('hidden');
+    success?.classList.remove('hidden');
+    window.scrollTo({ top: success?.offsetTop ?? 0, behavior: 'smooth' });
+  });
+</script>

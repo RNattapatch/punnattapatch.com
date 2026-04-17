@@ -1,0 +1,98 @@
+---
+import '../styles/global.css';
+import { SITE, cleanUrl } from '../data/site';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Schema from '../components/Schema.astro';
+import type { ComponentProps } from 'astro/types';
+
+type SchemaProps = ComponentProps<typeof Schema>;
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  noindex?: boolean;
+  schema?: SchemaProps;
+}
+
+const {
+  title = SITE.titleDefault,
+  description = SITE.description,
+  canonical = cleanUrl(Astro.url),
+  ogImage = `${SITE.url}/pun-avatar.png`,
+  noindex = false,
+  schema = { type: 'WebPage' as const },
+} = Astro.props;
+
+const fullTitle = title === SITE.titleDefault ? title : `${title} · ${SITE.nameTh}`;
+---
+
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#072b4e" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#fdfaf4" media="(prefers-color-scheme: light)" />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:site_name" content={SITE.name} />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Google Fonts: Bai Jamjuree (display) + Sarabun (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- AI discovery signal (announces llms.txt presence) -->
+    <link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt" />
+
+    <!-- RSS feed placeholder — wire in Phase 2 when content collection ships -->
+
+    <Schema {...schema} />
+  </head>
+
+  <body class="min-h-screen bg-base-100 font-body text-base-content">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-secondary focus:px-4 focus:py-2 focus:text-secondary-content"
+    >
+      ข้ามไปยังเนื้อหาหลัก
+    </a>
+
+    <Nav />
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <Footer />
+  </body>
+</html>

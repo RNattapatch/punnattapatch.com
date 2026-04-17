@@ -1,0 +1,159 @@
+# Pun Nattapatch — Full AI-readable profile
+
+> B2B Sales Consultant & Agentic AI Transformation Specialist สำหรับ SME ไทย
+
+---
+
+## About
+
+ปัน ณัฐพัชร์ (@pun_nattapatch) เริ่มทำที่ปรึกษาเต็มตัวปี 2025 หลังจากทำงานใน field sales 10+ ปี
+ตั้งอยู่ที่ Bangkok, Thailand — รับงานทั้ง on-site และ online
+
+### Positioning
+
+"ที่ปรึกษาการขาย B2B เชี่ยวชาญ Agentic AI Transformation" — ต่างจากเอเจนซี่ AI ทั่วไป:
+
+- เอเจนซี่ส่ง slide + roadmap — ปันส่งระบบที่รันได้จริงตั้งแต่วันส่งมอบ
+- ไม่ต้องมีทีม tech — stack ที่ใช้ (Claude Code + n8n + Google Apps Script) ให้ non-tech maintain ได้
+- ไม่มี vendor lock-in — ใช้ open tools ที่ client ถือ license เอง
+- 100% upfront — ไม่มีสัญญาผูกมัดยาว จบงานจบสัญญา
+
+### Expertise
+
+1. **B2B Sales Consulting** — ออกแบบ KPI + Commission structure ที่ fair + วัดได้จริง สำหรับทีมขาย 5-30 คน (telesales, chat commerce, field sales)
+2. **Agentic AI Transformation** — Build AI workflow ที่เชื่อม Google Sheets / CRM / LINE / Email ด้วย Claude Code + n8n + Apps Script
+3. **Value-Based Selling** — เปลี่ยนทีมจากขายของเป็นที่ปรึกษา ใช้ Jobs to be Done framework + จิตวิทยาการตัดสินใจ
+4. **Sales Psychology** — สอนกระบวนการตัดสินใจ (Functional / Emotional / Social) — ปิด deal ด้วยคุณค่าไม่ใช่ส่วนลด
+
+### Operating Principles
+
+1. ส่ง finished product เท่านั้น — ไม่ส่งคำว่า "ทีหลัง" หรือ "รอบหน้า"
+2. AI ที่ทำงานได้จริง ไม่ใช่ demo
+3. 100% upfront — ไม่มีข้อยกเว้น
+4. ทุกเคสได้ workflow อย่างน้อย 1 ตัวใช้งานได้จริง
+
+### Credentials (ณ 2026-04)
+
+- 10+ active clients — SME รายได้ 30-200M THB
+- ระบบที่วาง generate ยอดขายรวมกว่า 100 ล้านบาท
+- ลูกค้าเพิ่มยอดขายเฉลี่ย 40%+ หลังใช้ระบบ
+- ประสบการณ์ sales field 10+ ปี ก่อนเปิดที่ปรึกษา
+
+---
+
+## Services (4 packages)
+
+### 1. AI Day Workshop — ฿30,000
+
+**Hook:** "ทีมขายเสียเวลา 5+ ชั่วโมง/สัปดาห์ กับงานที่ AI ทำได้ใน 10 นาที"
+
+- ระยะเวลา: 1 วัน (6-7 ชม.)
+- รูปแบบ: On-site หรือ Online
+- ผู้เข้าร่วม: ไม่จำกัด
+- ชำระเงิน: 100% ก่อนเริ่ม
+
+**ได้อะไร:**
+
+- วิเคราะห์ workflow ทีมขายในวันเริ่ม
+- Build AI tool ที่ใช้ได้จริงภายในวันนั้น
+- สอน team lead maintain เอง
+- วัดผล Before / After ในวันเดียวกัน
+
+**เหมาะกับ:** ทีมขายที่เสียเวลากับงาน manual ซ้ำๆ ต้องการเห็น AI ทำงานจริงก่อนลงทุนเพิ่ม
+
+**ไม่เหมาะ:** ยังไม่มี process พื้นฐานเลย, ต้องการเรียน AI แบบ theory อย่างเดียว
+
+### 2. AI Workshop + 1-Month Follow-up — ฿50,000
+
+**Hook:** "Workshop จบแล้วทีมหยุดใช้ภายใน 2 สัปดาห์ — เคยเจอไหม?"
+
+- ระยะเวลา: Workshop 1 วัน + Follow-up 30 วัน
+- Follow-up: 4 sessions (สัปดาห์ละ 1 × 45-60 นาที)
+- LINE Support: Async 30 วัน (ตอบใน 24 ชม. จ-ศ)
+
+**Anchor:** Workshop เดี่ยว ฿30,000 = ไม่มี support | Workshop + Follow-up ฿50,000 = guarantee ระบบไม่ตาย
+
+**เหมาะกับ:** คนที่เคยจ่าย workshop แล้วทีมเลิกใช้ ต้องการ support หลัง workshop
+
+### 3. Sales System Sprint — ฿65,000 / 1 เดือน
+
+**Hook:** "มีทีมขาย 5-20 คน แต่ยอดขาย 80% มาจากคุณคนเดียว?"
+
+- ระยะเวลา: 1 เดือน
+- Sessions: 4 ครั้ง (Discovery → Design → Build → Training)
+- LINE Support: Async 30 วัน
+
+**Deliverables:**
+
+- Discovery Report + Quick Win ทันที
+- KPI Dashboard + Commission Calculator
+- n8n workflow + AI tools สำหรับทีม
+- Training Deck + Handover Checklist
+
+**Case study:** H.HomePlus วัสดุก่อสร้าง จ่าย ฿52,800 ได้ระบบ KPI + Commission + Training ทีม 16 คน 6 แผนก — ยอดขาย gap ฿1.95M/เดือน เริ่มปิดได้จริง
+
+**เหมาะกับ:** SME ที่มีทีมขาย 5-20 คน ยังไม่มีระบบ KPI/Commission ชัดเจน กำลัง scale หรือเปิดสาขา
+
+### 4. Sale Training Bundle — ฿42,500 / 2 วัน
+
+**Hook:** "ทีมขายยังปิดการขายด้วยการลดราคาอยู่เหรอ?"
+
+- Bundle: Value Selling (1 วัน) + Sales Psychology (1 วัน)
+- ราคาแยก: ฿25,000 × 2 = ฿50,000 | Bundle: ฿42,500 (ประหยัด ฿7,500)
+- รูปแบบ: In-house training ≤20 คน
+
+**หลักสูตร B: Value & Relationship Selling**
+
+1. จากสงครามราคาสู่การขายด้วยคุณค่า (Jobs to be Done)
+2. คัดกรองลูกค้า — รู้ว่าใคร "ใช่"
+3. จิตวิทยาการให้เพื่อความผูกพันระยะยาว
+4. เจรจาแบบ Win-Win — แลกผลประโยชน์ไม่ลดราคาฝ่ายเดียว
+
+**หลักสูตร C: Sale Psychology**
+
+1. ถอดรหัสกระบวนการตัดสินใจ (Functional / Emotional / Social)
+2. First Impression Code
+3. Trust & Social Proof
+4. Psychological Tactics for Closing
+
+**เหมาะกับ:** ทีมขายที่ปิดด้วยลดราคาเป็นหลัก, Telesales / Chat Commerce / Field Sales ที่ต้องเปลี่ยนวิธีขาย
+
+---
+
+## FAQ
+
+**Q: ต่างจากเอเจนซี่ AI หรือที่ปรึกษาการขายทั่วไปยังไง**
+A: เอเจนซี่ส่งสไลด์ ผมส่งระบบ — client ทุกรายออกจากงานพร้อม AI workflow ใช้งานได้จริงอย่างน้อย 1 ตัว ไม่ใช่ roadmap หรือรายงาน 200 หน้า
+
+**Q: ต้องมีทีม tech ก่อนไหม**
+A: ไม่ต้อง — ผมออกแบบให้ maintain ด้วย Google Sheets + n8n + Apps Script ซึ่ง non-tech ดูแลได้หลัง hand-over
+
+**Q: เริ่มเล็กได้ไหม**
+A: ได้ — เริ่มจาก AI Day Workshop 1 วัน ฿30,000 เห็นผลจริงก่อนค่อยลงทุนต่อ ไม่มีสัญญาผูกมัดยาว
+
+**Q: ทำในต่างจังหวัดได้ไหม**
+A: ได้ทั้ง on-site (บวกค่าเดินทาง) และ online — workshop สายที่ต้อง on-site คือ sale training ที่ต้อง role-play
+
+**Q: มี case study ให้ดูไหม**
+A: มี — ขอคุยผ่าน discovery call 15 นาที ผมจะ share case ที่ตรงกับ industry + team size ของคุณ ไม่ public เพราะบาง client ไม่ต้องการเปิดเผย
+
+---
+
+## Contact
+
+- Website: https://punnattapatch.com
+- Intake Form: https://punnattapatch.com/intake-form
+- TikTok: https://www.tiktok.com/@pun_nattapatch
+- Instagram: https://www.instagram.com/pun_nattapatch
+- LINE Official: https://lin.ee/punnattapatch
+
+---
+
+## Terms
+
+- Payment: 100% upfront — ไม่มีข้อยกเว้น ทั้งสองฝ่าย commit เต็มที่ตั้งแต่วันแรก
+- Contract: ไม่มี lock-in ยาว — จบงานจบสัญญา ใช้ระบบที่ส่งมอบต่อเองได้
+- Technology: Claude Code + n8n + Google Apps Script / Sheets — ไม่มี vendor lock-in
+- Handover: documentation + training included — ทีม maintain ต่อเองได้
+- Travel: on-site ต่างจังหวัด — คำนวณค่าเดินทางแยก แจ้งก่อนรับงาน
+- PDPA: ข้อมูลจาก intake form ใช้เพื่อตอบกลับเคสเท่านั้น ไม่ส่งต่อบุคคลที่สาม

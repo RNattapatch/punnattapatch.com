@@ -1,0 +1,65 @@
+---
+import { SITE } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t border-base-content/10 bg-base-200/50">
+  <div class="mx-auto max-w-6xl px-6 py-12">
+    <div class="grid gap-10 md:grid-cols-3">
+      <!-- Brand -->
+      <div>
+        <p class="font-display text-xl font-bold">{SITE.nameTh}</p>
+        <p class="mt-2 text-sm text-base-content/70">{SITE.author.jobTitle}</p>
+        <p class="mt-4 text-sm text-base-content/60">
+          {SITE.author.city}, Thailand
+        </p>
+      </div>
+
+      <!-- Nav -->
+      <div>
+        <p class="mb-3 text-sm font-semibold uppercase tracking-wide text-base-content/50">
+          เมนู
+        </p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/" class="hover:text-secondary">หน้าแรก</a></li>
+          <li><a href="/services" class="hover:text-secondary">บริการ</a></li>
+          <li><a href="/about" class="hover:text-secondary">เกี่ยวกับปัน</a></li>
+          <li><a href="/intake-form" class="hover:text-secondary">ประเมินปัญหา</a></li>
+        </ul>
+      </div>
+
+      <!-- Social -->
+      <div>
+        <p class="mb-3 text-sm font-semibold uppercase tracking-wide text-base-content/50">
+          ติดตาม
+        </p>
+        <ul class="space-y-2 text-sm">
+          <li>
+            <a href={SITE.social.tiktok} rel="me noopener" target="_blank" class="hover:text-secondary">
+              TikTok @pun_nattapatch
+            </a>
+          </li>
+          <li>
+            <a href={SITE.social.instagram} rel="me noopener" target="_blank" class="hover:text-secondary">
+              Instagram @pun_nattapatch
+            </a>
+          </li>
+          <li>
+            <a href={SITE.social.line} rel="noopener" target="_blank" class="hover:text-secondary">
+              LINE Official
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div
+      class="mt-10 flex flex-col items-start justify-between gap-3 border-t border-base-content/10 pt-6 text-xs text-base-content/50 md:flex-row md:items-center"
+    >
+      <p>&copy; {year} Pun Nattapatch. ทุกเสียงในเว็บนี้เขียนและตรวจโดยมนุษย์จริง</p>
+      <p>
+        100% payment upfront · Bangkok, Thailand
+      </p>
+    </div>
+  </div>
+</footer>

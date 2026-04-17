@@ -1,0 +1,235 @@
+---
+/**
+ * Schema.astro — JSON-LD structured data generator.
+ *
+ * Emits one or more schema.org objects inside a <script type="application/ld+json">
+ * block so AI crawlers (ChatGPT, Claude, Gemini, Perplexity, Google AI Overview)
+ * can reliably identify the entity, offers, and content on each page.
+ *
+ * Each page should include a Schema block whose `type` matches the page role:
+ *   - Person       : homepage + about  (identity anchor)
+ *   - Service      : services (one entry per package)
+ *   - FAQPage      : FAQ / cluster articles
+ *   - WebPage      : default fallback
+ *   - Article      : blog posts / pillar content
+ *   - BreadcrumbList: deep navigation
+ *
+ * Usage (single type):
+ *   <Schema type="Person" />
+ *
+ * Usage (multiple types — most pages combine Person + WebPage):
+ *   <Schema types={['Person', 'WebPage']} title="About" />
+ *
+ * Usage (Service — pass packages from site data):
+ *   <Schema type="ServiceList" services={SERVICES} />
+ */
+
+import { SITE, SERVICES, cleanUrl } from '../data/site';
+
+type SchemaType =
+  | 'Person'
+  | 'WebPage'
+  | 'Service'
+  | 'ServiceList'
+  | 'FAQPage'
+  | 'Article'
+  | 'BreadcrumbList';
+
+interface Props {
+  type?: SchemaType;
+  types?: SchemaType[];
+  title?: string;
+  description?: string;
+  url?: string;
+  datePublished?: string;
+  dateModified?: string;
+  /** For FAQPage */
+  faq?: Array<{ question: string; answer: string }>;
+  /** For BreadcrumbList */
+  breadcrumbs?: Array<{ name: string; url: string }>;
+  /** For Article */
+  article?: {
+    headline: string;
+    image?: string;
+    datePublished: string;
+    dateModified?: string;
+  };
+  /** For ServiceList */
+  services?: typeof SERVICES;
+}
+
+const {
+  type,
+  types = type ? [type] : ['WebPage'],
+  title = SITE.titleDefault,
+  description = SITE.description,
+  url = cleanUrl(Astro.url),
+  faq,
+  breadcrumbs,
+  article,
+  services = SERVICES,
+} = Astro.props;
+
+const PERSON_ID = `${SITE.url}/#person`;
+const WEBSITE_ID = `${SITE.url}/#website`;
+
+function buildPerson() {
+  return {
+    '@type': 'Person',
+    '@id': PERSON_ID,
+    name: SITE.author.nameTh,
+    alternateName: [SITE.author.name, 'punnattapatch', SITE.author.handle],
+    url: SITE.url,
+    jobTitle: SITE.author.jobTitle,
+    description: SITE.description,
+    knowsAbout: [
+      'B2B Sales Consulting',
+      'Agentic AI Transformation',
+      'Sales Team Automation',
+      'Claude Code',
+      'n8n Workflow Automation',
+      'Google Apps Script',
+      'KPI + Commission Design',
+      'Value-Based Selling',
+      'Sales Psychology',
+    ],
+    sameAs: [SITE.social.tiktok, SITE.social.instagram],
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: SITE.author.city,
+      addressCountry: SITE.author.country,
+    },
+  };
+}
+
+function buildWebPage() {
+  return {
+    '@type': 'WebPage',
+    '@id': `${url}#webpage`,
+    url,
+    name: title,
+    description,
+    inLanguage: 'th-TH',
+    isPartOf: { '@id': WEBSITE_ID },
+    about: { '@id': PERSON_ID },
+  };
+}
+
+function buildWebSite() {
+  return {
+    '@type': 'WebSite',
+    '@id': WEBSITE_ID,
+    url: SITE.url,
+    name: SITE.titleDefault,
+    inLanguage: 'th-TH',
+    publisher: { '@id': PERSON_ID },
+  };
+}
+
+function buildServiceList() {
+  return services.map((svc) => ({
+    '@type': 'Service',
+    '@id': `${SITE.url}/services#${svc.id}`,
+    name: svc.title,
+    alternateName: svc.subtitle,
+    description: svc.hook,
+    url: `${SITE.url}/services#${svc.slug}`,
+    provider: { '@id': PERSON_ID },
+    serviceType: svc.subtitle,
+    areaServed: { '@type': 'Country', name: 'Thailand' },
+    offers: {
+      '@type': 'Offer',
+      price: svc.priceThb,
+      priceCurrency: 'THB',
+      availability: 'https://schema.org/InStock',
+      url: `${SITE.url}/intake-form`,
+    },
+  }));
+}
+
+function buildFAQPage() {
+  if (!faq) return null;
+  return {
+    '@type': 'FAQPage',
+    mainEntity: faq.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
+}
+
+function buildArticle() {
+  if (!article) return null;
+  return {
+    '@type': 'Article',
+    headline: article.headline,
+    image: article.image,
+    datePublished: article.datePublished,
+    dateModified: article.dateModified ?? article.datePublished,
+    author: { '@id': PERSON_ID },
+    publisher: { '@id': PERSON_ID },
+  };
+}
+
+function buildBreadcrumbs() {
+  if (!breadcrumbs) return null;
+  return {
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbs.map((bc, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: bc.name,
+      item: bc.url,
+    })),
+  };
+}
+
+function buildGraph(): unknown[] {
+  const graph: unknown[] = [buildWebSite()];
+
+  for (const t of types) {
+    switch (t) {
+      case 'Person':
+        graph.push(buildPerson());
+        break;
+      case 'WebPage':
+        graph.push(buildWebPage());
+        break;
+      case 'Service':
+      case 'ServiceList': {
+        const serviceItems = buildServiceList();
+        graph.push(...serviceItems);
+        break;
+      }
+      case 'FAQPage': {
+        const faqBlock = buildFAQPage();
+        if (faqBlock) graph.push(faqBlock);
+        break;
+      }
+      case 'Article': {
+        const articleBlock = buildArticle();
+        if (articleBlock) graph.push(articleBlock);
+        break;
+      }
+      case 'BreadcrumbList': {
+        const bcBlock = buildBreadcrumbs();
+        if (bcBlock) graph.push(bcBlock);
+        break;
+      }
+    }
+  }
+
+  return graph;
+}
+
+const ldJson = {
+  '@context': 'https://schema.org',
+  '@graph': buildGraph(),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(ldJson, null, 0)} />

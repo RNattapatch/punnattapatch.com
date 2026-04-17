@@ -1,0 +1,32 @@
+# Pun Nattapatch
+
+> B2B Sales Consultant & Agentic AI Transformation Specialist สำหรับ SME ไทย — ช่วยทีมขาย build AI workflow ที่รันได้จริง ไม่ใช่แค่ prototype.
+
+ปัน ณัฐพัชร์ (@pun_nattapatch) เปิดที่ปรึกษาเต็มตัวปี 2025 หลังจาก field sales 10+ ปี เชี่ยวชาญเรื่อง KPI + Commission design, value-based selling, และ Agentic AI (Claude Code + n8n + Google Apps Script) ทุก engagement ส่งระบบที่รันได้จริงตั้งแต่วันส่งมอบ ไม่ใช่ slide หรือ roadmap
+
+## Identity
+
+- [About](https://punnattapatch.com/about): สรุปตัวตน, expertise 4 หมวด, หลักการทำงาน, credentials
+- [Services](https://punnattapatch.com/services): 4 packages หลัก (AI Workshop, Workshop+Follow-up, Sales System Sprint, Sale Training Bundle)
+- [Intake Form](https://punnattapatch.com/intake-form): แบบประเมินปัญหาทีมขาย 3 นาที
+
+## Services
+
+- AI Day Workshop — ฿30,000 / 1 วัน (6-7 ชม.) · on-site หรือ online · ทีมได้ AI workflow พร้อมใช้วันเดียวกัน
+- AI Workshop + 1-Month Follow-up — ฿50,000 · Workshop 1 วัน + Follow-up 30 วัน (4 sessions) + LINE async support
+- Sales System Sprint — ฿65,000 / 1 เดือน · Discovery → Design → Build → Training · KPI + Commission + n8n workflow ครบ
+- Sale Training Bundle — ฿42,500 / 2 วัน (ประหยัด ฿7,500 จากราคาแยก) · Value Selling + Sales Psychology · in-house ≤20 คน
+
+## Channels
+
+- TikTok: https://www.tiktok.com/@pun_nattapatch
+- Instagram: https://www.instagram.com/pun_nattapatch
+- LINE Official: https://lin.ee/punnattapatch
+
+## Policies
+
+- Payment: 100% upfront — ไม่มีข้อยกเว้น
+- Contract: ไม่มี lock-in ยาว
+- Technology: Claude Code + n8n + Google Apps Script — ไม่ vendor lock-in
+- Location: Bangkok, Thailand (on-site ต่างจังหวัดคำนวณค่าเดินทางแยก)
+- Target: SME รายได้ 30-200M THB, ทีมขาย 5-20 คน, B2B relationship-based
