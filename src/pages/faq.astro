@@ -19,13 +19,89 @@ const faqWithBody = await Promise.all(
   })
 );
 
+// Group FAQs by primary tag (first meaningful tag other than "faq")
+type FaqItem = (typeof faqWithBody)[number];
+type GroupDef = { id: string; label: string; icon: string; matchTags: string[] };
+
+const GROUPS: GroupDef[] = [
+  {
+    id: 'pricing',
+    label: 'ราคา & การจ่ายเงิน',
+    icon: '💰',
+    matchTags: ['pricing', 'budget', 'payment', 'investment', 'bangkok'],
+  },
+  {
+    id: 'ai',
+    label: 'AI & Automation',
+    icon: '🤖',
+    matchTags: ['ai', 'ai-agent', 'automation', 'chatbot', 'ai-adoption', 'ai-workshop', 'beginner'],
+  },
+  {
+    id: 'team',
+    label: 'ทีมขาย & Commission',
+    icon: '👥',
+    matchTags: ['commission', 'sales-team', 'kpi', 'structure', 'audience', 'services'],
+  },
+  {
+    id: 'workshop',
+    label: 'Workshop & Training',
+    icon: '🎓',
+    matchTags: ['workshop', 'consulting', 'sales-training', 'curriculum', 'in-house', 'preparation', 'discovery-call', 'booking'],
+  },
+  {
+    id: 'tools',
+    label: 'Tools & Tech',
+    icon: '🛠',
+    matchTags: ['crm', 'recommendation', 'dashboard', 'google-sheets', 'apps-script'],
+  },
+  {
+    id: 'other',
+    label: 'อื่นๆ',
+    icon: '📌',
+    matchTags: [],
+  },
+];
+
+function groupOf(entry: FaqEntry): string {
+  const tags = entry.data.tags ?? [];
+  for (const g of GROUPS) {
+    if (g.id === 'other') continue;
+    if (tags.some((t) => g.matchTags.includes(t))) return g.id;
+  }
+  return 'other';
+}
+
+const grouped: Record<string, FaqItem[]> = {};
+for (const g of GROUPS) grouped[g.id] = [];
+for (const item of faqWithBody) {
+  grouped[groupOf(item.entry)].push(item);
+}
+
+// Build search index — plain text of question + answerSummary + tags per entry
+type SearchIndexItem = {
+  id: string;
+  group: string;
+  text: string;
+};
+const searchIndex: SearchIndexItem[] = faqWithBody.map(({ entry }) => ({
+  id: entry.id,
+  group: groupOf(entry),
+  text:
+    entry.data.question +
+    ' ' +
+    entry.data.answerSummary +
+    ' ' +
+    (entry.data.tags ?? []).join(' '),
+}));
+const searchIndexJson = JSON.stringify(searchIndex);
+
 // Schema FAQPage uses answerSummary (short text) — full body lives in <details>
 const schemaFaq = faqEntries.map((entry: FaqEntry) => ({
   question: entry.data.question,
   answer: entry.data.answerSummary,
 }));
 
-const title = 'คำถามที่ถามบ่อย — FAQ';
+const title = 'คำถามที่ถามบ่อย — FAQ (18+ คำถาม)';
 const description =
   'รวมคำถามที่เจอบ่อยเรื่องการสร้างทีมขาย B2B + Agentic AI Transformation — ตอบจริง ตอบสั้น พร้อมที่ลึกถ้าต้องการ';
 ---
@@ -51,48 +127,128 @@ const description =
         คำถามที่ถามบ่อย
       </h1>
       <p class="mt-5 text-lg text-base-content/75">
-        รวมคำถามที่เจ้าของ SME + ผู้จัดการขายถามผมบ่อยที่สุด — ถ้าไม่เจอคำถามที่ตรงใจ
-        <a href="/intake-form" class="font-medium text-secondary underline">ส่งแบบประเมินมา</a>
+        รวม {faqWithBody.length} คำถามที่เจ้าของ SME + ผู้จัดการขายถามผมบ่อยที่สุด —
+        ถ้าไม่เจอคำถามที่ตรงใจ
+        <a href="/intake-form" class="font-medium text-secondary underline"
+          >ส่งแบบประเมินมา</a
+        >
         ผมตอบเองในเคสนั้นๆ
       </p>
     </div>
   </section>
 
-  {faqWithBody.length === 0 ? (
-    <section class="px-4 pb-20 lg:px-8">
-      <div class="mx-auto max-w-2xl rounded-2xl border border-dashed border-base-content/20 bg-base-200/30 p-10 text-center">
-        <p class="font-display text-xl font-bold">FAQ ยังไม่มีบทความ</p>
-        <p class="mt-3 text-base-content/70">
-          ทักมาที่
-          <a href={SITE.social.line} class="text-secondary underline" rel="noopener" target="_blank">
-            LINE OA
-          </a>
-          ผมตอบทุกคำถามภายใน 2 วันทำการ
-        </p>
-      </div>
-    </section>
-  ) : (
-    <section class="border-t border-base-content/10 bg-base-200/20 px-4 py-16 lg:px-8">
-      <div class="mx-auto max-w-3xl space-y-3">
-        {faqWithBody.map(({ entry, Content }) => (
-          <details class="group rounded-2xl border border-base-content/10 bg-base-100 p-6 open:shadow-md">
-            <summary
-              class="cursor-pointer list-none text-base font-semibold leading-snug group-open:text-secondary"
+  {
+    faqWithBody.length === 0 ? (
+      <section class="px-4 pb-20 lg:px-8">
+        <div class="mx-auto max-w-2xl rounded-2xl border border-dashed border-base-content/20 bg-base-200/30 p-10 text-center">
+          <p class="font-display text-xl font-bold">FAQ ยังไม่มีบทความ</p>
+          <p class="mt-3 text-base-content/70">
+            ทักมาที่
+            <a
+              href={SITE.social.line}
+              class="text-secondary underline"
+              rel="noopener"
+              target="_blank"
             >
-              <span class="mr-2 font-display font-bold text-secondary">Q.</span>
-              {entry.data.question}
-              <span class="float-right text-base-content/40 transition-transform group-open:rotate-180">▾</span>
-            </summary>
-            <div class="mt-5 border-t border-base-content/10 pt-5">
-              <Prose>
-                <Content />
-              </Prose>
+              LINE OA
+            </a>
+            ผมตอบทุกคำถามภายใน 2 วันทำการ
+          </p>
+        </div>
+      </section>
+    ) : (
+      <section class="border-t border-base-content/10 bg-base-200/20 px-4 py-10 lg:px-8">
+        <div class="mx-auto max-w-3xl">
+          {/* Search + filter controls */}
+          <div
+            id="faq-controls"
+            class="sticky top-2 z-20 space-y-3 rounded-2xl border border-base-content/10 bg-base-100/95 p-4 backdrop-blur-lg shadow-lg"
+          >
+            <label class="block">
+              <span class="sr-only">ค้นหาคำถาม</span>
+              <input
+                type="search"
+                id="faq-search"
+                placeholder="🔍 ค้นหาคำถาม... (เช่น ราคา, commission, AI agent)"
+                class="input input-bordered w-full text-base"
+                autocomplete="off"
+              />
+            </label>
+
+            <div class="flex flex-wrap gap-2">
+              <button
+                type="button"
+                data-group="all"
+                class="faq-tag-btn btn btn-sm bg-secondary text-secondary-content"
+              >
+                ทั้งหมด <span class="faq-count ml-1 opacity-75">({faqWithBody.length})</span>
+              </button>
+              {GROUPS.filter((g) => grouped[g.id].length > 0).map((g) => (
+                <button
+                  type="button"
+                  data-group={g.id}
+                  class="faq-tag-btn btn btn-sm btn-ghost border border-base-content/20"
+                >
+                  <span class="mr-1">{g.icon}</span>
+                  {g.label}
+                  <span class="faq-count ml-1 opacity-60">({grouped[g.id].length})</span>
+                </button>
+              ))}
             </div>
-          </details>
-        ))}
-      </div>
-    </section>
-  )}
+          </div>
+
+          <p
+            id="faq-no-results"
+            class="mt-8 hidden rounded-2xl border border-dashed border-base-content/20 bg-base-200/30 p-6 text-center text-base-content/65"
+          >
+            ไม่เจอคำถามที่ตรง —
+            <a href="/intake-form" class="font-semibold text-secondary underline">
+              ส่งคำถามให้ปันโดยตรง
+            </a>
+          </p>
+
+          {/* Grouped accordion */}
+          <div class="mt-8 space-y-8">
+            {GROUPS.filter((g) => grouped[g.id].length > 0).map((g) => (
+              <div class="faq-group" data-group={g.id}>
+                <h2
+                  class="font-display text-xl font-bold text-secondary"
+                  data-group-heading={g.id}
+                >
+                  <span class="mr-2">{g.icon}</span>
+                  {g.label}
+                  <span class="ml-2 text-sm font-normal text-base-content/50">
+                    ({grouped[g.id].length})
+                  </span>
+                </h2>
+                <div class="mt-4 space-y-3">
+                  {grouped[g.id].map(({ entry, Content }) => (
+                    <details
+                      class="faq-item group rounded-2xl border border-base-content/10 bg-base-100 p-6 open:shadow-md"
+                      data-faq-id={entry.id}
+                    >
+                      <summary class="cursor-pointer list-none text-base font-semibold leading-snug group-open:text-secondary">
+                        <span class="mr-2 font-display font-bold text-secondary">Q.</span>
+                        {entry.data.question}
+                        <span class="float-right text-base-content/40 transition-transform group-open:rotate-180">
+                          ▾
+                        </span>
+                      </summary>
+                      <div class="mt-5 border-t border-base-content/10 pt-5">
+                        <Prose>
+                          <Content />
+                        </Prose>
+                      </div>
+                    </details>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   <section class="px-4 py-20 lg:px-8">
     <div class="mx-auto max-w-3xl rounded-3xl bg-primary px-6 py-12 text-primary-content md:px-12">
@@ -121,3 +277,77 @@ const description =
     </div>
   </section>
 </BaseLayout>
+
+<script is:inline define:vars={{ searchIndexJson }}>
+  window.__FAQ_INDEX__ = JSON.parse(searchIndexJson);
+</script>
+<script>
+  interface SearchIndexItem {
+    id: string;
+    group: string;
+    text: string;
+  }
+
+  const index = (window as unknown as { __FAQ_INDEX__: SearchIndexItem[] }).__FAQ_INDEX__;
+  const searchEl = document.getElementById('faq-search') as HTMLInputElement | null;
+  const noResultsEl = document.getElementById('faq-no-results');
+  const tagBtns = Array.from(
+    document.querySelectorAll<HTMLButtonElement>('.faq-tag-btn')
+  );
+  const faqItems = Array.from(document.querySelectorAll<HTMLElement>('.faq-item'));
+  const faqGroups = Array.from(document.querySelectorAll<HTMLElement>('.faq-group'));
+
+  let activeGroup = 'all';
+  let activeQuery = '';
+
+  function applyFilters(): void {
+    const q = activeQuery.trim().toLowerCase();
+    let visibleCount = 0;
+
+    faqItems.forEach((el) => {
+      const id = el.dataset.faqId ?? '';
+      const entry = index.find((i) => i.id === id);
+      if (!entry) return;
+
+      const groupMatch = activeGroup === 'all' || entry.group === activeGroup;
+      const queryMatch = q === '' || entry.text.toLowerCase().includes(q);
+      const show = groupMatch && queryMatch;
+
+      el.style.display = show ? '' : 'none';
+      if (show) visibleCount++;
+    });
+
+    // Hide whole group if no visible items in it
+    faqGroups.forEach((gEl) => {
+      const anyVisible = Array.from(gEl.querySelectorAll<HTMLElement>('.faq-item')).some(
+        (el) => el.style.display !== 'none'
+      );
+      gEl.style.display = anyVisible ? '' : 'none';
+    });
+
+    if (noResultsEl) {
+      noResultsEl.classList.toggle('hidden', visibleCount > 0);
+    }
+  }
+
+  searchEl?.addEventListener('input', () => {
+    activeQuery = searchEl.value;
+    applyFilters();
+  });
+
+  tagBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      activeGroup = btn.dataset.group ?? 'all';
+      tagBtns.forEach((b) => {
+        if (b === btn) {
+          b.classList.remove('btn-ghost', 'border-base-content/20');
+          b.classList.add('bg-secondary', 'text-secondary-content');
+        } else {
+          b.classList.remove('bg-secondary', 'text-secondary-content');
+          b.classList.add('btn-ghost', 'border', 'border-base-content/20');
+        }
+      });
+      applyFilters();
+    });
+  });
+</script>
