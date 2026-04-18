@@ -40,10 +40,10 @@ Wedge ที่ SME ไทยเลือกแล้วคืนทุนเร
 ## งบที่เกินความจำเป็นสำหรับ SME ปีแรก
 
 **อย่าซื้อ:**
-- Enterprise AI platform ราคา ฿100,000+/เดือน (เช่น Salesforce Einstein, HubSpot Enterprise) เพราะ SME ไม่ได้ใช้ feature 80% ของมัน
+- Enterprise AI platform ราคา ฿100,000+/เดือน เพราะ SME ไม่ได้ใช้ feature 80% ของมัน
 - ที่ปรึกษาแบบ retainer ฿200,000+/เดือน สัญญา 12 เดือน เพราะผูกมัดนานเกินไป
 - Custom AI model training ราคา ฿500,000+ เพราะ off-the-shelf model เพียงพอสำหรับ 95% ของ use case
-- BI tool enterprise license (เช่น Power BI Pro, Tableau) เพราะ Google Sheets และ Apps Script สามารถทำงานได้ครบถ้วนเช่นกัน
+- BI tool enterprise license เพราะ Google Sheets และ Apps Script ทำงานได้ครบถ้วนเช่นกัน
 
 **ประหยัดได้ทันที:**
 - ใช้ Google Workspace ที่มีอยู่แล้ว ไม่ต้องซื้อ Microsoft 365
