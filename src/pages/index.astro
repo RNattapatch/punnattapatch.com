@@ -104,6 +104,14 @@ const diagnoseCards: Array<{
     href: '/services#sales-system-sprint',
     accent: 'coral',
   },
+  {
+    pain: 'จ้างคนทำ content แพงๆ ยอดวิวดี แต่',
+    highlight: 'ไม่เคยมีลูกค้าทักมาซื้อสักคน',
+    service: 'TikTok Trust Content (เร็วๆ นี้)',
+    oneLiner: 'สร้าง content ที่คนเชื่อแล้วทักมาซื้อเอง',
+    href: '/intake-form',
+    accent: 'violet',
+  },
 ];
 
 const accentColor = (a: Accent): string =>
@@ -423,7 +431,7 @@ const freeStuff = [
         </p>
       </div>
 
-      <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-2">
+      <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {
           diagnoseCards.map((card) => {
             const accent = accentColor(card.accent);
