@@ -25,6 +25,8 @@ export const SITE = {
   },
   nav: [
     { label: 'บริการ', href: '/services' },
+    { label: 'Insights', href: '/insights' },
+    { label: 'FAQ', href: '/faq' },
     { label: 'เกี่ยวกับปัน', href: '/about' },
     { label: 'ประเมินปัญหา', href: '/intake-form', cta: true },
   ],

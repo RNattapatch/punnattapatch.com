@@ -1,0 +1,169 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleHero from '../../components/ArticleHero.astro';
+import Prose from '../../components/Prose.astro';
+import { SITE } from '../../data/site';
+import { estimateReadingTimeMinutes } from '../../lib/reading-time';
+
+type Article = CollectionEntry<'pillar'> | CollectionEntry<'cluster'>;
+
+export async function getStaticPaths() {
+  const pillars = await getCollection('pillar', ({ data }: CollectionEntry<'pillar'>) => !data.draft);
+  const clusters = await getCollection('cluster', ({ data }: CollectionEntry<'cluster'>) => !data.draft);
+
+  return [...pillars, ...clusters].map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: Article;
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+const data = entry.data;
+
+const readingMinutes = (data as { readingTimeMinutes?: number }).readingTimeMinutes
+  ?? estimateReadingTimeMinutes(entry.body ?? '');
+
+const pillar = (data as { pillar?: string; parentPillar?: string }).pillar
+  ?? (data as { parentPillar?: string }).parentPillar;
+
+// Related articles: same pillar, exclude self, max 3.
+const allPillars = await getCollection('pillar', ({ data }: CollectionEntry<'pillar'>) => !data.draft);
+const allClusters = await getCollection('cluster', ({ data }: CollectionEntry<'cluster'>) => !data.draft);
+const related = [...allPillars, ...allClusters]
+  .filter((e) => {
+    if (e.id === entry.id) return false;
+    const ePillar = (e.data as { pillar?: string; parentPillar?: string }).pillar
+      ?? (e.data as { parentPillar?: string }).parentPillar;
+    return pillar && ePillar === pillar;
+  })
+  .slice(0, 3);
+
+const ogImage = (data as { heroImage?: string }).heroImage ?? `${SITE.url}/og-image.jpg`;
+---
+
+<BaseLayout
+  title={data.title}
+  description={data.description}
+  ogImage={ogImage}
+  schema={{
+    types: ['Person', 'WebPage', 'Article', 'BreadcrumbList'],
+    title: data.title,
+    description: data.description,
+    article: {
+      headline: data.title,
+      datePublished: data.published.toISOString(),
+      dateModified: (data.updated ?? data.published).toISOString(),
+      image: ogImage,
+    },
+    breadcrumbs: [
+      { name: 'หน้าแรก', url: SITE.url },
+      { name: 'Insights', url: `${SITE.url}/insights` },
+      { name: data.title, url: `${SITE.url}/insights/${entry.id}` },
+    ],
+  }}
+>
+  <article>
+    <ArticleHero
+      title={data.title}
+      description={data.description}
+      published={data.published}
+      updated={data.updated}
+      readingMinutes={readingMinutes}
+      pillar={pillar}
+      tags={data.tags}
+    />
+
+    <div class="grid gap-12 px-4 py-12 lg:grid-cols-[1fr_minmax(0,3fr)] lg:gap-16 lg:px-8 lg:py-16">
+      <!-- TOC sidebar (desktop) -->
+      {headings.length > 1 && (
+        <aside class="hidden lg:block">
+          <div class="sticky top-24">
+            <p class="mb-3 text-xs uppercase tracking-widest text-base-content/50">
+              ในบทความ
+            </p>
+            <nav aria-label="Table of contents">
+              <ol class="space-y-2 text-sm">
+                {headings
+                  .filter((h) => h.depth === 2)
+                  .map((h) => (
+                    <li>
+                      <a
+                        href={`#${h.slug}`}
+                        class="block border-l-2 border-base-content/10 pl-3 text-base-content/70 hover:border-secondary hover:text-secondary"
+                      >
+                        {h.text}
+                      </a>
+                    </li>
+                  ))}
+              </ol>
+            </nav>
+          </div>
+        </aside>
+      )}
+
+      <!-- Body -->
+      <div class="mx-auto w-full max-w-2xl lg:max-w-none">
+        <Prose>
+          <Content />
+        </Prose>
+
+        <!-- Author + signature -->
+        <footer class="mt-16 rounded-2xl border border-base-content/10 bg-base-200/30 p-6">
+          <div class="flex items-start gap-4">
+            <img
+              src="/pun-avatar.jpg"
+              alt="ปัน ณัฐพัชร์"
+              width="64"
+              height="64"
+              class="h-16 w-16 flex-shrink-0 rounded-full object-cover"
+              loading="lazy"
+            />
+            <div>
+              <p class="font-display text-lg font-bold">{SITE.nameTh}</p>
+              <p class="text-sm text-base-content/70">{SITE.author.jobTitle}</p>
+              <p class="mt-2 text-sm text-base-content/80">
+                อ่านแล้วเห็นภาพ? คุยกับปันต่อได้ —
+                <a href="/intake-form" class="font-medium text-secondary hover:underline">
+                  ประเมินปัญหาทีมขาย 3 นาที
+                </a>
+                หรือ
+                <a href={SITE.social.line} class="font-medium text-secondary hover:underline" rel="noopener" target="_blank">
+                  ทักใน LINE OA
+                </a>
+              </p>
+            </div>
+          </div>
+        </footer>
+
+        <!-- Related articles -->
+        {related.length > 0 && (
+          <section class="mt-12">
+            <h2 class="font-display text-xl font-bold tracking-tight">บทความที่เกี่ยวข้อง</h2>
+            <div class="mt-5 grid gap-4 sm:grid-cols-2">
+              {related.map((r) => (
+                <a
+                  href={`/insights/${r.id}`}
+                  class="group rounded-xl border border-base-content/10 bg-base-100 p-5 transition hover:border-secondary/50"
+                >
+                  <p class="font-display text-base font-bold leading-tight group-hover:text-secondary">
+                    {r.data.title}
+                  </p>
+                  <p class="mt-2 line-clamp-2 text-sm text-base-content/70">
+                    {r.data.description}
+                  </p>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+    </div>
+  </article>
+</BaseLayout>

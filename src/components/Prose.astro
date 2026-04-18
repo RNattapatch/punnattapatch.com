@@ -1,0 +1,211 @@
+---
+/**
+ * Prose.astro — typography wrapper for rendered markdown.
+ *
+ * Wraps an article body so unstyled markdown gets the project's heading
+ * scale, list styles, link colors, table treatment, and code-block padding.
+ * Tailwind v4 + DaisyUI doesn't ship a Tailwind Typography plugin equivalent,
+ * so the rules live here in scoped CSS.
+ */
+---
+
+<div class="prose-pun">
+  <slot />
+</div>
+
+<style is:global>
+  .prose-pun {
+    --prose-text: var(--color-base-content);
+    --prose-muted: oklch(50% 0.02 260);
+    --prose-link: var(--color-secondary);
+    --prose-code-bg: var(--color-base-200);
+    --prose-divider: oklch(85% 0.01 260);
+
+    color: var(--prose-text);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    max-width: 70ch;
+  }
+
+  .prose-pun > * + * {
+    margin-top: 1.25em;
+  }
+
+  .prose-pun h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-top: 2.5em;
+    margin-bottom: 0.6em;
+    line-height: 1.25;
+    scroll-margin-top: 5rem;
+  }
+
+  .prose-pun h3 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+    line-height: 1.35;
+    scroll-margin-top: 5rem;
+  }
+
+  .prose-pun h4 {
+    font-weight: 700;
+    margin-top: 1.6em;
+    margin-bottom: 0.4em;
+  }
+
+  .prose-pun p {
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+  }
+
+  .prose-pun p:first-child {
+    font-size: 1.15em;
+    color: oklch(35% 0.02 260);
+  }
+
+  .prose-pun a {
+    color: var(--prose-link);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: oklch(58% 0.18 22 / 0.4);
+    transition: text-decoration-color 0.15s;
+  }
+  .prose-pun a:hover {
+    text-decoration-color: var(--prose-link);
+  }
+
+  .prose-pun strong {
+    font-weight: 700;
+    color: var(--prose-text);
+  }
+
+  .prose-pun em {
+    font-style: italic;
+  }
+
+  .prose-pun ul,
+  .prose-pun ol {
+    padding-left: 1.5em;
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+  }
+
+  .prose-pun ul {
+    list-style: none;
+  }
+  .prose-pun ul > li {
+    position: relative;
+    padding-left: 1.25em;
+  }
+  .prose-pun ul > li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    top: 0.05em;
+    color: var(--color-secondary);
+    font-weight: 700;
+  }
+
+  .prose-pun ol {
+    list-style: decimal;
+  }
+  .prose-pun ol > li::marker {
+    color: var(--color-secondary);
+    font-weight: 700;
+  }
+
+  .prose-pun li + li {
+    margin-top: 0.5em;
+  }
+
+  .prose-pun blockquote {
+    border-left: 3px solid var(--color-secondary);
+    padding: 0.5em 1.25em;
+    margin: 2em 0;
+    background: oklch(96% 0.01 90);
+    border-radius: 0 0.5em 0.5em 0;
+    font-style: normal;
+    color: oklch(30% 0.02 260);
+  }
+  .prose-pun blockquote p:first-child {
+    font-size: 1em;
+    color: inherit;
+  }
+
+  .prose-pun code {
+    background: var(--prose-code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 0.25em;
+    font-size: 0.9em;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  }
+
+  .prose-pun pre {
+    background: oklch(15% 0.02 260);
+    color: oklch(95% 0.005 90);
+    padding: 1.25em 1.5em;
+    border-radius: 0.75em;
+    overflow-x: auto;
+    margin: 2em 0;
+    font-size: 0.9em;
+    line-height: 1.6;
+  }
+  .prose-pun pre code {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+  }
+
+  .prose-pun hr {
+    border: none;
+    border-top: 1px solid var(--prose-divider);
+    margin: 3em 0;
+  }
+
+  .prose-pun table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2em 0;
+    font-size: 0.95em;
+  }
+  .prose-pun th,
+  .prose-pun td {
+    text-align: left;
+    padding: 0.75em 1em;
+    border-bottom: 1px solid var(--prose-divider);
+  }
+  .prose-pun th {
+    font-weight: 700;
+    background: oklch(96% 0.01 90);
+  }
+
+  .prose-pun img {
+    border-radius: 0.5em;
+    margin: 2em auto;
+  }
+
+  /* Dark theme adjustments */
+  :where([data-theme="pundark"]) .prose-pun {
+    --prose-text: var(--color-base-content);
+    --prose-muted: oklch(70% 0.02 260);
+    --prose-divider: oklch(28% 0.02 260);
+    --prose-code-bg: oklch(20% 0.02 260);
+  }
+  :where([data-theme="pundark"]) .prose-pun p:first-child {
+    color: oklch(85% 0.01 90);
+  }
+  :where([data-theme="pundark"]) .prose-pun blockquote {
+    background: oklch(18% 0.02 260);
+    color: oklch(85% 0.01 90);
+  }
+  :where([data-theme="pundark"]) .prose-pun th {
+    background: oklch(20% 0.02 260);
+  }
+</style>

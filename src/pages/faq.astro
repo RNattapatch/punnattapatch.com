@@ -1,0 +1,123 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Prose from '../components/Prose.astro';
+import { SITE } from '../data/site';
+
+type FaqEntry = CollectionEntry<'faq'>;
+
+const faqEntries: FaqEntry[] = (
+  await getCollection('faq', ({ data }: FaqEntry) => !data.draft)
+).sort((a: FaqEntry, b: FaqEntry) => b.data.published.getTime() - a.data.published.getTime());
+
+// Render Markdown body for each FAQ to use as full answer.
+const faqWithBody = await Promise.all(
+  faqEntries.map(async (entry: FaqEntry) => {
+    const { Content } = await render(entry);
+    return { entry, Content };
+  })
+);
+
+// Schema FAQPage uses answerSummary (short text) — full body lives in <details>
+const schemaFaq = faqEntries.map((entry: FaqEntry) => ({
+  question: entry.data.question,
+  answer: entry.data.answerSummary,
+}));
+
+const title = 'คำถามที่ถามบ่อย — FAQ';
+const description =
+  'รวมคำถามที่เจอบ่อยเรื่องการสร้างทีมขาย B2B + Agentic AI Transformation — ตอบจริง ตอบสั้น พร้อมที่ลึกถ้าต้องการ';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  schema={{
+    types: ['WebPage', 'FAQPage', 'BreadcrumbList'],
+    title,
+    description,
+    faq: schemaFaq,
+    breadcrumbs: [
+      { name: 'หน้าแรก', url: SITE.url },
+      { name: 'FAQ', url: `${SITE.url}/faq` },
+    ],
+  }}
+>
+  <section class="px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-sm uppercase tracking-widest text-base-content/50">FAQ</p>
+      <h1 class="mt-3 font-display text-4xl font-bold tracking-tight md:text-5xl">
+        คำถามที่ถามบ่อย
+      </h1>
+      <p class="mt-5 text-lg text-base-content/75">
+        รวมคำถามที่เจ้าของ SME + ผู้จัดการขายถามผมบ่อยที่สุด — ถ้าไม่เจอคำถามที่ตรงใจ
+        <a href="/intake-form" class="font-medium text-secondary underline">ส่งแบบประเมินมา</a>
+        ผมตอบเองในเคสนั้นๆ
+      </p>
+    </div>
+  </section>
+
+  {faqWithBody.length === 0 ? (
+    <section class="px-4 pb-20 lg:px-8">
+      <div class="mx-auto max-w-2xl rounded-2xl border border-dashed border-base-content/20 bg-base-200/30 p-10 text-center">
+        <p class="font-display text-xl font-bold">FAQ ยังไม่มีบทความ</p>
+        <p class="mt-3 text-base-content/70">
+          ทักมาที่
+          <a href={SITE.social.line} class="text-secondary underline" rel="noopener" target="_blank">
+            LINE OA
+          </a>
+          ผมตอบทุกคำถามภายใน 2 วันทำการ
+        </p>
+      </div>
+    </section>
+  ) : (
+    <section class="border-t border-base-content/10 bg-base-200/20 px-4 py-16 lg:px-8">
+      <div class="mx-auto max-w-3xl space-y-3">
+        {faqWithBody.map(({ entry, Content }) => (
+          <details class="group rounded-2xl border border-base-content/10 bg-base-100 p-6 open:shadow-md">
+            <summary
+              class="cursor-pointer list-none text-base font-semibold leading-snug group-open:text-secondary"
+            >
+              <span class="mr-2 font-display font-bold text-secondary">Q.</span>
+              {entry.data.question}
+              <span class="float-right text-base-content/40 transition-transform group-open:rotate-180">▾</span>
+            </summary>
+            <div class="mt-5 border-t border-base-content/10 pt-5">
+              <Prose>
+                <Content />
+              </Prose>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="px-4 py-20 lg:px-8">
+    <div class="mx-auto max-w-3xl rounded-3xl bg-primary px-6 py-12 text-primary-content md:px-12">
+      <h2 class="font-display text-2xl font-bold leading-tight md:text-3xl">
+        ไม่เจอคำตอบที่ตรงใจ?
+      </h2>
+      <p class="mt-4 text-primary-content/80">
+        ตอบแบบประเมิน 3 นาที — ผมอ่านแล้วตอบเองในบริบทของคุณ ไม่ใช่ template
+      </p>
+      <div class="mt-7 flex flex-wrap gap-4">
+        <a
+          href="/intake-form"
+          class="btn btn-lg bg-secondary text-secondary-content shadow-lg shadow-secondary/30 hover:bg-secondary/90"
+        >
+          ประเมินปัญหาทีมขาย
+        </a>
+        <a
+          href={SITE.social.line}
+          rel="noopener"
+          target="_blank"
+          class="btn btn-lg btn-outline text-primary-content hover:bg-primary-content hover:text-primary"
+        >
+          ทักใน LINE OA
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

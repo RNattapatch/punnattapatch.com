@@ -167,12 +167,15 @@ function buildArticle() {
   if (!article) return null;
   return {
     '@type': 'Article',
+    '@id': `${url}#article`,
     headline: article.headline,
-    image: article.image,
+    image: article.image ?? `${SITE.url}/og-image.jpg`,
     datePublished: article.datePublished,
     dateModified: article.dateModified ?? article.datePublished,
     author: { '@id': PERSON_ID },
     publisher: { '@id': PERSON_ID },
+    mainEntityOfPage: { '@id': `${url}#webpage` },
+    inLanguage: 'th-TH',
   };
 }
 
