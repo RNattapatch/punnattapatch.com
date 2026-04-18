@@ -91,57 +91,85 @@ const pkgLookupJson = JSON.stringify({
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/css/intlTelInput.css"
     />
-    <style>
-      /* Dark-theme overrides for intl-tel-input v24 */
+    <style is:global>
+      /* Dark-theme + row-reorder for intl-tel-input v24 (see intake-form.astro for rationale) */
       .iti { width: 100%; display: block; }
+
       .iti__dropdown-content {
-        background: var(--color-base-100) !important;
-        color: var(--color-base-content) !important;
-        border: 1px solid rgb(255 255 255 / 0.15) !important;
+        background: #0f1a2b !important;
+        color: #ffffff !important;
+        border: 1px solid rgb(255 255 255 / 0.18) !important;
         border-radius: 0.5rem;
-        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6);
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.7);
       }
       .iti__country-list {
-        background: var(--color-base-100) !important;
-        color: var(--color-base-content) !important;
-        max-height: 260px;
+        background: #0f1a2b !important;
+        max-height: 280px;
       }
+      .iti__search-input {
+        background: rgb(255 255 255 / 0.06) !important;
+        color: #ffffff !important;
+        border: 1px solid rgb(255 255 255 / 0.18) !important;
+        padding: 10px 12px !important;
+      }
+      .iti__search-input::placeholder {
+        color: rgb(255 255 255 / 0.5) !important;
+      }
+
       .iti__country {
-        padding: 10px 12px;
-        color: var(--color-base-content) !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        padding: 10px 12px !important;
+        color: #ffffff !important;
       }
-      .iti__country-name {
-        color: var(--color-base-content) !important;
+      .iti__country .iti__flag-box,
+      .iti__country > .iti__flag {
+        order: 1 !important;
+        flex-shrink: 0;
       }
-      .iti__dial-code {
-        color: color-mix(in oklch, var(--color-base-content) 65%, transparent) !important;
+      .iti__country .iti__dial-code {
+        order: 2 !important;
+        color: #22d3ee !important;
+        font-weight: 600;
+        min-width: 52px;
+        flex-shrink: 0;
       }
+      .iti__country .iti__country-name {
+        order: 3 !important;
+        color: #ffffff !important;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
       .iti__country.iti__highlight,
       .iti__country:hover {
-        background: color-mix(in oklch, var(--color-secondary) 20%, transparent) !important;
+        background: color-mix(in oklch, var(--color-secondary) 30%, transparent) !important;
       }
+
       .iti__selected-country,
       .iti__selected-country-primary {
-        background: rgb(255 255 255 / 0.03) !important;
+        background: rgb(255 255 255 / 0.04) !important;
       }
       .iti__selected-country:hover,
       .iti__selected-country-primary:hover {
-        background: rgb(255 255 255 / 0.06) !important;
+        background: rgb(255 255 255 / 0.08) !important;
       }
-      .iti--separate-dial-code .iti__selected-dial-code {
-        color: var(--color-base-content) !important;
+      .iti--separate-dial-code .iti__selected-dial-code,
+      .iti--separate-dial-code .iti__dial-code {
+        color: #ffffff !important;
       }
-      .iti__search-input {
-        background: rgb(255 255 255 / 0.05) !important;
-        color: var(--color-base-content) !important;
-        border: 1px solid rgb(255 255 255 / 0.15) !important;
-        padding: 8px 12px;
-      }
-      .iti__search-input::placeholder {
-        color: color-mix(in oklch, var(--color-base-content) 50%, transparent);
-      }
+
       .iti__divider {
-        border-bottom-color: rgb(255 255 255 / 0.1) !important;
+        border-bottom-color: rgb(255 255 255 / 0.12) !important;
+        padding: 0 !important;
+      }
+
+      .iti__no-results {
+        color: rgb(255 255 255 / 0.7) !important;
+        padding: 12px !important;
       }
     </style>
   </Fragment>
@@ -345,6 +373,21 @@ const pkgLookupJson = JSON.stringify({
               }
             </div>
           </div>
+
+          <div class="form-control">
+            <label for="b-comment" class="label">
+              <span class="label-text font-medium">
+                ปัญหาอื่นๆที่เจอ (ไม่อยู่ในรายการข้างบน)
+              </span>
+            </label>
+            <textarea
+              id="b-comment"
+              name="comment"
+              rows="3"
+              class="textarea textarea-bordered w-full"
+              placeholder="อธิบาย pain point เฉพาะของคุณ หรือข้อมูลเพิ่มเติมที่อยากให้ปันรู้ก่อน"
+            />
+          </div>
         </fieldset>
 
         <!-- ===== 3. Timing ===== -->
@@ -380,19 +423,6 @@ const pkgLookupJson = JSON.stringify({
               <option value="">— เลือก —</option>
               {sources.map((s) => <option value={s.value}>{s.label}</option>)}
             </select>
-          </div>
-
-          <div class="form-control">
-            <label for="b-comment" class="label">
-              <span class="label-text font-medium">อยากฝากอะไรเพิ่มเติม (optional)</span>
-            </label>
-            <textarea
-              id="b-comment"
-              name="comment"
-              rows="4"
-              class="textarea textarea-bordered w-full"
-              placeholder="ปัญหาเฉพาะ ข้อสงสัย หรือเป้าหมายของธุรกิจที่อยากให้ปันรู้ก่อน"
-            />
           </div>
         </fieldset>
 
