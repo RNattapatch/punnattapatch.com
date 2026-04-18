@@ -91,11 +91,57 @@ const budgets = [
       href="https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/css/intlTelInput.css"
     />
     <style>
+      /* Dark-theme overrides for intl-tel-input v24 */
       .iti { width: 100%; display: block; }
-      .iti__country-list { background: var(--color-base-100); color: var(--color-base-content); border: 1px solid rgb(255 255 255 / 0.15); }
-      .iti__country.iti__highlight { background: color-mix(in oklch, var(--color-secondary) 15%, transparent); }
-      .iti__selected-country { background: rgb(255 255 255 / 0.03); }
-      .iti--separate-dial-code .iti__selected-dial-code { color: var(--color-base-content); }
+      .iti__dropdown-content {
+        background: var(--color-base-100) !important;
+        color: var(--color-base-content) !important;
+        border: 1px solid rgb(255 255 255 / 0.15) !important;
+        border-radius: 0.5rem;
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6);
+      }
+      .iti__country-list {
+        background: var(--color-base-100) !important;
+        color: var(--color-base-content) !important;
+        max-height: 260px;
+      }
+      .iti__country {
+        padding: 10px 12px;
+        color: var(--color-base-content) !important;
+      }
+      .iti__country-name {
+        color: var(--color-base-content) !important;
+      }
+      .iti__dial-code {
+        color: color-mix(in oklch, var(--color-base-content) 65%, transparent) !important;
+      }
+      .iti__country.iti__highlight,
+      .iti__country:hover {
+        background: color-mix(in oklch, var(--color-secondary) 20%, transparent) !important;
+      }
+      .iti__selected-country,
+      .iti__selected-country-primary {
+        background: rgb(255 255 255 / 0.03) !important;
+      }
+      .iti__selected-country:hover,
+      .iti__selected-country-primary:hover {
+        background: rgb(255 255 255 / 0.06) !important;
+      }
+      .iti--separate-dial-code .iti__selected-dial-code {
+        color: var(--color-base-content) !important;
+      }
+      .iti__search-input {
+        background: rgb(255 255 255 / 0.05) !important;
+        color: var(--color-base-content) !important;
+        border: 1px solid rgb(255 255 255 / 0.15) !important;
+        padding: 8px 12px;
+      }
+      .iti__search-input::placeholder {
+        color: color-mix(in oklch, var(--color-base-content) 50%, transparent);
+      }
+      .iti__divider {
+        border-bottom-color: rgb(255 255 255 / 0.1) !important;
+      }
     </style>
   </Fragment>
 
@@ -541,7 +587,11 @@ const budgets = [
       const factory = (window as unknown as { intlTelInput: ItiFactory }).intlTelInput;
       phoneIti = factory(phoneInput, {
         initialCountry: 'th',
-        preferredCountries: ['th', 'us', 'sg', 'my', 'hk', 'jp', 'gb', 'au'],
+        // In v24+, preferredCountries is deprecated — countryOrder reorders the
+        // entire list. Placing TH + regional neighbours first, then US/UK, then
+        // rest of the world alphabetically keeps the common picks reachable
+        // without scrolling while still showing every country.
+        countryOrder: ['th', 'us', 'sg', 'my', 'hk', 'jp', 'gb', 'au'],
         separateDialCode: true,
         autoPlaceholder: 'polite',
         nationalMode: true,

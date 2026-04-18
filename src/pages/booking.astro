@@ -14,6 +14,15 @@ const teamSizes = [
   '20+ คน',
 ];
 
+const painPoints = [
+  'ทีมเสียเวลากับงาน manual ซ้ำๆ (report, follow-up, data entry)',
+  'เจ้าของแบกยอดขายเอง ทีมไม่ run เอง',
+  'ไม่มีระบบ KPI / Commission ที่ fair + วัดได้',
+  'ทีมปิดการขายด้วยลดราคาเป็นหลัก',
+  'เคยจ่าย workshop แล้วทีมเลิกใช้ภายใน 2 สัปดาห์',
+  'อยากเริ่มใช้ AI แต่ไม่รู้จะเริ่มจากไหน',
+];
+
 const sources = [
   { value: 'chatgpt', label: 'ChatGPT / GPT-4o / o1' },
   { value: 'claude', label: 'Claude (claude.ai, Claude API)' },
@@ -83,11 +92,57 @@ const pkgLookupJson = JSON.stringify({
       href="https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/css/intlTelInput.css"
     />
     <style>
+      /* Dark-theme overrides for intl-tel-input v24 */
       .iti { width: 100%; display: block; }
-      .iti__country-list { background: var(--color-base-100); color: var(--color-base-content); border: 1px solid rgb(255 255 255 / 0.15); }
-      .iti__country.iti__highlight { background: color-mix(in oklch, var(--color-secondary) 15%, transparent); }
-      .iti__selected-country { background: rgb(255 255 255 / 0.03); }
-      .iti--separate-dial-code .iti__selected-dial-code { color: var(--color-base-content); }
+      .iti__dropdown-content {
+        background: var(--color-base-100) !important;
+        color: var(--color-base-content) !important;
+        border: 1px solid rgb(255 255 255 / 0.15) !important;
+        border-radius: 0.5rem;
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6);
+      }
+      .iti__country-list {
+        background: var(--color-base-100) !important;
+        color: var(--color-base-content) !important;
+        max-height: 260px;
+      }
+      .iti__country {
+        padding: 10px 12px;
+        color: var(--color-base-content) !important;
+      }
+      .iti__country-name {
+        color: var(--color-base-content) !important;
+      }
+      .iti__dial-code {
+        color: color-mix(in oklch, var(--color-base-content) 65%, transparent) !important;
+      }
+      .iti__country.iti__highlight,
+      .iti__country:hover {
+        background: color-mix(in oklch, var(--color-secondary) 20%, transparent) !important;
+      }
+      .iti__selected-country,
+      .iti__selected-country-primary {
+        background: rgb(255 255 255 / 0.03) !important;
+      }
+      .iti__selected-country:hover,
+      .iti__selected-country-primary:hover {
+        background: rgb(255 255 255 / 0.06) !important;
+      }
+      .iti--separate-dial-code .iti__selected-dial-code {
+        color: var(--color-base-content) !important;
+      }
+      .iti__search-input {
+        background: rgb(255 255 255 / 0.05) !important;
+        color: var(--color-base-content) !important;
+        border: 1px solid rgb(255 255 255 / 0.15) !important;
+        padding: 8px 12px;
+      }
+      .iti__search-input::placeholder {
+        color: color-mix(in oklch, var(--color-base-content) 50%, transparent);
+      }
+      .iti__divider {
+        border-bottom-color: rgb(255 255 255 / 0.1) !important;
+      }
     </style>
   </Fragment>
 
@@ -266,6 +321,29 @@ const pkgLookupJson = JSON.stringify({
               <option value="">— เลือก —</option>
               {teamSizes.map((t) => <option value={t}>{t}</option>)}
             </select>
+          </div>
+
+          <div class="form-control">
+            <span class="label">
+              <span class="label-text font-medium">
+                ปัญหาหลักที่เจอ (เลือกได้หลายข้อ)
+              </span>
+            </span>
+            <div class="space-y-2">
+              {
+                painPoints.map((p) => (
+                  <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-base-content/10 p-3 transition hover:bg-base-200/50">
+                    <input
+                      type="checkbox"
+                      name="problems"
+                      value={p}
+                      class="checkbox checkbox-sm mt-0.5"
+                    />
+                    <span class="text-sm">{p}</span>
+                  </label>
+                ))
+              }
+            </div>
           </div>
         </fieldset>
 
@@ -512,7 +590,7 @@ const pkgLookupJson = JSON.stringify({
       const factory = (window as unknown as { intlTelInput: ItiFactory }).intlTelInput;
       phoneIti = factory(phoneInput, {
         initialCountry: 'th',
-        preferredCountries: ['th', 'us', 'sg', 'my', 'hk', 'jp', 'gb', 'au'],
+        countryOrder: ['th', 'us', 'sg', 'my', 'hk', 'jp', 'gb', 'au'],
         separateDialCode: true,
         autoPlaceholder: 'polite',
         nationalMode: true,
