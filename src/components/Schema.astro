@@ -29,6 +29,7 @@ import { SITE, SERVICES, cleanUrl } from '../data/site';
 type SchemaType =
   | 'Person'
   | 'WebPage'
+  | 'ProfilePage'
   | 'Service'
   | 'ServiceList'
   | 'FAQPage'
@@ -112,6 +113,20 @@ function buildWebPage() {
     description,
     inLanguage: 'th-TH',
     isPartOf: { '@id': WEBSITE_ID },
+    about: { '@id': PERSON_ID },
+  };
+}
+
+function buildProfilePage() {
+  return {
+    '@type': 'ProfilePage',
+    '@id': `${url}#profilepage`,
+    url,
+    name: title,
+    description,
+    inLanguage: 'th-TH',
+    isPartOf: { '@id': WEBSITE_ID },
+    mainEntity: { '@id': PERSON_ID },
     about: { '@id': PERSON_ID },
   };
 }
@@ -202,6 +217,9 @@ function buildGraph(): unknown[] {
         break;
       case 'WebPage':
         graph.push(buildWebPage());
+        break;
+      case 'ProfilePage':
+        graph.push(buildProfilePage());
         break;
       case 'Service':
       case 'ServiceList': {

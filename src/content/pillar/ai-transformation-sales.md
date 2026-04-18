@@ -1,6 +1,6 @@
 ---
 title: "ทำยังไงให้องค์กรใช้ AI สร้างยอดขายได้จริง"
-description: "5 ขั้น AI Transformation ฝ่ายขาย เริ่มจาก mindset ไป list routine ฝึก daily AI ใช้ Gemini Gems Claude Cowork จนถึง full-loop agent + Realistic Budget สำหรับ SME"
+description: "5 ขั้น AI Transformation ฝ่ายขาย จาก mindset shift ไปจน full-loop agent พร้อม budget realistic สำหรับ SME ไทย"
 lang: th
 published: 2026-04-18
 draft: false

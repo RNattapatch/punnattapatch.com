@@ -14,53 +14,99 @@ const { title, description, published, updated, readingMinutes, pillar, tags = [
 const formatDate = (d: Date): string =>
   d.toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
 
-const PILLAR_LABEL: Record<string, string> = {
-  'sales-consulting': 'Sales Consulting',
-  'ai-transformation': 'AI Transformation',
-  'agentic-ai-sales': 'Agentic AI for Sales',
+const PILLAR_META: Record<string, { label: string; accent: 'cyan' | 'coral' | 'violet' }> = {
+  'sales-consulting': { label: 'Sales Consulting', accent: 'coral' },
+  'ai-transformation': { label: 'AI Transformation', accent: 'cyan' },
+  'agentic-ai-sales': { label: 'Agentic AI for Sales', accent: 'violet' },
 };
+
+const meta = pillar ? PILLAR_META[pillar] : undefined;
+const accentVar =
+  meta?.accent === 'cyan'
+    ? 'var(--color-pun-cyan)'
+    : meta?.accent === 'violet'
+      ? 'var(--color-pun-violet)'
+      : 'var(--color-pun-coral)';
+const accentSoftVar =
+  meta?.accent === 'cyan'
+    ? 'var(--color-pun-cyan-soft)'
+    : meta?.accent === 'violet'
+      ? 'var(--color-pun-violet-soft)'
+      : 'var(--color-pun-coral-soft)';
 ---
 
-<header class="border-b border-base-content/10 bg-base-200/30 px-4 py-12 lg:px-8 lg:py-16">
-  <div class="mx-auto max-w-3xl">
-    <nav aria-label="Breadcrumb" class="mb-6 text-sm text-base-content/60">
+<header
+  class="relative overflow-hidden border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-24"
+  style={`background: radial-gradient(ellipse 60% 50% at 30% 20%, ${accentSoftVar}, transparent 60%), radial-gradient(ellipse 50% 40% at 80% 90%, ${accentSoftVar}, transparent 50%);`}
+>
+  <!-- Top accent stripe -->
+  <div
+    class="absolute left-0 right-0 top-0 h-[2px]"
+    style={`background: linear-gradient(to right, transparent, ${accentVar}, transparent);`}
+  >
+  </div>
+
+  <div class="relative mx-auto max-w-3xl">
+    <nav aria-label="Breadcrumb" class="mb-6 text-sm text-base-content/65">
       <a href="/" class="hover:text-secondary">หน้าแรก</a>
-      <span class="mx-2">›</span>
+      <span class="mx-2 text-base-content/40">/</span>
       <a href="/insights" class="hover:text-secondary">Insights</a>
-      {pillar && (
+      {meta && (
         <>
-          <span class="mx-2">›</span>
-          <span class="text-base-content/80">{PILLAR_LABEL[pillar] ?? pillar}</span>
+          <span class="mx-2 text-base-content/40">/</span>
+          <span class="font-medium" style={`color: ${accentVar}`}>{meta.label}</span>
         </>
       )}
     </nav>
 
-    <h1 class="font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl lg:text-5xl">
+    {meta && (
+      <span
+        class="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-widest"
+        style={`color: ${accentVar}; border-color: color-mix(in oklch, ${accentVar} 35%, transparent); background: ${accentSoftVar};`}
+      >
+        <span class="h-1.5 w-1.5 rounded-full" style={`background: ${accentVar}`}></span>
+        {meta.label}
+      </span>
+    )}
+
+    <h1
+      class="mt-5 font-display text-3xl font-bold leading-[1.15] tracking-tight text-base-content md:text-5xl lg:text-[3.5rem]"
+    >
       {title}
     </h1>
 
     {description && (
-      <p class="mt-5 text-lg leading-relaxed text-base-content/75">
+      <p class="mt-6 text-lg leading-relaxed text-base-content/85 md:text-xl">
         {description}
       </p>
     )}
 
-    <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-base-content/60">
-      <span>
+    <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-base-content/65">
+      <span class="inline-flex items-center gap-2">
+        <span class="h-1 w-1 rounded-full bg-base-content/40"></span>
         เผยแพร่ <time datetime={published.toISOString()}>{formatDate(published)}</time>
       </span>
       {updated && updated.getTime() !== published.getTime() && (
-        <span>
-          อัปเดตล่าสุด <time datetime={updated.toISOString()}>{formatDate(updated)}</time>
+        <span class="inline-flex items-center gap-2">
+          <span class="h-1 w-1 rounded-full bg-base-content/40"></span>
+          อัปเดต <time datetime={updated.toISOString()}>{formatDate(updated)}</time>
         </span>
       )}
-      {readingMinutes && <span>· อ่าน {readingMinutes} นาที</span>}
+      {readingMinutes && (
+        <span class="inline-flex items-center gap-2">
+          <span class="h-1 w-1 rounded-full bg-base-content/40"></span>
+          อ่าน {readingMinutes} นาที
+        </span>
+      )}
     </div>
 
     {tags.length > 0 && (
-      <ul class="mt-5 flex flex-wrap gap-2">
+      <ul class="mt-6 flex flex-wrap gap-2">
         {tags.map((tag) => (
-          <li class="rounded-full border border-base-content/15 px-3 py-1 text-xs text-base-content/70">
+          <li
+            class="rounded-full border px-3 py-1 text-xs font-medium text-base-content/75"
+            style={`border-color: color-mix(in oklch, ${accentVar} 25%, transparent);`}
+          >
             #{tag}
           </li>
         ))}

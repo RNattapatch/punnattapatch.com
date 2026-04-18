@@ -1,6 +1,6 @@
 ---
 title: "จะเลือกที่ปรึกษาด้านการขายยังไง?"
-description: "เลือกที่ปรึกษาด้านการขายให้ตรงกับธุรกิจ 3 เกณฑ์ (background, style, next-step ชัดเจน) + 5 red flag ที่ควรเดินจาก + framework ลองเล็กก่อน commit project ใหญ่"
+description: "3 เกณฑ์เลือกที่ปรึกษาการขายให้ตรงกับธุรกิจ พร้อม 5 red flag ที่ควรเดินจาก และ framework ทดลองก่อนจ่ายเงินก้อนใหญ่"
 lang: th
 published: 2026-04-18
 draft: false

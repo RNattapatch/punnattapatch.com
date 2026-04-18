@@ -48,11 +48,40 @@ const principles = [
   },
 ];
 
-const credentials = [
-  '10+ active clients — SME รายได้ 30-200M THB (วัสดุก่อสร้าง, ค้าปลีก, ที่พัก, บริการ)',
-  'ระบบที่วาง generate ยอดขายรวมกว่า 100 ล้านบาท',
-  'ลูกค้าเพิ่มยอดขายเฉลี่ย 40%+ หลังใช้ระบบ',
-  'ประสบการณ์ sales field 10+ ปีก่อนเปิดที่ปรึกษา',
+const trackRecord = [
+  { metric: '10+', label: 'Active Clients', detail: 'SME รายได้ 30-200M THB ในกลุ่มวัสดุก่อสร้าง, ค้าปลีก, ที่พัก, บริการ' },
+  { metric: '100M+', label: 'THB Sales Managed', detail: 'ยอดขายรวมที่ระบบของผมมีส่วน generate ในรอบ 12 เดือน' },
+  { metric: '40%+', label: 'Average Sales Uplift', detail: 'ค่าเฉลี่ยที่ client เห็นในเดือน 2-4 หลัง implementation' },
+  { metric: '10+', label: 'Years Field Sales', detail: 'ก่อนเปิดที่ปรึกษาเต็มตัวปี 2025' },
+];
+
+const projectsShipped = [
+  {
+    type: 'AI Workflow Automation',
+    examples: 'KPI dashboard auto-sync, lead qualifier scoring, follow-up scheduler, quote/proposal generator, n8n integration กับ LINE OA + Google Sheets',
+  },
+  {
+    type: 'Sales System Build',
+    examples: 'Commission structure design, KPI ที่ทีม run เองได้, pipeline tracking, sales playbook + role-play training',
+  },
+  {
+    type: 'AI Day Workshop',
+    examples: 'On-site 1-day workshop ที่ทีมขายกลับไปพร้อม workflow ใช้งานได้จริง 1 ตัว วัดผลก่อน-หลังในวันเดียวกัน',
+  },
+  {
+    type: 'Sales Training (Value + Psychology)',
+    examples: 'In-house training ที่เปลี่ยนทีมจากขายของเป็นที่ปรึกษา ปิด deal โดยไม่ต้องลดราคา',
+  },
+];
+
+const techStack = [
+  { name: 'Claude Code', use: 'AI agent build, code generation, document automation' },
+  { name: 'n8n', use: 'Workflow orchestration ที่ทีม non-tech maintain เองได้' },
+  { name: 'Google Apps Script', use: 'Logic + scheduling + Sheets integration ระดับองค์กร' },
+  { name: 'Google Sheets', use: 'Data layer ที่ทีมใช้เป็นอยู่แล้ว ไม่ต้องเรียนใหม่' },
+  { name: 'OpenRouter / Claude API', use: 'AI calls ที่ pricing โปร่งใส ไม่มี vendor lock' },
+  { name: 'LINE Messaging API', use: 'Customer interface ที่คนไทยใช้อยู่แล้ว' },
+  { name: 'Astro + Tailwind', use: 'Static site + landing page build (เว็บนี้คือตัวอย่าง)' },
 ];
 
 const faqItems = [
@@ -88,7 +117,7 @@ const faqItems = [
   title={title}
   description={description}
   schema={{
-    types: ['Person', 'WebPage', 'FAQPage', 'BreadcrumbList'],
+    types: ['Person', 'ProfilePage', 'FAQPage', 'BreadcrumbList'],
     title,
     description,
     faq: faqItems,
@@ -184,24 +213,83 @@ const faqItems = [
     </div>
   </section>
 
-  <!-- ===== CREDENTIALS ===== -->
+  <!-- ===== TRACK RECORD (numbers) ===== -->
   <section class="px-4 py-20 lg:px-8">
-    <div class="mx-auto max-w-4xl">
-      <h2 class="font-display text-3xl font-bold tracking-tight md:text-4xl">
+    <div class="mx-auto max-w-5xl">
+      <p class="text-sm uppercase tracking-widest text-base-content/50">Track Record</p>
+      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
         ที่ผ่านมา
       </h2>
-      <ul class="mt-8 space-y-4">
+      <p class="mt-3 max-w-2xl text-base-content/70">
+        ตัวเลขจริงจาก engagement 12 เดือนหลังสุด (เม.ย. 2025 - เม.ย. 2026)
+      </p>
+
+      <dl class="mt-10 grid gap-6 md:grid-cols-2">
         {
-          credentials.map((c) => (
-            <li class="flex items-start gap-3 text-base leading-relaxed text-base-content/85">
-              <span class="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-secondary" />
-              <span>{c}</span>
+          trackRecord.map((tr) => (
+            <div class="rounded-2xl border border-base-content/10 bg-base-100 p-6">
+              <dt class="text-xs uppercase tracking-widest text-base-content/55">{tr.label}</dt>
+              <dd class="mt-2 font-display text-4xl font-bold text-secondary md:text-5xl">{tr.metric}</dd>
+              <p class="mt-3 text-sm leading-relaxed text-base-content/75">{tr.detail}</p>
+            </div>
+          ))
+        }
+      </dl>
+
+      <p class="mt-6 text-sm text-base-content/60">
+        Client บางรายไม่ขอเปิดเผย ขอ case study ที่ตรงกับ industry คุณผ่าน discovery call ได้
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== PROJECTS SHIPPED (anonymized types) ===== -->
+  <section class="border-y border-base-content/10 bg-base-200/30 px-4 py-20 lg:px-8">
+    <div class="mx-auto max-w-5xl">
+      <p class="text-sm uppercase tracking-widest text-base-content/50">Projects Shipped</p>
+      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+        งานที่ส่งมอบจริง 4 ประเภท
+      </h2>
+      <p class="mt-3 max-w-2xl text-base-content/70">
+        ไม่ใช่บริการบน catalog แต่คือสิ่งที่ลูกค้าได้รับจริงในแต่ละ engagement
+      </p>
+
+      <div class="mt-10 grid gap-5 md:grid-cols-2">
+        {
+          projectsShipped.map((p) => (
+            <div class="rounded-2xl border border-base-content/10 bg-base-100 p-6">
+              <h3 class="font-display text-lg font-bold text-secondary">{p.type}</h3>
+              <p class="mt-3 text-sm leading-relaxed text-base-content/80">{p.examples}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TECH STACK OWNED ===== -->
+  <section class="px-4 py-20 lg:px-8">
+    <div class="mx-auto max-w-4xl">
+      <p class="text-sm uppercase tracking-widest text-base-content/50">Tech Stack</p>
+      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+        เครื่องมือที่ใช้จริงทุกวัน
+      </h2>
+      <p class="mt-3 max-w-2xl text-base-content/70">
+        Stack ที่ผม build ระบบให้ลูกค้า ทุกตัวเลือกเพราะทีม non-tech ของลูกค้า maintain ต่อเองได้
+      </p>
+
+      <ul class="mt-10 divide-y divide-base-content/10 rounded-2xl border border-base-content/10 bg-base-100">
+        {
+          techStack.map((t) => (
+            <li class="grid gap-2 p-5 sm:grid-cols-[180px_1fr] sm:items-baseline sm:gap-6">
+              <span class="font-display font-bold text-secondary">{t.name}</span>
+              <span class="text-sm leading-relaxed text-base-content/75">{t.use}</span>
             </li>
           ))
         }
       </ul>
-      <p class="mt-6 text-sm text-base-content/60">
-        Client บางรายไม่ขอเปิดเผย — case study ตรงกับ industry คุณ ขอคุยผ่าน discovery call
+
+      <p class="mt-5 text-sm text-base-content/60">
+        ห้ามใช้ stack ที่ vendor lock เพราะ client ต้อง maintain ต่อหลังจบ engagement ไม่ใช่ผูกติดกับผมตลอดไป
       </p>
     </div>
   </section>

@@ -13,20 +13,31 @@ const all: Article[] = [...pillars, ...clusters].sort(
   (a, b) => b.data.published.getTime() - a.data.published.getTime()
 );
 
-const PILLAR_LABEL: Record<string, { name: string; tagline: string }> = {
+const PILLAR_LABEL: Record<string, { name: string; tagline: string; accent: 'cyan' | 'coral' | 'violet' }> = {
   'sales-consulting': {
     name: 'Sales Consulting',
-    tagline: 'KPI, Commission, ทีมขาย — ระบบที่รันเองได้',
+    tagline: 'KPI, Commission, ทีมขาย ระบบที่รันเองได้',
+    accent: 'coral',
   },
   'ai-transformation': {
     name: 'AI Transformation',
     tagline: 'AI ที่เปลี่ยนงาน manual ทีมขายให้รันเอง',
+    accent: 'cyan',
   },
   'agentic-ai-sales': {
     name: 'Agentic AI for Sales',
     tagline: 'Agent + workflow ที่ลูกค้าเห็นว่าทำงานจริง',
+    accent: 'violet',
   },
 };
+
+function accentVar(accent: 'cyan' | 'coral' | 'violet'): string {
+  return accent === 'cyan'
+    ? 'var(--color-pun-cyan)'
+    : accent === 'violet'
+      ? 'var(--color-pun-violet)'
+      : 'var(--color-pun-coral)';
+}
 
 const groupedByPillar = new Map<string, Article[]>();
 for (const article of all) {
@@ -87,34 +98,49 @@ const description =
       <div class="mx-auto max-w-5xl space-y-16">
         {Array.from(groupedByPillar.entries()).map(([pillarKey, articles]) => {
           const meta = PILLAR_LABEL[pillarKey];
+          const accent = meta ? accentVar(meta.accent) : 'var(--color-pun-coral)';
           return (
             <div>
-              <header class="mb-8">
-                <h2 class="font-display text-2xl font-bold tracking-tight md:text-3xl">
+              <header class="mb-8 border-l-4 pl-4" style={`border-color: ${accent}`}>
+                <p class="text-xs uppercase tracking-widest" style={`color: ${accent}`}>
+                  Pillar
+                </p>
+                <h2 class="mt-1 font-display text-2xl font-bold tracking-tight md:text-3xl">
                   {meta?.name ?? pillarKey}
                 </h2>
-                {meta && <p class="mt-2 text-base-content/70">{meta.tagline}</p>}
+                {meta && <p class="mt-2 text-base-content/75">{meta.tagline}</p>}
               </header>
               <ul class="grid gap-5 md:grid-cols-2">
                 {articles.map((article) => (
                   <li>
                     <a
                       href={`/insights/${article.id}`}
-                      class="group block h-full rounded-2xl border border-base-content/10 bg-base-100 p-6 transition hover:border-secondary/50 hover:shadow-md"
+                      class="group relative block h-full overflow-hidden rounded-2xl border border-base-content/10 bg-base-200 p-6 transition hover:-translate-y-0.5 hover:shadow-lg"
+                      style={`--card-accent: ${accent};`}
                     >
-                      <p class="text-xs uppercase tracking-widest text-base-content/50">
+                      <div
+                        class="absolute inset-x-0 top-0 h-[2px] opacity-60 transition group-hover:opacity-100"
+                        style="background: linear-gradient(to right, transparent, var(--card-accent), transparent);"
+                      ></div>
+                      <p class="text-xs uppercase tracking-widest text-base-content/55">
                         {formatDate(article.data.published)}
                       </p>
-                      <h3 class="mt-2 font-display text-xl font-bold leading-tight group-hover:text-secondary">
+                      <h3
+                        class="mt-2 font-display text-xl font-bold leading-tight transition"
+                        style="color: var(--color-base-content);"
+                      >
                         {article.data.title}
                       </h3>
-                      <p class="mt-3 text-sm leading-relaxed text-base-content/75">
+                      <p class="mt-3 text-sm leading-relaxed text-base-content/80">
                         {article.data.description}
                       </p>
                       {article.data.tags.length > 0 && (
                         <ul class="mt-4 flex flex-wrap gap-2">
                           {article.data.tags.slice(0, 3).map((tag: string) => (
-                            <li class="rounded-full border border-base-content/10 px-2 py-0.5 text-xs text-base-content/60">
+                            <li
+                              class="rounded-full border px-2 py-0.5 text-xs text-base-content/70"
+                              style="border-color: color-mix(in oklch, var(--card-accent) 25%, transparent);"
+                            >
                               #{tag}
                             </li>
                           ))}
