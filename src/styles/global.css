@@ -101,12 +101,14 @@
   --color-brand-cream: #fdfaf4;
 
   /* Per-pillar accents (dark-theme tuned) */
-  --color-pun-cyan: #22d3ee;       /* AI / tech topics */
+  --color-pun-cyan: #22d3ee;       /* AI Transformation topics (workshop/consulting) */
   --color-pun-cyan-soft: oklch(78% 0.16 200 / 0.15);
-  --color-pun-coral: #f97a89;      /* Sales / B2B topics */
+  --color-pun-coral: #f97a89;      /* Sales Consulting topics (training/commission) */
   --color-pun-coral-soft: oklch(70% 0.21 22 / 0.12);
-  --color-pun-violet: #a78bfa;     /* Content / marketing topics */
+  --color-pun-violet: #a78bfa;     /* Marketing / Content topics (TikTok/Branding — reserved) */
   --color-pun-violet-soft: oklch(75% 0.16 295 / 0.12);
+  --color-pun-emerald: #34d399;    /* Agentic AI Agent topics (automation/workflow) */
+  --color-pun-emerald-soft: oklch(75% 0.16 165 / 0.15);
 }
 
 html,
@@ -136,6 +138,10 @@ body {
 .accent-violet {
   --accent: var(--color-pun-violet);
   --accent-soft: var(--color-pun-violet-soft);
+}
+.accent-emerald {
+  --accent: var(--color-pun-emerald);
+  --accent-soft: var(--color-pun-emerald-soft);
 }
 
 /* =============================================================================

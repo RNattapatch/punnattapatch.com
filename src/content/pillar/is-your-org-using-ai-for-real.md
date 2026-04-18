@@ -1,6 +1,6 @@
 ---
-title: "องค์กรของคุณใช้ AI เป็นจริงไหม — 10 คำถามวัดระดับ AI Maturity"
-description: "ถ้าพนักงานยังทำ routine ซ้ำๆ เอง + ต้องรอสรุปยอดตอนเย็น + ยังคีย์ค่าใช้จ่ายมือ = องค์กรยังใช้ AI ไม่เป็น บทความนี้มี 10 คำถาม diagnosis + roadmap ขยับจาก AI user ไป AI commander"
+title: "10 คำถามเช็คว่าองค์กรใช้ AI เป็นจริง หรือแค่ใช้ ChatGPT ตอบ email"
+description: "90% ของ SME ไทยคิดว่าตัวเองใช้ AI เป็นแล้ว — ความจริงคือแค่ Casual User ไม่ใช่ Commander บทความนี้มี 10 คำถาม diagnosis + 4-tier maturity + roadmap 6 เดือนขยับระดับ"
 lang: th
 published: 2026-04-18
 draft: false

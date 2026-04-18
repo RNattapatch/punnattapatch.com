@@ -1,6 +1,6 @@
 ---
-title: "ทำยังไงให้องค์กรใช้ AI สร้างยอดขายได้จริง"
-description: "5 ขั้น AI Transformation ฝ่ายขาย จาก mindset shift ไปจน full-loop agent พร้อม budget realistic สำหรับ SME ไทย"
+title: "AI เพิ่มยอดขายได้จริงหรือแค่ hype? 5 ขั้นที่ SME ไทยทำเองได้"
+description: "ซื้อ ChatGPT ให้ทีม 20 คน เดือนสามเหลือคนใช้จริง 3 คน — ปัญหาอยู่ที่ขั้นตอน ไม่ใช่ tool บทความนี้มี 5 ขั้น + budget realistic ฿100-150k ปีแรก + pitfall 4 ข้อที่ทำให้ล้ม"
 lang: th
 published: 2026-04-18
 draft: false

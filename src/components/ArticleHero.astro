@@ -14,10 +14,20 @@ const { title, description, published, updated, readingMinutes, pillar, tags = [
 const formatDate = (d: Date): string =>
   d.toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
 
-const PILLAR_META: Record<string, { label: string; accent: 'cyan' | 'coral' | 'violet' }> = {
+/**
+ * Pillar → color mapping (per Pun 2026-04-18):
+ *  - Sales Consulting → coral (matches Services Path B + Sales Training)
+ *  - AI Transformation → cyan (matches Services Path A + AI Workshops)
+ *  - Agentic AI for Sales → emerald (NEW — was violet, reassigned)
+ *  - Marketing/Content (reserved for future pillar) → violet
+ * Reason: Pun wants violet reserved for Marketing pillar (to match
+ * Trust Content TikTok Workshop special accent), so AI Agent needed
+ * its own distinct color.
+ */
+const PILLAR_META: Record<string, { label: string; accent: 'cyan' | 'coral' | 'violet' | 'emerald' }> = {
   'sales-consulting': { label: 'Sales Consulting', accent: 'coral' },
   'ai-transformation': { label: 'AI Transformation', accent: 'cyan' },
-  'agentic-ai-sales': { label: 'Agentic AI for Sales', accent: 'violet' },
+  'agentic-ai-sales': { label: 'Agentic AI Agent', accent: 'emerald' },
 };
 
 const meta = pillar ? PILLAR_META[pillar] : undefined;
@@ -26,13 +36,17 @@ const accentVar =
     ? 'var(--color-pun-cyan)'
     : meta?.accent === 'violet'
       ? 'var(--color-pun-violet)'
-      : 'var(--color-pun-coral)';
+      : meta?.accent === 'emerald'
+        ? 'var(--color-pun-emerald)'
+        : 'var(--color-pun-coral)';
 const accentSoftVar =
   meta?.accent === 'cyan'
     ? 'var(--color-pun-cyan-soft)'
     : meta?.accent === 'violet'
       ? 'var(--color-pun-violet-soft)'
-      : 'var(--color-pun-coral-soft)';
+      : meta?.accent === 'emerald'
+        ? 'var(--color-pun-emerald-soft)'
+        : 'var(--color-pun-coral-soft)';
 ---
 
 <header

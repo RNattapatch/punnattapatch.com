@@ -1,0 +1,146 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../data/site';
+
+type CaseEntry = CollectionEntry<'case-analysis'>;
+
+const cases: CaseEntry[] = (
+  await getCollection('case-analysis', ({ data }: CaseEntry) => !data.draft)
+).sort((a: CaseEntry, b: CaseEntry) => b.data.published.getTime() - a.data.published.getTime());
+
+const title = 'Case Studies — เคสจริงจาก Client ผม';
+const description =
+  'เคสจริงจาก SME ไทย B2B ที่ผมช่วยวางระบบขายและ AI transformation — ตัวเลขจริง ไม่ใช่ estimate ชื่อและรายละเอียดสงวนตามคำขอลูกค้า';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  schema={{
+    types: ['WebPage', 'BreadcrumbList'],
+    title,
+    description,
+    breadcrumbs: [
+      { name: 'หน้าแรก', url: SITE.url },
+      { name: 'Case Studies', url: `${SITE.url}/case-studies` },
+    ],
+  }}
+>
+  <section class="px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-4xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Case Studies</p>
+      <h1 class="mt-3 font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl">
+        เคสจริงจาก client ผม — ตัวเลขจริง ไม่ใช่ estimate
+      </h1>
+      <p class="mt-5 max-w-2xl text-lg text-base-content/75">
+        {cases.length} เคสจาก SME ไทย B2B รายได้ ฿30-200M ที่ใช้บริการ AI Workshop +
+        Sales System Sprint + Monthly Consulting ของผม ชื่อและรายละเอียดธุรกิจสงวนตามคำขอลูกค้า
+        แต่ metric ทั้งหมดคือตัวเลขจริงจาก report
+      </p>
+    </div>
+  </section>
+
+  {
+    cases.length === 0 ? (
+      <section class="px-4 pb-20 lg:px-8">
+        <div class="mx-auto max-w-2xl rounded-2xl border border-dashed border-base-content/20 bg-base-200/30 p-10 text-center">
+          <p class="font-display text-xl font-bold">เคสกำลังรวบรวม</p>
+          <p class="mt-3 text-base-content/70">
+            ปันกำลัง compile case studies ใหม่ — ขอ case ที่ตรงกับ industry คุณผ่าน
+            <a href="/intake-form" class="text-secondary underline">
+              discovery call
+            </a>
+          </p>
+        </div>
+      </section>
+    ) : (
+      <section class="border-t border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8">
+        <div class="mx-auto max-w-4xl space-y-6">
+          {cases.map((c) => (
+            <a
+              href={`/case-studies/${c.id}`}
+              class="group block rounded-2xl border border-base-content/10 bg-base-100 p-8 transition-all hover:-translate-y-0.5 hover:border-secondary/50 hover:shadow-lg"
+            >
+              <div class="flex flex-wrap items-center gap-2 text-xs">
+                {c.data.industry && (
+                  <span class="rounded-full border border-secondary/30 bg-secondary/10 px-3 py-1 font-semibold text-secondary">
+                    {c.data.industry}
+                  </span>
+                )}
+                {c.data.companySize && (
+                  <span class="rounded-full border border-base-content/15 bg-base-200/50 px-3 py-1 text-base-content/75">
+                    {c.data.companySize}
+                  </span>
+                )}
+                {c.data.anonymized && (
+                  <span class="rounded-full border border-base-content/15 bg-base-200/50 px-3 py-1 text-base-content/55">
+                    Anonymized
+                  </span>
+                )}
+              </div>
+
+              <h2 class="mt-4 font-display text-2xl font-bold leading-tight transition-colors group-hover:text-secondary md:text-3xl">
+                {c.data.title}
+              </h2>
+
+              {c.data.outcome && (
+                <p class="mt-3 font-display text-lg font-semibold text-secondary">
+                  ผลลัพธ์: {c.data.outcome}
+                </p>
+              )}
+
+              <p class="mt-4 text-base leading-relaxed text-base-content/80">
+                {c.data.description}
+              </p>
+
+              <p class="mt-5 text-sm font-semibold text-secondary">
+                อ่านเคสเต็ม →
+              </p>
+            </a>
+          ))}
+        </div>
+
+        <div class="mx-auto mt-10 max-w-3xl rounded-2xl border-2 border-dashed border-base-content/25 bg-base-200/30 p-8 text-center">
+          <p class="font-display text-lg font-bold">เคสของคุณไม่ตรงกับตัวอย่างข้างบน?</p>
+          <p class="mt-2 text-base-content/75">
+            ขอคุยผ่าน discovery call 30 นาที ผมจะ share เคสที่ตรงกับ industry และ team size
+            ของคุณ (บาง client ไม่ต้องการเปิดเผย public)
+          </p>
+          <a
+            href="/intake-form"
+            class="btn btn-lg mt-5 bg-secondary px-8 text-secondary-content shadow-lg shadow-secondary/30 hover:bg-secondary/90"
+          >
+            นัด discovery call ฟรี →
+          </a>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="px-4 py-20 lg:px-8">
+    <div class="mx-auto max-w-3xl rounded-3xl bg-primary px-6 py-12 text-primary-content md:px-12">
+      <h2 class="font-display text-2xl font-bold leading-tight md:text-3xl">
+        อยากเป็น case study คนถัดไปไหม?
+      </h2>
+      <p class="mt-4 text-primary-content/80">
+        ตอบแบบประเมิน 3 นาที ผมอ่านเองและตอบกลับในวันถัดไป พร้อมบอกว่าเคสคุณควรเริ่มจาก package ไหน
+      </p>
+      <div class="mt-7 flex flex-wrap gap-4">
+        <a
+          href="/intake-form"
+          class="btn btn-lg bg-secondary text-secondary-content shadow-lg shadow-secondary/30 hover:bg-secondary/90"
+        >
+          ประเมินปัญหาทีมขาย
+        </a>
+        <a
+          href="/services"
+          class="btn btn-lg btn-outline text-primary-content hover:bg-primary-content hover:text-primary"
+        >
+          ดูบริการทั้งหมด
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
