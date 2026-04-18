@@ -7,23 +7,144 @@ import avatar from '../assets/pun-avatar.png';
 const heroHeadline = 'ที่ปรึกษาการขาย B2B';
 const heroHeadlineAccent = 'เชี่ยวชาญ Agentic AI Transformation';
 const heroSub =
-  'ผมไม่ใช่โค้ชมาให้กำลังใจทีม ผมคือคนที่จับมือสร้างระบบขายด้วย AI ให้ SME ไทย — ระบบที่รันได้จริง ไม่ใช่ slide สวยๆ';
+  'ผมไม่ใช่โค้ชมาให้กำลังใจทีม ผมคือคนที่จับมือสร้างระบบขายด้วย AI ให้ SME ไทย ระบบที่รันได้จริง ไม่ใช่ slide สวยๆ';
 
-const valueProps = [
+const painPoints = [
   {
-    icon: '→',
-    title: 'ส่งระบบ ไม่ใช่ slide',
-    body: 'ทุก engagement client ออกไปพร้อม AI workflow ใช้งานได้จริงอย่างน้อย 1 ตัว — ไม่ใช่รายงานหรือ roadmap',
+    emoji: '😤',
+    title: '"แบกยอดอยู่คนเดียว"',
+    body: 'ทีมขายมี 5-20 คน แต่ยอดขายกว่า 80% มาจากคุณเอง ถ้าคุณไม่อยู่ ยอดตก',
   },
   {
-    icon: '→',
-    title: 'Agentic AI จริง ไม่ใช่ ChatGPT สำเร็จรูป',
-    body: 'Claude Code + n8n + Apps Script — stack ที่ maintain ต่อได้หลัง engagement จบ ไม่ติด vendor',
+    emoji: '📈',
+    title: '"ต้นทุนขึ้นทุกเดือน"',
+    body: 'ค่าแรงขึ้น ค่า ads ขึ้น แต่ทีมขายยังใช้ Excel ยังพิมพ์ proposal ด้วยมือ',
   },
   {
-    icon: '→',
-    title: '100% upfront แลกกับความมั่นใจ',
-    body: 'ไม่มี retainer, ไม่มี สัญญาผูกมัดยาว — จ่ายครั้งเดียวเริ่มเลย ส่งมอบตามสัญญา',
+    emoji: '😱',
+    title: '"Training จบแล้วก็ลืม"',
+    body: 'ส่งทีมไปเรียน workshop หลายหมื่น กลับมาตื่นเต้น 2 สัปดาห์ แล้วก็กลับไปทำแบบเดิม',
+  },
+];
+
+const whyPun = [
+  {
+    title: 'ที่ปรึกษาการขายทั่วไป',
+    icon: 'megaphone',
+    style: 'muted',
+    points: [
+      'เน้นพัฒนาทักษะเซลล์อย่างเดียว',
+      'ใช้ AI แค่เขียนอีเมล หรือวิเคราะห์ lead พื้นฐาน',
+      'ใช้ ChatGPT / Gemini แบบถาม-ตอบทั่วไป',
+      'ไม่รู้จัก AI Agent, n8n หรือ Automation จริงๆ',
+    ],
+  },
+  {
+    title: 'AI Guru ทั่วไป',
+    icon: 'binary',
+    style: 'muted',
+    points: [
+      'สายเทคจ๋า ชอบใช้ศัพท์ยาก',
+      'สอน concept เก่ง แต่ลูกค้ากลับไปทำเองไม่ได้',
+      'ไม่เข้าใจจิตวิทยาการขาย หรือ pain ของฝ่ายขาย',
+      'Use case ไกลตัว SME ทำตามไม่ได้',
+    ],
+  },
+  {
+    title: 'ปัน ณัฐพัชร์',
+    icon: 'target',
+    style: 'sweet-spot',
+    points: [
+      'เข้าใจทั้งการขาย การบริหาร และ AI',
+      'สร้าง AI Agent จริง ด้วย Claude Code, n8n, NotebookLM',
+      'ถ่ายทอดเรื่องยากให้เข้าใจง่าย จับมือทำทุกขั้นตอน',
+      'พนักงานเอาไปใช้จริงได้ทันที ไม่ต้องรอ vendor',
+    ],
+  },
+];
+
+type Accent = 'cyan' | 'coral' | 'violet';
+const diagnoseCards: Array<{
+  pain: string;
+  highlight: string;
+  service: string;
+  oneLiner: string;
+  href: string;
+  accent: Accent;
+}> = [
+  {
+    pain: 'ทีมทำ report ด้วยมือ copy-paste ข้อมูลลูกค้าทีละคน',
+    highlight: 'ทุกวัน',
+    service: 'AI Workshop 1 วัน',
+    oneLiner: 'แก้ได้ใน 1 วัน ทีมได้ AI tool กลับไปใช้เลย',
+    href: '/services#ai-workshop',
+    accent: 'cyan',
+  },
+  {
+    pain: 'สอน AI ไปแล้ว ตื่นเต้นได้ 2 อาทิตย์ แล้วทีม',
+    highlight: 'ก็กลับไปทำแบบเดิม',
+    service: 'AI + Follow-up 30 วัน',
+    oneLiner: 'ปันติดตามให้ 30 วัน จนทีมใช้จนเป็นนิสัย',
+    href: '/services#ai-workshop-followup',
+    accent: 'cyan',
+  },
+  {
+    pain: 'ขายได้ก็ต่อเมื่อ',
+    highlight: 'ยอมตัดราคาสู้',
+    service: 'Sale Training Bundle',
+    oneLiner: 'สอนทีมปิดดีลด้วยคุณค่า ไม่ใช่ส่วนลด',
+    href: '/services#sale-training-bundle',
+    accent: 'coral',
+  },
+  {
+    pain: 'มีทีมขาย แต่ยอด 80% มาจาก',
+    highlight: 'เจ้าของคนเดียว',
+    service: 'Sales System Sprint',
+    oneLiner: 'วางระบบ KPI + Commission + AI ครบใน 1 เดือน',
+    href: '/services#sales-system-sprint',
+    accent: 'coral',
+  },
+];
+
+const accentColor = (a: Accent): string =>
+  a === 'cyan'
+    ? 'var(--color-pun-cyan)'
+    : a === 'violet'
+      ? 'var(--color-pun-violet)'
+      : 'var(--color-pun-coral)';
+
+const testimonials = [
+  { src: '/testimonial/testimonial1.jpg', alt: 'รีวิวจากลูกค้า 1' },
+  { src: '/testimonial/testimonial2.jpg', alt: 'รีวิวจากลูกค้า 2' },
+  { src: '/testimonial/testimonial3.jpg', alt: 'รีวิวจากลูกค้า 3' },
+  { src: '/testimonial/testimonial4.jpg', alt: 'รีวิวจากลูกค้า 4' },
+  { src: '/testimonial/testimonial5.jpg', alt: 'รีวิวจากลูกค้า 5' },
+];
+
+const qualifyYes = [
+  'มีทีมขายอยู่แล้ว แต่ยอดไม่ไปไหน',
+  'รู้สึกเหมือน "แบกยอดอยู่คนเดียว" ทั้งที่มีทีม',
+  'อยากให้มีระบบที่เดินได้เอง ไม่ต้องจ้ำจี้จ้ำไช',
+  'พร้อมลงทุนเพื่อสร้างระบบจริงๆ จังๆ',
+];
+
+const qualifyNo = [
+  'เป็น Freelancer หรือทำงานคนเดียว',
+  'ทำธุรกิจ B2C ขายของจำนวนเยอะ ราคาไม่สูง',
+  'อยากได้ "เทคนิคปิดการขาย" แบบทางลัด',
+  'มองหาของฟรี หรือยังไม่มีงบลงทุน',
+];
+
+const freeStuff = [
+  {
+    title: 'รวม 60+ คำถามสัมภาษณ์เซลล์ที่ควรถาม',
+    body: 'E-book สำหรับเจ้าของธุรกิจที่อยากคัดคนขายให้ตรงจุด ไม่ต้องเดาสุ่ม',
+    href: 'https://drive.google.com/file/d/1GXUOGavkL9vXhlcUcM1ztbZqCf5n8xgb/view',
+  },
+  {
+    title: 'คู่มือสร้างทีมขาย 100 ล้าน คุณก็ทำได้',
+    body: 'E-book สำหรับเจ้าของ SME ที่อยากสร้างทีมขายให้วิ่งเองได้ ไม่ต้องแบกยอดคนเดียว',
+    href: 'https://drive.google.com/file/d/1FXouSCK7XXo_xig8nrk-Gc_mshotCNgX/view',
   },
 ];
 ---
@@ -36,15 +157,14 @@ const valueProps = [
   <!-- ===== HERO ===== -->
   <section class="relative overflow-hidden px-4 py-16 sm:py-20 lg:px-8 lg:py-28">
     <div
-      class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_20%_10%,rgba(7,43,78,0.12),transparent_60%),radial-gradient(ellipse_60%_50%_at_85%_80%,rgba(221,65,85,0.08),transparent_55%)]"
+      class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_20%_10%,rgba(7,43,78,0.18),transparent_60%),radial-gradient(ellipse_60%_50%_at_85%_80%,rgba(221,65,85,0.12),transparent_55%)]"
     >
     </div>
 
     <div class="mx-auto flex max-w-6xl flex-col items-center gap-10 lg:flex-row lg:gap-16">
-      <!-- Avatar -->
       <div class="flex-shrink-0 lg:w-2/5">
         <div
-          class="mx-auto aspect-square w-56 overflow-hidden rounded-full ring-4 ring-base-100 md:w-72 lg:w-80"
+          class="mx-auto aspect-square w-56 overflow-hidden rounded-full ring-4 ring-secondary/20 md:w-72 lg:w-80"
         >
           <Picture
             src={avatar}
@@ -62,30 +182,30 @@ const valueProps = [
         </div>
       </div>
 
-      <!-- Text -->
       <div class="lg:w-3/5">
         <span
-          class="inline-flex items-center gap-2 rounded-full border border-base-content/10 bg-base-200/50 px-4 py-1.5 text-sm font-medium text-base-content/70"
+          class="inline-flex items-center gap-2 rounded-full border border-base-content/15 bg-base-200/60 px-4 py-1.5 text-sm font-medium text-base-content/80"
         >
           <span class="h-2 w-2 animate-pulse rounded-full bg-success"></span>
           รับงานที่ปรึกษาปี 2026
         </span>
 
         <h1
-          class="mt-6 font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl lg:text-6xl"
+          class="mt-6 font-display text-4xl font-bold leading-[1.1] tracking-tight md:text-5xl lg:text-6xl"
         >
           {heroHeadline}
           <br />
           <span class="text-secondary">{heroHeadlineAccent}</span>
         </h1>
 
-        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-base-content/75 md:text-xl">
+        <p
+          class="mt-6 max-w-2xl rounded-r-lg border-l-4 border-secondary bg-base-200/50 px-5 py-3 text-lg leading-relaxed text-base-content/90 md:text-xl"
+        >
           {heroSub}
         </p>
 
-        <!-- USP Badge -->
         <div
-          class="mt-7 flex max-w-2xl items-start gap-4 rounded-2xl border border-secondary/20 bg-secondary/5 p-5"
+          class="mt-7 flex max-w-2xl items-start gap-4 rounded-2xl border border-secondary/25 bg-secondary/5 p-5"
         >
           <div
             class="flex-shrink-0 rounded-lg bg-secondary px-3 py-2 text-center font-display text-xs font-bold uppercase tracking-wide text-secondary-content"
@@ -96,7 +216,7 @@ const valueProps = [
             <p class="font-display text-sm font-bold text-base-content">
               1 Workshop · 2 Skill (AI + Sales) · 30 วันหลัง run ได้จริง
             </p>
-            <p class="mt-1 text-sm leading-snug text-base-content/70">
+            <p class="mt-1 text-sm leading-snug text-base-content/75">
               ที่เดียวที่รวม AI Workflow กับระบบขาย B2B ให้ทำงานพร้อมกัน ไม่ต้องซื้อ 2 คอร์ส
             </p>
           </div>
@@ -110,21 +230,20 @@ const valueProps = [
             ประเมินปัญหาทีมขาย
           </a>
           <a
-            href="/services"
-            class="btn btn-lg btn-ghost border border-base-content/20 hover:bg-base-200"
+            href="#diagnose"
+            class="btn btn-lg btn-ghost border border-base-content/25 hover:bg-base-200"
           >
             ดูบริการทั้งหมด
           </a>
         </div>
 
-        <!-- Proof stats -->
         <dl
-          class="mt-12 flex flex-wrap gap-x-10 gap-y-6 border-t border-base-content/10 pt-8"
+          class="mt-12 flex flex-wrap gap-x-10 gap-y-6 border-t border-base-content/15 pt-8"
         >
           {
             PROOF_STATS.map((stat) => (
               <div>
-                <dt class="text-xs uppercase tracking-widest text-base-content/50">
+                <dt class="text-xs uppercase tracking-widest text-base-content/65">
                   {stat.label}
                 </dt>
                 <dd class="mt-1 font-display text-3xl font-bold text-secondary md:text-4xl">
@@ -138,94 +257,297 @@ const valueProps = [
     </div>
   </section>
 
-  <!-- ===== VALUE PROPS ===== -->
-  <section class="bg-base-200/40 px-4 py-20 lg:px-8">
+  <!-- ===== PROBLEM ===== -->
+  <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
     <div class="mx-auto max-w-5xl">
-      <h2 class="font-display text-3xl font-bold tracking-tight md:text-4xl">
-        ทำไมต้องปัน
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Problem</p>
+      <h2 class="mt-3 max-w-2xl font-display text-3xl font-bold tracking-tight md:text-4xl">
+        ปัญหาที่เจ้าของธุรกิจส่วนใหญ่หนีไม่พ้น
       </h2>
-      <p class="mt-3 max-w-2xl text-base-content/70">
-        ที่ปรึกษาการขายในตลาดไทยเยอะมาก แต่ไม่มีใคร deliver ระบบจริงที่รันต่อได้หลังจบงาน
-      </p>
 
-      <div class="mt-12 grid gap-6 md:grid-cols-3">
+      <div class="mt-10 grid gap-4 md:grid-cols-3">
         {
-          valueProps.map((vp) => (
-            <div class="rounded-2xl border border-base-content/10 bg-base-100 p-6 shadow-sm">
-              <p class="font-display text-2xl font-bold text-secondary">{vp.icon}</p>
-              <h3 class="mt-3 font-display text-lg font-bold">{vp.title}</h3>
-              <p class="mt-2 text-sm leading-relaxed text-base-content/75">{vp.body}</p>
+          painPoints.map((p) => (
+            <div class="rounded-2xl border border-base-content/15 bg-base-200/40 p-6 transition hover:border-secondary/40">
+              <div class="text-3xl">{p.emoji}</div>
+              <h3 class="mt-4 font-display text-base font-bold">{p.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-base-content/75">{p.body}</p>
             </div>
           ))
         }
       </div>
+
+      <div
+        class="mt-8 rounded-2xl border border-secondary/40 bg-secondary/10 p-8 text-center"
+      >
+        <p class="text-sm font-bold uppercase tracking-widest text-secondary">
+          เสียโอกาสกว่าเดือนละ
+        </p>
+        <p class="mt-3 font-display text-4xl font-bold md:text-5xl">
+          ฿150,000 — 500,000
+        </p>
+        <p class="mt-3 text-sm font-semibold text-secondary">
+          เพราะขาด "ระบบ" ที่ทำงานแทนคุณ
+        </p>
+        <p class="mt-4 mx-auto max-w-lg text-sm text-base-content/70">
+          ยอดขายที่น่าจะได้แต่ไม่ได้ + เงินเดือนเซลล์ที่ไม่ทำเงิน + เวลาที่ทีมเสียไปกับงานงอก
+        </p>
+      </div>
+
+      <div
+        class="mx-auto mt-12 max-w-md rounded-2xl border-2 border-dashed border-secondary/40 bg-secondary/[0.04] p-8 text-center"
+      >
+        <p class="text-lg leading-relaxed text-base-content/80">ถ้าอ่านแล้วรู้สึกว่า</p>
+        <p class="mt-1 font-display text-xl font-bold text-secondary">
+          "เฮ้ย! นี่มันเรื่องของเราเลยนี่หว่า..."
+        </p>
+        <a
+          href="/intake-form"
+          class="btn btn-lg mt-5 bg-secondary text-secondary-content shadow-lg shadow-secondary/25 hover:bg-secondary/90"
+        >
+          เช็คสุขภาพทีมขายฟรี →
+        </a>
+        <p class="mt-3 text-xs text-base-content/55">
+          3 นาที · ไม่มีค่าใช้จ่าย · ปันอ่านเองทุกใบ
+        </p>
+      </div>
     </div>
   </section>
 
-  <!-- ===== SOCIAL PROOF (anonymized client case) ===== -->
-  <section id="social-proof" class="border-y border-base-content/10 px-4 py-20 lg:px-8">
+  <!-- ===== WHY PUN — 3-Column Positioning ===== -->
+  <section class="border-t border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8 lg:py-20">
     <div class="mx-auto max-w-5xl">
-      <p class="text-sm uppercase tracking-widest text-base-content/50">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Why Pun</p>
+      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+        ทำไมต้องเป็นปัน?
+      </h2>
+      <p class="mt-3 max-w-2xl text-base-content/75">
+        ในตลาดมีทั้งที่ปรึกษาการขายและ AI Guru แต่ทั้งสองฝั่งมีจุดบอดที่ทำให้ SME ยังใช้ AI ได้ไม่เต็มที่
+      </p>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-3">
+        {
+          whyPun.map((col) => (
+            <div
+              class:list={[
+                'rounded-2xl p-6',
+                col.style === 'sweet-spot'
+                  ? 'relative border-2 border-secondary/50 bg-secondary/10 shadow-lg shadow-secondary/10 md:scale-[1.02]'
+                  : 'border border-base-content/15 bg-base-100/40',
+              ]}
+            >
+              {col.style === 'sweet-spot' && (
+                <span class="absolute right-4 top-4 rounded-full bg-secondary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-secondary-content">
+                  Sweet Spot
+                </span>
+              )}
+              <h3
+                class:list={[
+                  'mb-4 font-display font-bold',
+                  col.style === 'sweet-spot'
+                    ? 'text-lg text-base-content'
+                    : 'text-base text-base-content/65',
+                ]}
+              >
+                {col.title}
+              </h3>
+              <ul class:list={['space-y-3 text-sm', col.style === 'sweet-spot' ? 'text-base-content/85' : 'text-base-content/55']}>
+                {col.points.map((point) => (
+                  <li class="flex items-start gap-2">
+                    <span class:list={[col.style === 'sweet-spot' ? 'text-secondary font-bold' : 'text-base-content/40']}>
+                      {col.style === 'sweet-spot' ? '✓' : '•'}
+                    </span>
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+
+      <div
+        class="mt-14 rounded-2xl border-l-4 border-l-secondary border border-base-content/15 bg-primary/40 p-8 text-center md:p-10"
+      >
+        <p class="text-xs font-bold uppercase tracking-widest text-secondary">Mission</p>
+        <h3
+          class="mx-auto mt-4 max-w-2xl font-display text-2xl font-bold leading-tight md:text-3xl"
+        >
+          ผมเชื่อว่า SME ไทยไม่ควรแพ้<br class="hidden md:block" />เพราะ "ไม่มีระบบ"
+        </h3>
+        <p class="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-base-content/80">
+          ตอนนี้ AI เปลี่ยนเกมทุกอุตสาหกรรม ธุรกิจที่ปรับตัวทันจะวิ่งนำ ธุรกิจที่รอจะถูกทิ้งไว้ข้างหลัง
+          ผมอยากให้เจ้าของ SME มีระบบขายที่แข็งแกร่ง และใช้ AI เป็นเครื่องมือจริงๆ ไม่ใช่แค่ของเล่น
+        </p>
+        <p class="mx-auto mt-3 max-w-xl text-[15px] leading-relaxed text-base-content/80">
+          เป้าหมายของผมไม่ใช่แค่ขาย Workshop แล้วจบ ผมอยากเห็นทีมขายของลูกค้า
+          <strong class="text-base-content">หลุดจากสงครามราคา</strong>
+          แล้วขายด้วยคุณค่าของสินค้าจริงๆ ได้
+        </p>
+
+        <div class="mt-8 inline-block rounded-2xl border border-secondary/30 bg-secondary/10 px-8 py-5">
+          <p class="text-sm text-base-content/75">เป้าหมายปี 2026</p>
+          <p class="mt-1 font-display text-lg font-bold">
+            ช่วย SME ไทย <span class="text-2xl text-secondary">50</span> ธุรกิจ ให้มีระบบขายที่ทำเงินได้จริง
+          </p>
+          <p class="mt-1 text-sm text-base-content/65">
+            ตอนนี้เดินมาแล้ว <strong class="text-base-content/85">10 ธุรกิจ</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DIAGNOSE / QUICK NAV TO PACKAGES ===== -->
+  <section
+    id="diagnose"
+    class="relative overflow-hidden border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20"
+  >
+    <div
+      class="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[400px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-secondary/[0.04] blur-[120px]"
+    >
+    </div>
+
+    <div class="mx-auto max-w-6xl">
+      <div class="text-center">
+        <span
+          class="inline-flex items-center gap-2 rounded-full border border-secondary/30 bg-secondary/10 px-4 py-1.5"
+        >
+          <span class="text-xs font-bold uppercase tracking-widest text-secondary">Diagnose</span>
+        </span>
+        <h2 class="mt-5 font-display text-3xl font-bold tracking-tight md:text-4xl">
+          เจอปัญหาไหนอยู่?
+        </h2>
+        <p class="mt-3 text-base-content/65">
+          กดที่ปัญหาของคุณ ผมมีบริการที่แก้ได้ตรงจุด
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-2">
+        {
+          diagnoseCards.map((card) => {
+            const accent = accentColor(card.accent);
+            return (
+              <a
+                href={card.href}
+                class="group relative block overflow-hidden rounded-2xl no-underline transition hover:-translate-y-1 hover:shadow-lg"
+                style={`--card-accent: ${accent};`}
+              >
+                <div
+                  class="absolute inset-0 rounded-2xl border opacity-50 transition group-hover:opacity-100"
+                  style="border-color: var(--card-accent);"
+                ></div>
+                <div
+                  class="absolute inset-x-0 top-0 h-[2px] opacity-0 transition group-hover:opacity-100"
+                  style="background: linear-gradient(to right, transparent, var(--card-accent), transparent);"
+                ></div>
+                <div
+                  class="relative p-6"
+                  style="background: linear-gradient(180deg, color-mix(in oklch, var(--card-accent) 8%, transparent), transparent 70%);"
+                >
+                  <div class="mb-4 flex items-center gap-2">
+                    <div
+                      class="flex h-8 w-8 items-center justify-center rounded-lg"
+                      style="background: color-mix(in oklch, var(--card-accent) 18%, transparent);"
+                    >
+                      <span class="font-display text-sm font-bold" style="color: var(--card-accent);">!</span>
+                    </div>
+                    <span
+                      class="text-[11px] font-bold uppercase tracking-widest"
+                      style="color: color-mix(in oklch, var(--card-accent) 80%, transparent);"
+                    >
+                      Pain Point
+                    </span>
+                  </div>
+
+                  <p class="text-[15px] font-semibold leading-relaxed text-base-content/95">
+                    "{card.pain}
+                    <span style={`color: ${accent}`}>{card.highlight}</span>"
+                  </p>
+
+                  <div
+                    class="my-5 h-px"
+                    style="background: linear-gradient(to right, transparent, color-mix(in oklch, var(--card-accent) 25%, transparent), transparent);"
+                  ></div>
+
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <h3
+                        class="font-display font-bold transition"
+                        style="color: var(--color-base-content);"
+                      >
+                        {card.service}
+                      </h3>
+                      <p class="mt-0.5 text-xs text-base-content/55">{card.oneLiner}</p>
+                    </div>
+                    <div
+                      class="ml-3 flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition group-hover:scale-110"
+                      style="background: color-mix(in oklch, var(--card-accent) 15%, transparent);"
+                    >
+                      <span class="font-bold" style="color: var(--card-accent);">→</span>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            );
+          })
+        }
+      </div>
+
+      <p class="mt-8 text-center text-xs text-base-content/55">
+        ไม่แน่ใจว่าเหมาะกับบริการไหน?
+        <a href="/intake-form" class="text-base-content/75 underline underline-offset-2 hover:text-secondary">
+          ให้ปันช่วยดูให้
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== OUTCOME — Social Proof (anonymized client case) ===== -->
+  <section
+    id="social-proof"
+    class="border-t border-base-content/10 bg-base-200/30 px-4 py-20 lg:px-8"
+  >
+    <div class="mx-auto max-w-5xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">
         เคสจริงจากลูกค้าที่ผมดูแล
       </p>
       <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
         ไม่ใช่ demo ผลลัพธ์จริงหลัง AI Day Workshop + Monthly Consulting
       </h2>
 
-      <!-- 3 stat cards -->
       <div class="mt-12 grid gap-6 md:grid-cols-3">
-        <div
-          class="rounded-2xl border border-secondary/20 bg-base-100 p-6 shadow-sm"
-        >
-          <p class="text-xs uppercase tracking-widest text-base-content/60">
-            ยอดขายหลังเรียน
-          </p>
-          <p class="mt-2 font-display text-4xl font-bold text-secondary md:text-5xl">
-            +30%+
-          </p>
-          <p class="mt-3 text-sm leading-relaxed text-base-content/75">
+        <div class="rounded-2xl border border-secondary/25 bg-base-100/60 p-6 shadow-sm">
+          <p class="text-xs uppercase tracking-widest text-base-content/65">ยอดขายหลังเรียน</p>
+          <p class="mt-2 font-display text-4xl font-bold text-secondary md:text-5xl">+30%+</p>
+          <p class="mt-3 text-sm leading-relaxed text-base-content/80">
             ทำยอด 50% ของเป้าเดือนได้ภายใน 10 วัน โดยไม่ต้องลดราคาแข่ง
           </p>
         </div>
-
-        <div
-          class="rounded-2xl border border-secondary/20 bg-base-100 p-6 shadow-sm"
-        >
-          <p class="text-xs uppercase tracking-widest text-base-content/60">
-            ค่า Software รายเดือน
-          </p>
-          <p class="mt-2 font-display text-4xl font-bold text-secondary md:text-5xl">
-            -97%
-          </p>
-          <p class="mt-3 text-sm leading-relaxed text-base-content/75">
+        <div class="rounded-2xl border border-secondary/25 bg-base-100/60 p-6 shadow-sm">
+          <p class="text-xs uppercase tracking-widest text-base-content/65">ค่า Software รายเดือน</p>
+          <p class="mt-2 font-display text-4xl font-bold text-secondary md:text-5xl">-97%</p>
+          <p class="mt-3 text-sm leading-relaxed text-base-content/80">
             ฿100,000+ → ฿3,000 (พนักงาน build webapp ใช้เองในองค์กร จ่ายแค่ค่า AI API)
           </p>
         </div>
-
-        <div
-          class="rounded-2xl border border-secondary/20 bg-base-100 p-6 shadow-sm"
-        >
-          <p class="text-xs uppercase tracking-widest text-base-content/60">
-            ค่า Google Ads
-          </p>
-          <p class="mt-2 font-display text-4xl font-bold text-secondary md:text-5xl">
-            -50%
-          </p>
-          <p class="mt-3 text-sm leading-relaxed text-base-content/75">
+        <div class="rounded-2xl border border-secondary/25 bg-base-100/60 p-6 shadow-sm">
+          <p class="text-xs uppercase tracking-widest text-base-content/65">ค่า Google Ads</p>
+          <p class="mt-2 font-display text-4xl font-bold text-secondary md:text-5xl">-50%</p>
+          <p class="mt-3 text-sm leading-relaxed text-base-content/80">
             ฿500,000 → ฿250,000 ต่อเดือน หลัง AI Agent ช่วย optimize campaign
           </p>
         </div>
       </div>
 
-      <!-- Quote block -->
       <blockquote
-        class="mx-auto mt-10 max-w-3xl rounded-r-2xl border-l-4 border-secondary bg-base-100 p-6 shadow-sm"
+        class="mx-auto mt-10 max-w-3xl rounded-r-2xl border-l-4 border-secondary bg-base-100/60 p-6 shadow-sm"
       >
-        <p class="text-base leading-relaxed text-base-content/85 md:text-lg">
+        <p class="text-base leading-relaxed text-base-content/90 md:text-lg">
           "เซลล์เริ่มขายโดยไม่ต้องลดราคาแข่ง เอาหลักจิตวิทยาการขายไปใช้
           พนักงานมีเวลาไปหา idea ใหม่ พัฒนาองค์กรมากขึ้น เพราะเอางานซ้ำๆ ให้ AI Agent ทำ"
         </p>
-        <footer class="mt-4 text-sm text-base-content/60">
+        <footer class="mt-4 text-sm text-base-content/65">
           เจ้าของธุรกิจ B2B Manufacturing/Distribution · Monthly Consulting Client
         </footer>
       </blockquote>
@@ -236,15 +558,49 @@ const valueProps = [
     </div>
   </section>
 
+  <!-- ===== TESTIMONIAL — chat screenshots from clients ===== -->
+  <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-5xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Testimonial</p>
+      <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+        เสียงจากผู้ประกอบการที่ให้ผมดูแล
+      </h2>
+
+      <div class="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+        {
+          testimonials.map((t, idx) => (
+            <div
+              class:list={[
+                'group overflow-hidden rounded-2xl border border-base-content/15 transition hover:border-secondary/40 hover:-translate-y-0.5',
+                idx === 4 && 'col-span-2 md:col-span-1',
+              ]}
+            >
+              <img
+                src={t.src}
+                alt={t.alt}
+                loading="lazy"
+                class="h-auto w-full object-cover transition duration-500 group-hover:scale-105"
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
   <!-- ===== SERVICES TEASER ===== -->
-  <section id="services-teaser" class="px-4 py-20 lg:px-8">
+  <section
+    id="services-teaser"
+    class="border-t border-base-content/10 bg-base-200/30 px-4 py-20 lg:px-8"
+  >
     <div class="mx-auto max-w-6xl">
       <div class="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
         <div>
-          <h2 class="font-display text-3xl font-bold tracking-tight md:text-4xl">
+          <p class="text-xs font-bold uppercase tracking-widest text-secondary">Services</p>
+          <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
             4 บริการหลัก
           </h2>
-          <p class="mt-3 max-w-2xl text-base-content/70">
+          <p class="mt-3 max-w-2xl text-base-content/75">
             เลือกตามปัญหาจริงของทีม ไม่ใช่ตามว่ามีอะไรใน catalog
           </p>
         </div>
@@ -258,20 +614,20 @@ const valueProps = [
           SERVICES.map((svc) => (
             <a
               href={`/services#${svc.slug}`}
-              class="group rounded-2xl border border-base-content/10 bg-base-100 p-6 transition-all hover:border-secondary/50 hover:shadow-lg hover:shadow-secondary/10"
+              class="group rounded-2xl border border-base-content/15 bg-base-100/60 p-6 transition-all hover:-translate-y-0.5 hover:border-secondary/50 hover:shadow-lg hover:shadow-secondary/10"
             >
-              <p class="text-xs uppercase tracking-widest text-base-content/50">
+              <p class="text-xs uppercase tracking-widest text-base-content/60">
                 {svc.subtitle}
               </p>
               <h3 class="mt-2 font-display text-xl font-bold leading-tight group-hover:text-secondary">
                 {svc.title}
               </h3>
-              <p class="mt-3 text-sm leading-relaxed text-base-content/70">“{svc.hook}”</p>
-              <div class="mt-5 flex items-center justify-between border-t border-base-content/10 pt-4">
+              <p class="mt-3 text-sm leading-relaxed text-base-content/80">"{svc.hook}"</p>
+              <div class="mt-5 flex items-center justify-between border-t border-base-content/15 pt-4">
                 <span class="font-display text-lg font-bold text-secondary">
                   {svc.priceLabel}
                 </span>
-                <span class="text-sm text-base-content/60 group-hover:text-secondary">
+                <span class="text-sm text-base-content/65 group-hover:text-secondary">
                   ดูรายละเอียด →
                 </span>
               </div>
@@ -282,16 +638,103 @@ const valueProps = [
     </div>
   </section>
 
+  <!-- ===== QUALIFY — Is this for you? ===== -->
+  <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-5xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Is This For You?</p>
+      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+        เช็คก่อนว่าเราเหมาะกันไหม
+      </h2>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        <div
+          class="rounded-2xl border border-success/30 border-l-4 border-l-success bg-success/[0.06] p-6"
+        >
+          <h3 class="mb-4 font-display text-lg font-bold text-success">
+            ✓ บริการของผมเหมาะกับธุรกิจคุณ ถ้า...
+          </h3>
+          <ul class="space-y-3 text-sm text-base-content/85">
+            {
+              qualifyYes.map((item) => (
+                <li class="flex items-start gap-2">
+                  <span class="text-success">✔</span>
+                  <span>{item}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div
+          class="rounded-2xl border border-base-content/20 border-l-4 border-l-base-content/40 bg-base-200/30 p-6"
+        >
+          <h3 class="mb-4 font-display text-lg font-bold text-base-content/65">
+            ✗ อาจยังไม่เหมาะกับคุณ ถ้า...
+          </h3>
+          <ul class="space-y-3 text-sm text-base-content/65">
+            {
+              qualifyNo.map((item) => (
+                <li class="flex items-start gap-2">
+                  <span>✕</span>
+                  <span>{item}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FREE STUFF LIBRARY ===== -->
+  <section class="border-t border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-4xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Free Resources</p>
+      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+        ยังไม่พร้อมใช้บริการผม? เริ่มจากเนื้อหาฟรีตรงนี้ก่อนก็ได้
+      </h2>
+      <p class="mt-3 text-base-content/75">
+        เครื่องมือและเนื้อหาที่ปันทำให้ใช้ได้เลย ไม่ต้องสมัครอะไร
+      </p>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        {
+          freeStuff.map((item) => (
+            <div
+              class="rounded-2xl border border-base-content/15 bg-base-100/60 p-6 transition hover:border-secondary/40"
+            >
+              <div
+                class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary/15"
+              >
+                <span class="text-xl">📘</span>
+              </div>
+              <h3 class="font-display text-lg font-bold leading-tight">{item.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-base-content/75">{item.body}</p>
+              <a
+                href={item.href}
+                target="_blank"
+                rel="noopener"
+                class="btn btn-outline mt-5 w-full border-base-content/25 text-base-content hover:border-secondary hover:bg-secondary hover:text-secondary-content"
+              >
+                ดาวน์โหลดฟรี ↓
+              </a>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
   <!-- ===== CTA BOTTOM ===== -->
-  <section class="px-4 py-20 lg:px-8">
+  <section class="border-t border-base-content/10 px-4 py-20 lg:px-8">
     <div
       class="mx-auto max-w-4xl rounded-3xl bg-primary px-6 py-14 text-primary-content shadow-xl md:px-12"
     >
       <h2 class="font-display text-3xl font-bold leading-tight md:text-4xl">
         พร้อมให้ทีมขายของคุณ<br />ได้เวลาและยอดคืน?
       </h2>
-      <p class="mt-4 max-w-2xl text-primary-content/80">
-        ไม่ต้องตัดสินใจตอนนี้ ตอบแบบประเมิน 3 นาที — ผมดูว่าเคสคุณควรเริ่มจาก package ไหน
+      <p class="mt-4 max-w-2xl text-primary-content/85">
+        ไม่ต้องตัดสินใจตอนนี้ ตอบแบบประเมิน 3 นาที ผมดูว่าเคสคุณควรเริ่มจาก package ไหน
         แล้วส่ง follow-up ให้ภายใน 2 วันทำการ
       </p>
       <div class="mt-8 flex flex-wrap gap-4">
