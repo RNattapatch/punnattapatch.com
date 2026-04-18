@@ -32,8 +32,22 @@ const packages = SERVICES.map((s) => ({
   title: s.title,
   subtitle: s.subtitle,
   priceLabel: s.priceLabel,
+  priceThb: s.priceThb,
   accent: accentFor(s.slug),
 }));
+
+// Map slug → display name + numeric price for CRM/Telegram schema
+// (matches legacy booking-form.html PKG_MAP shape)
+const pkgNameBySlug: Record<string, string> = Object.fromEntries(
+  SERVICES.map((s) => [s.slug, s.title])
+);
+const pkgPriceBySlug: Record<string, number> = Object.fromEntries(
+  SERVICES.map((s) => [s.slug, s.priceThb])
+);
+const pkgLookupJson = JSON.stringify({
+  names: pkgNameBySlug,
+  prices: pkgPriceBySlug,
+});
 ---
 
 <BaseLayout
@@ -138,17 +152,31 @@ const packages = SERVICES.map((s) => ({
             </div>
           </div>
 
-          <div class="form-control">
-            <label for="b-position" class="label">
-              <span class="label-text font-medium">ตำแหน่ง</span>
-            </label>
-            <input
-              id="b-position"
-              name="position"
-              type="text"
-              class="input input-bordered w-full"
-              placeholder="เจ้าของ / CEO / Sales Manager"
-            />
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div class="form-control">
+              <label for="b-position" class="label">
+                <span class="label-text font-medium">ตำแหน่ง</span>
+              </label>
+              <input
+                id="b-position"
+                name="position"
+                type="text"
+                class="input input-bordered w-full"
+                placeholder="เจ้าของ / CEO / Sales Manager"
+              />
+            </div>
+            <div class="form-control">
+              <label for="b-industry" class="label">
+                <span class="label-text font-medium">อุตสาหกรรม</span>
+              </label>
+              <input
+                id="b-industry"
+                name="industry"
+                type="text"
+                class="input input-bordered w-full"
+                placeholder="เช่น วัสดุก่อสร้าง / ที่พัก / IT"
+              />
+            </div>
           </div>
 
           <div class="grid gap-5 sm:grid-cols-2">
@@ -167,17 +195,30 @@ const packages = SERVICES.map((s) => ({
             </div>
 
             <div class="form-control">
-              <label for="b-line" class="label">
-                <span class="label-text font-medium">LINE ID</span>
+              <label for="b-email" class="label">
+                <span class="label-text font-medium">อีเมล</span>
               </label>
               <input
-                id="b-line"
-                name="line"
-                type="text"
+                id="b-email"
+                name="email"
+                type="email"
                 class="input input-bordered w-full"
-                placeholder="@punnattapatch"
+                placeholder="you@company.co.th"
               />
             </div>
+          </div>
+
+          <div class="form-control">
+            <label for="b-line" class="label">
+              <span class="label-text font-medium">LINE ID (optional)</span>
+            </label>
+            <input
+              id="b-line"
+              name="line"
+              type="text"
+              class="input input-bordered w-full"
+              placeholder="@punnattapatch"
+            />
           </div>
 
           <div class="form-control">
@@ -206,7 +247,7 @@ const packages = SERVICES.map((s) => ({
             </label>
             <input
               id="b-date"
-              name="preferredDate"
+              name="preferred_date"
               type="text"
               class="input input-bordered w-full"
               placeholder="เช่น ต้น พ.ค. 2026 / สัปดาห์ที่ 3 เดือน พ.ค."
@@ -307,6 +348,9 @@ const packages = SERVICES.map((s) => ({
   }
 </style>
 
+<script is:inline define:vars={{ pkgLookupJson }}>
+  window.__PKG_LOOKUP__ = JSON.parse(pkgLookupJson);
+</script>
 <script>
   interface BookingPayload {
     [key: string]: unknown;
@@ -401,9 +445,22 @@ const packages = SERVICES.map((s) => ({
     if (!form.reportValidity()) return;
 
     const formData = new FormData(form);
+
+    // Build legacy-compatible `package` + `package_price` from selected slugs
+    // so n8n/Telegram can render package name + price without mapping changes.
+    const lookup = (window as unknown as {
+      __PKG_LOOKUP__: { names: Record<string, string>; prices: Record<string, number> };
+    }).__PKG_LOOKUP__;
+    const pkgNames = selectedPkgs.map((s) => lookup.names[s] ?? s);
+    const pkgPrices = selectedPkgs.map((s) =>
+      (lookup.prices[s] ?? 0).toLocaleString('en-US')
+    );
+
     const payload: BookingPayload = {
       source_page: 'booking-astro',
       booking_type: 'package-booking',
+      package: pkgNames.join(', '),
+      package_price: pkgPrices.join(', '),
       packages: selectedPkgs,
       _meta: {
         reference: makeReference(),

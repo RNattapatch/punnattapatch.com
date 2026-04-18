@@ -6,6 +6,16 @@ const title = 'ประเมินปัญหาทีมขาย';
 const description =
   'แบบประเมินปัญหาทีมขาย 3 นาที — ผมอ่านเองทุกเคสและตอบกลับภายใน 2 วันทำการ พร้อมบอกว่าคุณเหมาะกับ package ไหน';
 
+const positions = [
+  'CEO / เจ้าของกิจการ',
+  'Managing Director',
+  'Sales Director',
+  'Sales Manager',
+  'Marketing Manager',
+  'Operations Manager',
+  'อื่นๆ',
+];
+
 const teamSizes = [
   '1-2 คน (เจ้าของ + ผู้ช่วย)',
   '3-5 คน',
@@ -138,17 +148,34 @@ const budgets = [
             </div>
           </div>
 
-          <div class="form-control">
-            <label for="company" class="label">
-              <span class="label-text font-medium">ชื่อบริษัท *</span>
-            </label>
-            <input
-              id="company"
-              name="company"
-              type="text"
-              required
-              class="input input-bordered w-full"
-            />
+          <div class="grid gap-5 md:grid-cols-2">
+            <div class="form-control">
+              <label for="company" class="label">
+                <span class="label-text font-medium">ชื่อบริษัท *</span>
+              </label>
+              <input
+                id="company"
+                name="company"
+                type="text"
+                required
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <div class="form-control">
+              <label for="position" class="label">
+                <span class="label-text font-medium">ตำแหน่ง *</span>
+              </label>
+              <select
+                id="position"
+                name="position"
+                required
+                class="select select-bordered w-full"
+              >
+                <option value="">เลือก...</option>
+                {positions.map((p) => <option value={p}>{p}</option>)}
+              </select>
+            </div>
           </div>
 
           <div class="form-control">
@@ -175,7 +202,7 @@ const budgets = [
             </label>
             <select
               id="team-size"
-              name="team_size"
+              name="teamSize"
               required
               class="select select-bordered w-full"
             >
@@ -204,7 +231,7 @@ const budgets = [
                   <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-base-content/10 p-3 transition hover:bg-base-200/50">
                     <input
                       type="checkbox"
-                      name="pain_points"
+                      name="problems"
                       value={p}
                       class="checkbox checkbox-sm mt-0.5"
                     />
@@ -223,7 +250,7 @@ const budgets = [
             </label>
             <textarea
               id="goal"
-              name="goal"
+              name="message"
               rows="3"
               class="textarea textarea-bordered w-full"
               placeholder="เช่น เพิ่มยอดขาย 30% โดยไม่จ้างเซลล์เพิ่ม / ลดเวลาทีมทำ manual report จาก 10 ชม. เหลือ 1 ชม."
@@ -269,7 +296,7 @@ const budgets = [
             </label>
             <select
               id="source"
-              name="ai_source"
+              name="source"
               required
               class="select select-bordered w-full"
             >
@@ -286,7 +313,7 @@ const budgets = [
             </label>
             <textarea
               id="source-note"
-              name="ai_source_note"
+              name="comment"
               rows="3"
               class="textarea textarea-bordered w-full"
               placeholder="เช่น 'ถาม ChatGPT ว่าที่ปรึกษา AI ขาย SME ไทยมีใครบ้าง แล้วเจอผม' — ช่วยผมรู้ว่า AEO ทำงานไหม"
