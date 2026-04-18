@@ -77,6 +77,20 @@ const pkgLookupJson = JSON.stringify({
     ],
   }}
 >
+  <Fragment slot="head">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/css/intlTelInput.css"
+    />
+    <style>
+      .iti { width: 100%; display: block; }
+      .iti__country-list { background: var(--color-base-100); color: var(--color-base-content); border: 1px solid rgb(255 255 255 / 0.15); }
+      .iti__country.iti__highlight { background: color-mix(in oklch, var(--color-secondary) 15%, transparent); }
+      .iti__selected-country { background: rgb(255 255 255 / 0.03); }
+      .iti--separate-dial-code .iti__selected-dial-code { color: var(--color-base-content); }
+    </style>
+  </Fragment>
+
   <section class="px-4 py-16 lg:px-8">
     <div class="mx-auto max-w-3xl">
       <p class="text-xs font-bold uppercase tracking-widest text-secondary">Booking</p>
@@ -203,9 +217,13 @@ const pkgLookupJson = JSON.stringify({
                 name="phone"
                 type="tel"
                 required
+                autocomplete="tel"
                 class="input input-bordered w-full"
-                placeholder="081-234-5678"
+                placeholder="812345678"
               />
+              <p id="b-phone-err" class="mt-1.5 hidden text-xs font-medium text-error">
+                กรุณาใส่เบอร์โทรให้ถูก format (เลือกประเทศจาก dropdown ก่อน)
+              </p>
             </div>
 
             <div class="form-control">
@@ -460,6 +478,52 @@ const pkgLookupJson = JSON.stringify({
   const submitBtn = document.getElementById('btn-submit') as HTMLButtonElement | null;
   const submitBtnLabel = submitBtn?.textContent ?? '';
 
+  /* ==== intl-tel-input init ================================================
+   * Same validation setup as /intake-form. Accepts Thai formats like
+   * 081-234-5678, 02-1234-5678, 0812345678 and international (+1 US, +65 SG).
+   * On submit: block if iti.isValidNumber() === false, else normalize to E.164
+   * so Sheet stores canonical +66XXXXXXXXX.
+   */
+  interface ItiInstance {
+    isValidNumber(): boolean;
+    getNumber(): string;
+  }
+  type ItiFactory = (el: HTMLInputElement, opts: Record<string, unknown>) => ItiInstance;
+  let phoneIti: ItiInstance | null = null;
+  const phoneInput = document.getElementById('b-phone') as HTMLInputElement | null;
+  const phoneErr = document.getElementById('b-phone-err');
+
+  function loadScript(src: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error(`failed to load ${src}`));
+      document.head.appendChild(s);
+    });
+  }
+
+  (async () => {
+    if (!phoneInput) return;
+    try {
+      await loadScript(
+        'https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/js/intlTelInput.min.js'
+      );
+      const factory = (window as unknown as { intlTelInput: ItiFactory }).intlTelInput;
+      phoneIti = factory(phoneInput, {
+        initialCountry: 'th',
+        preferredCountries: ['th', 'us', 'sg', 'my', 'hk', 'jp', 'gb', 'au'],
+        separateDialCode: true,
+        autoPlaceholder: 'polite',
+        nationalMode: true,
+        loadUtilsOnInit:
+          'https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/js/utils.js',
+      });
+    } catch (err) {
+      console.error('[booking-form] intl-tel-input failed to load', err);
+    }
+  })();
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -475,6 +539,18 @@ const pkgLookupJson = JSON.stringify({
     errPackages?.classList.add('hidden');
 
     if (!form.reportValidity()) return;
+
+    // Phone validation
+    if (phoneIti && phoneInput) {
+      if (!phoneIti.isValidNumber()) {
+        phoneErr?.classList.remove('hidden');
+        phoneInput.focus();
+        phoneInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      phoneErr?.classList.add('hidden');
+      phoneInput.value = phoneIti.getNumber();
+    }
 
     const formData = new FormData(form);
 

@@ -88,6 +88,9 @@ const fullTitle = title === SITE.titleDefault ? title : `${title} · ${SITE.name
     <link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt" />
 
     <Schema {...schema} />
+
+    <!-- Per-page head injection (e.g. intl-tel-input CSS) -->
+    <slot name="head" />
   </head>
 
   <body class="min-h-screen bg-base-100 font-body text-base-content">

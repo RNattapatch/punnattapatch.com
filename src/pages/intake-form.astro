@@ -85,6 +85,20 @@ const budgets = [
     ],
   }}
 >
+  <Fragment slot="head">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/css/intlTelInput.css"
+    />
+    <style>
+      .iti { width: 100%; display: block; }
+      .iti__country-list { background: var(--color-base-100); color: var(--color-base-content); border: 1px solid rgb(255 255 255 / 0.15); }
+      .iti__country.iti__highlight { background: color-mix(in oklch, var(--color-secondary) 15%, transparent); }
+      .iti__selected-country { background: rgb(255 255 255 / 0.03); }
+      .iti--separate-dial-code .iti__selected-dial-code { color: var(--color-base-content); }
+    </style>
+  </Fragment>
+
   <section class="px-4 py-16 lg:px-8">
     <div class="mx-auto max-w-3xl">
       <p class="text-sm uppercase tracking-widest text-base-content/50">Assessment</p>
@@ -135,17 +149,34 @@ const budgets = [
 
             <div class="form-control">
               <label for="phone" class="label">
-                <span class="label-text font-medium">เบอร์ติดต่อ / LINE ID *</span>
+                <span class="label-text font-medium">เบอร์โทร *</span>
               </label>
               <input
                 id="phone"
                 name="phone"
-                type="text"
+                type="tel"
                 required
+                autocomplete="tel"
                 class="input input-bordered w-full"
-                placeholder="081-xxx-xxxx หรือ LINE ID"
+                placeholder="812345678"
               />
+              <p id="phone-err" class="mt-1.5 hidden text-xs font-medium text-error">
+                กรุณาใส่เบอร์โทรให้ถูก format (เลือกประเทศจาก dropdown ก่อน)
+              </p>
             </div>
+          </div>
+
+          <div class="form-control">
+            <label for="line" class="label">
+              <span class="label-text font-medium">LINE ID (optional)</span>
+            </label>
+            <input
+              id="line"
+              name="line"
+              type="text"
+              class="input input-bordered w-full"
+              placeholder="@punnattapatch หรือ LINE ID"
+            />
           </div>
 
           <div class="grid gap-5 md:grid-cols-2">
@@ -474,9 +505,71 @@ const budgets = [
   const submitBtn = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
   const submitBtnLabel = submitBtn?.textContent ?? '';
 
+  /* ==== intl-tel-input init (loaded async from CDN) ========================
+   * Wires phone field to libphonenumber validation so "test by pun" or free
+   * text is blocked. Supports Thai native formats (081-234-5678, 02-1234-5678,
+   * 0812345678, +66-81-234-5678) + any international number. On valid submit,
+   * value is normalized to E.164 (+66812345678) before POSTing to n8n so Sheet
+   * stores a canonical number regardless of how the user typed it.
+   */
+  interface ItiInstance {
+    isValidNumber(): boolean;
+    getNumber(): string;
+    getValidationError(): number;
+  }
+  type ItiFactory = (el: HTMLInputElement, opts: Record<string, unknown>) => ItiInstance;
+  let phoneIti: ItiInstance | null = null;
+  const phoneInput = document.getElementById('phone') as HTMLInputElement | null;
+  const phoneErr = document.getElementById('phone-err');
+
+  function loadScript(src: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error(`failed to load ${src}`));
+      document.head.appendChild(s);
+    });
+  }
+
+  (async () => {
+    if (!phoneInput) return;
+    try {
+      await loadScript(
+        'https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/js/intlTelInput.min.js'
+      );
+      const factory = (window as unknown as { intlTelInput: ItiFactory }).intlTelInput;
+      phoneIti = factory(phoneInput, {
+        initialCountry: 'th',
+        preferredCountries: ['th', 'us', 'sg', 'my', 'hk', 'jp', 'gb', 'au'],
+        separateDialCode: true,
+        autoPlaceholder: 'polite',
+        nationalMode: true,
+        loadUtilsOnInit:
+          'https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/js/utils.js',
+      });
+    } catch (err) {
+      console.error('[intake-form] intl-tel-input failed to load', err);
+      /* Silent fallback — native HTML5 tel validation still applies */
+    }
+  })();
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!form.reportValidity()) return;
+
+    // Phone validation — gate submission if invalid number
+    if (phoneIti && phoneInput) {
+      if (!phoneIti.isValidNumber()) {
+        phoneErr?.classList.remove('hidden');
+        phoneInput.focus();
+        phoneInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      phoneErr?.classList.add('hidden');
+      // Normalize to E.164 before serialization so CRM Sheet stores canonical form
+      phoneInput.value = phoneIti.getNumber();
+    }
 
     const formData = new FormData(form);
     const payload: IntakePayload = {
