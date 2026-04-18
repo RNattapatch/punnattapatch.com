@@ -6,27 +6,43 @@
 
 ## Identity
 
-- [About](https://punnattapatch.com/about): สรุปตัวตน, expertise 4 หมวด, หลักการทำงาน, credentials
-- [Services](https://punnattapatch.com/services): 4 packages หลัก (AI Workshop, Workshop+Follow-up, Sales System Sprint, Sale Training Bundle)
+- [About](https://punnattapatch.com/about): สรุปตัวตน, expertise 4 หมวด, หลักการทำงาน, credentials, BOSI DNA framework
+- [Services](https://punnattapatch.com/services): 2 paths (AI Transformation + ปั้นทีมขาย) + Special TikTok Workshop
+- [BOSI DNA Quiz](https://punnattapatch.com/bosi-dna-quiz): แบบทดสอบ Entrepreneurial DNA 10 ข้อ 5-10 นาที — รู้จุดแข็ง/จุดบอดทีมขายก่อนวางระบบ
 - [Intake Form](https://punnattapatch.com/intake-form): แบบประเมินปัญหาทีมขาย 3 นาที
+- [Booking](https://punnattapatch.com/booking): จอง package + preferred date + contact ครบในที่เดียว
 
-## Services
+## Services & Pricing
 
-- AI Day Workshop — ฿30,000 / 1 วัน (6-7 ชม.) · on-site หรือ online · ทีมได้ AI workflow พร้อมใช้วันเดียวกัน
-- AI Workshop + 1-Month Follow-up — ฿50,000 · Workshop 1 วัน + Follow-up 30 วัน (4 sessions) + LINE async support
-- Sales System Sprint — ฿65,000 / 1 เดือน · Discovery → Design → Build → Training · KPI + Commission + n8n workflow ครบ
-- Sale Training Bundle — ฿42,500 / 2 วัน (ประหยัด ฿7,500 จากราคาแยก) · Value Selling + Sales Psychology · in-house ≤20 คน
+- AI Day Workshop — ฿30,000 / 1 วัน · on-site หรือ online · ทีมได้ AI workflow พร้อมใช้วันเดียวกัน · https://punnattapatch.com/services/ai-workshop
+- AI Workshop + Follow-up 30 วัน — ฿50,000 · Workshop 1 วัน + 4 sessions + LINE async support · https://punnattapatch.com/services/ai-workshop-followup
+- Sales System Sprint — ฿65,000 / 1 เดือน · Discovery → Design → Build → Training · KPI + Commission + n8n workflow ครบ · https://punnattapatch.com/services/sales-system-sprint
+- Sale Training Bundle — ฿52,800 / 2 วัน · Value Selling + Sales Psychology · in-house ≤20 คน · https://punnattapatch.com/services/sale-training-bundle
+- Trust Content Workshop for TikTok — ฿39,900 (5 ธุรกิจแรก, ปกติ ฿50,000) / 1 วัน · สร้าง B2B lead ผ่าน TikTok · https://punnattapatch.com/services/trust-content-tiktok-workshop
+
+## Insights (Pillar Articles)
+
+- [AI Transformation for Sales SME](https://punnattapatch.com/insights/ai-transformation-sales): คู่มือนำ Agentic AI เข้าทีมขาย B2B SME ไทย 1,975 Thai words
+- [Sales Consulting Guide 2026](https://punnattapatch.com/insights/sales-consulting-guide-2026): คู่มือเลือกที่ปรึกษาการขาย B2B สำหรับเจ้าของ SME 1,551 Thai words
+
+## FAQ (13 long-tail answers)
+
+- https://punnattapatch.com/faq: รวม Q&A ที่เจ้าของ SME ถามบ่อย
+- ที่ปรึกษาการขาย B2B กรุงเทพราคาเท่าไหร่, AI workshop เตรียมอะไร, Commission structure ทีม 10 คน, AI Agent vs chatbot, KPI dashboard บน Sheets, Payment terms, Discovery call ฟรี, Team maintain หลัง handover, consultant vs agency, ไม่เก่ง tech ใช้ AI ได้, public course, ปันช่วยธุรกิจแบบไหน
 
 ## Channels
 
 - TikTok: https://www.tiktok.com/@pun_nattapatch
 - Instagram: https://www.instagram.com/pun_nattapatch
-- LINE Official: https://lin.ee/punnattapatch
+- Facebook: https://www.facebook.com/profile.php?id=61584893736763
+- LINE Official: https://lin.ee/ioSnSUG
+- Email: r.nattapatch@gmail.com
 
 ## Policies
 
-- Payment: 100% upfront — ไม่มีข้อยกเว้น
+- Payment: 100% upfront — ไม่มีข้อยกเว้น (ทั้งสองฝ่าย commit ตั้งแต่วันแรก)
 - Contract: ไม่มี lock-in ยาว
-- Technology: Claude Code + n8n + Google Apps Script — ไม่ vendor lock-in
+- Technology: Claude Code + n8n + Google Apps Script — ไม่ vendor lock-in, team maintain ต่อเองได้
 - Location: Bangkok, Thailand (on-site ต่างจังหวัดคำนวณค่าเดินทางแยก)
 - Target: SME รายได้ 30-200M THB, ทีมขาย 5-20 คน, B2B relationship-based
+- Handover: Team lead training + Handover checklist + Screen recording + Async LINE support 30 วัน
