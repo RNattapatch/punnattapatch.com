@@ -94,6 +94,7 @@ function buildPerson() {
       'KPI + Commission Design',
       'Value-Based Selling',
       'Sales Psychology',
+      'BOSI DNA Framework',
     ],
     sameAs: [SITE.social.tiktok, SITE.social.instagram],
     address: {
@@ -101,6 +102,20 @@ function buildPerson() {
       addressLocality: SITE.author.city,
       addressCountry: SITE.author.country,
     },
+    // Real client testimonial from social-proof section (anonymized per client request)
+    review: [
+      {
+        '@type': 'Review',
+        reviewBody:
+          'เซลล์เลิกใช้ส่วนลดปิดดีล เปลี่ยนมาคุยเรื่องคุณค่าที่ลูกค้าได้ ส่วนงาน report ที่เคยทำมือ ตอนนี้ AI ทำให้ พนักงานเลยมีเวลาคิดวิธีใหม่ๆ ให้ลูกค้ามากขึ้น',
+        author: {
+          '@type': 'Organization',
+          name: 'B2B Manufacturing/Distribution Client (anonymized per request)',
+        },
+        datePublished: '2026-03-15',
+        itemReviewed: { '@id': PERSON_ID },
+      },
+    ],
   };
 }
 
@@ -149,16 +164,36 @@ function buildServiceList() {
     name: svc.title,
     alternateName: svc.subtitle,
     description: svc.hook,
-    url: `${SITE.url}/services#${svc.slug}`,
+    url: `${SITE.url}/services/${svc.slug}`,
     provider: { '@id': PERSON_ID },
     serviceType: svc.subtitle,
-    areaServed: { '@type': 'Country', name: 'Thailand' },
+    category: 'Business Consulting',
+    areaServed: [
+      { '@type': 'City', name: 'Bangkok' },
+      { '@type': 'Country', name: 'Thailand' },
+    ],
+    audience: {
+      '@type': 'BusinessAudience',
+      audienceType: 'SME B2B',
+      name: 'Thai SME รายได้ 30-200M บาท ทีมขาย 5-20 คน',
+    },
+    termsOfService: `${SITE.url}/services#payment`,
     offers: {
       '@type': 'Offer',
+      '@id': `${SITE.url}/services/${svc.slug}#offer`,
       price: svc.priceThb,
       priceCurrency: 'THB',
+      priceSpecification: {
+        '@type': 'PriceSpecification',
+        price: svc.priceThb,
+        priceCurrency: 'THB',
+        valueAddedTaxIncluded: false,
+      },
       availability: 'https://schema.org/InStock',
-      url: `${SITE.url}/intake-form`,
+      url: `${SITE.url}/booking?package=${svc.slug}`,
+      validFrom: '2026-01-01',
+      seller: { '@id': PERSON_ID },
+      eligibleCustomerType: 'Business',
     },
   }));
 }
