@@ -435,6 +435,176 @@ const socials = [
     </div>
   </section>
 
+  <!-- ===== TESTIMONIAL — chat screenshots from clients (moved below Problem per Pun 2026-04-18) ===== -->
+  <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-5xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Testimonial</p>
+      <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+        เสียงจากผู้ประกอบการที่ให้ผมดูแล
+      </h2>
+      <div class="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+        {
+          testimonials.map((t) => (
+            <div class="overflow-hidden rounded-2xl border border-base-content/10 bg-base-200/40 shadow-sm">
+              <img
+                src={t.src}
+                alt={t.alt}
+                loading="lazy"
+                decoding="async"
+                class="aspect-[3/4] w-full object-cover"
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DIAGNOSE / QUICK NAV TO PACKAGES (moved below Testimonial per Pun 2026-04-18) ===== -->
+  <section
+    id="diagnose"
+    class="relative overflow-hidden border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20"
+  >
+    <div
+      class="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[400px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-secondary/[0.04] blur-[120px]"
+    >
+    </div>
+
+    <div class="mx-auto max-w-6xl">
+      <div class="text-center">
+        <span
+          class="inline-flex items-center gap-2 rounded-full border border-secondary/30 bg-secondary/10 px-4 py-1.5"
+        >
+          <span class="text-xs font-bold uppercase tracking-widest text-secondary">Diagnose</span>
+        </span>
+        <h2 class="mt-5 font-display text-3xl font-bold tracking-tight md:text-4xl">
+          เจอปัญหาไหนอยู่?
+        </h2>
+        <p class="mt-3 text-base-content/65">
+          กดที่ปัญหาของคุณ ผมมีบริการที่แก้ได้ตรงจุด
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {
+          diagnoseCards.map((card) => {
+            const accent = accentColor(card.accent);
+            return (
+              <a
+                href={card.href}
+                class="group relative block overflow-hidden rounded-2xl no-underline transition hover:-translate-y-1 hover:shadow-lg"
+                style={`--card-accent: ${accent};`}
+              >
+                <div
+                  class="absolute inset-0 rounded-2xl border opacity-50 transition group-hover:opacity-100"
+                  style="border-color: var(--card-accent);"
+                ></div>
+                <div
+                  class="absolute inset-x-0 top-0 h-[2px] opacity-0 transition group-hover:opacity-100"
+                  style="background: linear-gradient(to right, transparent, var(--card-accent), transparent);"
+                ></div>
+                <div
+                  class="relative p-6"
+                  style="background: linear-gradient(180deg, color-mix(in oklch, var(--card-accent) 8%, transparent), transparent 70%);"
+                >
+                  <div class="mb-4 flex items-center gap-2">
+                    <div
+                      class="flex h-8 w-8 items-center justify-center rounded-lg"
+                      style="background: color-mix(in oklch, var(--card-accent) 18%, transparent);"
+                    >
+                      <span class="font-display text-sm font-bold" style="color: var(--card-accent);">!</span>
+                    </div>
+                    <span
+                      class="text-[11px] font-bold uppercase tracking-widest"
+                      style="color: color-mix(in oklch, var(--card-accent) 80%, transparent);"
+                    >
+                      Pain Point
+                    </span>
+                  </div>
+
+                  <p class="text-[15px] font-semibold leading-relaxed text-base-content/95">
+                    "{card.pain}
+                    <span style={`color: ${accent}`}>{card.highlight}</span>"
+                  </p>
+
+                  <div
+                    class="my-5 h-px"
+                    style="background: linear-gradient(to right, transparent, color-mix(in oklch, var(--card-accent) 25%, transparent), transparent);"
+                  ></div>
+
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <h3
+                        class="font-display font-bold transition"
+                        style="color: var(--color-base-content);"
+                      >
+                        {card.service}
+                      </h3>
+                      <p class="mt-0.5 text-xs text-base-content/55">{card.oneLiner}</p>
+                    </div>
+                    <div
+                      class="ml-3 flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition group-hover:scale-110"
+                      style="background: color-mix(in oklch, var(--card-accent) 15%, transparent);"
+                    >
+                      <span class="font-bold" style="color: var(--card-accent);">→</span>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            );
+          })
+        }
+      </div>
+
+      <div class="mx-auto mt-14 grid max-w-4xl gap-5 md:grid-cols-2">
+        <!-- Path 1: Already know — book -->
+        <div
+          class="rounded-2xl border-2 bg-secondary/[0.08] p-8 text-center shadow-xl"
+          style="border-color: var(--color-secondary); box-shadow: 0 20px 50px -20px color-mix(in oklch, var(--color-secondary) 45%, transparent);"
+        >
+          <p class="text-xs font-bold uppercase tracking-widest text-secondary">รู้แล้วว่าเลือกอะไร</p>
+          <p class="mt-3 font-display text-xl font-bold text-base-content md:text-2xl">
+            จองเลย เริ่มต้นแค่ ฿30,000
+          </p>
+          <p class="mt-2 text-sm text-base-content/70">
+            เลือก package แล้วกรอก 3 นาที ปันตอบกลับใน 24 ชม. พร้อม link นัดเวลา
+          </p>
+          <a
+            href="/booking"
+            class="btn btn-lg mt-6 w-full bg-secondary px-8 text-base text-secondary-content shadow-xl shadow-secondary/30 transition-all hover:scale-[1.02] hover:bg-secondary/90"
+          >
+            จอง Workshop / Consulting →
+          </a>
+          <p class="mt-3 text-xs text-base-content/50">
+            ชำระ 100% ก่อนเริ่มงาน · ไม่มีสัญญาผูกมัดยาว
+          </p>
+        </div>
+
+        <!-- Path 2: Not sure — intake -->
+        <div
+          class="rounded-2xl border-2 border-dashed border-base-content/25 bg-base-200/40 p-8 text-center"
+        >
+          <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">ยังไม่แน่ใจ</p>
+          <p class="mt-3 font-display text-xl font-bold text-base-content md:text-2xl">
+            ให้ปันช่วยดูให้ก่อน
+          </p>
+          <p class="mt-2 text-sm text-base-content/70">
+            กรอก 3 นาที ปันอ่านเองแล้วบอกตรงๆ ว่าเคสของคุณควรเริ่มจากไหน
+          </p>
+          <a
+            href="/intake-form"
+            class="btn btn-lg mt-6 w-full border-2 border-base-content/30 bg-transparent px-8 text-base text-base-content transition-all hover:scale-[1.02] hover:border-secondary hover:bg-secondary/10 hover:text-secondary"
+          >
+            ประเมินปัญหาฟรี →
+          </a>
+          <p class="mt-3 text-xs text-base-content/50">
+            ฟรี · ไม่มี spam · ได้คำตอบใน 24 ชม.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== OUTCOME — 3 promises (ported from landing-page-live-v2) ===== -->
   <section class="border-t border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8 lg:py-20">
     <div class="mx-auto max-w-4xl">
@@ -613,7 +783,7 @@ const socials = [
               </p>
               <p>
                 หลังจากนั้นกลับมาทำธุรกิจครอบครัว แล้วต่อมาก็ออกมาทำธุรกิจของตัวเอง ระหว่างทางช่วยเพื่อนนักธุรกิจหลายคนจัดระบบทีมขาย
-                วาง Pipeline เพิ่ม Conversion จนตัดสินใจเอาประสบการณ์สะสม 10 ปีมาช่วย SME ไทยเต็มตัวปี 2025
+                วาง Pipeline เพิ่ม Conversion จนตัดสินใจเอาประสบการณ์สะสม 5 ปีมาช่วย SME ไทยเต็มตัวปี 2025
               </p>
               <p>
                 วันนี้บริการของผมรวม
@@ -636,7 +806,7 @@ const socials = [
       </h2>
 
       <p class="mt-5 max-w-2xl text-base-content/75">
-        ผมคลุกคลีกับงานขาย B2B มา 10+ ปี ทั้งฝั่ง Corporate และ SME
+        ผมคลุกคลีกับงานขาย B2B มา 5 ปี ทั้งฝั่ง Corporate และ SME
         ตอนนี้ช่วยเจ้าของธุรกิจสร้างทีมขายที่ทำเงินได้จริงด้วย AI + ระบบที่จับต้องได้
       </p>
 
@@ -666,151 +836,6 @@ const socials = [
         >
           อ่านเรื่องราวของปันเพิ่มเติม →
         </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== DIAGNOSE / QUICK NAV TO PACKAGES ===== -->
-  <section
-    id="diagnose"
-    class="relative overflow-hidden border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20"
-  >
-    <div
-      class="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[400px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-secondary/[0.04] blur-[120px]"
-    >
-    </div>
-
-    <div class="mx-auto max-w-6xl">
-      <div class="text-center">
-        <span
-          class="inline-flex items-center gap-2 rounded-full border border-secondary/30 bg-secondary/10 px-4 py-1.5"
-        >
-          <span class="text-xs font-bold uppercase tracking-widest text-secondary">Diagnose</span>
-        </span>
-        <h2 class="mt-5 font-display text-3xl font-bold tracking-tight md:text-4xl">
-          เจอปัญหาไหนอยู่?
-        </h2>
-        <p class="mt-3 text-base-content/65">
-          กดที่ปัญหาของคุณ ผมมีบริการที่แก้ได้ตรงจุด
-        </p>
-      </div>
-
-      <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {
-          diagnoseCards.map((card) => {
-            const accent = accentColor(card.accent);
-            return (
-              <a
-                href={card.href}
-                class="group relative block overflow-hidden rounded-2xl no-underline transition hover:-translate-y-1 hover:shadow-lg"
-                style={`--card-accent: ${accent};`}
-              >
-                <div
-                  class="absolute inset-0 rounded-2xl border opacity-50 transition group-hover:opacity-100"
-                  style="border-color: var(--card-accent);"
-                ></div>
-                <div
-                  class="absolute inset-x-0 top-0 h-[2px] opacity-0 transition group-hover:opacity-100"
-                  style="background: linear-gradient(to right, transparent, var(--card-accent), transparent);"
-                ></div>
-                <div
-                  class="relative p-6"
-                  style="background: linear-gradient(180deg, color-mix(in oklch, var(--card-accent) 8%, transparent), transparent 70%);"
-                >
-                  <div class="mb-4 flex items-center gap-2">
-                    <div
-                      class="flex h-8 w-8 items-center justify-center rounded-lg"
-                      style="background: color-mix(in oklch, var(--card-accent) 18%, transparent);"
-                    >
-                      <span class="font-display text-sm font-bold" style="color: var(--card-accent);">!</span>
-                    </div>
-                    <span
-                      class="text-[11px] font-bold uppercase tracking-widest"
-                      style="color: color-mix(in oklch, var(--card-accent) 80%, transparent);"
-                    >
-                      Pain Point
-                    </span>
-                  </div>
-
-                  <p class="text-[15px] font-semibold leading-relaxed text-base-content/95">
-                    "{card.pain}
-                    <span style={`color: ${accent}`}>{card.highlight}</span>"
-                  </p>
-
-                  <div
-                    class="my-5 h-px"
-                    style="background: linear-gradient(to right, transparent, color-mix(in oklch, var(--card-accent) 25%, transparent), transparent);"
-                  ></div>
-
-                  <div class="flex items-center justify-between">
-                    <div>
-                      <h3
-                        class="font-display font-bold transition"
-                        style="color: var(--color-base-content);"
-                      >
-                        {card.service}
-                      </h3>
-                      <p class="mt-0.5 text-xs text-base-content/55">{card.oneLiner}</p>
-                    </div>
-                    <div
-                      class="ml-3 flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition group-hover:scale-110"
-                      style="background: color-mix(in oklch, var(--card-accent) 15%, transparent);"
-                    >
-                      <span class="font-bold" style="color: var(--card-accent);">→</span>
-                    </div>
-                  </div>
-                </div>
-              </a>
-            );
-          })
-        }
-      </div>
-
-      <div class="mx-auto mt-14 grid max-w-4xl gap-5 md:grid-cols-2">
-        <!-- Path 1: Already know — book -->
-        <div
-          class="rounded-2xl border-2 bg-secondary/[0.08] p-8 text-center shadow-xl"
-          style="border-color: var(--color-secondary); box-shadow: 0 20px 50px -20px color-mix(in oklch, var(--color-secondary) 45%, transparent);"
-        >
-          <p class="text-xs font-bold uppercase tracking-widest text-secondary">รู้แล้วว่าเลือกอะไร</p>
-          <p class="mt-3 font-display text-xl font-bold text-base-content md:text-2xl">
-            จองเลย เริ่มต้นแค่ ฿30,000
-          </p>
-          <p class="mt-2 text-sm text-base-content/70">
-            เลือก package แล้วกรอก 3 นาที ปันตอบกลับใน 24 ชม. พร้อม link นัดเวลา
-          </p>
-          <a
-            href="/booking"
-            class="btn btn-lg mt-6 w-full bg-secondary px-8 text-base text-secondary-content shadow-xl shadow-secondary/30 transition-all hover:scale-[1.02] hover:bg-secondary/90"
-          >
-            จอง Workshop / Consulting →
-          </a>
-          <p class="mt-3 text-xs text-base-content/50">
-            ชำระ 100% ก่อนเริ่มงาน · ไม่มีสัญญาผูกมัดยาว
-          </p>
-        </div>
-
-        <!-- Path 2: Not sure — intake -->
-        <div
-          class="rounded-2xl border-2 border-dashed border-base-content/25 bg-base-200/40 p-8 text-center"
-        >
-          <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">ยังไม่แน่ใจ</p>
-          <p class="mt-3 font-display text-xl font-bold text-base-content md:text-2xl">
-            ให้ปันช่วยดูให้ก่อน
-          </p>
-          <p class="mt-2 text-sm text-base-content/70">
-            กรอก 3 นาที ปันอ่านเองแล้วบอกตรงๆ ว่าเคสของคุณควรเริ่มจากไหน
-          </p>
-          <a
-            href="/intake-form"
-            class="btn btn-lg mt-6 w-full border-2 border-base-content/30 bg-transparent px-8 text-base text-base-content transition-all hover:scale-[1.02] hover:border-secondary hover:bg-secondary/10 hover:text-secondary"
-          >
-            ประเมินปัญหาฟรี →
-          </a>
-          <p class="mt-3 text-xs text-base-content/50">
-            ฟรี · ไม่มี spam · ได้คำตอบใน 24 ชม.
-          </p>
-        </div>
       </div>
     </div>
   </section>
@@ -923,36 +948,6 @@ const socials = [
             <p class="mt-1 text-xs text-base-content/65">นักคิดค้น</p>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== TESTIMONIAL — chat screenshots from clients ===== -->
-  <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
-    <div class="mx-auto max-w-5xl">
-      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Testimonial</p>
-      <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
-        เสียงจากผู้ประกอบการที่ให้ผมดูแล
-      </h2>
-
-      <div class="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
-        {
-          testimonials.map((t, idx) => (
-            <div
-              class:list={[
-                'group overflow-hidden rounded-2xl border border-base-content/15 transition hover:border-secondary/40 hover:-translate-y-0.5',
-                idx === 4 && 'col-span-2 md:col-span-1',
-              ]}
-            >
-              <img
-                src={t.src}
-                alt={t.alt}
-                loading="lazy"
-                class="h-auto w-full object-cover transition duration-500 group-hover:scale-105"
-              />
-            </div>
-          ))
-        }
       </div>
     </div>
   </section>
