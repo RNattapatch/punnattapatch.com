@@ -87,17 +87,17 @@ const fullTitle = title === SITE.titleDefault ? title : `${title} · ${SITE.name
     <!-- AI discovery signal (announces llms.txt presence) -->
     <link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt" />
 
-    <!-- Plausible Analytics — account-specific tracker (privacy-first, no cookies)
-         Script URL is unique per account (token encodes the domain config).
-         Extensions (hash routing, outbound links, file downloads) are toggled
-         on the Plausible dashboard, not via filename.
+    <!-- Plausible Analytics — proxied through pl.punnattapatch.com to bypass
+         DNS-level filters (Pi-hole, NextDNS), Safari ITP, and Brave Shields.
+         First-party domain = counts visitors that would otherwise be dropped.
+         Worker config: input-to-agent/cloudflare-worker-plausible-proxy.js
 
-         Custom events fired via window.plausible() from form submit handlers:
+         Custom events fired via window.plausible():
            - 'Intake Submit'  — /intake-form submission
            - 'Booking Submit' — /booking submission
            - 'BOSI Complete'  — /bosi-dna-quiz reached result
     -->
-    <script is:inline async src="https://plausible.io/js/pa-py-NKga-B2dlJColCdo-p.js"></script>
+    <script is:inline async src="https://pl.punnattapatch.com/js/pa-py-NKga-B2dlJColCdo-p.js"></script>
     <script is:inline>
       window.plausible =
         window.plausible ||
@@ -105,7 +105,7 @@ const fullTitle = title === SITE.titleDefault ? title : `${title} · ${SITE.name
           (window.plausible.q = window.plausible.q || []).push(arguments);
         };
       window.plausible.init = window.plausible.init || function (i) { window.plausible.o = i || {}; };
-      window.plausible.init();
+      window.plausible.init({ endpoint: 'https://pl.punnattapatch.com/api/event' });
     </script>
 
     <Schema {...schema} />
