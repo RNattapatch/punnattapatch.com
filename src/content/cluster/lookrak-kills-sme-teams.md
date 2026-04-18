@@ -102,6 +102,10 @@ Client ของผมที่ implement 3 ระบบนี้:
 
 อย่าปล่อยให้คำว่า "ลูกรัก" มาทำร้ายธุรกิจที่คุณสร้างมากับมือ
 
+## Case Study — client ที่โดน "ลูกรัก syndrome" แล้วแก้ได้
+
+- [Real Estate Developer: เสียเซลล์เก่ง 3 คนใน 6 เดือน → retention 100% หลัง redesign commission](/case-studies/real-estate-developer-sales-team-restructure) — Revenue per rep +45%, ประหยัด turnover cost ฿900k
+
 ## อ่านต่อ
 
 - [Commission structure ทีม 10 คน](/faq) — 3-tier formula ที่ fair + วัดได้

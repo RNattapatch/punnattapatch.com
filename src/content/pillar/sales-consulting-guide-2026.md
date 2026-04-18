@@ -64,6 +64,12 @@ heroImage: "/og-image.jpg"
 3.  ถ้าผ่าน 2 ข้อนี้ ค่อยคุยเรื่อง scope project ใหญ่
 4.  ถ้าทำ workshop แล้วยังรู้สึกว่าไม่ใช่ ก็แค่หาคนใหม่ ค่า workshop ฿20,000 คุ้มกว่าจ่าย ฿200,000 แล้วต้องมาล้มโปรเจกต์กลางทาง
 
+## Case Study — client จริงที่ผ่านกระบวนการเลือกผมแบบนี้
+
+- [Real Estate Developer: redesign commission หลังเซลล์เก่งลาออก 3 คน](/case-studies/real-estate-developer-sales-team-restructure) — retention 100% 12 เดือน, revenue per rep +45%
+- [Manufacturing B2B ทีม 12 คน: pipeline velocity +30%, discount rate 15%→7%](/case-studies/manufacturing-b2b-12-person-team) — Margin +15%, saving ฿3.8M/ปี
+- [Forklift Distributor ทีม 5 คน: ยอด +30%, software cost -97%](/case-studies/forklift-distributor-5-person-team) — ROI 6.9x ปีแรก, report 2ชม.→15นาที
+
 ## อ่านต่อ — คำถามเฉพาะที่เจอบ่อย
 
 - [ที่ปรึกษาการขาย B2B ในกรุงเทพราคาเท่าไหร่](/faq) — table ราคาทุก package + logic การคิด

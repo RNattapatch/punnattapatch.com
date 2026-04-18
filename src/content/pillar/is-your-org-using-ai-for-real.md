@@ -104,6 +104,11 @@ readingTimeMinutes: 9
 **3. ให้พนักงาน upskill เรื่อง AI ไม่ใช่แค่ทำงานเดิม**
 คนที่ทำงาน routine จะถูกแทนที่ ส่วนคนที่ manage AI และคิด edge case ได้ คือคนที่จะสร้างคุณค่าเพิ่มให้บริษัท
 
+## Case Study — องค์กรที่ขยับจาก User → Commander จริง
+
+-   [Manufacturing B2B ทีม 12 คน](/case-studies/manufacturing-b2b-12-person-team) — ตอนเริ่มตอบ "ใช่" 8/10 ข้อ → จบที่ 1/10 ข้อ, pipeline velocity +30%, margin +15%
+-   [Forklift Distributor ทีม 5 คน](/case-studies/forklift-distributor-5-person-team) — SME เล็กก็ขยับได้: software cost -97%, ยอด +30%
+
 ## อ่านต่อ
 
 -   [Pillar: Agentic AI สำหรับ SME ไทย: เริ่มสร้าง Agent ตัวแรก](/insights/agentic-ai-sme-thailand-start) — ทำต่อจากบทความนี้
