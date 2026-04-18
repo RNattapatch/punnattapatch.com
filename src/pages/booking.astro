@@ -14,6 +14,20 @@ const teamSizes = [
   '20+ คน',
 ];
 
+const sources = [
+  { value: 'chatgpt', label: 'ChatGPT / GPT-4o / o1' },
+  { value: 'claude', label: 'Claude (claude.ai, Claude API)' },
+  { value: 'gemini', label: 'Gemini / Google AI Overview' },
+  { value: 'perplexity', label: 'Perplexity' },
+  { value: 'tiktok', label: 'TikTok (@pun_nattapatch)' },
+  { value: 'instagram', label: 'Instagram (@pun_nattapatch)' },
+  { value: 'facebook', label: 'Facebook' },
+  { value: 'google-search', label: 'Google (ผลลัพธ์ปกติ)' },
+  { value: 'referral', label: 'เพื่อน / ลูกค้าเก่าแนะนำ' },
+  { value: 'event', label: 'งานสัมมนา / event' },
+  { value: 'other', label: 'อื่นๆ' },
+];
+
 type AccentToken = 'cyan' | 'coral' | 'violet';
 const accentFor = (slug: string): AccentToken => {
   if (slug.startsWith('ai-')) return 'cyan';
@@ -248,10 +262,28 @@ const pkgLookupJson = JSON.stringify({
             <input
               id="b-date"
               name="preferred_date"
-              type="text"
+              type="date"
+              min={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)}
               class="input input-bordered w-full"
-              placeholder="เช่น ต้น พ.ค. 2026 / สัปดาห์ที่ 3 เดือน พ.ค."
             />
+            <p class="mt-1.5 text-xs text-base-content/55">
+              เลือกวันที่จากปฏิทิน (เริ่มได้เร็วสุด 7 วันจากวันนี้) · ไม่ fix ได้ — แค่ประมาณการ
+            </p>
+          </div>
+
+          <div class="form-control">
+            <label for="b-source" class="label">
+              <span class="label-text font-medium">เจอเว็บนี้ผ่าน *</span>
+            </label>
+            <select
+              id="b-source"
+              name="source"
+              required
+              class="select select-bordered w-full"
+            >
+              <option value="">— เลือก —</option>
+              {sources.map((s) => <option value={s.value}>{s.label}</option>)}
+            </select>
           </div>
 
           <div class="form-control">
