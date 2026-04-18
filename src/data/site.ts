@@ -24,9 +24,11 @@ export const SITE = {
     line: 'https://lin.ee/punnattapatch',
   },
   nav: [
+    { label: 'หน้าหลัก', href: '/' },
     { label: 'บริการ', href: '/services' },
     { label: 'BOSI Quiz', href: '/bosi-dna-quiz' },
-    { label: 'Insights', href: '/insights' },
+    { label: 'Case Study', href: '/case-studies' },
+    { label: 'บทเรียน 100 ล้าน', href: '/insights' },
     { label: 'FAQ', href: '/faq' },
     { label: 'เกี่ยวกับปัน', href: '/about' },
     { label: 'ประเมินปัญหา', href: '/intake-form', cta: true },

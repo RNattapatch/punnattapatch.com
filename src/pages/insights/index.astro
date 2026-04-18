@@ -13,7 +13,9 @@ const all: Article[] = [...pillars, ...clusters].sort(
   (a, b) => b.data.published.getTime() - a.data.published.getTime()
 );
 
-const PILLAR_LABEL: Record<string, { name: string; tagline: string; accent: 'cyan' | 'coral' | 'violet' }> = {
+// Color per pillar (violet reserved for Marketing/Content — see ArticleHero.astro)
+type PillarAccent = 'cyan' | 'coral' | 'violet' | 'emerald';
+const PILLAR_LABEL: Record<string, { name: string; tagline: string; accent: PillarAccent }> = {
   'sales-consulting': {
     name: 'Sales Consulting',
     tagline: 'KPI, Commission, ทีมขาย ระบบที่รันเองได้',
@@ -25,18 +27,23 @@ const PILLAR_LABEL: Record<string, { name: string; tagline: string; accent: 'cya
     accent: 'cyan',
   },
   'agentic-ai-sales': {
-    name: 'Agentic AI for Sales',
+    name: 'Agentic AI Agent',
     tagline: 'Agent + workflow ที่ลูกค้าเห็นว่าทำงานจริง',
-    accent: 'violet',
+    accent: 'emerald',
   },
 };
 
-function accentVar(accent: 'cyan' | 'coral' | 'violet'): string {
-  return accent === 'cyan'
-    ? 'var(--color-pun-cyan)'
-    : accent === 'violet'
-      ? 'var(--color-pun-violet)'
-      : 'var(--color-pun-coral)';
+function accentVar(accent: PillarAccent): string {
+  switch (accent) {
+    case 'cyan':
+      return 'var(--color-pun-cyan)';
+    case 'violet':
+      return 'var(--color-pun-violet)';
+    case 'emerald':
+      return 'var(--color-pun-emerald)';
+    default:
+      return 'var(--color-pun-coral)';
+  }
 }
 
 const groupedByPillar = new Map<string, Article[]>();
@@ -50,9 +57,9 @@ for (const article of all) {
 const formatDate = (d: Date): string =>
   d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
 
-const title = 'Insights — บทความและคู่มือ';
+const title = 'บทเรียน 100 ล้าน — บทความจากประสบการณ์จริง';
 const description =
-  'รวมบทความและคู่มือเรื่องการสร้างทีมขาย B2B + Agentic AI Transformation สำหรับ SME ไทย';
+  'บทความจากประสบการณ์ 10+ ปี สร้างทีมขายให้ SME ไทยปิดยอดรวม 100M+ THB — ทั้ง Sales Consulting, AI Transformation, และ Agentic AI สำหรับทีมขาย';
 ---
 
 <BaseLayout
@@ -70,12 +77,13 @@ const description =
 >
   <section class="px-4 py-16 lg:px-8">
     <div class="mx-auto max-w-5xl">
-      <p class="text-sm uppercase tracking-widest text-base-content/50">Insights</p>
-      <h1 class="mt-3 font-display text-4xl font-bold tracking-tight md:text-5xl">
-        บทความและคู่มือ
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Lessons from the Field</p>
+      <h1 class="mt-3 font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl">
+        บทเรียนจาก 100+ ล้านบาท<br class="hidden md:block" />ที่ผมช่วย SME ไทยปิดยอด
       </h1>
       <p class="mt-5 max-w-2xl text-lg text-base-content/75">
-        รวมประสบการณ์จริงจากการวางระบบขายให้ SME ไทย — เอามาเขียนเป็นบทความที่อ่านแล้วเอาไปใช้ได้
+        ไม่ใช่ทฤษฎีจาก MBA — เคสจริง ตัวเลขจริง จาก client ที่ผมเข้าไปวางระบบเอง
+        เอาไปใช้ได้ทันทีไม่ต้องรอผม
       </p>
     </div>
   </section>
