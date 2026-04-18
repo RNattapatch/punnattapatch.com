@@ -542,24 +542,51 @@ const socials = [
         }
       </div>
 
-      <div
-        class="mx-auto mt-14 max-w-xl rounded-2xl border-2 border-dashed border-secondary/40 bg-secondary/[0.05] p-8 text-center"
-      >
-        <p class="font-display text-xl font-bold text-base-content md:text-2xl">
-          ไม่แน่ใจว่าเหมาะกับบริการไหน?
-        </p>
-        <p class="mt-2 text-base text-base-content/70">
-          กรอก 3 นาที ปันอ่านเองแล้วบอกตรงๆ ว่าเคสของคุณควรเริ่มจากไหน
-        </p>
-        <a
-          href="/intake-form"
-          class="btn btn-lg mt-6 bg-secondary px-10 text-base text-secondary-content shadow-xl shadow-secondary/30 transition-all hover:scale-105 hover:bg-secondary/90"
+      <div class="mx-auto mt-14 grid max-w-4xl gap-5 md:grid-cols-2">
+        <!-- Path 1: Already know — book -->
+        <div
+          class="rounded-2xl border-2 bg-secondary/[0.08] p-8 text-center shadow-xl"
+          style="border-color: var(--color-secondary); box-shadow: 0 20px 50px -20px color-mix(in oklch, var(--color-secondary) 45%, transparent);"
         >
-          ให้ปันช่วยดูให้ →
-        </a>
-        <p class="mt-3 text-xs text-base-content/50">
-          ฟรี · ไม่มี spam · ได้คำตอบใน 24 ชม.
-        </p>
+          <p class="text-xs font-bold uppercase tracking-widest text-secondary">รู้แล้วว่าเลือกอะไร</p>
+          <p class="mt-3 font-display text-xl font-bold text-base-content md:text-2xl">
+            จองเลย เริ่มต้นแค่ ฿30,000
+          </p>
+          <p class="mt-2 text-sm text-base-content/70">
+            เลือก package แล้วกรอก 3 นาที ปันตอบกลับใน 24 ชม. พร้อม link นัดเวลา
+          </p>
+          <a
+            href="/booking"
+            class="btn btn-lg mt-6 w-full bg-secondary px-8 text-base text-secondary-content shadow-xl shadow-secondary/30 transition-all hover:scale-[1.02] hover:bg-secondary/90"
+          >
+            จอง Workshop / Consulting →
+          </a>
+          <p class="mt-3 text-xs text-base-content/50">
+            ชำระ 100% ก่อนเริ่มงาน · ไม่มีสัญญาผูกมัดยาว
+          </p>
+        </div>
+
+        <!-- Path 2: Not sure — intake -->
+        <div
+          class="rounded-2xl border-2 border-dashed border-base-content/25 bg-base-200/40 p-8 text-center"
+        >
+          <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">ยังไม่แน่ใจ</p>
+          <p class="mt-3 font-display text-xl font-bold text-base-content md:text-2xl">
+            ให้ปันช่วยดูให้ก่อน
+          </p>
+          <p class="mt-2 text-sm text-base-content/70">
+            กรอก 3 นาที ปันอ่านเองแล้วบอกตรงๆ ว่าเคสของคุณควรเริ่มจากไหน
+          </p>
+          <a
+            href="/intake-form"
+            class="btn btn-lg mt-6 w-full border-2 border-base-content/30 bg-transparent px-8 text-base text-base-content transition-all hover:scale-[1.02] hover:border-secondary hover:bg-secondary/10 hover:text-secondary"
+          >
+            ประเมินปัญหาฟรี →
+          </a>
+          <p class="mt-3 text-xs text-base-content/50">
+            ฟรี · ไม่มี spam · ได้คำตอบใน 24 ชม.
+          </p>
+        </div>
       </div>
     </div>
   </section>
@@ -865,6 +892,41 @@ const socials = [
           </div>
         </div>
       </a>
+
+      <!-- ===== Services Booking CTA Block ===== -->
+      <div class="mx-auto mt-14 max-w-4xl">
+        <div
+          class="rounded-3xl border-2 bg-secondary/[0.08] p-8 text-center shadow-2xl md:p-12"
+          style="border-color: var(--color-secondary); box-shadow: 0 30px 80px -30px color-mix(in oklch, var(--color-secondary) 50%, transparent);"
+        >
+          <p class="text-xs font-bold uppercase tracking-widest text-secondary">Ready to Start?</p>
+          <h3
+            class="mx-auto mt-4 max-w-2xl font-display text-2xl font-bold leading-tight md:text-3xl"
+          >
+            เลือก package ได้แล้ว? จองเลยไม่ต้องรอ
+          </h3>
+          <p class="mx-auto mt-3 max-w-xl text-base text-base-content/75">
+            ทุก package ชำระ 100% ก่อนเริ่ม · ปันอ่านคำจองเองทุกใบ · ตอบกลับภายใน 24 ชม. พร้อม link นัดเวลา + ใบเสนอราคา
+          </p>
+          <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row sm:gap-4">
+            <a
+              href="/booking"
+              class="btn btn-lg bg-secondary px-10 text-base font-bold text-secondary-content shadow-xl shadow-secondary/40 transition-all hover:scale-[1.03] hover:bg-secondary/90"
+            >
+              จองเลย →
+            </a>
+            <a
+              href="/intake-form"
+              class="btn btn-lg btn-ghost border-2 border-base-content/25 text-base hover:bg-base-200 hover:border-base-content/40"
+            >
+              ไม่แน่ใจ? ประเมินก่อน
+            </a>
+          </div>
+          <p class="mt-5 text-xs text-base-content/50">
+            ปันอ่านทุกคำจองเอง · ไม่มี sales team · ไม่มี upsell แปลกๆ
+          </p>
+        </div>
+      </div>
     </div>
   </section>
 

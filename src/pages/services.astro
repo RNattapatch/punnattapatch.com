@@ -184,22 +184,22 @@ const pathBPackages: PathCardProps[] = [
                     ))}
                   </ul>
                   <a
+                    href={`/booking?package=${p.svc.slug}`}
+                    class="btn btn-lg mt-2 w-full border-none text-base font-bold shadow-xl transition-all hover:scale-[1.02]"
+                    style={
+                      p.featured
+                        ? 'background: var(--color-pun-cyan); color: #0a1020; box-shadow: 0 14px 32px -10px color-mix(in oklch, var(--color-pun-cyan) 55%, transparent);'
+                        : 'background: color-mix(in oklch, var(--color-pun-cyan) 18%, transparent); color: var(--color-pun-cyan); border: 1px solid color-mix(in oklch, var(--color-pun-cyan) 45%, transparent);'
+                    }
+                  >
+                    จองเลย {p.svc.priceLabel.replace(/\s*\/.*$/, '')} →
+                  </a>
+                  <a
                     href={`/services/${p.svc.slug}`}
-                    class="mb-2 block text-center text-xs transition-colors hover:text-[var(--color-pun-cyan)]"
+                    class="mt-1.5 block text-center text-xs transition-colors hover:text-[var(--color-pun-cyan)]"
                     style="color: color-mix(in oklch, var(--color-pun-cyan) 70%, transparent);"
                   >
                     ดูรายละเอียดเพิ่มเติม →
-                  </a>
-                  <a
-                    href={`/booking?package=${p.svc.slug}`}
-                    class:list={['btn btn-sm w-full border-none font-bold transition-all', p.featured ? 'shadow-lg' : 'btn-outline']}
-                    style={
-                      p.featured
-                        ? 'background: var(--color-pun-cyan); color: #0a1020; box-shadow: 0 10px 25px -10px color-mix(in oklch, var(--color-pun-cyan) 40%, transparent);'
-                        : 'border-color: rgb(255 255 255 / 0.2); color: rgb(255 255 255 / 0.75);'
-                    }
-                  >
-                    จองเลย →
                   </a>
                 </div>
               ))
@@ -292,22 +292,22 @@ const pathBPackages: PathCardProps[] = [
                     ))}
                   </ul>
                   <a
+                    href={`/booking?package=${p.svc.slug}`}
+                    class="btn btn-lg mt-2 w-full border-none text-base font-bold shadow-xl transition-all hover:scale-[1.02]"
+                    style={
+                      p.featured
+                        ? 'background: var(--color-pun-coral); color: white; box-shadow: 0 14px 32px -10px color-mix(in oklch, var(--color-pun-coral) 55%, transparent);'
+                        : 'background: color-mix(in oklch, var(--color-pun-coral) 18%, transparent); color: var(--color-pun-coral); border: 1px solid color-mix(in oklch, var(--color-pun-coral) 45%, transparent);'
+                    }
+                  >
+                    จองเลย {p.svc.priceLabel.replace(/\s*\/.*$/, '')} →
+                  </a>
+                  <a
                     href={`/services/${p.svc.slug}`}
-                    class="mb-2 block text-center text-xs transition-colors hover:text-secondary"
+                    class="mt-1.5 block text-center text-xs transition-colors hover:text-secondary"
                     style="color: color-mix(in oklch, var(--color-pun-coral) 70%, transparent);"
                   >
                     ดูรายละเอียดเพิ่มเติม →
-                  </a>
-                  <a
-                    href={`/booking?package=${p.svc.slug}`}
-                    class:list={['btn btn-sm w-full border-none font-bold transition-all', p.featured ? 'shadow-lg' : 'btn-outline']}
-                    style={
-                      p.featured
-                        ? 'background: var(--color-pun-coral); color: white; box-shadow: 0 10px 25px -10px color-mix(in oklch, var(--color-pun-coral) 40%, transparent);'
-                        : 'border-color: rgb(255 255 255 / 0.2); color: rgb(255 255 255 / 0.75);'
-                    }
-                  >
-                    จองเลย →
                   </a>
                 </div>
               ))
@@ -404,10 +404,10 @@ const pathBPackages: PathCardProps[] = [
             </span>
             <a
               href={`/booking?package=${tiktokWorkshop.slug}`}
-              class="btn btn-sm w-full border-none font-bold text-white shadow-lg transition-all hover:scale-105"
-              style="background: var(--color-pun-violet); box-shadow: 0 10px 25px -10px color-mix(in oklch, var(--color-pun-violet) 40%, transparent);"
+              class="btn btn-lg w-full border-none text-base font-bold text-white shadow-xl transition-all hover:scale-[1.02]"
+              style="background: var(--color-pun-violet); box-shadow: 0 14px 32px -10px color-mix(in oklch, var(--color-pun-violet) 55%, transparent);"
             >
-              จอง Workshop →
+              จอง Workshop ฿39,900 →
             </a>
             <a
               href={`/services/${tiktokWorkshop.slug}`}
