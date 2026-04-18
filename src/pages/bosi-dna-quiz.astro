@@ -531,6 +531,12 @@ const description =
     }
 
     postBosiResult(dominant, scores);
+
+    (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.(
+      'BOSI Complete',
+      { props: { dna: dominant } }
+    );
+
     showSection('sec-result');
   });
 

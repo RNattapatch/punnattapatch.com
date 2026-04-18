@@ -712,6 +712,16 @@ const pkgLookupJson = JSON.stringify({
     (payload._meta as Record<string, unknown>).webhook_status = status;
     journalPayload(payload);
 
+    (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.(
+      'Booking Submit',
+      {
+        props: {
+          source: (payload.source as string) ?? 'unknown',
+          packages: selectedPkgs.join('+'),
+        },
+      }
+    );
+
     if (refNode) refNode.textContent = payload._meta.reference;
 
     form.classList.add('hidden');

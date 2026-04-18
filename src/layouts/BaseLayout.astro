@@ -87,6 +87,29 @@ const fullTitle = title === SITE.titleDefault ? title : `${title} · ${SITE.name
     <!-- AI discovery signal (announces llms.txt presence) -->
     <link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt" />
 
+    <!-- Plausible Analytics — privacy-first, no cookies, GDPR-ok.
+         `hash` enables #anchor + SPA pageview events. `outbound-links` tracks
+         clicks on external links (LINE OA / social). Production domain only
+         so local dev doesn't pollute stats.
+
+         Custom events fired via window.plausible() from form submit handlers:
+           - 'Intake Submit' — /intake-form submission
+           - 'Booking Submit' — /booking submission
+           - 'BOSI Complete' — bosi-dna-quiz reached result
+    -->
+    <script
+      defer
+      data-domain="punnattapatch.com"
+      src="https://plausible.io/js/script.hash.outbound-links.js"
+    ></script>
+    <script is:inline>
+      window.plausible =
+        window.plausible ||
+        function () {
+          (window.plausible.q = window.plausible.q || []).push(arguments);
+        };
+    </script>
+
     <Schema {...schema} />
 
     <!-- Per-page head injection (e.g. intl-tel-input CSS) -->

@@ -25,6 +25,7 @@ export const SITE = {
   },
   nav: [
     { label: 'บริการ', href: '/services' },
+    { label: 'BOSI Quiz', href: '/bosi-dna-quiz' },
     { label: 'Insights', href: '/insights' },
     { label: 'FAQ', href: '/faq' },
     { label: 'เกี่ยวกับปัน', href: '/about' },

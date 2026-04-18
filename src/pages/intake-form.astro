@@ -707,6 +707,12 @@ const budgets = [
     (payload._meta as Record<string, unknown>).webhook_status = status;
     journalPayload(payload);
 
+    // Plausible custom event — tracks conversion funnel
+    (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.(
+      'Intake Submit',
+      { props: { source: (payload.source as string) ?? 'unknown' } }
+    );
+
     if (refNode) refNode.textContent = payload._meta.reference;
 
     form.classList.add('hidden');
