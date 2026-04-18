@@ -359,7 +359,32 @@ const packages = SERVICES.map((s) => ({
     }
   }
 
-  form?.addEventListener('submit', (e) => {
+  const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
+
+  async function postToWebhook(payload: BookingPayload): Promise<'sent' | 'failed'> {
+    const ctrl = new AbortController();
+    const kill = setTimeout(() => ctrl.abort(), 10_000);
+    try {
+      const res = await fetch(N8N_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: ctrl.signal,
+        keepalive: true,
+      });
+      clearTimeout(kill);
+      return res.ok ? 'sent' : 'failed';
+    } catch (err) {
+      clearTimeout(kill);
+      console.error('[booking-form] webhook error', err);
+      return 'failed';
+    }
+  }
+
+  const submitBtn = document.getElementById('btn-submit') as HTMLButtonElement | null;
+  const submitBtnLabel = submitBtn?.textContent ?? '';
+
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const selectedPkgs = Array.from(
@@ -377,6 +402,8 @@ const packages = SERVICES.map((s) => ({
 
     const formData = new FormData(form);
     const payload: BookingPayload = {
+      source_page: 'booking-astro',
+      booking_type: 'package-booking',
       packages: selectedPkgs,
       _meta: {
         reference: makeReference(),
@@ -389,7 +416,7 @@ const packages = SERVICES.map((s) => ({
     };
 
     formData.forEach((value, key) => {
-      if (key === 'packages') return; // handled above
+      if (key === 'packages') return;
       if (payload[key]) {
         if (Array.isArray(payload[key])) {
           (payload[key] as unknown[]).push(value);
@@ -401,13 +428,25 @@ const packages = SERVICES.map((s) => ({
       }
     });
 
-    console.log('[booking-form] submission', payload);
+    journalPayload(payload);
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังส่ง...';
+    }
+
+    const status = await postToWebhook(payload);
+    (payload._meta as Record<string, unknown>).webhook_status = status;
     journalPayload(payload);
 
     if (refNode) refNode.textContent = payload._meta.reference;
 
     form.classList.add('hidden');
     success?.classList.remove('hidden');
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = submitBtnLabel;
+    }
     window.scrollTo({
       top: (success?.offsetTop ?? 0) - 80,
       behavior: 'smooth',
