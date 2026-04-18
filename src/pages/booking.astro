@@ -1,0 +1,431 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE, SERVICES } from '../data/site';
+
+const title = 'จองบริการกับปัน';
+const description =
+  'กรอก 3 นาที — เลือก package ที่อยากเริ่ม + ส่งให้ปัน ปันอ่านเองทุกใบและตอบกลับใน 24 ชม. พร้อม link นัดเวลา';
+
+const teamSizes = [
+  '1-2 คน (เจ้าของ + ผู้ช่วย)',
+  '3-5 คน',
+  '6-10 คน',
+  '11-20 คน',
+  '20+ คน',
+];
+
+type AccentToken = 'cyan' | 'coral' | 'violet';
+const accentFor = (slug: string): AccentToken => {
+  if (slug.startsWith('ai-')) return 'cyan';
+  if (slug.startsWith('trust-')) return 'violet';
+  return 'coral';
+};
+const accentVar = (a: AccentToken): string =>
+  a === 'cyan'
+    ? 'var(--color-pun-cyan)'
+    : a === 'violet'
+      ? 'var(--color-pun-violet)'
+      : 'var(--color-pun-coral)';
+
+const packages = SERVICES.map((s) => ({
+  slug: s.slug,
+  title: s.title,
+  subtitle: s.subtitle,
+  priceLabel: s.priceLabel,
+  accent: accentFor(s.slug),
+}));
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  schema={{
+    types: ['WebPage', 'BreadcrumbList'],
+    title,
+    description,
+    breadcrumbs: [
+      { name: 'หน้าแรก', url: SITE.url },
+      { name: 'จองบริการ', url: `${SITE.url}/booking` },
+    ],
+  }}
+>
+  <section class="px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Booking</p>
+      <h1 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+        จอง Workshop / Consulting กับปัน
+      </h1>
+      <p class="mt-4 text-lg text-base-content/75">
+        เลือก package ที่อยากเริ่ม กรอกข้อมูล 3 นาที ปันอ่านเองทุกใบ ตอบกลับภายใน 24 ชม. พร้อม link นัดเวลา
+      </p>
+
+      <form id="booking-form" class="mt-10 space-y-8" novalidate>
+        <!-- ===== 1. เลือก Package ===== -->
+        <fieldset class="space-y-4 rounded-2xl border border-base-content/10 bg-base-100 p-6">
+          <legend class="px-2 font-display text-lg font-bold">1. เลือก Package ที่สนใจ</legend>
+          <p class="text-sm text-base-content/65">เลือกได้มากกว่า 1 รายการ</p>
+
+          <div class="space-y-3">
+            {
+              packages.map((p) => {
+                const accent = accentVar(p.accent);
+                return (
+                  <label
+                    data-pkg={p.slug}
+                    data-accent={p.accent}
+                    class="pkg-card relative flex cursor-pointer items-start gap-4 rounded-xl border border-base-content/15 bg-base-200/30 p-5 transition-all hover:-translate-y-0.5"
+                    style={`--pkg-accent: ${accent};`}
+                  >
+                    <input
+                      type="checkbox"
+                      name="packages"
+                      value={p.slug}
+                      class="pkg-input peer sr-only"
+                    />
+                    <div
+                      class="pkg-dot mt-1 h-5 w-5 flex-shrink-0 rounded-full border-2 border-base-content/25 transition-all"
+                    />
+                    <div class="flex-1">
+                      <p class="text-xs uppercase tracking-widest text-base-content/55">
+                        {p.subtitle}
+                      </p>
+                      <p class="mt-1 font-display text-base font-bold">{p.title}</p>
+                    </div>
+                    <span class="pkg-price font-display text-base font-bold text-secondary">
+                      {p.priceLabel}
+                    </span>
+                  </label>
+                );
+              })
+            }
+          </div>
+          <p id="err-packages" class="hidden text-sm font-medium text-error">
+            เลือกอย่างน้อย 1 package
+          </p>
+        </fieldset>
+
+        <!-- ===== 2. Contact ===== -->
+        <fieldset class="space-y-5 rounded-2xl border border-base-content/10 bg-base-100 p-6">
+          <legend class="px-2 font-display text-lg font-bold">2. ติดต่อ</legend>
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div class="form-control">
+              <label for="b-name" class="label">
+                <span class="label-text font-medium">ชื่อ-นามสกุล *</span>
+              </label>
+              <input
+                id="b-name"
+                name="name"
+                type="text"
+                required
+                class="input input-bordered w-full"
+                placeholder="ปัน ณัฐพัชร์"
+              />
+            </div>
+
+            <div class="form-control">
+              <label for="b-company" class="label">
+                <span class="label-text font-medium">บริษัท *</span>
+              </label>
+              <input
+                id="b-company"
+                name="company"
+                type="text"
+                required
+                class="input input-bordered w-full"
+                placeholder="Pun Nattapatch Co., Ltd."
+              />
+            </div>
+          </div>
+
+          <div class="form-control">
+            <label for="b-position" class="label">
+              <span class="label-text font-medium">ตำแหน่ง</span>
+            </label>
+            <input
+              id="b-position"
+              name="position"
+              type="text"
+              class="input input-bordered w-full"
+              placeholder="เจ้าของ / CEO / Sales Manager"
+            />
+          </div>
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div class="form-control">
+              <label for="b-phone" class="label">
+                <span class="label-text font-medium">เบอร์โทร *</span>
+              </label>
+              <input
+                id="b-phone"
+                name="phone"
+                type="tel"
+                required
+                class="input input-bordered w-full"
+                placeholder="081-234-5678"
+              />
+            </div>
+
+            <div class="form-control">
+              <label for="b-line" class="label">
+                <span class="label-text font-medium">LINE ID</span>
+              </label>
+              <input
+                id="b-line"
+                name="line"
+                type="text"
+                class="input input-bordered w-full"
+                placeholder="@punnattapatch"
+              />
+            </div>
+          </div>
+
+          <div class="form-control">
+            <label for="b-team" class="label">
+              <span class="label-text font-medium">ขนาดทีมขายปัจจุบัน *</span>
+            </label>
+            <select
+              id="b-team"
+              name="teamSize"
+              required
+              class="select select-bordered w-full"
+            >
+              <option value="">— เลือก —</option>
+              {teamSizes.map((t) => <option value={t}>{t}</option>)}
+            </select>
+          </div>
+        </fieldset>
+
+        <!-- ===== 3. Timing ===== -->
+        <fieldset class="space-y-5 rounded-2xl border border-base-content/10 bg-base-100 p-6">
+          <legend class="px-2 font-display text-lg font-bold">3. Timing</legend>
+
+          <div class="form-control">
+            <label for="b-date" class="label">
+              <span class="label-text font-medium">วันที่สะดวกเริ่ม (ประมาณ)</span>
+            </label>
+            <input
+              id="b-date"
+              name="preferredDate"
+              type="text"
+              class="input input-bordered w-full"
+              placeholder="เช่น ต้น พ.ค. 2026 / สัปดาห์ที่ 3 เดือน พ.ค."
+            />
+          </div>
+
+          <div class="form-control">
+            <label for="b-comment" class="label">
+              <span class="label-text font-medium">อยากฝากอะไรเพิ่มเติม (optional)</span>
+            </label>
+            <textarea
+              id="b-comment"
+              name="comment"
+              rows="4"
+              class="textarea textarea-bordered w-full"
+              placeholder="ปัญหาเฉพาะ ข้อสงสัย หรือเป้าหมายของธุรกิจที่อยากให้ปันรู้ก่อน"
+            />
+          </div>
+        </fieldset>
+
+        <!-- ===== Submit ===== -->
+        <div class="rounded-2xl border border-base-content/10 bg-base-200/30 p-6">
+          <button
+            type="submit"
+            id="btn-submit"
+            class="btn btn-lg w-full bg-secondary text-secondary-content shadow-xl shadow-secondary/30 hover:scale-[1.02] hover:bg-secondary/90"
+          >
+            ส่งคำจอง →
+          </button>
+          <p class="mt-3 text-center text-xs text-base-content/55">
+            ปันอ่านเองภายใน 24 ชม. · ตอบกลับพร้อม link นัดเวลา + ใบเสนอราคา
+          </p>
+        </div>
+      </form>
+
+      <!-- ===== Success state ===== -->
+      <div
+        id="booking-success"
+        class="hidden rounded-3xl border border-success/30 bg-success/[0.06] p-10 text-center"
+      >
+        <div
+          class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-success text-3xl text-success-content"
+        >
+          ✓
+        </div>
+        <h2 class="font-display text-2xl font-bold leading-tight">
+          รับคำจองแล้ว
+        </h2>
+        <p class="mt-3 text-base text-base-content/80">
+          เก็บ reference number ไว้ ถ้าทัก LINE OA ก่อน 24 ชม. พิมพ์ reference นี้ ปันจะเปิดเคสของคุณได้เร็วขึ้น
+        </p>
+        <div
+          class="mx-auto mt-6 inline-flex items-center gap-3 rounded-xl border border-base-content/15 bg-base-100 px-5 py-3 font-mono text-lg font-bold"
+        >
+          <span id="booking-ref">—</span>
+          <button
+            id="booking-copy-ref"
+            type="button"
+            class="btn btn-ghost btn-sm"
+            aria-label="Copy reference"
+          >
+            Copy
+          </button>
+        </div>
+        <div class="mt-6 flex flex-wrap justify-center gap-4">
+          <a
+            href={SITE.social.line}
+            target="_blank"
+            rel="noopener"
+            class="btn btn-lg bg-secondary text-secondary-content hover:bg-secondary/90"
+          >
+            ทักมา LINE OA ต่อ →
+          </a>
+          <a href="/" class="btn btn-lg btn-outline">
+            กลับหน้าแรก
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .pkg-card:has(.pkg-input:checked) {
+    border-color: var(--pkg-accent);
+    background: color-mix(in oklch, var(--pkg-accent) 10%, transparent);
+  }
+  .pkg-card:has(.pkg-input:checked) .pkg-dot {
+    border-color: var(--pkg-accent);
+    background: radial-gradient(circle, var(--pkg-accent) 0 55%, transparent 60%);
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--pkg-accent) 20%, transparent);
+  }
+  .pkg-card:has(.pkg-input:checked) .pkg-price {
+    color: var(--pkg-accent);
+  }
+  .pkg-card:hover {
+    border-color: color-mix(in oklch, var(--pkg-accent) 40%, transparent);
+  }
+</style>
+
+<script>
+  interface BookingPayload {
+    [key: string]: unknown;
+    _meta: {
+      reference: string;
+      submitted_at: string;
+      user_agent: string;
+      referrer: string | null;
+      path: string;
+      initial_package: string | null;
+    };
+  }
+
+  const form = document.getElementById('booking-form') as HTMLFormElement | null;
+  const success = document.getElementById('booking-success');
+  const refNode = document.getElementById('booking-ref');
+  const copyBtn = document.getElementById('booking-copy-ref') as HTMLButtonElement | null;
+  const errPackages = document.getElementById('err-packages');
+
+  // Pre-select package from ?package= query param
+  const params = new URLSearchParams(window.location.search);
+  const initialPkg = params.get('package');
+  if (initialPkg) {
+    const preselect = document.querySelector<HTMLInputElement>(
+      `.pkg-card[data-pkg="${CSS.escape(initialPkg)}"] .pkg-input`
+    );
+    if (preselect) {
+      preselect.checked = true;
+      preselect.closest('.pkg-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  function makeReference(): string {
+    const stamp = new Date()
+      .toISOString()
+      .replace(/[-:T.Z]/g, '')
+      .slice(0, 12);
+    const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+    return `PN-BK-${stamp}-${rand}`;
+  }
+
+  function journalPayload(payload: BookingPayload): void {
+    try {
+      const raw = localStorage.getItem('pn_booking_journal');
+      const journal: BookingPayload[] = raw ? JSON.parse(raw) : [];
+      journal.unshift(payload);
+      localStorage.setItem('pn_booking_journal', JSON.stringify(journal.slice(0, 10)));
+    } catch {
+      /* non-fatal */
+    }
+  }
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const selectedPkgs = Array.from(
+      form.querySelectorAll<HTMLInputElement>('.pkg-input:checked')
+    ).map((el) => el.value);
+
+    if (selectedPkgs.length === 0) {
+      errPackages?.classList.remove('hidden');
+      errPackages?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    errPackages?.classList.add('hidden');
+
+    if (!form.reportValidity()) return;
+
+    const formData = new FormData(form);
+    const payload: BookingPayload = {
+      packages: selectedPkgs,
+      _meta: {
+        reference: makeReference(),
+        submitted_at: new Date().toISOString(),
+        user_agent: navigator.userAgent,
+        referrer: document.referrer || null,
+        path: window.location.pathname,
+        initial_package: initialPkg,
+      },
+    };
+
+    formData.forEach((value, key) => {
+      if (key === 'packages') return; // handled above
+      if (payload[key]) {
+        if (Array.isArray(payload[key])) {
+          (payload[key] as unknown[]).push(value);
+        } else {
+          payload[key] = [payload[key], value];
+        }
+      } else {
+        payload[key] = value;
+      }
+    });
+
+    console.log('[booking-form] submission', payload);
+    journalPayload(payload);
+
+    if (refNode) refNode.textContent = payload._meta.reference;
+
+    form.classList.add('hidden');
+    success?.classList.remove('hidden');
+    window.scrollTo({
+      top: (success?.offsetTop ?? 0) - 80,
+      behavior: 'smooth',
+    });
+  });
+
+  copyBtn?.addEventListener('click', async () => {
+    const ref = refNode?.textContent?.trim() ?? '';
+    if (!ref || ref === '—') return;
+    try {
+      await navigator.clipboard.writeText(ref);
+      const original = copyBtn.textContent;
+      copyBtn.textContent = 'Copied ✓';
+      setTimeout(() => {
+        copyBtn.textContent = original;
+      }, 2000);
+    } catch {
+      /* clipboard blocked */
+    }
+  });
+</script>

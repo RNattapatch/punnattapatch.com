@@ -542,12 +542,25 @@ const socials = [
         }
       </div>
 
-      <p class="mt-8 text-center text-xs text-base-content/55">
-        ไม่แน่ใจว่าเหมาะกับบริการไหน?
-        <a href="/intake-form" class="text-base-content/75 underline underline-offset-2 hover:text-secondary">
-          ให้ปันช่วยดูให้
+      <div
+        class="mx-auto mt-14 max-w-xl rounded-2xl border-2 border-dashed border-secondary/40 bg-secondary/[0.05] p-8 text-center"
+      >
+        <p class="font-display text-xl font-bold text-base-content md:text-2xl">
+          ไม่แน่ใจว่าเหมาะกับบริการไหน?
+        </p>
+        <p class="mt-2 text-base text-base-content/70">
+          กรอก 3 นาที ปันอ่านเองแล้วบอกตรงๆ ว่าเคสของคุณควรเริ่มจากไหน
+        </p>
+        <a
+          href="/intake-form"
+          class="btn btn-lg mt-6 bg-secondary px-10 text-base text-secondary-content shadow-xl shadow-secondary/30 transition-all hover:scale-105 hover:bg-secondary/90"
+        >
+          ให้ปันช่วยดูให้ →
         </a>
-      </p>
+        <p class="mt-3 text-xs text-base-content/50">
+          ฟรี · ไม่มี spam · ได้คำตอบใน 24 ชม.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -557,33 +570,34 @@ const socials = [
     class="border-t border-base-content/10 bg-base-200/30 px-4 py-20 lg:px-8"
   >
     <div class="mx-auto max-w-5xl">
-      <p class="text-xs font-bold uppercase tracking-widest text-secondary">
-        เคสจริงจากลูกค้าที่ผมดูแล
-      </p>
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Case Study</p>
       <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
-        ไม่ใช่ demo ผลลัพธ์จริงหลัง AI Day Workshop + Monthly Consulting
+        ตัวเลขจาก client 1 ราย หลังทำด้วยกัน 6 เดือน
       </h2>
+      <p class="mt-3 max-w-2xl text-base-content/70">
+        B2B Manufacturing/Distribution · ทีมขาย 12 คน · เริ่มจาก AI Day Workshop แล้วต่อ Monthly Consulting
+      </p>
 
       <div class="mt-12 grid gap-6 md:grid-cols-3">
         <div class="rounded-2xl border border-secondary/25 bg-base-100/60 p-6 shadow-sm">
-          <p class="text-xs uppercase tracking-widest text-base-content/65">ยอดขายหลังเรียน</p>
-          <p class="mt-2 font-display text-4xl font-bold text-secondary md:text-5xl">+30%+</p>
+          <p class="text-xs uppercase tracking-widest text-base-content/65">ยอดขาย 3 เดือนแรก</p>
+          <p class="mt-2 font-display text-4xl font-bold text-secondary md:text-5xl">+30%</p>
           <p class="mt-3 text-sm leading-relaxed text-base-content/80">
-            ทำยอด 50% ของเป้าเดือนได้ภายใน 10 วัน โดยไม่ต้องลดราคาแข่ง
+            ทำ 50% ของเป้าเดือนได้ใน 10 วัน ปิดด้วยคุณค่า ไม่ต้องลดราคา
           </p>
         </div>
         <div class="rounded-2xl border border-secondary/25 bg-base-100/60 p-6 shadow-sm">
-          <p class="text-xs uppercase tracking-widest text-base-content/65">ค่า Software รายเดือน</p>
-          <p class="mt-2 font-display text-4xl font-bold text-secondary md:text-5xl">-97%</p>
+          <p class="text-xs uppercase tracking-widest text-base-content/65">ค่า Software ในออฟฟิศ</p>
+          <p class="mt-2 font-display text-4xl font-bold text-secondary md:text-5xl">฿3,000</p>
           <p class="mt-3 text-sm leading-relaxed text-base-content/80">
-            ฿100,000+ → ฿3,000 (พนักงาน build webapp ใช้เองในองค์กร จ่ายแค่ค่า AI API)
+            จาก ฿100,000/เดือน เหลือแค่ค่า AI API เพราะพนักงาน build webapp ใช้เอง
           </p>
         </div>
         <div class="rounded-2xl border border-secondary/25 bg-base-100/60 p-6 shadow-sm">
           <p class="text-xs uppercase tracking-widest text-base-content/65">ค่า Google Ads</p>
-          <p class="mt-2 font-display text-4xl font-bold text-secondary md:text-5xl">-50%</p>
+          <p class="mt-2 font-display text-4xl font-bold text-secondary md:text-5xl">฿250k</p>
           <p class="mt-3 text-sm leading-relaxed text-base-content/80">
-            ฿500,000 → ฿250,000 ต่อเดือน หลัง AI Agent ช่วย optimize campaign
+            จาก ฿500,000/เดือน เหลือครึ่ง หลัง AI Agent ช่วย optimize bid + audience
           </p>
         </div>
       </div>
@@ -592,16 +606,16 @@ const socials = [
         class="mx-auto mt-10 max-w-3xl rounded-r-2xl border-l-4 border-secondary bg-base-100/60 p-6 shadow-sm"
       >
         <p class="text-base leading-relaxed text-base-content/90 md:text-lg">
-          "เซลล์เริ่มขายโดยไม่ต้องลดราคาแข่ง เอาหลักจิตวิทยาการขายไปใช้
-          พนักงานมีเวลาไปหา idea ใหม่ พัฒนาองค์กรมากขึ้น เพราะเอางานซ้ำๆ ให้ AI Agent ทำ"
+          "เซลล์เลิกใช้ส่วนลดปิดดีล เปลี่ยนมาคุยเรื่องคุณค่าที่ลูกค้าได้
+          ส่วนงาน report ที่เคยทำมือ ตอนนี้ AI ทำให้ พนักงานเลยมีเวลาคิดวิธีใหม่ๆ ให้ลูกค้ามากขึ้น"
         </p>
         <footer class="mt-4 text-sm text-base-content/65">
-          เจ้าของธุรกิจ B2B Manufacturing/Distribution · Monthly Consulting Client
+          เจ้าของธุรกิจ B2B Manufacturing/Distribution · Monthly Consulting client
         </footer>
       </blockquote>
 
       <p class="mt-6 text-center text-xs text-base-content/55">
-        ชื่อและรายละเอียดธุรกิจสงวนตามคำขอของลูกค้า ผลลัพธ์ขึ้นกับบริบทธุรกิจและความมุ่งมั่นในการ implement
+        ชื่อสงวนตามคำขอลูกค้า · ตัวเลขจาก report จริง ไม่ใช่ estimate · ผลลัพธ์ต่างกันได้ตามบริบทธุรกิจ
       </p>
     </div>
   </section>
@@ -661,53 +675,196 @@ const socials = [
     </div>
   </section>
 
-  <!-- ===== SERVICES TEASER ===== -->
+  <!-- ===== SERVICES TEASER — 2-Path layout ===== -->
   <section
     id="services-teaser"
     class="border-t border-base-content/10 bg-base-200/30 px-4 py-20 lg:px-8"
   >
     <div class="mx-auto max-w-6xl">
-      <div class="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
-        <div>
-          <p class="text-xs font-bold uppercase tracking-widest text-secondary">Services</p>
-          <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
-            4 บริการหลัก
-          </h2>
-          <p class="mt-3 max-w-2xl text-base-content/75">
-            เลือกตามปัญหาจริงของทีม ไม่ใช่ตามว่ามีอะไรใน catalog
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Services</p>
+      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">
+        เลือกทางที่เหมาะกับธุรกิจคุณที่สุด
+      </h2>
+      <p class="mt-3 max-w-2xl text-base-content/75">
+        ผมมี 2 แนวทางให้เลือกตามเป้าหมายของธุรกิจคุณตอนนี้
+      </p>
+
+      <div class="mt-12 grid gap-8 lg:grid-cols-2">
+        <!-- PATH A: AI Transformation (cyan) -->
+        <div
+          class="rounded-2xl border p-6 lg:p-8"
+          style="border-color: color-mix(in oklch, var(--color-pun-cyan) 25%, transparent); background: color-mix(in oklch, var(--color-pun-cyan) 4%, transparent);"
+        >
+          <div class="mb-2 flex items-center gap-3">
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-lg"
+              style="background: color-mix(in oklch, var(--color-pun-cyan) 12%, transparent);"
+            >
+              <span class="font-display text-lg font-bold" style="color: var(--color-pun-cyan);">A</span>
+            </div>
+            <p class="text-xs font-bold uppercase tracking-widest" style="color: var(--color-pun-cyan);">
+              Path A
+            </p>
+          </div>
+          <h3 class="font-display text-2xl font-bold">AI Transformation</h3>
+          <p class="mt-2 text-sm text-base-content/65">
+            ปลดล็อกเวลาทีมขายด้วย AI ลดงานซ้ำซ้อน
           </p>
+
+          <div class="mt-6 space-y-3">
+            <a
+              href="/services/ai-workshop"
+              class="group flex items-center justify-between rounded-xl border border-base-content/10 bg-base-100/40 p-4 transition-all hover:-translate-y-0.5"
+              style="--hover: var(--color-pun-cyan);"
+            >
+              <div>
+                <p class="text-xs uppercase tracking-widest text-base-content/45">1 Day</p>
+                <p class="mt-0.5 font-display text-base font-bold">AI Day Workshop</p>
+              </div>
+              <span class="font-display text-lg font-bold" style="color: var(--color-pun-cyan);">฿30,000</span>
+            </a>
+            <a
+              href="/services/ai-workshop-followup"
+              class="group flex items-center justify-between rounded-xl border p-4 transition-all hover:-translate-y-0.5"
+              style="border-color: color-mix(in oklch, var(--color-pun-cyan) 40%, transparent); background: color-mix(in oklch, var(--color-pun-cyan) 6%, transparent);"
+            >
+              <div>
+                <div class="flex items-center gap-2">
+                  <p class="text-xs uppercase tracking-widest text-base-content/45">1 Day + 30 Days</p>
+                  <span
+                    class="rounded-full px-2 py-0.5 text-[10px] font-bold"
+                    style="background: color-mix(in oklch, var(--color-pun-cyan) 20%, transparent); color: var(--color-pun-cyan);"
+                  >
+                    แนะนำ
+                  </span>
+                </div>
+                <p class="mt-0.5 font-display text-base font-bold">AI Workshop + Follow-up</p>
+              </div>
+              <span class="font-display text-lg font-bold" style="color: var(--color-pun-cyan);">฿50,000</span>
+            </a>
+          </div>
+
+          <a
+            href="/services#ai-workshop"
+            class="mt-5 block text-center text-sm font-semibold transition-colors"
+            style="color: var(--color-pun-cyan);"
+          >
+            ดูรายละเอียด Path A →
+          </a>
         </div>
-        <a href="/services" class="btn btn-sm btn-ghost hover:bg-base-200">
-          ดูรายละเอียดทุก package →
-        </a>
+
+        <!-- PATH B: ปั้นทีมขาย (coral) -->
+        <div
+          class="rounded-2xl border p-6 lg:p-8"
+          style="border-color: color-mix(in oklch, var(--color-pun-coral) 25%, transparent); background: color-mix(in oklch, var(--color-pun-coral) 4%, transparent);"
+        >
+          <div class="mb-2 flex items-center gap-3">
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-lg"
+              style="background: color-mix(in oklch, var(--color-pun-coral) 12%, transparent);"
+            >
+              <span class="font-display text-lg font-bold" style="color: var(--color-pun-coral);">B</span>
+            </div>
+            <p class="text-xs font-bold uppercase tracking-widest" style="color: var(--color-pun-coral);">
+              Path B
+            </p>
+          </div>
+          <h3 class="font-display text-2xl font-bold">ปั้นทีมขาย</h3>
+          <p class="mt-2 text-sm text-base-content/65">
+            วางโครงสร้างทีมขาย ทั้ง KPI, Commission และ Training
+          </p>
+
+          <div class="mt-6 space-y-3">
+            <a
+              href="/services/sale-training-bundle"
+              class="group flex items-center justify-between rounded-xl border border-base-content/10 bg-base-100/40 p-4 transition-all hover:-translate-y-0.5"
+            >
+              <div>
+                <p class="text-xs uppercase tracking-widest text-base-content/45">2 Days</p>
+                <p class="mt-0.5 font-display text-base font-bold">Sale Training Bundle</p>
+              </div>
+              <span class="font-display text-lg font-bold text-secondary">฿52,800</span>
+            </a>
+            <a
+              href="/services/sales-system-sprint"
+              class="group flex items-center justify-between rounded-xl border p-4 transition-all hover:-translate-y-0.5"
+              style="border-color: color-mix(in oklch, var(--color-pun-coral) 40%, transparent); background: color-mix(in oklch, var(--color-pun-coral) 6%, transparent);"
+            >
+              <div>
+                <div class="flex items-center gap-2">
+                  <p class="text-xs uppercase tracking-widest text-base-content/45">1 Month</p>
+                  <span
+                    class="rounded-full bg-secondary/20 px-2 py-0.5 text-[10px] font-bold text-secondary"
+                  >
+                    ครบจบ
+                  </span>
+                </div>
+                <p class="mt-0.5 font-display text-base font-bold">Sales System Sprint</p>
+              </div>
+              <span class="font-display text-lg font-bold text-secondary">฿65,000</span>
+            </a>
+          </div>
+
+          <a
+            href="/services#sale-training-bundle"
+            class="mt-5 block text-center text-sm font-semibold text-secondary transition-colors"
+          >
+            ดูรายละเอียด Path B →
+          </a>
+        </div>
       </div>
 
-      <div class="mt-10 grid gap-6 md:grid-cols-2">
-        {
-          SERVICES.map((svc) => (
-            <a
-              href={`/services#${svc.slug}`}
-              class="group rounded-2xl border border-base-content/15 bg-base-100/60 p-6 transition-all hover:-translate-y-0.5 hover:border-secondary/50 hover:shadow-lg hover:shadow-secondary/10"
-            >
-              <p class="text-xs uppercase tracking-widest text-base-content/60">
-                {svc.subtitle}
-              </p>
-              <h3 class="mt-2 font-display text-xl font-bold leading-tight group-hover:text-secondary">
-                {svc.title}
-              </h3>
-              <p class="mt-3 text-sm leading-relaxed text-base-content/80">"{svc.hook}"</p>
-              <div class="mt-5 flex items-center justify-between border-t border-base-content/15 pt-4">
-                <span class="font-display text-lg font-bold text-secondary">
-                  {svc.priceLabel}
-                </span>
-                <span class="text-sm text-base-content/65 group-hover:text-secondary">
-                  ดูรายละเอียด →
-                </span>
-              </div>
-            </a>
-          ))
-        }
+      <!-- Connector note -->
+      <div class="mt-8 text-center">
+        <div
+          class="inline-flex items-center gap-3 rounded-full border border-base-content/15 bg-base-100/50 px-6 py-3"
+        >
+          <span class="text-base" aria-hidden="true">✦</span>
+          <span class="text-sm text-base-content/75">
+            <strong class="text-base-content">ทำได้ทั้งสองทาง</strong> ลูกค้าหลายเจ้าเริ่มจาก AI Workshop แล้วต่อ Sales System Sprint
+          </span>
+        </div>
       </div>
+
+      <!-- Special Workshop: Trust Content TikTok (violet) -->
+      <a
+        href="/services/trust-content-tiktok-workshop"
+        class="relative mt-10 block overflow-hidden rounded-2xl border p-6 lg:p-8"
+        style="border-color: color-mix(in oklch, var(--color-pun-violet) 25%, transparent); background: color-mix(in oklch, var(--color-pun-violet) 4%, transparent);"
+      >
+        <div
+          class="absolute right-4 top-4 rounded-full px-2.5 py-0.5 text-[10px] font-bold"
+          style="background: color-mix(in oklch, var(--color-pun-violet) 18%, transparent); color: var(--color-pun-violet); border: 1px solid color-mix(in oklch, var(--color-pun-violet) 40%, transparent);"
+        >
+          Special Workshop
+        </div>
+        <div class="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+          <div>
+            <div class="mb-2 flex items-center gap-2">
+              <div
+                class="flex h-8 w-8 items-center justify-center rounded-lg"
+                style="background: color-mix(in oklch, var(--color-pun-violet) 12%, transparent);"
+              >
+                <span class="font-bold" style="color: var(--color-pun-violet);">★</span>
+              </div>
+              <p class="text-xs font-bold uppercase tracking-widest" style="color: var(--color-pun-violet);">
+                New
+              </p>
+            </div>
+            <h3 class="font-display text-xl font-bold md:text-2xl">Trust Content Workshop for TikTok</h3>
+            <p class="mt-2 max-w-xl text-sm text-base-content/65">
+              1 Day In-House — เจ้าของถ่ายคลิปเอง 3 คลิปเสร็จวันนั้น + Content Calendar 30 วัน
+            </p>
+          </div>
+          <div class="flex-shrink-0 text-right">
+            <p class="text-xs text-base-content/40 line-through">฿50,000</p>
+            <p class="font-display text-3xl font-bold" style="color: var(--color-pun-violet);">฿39,900</p>
+            <span class="mt-1 inline-block rounded-full border border-secondary/30 bg-secondary/10 px-2 py-0.5 text-[10px] font-bold text-secondary">
+              5 ธุรกิจแรก
+            </span>
+          </div>
+        </div>
+      </a>
     </div>
   </section>
 

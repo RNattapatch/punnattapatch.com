@@ -191,7 +191,7 @@ const pathBPackages: PathCardProps[] = [
                     ดูรายละเอียดเพิ่มเติม →
                   </a>
                   <a
-                    href="/intake-form"
+                    href={`/booking?package=${p.svc.slug}`}
                     class:list={['btn btn-sm w-full border-none font-bold transition-all', p.featured ? 'shadow-lg' : 'btn-outline']}
                     style={
                       p.featured
@@ -299,7 +299,7 @@ const pathBPackages: PathCardProps[] = [
                     ดูรายละเอียดเพิ่มเติม →
                   </a>
                   <a
-                    href="/intake-form"
+                    href={`/booking?package=${p.svc.slug}`}
                     class:list={['btn btn-sm w-full border-none font-bold transition-all', p.featured ? 'shadow-lg' : 'btn-outline']}
                     style={
                       p.featured
@@ -403,7 +403,7 @@ const pathBPackages: PathCardProps[] = [
               5 ธุรกิจแรก
             </span>
             <a
-              href="/intake-form"
+              href={`/booking?package=${tiktokWorkshop.slug}`}
               class="btn btn-sm w-full border-none font-bold text-white shadow-lg transition-all hover:scale-105"
               style="background: var(--color-pun-violet); box-shadow: 0 10px 25px -10px color-mix(in oklch, var(--color-pun-violet) 40%, transparent);"
             >

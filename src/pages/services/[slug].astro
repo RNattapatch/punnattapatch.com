@@ -70,19 +70,17 @@ const description = detail.subhead;
 
       <div class="mt-8 flex flex-wrap gap-4">
         <a
-          href="/intake-form"
+          href={`/booking?package=${svc.slug}`}
           class="btn btn-lg border-none font-bold shadow-xl transition-all hover:scale-105"
           style={`background: ${accent}; color: ${accentButtonText}; box-shadow: 0 15px 40px -15px color-mix(in oklch, ${accent} 50%, transparent);`}
         >
           จองเลย — {detail.priceHeadline}
         </a>
         <a
-          href={SITE.social.line}
-          target="_blank"
-          rel="noopener"
+          href="/intake-form"
           class="btn btn-lg btn-ghost border border-base-content/25 hover:bg-base-200"
         >
-          ไม่แน่ใจ? คุยกับปันก่อน →
+          ไม่แน่ใจ? นัดคุยกับปันก่อน →
         </a>
       </div>
     </div>
@@ -270,11 +268,11 @@ const description = detail.subhead;
 
         <div class="mt-10 text-center">
           <a
-            href="/intake-form"
+            href={`/booking?package=${svc.slug}`}
             class="btn btn-lg border-none font-bold shadow-xl transition-all hover:scale-105"
             style={`background: ${accent}; color: ${accentButtonText}; box-shadow: 0 15px 40px -15px color-mix(in oklch, ${accent} 50%, transparent);`}
           >
-            จองเลย →
+            จอง {detail.priceHeadline} →
           </a>
         </div>
       </div>
@@ -322,17 +320,17 @@ const description = detail.subhead;
       </p>
       <div class="mt-8 flex flex-wrap gap-4">
         <a
-          href="/intake-form"
+          href={`/booking?package=${svc.slug}`}
           class="btn btn-lg border-none font-bold shadow-xl transition-all hover:scale-105"
           style={`background: ${accent}; color: ${accentButtonText};`}
         >
-          ประเมินปัญหาทีมขาย
+          จอง {svc.title} →
         </a>
         <a
-          href="/services"
+          href="/intake-form"
           class="btn btn-lg btn-outline text-primary-content hover:bg-primary-content hover:text-primary"
         >
-          ← ดูทุก package
+          ไม่แน่ใจ? นัดคุยก่อน
         </a>
       </div>
     </div>
