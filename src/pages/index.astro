@@ -155,6 +155,46 @@ const freeStuff = [
     href: 'https://drive.google.com/file/d/1FXouSCK7XXo_xig8nrk-Gc_mshotCNgX/view',
   },
 ];
+
+const galleryPhotos = Array.from({ length: 8 }, (_, i) => ({
+  src: `/gallery/gallery${i + 1}.jpg`,
+  alt: `รูปจริงจากงานปัน ครั้งที่ ${i + 1}`,
+}));
+
+const trustPoints = [
+  { icon: '⏱', title: 'กรอกฟอร์ม 3 นาที', body: 'ใช้เวลาไม่ถึง 3 นาที' },
+  { icon: '🛡', title: 'ประเมินฟรี', body: 'ไม่มีค่าใช้จ่าย ไม่มีข้อผูกมัด' },
+  { icon: '👤', title: 'ปันอ่านและตอบเอง', body: 'ไม่ใช่ bot ปันดูเองทุกใบ' },
+  { icon: '💬', title: 'ได้คำตอบใน 24 ชม.', body: 'ได้ feedback ภายในวันถัดไป' },
+];
+
+const socials = [
+  {
+    label: 'Facebook',
+    href: 'https://www.facebook.com/profile.php?id=61584893736763',
+    accent: 'oklch(58% 0.18 255)',
+  },
+  {
+    label: 'Instagram',
+    href: 'https://www.instagram.com/pun_nattapatch',
+    accent: 'oklch(65% 0.20 350)',
+  },
+  {
+    label: 'TikTok',
+    href: 'https://www.tiktok.com/@pun_nattapatch',
+    accent: 'var(--color-pun-coral)',
+  },
+  {
+    label: 'LINE OA',
+    href: 'https://lin.ee/ioSnSUG',
+    accent: 'oklch(70% 0.18 145)',
+  },
+  {
+    label: 'r.nattapatch@gmail.com',
+    href: 'mailto:r.nattapatch@gmail.com',
+    accent: 'var(--color-pun-coral)',
+  },
+];
 ---
 
 <BaseLayout
@@ -566,6 +606,31 @@ const freeStuff = [
     </div>
   </section>
 
+  <!-- ===== GALLERY — real photos ===== -->
+  <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-5xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Gallery</p>
+      <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+        จากห้องประชุม Corporate สู่การสร้างระบบให้ SME
+      </h2>
+
+      <div class="mt-10 grid grid-cols-2 gap-3 md:grid-cols-4">
+        {
+          galleryPhotos.map((photo) => (
+            <div class="group aspect-square overflow-hidden rounded-xl border border-base-content/15 transition-all duration-300 hover:border-secondary/40">
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                loading="lazy"
+                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
   <!-- ===== TESTIMONIAL — chat screenshots from clients ===== -->
   <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
     <div class="mx-auto max-w-5xl">
@@ -733,34 +798,75 @@ const freeStuff = [
     </div>
   </section>
 
-  <!-- ===== CTA BOTTOM ===== -->
-  <section class="border-t border-base-content/10 px-4 py-20 lg:px-8">
-    <div
-      class="mx-auto max-w-4xl rounded-3xl bg-primary px-6 py-14 text-primary-content shadow-xl md:px-12"
-    >
-      <h2 class="font-display text-3xl font-bold leading-tight md:text-4xl">
-        พร้อมให้ทีมขายของคุณ<br />ได้เวลาและยอดคืน?
+  <!-- ===== CTA BOTTOM — HelloFresh trust grid ===== -->
+  <section
+    class="relative overflow-hidden border-t border-secondary/10 px-4 py-20 lg:px-8"
+    style="background: linear-gradient(180deg, transparent, color-mix(in oklch, var(--color-secondary) 6%, transparent), color-mix(in oklch, var(--color-secondary) 12%, transparent));"
+  >
+    <div class="relative z-10 mx-auto max-w-3xl">
+      <h2
+        class="text-center font-display text-3xl font-bold tracking-tight md:text-4xl"
+      >
+        พร้อมจะเลิกแบกยอดคนเดียวรึยัง?
       </h2>
-      <p class="mt-4 max-w-2xl text-primary-content/85">
-        ไม่ต้องตัดสินใจตอนนี้ ตอบแบบประเมิน 3 นาที ผมดูว่าเคสคุณควรเริ่มจาก package ไหน
-        แล้วส่ง follow-up ให้ภายใน 2 วันทำการ
-      </p>
-      <div class="mt-8 flex flex-wrap gap-4">
+
+      <div class="mt-12 grid grid-cols-2 gap-6 md:grid-cols-4">
+        {
+          trustPoints.map((point) => (
+            <div class="text-center">
+              <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full border border-base-content/15 bg-base-200/60 text-xl">
+                {point.icon}
+              </div>
+              <p class="font-display text-sm font-bold text-base-content">
+                {point.title}
+              </p>
+              <p class="mt-1 text-xs text-base-content/55">{point.body}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="mt-12 text-center">
         <a
           href="/intake-form"
-          class="btn btn-lg bg-secondary text-secondary-content shadow-lg shadow-secondary/30 hover:bg-secondary/90"
+          class="btn btn-lg bg-secondary px-10 text-lg text-secondary-content shadow-xl shadow-secondary/30 transition-all hover:scale-105 hover:bg-secondary/90 hover:shadow-2xl hover:shadow-secondary/40"
         >
-          ประเมินปัญหาทีมขาย
-        </a>
-        <a
-          href={SITE.social.line}
-          rel="noopener"
-          target="_blank"
-          class="btn btn-lg btn-outline text-primary-content hover:bg-primary-content hover:text-primary"
-        >
-          ทักมาคุยใน LINE OA
+          เช็คสุขภาพทีมขายของคุณ →
         </a>
       </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT / SOCIAL ===== -->
+  <section class="border-t border-base-content/10 px-4 py-14 lg:px-8">
+    <div class="mx-auto max-w-3xl text-center">
+      <h3 class="font-display text-xl font-bold">ติดตามและติดต่อปัน</h3>
+
+      <div class="mt-6 flex flex-wrap justify-center gap-3 md:gap-4">
+        {
+          socials.map((s) => (
+            <a
+              href={s.href}
+              target={s.href.startsWith('http') ? '_blank' : undefined}
+              rel={s.href.startsWith('http') ? 'noopener' : undefined}
+              class="group flex items-center gap-2 rounded-xl border border-base-content/15 bg-base-200/50 px-4 py-2.5 transition-all duration-300 hover:-translate-y-0.5 hover:bg-base-200/80"
+              style={`--social-accent: ${s.accent};`}
+              onmouseenter="this.style.borderColor = `color-mix(in oklch, ${this.style.getPropertyValue('--social-accent')} 40%, transparent)`"
+              onmouseleave="this.style.borderColor = ''"
+            >
+              <span class="h-2 w-2 rounded-full" style="background: var(--social-accent);" />
+              <span class="text-sm text-base-content/75 group-hover:text-base-content">
+                {s.label}
+              </span>
+            </a>
+          ))
+        }
+      </div>
+
+      <p class="mt-6 text-xs text-base-content/55">
+        DM คำว่า <strong class="text-base-content/80">AI</strong> หรือ
+        <strong class="text-base-content/80">ทีมขาย</strong> แล้วปันจะติดต่อกลับครับ
+      </p>
     </div>
   </section>
 </BaseLayout>

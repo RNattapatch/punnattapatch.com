@@ -84,6 +84,37 @@ const techStack = [
   { name: 'Astro + Tailwind', use: 'Static site + landing page build (เว็บนี้คือตัวอย่าง)' },
 ];
 
+const bosiLetters = [
+  {
+    letter: 'B',
+    name: 'Builder',
+    nameTh: 'ผู้สร้างระบบ',
+    color: '#7ec8f0',
+    desc: 'คนที่มองเห็นโครงสร้าง วางระบบให้รันเอง ไม่ต้องพึ่งฮีโร่คนเดียว',
+  },
+  {
+    letter: 'O',
+    name: 'Opportunist',
+    nameTh: 'นักล่าโอกาส',
+    color: '#ff8fa3',
+    desc: 'คนที่เห็นโอกาสแล้ววิ่งเข้าใส่ ปิดดีลเร็วที่สุดในทีม',
+  },
+  {
+    letter: 'S',
+    name: 'Specialist',
+    nameTh: 'ผู้เชี่ยวชาญ',
+    color: '#64d9f5',
+    desc: 'คนที่รู้ลึก technical ลูกค้าถามอะไรก็ตอบได้หมด เป็นที่ปรึกษาในเคสซับซ้อน',
+  },
+  {
+    letter: 'I',
+    name: 'Innovator',
+    nameTh: 'นักคิดค้น',
+    color: '#d98fe0',
+    desc: 'คนที่เห็น pattern ที่คนอื่นไม่เห็น เสนอ solution แปลกใหม่แต่ใช้ได้',
+  },
+];
+
 const faqItems = [
   {
     question: 'ต่างจากเอเจนซี่ AI หรือที่ปรึกษาการขายทั่วไปยังไง',
@@ -190,6 +221,51 @@ const faqItems = [
             ตอนนี้เดินมาแล้ว <strong class="text-base-content/85">10 ธุรกิจ</strong>
           </p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BOSI DNA Framework ===== -->
+  <section class="border-b border-base-content/10 px-4 py-20 lg:px-8">
+    <div class="mx-auto max-w-4xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Framework ที่ใช้ทุก Workshop</p>
+      <h2 class="mt-3 font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+        BOSI DNA — ตรวจ DNA นักขาย & ผู้ประกอบการของทีม
+      </h2>
+      <p class="mt-4 max-w-2xl text-base-content/75">
+        BOSI DNA มาจากหนังสือ <em>Entrepreneurial DNA</em> โดย Joe Abraham
+        ซึ่งแบ่งผู้ประกอบการและนักขายออกเป็น 4 DNA ผมใช้ Framework นี้ในทุก Workshop
+        เพราะมันช่วยให้เจ้าของธุรกิจเข้าใจจุดแข็ง-จุดบอดของตัวเองและทีม ก่อนวางระบบขาย
+      </p>
+
+      <div class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {
+          bosiLetters.map((b) => (
+            <div
+              class="rounded-2xl border p-6 transition-all hover:-translate-y-0.5"
+              style={`border-color: color-mix(in oklch, ${b.color} 30%, transparent); background: color-mix(in oklch, ${b.color} 4%, transparent);`}
+            >
+              <div
+                class="font-display text-5xl font-black"
+                style={`color: ${b.color};`}
+              >
+                {b.letter}
+              </div>
+              <h3 class="mt-3 font-display text-lg font-bold">{b.name}</h3>
+              <p class="mt-0.5 text-sm text-base-content/65">{b.nameTh}</p>
+              <p class="mt-3 text-sm leading-relaxed text-base-content/75">{b.desc}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="mt-10 rounded-2xl border border-secondary/30 bg-secondary/[0.06] p-6 md:p-8">
+        <p class="text-base leading-relaxed text-base-content/85">
+          <strong class="text-base-content">ทีมขายที่แข็งแกร่งต้องมี DNA ที่หลากหลาย</strong>
+          ไม่ใช่หา "Top Sales" ที่เหมือนกันหมด Opportunist ปิดดีลเร็วแต่ follow-up แย่
+          Builder สร้างระบบเก่งแต่ชอบ deal ขนาดเล็ก ผมจะช่วยเจ้าของวาง role + commission
+          ที่ match กับ DNA จริงของแต่ละคน แทนที่จะบังคับทุกคนให้ขายเหมือนกัน
+        </p>
       </div>
     </div>
   </section>
