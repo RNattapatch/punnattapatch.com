@@ -1,0 +1,613 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/site';
+import { QUIZ_DATA_JSON, QUESTIONS } from '../data/bosiQuiz';
+
+const title = 'BOSI DNA Assessment — ตรวจ DNA นักขาย & ผู้ประกอบการฟรี';
+const description =
+  'แบบทดสอบ Entrepreneurial DNA ของ Joe Abraham ฉบับภาษาไทย 10 ข้อ 5-10 นาที ได้ผลทันที — รู้จุดแข็ง จุดบอด และตำแหน่งงานที่เหมาะกับทีมขายของคุณ';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  schema={{
+    types: ['WebPage', 'BreadcrumbList'],
+    title,
+    description,
+    breadcrumbs: [
+      { name: 'หน้าแรก', url: SITE.url },
+      { name: 'BOSI DNA Quiz', url: `${SITE.url}/bosi-dna-quiz` },
+    ],
+  }}
+>
+  <!-- ===== INTRO SECTION ===== -->
+  <section id="sec-intro" class="quiz-section px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Free Assessment</p>
+      <h1 class="mt-3 font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl">
+        BOSI DNA Assessment<br class="hidden md:block" />
+        ตรวจ DNA นักขายของคุณใน 10 นาที
+      </h1>
+      <p class="mt-5 max-w-2xl text-lg text-base-content/75">
+        แบบทดสอบจากหนังสือ <em>Entrepreneurial DNA</em> ของ Joe Abraham
+        ช่วยให้เจ้าของและทีมขายเข้าใจจุดแข็ง-จุดบอดของตัวเองก่อนวางระบบขาย
+        ทีมที่แข็งแกร่งคือทีมที่มี DNA หลากหลาย ไม่ใช่หา "Top Sales" ที่เหมือนกันหมด
+      </p>
+
+      <div class="mt-8 grid gap-4 sm:grid-cols-4">
+        <div class="rounded-xl border p-5 text-center" style="border-color: color-mix(in oklch, #7ec8f0 30%, transparent); background: color-mix(in oklch, #7ec8f0 6%, transparent);">
+          <div class="font-display text-4xl font-black" style="color: #7ec8f0;">B</div>
+          <p class="mt-1 text-sm font-semibold">Builder</p>
+          <p class="text-xs text-base-content/60">ผู้สร้างระบบ</p>
+        </div>
+        <div class="rounded-xl border p-5 text-center" style="border-color: color-mix(in oklch, #ff8fa3 30%, transparent); background: color-mix(in oklch, #ff8fa3 6%, transparent);">
+          <div class="font-display text-4xl font-black" style="color: #ff8fa3;">O</div>
+          <p class="mt-1 text-sm font-semibold">Opportunist</p>
+          <p class="text-xs text-base-content/60">นักล่าโอกาส</p>
+        </div>
+        <div class="rounded-xl border p-5 text-center" style="border-color: color-mix(in oklch, #64d9f5 30%, transparent); background: color-mix(in oklch, #64d9f5 6%, transparent);">
+          <div class="font-display text-4xl font-black" style="color: #64d9f5;">S</div>
+          <p class="mt-1 text-sm font-semibold">Specialist</p>
+          <p class="text-xs text-base-content/60">ผู้เชี่ยวชาญ</p>
+        </div>
+        <div class="rounded-xl border p-5 text-center" style="border-color: color-mix(in oklch, #d98fe0 30%, transparent); background: color-mix(in oklch, #d98fe0 6%, transparent);">
+          <div class="font-display text-4xl font-black" style="color: #d98fe0;">I</div>
+          <p class="mt-1 text-sm font-semibold">Innovator</p>
+          <p class="text-xs text-base-content/60">นักคิดค้น</p>
+        </div>
+      </div>
+
+      <div class="mt-10 space-y-4 rounded-2xl border border-base-content/10 bg-base-200/30 p-6">
+        <h2 class="font-display text-xl font-bold">เริ่มทำแบบทดสอบ</h2>
+        <p class="text-sm text-base-content/70">
+          ใช้เวลา 5-10 นาที · ไม่ต้องสมัครสมาชิก · ได้ผลทันที
+        </p>
+
+        <div class="form-control">
+          <label for="intro-name" class="label">
+            <span class="label-text font-medium">ชื่อของคุณ *</span>
+          </label>
+          <input
+            id="intro-name"
+            type="text"
+            required
+            class="input input-bordered w-full"
+            placeholder="ปัน ณัฐพัชร์"
+          />
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="form-control">
+            <label for="intro-role" class="label">
+              <span class="label-text font-medium">ตำแหน่ง (optional)</span>
+            </label>
+            <input
+              id="intro-role"
+              type="text"
+              class="input input-bordered w-full"
+              placeholder="CEO / Sales Manager"
+            />
+          </div>
+          <div class="form-control">
+            <label for="intro-company" class="label">
+              <span class="label-text font-medium">บริษัท (optional)</span>
+            </label>
+            <input
+              id="intro-company"
+              type="text"
+              class="input input-bordered w-full"
+            />
+          </div>
+        </div>
+
+        <button
+          id="btn-start"
+          type="button"
+          class="btn btn-lg w-full bg-secondary text-secondary-content shadow-xl shadow-secondary/30 transition-all hover:scale-[1.01] hover:bg-secondary/90"
+        >
+          เริ่มทำแบบทดสอบ →
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== QUIZ SECTION ===== -->
+  <section id="sec-quiz" class="quiz-section hidden px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <!-- Progress -->
+      <div class="sticky top-0 z-20 -mx-4 border-b border-base-content/10 bg-base-100/95 px-4 py-3 backdrop-blur-lg lg:-mx-8 lg:px-8">
+        <div class="flex items-center justify-between text-sm">
+          <span id="progress-text" class="font-medium text-base-content">ตอบแล้ว 0 / 10 ข้อ</span>
+          <span id="progress-pct" class="font-display font-bold text-secondary">0%</span>
+        </div>
+        <div class="mt-2 h-2 overflow-hidden rounded-full bg-base-200">
+          <div
+            id="progress-fill"
+            class="h-full bg-secondary transition-all duration-300"
+            style="width: 0%;"
+          >
+          </div>
+        </div>
+      </div>
+
+      <div id="questions-container" class="mt-8 space-y-6">
+        {
+          QUESTIONS.map((q, idx) => (
+            <article
+              class="q-card rounded-2xl border border-base-content/10 bg-base-100 p-6"
+              id={`q-card-${idx}`}
+              data-q-idx={idx}
+            >
+              <p class="text-xs font-bold uppercase tracking-widest text-secondary">
+                ข้อที่ {q.num}
+              </p>
+              <h3 class="mt-2 font-display text-lg font-bold leading-snug">{q.text}</h3>
+
+              <div class="mt-5 space-y-2">
+                {q.choices.map((c, ci) => (
+                  <label
+                    id={`choice-${idx}-${ci}`}
+                    class="choice-label flex cursor-pointer items-start gap-3 rounded-xl border border-base-content/15 p-4 transition hover:border-secondary/50 hover:bg-base-200/40"
+                    data-q-idx={idx}
+                    data-choice-idx={ci}
+                  >
+                    <input
+                      type="radio"
+                      name={`q${idx}`}
+                      value={ci}
+                      class="radio radio-sm mt-0.5"
+                    />
+                    <div class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-base-200 font-display text-sm font-bold">
+                      {c.key}
+                    </div>
+                    <span class="flex-1 text-sm leading-relaxed text-base-content/85">
+                      {c.text}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <button
+        id="btn-submit"
+        type="button"
+        disabled
+        class="btn btn-lg mt-10 w-full bg-secondary text-secondary-content shadow-xl shadow-secondary/30 transition-all hover:scale-[1.01] hover:bg-secondary/90 disabled:cursor-not-allowed disabled:bg-base-200 disabled:text-base-content/40 disabled:shadow-none"
+      >
+        คำนวณผล →
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== RESULT SECTION ===== -->
+  <section id="sec-result" class="quiz-section hidden px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Your Result</p>
+      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+        DNA นักขาย & ผู้ประกอบการของคุณ
+      </h2>
+
+      <!-- Hero card -->
+      <div
+        id="result-hero"
+        class="mt-8 rounded-3xl border-2 p-8 text-center md:p-12"
+        style="border-color: var(--result-color, var(--color-secondary)); background: color-mix(in oklch, var(--result-color, var(--color-secondary)) 8%, transparent);"
+      >
+        <div
+          id="result-letter"
+          class="font-display text-[120px] font-black leading-none"
+          style="color: var(--result-color, var(--color-secondary));"
+        >
+          —
+        </div>
+        <h3 id="result-name" class="mt-2 font-display text-3xl font-bold"></h3>
+        <p id="result-name-th" class="mt-1 text-base text-base-content/70"></p>
+      </div>
+
+      <!-- Score bars -->
+      <div class="mt-8 rounded-2xl border border-base-content/10 bg-base-100 p-6">
+        <h4 class="font-display text-lg font-bold">คะแนนแต่ละ DNA</h4>
+        <div class="mt-5 space-y-3">
+          {
+            (['B', 'O', 'S', 'I'] as const).map((letter) => (
+              <div class="score-row">
+                <div class="mb-1 flex items-center justify-between text-sm">
+                  <span class="font-display font-bold" data-letter-color={letter}>
+                    {letter}
+                  </span>
+                  <span id={`score-${letter}`} class="font-mono text-xs text-base-content/70">
+                    0 คะแนน
+                  </span>
+                </div>
+                <div class="h-3 overflow-hidden rounded-full bg-base-200">
+                  <div
+                    id={`bar-${letter}`}
+                    class="h-full transition-all duration-700"
+                    data-letter-bar={letter}
+                    style="width: 0%;"
+                  />
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Details — populated by safe DOM methods on result -->
+      <div
+        id="result-desc"
+        class="mt-8 space-y-6 rounded-2xl border border-base-content/10 bg-base-100 p-6 md:p-8"
+      >
+      </div>
+
+      <!-- Primary CTA - recommended package -->
+      <div
+        id="result-cta"
+        class="mt-10 rounded-3xl border-2 p-8 text-center md:p-10"
+        style="border-color: var(--result-color, var(--color-secondary)); background: color-mix(in oklch, var(--result-color, var(--color-secondary)) 6%, transparent); box-shadow: 0 30px 80px -30px color-mix(in oklch, var(--result-color, var(--color-secondary)) 45%, transparent);"
+      >
+        <p class="text-xs font-bold uppercase tracking-widest" style="color: var(--result-color);">
+          แนะนำจากปัน
+        </p>
+        <h3 class="mt-3 font-display text-2xl font-bold leading-tight md:text-3xl">
+          อยากรู้ว่า DNA แบบนี้ควรเริ่มจากบริการไหน?
+        </h3>
+        <p class="mx-auto mt-3 max-w-xl text-base text-base-content/75">
+          ปันจะแนะนำ package ที่ match กับ DNA ของคุณมากที่สุด + ส่งคำแนะนำตามบริบทธุรกิจของคุณภายใน 24 ชม.
+        </p>
+        <div class="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+          <a
+            id="cta-book"
+            href="/booking"
+            class="btn btn-lg border-none text-base font-bold text-white shadow-xl transition-all hover:scale-[1.03]"
+            style="background: var(--result-color); box-shadow: 0 14px 32px -10px color-mix(in oklch, var(--result-color) 55%, transparent);"
+          >
+            ดู package ที่แนะนำ →
+          </a>
+          <a
+            href="/intake-form?source=bosi-quiz"
+            class="btn btn-lg btn-ghost border-2 border-base-content/25 text-base hover:bg-base-200"
+          >
+            ให้ปันแนะนำก่อน
+          </a>
+        </div>
+      </div>
+
+      <!-- Secondary actions -->
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <button
+          id="btn-reset"
+          type="button"
+          class="btn btn-sm btn-ghost border border-base-content/20 text-sm"
+        >
+          ทำใหม่อีกรอบ
+        </button>
+        <button
+          id="btn-share"
+          type="button"
+          class="btn btn-sm btn-ghost border border-base-content/20 text-sm"
+        >
+          คัดลอกผลลัพธ์
+        </button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style is:global>
+  .quiz-section.hidden { display: none !important; }
+  .quiz-section:not(.hidden) { display: block; }
+
+  .choice-label:has(input:checked) {
+    border-color: var(--color-secondary) !important;
+    background: color-mix(in oklch, var(--color-secondary) 10%, transparent) !important;
+  }
+  .q-card.answered {
+    border-color: color-mix(in oklch, var(--color-secondary) 30%, transparent) !important;
+  }
+
+  [data-letter-color="B"] { color: #7ec8f0; }
+  [data-letter-color="O"] { color: #ff8fa3; }
+  [data-letter-color="S"] { color: #64d9f5; }
+  [data-letter-color="I"] { color: #d98fe0; }
+
+  [data-letter-bar="B"] { background: #7ec8f0; }
+  [data-letter-bar="O"] { background: #ff8fa3; }
+  [data-letter-bar="S"] { background: #64d9f5; }
+  [data-letter-bar="I"] { background: #d98fe0; }
+
+  #result-hero.dna-B, #result-cta.dna-B { --result-color: #7ec8f0; }
+  #result-hero.dna-O, #result-cta.dna-O { --result-color: #ff8fa3; }
+  #result-hero.dna-S, #result-cta.dna-S { --result-color: #64d9f5; }
+  #result-hero.dna-I, #result-cta.dna-I { --result-color: #d98fe0; }
+</style>
+
+<script is:inline define:vars={{ QUIZ_DATA_JSON }}>
+  window.__BOSI_DATA__ = JSON.parse(QUIZ_DATA_JSON);
+</script>
+<script>
+  type DnaLetter = 'B' | 'O' | 'S' | 'I';
+  interface QuizChoice { key: string; text: string; }
+  interface QuizQuestion { num: number; text: string; choices: QuizChoice[]; }
+  interface DnaProfile {
+    name: string; nameTh: string; desc: string;
+    traits: string[]; roles: string[]; environment: string; blindspots: string[];
+    recommendedSlug: string; accent: string; color: string;
+  }
+  interface QuizData {
+    QUESTIONS: QuizQuestion[];
+    ANSWER_KEY: Array<Array<DnaLetter | null>>;
+    DNA_PROFILES: Record<DnaLetter, DnaProfile>;
+  }
+
+  const data = (window as unknown as { __BOSI_DATA__: QuizData }).__BOSI_DATA__;
+  const { QUESTIONS, ANSWER_KEY, DNA_PROFILES } = data;
+
+  const answers: Array<number | null> = new Array(10).fill(null);
+  let userData: {
+    name: string;
+    role: string;
+    company: string;
+    timestamp: string;
+    dominant?: DnaLetter;
+    scores?: Record<DnaLetter, number>;
+  } = { name: '', role: '', company: '', timestamp: '' };
+
+  const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
+
+  function showSection(id: string): void {
+    document.querySelectorAll('.quiz-section').forEach((s) => s.classList.add('hidden'));
+    document.getElementById(id)?.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function updateProgress(): void {
+    const answered = answers.filter((a) => a !== null).length;
+    const pct = Math.round((answered / 10) * 100);
+    const textEl = document.getElementById('progress-text');
+    const pctEl = document.getElementById('progress-pct');
+    const fillEl = document.getElementById('progress-fill');
+    const btn = document.getElementById('btn-submit') as HTMLButtonElement | null;
+    if (textEl) textEl.textContent = `ตอบแล้ว ${answered} / 10 ข้อ`;
+    if (pctEl) pctEl.textContent = `${pct}%`;
+    if (fillEl) fillEl.style.width = `${pct}%`;
+    if (btn) btn.disabled = answered < 10;
+  }
+
+  document.getElementById('btn-start')?.addEventListener('click', () => {
+    const nameEl = document.getElementById('intro-name') as HTMLInputElement | null;
+    if (!nameEl || !nameEl.value.trim()) {
+      nameEl?.focus();
+      if (nameEl) nameEl.style.borderColor = 'var(--color-secondary)';
+      return;
+    }
+    userData = {
+      name: nameEl.value.trim(),
+      role: (document.getElementById('intro-role') as HTMLInputElement | null)?.value.trim() ?? '',
+      company: (document.getElementById('intro-company') as HTMLInputElement | null)?.value.trim() ?? '',
+      timestamp: new Date().toISOString(),
+    };
+    showSection('sec-quiz');
+  });
+
+  document.querySelectorAll<HTMLLabelElement>('.choice-label').forEach((label) => {
+    label.addEventListener('click', () => {
+      const qIdx = Number(label.dataset.qIdx);
+      const cIdx = Number(label.dataset.choiceIdx);
+      const radio = label.querySelector<HTMLInputElement>('input[type="radio"]');
+      if (radio) radio.checked = true;
+      answers[qIdx] = cIdx;
+      document.getElementById(`q-card-${qIdx}`)?.classList.add('answered');
+      updateProgress();
+    });
+  });
+
+  /* Render profile detail using safe DOM methods (textContent + createElement).
+   * Avoids innerHTML + string concat to keep the page XSS-safe even if the
+   * DNA_PROFILES data is ever fed from an external source later. */
+  function renderSection(parent: HTMLElement, heading: string, render: (root: HTMLElement) => void): void {
+    const wrap = document.createElement('div');
+    const h = document.createElement('h4');
+    h.className = 'font-display text-base font-bold text-secondary';
+    h.textContent = heading;
+    wrap.appendChild(h);
+    const body = document.createElement('div');
+    body.className = 'mt-3';
+    render(body);
+    wrap.appendChild(body);
+    parent.appendChild(wrap);
+  }
+
+  function renderProfileDetail(root: HTMLElement, profile: DnaProfile): void {
+    root.textContent = '';
+
+    const descWrap = document.createElement('div');
+    const descP = document.createElement('p');
+    descP.className = 'text-base leading-relaxed text-base-content/85';
+    descP.textContent = profile.desc;
+    descWrap.appendChild(descP);
+    root.appendChild(descWrap);
+
+    renderSection(root, 'จุดแข็งของคุณ', (body) => {
+      const ul = document.createElement('ul');
+      ul.className = 'space-y-2 text-sm text-base-content/85';
+      profile.traits.forEach((t) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-start gap-2';
+        const dot = document.createElement('span');
+        dot.style.color = profile.color;
+        dot.textContent = '✓';
+        const span = document.createElement('span');
+        span.textContent = t;
+        li.appendChild(dot);
+        li.appendChild(span);
+        ul.appendChild(li);
+      });
+      body.appendChild(ul);
+    });
+
+    renderSection(root, 'ตำแหน่งงานที่เหมาะสม', (body) => {
+      const tags = document.createElement('div');
+      tags.className = 'flex flex-wrap gap-2';
+      profile.roles.forEach((r) => {
+        const tag = document.createElement('span');
+        tag.className =
+          'inline-block rounded-full border border-base-content/15 bg-base-200/50 px-3 py-1 text-xs';
+        tag.textContent = r;
+        tags.appendChild(tag);
+      });
+      body.appendChild(tags);
+      const envP = document.createElement('p');
+      envP.className = 'mt-3 text-xs text-base-content/60';
+      envP.textContent = `สภาพแวดล้อมที่เหมาะ: ${profile.environment}`;
+      body.appendChild(envP);
+    });
+
+    renderSection(root, 'จุดบอดที่ต้องระวัง', (body) => {
+      const ul = document.createElement('ul');
+      ul.className = 'space-y-2 text-sm text-base-content/85';
+      profile.blindspots.forEach((b) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-start gap-2';
+        const dot = document.createElement('span');
+        dot.className = 'text-error';
+        dot.textContent = '!';
+        const span = document.createElement('span');
+        span.textContent = b;
+        li.appendChild(dot);
+        li.appendChild(span);
+        ul.appendChild(li);
+      });
+      body.appendChild(ul);
+    });
+  }
+
+  document.getElementById('btn-submit')?.addEventListener('click', () => {
+    const scores: Record<DnaLetter, number> = { B: 0, O: 0, S: 0, I: 0 };
+    answers.forEach((choiceIdx, qIdx) => {
+      if (choiceIdx === null) return;
+      const dna = ANSWER_KEY[qIdx][choiceIdx];
+      if (dna) scores[dna]++;
+    });
+
+    const dominant = (Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0]) as DnaLetter;
+    const profile = DNA_PROFILES[dominant];
+    const total = Object.values(scores).reduce((a, b) => a + b, 0) || 1;
+
+    userData.dominant = dominant;
+    userData.scores = scores;
+
+    const letterEl = document.getElementById('result-letter');
+    const nameEl = document.getElementById('result-name');
+    const nameThEl = document.getElementById('result-name-th');
+    const heroEl = document.getElementById('result-hero');
+    const ctaEl = document.getElementById('result-cta');
+
+    if (letterEl) letterEl.textContent = dominant;
+    if (nameEl) nameEl.textContent = profile.name;
+    if (nameThEl) nameThEl.textContent = profile.nameTh;
+    heroEl?.classList.add(`dna-${dominant}`);
+    ctaEl?.classList.add(`dna-${dominant}`);
+
+    (['B', 'O', 'S', 'I'] as const).forEach((type) => {
+      const scoreEl = document.getElementById(`score-${type}`);
+      const barEl = document.getElementById(`bar-${type}`);
+      if (scoreEl) scoreEl.textContent = `${scores[type]} คะแนน`;
+      setTimeout(() => {
+        if (barEl) barEl.style.width = `${(scores[type] / total) * 100}%`;
+      }, 150);
+    });
+
+    const descEl = document.getElementById('result-desc');
+    if (descEl) renderProfileDetail(descEl, profile);
+
+    const ctaBtn = document.getElementById('cta-book') as HTMLAnchorElement | null;
+    if (ctaBtn) {
+      ctaBtn.href = `/booking?package=${profile.recommendedSlug}&source=bosi-quiz&dna=${dominant}`;
+    }
+
+    postBosiResult(dominant, scores);
+    showSection('sec-result');
+  });
+
+  async function postBosiResult(
+    dominant: DnaLetter,
+    scores: Record<DnaLetter, number>
+  ): Promise<void> {
+    const answersEncoded = answers
+      .map((ci, qi) => (ci === null ? '' : QUESTIONS[qi].choices[ci].key))
+      .join(',');
+    const payload = {
+      source_page: 'bosi-quiz',
+      booking_type: 'quiz-completion',
+      name: userData.name,
+      position: userData.role,
+      company: userData.company,
+      message: `BOSI DNA = ${dominant} (${DNA_PROFILES[dominant].name}). Scores B:${scores.B} O:${scores.O} S:${scores.S} I:${scores.I}`,
+      comment: `Answers: ${answersEncoded}`,
+      bosi_dominant: dominant,
+      bosi_score_B: scores.B,
+      bosi_score_O: scores.O,
+      bosi_score_S: scores.S,
+      bosi_score_I: scores.I,
+      _meta: {
+        reference: `BOSI-${dominant}-${Date.now()}`,
+        submitted_at: new Date().toISOString(),
+        user_agent: navigator.userAgent,
+        path: window.location.pathname,
+      },
+    };
+    try {
+      const ctrl = new AbortController();
+      const kill = setTimeout(() => ctrl.abort(), 10_000);
+      await fetch(N8N_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: ctrl.signal,
+        keepalive: true,
+      });
+      clearTimeout(kill);
+    } catch (err) {
+      console.error('[bosi-quiz] webhook error', err);
+    }
+    try {
+      localStorage.setItem('pn_bosi_last_result', JSON.stringify(payload));
+    } catch {
+      /* non-fatal */
+    }
+  }
+
+  document.getElementById('btn-reset')?.addEventListener('click', () => {
+    for (let i = 0; i < 10; i++) answers[i] = null;
+    document.querySelectorAll<HTMLInputElement>('input[type="radio"]').forEach((r) => {
+      r.checked = false;
+    });
+    document.querySelectorAll('.q-card').forEach((c) => c.classList.remove('answered'));
+    updateProgress();
+    showSection('sec-intro');
+  });
+
+  document.getElementById('btn-share')?.addEventListener('click', async () => {
+    if (!userData.dominant || !userData.scores) return;
+    const p = DNA_PROFILES[userData.dominant];
+    const text = `ผมทำ BOSI DNA Assessment แล้ว → ${userData.dominant} (${p.name} ${p.nameTh})\n\nB: ${userData.scores.B} | O: ${userData.scores.O} | S: ${userData.scores.S} | I: ${userData.scores.I}\n\nลองทำด้วยตัวเองได้ที่ ${window.location.href}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      const btn = document.getElementById('btn-share');
+      if (btn) {
+        const original = btn.textContent ?? '';
+        btn.textContent = 'คัดลอกแล้ว ✓';
+        setTimeout(() => {
+          btn.textContent = original;
+        }, 2000);
+      }
+    } catch {
+      /* clipboard blocked */
+    }
+  });
+</script>
