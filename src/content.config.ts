@@ -62,10 +62,52 @@ const framework = defineCollection({
   }),
 });
 
+const training = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/training' }),
+  schema: commonFrontmatter.extend({
+    programCode: z.enum(['p1', 'p2', 'p4', 'p5']),
+    hook: z.string(),
+    guarantee: z.string(),
+    audience: z.string(),
+    duration: z.string(),
+    format: z.enum(['onsite', 'online', 'hybrid']),
+    seats: z.object({
+      total: z.number(),
+      founding: z.number().optional(),
+    }),
+    priceThb: z.object({
+      normal: z.number(),
+      founding: z.number().optional(),
+    }),
+    closesAt: z.coerce.date(),
+    startsAt: z.coerce.date(),
+    endsAt: z.coerce.date(),
+    location: z.object({
+      name: z.string(),
+      address: z.string().optional(),
+      virtual: z.boolean().default(false),
+    }),
+    outcomes: z.array(z.string()),
+    syllabus: z.array(z.object({
+      title: z.string(),
+      body: z.string(),
+      duration: z.string().optional(),
+    })),
+    founding_perks: z.array(z.string()).default([]),
+    qualifies: z.array(z.string()).default([]),
+    disqualifies: z.array(z.string()).default([]),
+    faq: z.array(z.object({
+      q: z.string(),
+      a: z.string(),
+    })).default([]),
+  }),
+});
+
 export const collections = {
   pillar,
   cluster,
   faq,
   'case-analysis': caseAnalysis,
   framework,
+  training,
 };

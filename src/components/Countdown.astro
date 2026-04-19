@@ -1,0 +1,90 @@
+---
+/**
+ * Countdown.astro — Real-time countdown to training enrollment close.
+ *
+ * Props:
+ *   targetDate: ISO 8601 string OR Date — the deadline (closesAt)
+ *   label?: string — headline above digits (default: "Founding Cohort ปิดรับสมัครใน")
+ *
+ * Client-side: re-renders every 1s using Thai time (Asia/Bangkok).
+ * Fallback: prints the static closesAt date if JS disabled.
+ */
+interface Props {
+  targetDate: string | Date;
+  label?: string;
+}
+
+const { targetDate, label = 'Founding Cohort ปิดรับสมัครใน' } = Astro.props;
+const iso = targetDate instanceof Date ? targetDate.toISOString() : targetDate;
+const formatted = new Date(iso).toLocaleDateString('th-TH', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<div
+  class="countdown-block mx-auto w-full max-w-2xl rounded-2xl border border-secondary/30 bg-base-200/40 p-6 text-center shadow-sm"
+  data-countdown-target={iso}
+>
+  <p class="text-xs font-bold uppercase tracking-widest text-secondary">{label}</p>
+  <div class="countdown-grid mt-5 grid grid-cols-4 gap-2 sm:gap-4">
+    <div>
+      <div data-cd="days" class="font-display text-3xl font-bold tabular-nums text-base-content md:text-5xl">--</div>
+      <div class="mt-1 text-xs text-base-content/60">วัน</div>
+    </div>
+    <div>
+      <div data-cd="hours" class="font-display text-3xl font-bold tabular-nums text-base-content md:text-5xl">--</div>
+      <div class="mt-1 text-xs text-base-content/60">ชั่วโมง</div>
+    </div>
+    <div>
+      <div data-cd="minutes" class="font-display text-3xl font-bold tabular-nums text-base-content md:text-5xl">--</div>
+      <div class="mt-1 text-xs text-base-content/60">นาที</div>
+    </div>
+    <div>
+      <div data-cd="seconds" class="font-display text-3xl font-bold tabular-nums text-base-content md:text-5xl">--</div>
+      <div class="mt-1 text-xs text-base-content/60">วินาที</div>
+    </div>
+  </div>
+  <p class="mt-5 text-sm text-base-content/70">
+    ปิดรับสมัคร <span class="font-semibold text-secondary">{formatted}</span> (เวลาประเทศไทย)
+  </p>
+</div>
+
+<script>
+  // Update every second — client-only
+  function tickAll() {
+    const now = Date.now();
+    document.querySelectorAll<HTMLElement>('.countdown-block').forEach((block) => {
+      const target = block.dataset.countdownTarget;
+      if (!target) return;
+      const diff = new Date(target).getTime() - now;
+      const clamp = Math.max(0, diff);
+      const days = Math.floor(clamp / 86_400_000);
+      const hours = Math.floor((clamp % 86_400_000) / 3_600_000);
+      const minutes = Math.floor((clamp % 3_600_000) / 60_000);
+      const seconds = Math.floor((clamp % 60_000) / 1000);
+
+      const set = (sel: string, v: number) => {
+        const el = block.querySelector<HTMLElement>(`[data-cd="${sel}"]`);
+        if (el) el.textContent = String(v).padStart(2, '0');
+      };
+      set('days', days);
+      set('hours', hours);
+      set('minutes', minutes);
+      set('seconds', seconds);
+
+      if (diff <= 0) {
+        block.classList.add('countdown-closed');
+      }
+    });
+  }
+  tickAll();
+  setInterval(tickAll, 1000);
+</script>
+
+<style>
+  .countdown-closed {
+    opacity: 0.5;
+  }
+</style>

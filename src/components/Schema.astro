@@ -34,7 +34,25 @@ type SchemaType =
   | 'ServiceList'
   | 'FAQPage'
   | 'Article'
-  | 'BreadcrumbList';
+  | 'BreadcrumbList'
+  | 'Event'
+  | 'Course';
+
+interface TrainingEvent {
+  name: string;
+  description: string;
+  url: string;
+  startDate: string | Date;
+  endDate: string | Date;
+  closesAt: string | Date;
+  priceThb: number;
+  foundingPriceThb?: number;
+  seatsTotal: number;
+  locationName: string;
+  locationAddress?: string;
+  isVirtual?: boolean;
+  audience?: string;
+}
 
 interface Props {
   type?: SchemaType;
@@ -57,6 +75,8 @@ interface Props {
   };
   /** For ServiceList */
   services?: typeof SERVICES;
+  /** For Event/Course (training pages) */
+  training?: TrainingEvent;
 }
 
 const {
@@ -69,6 +89,7 @@ const {
   breadcrumbs,
   article,
   services = SERVICES,
+  training,
 } = Astro.props;
 
 const PERSON_ID = `${SITE.url}/#person`;
@@ -230,6 +251,102 @@ function buildArticle() {
   };
 }
 
+function buildEvent() {
+  if (!training) return null;
+  const toISO = (d: string | Date) => (d instanceof Date ? d.toISOString() : d);
+
+  const offers: Record<string, unknown>[] = [
+    {
+      '@type': 'Offer',
+      name: 'Founding Cohort',
+      price: training.foundingPriceThb ?? training.priceThb,
+      priceCurrency: 'THB',
+      availability: 'https://schema.org/LimitedAvailability',
+      url: training.url + '?program=' + new URL(training.url).pathname.split('/').pop(),
+      validFrom: '2026-04-19T00:00:00+07:00',
+      validThrough: toISO(training.closesAt),
+      eligibleCustomerType: 'Business',
+    },
+  ];
+  if (training.foundingPriceThb && training.foundingPriceThb < training.priceThb) {
+    offers.push({
+      '@type': 'Offer',
+      name: 'Standard',
+      price: training.priceThb,
+      priceCurrency: 'THB',
+      availability: 'https://schema.org/InStock',
+      validFrom: toISO(training.closesAt),
+      eligibleCustomerType: 'Business',
+    });
+  }
+
+  return {
+    '@type': 'Event',
+    '@id': `${training.url}#event`,
+    name: training.name,
+    description: training.description,
+    url: training.url,
+    startDate: toISO(training.startDate),
+    endDate: toISO(training.endDate),
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: training.isVirtual
+      ? 'https://schema.org/OnlineEventAttendanceMode'
+      : 'https://schema.org/OfflineEventAttendanceMode',
+    location: training.isVirtual
+      ? {
+          '@type': 'VirtualLocation',
+          url: training.url,
+        }
+      : {
+          '@type': 'Place',
+          name: training.locationName,
+          address: {
+            '@type': 'PostalAddress',
+            addressLocality: 'Bangkok',
+            addressCountry: 'TH',
+            ...(training.locationAddress ? { streetAddress: training.locationAddress } : {}),
+          },
+        },
+    organizer: { '@id': PERSON_ID },
+    performer: { '@id': PERSON_ID },
+    offers,
+    maximumAttendeeCapacity: training.seatsTotal,
+    inLanguage: 'th-TH',
+    ...(training.audience
+      ? {
+          audience: {
+            '@type': 'BusinessAudience',
+            audienceType: 'SME B2B',
+            name: training.audience,
+          },
+        }
+      : {}),
+  };
+}
+
+function buildCourse() {
+  if (!training) return null;
+  return {
+    '@type': 'Course',
+    '@id': `${training.url}#course`,
+    name: training.name,
+    description: training.description,
+    url: training.url,
+    provider: { '@id': PERSON_ID },
+    hasCourseInstance: [
+      {
+        '@type': 'CourseInstance',
+        courseMode: training.isVirtual ? 'online' : 'onsite',
+        startDate: training.startDate instanceof Date ? training.startDate.toISOString() : training.startDate,
+        endDate: training.endDate instanceof Date ? training.endDate.toISOString() : training.endDate,
+        location: training.isVirtual ? 'Online' : training.locationName,
+        inLanguage: 'th-TH',
+      },
+    ],
+    inLanguage: 'th-TH',
+  };
+}
+
 function buildBreadcrumbs() {
   if (!breadcrumbs) return null;
   return {
@@ -276,6 +393,16 @@ function buildGraph(): unknown[] {
       case 'BreadcrumbList': {
         const bcBlock = buildBreadcrumbs();
         if (bcBlock) graph.push(bcBlock);
+        break;
+      }
+      case 'Event': {
+        const evt = buildEvent();
+        if (evt) graph.push(evt);
+        break;
+      }
+      case 'Course': {
+        const course = buildCourse();
+        if (course) graph.push(course);
         break;
       }
     }

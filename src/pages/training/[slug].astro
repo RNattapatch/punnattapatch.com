@@ -1,0 +1,319 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Schema from '../../components/Schema.astro';
+import Countdown from '../../components/Countdown.astro';
+import { SITE } from '../../data/site';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('training', ({ data }: CollectionEntry<'training'>) => !data.draft);
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+interface Props { entry: CollectionEntry<'training'> }
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const data = entry.data;
+
+const url = `${SITE.url}/training/${entry.id}`;
+const hasFounding = Boolean(data.priceThb.founding && data.priceThb.founding < data.priceThb.normal);
+
+const formatPrice = (n: number): string => '฿' + n.toLocaleString('en-US');
+const formatDate = (d: Date): string =>
+  d.toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<BaseLayout
+  title={`${data.title} | ${SITE.name}`}
+  description={data.description}
+  schema={{
+    types: ['Event', 'Course', 'BreadcrumbList'],
+    title: data.title,
+    description: data.description,
+    breadcrumbs: [
+      { name: 'หน้าแรก', url: SITE.url },
+      { name: 'Public Training', url: `${SITE.url}/training` },
+      { name: data.title, url },
+    ],
+    training: {
+      name: data.title,
+      description: data.description,
+      url,
+      startDate: data.startsAt,
+      endDate: data.endsAt,
+      closesAt: data.closesAt,
+      priceThb: data.priceThb.normal,
+      foundingPriceThb: data.priceThb.founding,
+      seatsTotal: data.seats.total,
+      locationName: data.location.name,
+      locationAddress: data.location.address,
+      isVirtual: data.location.virtual,
+      audience: data.audience,
+    },
+  }}
+>
+  {/* ===== HERO ===== */}
+  <section class="relative overflow-hidden border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-24">
+    <div
+      class="pointer-events-none absolute inset-0 -z-10 opacity-60"
+      style="background: radial-gradient(circle at 30% 20%, color-mix(in oklch, var(--color-secondary) 12%, transparent), transparent 60%);"
+    >
+    </div>
+
+    <div class="mx-auto max-w-4xl">
+      {/* Program badge */}
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="inline-flex items-center gap-2 rounded-full border border-secondary/40 bg-secondary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-secondary">
+          {data.programCode.toUpperCase()} · Founding Cohort #1
+        </span>
+        {hasFounding && (
+          <span class="rounded-full bg-amber-400/20 px-3 py-1 text-xs font-bold text-amber-600 dark:text-amber-300">
+            Early-bird · {data.seats.founding} ที่นั่งเท่านั้น
+          </span>
+        )}
+      </div>
+
+      <h1 class="mt-6 font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl lg:text-6xl">
+        {data.title}
+      </h1>
+
+      <p class="mt-5 max-w-2xl text-lg leading-relaxed text-base-content/80 md:text-xl">
+        {data.hook}
+      </p>
+
+      {/* Key facts row */}
+      <div class="mt-8 grid gap-4 md:grid-cols-4">
+        <div>
+          <p class="text-xs uppercase tracking-widest text-base-content/55">Duration</p>
+          <p class="mt-1 font-display text-base font-semibold">{data.duration}</p>
+        </div>
+        <div>
+          <p class="text-xs uppercase tracking-widest text-base-content/55">Format</p>
+          <p class="mt-1 font-display text-base font-semibold">
+            {data.location.virtual ? 'Online' : 'On-site Bangkok'}
+          </p>
+        </div>
+        <div>
+          <p class="text-xs uppercase tracking-widest text-base-content/55">Seats</p>
+          <p class="mt-1 font-display text-base font-semibold">Max {data.seats.total} คน</p>
+        </div>
+        <div>
+          <p class="text-xs uppercase tracking-widest text-base-content/55">Price</p>
+          <p class="mt-1 font-display text-base font-semibold">
+            {hasFounding ? (
+              <>
+                <span class="text-secondary">{formatPrice(data.priceThb.founding!)}</span>
+                <span class="ml-2 text-sm text-base-content/50 line-through">
+                  {formatPrice(data.priceThb.normal)}
+                </span>
+              </>
+            ) : (
+              <span class="text-secondary">{formatPrice(data.priceThb.normal)}</span>
+            )}
+          </p>
+        </div>
+      </div>
+
+      {/* Primary CTA */}
+      <div class="mt-10 flex flex-wrap items-center gap-3">
+        <a
+          href={`/intake-form?program=${data.programCode}`}
+          class="btn btn-lg bg-secondary px-8 text-secondary-content shadow-xl shadow-secondary/30 hover:bg-secondary/90"
+        >
+          ยื่น Application — {formatPrice(hasFounding ? data.priceThb.founding! : data.priceThb.normal)} →
+        </a>
+        <a
+          href="#syllabus"
+          class="btn btn-lg btn-ghost border border-base-content/20 hover:border-secondary hover:text-secondary"
+        >
+          ดู syllabus ก่อน
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {/* ===== COUNTDOWN ===== */}
+  <section class="border-b border-base-content/10 px-4 py-14 lg:px-8">
+    <Countdown targetDate={data.closesAt} />
+  </section>
+
+  {/* ===== OUTCOMES ===== */}
+  <section class="border-b border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-4xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">สิ่งที่ได้กลับบ้าน</p>
+      <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+        จบ {data.title.split('—')[0].trim()} แล้วคุณจะ
+      </h2>
+      <ul class="mt-8 space-y-4">
+        {
+          data.outcomes.map((o) => (
+            <li class="flex items-start gap-3">
+              <span class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-secondary/15 text-secondary">
+                ✓
+              </span>
+              <span class="text-base leading-relaxed text-base-content/85 md:text-lg">{o}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  {/* ===== SYLLABUS ===== */}
+  <section id="syllabus" class="border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-4xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Syllabus</p>
+      <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+        {data.syllabus.length} โมดูล · {data.duration}
+      </h2>
+      <ol class="mt-10 space-y-6">
+        {
+          data.syllabus.map((m, i) => (
+            <li class="rounded-2xl border border-base-content/10 bg-base-100/50 p-6 shadow-sm">
+              <div class="flex items-start justify-between gap-4">
+                <div class="flex-1">
+                  <p class="text-xs font-bold uppercase tracking-widest text-secondary">
+                    Module {i + 1}
+                  </p>
+                  <h3 class="mt-2 font-display text-xl font-bold">{m.title}</h3>
+                  <p class="mt-3 text-sm leading-relaxed text-base-content/80 md:text-base">{m.body}</p>
+                </div>
+                {m.duration && (
+                  <span class="shrink-0 rounded-full border border-base-content/15 bg-base-200 px-3 py-1 text-xs text-base-content/70">
+                    {m.duration}
+                  </span>
+                )}
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  {/* ===== GUARANTEE ===== */}
+  <section class="border-b border-base-content/10 bg-secondary/5 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-3xl text-center">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Outcome Guarantee</p>
+      <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+        ถ้าไม่ได้ผลจริง — คืนเงิน
+      </h2>
+      <p class="mt-6 text-base leading-relaxed text-base-content/85 md:text-lg">{data.guarantee}</p>
+    </div>
+  </section>
+
+  {/* ===== FOUNDING PERKS (if applicable) ===== */}
+  {
+    hasFounding && data.founding_perks.length > 0 && (
+      <section class="border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+        <div class="mx-auto max-w-3xl">
+          <p class="text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400">
+            Founding Cohort Only
+          </p>
+          <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+            สิทธิพิเศษ {data.seats.founding} คนแรกเท่านั้น
+          </h2>
+          <ul class="mt-8 space-y-3">
+            {data.founding_perks.map((p) => (
+              <li class="flex items-start gap-3">
+                <span class="mt-1 text-amber-500">★</span>
+                <span class="text-base leading-relaxed text-base-content/85">{p}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  {/* ===== QUALIFIES / DISQUALIFIES ===== */}
+  <section class="border-b border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-4xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Is this for you?</p>
+      <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+        อ่านก่อนสมัคร — {data.programCode.toUpperCase()} เหมาะกับใคร
+      </h2>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        <div class="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6">
+          <p class="font-display text-lg font-bold text-emerald-700 dark:text-emerald-300">✓ เหมาะกับคุณถ้า</p>
+          <ul class="mt-4 space-y-2">
+            {data.qualifies.map((q) => (
+              <li class="flex items-start gap-2 text-sm text-base-content/85">
+                <span class="mt-0.5 text-emerald-500">•</span>
+                <span>{q}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="rounded-2xl border border-rose-500/30 bg-rose-500/5 p-6">
+          <p class="font-display text-lg font-bold text-rose-700 dark:text-rose-300">✗ ไม่เหมาะถ้า</p>
+          <ul class="mt-4 space-y-2">
+            {data.disqualifies.map((q) => (
+              <li class="flex items-start gap-2 text-sm text-base-content/85">
+                <span class="mt-0.5 text-rose-500">•</span>
+                <span>{q}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ===== LONG-FORM BODY (markdown content) ===== */}
+  <section class="border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="prose prose-lg mx-auto max-w-3xl font-body text-base-content prose-headings:font-display prose-headings:text-base-content prose-strong:text-base-content prose-a:text-secondary">
+      <Content />
+    </div>
+  </section>
+
+  {/* ===== FAQ ===== */}
+  {
+    data.faq.length > 0 && (
+      <section class="border-b border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8 lg:py-20">
+        <div class="mx-auto max-w-3xl">
+          <p class="text-xs font-bold uppercase tracking-widest text-secondary">FAQ</p>
+          <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">คำถามที่เจอบ่อย</h2>
+          <div class="mt-8 space-y-4">
+            {data.faq.map((f) => (
+              <details class="group rounded-xl border border-base-content/15 bg-base-100/50 p-5">
+                <summary class="cursor-pointer font-display text-base font-bold group-open:text-secondary">
+                  {f.q}
+                </summary>
+                <p class="mt-3 text-sm leading-relaxed text-base-content/80">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {/* ===== FINAL CTA ===== */}
+  <section class="bg-secondary/10 px-4 py-20 lg:px-8">
+    <div class="mx-auto max-w-3xl text-center">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Apply Now</p>
+      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+        พร้อมเริ่มเลยไหม?
+      </h2>
+      <p class="mt-4 text-base-content/80">
+        {data.seats.founding ?? data.seats.total} ที่นั่งเท่านั้น · ปิดรับ {formatDate(data.closesAt)} · ทุกคนต้องผ่าน application screening
+      </p>
+      <a
+        href={`/intake-form?program=${data.programCode}`}
+        class="btn btn-lg mt-8 bg-secondary px-10 text-secondary-content shadow-xl shadow-secondary/30 hover:bg-secondary/90"
+      >
+        ยื่น Application 3-5 นาที →
+      </a>
+      <p class="mt-4 text-xs text-base-content/55">
+        ชำระ 100% upfront หลังผ่าน screening · {data.guarantee.slice(0, 60)}...
+      </p>
+    </div>
+  </section>
+</BaseLayout>

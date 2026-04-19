@@ -191,11 +191,25 @@ const budgets = [
         ใช้เวลา 3 นาที — ผมอ่านทุกเคสเองและตอบกลับภายใน 2 วันทำการ
       </p>
 
+      {/* Program pre-fill banner — shown when ?program=p1|p4|p5 in URL */}
+      <div
+        id="program-banner"
+        class="mt-8 hidden rounded-2xl border border-secondary/40 bg-secondary/10 p-5"
+      >
+        <p class="text-xs font-bold uppercase tracking-widest text-secondary">Applying for</p>
+        <p id="program-banner-title" class="mt-2 font-display text-lg font-bold">—</p>
+        <p class="mt-2 text-xs text-base-content/65">
+          Application สำหรับ Public Training · ผมจะติดต่อกลับภายใน 48 ชม. พร้อม link ชำระเงิน
+        </p>
+      </div>
+
       <form
         id="intake-form"
         class="mt-10 space-y-8"
         novalidate
       >
+        {/* Hidden field populated from ?program= URL param */}
+        <input type="hidden" id="program" name="program" value="" />
         <!-- ===== Contact ===== -->
         <fieldset class="space-y-5 rounded-2xl border border-base-content/10 bg-base-100 p-6">
           <legend class="px-2 font-display text-lg font-bold">1. ติดต่อ</legend>
@@ -556,6 +570,27 @@ const budgets = [
   const success = document.getElementById('intake-success');
   const refNode = document.getElementById('intake-ref');
   const copyBtn = document.getElementById('intake-copy-ref') as HTMLButtonElement | null;
+
+  // Read ?program=p1|p4|p5 → pre-fill hidden field + show banner
+  const PROGRAM_LABELS: Record<string, string> = {
+    p1: 'P1 — AI Quick Launch (1 วัน · ฿11,900 Founding)',
+    p4: 'P4 — Sales Mastery (2 วัน · ฿16,900 Founding)',
+    p5: 'P5 — Sales Team Builder (2 weekends · ฿27,900 Founding)',
+  };
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const program = (params.get('program') ?? '').toLowerCase();
+    if (program && PROGRAM_LABELS[program]) {
+      const hidden = document.getElementById('program') as HTMLInputElement | null;
+      const banner = document.getElementById('program-banner');
+      const bannerTitle = document.getElementById('program-banner-title');
+      if (hidden) hidden.value = program;
+      if (banner) banner.classList.remove('hidden');
+      if (bannerTitle) bannerTitle.textContent = PROGRAM_LABELS[program];
+    }
+  } catch {
+    /* URL not available (SSR) or malformed — ignore */
+  }
 
   function makeReference(): string {
     const stamp = new Date()
