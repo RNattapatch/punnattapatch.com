@@ -103,6 +103,8 @@ function buildPerson() {
       addressCountry: SITE.author.country,
     },
     // Real client testimonial from social-proof section (anonymized per client request)
+    // Note: itemReviewed is implicit when Review is nested inside Person via `review`
+    // property — Google's spec forbids explicit itemReviewed on nested Reviews.
     review: [
       {
         '@type': 'Review',
@@ -113,7 +115,6 @@ function buildPerson() {
           name: 'B2B Manufacturing/Distribution Client (anonymized per request)',
         },
         datePublished: '2026-03-15',
-        itemReviewed: { '@id': PERSON_ID },
       },
     ],
   };
