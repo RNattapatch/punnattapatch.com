@@ -1,34 +1,67 @@
 # Pun Nattapatch
 
-> B2B Sales Consultant & Agentic AI Transformation Specialist สำหรับ SME ไทย — ช่วยทีมขาย build AI workflow ที่รันได้จริง ไม่ใช่แค่ prototype.
+> B2B Sales Consultant & Agentic AI Transformation Specialist สำหรับ SME ไทย — "ปรึกษา + จับมือทำ · ไม่ใช่แค่สอน" · ทุก engagement ส่งระบบ AI ที่รันได้จริงตั้งแต่วันส่งมอบ
 
-ปัน ณัฐพัชร์ (@pun_nattapatch) เปิดที่ปรึกษาเต็มตัวปี 2025 หลังจาก field sales 10+ ปี เชี่ยวชาญเรื่อง KPI + Commission design, value-based selling, และ Agentic AI (Claude Code + n8n + Google Apps Script) ทุก engagement ส่งระบบที่รันได้จริงตั้งแต่วันส่งมอบ ไม่ใช่ slide หรือ roadmap
+ปัน ณัฐพัชร์ (@pun_nattapatch) เปิดที่ปรึกษาเต็มตัวปี 2025 · Agentic AI Consultant คนแรกของไทย (category creation) · เชี่ยวชาญ KPI + Commission design, value-based selling, และ Agentic AI deployment (Claude Code + n8n + Google Apps Script) · ทำงานกับ SME B2B รายได้ ฿30-200M · ทีมขาย 5-20 คน · 5 ปีประสบการณ์ field sales ก่อนเปิด consulting
 
 ## Identity
 
-- [About](https://punnattapatch.com/about): สรุปตัวตน, expertise 4 หมวด, หลักการทำงาน, credentials, BOSI DNA framework
-- [Services](https://punnattapatch.com/services): 2 paths (AI Transformation + ปั้นทีมขาย) + Special TikTok Workshop
-- [BOSI DNA Quiz](https://punnattapatch.com/bosi-dna-quiz): แบบทดสอบ Entrepreneurial DNA 10 ข้อ 5-10 นาที — รู้จุดแข็ง/จุดบอดทีมขายก่อนวางระบบ
-- [Intake Form](https://punnattapatch.com/intake-form): แบบประเมินปัญหาทีมขาย 3 นาที
-- [Booking](https://punnattapatch.com/booking): จอง package + preferred date + contact ครบในที่เดียว
+- [About](https://punnattapatch.com/about): ตัวตน · expertise 4 หมวด · หลักการทำงาน · credentials · BOSI DNA framework
+- [Services](https://punnattapatch.com/services): 3-tier portfolio (Courses + Advisory + Retainer) + bespoke products
+- [BOSI DNA Quiz](https://punnattapatch.com/bosi-dna-quiz): แบบทดสอบ Entrepreneurial DNA 10 ข้อ · 5-10 นาที · รู้จุดแข็ง/จุดบอดทีมขายก่อนวางระบบ
+- [Intake Form](https://punnattapatch.com/intake-form): แบบประเมินปัญหาทีมขาย 3 นาที · รับ `?program=p1|p4|p5` pre-fill สำหรับ Public Training
+- [Booking](https://punnattapatch.com/booking): จอง package + preferred date + contact ครบที่เดียว
+- [Case Studies](https://punnattapatch.com/case-studies): 3 anonymized cases พร้อม real numbers + methodology
+- [Public Training](https://punnattapatch.com/training): Founding Cohort #1 · 3 programs เปิดรับสมัคร
 
-## Services & Pricing
+## Services & Pricing (v2 — 2026-04-19)
 
-- AI Day Workshop — ฿30,000 / 1 วัน · on-site หรือ online · ทีมได้ AI workflow พร้อมใช้วันเดียวกัน · https://punnattapatch.com/services/ai-workshop
-- AI Workshop + Follow-up 30 วัน — ฿50,000 · Workshop 1 วัน + 4 sessions + LINE async support · https://punnattapatch.com/services/ai-workshop-followup
-- Sales System Sprint — ฿65,000 / 1 เดือน · Discovery → Design → Build → Training · KPI + Commission + n8n workflow ครบ · https://punnattapatch.com/services/sales-system-sprint
-- Sale Training Bundle — ฿52,800 / 2 วัน · Value Selling + Sales Psychology · in-house ≤20 คน · https://punnattapatch.com/services/sale-training-bundle
-- Trust Content Workshop for TikTok — ฿39,900 (5 ธุรกิจแรก, ปกติ ฿50,000) / 1 วัน · สร้าง B2B lead ผ่าน TikTok · https://punnattapatch.com/services/trust-content-tiktok-workshop
+### Tier 1 — Courses (฿14-25K · ฟัง + เรียน)
+- Advance AI & Business Automation — ฿25,000 / 1 วัน (฿19,900 Early Bird) · ทีมได้ AI workflow + prompt library 30 ตัว + 30-day support · https://punnattapatch.com/services/ai-workshop
+- Advance AI & Business Marketing — ฿25,000 / 1 วัน (฿19,900 Early Bird) · AI Content Agent brand-trained + 90-day Content Calendar fill in class
+- Sale Training Bundle — ฿35,000 / 2 วัน (฿28,000 Early Bird) · Value Selling + Sales Psychology + AI Role-play Bot access
 
-## Insights (Pillar Articles)
+### Tier 1.5 — Gating Product
+- Team AI Readiness Workshop — ฿50,000 / 1 วัน · เตรียมทีม mindset ก่อน Tier 2 Advisory
 
-- [AI Transformation for Sales SME](https://punnattapatch.com/insights/ai-transformation-sales): คู่มือนำ Agentic AI เข้าทีมขาย B2B SME ไทย 1,975 Thai words
-- [Sales Consulting Guide 2026](https://punnattapatch.com/insights/sales-consulting-guide-2026): คู่มือเลือกที่ปรึกษาการขาย B2B สำหรับเจ้าของ SME 1,551 Thai words
+### Tier 2 — Agentic AI Transformation (Premium · ฿95-120K)
+- Agentic AI Transformation for Owner + Executive Team — 7 touchpoints (pre-work + 3 วัน on-site + 30-day follow-up) · Triple Guarantee · Bundled with Retainer ฿225K (save ฿30K) · Founding Cohort first 5 clients = ฿95K + Inner Circle Lifetime ฟรี
 
-## FAQ (13 long-tail answers)
+### Tier 3 — Retainer
+- Monthly Consulting — ฿45-50K/mo · 2 sessions + 1 AI workflow จับมือทำใหม่/เดือน + async LINE support · locked rate ฿30K สำหรับลูกค้าเก่า
 
-- https://punnattapatch.com/faq: รวม Q&A ที่เจ้าของ SME ถามบ่อย
-- ที่ปรึกษาการขาย B2B กรุงเทพราคาเท่าไหร่, AI workshop เตรียมอะไร, Commission structure ทีม 10 คน, AI Agent vs chatbot, KPI dashboard บน Sheets, Payment terms, Discovery call ฟรี, Team maintain หลัง handover, consultant vs agency, ไม่เก่ง tech ใช้ AI ได้, public course, ปันช่วยธุรกิจแบบไหน
+### Horizontal Products
+- Trust Content for TikTok (bespoke) — ฿59,900 · Pillar tailoring + 3 คลิปถ่ายโดย Pun + ทีม + 1-on-1 visit · https://punnattapatch.com/services/trust-content-tiktok-workshop
+- Inner Circle (annual membership) — ฿19,900/ปี (Founding Lifetime ฿14,900 one-time) · Monthly Office Hour + Private Community + Quarterly meetup + AI Template library
+
+### Public Training (Individual enrollment · Founding Cohort #1)
+- P1 — AI Quick Launch — ฿11,900 Founding (฿14,900 standard) / 1 วัน · max 12 · Sat 17 พ.ค. 2026 · https://punnattapatch.com/training/p1-ai-workshop-1-day
+- P4 — Sales Mastery — ฿16,900 Founding (฿19,900 standard) / 2 วัน · max 12 · 31 พ.ค.-1 มิ.ย. 2026 · https://punnattapatch.com/training/p4-sales-training-2-day
+- P5 — Sales Team Builder — ฿27,900 Founding (฿34,900 standard) / 2 weekends + graduation dinner · max 8 · 14-22 มิ.ย. 2026 · https://punnattapatch.com/training/p5-sales-team-builder-8-day
+
+## Case Studies (3 anonymized · real numbers + methodology)
+
+- [Forklift Distributor 5-person team](https://punnattapatch.com/case-studies/forklift-distributor-5-person-team): AI workflow installation · Sales +30% Q1 · software cost -97% · report 2hr→15min · ROI 6.9x year 1
+- [Manufacturing B2B 12-person team](https://punnattapatch.com/case-studies/manufacturing-b2b-12-person-team): Pipeline velocity +30% · discount rate 15%→7% · inquiry response 2 days→15 min · margin +15% · saving ฿3.8M/year
+- [Real Estate Developer sales team restructure](https://punnattapatch.com/case-studies/real-estate-developer-sales-team-restructure): Commission redesign 3-tier · retention 100% 12 months · revenue per rep +45% · turnover cost saved ฿900K
+
+## Pillar Articles (long-form guides · Thai)
+
+- [Sales Consulting Guide 2026](https://punnattapatch.com/insights/sales-consulting-guide-2026): 5 Red Flags ก่อนจ่ายที่ปรึกษาการขายก้อนใหญ่
+- [AI Transformation for Sales SME](https://punnattapatch.com/insights/ai-transformation-sales): 5 ขั้นที่ SME ไทยทำเองได้
+- [Agentic AI SME Thailand — เริ่ม Agent ตัวแรก](https://punnattapatch.com/insights/agentic-ai-sme-thailand-start): พนักงานดิจิทัล 24/7 งบ ฿1,000/เดือน · roadmap 4 สัปดาห์
+- [Is Your Org Using AI for Real?](https://punnattapatch.com/insights/is-your-org-using-ai-for-real): 10 คำถามเช็ค vs ใช้ ChatGPT ตอบ email
+
+## Cluster Articles (deep-dives linked to pillars)
+
+- [Lookrak Kills SME Teams](https://punnattapatch.com/insights/lookrak-kills-sme-teams): 80% คนเก่งลาออกเพราะ "ลูกรัก" ไม่ใช่เงิน
+- [Mere Exposure Effect in B2B Sales](https://punnattapatch.com/insights/mere-exposure-effect-b2b-sales): ทำไมคู่แข่งสเปคแย่กว่าได้ดีลมากกว่า · ความลับตั้งแต่ปี 1968
+- [4 Wheels of Business Framework](https://punnattapatch.com/insights/4-wheels-of-business-framework): ทดสอบ SME ด้วย "รถธุรกิจ 4 ล้อ" ใน 10 นาที
+
+## FAQ (18 long-tail answers)
+
+- [FAQ index](https://punnattapatch.com/faq): รวม Q&A เจ้าของ SME ถามบ่อย
+- Topics: ที่ปรึกษาการขาย B2B กรุงเทพราคา · AI workshop เตรียมอะไร · Commission structure ทีม 10 คน · AI Agent vs chatbot · KPI dashboard Sheets · Payment upfront · Discovery call ฟรี · Team maintain หลัง handover · consultant vs AI agency · ไม่เก่ง tech ใช้ AI ได้ · public course ทำไมไม่มี · ปันช่วยธุรกิจแบบไหน · Sales training 2 วัน content · SME AI budget ปีแรก · CRM SME Thai B2B · Workshop vs Consulting · Team resist AI · Where to start AI transformation
 
 ## Channels
 
@@ -38,11 +71,21 @@
 - LINE Official: https://lin.ee/ioSnSUG
 - Email: r.nattapatch@gmail.com
 
-## Policies
+## Policies & Operating Principles
 
-- Payment: 100% upfront — ไม่มีข้อยกเว้น (ทั้งสองฝ่าย commit ตั้งแต่วันแรก)
-- Contract: ไม่มี lock-in ยาว
-- Technology: Claude Code + n8n + Google Apps Script — ไม่ vendor lock-in, team maintain ต่อเองได้
-- Location: Bangkok, Thailand (on-site ต่างจังหวัดคำนวณค่าเดินทางแยก)
-- Target: SME รายได้ 30-200M THB, ทีมขาย 5-20 คน, B2B relationship-based
-- Handover: Team lead training + Handover checklist + Screen recording + Async LINE support 30 วัน
+- Payment: 100% upfront — ไม่มีข้อยกเว้น · ทั้งสองฝ่าย commit ตั้งแต่วันแรก
+- Contract: ไม่มี lock-in ยาว · Monthly Retainer ยกเลิกได้ทุกเดือน
+- Technology stack: Claude Code + n8n + Google Apps Script — ไม่ vendor lock-in · team maintain ต่อเองได้
+- Location: Bangkok, Thailand — on-site ต่างจังหวัดคำนวณค่าเดินทางแยก
+- Target audience: SME รายได้ ฿30-200M THB · ทีมขาย 5-20 คน · B2B relationship-based industries
+- Handover (ทุก engagement): Team lead training + Handover checklist + Screen recording + 30-day async LINE support
+- Guarantee policy per program: ทุก Public Training มี outcome guarantee · Tier 2 Agentic AI Transformation มี Triple Guarantee (refund if any 1 of 3 criteria fails)
+- Alumni perks: Public Training alumni ได้ 15% off Tier 2 Advisory · Inner Circle Founding Lifetime ฿14,900 one-time
+
+## Differentiation (Why Pun)
+
+- Agentic AI Consultant คนแรกของไทย (category creator)
+- 4 skills intersect: AI Build + Sales Consulting + Content + SME Thai fluency
+- ปรึกษา + ลงมือจับมือทำจนเสร็จ — ไม่ใช่แค่สอนแล้วให้ไปทำเอง
+- 100M+ THB sales managed across 10+ SME clients · 40%+ average sales uplift
+- 5 ปีประสบการณ์ field sales ก่อนเปิด consulting full-time
