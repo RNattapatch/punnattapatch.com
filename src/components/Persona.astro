@@ -1,0 +1,73 @@
+---
+/**
+ * Persona.astro — Single persona card (3-column grid on desktop).
+ *
+ * Implements Pakorn model landing page Section 2 — "Workshop นี้เหมาะกับใคร"
+ * Self-identification card that lets prospect match their role to the product.
+ *
+ * Usage:
+ *   <Persona
+ *     icon="building-2"
+ *     role="เจ้าของธุรกิจ SME"
+ *     scope="รายได้ ฿30-200M · ทีมขาย 5-20 คน"
+ *     pain="ทีมใช้เวลา 60% กับ proposal/research"
+ *     outcome="คืนเวลาเจ้าของ 1-2 ชม/วัน + ระบบให้ทีมทำเองได้"
+ *   />
+ */
+interface Props {
+  icon: string; // Lucide icon name (just for visual hint — use emoji fallback)
+  emoji?: string; // Optional emoji if not using icon lib
+  role: string;
+  scope: string;
+  pain: string;
+  outcome: string;
+  accent?: 'coral' | 'cyan' | 'emerald' | 'violet';
+}
+
+const {
+  icon: _icon,
+  emoji = '👤',
+  role,
+  scope,
+  pain,
+  outcome,
+  accent = 'coral',
+} = Astro.props;
+
+const accentVar =
+  accent === 'cyan'    ? 'var(--color-pun-cyan)' :
+  accent === 'emerald' ? 'var(--color-pun-emerald)' :
+  accent === 'violet'  ? 'var(--color-pun-violet)' :
+                         'var(--color-pun-coral)';
+---
+
+<article
+  class="persona-card relative h-full rounded-2xl border border-base-content/10 bg-base-100/60 p-6 transition hover:-translate-y-1 hover:shadow-lg"
+  style={`--persona-accent: ${accentVar};`}
+>
+  <div
+    class="absolute inset-x-0 top-0 h-[2px] opacity-60"
+    style="background: linear-gradient(to right, transparent, var(--persona-accent), transparent);"
+  ></div>
+
+  <div
+    class="flex h-12 w-12 items-center justify-center rounded-2xl"
+    style="background: color-mix(in oklch, var(--persona-accent) 15%, transparent);"
+  >
+    <span class="text-2xl">{emoji}</span>
+  </div>
+
+  <h3 class="mt-4 font-display text-lg font-bold">{role}</h3>
+  <p class="mt-1 text-xs text-base-content/55">{scope}</p>
+
+  <div class="mt-5 space-y-3 text-sm">
+    <div>
+      <p class="text-[10px] font-bold uppercase tracking-widest text-rose-500/80">ปัญหาที่เจอ</p>
+      <p class="mt-1 leading-relaxed text-base-content/80">{pain}</p>
+    </div>
+    <div>
+      <p class="text-[10px] font-bold uppercase tracking-widest" style="color: var(--persona-accent);">สิ่งที่ได้</p>
+      <p class="mt-1 leading-relaxed text-base-content/80">{outcome}</p>
+    </div>
+  </div>
+</article>

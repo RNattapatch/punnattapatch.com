@@ -132,9 +132,9 @@ export const SERVICES = [
 ] as const;
 
 export const PROOF_STATS = [
-  { value: '10+', label: 'Active Clients' },
-  { value: '100M+', label: 'Thai Baht (Sales Managed)' },
-  { value: '40%+', label: 'Average Sales Uplift' },
+  { value: '10+', label: 'Active Clients', note: '฿30-200M revenue each · B2B relationship-based' },
+  { value: '฿100M+', label: 'Sales Managed', note: 'Cumulative since 2025 · verified quarterly reports · anonymized per NDA' },
+  { value: '+40%', label: 'Average Sales Uplift', note: 'Range 25-55% by industry · n=10 · directional signal (not peer-reviewed study)' },
 ] as const;
 
 export const SERVICE_TIERS_SUMMARY = {

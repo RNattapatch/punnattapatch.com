@@ -1,0 +1,94 @@
+---
+/**
+ * CaseCard.astro — Compact case study card for cross-linking from service/training pages.
+ *
+ * Reads from the `case-analysis` content collection by slug, displays
+ * title + outcome summary + link to full case page.
+ *
+ * Usage:
+ *   <CaseCard slug="forklift-distributor-5-person-team" />
+ *   <CaseCard slug="manufacturing-b2b-12-person-team" accent="emerald" />
+ */
+import { getEntry } from 'astro:content';
+
+interface Props {
+  slug: string;
+  accent?: 'coral' | 'cyan' | 'emerald';
+}
+
+const { slug, accent = 'coral' } = Astro.props;
+const entry = await getEntry('case-analysis', slug);
+
+if (!entry) {
+  throw new Error(`CaseCard: case-analysis/${slug} not found`);
+}
+
+const data = entry.data;
+const accentVar =
+  accent === 'cyan'    ? 'var(--color-pun-cyan)' :
+  accent === 'emerald' ? 'var(--color-pun-emerald)' :
+                         'var(--color-pun-coral)';
+---
+
+<a
+  href={`/case-studies/${slug}`}
+  class="case-card group relative block h-full overflow-hidden rounded-2xl border border-base-content/10 bg-base-100/60 p-6 no-underline transition hover:-translate-y-1 hover:shadow-lg"
+  style={`--case-accent: ${accentVar};`}
+>
+  <div
+    class="absolute inset-x-0 top-0 h-[2px] opacity-60 transition group-hover:opacity-100"
+    style="background: linear-gradient(to right, transparent, var(--case-accent), transparent);"
+  ></div>
+
+  <div class="flex items-center gap-2">
+    <span
+      class="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest"
+      style="background: color-mix(in oklch, var(--case-accent) 15%, transparent); color: var(--case-accent);"
+    >
+      Case Study
+    </span>
+    {
+      data.industry && (
+        <span class="text-[10px] text-base-content/55">· {data.industry}</span>
+      )
+    }
+  </div>
+
+  <h3
+    class="mt-3 font-display text-base font-bold leading-tight transition group-hover:underline md:text-lg"
+    style="color: var(--color-base-content);"
+  >
+    {data.title}
+  </h3>
+
+  {
+    data.outcome && (
+      <p class="mt-3 text-xs font-semibold leading-relaxed" style="color: var(--case-accent);">
+        {data.outcome}
+      </p>
+    )
+  }
+
+  <p class="mt-3 text-xs leading-relaxed text-base-content/75">
+    {data.description}
+  </p>
+
+  {
+    data.companySize && (
+      <p class="mt-4 text-[10px] text-base-content/50">
+        <span class="font-semibold">Scope:</span> {data.companySize}
+      </p>
+    )
+  }
+
+  <div class="mt-4 flex items-center justify-between text-xs">
+    <span class="font-semibold transition group-hover:underline" style="color: var(--case-accent);">
+      อ่าน case เต็ม →
+    </span>
+    {
+      data.anonymized && (
+        <span class="text-[10px] text-base-content/45">Anonymized per NDA</span>
+      )
+    }
+  </div>
+</a>

@@ -1,0 +1,99 @@
+---
+/**
+ * BeforeAfter.astro — Annotated Before/After metric with event + caveat.
+ *
+ * Implements chartosaur's data viz principles on trust-compounding metrics:
+ * - Show the story (not just the delta) → event annotation
+ * - Show the transparency → caveat footer
+ * - Show the confidence → range/variance
+ *
+ * Usage:
+ *   <BeforeAfter
+ *     label="ยอดขาย Q1 2026"
+ *     before={{ value: "฿3M/mo", note: "เฉลี่ย Q4 2025" }}
+ *     after={{ value: "฿3.9M/mo", note: "+30% YoY" }}
+ *     event="AI Agent deployed 15 ม.ค. 2026"
+ *     caveat="Client anonymized · ±5% quarterly variation"
+ *   />
+ */
+interface Props {
+  label: string;
+  before: { value: string; note?: string };
+  after: { value: string; note?: string };
+  event?: string;
+  caveat?: string;
+  accent?: 'coral' | 'emerald' | 'navy';
+}
+
+const {
+  label,
+  before,
+  after,
+  event,
+  caveat,
+  accent = 'coral',
+} = Astro.props;
+
+const accentColor =
+  accent === 'emerald' ? 'var(--color-pun-emerald)' :
+  accent === 'navy'    ? 'var(--color-pun-navy)' :
+                         'var(--color-pun-coral)';
+---
+
+<div
+  class="beforeafter rounded-2xl border border-base-content/10 bg-base-100/60 p-6 shadow-sm"
+  style={`--ba-accent: ${accentColor};`}
+>
+  <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">{label}</p>
+
+  <div class="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+    {/* Before */}
+    <div class="text-center">
+      <p class="text-[10px] uppercase tracking-widest text-base-content/50">Before</p>
+      <p class="mt-1 font-display text-2xl font-bold text-base-content/75 md:text-3xl">
+        {before.value}
+      </p>
+      {before.note && <p class="mt-1 text-xs text-base-content/55">{before.note}</p>}
+    </div>
+
+    {/* Arrow */}
+    <div class="flex flex-col items-center">
+      <div
+        class="flex h-10 w-10 items-center justify-center rounded-full"
+        style="background: color-mix(in oklch, var(--ba-accent) 18%, transparent);"
+      >
+        <span class="font-bold" style="color: var(--ba-accent);">→</span>
+      </div>
+    </div>
+
+    {/* After */}
+    <div class="text-center">
+      <p class="text-[10px] uppercase tracking-widest" style="color: var(--ba-accent);">After</p>
+      <p class="mt-1 font-display text-3xl font-bold md:text-4xl" style="color: var(--ba-accent);">
+        {after.value}
+      </p>
+      {after.note && <p class="mt-1 text-xs text-base-content/55">{after.note}</p>}
+    </div>
+  </div>
+
+  {/* Event annotation — the "so what" */}
+  {
+    event && (
+      <div class="mt-5 flex items-start gap-2 rounded-lg bg-base-200/50 p-3">
+        <span class="mt-0.5 text-xs" style="color: var(--ba-accent);">★</span>
+        <p class="text-xs leading-relaxed text-base-content/75">
+          <span class="font-semibold">Event:</span> {event}
+        </p>
+      </div>
+    )
+  }
+
+  {/* Caveat — show the limitations */}
+  {
+    caveat && (
+      <p class="mt-3 text-[10px] text-base-content/50">
+        <span class="font-semibold">Note:</span> {caveat}
+      </p>
+    )
+  }
+</div>
