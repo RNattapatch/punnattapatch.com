@@ -29,7 +29,7 @@ Sale Training Bundle 2 วันของผม [฿50,000 · Early Bird ฿44,9
 - Workshop สร้าง solution deck ขนาด 1 หน้าสำหรับนำเสนอให้ลูกค้ารายใหม่
 
 **Module 4 (14:45-16:30): ส่งมอบผลลัพธ์ Day 1**
-- ทีมได้รับ pain discovery playbook
+- ทีมได้รับ pain discovery playbook (คู่มือการค้นหา Pain Point)
 - ได้รับเทมเพลต solution mapping
 - มอบหมายการบ้านสำหรับ Day 2 คือการนำสิ่งที่เรียนไปทดลองใช้กับลูกค้ารายจริง 1 ราย
 
@@ -40,7 +40,7 @@ Sale Training Bundle 2 วันของผม [฿50,000 · Early Bird ฿44,9
 - Functional = คุ้มค่าเงิน · Emotional = รู้สึกปลอดภัย · Social = ได้รับการยอมรับจากคนรอบข้าง (peer)
 - ฝึก Drill เพื่อค้นหาเหตุผล 3 layer ในการตัดสินใจของลูกค้ารายจริง 5 ราย
 
-**Module 6 (10:45-12:00): Handle Objection โดยไม่ลดราคา**
+**Module 6 (10:45-12:00): Handle Objection (การรับมือข้อโต้แย้งของลูกค้า) โดยไม่ลดราคา**
 - ศึกษา 7 Objection pattern ที่เจอบ่อยในตลาด B2B ไทย ("แพงไป", "ลองคุยกับเจ้าอื่นก่อน", "เดือนหน้าคุย", ฯลฯ)
 - ฝึกใช้ Script response ที่เปลี่ยนมุมมอง (reframe) ของลูกค้าให้กลับมาที่ value ไม่ใช่ price
 - Role-play รอบที่ 2 ฝึกให้คู่สนทนาตั้งใจยกข้อโต้แย้ง (object) 3 ครั้ง จนกว่าอีกฝ่ายจะสามารถ reframe กลับมาที่ value ได้สำเร็จ
@@ -50,25 +50,25 @@ Sale Training Bundle 2 วันของผม [฿50,000 · Early Bird ฿44,9
 - เรียนรู้ 'ทางลัด' ที่ไม่ควรใช้ เช่น discount close, fake urgency, scarcity manipulation
 - Role-play รอบที่ 3 ฝึกปิดการขายเต็มขั้นตอน ใช้เวลา 10 นาทีต่อรอบ จำนวน 3 รอบ
 
-**Module 8 (14:45-16:30): Post-training KPI Tracking**
-- ได้รับ 30-day tracking template สำหรับวัด closing rate, discount rate, average deal size
+**Module 8 (14:45-16:30): Post-training KPI (ตัววัดผลงาน) Tracking**
+- ได้รับ 30-day tracking template สำหรับวัด closing rate (อัตราปิดการขาย), discount rate, average deal size
 - รู้ว่า Metric ใดที่ควรดู และ metric ใดที่อาจทำให้เข้าใจผิด (misleading)
-- ส่งมอบเอกสารประกอบทั้งหมด (Handover documentation)
+- ส่งมอบเอกสารประกอบทั้งหมด (handover)
 
 ## สิ่งที่ได้กลับหลัง 2 วัน
 
 - Pain discovery playbook (1-page per customer segment)
 - Objection handling script library (7 patterns)
 - Closing technique decision tree
-- Post-training KPI dashboard template
+- Post-training KPI dashboard (หน้าจอสรุปข้อมูล KPI) template
 - Video recording จากช่วง Role-play (หากทีมตกลง) สำหรับเปิดดูทบทวน
 - LINE support 14 วันหลัง training
 
-## KPI ที่ client ส่วนใหญ่เห็นหลัง 2 เดือน
+## KPI ที่ลูกค้าส่วนใหญ่เห็นหลัง 2 เดือน
 
 - Closing rate เพิ่มขึ้น 20-40%
-- Discount rate ลดลง 30-50% (ทำให้ margin กลับมา)
-- Average deal size เพิ่มขึ้น เพราะทีมสามารถขายแบบ bundle หรือ premium tier ได้
+- Discount rate ลดลง 30-50% (ทำให้ margin (กำไรขั้นต้น) กลับมา)
+- Average deal size เพิ่มขึ้น เพราะทีมสามารถขายแบบ bundle (แพ็คเกจรวม) หรือ premium tier ได้
 - Sales cycle สั้นลง 20-30% เนื่องจากลูกค้าตัดสินใจเร็วขึ้นเมื่อเข้าใจ value ชัดเจน
 
 ## ข้อแม้

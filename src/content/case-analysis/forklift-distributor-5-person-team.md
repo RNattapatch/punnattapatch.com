@@ -17,7 +17,7 @@ anonymized: true
 
 ## ปัญหาที่เจอก่อนเริ่มงาน
 
-เจ้าของทำธุรกิจมา 8+ ปี ยอดขายโตปีละ 10-15% แต่ margin ลดลง และเจ้าของเหนื่อยขึ้นเรื่อยๆ
+เจ้าของทำธุรกิจมา 8+ ปี ยอดขายโตปีละ 10-15% แต่ margin (กำไรขั้นต้น) ลดลง และเจ้าของเหนื่อยขึ้นเรื่อยๆ
 
 **3 ปัญหาหลัก:**
 
@@ -33,22 +33,22 @@ anonymized: true
 
 **Session 1 (1 วัน):** AI Day Workshop ฿30,000
 - ทีม 5 คน + เจ้าของ เข้าเต็มวัน 6 ชั่วโมง
-- Build AI workflow แรก: weekly report automation
+- Build AI workflow (ขั้นตอนการทำงาน) แรก: weekly report automation
 - Output: สคริปต์ที่ดึงข้อมูลจาก Google Sheets → generate summary → ส่ง LINE เจ้าของทุกเช้าจันทร์ 8:00
 - Measured outcome ในห้อง: 2 ชั่วโมง → 15 นาที (เวลาที่ senior sales rep ใช้)
 
 ### เดือน 2: Sales System Sprint
 
 **Session 2-5 (รายสัปดาห์):** ฿65,000
-- วาง KPI dashboard (Google Sheets + Apps Script) ทีมเห็นตัวเองและเพื่อนร่วมทีม real-time
-- ออกแบบ Commission calculator ใหม่ — tier-based auto-compute
+- วาง KPI (ตัววัดผลงาน) dashboard (หน้าจอสรุปข้อมูล) (Google Sheets + Apps Script) ทีมเห็นตัวเองและเพื่อนร่วมทีม real-time
+- ออกแบบ Commission calculator ใหม่ — ใช้ commission tier (ขั้นคอมมิชชั่น) และคำนวณอัตโนมัติ
   - 80-100% quota = 3%
   - 100-120% = 5%
   - 120%+ = 8%
-- Build n8n workflow 2 ตัว: lead qualifier + proposal generator
+- Build n8n workflow 2 ตัว: lead (รายชื่อลูกค้าที่สนใจ) qualifier + proposal (ใบเสนอราคา) generator
 - Train team lead + IT ดูแลระบบต่อเอง
 
-### เดือน 3: Handover + Coaching
+### เดือน 3: Handover (ส่งมอบระบบ) + Coaching
 
 **Session 6-8 (รายสัปดาห์):** รวมใน sprint
 - Train ทีมใช้ tool เองโดยไม่ต้องผม
@@ -81,15 +81,15 @@ anonymized: true
 ### Sales performance
 
 - **Q1 ต่อไปหลัง handover:** ยอดขาย +30% YoY
-- **Closing rate:** 18% → 25% (เซลล์มีเวลาไป follow up มากขึ้น)
+- **Closing rate (อัตราปิดการขาย):** 18% → 25% (เซลล์มีเวลาไป follow-up (ติดตามลูกค้า) มากขึ้น)
 - **Discount rate:** 15% → 8% (commission tier ใหม่จูงใจปิดราคาเต็ม)
-- **Team retention:** 0 turnover ใน 6 เดือนหลัง (ก่อนหน้านี้เซลล์เก่งลาออก 1 คน)
+- **Team retention (รักษาพนักงาน):** 0 turnover ใน 6 เดือนหลัง (ก่อนหน้านี้เซลล์เก่งลาออก 1 คน)
 
 ### คำ feedback จากเจ้าของ (quoted)
 
 > "เซลล์เลิกใช้ส่วนลดปิดดีล เปลี่ยนมาคุยเรื่องคุณค่าที่ลูกค้าได้ ส่วนงาน report ที่เคยทำมือ ตอนนี้ AI ทำให้ พนักงานเลยมีเวลาคิดวิธีใหม่ๆ ให้ลูกค้ามากขึ้น"
 
-## Stack ที่ใช้ (maintain ต่อเองได้หลังจบ)
+## Stack (ชุดเครื่องมือ) ที่ใช้ (maintain ต่อเองได้หลังจบ)
 
 - **Google Sheets + Apps Script** — Data layer + automation logic (ทีมใช้เป็นอยู่แล้ว)
 - **n8n cloud** ฿700/เดือน — Workflow orchestration
@@ -98,7 +98,7 @@ anonymized: true
 
 **ไม่ใช้:** Enterprise CRM SaaS, BI platform license, custom AI training, proprietary automation SaaS
 
-## Total investment vs ROI
+## Total investment vs ROI (ผลตอบแทนการลงทุน)
 
 - **Investment:** ฿95,000 (Workshop ฿30k + Sprint ฿65k) + ฿3,000/เดือน ค่า tool
 - **Saving per year:** ฿340,000 (software) + ฿318,000 (time × 12 mo) = **฿658,000**
@@ -107,9 +107,9 @@ anonymized: true
 
 ## อ่านต่อ
 
-- [Pillar: AI Transformation for Sales](/insights/ai-transformation-sales) — 5 ขั้นที่ client นี้ผ่าน
-- [Pillar: Agentic AI SME Start](/insights/agentic-ai-sme-thailand-start) — วิธีเริ่ม Agent ตัวแรก (เหมือนที่เริ่มกับ client นี้)
-- [Commission structure ทีม 10 คน](/faq) — 3-tier formula ที่ใช้วางให้ client นี้
+- [Pillar: AI Transformation for Sales](/insights/ai-transformation-sales) — 5 ขั้นที่ลูกค้ารายนี้ผ่าน
+- [Pillar: Agentic AI SME Start](/insights/agentic-ai-sme-thailand-start) — วิธีเริ่ม Agent ตัวแรก (เหมือนที่เริ่มกับลูกค้ารายนี้)
+- [Commission structure ทีม 10 คน](/faq) — 3-tier formula ที่ใช้วางให้ลูกค้ารายนี้
 - [KPI dashboard บน Google Sheets](/faq) — ตัว dashboard ที่ build ให้
 
 ## อยากได้ผลลัพธ์แบบนี้ไหม?
@@ -117,4 +117,4 @@ anonymized: true
 - [Advance AI Workshop ฿24,900](/services/ai-workshop) — 1 วัน build automation ตัวแรก
 - [Sales System Sprint ฿65,000](/services/sales-system-sprint) — 1 เดือน วางระบบครบ (KPI + Commission + workflow)
 - [BOSI DNA Quiz](/bosi-dna-quiz) — รู้ DNA ทีมก่อนเริ่ม
-- [กรอกฟอร์ม 3 นาที](/intake-form) — ผมอ่านแล้วบอกว่าเคสคุณเหมือน/ต่างจาก client นี้ยังไง
+- [กรอกฟอร์ม 3 นาที](/intake-form) — ผมอ่านแล้วบอกว่าเคสคุณเหมือน/ต่างจากลูกค้ารายนี้ยังไง

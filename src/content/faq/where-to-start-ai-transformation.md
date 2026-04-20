@@ -2,7 +2,7 @@
 title: "เริ่ม AI Transformation ฝ่ายขายควรเริ่มจากไหน"
 description: "5-step roadmap เริ่ม AI Transformation ฝ่ายขายสำหรับ SME ไทย เริ่มจาก audit งาน manual ของทีม ไม่ใช่ซื้อ ChatGPT Team ก่อน"
 question: "เริ่ม AI Transformation ฝ่ายขายควรเริ่มจากไหน"
-answerSummary: "เริ่มจาก audit ว่าทีมขายเสียเวลากับงาน manual อะไรกี่นาทีต่อสัปดาห์ ก่อนซื้อ tool ใดๆ. เลือก 1 workflow ที่มี ROI ชัดสุด build ให้รันได้ใน 2 สัปดาห์ วัดผล แล้วค่อยขยาย ห้ามซื้อ enterprise AI platform ตั้งแต่ยังไม่ audit"
+answerSummary: "Audit งาน manual ของทีมขายก่อนซื้อ tool. เลือก 1 workflow ROI ชัดสุด build ใน 2 สัปดาห์ วัดผลแล้วขยาย. ห้ามซื้อ enterprise AI platform ถ้ายังไม่ audit."
 lang: th
 published: 2026-04-18
 draft: false

@@ -19,7 +19,7 @@ anonymized: true
 
 ใน 6 เดือนก่อนหน้า เสียเซลล์เก่ง 3 คน (33% ของทีม) คนที่ออกไปเป็น top performer ที่ขายยูนิตใหญ่ได้เสมอ
 
-**สาเหตุหลัก:** Commission structure flat 3% สำหรับทุกคน ไม่มี tier ไม่มี cap ไม่มี team bonus
+**สาเหตุหลัก:** โครงสร้าง Commission (ค่าคอมมิชชั่น) แบบ flat 3% สำหรับทุกคน ไม่มี tier (ขั้น) ไม่มี cap ไม่มี team bonus
 
 **ผลกระทบของ flat commission:**
 - Top performer ขายยูนิต premium ฿8M ได้ = commission ฿240,000
@@ -33,7 +33,7 @@ anonymized: true
 ### Week 1: Discovery + Data Audit
 
 - สัมภาษณ์ทีมขาย 8 คน individually (ถาม pain + motivation + fair-ness perception)
-- Data audit: ดู performance 12 เดือนย้อนหลัง แยก rep, unit size, closing rate
+- Data audit (ตรวจสอบข้อมูล): ดู performance 12 เดือนย้อนหลัง แยก rep, unit size, closing rate (อัตราปิดการขาย)
 - เจอ pattern สำคัญ: top 20% ของทีมสร้าง 65% ของ revenue — ระบบ flat ทำให้เขาถูก "ดึงลงมาเฉลี่ย"
 
 ### Week 2: Redesign Commission Structure (3-Tier)
@@ -62,7 +62,7 @@ anonymized: true
 
 **KPI Dashboard (Google Sheets + Apps Script):**
 - Real-time view ของ quota vs actual รายคน
-- Dashboard เปิดให้ทุกคนในทีมดู (ทั้งของตัวเอง + เพื่อนร่วมทีม)
+- Dashboard (หน้าจอสรุปข้อมูล) เปิดให้ทุกคนในทีมดู (ทั้งของตัวเอง + เพื่อนร่วมทีม)
 - Update ทุก 15 นาทีจาก input sales rep
 
 **Commission Calculator:**
@@ -74,12 +74,12 @@ anonymized: true
 
 - All-hands meeting: ประกาศระบบใหม่ + explain rationale
 - Workshop 1 วัน: ให้ทีมลองคำนวณ commission ด้วย dashboard ใหม่
-- Q&A + objection handling จาก junior ที่กังวล (ส่วนใหญ่กังวล "จะได้ commission น้อยลงไหม")
+- Q&A + การรับมือ objection (ข้อโต้แย้งของลูกค้า) จาก junior ที่กังวล (ส่วนใหญ่กังวล "จะได้ commission น้อยลงไหม")
 - Commit: ใช้ระบบใหม่ 3 เดือน หลังจากนั้น review + tweak
 
 ## ผลลัพธ์หลัง 12 เดือน
 
-### Team Retention
+### Team Retention (การรักษาพนักงาน)
 
 - **Turnover rate:** 35% (ปี 0) → **0%** (ปี 1 หลัง implement)
 - Top performer stay rate: 2/3 ที่เหลือ stay 100% ของปี
@@ -87,7 +87,7 @@ anonymized: true
 
 ### Sales Performance
 
-| Metric | ก่อน (baseline) | หลัง 12 เดือน | Change |
+| Metric | ก่อน (baseline/ค่าตั้งต้น) | หลัง 12 เดือน | Change |
 |---|---|---|---|
 | Revenue per rep | ฿22M/ปี | ฿32M/ปี | +45% |
 | Top 3 performers revenue share | 55% | 70% | เข้มข้นขึ้น (top pull harder) |
@@ -104,16 +104,16 @@ anonymized: true
 **Junior quote:**
 > "ตอนแรกกลัวว่าระบบใหม่จะทำให้ได้ commission น้อยลง แต่พอเห็น top performer ช่วยผม close ดีลเพื่อ team bonus ก็เข้าใจ — เราอยู่ทีมเดียวกันจริงๆ"
 
-### Margin Impact
+### ผลกระทบต่อ Margin (กำไรขั้นต้น)
 
-- ไม่มี turnover cost (฿300,000/คนที่ต้อง replace + train ใหม่ 6 เดือน) × 3 คน = **saved ฿900,000**
+- ไม่มี turnover cost (฿300,000/คนที่ต้อง replace + train ใหม่ 6 เดือน) × 3 คน = **ประหยัดไป ฿900,000**
 - Top performer ไม่ออก = ไม่เสีย relationship กับลูกค้าเก่า (2 คนใน 3 ที่ออกเคยชวนลูกค้าไปเจ้าอื่น)
 - Opportunity cost ที่ประหยัดได้: ~฿5M ของ revenue ปีที่ 2 ที่จะไม่ได้ถ้าเสียคนอีก
 
 ## Lessons สำหรับ SME ธุรกิจอสังหา / B2B อื่น
 
 **1. Flat commission = ระเบิดเวลา**
-ทุกอุตสาหกรรมที่ deal size ต่างกันมากๆ (เช่น อสังหา B2B manufacturing) ห้ามใช้ flat — top performer จะ burn out แล้วออก
+ทุกอุตสาหกรรมที่ deal size ต่างกันมากๆ (เช่น อสังหา B2B manufacturing) ห้ามใช้ flat — top performer จะ burn out (หมดไฟ) แล้วออก
 
 **2. Transparency กว่า Secrecy**
 เปิด dashboard ให้ทีมดูของเพื่อน = สร้าง healthy competition + กระตุ้น junior
@@ -127,13 +127,13 @@ Team bonus = top performer ยอมช่วย junior เพราะมัน
 ประกาศ "ระบบใหม่" โดยไม่อธิบาย = ทีมคิดว่าถูกลด
 แจง formula + math ให้ทุกคนคำนวณเอง = buy-in สูงสุด
 
-## Stack ที่ใช้
+## Stack (ชุดเครื่องมือ) ที่ใช้
 
 - **Google Sheets + Apps Script** — Dashboard + Commission calculator
 - **n8n cloud** ฿700/เดือน — Trigger + notification
 - **LINE group** — Team communication
 
-## Total Investment vs ROI
+## Total Investment vs ROI (ผลตอบแทนการลงทุน)
 
 - **Investment:** Sales System Sprint ฿65,000 (1 เดือน)
 - **Tool cost/เดือน:** ฿700 (n8n only)
@@ -143,12 +143,12 @@ Team bonus = top performer ยอมช่วย junior เพราะมัน
 
 ## อ่านต่อ
 
-- [Pillar: Sales Consulting Guide 2026](/insights/sales-consulting-guide-2026) — วิธีเลือกที่ปรึกษาแบบที่ client นี้เลือกผม
+- [Pillar: Sales Consulting Guide 2026](/insights/sales-consulting-guide-2026) — วิธีเลือกที่ปรึกษาแบบที่ลูกค้ารายนี้เลือกผม
 - [Cluster: 'ลูกรัก' ทำ SME เสียคนเก่ง](/insights/lookrak-kills-sme-teams) — ถ้าระบบไม่ fair ทีมจะลาออก (case นี้เป็นตัวอย่างชัด)
-- [Commission structure ทีม 10 คน](/faq) — formula แบบเดียวกับที่ใช้กับ client นี้ (ปรับตาม deal size)
+- [Commission structure ทีม 10 คน](/faq) — formula แบบเดียวกับที่ใช้กับลูกค้ารายนี้ (ปรับตาม deal size)
 
 ## อยากได้ผลลัพธ์แบบนี้ไหม?
 
-- [Sales System Sprint ฿65,000](/services/sales-system-sprint) — Workflow เดียวกับ client นี้ใน 1 เดือน
-- [Sale Training Bundle ฿50,000](/services/sale-training-bundle) — ถ้าต้องการฝึกทีมก่อน redesign commission
+- [Sales System Sprint ฿65,000](/services/sales-system-sprint) — Workflow (ขั้นตอนการทำงาน) เดียวกับลูกค้ารายนี้ใน 1 เดือน
+- [Sale Training Bundle (แพ็คเกจรวมการฝึกอบรม) ฿50,000](/services/sale-training-bundle) — ถ้าต้องการฝึกทีมก่อน redesign commission
 - [กรอกฟอร์ม 3 นาที](/intake-form) — ผมอ่านแล้วบอกว่าเคสคุณควรเริ่มที่ตัวเลขเท่าไหร่
