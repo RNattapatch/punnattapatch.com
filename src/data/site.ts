@@ -35,7 +35,7 @@ export const SITE = {
     { label: 'บทเรียน 100 ล้าน', href: '/insights' },
     { label: 'FAQ', href: '/faq' },
     { label: 'เกี่ยวกับปัน', href: '/about' },
-    { label: 'ประเมินปัญหา', href: '/intake-form', cta: true },
+    { label: 'นัดคุยกับผม', href: '/intake-form', cta: true },
   ],
 } as const;
 
@@ -118,9 +118,9 @@ export const SERVICES = [
 ] as const;
 
 export const PROOF_STATS = [
-  { value: '10+', label: 'Active Clients', note: '฿30-200M revenue each · B2B relationship-based' },
-  { value: '฿100M+', label: 'Sales Managed', note: 'Cumulative since 2025 · verified quarterly reports · anonymized per NDA' },
-  { value: '+40%', label: 'Average Sales Uplift', note: 'Range 25-55% by industry · n=10 · directional signal (not peer-reviewed study)' },
+  { value: '10+', label: 'ธุรกิจที่ผมดูแล', note: '฿30-200M รายได้ · B2B ความสัมพันธ์ระยะยาว' },
+  { value: '฿100M+', label: 'มูลค่าธุรกิจที่เพิ่มขึ้น', note: 'Cumulative since 2025 · verified quarterly reports · anonymized per NDA' },
+  { value: '+40%', label: 'ผลลัพธ์ยอดขายที่เพิ่มขึ้นเฉลี่ย', note: 'Range 25-55% by industry · n=10 · directional signal' },
 ] as const;
 
 export const SERVICE_TIERS_SUMMARY = {

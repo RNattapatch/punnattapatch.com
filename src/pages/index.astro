@@ -80,10 +80,11 @@ const featuredCards: FeaturedCard[] = featuredArticles.map((article) => {
   };
 });
 
-const heroHeadline = 'ที่ปรึกษาการขาย B2B';
-const heroHeadlineAccent = 'เชี่ยวชาญ Agentic AI Transformation';
+const heroHeadline = 'Digital B2B & Agentic AI';
+const heroHeadlineAccent = 'Transformation Expert';
+const heroSubHeading = 'ที่ปรึกษาผู้เชี่ยวชาญด้านการพัฒนาทีมขาย B2B และการใช้ AI Agent สำหรับฝ่ายขาย';
 const heroSub =
-  'ผมไม่ใช่โค้ชมาให้กำลังใจทีม ผมคือคนที่จับมือสร้างระบบขายด้วย AI ให้ SME ไทย ระบบที่รันได้จริง ไม่ใช่ slide สวยๆ';
+  'ผมไม่ใช่โค้ชที่มาพูดหล่อๆให้กำลังใจทีม แต่ผมคือคนที่จะจับมือคุณสร้างระบบขายด้วย AI ให้ SME ไทย มีระบบการขายที่ใช้ได้จริง';
 
 const painPoints = [
   {
@@ -311,7 +312,7 @@ const socials = [
           class="inline-flex items-center gap-2 rounded-full border border-base-content/15 bg-base-200/60 px-4 py-1.5 text-sm font-medium text-base-content/80"
         >
           <span class="h-2 w-2 animate-pulse rounded-full bg-success"></span>
-          รับงานที่ปรึกษาปี 2026
+          ที่ปรึกษาด้านการพัฒนาทีมขาย และ AI สำหรับธุรกิจ
         </span>
 
         <h1
@@ -323,42 +324,37 @@ const socials = [
         </h1>
 
         <p
+          class="mt-4 max-w-2xl text-base font-medium text-base-content/80 md:text-lg"
+        >
+          {heroSubHeading}
+        </p>
+
+        <p
           class="mt-6 max-w-2xl rounded-r-lg border-l-4 border-secondary bg-base-200/50 px-5 py-3 text-lg leading-relaxed text-base-content/90 md:text-xl"
         >
           {heroSub}
         </p>
 
-        <div
-          class="mt-7 flex max-w-2xl items-start gap-4 rounded-2xl border border-secondary/25 bg-secondary/5 p-5"
-        >
-          <div
-            class="flex-shrink-0 rounded-lg bg-secondary px-3 py-2 text-center font-display text-xs font-bold uppercase tracking-wide text-secondary-content"
-          >
-            1 / 2 / 30
-          </div>
+        <div class="mt-8 flex flex-col gap-4">
           <div>
-            <p class="font-display text-sm font-bold text-base-content">
-              1 Workshop · 2 Skill (AI + Sales) · 30 วันหลัง run ได้จริง
-            </p>
-            <p class="mt-1 text-sm leading-snug text-base-content/75">
-              ที่เดียวที่รวม AI Workflow กับระบบขาย B2B ให้ทำงานพร้อมกัน ไม่ต้องซื้อ 2 คอร์ส
+            <a
+              href="/intake-form"
+              class="btn btn-lg bg-secondary text-secondary-content shadow-lg shadow-secondary/25 hover:bg-secondary/90"
+            >
+              นัดคุยกับผมเพื่อประเมิณทีมขายของคุณ
+            </a>
+            <p class="mt-2 text-xs text-base-content/60 max-w-md">
+              เพื่อการรักษาคุณภาพการทำงาน ใน 1 สัปดาห์ผมจะมีคิวแค่ 5 slot เท่านั้นครับ
             </p>
           </div>
-        </div>
-
-        <div class="mt-8 flex flex-wrap gap-4">
-          <a
-            href="/intake-form"
-            class="btn btn-lg bg-secondary text-secondary-content shadow-lg shadow-secondary/25 hover:bg-secondary/90"
-          >
-            ประเมินปัญหาทีมขาย
-          </a>
-          <a
-            href="#diagnose"
-            class="btn btn-lg btn-ghost border border-base-content/25 hover:bg-base-200"
-          >
-            ดูบริการทั้งหมด
-          </a>
+          <div class="flex flex-wrap gap-4">
+            <a
+              href="#diagnose"
+              class="btn btn-lg btn-ghost border border-base-content/25 hover:bg-base-200"
+            >
+              ดูบริการทั้งหมด
+            </a>
+          </div>
         </div>
 
         <dl
@@ -381,6 +377,72 @@ const socials = [
           }
         </dl>
       </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURED COURSE: ADVANCE AI ===== -->
+  <section class="relative overflow-hidden bg-gradient-to-br from-cyan-50 via-blue-50 to-cyan-50/70 px-4 py-16 lg:px-8 lg:py-24">
+    <div class="pointer-events-none absolute inset-0 -z-10 opacity-40">
+      <div class="absolute -right-20 -top-20 h-40 w-40 rounded-full bg-cyan-300/30 blur-3xl"></div>
+      <div class="absolute -bottom-20 -left-20 h-40 w-40 rounded-full bg-blue-300/20 blur-3xl"></div>
+    </div>
+
+    <div class="mx-auto max-w-5xl">
+      <div class="mb-8 inline-flex items-center gap-2 rounded-full border border-cyan-300/50 bg-white/70 px-4 py-2 text-sm font-medium text-cyan-800 backdrop-blur-sm">
+        <span class="h-2 w-2 animate-pulse rounded-full bg-cyan-500"></span>
+        🎯 Promoted Course — Limited Spots
+      </div>
+
+      <h2 class="max-w-3xl font-display text-4xl font-bold leading-[1.15] tracking-tight text-cyan-950 md:text-5xl">
+        คอร์สสร้าง AI Agent สำหรับคนทำธุรกิจ
+        <br class="hidden md:block" />
+        <span class="text-cyan-600">จับมือทำจริงในคลาส ได้ Agent กลับไปใช้ทันที</span>
+      </h2>
+
+      <div class="mt-6 rounded-2xl border border-cyan-200/60 bg-white/60 px-6 py-4 backdrop-blur-sm">
+        <p class="font-display text-lg font-bold text-cyan-900">
+          ถ้าไม่เข้าใจ ผมไม่ให้กลับบ้าน!
+        </p>
+        <p class="mt-3 text-base leading-relaxed text-cyan-800">
+          สร้างเสร็จในคลาส ได้ทั้ง AI Agent ของตัวเอง และ Action Plan 30 วัน กลับไปใช้จริง
+        </p>
+      </div>
+
+      {/* Quick Facts */}
+      <div class="mt-8 grid gap-4 md:grid-cols-3">
+        <div class="rounded-xl bg-white/70 border border-cyan-200/40 p-5 backdrop-blur-sm">
+          <div class="text-3xl font-bold text-cyan-700">12 ที่</div>
+          <p class="mt-2 text-sm text-cyan-700/80">Founding Cohort <span class="font-bold">฿11,900</span></p>
+        </div>
+        <div class="rounded-xl bg-white/70 border border-cyan-200/40 p-5 backdrop-blur-sm">
+          <div class="text-3xl font-bold text-cyan-700">1 วัน</div>
+          <p class="mt-2 text-sm text-cyan-700/80">6-7 ชั่วโมง · On-site · Hands-on</p>
+        </div>
+        <div class="rounded-xl bg-white/70 border border-cyan-200/40 p-5 backdrop-blur-sm">
+          <div class="text-3xl font-bold text-cyan-700">Lifetime</div>
+          <p class="mt-2 text-sm text-cyan-700/80">Inner Circle ฟรี · Support ตลอด</p>
+        </div>
+      </div>
+
+      {/* CTAs */}
+      <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:gap-3">
+        <a
+          href="/training/p1-ai-workshop-1-day"
+          class="btn btn-lg bg-cyan-600 text-white shadow-lg shadow-cyan-600/30 hover:bg-cyan-700 transition-colors"
+        >
+          ดูรายละเอียด & ลงสมัคร
+        </a>
+        <a
+          href="/intake-form?source=homepage-course"
+          class="btn btn-lg btn-outline border-cyan-400 text-cyan-700 hover:bg-cyan-50"
+        >
+          ไม่แน่ใจ? นัดคุยเบื้องต้น
+        </a>
+      </div>
+
+      <p class="mt-5 text-sm text-cyan-700/75 max-w-2xl">
+        ยังไม่ชัวร์ว่าคอร์สนี้เหมาะกับทีมคุณรึเปล่า? นัดคุยปรึกษาผมก่อนได้เลย
+      </p>
     </div>
   </section>
 
@@ -648,7 +710,7 @@ const socials = [
             href="/intake-form"
             class="btn btn-lg mt-6 w-full border-2 border-base-content/30 bg-transparent px-8 text-base text-base-content transition-all hover:scale-[1.02] hover:border-secondary hover:bg-secondary/10 hover:text-secondary"
           >
-            ประเมินปัญหาฟรี →
+            นัดคุยฟรี →
           </a>
           <p class="mt-3 text-xs text-base-content/50">
             ฟรี · ไม่มี spam · ได้คำตอบใน 24 ชม.
@@ -1247,7 +1309,7 @@ const socials = [
               href="/intake-form"
               class="btn btn-lg btn-ghost border-2 border-base-content/25 text-base hover:bg-base-200 hover:border-base-content/40"
             >
-              ไม่แน่ใจ? ประเมินก่อน
+              ไม่แน่ใจ? นัดคุยกับผมก่อน
             </a>
           </div>
           <p class="mt-5 text-xs text-base-content/50">
