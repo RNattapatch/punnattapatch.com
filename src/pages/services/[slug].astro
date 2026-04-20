@@ -34,6 +34,33 @@ const GUARANTEE_MAP: Record<string, string> = {
 };
 const guarantee = GUARANTEE_MAP[slug as string];
 
+// Gallery photos per service (real phone-shot action photos per Google 2026 SEO tip)
+const GALLERY_MAP: Record<string, { src: string; alt: string }[]> = {
+  'ai-workshop': [
+    { src: '/advance-ai-course/gallery1.JPG', alt: 'ทีมใช้ laptop ในห้อง workshop · จอฉาย "Advance AI & Business Automation"' },
+    { src: '/advance-ai-course/gallery7.JPG', alt: 'บรรยากาศ workshop hands-on · ทีมกำลัง build workflow' },
+    { src: '/advance-ai-course/IMG_5218.JPG', alt: 'ปัน ณัฐพัชร์ สอน AI workshop' },
+  ],
+};
+const gallery = GALLERY_MAP[slug as string] ?? [];
+
+// Testimonial per service (real client quote with permission)
+interface ServiceTestimonial {
+  quote: string;
+  author: string;
+  role: string;
+  image?: string;
+}
+const TESTIMONIAL_MAP: Record<string, ServiceTestimonial> = {
+  'ai-workshop': {
+    quote: 'ทีมใช้ AI เก่งขึ้นเยอะ จากเดิมไม่กล้าใช้เพราะกลัว prompt ผิด ตอนนี้สร้าง Web-App ใช้กันเองแล้ว ประหยัดเวลาไปได้เยอะเลย · จากงานที่ต้องใช้เวลาทั้งวัน ตอนนี้เสร็จภายใน 15 นาทีได้ · เมื่อก่อน AI Chat ธรรมดายังไม่อยากใช้ ตอนนี้สร้าง Agent ทำงานแทนเป็นเรื่องปกติ — มาแข่งกันว่าใครจะลดเวลาได้มากกว่า',
+    author: 'คุณฝน',
+    role: 'Good & Rich Folklift · Monthly Consulting Client',
+    image: '/advance-ai-course/testimonial5.png',
+  },
+};
+const testimonial = TESTIMONIAL_MAP[slug as string];
+
 const accentVar = (a: AccentToken): string =>
   a === 'cyan'
     ? 'var(--color-pun-cyan)'
@@ -74,11 +101,20 @@ const description = detail.subhead;
         <span class="text-base-content/80">{svc.title}</span>
       </div>
 
-      <div
-        class="mb-6 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-semibold tracking-wide"
-        style={`border-color: color-mix(in oklch, ${accent} 35%, transparent); background: color-mix(in oklch, ${accent} 10%, transparent); color: ${accent};`}
-      >
-        {detail.eyebrow}
+      <div class="mb-6 flex flex-wrap items-center gap-3">
+        <div
+          class="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-semibold tracking-wide"
+          style={`border-color: color-mix(in oklch, ${accent} 35%, transparent); background: color-mix(in oklch, ${accent} 10%, transparent); color: ${accent};`}
+        >
+          {detail.eyebrow}
+        </div>
+        {
+          slug === 'ai-workshop' && (
+            <div class="inline-flex items-center gap-2 rounded-full bg-amber-400/20 px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-300">
+              🔥 เหลือ 2 เจ้าจาก 5 เจ้า · ราคาพิเศษเดือนนี้
+            </div>
+          )
+        }
       </div>
 
       <h1 class="font-display text-4xl font-bold leading-[1.1] tracking-tight md:text-5xl lg:text-6xl">
@@ -274,6 +310,81 @@ const description = detail.subhead;
               Fair measurement: วัด baseline ก่อน workshop · วัดซ้ำ 30 วันหลัง · ถ้าไม่ถึงเกณฑ์ คืนทันที ไม่ต้องทวง
             </p>
           </div>
+        </div>
+      </section>
+    )
+  }
+
+  {/* ===== GALLERY — real workshop photos (phone-shot, Google 2026 authenticity signal) ===== */}
+  {
+    gallery.length > 0 && (
+      <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+        <div class="mx-auto max-w-5xl">
+          <p class="text-xs font-bold uppercase tracking-widest text-secondary">Gallery</p>
+          <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+            บรรยากาศ workshop จริง
+          </h2>
+          <p class="mt-3 max-w-2xl text-sm text-base-content/70">
+            ภาพถ่ายจากงานจริง · ไม่ใช่ stock photo · ทุก session Pun ลงไปสอน + จับมือทำ + feedback รายคน
+          </p>
+
+          <div class="mt-8 grid gap-4 md:grid-cols-3">
+            {
+              gallery.map((photo) => (
+                <div class="overflow-hidden rounded-2xl border border-base-content/10 bg-base-200 shadow-sm">
+                  <img
+                    src={photo.src}
+                    alt={photo.alt}
+                    loading="lazy"
+                    decoding="async"
+                    class="aspect-[4/3] w-full object-cover transition hover:scale-105"
+                  />
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {/* ===== TESTIMONIAL — real client quote (with permission) ===== */}
+  {
+    testimonial && (
+      <section
+        class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20"
+        style={`background: linear-gradient(180deg, color-mix(in oklch, ${accent} 4%, transparent), transparent 80%);`}
+      >
+        <div class="mx-auto max-w-4xl">
+          <p class="text-xs font-bold uppercase tracking-widest text-secondary">Client Voice</p>
+          <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+            เสียงจากคนที่ผ่าน workshop + ต่อยอดเป็น retainer
+          </h2>
+
+          <blockquote
+            class="mt-8 rounded-3xl border-l-4 bg-base-100 p-6 shadow-sm md:p-10"
+            style={`border-color: ${accent};`}
+          >
+            <p class="font-display text-lg leading-relaxed text-base-content/90 md:text-xl">
+              "{testimonial.quote}"
+            </p>
+            <footer class="mt-6 flex items-center gap-4 border-t border-base-content/10 pt-5">
+              {
+                testimonial.image && (
+                  <img
+                    src={testimonial.image}
+                    alt={testimonial.author}
+                    loading="lazy"
+                    class="h-14 w-14 rounded-full object-cover"
+                  />
+                )
+              }
+              <div>
+                <p class="font-display text-base font-bold">— {testimonial.author}</p>
+                <p class="mt-0.5 text-sm text-base-content/65">{testimonial.role}</p>
+              </div>
+            </footer>
+          </blockquote>
         </div>
       </section>
     )
