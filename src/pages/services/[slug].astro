@@ -228,8 +228,9 @@ const description = detail.subhead;
       </div>
 
       <h1 class="font-display text-4xl font-bold leading-[1.1] tracking-tight md:text-5xl lg:text-6xl">
-        {detail.headline}{' '}
-        <span style={`color: ${accent};`}>{detail.headlineAccent}</span>
+        {detail.headline}
+        <br class="hidden md:block" />
+        <span class="md:whitespace-nowrap" style={`color: ${accent};`}>{detail.headlineAccent}</span>
         {detail.headlineTail && <><br class="hidden md:block" />{detail.headlineTail}</>}
       </h1>
 
@@ -1057,27 +1058,19 @@ const description = detail.subhead;
               class="relative overflow-hidden rounded-3xl border-2 border-dashed bg-base-100/40 p-8 backdrop-blur-sm md:p-10"
               style={`border-color: color-mix(in oklch, ${accent} 35%, transparent);`}
             >
-              {/* Small badge at top */}
-              <div
-                class="absolute -top-3 left-8 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                style={`background: ${accent}; color: ${accentButtonText};`}
-              >
-                Safety Net
-              </div>
-
               <div class="grid gap-6 md:grid-cols-[auto_1fr] md:items-center">
-                <div class="text-5xl md:text-6xl">🛟</div>
+                <div class="text-5xl md:text-6xl">🤔</div>
 
                 <div>
                   <h3 class="font-display text-xl font-bold md:text-2xl">
-                    ยังไม่พร้อม commit bundle? ลองคอร์สก่อนได้
+                    ยังไม่แน่ใจ เริ่มต้นจาก workshop 1 วันก่อนก็ได้
                   </h3>
                   <p class="mt-3 text-sm leading-relaxed text-base-content/80 md:text-base">
-                    เริ่มแค่ <strong>Workshop 1 วัน ฿24,900</strong> ก่อน · ถ้าเห็นผลแล้วอยากต่อ Consult 30 วัน
+                    เริ่มต้นจาก <strong>Workshop 1 วัน 24,900฿</strong> ก่อน · ถ้าเห็นผลแล้วอยากต่อบริการ Consult 30 วัน ขอให้แจ้งผม
                     <span class="font-semibold" style={`color: ${accent};`}>
                       {' '}ภายใน 7 วันหลังจบ workshop
                     </span>
-                    → เอาค่า workshop มาเป็น <strong>credit ส่วนลดเต็มจำนวน</strong>
+                    → คุณสามารถเอาค่า workshop มาเป็น <strong>ส่วนลดได้เต็มจำนวน</strong>
                   </p>
 
                   <div class="mt-5 grid gap-3 rounded-xl bg-base-200/40 p-4 text-sm md:grid-cols-3">

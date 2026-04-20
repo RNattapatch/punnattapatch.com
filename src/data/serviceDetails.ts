@@ -29,9 +29,9 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
     slug: 'ai-workshop',
     accent: 'cyan',
     eyebrow: 'Advance AI & Business Automation · 1 วัน',
-    headline: 'ผมไม่ได้แค่สอน',
-    headlineAccent: 'ผมสร้าง AI Agent ตัวแรก',
-    headlineTail: 'ของธุรกิจคุณในวันเดียว',
+    headline: 'ผมไม่ได้แค่มาสอนคุณใช้ AI',
+    headlineAccent: 'แต่ผมจะจับมือคุณสร้าง AI Agent ตัวแรก',
+    headlineTail: 'ให้ธุรกิจของคุณ',
     subhead:
       '1 วันเต็ม 6-7 ชั่วโมง · ทีมขาย 5-20 คน · ออกจากห้องพร้อม n8n workflow + AI Agent ที่ run ได้จริง + 30 prompts ready-to-use · ทีม build ด้วยมือตัวเอง Pun จับมือทำเคียงข้าง output เห็นหน้างานทุก session',
     pains: [
