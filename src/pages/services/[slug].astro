@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CaseCard from '../../components/CaseCard.astro';
 import { SITE, SERVICES } from '../../data/site';
 import { SERVICE_DETAILS, type AccentToken } from '../../data/serviceDetails';
 
@@ -10,6 +11,28 @@ export function getStaticPaths() {
 const { slug } = Astro.params;
 const svc = SERVICES.find((s) => s.slug === slug)!;
 const detail = SERVICE_DETAILS[slug as string]!;
+
+// Case study mapping per service — which cases prove this service works?
+const CASE_MAP: Record<string, { slug: string; accent: 'coral' | 'cyan' | 'emerald' }[]> = {
+  'ai-workshop': [
+    { slug: 'forklift-distributor-5-person-team', accent: 'cyan' },
+    { slug: 'manufacturing-b2b-12-person-team', accent: 'coral' },
+  ],
+  'sales-system-sprint': [
+    { slug: 'real-estate-developer-sales-team-restructure', accent: 'coral' },
+    { slug: 'manufacturing-b2b-12-person-team', accent: 'emerald' },
+  ],
+  'sale-training-bundle': [
+    { slug: 'real-estate-developer-sales-team-restructure', accent: 'coral' },
+  ],
+};
+const relatedCases = CASE_MAP[slug as string] ?? [];
+
+// Guarantee text per service (single-line summary)
+const GUARANTEE_MAP: Record<string, string> = {
+  'ai-workshop': 'ทีมไม่ได้เวลาคืน ≥5 ชั่วโมง/สัปดาห์ ภายใน 30 วัน → คืนเงิน 100% ไม่มีเงื่อนไข',
+};
+const guarantee = GUARANTEE_MAP[slug as string];
 
 const accentVar = (a: AccentToken): string =>
   a === 'cyan'
@@ -228,6 +251,68 @@ const description = detail.subhead;
       </ul>
     </div>
   </section>
+
+  {/* ===== GUARANTEE (if defined for this service) ===== */}
+  {
+    guarantee && (
+      <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+        <div class="mx-auto max-w-3xl">
+          <div
+            class="rounded-3xl border-2 p-8 text-center md:p-12"
+            style={`border-color: ${accent}; background: color-mix(in oklch, ${accent} 6%, transparent);`}
+          >
+            <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+              Outcome Guarantee
+            </p>
+            <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+              ถ้าไม่ได้ผลจริง — คืนเงิน 100%
+            </h2>
+            <p class="mt-5 text-base leading-relaxed text-base-content/85 md:text-lg">
+              {guarantee}
+            </p>
+            <p class="mt-5 text-xs text-base-content/60">
+              Fair measurement: วัด baseline ก่อน workshop · วัดซ้ำ 30 วันหลัง · ถ้าไม่ถึงเกณฑ์ คืนทันที ไม่ต้องทวง
+            </p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {/* ===== PROOF — related case studies ===== */}
+  {
+    relatedCases.length > 0 && (
+      <section class="border-t border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8 lg:py-20">
+        <div class="mx-auto max-w-5xl">
+          <p class="text-xs font-bold uppercase tracking-widest text-secondary">Proof</p>
+          <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+            client ที่ผ่าน {svc.title} แล้ววัดผลได้
+          </h2>
+          <p class="mt-3 max-w-2xl text-base-content/70">
+            ตัวเลขจาก quarterly report จริง · anonymized per NDA · ผลลัพธ์ต่างกันได้ตามบริบทธุรกิจ
+          </p>
+
+          <div class="mt-10 grid gap-5 md:grid-cols-2">
+            {
+              relatedCases.map((c) => (
+                <CaseCard slug={c.slug} accent={c.accent} />
+              ))
+            }
+          </div>
+
+          <div class="mt-8 text-center">
+            <a
+              href="/case-studies"
+              class="text-sm font-semibold hover:underline"
+              style={`color: ${accent};`}
+            >
+              ดู case ทั้งหมด →
+            </a>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   <!-- ===== PRICING ===== -->
   <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
