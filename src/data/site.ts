@@ -55,7 +55,7 @@ export const SERVICES = [
     priceThb: 24900,
     priceLabel: '฿24,900 · ราคาพิเศษเดือนนี้ (ปกติ ฿30,000)',
     duration: '1 วัน (6-7 ชม.)',
-    format: 'On-site หรือ Online',
+    format: 'On-site เท่านั้น (In-house)',
     audience: 'ทีมขายที่เสียเวลากับงาน manual ซ้ำๆ อยากเห็น AI ทำงานจริงก่อนลงทุนเพิ่ม',
     outcome: [
       'กลับไปพร้อม AI tool ใช้ได้จริง — ไม่ใช่แค่ slide',

@@ -138,7 +138,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
     priceCompare: '🔥 ราคาพิเศษเดือนนี้ ฿24,900 (ปกติ ฿30,000) · เหลือ 2 เจ้าจาก 5 เจ้า · หมดแล้วกลับเป็นราคาเต็ม',
     priceNote: 'จัดแบบ in-house on-demand · ปันเข้าไปจัด workshop ให้ตามตารางที่ทีมคุณสะดวก · ชำระ 100% ก่อนเริ่มงาน · ไม่มีสัญญาผูกมัดยาว',
     inclusions: [
-      'Workshop 1 วัน 6-7 ชม. · On-site หรือ Online',
+      'Workshop 1 วัน 6-7 ชม. · On-site เท่านั้น (In-house)',
       'n8n workflow + AI Agent 1 ตัวที่ build ในห้อง (production-ready)',
       'Prompt library 30 prompts tested สำหรับงาน admin + sales',
       '30-day async LINE support หลัง workshop (Mon-Fri)',
