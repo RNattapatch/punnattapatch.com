@@ -83,7 +83,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
     ],
     priceHeadline: '฿24,900 / 1 วัน',
     priceCompare: '🔥 ราคาพิเศษเดือนนี้ ฿24,900 (ปกติ ฿30,000) · เหลือ 2 เจ้าจาก 5 เจ้า · หมดแล้วกลับเป็นราคาเต็ม',
-    priceNote: 'Format: in-house on-demand · ปันจัดเวลาให้ตามความสะดวกของทีมคุณ · 100% upfront ก่อนเริ่มงาน',
+    priceNote: 'จัดแบบ in-house on-demand · ปันเข้าไปจัด workshop ให้ตามตารางที่ทีมคุณสะดวก · ชำระ 100% ก่อนเริ่มงาน · ไม่มีสัญญาผูกมัดยาว',
     inclusions: [
       'Workshop 1 วัน 6-7 ชม. · On-site หรือ Online',
       'n8n workflow + AI Agent 1 ตัวที่ build ในห้อง (production-ready)',
@@ -104,15 +104,15 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       },
       {
         q: 'ถ้าทีมไม่เก่ง tech จะตามทันไหม',
-        a: 'ตาม 100% ได้ · ลูกค้าผม 8/10 ทีมไม่มีใครเขียน code · stack ที่ผมใช้ (Sheets + n8n + Claude) ออกแบบให้ non-tech ดูแลต่อเองได้ 100%',
+        a: 'ทันแน่นอนครับ · ลูกค้าผม 8/10 ทีมไม่มีใครเขียน code · stack ที่ผมใช้ (Sheets + n8n + Claude) ออกแบบให้ non-tech ดูแลต่อเองได้ 100%',
       },
       {
         q: 'หลัง Workshop ถ้าเจอปัญหาถามใครได้',
         a: '30-day async LINE support รวมในราคาแล้ว · ผมตอบทุกข้อความใน 24 ชม. (Mon-Fri) · ถ้าต้องการ scope ต่อยอดระยะยาว คุยเรื่อง Monthly Consulting หลัง workshop ได้',
       },
       {
-        q: 'Early Bird ราคา ฿19,900 ต่างจาก ฿25K ยังไง',
-        a: 'ฟีเจอร์ + deliverables เหมือนกันทุกประการ · Early Bird คือ signal ว่าคุณพร้อม commit ก่อน batch ถัดไปเปิด · ติดต่อผมเพื่อเช็ค current batch status',
+        q: 'Early Bird ราคา ฿19,900 ต่างจาก ฿24,900 ยังไง',
+        a: 'เหมือนกันทุกอย่างครับ · Early Bird เป็นราคาพิเศษสำหรับทีมที่ตัดสินใจเร็วและจองเข้ามาก่อน batch ใหม่เต็ม · ทักมาเช็คสถานะ batch ปัจจุบันกับผมได้เลย',
       },
       {
         q: 'Guarantee "ได้เวลาคืน ≥5 ชม./สัปดาห์" วัดยังไง',
@@ -120,7 +120,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       },
       {
         q: 'Advance AI & Business Automation ต่าง AI & Business Marketing ยังไง',
-        a: 'Automation = admin overhead (report, follow-up manual, data entry) · Marketing = content production + funnel · ถ้าไม่แน่ใจ ทักผมช่วย diagnose ก่อนเลือก',
+        a: 'Automation = งาน admin (report, follow-up, data entry) · Marketing = การผลิต content + funnel · ถ้าไม่แน่ใจ ทักผมช่วย diagnose ก่อนเลือก',
       },
     ],
   },
