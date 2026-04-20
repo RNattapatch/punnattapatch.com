@@ -262,10 +262,71 @@ const description = detail.subhead;
     </div>
   </section>
 
+  {/* ===== PREPARATION — gear + AI tools taught (conditional per service) ===== */}
+  {
+    detail.preparation && (
+      <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+        <div class="mx-auto max-w-5xl">
+          <p class="text-xs font-bold uppercase tracking-widest text-secondary">Prep + Tools</p>
+          <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+            เตรียมอะไร · เรียนเครื่องมืออะไร
+          </h2>
+
+          <div class="mt-10 grid gap-8 md:grid-cols-2">
+            {/* Left: Requirements */}
+            <div>
+              <h3 class="font-display text-xl font-bold" style={`color: ${accent};`}>
+                💻 สิ่งที่ต้องเตรียม
+              </h3>
+              <ul class="mt-5 space-y-4">
+                {detail.preparation.requirements.map((r) => (
+                  <li class="flex items-start gap-3 rounded-xl border border-base-content/10 bg-base-100/60 p-5">
+                    <span
+                      class="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold"
+                      style={`background: color-mix(in oklch, ${accent} 20%, transparent); color: ${accent};`}
+                    >
+                      ✓
+                    </span>
+                    <div>
+                      <p class="font-display font-bold text-base-content">{r.title}</p>
+                      {r.detail && (
+                        <p class="mt-1 text-sm leading-relaxed text-base-content/70">{r.detail}</p>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Right: AI & Tools taught */}
+            <div>
+              <h3 class="font-display text-xl font-bold" style={`color: ${accent};`}>
+                🤖 AI & Tools ที่จะได้เรียน
+              </h3>
+              <ul class="mt-5 space-y-3">
+                {detail.preparation.tools.map((t) => (
+                  <li
+                    class="rounded-xl border p-4 transition hover:-translate-y-0.5 hover:shadow-md"
+                    style={`border-color: color-mix(in oklch, ${accent} 25%, transparent); background: color-mix(in oklch, ${accent} 4%, transparent);`}
+                  >
+                    <p class="font-display font-bold" style={`color: ${accent};`}>
+                      {t.name}
+                    </p>
+                    <p class="mt-1.5 text-sm leading-relaxed text-base-content/80">{t.tagline}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   <!-- ===== AGENDA ===== -->
   <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
     <div class="mx-auto max-w-4xl">
-      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Agenda</p>
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Agenda · 8 modules</p>
       <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
         workshop จะเกิดอะไรบ้าง
       </h2>

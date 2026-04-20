@@ -10,6 +10,10 @@ export type ServiceDetail = {
   subhead: string;
   pains: { emoji: string; title: string; body: string }[];
   audience: string[];
+  preparation?: {
+    requirements: { title: string; detail?: string }[];
+    tools: { name: string; tagline: string }[];
+  };
   agenda: { time: string; title: string; body: string }[];
   outcomes: string[];
   priceHeadline: string;
@@ -57,21 +61,60 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       'ทีมที่เคยซื้อ course ออนไลน์แล้วไม่ได้ implement ต่อ',
       'เจ้าของที่อยากเห็น AI รันจริง ก่อนตัดสินใจลงทุนก้อนใหญ่',
     ],
+    preparation: {
+      requirements: [
+        { title: 'Laptop ส่วนตัว + Internet', detail: 'laptop ของทีมแต่ละคน · WiFi ที่เข้า Google + n8n ได้' },
+        { title: 'Gmail คนละ 1 account', detail: 'ใช้สมัคร AI tools + access Google Sheets/Drive' },
+      ],
+      tools: [
+        { name: 'n8n', tagline: 'สร้างระบบ Automation แบบไม่ต้องเขียนโค้ด' },
+        { name: 'Claude.ai', tagline: 'AI ที่ช่วยคิด วางแผน และลงมือทำ' },
+        { name: 'Claude Code', tagline: 'AI ที่ "ทำงาน" ให้ ไม่ใช่แค่ "เขียนโค้ด" · ใช้สร้าง Business OS ขององค์กร' },
+        { name: 'Gemini Gems + NotebookLM', tagline: 'ระบบ Onboarding + Product Knowledge Hub · AI ที่รู้ข้อมูลบริษัท' },
+        { name: 'Kie.Ai', tagline: 'AI สร้างภาพและวิดีโอ ไม่ติดลายน้ำ · จ่ายเท่าที่ใช้ ไม่ต้องผูก subscription' },
+        { name: 'Openrouter', tagline: 'ศูนย์รวม AI หลาย model ในที่เดียว · จ่ายตามใช้จริง · ทดลอง model ใหม่ได้โดยไม่ต้องสมัครแยก' },
+      ],
+    },
     agenda: [
       {
-        time: 'ช่วงเช้า (9:00-12:00)',
-        title: 'Diagnose + Design',
-        body: 'วิเคราะห์ workflow ทีมขายจริงของลูกค้า · ชี้จุดที่ AI ลดเวลาได้มากสุด · ออกแบบ workflow 1 ตัวที่สำคัญที่สุด',
+        time: 'Module 1',
+        title: 'Onboarding + Mindset Reset',
+        body: 'เปิดใจทีมก่อนเปิด laptop · เข้าใจว่า AI ไม่ได้มาแทนคน แต่มาขยายขีดความสามารถ · setup gear + account พร้อมใช้งาน',
       },
       {
-        time: 'ช่วงบ่าย (13:00-16:00)',
-        title: 'Build + Train',
-        body: 'Build workflow จริงในห้อง (Google Sheets + n8n / Apps Script) · ทีมลองใช้ทันที · วัดผล Before / After ในวันเดียวกัน',
+        time: 'Module 2',
+        title: 'ประวัติศาสตร์ AI 3 ระลอก',
+        body: 'Rule-based (ระลอก 1) · Machine Learning (ระลอก 2) · Generative + Agentic (ระลอก 3) · เข้าใจ context เพื่อเลือกเครื่องมือถูก ไม่หลง trend',
       },
       {
-        time: 'ช่วงเย็น (16:00-17:00)',
-        title: 'Handover',
-        body: 'สอน team lead maintain ระบบต่อ · ส่ง documentation + screen recording · บอกขั้นตอนต่อไปถ้าต้องการขยาย',
+        time: 'Module 3',
+        title: 'สั่งงานให้เป๊ะ · Prompt + Advanced Tricks',
+        body: 'Framework สั่งงาน AI ให้ output ชัด · 20 prompts tested สำหรับ sales · ทีม copy-paste ใช้วันจันทร์ได้เลย',
+      },
+      {
+        time: 'Module 4',
+        title: 'รู้จัก AI แต่ละตัว',
+        body: 'ChatGPT vs Claude vs Gemini vs NotebookLM · แต่ละตัวเก่งอะไร ใช้ตอนไหน · ใช้ถูกตัว = ลดเวลา + ประหยัด subscription',
+      },
+      {
+        time: 'Module 5',
+        title: 'ทำไมต้อง Claude Code?',
+        body: 'Agentic AI ที่ "ทำงานแทน" ไม่ใช่ "ตอบคำถาม" · เปลี่ยนวิธีทำงานองค์กร · ทำไม Pun เลือกใช้ Claude Code เป็น stack หลัก',
+      },
+      {
+        time: 'Module 6',
+        title: 'สร้าง Business OS ด้วย Claude Code',
+        body: 'Orchestration layer เชื่อม AI + tool + data + team · ระบบกลางที่ทุกคนใช้ร่วมกัน · เลิก chat รายคน',
+      },
+      {
+        time: 'Module 7',
+        title: 'สูตรลับสร้างพนักงาน AI',
+        body: 'Agent design pattern · role-based agent + guardrail + approval gate · สร้าง AI ทำงานแทนคนได้จริง วัดผลได้ ไม่ใช่แค่ demo',
+      },
+      {
+        time: 'Module 8',
+        title: 'สร้าง Web-App ใช้เองในองค์กร · ใครๆ ก็ทำได้',
+        body: 'No-code + Claude Code approach · hands-on build ในห้อง · ออกจากห้องพร้อม app จริงที่ทีมใช้ต่อได้',
       },
     ],
     outcomes: [
