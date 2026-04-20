@@ -26,10 +26,10 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
     accent: 'cyan',
     eyebrow: 'Advance AI & Business Automation · 1 วัน',
     headline: 'ผมไม่ได้แค่สอน',
-    headlineAccent: 'ผมจับมือทำ AI ตัวแรก',
+    headlineAccent: 'ผมสร้าง AI Agent ตัวแรก',
     headlineTail: 'ของธุรกิจคุณในวันเดียว',
     subhead:
-      '1 วันเต็ม 6-7 ชั่วโมง · ทีมขาย 5-20 คน · ออกจากห้องพร้อม n8n workflow + AI Agent ที่ run ได้จริง + 30 prompts ready-to-use · ไม่ใช่ concept ไม่ใช่ roadmap — ทีมได้เวลาคืน ≥5 ชม./สัปดาห์ หรือคืนเงิน 100%',
+      '1 วันเต็ม 6-7 ชั่วโมง · ทีมขาย 5-20 คน · ออกจากห้องพร้อม n8n workflow + AI Agent ที่ run ได้จริง + 30 prompts ready-to-use · ทีม build ด้วยมือตัวเอง Pun จับมือทำเคียงข้าง output เห็นหน้างานทุก session',
     pains: [
       {
         emoji: '💬',
@@ -49,7 +49,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       {
         emoji: '📈',
         title: 'อยากสร้างระบบ AI ให้มียอดจริง',
-        body: 'ไม่ใช่ "มี AI เพื่อว่ามี" แต่อยากให้ AI ทำงานที่วัดผลได้ — ยอดขายเพิ่ม · เวลาคืน · cost ลด ไม่ใช่แค่ hype',
+        body: 'ลงทุนกับ AI แล้วต้องวัดผลเป็นตัวเลข: ยอดเพิ่มกี่ %, เวลาคืนกี่ชม., cost ลดกี่บาท · report ได้จริง ไม่ใช่แค่ feel ว่าทีมใช้ AI เก่งขึ้น',
       },
     ],
     audience: [

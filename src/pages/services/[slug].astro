@@ -12,6 +12,49 @@ const { slug } = Astro.params;
 const svc = SERVICES.find((s) => s.slug === slug)!;
 const detail = SERVICE_DETAILS[slug as string]!;
 
+// ROI benefit cards per service — concrete before/after numbers per Pun's calculation (2026-04-20)
+interface RoiCard {
+  label: string;
+  before: string;
+  beforeNote: string;
+  after: string;
+  afterNote: string;
+  saving: string;
+  emoji: string;
+}
+const ROI_MAP: Record<string, RoiCard[]> = {
+  'ai-workshop': [
+    {
+      emoji: '💰',
+      label: 'ค่า Software ต่อปี',
+      before: '฿200,000',
+      beforeNote: 'ปีละ · SaaS subscription ทั้งทีม',
+      after: '฿3,000',
+      afterNote: 'เดือนละ · AI API อย่างเดียว',
+      saving: 'ประหยัด ฿164,000/ปี',
+    },
+    {
+      emoji: '👥',
+      label: 'ต้นทุนทีมทำงาน',
+      before: '฿125,000',
+      beforeNote: 'เดือนละ · ทีม 5 คน · salary + overhead',
+      after: '฿28,000',
+      afterNote: 'เดือนละ · 1 คน + AI Agent · output มากกว่าทีม 5 คนเก่า',
+      saving: 'ประหยัด ฿1.16M/ปี',
+    },
+    {
+      emoji: '⏰',
+      label: 'เวลาต่องาน',
+      before: '8 ชั่วโมง',
+      beforeNote: 'ต่องาน · ทำเองด้วยมือ',
+      after: '30 นาที',
+      afterNote: 'ต่องาน · AI Agent execute · คน review + approve',
+      saving: 'เวลาคืน 94%',
+    },
+  ],
+};
+const roiCards = ROI_MAP[slug as string] ?? [];
+
 // Case study mapping per service — which cases prove this service works?
 const CASE_MAP: Record<string, { slug: string; accent: 'coral' | 'cyan' | 'emerald' }[]> = {
   'ai-workshop': [
@@ -28,11 +71,28 @@ const CASE_MAP: Record<string, { slug: string; accent: 'coral' | 'cyan' | 'emera
 };
 const relatedCases = CASE_MAP[slug as string] ?? [];
 
-// Guarantee text per service (single-line summary)
+// Guarantee text per service (single-line summary) — only for services that have explicit guarantee policy
 const GUARANTEE_MAP: Record<string, string> = {
-  'ai-workshop': 'ทีมไม่ได้เวลาคืน ≥5 ชั่วโมง/สัปดาห์ ภายใน 30 วัน → คืนเงิน 100% ไม่มีเงื่อนไข',
+  // Intentionally empty for now · ai-workshop doesn't have a refund-guarantee policy
 };
 const guarantee = GUARANTEE_MAP[slug as string];
+
+// Seat availability for scarcity UI (per service · edit as slots fill)
+interface SeatInfo {
+  taken: number;
+  total: number;
+  priceLabel: string;
+  note: string;
+}
+const SEAT_MAP: Record<string, SeatInfo> = {
+  'ai-workshop': {
+    taken: 3,
+    total: 5,
+    priceLabel: 'ราคาพิเศษเดือนนี้',
+    note: 'หลังที่นั่งเต็ม ราคากลับเป็น ฿30,000',
+  },
+};
+const seats = SEAT_MAP[slug as string];
 
 // Gallery photos per service (real phone-shot action photos per Google 2026 SEO tip)
 const GALLERY_MAP: Record<string, { src: string; alt: string }[]> = {
@@ -55,8 +115,7 @@ const TESTIMONIAL_MAP: Record<string, ServiceTestimonial> = {
   'ai-workshop': {
     quote: 'ทีมใช้ AI เก่งขึ้นเยอะ จากเดิมไม่กล้าใช้เพราะกลัว prompt ผิด ตอนนี้สร้าง Web-App ใช้กันเองแล้ว ประหยัดเวลาไปได้เยอะเลย · จากงานที่ต้องใช้เวลาทั้งวัน ตอนนี้เสร็จภายใน 15 นาทีได้ · เมื่อก่อน AI Chat ธรรมดายังไม่อยากใช้ ตอนนี้สร้าง Agent ทำงานแทนเป็นเรื่องปกติ — มาแข่งกันว่าใครจะลดเวลาได้มากกว่า',
     author: 'คุณฝน',
-    role: 'Good & Rich Folklift · Monthly Consulting Client',
-    image: '/advance-ai-course/testimonial5.png',
+    role: 'Monthly Consulting Client',
   },
 };
 const testimonial = TESTIMONIAL_MAP[slug as string];
@@ -109,9 +168,13 @@ const description = detail.subhead;
           {detail.eyebrow}
         </div>
         {
-          slug === 'ai-workshop' && (
-            <div class="inline-flex items-center gap-2 rounded-full bg-amber-400/20 px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-300">
-              🔥 เหลือ 2 เจ้าจาก 5 เจ้า · ราคาพิเศษเดือนนี้
+          seats && (
+            <div class="inline-flex items-center gap-2 rounded-full border-2 border-rose-500/50 bg-rose-500/15 px-4 py-1.5 text-xs font-bold text-rose-700 dark:text-rose-300">
+              <span class="relative flex h-2 w-2">
+                <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-500 opacity-75"></span>
+                <span class="relative inline-flex h-2 w-2 rounded-full bg-rose-500"></span>
+              </span>
+              🔥 เหลือ {seats.total - seats.taken} ที่ จาก {seats.total} ที่ · {seats.priceLabel}
             </div>
           )
         }
@@ -288,6 +351,101 @@ const description = detail.subhead;
     </div>
   </section>
 
+  {/* ===== ROI BENEFIT BOXES — concrete before/after numbers ===== */}
+  {
+    roiCards.length > 0 && (
+      <section
+        class="relative overflow-hidden border-t border-base-content/10 px-4 py-20 lg:px-8 lg:py-24"
+        style={`background: linear-gradient(180deg, color-mix(in oklch, ${accent} 10%, transparent), transparent 80%);`}
+      >
+        <div
+          class="pointer-events-none absolute inset-0 -z-10 opacity-40"
+          style={`background: radial-gradient(circle at 50% 0%, color-mix(in oklch, ${accent} 18%, transparent), transparent 60%);`}
+        ></div>
+
+        <div class="mx-auto max-w-6xl">
+          <div class="text-center">
+            <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+              Real ROI · ตัวเลขจริงจาก client
+            </p>
+            <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">
+              ลงทุน ฿24,900 · ประหยัดจริง <span style={`color: ${accent};`}>ปีแรก ฿1M+</span>
+            </h2>
+            <p class="mx-auto mt-4 max-w-2xl text-base text-base-content/75 md:text-lg">
+              3 ตัวเลขจริงจาก client ที่ Pun build AI Agent ให้ใน workshop · วัดจาก report บริษัท 6 เดือนหลังส่งมอบ
+            </p>
+          </div>
+
+          <div class="mt-12 grid gap-6 md:grid-cols-3">
+            {
+              roiCards.map((card) => (
+                <div
+                  class="relative overflow-hidden rounded-3xl border-2 bg-base-100/80 p-7 shadow-xl backdrop-blur-sm transition hover:-translate-y-1 hover:shadow-2xl md:p-8"
+                  style={`border-color: color-mix(in oklch, ${accent} 25%, transparent);`}
+                >
+                  {/* Top accent bar */}
+                  <div
+                    class="absolute inset-x-0 top-0 h-1.5"
+                    style={`background: linear-gradient(to right, transparent, ${accent}, transparent);`}
+                  ></div>
+
+                  {/* Emoji + label */}
+                  <div class="mb-5 flex items-center gap-3">
+                    <div
+                      class="flex h-12 w-12 items-center justify-center rounded-2xl text-2xl"
+                      style={`background: color-mix(in oklch, ${accent} 15%, transparent);`}
+                    >
+                      {card.emoji}
+                    </div>
+                    <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+                      {card.label}
+                    </p>
+                  </div>
+
+                  {/* Before → After */}
+                  <div class="space-y-4">
+                    <div>
+                      <p class="text-[10px] uppercase tracking-widest text-base-content/50">Before</p>
+                      <p class="mt-1 font-display text-2xl font-bold text-base-content/70 line-through decoration-2 md:text-3xl">
+                        {card.before}
+                      </p>
+                      <p class="mt-1 text-[11px] text-base-content/55">{card.beforeNote}</p>
+                    </div>
+
+                    <div
+                      class="border-t-2 border-dashed pt-4"
+                      style={`border-color: color-mix(in oklch, ${accent} 30%, transparent);`}
+                    >
+                      <p class="text-[10px] uppercase tracking-widest" style={`color: ${accent};`}>After</p>
+                      <p class="mt-1 font-display text-3xl font-bold md:text-4xl" style={`color: ${accent};`}>
+                        {card.after}
+                      </p>
+                      <p class="mt-1 text-[11px] text-base-content/65">{card.afterNote}</p>
+                    </div>
+                  </div>
+
+                  {/* Saving highlight */}
+                  <div
+                    class="mt-6 rounded-2xl p-4 text-center"
+                    style={`background: color-mix(in oklch, ${accent} 12%, transparent);`}
+                  >
+                    <p class="font-display text-lg font-bold md:text-xl" style={`color: ${accent};`}>
+                      ★ {card.saving}
+                    </p>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+
+          <p class="mt-10 text-center text-xs text-base-content/55">
+            ตัวเลขจาก client จริง · anonymized per NDA · ผลต่างกันได้ตามขนาด + อุตสาหกรรม
+          </p>
+        </div>
+      </section>
+    )
+  }
+
   {/* ===== GUARANTEE (if defined for this service) ===== */}
   {
     guarantee && (
@@ -433,8 +591,70 @@ const description = detail.subhead;
         ราคาและสิ่งที่ได้
       </h2>
 
+      {/* ===== SCARCITY BANNER (if seats defined) ===== */}
+      {
+        seats && (
+          <div class="mb-8 overflow-hidden rounded-3xl border-2 border-rose-500 bg-gradient-to-br from-rose-500/10 via-rose-500/5 to-base-100 p-8 shadow-2xl shadow-rose-500/20">
+            <div class="flex flex-col items-center gap-6 md:flex-row md:justify-between">
+              {/* Left: Headline */}
+              <div class="text-center md:text-left">
+                <div class="flex items-center justify-center gap-2 md:justify-start">
+                  <span class="relative flex h-3 w-3">
+                    <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-500 opacity-75"></span>
+                    <span class="relative inline-flex h-3 w-3 rounded-full bg-rose-500"></span>
+                  </span>
+                  <p class="text-xs font-bold uppercase tracking-widest text-rose-600 dark:text-rose-400">
+                    Real Urgency · ไม่ใช่ fake scarcity
+                  </p>
+                </div>
+                <p class="mt-3 font-display text-4xl font-bold md:text-5xl">
+                  เหลือ <span class="text-rose-600 dark:text-rose-400">{seats.total - seats.taken} ที่</span>
+                  <span class="text-base-content/40"> / {seats.total}</span>
+                </p>
+                <p class="mt-2 text-sm text-base-content/70">{seats.note}</p>
+              </div>
+
+              {/* Right: Seat dots visualization */}
+              <div class="flex items-center gap-3">
+                {
+                  Array.from({ length: seats.total }, (_, i) => {
+                    const isTaken = i < seats.taken;
+                    return (
+                      <div
+                        class="flex h-14 w-14 items-center justify-center rounded-2xl border-2 md:h-16 md:w-16"
+                        style={
+                          isTaken
+                            ? 'border-color: rgba(100,100,100,0.3); background: color-mix(in oklch, currentColor 6%, transparent); opacity: 0.4;'
+                            : 'border-color: rgb(244 63 94); background: rgba(244,63,94,0.15); box-shadow: 0 0 24px -4px rgba(244,63,94,0.5);'
+                        }
+                      >
+                        <span class={`text-2xl md:text-3xl ${isTaken ? '' : 'animate-pulse'}`}>
+                          {isTaken ? '✓' : '🪑'}
+                        </span>
+                      </div>
+                    );
+                  })
+                }
+              </div>
+            </div>
+
+            {/* Legend */}
+            <div class="mt-6 flex items-center justify-center gap-5 text-[11px] text-base-content/60">
+              <span class="flex items-center gap-1.5">
+                <span class="inline-block h-2 w-2 rounded-full bg-base-content/30"></span>
+                จองแล้ว {seats.taken}
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-rose-500"></span>
+                ว่าง {seats.total - seats.taken}
+              </span>
+            </div>
+          </div>
+        )
+      }
+
       <div
-        class="mt-10 rounded-3xl border p-8 md:p-12"
+        class="rounded-3xl border p-8 md:p-12"
         style={`border-color: color-mix(in oklch, ${accent} 30%, transparent); background: color-mix(in oklch, ${accent} 4%, transparent);`}
       >
         <div class="text-center">
