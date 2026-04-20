@@ -12,6 +12,53 @@ const { slug } = Astro.params;
 const svc = SERVICES.find((s) => s.slug === slug)!;
 const detail = SERVICE_DETAILS[slug as string]!;
 
+// Bundle upsell offer per service — Pakorn-style "level up" CTA (if configured)
+interface BundleUpsell {
+  eyebrow: string;
+  headline: string;
+  tagline: string;
+  timeline: { step: string; label: string; body: string }[];
+  compareTitle: string;
+  compareLines: { item: string; price: string; muted?: boolean }[];
+  totalSeparate: string;
+  totalBundle: string;
+  savings: string;
+  includes: string[];
+  ctaLabel: string;
+  ctaHref: string;
+}
+const BUNDLE_MAP: Record<string, BundleUpsell> = {
+  'ai-workshop': {
+    eyebrow: 'Level Up · ต่อยอดอีกนิด',
+    headline: 'เรียน 1 วันไม่พอ — ให้ผมคุมระบบต่อให้ 30 วัน',
+    tagline: 'Workshop + Consult 30 วัน · ทำเป็น เข้าใจ เห็นผล · ทีมไม่ล้มเลิกกลางทาง',
+    timeline: [
+      { step: 'Day 1',    label: 'Workshop',     body: 'Build AI Agent ตัวแรก ในห้อง' },
+      { step: 'Week 1-2', label: 'Iterate',      body: 'Weekly 1:1 · ปรับระบบตาม pain หน้างาน' },
+      { step: 'Week 3',   label: 'Expand',       body: 'Build workflow ตัวที่ 2 · ขยาย scope' },
+      { step: 'Week 4',   label: 'Handover',     body: 'Team lead ดูแลต่อ · ผมออก · ระบบยัง run' },
+    ],
+    compareTitle: 'ถ้าซื้อแยก vs bundle',
+    compareLines: [
+      { item: 'Advance AI & Business Automation (1 วัน)', price: '฿24,900' },
+      { item: 'Monthly Consulting Retainer (30 วัน)',     price: '฿45,000' },
+    ],
+    totalSeparate: '฿69,900',
+    totalBundle:   '฿44,900',
+    savings:       'ประหยัด ฿25,000',
+    includes: [
+      'Workshop 1 วันเต็ม ครบเนื้อหา 8 modules (เหมือนแพ็กเกจปกติ)',
+      'Private Consult 1:1 กับ Pun 4 ครั้ง · สัปดาห์ละครั้ง ตลอด 30 วัน',
+      'สร้าง AI Agent เพิ่มอย่างน้อย 1 ตัว ตามโจทย์ของลูกค้า',
+      'ถาม-ตอบผ่าน LINE ได้ไม่จำกัด · ตอบใน 24 ชม. วันทำการ',
+      'คู่มือดูแลระบบ + วิดีโออัดหน้าจอทุก session',
+    ],
+    ctaLabel: 'จอง Bundle · ฿44,900',
+    ctaHref:  '/booking?package=ai-workshop&bundle=consult-30',
+  },
+};
+const bundle = BUNDLE_MAP[slug as string];
+
 // ROI benefit cards per service — concrete before/after numbers per Pun's calculation (2026-04-20)
 interface RoiCard {
   label: string;
@@ -814,6 +861,150 @@ const description = detail.subhead;
       </div>
     </div>
   </section>
+
+  {/* ===== BUNDLE UPSELL — Pakorn-style "level up" offer (conditional) ===== */}
+  {
+    bundle && (
+      <section
+        class="relative overflow-hidden border-t border-base-content/10 px-4 py-20 lg:px-8 lg:py-24"
+        style={`background: linear-gradient(180deg, color-mix(in oklch, ${accent} 8%, transparent), transparent 85%);`}
+      >
+        <div
+          class="pointer-events-none absolute inset-0 -z-10 opacity-40"
+          style={`background: radial-gradient(ellipse at 50% 0%, color-mix(in oklch, ${accent} 15%, transparent), transparent 70%);`}
+        ></div>
+
+        <div class="mx-auto max-w-5xl">
+          <div class="text-center">
+            <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+              {bundle.eyebrow}
+            </p>
+            <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">
+              {bundle.headline}
+            </h2>
+            <p class="mx-auto mt-4 max-w-2xl text-base text-base-content/80 md:text-lg">
+              {bundle.tagline}
+            </p>
+          </div>
+
+          {/* Timeline (Pakorn-style) */}
+          <div class="relative mt-14">
+            {/* Horizontal line connecting steps (desktop only) */}
+            <div
+              class="pointer-events-none absolute left-[10%] right-[10%] top-[2.5rem] hidden h-[2px] md:block"
+              style={`background: linear-gradient(to right, transparent, ${accent}, ${accent}, transparent);`}
+            ></div>
+
+            <ol class="grid gap-6 md:grid-cols-4">
+              {
+                bundle.timeline.map((t, i) => (
+                  <li class="relative flex flex-col items-center text-center">
+                    {/* Step circle */}
+                    <div
+                      class="relative z-10 flex h-20 w-20 items-center justify-center rounded-full border-4 bg-base-100 font-display text-lg font-bold shadow-lg"
+                      style={`border-color: ${accent}; color: ${accent};`}
+                    >
+                      {i + 1}
+                    </div>
+
+                    {/* Step label */}
+                    <p class="mt-4 text-[11px] font-bold uppercase tracking-widest text-base-content/55">
+                      {t.step}
+                    </p>
+                    <h3 class="mt-1 font-display text-base font-bold md:text-lg">
+                      {t.label}
+                    </h3>
+                    <p class="mt-2 text-sm leading-relaxed text-base-content/75">
+                      {t.body}
+                    </p>
+                  </li>
+                ))
+              }
+            </ol>
+          </div>
+
+          {/* Bundle card — includes + pricing */}
+          <div
+            class="mt-14 grid gap-8 rounded-3xl border-2 bg-base-100/80 p-8 shadow-2xl backdrop-blur-sm md:grid-cols-[2fr_1fr] md:p-10"
+            style={`border-color: ${accent}; box-shadow: 0 25px 60px -20px color-mix(in oklch, ${accent} 45%, transparent);`}
+          >
+            {/* Left — What's included */}
+            <div>
+              <h3 class="font-display text-xl font-bold" style={`color: ${accent};`}>
+                ✓ ได้อะไรใน Bundle นี้
+              </h3>
+              <ul class="mt-5 space-y-3">
+                {
+                  bundle.includes.map((inc) => (
+                    <li class="flex items-start gap-3 text-sm leading-relaxed text-base-content/85">
+                      <span class="mt-0.5 font-bold" style={`color: ${accent};`}>✓</span>
+                      <span>{inc}</span>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+
+            {/* Right — Pricing comparison */}
+            <div class="flex flex-col justify-between rounded-2xl bg-base-200/50 p-6">
+              <div>
+                <p class="text-xs font-bold uppercase tracking-widest text-base-content/55">
+                  {bundle.compareTitle}
+                </p>
+                <ul class="mt-4 space-y-2 text-sm">
+                  {
+                    bundle.compareLines.map((l) => (
+                      <li class="flex items-center justify-between gap-2 text-base-content/75">
+                        <span class="truncate">{l.item}</span>
+                        <span class="font-display font-semibold">{l.price}</span>
+                      </li>
+                    ))
+                  }
+                  <li class="flex items-center justify-between gap-2 border-t border-base-content/10 pt-3 text-sm text-base-content/60 line-through">
+                    <span>ซื้อแยก รวม</span>
+                    <span class="font-display font-semibold">{bundle.totalSeparate}</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="mt-6 border-t-2 pt-5" style={`border-color: ${accent};`}>
+                <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+                  Bundle Price
+                </p>
+                <p class="mt-2 font-display text-4xl font-bold md:text-5xl" style={`color: ${accent};`}>
+                  {bundle.totalBundle}
+                </p>
+                <p class="mt-1 text-sm font-semibold" style={`color: ${accent};`}>
+                  ★ {bundle.savings}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <a
+              href={bundle.ctaHref}
+              class="btn btn-lg border-none px-8 text-base font-bold shadow-xl transition-all hover:scale-105"
+              style={`background: ${accent}; color: ${accentButtonText}; box-shadow: 0 15px 40px -15px color-mix(in oklch, ${accent} 50%, transparent);`}
+            >
+              {bundle.ctaLabel} →
+            </a>
+            <a
+              href={`/booking?package=${svc.slug}`}
+              class="btn btn-lg btn-ghost border border-base-content/25 hover:bg-base-200"
+            >
+              ขอ Workshop อย่างเดียว (฿24,900)
+            </a>
+          </div>
+
+          <p class="mt-6 text-center text-xs text-base-content/55">
+            Workshop + Consult 30 วัน · ชำระเงินเต็มจำนวนก่อนเริ่ม · เริ่ม Consult ทันทีหลังจบ Workshop
+          </p>
+        </div>
+      </section>
+    )
+  }
 
   <!-- ===== CTA ===== -->
   <section class="border-t border-base-content/10 px-4 py-20 lg:px-8">

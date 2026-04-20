@@ -55,6 +55,16 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
         title: 'อยากสร้างระบบ AI ให้มียอดจริง',
         body: 'ลงทุนกับ AI แล้วต้องวัดผลเป็นตัวเลข: ยอดเพิ่มกี่ %, เวลาคืนกี่ชม., cost ลดกี่บาท · report ได้จริง ไม่ใช่แค่ feel ว่าทีมใช้ AI เก่งขึ้น',
       },
+      {
+        emoji: '📄',
+        title: 'เซลล์หมดเวลากับงานเอกสาร',
+        body: 'ทำ report ส่งลูกค้า · copy ข้อมูลจาก LINE ใส่ Sheet · Follow-up ทีละคน · quote template ที่ต้องแก้ครั้งละชั่วโมง · พวกนี้กินเวลาวันละ 2-4 ชม. ของเซลล์ที่ควรเอาไปปิดดีล',
+      },
+      {
+        emoji: '🧠',
+        title: 'ส่งทีมเรียน AI แล้วใช้ไม่เป็น',
+        body: 'เคยจ่ายเงินส่งทีมไปเรียน AI · ตื่นเต้นแค่ 3 วันแรกแล้วก็ลืม · หรือพนักงานลาออก เอาความรู้ติดตัวไปด้วย · อยากได้ระบบที่ฝังในองค์กร ไม่ใช่ความรู้ที่ติดไปกับตัวคน',
+      },
     ],
     audience: [
       'SME B2B ทีมขาย 5-20 คน ที่เจ้าของอยากให้ทีมใช้ AI ลดงานซ้ำ',
@@ -154,15 +164,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
         a: '30-day async LINE support รวมในราคาแล้ว · ผมตอบทุกข้อความใน 24 ชม. (Mon-Fri) · ถ้าต้องการ scope ต่อยอดระยะยาว คุยเรื่อง Monthly Consulting หลัง workshop ได้',
       },
       {
-        q: 'Early Bird ราคา ฿19,900 ต่างจาก ฿24,900 ยังไง',
-        a: 'เหมือนกันทุกอย่างครับ · Early Bird เป็นราคาพิเศษสำหรับทีมที่ตัดสินใจเร็วและจองเข้ามาก่อน batch ใหม่เต็ม · ทักมาเช็คสถานะ batch ปัจจุบันกับผมได้เลย',
-      },
-      {
-        q: 'Guarantee "ได้เวลาคืน ≥5 ชม./สัปดาห์" วัดยังไง',
-        a: 'ก่อน workshop วัด baseline เวลาที่ทีมใช้กับงานซ้ำ · 30 วันหลัง workshop เปรียบเทียบ · ถ้าไม่ได้ ≥5 ชม./สัปดาห์ (เฉลี่ย 4 สัปดาห์) = คืนเงิน 100%',
-      },
-      {
-        q: 'Advance AI & Business Automation ต่าง AI & Business Marketing ยังไง',
+        q: 'Advance AI & Business Automation ต่างกัน AI & Business Marketing ยังไง',
         a: 'Automation = งาน admin (report, follow-up, data entry) · Marketing = การผลิต content + funnel · ถ้าไม่แน่ใจ ทักผมช่วย diagnose ก่อนเลือก',
       },
     ],
