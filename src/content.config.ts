@@ -67,7 +67,8 @@ const training = defineCollection({
   schema: commonFrontmatter.extend({
     programCode: z.enum(['p1', 'p2', 'p4', 'p5']),
     hook: z.string(),
-    guarantee: z.string(),
+    /** @deprecated Pun has NO refund/money-back/retake-free policy anywhere · keep optional for legacy · do NOT repopulate */
+    guarantee: z.string().optional(),
     audience: z.string(),
     duration: z.string(),
     format: z.enum(['onsite', 'online', 'hybrid']),

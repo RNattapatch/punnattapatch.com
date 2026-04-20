@@ -303,19 +303,8 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
     )
   }
 
-  {/* ===== GUARANTEE ===== */}
-  <section
-    class="border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-20"
-    style={`background: color-mix(in oklch, ${accent} 4%, transparent);`}
-  >
-    <div class="mx-auto max-w-3xl text-center">
-      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>Outcome Guarantee</p>
-      <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
-        ถ้าไม่ได้ผลจริง — คืนเงิน
-      </h2>
-      <p class="mt-6 text-base leading-relaxed text-base-content/85 md:text-lg">{data.guarantee}</p>
-    </div>
-  </section>
+  {/* NOTE: Pun has NO refund/money-back policy — do NOT re-add Outcome Guarantee section.
+      The `guarantee` field in training schema is deprecated (kept optional for legacy). */}
 
   {/* ===== FOUNDING PERKS (if applicable) ===== */}
   {
@@ -477,7 +466,7 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
         ยื่น Application 3-5 นาที →
       </a>
       <p class="mt-4 text-xs text-base-content/55">
-        ชำระ 100% upfront หลังผ่าน screening · {data.guarantee.slice(0, 60)}...
+        ชำระ 100% upfront หลังผ่าน screening · Application-based · 1-per-industry-per-cohort
       </p>
     </div>
   </section>

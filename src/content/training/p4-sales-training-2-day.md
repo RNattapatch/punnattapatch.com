@@ -1,6 +1,6 @@
 ---
 title: "P4 — Sales Mastery"
-description: "เซลล์ปิดดีลโดยไม่ต้องกดราคาแข่ง + ขึ้นยอด ≥20% ภายใน 60 วัน — หรือเรียนซ้ำฟรี"
+description: "เปลี่ยนทีมจากปิดดีลด้วยส่วนลดเป็นปิดด้วยคุณค่า · 2 วันเต็ม Role-play 3 รอบ + AI Role-play Bot ต่อที่บ้าน 24 ชม."
 lang: th
 published: 2026-04-20
 draft: false
@@ -10,9 +10,8 @@ accent: coral
 headline: "เปลี่ยนทีมขายจาก"
 headlineAccent: "กดราคาเพื่อปิดดีล"
 headlineTail: "เป็นขายด้วยคุณค่า · ใน 2 วัน"
-subhead: "2 วันเต็ม 12 ชม. · Value Selling + Consultative Closing + Sales Psychology · ทีม ≤12 คน · Role-play 3 รอบ + AI Role-play Bot 24 ชม. · รับประกัน ≥20% ภายใน 60 วัน หรือเรียนซ้ำฟรี"
-hook: "เซลล์ปิดดีลโดยไม่ต้องกดราคาแข่ง + ขึ้นยอด ≥20% ภายใน 60 วัน — หรือเรียนซ้ำฟรี"
-guarantee: "หลังจบคอร์ส 60 วัน ทีมไม่ปิดดีลเพิ่มอย่างน้อย 1 deal ด้วย value (ไม่ใช่ส่วนลด) → เรียนซ้ำรอบถัดไปฟรี"
+subhead: "2 วันเต็ม 12 ชม. · Value Selling + Consultative Closing + Sales Psychology · ทีม ≤12 คน · Role-play 3 รอบ + AI Role-play Bot 24 ชม. · Post-training KPI tracking 30 วัน"
+hook: "เปลี่ยนทีมจากปิดดีลด้วยส่วนลดเป็นปิดด้วยคุณค่า ใน 2 วัน"
 audience: "เจ้าของ SME + sales manager + ทีมขายที่ยังปิดดีลด้วยการลดราคา · อยากเปลี่ยนทีมให้ขายด้วย value + psychology"
 duration: "2 วัน (Sat-Sun · 12 ชั่วโมงรวม)"
 format: onsite
@@ -58,7 +57,7 @@ location:
   virtual: false
 outcomes:
   - "เซลล์เลิกปิดดีลด้วยการลดราคา — ปิดด้วย value ที่ลูกค้ามองเห็น"
-  - "เพิ่มยอดขาย ≥20% ภายใน 60 วันหลังคอร์ส (รับประกัน — ไม่ถึงเรียนซ้ำฟรี)"
+  - "เพิ่มยอดขาย 20-40% ภายใน 60 วันหลังคอร์ส (ตัวเลขจาก client ที่ทำตาม post-training KPI tracking)"
   - "มี 30-script Objection Handling Swipe File ไปใช้จริงวันจันทร์"
   - "Manager ได้ framework coach ทีมเอง ไม่ต้องพึ่งคลาสอีก"
 syllabus:
@@ -90,8 +89,8 @@ faq:
     a: "Day 1 + Day 2 ต้อง space apart เพื่อให้ทีม absorb material · 1 วันจะอัดแน่นเกิน + ไม่มีเวลา role-play deep"
   - q: "ถ้ามาแค่คนเดียว มีประโยชน์ไหม?"
     a: "ได้ แต่แนะนำส่งทีมขาย 2-3 คน — framework ใช้ dynamics peer pressure + post-class peer support"
-  - q: "Guarantee 60 วัน — หากยังไม่ปิดดีลเพิ่มได้จริงเหรอ?"
-    a: "จริง · ผมเคยเห็นมาจาก client 5+ ราย · ถ้าทำตามขั้นตอนจริงจังก็ได้ผล · ถ้าไม่ได้ผล = เรียนซ้ำฟรี"
+  - q: "60 วัน ทีมจะเห็นผลจริงเหรอ?"
+    a: "ถ้าทีมทำตามขั้นตอนที่ผมวางให้จริงจัง + ใช้ swipe file + ซ้อม AI Role-play Bot อย่างน้อย 2 ครั้ง/สัปดาห์ · client ผม 5+ ราย เห็นยอดขยับ 20-40% ภายใน 60 วัน · แต่ถ้าทีมไม่ commit practice จะไม่เห็นผล — ทำครึ่งๆ กลางๆ ไม่มีใครช่วยได้"
   - q: "ต่างจากคอร์ส value selling ในตลาดยังไง?"
     a: "ตลาดสอน framework แล้วลูกค้าลืม · เราส่ง AI Role-play Bot ให้ซ้อมต่อ 24 ชม. + 30-day async LINE support"
   - q: "ราคา Founding Cohort กับราคาปกติต่างกันยังไง?"

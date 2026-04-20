@@ -1,6 +1,6 @@
 ---
 title: "P5 — Sales Team Builder"
-description: "ได้ระบบ Recruit → Onboard → Manage → Coach → Retain ครบวงจรที่ implement ได้ทันที — หรือคืนเงิน"
+description: "ได้ 5 ระบบ Recruit → Onboard → Manage → Coach → Retain ครบวงจรที่ implement หน้างานได้ทันที · 2 weekends + break week + graduation dinner"
 lang: th
 published: 2026-04-20
 draft: false
@@ -10,9 +10,8 @@ accent: coral
 headline: "ทีมขาย 5-20 คน แต่ยอด"
 headlineAccent: "80% มาจากเจ้าของคนเดียว"
 headlineTail: "วางระบบให้ทีมวิ่งเอง ใน 2 weekends"
-subhead: "2 weekends + 1-week break + graduation dinner · 8 ที่นั่ง · รับทีมเจ้าของ SME ที่ scale จาก 5 → 20 คน · ออกมาพร้อม 5 ระบบ (Recruit/Onboard/Manage/Coach/Retain) ที่ implement ได้ทันที · ไม่ได้ 5 ระบบ = คืนเงิน 100%"
-hook: "ได้ระบบ Recruit → Onboard → Manage → Coach → Retain ครบวงจรที่ implement ได้ทันที — หรือคืนเงิน"
-guarantee: "จบโปรแกรม 2 weekends ไม่ได้ 5 ระบบ (Recruit/Onboard/Manage/Coach/Retain) ที่ implement ได้ทันที → คืนเงิน 100%"
+subhead: "2 weekends + 1-week break + graduation dinner · 8 ที่นั่ง · รับเฉพาะเจ้าของ SME ที่ scale จาก 5 → 20 คน · ออกมาพร้อม 5 ระบบ (Recruit/Onboard/Manage/Coach/Retain) implement หน้างานได้ทันที"
+hook: "ได้ 5 ระบบ Recruit → Onboard → Manage → Coach → Retain ครบวงจร implement ได้ทันที"
 audience: "เจ้าของ SME + Sales Director ที่มีทีม 5-20 คน + ยังไม่มีระบบ end-to-end จาก recruit ถึง retain"
 duration: "2 weekends + 1-week break (รวม 3 วันที่ห้อง + graduation dinner)"
 format: onsite
@@ -98,8 +97,8 @@ faq:
     a: "Weekend 1 + Break 1 week + Weekend 2 design ให้ implement ได้จริง · หลัง Weekend 1 ทีมลองไป apply หน้างาน 1 อาทิตย์ แล้วมา debrief Weekend 2"
   - q: "ถ้ามี partner/co-founder เข้าด้วยกันได้ไหม?"
     a: "เข้าได้ · แต่ต้องจ่ายคนละ seat (ไม่มี 2-for-1) · ทั้งคู่เรียนพร้อมกัน = ตัดสินใจทันหลังจบ ง่ายกว่า"
-  - q: "Guarantee — ถ้าไม่ได้ 5 ระบบจริงเหรอ?"
-    a: "จริง · ใน 2 weekends ที่ออกแบบไว้ ทุกคนจะได้ output ของทั้ง 5 ระบบ · ถ้าไม่ได้ (เพราะผมสอนไม่ดี) คืนเงิน 100%"
+  - q: "2 weekends จะได้ 5 ระบบครบจริงเหรอ?"
+    a: "ได้ครบถ้า commit ทุก session · แต่ต้องทำ pre-work (Team Audit Worksheet) ล่วงหน้า 1 สัปดาห์ + homework break week + share case จริงในห้อง · ถ้า skip session หรือไม่ทำ homework = ไม่มี output · peer learning format ต้องพร้อมเปิดเผย data ในห้อง"
   - q: "Graduation dinner จำเป็นไหม?"
     a: "Optional แต่แนะนำมากๆ — network กับ SME owner 7 ราย + peer advisory post-program · ตัวโปรแกรมหลัง graduation คือ alumni community"
   - q: "หลังจบ alumni มีอะไรต่อ?"

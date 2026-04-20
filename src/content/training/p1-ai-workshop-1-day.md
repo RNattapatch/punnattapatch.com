@@ -1,6 +1,6 @@
 ---
 title: "P1 — AI Quick Launch"
-description: "จบวันเดียว ได้ AI Agent แรกของธุรกิจ + Action Plan 30 วัน — หรือคืนเงิน 100%"
+description: "จบวันเดียว ได้ AI Agent ตัวแรกของธุรกิจ + Action Plan 30 วัน · Hands-on build ในห้อง ไม่ใช่ฟัง theory"
 lang: th
 published: 2026-04-19
 draft: false
@@ -10,9 +10,8 @@ accent: cyan
 headline: "จบวันเดียว คุณจะมี"
 headlineAccent: "AI Agent ตัวแรกของธุรกิจ"
 headlineTail: "build ด้วยมือคุณเอง · ไม่ต้องรอเป็นเดือน"
-subhead: "1 วันเต็ม 6-7 ชม. · 12 ที่นั่ง · Peer-accountability · ออกจากห้องพร้อม AI Agent ใช้งานจริง + Action Plan 30 วัน · ถ้าไม่เห็นผลคืนเงิน 100%"
-hook: "จบวันเดียว ได้ AI Agent แรกของธุรกิจ + Action Plan 30 วัน — หรือคืนเงิน"
-guarantee: "ถ้าวันนั้นยังไม่เห็น AI Agent ของคุณทำงานจริง คืนเงิน 100% ไม่มีเงื่อนไข"
+subhead: "1 วันเต็ม 6-7 ชม. · 12 ที่นั่ง · Peer-accountability · ออกจากห้องพร้อม AI Agent ใช้งานจริง + Action Plan 30 วัน · hands-on build ตลอดวัน"
+hook: "จบวันเดียว ได้ AI Agent ตัวแรกของธุรกิจ + Action Plan 30 วัน"
 audience: "เจ้าของ SME ที่อยากให้ AI ทำงานแทนได้จริง — เริ่มจากศูนย์ ไม่ต้องมีพื้นฐาน tech"
 duration: "1 วัน (6-7 ชั่วโมง)"
 format: onsite
@@ -94,8 +93,8 @@ faq:
     a: "พอครับ — เน้น 1 use case จริงของธุรกิจคุณ build ให้ใช้งานได้ก่อนกลับบ้าน"
   - q: "ราคา Founding กับราคาปกติต่างกันยังไง?"
     a: "Founding Cohort 12 คนแรกได้ราคา ฿11,900 + Lifetime Inner Circle ฟรี หลังจากนั้นราคาขึ้นเป็น ฿14,900 และไม่มี Lifetime perk อีกแล้ว"
-  - q: "ถ้าไม่พอใจ ขอเงินคืนได้ไหม?"
-    a: "ได้ครับ ถ้าวันนั้นยังไม่เห็น AI Agent ทำงานจริง คืนเงิน 100% ไม่มีเงื่อนไข"
+  - q: "ชำระเงินยังไง มีผ่อนไหม?"
+    a: "ชำระ 100% upfront ก่อนเริ่ม · ไม่มีผ่อน · Application-based screening ก่อนเก็บเงิน · ถ้าไม่ผ่าน screening ไม่ต้องโอน"
   - q: "Enrollment เปิดให้ทุกคนสมัครไหม?"
     a: "ไม่ครับ — เปิดแบบ Application-based เพื่อให้ทุกคนในห้องได้ประโยชน์สูงสุด ต้องผ่าน screening ก่อน"
 ---
@@ -130,5 +129,5 @@ Founding Cohort 12 คนแรก ได้สิทธิ์ Lifetime Inner Ci
 
 1.  กรอก Application form ใช้เวลา 3-5 นาที
 2.  ผมจะอ่านทุกใบสมัครและแจ้งผลภายใน 48 ชั่วโมง
-3.  หากผ่านการคัดเลือก ชำระค่าเรียน ฿11,900 (เรามี outcome guarantee คืนเงินเต็มจำนวนหากคุณไม่พอใจผลลัพธ์)
+3.  หากผ่านการคัดเลือก ชำระค่าเรียน ฿11,900 upfront · Application-based screening ก่อนเก็บเงิน ถ้าไม่ผ่าน screening ไม่ต้องโอน
 4.  คุณจะได้รับ onboarding pack และการยืนยันสถานที่เรียน 1 สัปดาห์ก่อนวันจริง
