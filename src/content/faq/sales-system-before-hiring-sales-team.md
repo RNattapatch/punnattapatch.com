@@ -62,7 +62,7 @@ tags: [faq, sales-system, hiring, sme, playbook]
 
 แถมถ้าใช้ conditional formatting ช่วยได้อีก: ตั้งให้แถวไหนที่ "last touch" เกิน 7 วันกลายเป็นสีส้ม เซลล์จะรู้ทันทีว่าต้องตามใคร
 
-ลงลึกใน [KPI dashboard ทีมขายบน Google Sheets](/faq/sales-kpi-dashboard-google-sheets)
+ลงลึกใน [KPI dashboard ทีมขายบน Google Sheets](/faq#sales-kpi-dashboard-google-sheets)
 
 ## เคสจริง — client ที่ข้ามขั้นนี้
 
@@ -92,7 +92,7 @@ Cost ของการข้ามขั้น — ฿280,000 + opportunity cos
 
 ค่อยคิดเรื่องย้ายไปใช้ CRM จริงจังอย่าง HubSpot/Pipedrive ก็ต่อเมื่อทีมมีเซลล์เกิน 10 คน หรือมี lead เข้ามาเกิน 500 lead ต่อเดือน — ก่อนหน้านั้นมันเกินความจำเป็น (overkill)
 
-อ่าน [CRM ที่แนะนำสำหรับ SME ไทย B2B](/faq/crm-recommendation-sme-thai-b2b)
+อ่าน [CRM ที่แนะนำสำหรับ SME ไทย B2B](/faq#crm-recommendation-sme-thai-b2b)
 
 ## Checklist 1 หน้า: เช็คให้ครบก่อนจ้างเซลล์คนแรก
 
@@ -108,6 +108,6 @@ Cost ของการข้ามขั้น — ฿280,000 + opportunity cos
 ## Package ที่เกี่ยวข้อง
 
 - [Sales System Sprint ฿65,000](/services/sales-system-sprint) — 1 เดือนครบทั้ง 3 ชิ้น + onboarding plan + training
-- [AI Day Workshop ฿30,000](/services/ai-workshop) — 1 วันได้ ICP + objection script + pipeline template
+- [Advance AI Workshop ฿24,900](/services/ai-workshop) — 1 วันได้ ICP + objection script + pipeline template
 
-อ่านต่อ: [ควรทำ research ก่อนจ้างเซลล์ไหม](/faq/research-market-before-hiring-sales) | [เพิ่มพนักงานขายแล้วยอดจะเพิ่มไหม](/faq/add-sales-staff-revenue-not-increase) | [คู่มือสร้างทีมขาย B2B](/pillar/build-b2b-sales-team-sme-thailand)
+อ่านต่อ: [ควรทำ research ก่อนจ้างเซลล์ไหม](/faq#research-market-before-hiring-sales) | [เพิ่มพนักงานขายแล้วยอดจะเพิ่มไหม](/faq#add-sales-staff-revenue-not-increase) | [คู่มือสร้างทีมขาย B2B](/insights/build-b2b-sales-team-sme-thailand)

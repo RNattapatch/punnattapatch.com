@@ -152,5 +152,5 @@ parentPillar: sales-consulting
 ## เริ่มประคอง 4 ล้อ
 
 - [Sales System Sprint ฿65,000 / 1 เดือน](/services/sales-system-sprint) — เข้ามาช่วยวางระบบ 4 ล้อให้ครบและทำงานลื่นไหลใน 4 sessions
-- [AI Day Workshop ฿30,000](/services/ai-workshop) — สอนใช้ AI ลดงานซ้ำๆ ที่ดูดพลังงานเจ้าของ
+- [Advance AI Workshop ฿24,900](/services/ai-workshop) — สอนใช้ AI ลดงานซ้ำๆ ที่ดูดพลังงานเจ้าของ
 - [กรอกฟอร์มประเมิน 3 นาที](/intake-form) — ผมจะอ่านข้อมูลแล้วบอกให้ว่าล้อไหนของคุณกำลังมีปัญหา และควรแก้เรื่องไหนก่อน

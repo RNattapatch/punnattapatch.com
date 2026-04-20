@@ -254,7 +254,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       'Async LINE support 30 วันหลัง handover',
     ],
     notIncluded: [
-      'AI Day Workshop (separate ฿30k — ส่วนใหญ่รวมมาด้วยแล้วผ่าน AI workflow ใน sprint)',
+      'Advance AI Workshop แยก (฿24,900 — ส่วนใหญ่รวมมาด้วยแล้วผ่าน AI workflow ใน sprint)',
       'ค่าเดินทาง on-site ต่างจังหวัด',
       'Monthly retainer หลัง handover (optional)',
     ],

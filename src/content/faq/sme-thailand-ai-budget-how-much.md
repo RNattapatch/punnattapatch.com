@@ -66,6 +66,6 @@ Wedge ที่ SME ไทยเลือกแล้วคืนทุนเร
 
 ## ถ้างบต่ำกว่า ฿100,000
 
-สามารถเริ่มด้วย [AI Day Workshop ฿30,000](/services/ai-workshop) ก่อนได้ เวิร์กช็อป 1 วันนี้จะทำให้คุณได้ AI workflow 1 ตัวไปใช้งานทันที และได้เห็นสไตล์การทำงานของที่ปรึกษาก่อนตัดสินใจ commit กับ wedge ที่ใหญ่ขึ้น
+สามารถเริ่มด้วย [Advance AI Workshop ฿24,900](/services/ai-workshop) ก่อนได้ เวิร์กช็อป 1 วันนี้จะทำให้คุณได้ AI workflow 1 ตัวไปใช้งานทันที และได้เห็นสไตล์การทำงานของที่ปรึกษาก่อนตัดสินใจ commit กับ wedge ที่ใหญ่ขึ้น
 
 อ่านต่อ: [Pillar: AI Transformation for Sales](/insights/ai-transformation-sales) | [KPI dashboard บน Sheets](/faq)

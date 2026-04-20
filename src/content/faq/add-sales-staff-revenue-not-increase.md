@@ -76,6 +76,6 @@ Client forklift distributor ทีม 5 คน. Inbound lead เฉลี่ย 
 ## Package ที่เกี่ยวข้อง
 
 - [Sales System Sprint ฿65,000](/services/sales-system-sprint): 1 เดือนวางระบบ + CRM + KPI ก่อนตัดสินใจเพิ่มคน
-- [AI Day Workshop ฿30,000](/services/ai-workshop): automate งาน admin ให้ทีมเดิมมี capacity เพิ่มใน 1 วัน
+- [Advance AI Workshop ฿24,900](/services/ai-workshop): automate งาน admin ให้ทีมเดิมมี capacity เพิ่มใน 1 วัน
 
-อ่านต่อ: [ต้องวางระบบขายก่อนจ้างเซลล์ไหม](/faq/sales-system-before-hiring-sales-team) | [KPI dashboard ทีมขาย](/faq/sales-kpi-dashboard-google-sheets) | [คู่มือสร้างทีมขาย B2B](/pillar/build-b2b-sales-team-sme-thailand)
+อ่านต่อ: [ต้องวางระบบขายก่อนจ้างเซลล์ไหม](/faq#sales-system-before-hiring-sales-team) | [KPI dashboard ทีมขาย](/faq#sales-kpi-dashboard-google-sheets) | [คู่มือสร้างทีมขาย B2B](/insights/build-b2b-sales-team-sme-thailand)

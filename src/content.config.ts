@@ -14,7 +14,7 @@ const commonFrontmatter = z.object({
   author: z.string().default('Pun Nattapatch'),
   tags: z.array(z.string()).default([]),
   /** AEO-specific: which pillar does this belong under */
-  pillar: z.enum(['sales-consulting', 'ai-transformation', 'agentic-ai-sales']).optional(),
+  pillar: z.enum(['sales-consulting', 'ai-transformation', 'agentic-ai-sales', 'personal-branding']).optional(),
   /** AEO-specific: was this generated/polished by the pipeline */
   polished_by: z.string().optional(),
   ai_detection_score: z.number().optional(),

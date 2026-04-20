@@ -21,7 +21,10 @@ export const SITE = {
   social: {
     tiktok: 'https://www.tiktok.com/@pun_nattapatch',
     instagram: 'https://www.instagram.com/pun_nattapatch',
-    line: 'https://lin.ee/punnattapatch',
+    // LINE OA canonical URL — verified share link matches real LINE OA (NOT a vanity ID).
+    // ❌ DO NOT change to 'lin.ee/punnattapatch' — that handle is NOT registered to Pun.
+    // Reference: index.astro line 265 + faq/no-public-course-why.md line 35 (same URL).
+    line: 'https://lin.ee/ioSnSUG',
   },
   nav: [
     { label: 'หน้าหลัก', href: '/' },
@@ -46,11 +49,11 @@ export const BRAND_COLORS = {
 export const SERVICES = [
   {
     id: 'ai-workshop',
-    title: 'Advanced AI & Business Automation',
-    subtitle: 'AI Day Workshop',
+    title: 'Advance AI & Business Automation',
+    subtitle: 'Workshop 1 วัน · Build AI Agent แรก',
     hook: 'ทีมขายเสียเวลา 5+ ชั่วโมง/สัปดาห์ กับงานที่ AI ทำได้ใน 10 นาที',
-    priceThb: 30000,
-    priceLabel: '฿30,000 / วัน',
+    priceThb: 24900,
+    priceLabel: '฿24,900 · ราคาพิเศษเดือนนี้ (ปกติ ฿30,000)',
     duration: '1 วัน (6-7 ชม.)',
     format: 'On-site หรือ Online',
     audience: 'ทีมขายที่เสียเวลากับงาน manual ซ้ำๆ อยากเห็น AI ทำงานจริงก่อนลงทุนเพิ่ม',

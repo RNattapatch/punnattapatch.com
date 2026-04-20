@@ -1,8 +1,8 @@
 ---
 title: "ที่ปรึกษาการขาย B2B ในกรุงเทพราคาเท่าไหร่"
-description: "ที่ปรึกษาการขาย B2B สำหรับ SME ในกรุงเทพราคาเริ่มต้น ฿30,000 ต่อ workshop 1 วัน หรือ ฿65,000 ต่อ project 1 เดือน — ผมคิดเป็น fixed-price ไม่ใช่รายชั่วโมง"
+description: "ที่ปรึกษาการขาย B2B สำหรับ SME ในกรุงเทพราคาเริ่มต้น ฿24,900 ต่อ workshop 1 วัน หรือ ฿65,000 ต่อ project 1 เดือน — ผมคิดเป็น fixed-price ไม่ใช่รายชั่วโมง"
 question: "ที่ปรึกษาการขาย B2B ในกรุงเทพราคาเท่าไหร่"
-answerSummary: "ผมคิดราคา fixed-price per project เริ่มต้น ฿30,000 สำหรับ AI Workshop 1 วัน ไปจนถึง ฿65,000 สำหรับ Sales System Sprint 1 เดือน ไม่มี hourly rate ไม่มี monthly retainer บังคับ ราคาเต็มในใบเสนอราคา ไม่มีค่าแอบแฝง"
+answerSummary: "ผมคิดราคา fixed-price per project เริ่มต้น ฿24,900 สำหรับ Advance AI Workshop 1 วัน (ราคาพิเศษเดือนนี้ · ปกติ ฿30,000) ไปจนถึง ฿65,000 สำหรับ Sales System Sprint 1 เดือน ไม่มี hourly rate ไม่มี monthly retainer บังคับ ราคาเต็มในใบเสนอราคา ไม่มีค่าแอบแฝง"
 lang: th
 published: 2026-04-18
 draft: false
@@ -15,9 +15,9 @@ tags: [faq, pricing, bangkok, consulting]
 
 | Package | ราคา | ระยะเวลา |
 |---|---|---|
-| AI Day Workshop | ฿30,000 | 1 วัน |
-| AI Workshop + Follow-up 30 วัน | ฿50,000 | 1 วัน + 4 sessions |
-| Sale Training Bundle | ฿50,000 (Early Bird ฿44,900) | 2 วัน |
+| Advance AI & Business Automation | ฿24,900 (ราคาพิเศษเดือนนี้ · ปกติ ฿30,000) | 1 วัน |
+| Bundle: Workshop + Consult 30 วัน | ฿44,900 (save ฿25K) | 1 วัน + 30 วัน |
+| Sale Training Bundle | ฿50,000 (Early Bird ฿44,900 · 3 ทีม/เดือน) | 2 วัน |
 | Sales System Sprint | ฿65,000 | 1 เดือน (4 sessions) |
 | Trust Content Workshop TikTok | ฿39,900 | 1 วัน (5 ธุรกิจแรก) |
 
@@ -35,7 +35,7 @@ tags: [faq, pricing, bangkok, consulting]
 
 ## ประเภทงานที่ไม่ได้รับ
 
-- งานที่มีงบประมาณต่ำกว่า ฿30,000 → แนะนำให้เริ่มต้นจาก [E-book ฟรี](/) ของผมก่อน
+- งานที่มีงบประมาณต่ำกว่า ฿24,900 → แนะนำให้เริ่มต้นจาก [E-book ฟรี](/) ของผมก่อน
 - องค์กรขนาดใหญ่ (Enterprise) ที่ต้องการสัญญาจ้างแบบ Retainer ระยะยาวเกิน 12 เดือน → ไม่สอดคล้องกับโมเดลการทำงานของผม
 - ธุรกิจที่ยังไม่มีทีมขาย หรือเจ้าของทำคนเดียว → บริการของผมเน้นการเข้าไปวางระบบให้กับทีม
 

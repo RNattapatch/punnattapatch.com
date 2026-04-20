@@ -75,7 +75,7 @@ tags: [faq, hiring, sales-team, market-research, sme]
 
 ## Package ที่เกี่ยวข้อง
 
-- [AI Day Workshop ฿30,000](/services/ai-workshop) — 1 วันได้ framework research + ICP document ทำงานกันสด
+- [Advance AI Workshop ฿24,900](/services/ai-workshop) — 1 วันได้ framework research + ICP document ทำงานกันสด
 - [Sales System Sprint ฿65,000](/services/sales-system-sprint) — 1 เดือนรวม research → ICP → playbook → CRM → KPI dashboard ครบ
 
-อ่านต่อ: [ต้องวางระบบขายก่อนจ้างเซลล์ไหม](/faq/sales-system-before-hiring-sales-team) | [จ้างเซลล์มีประสบการณ์ vs มือใหม่](/faq/experienced-vs-new-sales-hire) | [คู่มือสร้างทีมขาย B2B](/pillar/build-b2b-sales-team-sme-thailand)
+อ่านต่อ: [ต้องวางระบบขายก่อนจ้างเซลล์ไหม](/faq#sales-system-before-hiring-sales-team) | [จ้างเซลล์มีประสบการณ์ vs มือใหม่](/faq#experienced-vs-new-sales-hire) | [คู่มือสร้างทีมขาย B2B](/insights/build-b2b-sales-team-sme-thailand)

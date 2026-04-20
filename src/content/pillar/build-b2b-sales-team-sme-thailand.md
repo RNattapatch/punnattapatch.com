@@ -41,7 +41,7 @@ heroImage: "/og-image.jpg"
 
 เคส client ทันตกรรม ก่อนทำ research เจ้าของคิดว่าลูกค้าหลักคือหมอฟันเปิดคลินิกใหม่ หลังโทรสัมภาษณ์ 5 ราย พบว่า 4 ใน 5 คือคลินิกเก่าที่กำลังเปลี่ยนเครื่อง ความต้องการต่างกันคนละเรื่อง แปลว่า script ขายที่ใช้มา 2 ปีพูดผิดกลุ่ม
 
-ถ้าข้ามขั้นนี้ไปจ้างเซลล์ เซลล์จะไปบอกลูกค้าว่าอะไรครับ อ่าน [ควรทำ research ก่อนจ้างทีมขายหรือไม่](/faq/research-market-before-hiring-sales) ถ้าอยากเห็นเฟรม research เต็ม
+ถ้าข้ามขั้นนี้ไปจ้างเซลล์ เซลล์จะไปบอกลูกค้าว่าอะไรครับ อ่าน [ควรทำ research ก่อนจ้างทีมขายหรือไม่](/faq#research-market-before-hiring-sales) ถ้าอยากเห็นเฟรม research เต็ม
 
 ### 2. วางระบบขายก่อน สเกลด้วยคน
 
@@ -53,7 +53,7 @@ heroImage: "/og-image.jpg"
 
 สิ่งที่ client ผมเคยพลาด คือจ้างเซลล์ ฿45,000 + commission ก่อนมี 3 ชิ้นนี้ เซลล์อยู่ 4 เดือนแล้วลาออก เหตุผลที่เขาบอกตอน exit interview คือ "ไม่รู้ว่าเป้าหมายคือกำไรหรือยอด ไม่มีใครตอบได้"
 
-ลงทุน 1 เดือนวางระบบก่อน ประหยัดค่าจ้างเซลล์ที่ burn out ไป ฿180,000+ อ่านเพิ่ม [ต้องวางระบบขายก่อนจ้างเซลล์ไหม](/faq/sales-system-before-hiring-sales-team)
+ลงทุน 1 เดือนวางระบบก่อน ประหยัดค่าจ้างเซลล์ที่ burn out ไป ฿180,000+ อ่านเพิ่ม [ต้องวางระบบขายก่อนจ้างเซลล์ไหม](/faq#sales-system-before-hiring-sales-team)
 
 ### 3. Interview และจ้างให้เข้ากับ phase ของบริษัท
 
@@ -65,7 +65,7 @@ heroImage: "/og-image.jpg"
 | มี playbook แล้ว ต้องการ scale | มือ exp | execute ตาม system ได้เร็ว ไม่ต้องสอนพื้นฐาน |
 | ต้องการเปลี่ยน market ใหม่ | มือ exp จาก industry นั้น | เครือข่ายพร้อม, deal cycle สั้นลง 30-50% |
 
-คำถาม filter 1 ข้อก่อนรับ: "ถ้าผมบอกให้คุณทำในแบบที่ต่างจากที่เคยทำมา คุณโอเคไหม" ถ้าได้คำตอบ "ที่เก่าผมทำแบบนี้..." แปลว่าเขาไม่ปรับ ดูเพิ่มที่ [จ้างเซลล์มีประสบการณ์ vs มือใหม่ เลือกแบบไหน](/faq/experienced-vs-new-sales-hire)
+คำถาม filter 1 ข้อก่อนรับ: "ถ้าผมบอกให้คุณทำในแบบที่ต่างจากที่เคยทำมา คุณโอเคไหม" ถ้าได้คำตอบ "ที่เก่าผมทำแบบนี้..." แปลว่าเขาไม่ปรับ ดูเพิ่มที่ [จ้างเซลล์มีประสบการณ์ vs มือใหม่ เลือกแบบไหน](/faq#experienced-vs-new-sales-hire)
 
 ### 4. วัด KPI ที่บอก direction ไม่ใช่แค่ยอดขาย
 
@@ -79,7 +79,7 @@ heroImage: "/og-image.jpg"
 
 เคส client luxury ที่ยอดตก ฿40M ตอนเข้าไปพบว่าวัดแค่ยอดรวม ไม่ได้วัดเวลาตอบ พอเปลี่ยนมาวัด SLA ตอบ 15 นาที + conversion rate รายคน พบว่า 2 ใน 6 คน response time 60+ นาที เมื่อแก้ตรงนั้น conversion รวมของทีมขึ้นจาก 11% เป็น 18% ใน 6 สัปดาห์
 
-KPI dashboard พื้นฐานทำใน Google Sheets ได้ ดู [KPI dashboard ทีมขายบน Google Sheets](/faq/sales-kpi-dashboard-google-sheets)
+KPI dashboard พื้นฐานทำใน Google Sheets ได้ ดู [KPI dashboard ทีมขายบน Google Sheets](/faq#sales-kpi-dashboard-google-sheets)
 
 ## เคสจริง: ธุรกิจเครื่องมือทันตกรรมที่ dealer heavy
 
@@ -97,13 +97,13 @@ Client รายนี้ (anonymized) รายได้ ฿85M/ปี มี d
 
 ผลหลัง 4 เดือน: dealer active เพิ่มจาก 11 → 15 ราย, concentration จาก top-4 = 80% ลงมาที่ 65%, เจ้าของเอาเวลา follow-up dealer กลับมาได้ 3 ชม./วัน. งบทำระบบรวม ฿65,000
 
-เคสเต็มอ่านที่ [Dealer หนีไปคู่แข่งแก้ยังไง](/faq/dealer-switching-to-competitor) + [Forklift Distributor ทีม 5 คน](/case-studies/forklift-distributor-5-person-team) สำหรับเคสลักษณะคล้ายกัน
+เคสเต็มอ่านที่ [Dealer หนีไปคู่แข่งแก้ยังไง](/faq#dealer-switching-to-competitor) + [Forklift Distributor ทีม 5 คน](/case-studies/forklift-distributor-5-person-team) สำหรับเคสลักษณะคล้ายกัน
 
 ## 5 ข้อผิดพลาดที่เจ้าของ SME ทำซ้ำ
 
-- จ้างเซลล์เพราะคิดว่าคนเพิ่ม = ยอดเพิ่ม. Demand ไม่โตตาม จ้างไปก็ idle ดู [เพิ่มพนักงานขายแล้วยอดจะเพิ่มไหม](/faq/add-sales-staff-revenue-not-increase)
+- จ้างเซลล์เพราะคิดว่าคนเพิ่ม = ยอดเพิ่ม. Demand ไม่โตตาม จ้างไปก็ idle ดู [เพิ่มพนักงานขายแล้วยอดจะเพิ่มไหม](/faq#add-sales-staff-revenue-not-increase)
 - ให้เซลล์สร้าง relationship กับลูกค้าแทนบริษัท. วันเซลล์ลาออก ลูกค้าตามไป ต้อง design การ check-in จากหลายจุด (admin, owner, technical support) ไม่ใช่แค่เซลล์คนเดียว
-- Commission structure ไม่สะท้อน profit. เซลล์ push discount เพื่อปิดยอด กำไรหาย อ่าน [Commission structure ทีมขาย 10 คน](/faq/commission-structure-sales-team-10-people)
+- Commission structure ไม่สะท้อน profit. เซลล์ push discount เพื่อปิดยอด กำไรหาย อ่าน [Commission structure ทีมขาย 10 คน](/faq#commission-structure-sales-team-10-people)
 - Copy playbook จากธุรกิจคนละ industry. B2C retail playbook ใช้กับ B2B ที่ deal cycle 3-6 เดือนไม่ได้
 - วัดแค่ยอดขาย ไม่วัด leading indicator. รู้ผิดตอนจบเดือน แก้ไม่ทัน
 
@@ -120,15 +120,15 @@ Client รายนี้ (anonymized) รายได้ ฿85M/ปี มี d
 
 ## อ่านต่อ — คำถามเฉพาะที่เจ้าของ SME ถามผมบ่อย
 
-- [ควรทำ research ตลาดก่อนจ้างเซลล์ไหม](/faq/research-market-before-hiring-sales) — วิธี research 3 ข้อในงบ ฿0
-- [จ้างเซลล์มีประสบการณ์ vs มือใหม่ เลือกแบบไหน](/faq/experienced-vs-new-sales-hire) — filter question 1 ข้อที่ใช้ก่อนรับ
-- [เพิ่มพนักงานขายแล้วยอดจะเพิ่มไหม](/faq/add-sales-staff-revenue-not-increase) — 3 เงื่อนไขก่อนตัดสินใจเพิ่มคน
-- [ต้องวางระบบขายก่อนจ้างเซลล์ไหม](/faq/sales-system-before-hiring-sales-team) — 3 ชิ้นพื้นฐานที่ต้องมี
-- [Dealer หนีไปคู่แข่งแก้ยังไง](/faq/dealer-switching-to-competitor) — framework ดูแล dealer relationship แบบ B2B
+- [ควรทำ research ตลาดก่อนจ้างเซลล์ไหม](/faq#research-market-before-hiring-sales) — วิธี research 3 ข้อในงบ ฿0
+- [จ้างเซลล์มีประสบการณ์ vs มือใหม่ เลือกแบบไหน](/faq#experienced-vs-new-sales-hire) — filter question 1 ข้อที่ใช้ก่อนรับ
+- [เพิ่มพนักงานขายแล้วยอดจะเพิ่มไหม](/faq#add-sales-staff-revenue-not-increase) — 3 เงื่อนไขก่อนตัดสินใจเพิ่มคน
+- [ต้องวางระบบขายก่อนจ้างเซลล์ไหม](/faq#sales-system-before-hiring-sales-team) — 3 ชิ้นพื้นฐานที่ต้องมี
+- [Dealer หนีไปคู่แข่งแก้ยังไง](/faq#dealer-switching-to-competitor) — framework ดูแล dealer relationship แบบ B2B
 
 ## อยากเริ่มก่อนจ้าง project ใหญ่
 
-- [AI Day Workshop 1 วัน ฿30,000](/services/ai-workshop) — วางระบบ + ได้ AI workflow ใช้งานจริงใน 1 วัน
+- [Advance AI Workshop 1 วัน ฿24,900](/services/ai-workshop) — วางระบบ + ได้ AI workflow ใช้งานจริงใน 1 วัน
 - [Sales System Sprint 1 เดือน ฿65,000](/services/sales-system-sprint) — ระบบขายครบพร้อม KPI dashboard + CRM automation
 - [BOSI DNA Quiz ฟรี](/bosi-dna-quiz) — รู้ DNA ทีมขายใน 5-10 นาที ก่อนวางระบบ
 - [จองคิวคุย 30 นาที](/booking) — ดูว่าผมเข้ากับ culture ของทีมคุณไหม

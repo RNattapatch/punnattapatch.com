@@ -119,7 +119,7 @@ readingTimeMinutes: 9
 
 ## เริ่ม audit องค์กรคุณ
 
--   [AI Day Workshop ฿30,000](/services/ai-workshop) — 1 วัน audit + build Agent แรก
+-   [Advance AI Workshop ฿24,900](/services/ai-workshop) — 1 วัน audit + build Agent แรก
 -   [Sales System Sprint ฿65,000](/services/sales-system-sprint) — 1 เดือน vertical-full automation
 -   [BOSI DNA Quiz](/bosi-dna-quiz) — รู้ DNA ทีมก่อนเลือก path
 
