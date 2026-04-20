@@ -25,6 +25,14 @@ const hasFounding = Boolean(data.priceThb.founding && data.priceThb.founding < d
 const formatPrice = (n: number): string => '฿' + n.toLocaleString('en-US');
 const formatDate = (d: Date): string =>
   d.toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
+
+// Accent color system — maps token to Tailwind var (same as services/[slug].astro)
+const accent = data.accent === 'cyan'
+  ? 'var(--color-pun-cyan)'
+  : data.accent === 'violet'
+    ? 'var(--color-pun-violet)'
+    : 'var(--color-pun-coral)';
+const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
 ---
 
 <BaseLayout
@@ -60,14 +68,17 @@ const formatDate = (d: Date): string =>
   <section class="relative overflow-hidden border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-24">
     <div
       class="pointer-events-none absolute inset-0 -z-10 opacity-60"
-      style="background: radial-gradient(circle at 30% 20%, color-mix(in oklch, var(--color-secondary) 12%, transparent), transparent 60%);"
+      style={`background: radial-gradient(circle at 30% 20%, color-mix(in oklch, ${accent} 12%, transparent), transparent 60%);`}
     >
     </div>
 
     <div class="mx-auto max-w-4xl">
       {/* Program badge */}
       <div class="flex flex-wrap items-center gap-3">
-        <span class="inline-flex items-center gap-2 rounded-full border border-secondary/40 bg-secondary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-secondary">
+        <span
+          class="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
+          style={`border-color: color-mix(in oklch, ${accent} 40%, transparent); background: color-mix(in oklch, ${accent} 10%, transparent); color: ${accent};`}
+        >
           {data.programCode.toUpperCase()} · Founding Cohort #1
         </span>
         {hasFounding && (
@@ -77,12 +88,26 @@ const formatDate = (d: Date): string =>
         )}
       </div>
 
-      <h1 class="mt-6 font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl lg:text-6xl">
-        {data.title}
+      <h1 class="mt-6 font-display text-4xl font-bold leading-[1.1] tracking-tight md:text-5xl lg:text-6xl">
+        {data.headline && data.headlineAccent ? (
+          <>
+            {data.headline}
+            <br class="hidden md:block" />
+            <span style={`color: ${accent};`}>{data.headlineAccent}</span>
+            {data.headlineTail && (
+              <>
+                <br class="hidden md:block" />
+                {data.headlineTail}
+              </>
+            )}
+          </>
+        ) : (
+          data.title
+        )}
       </h1>
 
-      <p class="mt-5 max-w-2xl text-lg leading-relaxed text-base-content/80 md:text-xl">
-        {data.hook}
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-base-content/80 md:text-xl">
+        {data.subhead ?? data.hook}
       </p>
 
       {/* Key facts row */}
@@ -106,29 +131,34 @@ const formatDate = (d: Date): string =>
           <p class="mt-1 font-display text-base font-semibold">
             {hasFounding ? (
               <>
-                <span class="text-secondary">{formatPrice(data.priceThb.founding!)}</span>
+                <span style={`color: ${accent};`}>{formatPrice(data.priceThb.founding!)}</span>
                 <span class="ml-2 text-sm text-base-content/50 line-through">
                   {formatPrice(data.priceThb.normal)}
                 </span>
               </>
             ) : (
-              <span class="text-secondary">{formatPrice(data.priceThb.normal)}</span>
+              <span style={`color: ${accent};`}>{formatPrice(data.priceThb.normal)}</span>
             )}
           </p>
         </div>
       </div>
 
+      {data.priceCompare && (
+        <p class="mt-5 text-sm font-semibold" style={`color: ${accent};`}>{data.priceCompare}</p>
+      )}
+
       {/* Primary CTA */}
       <div class="mt-10 flex flex-wrap items-center gap-3">
         <a
           href={`/intake-form?program=${data.programCode}`}
-          class="btn btn-lg bg-secondary px-8 text-secondary-content shadow-xl shadow-secondary/30 hover:bg-secondary/90"
+          class="btn btn-lg border-none px-8 font-bold shadow-xl transition-all hover:scale-105"
+          style={`background: ${accent}; color: ${accentButtonText}; box-shadow: 0 15px 40px -15px color-mix(in oklch, ${accent} 50%, transparent);`}
         >
           ยื่น Application — {formatPrice(hasFounding ? data.priceThb.founding! : data.priceThb.normal)} →
         </a>
         <a
           href="#syllabus"
-          class="btn btn-lg btn-ghost border border-base-content/20 hover:border-secondary hover:text-secondary"
+          class="btn btn-lg btn-ghost border border-base-content/20"
         >
           ดู syllabus ก่อน
         </a>
@@ -141,10 +171,57 @@ const formatDate = (d: Date): string =>
     <Countdown targetDate={data.closesAt} />
   </section>
 
+  {/* ===== PAINS (dramatic · pain-first section) ===== */}
+  {
+    data.pains.length > 0 && (
+      <section class="relative overflow-hidden border-b border-base-content/10 px-4 py-20 lg:px-8 lg:py-24">
+        <div
+          class="pointer-events-none absolute inset-0 -z-10"
+          style={`background: radial-gradient(circle at 80% 20%, color-mix(in oklch, ${accent} 8%, transparent), transparent 55%);`}
+        />
+        <div class="mx-auto max-w-5xl">
+          <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>Pain Points</p>
+          <h2 class="mt-3 font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl lg:text-5xl">
+            ถ้าคุณเจอปัญหาเหล่านี้อยู่ — <span style={`color: ${accent};`}>คอร์สนี้ออกแบบมาเพื่อคุณ</span>
+          </h2>
+          <div class="mt-12 grid gap-6 md:grid-cols-2 lg:gap-8">
+            {data.pains.map((p) => (
+              <div
+                class="rounded-2xl border p-6 transition-all md:p-8"
+                style={`border-color: color-mix(in oklch, ${accent} 20%, transparent); background: color-mix(in oklch, ${accent} 3%, transparent);`}
+              >
+                <div class="text-4xl md:text-5xl">{p.emoji}</div>
+                <h3 class="mt-4 font-display text-lg font-bold md:text-xl">{p.title}</h3>
+                <p class="mt-3 text-sm leading-relaxed text-base-content/75 md:text-base">{p.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {/* ===== GALLERY (if present · real phone-shot workshop photos) ===== */}
+  {
+    data.gallery.length > 0 && (
+      <section class="border-b border-base-content/10 bg-base-200/30 px-4 py-14 lg:px-8">
+        <div class="mx-auto max-w-5xl">
+          <div class="grid gap-4 md:grid-cols-3">
+            {data.gallery.map((g) => (
+              <figure class="overflow-hidden rounded-2xl border border-base-content/10">
+                <img src={g.src} alt={g.alt} loading="lazy" class="h-full w-full object-cover" />
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   {/* ===== OUTCOMES ===== */}
   <section class="border-b border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8 lg:py-20">
     <div class="mx-auto max-w-4xl">
-      <p class="text-xs font-bold uppercase tracking-widest text-secondary">สิ่งที่ได้กลับบ้าน</p>
+      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>สิ่งที่ได้กลับบ้าน</p>
       <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
         จบ {data.title.split('—')[0].trim()} แล้วคุณจะ
       </h2>
@@ -152,7 +229,10 @@ const formatDate = (d: Date): string =>
         {
           data.outcomes.map((o) => (
             <li class="flex items-start gap-3">
-              <span class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-secondary/15 text-secondary">
+              <span
+                class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-sm font-bold"
+                style={`background: color-mix(in oklch, ${accent} 18%, transparent); color: ${accent};`}
+              >
                 ✓
               </span>
               <span class="text-base leading-relaxed text-base-content/85 md:text-lg">{o}</span>
@@ -166,7 +246,7 @@ const formatDate = (d: Date): string =>
   {/* ===== SYLLABUS ===== */}
   <section id="syllabus" class="border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
     <div class="mx-auto max-w-4xl">
-      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Syllabus</p>
+      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>Syllabus</p>
       <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
         {data.syllabus.length} โมดูล · {data.duration}
       </h2>
@@ -176,7 +256,7 @@ const formatDate = (d: Date): string =>
             <li class="rounded-2xl border border-base-content/10 bg-base-100/50 p-6 shadow-sm">
               <div class="flex items-start justify-between gap-4">
                 <div class="flex-1">
-                  <p class="text-xs font-bold uppercase tracking-widest text-secondary">
+                  <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>
                     Module {i + 1}
                   </p>
                   <h3 class="mt-2 font-display text-xl font-bold">{m.title}</h3>
@@ -195,10 +275,41 @@ const formatDate = (d: Date): string =>
     </div>
   </section>
 
+  {/* ===== TESTIMONIAL (if present) ===== */}
+  {
+    data.testimonial && (
+      <section class="border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+        <div class="mx-auto max-w-3xl">
+          <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>Alumni Voice</p>
+          <figure
+            class="mt-6 rounded-3xl border p-8 md:p-10"
+            style={`border-color: color-mix(in oklch, ${accent} 25%, transparent); background: color-mix(in oklch, ${accent} 4%, transparent);`}
+          >
+            <blockquote class="text-base leading-relaxed text-base-content/90 md:text-lg">
+              "{data.testimonial.quote}"
+            </blockquote>
+            <figcaption class="mt-6 flex items-center gap-4">
+              {data.testimonial.image && (
+                <img src={data.testimonial.image} alt={data.testimonial.author} class="h-12 w-12 rounded-full object-cover" />
+              )}
+              <div>
+                <p class="font-display text-base font-bold">{data.testimonial.author}</p>
+                <p class="text-sm text-base-content/65">{data.testimonial.role}</p>
+              </div>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+    )
+  }
+
   {/* ===== GUARANTEE ===== */}
-  <section class="border-b border-base-content/10 bg-secondary/5 px-4 py-16 lg:px-8 lg:py-20">
+  <section
+    class="border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-20"
+    style={`background: color-mix(in oklch, ${accent} 4%, transparent);`}
+  >
     <div class="mx-auto max-w-3xl text-center">
-      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Outcome Guarantee</p>
+      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>Outcome Guarantee</p>
       <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
         ถ้าไม่ได้ผลจริง — คืนเงิน
       </h2>
@@ -233,7 +344,7 @@ const formatDate = (d: Date): string =>
   {/* ===== QUALIFIES / DISQUALIFIES ===== */}
   <section class="border-b border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8 lg:py-20">
     <div class="mx-auto max-w-4xl">
-      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Is this for you?</p>
+      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>Is this for you?</p>
       <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
         อ่านก่อนสมัคร — {data.programCode.toUpperCase()} เหมาะกับใคร
       </h2>
@@ -268,7 +379,10 @@ const formatDate = (d: Date): string =>
 
   {/* ===== LONG-FORM BODY (markdown content) ===== */}
   <section class="border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
-    <div class="prose prose-lg mx-auto max-w-3xl font-body text-base-content prose-headings:font-display prose-headings:text-base-content prose-strong:text-base-content prose-a:text-secondary">
+    <div
+      class="prose prose-lg mx-auto max-w-3xl font-body text-base-content prose-headings:font-display prose-headings:text-base-content prose-strong:text-base-content"
+      style={`--tw-prose-links: ${accent};`}
+    >
       <Content />
     </div>
   </section>
@@ -278,12 +392,15 @@ const formatDate = (d: Date): string =>
     data.faq.length > 0 && (
       <section class="border-b border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8 lg:py-20">
         <div class="mx-auto max-w-3xl">
-          <p class="text-xs font-bold uppercase tracking-widest text-secondary">FAQ</p>
+          <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>FAQ</p>
           <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">คำถามที่เจอบ่อย</h2>
           <div class="mt-8 space-y-4">
             {data.faq.map((f) => (
               <details class="group rounded-xl border border-base-content/15 bg-base-100/50 p-5">
-                <summary class="cursor-pointer font-display text-base font-bold group-open:text-secondary">
+                <summary
+                  class="cursor-pointer font-display text-base font-bold"
+                  style={`--open-color: ${accent};`}
+                >
                   {f.q}
                 </summary>
                 <p class="mt-3 text-sm leading-relaxed text-base-content/80">{f.a}</p>
@@ -299,26 +416,28 @@ const formatDate = (d: Date): string =>
   <section class="border-b border-base-content/10 px-4 py-16 lg:px-8">
     <div class="mx-auto max-w-4xl">
       <div
-        class="relative overflow-hidden rounded-3xl border-2 border-dashed border-secondary/35 bg-base-100/40 p-8 backdrop-blur-sm md:p-10"
+        class="relative overflow-hidden rounded-3xl border-2 border-dashed bg-base-100/40 p-8 backdrop-blur-sm md:p-10"
+        style={`border-color: color-mix(in oklch, ${accent} 35%, transparent);`}
       >
         <div class="grid gap-6 md:grid-cols-[auto_1fr] md:items-center">
           <div class="text-5xl md:text-6xl">🏢</div>
 
           <div>
-            <p class="text-xs font-bold uppercase tracking-widest text-secondary">สำหรับ Alumni</p>
+            <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>สำหรับ Alumni</p>
             <h3 class="mt-2 font-display text-xl font-bold md:text-2xl">
-              จบคอร์สแล้วอยากพาทั้งทีมเข้ามาเรียน? จัด In-house ได้เลย · <span class="text-secondary">ลด 15%</span>
+              จบคอร์สแล้วอยากพาทั้งทีมเข้ามาเรียน? จัด In-house ได้เลย · <span style={`color: ${accent};`}>ลด 15%</span>
             </h3>
             <p class="mt-3 text-sm leading-relaxed text-base-content/80 md:text-base">
               Alumni ของคอร์ส public ทุก batch ได้สิทธิ์จัด In-house Workshop/Training ให้องค์กรตัวเอง
-              <span class="font-semibold text-secondary">ในราคาลด 15%</span>
+              <span class="font-semibold" style={`color: ${accent};`}>{' '}ในราคาลด 15%</span>
               จาก list ปกติ · ใช้ได้ภายใน 6 เดือนหลังจบคอร์ส · ทักผมเลยถ้าอยากคุยเรื่องสเกล
             </p>
 
             <div class="mt-5 flex flex-wrap gap-3">
               <a
                 href={`/intake-form?program=${data.programCode}&source=alumni-inhouse`}
-                class="btn btn-sm bg-secondary text-secondary-content hover:bg-secondary/90"
+                class="btn btn-sm border-none font-bold"
+                style={`background: ${accent}; color: ${accentButtonText};`}
               >
                 คุยเรื่อง In-house
               </a>
@@ -338,9 +457,12 @@ const formatDate = (d: Date): string =>
   </section>
 
   {/* ===== FINAL CTA ===== */}
-  <section class="bg-secondary/10 px-4 py-20 lg:px-8">
+  <section
+    class="px-4 py-20 lg:px-8"
+    style={`background: color-mix(in oklch, ${accent} 10%, transparent);`}
+  >
     <div class="mx-auto max-w-3xl text-center">
-      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Apply Now</p>
+      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>Apply Now</p>
       <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
         พร้อมเริ่มเลยไหม?
       </h2>
@@ -349,7 +471,8 @@ const formatDate = (d: Date): string =>
       </p>
       <a
         href={`/intake-form?program=${data.programCode}`}
-        class="btn btn-lg mt-8 bg-secondary px-10 text-secondary-content shadow-xl shadow-secondary/30 hover:bg-secondary/90"
+        class="btn btn-lg mt-8 border-none px-10 font-bold shadow-xl transition-all hover:scale-105"
+        style={`background: ${accent}; color: ${accentButtonText}; box-shadow: 0 15px 40px -15px color-mix(in oklch, ${accent} 50%, transparent);`}
       >
         ยื่น Application 3-5 นาที →
       </a>

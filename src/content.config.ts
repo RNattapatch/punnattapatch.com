@@ -71,6 +71,29 @@ const training = defineCollection({
     audience: z.string(),
     duration: z.string(),
     format: z.enum(['onsite', 'online', 'hybrid']),
+    /** Color theming — 'cyan' for AI tracks (P1/P2), 'coral' for Sales tracks (P4/P5) */
+    accent: z.enum(['cyan', 'coral', 'violet']).default('coral'),
+    /** 3-line hero headline (ai-workshop format): normal | accent | tail */
+    headline: z.string().optional(),
+    headlineAccent: z.string().optional(),
+    headlineTail: z.string().optional(),
+    subhead: z.string().optional(),
+    /** Pain-first section (from pun-to-agent handoff segments) */
+    pains: z.array(z.object({
+      emoji: z.string(),
+      title: z.string(),
+      body: z.string(),
+    })).default([]),
+    testimonial: z.object({
+      quote: z.string(),
+      author: z.string(),
+      role: z.string(),
+      image: z.string().optional(),
+    }).optional(),
+    gallery: z.array(z.object({
+      src: z.string(),
+      alt: z.string(),
+    })).default([]),
     seats: z.object({
       total: z.number(),
       founding: z.number().optional(),
@@ -79,6 +102,7 @@ const training = defineCollection({
       normal: z.number(),
       founding: z.number().optional(),
     }),
+    priceCompare: z.string().optional(),
     closesAt: z.coerce.date(),
     startsAt: z.coerce.date(),
     endsAt: z.coerce.date(),

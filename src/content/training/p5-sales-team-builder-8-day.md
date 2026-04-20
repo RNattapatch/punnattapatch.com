@@ -6,17 +6,49 @@ published: 2026-04-20
 draft: false
 tags: [public-training, sales-management, team-building, founding-cohort]
 programCode: p5
+accent: coral
+headline: "ทีมขาย 5-20 คน แต่ยอด"
+headlineAccent: "80% มาจากเจ้าของคนเดียว"
+headlineTail: "วางระบบให้ทีมวิ่งเอง ใน 2 weekends"
+subhead: "2 weekends + 1-week break + graduation dinner · 8 ที่นั่ง · รับทีมเจ้าของ SME ที่ scale จาก 5 → 20 คน · ออกมาพร้อม 5 ระบบ (Recruit/Onboard/Manage/Coach/Retain) ที่ implement ได้ทันที · ไม่ได้ 5 ระบบ = คืนเงิน 100%"
 hook: "ได้ระบบ Recruit → Onboard → Manage → Coach → Retain ครบวงจรที่ implement ได้ทันที — หรือคืนเงิน"
 guarantee: "จบโปรแกรม 2 weekends ไม่ได้ 5 ระบบ (Recruit/Onboard/Manage/Coach/Retain) ที่ implement ได้ทันที → คืนเงิน 100%"
 audience: "เจ้าของ SME + Sales Director ที่มีทีม 5-20 คน + ยังไม่มีระบบ end-to-end จาก recruit ถึง retain"
 duration: "2 weekends + 1-week break (รวม 3 วันที่ห้อง + graduation dinner)"
 format: onsite
+pains:
+  - emoji: "🔍"
+    title: "อยากได้เซลล์เก่ง · ไม่รู้จะหาจากไหน"
+    body: "อยากเติบโตต้องเพิ่มทีม แต่ดึงเซลล์จากแบรนด์ใหญ่มาค่าตัวแพง · เอา junior มาปั้นใช้เวลา 6-12 เดือนกว่าจะ productive · ระหว่างนั้นเจ้าของต้องวิ่งเองทุกดีลสำคัญ"
+  - emoji: "⚖️"
+    title: "Commission ไม่แฟร์ · ทีมเก่งลาออก"
+    body: "จ่ายตามความรู้สึกหรือสูตรเก่าที่ outdated · Top performer เซ็งเพราะปิดดีลใหญ่ได้ commission เท่าคนเก่าที่อยู่มานาน · พอลาออก = ลูกค้าเก่าหายตามไปด้วย 40%+"
+  - emoji: "📊"
+    title: "KPI ไม่รู้ว่าทีมกำลังแพ้หรือชนะ"
+    body: "เห็นยอดตอนสิ้นเดือนเท่านั้น · ระหว่างเดือนไม่รู้ใครแผ่วใครวิ่งดี · แก้ไม่ทัน · manager ก็ไม่รู้จะ coach ใครก่อน"
+  - emoji: "👥"
+    title: "ทีม 14 คน · ทำงานจริงแค่ 3-4 คน"
+    body: "รับสมัครตัวแทนเข้ามาเรื่อย ๆ แต่งานไม่ค่อยเกิด ผลงานไม่ค่อยออก · 70% ของทีมเป็น deadweight · ไม่มี onboarding ที่ชัด · ไม่มี framework ไล่คน underperform"
+  - emoji: "🚪"
+    title: "เจ้าของต้อง close deal ใหญ่เอง"
+    body: "ทีมปิดดีลเล็กได้ · แต่ดีลที่สำคัญเกินล้านต้องเรียกเจ้าของเสมอ · ถ้าเจ้าของไม่ว่าง = ดีลหาย หรือลูกค้ารอจนใจเย็นหาย · เจ้าของลาพักก็ไม่ได้"
+  - emoji: "🏗"
+    title: "อยากวางระบบ · ไม่รู้จะเริ่มตรงไหน"
+    body: "เคยอ่าน playbook ต่างประเทศ ดู YouTube · ฟังแล้วเข้าใจ แต่พอ implement กับธุรกิจตัวเองไปไม่เป็น · ไม่มีใครบอกว่า SME ไทย 5-20 คน ควรเริ่มจากระบบไหน ต่อเข้ากันอย่างไร"
+gallery:
+  - src: "/advance-ai-course/gallery1.JPG"
+    alt: "บรรยากาศ workshop · เจ้าของ SME ประชุมวางระบบทีมขาย"
+  - src: "/advance-ai-course/gallery7.JPG"
+    alt: "Peer learning · แลกเปลี่ยน case study ข้ามอุตสาหกรรม"
+  - src: "/advance-ai-course/IMG_5218.JPG"
+    alt: "ปัน ณัฐพัชร์ coach เจ้าของ SME วางระบบทีมขาย"
 seats:
   total: 8
   founding: 8
 priceThb:
   normal: 34900
   founding: 27900
+priceCompare: "🔥 Founding Cohort #1 ฿27,900 (ปกติ ฿34,900) · 8 ที่แรกได้ Quarterly reunion ฟรี 4 ครั้ง + graduation dinner bundled · หลังเต็มราคากลับเป็น ฿34,900"
 closesAt: 2026-05-31T23:59:00+07:00
 startsAt: 2026-06-14T09:00:00+07:00
 endsAt: 2026-06-22T21:00:00+07:00
@@ -76,73 +108,63 @@ faq:
     a: "Founding Cohort #1 (8 คนแรก) ได้ราคา ฿27,900 + Quarterly reunion 2026 ฟรี + dinner bundled · หลังจากนั้น ฿34,900"
 ---
 
-## ปัญหาที่ P5 แก้
+## ทำไม P5 ต่างจาก sales training ทั่วไป
 
-เจ้าของ SME ส่วนใหญ่เจอ pattern เดียวกัน — ทีมขาย 10+ คนแต่:
+ตลาดแยก sales training, HR consulting และ recruitment agency เป็น 3 บริการจาก 3 ที่ ต้องใช้งบ 3 ส่วน แต่ไม่มีใครเชื่อมทั้งระบบเข้าด้วยกัน P5 รวม 5 ขั้นตอนสำคัญ (Recruit → Onboard → Manage → Coach → Retain) เสริมด้วย AI Tools เป็นระบบเดียวที่ออกแบบมาสำหรับ SME ไทยซึ่งกำลังขยายทีมจาก 5 เป็น 20 คนโดยเฉพาะ
 
-- **Top performer ลาออก = ยอดหาย 40%** — เพราะ knowledge ติดตัวคน ไม่ติดระบบ
-- **New hire onboard 6 เดือนยังไม่ productive** — ไม่มี playbook
-- **Manager ไม่กล้าไล่คน underperform** — ไม่มี PIP framework
-- **Commission ไม่ fair** — top performer รู้สึกว่าได้ไม่ต่างกับ junior · burn out
-- **KPI ไม่ชัด** — ทีมไม่รู้จะ prioritize อะไรก่อน · scattered
+โปรแกรมถูกออกแบบเป็น 2 สุดสัปดาห์ มีช่วงพัก 1 สัปดาห์ ไม่ใช่การอบรม 2 วันติดกัน เพราะเฟรมเวิร์กการจัดการที่ไม่ได้นำไปใช้จริงจะถูกลืมในสองสัปดาห์ ช่วงพักนี้เปิดโอกาสให้ทีมเอาสิ่งที่เรียนใน Weekend 1 ไปใช้หน้างาน เก็บปัญหาจริง แล้วกลับมาคุยกันใน Weekend 2 ทุกคนจึงมีกรณีศึกษาของตัวเองมาแลกเปลี่ยนกับเพื่อนในคลาส
 
-**ตลาดไม่มี course ที่ combine 5 เรื่องนี้** — มีแค่ sales training, HR, recruitment แยกกัน
-
-**P5 = Blue Ocean:** combine ทุกเรื่อง + AI Tools augmentation · ออกแบบสำหรับ SME Thai ที่ scale ทีมขายจาก 5 → 20 คน
-
-## ทำไม 2 weekends + 1-week break (ไม่ใช่ 2 วัน straight)
-
-**Learning science:** management framework ที่ไม่ implement จริง = ลืมภายใน 2 สัปดาห์
-
-**Solution:** Weekend 1 (Build the Team) → apply 7 วัน → Weekend 2 (Manage & Retain)
-
-Break week = ทีม apply สิ่งที่เรียน · ได้ input จริงจาก pain points ที่เจอ · กลับมา Weekend 2 มี case study ของตัวเองให้แลกเปลี่ยน
-
-## 5 Systems ที่ได้กลับบ้าน (ไม่ใช่แค่ framework)
+## 5 Systems ที่ได้กลับบ้าน
 
 ### 1. Interview Framework
+
 - 10-question scorecard
-- Red flag spotting techniques
-- Candidate scoring rubric (10-point system)
+- เทคนิคการจับสัญญาณ Red flag
+- เกณฑ์การให้คะแนนผู้สมัครระบบ 10 คะแนน
 
 ### 2. Onboarding 30-60-90
-- Day 1-30: ramp up playbook
-- Day 31-60: first deal coaching
-- Day 61-90: independence verification
+
+- Playbook สำหรับการ ramp-up ใน 30 วันแรก
+- การโค้ชเพื่อให้ปิดดีลแรกได้ในช่วง 31-60 วัน
+- การประเมินเพื่อยืนยันว่าพนักงานสามารถทำงานได้เองในช่วง 61-90 วัน
 
 ### 3. KPI + Commission Structure
-- 3-tier commission formula (80%/100%/120%/150%+ hit rates)
-- Team bonus mechanism
-- Transparency dashboard design
+
+- สูตรคำนวณค่าคอมมิชชั่น 3 ระดับตาม hit rate ที่ 80/100/120/150%+
+- กลไกโบนัสสำหรับทีม
+- การออกแบบแดชบอร์ดที่โปร่งใส
 
 ### 4. 1:1 Coaching Rhythm
-- Weekly 1:1 agenda template
-- Monthly review framework
-- PIP activation criteria
-- Firing framework (legal + ethical)
 
-### 5. Retain & Scale
-- Succession planning
-- Promotion criteria
-- Alumni network
+- Agenda template สำหรับการคุย 1:1 รายสัปดาห์
+- Framework สำหรับการรีวิวรายเดือน
+- เกณฑ์การเริ่มใช้ PIP (Performance Improvement Plan)
+- Framework การให้ออกที่ครอบคลุมทั้งด้านกฎหมายและจริยธรรม
 
-## Graduation Dinner (Sunday Weekend 2 18:00-21:00)
+### 5. Retain + Scale
 
-Hotel ระดับ 5-star (ประกาศก่อน 1 สัปดาห์) · buffet dinner · Founding Cohort #1 badge ceremony · commitment ritual สำหรับ 90-day post-program accountability
+- การวางแผนสืบทอดตำแหน่ง (Succession planning)
+- เกณฑ์การเลื่อนตำแหน่ง
+- โครงสร้างสำหรับ Alumni network
 
-**Dinner = ส่วนหนึ่งของโปรแกรม** — ไม่ใช่ optional event · เป็นที่ network + peer advisory ที่จะ continue หลังจบ
+## Graduation Dinner (Sunday Weekend 2 · 18:00-21:00)
 
-## Venue & Format
+- ดินเนอร์บุฟเฟต์ที่โรงแรม 5 ดาว (จะประกาศสถานที่ล่วงหน้า 1 สัปดาห์)
+- พิธีมอบเข็มกลัดสำหรับ Founding Cohort #1
+- กิจกรรม commitment ritual เพื่อสร้างความรับผิดชอบร่วมกันในช่วง 90 วันหลังจบโปรแกรม
 
-**Weekend 1:** 14-15 มิ.ย. 2026 (Sat 9:00 + Sun 9:00-16:00) · Co-working Premium Bangkok
-**Break:** 16-20 มิ.ย. · 1 week implementation + homework
-**Weekend 2:** 21-22 มิ.ย. · Sat 9:00 + Sun 9:00-16:00 · same venue + Hotel dinner 18:00-21:00
+Dinner เป็นส่วนหนึ่งของโปรแกรมซึ่งบังคับเข้าร่วม ไม่ใช่กิจกรรมเสริม เจ้าของ SME ทั้ง 8 คนในห้องจะได้สร้างเครือข่ายที่ปรึกษา (peer advisory network) ที่ช่วยเหลือกันต่อไปหลังจบคอร์ส
 
-**Max 8 ที่นั่ง — 1-per-industry-per-cohort strict** (ไม่มีคู่แข่งในห้อง — ต้อง peer-safe เพื่อ share case lao+ลึก)
+## Venue + Format
+
+Weekend 1 · 14-15 มิ.ย. 2026 (เสาร์-อาทิตย์ 09:00-16:00) ที่ Co-working Space ชั้นนำในกรุงเทพฯ
+
+Implementation Week · 16-20 มิ.ย. (พัก 1 สัปดาห์) สำหรับนำสิ่งที่เรียนไปลงมือทำหน้างาน + ทำการบ้าน
+
+Weekend 2 · 21-22 มิ.ย. (เสาร์-อาทิตย์ 09:00-16:00) ที่เดิม และมี Graduation Dinner เวลา 18:00-21:00
+
+รับสูงสุด 8 คนต่อรุ่น จำกัด 1 คนต่อ 1 อุตสาหกรรมอย่างเคร่งครัด คุณจึงแชร์เคสได้ลึกโดยไม่ต้องกังวลว่าข้อมูลจะรั่วไหลถึงคู่แข่ง
 
 ## ขั้นตอนสมัคร
 
-1. ยื่น Application ผ่าน intake form (3-5 นาที)
-2. **Phone screening 15 นาที** (P5 มี screening เพราะ 8 seats · 1-per-industry strict)
-3. ผ่าน → ชำระ ฿27,900 upfront
-4. Pre-work: Team audit worksheet · ส่งก่อน Weekend 1 1 สัปดาห์
+ยื่นใบสมัครผ่าน intake form ออนไลน์ (ใช้เวลา 3-5 นาที) จากนั้นมีสัมภาษณ์ทางโทรศัพท์ 15 นาทีเพื่อคัดกรองผู้สมัคร (P5 screening strict เพราะเหลือ 8 ที่นั่ง · 1-per-industry) หากผ่านการคัดเลือก ชำระค่าโปรแกรม ฿27,900 และรับ Team Audit Worksheet เป็น pre-work 1 สัปดาห์ก่อนเริ่ม Weekend 1
