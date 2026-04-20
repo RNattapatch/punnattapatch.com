@@ -4,12 +4,11 @@ import { SITE, SERVICES } from '../data/site';
 
 const title = 'บริการ — 2 Path สำหรับ SME + Special TikTok Workshop';
 const description =
-  'Path A — AI Transformation: AI Day Workshop (฿30k) + Follow-up 30 วัน (฿50k). Path B — ปั้นทีมขาย: Sale Training Bundle (฿52.8k) + Sales System Sprint (฿65k). Plus: Trust Content Workshop TikTok (฿39.9k).';
+  'Path A — AI Transformation: Advance AI Workshop ฿24,900 + Bundle Workshop + Consult 30 วัน ฿44,900. Path B — ปั้นทีมขาย: Sale Training Bundle ฿50K (Early Bird ฿44,900) + Sales System Sprint ฿65,000. Plus: Trust Content Workshop TikTok ฿39,900.';
 
 const svcBySlug = (slug: string) => SERVICES.find((s) => s.slug === slug)!;
 
 const aiDay = svcBySlug('ai-workshop');
-const aiFollow = svcBySlug('ai-workshop-followup');
 const saleBundle = svcBySlug('sale-training-bundle');
 const saleSprint = svcBySlug('sales-system-sprint');
 const tiktokWorkshop = svcBySlug('trust-content-tiktok-workshop');
@@ -26,23 +25,14 @@ const pathAPackages: PathCardProps[] = [
   {
     svc: aiDay,
     durationLabel: '1 Day',
-    bullets: [
-      'วิเคราะห์ workflow ทีมขาย',
-      'Build AI tool ใช้ได้จริงในวันนั้น',
-      'สอน team lead maintain เอง',
-      'วัดผล Before / After ทันที',
-    ],
-  },
-  {
-    svc: aiFollow,
-    durationLabel: '1 Day + 30 Days',
     featured: true,
-    badgeText: 'แนะนำ',
+    badgeText: 'ราคาพิเศษเดือนนี้',
     bullets: [
-      'ทุกอย่างใน Workshop รวมอยู่แล้ว',
-      'Follow-up 4 ครั้ง (สัปดาห์ละ 1)',
-      'ปรับ workflow ตาม feedback จริง',
-      'Async LINE support 30 วัน',
+      'Build AI Agent ตัวแรก ใช้ได้จริงในห้อง',
+      'n8n workflow + 30 Prompts tested',
+      'Team lead maintain เองได้หลัง handover',
+      '30-day async LINE support',
+      'Bundle option: + Consult 30 วัน = ฿44,900 (save ฿25K)',
     ],
   },
 ];
@@ -163,7 +153,7 @@ const pathBPackages: PathCardProps[] = [
                           href={`/services/${p.svc.slug}`}
                           class="transition-colors hover:text-[var(--color-pun-cyan)]"
                         >
-                          {p.svc.subtitle === aiDay.subtitle ? 'AI Day Workshop' : 'AI Workshop + Follow-up'}
+                          Advance AI & Business Automation
                         </a>
                       </h3>
                     </div>
@@ -207,7 +197,7 @@ const pathBPackages: PathCardProps[] = [
           </div>
 
           <p class="mt-5 text-center text-xs text-base-content/45">
-            เริ่มจาก Workshop ฿30K → ต่อ Follow-up ได้ภายหลัง
+            เริ่มจาก Workshop ฿24,900 → ต่อ Bundle Consult 30 วัน ได้เลย (save ฿25K)
           </p>
         </div>
 

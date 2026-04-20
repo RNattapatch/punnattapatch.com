@@ -57,7 +57,7 @@ tags: [faq, ai-adoption, change-management, team]
 
 ## Package ที่ช่วย change management
 
-- [AI Workshop + Follow-up 30 วัน ฿50,000](/services/ai-workshop-followup) — Follow-up 4 ครั้งช่วย coach ทีมในช่วง transition ที่ resistance สูงสุด
+- [Advance AI & Business Automation ฿24,900](/services/ai-workshop) — Workshop 1 วัน + Bundle Consult 30 วัน ฿44,900 สำหรับช่วง transition ที่ resistance สูง
 - [Sales System Sprint ฿65,000](/services/sales-system-sprint) — รวม change management ใน handover package
 
 อ่านต่อ: [AI Agent ต่างจาก chatbot ยังไง](/faq) | [ไม่เก่ง tech ใช้ AI ได้ไหม](/faq)

@@ -62,23 +62,6 @@ export const SERVICES = [
     slug: 'ai-workshop',
   },
   {
-    id: 'ai-workshop-followup',
-    title: 'AI Workshop + 1-Month Follow-up',
-    subtitle: 'Workshop จบแล้วระบบยังอยู่',
-    hook: 'Workshop จบแล้วทีมหยุดใช้ภายใน 2 สัปดาห์ — เคยเจอไหม?',
-    priceThb: 50000,
-    priceLabel: '฿50,000 / package',
-    duration: 'Workshop 1 วัน + Follow-up 30 วัน',
-    format: '4 sessions + LINE support async',
-    audience: 'ผู้ที่จ่าย Workshop แล้วทีมเลิกใช้ภายใน 2 สัปดาห์ ต้องการ guarantee ว่าระบบไม่ตาย',
-    outcome: [
-      'ระบบยังอยู่หลัง 30 วัน — ทีมไม่หยุดใช้',
-      'ปรับ workflow 4 ครั้งตามปัญหาจริงหน้างาน',
-      'Async support ตอบใน 24 ชม. (จ-ศ)',
-    ],
-    slug: 'ai-workshop-followup',
-  },
-  {
     id: 'sales-system-sprint',
     title: 'Sales System Sprint',
     subtitle: '1-Month Sales System',

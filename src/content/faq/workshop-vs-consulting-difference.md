@@ -56,8 +56,8 @@ Workshop เป็นแบบลงมือทำ จบใน 1 วัน ส
 
 ## Path ที่ผมแนะนำสำหรับ SME ส่วนใหญ่
 
-1. เริ่มจาก [AI Day Workshop ฿30,000](/services/ai-workshop) 1 วัน
-2. หากพอใจ ค่อยต่อด้วย [Follow-up 30 วัน ฿50,000](/services/ai-workshop-followup) หรือ [Sales System Sprint ฿65,000](/services/sales-system-sprint)
-3. ถ้าไม่เข้ากับที่ปรึกษา ก็ไม่ต้องเสียเงินก้อนใหญ่ ค่า workshop ฿30,000 คุ้มค่ากว่าการลงทุนในโปรเจกต์ ฿200,000 แล้วต้องยกเลิกกลางทาง
+1. เริ่มจาก [Advance AI & Business Automation ฿24,900](/services/ai-workshop) 1 วัน (ราคาพิเศษเดือนนี้)
+2. ถ้าอยากให้ระบบไม่ตายหลัง workshop → [Bundle Workshop + Consult 30 วัน ฿44,900](/services/ai-workshop) หรือ [Sales System Sprint ฿65,000](/services/sales-system-sprint)
+3. ถ้าไม่เข้ากับที่ปรึกษา ก็ไม่ต้องเสียเงินก้อนใหญ่ ค่า workshop ฿24,900 คุ้มค่ากว่าการลงทุนในโปรเจกต์ ฿200,000 แล้วต้องยกเลิกกลางทาง
 
 ดูรายละเอียดเพิ่มเติมใน [Pillar: คู่มือเลือกที่ปรึกษาการขาย B2B 2026](/insights/sales-consulting-guide-2026)

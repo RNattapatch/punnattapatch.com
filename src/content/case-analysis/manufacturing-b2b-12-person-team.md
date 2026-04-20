@@ -113,7 +113,7 @@ anonymized: true
 ## Total Investment vs ROI
 
 - **Investment:**
-  - AI Workshop ฿50,000 (Workshop + Follow-up 30 วัน)
+  - AI Workshop + Consult 30 วัน ฿44,900 (Bundle)
   - Monthly Consulting 6 เดือน × ฿30,000 = ฿180,000
   - Sale Training Bundle ฿50,000
   - Total: **฿280,000**
@@ -143,6 +143,6 @@ anonymized: true
 ## อยากได้ผลลัพธ์แบบนี้ไหม?
 
 - [Sales System Sprint ฿65,000](/services/sales-system-sprint) — 1 เดือน compact version ของเคสนี้ (เหมาะทีม 10-15 คน)
-- [AI Workshop + Follow-up ฿50,000](/services/ai-workshop-followup) — Starting point ของ client นี้
+- [Advance AI & Business Automation ฿24,900](/services/ai-workshop) — Starting point ของ client นี้ (Bundle Consult 30 วัน ฿44,900)
 - [Sale Training Bundle ฿50,000](/services/sale-training-bundle) — Module ที่ 4 ของเคสนี้
 - [กรอกฟอร์ม 3 นาที](/intake-form) — ผมอ่านแล้วบอกว่าเคสคุณ match กับ client นี้แค่ไหน + ควร start ตรงไหน

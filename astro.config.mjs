@@ -11,6 +11,9 @@ export default defineConfig({
   build: {
     format: 'file',
   },
+  redirects: {
+    '/services/ai-workshop-followup': '/services/ai-workshop',
+  },
   vite: {
     plugins: [tailwindcss()],
   },
