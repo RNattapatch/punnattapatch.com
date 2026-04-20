@@ -130,6 +130,7 @@ interface SeatInfo {
   total: number;
   priceLabel: string;
   note: string;
+  unit?: string;
 }
 const SEAT_MAP: Record<string, SeatInfo> = {
   'ai-workshop': {
@@ -137,6 +138,13 @@ const SEAT_MAP: Record<string, SeatInfo> = {
     total: 5,
     priceLabel: 'ราคาพิเศษเดือนนี้',
     note: 'หลังที่นั่งเต็ม ราคากลับเป็น ฿30,000',
+  },
+  'sale-training-bundle': {
+    taken: 0,
+    total: 3,
+    priceLabel: 'Early Bird เดือนนี้',
+    note: 'หลัง 3 ทีมเต็ม ราคากลับเป็น ฿50,000',
+    unit: 'ทีม',
   },
 };
 const seats = SEAT_MAP[slug as string];
@@ -221,7 +229,7 @@ const description = detail.subhead;
                 <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-500 opacity-75"></span>
                 <span class="relative inline-flex h-2 w-2 rounded-full bg-rose-500"></span>
               </span>
-              🔥 เหลือ {seats.total - seats.taken} ที่ จาก {seats.total} ที่ · {seats.priceLabel}
+              🔥 เหลือ {seats.total - seats.taken} {seats.unit ?? 'ที่'} จาก {seats.total} {seats.unit ?? 'ที่'} · {seats.priceLabel}
             </div>
           )
         }

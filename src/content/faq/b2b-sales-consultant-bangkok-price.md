@@ -17,7 +17,7 @@ tags: [faq, pricing, bangkok, consulting]
 |---|---|---|
 | AI Day Workshop | ฿30,000 | 1 วัน |
 | AI Workshop + Follow-up 30 วัน | ฿50,000 | 1 วัน + 4 sessions |
-| Sale Training Bundle | ฿52,800 | 2 วัน |
+| Sale Training Bundle | ฿50,000 (Early Bird ฿44,900) | 2 วัน |
 | Sales System Sprint | ฿65,000 | 1 เดือน (4 sessions) |
 | Trust Content Workshop TikTok | ฿39,900 | 1 วัน (5 ธุรกิจแรก) |
 

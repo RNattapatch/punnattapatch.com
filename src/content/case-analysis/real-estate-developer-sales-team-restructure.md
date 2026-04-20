@@ -150,5 +150,5 @@ Team bonus = top performer ยอมช่วย junior เพราะมัน
 ## อยากได้ผลลัพธ์แบบนี้ไหม?
 
 - [Sales System Sprint ฿65,000](/services/sales-system-sprint) — Workflow เดียวกับ client นี้ใน 1 เดือน
-- [Sale Training Bundle ฿52,800](/services/sale-training-bundle) — ถ้าต้องการฝึกทีมก่อน redesign commission
+- [Sale Training Bundle ฿50,000](/services/sale-training-bundle) — ถ้าต้องการฝึกทีมก่อน redesign commission
 - [กรอกฟอร์ม 3 นาที](/intake-form) — ผมอ่านแล้วบอกว่าเคสคุณควรเริ่มที่ตัวเลขเท่าไหร่

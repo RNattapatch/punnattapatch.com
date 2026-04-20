@@ -115,5 +115,5 @@ Client ของผมที่ implement 3 ระบบนี้:
 ## Package ที่เกี่ยวข้อง
 
 - [Sales System Sprint ฿65,000 / 1 เดือน](/services/sales-system-sprint) — ออกแบบ KPI + Commission structure ใหม่ + install dashboard transparent
-- [Sale Training Bundle ฿52,800 / 2 วัน](/services/sale-training-bundle) — ฝึกทีมให้ทำงานแบบ merit-based
+- [Sale Training Bundle ฿50,000 / 2 วัน (Early Bird ฿44,900)](/services/sale-training-bundle) — ฝึกทีมให้ทำงานแบบ merit-based
 - [กรอกฟอร์มประเมิน 3 นาที](/intake-form) — ผมอ่านแล้วจะบอกได้ว่าทีมคุณติดกับดัก "ลูกรัก" อยู่ในระดับไหน
