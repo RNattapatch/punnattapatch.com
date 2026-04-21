@@ -17,6 +17,26 @@ const CONTACT = {
   phoneLink:    '', // e.g. '+66812345678'
 } as const;
 
+/* ============================================================
+   n8n payload shape (sent to webhook intake-form-v2)
+   ============================================================
+   {
+     source:        'sponsor-form',     // use to branch Telegram template
+     submittedAt:   ISO timestamp,
+     pageUrl:       window.location.href,
+     brandName:     string (required),
+     brandWebsite:  string (required),
+     yourName:      string (required),
+     yourRole:      string (optional),
+     email:         string (required, validated),
+     message:       string (required)
+   }
+
+   n8n workflow should branch on `source === 'sponsor-form'` and use
+   Telegram template: "🤝 Brand Inquiry · {brandName} · {yourName}
+   ({yourRole}) · {email} · see web: {brandWebsite} · brief: {message}"
+   ============================================================ */
+
 const title = 'ติดต่อ Sponsored / Brand Collab';
 const description =
   'สำหรับแบรนด์ที่สนใจความร่วมมือกับ @pun_nattapatch · กรอกฟอร์มสั้น 1 นาที แล้วรับช่องทางติดต่อตรงทันที';
@@ -104,34 +124,9 @@ const description =
         </div>
 
         <div class="sponsor-field">
-          <label for="collabType">ประเภทความร่วมมือ <span class="req">*</span></label>
-          <select id="collabType" name="collabType" required>
-            <option value="">— เลือก —</option>
-            <option value="sponsored-reel">Sponsored Reel / Short-form content</option>
-            <option value="speaking">Speaking / Guest / Panel</option>
-            <option value="brand-partnership">Brand Partnership (long-term)</option>
-            <option value="affiliate">Affiliate Program</option>
-            <option value="consulting">Consulting / Advisory</option>
-            <option value="other">อื่นๆ</option>
-          </select>
-        </div>
-
-        <div class="sponsor-field">
-          <label for="budget">Budget range <span class="req">*</span></label>
-          <select id="budget" name="budget" required>
-            <option value="">— เลือก —</option>
-            <option value="under-30k">น้อยกว่า ฿30,000</option>
-            <option value="30-100k">฿30,000 - ฿100,000</option>
-            <option value="100-300k">฿100,000 - ฿300,000</option>
-            <option value="300k-plus">มากกว่า ฿300,000</option>
-            <option value="flexible">ยืดหยุ่น · คุยกันได้</option>
-          </select>
-          <p class="sponsor-hint">ช่วยให้ผมเสนอ scope ที่เหมาะกับงบคุณได้ตั้งแต่รอบแรก</p>
-        </div>
-
-        <div class="sponsor-field">
-          <label for="message">เล่า brief คร่าวๆ</label>
-          <textarea id="message" name="message" rows="4" placeholder="campaign goal · timeline · ช่องทางที่อยากใช้ · ฯลฯ"></textarea>
+          <label for="message">เล่ารายละเอียดคร่าวๆ <span class="req">*</span></label>
+          <textarea id="message" name="message" rows="5" required placeholder="อยากร่วมงานแบบไหน · เป้าหมายของ campaign · timeline ที่ต้องการ · ช่องทางที่อยากใช้ · งบประมาณคร่าวๆ"></textarea>
+          <p class="sponsor-hint">ใส่ได้ยาวเท่าที่ต้องการ · ยิ่งละเอียด ผมยิ่งเสนอ scope ได้ตรง</p>
         </div>
 
         <button type="submit" class="sponsor-submit">
@@ -140,7 +135,7 @@ const description =
         </button>
 
         <p class="sponsor-consent">
-          เมื่อกดส่ง คุณยอมรับว่าเราจะเก็บข้อมูลนี้เพื่อติดต่อกลับเท่านั้น · ไม่แชร์ให้บุคคลที่ 3
+          เมื่อกดส่ง คุณยอมรับว่าผมจะเก็บข้อมูลนี้เพื่อใช้ติดต่อกลับเท่านั้น · ไม่แชร์ให้บุคคลที่สาม
         </p>
 
         <p class="sponsor-error" id="sponsorError" hidden role="alert">
@@ -167,7 +162,7 @@ const description =
                 {CONTACT.email}
               </a>
             </div>
-            <span class="sponsor-contact-hint">ตอบภายใน 48 hr</span>
+            <span class="sponsor-contact-hint">ตอบภายใน 48 ชม.</span>
           </li>
 
           <li class="sponsor-contact-item">
@@ -178,7 +173,7 @@ const description =
                 เพิ่มเพื่อน LINE OA →
               </a>
             </div>
-            <span class="sponsor-contact-hint">reply เร็วที่สุด</span>
+            <span class="sponsor-contact-hint">ตอบเร็วที่สุด</span>
           </li>
 
           {CONTACT.phoneDisplay && (
@@ -788,7 +783,7 @@ const description =
         // Fire Plausible custom event
         (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.(
           'Sponsor Submit',
-          { props: { collabType: String(payload.collabType ?? 'unknown'), budget: String(payload.budget ?? 'unknown') } }
+          { props: { brand: String(payload.brandName ?? 'unknown') } }
         );
 
         reveal_();
