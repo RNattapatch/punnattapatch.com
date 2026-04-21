@@ -14,6 +14,22 @@ export type ServiceDetail = {
     requirements: { title: string; detail?: string }[];
     tools: { name: string; tagline: string }[];
   };
+  tiktokProof?: {
+    stats: {
+      totalViews: string;
+      totalLikes: string;
+      totalShares: string;
+      posts: string;
+      period: string;
+      peakDay: string;
+    };
+    monthly: { month: string; views: number }[];
+    topPosts: { views: string; likes: string; shares: string; date: string; hook: string; url: string }[];
+    audience: { th: string; female: string; male: string };
+    funnelSteps: { step: string; title: string; body: string }[];
+    aiUsed: { name: string; purpose: string }[];
+    aiForbidden: { name: string; reason: string }[];
+  };
   agenda: { time: string; title: string; body: string }[];
   outcomes: string[];
   priceHeadline: string;
@@ -426,9 +442,87 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       'Trust Framework PDF เจ้าของใช้ซ้ำได้ทุกเดือน',
       'ทักษะถ่ายเองได้ ไม่ต้องจ้างเอเจนซี่',
     ],
-    priceHeadline: '฿39,900 (5 ธุรกิจแรก)',
-    priceCompare: 'ราคาปกติ ฿50,000 · ลดพิเศษ 5 ธุรกิจแรก',
-    priceNote: '1 Day In-House · 100% upfront · ส่วนลด 5 ธุรกิจแรกจะปิดเมื่อครบโควต้า',
+    priceHeadline: '฿44,900 · Early Bird 5 ธุรกิจแรก',
+    priceCompare: 'ราคาปกติ ฿52,800 · Early Bird ลดให้ 5 ธุรกิจแรก → ฿44,900',
+    priceNote: '1 Day In-House On-site · 100% upfront · Early Bird ปิดเมื่อครบ 5 ธุรกิจ',
+    tiktokProof: {
+      stats: {
+        totalViews: '2.29M',
+        totalLikes: '140K',
+        totalShares: '35K',
+        posts: '15',
+        period: '4 เดือน · ธ.ค. 2568 → เม.ย. 2569',
+        peakDay: '161,711 วิว / วัน (28 ธ.ค. 68)',
+      },
+      monthly: [
+        { month: 'ธ.ค.', views: 277585 },
+        { month: 'ม.ค.', views: 878905 },
+        { month: 'ก.พ.', views: 629451 },
+        { month: 'มี.ค.', views: 334199 },
+        { month: 'เม.ย.', views: 167504 },
+      ],
+      topPosts: [
+        {
+          views: '548K',
+          likes: '32K',
+          shares: '10.5K',
+          date: '19 ม.ค. 69',
+          hook: 'คุณกำลังไล่ "คนเก่ง" ไปให้ "คู่แข่ง" โดยไม่รู้ตัวหรือเปล่า?',
+          url: 'https://www.tiktok.com/@pun_nattapatch/video/7596760385848347911',
+        },
+        {
+          views: '528K',
+          likes: '46K',
+          shares: '13K',
+          date: '27 ธ.ค. 68',
+          hook: 'ความลับ 4 ข้อ ที่เศรษฐีพันล้านมีเหมือนกันหมด',
+          url: 'https://www.tiktok.com/@pun_nattapatch/video/7588505644131470612',
+        },
+        {
+          views: '126K',
+          likes: '4.7K',
+          shares: '1.6K',
+          date: '22 ธ.ค. 68',
+          hook: 'อย่ารับเซลล์เข้าทีม ถ้ายังไม่ได้ถาม 4 ข้อนี้',
+          url: 'https://www.tiktok.com/@pun_nattapatch/video/7586570034437377301',
+        },
+      ],
+      audience: { th: '87.1%', female: '63%', male: '37%' },
+      funnelSteps: [
+        {
+          step: '1',
+          title: 'Hook 3 วินาทีแรก หยุด scroll',
+          body: 'Pain point ที่เจาะจงจนคนคิดว่า "เรื่องของกู" · ใช้คำพูดของเจ้าของธุรกิจจริง ไม่ใช่ agency tone',
+        },
+        {
+          step: '2',
+          title: 'Body สอน insight ที่ specific ไปเลย',
+          body: 'ไม่ใช่ motivation ไม่ใช่ clickbait · ให้ framework ที่ copy ไปใช้ได้ทันที เพื่อสร้าง authority',
+        },
+        {
+          step: '3',
+          title: 'CTA ปิดด้วย "ถ้าอยากคุย นัดได้เลย"',
+          body: 'ไม่บังคับซื้อ ไม่ขายหน้ากล้อง · ส่ง traffic ไป bio → landing page → intake form',
+        },
+        {
+          step: '4',
+          title: 'Intake form คัดคนที่ fit',
+          body: 'Qualify ด้วย teamSize / pain / budget · ตอบกลับเฉพาะเคสที่ตรง · ปิดดีล B2B ที่ relationship-based',
+        },
+      ],
+      aiUsed: [
+        { name: 'Claude / ChatGPT', purpose: 'Hook ideation · script draft · ย่อ insight ซับซ้อนให้ 60 วินาที' },
+        { name: 'Notion AI', purpose: 'Content calendar · ตาราง 30 วัน · tag pillar/cluster' },
+        { name: 'CapCut Auto-Caption', purpose: 'ใส่ caption ไทยอัตโนมัติ · trim silence · add beat sync' },
+        { name: 'Gemini Deep Research', purpose: 'วิเคราะห์ trend + competitor hook · หา angle ใหม่ทุกสัปดาห์' },
+      ],
+      aiForbidden: [
+        { name: 'AI Avatar / Face Swap', reason: 'B2B ขายด้วย trust · หน้าปลอม = ลูกค้าเลิก engage' },
+        { name: 'AI Voice Cloning', reason: 'เสียงสังเคราะห์ติดหู uncanny · authenticity = conversion' },
+        { name: 'AI-Generated Video (Sora / Runway)', reason: 'เจ้าของต้องอยู่หน้ากล้องเอง · ตัวตนจริง = relationship' },
+        { name: 'AI Thumbnail Generation', reason: 'ภาพจริงจาก workshop/มีตติ้ง = proof ที่ AI ปลอมไม่ได้' },
+      ],
+    },
     inclusions: [
       'Workshop 1 วัน On-site (6-7 ชม.)',
       '3 คลิปถ่ายเสร็จ + ตัดต่อในวันนั้น',
@@ -452,8 +546,8 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
         a: 'มือถือเครื่องเดียวพอ ไม่ต้องลงทุนไมโครโฟน หรือกล้อง DSLR workshop นี้ทำเพื่อให้ทำต่อเองไหว ไม่ใช่ทำให้ต้องจ้างคนมาถ่าย',
       },
       {
-        q: 'ราคา ฿39,900 ถึงเมื่อไหร่',
-        a: 'ถึง 5 ธุรกิจแรกที่จองเข้ามา หลังจากนั้นปรับเป็น ฿50,000 ดู status ได้ที่หน้า services ถ้ายังเห็น "5 ธุรกิจแรก" คือยังเปิดอยู่',
+        q: 'ราคา Early Bird ฿44,900 ถึงเมื่อไหร่',
+        a: 'ถึง 5 ธุรกิจแรกที่จองเข้ามา หลังจากนั้นกลับเป็นราคาปกติ ฿52,800 ดู status ได้ที่หน้า services ถ้ายังเห็น "5 ธุรกิจแรก" คือยังเปิดอยู่',
       },
     ],
   },
