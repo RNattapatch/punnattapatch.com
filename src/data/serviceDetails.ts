@@ -328,6 +328,56 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       'n8n workflow ช่วยคัดกรองลูกค้า + แจ้งเตือนติดตาม + สรุปรายงาน ให้อัตโนมัติ',
       'เจ้าของลดเวลาจุกจิกกับทีมลง 50%+ ปล่อยให้ทีมวิ่งเอง',
     ],
+    whyMe: {
+      eyebrow: 'Why Me · Sales System Sprint',
+      headline: 'ที่ปรึกษาที่ build ของจริง · ไม่ใช่แค่ส่ง slide',
+      marketGap: {
+        intro: 'ผมเห็น SME เสียเวลากับที่ปรึกษา 3-6 เดือน ได้ slide แนะนำกลับมาแต่ไม่มีระบบที่ใช้งานได้จริง · ตลาดการวางระบบขายแบ่งได้ 3 กลุ่ม และยังไม่มีใครเจาะ hands-on end-to-end สำหรับ SME ใน 1 เดือน',
+        segments: [
+          {
+            name: 'ที่ปรึกษาสาย Strategy ทั่วไป',
+            desc: 'ส่งมอบ Presentation Deck คำแนะนำสวยๆ · ไม่ลงมือ implement ระบบจริง · กลยุทธ์บน slide ไม่เคยเกิดขึ้นในทางปฏิบัติ',
+          },
+          {
+            name: 'ผู้ขาย Template สำเร็จรูป',
+            desc: 'ขายไฟล์ Excel / Sheets แบบ one-size-fits-all · ไม่พอดีกับ revenue model / margin / วิธีทำงานของทีมขายคุณ',
+          },
+          {
+            name: 'ที่ปรึกษาด้าน CRM',
+            desc: 'เน้น setup software · ไม่ลงไปช่วยออกแบบ process หรือปรับ mindset ทีม · ทีมกลับไปทำงานแบบเดิม',
+          },
+        ],
+        position: 'ยังไม่มีใครเจาะการวาง sales system แบบ hands-on end-to-end ใน 1 เดือนให้ SME · ผมเป็นทั้งคนคิด · คน build · คนสอน ในคนเดียว',
+      },
+      pointOfParity: [
+        'Discovery session วิเคราะห์ทีมและ process ปัจจุบัน (ไม่เริ่มจาก template)',
+        'KPI + Commission structure ออกแบบให้ธุรกิจคุณโดยเฉพาะ',
+        'Training ทีมขายทุกคน · ใช้ระบบใหม่ได้ครบถ้วน',
+        'Documentation + คู่มือ · ทีมกลับไป review หรือสอนสมาชิกใหม่ได้',
+      ],
+      pointOfDifferentiation: [
+        {
+          title: 'ที่ปรึกษาที่ build ของจริง',
+          body: 'ผมไม่ใช่ที่ปรึกษาที่ส่งมอบแค่ strategy slide · ผมเป็นคนลงมือสร้างระบบที่ run ได้จริงตั้งแต่วันส่งมอบ · วันสุดท้ายของ sprint ทีมมีระบบใช้งานเลย ไม่ต้องไปหา vendor มาทำต่อ',
+        },
+        {
+          title: 'KPI จาก revenue model จริงของบริษัทคุณ',
+          body: 'ผมออกแบบ KPI และ Commission จาก revenue model + cost structure + margin ของธุรกิจคุณจริงๆ · ไม่ copy template จากบริษัทอื่น · ทีมใหญ่ที่ตอบได้ว่า "ปิดดีลขนาดนี้ได้คอมเท่าไหร่" ทันที',
+        },
+        {
+          title: 'n8n automation integrated ไม่ใช่แค่ dashboard',
+          body: 'ระบบที่ผมสร้างมี workflow automation ด้วย n8n สำหรับแจ้งเตือน follow-up / สร้าง report อัตโนมัติ / sync ข้อมูล · ไม่ใช่แค่ CRM ที่ต้องคีย์ข้อมูลเอง',
+        },
+        {
+          title: '1 เดือนจบ ไม่ลากยาว 3-6 เดือน',
+          body: 'ที่ปรึกษาทั่วไปใช้ 3-6 เดือนสำหรับโครงการลักษณะนี้ · ผมทำจบใน 1 เดือน · 4 hands-on sessions (Discovery → Design → Build → Training) · ส่งมอบเต็มที่ไม่ drag timeline',
+        },
+        {
+          title: 'Handover ให้ทีมเจ้าของ maintain เอง',
+          body: 'ผมสร้างระบบบน Google Sheets + n8n ที่เข้าถึงง่าย · ทีมเจ้าของปรับปรุงแก้ไขได้เอง · ไม่ต้องจ้าง retainer รายเดือน · ระบบที่เจ้าของเป็นเจ้าของจริงๆ',
+        },
+      ],
+    },
     priceHeadline: '฿65,000 / โครงการ',
     priceNote: '1 เดือนจบ · ชำระเต็มจำนวนก่อนเริ่ม · ไม่มีสัญญารายเดือนผูกมัดหลังจบ',
     inclusions: [
@@ -491,6 +541,56 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       'ขนาดของดีลโดยเฉลี่ย (Average Deal Size) ใหญ่ขึ้น เพราะทีมสามารถ Upsell หรือขายแบบ Bundle ได้อย่างเป็นธรรมชาติ',
       'ทีมมี Opening Script และ Closing Playbook เป็นของตัวเอง ซึ่งปรับให้เข้ากับธุรกิจและลูกค้าของบริษัทโดยเฉพาะ',
     ],
+    whyMe: {
+      eyebrow: 'Why Me · Sale Training Bundle',
+      headline: 'ครูขายที่ยังปิดดีลด้วยมือตัวเอง · ไม่ใช่ academic trainer',
+      marketGap: {
+        intro: 'ตลาดอบรมการขายในไทยมีผู้เล่นหลากหลาย แต่ส่วนใหญ่แบ่งเป็น 3 กลุ่ม · ยังไม่มีใครเจาะทีมขาย B2B SME ที่ต้องปิดด้วยคุณค่าผ่าน Chat / Call / Field โดยเฉพาะ',
+        segments: [
+          {
+            name: 'หลักสูตรอบรมการขายทั่วไป',
+            desc: 'เน้นทฤษฎี + slide สวย · ขาดการลงมือทำจริง · ทีมเรียนจบกลับไปทำงานแบบเดิม เพราะปรับใช้กับหน้างานไม่ได้',
+          },
+          {
+            name: 'นักพูดสร้างแรงบันดาลใจ',
+            desc: 'ปลุกไฟทีมได้ดีช่วงสั้นๆ · พอจบ event ไฟมอด · ทักษะการขายจริงไม่ได้ถูกพัฒนาอย่างเป็นระบบ',
+          },
+          {
+            name: 'เทรนเนอร์สาย Soft Skill ทั่วไป',
+            desc: 'สอนการสื่อสารในภาพกว้าง · ไม่เจาะ B2B Sales · ไม่มี scenario เฉพาะสำหรับ Chat / Telesales / Field',
+          },
+        ],
+        position: 'ยังไม่มีใครเจาะทีมขาย B2B SME ที่ต้องปิดด้วยคุณค่า ไม่ใช่ราคา · Workshop นี้ผมออกแบบมาเพื่อทีมที่ขายผ่าน Chat / Call / Field โดยเฉพาะ',
+      },
+      pointOfParity: [
+        'Workshop เน้นลงมือทำ · ฝึก role-play 3 รอบ + individual feedback',
+        'เอกสารประกอบ + workbook สำหรับผู้เข้าร่วมทุกคน',
+        'Async LINE support 14 วันหลัง workshop · ผมตอบในเวลาทำการ',
+        'Frameworks ที่ปรับใช้ได้วันจันทร์ทันที · ไม่ต้องรอ research เพิ่ม',
+      ],
+      pointOfDifferentiation: [
+        {
+          title: 'ครูขายที่ปิดดีลด้วยมือตัวเอง',
+          body: 'ผมไม่ใช่ academic trainer ที่สอนแต่ไม่ขาย · ผมอยู่ในสนาม B2B Sales มา 5 ปี · ปัจจุบันยังเป็นที่ปรึกษาและลงมือปิดดีลให้ลูกค้า SME 10+ ราย · ประสบการณ์ทั้งหมดจากหน้างานจริง ไม่ใช่ทฤษฎี',
+        },
+        {
+          title: 'ใช้ดีลจริงของบริษัทคุณใน workshop',
+          body: 'ผมไม่ใช้ case study ในตำรา · ผมนำดีลที่ทีมขายปิดไม่ได้ 5-10 เคสล่าสุดมาทำ role-play สด · ทุกนาทีใน workshop เกี่ยวข้องกับธุรกิจคุณโดยตรง · แก้ปัญหาจริงได้ทันที',
+        },
+        {
+          title: 'Frameworks เปลี่ยนพฤติกรรม ไม่ใช่ tips',
+          body: 'ทีมได้ระบบคิดที่ใช้ต่อได้ เช่น Jobs to be Done · Why We Buy 3-Axis · Opening Script · Trust Playbook · Paradox of Choice · framework ที่เปลี่ยนวิธีคิดและพฤติกรรม ไม่ใช่ tips เล็กๆ ที่ใช้แล้วลืม',
+        },
+        {
+          title: 'วัดผล 30 วันด้วยตัวเลข ไม่ใช่ความรู้สึก',
+          body: 'หลัง workshop ผมติดตามผลลัพธ์ 30 วันจากตัวชี้วัดจริง: Close Rate / Discount Rate / Average Deal Size · เราตั้งเป้าที่ผลทางธุรกิจ ไม่ใช่แค่ "ทีมรู้สึกมีกำลังใจขึ้น"',
+        },
+        {
+          title: 'ทีมได้ Opening Script + Closing Playbook ของตัวเอง',
+          body: 'ผลลัพธ์สุดท้ายคือทีมขายมี Opening Script + Closing Playbook ที่สร้างขึ้นจากดีลและสินค้าของบริษัทจริง · ไม่ใช่ template สำเร็จรูป · ทีมเป็นเจ้าของกระบวนการ · ต่อยอดได้ทันที',
+        },
+      ],
+    },
     priceHeadline: '฿44,900 / 2 วัน · Early Bird',
     priceCompare: '🔥 Early Bird ฿44,900 · รับเพียง 3 ทีมต่อเดือน · หลังเต็มกลับเป็นราคาปกติ ฿52,800',
     priceNote: 'อบรมที่บริษัทลูกค้า (On-site) สำหรับทีมขนาดไม่เกิน 20 คน ราคานี้สำหรับการอบรมในกรุงเทพและปริมณฑล ชำระ 100% ก่อนวันอบรม ค่าเดินทางสำหรับต่างจังหวัดจะคิดแยกตามระยะทางจริง',
@@ -586,6 +686,56 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       'เอกสาร Trust Framework (PDF) เจ้าของใช้ซ้ำได้ทุกเดือน',
       'ทักษะถ่ายเองได้ ไม่ต้องจ้างเอเจนซี่',
     ],
+    whyMe: {
+      eyebrow: 'Why Me · Trust Content TikTok',
+      headline: 'ทำจริงจน 2.29M views organic · ไม่ใช่แค่สอนทฤษฎี',
+      marketGap: {
+        intro: 'ตลาด TikTok coach / content agency / growth course มีเยอะ แต่ยังไม่มีใครเจาะ TikTok for B2B Sales SME ที่ขายด้วย trust · ผมทำจริงจนช่องตัวเองได้ 2.29M views organic ใน 4 เดือน · ไม่ใช่ theory',
+        segments: [
+          {
+            name: 'Creator Agency',
+            desc: 'เน้น production สวยงาม · ราคาสูง (฿หลักแสน/campaign) · ไม่เข้าใจ B2B · เน้น brand awareness ไม่ใช่ lead conversion',
+          },
+          {
+            name: 'TikTok Growth Course',
+            desc: 'สอน algorithm / trend / viral formula · focus ยอด reach · content ที่ viral มักเปลี่ยนเป็นลูกค้า B2B ไม่ได้',
+          },
+          {
+            name: 'Individual TikTok Coach',
+            desc: 'เน้น personal branding สำหรับ creator / influencer · ไม่ใช่ B2B sales funnel end-to-end · ไม่รู้วิธีปิดดีลผ่าน DM',
+          },
+        ],
+        position: 'ยังไม่มีใครเจาะ TikTok for B2B Sales SME · ผมทำจริงจนได้ 2.29M views · 140K likes · 15 posts ใน 4 เดือนโดยไม่ยิง ads · workshop นี้ถ่ายทอดสูตรเดียวกันให้คุณ',
+      },
+      pointOfParity: [
+        'Hands-on shoot 3 clips จริงในห้อง · feedback ทันทีทุกคลิป',
+        'Content Calendar 30 วัน ออกแบบสำหรับธุรกิจคุณเฉพาะ',
+        'Script Template Kit + Trust Framework PDF ใช้ซ้ำได้',
+        'Async LINE support 14 วันหลัง workshop',
+      ],
+      pointOfDifferentiation: [
+        {
+          title: 'ครูที่ทำจริงจน 2.29M views organic',
+          body: 'ผมเริ่มช่อง TikTok จาก 0 เดือนธันวาคม · ปัจจุบัน 2.29M views · 140K likes · 15 posts ใน 4 เดือน · ไม่ยิง ads แม้บาทเดียว · agency ไม่เคยปั้นช่องเอง · coach ทั่วไปไม่เคย execute · ผมลงมือทำจริงก่อนมาสอน',
+        },
+        {
+          title: 'Trust Framework สำหรับ B2B โดยเฉพาะ',
+          body: 'ผมไม่ได้สอน viral formula หรือ entertainment strategy · ผมสอน Trust Framework ที่ออกแบบสำหรับ B2B · เป้าหมายคือ "เจ้าของธุรกิจทักเข้ามาขอนัดคุย" ไม่ใช่แค่ยอด like หรือ follower สูง',
+        },
+        {
+          title: 'Funnel end-to-end · Clip → Bio → Form → Close',
+          body: 'ผมสอนทั้ง funnel ตั้งแต่ทำ clip · ออกแบบ bio · สร้าง form เก็บ lead · จนถึงเทคนิคปิดการขาย B2B ที่ทักเข้ามา · ไม่ใช่แค่สอนทำ content แล้วจบ · ได้ business result ทั้งระบบ',
+        },
+        {
+          title: 'On-site at your business · ไม่ใช่ open cohort',
+          body: 'ผมเข้าไปสอนที่บริษัทลูกค้าเอง · use case + script ทั้งหมดมาจากธุรกิจของคุณจริง · ไม่ใช่การเรียนรวมใน open cohort ที่ใช้ template · ทีมได้ content plan ที่เหมาะกับอุตสาหกรรมตัวเอง',
+        },
+        {
+          title: 'AI ช่วยได้ แต่ยังคง authentic ของเจ้าของ',
+          body: 'ผมสอนใช้ Claude + CapCut ช่วยให้ทำงานเร็วขึ้น · แต่ไม่ใช้ AI Avatar หรือ Voice Clone · เพราะ B2B ขายด้วย trust · ลูกค้าต้องเห็นเจ้าของจริง ไม่ใช่อวตาร AI ที่จับได้ว่าปลอม',
+        },
+      ],
+    },
     priceHeadline: '฿44,900 · ราคาเปิดตัว 5 ธุรกิจแรก',
     priceCompare: 'ราคาปกติ ฿52,800 · ราคาเปิดตัวลดให้ 5 ธุรกิจแรก → ฿44,900',
     priceNote: 'Workshop 1 วัน ที่บริษัทลูกค้า · ชำระเต็มจำนวนก่อนเริ่ม · ราคาเปิดตัวปิดเมื่อครบ 5 ธุรกิจ',
