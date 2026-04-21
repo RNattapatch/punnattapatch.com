@@ -380,84 +380,93 @@ const socials = [
     </div>
   </section>
 
-  <!-- ===== FEATURED COURSE: ADVANCE AI ===== -->
-  <section class="relative overflow-hidden bg-gradient-to-br from-cyan-50 via-blue-50 to-cyan-50/70 px-4 py-16 lg:px-8 lg:py-24">
-    <div class="pointer-events-none absolute inset-0 -z-10 opacity-40">
-      <div class="absolute -right-20 -top-20 h-40 w-40 rounded-full bg-cyan-300/30 blur-3xl"></div>
-      <div class="absolute -bottom-20 -left-20 h-40 w-40 rounded-full bg-blue-300/20 blur-3xl"></div>
+  <!-- ===== FEATURED COURSE: ADVANCE AI (dark theme · coral CTA · glassmorphism) ===== -->
+  <section class="relative overflow-hidden px-4 py-20 lg:px-8 lg:py-28" style="background: linear-gradient(135deg, #040f1e 0%, #072b4e 50%, #0d3a5c 100%);">
+    {/* Ambient orbs */}
+    <div class="pointer-events-none absolute inset-0 opacity-50">
+      <div class="absolute -left-32 -top-20 h-[500px] w-[500px] rounded-full" style="background: radial-gradient(circle, rgba(34,211,238,0.18) 0%, transparent 70%); filter: blur(80px);"></div>
+      <div class="absolute -right-20 top-1/3 h-[400px] w-[400px] rounded-full" style="background: radial-gradient(circle, rgba(221,65,85,0.12) 0%, transparent 70%); filter: blur(80px);"></div>
+      <div class="absolute -bottom-32 left-1/3 h-[600px] w-[600px] rounded-full" style="background: radial-gradient(circle, rgba(6,182,212,0.10) 0%, transparent 70%); filter: blur(100px);"></div>
     </div>
+    {/* Dot grid */}
+    <div class="pointer-events-none absolute inset-0 opacity-40" style="background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 32px 32px;"></div>
 
-    <div class="mx-auto max-w-5xl">
-      <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-300/50 bg-white/70 px-4 py-2 text-sm font-medium text-cyan-800 backdrop-blur-sm">
-        <span class="h-2 w-2 animate-pulse rounded-full bg-cyan-500"></span>
+    <div class="relative mx-auto max-w-5xl">
+      {/* Badge with pulsing coral dot */}
+      <div class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.08] px-4 py-2 text-sm font-semibold text-white/90 backdrop-blur-md">
+        <span class="relative flex h-2 w-2">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style="background: #dd4155;"></span>
+          <span class="relative inline-flex h-2 w-2 rounded-full" style="background: #dd4155;"></span>
+        </span>
         🎯 In-house Workshop สำหรับทีมของคุณ
       </div>
 
       {/* Course Name — Billboard Heading */}
-      <h2 class="font-display font-black tracking-tight leading-[1.05] text-cyan-950 text-5xl md:text-6xl lg:text-7xl">
+      <h2 class="mt-6 font-display font-black tracking-tight leading-[1.05] text-white text-5xl md:text-6xl lg:text-7xl">
         Advance AI &
         <br />
-        <span class="bg-gradient-to-r from-cyan-700 to-cyan-500 bg-clip-text text-transparent">Business Automation</span>
+        <span class="bg-gradient-to-r from-cyan-300 via-cyan-200 to-cyan-400 bg-clip-text text-transparent">Business Automation</span>
       </h2>
 
-      <div class="mt-4 inline-flex items-center gap-2 rounded-full bg-cyan-900/90 px-4 py-2 text-sm font-semibold text-white shadow-sm">
+      <div class="mt-5 inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-200 backdrop-blur-md">
         <span>⏱</span>
         <span>Workshop 1 วัน · 6-7 ชั่วโมง · Hands-on</span>
       </div>
 
-      {/* Hook — Scroll Stopper */}
-      <div class="mt-10 relative rounded-2xl border-l-4 border-cyan-600 bg-white/50 py-5 pl-6 pr-5 backdrop-blur-sm shadow-sm">
-        <p class="font-display text-3xl font-bold leading-tight text-cyan-950 md:text-4xl">
+      {/* Hook — Scroll Stopper (glassmorphism with cyan accent) */}
+      <div class="mt-10 rounded-2xl border border-white/10 border-l-4 py-6 pl-7 pr-6 backdrop-blur-xl md:py-7" style="background: rgba(255,255,255,0.04); border-left-color: #22d3ee;">
+        <p class="font-display text-3xl font-black leading-tight text-white md:text-4xl">
           คอร์ส AI ที่ไม่เหมือนใคร
         </p>
-        <p class="mt-2 font-display text-2xl font-semibold leading-tight text-cyan-700 md:text-3xl">
+        <p class="mt-2 font-display text-2xl font-bold leading-tight text-cyan-300 md:text-3xl">
           จับมือคุณสร้าง AI Agent ตัวแรก
         </p>
       </div>
 
-      {/* Pun's Promise Card */}
-      <div class="mt-5 rounded-2xl border border-cyan-200/60 bg-white/60 px-6 py-4 backdrop-blur-sm">
-        <p class="font-display text-lg font-bold text-cyan-900 md:text-xl">
+      {/* Pun's Promise Card (glassmorphism) */}
+      <div class="mt-5 rounded-2xl border border-white/10 px-6 py-5 backdrop-blur-xl" style="background: rgba(255,255,255,0.035);">
+        <p class="font-display text-lg font-bold text-white md:text-xl">
           ถ้าไม่เข้าใจ ผมไม่ให้กลับบ้าน!
         </p>
-        <p class="mt-2 text-base leading-relaxed text-cyan-800">
+        <p class="mt-2 text-base leading-relaxed text-white/75">
           ได้ AI Agent และ Action Plan 30 วัน กลับไปทำต่อได้เลย
         </p>
       </div>
 
-      {/* Quick Facts */}
+      {/* Quick Facts — glassmorphism cards */}
       <div class="mt-8 grid gap-4 md:grid-cols-3">
-        <div class="rounded-xl bg-white/70 border border-cyan-200/40 p-5 backdrop-blur-sm">
-          <div class="text-3xl font-bold text-cyan-700">฿24,900</div>
-          <p class="mt-2 text-sm text-cyan-700/80">ราคาพิเศษเดือนนี้ <span class="text-cyan-700/60">(ปกติ ฿30,000)</span> · เหลือ <span class="font-bold text-cyan-800">2 จาก 5 slot</span></p>
+        <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl transition hover:border-cyan-300/40">
+          <div class="font-display text-3xl font-black text-white md:text-4xl">฿24,900</div>
+          <p class="mt-2 text-sm text-white/70">ราคาพิเศษเดือนนี้ <span class="text-white/50">(ปกติ ฿30,000)</span> · เหลือ <span class="font-bold text-cyan-300">2 จาก 5 slot</span></p>
         </div>
-        <div class="rounded-xl bg-white/70 border border-cyan-200/40 p-5 backdrop-blur-sm">
-          <div class="text-3xl font-bold text-cyan-700">1 วัน</div>
-          <p class="mt-2 text-sm text-cyan-700/80">6-7 ชั่วโมง · Hands-on · Build จริง</p>
+        <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl transition hover:border-cyan-300/40">
+          <div class="font-display text-3xl font-black text-white md:text-4xl">1 วัน</div>
+          <p class="mt-2 text-sm text-white/70">6-7 ชั่วโมง · Hands-on · Build จริง</p>
         </div>
-        <div class="rounded-xl bg-white/70 border border-cyan-200/40 p-5 backdrop-blur-sm">
-          <div class="text-3xl font-bold text-cyan-700">On-site</div>
-          <p class="mt-2 text-sm text-cyan-700/80">In-house · เข้าไปสอนที่บริษัทคุณ</p>
+        <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl transition hover:border-cyan-300/40">
+          <div class="font-display text-3xl font-black text-white md:text-4xl">On-site</div>
+          <p class="mt-2 text-sm text-white/70">In-house · เข้าไปสอนที่บริษัทคุณ</p>
         </div>
       </div>
 
-      {/* CTAs */}
+      {/* CTAs — primary coral gradient (brand rule) + secondary ghost */}
       <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:gap-3">
         <a
           href="/services/ai-workshop"
-          class="btn btn-lg bg-cyan-600 text-white shadow-lg shadow-cyan-600/30 hover:bg-cyan-700 transition-colors"
+          class="inline-flex items-center justify-center rounded-2xl px-8 py-4 font-display text-base font-bold text-white transition hover:-translate-y-0.5"
+          style="background: linear-gradient(135deg, #dd4155 0%, #c43245 100%); box-shadow: 0 8px 28px rgba(221,65,85,0.35);"
         >
-          ดูรายละเอียดคอร์ส
+          ดูรายละเอียดคอร์ส →
         </a>
         <a
           href="/intake-form?source=homepage-course"
-          class="btn btn-lg btn-outline border-cyan-400 text-cyan-700 hover:bg-cyan-50"
+          class="inline-flex items-center justify-center rounded-2xl border border-white/25 bg-white/[0.06] px-8 py-4 font-display text-base font-bold text-white backdrop-blur-md transition hover:bg-white/[0.12]"
         >
           ไม่แน่ใจ? นัดคุยเบื้องต้น
         </a>
       </div>
 
-      <p class="mt-5 text-sm text-cyan-700/75 max-w-2xl">
+      <p class="mt-5 max-w-2xl text-sm text-white/55">
         ยังไม่ชัวร์ว่าคอร์สนี้เหมาะกับทีมคุณรึเปล่า? นัดคุยปรึกษาผมก่อนได้เลย
       </p>
     </div>
