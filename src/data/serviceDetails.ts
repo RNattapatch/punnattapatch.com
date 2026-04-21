@@ -1,5 +1,23 @@
 export type AccentToken = 'cyan' | 'coral' | 'violet';
 
+/**
+ * WhyMeBlock — optional section that explains why choose Pun for THIS service.
+ * Pattern: Hybrid (reused PUN_CORE_BIO from site.ts + per-service custom content).
+ * Voice: B+C (positive self-framing + market-gap landscape with POP/POD positioning).
+ * Render: between Outcomes and Pricing sections via <WhyMeSection> component.
+ */
+export type WhyMeBlock = {
+  eyebrow: string;
+  headline: string;
+  marketGap: {
+    intro: string;
+    segments: { name: string; desc: string }[];
+    position: string;
+  };
+  pointOfParity: string[];
+  pointOfDifferentiation: { title: string; body: string }[];
+};
+
 export type ServiceDetail = {
   slug: string;
   accent: AccentToken;
@@ -14,6 +32,7 @@ export type ServiceDetail = {
     requirements: { title: string; detail?: string }[];
     tools: { name: string; tagline: string }[];
   };
+  whyMe?: WhyMeBlock;
   tiktokProof?: {
     stats: {
       totalViews: string;
@@ -150,6 +169,56 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       'Team lead maintain ระบบเองได้ ไม่ต้องพึ่งผมต่อเดือน',
       'ทีมเห็น AI ทำงานจริงกับธุรกิจตัวเอง ไม่ใช่แค่ theory',
     ],
+    whyMe: {
+      eyebrow: 'Why Me · AI Workshop',
+      headline: 'ทำไมต้องเรียน AI Workshop กับผม',
+      marketGap: {
+        intro: 'ตลาด AI course ในไทยตอนนี้มีผู้เล่นหลากหลาย แต่ส่วนใหญ่จะแบ่งได้เป็น 3 กลุ่มหลัก ซึ่งยังไม่มีใครที่เจาะตลาดทีมขาย B2B ของธุรกิจ SME โดยเฉพาะ',
+        segments: [
+          {
+            name: 'คอร์ส AI ทั่วไป',
+            desc: 'เน้นสอนใช้เครื่องมือพื้นฐานอย่าง ChatGPT หรือ Claude สำหรับงานทั่วไป ไม่ได้ออกแบบมาเพื่อแก้ปัญหาหรือสร้าง workflow สำหรับทีมขายโดยตรง',
+          },
+          {
+            name: 'อบรมสำหรับฝ่าย IT องค์กร',
+            desc: 'เนื้อหาลงลึกด้านเทคนิค เหมาะสำหรับนักพัฒนาหรือฝ่าย IT แต่ซับซ้อนเกินไปสำหรับเจ้าของธุรกิจ SME และทีมขายที่ต้องการนำไปใช้ทันที',
+          },
+          {
+            name: 'คอร์สสำหรับบุคคล / ฟรีแลนซ์',
+            desc: 'โฟกัสที่การเพิ่มประสิทธิภาพส่วนบุคคล ไม่ได้สอนการสร้างระบบ AI ที่ทำงานร่วมกันเป็นทีม ซึ่งเป็นหัวใจสำคัญของฝ่ายขาย',
+          },
+        ],
+        position: 'ช่องว่างสำหรับ AI เพื่อทีมขาย B2B ของ SME ไทยยังคงมีอยู่ · workshop นี้คือคำตอบที่ผมสร้างขึ้นมาเพื่อเติมเต็มช่องว่างนี้โดยเฉพาะ',
+      },
+      pointOfParity: [
+        'Workshop เน้นลงมือทำจริง ไม่ใช่นั่งฟังบรรยายอย่างเดียว',
+        'ใช้เครื่องมือล่าสุดเสมอ เช่น Claude Code · n8n · Gemini · Kie.Ai',
+        'กลุ่มซัพพอร์ตสำหรับถามตอบและให้คำปรึกษาต่อเนื่อง 30 วันหลังจบ workshop',
+        'เอกสารสรุป + วิดีโอบันทึกหน้าจอทุก session · ทีมกลับไปทบทวนได้',
+      ],
+      pointOfDifferentiation: [
+        {
+          title: 'ครูสอนคือคนขายตัวจริง',
+          body: 'ผมเป็นเซลส์ B2B ในฟิลด์มา 5 ปี ปิดดีลด้วยตัวเอง · ผมจึงเข้าใจปัญหาและ workflow ของทีมขายจริงๆ ไม่ใช่คนที่ศึกษาเรื่องการขายจากทฤษฎี',
+        },
+        {
+          title: 'สอนสดที่บริษัทคุณโดยเฉพาะ',
+          body: 'Workshop นี้เป็น private on-site ไม่ใช่ public cohort · เรานำปัญหาและ use case จริงของบริษัทคุณมาสร้างเป็น workflow ได้ทันทีในห้อง',
+        },
+        {
+          title: 'สร้างระบบ AI ที่ทำงานแทน ไม่ใช่แค่ถาม-ตอบ',
+          body: 'เน้นสร้าง Agentic AI (AI ที่ทำงานแทน) ด้วย Claude Code + n8n เพื่อสร้างระบบอัตโนมัติที่ช่วยทีมขายจริงๆ ไม่ใช่แค่สอนเขียน prompt พื้นฐาน',
+        },
+        {
+          title: 'วัดผล ROI ได้ตั้งแต่วันแรก',
+          body: 'ผมคำนวณเวลาและต้นทุนที่ประหยัดได้จาก workflow ที่สร้างขึ้นภายในวันนั้นเลย · คุณเห็นตัวเลข ROI ที่จับต้องได้ทันที ไม่ต้องรอให้ทีมกลับไปลองใช้แล้วค่อยวัดผล',
+        },
+        {
+          title: 'ส่งมอบให้หัวหน้าทีมดูแลต่อได้',
+          body: 'ผมสอนหัวหน้าทีมขายให้ดูแลและปรับปรุงระบบ AI ที่สร้างขึ้นเองได้ · ทีมใช้งานต่อได้ระยะยาว โดยไม่ต้องจ้างผมเป็น retainer รายเดือน',
+        },
+      ],
+    },
     priceHeadline: '฿24,900 / 1 วัน',
     priceCompare: '🔥 ราคาพิเศษเดือนนี้ ฿24,900 (ปกติ ฿30,000) · เหลือ 2 เจ้าจาก 5 เจ้า · หมดแล้วกลับเป็นราคาเต็ม',
     priceNote: 'จัดแบบ in-house on-demand · ปันเข้าไปจัด workshop ให้ตามตารางที่ทีมคุณสะดวก · ชำระ 100% ก่อนเริ่มงาน · ไม่มีสัญญาผูกมัดยาว',

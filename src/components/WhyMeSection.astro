@@ -1,0 +1,148 @@
+---
+/**
+ * WhyMeSection · renders "ทำไมต้องเรียนกับผม" for a service page.
+ * Pattern: Hybrid (PUN_CORE_BIO reused + per-service customized whyMe block).
+ * Placement: between Outcomes and Pricing in services/[slug].astro.
+ * Accent color inherits from parent service (cyan/coral/violet).
+ */
+import { PUN_CORE_BIO } from '../data/site';
+import type { WhyMeBlock, AccentToken } from '../data/serviceDetails';
+
+interface Props {
+  whyMe: WhyMeBlock;
+  accent: AccentToken;
+}
+
+const { whyMe, accent } = Astro.props;
+
+// Map accent token → CSS color (CSS variables defined in BaseLayout / tailwind config)
+const accentColor: Record<AccentToken, string> = {
+  cyan: 'var(--color-pun-cyan, #22d3ee)',
+  coral: 'var(--color-secondary, #dd4155)',
+  violet: 'var(--color-pun-violet, #7c3aed)',
+};
+const accentVar = accentColor[accent];
+---
+
+<section class="relative border-t border-base-content/10 bg-base-200/30 px-4 py-20 lg:px-8 lg:py-28">
+  <div class="mx-auto max-w-5xl">
+
+    <!-- Section eyebrow + headline -->
+    <div class="inline-flex items-center gap-2 rounded-full border border-base-content/15 bg-base-100/60 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-base-content/80 backdrop-blur-sm">
+      <span class="relative flex h-2 w-2">
+        <span class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style={`background: ${accentVar};`}></span>
+        <span class="relative inline-flex h-2 w-2 rounded-full" style={`background: ${accentVar};`}></span>
+      </span>
+      {whyMe.eyebrow}
+    </div>
+
+    <h2 class="mt-5 font-display text-3xl font-black tracking-tight md:text-4xl lg:text-5xl">
+      {whyMe.headline}
+    </h2>
+
+    <!-- Zone 1 · PUN CORE BIO (3 horizontal cards · reused across services) -->
+    <div class="mt-10 grid gap-4 md:grid-cols-3">
+      {PUN_CORE_BIO.map((item) => (
+        <div class="rounded-2xl border border-base-content/10 bg-base-100/60 p-6 backdrop-blur-sm transition hover:border-[color:var(--hover-accent)]" style={`--hover-accent: ${accentVar};`}>
+          <div class="font-display text-4xl font-black md:text-5xl" style={`color: ${accentVar};`}>
+            {item.stat}
+          </div>
+          <p class="mt-3 text-sm leading-relaxed text-base-content/80 md:text-base">
+            {item.body}
+          </p>
+        </div>
+      ))}
+    </div>
+
+    <!-- Zone 2 · MARKET GAP (educate + position) -->
+    <div class="mt-16 border-t border-base-content/10 pt-12">
+      <h3 class="font-display text-xl font-bold md:text-2xl">
+        ตลาด AI course ยังไม่มีใครเจาะ <span style={`color: ${accentVar};`}>ทีมขาย B2B SME</span>
+      </h3>
+      <p class="mt-4 max-w-3xl text-base leading-relaxed text-base-content/75 md:text-lg">
+        {whyMe.marketGap.intro}
+      </p>
+
+      <div class="mt-8 grid gap-4 md:grid-cols-3">
+        {whyMe.marketGap.segments.map((segment, i) => (
+          <div class="rounded-xl border border-base-content/10 bg-base-100/40 p-5 backdrop-blur-sm">
+            <div class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-base-content/10 text-xs font-bold text-base-content/60">
+              {i + 1}
+            </div>
+            <p class="mt-3 font-display text-sm font-bold text-base-content md:text-base">
+              {segment.name}
+            </p>
+            <p class="mt-2 text-xs leading-relaxed text-base-content/65 md:text-sm">
+              {segment.desc}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <div
+        class="mt-6 rounded-2xl border-l-4 bg-base-100/50 px-6 py-5 backdrop-blur-sm"
+        style={`border-left-color: ${accentVar}; background-image: linear-gradient(135deg, ${accentVar}18 0%, transparent 60%);`}
+      >
+        <p class="font-display text-base font-semibold leading-relaxed text-base-content md:text-lg">
+          💡 {whyMe.marketGap.position}
+        </p>
+      </div>
+    </div>
+
+    <!-- Zone 3 · POINT OF PARITY (table stakes · ผมก็มี) -->
+    <div class="mt-12 border-t border-base-content/10 pt-12">
+      <h3 class="font-display text-xl font-bold md:text-2xl">
+        สิ่งที่ course AI ดีๆ ต้องมี · <span class="text-emerald-600 dark:text-emerald-400">ผมก็มีครบ</span>
+      </h3>
+      <p class="mt-3 text-sm text-base-content/65 md:text-base">
+        มาตรฐานขั้นต่ำของ course ที่ลงทุนคุ้ม · ของผม include ครบ
+      </p>
+
+      <ul class="mt-6 grid gap-3 md:grid-cols-2">
+        {whyMe.pointOfParity.map((item) => (
+          <li class="flex items-start gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.04] p-4">
+            <span class="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-sm font-bold text-emerald-600 dark:text-emerald-400">
+              ✓
+            </span>
+            <p class="text-sm leading-relaxed text-base-content/85 md:text-base">
+              {item}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Zone 4 · POINT OF DIFFERENTIATION (premium · เหนือชั้น) -->
+    <div class="mt-12 border-t border-base-content/10 pt-12">
+      <h3 class="font-display text-xl font-bold md:text-2xl">
+        แต่ที่ผม <span style={`color: ${accentVar};`}>เหนือชั้นกว่า</span> · เฉพาะทาง B2B Sales
+      </h3>
+      <p class="mt-3 text-sm text-base-content/65 md:text-base">
+        5 จุดที่ workshop ผม deliver ต่างจาก course ทั่วไปในตลาด
+      </p>
+
+      <div class="mt-8 grid gap-4 md:grid-cols-2">
+        {whyMe.pointOfDifferentiation.map((pod, i) => (
+          <div
+            class="relative overflow-hidden rounded-2xl border bg-base-100/60 p-6 backdrop-blur-sm transition hover:-translate-y-1 hover:shadow-lg"
+            style={`border-color: ${accentVar}40;`}
+          >
+            <div
+              class="absolute -right-4 -top-4 flex h-12 w-12 items-center justify-center rounded-full font-display text-lg font-black text-white shadow-md"
+              style={`background: ${accentVar};`}
+            >
+              {i + 1}
+            </div>
+            <h4 class="pr-10 font-display text-base font-bold leading-tight text-base-content md:text-lg">
+              {pod.title}
+            </h4>
+            <p class="mt-3 text-sm leading-relaxed text-base-content/80 md:text-base">
+              {pod.body}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>

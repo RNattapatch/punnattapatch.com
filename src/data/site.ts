@@ -124,6 +124,18 @@ export const PROOF_STATS = [
   { value: '+40%', label: 'ผลลัพธ์ยอดขายที่เพิ่มขึ้นเฉลี่ย', note: 'Range 25-55% by industry · n=10 · directional signal' },
 ] as const;
 
+/**
+ * PUN_CORE_BIO — reused across all service-page "Why Me" sections.
+ * 3 identity-level credentials that make Pun distinct from any AI/sales trainer.
+ * Rendered as horizontal stat cards at top of <WhyMeSection>.
+ * Update ONLY when the underlying numbers change (annual review).
+ */
+export const PUN_CORE_BIO = [
+  { stat: '5 ปี', body: 'ฟิลด์ sales B2B · ปิดดีลด้วยมือตัวเอง · ไม่ใช่ academic trainer' },
+  { stat: '฿100M+', body: 'มูลค่าธุรกิจลูกค้า SME 10+ ราย (฿30-200M) ที่ผมดูแลตั้งแต่ 2025' },
+  { stat: '2.29M', body: 'TikTok views organic · proof ว่าเจ้าของ SME ฟังผม · ไม่ใช่ทฤษฎีในตำรา' },
+] as const;
+
 export const SERVICE_TIERS_SUMMARY = {
   entry: 'AI Workshop (฿30k/วัน)',
   growth: 'Workshop + Follow-up (฿50k)',
