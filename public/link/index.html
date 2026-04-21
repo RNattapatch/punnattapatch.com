@@ -337,8 +337,8 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      padding: 0 18px 0 14px;
-      height: 60px;
+      padding: 12px 18px 12px 14px;
+      min-height: 60px;
       width: 100%;
       border-radius: var(--r-outer);
       text-decoration: none;
@@ -397,7 +397,9 @@
 
     /* Primary CTA · glass over coral gradient · 8px taller (intentional asymmetry) */
     .link-btn-primary {
-      height: 68px;
+      min-height: 68px;
+      padding-top: 14px;
+      padding-bottom: 14px;
       background:
         linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 45%),
         linear-gradient(135deg, #dd4155 0%, #c43245 100%);
@@ -432,7 +434,9 @@
     /* Cyan-tinted secondary emphasis · AI Workshop feature · 4px taller than normal
        Strong cyan-violet gradient fill + thick glowing border + breathing outer glow */
     .link-btn-cyan {
-      height: 64px;
+      min-height: 64px;
+      padding-top: 13px;
+      padding-bottom: 13px;
       background:
         linear-gradient(135deg,
           rgba(34,211,238,0.32) 0%,
@@ -660,8 +664,8 @@
           <span class="available-badge-text">Available for consult</span>
         </div>
 
-        <p class="mt-5 text-[15px] leading-[1.55] max-w-[340px]" style="color: rgba(255,255,255,0.78); font-weight: 500;">
-          ผมจับมือเจ้าของ SME ไทย วางระบบขาย + ติดตั้ง AI Agent ให้ทีมใช้งานได้จริง
+        <p class="mt-5 text-[15px] leading-[1.55] max-w-[340px] px-2" style="color: rgba(255,255,255,0.78); font-weight: 500;">
+          ผมจับมือเจ้าของ SME ไทย วางระบบขาย พร้อมติดตั้ง AI Agent ให้ทีมใช้งานได้จริง
         </p>
       </header>
 
@@ -695,7 +699,7 @@
               </span>
               <span class="flex-1 text-left min-w-0">
                 <span class="block btn-title">คอร์ส Advance AI &amp; Business Automation</span>
-                <span class="block btn-sub">In-house Workshop 1 วัน · จับมือสร้าง AI Agent ตัวแรก · ฿24,900 · เหลือ 2 จาก 5 slot</span>
+                <span class="block btn-sub">In-house 1 วัน · ฿24,900 · เหลือ 2/5 slot</span>
               </span>
               <i data-lucide="arrow-up-right" class="w-[18px] h-[18px] btn-arrow flex-shrink-0" aria-hidden="true"></i>
             </a>
