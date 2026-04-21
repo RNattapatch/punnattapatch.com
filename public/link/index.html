@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <title>ปัน ณัฐพัชร์ · @pun_nattapatch</title>
+  <meta name="description" content="B2B Sales Consultant + Agentic AI Transformation · Bangkok">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="ปัน ณัฐพัชร์ — links">
+  <meta property="og:description" content="นัดคุย · คอร์ส AI · บทเรียน 100M · Sponsored">
+  <meta property="og:image" content="https://punnattapatch.com/og-image.jpg">
+  <meta property="og:type" content="profile">
+  <meta property="og:url" content="https://link.punnattapatch.com">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#040f1e">
+
+  <!-- DaisyUI BEFORE Tailwind (load order matters) -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Analytics -->
+  <script defer data-domain="link.punnattapatch.com" src="https://pl.punnattapatch.com/js/script.js"></script>
+
+  <style>
+    /* ============================================================
+       PUN LINK HUB · Apple Liquid Glass × Personal Brand
+       navy-deep canvas · coral/cyan/violet ambient · multi-layer glass
+       0 KB JS · GPU-accelerated · mobile-safe
+       ============================================================ */
+    :root {
+      /* Brand palette */
+      --navy-deep: #040f1e;
+      --navy: #072b4e;
+      --navy-mid: #0d3a5c;
+      --coral: #dd4155;
+      --coral-dark: #c43245;
+      --cyan: #22d3ee;
+      --violet: #7c3aed;
+
+      /* Text scale */
+      --w90: rgba(255,255,255,0.92);
+      --w80: rgba(255,255,255,0.80);
+      --w60: rgba(255,255,255,0.60);
+      --w50: rgba(255,255,255,0.50);
+      --w42: rgba(255,255,255,0.42);
+
+      /* Liquid Glass tokens */
+      --glass-bg:      rgba(255,255,255,0.055);
+      --glass-bg-hi:   rgba(255,255,255,0.095);
+      --glass-border:  rgba(255,255,255,0.14);
+      --glass-blur:    22px;
+      --glass-sat:     180%;
+
+      /* Concentric radius system (outer → inner) */
+      --r-outer: 22px;
+      --r-mid:   16px;
+      --r-chip:  12px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      background-color: var(--navy-deep);
+      color: var(--w80);
+      font-family: 'Sarabun', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+    body {
+      min-height: 100dvh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .font-display { font-family: 'Bai Jamjuree', sans-serif; }
+
+    /* ============================================================
+       ANIMATED BACKGROUND · fixed behind content · 0 KB JS
+       3 orbs + dot-grid + accent-lines + grain overlay
+       ============================================================ */
+    .bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 90% 50% at 50% 0%, rgba(13,58,92,0.38), transparent 60%),
+        linear-gradient(180deg, var(--navy-deep) 0%, #060f20 40%, var(--navy-deep) 100%);
+    }
+
+    /* Orbs · dimmer (-45%) · mix-blend screen for soft additive glow
+       3 asymmetric paths, 3 different durations → never sync = organic feel */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      mix-blend-mode: screen;
+      opacity: 0.92;
+      will-change: transform;
+    }
+    .orb-1 {
+      width: 460px; height: 460px;
+      background: radial-gradient(circle, rgba(34,211,238,0.17) 0%, transparent 70%);
+      top: -120px; left: -100px;
+      animation: orb-path-a 20s ease-in-out infinite;
+    }
+    .orb-2 {
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, rgba(124,58,237,0.14) 0%, transparent 70%);
+      top: 32%; right: -140px;
+      animation: orb-path-b 26s ease-in-out infinite -7s;
+    }
+    .orb-3 {
+      width: 520px; height: 520px;
+      background: radial-gradient(circle, rgba(221,65,85,0.10) 0%, transparent 70%);
+      bottom: -180px; left: 18%;
+      animation: orb-path-c 32s ease-in-out infinite -13s;
+    }
+
+    /* Aurora streak · slow diagonal light ribbon · 1 element · cheap */
+    .aurora {
+      position: absolute;
+      inset: -15%;
+      background: linear-gradient(115deg,
+        transparent 0%,
+        transparent 30%,
+        rgba(34,211,238,0.055) 42%,
+        rgba(124,58,237,0.045) 50%,
+        rgba(221,65,85,0.035) 58%,
+        transparent 70%,
+        transparent 100%);
+      filter: blur(50px);
+      mix-blend-mode: screen;
+      will-change: transform;
+      animation: aurora-drift 34s ease-in-out infinite;
+    }
+
+    .dot-grid {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px);
+      background-size: 28px 28px;
+      -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 40%, #000 30%, transparent 85%);
+              mask-image: radial-gradient(ellipse 90% 60% at 50% 40%, #000 30%, transparent 85%);
+    }
+
+    .accent-lines {
+      position: absolute;
+      top: 0; right: 0;
+      width: 300px; height: 300px;
+      background: repeating-linear-gradient(-45deg,
+        transparent, transparent 18px,
+        rgba(221,65,85,0.07) 18px, rgba(221,65,85,0.07) 19px);
+      -webkit-mask-image: radial-gradient(ellipse at top right, #000 25%, transparent 75%);
+              mask-image: radial-gradient(ellipse at top right, #000 25%, transparent 75%);
+      animation: accent-breathe 14s ease-in-out infinite alternate;
+      will-change: opacity;
+    }
+
+    /* SVG noise inline · ~0.5 KB · premium grain */
+    .grain {
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.55'/></svg>");
+      opacity: 0.09;
+      mix-blend-mode: overlay;
+    }
+
+    /* Each orb has its own path → never repeats the same pattern */
+    @keyframes orb-path-a {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      50%      { transform: translate3d(24px, -36px, 0) scale(1.08); }
+    }
+    @keyframes orb-path-b {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      33%      { transform: translate3d(-30px, -18px, 0) scale(1.05); }
+      66%      { transform: translate3d(18px, -42px, 0) scale(0.95); }
+    }
+    @keyframes orb-path-c {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      50%      { transform: translate3d(-22px, 28px, 0) scale(1.10); }
+    }
+    @keyframes aurora-drift {
+      0%   { transform: translate3d(-6%, -3%, 0) rotate(0deg); opacity: 0.7; }
+      50%  { transform: translate3d(6%, 3%, 0) rotate(1.5deg);  opacity: 1;   }
+      100% { transform: translate3d(-6%, -3%, 0) rotate(0deg); opacity: 0.7; }
+    }
+    @keyframes accent-breathe {
+      from { opacity: 0.7; }
+      to   { opacity: 1; }
+    }
+
+    /* ============================================================
+       LIQUID GLASS PRIMITIVE
+       ref: developer.apple.com/documentation/technologyoverviews/liquid-glass
+       - backdrop blur + saturate for color richness
+       - 0.5px border for retina crisp edge
+       - specular top-left highlight via pseudo element
+       - dual inset shadows (top light + bottom depth)
+       - concentric radius (child = parent − padding)
+       ============================================================ */
+    .glass {
+      position: relative;
+      isolation: isolate;
+      background: var(--glass-bg);
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+              backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+      border: 0.5px solid var(--glass-border);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.10),
+        inset 0 0 0 0.5px rgba(255,255,255,0.03),
+        0 10px 30px rgba(0,0,0,0.30),
+        0 2px 6px rgba(0,0,0,0.18);
+    }
+    /* Specular edge highlight (Liquid Glass signature) */
+    .glass::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 0.5px;
+      background: linear-gradient(135deg,
+        rgba(255,255,255,0.38) 0%,
+        rgba(255,255,255,0.05) 25%,
+        rgba(255,255,255,0) 50%,
+        rgba(255,255,255,0) 72%,
+        rgba(255,255,255,0.14) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+              mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       AVATAR · gradient ring + pulsing ambient
+       ============================================================ */
+    .avatar-ring {
+      position: relative;
+      background: conic-gradient(from 140deg,
+        rgba(34,211,238,0.60),
+        rgba(124,58,237,0.60),
+        rgba(221,65,85,0.48),
+        rgba(34,211,238,0.60));
+      padding: 2.5px;
+      border-radius: 9999px;
+      box-shadow:
+        0 10px 36px rgba(34,211,238,0.22),
+        0 4px 14px rgba(221,65,85,0.15);
+    }
+    .avatar-img {
+      width: 100px; height: 100px;
+      border-radius: 9999px;
+      object-fit: cover;
+      background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy) 100%);
+      display: block;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10);
+    }
+
+    /* ============================================================
+       PULSING CORAL DOT · signature brand element
+       ============================================================ */
+    .pulse-dot {
+      position: relative;
+      width: 8px; height: 8px;
+      display: inline-block;
+    }
+    .pulse-dot::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--coral);
+      border-radius: 50%;
+      animation: coral-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+    .pulse-dot::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--coral);
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(221,65,85,0.70);
+    }
+    @keyframes coral-ping {
+      0%   { transform: scale(1);   opacity: 0.90; }
+      75%, 100% { transform: scale(2.8); opacity: 0; }
+    }
+
+    /* ============================================================
+       AVAILABLE BADGE · coral-tinted glass
+       ============================================================ */
+    .available-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: 9999px;
+      background: rgba(221,65,85,0.11);
+      -webkit-backdrop-filter: blur(14px) saturate(170%);
+              backdrop-filter: blur(14px) saturate(170%);
+      border: 0.5px solid rgba(221,65,85,0.34);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 4px 14px rgba(221,65,85,0.18);
+    }
+    .available-badge-text {
+      font-family: 'Sarabun', sans-serif;
+      font-weight: 500;
+      font-size: 12px;
+      color: #ffc3cb;
+      letter-spacing: 0.03em;
+    }
+
+    .handle {
+      font-family: 'Bai Jamjuree', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: var(--w50);
+      letter-spacing: 0.02em;
+    }
+
+    /* ============================================================
+       LINK BUTTONS · Liquid Glass translucent surfaces
+       ============================================================ */
+    .link-btn {
+      position: relative;
+      isolation: isolate;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 18px 0 14px;
+      height: 60px;
+      width: 100%;
+      border-radius: var(--r-outer);
+      text-decoration: none;
+      color: #fff;
+      transition:
+        transform 240ms cubic-bezier(0.2, 0, 0.2, 1),
+        background 240ms ease,
+        box-shadow 240ms ease,
+        border-color 240ms ease;
+      will-change: transform;
+
+      background: var(--glass-bg);
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+              backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+      border: 0.5px solid var(--glass-border);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.10),
+        inset 0 0 0 0.5px rgba(255,255,255,0.03),
+        0 8px 24px rgba(0,0,0,0.28),
+        0 2px 4px rgba(0,0,0,0.18);
+    }
+    /* Specular edge (Liquid Glass) */
+    .link-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 0.5px;
+      background: linear-gradient(135deg,
+        rgba(255,255,255,0.35) 0%,
+        rgba(255,255,255,0.04) 28%,
+        rgba(255,255,255,0) 50%,
+        rgba(255,255,255,0) 72%,
+        rgba(255,255,255,0.11) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+              mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      pointer-events: none;
+    }
+    .link-btn:hover {
+      transform: translateY(-2px);
+      background: var(--glass-bg-hi);
+      border-color: rgba(255,255,255,0.20);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.14),
+        inset 0 0 0 0.5px rgba(255,255,255,0.05),
+        0 14px 36px rgba(0,0,0,0.40),
+        0 4px 8px rgba(0,0,0,0.22);
+    }
+    .link-btn:active { transform: translateY(-1px); }
+    .link-btn:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    /* Primary CTA · glass over coral gradient · 8px taller (intentional asymmetry) */
+    .link-btn-primary {
+      height: 68px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 45%),
+        linear-gradient(135deg, #dd4155 0%, #c43245 100%);
+      border: 0.5px solid rgba(255,255,255,0.28);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.28),
+        inset 0 -1px 0 rgba(0,0,0,0.18),
+        0 14px 40px rgba(221,65,85,0.42),
+        0 4px 10px rgba(221,65,85,0.26);
+    }
+    .link-btn-primary::before {
+      background: linear-gradient(135deg,
+        rgba(255,255,255,0.55) 0%,
+        rgba(255,255,255,0.10) 32%,
+        rgba(255,255,255,0) 55%,
+        rgba(255,255,255,0) 75%,
+        rgba(255,255,255,0.22) 100%);
+    }
+    .link-btn-primary:hover {
+      transform: translateY(-2px);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 45%),
+        linear-gradient(135deg, #e94e61 0%, #cf3a4b 100%);
+      border-color: rgba(255,255,255,0.36);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.32),
+        inset 0 -1px 0 rgba(0,0,0,0.20),
+        0 18px 48px rgba(221,65,85,0.52),
+        0 6px 14px rgba(221,65,85,0.30);
+    }
+
+    /* Icon chip · concentric radius · mini glass */
+    .btn-icon-wrap {
+      position: relative;
+      flex-shrink: 0;
+      width: 40px; height: 40px;
+      display: grid; place-items: center;
+      border-radius: var(--r-chip);
+      background: rgba(255,255,255,0.07);
+      border: 0.5px solid rgba(255,255,255,0.12);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.10);
+    }
+    .link-btn-primary .btn-icon-wrap {
+      background: rgba(255,255,255,0.22);
+      border-color: rgba(255,255,255,0.32);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.38),
+        inset 0 -1px 0 rgba(0,0,0,0.12);
+    }
+
+    .btn-title {
+      font-family: 'Bai Jamjuree', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      line-height: 1.2;
+      color: #fff;
+      letter-spacing: 0.01em;
+    }
+    .link-btn-primary .btn-title {
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .btn-sub {
+      font-family: 'Sarabun', sans-serif;
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.58);
+      margin-top: 3px;
+      line-height: 1.4;
+      font-weight: 400;
+    }
+    .link-btn-primary .btn-sub {
+      color: rgba(255,255,255,0.85);
+      font-size: 12px;
+    }
+    .btn-arrow { color: rgba(255,255,255,0.38); transition: color 220ms, transform 220ms; }
+    .link-btn:hover .btn-arrow { color: rgba(255,255,255,0.80); transform: translate(2px,-2px); }
+    .link-btn-primary .btn-arrow { color: rgba(255,255,255,0.88); }
+
+    /* ============================================================
+       SOCIAL ICONS · mini Liquid Glass chips
+       ============================================================ */
+    .social-icon {
+      position: relative;
+      width: 44px; height: 44px;
+      display: grid; place-items: center;
+      border-radius: 14px;
+      color: var(--w60);
+      background: rgba(255,255,255,0.04);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+              backdrop-filter: blur(14px) saturate(160%);
+      border: 0.5px solid rgba(255,255,255,0.10);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 2px 8px rgba(0,0,0,0.22);
+      transition: color 200ms, border-color 200ms, transform 200ms, background 200ms;
+    }
+    .social-icon:hover {
+      color: #fff;
+      border-color: rgba(255,255,255,0.28);
+      background: rgba(255,255,255,0.10);
+      transform: translateY(-2px);
+    }
+    .social-icon:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    /* Micro-proof */
+    .micro-proof {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--w42);
+    }
+
+    /* ============================================================
+       MOBILE PERFORMANCE · reduce blur intensity + orb size
+       ============================================================ */
+    @media (max-width: 480px) {
+      :root { --glass-blur: 16px; }
+      .orb { filter: blur(65px); }
+      .orb-1, .orb-2 { width: 300px; height: 300px; }
+      .orb-3 { width: 360px; height: 360px; }
+      .aurora { filter: blur(38px); opacity: 0.7; }
+      .accent-lines { width: 200px; height: 200px; }
+      .avatar-img { width: 88px; height: 88px; }
+    }
+    @media (max-width: 360px) {
+      :root { --glass-blur: 12px; --glass-sat: 150%; }
+      .aurora { display: none; } /* low-end devices: skip aurora to save paint */
+    }
+
+    /* Respect motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      .orb, .aurora, .accent-lines { animation: none; }
+      .pulse-dot::before { animation: none; opacity: 0; }
+      .link-btn, .social-icon, .btn-arrow { transition: none; }
+      .link-btn:hover, .social-icon:hover { transform: none; }
+    }
+
+    /* Older browsers without backdrop-filter — fallback to solid translucent */
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .link-btn, .social-icon, .available-badge {
+        background: rgba(13,58,92,0.70);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       Animated background · 3 orbs + dot-grid + accent-lines + grain
+       fixed behind all content · pointer-events: none
+       ============================================================ -->
+  <div class="bg-canvas" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="aurora"></div>
+    <div class="dot-grid"></div>
+    <div class="accent-lines"></div>
+    <div class="grain"></div>
+  </div>
+
+  <main class="min-h-dvh flex items-start justify-center px-5 pt-10 pb-10">
+    <div class="w-full max-w-[480px]">
+
+      <!-- Identity block -->
+      <header class="flex flex-col items-center text-center">
+        <div class="avatar-ring mb-4">
+          <img src="/pun-avatar.jpg" alt="ปัน ณัฐพัชร์" class="avatar-img" width="100" height="100" loading="eager" decoding="async" />
+        </div>
+
+        <h1 class="font-display font-bold text-[28px] text-white leading-[1.1]">ปัน ณัฐพัชร์</h1>
+        <p class="handle mt-1">@pun_nattapatch</p>
+
+        <div class="available-badge mt-4" role="status" aria-label="Available for consult">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <span class="available-badge-text">Available for consult</span>
+        </div>
+
+        <p class="mt-5 text-[15px] leading-[1.55] max-w-[340px]" style="color: rgba(255,255,255,0.78); font-weight: 500;">
+          ช่วยเจ้าของ SME ไทย Transform ทีมขายด้วย Agentic AI ที่ทำได้จริง
+        </p>
+      </header>
+
+      <!-- 5 destination buttons -->
+      <nav class="mt-7" aria-label="Primary links">
+        <ul class="space-y-3 list-none p-0 m-0">
+
+          <!-- #1 Primary CTA -->
+          <li>
+            <a href="https://punnattapatch.com/intake-form?source=linkhub"
+               class="link-btn link-btn-primary"
+               data-track="intake">
+              <span class="btn-icon-wrap" aria-hidden="true">
+                <i data-lucide="calendar-check" class="w-5 h-5 text-white"></i>
+              </span>
+              <span class="flex-1 text-left min-w-0">
+                <span class="block btn-title">นัดคุยกับผม 1-on-1</span>
+                <span class="block btn-sub">ประเมินปัญหาทีมขายของคุณ · ว่างสัปดาห์ละ 5 slot</span>
+              </span>
+              <i data-lucide="arrow-up-right" class="w-[18px] h-[18px] btn-arrow flex-shrink-0" aria-hidden="true"></i>
+            </a>
+          </li>
+
+          <!-- #2 Workshop -->
+          <li>
+            <a href="https://punnattapatch.com/services/ai-workshop"
+               class="link-btn"
+               data-track="workshop">
+              <span class="btn-icon-wrap" aria-hidden="true">
+                <i data-lucide="zap" class="w-[18px] h-[18px]" style="color: #22d3ee"></i>
+              </span>
+              <span class="flex-1 text-left min-w-0">
+                <span class="block btn-title">คอร์ส Advance AI &amp; Business Automation</span>
+                <span class="block btn-sub">In-house Workshop 1 วัน · จับมือสร้าง AI Agent ตัวแรก · ฿24,900 (เหลือ 2/5 slot)</span>
+              </span>
+              <i data-lucide="arrow-up-right" class="w-[18px] h-[18px] btn-arrow flex-shrink-0" aria-hidden="true"></i>
+            </a>
+          </li>
+
+          <!-- #3 Website -->
+          <li>
+            <a href="https://punnattapatch.com"
+               class="link-btn"
+               data-track="website">
+              <span class="btn-icon-wrap" aria-hidden="true">
+                <i data-lucide="home" class="w-[18px] h-[18px]" style="color: rgba(255,255,255,0.80)"></i>
+              </span>
+              <span class="flex-1 text-left min-w-0">
+                <span class="block btn-title">punnattapatch.com</span>
+                <span class="block btn-sub">หน้าหลัก · ดูบริการทั้งหมด + เคสลูกค้า</span>
+              </span>
+              <i data-lucide="arrow-up-right" class="w-[18px] h-[18px] btn-arrow flex-shrink-0" aria-hidden="true"></i>
+            </a>
+          </li>
+
+          <!-- #4 Insights -->
+          <li>
+            <a href="https://punnattapatch.com/insights"
+               class="link-btn"
+               data-track="insights">
+              <span class="btn-icon-wrap" aria-hidden="true">
+                <i data-lucide="book-open" class="w-[18px] h-[18px]" style="color: #a78bfa"></i>
+              </span>
+              <span class="flex-1 text-left min-w-0">
+                <span class="block btn-title">บทเรียน 100 ล้าน</span>
+                <span class="block btn-sub">ประสบการณ์จริงสร้างทีมขาย B2B จาก ฿0 → ฿100M+</span>
+              </span>
+              <i data-lucide="arrow-up-right" class="w-[18px] h-[18px] btn-arrow flex-shrink-0" aria-hidden="true"></i>
+            </a>
+          </li>
+
+          <!-- #5 Sponsored -->
+          <li>
+            <a href="mailto:r.nattapatch@gmail.com?subject=Sponsored%20Inquiry%20%E2%80%94%20@pun_nattapatch"
+               class="link-btn"
+               data-track="sponsored">
+              <span class="btn-icon-wrap" aria-hidden="true">
+                <i data-lucide="handshake" class="w-[18px] h-[18px]" style="color: rgba(255,255,255,0.80)"></i>
+              </span>
+              <span class="flex-1 text-left min-w-0">
+                <span class="block btn-title">ติดต่อ Sponsored / Brand Collab</span>
+                <span class="block btn-sub">สำหรับแบรนด์ที่สนใจ collaboration · respond ภายใน 48 hr</span>
+              </span>
+              <i data-lucide="arrow-up-right" class="w-[18px] h-[18px] btn-arrow flex-shrink-0" aria-hidden="true"></i>
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+
+      <!-- Social row -->
+      <div class="flex items-center justify-center gap-3 mt-8" role="group" aria-label="Social profiles">
+        <a href="https://www.tiktok.com/@pun_nattapatch" class="social-icon" aria-label="TikTok @pun_nattapatch" data-track="tiktok" rel="me">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false">
+            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-.88-.05A6.33 6.33 0 0 0 5.34 20.3a6.34 6.34 0 0 0 10.86-4.43V9.1a8.16 8.16 0 0 0 4.77 1.52V7.19a4.85 4.85 0 0 1-1.38-.5z"/>
+          </svg>
+        </a>
+        <a href="https://www.instagram.com/pun_nattapatch" class="social-icon" aria-label="Instagram @pun_nattapatch" data-track="instagram" rel="me">
+          <i data-lucide="instagram" class="w-[18px] h-[18px]" aria-hidden="true"></i>
+        </a>
+        <a href="https://lin.ee/ioSnSUG" class="social-icon" aria-label="LINE Official Account" data-track="line" rel="me">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false">
+            <path d="M19.365 9.89c.43 0 .779.35.779.778a.78.78 0 0 1-.779.778h-2.166v1.389h2.166c.43 0 .779.35.779.778a.78.78 0 0 1-.779.779H16.42a.779.779 0 0 1-.775-.779V8.11c0-.428.348-.779.779-.779h2.945c.43 0 .779.35.779.779a.78.78 0 0 1-.779.778h-2.167v1.002h2.167zM14.781 13.614a.775.775 0 0 1-.533.737.79.79 0 0 1-.244.038.767.767 0 0 1-.63-.313l-3.016-4.105v3.643a.777.777 0 0 1-.778.777.78.78 0 0 1-.78-.777V8.111c0-.334.215-.628.531-.732.08-.025.164-.04.247-.04.244 0 .474.115.618.313l3.04 4.11V8.11c0-.428.347-.779.778-.779.43 0 .778.35.778.779v5.503h-.011zM7.701 14.392a.78.78 0 0 1-.778.777.78.78 0 0 1-.778-.777V8.111c0-.428.352-.779.778-.779.428 0 .778.351.778.779v6.281zM5.262 14.392H2.32a.783.783 0 0 1-.778-.779v-5.5c0-.43.352-.781.778-.781.43 0 .779.35.779.779v4.723h2.164c.43 0 .778.351.778.779 0 .426-.349.779-.778.779M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Micro-proof footer -->
+      <footer class="mt-6 text-center">
+        <p class="micro-proof">
+          2.29M views · ฿100M+ มูลค่าธุรกิจลูกค้า · 10+ clients ต่อเนื่อง
+        </p>
+      </footer>
+
+    </div>
+  </main>
+
+  <script>
+    // Lucide icons
+    if (window.lucide) { lucide.createIcons(); }
+
+    // Plausible custom events per link
+    (function () {
+      var links = document.querySelectorAll('[data-track]');
+      links.forEach(function (el) {
+        el.addEventListener('click', function () {
+          var target = el.getAttribute('data-track');
+          if (window.plausible) {
+            window.plausible('Link Click', { props: { target: target } });
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

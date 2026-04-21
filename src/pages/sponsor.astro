@@ -1,0 +1,803 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/site';
+
+/* ============================================================
+   EDIT HERE · reveal-on-submit contact info
+   ============================================================
+   - EMAIL:         r.nattapatch@gmail.com (canonical business contact)
+   - LINE_OA_URL:   SITE.social.line (pulled from single source)
+   - PHONE_DISPLAY: set to '' if not publicly listed yet
+   - PHONE_LINK:    tel: link (E.164, no spaces)
+   ============================================================ */
+const CONTACT = {
+  email: 'r.nattapatch@gmail.com',
+  lineOa: SITE.social.line,
+  phoneDisplay: '', // e.g. '+66 81 234 5678' — empty = hide row
+  phoneLink:    '', // e.g. '+66812345678'
+} as const;
+
+const title = 'ติดต่อ Sponsored / Brand Collab';
+const description =
+  'สำหรับแบรนด์ที่สนใจความร่วมมือกับ @pun_nattapatch · กรอกฟอร์มสั้น 1 นาที แล้วรับช่องทางติดต่อตรงทันที';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  schema={{ type: 'WebPage' as const }}
+>
+  <section class="sponsor-section">
+    <!-- Ambient glass background · inherits pundark theme -->
+    <div class="sponsor-bg" aria-hidden="true">
+      <div class="sponsor-orb sponsor-orb-a"></div>
+      <div class="sponsor-orb sponsor-orb-b"></div>
+      <div class="sponsor-accent-lines"></div>
+    </div>
+
+    <div class="sponsor-container">
+      <!-- Eyebrow -->
+      <div class="sponsor-eyebrow">
+        <span class="sponsor-dot" aria-hidden="true"></span>
+        <span>Sponsored / Brand Collaboration</span>
+      </div>
+
+      <!-- Hero -->
+      <h1 class="sponsor-h1">
+        สนใจร่วมงานกับ<br /><span class="sponsor-accent">@pun_nattapatch</span>?
+      </h1>
+      <p class="sponsor-sub">
+        กรอกข้อมูลสั้นๆ ด้านล่าง · <strong>ได้รับช่องทางติดต่อตรงทันที</strong> · ผมอ่านและตอบกลับเองทุกเคสภายใน 48 ชั่วโมงทำการ
+      </p>
+
+      <!-- What I accept / don't accept -->
+      <div class="sponsor-meta">
+        <div class="sponsor-meta-col sponsor-meta-ok">
+          <p class="sponsor-meta-label">✅ รับพิจารณา</p>
+          <ul>
+            <li>Sponsored reel / content (B2B · Sales · AI tools)</li>
+            <li>Speaking / panelist / guest podcast</li>
+            <li>Brand partnership ระยะยาว</li>
+            <li>Affiliate ที่ align กับ audience</li>
+          </ul>
+        </div>
+        <div class="sponsor-meta-col sponsor-meta-no">
+          <p class="sponsor-meta-label">❌ ไม่รับ</p>
+          <ul>
+            <li>MLM / crypto / สินเชื่อ / การพนัน</li>
+            <li>สินค้าที่ไม่เคยใช้จริง</li>
+            <li>แคมเปญที่ขัด principles ของช่อง</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           FORM (stage 1 · collect data)
+           ============================================================ -->
+      <form id="sponsorForm" class="sponsor-card" novalidate>
+        <div class="sponsor-field">
+          <label for="brandName">Brand / Company name <span class="req">*</span></label>
+          <input id="brandName" name="brandName" type="text" required autocomplete="organization" />
+        </div>
+
+        <div class="sponsor-field">
+          <label for="brandWebsite">Website หรือ social ของแบรนด์ <span class="req">*</span></label>
+          <input id="brandWebsite" name="brandWebsite" type="text" required placeholder="https://... หรือ IG/TikTok handle" autocomplete="url" />
+          <p class="sponsor-hint">ช่วยให้ผม verify ได้ว่าเป็น brand จริง · ตอบเร็วขึ้น</p>
+        </div>
+
+        <div class="sponsor-row">
+          <div class="sponsor-field">
+            <label for="yourName">ชื่อของคุณ <span class="req">*</span></label>
+            <input id="yourName" name="yourName" type="text" required autocomplete="name" />
+          </div>
+          <div class="sponsor-field">
+            <label for="yourRole">ตำแหน่ง</label>
+            <input id="yourRole" name="yourRole" type="text" placeholder="Marketing Manager, Founder, ..." autocomplete="organization-title" />
+          </div>
+        </div>
+
+        <div class="sponsor-field">
+          <label for="email">Email ที่ใช้ทำงาน <span class="req">*</span></label>
+          <input id="email" name="email" type="email" required autocomplete="email" />
+        </div>
+
+        <div class="sponsor-field">
+          <label for="collabType">ประเภทความร่วมมือ <span class="req">*</span></label>
+          <select id="collabType" name="collabType" required>
+            <option value="">— เลือก —</option>
+            <option value="sponsored-reel">Sponsored Reel / Short-form content</option>
+            <option value="speaking">Speaking / Guest / Panel</option>
+            <option value="brand-partnership">Brand Partnership (long-term)</option>
+            <option value="affiliate">Affiliate Program</option>
+            <option value="consulting">Consulting / Advisory</option>
+            <option value="other">อื่นๆ</option>
+          </select>
+        </div>
+
+        <div class="sponsor-field">
+          <label for="budget">Budget range <span class="req">*</span></label>
+          <select id="budget" name="budget" required>
+            <option value="">— เลือก —</option>
+            <option value="under-30k">น้อยกว่า ฿30,000</option>
+            <option value="30-100k">฿30,000 - ฿100,000</option>
+            <option value="100-300k">฿100,000 - ฿300,000</option>
+            <option value="300k-plus">มากกว่า ฿300,000</option>
+            <option value="flexible">ยืดหยุ่น · คุยกันได้</option>
+          </select>
+          <p class="sponsor-hint">ช่วยให้ผมเสนอ scope ที่เหมาะกับงบคุณได้ตั้งแต่รอบแรก</p>
+        </div>
+
+        <div class="sponsor-field">
+          <label for="message">เล่า brief คร่าวๆ</label>
+          <textarea id="message" name="message" rows="4" placeholder="campaign goal · timeline · ช่องทางที่อยากใช้ · ฯลฯ"></textarea>
+        </div>
+
+        <button type="submit" class="sponsor-submit">
+          <span class="sponsor-submit-idle">ส่งฟอร์ม → รับช่องทางติดต่อ</span>
+          <span class="sponsor-submit-loading" hidden>กำลังส่ง...</span>
+        </button>
+
+        <p class="sponsor-consent">
+          เมื่อกดส่ง คุณยอมรับว่าเราจะเก็บข้อมูลนี้เพื่อติดต่อกลับเท่านั้น · ไม่แชร์ให้บุคคลที่ 3
+        </p>
+
+        <p class="sponsor-error" id="sponsorError" hidden role="alert">
+          ⚠️ ส่งไม่สำเร็จ · ลองใหม่อีกครั้ง หรือ email ตรงที่ <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+        </p>
+      </form>
+
+      <!-- ============================================================
+           REVEAL (stage 2 · contact info after submit)
+           ============================================================ -->
+      <div id="sponsorReveal" class="sponsor-reveal" hidden>
+        <div class="sponsor-reveal-header">
+          <div class="sponsor-reveal-icon">✓</div>
+          <h2>ส่งเรียบร้อย · ขอบคุณครับ</h2>
+          <p>ผมได้รับข้อมูลแล้วและจะตอบกลับภายใน 48 ชั่วโมงทำการ · ระหว่างนี้ติดต่อตรงได้ที่ช่องทางด้านล่าง</p>
+        </div>
+
+        <ul class="sponsor-contact-list">
+          <li class="sponsor-contact-item">
+            <div class="sponsor-contact-icon" aria-hidden="true">✉</div>
+            <div class="sponsor-contact-body">
+              <p class="sponsor-contact-label">Email</p>
+              <a href={`mailto:${CONTACT.email}?subject=Sponsored%20Inquiry%20%E2%80%94%20${encodeURIComponent('(กรุณาระบุ Brand)')}`} class="sponsor-contact-link">
+                {CONTACT.email}
+              </a>
+            </div>
+            <span class="sponsor-contact-hint">ตอบภายใน 48 hr</span>
+          </li>
+
+          <li class="sponsor-contact-item">
+            <div class="sponsor-contact-icon" aria-hidden="true">💬</div>
+            <div class="sponsor-contact-body">
+              <p class="sponsor-contact-label">LINE Official Account</p>
+              <a href={CONTACT.lineOa} target="_blank" rel="noopener" class="sponsor-contact-link">
+                เพิ่มเพื่อน LINE OA →
+              </a>
+            </div>
+            <span class="sponsor-contact-hint">reply เร็วที่สุด</span>
+          </li>
+
+          {CONTACT.phoneDisplay && (
+            <li class="sponsor-contact-item">
+              <div class="sponsor-contact-icon" aria-hidden="true">☏</div>
+              <div class="sponsor-contact-body">
+                <p class="sponsor-contact-label">Phone</p>
+                <a href={`tel:${CONTACT.phoneLink}`} class="sponsor-contact-link">{CONTACT.phoneDisplay}</a>
+              </div>
+              <span class="sponsor-contact-hint">จันทร์-ศุกร์ 10:00-18:00</span>
+            </li>
+          )}
+        </ul>
+
+        <div class="sponsor-reveal-footer">
+          <a href="/" class="sponsor-reveal-back">← กลับหน้าหลัก</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    /* ============================================================
+       SPONSOR PAGE · Apple Liquid Glass × pundark
+       Inherits DaisyUI pundark theme · navy-deep base already applied
+       ============================================================ */
+    :root {
+      --sponsor-glass-bg: rgba(255,255,255,0.050);
+      --sponsor-glass-bg-hi: rgba(255,255,255,0.090);
+      --sponsor-glass-border: rgba(255,255,255,0.13);
+      --sponsor-glass-blur: 22px;
+      --sponsor-glass-sat: 180%;
+      --sponsor-coral: #dd4155;
+      --sponsor-cyan: #22d3ee;
+      --sponsor-violet: #7c3aed;
+      --sponsor-r-outer: 22px;
+      --sponsor-r-field: 12px;
+    }
+
+    .sponsor-section {
+      position: relative;
+      min-height: 100dvh;
+      padding: 3rem 1.25rem 5rem;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    /* ========== Background (orbs + accent lines) ========== */
+    .sponsor-bg {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .sponsor-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      mix-blend-mode: screen;
+      opacity: 0.9;
+      will-change: transform;
+    }
+    .sponsor-orb-a {
+      width: 480px; height: 480px;
+      background: radial-gradient(circle, rgba(124,58,237,0.16) 0%, transparent 70%);
+      top: -140px; left: -120px;
+      animation: sponsor-float-a 22s ease-in-out infinite;
+    }
+    .sponsor-orb-b {
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, rgba(221,65,85,0.12) 0%, transparent 70%);
+      bottom: -160px; right: -100px;
+      animation: sponsor-float-b 28s ease-in-out infinite -9s;
+    }
+    .sponsor-accent-lines {
+      position: absolute;
+      top: 5%; right: 0;
+      width: 260px; height: 260px;
+      background: repeating-linear-gradient(-45deg,
+        transparent, transparent 18px,
+        rgba(221,65,85,0.06) 18px, rgba(221,65,85,0.06) 19px);
+      -webkit-mask-image: radial-gradient(ellipse at top right, #000 25%, transparent 75%);
+              mask-image: radial-gradient(ellipse at top right, #000 25%, transparent 75%);
+    }
+    @keyframes sponsor-float-a {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      50%      { transform: translate3d(22px, -30px, 0) scale(1.08); }
+    }
+    @keyframes sponsor-float-b {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      50%      { transform: translate3d(-20px, 25px, 0) scale(1.10); }
+    }
+
+    /* ========== Container ========== */
+    .sponsor-container {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    /* ========== Eyebrow + hero ========== */
+    .sponsor-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 14px;
+      border-radius: 9999px;
+      background: rgba(221,65,85,0.10);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+              backdrop-filter: blur(14px) saturate(160%);
+      border: 0.5px solid rgba(221,65,85,0.32);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.10);
+      font-size: 12px;
+      font-weight: 600;
+      color: #ffc3cb;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .sponsor-dot {
+      position: relative;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--sponsor-coral);
+      box-shadow: 0 0 10px rgba(221,65,85,0.70);
+    }
+    .sponsor-dot::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: var(--sponsor-coral);
+      animation: sponsor-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+    @keyframes sponsor-ping {
+      0%   { transform: scale(1);   opacity: 0.85; }
+      75%, 100% { transform: scale(2.8); opacity: 0; }
+    }
+
+    .sponsor-h1 {
+      font-family: 'Bai Jamjuree', sans-serif;
+      font-weight: 800;
+      font-size: clamp(32px, 5vw, 48px);
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      color: #fff;
+      margin-top: 1.25rem;
+    }
+    .sponsor-accent {
+      background: linear-gradient(135deg, var(--sponsor-cyan) 0%, var(--sponsor-violet) 100%);
+      -webkit-background-clip: text;
+              background-clip: text;
+      color: transparent;
+    }
+    .sponsor-sub {
+      font-size: 15.5px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.75);
+      margin-top: 1rem;
+      max-width: 560px;
+    }
+    .sponsor-sub strong { color: #fff; font-weight: 600; }
+
+    /* ========== Meta grid (ok / not ok) ========== */
+    .sponsor-meta {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin: 2rem 0 2.25rem;
+    }
+    @media (min-width: 560px) { .sponsor-meta { grid-template-columns: 1fr 1fr; } }
+
+    .sponsor-meta-col {
+      padding: 1rem 1.1rem;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.035);
+      -webkit-backdrop-filter: blur(14px);
+              backdrop-filter: blur(14px);
+      border: 0.5px solid rgba(255,255,255,0.10);
+    }
+    .sponsor-meta-ok { border-left: 2px solid rgba(34,211,238,0.50); }
+    .sponsor-meta-no { border-left: 2px solid rgba(221,65,85,0.40); }
+    .sponsor-meta-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.70);
+      margin: 0 0 0.5rem;
+    }
+    .sponsor-meta-col ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .sponsor-meta-col li {
+      font-size: 13px;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.70);
+      padding: 2px 0;
+    }
+
+    /* ========== Form card (Liquid Glass) ========== */
+    .sponsor-card {
+      position: relative;
+      isolation: isolate;
+      padding: 1.75rem 1.5rem;
+      border-radius: var(--sponsor-r-outer);
+      background: var(--sponsor-glass-bg);
+      -webkit-backdrop-filter: blur(var(--sponsor-glass-blur)) saturate(var(--sponsor-glass-sat));
+              backdrop-filter: blur(var(--sponsor-glass-blur)) saturate(var(--sponsor-glass-sat));
+      border: 0.5px solid var(--sponsor-glass-border);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.10),
+        0 12px 36px rgba(0,0,0,0.30),
+        0 2px 8px rgba(0,0,0,0.18);
+    }
+    .sponsor-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 0.5px;
+      background: linear-gradient(135deg,
+        rgba(255,255,255,0.35) 0%,
+        rgba(255,255,255,0.05) 28%,
+        rgba(255,255,255,0) 52%,
+        rgba(255,255,255,0) 72%,
+        rgba(255,255,255,0.12) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+              mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      pointer-events: none;
+    }
+    @media (min-width: 640px) {
+      .sponsor-card { padding: 2.25rem 2rem; }
+    }
+
+    /* ========== Form fields ========== */
+    .sponsor-field { margin-bottom: 1.1rem; }
+    .sponsor-field label {
+      display: block;
+      font-family: 'Bai Jamjuree', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 0.45rem;
+      letter-spacing: 0.01em;
+    }
+    .req { color: var(--sponsor-coral); margin-left: 2px; }
+
+    .sponsor-field input,
+    .sponsor-field select,
+    .sponsor-field textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: var(--sponsor-r-field);
+      background: rgba(255,255,255,0.04);
+      -webkit-backdrop-filter: blur(10px);
+              backdrop-filter: blur(10px);
+      border: 0.5px solid rgba(255,255,255,0.14);
+      color: #fff;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 14.5px;
+      line-height: 1.4;
+      transition: border-color 180ms, background 180ms, box-shadow 180ms;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+    .sponsor-field input:focus,
+    .sponsor-field select:focus,
+    .sponsor-field textarea:focus {
+      outline: none;
+      border-color: rgba(34,211,238,0.55);
+      background: rgba(255,255,255,0.06);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        0 0 0 3px rgba(34,211,238,0.18);
+    }
+    .sponsor-field input::placeholder,
+    .sponsor-field textarea::placeholder {
+      color: rgba(255,255,255,0.35);
+    }
+    .sponsor-field select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1.5L6 6.5L11 1.5' stroke='rgba(255,255,255,0.55)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 40px;
+    }
+    .sponsor-field select option { background: #0d3a5c; color: #fff; }
+    .sponsor-field textarea { resize: vertical; min-height: 100px; }
+    .sponsor-hint {
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.45);
+      margin: 0.4rem 0 0;
+      line-height: 1.45;
+    }
+
+    .sponsor-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 520px) {
+      .sponsor-row { grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .sponsor-row .sponsor-field { margin-bottom: 1.1rem; }
+    }
+
+    /* ========== Submit button (coral Liquid Glass) ========== */
+    .sponsor-submit {
+      position: relative;
+      isolation: isolate;
+      width: 100%;
+      height: 56px;
+      margin-top: 0.5rem;
+      border-radius: 14px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 45%),
+        linear-gradient(135deg, #dd4155 0%, #c43245 100%);
+      border: 0.5px solid rgba(255,255,255,0.30);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.32),
+        inset 0 -1px 0 rgba(0,0,0,0.18),
+        0 12px 32px rgba(221,65,85,0.38),
+        0 4px 10px rgba(221,65,85,0.22);
+      color: #fff;
+      font-family: 'Bai Jamjuree', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: transform 220ms, box-shadow 220ms, background 220ms;
+    }
+    .sponsor-submit:hover:not(:disabled) {
+      transform: translateY(-2px);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0) 45%),
+        linear-gradient(135deg, #e94e61 0%, #cf3a4b 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.36),
+        0 16px 40px rgba(221,65,85,0.48),
+        0 6px 14px rgba(221,65,85,0.28);
+    }
+    .sponsor-submit:active { transform: translateY(-1px); }
+    .sponsor-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .sponsor-submit:focus-visible {
+      outline: 2px solid var(--sponsor-cyan);
+      outline-offset: 3px;
+    }
+
+    .sponsor-consent {
+      font-size: 11px;
+      color: rgba(255,255,255,0.40);
+      text-align: center;
+      margin: 1rem 0 0;
+      line-height: 1.5;
+    }
+    .sponsor-error {
+      margin-top: 1rem;
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      background: rgba(221,65,85,0.10);
+      border: 0.5px solid rgba(221,65,85,0.30);
+      color: #ffc3cb;
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+    }
+    .sponsor-error a {
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* ============================================================
+       REVEAL card · shown after successful submit
+       ============================================================ */
+    .sponsor-reveal {
+      position: relative;
+      isolation: isolate;
+      padding: 2rem 1.5rem 1.5rem;
+      border-radius: var(--sponsor-r-outer);
+      background: var(--sponsor-glass-bg);
+      -webkit-backdrop-filter: blur(var(--sponsor-glass-blur)) saturate(var(--sponsor-glass-sat));
+              backdrop-filter: blur(var(--sponsor-glass-blur)) saturate(var(--sponsor-glass-sat));
+      border: 0.5px solid var(--sponsor-glass-border);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 14px 40px rgba(0,0,0,0.32),
+        0 2px 8px rgba(0,0,0,0.18);
+      animation: sponsor-reveal-in 500ms cubic-bezier(0.2, 0, 0.2, 1);
+    }
+    @keyframes sponsor-reveal-in {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (min-width: 640px) {
+      .sponsor-reveal { padding: 2.5rem 2rem 2rem; }
+    }
+
+    .sponsor-reveal-header { text-align: center; margin-bottom: 1.5rem; }
+    .sponsor-reveal-icon {
+      display: grid;
+      place-items: center;
+      width: 56px; height: 56px;
+      margin: 0 auto 1rem;
+      border-radius: 50%;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 50%),
+        linear-gradient(135deg, #22d3ee 0%, #7c3aed 100%);
+      color: #fff;
+      font-size: 26px;
+      font-weight: 700;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.28),
+        0 8px 24px rgba(34,211,238,0.28);
+    }
+    .sponsor-reveal-header h2 {
+      font-family: 'Bai Jamjuree', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 0.5rem;
+    }
+    .sponsor-reveal-header p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.72);
+      margin: 0;
+      max-width: 420px;
+      margin-inline: auto;
+    }
+
+    .sponsor-contact-list {
+      list-style: none;
+      padding: 0;
+      margin: 1.5rem 0 0;
+    }
+    .sponsor-contact-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 1rem 1.1rem;
+      margin-bottom: 0.7rem;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      -webkit-backdrop-filter: blur(16px);
+              backdrop-filter: blur(16px);
+      border: 0.5px solid rgba(255,255,255,0.10);
+      transition: background 200ms, border-color 200ms, transform 200ms;
+    }
+    .sponsor-contact-item:hover {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.20);
+      transform: translateY(-1px);
+    }
+    .sponsor-contact-icon {
+      display: grid;
+      place-items: center;
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.08);
+      border: 0.5px solid rgba(255,255,255,0.14);
+      color: rgba(255,255,255,0.85);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .sponsor-contact-body {
+      flex: 1;
+      min-width: 0;
+    }
+    .sponsor-contact-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin: 0 0 0.25rem;
+    }
+    .sponsor-contact-link {
+      font-family: 'Bai Jamjuree', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      text-decoration: none;
+      word-break: break-word;
+    }
+    .sponsor-contact-link:hover { color: var(--sponsor-cyan); }
+    .sponsor-contact-hint {
+      font-size: 11px;
+      color: rgba(255,255,255,0.40);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .sponsor-reveal-footer {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    .sponsor-reveal-back {
+      display: inline-block;
+      color: rgba(255,255,255,0.55);
+      font-size: 13px;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: color 180ms, background 180ms;
+    }
+    .sponsor-reveal-back:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* ========== Mobile tuning ========== */
+    @media (max-width: 480px) {
+      :root { --sponsor-glass-blur: 16px; }
+      .sponsor-orb-a, .sponsor-orb-b { width: 320px; height: 320px; }
+      .sponsor-contact-hint { display: none; }
+    }
+    @media (max-width: 360px) {
+      :root { --sponsor-glass-blur: 12px; --sponsor-glass-sat: 150%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .sponsor-orb, .sponsor-dot::before { animation: none; }
+      .sponsor-reveal { animation: none; }
+      .sponsor-contact-item { transition: none; }
+    }
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .sponsor-card, .sponsor-reveal, .sponsor-field input,
+      .sponsor-field select, .sponsor-field textarea,
+      .sponsor-contact-item, .sponsor-meta-col {
+        background: rgba(13,58,92,0.70);
+      }
+    }
+  </style>
+
+  <script>
+    const WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
+
+    const form = document.getElementById('sponsorForm') as HTMLFormElement | null;
+    const reveal = document.getElementById('sponsorReveal');
+    const errorEl = document.getElementById('sponsorError');
+    const submitBtn = form?.querySelector<HTMLButtonElement>('.sponsor-submit');
+    const submitIdle = submitBtn?.querySelector<HTMLElement>('.sponsor-submit-idle');
+    const submitLoading = submitBtn?.querySelector<HTMLElement>('.sponsor-submit-loading');
+
+    function setLoading(loading: boolean) {
+      if (!submitBtn || !submitIdle || !submitLoading) return;
+      submitBtn.disabled = loading;
+      submitIdle.hidden = loading;
+      submitLoading.hidden = !loading;
+    }
+
+    function showError() {
+      if (errorEl) errorEl.hidden = false;
+    }
+    function hideError() {
+      if (errorEl) errorEl.hidden = true;
+    }
+
+    function reveal_() {
+      if (!form || !reveal) return;
+      form.hidden = true;
+      reveal.hidden = false;
+      // Scroll reveal into view
+      reveal.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+
+      // Basic client-side validation for required fields
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const fd = new FormData(form);
+      const payload: Record<string, unknown> = {
+        source: 'sponsor-form',
+        submittedAt: new Date().toISOString(),
+        pageUrl: window.location.href,
+      };
+      fd.forEach((value, key) => {
+        payload[key] = value;
+      });
+
+      setLoading(true);
+
+      try {
+        const res = await fetch(WEBHOOK, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok && res.status !== 0) {
+          throw new Error(`webhook ${res.status}`);
+        }
+
+        // Fire Plausible custom event
+        (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.(
+          'Sponsor Submit',
+          { props: { collabType: String(payload.collabType ?? 'unknown'), budget: String(payload.budget ?? 'unknown') } }
+        );
+
+        reveal_();
+      } catch (err) {
+        console.error('Sponsor form submit failed:', err);
+        showError();
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</BaseLayout>
