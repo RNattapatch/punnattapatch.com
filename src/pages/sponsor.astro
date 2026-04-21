@@ -13,12 +13,13 @@ import { SITE } from '../data/site';
 const CONTACT = {
   email: 'r.nattapatch@gmail.com',
   lineOa: SITE.social.line,
-  phoneDisplay: '', // e.g. '+66 81 234 5678' — empty = hide row
-  phoneLink:    '', // e.g. '+66812345678'
+  phoneDisplay: '+66 62 954 4455',
+  phoneLink:    '+66629544455',
 } as const;
 
 /* ============================================================
    n8n payload shape (sent to webhook intake-form-v2)
+   Last updated: 2026-04-21 · added yourPhone (required)
    ============================================================
    {
      source:        'sponsor-form',     // use to branch Telegram template
@@ -29,12 +30,19 @@ const CONTACT = {
      yourName:      string (required),
      yourRole:      string (optional),
      email:         string (required, validated),
+     yourPhone:     string (required),   // Thai format or international, free-text
      message:       string (required)
    }
 
-   n8n workflow should branch on `source === 'sponsor-form'` and use
-   Telegram template: "🤝 Brand Inquiry · {brandName} · {yourName}
-   ({yourRole}) · {email} · see web: {brandWebsite} · brief: {message}"
+   n8n workflow should branch on `source === 'sponsor-form'`.
+   Suggested Telegram template:
+     🤝 Brand Inquiry
+     Brand: {brandName}
+     Web: {brandWebsite}
+     Contact: {yourName} ({yourRole})
+     Email: {email}
+     Phone: {yourPhone}
+     Brief: {message}
    ============================================================ */
 
 const title = 'ติดต่อ Sponsored / Brand Collab';
@@ -118,9 +126,15 @@ const description =
           </div>
         </div>
 
-        <div class="sponsor-field">
-          <label for="email">Email ที่ใช้ทำงาน <span class="req">*</span></label>
-          <input id="email" name="email" type="email" required autocomplete="email" />
+        <div class="sponsor-row">
+          <div class="sponsor-field">
+            <label for="email">Email ที่ใช้ทำงาน <span class="req">*</span></label>
+            <input id="email" name="email" type="email" required autocomplete="email" />
+          </div>
+          <div class="sponsor-field">
+            <label for="yourPhone">เบอร์โทรติดต่อกลับ <span class="req">*</span></label>
+            <input id="yourPhone" name="yourPhone" type="tel" required placeholder="เช่น 081-234-5678" autocomplete="tel" inputmode="tel" />
+          </div>
         </div>
 
         <div class="sponsor-field">
