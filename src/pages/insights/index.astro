@@ -13,7 +13,7 @@ const all: Article[] = [...pillars, ...clusters].sort(
   (a, b) => b.data.published.getTime() - a.data.published.getTime()
 );
 
-// Color per pillar (violet reserved for Marketing/Content — see ArticleHero.astro)
+// Color per pillar (violet = Personal Branding / Content — see ArticleHero.astro)
 type PillarAccent = 'cyan' | 'coral' | 'violet' | 'emerald';
 const PILLAR_LABEL: Record<string, { name: string; tagline: string; accent: PillarAccent }> = {
   'sales-consulting': {
@@ -29,7 +29,12 @@ const PILLAR_LABEL: Record<string, { name: string; tagline: string; accent: Pill
   'agentic-ai-sales': {
     name: 'Agentic AI Agent',
     tagline: 'Agent + workflow ที่ลูกค้าเห็นว่าทำงานจริง',
-    accent: 'emerald',
+    accent: 'cyan',
+  },
+  'personal-branding': {
+    name: 'Personal Branding',
+    tagline: 'สร้างตัวตนเจ้าของธุรกิจให้ลูกค้าเดินมาหาเอง',
+    accent: 'violet',
   },
 };
 

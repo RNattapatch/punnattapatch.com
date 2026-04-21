@@ -15,19 +15,18 @@ const formatDate = (d: Date): string =>
   d.toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
 
 /**
- * Pillar → color mapping (per Pun 2026-04-18):
+ * Pillar → color mapping (per Pun 2026-04-21):
  *  - Sales Consulting → coral (matches Services Path B + Sales Training)
  *  - AI Transformation → cyan (matches Services Path A + AI Workshops)
- *  - Agentic AI for Sales → emerald (NEW — was violet, reassigned)
- *  - Marketing/Content (reserved for future pillar) → violet
- * Reason: Pun wants violet reserved for Marketing pillar (to match
- * Trust Content TikTok Workshop special accent), so AI Agent needed
- * its own distinct color.
+ *  - Agentic AI Agent → cyan (grouped with AI Transformation per Pun)
+ *  - Personal Branding → violet (matches Trust Content TikTok Workshop)
+ * Emerald is now reserved for future pillar.
  */
 const PILLAR_META: Record<string, { label: string; accent: 'cyan' | 'coral' | 'violet' | 'emerald' }> = {
   'sales-consulting': { label: 'Sales Consulting', accent: 'coral' },
   'ai-transformation': { label: 'AI Transformation', accent: 'cyan' },
-  'agentic-ai-sales': { label: 'Agentic AI Agent', accent: 'emerald' },
+  'agentic-ai-sales': { label: 'Agentic AI Agent', accent: 'cyan' },
+  'personal-branding': { label: 'Personal Branding', accent: 'violet' },
 };
 
 const meta = pillar ? PILLAR_META[pillar] : undefined;

@@ -105,9 +105,9 @@
   --color-pun-cyan-soft: oklch(78% 0.16 200 / 0.15);
   --color-pun-coral: #f97a89;      /* Sales Consulting topics (training/commission) */
   --color-pun-coral-soft: oklch(70% 0.21 22 / 0.12);
-  --color-pun-violet: #a78bfa;     /* Marketing / Content topics (TikTok/Branding — reserved) */
+  --color-pun-violet: #a78bfa;     /* Personal Branding / Content topics (TikTok/Branding) */
   --color-pun-violet-soft: oklch(75% 0.16 295 / 0.12);
-  --color-pun-emerald: #34d399;    /* Agentic AI Agent topics (automation/workflow) */
+  --color-pun-emerald: #34d399;    /* reserved for future pillar */
   --color-pun-emerald-soft: oklch(75% 0.16 165 / 0.15);
 }
 
