@@ -19,7 +19,10 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/_'),
+      filter: (page) =>
+        !page.includes('/_') &&
+        !page.endsWith('/thank-you') && // intake thank-you is noindex
+        !page.endsWith('/agent-builder-kit/thank-you'), // Kit thank-you is noindex
       // Per-URL priority + changefreq so crawlers grasp information
       // hierarchy: revenue pages (home, services, booking, quiz) rank
       // highest, insights/FAQ next, secondary last.
@@ -40,6 +43,15 @@ export default defineConfig({
         } else if (p.startsWith('/insights/')) {
           item.priority = 0.8;
           item.changefreq = 'weekly';
+        } else if (p === '/agent-builder-kit') {
+          item.priority = 0.95;
+          item.changefreq = 'weekly';
+        } else if (p.startsWith('/agent-builder-kit/prompts/')) {
+          item.priority = 0.7;
+          item.changefreq = 'monthly';
+        } else if (p === '/agent-builder-kit/audit') {
+          item.priority = 0.7;
+          item.changefreq = 'monthly';
         } else if (p === '/insights' || p === '/faq' || p === '/about') {
           item.priority = 0.7;
           item.changefreq = 'weekly';
