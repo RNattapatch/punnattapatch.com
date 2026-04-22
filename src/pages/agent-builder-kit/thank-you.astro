@@ -1,9 +1,14 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../data/site';
 
 const title = 'ขอบคุณครับ — Kit ส่งให้แล้ว';
 const description =
-  'ผมจัดส่ง AI Agent Builder Kit ให้คุณทาง LINE OA แล้ว — เปิด LINE เพื่อดูลิงก์ดาวน์โหลด';
+  'Kit ดาวน์โหลดเรียบร้อย — เลือกขั้นตอนถัดไปตามที่คุณติ๊กในฟอร์ม';
+
+const KIT_ZIP_URL = '/downloads/agent-builder-kit-v1.zip';
+const GITHUB_MIRROR =
+  'https://github.com/RNattapatch/punnattapatch.com/releases/latest/download/agent-builder-kit-v1.zip';
 ---
 
 <BaseLayout
@@ -12,15 +17,299 @@ const description =
   noindex={true}
   schema={{ type: 'WebPage' }}
 >
-  <main class="mx-auto max-w-2xl px-4 py-20 text-center">
-    <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
-      Thank you
-    </p>
-    <h1 class="mt-2 font-display text-4xl font-bold">Thank-you page (B5 stub)</h1>
-    <p class="mt-4 text-base-content/70">
-      Phase B1 scaffold. เนื้อหา embed จาก
-      <code class="rounded bg-base-200 px-1.5 py-0.5 text-sm">web-content/thank-you-page-content.md</code>
-      ใน B5
-    </p>
+  <main>
+    {/* Anti-claim headline */}
+    <section class="border-b border-base-content/10 bg-base-100 px-4 py-16 lg:py-20">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="text-xs font-bold uppercase tracking-widest text-secondary">
+          Thank you
+        </p>
+        <h1 class="mt-3 font-display text-2xl font-black leading-tight md:text-4xl">
+          ผมไม่ได้แจก kit เฉยๆ · ผมแจกระบบที่ติดตั้งกับลูกค้าจริงแล้ว
+        </h1>
+        <p
+          id="ref-display"
+          class="mt-6 inline-block rounded-full bg-base-200/80 px-4 py-1.5 font-mono text-sm text-base-content/70"
+        >
+          กำลังโหลด ref...
+        </p>
+
+        <div class="mt-8 rounded-2xl border-2 border-secondary/30 bg-secondary/5 p-6 md:p-8">
+          <p class="font-display text-base font-bold leading-relaxed">
+            ✅ ดาวน์โหลด Kit เรียบร้อย — ตรวจที่ Inbox อีก 1 รอบเผื่อไฟล์ใหญ่
+          </p>
+
+          <a
+            href={KIT_ZIP_URL}
+            class="mt-6 inline-flex items-center gap-2 rounded-full bg-secondary px-7 py-4 font-display text-base font-bold text-white shadow-xl transition hover:bg-secondary/90 md:text-lg"
+            download
+          >
+            ⬇️ ดาวน์โหลด Kit (.zip · 12 MB)
+          </a>
+
+          <p class="mt-4 text-xs text-base-content/60">
+            ถ้ากดแล้วโหลดไม่ได้ →
+            <a href={GITHUB_MIRROR} class="text-secondary underline">GitHub mirror</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* Conditional CTAs (controlled by ?interests=inhouse,p1,intake) */}
+    <section class="bg-base-200/30 px-4 py-16 lg:py-20">
+      <div class="mx-auto max-w-3xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+          ขั้นตอนถัดไปสำหรับคุณ
+        </p>
+        <h2 class="mt-2 font-display text-2xl font-black md:text-3xl">
+          เลือกหนึ่งเส้นทาง — ผมพาไปต่อ
+        </h2>
+
+        {/* In-house — large card (shown if ?interests includes inhouse) */}
+        <div
+          id="cta-inhouse"
+          data-interest="inhouse"
+          class="mt-8 hidden rounded-2xl border-2 border-secondary/40 bg-base-100 p-6 shadow-md md:p-8"
+        >
+          <div class="flex items-baseline justify-between gap-3">
+            <p class="font-display text-xl font-black md:text-2xl">
+              🏢 In-House Workshop — ปั้นพนักงานคุณเป็นพ่อมด AI
+            </p>
+          </div>
+
+          <ul class="mt-5 space-y-2 text-sm leading-relaxed text-base-content/85 md:text-base">
+            <li>— Workshop 1 วัน on-site ที่ออฟฟิศคุณ — มูลค่า ฿24,900</li>
+            <li>— n8n workflow + AI Agent 1 ตัว build ในห้อง — มูลค่า ฿15,000</li>
+            <li>— 30-day async LINE support — มูลค่า ฿8,000</li>
+            <li>— Handover documentation + screen recording — มูลค่า ฿5,000</li>
+          </ul>
+
+          <div class="mt-6 rounded-2xl border border-base-content/15 bg-base-200/60 p-5">
+            <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+              Anchor Table
+            </p>
+            <table class="mt-3 w-full text-sm">
+              <tbody>
+                <tr><td class="py-1">มูลค่ารวม</td><td class="py-1 text-right line-through opacity-50">฿52,900</td></tr>
+                <tr><td class="py-1 font-bold">⭐ ราคา Bundle</td><td class="py-1 text-right font-display text-lg font-black text-secondary">฿44,900</td></tr>
+                <tr><td class="py-1">ประหยัด</td><td class="py-1 text-right">฿8,000 (15%)</td></tr>
+                <tr><td class="py-1 text-xs text-base-content/60" colspan="2">Early Bird ถึง 30 เม.ย. — 1 พ.ค. ขึ้น ฿49,000</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <a
+            href="/services/ai-workshop"
+            class="mt-6 inline-flex items-center gap-2 rounded-full bg-secondary px-6 py-3 font-display text-base font-bold text-white transition hover:bg-secondary/90"
+          >
+            ดู In-House Workshop →
+          </a>
+        </div>
+
+        {/* P1 waitlist — large card */}
+        <div
+          id="cta-p1"
+          data-interest="p1"
+          class="mt-6 hidden rounded-2xl border-2 border-secondary/40 bg-base-100 p-6 shadow-md md:p-8"
+        >
+          <p class="font-display text-xl font-black md:text-2xl">
+            🎟️ P1 Public Training — Waitlist (cohort-cap 12 ที่)
+          </p>
+
+          <ul class="mt-5 space-y-2 text-sm leading-relaxed text-base-content/85 md:text-base">
+            <li>— 1 วัน hands-on workshop — มูลค่า ฿15,900</li>
+            <li>— AI Agent ตัวแรกของธุรกิจ + Action Plan 30 วัน — มูลค่า ฿4,000</li>
+          </ul>
+
+          <div class="mt-6 rounded-2xl border border-base-content/15 bg-base-200/60 p-5">
+            <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+              Anchor Table
+            </p>
+            <table class="mt-3 w-full text-sm">
+              <tbody>
+                <tr><td class="py-1">ราคาเปิด</td><td class="py-1 text-right line-through opacity-50">฿19,900</td></tr>
+                <tr><td class="py-1 font-bold">⭐ Waitlist Lock</td><td class="py-1 text-right font-display text-lg font-black text-secondary">฿11,900</td></tr>
+                <tr><td class="py-1">ประหยัด</td><td class="py-1 text-right">฿8,000 (40%)</td></tr>
+                <tr><td class="py-1 text-xs text-base-content/60" colspan="2">Cohort-cap 12 ที่ · ปิดเมื่อเต็ม</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <a
+            href="/training/p1-ai-workshop-1-day#waitlist"
+            class="mt-6 inline-flex items-center gap-2 rounded-full bg-secondary px-6 py-3 font-display text-base font-bold text-white transition hover:bg-secondary/90"
+          >
+            เข้า Waitlist →
+          </a>
+        </div>
+
+        {/* Discovery call — large card */}
+        <div
+          id="cta-intake"
+          data-interest="intake"
+          class="mt-6 hidden rounded-2xl border-2 border-secondary/40 bg-base-100 p-6 shadow-md md:p-8"
+        >
+          <p class="font-display text-xl font-black md:text-2xl">
+            💬 Discovery Call — คุย 1-on-1 กับปัน
+          </p>
+
+          <ul class="mt-5 space-y-2 text-sm leading-relaxed text-base-content/85 md:text-base">
+            <li>— 30-45 นาที audit business เฉพาะคุณ</li>
+            <li>— แนะ wedge แรกที่ AI ติดได้จริง</li>
+            <li>— Custom proposal (ถ้าตรงกัน) ภายใน 5 วัน</li>
+          </ul>
+
+          <p class="mt-5 text-sm text-base-content/70">
+            ฟรี · pre-qualified leads only · ต้องผ่าน 5-rule audit
+          </p>
+
+          <a
+            href="/intake-form?source=kit-thankyou"
+            class="mt-6 inline-flex items-center gap-2 rounded-full bg-secondary px-6 py-3 font-display text-base font-bold text-white transition hover:bg-secondary/90"
+          >
+            กรอก Intake Form →
+          </a>
+        </div>
+
+        {/* Fallback (no interest checked) — 3 collapsed mini-cards */}
+        <div id="cta-fallback" class="mt-6 hidden">
+          <p class="text-sm text-base-content/70">
+            คุณยังไม่ได้เลือก interest ในฟอร์ม — ดู 3 ทางที่ Pun เปิดให้ได้:
+          </p>
+          <div class="mt-4 grid gap-3 md:grid-cols-3">
+            <a href="/services/ai-workshop" class="rounded-2xl border border-base-content/15 bg-base-100 p-5 transition hover:border-secondary/40">
+              <p class="font-display text-base font-bold">🏢 In-house Workshop</p>
+              <p class="mt-2 text-xs text-base-content/70">฿44,900 Early Bird ถึง 30 เม.ย.</p>
+            </a>
+            <a href="/training/p1-ai-workshop-1-day#waitlist" class="rounded-2xl border border-base-content/15 bg-base-100 p-5 transition hover:border-secondary/40">
+              <p class="font-display text-base font-bold">🎟️ P1 Waitlist</p>
+              <p class="mt-2 text-xs text-base-content/70">฿11,900 lock · cohort-cap 12 ที่</p>
+            </a>
+            <a href="/intake-form?source=kit-thankyou" class="rounded-2xl border border-base-content/15 bg-base-100 p-5 transition hover:border-secondary/40">
+              <p class="font-display text-base font-bold">💬 Discovery Call</p>
+              <p class="mt-2 text-xs text-base-content/70">1-on-1 กับปัน · ฟรี</p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* Bonus Stack */}
+    <section class="bg-base-100 px-4 py-16 lg:py-20">
+      <div class="mx-auto max-w-3xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+          🎁 Bonus ที่คุณได้ทันที
+        </p>
+        <h2 class="mt-2 font-display text-2xl font-black md:text-3xl">
+          มูลค่ารวม ฿18,700
+        </h2>
+
+        <div class="mt-8 space-y-4">
+          <div class="rounded-2xl border border-base-content/10 bg-base-200/40 p-5">
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+              <p class="font-display text-base font-bold">Custom GPT "Pun's Sales OS"</p>
+              <span class="font-display text-sm font-bold text-secondary">฿9,900</span>
+            </div>
+            <p class="mt-2 text-sm text-base-content/70">ส่งทาง LINE ภายใน 7 วัน</p>
+            <p class="mt-1 text-sm text-base-content/85">→ AI ที่เทรนจาก closed-won deal 100+ รายของลูกค้าปัน</p>
+          </div>
+
+          <div class="rounded-2xl border border-base-content/10 bg-base-200/40 p-5">
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+              <p class="font-display text-base font-bold">30-day LINE OA support during install</p>
+              <span class="font-display text-sm font-bold text-secondary">฿4,900</span>
+            </div>
+            <p class="mt-2 text-sm text-base-content/70">ตอบใน 24 ชม. (Mon-Fri)</p>
+            <p class="mt-1 text-sm text-base-content/85">→ ไม่ติดอยู่กับ "ลองเอง" ที่อาจหลงทาง</p>
+          </div>
+
+          <div class="rounded-2xl border border-base-content/10 bg-base-200/40 p-5">
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+              <p class="font-display text-base font-bold">Free entry: monthly Office Hours group call</p>
+              <span class="font-display text-sm font-bold text-secondary">฿3,900</span>
+            </div>
+            <p class="mt-2 text-sm text-base-content/85">→ ฟัง Q&A ของเจ้าของ SME คนอื่นที่ install kit เดียวกัน</p>
+          </div>
+
+          <div class="rounded-2xl border-2 border-secondary/40 bg-secondary/5 p-5">
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+              <p class="font-display text-base font-bold">🔥 FAST ACTION (50 คนแรกเท่านั้น): 30-min strategy call กับปัน</p>
+              <span class="font-display text-sm font-bold text-secondary">฿4,500</span>
+            </div>
+            <p class="mt-2 text-sm text-base-content/85">→ audit business เฉพาะคุณ + แนะ wedge แรก</p>
+            <p class="mt-1 text-xs text-base-content/60">นับจาก form submit timestamp · เต็มเมื่อเต็ม</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* LINE OA Fallback (always shown) */}
+    <section class="border-t border-base-content/10 bg-base-100 px-4 py-12">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="text-base text-base-content/80">ติดปัญหาตอนติดตั้ง? ทักได้เลยครับ</p>
+        <a
+          href={SITE.social.line}
+          target="_blank"
+          rel="noopener"
+          class="mt-4 inline-flex items-center gap-2 rounded-full bg-[#06C755] px-6 py-3 font-display text-base font-bold text-white shadow-lg transition hover:bg-[#05b14a]"
+        >
+          💬 คุยทาง LINE OA →
+        </a>
+      </div>
+    </section>
+
+    {/* P.S. Closing */}
+    <section class="bg-base-200/40 px-4 py-16">
+      <div class="mx-auto max-w-3xl">
+        <div class="rounded-2xl border-l-4 border-secondary bg-base-100 p-6 md:p-8">
+          <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">P.S.</p>
+          <div class="mt-3 space-y-3 text-base leading-relaxed text-base-content/85 md:text-lg">
+            <p>ผมยังไม่ถึง ฿1M MRR ตามเป้าหมายตัวเอง · ผมยังเดินอยู่</p>
+            <p>แต่ระบบที่ผมส่งให้คุณใน Kit นี้ คือระบบเดียวกับที่ผมใช้กับลูกค้าจริง ที่ปิด deal เป็น ฿hundreds-of-thousands ในไตรมาส Q1 2026</p>
+            <p>ผมเข้าใจว่าคุณเห็นคลิปคนอวด AI hack ทุกวันจน tired</p>
+            <p>ผมเลยอยากให้ Kit นี้พูดด้วยระบบ ไม่ใช่คำพูด</p>
+            <p>install เสร็จแล้วทักผมได้เลยครับ</p>
+          </div>
+          <p class="mt-5 font-display text-sm font-bold">— ปัน ณัฐพัชร์ (@pun_nattapatch)</p>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <script is:inline>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+
+      // Show ref code
+      const refEl = document.getElementById('ref-display');
+      const ref = params.get('ref');
+      if (refEl) {
+        refEl.textContent = ref ? `Reference: ${ref}` : 'Reference: PN-KIT (no ref)';
+      }
+
+      // Conditional CTAs based on ?interests=inhouse,p1,intake
+      const interestsParam = params.get('interests') || '';
+      const interests = interestsParam.split(',').map((s) => s.trim()).filter(Boolean);
+
+      let anyShown = false;
+      ['inhouse', 'p1', 'intake'].forEach((key) => {
+        const el = document.getElementById('cta-' + key);
+        if (!el) return;
+        if (interests.includes(key)) {
+          el.classList.remove('hidden');
+          anyShown = true;
+        }
+      });
+
+      if (!anyShown) {
+        const fallback = document.getElementById('cta-fallback');
+        if (fallback) fallback.classList.remove('hidden');
+      }
+
+      // Plausible event
+      if (typeof window.plausible === 'function') {
+        try { window.plausible('Kit Download', { props: { ref: ref || 'unknown' } }); } catch (_) {}
+      }
+    })();
+  </script>
 </BaseLayout>

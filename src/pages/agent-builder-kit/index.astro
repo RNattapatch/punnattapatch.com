@@ -686,7 +686,7 @@ const faqs = [
       </div>
     </section>
 
-    {/* 3.14 — Form Gate (B5 stub) */}
+    {/* 3.14 — Form Gate */}
     <section id="form" class="bg-base-200/40 px-4 py-20 lg:py-24">
       <div class="mx-auto max-w-2xl">
         <p class="text-xs font-bold uppercase tracking-widest text-secondary">
@@ -699,17 +699,292 @@ const faqs = [
           กรอก 8 ฟิลด์ + เลือก interest 1+ ข้อ — ผมส่ง Kit ทาง LINE OA ภายใน 1 นาที
         </p>
 
-        <div class="mt-8 rounded-2xl border-2 border-dashed border-base-content/20 bg-base-100 p-8 text-center text-sm text-base-content/60">
-          <p class="font-display text-base font-bold text-base-content/80">📋 Form (B5 stub)</p>
-          <p class="mt-3">
-            8 fields + 3 interest checkboxes + 7 hidden UTM fields<br />
-            POST → n8n webhook <code class="rounded bg-base-200 px-1.5 py-0.5 text-xs">kit-leads-v1</code><br />
-            Redirect → <code class="rounded bg-base-200 px-1.5 py-0.5 text-xs">/agent-builder-kit/thank-you</code>
+        <form
+          id="kit-form"
+          class="mt-8 space-y-5 rounded-2xl border border-base-content/10 bg-base-100 p-6 md:p-8"
+          novalidate
+        >
+          {/* Hidden attribution fields populated by BaseLayout UTM capture */}
+          <input type="hidden" id="kit-utm_source" name="utm_source" value="" />
+          <input type="hidden" id="kit-utm_medium" name="utm_medium" value="" />
+          <input type="hidden" id="kit-utm_campaign" name="utm_campaign" value="" />
+          <input type="hidden" id="kit-utm_content" name="utm_content" value="" />
+          <input type="hidden" id="kit-utm_term" name="utm_term" value="" />
+          <input type="hidden" id="kit-fbclid" name="fbclid" value="" />
+          <input type="hidden" id="kit-ttclid" name="ttclid" value="" />
+
+          {/* Field 1: name */}
+          <div>
+            <label class="block text-sm font-bold" for="kit-name">ชื่อ-นามสกุล <span class="text-secondary">*</span></label>
+            <input
+              type="text"
+              id="kit-name"
+              name="name"
+              required
+              autocomplete="name"
+              class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:border-secondary focus:outline-none"
+            />
+          </div>
+
+          {/* Field 2: email */}
+          <div>
+            <label class="block text-sm font-bold" for="kit-email">Email <span class="text-secondary">*</span></label>
+            <input
+              type="email"
+              id="kit-email"
+              name="email"
+              required
+              autocomplete="email"
+              class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:border-secondary focus:outline-none"
+            />
+          </div>
+
+          {/* Field 3: line/phone */}
+          <div>
+            <label class="block text-sm font-bold" for="kit-contact">LINE ID / โทรศัพท์ <span class="text-secondary">*</span></label>
+            <input
+              type="text"
+              id="kit-contact"
+              name="contact"
+              required
+              autocomplete="tel"
+              placeholder="เช่น @yourline หรือ 081-234-5678"
+              class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:border-secondary focus:outline-none"
+            />
+          </div>
+
+          {/* Field 4: company */}
+          <div>
+            <label class="block text-sm font-bold" for="kit-company">ชื่อบริษัท / แบรนด์ <span class="text-secondary">*</span></label>
+            <input
+              type="text"
+              id="kit-company"
+              name="company"
+              required
+              autocomplete="organization"
+              class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:border-secondary focus:outline-none"
+            />
+          </div>
+
+          {/* Field 5: position */}
+          <div>
+            <label class="block text-sm font-bold" for="kit-position">ตำแหน่ง <span class="text-secondary">*</span></label>
+            <select
+              id="kit-position"
+              name="position"
+              required
+              class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:border-secondary focus:outline-none"
+            >
+              <option value="">-- เลือก --</option>
+              <option value="owner-ceo">เจ้าของ / CEO</option>
+              <option value="md">กรรมการผู้จัดการ</option>
+              <option value="dept-head-manager">หัวหน้าฝ่าย / ผู้จัดการ</option>
+              <option value="staff-sales">พนักงาน / ทีมขาย</option>
+              <option value="other">อื่นๆ</option>
+            </select>
+          </div>
+
+          {/* Field 6: team size */}
+          <div>
+            <label class="block text-sm font-bold" for="kit-team-size">ขนาดทีมขาย <span class="text-secondary">*</span></label>
+            <select
+              id="kit-team-size"
+              name="team_size"
+              required
+              class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:border-secondary focus:outline-none"
+            >
+              <option value="">-- เลือก --</option>
+              <option value="none">ยังไม่มี</option>
+              <option value="1-4">1-4 คน</option>
+              <option value="5-10">5-10 คน</option>
+              <option value="11-20">11-20 คน</option>
+              <option value="20+">20+ คน</option>
+            </select>
+          </div>
+
+          {/* Field 7: revenue */}
+          <div>
+            <label class="block text-sm font-bold" for="kit-revenue">รายได้บริษัท/ปี (THB) <span class="text-secondary">*</span></label>
+            <select
+              id="kit-revenue"
+              name="revenue"
+              required
+              class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:border-secondary focus:outline-none"
+            >
+              <option value="">-- เลือก --</option>
+              <option value="<10M">น้อยกว่า ฿10M</option>
+              <option value="10-30M">฿10-30M</option>
+              <option value="30-100M">฿30-100M</option>
+              <option value="100-200M">฿100-200M</option>
+              <option value="200M+">฿200M+</option>
+              <option value="prefer-not">ไม่สะดวกตอบ</option>
+            </select>
+          </div>
+
+          {/* Field 8: timing */}
+          <div>
+            <label class="block text-sm font-bold" for="kit-timing">Timing ที่อยากเริ่ม install AI <span class="text-secondary">*</span></label>
+            <select
+              id="kit-timing"
+              name="timing"
+              required
+              class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:border-secondary focus:outline-none"
+            >
+              <option value="">-- เลือก --</option>
+              <option value="1mo">ภายใน 1 เดือน</option>
+              <option value="1-3mo">1-3 เดือน</option>
+              <option value="3-6mo">3-6 เดือน</option>
+              <option value=">6mo">มากกว่า 6 เดือน</option>
+              <option value="learning">แค่ศึกษาก่อน</option>
+            </select>
+          </div>
+
+          {/* Interest checkboxes */}
+          <fieldset class="rounded-2xl border border-base-content/10 bg-base-200/40 p-5">
+            <legend class="px-2 text-sm font-bold">เลือกอันที่สนใจ (ผมจะลิงก์ไปหน้านั้นหลังกรอก)</legend>
+
+            <label class="mt-3 flex cursor-pointer items-start gap-3 rounded-xl p-3 hover:bg-base-100">
+              <input
+                type="checkbox"
+                name="interest_inhouse"
+                value="1"
+                class="mt-1 size-5 rounded border-base-content/30 accent-secondary"
+              />
+              <span class="text-sm leading-relaxed">
+                <strong>ผมอยากให้ปันมาช่วยปั้นพนักงานในบริษัทผมให้เป็น "พ่อมด AI" แบบปัน</strong>
+                <span class="mt-1 block text-xs text-base-content/60">→ In-House Workshop (on-site ที่ออฟฟิศคุณ)</span>
+              </span>
+            </label>
+
+            <label class="mt-2 flex cursor-pointer items-start gap-3 rounded-xl p-3 hover:bg-base-100">
+              <input
+                type="checkbox"
+                name="interest_p1"
+                value="1"
+                class="mt-1 size-5 rounded border-base-content/30 accent-secondary"
+              />
+              <span class="text-sm leading-relaxed">
+                <strong>ผมอยากเข้า P1 Public Training รอบหน้า</strong>
+                <span class="mt-1 block text-xs text-base-content/60">→ ขึ้น Waiting List + lock ราคาพิเศษ ฿11,900 (ราคาเปิดจริง ฿19,900)</span>
+              </span>
+            </label>
+
+            <label class="mt-2 flex cursor-pointer items-start gap-3 rounded-xl p-3 hover:bg-base-100">
+              <input
+                type="checkbox"
+                name="interest_intake"
+                value="1"
+                class="mt-1 size-5 rounded border-base-content/30 accent-secondary"
+              />
+              <span class="text-sm leading-relaxed">
+                <strong>ผมอยากคุยรายละเอียดเรื่องการเอา AI ไปพัฒนาฝ่ายขาย — แบบ 1-on-1</strong>
+                <span class="mt-1 block text-xs text-base-content/60">→ Intake Form (Discovery Call)</span>
+              </span>
+            </label>
+          </fieldset>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            id="kit-submit-btn"
+            class="w-full rounded-full bg-secondary px-6 py-3.5 font-display text-base font-bold text-white shadow-lg transition hover:bg-secondary/90 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            ส่ง + ดาวน์โหลด Kit
+          </button>
+
+          <p class="text-xs leading-relaxed text-base-content/60">
+            Kit นี้ออกแบบสำหรับ SME ฿30M+ ที่อยากใช้ AI ระดับองค์กร — ถ้ายังไม่ใช่ขนาดนี้ ดาวน์โหลดไปดูก่อนได้ครับ
           </p>
-          <p class="mt-3 text-xs text-base-content/50">Phase B5 จะแทนที่ block นี้ด้วย form จริง</p>
-        </div>
+
+          <p id="kit-form-error" class="hidden rounded-xl bg-secondary/10 p-3 text-sm text-secondary"></p>
+        </form>
       </div>
     </section>
+
+    <script is:inline>
+      (function () {
+        const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/kit-leads-v1';
+        const form = document.getElementById('kit-form');
+        const btn = document.getElementById('kit-submit-btn');
+        const errEl = document.getElementById('kit-form-error');
+        if (!form || !btn || !errEl) return;
+
+        function genRef() {
+          const ts = Date.now().toString(36);
+          const rnd = Math.random().toString(36).slice(2, 7);
+          return `PN-KIT-${ts}-${rnd}`.toUpperCase();
+        }
+
+        function showError(msg) {
+          errEl.textContent = msg;
+          errEl.classList.remove('hidden');
+        }
+
+        form.addEventListener('submit', async function (ev) {
+          ev.preventDefault();
+          errEl.classList.add('hidden');
+
+          if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+          }
+
+          btn.disabled = true;
+          btn.textContent = 'กำลังส่ง...';
+
+          const fd = new FormData(form);
+          const ref = genRef();
+          const payload = { _meta: { reference: ref, page: location.pathname } };
+          fd.forEach((v, k) => { payload[k] = v; });
+
+          // Plausible event
+          if (typeof window.plausible === 'function') {
+            try { window.plausible('Kit Form Submit', { props: { ref } }); } catch (_) {}
+          }
+          // Meta Pixel — conditional, fires only if loaded
+          if (typeof window.fbq === 'function') {
+            try { window.fbq('track', 'Lead', { event_id: ref }); } catch (_) {}
+          }
+          // TikTok Pixel — conditional, fires only if loaded
+          if (typeof window.ttq === 'object' && window.ttq && typeof window.ttq.track === 'function') {
+            try { window.ttq.track('CompleteRegistration', { event_id: ref }); } catch (_) {}
+          }
+
+          let webhookOk = false;
+          try {
+            const ctrl = new AbortController();
+            const t = setTimeout(() => ctrl.abort(), 8000);
+            const res = await fetch(N8N_WEBHOOK, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+              signal: ctrl.signal,
+            });
+            clearTimeout(t);
+            webhookOk = res.ok;
+          } catch (e) {
+            console.error('[kit-form] webhook error', e);
+          }
+
+          // Redirect regardless of webhook (download is the contract; lead capture is best-effort)
+          const interests = [];
+          if (fd.get('interest_inhouse')) interests.push('inhouse');
+          if (fd.get('interest_p1')) interests.push('p1');
+          if (fd.get('interest_intake')) interests.push('intake');
+
+          const url = new URL('/agent-builder-kit/thank-you', location.origin);
+          url.searchParams.set('ref', ref);
+          if (interests.length) url.searchParams.set('interests', interests.join(','));
+          ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'ttclid'].forEach((k) => {
+            const v = fd.get(k);
+            if (v) url.searchParams.set(k, String(v));
+          });
+          if (!webhookOk) url.searchParams.set('webhook', 'failed');
+
+          location.assign(url.toString());
+        });
+      })();
+    </script>
 
     {/* 3.15 — Pre-registration Screening CTA */}
     <section class="bg-base-100 px-4 py-12">
