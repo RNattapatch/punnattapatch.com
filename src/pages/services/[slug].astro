@@ -54,7 +54,7 @@ const BUNDLE_MAP: Record<string, BundleUpsell> = {
       'ถาม-ตอบผ่าน LINE ได้ไม่จำกัด · ตอบใน 24 ชม. วันทำการ',
       'คู่มือดูแลระบบ + วิดีโออัดหน้าจอทุก session',
     ],
-    ctaLabel: 'จอง Bundle · ฿44,900',
+    ctaLabel: 'จอง Bundle · ฿44,900 (Early Bird ถึง 30 เม.ย.)',
     ctaHref:  '/booking?package=ai-workshop&bundle=consult-30',
   },
 };
@@ -1072,6 +1072,29 @@ const description = detail.subhead;
         style={`border-color: color-mix(in oklch, ${accent} 30%, transparent); background: color-mix(in oklch, ${accent} 4%, transparent);`}
       >
         <div class="text-center">
+          {slug === 'ai-workshop' && (
+            <div
+              class="mx-auto mb-6 max-w-2xl rounded-2xl border p-4"
+              style={`border-color: color-mix(in oklch, ${accent} 35%, transparent); background: color-mix(in oklch, ${accent} 6%, transparent);`}
+              data-countdown-wrap
+            >
+              <div class="flex flex-col items-center gap-3 md:flex-row md:justify-between" data-countdown-visible>
+                <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+                  ⏰ Early Bird ปิดใน
+                </p>
+                <div class="flex gap-3 font-display font-bold">
+                  <div class="text-center"><div class="text-xl md:text-2xl" data-cd-days>--</div><div class="text-[9px] uppercase text-base-content/55">วัน</div></div>
+                  <div class="text-center"><div class="text-xl md:text-2xl" data-cd-hours>--</div><div class="text-[9px] uppercase text-base-content/55">ชม.</div></div>
+                  <div class="text-center"><div class="text-xl md:text-2xl" data-cd-mins>--</div><div class="text-[9px] uppercase text-base-content/55">นาที</div></div>
+                  <div class="text-center"><div class="text-xl md:text-2xl" data-cd-secs>--</div><div class="text-[9px] uppercase text-base-content/55">วินาที</div></div>
+                </div>
+                <p class="text-[11px] text-base-content/60">1 พ.ค. ขึ้น<br/>฿29,900 / Bundle ฿49,000</p>
+              </div>
+              <p class="hidden text-center text-sm font-semibold" data-countdown-expired style={`color: ${accent};`}>
+                ⏰ Early Bird ปิดแล้ว · ราคาใหม่ Workshop ฿29,900 / Bundle ฿49,000
+              </p>
+            </div>
+          )}
           <div
             class="font-display text-5xl font-bold md:text-6xl"
             style={`color: ${accent};`}
@@ -1422,4 +1445,35 @@ const description = detail.subhead;
   </div>
   <!-- Spacer so sticky bar doesn't hide footer content on mobile -->
   <div class="h-20 md:hidden" aria-hidden="true"></div>
+
+  {slug === 'ai-workshop' && (
+    <script is:inline>
+      (function () {
+        var DEADLINE = new Date('2026-04-30T23:59:59+07:00').getTime();
+        function pad(n) { return String(n).padStart(2, '0'); }
+        function update() {
+          var delta = DEADLINE - Date.now();
+          if (delta <= 0) {
+            document.querySelectorAll('[data-countdown-wrap]').forEach(function (w) {
+              var vis = w.querySelector('[data-countdown-visible]');
+              var exp = w.querySelector('[data-countdown-expired]');
+              if (vis) vis.classList.add('hidden');
+              if (exp) exp.classList.remove('hidden');
+            });
+            return;
+          }
+          var d = Math.floor(delta / 86400000);
+          var h = Math.floor((delta % 86400000) / 3600000);
+          var m = Math.floor((delta % 3600000) / 60000);
+          var s = Math.floor((delta % 60000) / 1000);
+          document.querySelectorAll('[data-cd-days]').forEach(function (e) { e.textContent = String(d); });
+          document.querySelectorAll('[data-cd-hours]').forEach(function (e) { e.textContent = pad(h); });
+          document.querySelectorAll('[data-cd-mins]').forEach(function (e) { e.textContent = pad(m); });
+          document.querySelectorAll('[data-cd-secs]').forEach(function (e) { e.textContent = pad(s); });
+        }
+        update();
+        setInterval(update, 1000);
+      })();
+    </script>
+  )}
 </BaseLayout>

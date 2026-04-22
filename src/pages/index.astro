@@ -166,7 +166,7 @@ const diagnoseCards: Array<{
     pain: 'สอน AI ไปแล้ว ตื่นเต้นได้ 2 อาทิตย์ แล้วทีม',
     highlight: 'ก็กลับไปทำแบบเดิม',
     service: 'AI Workshop + Consult 30 วัน Bundle',
-    oneLiner: 'ปันติดตามให้ 30 วัน จนทีมใช้จนเป็นนิสัย · ฿44,900 save ฿25K',
+    oneLiner: 'ปันติดตามให้ 30 วัน จนทีมใช้จนเป็นนิสัย · ฿44,900 Early Bird ถึง 30 เม.ย. (1 พ.ค. ขึ้น ฿49,000)',
     href: '/services/ai-workshop#bundle',
     accent: 'cyan',
   },
@@ -451,6 +451,36 @@ const socials = [
         <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl transition hover:border-cyan-300/40">
           <div class="font-display text-3xl font-black text-white md:text-4xl">On-site</div>
           <p class="mt-2 text-sm text-white/70">In-house · เข้าไปสอนที่บริษัทคุณ</p>
+        </div>
+      </div>
+
+      {/* Early Bird countdown banner — flips to "ended" state after 30 April 2026 23:59:59 Asia/Bangkok */}
+      <div
+        class="mt-6 rounded-2xl border p-5 backdrop-blur-xl"
+        style="border-color: color-mix(in oklch, var(--color-pun-cyan) 30%, transparent); background: color-mix(in oklch, var(--color-pun-cyan) 6%, transparent);"
+        data-countdown-wrap
+      >
+        <div class="flex flex-col items-center gap-4 md:flex-row md:justify-between" data-countdown-visible>
+          <div class="text-center md:text-left">
+            <p class="text-xs font-bold uppercase tracking-widest text-cyan-300">⏰ Early Bird ปิดใน</p>
+            <p class="mt-1 text-xs text-white/60">ราคาขึ้น 1 พ.ค. · Workshop ฿29,900 / Bundle ฿49,000</p>
+          </div>
+          <div class="flex gap-4 font-display font-bold text-white">
+            <div class="text-center"><div class="text-2xl md:text-3xl" data-cd-days>--</div><div class="text-[10px] uppercase text-white/55">วัน</div></div>
+            <div class="text-center"><div class="text-2xl md:text-3xl" data-cd-hours>--</div><div class="text-[10px] uppercase text-white/55">ชม.</div></div>
+            <div class="text-center"><div class="text-2xl md:text-3xl" data-cd-mins>--</div><div class="text-[10px] uppercase text-white/55">นาที</div></div>
+            <div class="text-center"><div class="text-2xl md:text-3xl" data-cd-secs>--</div><div class="text-[10px] uppercase text-white/55">วินาที</div></div>
+          </div>
+          <a
+            href="/services/ai-workshop"
+            class="rounded-full border border-cyan-300/40 bg-cyan-300/10 px-5 py-2 text-sm font-bold text-cyan-300 transition hover:bg-cyan-300/20"
+          >
+            จอง lock ราคา →
+          </a>
+        </div>
+        <div class="hidden text-center text-sm font-semibold text-white" data-countdown-expired>
+          ⏰ Early Bird ปิดแล้ว · ราคาใหม่ Workshop ฿29,900 / Bundle ฿49,000 ·
+          <a href="/services/ai-workshop" class="underline">ดูรายละเอียด</a>
         </div>
       </div>
 
@@ -1188,10 +1218,16 @@ const socials = [
                   >
                     Bundle แนะนำ
                   </span>
+                  <span class="rounded-full bg-secondary/20 px-2 py-0.5 text-[10px] font-bold text-secondary">
+                    Early Bird ถึง 30 เม.ย.
+                  </span>
                 </div>
                 <p class="mt-0.5 font-display text-base font-bold">Workshop + Consult 30 วัน</p>
               </div>
-              <span class="font-display text-lg font-bold" style="color: var(--color-pun-cyan);">฿44,900</span>
+              <div class="text-right">
+                <span class="font-display text-lg font-bold" style="color: var(--color-pun-cyan);">฿44,900</span>
+                <p class="text-[10px] text-base-content/55">1 พ.ค. ขึ้น ฿49,000</p>
+              </div>
             </a>
           </div>
 
@@ -1572,4 +1608,34 @@ const socials = [
       </p>
     </div>
   </section>
+
+  {/* Early Bird countdown logic — deadline: 30 April 2026 23:59:59 Asia/Bangkok = 2026-04-30T23:59:59+07:00 */}
+  <script is:inline>
+    (function () {
+      var DEADLINE = new Date('2026-04-30T23:59:59+07:00').getTime();
+      function pad(n) { return String(n).padStart(2, '0'); }
+      function update() {
+        var delta = DEADLINE - Date.now();
+        if (delta <= 0) {
+          document.querySelectorAll('[data-countdown-wrap]').forEach(function (w) {
+            var vis = w.querySelector('[data-countdown-visible]');
+            var exp = w.querySelector('[data-countdown-expired]');
+            if (vis) vis.classList.add('hidden');
+            if (exp) exp.classList.remove('hidden');
+          });
+          return;
+        }
+        var d = Math.floor(delta / 86400000);
+        var h = Math.floor((delta % 86400000) / 3600000);
+        var m = Math.floor((delta % 3600000) / 60000);
+        var s = Math.floor((delta % 60000) / 1000);
+        document.querySelectorAll('[data-cd-days]').forEach(function (e) { e.textContent = String(d); });
+        document.querySelectorAll('[data-cd-hours]').forEach(function (e) { e.textContent = pad(h); });
+        document.querySelectorAll('[data-cd-mins]').forEach(function (e) { e.textContent = pad(m); });
+        document.querySelectorAll('[data-cd-secs]').forEach(function (e) { e.textContent = pad(s); });
+      }
+      update();
+      setInterval(update, 1000);
+    })();
+  </script>
 </BaseLayout>
