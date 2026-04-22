@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = 'ขอบคุณครับ — Kit ส่งให้แล้ว';
+const description =
+  'ผมจัดส่ง AI Agent Builder Kit ให้คุณทาง LINE OA แล้ว — เปิด LINE เพื่อดูลิงก์ดาวน์โหลด';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  schema={{ type: 'WebPage' }}
+>
+  <main class="mx-auto max-w-2xl px-4 py-20 text-center">
+    <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+      Thank you
+    </p>
+    <h1 class="mt-2 font-display text-4xl font-bold">Thank-you page (B5 stub)</h1>
+    <p class="mt-4 text-base-content/70">
+      Phase B1 scaffold. เนื้อหา embed จาก
+      <code class="rounded bg-base-200 px-1.5 py-0.5 text-sm">web-content/thank-you-page-content.md</code>
+      ใน B5
+    </p>
+  </main>
+</BaseLayout>

@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = 'AI Agent Builder Kit';
+const description =
+  'Kit สำหรับเจ้าของ SME / ผู้จัดการที่อยากสร้างทีม AI Agent ใช้งานจริงในธุรกิจ — manual + setup files + 20+ prompts + bonus stack';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  schema={{ type: 'WebPage' }}
+>
+  <main class="mx-auto max-w-3xl px-4 py-16">
+    <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+      Agent Builder Kit
+    </p>
+    <h1 class="mt-2 font-display text-4xl font-bold">Hub page (B4 stub)</h1>
+    <p class="mt-4 text-base-content/70">
+      Phase B1 scaffold. เนื้อหา 17 sections จะ embed จาก
+      <code class="rounded bg-base-200 px-1.5 py-0.5 text-sm">web-content/hub-page-content.md</code>
+      ใน B4
+    </p>
+  </main>
+</BaseLayout>

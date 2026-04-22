@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = 'STEP 0 Audit — เช็กธุรกิจคุณก่อนสร้าง AI';
+const description =
+  '7-rule audit ก่อนสร้าง AI Agent: process ที่ทำซ้ำได้ + data ที่จับต้องได้ + คนที่รับผิดชอบชัด — ใช้เวลา 10 นาที รู้ว่าควรเริ่มหรือยัง';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  schema={{ type: 'WebPage' }}
+>
+  <main class="mx-auto max-w-3xl px-4 py-16">
+    <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+      STEP 0 · Audit
+    </p>
+    <h1 class="mt-2 font-display text-4xl font-bold">Audit page (B6 stub)</h1>
+    <p class="mt-4 text-base-content/70">
+      Phase B1 scaffold. เนื้อหา 7 rules + worked example จะ embed จาก
+      <code class="rounded bg-base-200 px-1.5 py-0.5 text-sm">web-content/audit-page-content.md</code>
+      ใน B6
+    </p>
+  </main>
+</BaseLayout>
