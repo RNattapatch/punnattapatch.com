@@ -1,9 +1,108 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../data/site';
 
 const title = 'STEP 0 Audit — เช็กธุรกิจคุณก่อนสร้าง AI';
 const description =
-  '7-rule audit ก่อนสร้าง AI Agent: process ที่ทำซ้ำได้ + data ที่จับต้องได้ + คนที่รับผิดชอบชัด — ใช้เวลา 10 นาที รู้ว่าควรเริ่มหรือยัง';
+  '7-rule AI Readiness Audit สำหรับ SME — ใช้เวลา 10 นาที รู้ว่าธุรกิจคุณพร้อมจะ install AI Agent System แล้วหรือยัง · ก่อนเสียเวลากับเครื่องมือที่ยังไม่ใช่จังหวะ';
+
+const rules = [
+  {
+    n: 1,
+    title: 'Revenue baseline ≥ ฿30M/ปี',
+    why: 'AI tool subscription = ฿1,500-3,000/เดือน · ต่ำกว่า ฿30M revenue cash flow ไม่รองรับ experimentation ที่ต้องลองหลายรอบ',
+    check: 'ปีที่แล้วบริษัทคุณรายได้เท่าไร?',
+    rules: [
+      { result: '< ฿30M', verdict: 'ข้ามไปดู E-book ฟรีอื่น', pass: false },
+      { result: '฿30M+', verdict: 'ไฟเขียว', pass: true },
+    ],
+  },
+  {
+    n: 2,
+    title: 'Team size 5+',
+    why: 'Agent ต้องมีคนใช้ ไม่ใช่ install เสร็จแล้วใช้คนเดียว · ทีมเล็กเกินไป workflow ไม่ซ้ำพอจะ automate',
+    check: 'ทีมงาน full-time มีกี่คน?',
+    rules: [
+      { result: '< 5 คน', verdict: 'solo mode (Kit ใช้ได้แต่ ROI ต่ำ)', pass: false },
+      { result: '5-20 คน', verdict: 'sweet spot · ไฟเขียว', pass: true },
+      { result: '> 20 คน', verdict: 'ใช้ได้แต่ต้อง enterprise path (consulting แทน Kit เดี่ยว)', pass: 'partial' },
+    ],
+  },
+  {
+    n: 3,
+    title: 'Tech baseline (Google Workspace + laptop)',
+    why: 'Agent ต้อง integrate กับระบบที่มีอยู่ ไม่ใช่สร้างจากศูนย์ · ถ้ายังทำงานบนกระดาษ + LINE chat อย่างเดียว install Kit แล้วไม่มีอะไรให้ agent ทำ',
+    check: 'บริษัทใช้ Google Workspace (Gmail + Drive + Sheets + Calendar) อยู่ไหม? มีคอม Mac/Windows ทุกคนไหม?',
+    rules: [
+      { result: 'ไม่มีเลย', verdict: 'vanilla start (ต้อง setup tech stack ก่อน)', pass: false },
+      { result: 'มีแค่ 1-2 อย่าง', verdict: 'OK · เริ่มได้แต่ตั้งคาดหวัง iterate', pass: 'partial' },
+      { result: 'มีครบ', verdict: 'ไฟเขียว', pass: true },
+    ],
+  },
+  {
+    n: 4,
+    title: 'Time commitment 4-6 ชม. ใน 30 วันแรก',
+    why: 'Install ไม่ใช่ magic — ต้องอ่าน manual + ทำ worksheet + setup agent · ถ้าไม่มีเวลาทำ Kit นี้จะกลายเป็นไฟล์ใน Downloads folder',
+    check: 'คุณสำรองเวลา 4-6 ชม. ใน 30 วันแรกได้ไหม? (= 1 ชม./สัปดาห์)',
+    rules: [
+      { result: 'ไม่ได้', verdict: 'รอรอบที่พร้อมกว่า · bookmark แล้วกลับมา', pass: false },
+      { result: 'ได้', verdict: 'ไฟเขียว', pass: true },
+    ],
+  },
+  {
+    n: 5,
+    title: 'Growth mindset (ยอมรับ iterate)',
+    why: 'AI ใช้แล้วต้อง iterate — install เสร็จต้องปรับให้เก่งขึ้นเรื่อยๆ · agent ตัวแรกไม่สมบูรณ์ตั้งแต่วันแรก',
+    check: 'คุณยอมรับว่า agent ตัวแรกจะไม่สมบูรณ์ และต้อง adjust ได้ไหม?',
+    rules: [
+      { result: 'ต้องการ perfect ทันที', verdict: 'ข้าม (Kit นี้ยังไม่ตอบโจทย์)', pass: false },
+      { result: 'ยอมรับ iterate', verdict: 'ไฟเขียว', pass: true },
+    ],
+  },
+  {
+    n: 6,
+    title: 'Data hygiene baseline',
+    why: 'Agent ใช้ context จาก data ของคุณ — data ไม่สะอาด output ก็ไม่สะอาด · garbage in garbage out',
+    check: 'CRM / customer list / sale pipeline ของคุณอยู่ใน spreadsheet ที่ search ได้ไหม? หรือยังเก็บใน LINE chat / สมุดจด?',
+    rules: [
+      { result: 'LINE chat / สมุดจดเท่านั้น', verdict: 'ต้อง migrate ก่อน · install Kit แล้วทำ migration เป็น project แรก', pass: false },
+      { result: 'Sheets / Excel organized', verdict: 'ไฟเขียว', pass: true },
+    ],
+  },
+  {
+    n: 7,
+    title: 'Decision authority',
+    why: 'Kit ให้ system ที่ต้องใช้ใน workflow จริง — ถ้าคุณไม่มีอำนาจเปลี่ยน workflow ทีม agent จะติดตั้งแต่ไม่ได้ใช้',
+    check: 'คุณตัดสินใจเรื่อง workflow + investment ของทีมได้เองไหม?',
+    rules: [
+      { result: 'ไม่ได้', verdict: 'ชวนเจ้านาย / co-founder join ก่อน', pass: false },
+      { result: 'ได้', verdict: 'ไฟเขียว', pass: true },
+    ],
+  },
+];
+
+const scoring = [
+  {
+    range: '7/7 ไฟเขียว',
+    advice: 'Install Kit ได้ทันที · ทุก condition พร้อม · เริ่ม Phase 1 ใน 7 วัน',
+    accent: 'var(--color-secondary, #dd4155)',
+  },
+  {
+    range: '5-6/7 ไฟเขียว',
+    advice: 'Install ได้ · แต่เตรียม data + decision authority ให้พร้อมก่อน · plan 2-3 สัปดาห์เตรียมตัว',
+    accent: 'var(--color-pun-cyan, #22d3ee)',
+  },
+  {
+    range: '3-4/7 ไฟเขียว',
+    advice: 'ยังไม่ใช่จังหวะ · ไปอ่าน E-book ฟรีอื่นก่อน · กลับมาเมื่อ business โตขึ้น',
+    accent: 'var(--color-pun-violet, #7c3aed)',
+  },
+  {
+    range: '0-2/7 ไฟเขียว',
+    advice: 'Kit นี้ overkill สำหรับ stage ปัจจุบัน · รอให้ business โต ทีม + revenue ก่อน',
+    accent: 'var(--color-base-content)',
+  },
+];
 ---
 
 <BaseLayout
@@ -11,15 +110,126 @@ const description =
   description={description}
   schema={{ type: 'WebPage' }}
 >
-  <main class="mx-auto max-w-3xl px-4 py-16">
-    <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
-      STEP 0 · Audit
-    </p>
-    <h1 class="mt-2 font-display text-4xl font-bold">Audit page (B6 stub)</h1>
-    <p class="mt-4 text-base-content/70">
-      Phase B1 scaffold. เนื้อหา 7 rules + worked example จะ embed จาก
-      <code class="rounded bg-base-200 px-1.5 py-0.5 text-sm">web-content/audit-page-content.md</code>
-      ใน B6
-    </p>
+  <main>
+    {/* Hero */}
+    <section class="border-b border-base-content/10 bg-base-100 px-4 py-16 lg:py-20">
+      <div class="mx-auto max-w-3xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-secondary">
+          STEP 0 · AI Readiness Audit
+        </p>
+        <h1 class="mt-3 font-display text-3xl font-black leading-tight md:text-5xl">
+          เช็ก 7 ข้อก่อนสร้าง AI Agent System
+        </h1>
+        <p class="mt-5 text-base leading-relaxed text-base-content/80 md:text-lg">
+          Kit นี้ออกแบบสำหรับ SME ฿30M+ ที่อยากใช้ AI ระดับองค์กร — ใช้เวลา 10 นาทีเช็ก 7 rule นี้ก่อนกดดาวน์โหลด รู้ทันทีว่าธุรกิจคุณพร้อมหรือยัง
+        </p>
+        <p class="mt-3 text-sm text-base-content/60">
+          (Hub page ใช้ 5-rule summary · หน้านี้คือ extended 7-rule version)
+        </p>
+      </div>
+    </section>
+
+    {/* 7 Rules */}
+    <section class="bg-base-200/30 px-4 py-16 lg:py-20">
+      <div class="mx-auto max-w-3xl space-y-6">
+        {rules.map((r) => (
+          <article class="rounded-2xl border border-base-content/10 bg-base-100 p-6 md:p-8">
+            <div class="flex items-baseline gap-3">
+              <span class="font-display text-2xl font-black text-secondary">{r.n}.</span>
+              <h2 class="font-display text-xl font-black md:text-2xl">{r.title}</h2>
+            </div>
+
+            <div class="mt-5 space-y-4 text-base leading-relaxed">
+              <div>
+                <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">Why</p>
+                <p class="mt-1.5 text-base-content/85">{r.why}</p>
+              </div>
+
+              <div>
+                <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">Check</p>
+                <p class="mt-1.5 text-base-content/85">{r.check}</p>
+              </div>
+
+              <div>
+                <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">Rule</p>
+                <ul class="mt-2 space-y-2">
+                  {r.rules.map((rule) => (
+                    <li class="flex items-start gap-3 rounded-xl bg-base-200/50 p-3 text-sm">
+                      <span class="mt-0.5 shrink-0">
+                        {rule.pass === true && <span class="text-emerald-500">🟢</span>}
+                        {rule.pass === 'partial' && <span class="text-amber-500">🟡</span>}
+                        {rule.pass === false && <span class="text-base-content/40">⚪</span>}
+                      </span>
+                      <span class="leading-relaxed">
+                        <strong>{rule.result}</strong> → {rule.verdict}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    {/* Scoring */}
+    <section class="bg-base-100 px-4 py-16 lg:py-20">
+      <div class="mx-auto max-w-3xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+          ผลการ Audit
+        </p>
+        <h2 class="mt-2 font-display text-2xl font-black md:text-3xl">
+          นับจำนวนข้อที่ได้ "ไฟเขียว"
+        </h2>
+
+        <div class="mt-8 space-y-3">
+          {scoring.map((s) => (
+            <div
+              class="rounded-2xl border-2 bg-base-100 p-5"
+              style={`border-color: color-mix(in oklch, ${s.accent} 30%, transparent);`}
+            >
+              <p class="font-display text-lg font-bold" style={`color: ${s.accent};`}>{s.range}</p>
+              <p class="mt-2 text-sm leading-relaxed text-base-content/85 md:text-base">{s.advice}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* Persistent CTAs */}
+    <section class="border-t border-base-content/10 bg-base-200/40 px-4 py-16">
+      <div class="mx-auto max-w-3xl space-y-4">
+        <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+          ขั้นตอนถัดไป
+        </p>
+
+        <div class="grid gap-3 md:grid-cols-3">
+          <a
+            href="/agent-builder-kit#form"
+            class="group rounded-2xl border-2 border-secondary bg-secondary p-5 text-white transition hover:bg-secondary/90"
+          >
+            <p class="font-display text-base font-bold">✅ ผ่าน 5+/7</p>
+            <p class="mt-2 text-sm opacity-90">กลับไปดาวน์โหลด Kit →</p>
+          </a>
+          <a
+            href="/insights"
+            class="group rounded-2xl border-2 border-base-content/15 bg-base-100 p-5 transition hover:border-secondary/40"
+          >
+            <p class="font-display text-base font-bold">📚 ผ่าน 0-4/7</p>
+            <p class="mt-2 text-sm text-base-content/70">ลอง E-book ฟรีก่อน · กลับมาเมื่อพร้อม</p>
+          </a>
+          <a
+            href={SITE.social.line}
+            target="_blank"
+            rel="noopener"
+            class="group rounded-2xl border-2 border-base-content/15 bg-base-100 p-5 transition hover:border-secondary/40"
+          >
+            <p class="font-display text-base font-bold">💬 ไม่แน่ใจ</p>
+            <p class="mt-2 text-sm text-base-content/70">ทักทีม LINE OA · ช่วย audit ภายใน 24 ชม.</p>
+          </a>
+        </div>
+      </div>
+    </section>
   </main>
 </BaseLayout>
