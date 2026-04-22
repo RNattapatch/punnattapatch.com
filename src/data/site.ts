@@ -136,6 +136,45 @@ export const PUN_CORE_BIO = [
   { stat: '2.29M', body: 'TikTok views organic · proof ว่าเจ้าของ SME ฟังผม · ไม่ใช่ทฤษฎีในตำรา' },
 ] as const;
 
+/**
+ * MILESTONES — Status Bar data for <MilestoneBar /> component.
+ * Renders trajectory through Outcomes (clients won / workshops run / agents deployed),
+ * NOT income — per CLAUDE.md no-revenue-disclosure rule.
+ * Update quarterly. Pattern lifted from @ar.ngoon p.19 + Doctor Rule 16 Outcome Bucket.
+ */
+export const MILESTONES = {
+  done: {
+    status: 'DONE',
+    quarter: 'Q1 2026',
+    icon: '✓',
+    items: [
+      '3 client wins (B2B SME ฿30-200M)',
+      '1 in-house workshop run',
+      '12 agents deployed in client teams',
+    ],
+  },
+  now: {
+    status: 'NOW',
+    quarter: 'Q2 2026',
+    icon: '→',
+    items: [
+      'Public Training Phase 1 launch',
+      '8 AEO articles indexed',
+      'Kit + Waitlist live',
+    ],
+  },
+  next: {
+    status: 'NEXT',
+    quarter: 'Q3 2026',
+    icon: '⚡',
+    items: [
+      'Inner Circle gated rollout',
+      '฿1M MRR target',
+      'Build ฿100M sales-team SOP handed to first 3 clients',
+    ],
+  },
+} as const;
+
 export const SERVICE_TIERS_SUMMARY = {
   entry: 'AI Workshop (฿30k/วัน)',
   growth: 'Workshop + Follow-up (฿50k)',
