@@ -210,6 +210,14 @@ const budgets = [
       >
         {/* Hidden field populated from ?program= URL param */}
         <input type="hidden" id="program" name="program" value="" />
+        {/* Hidden attribution fields populated by UTM capture script (BaseLayout.astro) */}
+        <input type="hidden" id="utm_source" name="utm_source" value="" />
+        <input type="hidden" id="utm_medium" name="utm_medium" value="" />
+        <input type="hidden" id="utm_campaign" name="utm_campaign" value="" />
+        <input type="hidden" id="utm_content" name="utm_content" value="" />
+        <input type="hidden" id="utm_term" name="utm_term" value="" />
+        <input type="hidden" id="fbclid" name="fbclid" value="" />
+        <input type="hidden" id="ttclid" name="ttclid" value="" />
         <!-- ===== Contact ===== -->
         <fieldset class="space-y-5 rounded-2xl border border-base-content/10 bg-base-100 p-6">
           <legend class="px-2 font-display text-lg font-bold">1. ติดต่อ</legend>
@@ -748,18 +756,35 @@ const budgets = [
       { props: { source: (payload.source as string) ?? 'unknown' } }
     );
 
-    if (refNode) refNode.textContent = payload._meta.reference;
-
-    form.classList.add('hidden');
-    success?.classList.remove('hidden');
     if (submitBtn) {
       submitBtn.disabled = false;
       submitBtn.textContent = submitBtnLabel;
     }
-    window.scrollTo({
-      top: (success?.offsetTop ?? 0) - 80,
-      behavior: 'smooth',
+
+    // Redirect to /thank-you with ref + attribution passthrough so the
+    // conversion event fires on a canonical URL (required by Meta/TikTok
+    // ads managers to match "Thank You Page" conversion goal).
+    const thankYouUrl = new URL('/thank-you', window.location.origin);
+    thankYouUrl.searchParams.set('ref', payload._meta.reference);
+    const attrKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'ttclid'];
+    attrKeys.forEach((k) => {
+      const v = (payload[k] as string) || '';
+      if (v) thankYouUrl.searchParams.set(k, v);
     });
+    window.location.href = thankYouUrl.toString();
+
+    // Double-belt fallback: in-app browsers (IG/LINE) occasionally swallow the
+    // redirect. If we're still on this page after 800ms, reveal the inline
+    // success panel so the user doesn't lose the reference token.
+    setTimeout(() => {
+      if (refNode) refNode.textContent = payload._meta.reference;
+      form.classList.add('hidden');
+      success?.classList.remove('hidden');
+      window.scrollTo({
+        top: (success?.offsetTop ?? 0) - 80,
+        behavior: 'smooth',
+      });
+    }, 800);
   });
 
   copyBtn?.addEventListener('click', async () => {

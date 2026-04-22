@@ -1,0 +1,149 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/site';
+
+const title = 'ขอบคุณที่กรอกแบบประเมิน';
+const description =
+  'รับแบบประเมินแล้ว ผมจะอ่านและตอบกลับภายใน 2 วันทำการ — ขั้นตอนสุดท้าย ทักใน LINE OA พร้อมรหัสอ้างอิง';
+---
+
+<BaseLayout title={title} description={description} noindex={true}>
+  <section class="px-4 py-24">
+    <div class="mx-auto max-w-xl text-center">
+      <div
+        class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-success text-5xl text-success-content"
+        aria-hidden="true"
+      >
+        ✓
+      </div>
+
+      <h1 class="mt-6 font-display text-3xl font-bold text-base-content md:text-4xl">
+        บันทึกแบบประเมินเรียบร้อย
+      </h1>
+
+      <p class="mt-5 text-lg leading-relaxed text-base-content/80">
+        ขั้นตอนสุดท้าย — <strong class="text-secondary">ทักหาผมใน LINE</strong>
+        พร้อมแนบ Reference ด้านล่าง
+      </p>
+
+      <div class="mt-8">
+        <span class="text-xs uppercase tracking-widest text-base-content/50">Reference</span>
+        <div class="mt-2">
+          <code
+            id="ref-display"
+            class="inline-block rounded-lg bg-base-200 px-6 py-3 font-mono text-xl font-bold text-base-content"
+          >—</code>
+        </div>
+      </div>
+
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a
+          href={SITE.social.line}
+          rel="noopener"
+          target="_blank"
+          class="btn btn-lg bg-secondary text-secondary-content shadow-lg shadow-secondary/25 hover:bg-secondary/90"
+        >
+          ทักใน LINE OA →
+        </a>
+        <button id="copy-ref" type="button" class="btn btn-lg btn-outline">
+          คัดลอก Reference
+        </button>
+      </div>
+
+      <p class="mt-8 text-sm text-base-content/70">
+        ปันอ่านเองทุกเคส · ตอบกลับภายใน 2 วันทำการ · ไม่มี mass email
+      </p>
+
+      <div class="mt-12 rounded-xl border border-base-content/10 bg-base-100 p-6 text-left">
+        <p class="mb-3 font-display text-lg font-bold">ระหว่างรอผมตอบกลับ</p>
+        <ul class="space-y-2 text-sm text-base-content/80">
+          <li>
+            📺 ดู case studies จริงจาก SME ไทย —
+            <a href="/case-studies" class="link link-secondary">/case-studies</a>
+          </li>
+          <li>
+            📚 อ่านบทเรียนสร้างทีมขาย ฿0 → ฿100M —
+            <a href="/insights" class="link link-secondary">/insights</a>
+          </li>
+          <li>
+            📱 ดู content ใหม่ —
+            <a
+              href={SITE.social.tiktok}
+              target="_blank"
+              rel="noopener"
+              class="link link-secondary"
+            >
+              TikTok @pun_nattapatch
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get('ref') || '—';
+
+      const refNode = document.getElementById('ref-display');
+      if (refNode) refNode.textContent = ref;
+
+      const copyBtn = document.getElementById('copy-ref');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', async () => {
+          if (ref === '—') return;
+          try {
+            await navigator.clipboard.writeText(ref);
+            const orig = copyBtn.textContent;
+            copyBtn.textContent = 'คัดลอกแล้ว ✓';
+            setTimeout(() => {
+              copyBtn.textContent = orig;
+            }, 2000);
+          } catch {
+            /* clipboard blocked — user can still highlight + copy */
+          }
+        });
+      }
+
+      // Collect attribution from URL for conversion event payloads
+      const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+      const attribution = {};
+      utmKeys.forEach((k) => {
+        const v = params.get(k);
+        if (v) attribution[k] = v;
+      });
+      const fbclid = params.get('fbclid');
+      const ttclid = params.get('ttclid');
+      if (fbclid) attribution.fbclid = fbclid;
+      if (ttclid) attribution.ttclid = ttclid;
+
+      // Plausible — Lead Success conversion goal (fires always; Plausible is loaded in BaseLayout)
+      window.plausible =
+        window.plausible ||
+        function () {
+          (window.plausible.q = window.plausible.q || []).push(arguments);
+        };
+      window.plausible('Lead Success', { props: { ref, ...attribution } });
+
+      // Meta Pixel — Lead event. Guarded; fires only if fbq loaded (post H1 unblock)
+      if (typeof window.fbq === 'function') {
+        window.fbq(
+          'track',
+          'Lead',
+          { content_name: 'intake_form', currency: 'THB', value: 0 },
+          { eventID: ref }
+        );
+      }
+
+      // TikTok Pixel — CompleteRegistration event. Guarded; fires only if ttq loaded (post H2)
+      if (window.ttq && typeof window.ttq.track === 'function') {
+        window.ttq.track('CompleteRegistration', {
+          content_id: ref,
+          currency: 'THB',
+          value: 0,
+        });
+      }
+    })();
+  </script>
+</BaseLayout>
