@@ -1,9 +1,197 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import MilestoneBar from '../../components/MilestoneBar.astro';
+import ManifestoBlock from '../../components/ManifestoBlock.astro';
+import { SITE } from '../../data/site';
 
-const title = 'AI Agent Builder Kit';
+const title = 'AI Agent Builder Kit — สร้างทีม AI ที่ทำงานจริงในธุรกิจ';
 const description =
-  'Kit สำหรับเจ้าของ SME / ผู้จัดการที่อยากสร้างทีม AI Agent ใช้งานจริงในธุรกิจ — manual + setup files + 20+ prompts + bonus stack';
+  'Kit ฟรี (form-gated) สำหรับเจ้าของ SME ฿30M+ ที่อยากสร้าง AI Agent ใช้งานจริง — Manual 50pp + 5 setup files + 20+ prompts + bonus stack มูลค่ารวม ฿29,900';
+
+const eras = [
+  {
+    label: 'ยุค 1',
+    title: 'ใช้ AI Random ถามตอบ',
+    note: 'SME ส่วนใหญ่อยู่ตรงนี้',
+    accent: 'var(--color-base-content)',
+  },
+  {
+    label: 'ยุค 2',
+    title: 'มี Agent ทำงานเฉพาะทาง 1-2 ตัว',
+    note: 'early adopter',
+    accent: 'var(--color-pun-cyan, #22d3ee)',
+  },
+  {
+    label: 'ยุค 3',
+    title: 'ทีม AI รู้จักธุรกิจ ทำงานเป็นระบบ',
+    note: 'Kit นี้พาคุณไปที่นี่',
+    accent: 'var(--color-secondary, #dd4155)',
+  },
+];
+
+const tiers = [
+  {
+    tier: 'TIER 1',
+    label: 'เริ่มต้น (1 agent · ใช้แค่คุณคนเดียว)',
+    math: 'Save 5 ชม./สัปดาห์ × 50 สัปดาห์ × labor ฿500/ชม.',
+    save: '฿125,000 / ปี',
+    outcome: '⏰ คุณได้คืนเวลา 1 วันต่อสัปดาห์',
+    accent: 'var(--color-pun-cyan, #22d3ee)',
+  },
+  {
+    tier: 'TIER 2',
+    label: 'ทีมเริ่มใช้ (5 agents · ทั้ง sales team ใช้)',
+    math: 'Save 80 ชม./สัปดาห์ × 50 × ฿500',
+    save: '฿2,000,000 / ปี',
+    outcome: '💰 เท่ากับเงินเดือนพนักงานเพิ่ม 1 คนแบบไม่ต้องจ้าง',
+    accent: 'var(--color-secondary, #dd4155)',
+  },
+  {
+    tier: 'TIER 3',
+    label: 'ระบบเต็ม (15 agents · operating system)',
+    math: 'Save 240 ชม./สัปดาห์ × 50 × ฿500',
+    save: '฿6,000,000 / ปี',
+    outcome: '🛡 ลด headcount cost ฿120k/เดือน + คืนเวลาเจ้าของ 1 วัน/สัปดาห์',
+    accent: 'var(--color-pun-violet, #7c3aed)',
+  },
+];
+
+const programs = [
+  {
+    icon: '🤖',
+    badge: 'Training',
+    name: 'Program 1 — Agent Operating System Manual',
+    spec: '50pp Hybrid Beauty+Workbook',
+    value: '฿4,900',
+    bullets: [
+      ['คู่มือสร้าง AI Agent ตั้งแต่ 0 → ระบบใช้งานจริง', 'คุณรู้ว่าเริ่มที่ไหน ทำอะไรลำดับใด ใช้เวลาเท่าไร'],
+      ['4-phase journey × 8 modules + worksheet ทุกบท', 'ทำตามได้โดยไม่ต้องคิดเอง'],
+      ['7-rule audit checklist (Step 0)', 'คัด business problem ที่ AI ติดได้จริง ไม่ใช่ติดเสียเวลา'],
+    ],
+  },
+  {
+    icon: '🛠',
+    badge: 'Implementation',
+    name: 'Program 2 — Setup Toolkit (5 ไฟล์ .md)',
+    spec: 'Drop-in Files',
+    value: '฿2,400',
+    bullets: [
+      ['the-architect.md → AI ที่ดูแล project structure ของคุณ', 'ไม่ต้องตั้งระบบเองทุกครั้งที่เปิด project ใหม่'],
+      ['skill-business-context.md → ระบบสัมภาษณ์อัตโนมัติ', 'Claude รู้จักธุรกิจคุณภายใน 15 นาที'],
+      ['skill-build-agent-team.md + skill-prompt-library.md', 'ทีม agent ที่ตั้งให้กันเอง ไม่ต้องคิดทีละคน'],
+    ],
+  },
+  {
+    icon: '📋',
+    badge: 'AI Build',
+    name: 'Program 3 — Prompt Library 20+',
+    spec: 'Phase × Tier organized',
+    value: '฿3,900',
+    bullets: [
+      ['20 prompt สำเร็จรูปติดตั้งใน 5 นาที', 'จาก "อ่าน manual" → "agent ทำงานจริง" ใช้เวลาแค่ copy/paste'],
+      ['แต่ละ prompt มี CHECK gate + worked example', 'รู้ทันทีว่าใช้ได้กับธุรกิจคุณไหม ก่อนเสียเวลา'],
+      ['แบ่งตาม Phase 1-4 + Tier 🟢🟡🔴', 'เริ่มที่ระดับที่คุณพร้อม ไม่ต้องเรียนทั้งหมดก่อน'],
+    ],
+  },
+];
+
+const bonuses = [
+  {
+    name: 'Custom GPT "Pun\'s Sales OS"',
+    value: '฿9,900',
+    delivery: 'ส่งทาง LINE ภายใน 7 วันหลังกรอกฟอร์ม',
+    why: 'AI ที่เทรนจาก closed-won deal 100+ รายของลูกค้าปัน',
+  },
+  {
+    name: '30-day LINE OA support during install',
+    value: '฿4,900',
+    delivery: 'ตอบคำถาม install ภายใน 24 ชม. (Mon-Fri)',
+    why: 'ไม่ติดอยู่กับ "ลองเอง" ที่อาจหลงทาง',
+  },
+  {
+    name: 'Free entry: monthly "Office Hours" group call',
+    value: '฿3,900',
+    delivery: 'ฟัง Q&A ของเจ้าของ SME คนอื่นที่ install kit เดียวกัน',
+    why: 'เห็น pattern จากธุรกิจอื่นที่เจอปัญหาคล้ายคุณ',
+  },
+  {
+    name: '🔥 FAST ACTION (50 คนแรก): 30-min strategy call กับปัน',
+    value: 'นับจาก form submit timestamp · เต็มเมื่อเต็ม',
+    delivery: 'audit business เฉพาะคุณ + แนะ wedge แรก',
+    why: 'รู้ว่าควรเริ่ม agent ตัวแรกที่ตรงไหนก่อนกดเริ่ม',
+    fastAction: true,
+  },
+];
+
+const auditRules = [
+  'ธุรกิจคุณรายได้ ฿30M+ ต่อปี (มี cash flow รองรับ AI tool ฿1,500-3,000/เดือน)',
+  'คุณมีทีมงาน 5+ คน (agent มีคนใช้ ไม่ใช่ install แล้วใช้เอง)',
+  'คุณมี Google Workspace + คอม Mac/Windows ใช้งาน (ไม่ใช่ทำธุรกิจจาก iPad อย่างเดียว)',
+  'คุณพร้อมลงเวลา 4-6 ชม. ใน 30 วันแรก (อ่าน manual + ทำ worksheet + setup agent)',
+  'คุณยอมรับว่า "AI ใช้แล้วต้อง iterate" — install เสร็จต้องปรับให้เก่งขึ้นเรื่อยๆ',
+];
+
+const phases = [
+  {
+    num: '1',
+    name: 'Setup',
+    do: 'ติดตั้ง Claude Code + business context + 1 agent แรก',
+    time: '2-3 ชม.',
+    prompts: '4 prompts',
+  },
+  {
+    num: '2',
+    name: 'Build',
+    do: 'สร้าง agent team (sales / content / ops) ตามรูปแบบธุรกิจ',
+    time: '3-4 ชม.',
+    prompts: '8 prompts',
+  },
+  {
+    num: '3',
+    name: 'Operate',
+    do: 'ใช้งานจริง วัดผล before/after ปรับ prompt ให้คม',
+    time: '30 วัน',
+    prompts: '5 prompts',
+  },
+  {
+    num: '4',
+    name: 'Scale',
+    do: 'ขยาย agent team + handoff ให้พนักงาน maintain เอง',
+    time: '60-90 วัน',
+    prompts: '3 prompts',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Kit นี้ฟรีจริงไหม?',
+    a: 'ฟรีจริง · ไม่มี trial · ไม่มี upsell บังคับ · ไฟล์ทั้งหมด 12 MB ดาวน์โหลดเสร็จเป็นของคุณ',
+  },
+  {
+    q: 'ใช้กับ ChatGPT / Gemini ได้ไหม (แทน Claude Code)?',
+    a: 'ได้ · prompt 20 ตัวออกแบบให้ portable · setup files (.md) ทำงานบน Claude Code ดีที่สุด แต่ adapt ใช้กับ ChatGPT Custom GPT / Gemini Gem ได้',
+  },
+  {
+    q: 'ต้องเขียนโค้ดเป็นไหม?',
+    a: 'ไม่ต้อง · ทุก prompt มี CHECK gate + worked example · copy/paste แล้วเริ่มได้',
+  },
+  {
+    q: 'Workshop กับ Kit ต่างกันยังไง?',
+    a: 'Kit = TIER 1 ทำเองได้ (1 agent ใช้คนเดียว) · Workshop = TIER 2-3 ติดตั้งทั้งทีม + ปันลงไปจูง 1 วัน on-site',
+  },
+  {
+    q: 'รับเงินคืนไหม?',
+    a: 'ไม่มีนโยบายคืนเงิน — รับเฉพาะ qualified prospect เพื่อให้ผลลัพธ์จริง',
+  },
+  {
+    q: 'มีคอร์สออนไลน์ไหม?',
+    a: 'ไม่มี · ทุก service ของผม on-site เท่านั้น · in-house workshop ไปที่ออฟฟิศคุณ · public training (P1) ในห้องเรียน',
+  },
+  {
+    q: 'ติดตั้งที่บริษัทเราได้ไหม?',
+    a: 'ได้ · นั่นคือ in-house workshop · ดู /services/ai-workshop หรือกรอก intake-form',
+  },
+];
 ---
 
 <BaseLayout
@@ -11,15 +199,593 @@ const description =
   description={description}
   schema={{ type: 'WebPage' }}
 >
-  <main class="mx-auto max-w-3xl px-4 py-16">
-    <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
-      Agent Builder Kit
-    </p>
-    <h1 class="mt-2 font-display text-4xl font-bold">Hub page (B4 stub)</h1>
-    <p class="mt-4 text-base-content/70">
-      Phase B1 scaffold. เนื้อหา 17 sections จะ embed จาก
-      <code class="rounded bg-base-200 px-1.5 py-0.5 text-sm">web-content/hub-page-content.md</code>
-      ใน B4
-    </p>
+  <main>
+    {/* 3.1 — Wow Hero (Time-arbitrage hook) */}
+    <section class="relative overflow-hidden border-b border-base-content/10 bg-base-100 px-4 py-20 lg:py-28">
+      <div class="mx-auto max-w-4xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-secondary">
+          AI Agent Builder Kit · Free (form-gated)
+        </p>
+
+        <h1 class="mt-4 font-display text-3xl font-black leading-tight md:text-5xl lg:text-6xl">
+          งาน 80% ของพนักงานออฟฟิศคุณ ทำได้ด้วย AI Agent ที่เซ็ตอัพภายใน 1 ชั่วโมง
+        </h1>
+
+        <p class="mt-6 font-display text-xl font-bold leading-relaxed text-base-content/85 md:text-2xl">
+          ที่เหลือ 20% เป็นงานที่ต้องการมนุษย์จริงๆ — และนั่นคือคนที่คุณควรจ้างเพิ่ม
+        </p>
+
+        <p class="mt-6 text-base leading-relaxed text-base-content/75 md:text-lg">
+          Kit นี้คือคู่มือแยก 80/20 + prompt 20+ ตัว ที่ผมใช้กับลูกค้า ฿30M-200M revenue
+        </p>
+
+        <p class="mt-4 text-sm text-base-content/60">
+          Free Kit — Manual 50pp + 5 setup files + 20+ prompts (12 MB .zip)
+        </p>
+
+        <div class="mt-6 inline-flex items-center gap-2 rounded-full border border-secondary/30 bg-secondary/5 px-4 py-1.5 text-xs font-bold text-secondary">
+          💼 Corporate Tax-Deductible 200% available (in-house track)
+        </div>
+
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a
+            href="#form"
+            class="inline-flex items-center justify-center gap-2 rounded-full bg-secondary px-6 py-3 font-display text-base font-bold text-white shadow-lg transition hover:bg-secondary/90"
+            data-persona="owner"
+          >
+            🏢 ผมเป็นเจ้าของธุรกิจ
+          </a>
+          <a
+            href="#form"
+            class="inline-flex items-center justify-center gap-2 rounded-full border border-base-content/20 bg-base-100 px-6 py-3 font-display text-base font-bold text-base-content transition hover:border-secondary/40"
+            data-persona="manager"
+          >
+            👨‍💼 ผมเป็น Manager / Dept Head
+          </a>
+        </div>
+      </div>
+    </section>
+
+    {/* 3.2 — Status Bar (DONE / NOW / NEXT) */}
+    <MilestoneBar />
+
+    {/* 3.3 — The Truth manifesto */}
+    <ManifestoBlock />
+
+    {/* 3.4 — 3-Question Self-Diagnostic */}
+    <section class="bg-base-200/30 px-4 py-16 lg:py-20">
+      <div class="mx-auto max-w-3xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+          Self-diagnostic
+        </p>
+        <h2 class="mt-2 font-display text-2xl font-black leading-tight md:text-3xl">
+          นี่คือความจริงที่เจ้าของ SME ส่วนใหญ่ไม่ยอมยอมรับ — ลองตอบ 3 คำถามนี้ก่อนกรอกฟอร์ม
+        </h2>
+
+        <ol class="mt-8 space-y-6">
+          <li class="rounded-2xl border border-base-content/10 bg-base-100 p-6">
+            <p class="font-display text-lg font-bold">1️⃣ คุณใช้ ChatGPT ตอบคำถามวันละ 5-10 ครั้ง ใช่มั้ย?</p>
+            <p class="mt-3 text-base leading-relaxed text-base-content/80">
+              เพราะคุณยังไม่ได้ตั้ง agent ที่รู้จักธุรกิจคุณ — ทุกครั้งคือคุยจากศูนย์<br />
+              เปิด → อธิบาย context → ตรวจคำตอบ → ปรับใหม่ → คัดลอกไปใช้
+            </p>
+          </li>
+          <li class="rounded-2xl border border-base-content/10 bg-base-100 p-6">
+            <p class="font-display text-lg font-bold">2️⃣ ทุก task คุณยังต้อง prompt ใหม่ ใช่มั้ย?</p>
+            <p class="mt-3 text-base leading-relaxed text-base-content/80">
+              เปิด ChatGPT → คิด context → คิด instruction → ตรวจคำตอบ → ปรับใหม่<br />
+              งาน 30 นาทีกินเวลา 2 ชม. เพราะ AI ไม่จำเรื่องที่คุณบอกเมื่อวาน
+            </p>
+          </li>
+          <li class="rounded-2xl border border-base-content/10 bg-base-100 p-6">
+            <p class="font-display text-lg font-bold">3️⃣ คุณยังเชื่อว่า "AI ใช้ดีต้อง prompt เก่ง" ใช่มั้ย?</p>
+            <p class="mt-3 text-base leading-relaxed text-base-content/80">
+              รอเรียน prompt engineering · รอ AI เก่งขึ้น · รอจังหวะลงตัว<br />
+              แต่ทีมคู่แข่งติดตั้ง agent ระบบทำงานแล้วมา 6 เดือน
+            </p>
+          </li>
+        </ol>
+
+        <p class="mt-8 text-center font-display text-lg font-bold text-secondary">
+          ถ้าตอบ "ใช่" ทั้ง 3 ข้อ — Kit ในหน้านี้ออกแบบมาให้คุณ
+        </p>
+      </div>
+    </section>
+
+    {/* 3.5 — PROBLEM Section (Doctor 70:20:10) */}
+    <section class="bg-base-100 px-4 py-20 lg:py-24">
+      <div class="mx-auto max-w-4xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-secondary">
+          The Problem
+        </p>
+        <h2 class="mt-2 font-display text-3xl font-black leading-tight md:text-4xl">
+          ทำไม AI ในธุรกิจคุณยังทำงานไม่เป็นระบบ
+        </h2>
+
+        {/* Block A — SYMPTOM */}
+        <div class="mt-12">
+          <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+            อาการที่เจอ
+          </p>
+          <blockquote class="mt-3 rounded-2xl border-l-4 border-secondary bg-base-200/40 p-6 font-display text-base italic leading-relaxed md:text-lg">
+            <p>"พนักงาน admin คนเดียวลาออก ทุกอย่างหยุดหมด"</p>
+            <p class="mt-2">"ลูกน้องเปิด ChatGPT แล้วค้างคิดว่าจะพิมพ์อะไร"</p>
+            <p class="mt-2">"ทำ quote template ใช้เวลาเป็นชั่วโมง · งานซ้ำกินเวลา 4-6 ชม./วัน"</p>
+            <p class="mt-2">"ส่งทีมไปเรียน AI · ตื่นเต้น 3 วัน · สัปดาห์ที่ 2 ลืมหมด"</p>
+            <footer class="mt-4 text-sm not-italic text-base-content/60">
+              — เจ้าของ SME ที่ปันคุยใน 6 เดือนล่าสุด
+            </footer>
+          </blockquote>
+        </div>
+
+        {/* Block B — ROOT CAUSE */}
+        <div class="mt-12">
+          <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+            รากของปัญหา
+          </p>
+          <div class="mt-3 rounded-2xl border border-base-content/10 bg-base-100 p-6">
+            <p class="font-display text-lg font-bold">รากของปัญหาอยู่ที่ระบบ ไม่ใช่ AI หรือทีม</p>
+            <div class="mt-4 space-y-2 text-base leading-relaxed text-base-content/85">
+              <p>AI ดีพอแล้วในปี 2026 ทีมก็พร้อมเรียนรู้</p>
+              <p>แต่ไม่มีใครจัดเก็บความรู้ของธุรกิจคุณให้ AI เข้าใจตลอดไป</p>
+              <p>ทุกวันที่ผ่านไป = คุณ + ทีม คุยกับ AI ใหม่จากศูนย์</p>
+              <p>งาน 30 นาทีจึงกินเวลา 2 ชม. เพราะอธิบาย context ใหม่ทุกครั้ง</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Block C — IMPACT */}
+        <div class="mt-12">
+          <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+            Impact (สำหรับ SME ทีมขาย 5-10 คน)
+          </p>
+          <div class="mt-3 grid gap-4 md:grid-cols-3">
+            <div class="rounded-2xl border border-base-content/10 bg-base-200/40 p-5">
+              <p class="text-2xl">⏰</p>
+              <p class="mt-2 font-display font-bold">Time Lost</p>
+              <p class="mt-2 text-sm leading-relaxed text-base-content/80">
+                พนักงาน 5 คน × 3 ชม./วัน อธิบาย context ให้ AI ใหม่<br />
+                <span class="font-bold">= 15 ชม./วัน × 250 วัน = 3,750 ชม./ปี</span>
+              </p>
+            </div>
+            <div class="rounded-2xl border border-base-content/10 bg-base-200/40 p-5">
+              <p class="text-2xl">💰</p>
+              <p class="mt-2 font-display font-bold">Money Lost</p>
+              <p class="mt-2 text-sm leading-relaxed text-base-content/80">
+                3,750 ชม. × labor cost ฿500/ชม.<br />
+                <span class="font-bold">= ฿1,875,000 / ปี</span> ที่หายไปกับงานที่ AI ทำได้ใน 5 นาทีถ้ามี context
+              </p>
+            </div>
+            <div class="rounded-2xl border border-base-content/10 bg-base-200/40 p-5">
+              <p class="text-2xl">🛡</p>
+              <p class="mt-2 font-display font-bold">Risk Accumulated</p>
+              <p class="mt-2 text-sm leading-relaxed text-base-content/80">
+                พนักงาน 1 คน = single point of failure<br />
+                เขาลาออก = AI ของบริษัทคุณก็ลาออกตามไปด้วย (เพราะ context อยู่ในหัวเขา ไม่ใช่ในระบบ)
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Block D — COST OF INACTION */}
+        <div class="mt-12 rounded-2xl border-2 border-secondary/30 bg-secondary/5 p-6 md:p-8">
+          <p class="text-xs font-bold uppercase tracking-widest text-secondary">
+            Cost of Inaction (6 เดือน)
+          </p>
+          <ul class="mt-4 space-y-2 text-base leading-relaxed text-base-content/90">
+            <li>• Time loss: 3,750 ชม./2 = <span class="font-bold">1,875 ชม.</span> ที่ทีมเสีย</li>
+            <li>• Money loss: <span class="font-bold">฿937,500</span> ที่ไม่ควรจ่าย</li>
+            <li>• Opportunity cost: คู่แข่งที่ติดตั้งระบบไปแล้วจะเพิ่ม margin 20-30% ใน niche เดียวกัน</li>
+          </ul>
+          <p class="mt-4 font-display text-base font-bold">
+            Kit ในหน้านี้ = step แรกของระบบที่หยุดการสูญเสียนี้
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* 3.6 — 3-Era Positioning */}
+    <section class="bg-base-200/40 px-4 py-16 lg:py-20">
+      <div class="mx-auto max-w-5xl">
+        <p class="text-center text-xs font-bold uppercase tracking-widest text-base-content/60">
+          3-Era Positioning
+        </p>
+        <h2 class="mt-2 text-center font-display text-2xl font-black md:text-3xl">
+          AI ทุกคนใช้ — แต่อยู่กันคนละยุค
+        </h2>
+
+        <div class="mt-10 grid gap-4 md:grid-cols-3">
+          {eras.map((era) => (
+            <div
+              class="rounded-2xl border bg-base-100 p-6 text-center"
+              style={`border-color: color-mix(in oklch, ${era.accent} 25%, transparent);`}
+            >
+              <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${era.accent};`}>
+                {era.label}
+              </p>
+              <p class="mt-3 font-display text-base font-bold leading-snug md:text-lg">{era.title}</p>
+              <p class="mt-3 text-sm italic text-base-content/60">({era.note})</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* 3.7 — Math of Volume Tier Visualization */}
+    <section class="bg-base-100 px-4 py-20 lg:py-24">
+      <div class="mx-auto max-w-4xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+          Math of Volume
+        </p>
+        <h2 class="mt-2 font-display text-2xl font-black md:text-3xl">
+          ติดตั้ง agent กี่ตัว = ROI เท่าไร? คณิตศาสตร์ของลูกค้าจริง
+        </h2>
+
+        <div class="mt-10 space-y-4">
+          {tiers.map((t) => (
+            <div
+              class="rounded-2xl border-2 bg-base-100 p-6 transition hover:shadow-md"
+              style={`border-color: color-mix(in oklch, ${t.accent} 30%, transparent);`}
+            >
+              <div class="flex flex-wrap items-baseline justify-between gap-3">
+                <div>
+                  <span
+                    class="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest"
+                    style={`background: color-mix(in oklch, ${t.accent} 15%, transparent); color: ${t.accent};`}
+                  >
+                    {t.tier}
+                  </span>
+                  <span class="ml-3 font-display text-base font-bold">{t.label}</span>
+                </div>
+                <span class="font-display text-2xl font-black" style={`color: ${t.accent};`}>{t.save}</span>
+              </div>
+              <p class="mt-3 text-sm text-base-content/70">{t.math}</p>
+              <p class="mt-2 text-sm font-bold text-base-content/85">{t.outcome}</p>
+            </div>
+          ))}
+        </div>
+
+        <p class="mt-8 rounded-2xl bg-base-200/60 p-5 text-center text-base text-base-content/85">
+          Kit ฟรีในหน้านี้ = พา <strong>TIER 1</strong> ทำเองได้ ·
+          <strong>TIER 2-3</strong> = workshop / consulting (ดู CTAs ด้านล่าง)
+        </p>
+      </div>
+    </section>
+
+    {/* 3.8 — Programs + Anchor Table */}
+    <section class="bg-base-200/30 px-4 py-20 lg:py-24">
+      <div class="mx-auto max-w-5xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+          What's Inside
+        </p>
+        <h2 class="mt-2 font-display text-3xl font-black md:text-4xl">
+          3 Programs + Bonus Stack — มูลค่ารวม ฿29,900
+        </h2>
+
+        <div class="mt-10 grid gap-6 md:grid-cols-3">
+          {programs.map((p) => (
+            <div class="rounded-2xl border border-base-content/10 bg-base-100 p-6">
+              <div class="flex items-center justify-between">
+                <span class="text-3xl">{p.icon}</span>
+                <span class="rounded-full bg-base-200/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-base-content/70">
+                  {p.badge}
+                </span>
+              </div>
+              <p class="mt-4 font-display text-base font-black leading-snug">{p.name}</p>
+              <p class="mt-1 text-xs text-base-content/60">{p.spec}</p>
+              <p class="mt-2 font-display text-sm font-bold text-secondary">มูลค่า {p.value}</p>
+
+              <ul class="mt-5 space-y-3">
+                {p.bullets.map(([what, why]) => (
+                  <li class="text-sm leading-relaxed">
+                    <p class="text-base-content/90">— {what}</p>
+                    <p class="mt-1 pl-3 text-xs text-base-content/60">→ {why}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* Bonus Stack */}
+        <div class="mt-10 rounded-2xl border-2 border-secondary/30 bg-secondary/5 p-6 md:p-8">
+          <div class="flex flex-wrap items-baseline justify-between gap-3">
+            <div>
+              <span class="text-2xl">🎁</span>
+              <span class="ml-2 font-display text-lg font-black">BONUS STACK</span>
+              <span class="ml-2 text-xs text-base-content/60">(แยกบรรทัด · ทุกชิ้น · ทุกราคา)</span>
+            </div>
+            <span class="font-display text-xl font-black text-secondary">มูลค่ารวม ฿18,700</span>
+          </div>
+
+          <div class="mt-6 space-y-4">
+            {bonuses.map((b) => (
+              <div
+                class={`rounded-2xl border bg-base-100 p-5 ${b.fastAction ? 'border-secondary/50 ring-1 ring-secondary/20' : 'border-base-content/10'}`}
+              >
+                <div class="flex flex-wrap items-baseline justify-between gap-2">
+                  <p class="font-display text-base font-bold">{b.name}</p>
+                  <span class="font-display text-sm font-bold text-secondary">{b.value}</span>
+                </div>
+                <p class="mt-2 text-sm text-base-content/70">{b.delivery}</p>
+                <p class="mt-1 text-sm text-base-content/85">→ {b.why}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Anchor Table */}
+        <div class="mt-10 rounded-2xl border-2 border-base-content/15 bg-base-100 p-6 md:p-8">
+          <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+            Anchor Table
+          </p>
+          <table class="mt-4 w-full text-sm md:text-base">
+            <tbody>
+              <tr class="border-b border-base-content/10">
+                <td class="py-3">Program 1 — Manual 50pp</td>
+                <td class="py-3 text-right font-display font-bold">฿4,900</td>
+              </tr>
+              <tr class="border-b border-base-content/10">
+                <td class="py-3">Program 2 — Setup Toolkit</td>
+                <td class="py-3 text-right font-display font-bold">฿2,400</td>
+              </tr>
+              <tr class="border-b border-base-content/10">
+                <td class="py-3">Program 3 — Prompt Library 20+</td>
+                <td class="py-3 text-right font-display font-bold">฿3,900</td>
+              </tr>
+              <tr class="border-b border-base-content/10">
+                <td class="py-3">Bonus Stack (4 items split)</td>
+                <td class="py-3 text-right font-display font-bold">฿18,700</td>
+              </tr>
+              <tr class="border-b-2 border-base-content/30">
+                <td class="py-3 font-display font-bold">มูลค่ารวมถ้าซื้อแยก</td>
+                <td class="py-3 text-right font-display text-lg font-black line-through opacity-50">฿29,900</td>
+              </tr>
+              <tr>
+                <td class="py-4">
+                  <span class="font-display text-base font-black">⭐ วันนี้ — FREE (form-gated)</span>
+                </td>
+                <td class="py-4 text-right">
+                  <span class="font-display text-2xl font-black text-secondary">฿0</span>
+                  <p class="text-xs text-base-content/60">ประหยัด ฿29,900 (100%)</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="mt-6 rounded-xl bg-base-200/60 p-4 text-center text-sm font-bold text-base-content/80">
+            📦 Outcome Bucket: ⏰ More Time × 💰 More Money × 🛡 Less Risk
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* 3.9 — STEP 0 Audit Gate (5-rule summary) */}
+    <section class="bg-base-100 px-4 py-20 lg:py-24">
+      <div class="mx-auto max-w-3xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-secondary">
+          🚨 ก่อน install Kit นี้
+        </p>
+        <h2 class="mt-2 font-display text-2xl font-black md:text-3xl">
+          เช็ก 5 ข้อนี้ก่อน
+        </h2>
+        <p class="mt-3 text-base text-base-content/75">
+          ถ้าตอบ "ไม่" ข้อใดข้อหนึ่ง → Kit นี้จะไม่ส่งผลให้ ดาวน์โหลดไปดูได้แต่ยังไม่ใช่จังหวะ:
+        </p>
+
+        <ol class="mt-8 space-y-4">
+          {auditRules.map((rule, idx) => (
+            <li class="flex gap-3 rounded-2xl border border-base-content/10 bg-base-200/40 p-5">
+              <span class="shrink-0 font-display text-xl font-black text-secondary">✓ {idx + 1}.</span>
+              <span class="text-base leading-relaxed">{rule}</span>
+            </li>
+          ))}
+        </ol>
+
+        <a
+          href="/agent-builder-kit/audit"
+          class="mt-8 inline-flex items-center gap-2 rounded-full border border-secondary/40 bg-secondary/5 px-5 py-2.5 font-display text-sm font-bold text-secondary transition hover:bg-secondary/10"
+        >
+          ดูคู่มือเต็ม → 7-rule expanded version
+        </a>
+      </div>
+    </section>
+
+    {/* 3.10 — Qualification #1 */}
+    <section class="border-y border-base-content/10 bg-base-200/30 px-4 py-12">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="font-display text-xl font-bold">Kit นี้เหมาะกับใคร?</p>
+        <ul class="mt-4 space-y-2 text-base text-base-content/85">
+          <li>✓ เจ้าของ SME ฿30M+ ที่อยากเปลี่ยนระบบขายด้วย AI</li>
+          <li>✓ Manager / Head ที่ต้องโชว์ผลงาน AI ใน 90 วัน</li>
+          <li>✗ คนที่อยากใช้ AI แค่ถามตอบ (ไม่ต้องโหลด Kit — ไปโหลดฟรีอันอื่น)</li>
+        </ul>
+      </div>
+    </section>
+
+    {/* 3.11 — 4-Phase Journey */}
+    <section class="bg-base-100 px-4 py-20 lg:py-24">
+      <div class="mx-auto max-w-5xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+          The Journey
+        </p>
+        <h2 class="mt-2 font-display text-2xl font-black md:text-3xl">
+          4 Phase · จาก zero ถึง agent ทีมรัน
+        </h2>
+
+        <div class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {phases.map((p) => (
+            <div class="rounded-2xl border border-base-content/10 bg-base-100 p-6">
+              <div class="flex items-center justify-between">
+                <span class="font-display text-3xl font-black text-secondary">{p.num}</span>
+                <span class="rounded-full bg-base-200/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest">
+                  {p.prompts}
+                </span>
+              </div>
+              <p class="mt-3 font-display text-lg font-bold">{p.name}</p>
+              <p class="mt-3 text-sm leading-relaxed text-base-content/80">{p.do}</p>
+              <p class="mt-3 text-xs text-base-content/60">⏱ {p.time}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* 3.12 — Prompt Library Preview */}
+    <section class="bg-base-200/30 px-4 py-20 lg:py-24">
+      <div class="mx-auto max-w-5xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+          Prompt Library Preview
+        </p>
+        <h2 class="mt-2 font-display text-2xl font-black md:text-3xl">
+          20+ Prompts จัดตาม Phase × Tier
+        </h2>
+        <p class="mt-4 text-base text-base-content/75">
+          🟢 Starter · 🟡 Intermediate · 🔴 Advanced — แต่ละ prompt มี CHECK gate + worked example
+        </p>
+
+        <div class="mt-10 grid gap-4 md:grid-cols-2">
+          {phases.map((phase, idx) => (
+            <a
+              href={`/agent-builder-kit/prompts/p${idx + 1}-01-context-bootstrap`}
+              class="rounded-2xl border border-base-content/10 bg-base-100 p-6 transition hover:border-secondary/40 hover:shadow-md"
+            >
+              <p class="text-xs font-bold uppercase tracking-widest text-secondary">
+                Phase {phase.num} · {phase.name}
+              </p>
+              <p class="mt-2 font-display text-lg font-bold">{phase.prompts} ในเฟสนี้</p>
+              <p class="mt-3 text-sm text-base-content/70">{phase.do}</p>
+              <p class="mt-4 text-sm font-bold text-secondary">View prompts →</p>
+            </a>
+          ))}
+        </div>
+
+        <p class="mt-8 rounded-2xl bg-secondary/5 p-5 text-sm text-base-content/80">
+          🔴 <strong>Advanced cards</strong> ลิงก์เข้าใน workshop / P1 — ใช้ pattern เดียวกันแต่ลงลึกถึง production system
+        </p>
+      </div>
+    </section>
+
+    {/* 3.13 — Case Study compressed */}
+    <section class="border-y border-base-content/10 bg-base-100 px-4 py-16">
+      <div class="mx-auto max-w-3xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+          Case Study (30-second read)
+        </p>
+        <blockquote class="mt-4 rounded-2xl border-l-4 border-secondary bg-base-200/40 p-6">
+          <p class="font-display text-base leading-relaxed md:text-lg">
+            เคสลูกค้าที่ผมดูแลในไตรมาสที่ผ่านมา — ติดตั้ง agent ตัวแรก 1 เดือน → ปิด deal workshop + consulting ต่อเนื่อง
+          </p>
+          <a
+            href="/case-studies"
+            class="mt-4 inline-flex items-center gap-1 text-sm font-bold text-secondary hover:underline"
+          >
+            เปิด case detail →
+          </a>
+        </blockquote>
+      </div>
+    </section>
+
+    {/* 3.14 — Form Gate (B5 stub) */}
+    <section id="form" class="bg-base-200/40 px-4 py-20 lg:py-24">
+      <div class="mx-auto max-w-2xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-secondary">
+          กรอกฟอร์มรับ Kit
+        </p>
+        <h2 class="mt-2 font-display text-2xl font-black md:text-3xl">
+          ดาวน์โหลด Kit ฟรี (12 MB .zip)
+        </h2>
+        <p class="mt-4 text-base text-base-content/75">
+          กรอก 8 ฟิลด์ + เลือก interest 1+ ข้อ — ผมส่ง Kit ทาง LINE OA ภายใน 1 นาที
+        </p>
+
+        <div class="mt-8 rounded-2xl border-2 border-dashed border-base-content/20 bg-base-100 p-8 text-center text-sm text-base-content/60">
+          <p class="font-display text-base font-bold text-base-content/80">📋 Form (B5 stub)</p>
+          <p class="mt-3">
+            8 fields + 3 interest checkboxes + 7 hidden UTM fields<br />
+            POST → n8n webhook <code class="rounded bg-base-200 px-1.5 py-0.5 text-xs">kit-leads-v1</code><br />
+            Redirect → <code class="rounded bg-base-200 px-1.5 py-0.5 text-xs">/agent-builder-kit/thank-you</code>
+          </p>
+          <p class="mt-3 text-xs text-base-content/50">Phase B5 จะแทนที่ block นี้ด้วย form จริง</p>
+        </div>
+      </div>
+    </section>
+
+    {/* 3.15 — Pre-registration Screening CTA */}
+    <section class="bg-base-100 px-4 py-12">
+      <div class="mx-auto max-w-3xl rounded-2xl border-2 border-secondary/30 bg-secondary/5 p-6 text-center md:p-8">
+        <p class="font-display text-base leading-relaxed md:text-lg">
+          ก่อนสมัคร <strong>Workshop</strong> — กดคุยกับทีมก่อน เพื่อตรวจสอบว่าธุรกิจคุณพร้อมหรือไม่
+        </p>
+        <a
+          href={SITE.social.line}
+          target="_blank"
+          rel="noopener"
+          class="mt-5 inline-flex items-center gap-2 rounded-full bg-[#06C755] px-6 py-3 font-display text-base font-bold text-white shadow-lg transition hover:bg-[#05b14a]"
+        >
+          💬 คุยทาง LINE OA →
+        </a>
+      </div>
+    </section>
+
+    {/* 3.16 — FAQ */}
+    <section class="bg-base-200/30 px-4 py-20 lg:py-24">
+      <div class="mx-auto max-w-3xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+          FAQ
+        </p>
+        <h2 class="mt-2 font-display text-2xl font-black md:text-3xl">
+          คำถามที่เจ้าของถามบ่อย
+        </h2>
+
+        <div class="mt-8 space-y-3">
+          {faqs.map((f) => (
+            <details class="group rounded-2xl border border-base-content/10 bg-base-100 p-5 transition hover:border-secondary/30">
+              <summary class="cursor-pointer font-display text-base font-bold marker:hidden">
+                <span class="mr-2 text-secondary">Q.</span>{f.q}
+              </summary>
+              <p class="mt-3 pl-6 text-sm leading-relaxed text-base-content/80">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* 3.17 — Footer Qualification + Dual CTA */}
+    <section class="border-t border-base-content/10 bg-base-100 px-4 py-20">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="font-display text-xl font-bold leading-relaxed md:text-2xl">
+          รับเฉพาะ SME ฿30M+ ทีมขาย 5-20 คน
+        </p>
+        <p class="mt-3 text-base text-base-content/70">
+          เพราะเราขาย transformation ไม่ขาย training
+        </p>
+
+        <div class="mt-10 grid gap-4 md:grid-cols-2">
+          <a
+            href="/services/ai-workshop"
+            class="rounded-2xl border-2 border-secondary bg-secondary p-6 text-left text-white transition hover:bg-secondary/90"
+          >
+            <p class="text-xs font-bold uppercase tracking-widest opacity-80">
+              🏢 In-house Workshop
+            </p>
+            <p class="mt-2 font-display text-lg font-black">AI Workshop ที่ออฟฟิศคุณ</p>
+            <p class="mt-2 text-sm opacity-90">฿24,900 Early Bird ถึง 30 เม.ย. (1 พ.ค. ขึ้นเป็น ฿29,900)</p>
+            <p class="mt-3 text-sm font-bold">ดูรายละเอียด →</p>
+          </a>
+          <a
+            href="/training/p1-ai-workshop-1-day"
+            class="rounded-2xl border-2 border-base-content/15 bg-base-100 p-6 text-left transition hover:border-secondary/40"
+          >
+            <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+              👨‍💼 Public Training
+            </p>
+            <p class="mt-2 font-display text-lg font-black">P1 — 1-day Workshop</p>
+            <p class="mt-2 text-sm text-base-content/80">฿11,900 (Early Bird) · cohort-cap 1 ธุรกิจ/อุตสาหกรรม</p>
+            <p class="mt-3 text-sm font-bold text-secondary">เข้า waitlist →</p>
+          </a>
+        </div>
+      </div>
+    </section>
   </main>
 </BaseLayout>
