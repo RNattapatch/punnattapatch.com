@@ -1,34 +1,193 @@
 ---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { SITE } from '../../../data/site';
 
 export async function getStaticPaths() {
-  return [
-    { params: { slug: 'placeholder' }, props: { title: 'Placeholder prompt' } },
-  ];
+  const entries = await getCollection('prompts', ({ data }: CollectionEntry<'prompts'>) => !data.draft);
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
 }
 
 interface Props {
-  title: string;
+  entry: CollectionEntry<'prompts'>;
 }
 
-const { slug } = Astro.params;
-const { title } = Astro.props;
-const description = `Prompt ${slug} — Agent Builder Kit prompt library`;
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const data = entry.data;
+
+const description = data.description ?? data.useCase;
+
+const tierMeta = {
+  starter: { emoji: '🟢', label: 'Starter', accent: 'var(--color-pun-cyan, #22d3ee)' },
+  intermediate: { emoji: '🟡', label: 'Intermediate', accent: 'var(--color-secondary, #dd4155)' },
+  advanced: { emoji: '🔴', label: 'Advanced', accent: 'var(--color-pun-violet, #7c3aed)' },
+};
+
+const tier = tierMeta[data.tier];
+const url = `${SITE.url}/agent-builder-kit/prompts/${entry.id}`;
 ---
 
 <BaseLayout
-  title={title}
+  title={`${data.title} | Prompt Library`}
   description={description}
-  schema={{ type: 'WebPage' }}
+  schema={{
+    types: ['WebPage', 'BreadcrumbList'],
+    title: data.title,
+    description,
+    breadcrumbs: [
+      { name: 'หน้าแรก', url: SITE.url },
+      { name: 'Agent Builder Kit', url: `${SITE.url}/agent-builder-kit` },
+      { name: data.title, url },
+    ],
+  }}
 >
-  <main class="mx-auto max-w-3xl px-4 py-16">
-    <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
-      Prompt Library
-    </p>
-    <h1 class="mt-2 font-display text-4xl font-bold">{title}</h1>
-    <p class="mt-4 text-base-content/70">
-      Phase B1 scaffold (slug: <code>{slug}</code>). Content collection schema +
-      20 prompt MDs จะถูก wire ใน B7
-    </p>
+  <main>
+    {/* Hero */}
+    <section class="border-b border-base-content/10 bg-base-100 px-4 py-12 lg:py-16">
+      <div class="mx-auto max-w-3xl">
+        <nav class="text-xs text-base-content/60">
+          <a href="/agent-builder-kit" class="hover:text-secondary">Agent Builder Kit</a>
+          <span class="mx-2">/</span>
+          <span>Prompt Library</span>
+          <span class="mx-2">/</span>
+          <span class="text-base-content/40">Phase {data.phase}</span>
+        </nav>
+
+        <div class="mt-5 flex flex-wrap items-center gap-2">
+          <span
+            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest"
+            style={`background: color-mix(in oklch, ${tier.accent} 15%, transparent); color: ${tier.accent};`}
+          >
+            <span aria-hidden="true">{tier.emoji}</span>
+            {tier.label}
+          </span>
+          <span class="rounded-full bg-base-200/80 px-3 py-1 text-xs font-bold uppercase tracking-widest text-base-content/70">
+            Phase {data.phase}
+          </span>
+          <span class="rounded-full bg-base-200/80 px-3 py-1 text-xs text-base-content/70">
+            ⏱ {data.timeToSetup}
+          </span>
+        </div>
+
+        <h1 class="mt-5 font-display text-2xl font-black leading-tight md:text-4xl">
+          {data.title}
+        </h1>
+
+        <p class="mt-5 text-base leading-relaxed text-base-content/85 md:text-lg">
+          {data.useCase}
+        </p>
+      </div>
+    </section>
+
+    {/* CHECK gate */}
+    {data.checkGate.length > 0 && (
+      <section class="bg-base-200/30 px-4 py-10">
+        <div class="mx-auto max-w-3xl">
+          <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+            ✅ CHECK gate (ตอบใช่ทุกข้อก่อนใช้)
+          </p>
+          <ul class="mt-4 space-y-2">
+            {data.checkGate.map((q, idx) => (
+              <li class="flex items-start gap-3 rounded-xl bg-base-100 p-4">
+                <span class="font-display text-sm font-bold text-secondary">{idx + 1}.</span>
+                <span class="text-sm leading-relaxed">{q}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    {/* Prereqs */}
+    {data.prereqs.length > 0 && (
+      <section class="bg-base-100 px-4 py-8">
+        <div class="mx-auto max-w-3xl">
+          <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+            Prerequisite
+          </p>
+          <ul class="mt-3 space-y-1.5 text-sm text-base-content/85">
+            {data.prereqs.map((p) => (
+              <li>— {p}</li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    {/* Markdown body — contains "The Prompt" code block + worked example narrative */}
+    <section class="bg-base-100 px-4 py-12">
+      <div class="prose prose-base mx-auto max-w-3xl prose-headings:font-display prose-headings:font-black prose-pre:bg-base-200 prose-pre:text-base-content prose-code:rounded prose-code:bg-base-200/80 prose-code:px-1.5 prose-code:py-0.5">
+        <Content />
+      </div>
+    </section>
+
+    {/* Worked Example structured block */}
+    <section class="border-y border-base-content/10 bg-base-200/40 px-4 py-12">
+      <div class="mx-auto max-w-3xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+          Worked Example
+        </p>
+        <h2 class="mt-2 font-display text-xl font-black md:text-2xl">
+          ใช้กับธุรกิจจริงแล้วเป็นยังไง
+        </h2>
+
+        <dl class="mt-6 space-y-4 text-sm md:text-base">
+          <div class="rounded-xl border border-base-content/10 bg-base-100 p-5">
+            <dt class="text-xs font-bold uppercase tracking-widest text-base-content/60">Industry</dt>
+            <dd class="mt-1.5 leading-relaxed">{data.workedExample.industry}</dd>
+          </div>
+          <div class="rounded-xl border border-base-content/10 bg-base-100 p-5">
+            <dt class="text-xs font-bold uppercase tracking-widest text-base-content/60">Scenario</dt>
+            <dd class="mt-1.5 leading-relaxed">{data.workedExample.scenario}</dd>
+          </div>
+          <div class="rounded-xl border border-base-content/10 bg-base-100 p-5">
+            <dt class="text-xs font-bold uppercase tracking-widest text-base-content/60">Inputs</dt>
+            <dd class="mt-1.5 leading-relaxed">{data.workedExample.inputs}</dd>
+          </div>
+          <div class="rounded-xl border border-base-content/10 bg-base-100 p-5">
+            <dt class="text-xs font-bold uppercase tracking-widest text-base-content/60">Output</dt>
+            <dd class="mt-1.5 leading-relaxed">{data.workedExample.output}</dd>
+          </div>
+          <div class="rounded-xl border-2 border-secondary/30 bg-secondary/5 p-5">
+            <dt class="text-xs font-bold uppercase tracking-widest text-secondary">⏰ Time saved</dt>
+            <dd class="mt-1.5 font-display font-bold leading-relaxed">{data.workedExample.timeSaved}</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    {/* Phase CTA (Advanced tier routes to workshop) */}
+    {data.phaseCtaHref && data.phaseCtaLabel && (
+      <section class="bg-base-100 px-4 py-12">
+        <div class="mx-auto max-w-3xl rounded-2xl border-2 border-secondary/30 bg-secondary/5 p-6 text-center md:p-8">
+          <p class="font-display text-base font-bold leading-relaxed md:text-lg">
+            {data.phaseCtaLabel}
+          </p>
+          <a
+            href={data.phaseCtaHref}
+            class="mt-5 inline-flex items-center gap-2 rounded-full bg-secondary px-6 py-3 font-display text-base font-bold text-white transition hover:bg-secondary/90"
+          >
+            ดูรายละเอียด →
+          </a>
+        </div>
+      </section>
+    )}
+
+    {/* Back to Kit */}
+    <section class="border-t border-base-content/10 bg-base-200/40 px-4 py-10">
+      <div class="mx-auto max-w-3xl text-center">
+        <a
+          href="/agent-builder-kit"
+          class="inline-flex items-center gap-2 rounded-full border border-base-content/20 bg-base-100 px-5 py-2.5 font-display text-sm font-bold text-base-content transition hover:border-secondary/40"
+        >
+          ← กลับไป Agent Builder Kit
+        </a>
+      </div>
+    </section>
   </main>
 </BaseLayout>
