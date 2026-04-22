@@ -54,7 +54,7 @@ export const SERVICES = [
     subtitle: 'Workshop 1 วัน · Build AI Agent แรก',
     hook: 'ทีมขายเสียเวลา 5+ ชั่วโมง/สัปดาห์ กับงานที่ AI ทำได้ใน 10 นาที',
     priceThb: 24900,
-    priceLabel: '฿24,900 · ราคาพิเศษเดือนนี้ (ปกติ ฿30,000)',
+    priceLabel: '฿24,900 · Early Bird ถึง 30 เม.ย. (1 พ.ค. ขึ้นเป็น ฿29,900)',
     duration: '1 วัน (6-7 ชม.)',
     format: 'On-site เท่านั้น (In-house)',
     audience: 'ทีมขายที่เสียเวลากับงาน manual ซ้ำๆ อยากเห็น AI ทำงานจริงก่อนลงทุนเพิ่ม',
