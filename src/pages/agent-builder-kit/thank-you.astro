@@ -7,6 +7,7 @@ const description =
   'Kit ดาวน์โหลดเรียบร้อย — เลือกขั้นตอนถัดไปตามที่คุณติ๊กในฟอร์ม';
 
 const KIT_ZIP_URL = '/downloads/agent-builder-kit-v1.zip';
+const KIT_PDF_URL = '/downloads/AI-Agent-Builder-Manual-By-pun-nattapatch.pdf';
 const GITHUB_MIRROR =
   'https://github.com/RNattapatch/punnattapatch.com/releases/latest/download/agent-builder-kit-v1.zip';
 ---
@@ -39,16 +40,25 @@ const GITHUB_MIRROR =
             ✅ ดาวน์โหลด Kit เรียบร้อย — ตรวจที่ Inbox อีก 1 รอบเผื่อไฟล์ใหญ่
           </p>
 
-          <a
-            href={KIT_ZIP_URL}
-            class="mt-6 inline-flex items-center gap-2 rounded-full bg-secondary px-7 py-4 font-display text-base font-bold text-white shadow-xl transition hover:bg-secondary/90 md:text-lg"
-            download
-          >
-            ⬇️ ดาวน์โหลด Kit (.zip · 12 MB)
-          </a>
+          <div class="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <a
+              href={KIT_PDF_URL}
+              class="inline-flex items-center gap-2 rounded-full bg-secondary px-7 py-4 font-display text-base font-bold text-white shadow-xl transition hover:bg-secondary/90 md:text-lg"
+              download
+            >
+              ⬇️ ดาวน์โหลด Manual (.pdf · 222 KB)
+            </a>
+            <a
+              href={KIT_ZIP_URL}
+              class="inline-flex items-center gap-2 rounded-full border border-base-content/20 bg-base-100 px-6 py-4 font-display text-sm font-bold text-base-content transition hover:border-secondary/40"
+              download
+            >
+              ⬇️ ดาวน์โหลด Kit ทั้งหมด (.zip)
+            </a>
+          </div>
 
           <p class="mt-4 text-xs text-base-content/60">
-            ถ้ากดแล้วโหลดไม่ได้ →
+            zip โหลดไม่ได้ →
             <a href={GITHUB_MIRROR} class="text-secondary underline">GitHub mirror</a>
           </p>
         </div>
