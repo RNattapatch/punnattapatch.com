@@ -51,7 +51,7 @@ seats:
 priceThb:
   normal: 16900
   founding: 12900
-priceCompare: "🎟️ Waitlist Lock ฿12,900 (ราคาเปิดจริง ฿16,900) · cohort-cap 20 ที่ · ปิดเมื่อเต็ม — ไม่มี deadline · Founding 20 คนแรกได้ Lifetime Inner Circle ฟรี"
+priceCompare: "🎟️ Waitlist Lock ฿12,900 (ราคาเปิดจริง ฿16,900) · ปิดเมื่อเต็ม"
 closesAt: 2026-04-30T23:59:00+07:00
 startsAt: 2026-05-17T09:00:00+07:00
 endsAt: 2026-05-17T16:00:00+07:00
@@ -87,9 +87,6 @@ caseStudy:
     detail: "AI proposal writer + CRM automation ลด discount pressure เพิ่มความเร็ว follow-up ทั้งทีม"
 founding_perks:
   - "ราคา Founding ฿12,900 (ราคาเปิดจริง ฿16,900 — ประหยัด ฿4,000)"
-  - "Lifetime Alumni Inner Circle ฟรี (ปกติ ฿19,900/ปี)"
-  - "Priority booking สำหรับ P2/P4/P5 ในอนาคต"
-  - "ชื่ออยู่ใน Founding Cohort #1 ตลอดไป"
 qualifies:
   - "เจ้าของธุรกิจหรือ decision maker ของ SME รายได้ ฿30-200M"
   - "มีทีมขาย 3-20 คน ที่ทำงานจุกจิก manual เยอะ"
@@ -105,7 +102,7 @@ faq:
   - q: "1 วันพอจริงๆ เหรอ?"
     a: "พอครับ — เน้น 1 use case จริงของธุรกิจคุณ build ให้ใช้งานได้ก่อนกลับบ้าน"
   - q: "ราคา Founding กับราคาปกติต่างกันยังไง?"
-    a: "Waitlist Lock 20 คนแรกได้ราคา ฿12,900 + Lifetime Inner Circle ฟรี หลังจาก cohort เต็ม ราคาเปิดจริงคือ ฿16,900 และไม่มี Lifetime perk อีกแล้ว · cohort-cap ตามจำนวนที่นั่ง ไม่ใช่ timer"
+    a: "Waitlist Lock 20 คนแรกได้ราคา ฿12,900 หลังจาก 20 ที่เต็ม ราคาเปิดจริงคือ ฿16,900"
   - q: "ชำระเงินยังไง มีผ่อนไหม?"
     a: "ชำระ 100% upfront ก่อนเริ่ม · ไม่มีผ่อน · Application-based screening ก่อนเก็บเงิน · ถ้าไม่ผ่าน screening ไม่ต้องโอน"
   - q: "Enrollment เปิดให้ทุกคนสมัครไหม?"
@@ -131,9 +128,6 @@ faq:
 *   AI Agent template ที่พร้อมใช้งานได้ทันทีในวันจันทร์
 *   Prompt library สำหรับทีมขายกว่า 30 prompts ที่ผ่านการทดสอบแล้ว
 *   Action plan 30 วันสำหรับนำไปปรับใช้ต่อ
-*   สิทธิ์ในการสมัครเข้าร่วม Alumni Inner Circle
-
-Waitlist 20 คนแรก ได้สิทธิ์ Lifetime Inner Circle ฟรีตลอดชีพ + lock ราคา ฿12,900 (ปกติ ฿16,900) และ priority booking สำหรับ cohort ถัดไป · cohort-cap ตามจำนวนที่นั่ง ไม่มี deadline · Inner Circle หลัง cohort คิด ฿19,900/ปี
 
 ## Venue + Format
 
