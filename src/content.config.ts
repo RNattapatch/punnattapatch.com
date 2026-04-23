@@ -167,6 +167,25 @@ const prompts = defineCollection({
   }),
 });
 
+/**
+ * manual collection — Agent Builder Kit online manual (4 parts)
+ * Dark pages: not linked in nav, not in sitemap — distributed via email + PDF only.
+ * Google crawls via backlinks from email/PDF for SEO benefit.
+ */
+const manual = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/manual' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().max(280),
+    part: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]),
+    partTitle: z.string(),
+    /** estimated reading time in minutes */
+    readingTime: z.number(),
+    published: z.coerce.date(),
+    draft: z.boolean().default(false),
+  }),
+});
+
 export const collections = {
   pillar,
   cluster,
@@ -175,4 +194,5 @@ export const collections = {
   framework,
   training,
   prompts,
+  manual,
 };
