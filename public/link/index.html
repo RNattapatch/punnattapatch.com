@@ -589,6 +589,108 @@
       outline-offset: 3px;
     }
 
+    /* ============================================================
+       COUNTDOWN BAR · hugs AI course button · cyan accent
+       ============================================================ */
+    .cd-row {
+      list-style: none;
+      margin-top: -4px;
+    }
+    .cd-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px 14px;
+      padding: 10px 16px;
+      border-radius: var(--r-mid);
+      background: color-mix(in oklch, var(--cyan) 7%, rgba(255,255,255,0.03));
+      border: 1px solid color-mix(in oklch, var(--cyan) 22%, transparent);
+      backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .cd-head {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cd-pulse {
+      position: relative;
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+    }
+    .cd-pulse > span:first-child {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: var(--cyan);
+      opacity: 0.75;
+      animation: cd-ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+    .cd-pulse > span:last-child {
+      position: relative;
+      display: block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+    }
+    @keyframes cd-ping {
+      75%, 100% { transform: scale(2.2); opacity: 0; }
+    }
+    .cd-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--cyan);
+    }
+    .cd-timer {
+      display: inline-flex;
+      gap: 8px;
+      align-items: baseline;
+    }
+    .cd-seg {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 3px;
+    }
+    .cd-seg > span:first-child {
+      font-family: 'Bai Jamjuree', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: #ffffff;
+      font-variant-numeric: tabular-nums;
+      min-width: 1.6ch;
+      text-align: center;
+    }
+    .cd-unit {
+      font-size: 10px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.55);
+    }
+    .cd-msg {
+      flex-basis: 100%;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.72);
+      letter-spacing: 0.01em;
+    }
+    .cd-bar-expired {
+      justify-content: center;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.75);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .cd-pulse > span:first-child { animation: none; opacity: 0; }
+    }
+
     /* Micro-proof */
     .micro-proof {
       font-size: 11px;
@@ -699,10 +801,30 @@
               </span>
               <span class="flex-1 text-left min-w-0">
                 <span class="block btn-title">คอร์ส Advance AI &amp; Business Automation</span>
-                <span class="block btn-sub">In-house 1 วัน · ฿24,900 · เหลือ 2/5 slot</span>
+                <span class="block btn-sub">In-house 1 วัน · ฿24,900 · โอกาสสุดท้ายก่อนปรับราคาเป็น ฿29,900</span>
               </span>
               <i data-lucide="arrow-up-right" class="w-[18px] h-[18px] btn-arrow flex-shrink-0" aria-hidden="true"></i>
             </a>
+          </li>
+
+          <!-- Workshop Early Bird countdown · ends 2026-04-30 23:59:59 +07 -->
+          <li class="cd-row" data-cd-wrap>
+            <div class="cd-bar" data-cd-live>
+              <span class="cd-head">
+                <span class="cd-pulse"><span></span><span></span></span>
+                <span class="cd-eyebrow">Early Bird ปิดใน</span>
+              </span>
+              <span class="cd-timer">
+                <span class="cd-seg"><span data-cd-d>--</span><span class="cd-unit">วัน</span></span>
+                <span class="cd-seg"><span data-cd-h>--</span><span class="cd-unit">ชม</span></span>
+                <span class="cd-seg"><span data-cd-m>--</span><span class="cd-unit">นาที</span></span>
+                <span class="cd-seg"><span data-cd-s>--</span><span class="cd-unit">วิ</span></span>
+              </span>
+              <span class="cd-msg">จองและชำระภายใน 30 เม.ย. · lock ราคาเดิม ฿24,900</span>
+            </div>
+            <div class="cd-bar cd-bar-expired" data-cd-expired hidden>
+              ⏰ Early Bird ปิดแล้ว · ราคาปัจจุบัน ฿29,900
+            </div>
           </li>
 
           <!-- #3 Website -->
@@ -802,6 +924,35 @@
           }
         });
       });
+    })();
+
+    // Workshop Early Bird countdown · auto-flips to "ended" after 2026-04-30 23:59:59 Asia/Bangkok
+    (function () {
+      var DEADLINE = new Date('2026-04-30T23:59:59+07:00').getTime();
+      function pad(n) { return n < 10 ? '0' + n : '' + n; }
+      function tick() {
+        var diff = DEADLINE - Date.now();
+        document.querySelectorAll('[data-cd-wrap]').forEach(function (w) {
+          var live = w.querySelector('[data-cd-live]');
+          var exp = w.querySelector('[data-cd-expired]');
+          if (diff <= 0) {
+            if (live) live.style.display = 'none';
+            if (exp) exp.hidden = false;
+            return;
+          }
+          var d = Math.floor(diff / 86400000);
+          var h = Math.floor((diff % 86400000) / 3600000);
+          var m = Math.floor((diff % 3600000) / 60000);
+          var s = Math.floor((diff % 60000) / 1000);
+          var el;
+          el = w.querySelector('[data-cd-d]'); if (el) el.textContent = d;
+          el = w.querySelector('[data-cd-h]'); if (el) el.textContent = pad(h);
+          el = w.querySelector('[data-cd-m]'); if (el) el.textContent = pad(m);
+          el = w.querySelector('[data-cd-s]'); if (el) el.textContent = pad(s);
+        });
+      }
+      tick();
+      setInterval(tick, 1000);
     })();
   </script>
 </body>
