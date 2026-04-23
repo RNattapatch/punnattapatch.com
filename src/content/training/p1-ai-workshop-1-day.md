@@ -34,6 +34,10 @@ pains:
   - emoji: "🏁"
     title: "คู่แข่งไล่ตามเร็วมาก · อยากนำหน้าไว้ก่อน"
     body: "สินค้าที่เคยขาดตลาดเมื่อปีก่อน ตอนนี้มีคู่แข่ง 5 เจ้า · ราคาโดนตัด · ลูกค้าเทียบไปเทียบมา · ต้องทำงานเร็วกว่าเดิมให้ได้ · AI คือวิธีเดียวที่ขยับได้ทันโดยไม่ต้องเพิ่มทีม"
+testimonial:
+  quote: "Workshop จบตอนบ่าย — ผมเอา AI Agent กลับไปรันจริงวันจันทร์ถัดมาเลย ทีมประหยัดเวลาได้ 3-4 ชม./สัปดาห์ตั้งแต่สัปดาห์แรก ไม่ต้องรอ dev ไม่ต้องจ้างคนเพิ่ม"
+  author: "เจ้าของธุรกิจ B2B (นามแฝง ตาม NDA)"
+  role: "ผู้จัดจำหน่ายอุปกรณ์อุตสาหกรรม · กรุงเทพฯ · ทีม 8 คน"
 gallery:
   - src: "/advance-ai-course/gallery1.JPG"
     alt: "ทีมใช้ laptop ในห้อง workshop · จอฉาย Advance AI & Business Automation"
@@ -47,7 +51,7 @@ seats:
 priceThb:
   normal: 14900
   founding: 11900
-priceCompare: "🔥 Founding Cohort #1 ฿11,900 (ปกติ ฿14,900) · 12 ที่แรกได้ Lifetime Inner Circle ฟรี · หลังเต็มราคากลับเป็น ฿14,900"
+priceCompare: "🎟️ Founding ฿11,900 ปิด 30 เม.ย. · หลังจากนั้น ฿14,900 · 12 ที่ · 1-per-industry · Founding Cohort #1 ได้ Lifetime Inner Circle ฟรี (ปกติ ฿19,900/ปี)"
 closesAt: 2026-04-30T23:59:00+07:00
 startsAt: 2026-05-17T09:00:00+07:00
 endsAt: 2026-05-17T16:00:00+07:00
@@ -72,6 +76,15 @@ syllabus:
   - title: "Module 4 — Peer Showcase + Q&A"
     body: "นำเสนอ Agent ของแต่ละคน แลกเปลี่ยน use case ข้ามอุตสาหกรรม + ถาม-ตอบกับปันแบบไม่มีกั๊ก"
     duration: "1 ชม."
+caseStudy:
+  - industry: "ผู้จัดจำหน่าย อุตสาหกรรมอุปกรณ์ (B2B · ทีม 8 คน)"
+    result: "ยอดขาย +30% ใน 3 เดือน"
+    metric: "ค่าซอฟต์แวร์ลดลง 97% · รายงานจาก 2 ชม. → 15 นาที"
+    detail: "automate งาน quote + follow-up + รายงานด้วย n8n + Claude ทีมใช้งานได้เอง ไม่ต้องรอ dev"
+  - industry: "ผู้ผลิต B2B (Manufacturing · ทีม 12 คน)"
+    result: "Pipeline velocity +30%"
+    metric: "อัตราลดราคา 15% → 7% · งาน manual 3 ชม./วัน → 30 นาที"
+    detail: "AI proposal writer + CRM automation ลด discount pressure เพิ่มความเร็ว follow-up ทั้งทีม"
 founding_perks:
   - "ราคา Founding ฿11,900 (ปกติ ฿14,900 — ประหยัด ฿3,000)"
   - "Lifetime Alumni Inner Circle ฟรี (ปกติ ฿19,900/ปี)"
@@ -97,6 +110,10 @@ faq:
     a: "ชำระ 100% upfront ก่อนเริ่ม · ไม่มีผ่อน · Application-based screening ก่อนเก็บเงิน · ถ้าไม่ผ่าน screening ไม่ต้องโอน"
   - q: "Enrollment เปิดให้ทุกคนสมัครไหม?"
     a: "ไม่ครับ — เปิดแบบ Application-based เพื่อให้ทุกคนในห้องได้ประโยชน์สูงสุด ต้องผ่าน screening ก่อน"
+  - q: "P1 ต่างจาก AI Day Workshop (in-house TYPE 1) ยังไง? อันไหนเหมาะกว่า?"
+    a: "P1 public = ตัวคุณคนเดียวมา co-working Bangkok เรียนกับ founder 11 คนจากอุตสาหกรรมอื่น · เหมาะถ้าอยากลองก่อนหรือต้องการ peer network · TYPE 1 in-house = ปันและทีมไปที่ออฟฟิศคุณ build ระบบที่ตรงกับ process จริงของบริษัทคุณ ทีม 5-20 คนเรียนพร้อมกัน · คุ้มกว่าเมื่อทีม ≥5 คน (฿25K ÷ 10 คน = ฿2,500/คน)"
+  - q: "฿11,900 คุ้มไหม? มั่นใจได้ยังไง?"
+    a: "ถ้าทีมคุณประหยัดเวลาได้แค่ 1 ชม./วัน × 1 เดือน = 20 ชม. × ค่าแรงพนักงาน 1 คน — ROI ออกในเดือนแรก · ลูกค้าของผมยอดขายเพิ่ม 30% ค่าซอฟต์แวร์ลดลง 97% ภายใน 3 เดือน · ถ้าคุณไม่ได้ผลลัพธ์ใด ๆ เลยหลังจาก build AI Agent ตัวแรกในห้อง — มีอะไรให้ถามผมได้ตลอด 30 วันหลังจบ"
 ---
 
 ## ทำไม P1 compress เหลือ 1 วัน

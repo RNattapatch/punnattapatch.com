@@ -121,6 +121,12 @@ const training = defineCollection({
     founding_perks: z.array(z.string()).default([]),
     qualifies: z.array(z.string()).default([]),
     disqualifies: z.array(z.string()).default([]),
+    caseStudy: z.array(z.object({
+      industry: z.string(),
+      result: z.string(),
+      metric: z.string(),
+      detail: z.string().optional(),
+    })).optional(),
     faq: z.array(z.object({
       q: z.string(),
       a: z.string(),

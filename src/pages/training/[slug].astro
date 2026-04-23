@@ -4,7 +4,7 @@ import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Schema from '../../components/Schema.astro';
 import Countdown from '../../components/Countdown.astro';
-import { SITE } from '../../data/site';
+import { SITE, PUN_CORE_BIO } from '../../data/site';
 
 export async function getStaticPaths() {
   const entries = await getCollection('training', ({ data }: CollectionEntry<'training'>) => !data.draft);
@@ -218,6 +218,32 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
     )
   }
 
+  {/* ===== CASE STUDY / CLIENT RESULTS ===== */}
+  {data.caseStudy && data.caseStudy.length > 0 && (
+    <section class="border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+      <div class="mx-auto max-w-4xl">
+        <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>ผลลัพธ์จริงจากลูกค้า</p>
+        <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+          ก่อนมาเรียน — ไม่มี AI ในระบบเลย · หลังจาก 1 workshop
+        </h2>
+        <div class="mt-8 grid gap-6 md:grid-cols-2">
+          {data.caseStudy.map((c) => (
+            <div
+              class="rounded-2xl border p-6 md:p-8"
+              style={`border-color: color-mix(in oklch, ${accent} 22%, transparent); background: color-mix(in oklch, ${accent} 4%, transparent);`}
+            >
+              <p class="text-xs font-bold uppercase tracking-widest text-base-content/50">{c.industry}</p>
+              <p class="mt-3 font-display text-3xl font-black" style={`color: ${accent};`}>{c.result}</p>
+              <p class="mt-2 text-sm font-semibold text-base-content/80">{c.metric}</p>
+              {c.detail && <p class="mt-3 text-sm leading-relaxed text-base-content/60">{c.detail}</p>}
+            </div>
+          ))}
+        </div>
+        <p class="mt-5 text-xs text-base-content/45">* ข้อมูล anonymized ตาม NDA · ผลลัพธ์แตกต่างตามบริบทของแต่ละธุรกิจ</p>
+      </div>
+    </section>
+  )}
+
   {/* ===== OUTCOMES ===== */}
   <section class="border-b border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8 lg:py-20">
     <div class="mx-auto max-w-4xl">
@@ -400,6 +426,40 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
       </section>
     )
   }
+
+  {/* ===== INSTRUCTOR ===== */}
+  <section class="border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-4xl">
+      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>ใครสอน</p>
+      <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+        ปัน ณัฐพัชร์ — ไม่ใช่ academic trainer ที่สอนจากตำรา
+      </h2>
+      <div class="mt-8 grid gap-5 md:grid-cols-3">
+        {PUN_CORE_BIO.map((item) => (
+          <div
+            class="rounded-2xl border border-base-content/10 bg-base-100/50 p-6 text-center"
+          >
+            <p class="font-display text-3xl font-black" style={`color: ${accent};`}>{item.stat}</p>
+            <p class="mt-3 text-sm leading-relaxed text-base-content/70">{item.body}</p>
+          </div>
+        ))}
+      </div>
+      <p class="mt-6 text-sm leading-relaxed text-base-content/70">
+        ทุก use case ใน {data.programCode.toUpperCase()} มาจาก engagement จริงที่ปันทำกับลูกค้า SME — ไม่ใช่ตัวอย่างในหนังสือ · ปัน build AI workflow ให้ลูกค้าใช้จริงก่อนจะสอนให้ใครทำเอง
+      </p>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <a
+          href={SITE.social.tiktok}
+          target="_blank"
+          rel="noopener"
+          class="btn btn-sm btn-outline"
+        >
+          TikTok @pun_nattapatch
+        </a>
+        <a href="/about" class="btn btn-sm btn-ghost">อ่านประวัติเพิ่มเติม →</a>
+      </div>
+    </div>
+  </section>
 
   {/* ===== ALUMNI IN-HOUSE CROSS-PROMO ===== */}
   <section class="border-b border-base-content/10 px-4 py-16 lg:px-8">
