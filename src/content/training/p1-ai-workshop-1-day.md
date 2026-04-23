@@ -10,7 +10,7 @@ accent: cyan
 headline: "จบวันเดียว คุณจะมี"
 headlineAccent: "AI Agent ตัวแรกของธุรกิจ"
 headlineTail: "build ด้วยมือคุณเอง · ไม่ต้องรอเป็นเดือน"
-subhead: "1 วันเต็ม 6-7 ชม. · 12 ที่นั่ง · Peer-accountability · ออกจากห้องพร้อม AI Agent ใช้งานจริง + Action Plan 30 วัน · hands-on build ตลอดวัน"
+subhead: "1 วันเต็ม 6-7 ชม. · 20 ที่นั่ง · Peer-accountability · ออกจากห้องพร้อม AI Agent ใช้งานจริง + Action Plan 30 วัน · hands-on build ตลอดวัน"
 hook: "จบวันเดียว ได้ AI Agent ตัวแรกของธุรกิจ + Action Plan 30 วัน"
 audience: "เจ้าของ SME ที่อยากให้ AI ทำงานแทนได้จริง — เริ่มจากศูนย์ ไม่ต้องมีพื้นฐาน tech"
 duration: "1 วัน (6-7 ชั่วโมง)"
@@ -46,12 +46,12 @@ gallery:
   - src: "/advance-ai-course/IMG_5218.JPG"
     alt: "ปัน ณัฐพัชร์ สอน AI workshop"
 seats:
-  total: 12
-  founding: 12
+  total: 20
+  founding: 20
 priceThb:
-  normal: 19900
-  founding: 11900
-priceCompare: "🎟️ Waitlist Lock ฿11,900 (ราคาเปิดจริง ฿19,900) · cohort-cap 12 ที่ · ปิดเมื่อเต็ม — ไม่มี deadline · Founding 12 คนแรกได้ Lifetime Inner Circle ฟรี"
+  normal: 16900
+  founding: 12900
+priceCompare: "🎟️ Waitlist Lock ฿12,900 (ราคาเปิดจริง ฿16,900) · cohort-cap 20 ที่ · ปิดเมื่อเต็ม — ไม่มี deadline · Founding 20 คนแรกได้ Lifetime Inner Circle ฟรี"
 closesAt: 2026-04-30T23:59:00+07:00
 startsAt: 2026-05-17T09:00:00+07:00
 endsAt: 2026-05-17T16:00:00+07:00
@@ -86,7 +86,7 @@ caseStudy:
     metric: "อัตราลดราคา 15% → 7% · งาน manual 3 ชม./วัน → 30 นาที"
     detail: "AI proposal writer + CRM automation ลด discount pressure เพิ่มความเร็ว follow-up ทั้งทีม"
 founding_perks:
-  - "ราคา Founding ฿11,900 (ราคาเปิดจริง ฿19,900 — ประหยัด ฿8,000)"
+  - "ราคา Founding ฿12,900 (ราคาเปิดจริง ฿16,900 — ประหยัด ฿4,000)"
   - "Lifetime Alumni Inner Circle ฟรี (ปกติ ฿19,900/ปี)"
   - "Priority booking สำหรับ P2/P4/P5 ในอนาคต"
   - "ชื่ออยู่ใน Founding Cohort #1 ตลอดไป"
@@ -94,7 +94,7 @@ qualifies:
   - "เจ้าของธุรกิจหรือ decision maker ของ SME รายได้ ฿30-200M"
   - "มีทีมขาย 3-20 คน ที่ทำงานจุกจิก manual เยอะ"
   - "พร้อมลงมือสร้าง AI Agent จริงในห้อง ไม่ใช่แค่ฟังทฤษฎี"
-  - "พร้อมจ่าย ฿11,900 upfront (waitlist lock) หรือ ฿19,900 (post-cap) — เห็นคุณค่าของ premium access"
+  - "พร้อมจ่าย ฿12,900 upfront (waitlist lock) หรือ ฿16,900 (post-cap) — เห็นคุณค่าของ premium access"
 disqualifies:
   - "มองหาคอร์สฟรีหรือของถูก — ราคาเรา premium เพราะ ROI ต่อคนสูง"
   - "ต้องการ certificate วิชาการ — ไม่ใช่ format ของเรา เน้น hands-on"
@@ -105,14 +105,14 @@ faq:
   - q: "1 วันพอจริงๆ เหรอ?"
     a: "พอครับ — เน้น 1 use case จริงของธุรกิจคุณ build ให้ใช้งานได้ก่อนกลับบ้าน"
   - q: "ราคา Founding กับราคาปกติต่างกันยังไง?"
-    a: "Waitlist Lock 12 คนแรกได้ราคา ฿11,900 + Lifetime Inner Circle ฟรี หลังจาก cohort เต็ม ราคาเปิดจริงคือ ฿19,900 และไม่มี Lifetime perk อีกแล้ว · cohort-cap ตามจำนวนที่นั่ง ไม่ใช่ timer"
+    a: "Waitlist Lock 20 คนแรกได้ราคา ฿12,900 + Lifetime Inner Circle ฟรี หลังจาก cohort เต็ม ราคาเปิดจริงคือ ฿16,900 และไม่มี Lifetime perk อีกแล้ว · cohort-cap ตามจำนวนที่นั่ง ไม่ใช่ timer"
   - q: "ชำระเงินยังไง มีผ่อนไหม?"
     a: "ชำระ 100% upfront ก่อนเริ่ม · ไม่มีผ่อน · Application-based screening ก่อนเก็บเงิน · ถ้าไม่ผ่าน screening ไม่ต้องโอน"
   - q: "Enrollment เปิดให้ทุกคนสมัครไหม?"
     a: "ไม่ครับ — เปิดแบบ Application-based เพื่อให้ทุกคนในห้องได้ประโยชน์สูงสุด ต้องผ่าน screening ก่อน"
   - q: "P1 ต่างจาก AI Day Workshop (in-house TYPE 1) ยังไง? อันไหนเหมาะกว่า?"
     a: "P1 public = ตัวคุณคนเดียวมา co-working Bangkok เรียนกับ founder 11 คนจากอุตสาหกรรมอื่น · เหมาะถ้าอยากลองก่อนหรือต้องการ peer network · TYPE 1 in-house = ปันและทีมไปที่ออฟฟิศคุณ build ระบบที่ตรงกับ process จริงของบริษัทคุณ ทีม 5-20 คนเรียนพร้อมกัน · คุ้มกว่าเมื่อทีม ≥5 คน (฿25K ÷ 10 คน = ฿2,500/คน)"
-  - q: "฿11,900 คุ้มไหม? มั่นใจได้ยังไง?"
+  - q: "฿12,900 คุ้มไหม? มั่นใจได้ยังไง?"
     a: "ถ้าทีมคุณประหยัดเวลาได้แค่ 1 ชม./วัน × 1 เดือน = 20 ชม. × ค่าแรงพนักงาน 1 คน — ROI ออกในเดือนแรก · ลูกค้าของผมยอดขายเพิ่ม 30% ค่าซอฟต์แวร์ลดลง 97% ภายใน 3 เดือน · ถ้าคุณไม่ได้ผลลัพธ์ใด ๆ เลยหลังจาก build AI Agent ตัวแรกในห้อง — มีอะไรให้ถามผมได้ตลอด 30 วันหลังจบ"
 ---
 
@@ -133,18 +133,18 @@ faq:
 *   Action plan 30 วันสำหรับนำไปปรับใช้ต่อ
 *   สิทธิ์ในการสมัครเข้าร่วม Alumni Inner Circle
 
-Waitlist 12 คนแรก ได้สิทธิ์ Lifetime Inner Circle ฟรีตลอดชีพ + lock ราคา ฿11,900 (ปกติ ฿19,900) และ priority booking สำหรับ cohort ถัดไป · cohort-cap ตามจำนวนที่นั่ง ไม่มี deadline · Inner Circle หลัง cohort คิด ฿19,900/ปี
+Waitlist 20 คนแรก ได้สิทธิ์ Lifetime Inner Circle ฟรีตลอดชีพ + lock ราคา ฿12,900 (ปกติ ฿16,900) และ priority booking สำหรับ cohort ถัดไป · cohort-cap ตามจำนวนที่นั่ง ไม่มี deadline · Inner Circle หลัง cohort คิด ฿19,900/ปี
 
 ## Venue + Format
 
 วันเสาร์ 17 พฤษภาคม 2026 เวลา 09:00-16:00 น.
 จัดที่ Co-working space เกรดพรีเมียมในกรุงเทพฯ (Beacon Rama 9 หรือ Common Ground — จะประกาศสถานที่ที่แน่นอน 1 สัปดาห์ก่อนวันเรียน)
 
-จำกัดเพียง 12 ที่นั่ง โดยรับเพียง 1 บริษัทต่อ 1 อุตสาหกรรมในแต่ละ cohort เพื่อให้คุณแชร์เคสได้เต็มที่โดยไม่ต้องกังวลว่าข้อมูลจะรั่วไหลถึงคู่แข่ง
+จำกัดเพียง 20 ที่นั่ง โดยรับเพียง 1 บริษัทต่อ 1 อุตสาหกรรมในแต่ละ cohort เพื่อให้คุณแชร์เคสได้เต็มที่โดยไม่ต้องกังวลว่าข้อมูลจะรั่วไหลถึงคู่แข่ง
 
 ## ขั้นตอนสมัคร
 
 1.  กรอก Application form ใช้เวลา 3-5 นาที
 2.  ผมจะอ่านทุกใบสมัครและแจ้งผลภายใน 48 ชั่วโมง
-3.  หากผ่านการคัดเลือก ชำระค่าเรียน ฿11,900 upfront · Application-based screening ก่อนเก็บเงิน ถ้าไม่ผ่าน screening ไม่ต้องโอน
+3.  หากผ่านการคัดเลือก ชำระค่าเรียน ฿12,900 upfront · Application-based screening ก่อนเก็บเงิน ถ้าไม่ผ่าน screening ไม่ต้องโอน
 4.  คุณจะได้รับ onboarding pack และการยืนยันสถานที่เรียน 1 สัปดาห์ก่อนวันจริง
