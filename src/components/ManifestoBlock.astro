@@ -1,0 +1,60 @@
+---
+/**
+ * ManifestoBlock · "The Truth" identity statement.
+ * Pattern lifted from @ar.ngoon p.2 + Pun's winning-zone moat.
+ * Reused on /agent-builder-kit + /about + /services pages.
+ *
+ * Default copy is the canonical Pun manifesto. Override per page only when
+ * tone needs to shift (e.g. lighter on /about for narrative flow).
+ */
+
+interface Props {
+  /** Headline emoji + tagline. Default: canonical Pun manifesto opener. */
+  headline?: string;
+  /** Body paragraph (1-2 sentences). Default: canonical "ขายระบบ ไม่ใช่คอร์ส". */
+  lead?: string;
+  /** Bullet lines forming the proof stack. Default: 3-line bio + winning-zone formula. */
+  proofLines?: readonly string[];
+  /** Closing winning-zone formula. Default: 4-factor competitive moat. */
+  formula?: string;
+}
+
+const {
+  headline = '🎯 ผมไม่ได้มาขายคอร์ส AI',
+  lead = 'ผมมาขายระบบที่ผมใช้กับธุรกิจตัวเอง — และกับลูกค้าที่ปิดดีลจริง',
+  proofLines = [
+    '5 ปี B2B sales · ปั้นทีมขาย ฿100M · ใช้ AI ทุกวัน',
+    'วันนี้บริหารธุรกิจตัวเองได้โดยไม่มีพนักงาน — มีแค่ AI Agent 7 ตัว',
+    'ทีมขาย AI ของลูกค้าที่ผมดูแล run อยู่ทุกวันโดยไม่ต้องให้ผมเข้าไปจูง',
+  ],
+  formula = 'ประสบการณ์ขายจริง × B2B context × ทีม ฿100M × AI ใช้จริงทุกวัน',
+} = Astro.props;
+---
+
+<section class="border-y border-base-content/10 bg-base-100 px-4 py-16 lg:py-20">
+  <div class="mx-auto max-w-3xl">
+    <h2 class="font-display text-2xl font-black leading-tight md:text-3xl">{headline}</h2>
+
+    <p class="mt-5 font-display text-lg leading-relaxed text-base-content md:text-xl">
+      {lead}
+    </p>
+
+    <ul class="mt-8 space-y-3 border-l-2 pl-5" style="border-color: var(--color-secondary, #dd4155);">
+      {proofLines.map((line) => (
+        <li class="text-base leading-relaxed text-base-content/85 md:text-lg">{line}</li>
+      ))}
+    </ul>
+
+    <div
+      class="mt-8 rounded-2xl border p-5"
+      style="border-color: color-mix(in oklch, var(--color-secondary, #dd4155) 30%, transparent); background: color-mix(in oklch, var(--color-secondary, #dd4155) 6%, transparent);"
+    >
+      <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+        Winning zone
+      </p>
+      <p class="mt-2 font-display text-base font-semibold leading-relaxed md:text-lg">
+        {formula}
+      </p>
+    </div>
+  </div>
+</section>

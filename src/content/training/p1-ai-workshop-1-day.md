@@ -49,9 +49,9 @@ seats:
   total: 12
   founding: 12
 priceThb:
-  normal: 14900
+  normal: 19900
   founding: 11900
-priceCompare: "🎟️ Founding ฿11,900 ปิด 30 เม.ย. · หลังจากนั้น ฿14,900 · 12 ที่ · 1-per-industry · Founding Cohort #1 ได้ Lifetime Inner Circle ฟรี (ปกติ ฿19,900/ปี)"
+priceCompare: "🎟️ Waitlist Lock ฿11,900 (ราคาเปิดจริง ฿19,900) · cohort-cap 12 ที่ · ปิดเมื่อเต็ม — ไม่มี deadline · Founding 12 คนแรกได้ Lifetime Inner Circle ฟรี"
 closesAt: 2026-04-30T23:59:00+07:00
 startsAt: 2026-05-17T09:00:00+07:00
 endsAt: 2026-05-17T16:00:00+07:00
@@ -86,7 +86,7 @@ caseStudy:
     metric: "อัตราลดราคา 15% → 7% · งาน manual 3 ชม./วัน → 30 นาที"
     detail: "AI proposal writer + CRM automation ลด discount pressure เพิ่มความเร็ว follow-up ทั้งทีม"
 founding_perks:
-  - "ราคา Founding ฿11,900 (ปกติ ฿14,900 — ประหยัด ฿3,000)"
+  - "ราคา Founding ฿11,900 (ราคาเปิดจริง ฿19,900 — ประหยัด ฿8,000)"
   - "Lifetime Alumni Inner Circle ฟรี (ปกติ ฿19,900/ปี)"
   - "Priority booking สำหรับ P2/P4/P5 ในอนาคต"
   - "ชื่ออยู่ใน Founding Cohort #1 ตลอดไป"
@@ -94,7 +94,7 @@ qualifies:
   - "เจ้าของธุรกิจหรือ decision maker ของ SME รายได้ ฿30-200M"
   - "มีทีมขาย 3-20 คน ที่ทำงานจุกจิก manual เยอะ"
   - "พร้อมลงมือสร้าง AI Agent จริงในห้อง ไม่ใช่แค่ฟังทฤษฎี"
-  - "พร้อมจ่าย ฿11,900 upfront — เห็นคุณค่าของ premium access"
+  - "พร้อมจ่าย ฿11,900 upfront (waitlist lock) หรือ ฿19,900 (post-cap) — เห็นคุณค่าของ premium access"
 disqualifies:
   - "มองหาคอร์สฟรีหรือของถูก — ราคาเรา premium เพราะ ROI ต่อคนสูง"
   - "ต้องการ certificate วิชาการ — ไม่ใช่ format ของเรา เน้น hands-on"
@@ -105,7 +105,7 @@ faq:
   - q: "1 วันพอจริงๆ เหรอ?"
     a: "พอครับ — เน้น 1 use case จริงของธุรกิจคุณ build ให้ใช้งานได้ก่อนกลับบ้าน"
   - q: "ราคา Founding กับราคาปกติต่างกันยังไง?"
-    a: "Founding Cohort 12 คนแรกได้ราคา ฿11,900 + Lifetime Inner Circle ฟรี หลังจากนั้นราคาขึ้นเป็น ฿14,900 และไม่มี Lifetime perk อีกแล้ว"
+    a: "Waitlist Lock 12 คนแรกได้ราคา ฿11,900 + Lifetime Inner Circle ฟรี หลังจาก cohort เต็ม ราคาเปิดจริงคือ ฿19,900 และไม่มี Lifetime perk อีกแล้ว · cohort-cap ตามจำนวนที่นั่ง ไม่ใช่ timer"
   - q: "ชำระเงินยังไง มีผ่อนไหม?"
     a: "ชำระ 100% upfront ก่อนเริ่ม · ไม่มีผ่อน · Application-based screening ก่อนเก็บเงิน · ถ้าไม่ผ่าน screening ไม่ต้องโอน"
   - q: "Enrollment เปิดให้ทุกคนสมัครไหม?"
@@ -133,7 +133,7 @@ faq:
 *   Action plan 30 วันสำหรับนำไปปรับใช้ต่อ
 *   สิทธิ์ในการสมัครเข้าร่วม Alumni Inner Circle
 
-Founding Cohort 12 คนแรก ได้สิทธิ์ Lifetime Inner Circle ฟรีตลอดชีพ และ priority booking สำหรับ cohort ถัดไป หลังจากนั้น Inner Circle ราคา ฿19,900/ปี
+Waitlist 12 คนแรก ได้สิทธิ์ Lifetime Inner Circle ฟรีตลอดชีพ + lock ราคา ฿11,900 (ปกติ ฿19,900) และ priority booking สำหรับ cohort ถัดไป · cohort-cap ตามจำนวนที่นั่ง ไม่มี deadline · Inner Circle หลัง cohort คิด ฿19,900/ปี
 
 ## Venue + Format
 

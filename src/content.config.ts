@@ -134,6 +134,39 @@ const training = defineCollection({
   }),
 });
 
+/**
+ * prompts collection — Agent Builder Kit prompt library (20+ prompts)
+ * Each prompt has a CHECK gate + worked example, organized by Phase × Tier.
+ * Schema is intentionally separate from commonFrontmatter — prompt fields differ from articles.
+ */
+const prompts = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/prompts' }),
+  schema: z.object({
+    title: z.string(),
+    /** Optional public description for SEO/og — falls back to useCase if absent */
+    description: z.string().max(280).optional(),
+    tier: z.enum(['starter', 'intermediate', 'advanced']),
+    phase: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]),
+    slug: z.string(),
+    prereqs: z.array(z.string()).default([]),
+    useCase: z.string(),
+    timeToSetup: z.string(),
+    checkGate: z.array(z.string()).default([]),
+    workedExample: z.object({
+      industry: z.string(),
+      scenario: z.string(),
+      inputs: z.string(),
+      output: z.string(),
+      timeSaved: z.string(),
+    }),
+    /** Advanced (🔴) prompts route to workshop / P1 — link target + label */
+    phaseCtaHref: z.string().optional(),
+    phaseCtaLabel: z.string().optional(),
+    published: z.coerce.date(),
+    draft: z.boolean().default(false),
+  }),
+});
+
 export const collections = {
   pillar,
   cluster,
@@ -141,4 +174,5 @@ export const collections = {
   'case-analysis': caseAnalysis,
   framework,
   training,
+  prompts,
 };
