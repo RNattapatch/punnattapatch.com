@@ -30,6 +30,7 @@ export const SITE = {
     { label: 'หน้าหลัก', href: '/' },
     { label: 'บริการ', href: '/services' },
     { label: 'Public Training', href: '/training' },
+    { label: 'Free Kit', href: '/agent-builder-kit' },
     { label: 'BOSI Quiz', href: '/bosi-dna-quiz' },
     { label: 'Case Study', href: '/case-studies' },
     { label: 'บทเรียน 100 ล้าน', href: '/insights' },
