@@ -150,17 +150,17 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
       {/* Primary CTA */}
       <div class="mt-10 flex flex-wrap items-center gap-3">
         <a
-          href={`/intake-form?program=${data.programCode}`}
+          href="#waitlist"
           class="btn btn-lg border-none px-8 font-bold shadow-xl transition-all hover:scale-105"
           style={`background: ${accent}; color: ${accentButtonText}; box-shadow: 0 15px 40px -15px color-mix(in oklch, ${accent} 50%, transparent);`}
         >
-          ยื่น Application — {formatPrice(hasFounding ? data.priceThb.founding! : data.priceThb.normal)} →
+          จองที่นั่ง Waitlist →
         </a>
         <a
           href="#syllabus"
           class="btn btn-lg btn-ghost border border-base-content/20"
         >
-          ดู syllabus ก่อน
+          ดูหลักสูตร ก่อน
         </a>
       </div>
     </div>
@@ -400,6 +400,25 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
     >
       <Content />
     </div>
+    {/* Inline waitlist CTA — captures readers who finished the long-form section */}
+    <div class="mx-auto mt-10 max-w-3xl">
+      <div
+        class="flex flex-col items-start gap-4 rounded-2xl border p-6 sm:flex-row sm:items-center sm:justify-between"
+        style={`border-color: color-mix(in oklch, ${accent} 30%, transparent); background: color-mix(in oklch, ${accent} 6%, transparent);`}
+      >
+        <div>
+          <p class="font-display text-base font-bold">พร้อมแล้ว? ลงชื่อได้เลย — ไม่ต้องจ่ายวันนี้</p>
+          <p class="mt-1 text-sm text-base-content/65">20 ที่นั่ง · First Come, First Serve · ปิดเมื่อเต็ม</p>
+        </div>
+        <a
+          href="#waitlist"
+          class="btn btn-sm shrink-0 border-none font-bold"
+          style={`background: ${accent}; color: ${accentButtonText};`}
+        >
+          จองสิทธิ์ Waitlist →
+        </a>
+      </div>
+    </div>
   </section>
 
   {/* ===== FAQ ===== */}
@@ -517,11 +536,31 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
           🎟️ Waitlist
         </p>
         <h2 class="mt-3 font-display text-2xl font-black md:text-3xl">
-          ยังไม่พร้อมจ่ายเลย? — ขึ้น Waitlist lock ราคาก่อน
+          ยังไม่ต้องจ่ายวันนี้ — ลงชื่อจองสิทธิ์ Waitlist ก่อน
         </h2>
-        <p class="mt-4 text-base text-base-content/80">
-          กรอก 4 ฟิลด์ — ผมจะแจ้งคุณก่อนใครเมื่อ cohort ถัดไปใกล้เปิด · ราคา lock ฿12,900 (ปกติ ฿16,900) · ปิดเมื่อเต็ม
+        <p class="mt-1 text-base font-semibold" style={`color: ${accent};`}>
+          (First Come, First Serve — ที่นั่งปิดเมื่อเต็ม)
         </p>
+        <p class="mt-4 text-base text-base-content/80">
+          กรอก 4 ฟิลด์ — ผมจะแจ้งก่อนใครเมื่อถึงคิวคุณ · ราคา lock ฿12,900 (ปกติ ฿16,900 หลังเต็ม)
+        </p>
+
+        {/* Seats scarcity counter */}
+        <div
+          class="mt-6 grid grid-cols-2 gap-4 rounded-2xl border p-5"
+          style={`border-color: color-mix(in oklch, ${accent} 30%, transparent); background: color-mix(in oklch, ${accent} 5%, transparent);`}
+        >
+          <div class="text-center">
+            <p class="text-xs font-bold uppercase tracking-widest text-base-content/55">ที่นั่งทั้งหมด</p>
+            <p class="mt-1 font-display text-4xl font-black" style={`color: ${accent};`}>20</p>
+            <p class="text-xs text-base-content/55">คน · ปิดเมื่อเต็ม</p>
+          </div>
+          <div class="text-center">
+            <p class="text-xs font-bold uppercase tracking-widest text-base-content/55">ราคา Waitlist</p>
+            <p class="mt-1 font-display text-4xl font-black" style={`color: ${accent};`}>฿12,900</p>
+            <p class="text-xs text-base-content/55">post-cap ฿16,900</p>
+          </div>
+        </div>
 
         <form
           id="p1-waitlist-form"
@@ -633,22 +672,22 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
     id="apply"
   >
     <div class="mx-auto max-w-3xl text-center">
-      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>Apply Now</p>
+      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>จองสิทธิ์ตอนนี้</p>
       <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
-        พร้อมเริ่มเลยไหม?
+        20 ที่นั่ง · First Come, First Serve
       </h2>
       <p class="mt-4 text-base-content/80">
-        {data.seats.founding ?? data.seats.total} ที่นั่งเท่านั้น · ปิดรับ {formatDate(data.closesAt)} · ทุกคนต้องผ่าน application screening
+        ลงชื่อ Waitlist ก่อน — ฟรี ไม่ต้องจ่ายวันนี้ · lock ราคา ฿12,900 (post-cap ฿16,900) · 1 บริษัท / อุตสาหกรรม
       </p>
       <a
-        href={`/intake-form?program=${data.programCode}`}
+        href="#waitlist"
         class="btn btn-lg mt-8 border-none px-10 font-bold shadow-xl transition-all hover:scale-105"
         style={`background: ${accent}; color: ${accentButtonText}; box-shadow: 0 15px 40px -15px color-mix(in oklch, ${accent} 50%, transparent);`}
       >
-        ยื่น Application 3-5 นาที →
+        จองที่นั่ง Waitlist →
       </a>
       <p class="mt-4 text-xs text-base-content/55">
-        ชำระ 100% upfront หลังผ่าน screening · Application-based · 1-per-industry-per-cohort
+        ที่นั่งปิดเมื่อเต็ม · ชำระ ฿12,900 หลังยืนยันที่นั่ง · ไม่มี deadline
       </p>
     </div>
   </section>
