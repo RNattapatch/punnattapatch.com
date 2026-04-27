@@ -199,6 +199,10 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
 
   <script is:inline define:vars={{ accentHex, N8N_WEBHOOK }}>
     (function () {
+      if (window.ttq && typeof window.ttq.track === 'function') {
+        try { window.ttq.track('ViewContent', { contents: [{ content_id: 'p1-public-course', content_type: 'training', content_name: 'P1 AI Agent 101 Public Course' }], value: 12900, currency: 'THB' }); } catch (_) {}
+      }
+
       const form = document.getElementById('p1-waitlist-form');
       const btn = document.getElementById('wl-submit-btn');
       const msg = document.getElementById('wl-form-msg');
@@ -232,6 +236,9 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
 
         if (typeof window.plausible === 'function') {
           try { window.plausible('P1 Waitlist Signup', { props: { ref: ref, source: 'waitlist-page' } }); } catch (_) {}
+        }
+        if (window.ttq && typeof window.ttq.track === 'function') {
+          try { window.ttq.track('CompleteRegistration', { contents: [{ content_id: 'p1-public-course', content_name: 'P1 AI Agent 101 Public Course' }], value: 12900, currency: 'THB', event_id: ref }); } catch (_) {}
         }
 
         try {

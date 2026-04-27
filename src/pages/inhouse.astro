@@ -248,6 +248,10 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
 
   <script is:inline define:vars={{ accentHex, N8N_WEBHOOK }}>
     (function () {
+      if (window.ttq && typeof window.ttq.track === 'function') {
+        try { window.ttq.track('ViewContent', { contents: [{ content_id: 'inhouse-workshop', content_type: 'service', content_name: 'AI Workshop In-house' }], value: 29800, currency: 'THB' }); } catch (_) {}
+      }
+
       const form = document.getElementById('inhouse-form');
       const btn = document.getElementById('ih-submit-btn');
       const msg = document.getElementById('ih-form-msg');
@@ -280,6 +284,9 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
 
         if (typeof window.plausible === 'function') {
           try { window.plausible('Inhouse Inquiry', { props: { ref: ref } }); } catch (_) {}
+        }
+        if (window.ttq && typeof window.ttq.track === 'function') {
+          try { window.ttq.track('CompleteRegistration', { contents: [{ content_id: 'inhouse-workshop', content_name: 'AI Workshop In-house' }], value: 29800, currency: 'THB', event_id: ref }); } catch (_) {}
         }
 
         try {
