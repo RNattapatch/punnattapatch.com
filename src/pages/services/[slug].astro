@@ -54,7 +54,7 @@ const BUNDLE_MAP: Record<string, BundleUpsell> = {
       'Workshop Day 2 เต็ม 6-7 ชม. (Advance · 8 modules) · ต้องผ่าน Day 1 ก่อน',
       'AI Multi-agent workflow สำหรับทั้งองค์กร',
       '30-day async LINE support ตลอดทั้ง 2 workshops',
-      'Handover SOP + วิดีโออัดหน้าจอทุก session',
+      'Handover SOP',
     ],
     ctaLabel: 'จอง Bundle Day 1+2 · ฿48,900',
     ctaHref:  '/booking?package=ai-workshop&bundle=day1-day2',
@@ -1381,10 +1381,17 @@ const description = detail.subhead;
             >
               ขอ Workshop อย่างเดียว (฿29,800)
             </a>
+            <a
+              href="/ai-workshop-advance"
+              class="btn btn-lg btn-ghost border hover:bg-base-200"
+              style={`border-color: color-mix(in oklch, ${accent} 35%, transparent); color: ${accent};`}
+            >
+              ดูรายละเอียด Advance Day 2 →
+            </a>
           </div>
 
           <p class="mt-6 text-center text-xs text-base-content/55">
-            Workshop + Consult 30 วัน · ชำระเงินเต็มจำนวนก่อนเริ่ม · เริ่ม Consult ทันทีหลังจบ Workshop
+            ชำระ 100% ก่อนเริ่ม · ยืนยันวันอบรมได้ภายใน 30 วันหลังจอง
           </p>
 
           {/* ===== Credit Path — upgrade-later safety net ===== */}
@@ -1437,6 +1444,103 @@ const description = detail.subhead;
               </div>
             </div>
           </div>
+
+          {/* ===== Monthly Consult Retainer ===== */}
+          <div class="mx-auto mt-16 max-w-4xl">
+            <div class="text-center">
+              <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>ต่อยอดระยะยาว</p>
+              <h3 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+                Monthly Retainer — ผมเข้าไป 1 วัน/เดือน ระบบโตต่อเนื่อง
+              </h3>
+              <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-base-content/65 md:text-base">
+                หลัง Workshop ระบบพร้อมแล้ว แต่ธุรกิจยังโต ปัญหาใหม่เกิดทุกเดือน ผมเข้าไป 1 วัน/เดือน เพื่อปรับ ต่อยอด และ build workflow ที่ธุรกิจต้องการตอนนั้นจริงๆ
+              </p>
+            </div>
+
+            <div class="mt-8 grid gap-5 md:grid-cols-2">
+              {/* Track A */}
+              <div class="rounded-2xl border border-base-content/15 bg-base-100 p-7">
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-base-content/50">Track A</p>
+                    <h4 class="mt-1 font-display text-xl font-bold">Advisory Day</h4>
+                  </div>
+                  <span
+                    class="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider"
+                    style={`background: color-mix(in oklch, ${accent} 15%, transparent); color: ${accent};`}
+                  >
+                    Founding ฿45K
+                  </span>
+                </div>
+                <p class="mt-3 font-display text-2xl font-bold" style={`color: ${accent};`}>
+                  ฿45,000<span class="text-sm font-normal text-base-content/50">/เดือน</span>
+                </p>
+                <p class="mt-0.5 text-xs text-base-content/45">Founding Rate · Regular ฿70,000/เดือน</p>
+                <ul class="mt-5 space-y-2 text-sm text-base-content/75">
+                  {[
+                    '1 Full Day เข้าไปที่บริษัทคุณทุกเดือน',
+                    'ส่ง agenda ล่วงหน้า 1 สัปดาห์ โฟกัสปัญหาจริงที่เกิดในรอบนั้น',
+                    'แก้ bottleneck + ปรับกลยุทธ์ + build workflow ใหม่ตามสถานการณ์',
+                    'ไม่มีสัญญาผูกมัด ยกเลิกได้ก่อนรอบถัดไป',
+                  ].map((item) => (
+                    <li class="flex items-start gap-2">
+                      <span style={`color: ${accent};`}>✓</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p class="mt-4 text-xs text-base-content/40">สำหรับ: เจ้าของที่ต้องการ strategic partner คอยดู ปรับ และขยายระบบตามที่ธุรกิจโต</p>
+              </div>
+
+              {/* Track B */}
+              <div
+                class="rounded-2xl border p-7"
+                style={`border-color: color-mix(in oklch, ${accent} 35%, transparent); background: color-mix(in oklch, ${accent} 4%, transparent);`}
+              >
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-base-content/50">Track B</p>
+                    <h4 class="mt-1 font-display text-xl font-bold">Skill Injection Day</h4>
+                  </div>
+                  <span
+                    class="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider"
+                    style={`background: color-mix(in oklch, ${accent} 15%, transparent); color: ${accent};`}
+                  >
+                    Founding ฿55K
+                  </span>
+                </div>
+                <p class="mt-3 font-display text-2xl font-bold" style={`color: ${accent};`}>
+                  ฿55,000<span class="text-sm font-normal text-base-content/50">/เดือน</span>
+                </p>
+                <p class="mt-0.5 text-xs text-base-content/45">Founding Rate · Regular ฿80,000/เดือน</p>
+                <ul class="mt-5 space-y-2 text-sm text-base-content/75">
+                  {[
+                    '1 Full Day training session เข้าไปที่บริษัทคุณทุกเดือน',
+                    'สอน skill ใหม่ให้ทีม + build tool ร่วมกันในวันนั้นเลย',
+                    'ทีมออกจาก session พร้อม workflow จริงที่กลับไปใช้ได้ทันที',
+                    'ไม่มีสัญญาผูกมัด ยกเลิกได้ก่อนรอบถัดไป',
+                  ].map((item) => (
+                    <li class="flex items-start gap-2">
+                      <span style={`color: ${accent};`}>✓</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p class="mt-4 text-xs text-base-content/40">สำหรับ: เจ้าของที่อยาก build capability ภายในทีม ให้ทีมทำได้มากขึ้นในแต่ละเดือน</p>
+              </div>
+            </div>
+
+            <div class="mt-6 text-center">
+              <a
+                href="/intake-form"
+                class="btn btn-md border-none font-bold shadow-lg transition-all hover:scale-105"
+                style={`background: ${accent}; color: ${accentButtonText};`}
+              >
+                สอบถาม Retainer →
+              </a>
+            </div>
+          </div>
+
         </div>
       </section>
     )
