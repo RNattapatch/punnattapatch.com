@@ -219,8 +219,8 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
         },
       ],
     },
-    priceHeadline: '฿29,900 / 1 วัน',
-    priceCompare: 'Basic Workshop (Day 1) ฿29,800 · Bundle Day 1+2 ฿48,900 (ประหยัด ฿9,800) · Advance Workshop (Day 2) ฿35,800 สำหรับผู้ผ่าน Day 1 แล้ว หรือมีพื้นฐานการใช้ AI เบื้องต้น',
+    priceHeadline: '฿29,800 / 1 วัน',
+    priceCompare: 'Basic Workshop (Day 1) ฿29,800 · Bundle Day 1+2 ฿48,900 (ประหยัด ฿16,700) · Advance Workshop (Day 2) ฿35,800 สำหรับผู้ผ่าน Day 1 แล้ว หรือมีพื้นฐานการใช้ AI เบื้องต้น',
     priceNote: 'จัดแบบ private on-site ผมเดินทางไปที่บริษัทของคุณ · ยืนยันวันอบรมได้ภายใน 30 วันหลังจอง · ชำระ 100% ก่อนเริ่มงาน',
     inclusions: [
       'Workshop 1 วัน 6-7 ชม. · On-site เท่านั้น (In-house)',
@@ -389,7 +389,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       'ตอบคำถามผ่าน LINE ต่ออีก 30 วันหลังส่งมอบ',
     ],
     notIncluded: [
-      'Advance AI Workshop แยก (฿24,900 — ส่วนใหญ่รวมมาในแพ็กเกจนี้แล้วผ่าน AI workflow)',
+      'Advance AI Workshop แยก (฿35,800 — ส่วนใหญ่รวมมาในแพ็กเกจนี้แล้วผ่าน AI workflow)',
       'ค่าเดินทางเมื่อต้อง on-site ต่างจังหวัด',
       'สัญญารายเดือนหลังส่งมอบ (แล้วแต่ลูกค้าจะต่อเอง ไม่บังคับ)',
     ],

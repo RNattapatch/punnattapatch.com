@@ -4,7 +4,7 @@ import { SITE, SERVICES } from '../data/site';
 
 const title = 'บริการ — 2 Path สำหรับ SME + Special TikTok Workshop';
 const description =
-  'Path A — AI Transformation: Advance AI Workshop ฿24,900 + Bundle Workshop + Consult 30 วัน ฿44,900. Path B — ปั้นทีมขาย: Sale Training Bundle ฿50K (Early Bird ฿44,900) + Sales System Sprint ฿65,000. Plus: Trust Content Workshop TikTok ฿39,900.';
+  'Path A — AI Transformation: Basic AI Workshop ฿29,800 + Advance ฿35,800 + Bundle Day1+2 ฿48,900. Path B — ปั้นทีมขาย: Sale Training Bundle ฿50K (Early Bird ฿44,900) + Sales System Sprint ฿65,000. Plus: Trust Content Workshop TikTok ฿39,900.';
 
 const svcBySlug = (slug: string) => SERVICES.find((s) => s.slug === slug)!;
 
@@ -26,13 +26,12 @@ const pathAPackages: PathCardProps[] = [
     svc: aiDay,
     durationLabel: '1 Day',
     featured: true,
-    badgeText: 'ราคาพิเศษเดือนนี้',
     bullets: [
       'Build AI Agent ตัวแรก ใช้ได้จริงในห้อง',
       'AI workflow อัตโนมัติ + 30 Prompts tested',
       'Team lead maintain เองได้หลัง handover',
       '30-day async LINE support',
-      'Bundle Day1+2: ฿50,000 (save ฿9,800)',
+      'Bundle Day1+2: ฿48,900 (ประหยัด ฿16,700)',
     ],
   },
   {
@@ -44,7 +43,7 @@ const pathAPackages: PathCardProps[] = [
       'Multi-agent system · LINE OA + CRM integration',
       'Auto-report KPI dashboard ส่งทุกเช้า',
       'Governance SOP · หัวหน้าทีม maintain เองได้',
-      'Bundle Day1+2: ฿50,000 (save ฿9,800)',
+      'Bundle Day1+2: ฿48,900 (ประหยัด ฿16,700)',
     ],
   },
 ];
@@ -209,7 +208,7 @@ const pathBPackages: PathCardProps[] = [
           </div>
 
           <p class="mt-5 text-center text-xs text-base-content/45">
-            เริ่มจาก Workshop ฿24,900 → ต่อ Bundle Consult 30 วัน ได้เลย (save ฿25K)
+            Basic ฿29,800 · Advance ฿35,800 · Bundle Day1+2 ฿48,900 (ประหยัด ฿16,700)
           </p>
         </div>
 
