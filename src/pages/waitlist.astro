@@ -142,13 +142,27 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
         </p>
       </form>
 
-      {/* Link to full page */}
-      <div class="mt-6 text-center">
+      {/* Secondary CTA — full detail page */}
+      <div class="mt-6">
         <a
           href="/training/p1-ai-workshop-1-day"
-          class="text-sm text-base-content/55 underline underline-offset-2 hover:text-base-content/80"
+          class="group flex w-full items-center justify-between gap-4 rounded-2xl border-2 px-6 py-5 transition-all hover:scale-[1.01]"
+          style={`border-color: color-mix(in oklch, ${accent} 35%, transparent); background: color-mix(in oklch, ${accent} 6%, transparent);`}
         >
-          อ่านรายละเอียดคอร์สเต็มๆ →
+          <div>
+            <p class="font-display text-base font-bold leading-snug" style={`color: ${accent};`}>
+              อยากรู้ว่าคอร์สสอนอะไรบ้าง?
+            </p>
+            <p class="mt-1 text-sm text-base-content/65">
+              ดู syllabus เต็ม · ผลลัพธ์จริงจากลูกค้า · FAQ ครบ →
+            </p>
+          </div>
+          <span
+            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg font-bold transition-transform group-hover:translate-x-1"
+            style={`background: color-mix(in oklch, ${accent} 15%, transparent); color: ${accent};`}
+          >
+            →
+          </span>
         </a>
       </div>
 
