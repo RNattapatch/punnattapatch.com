@@ -9,106 +9,106 @@ const modules = [
   {
     no: 'Module 1',
     title: 'Debrief + System Audit',
-    body: 'ทบทวน AI ที่สร้างใน Day 1 ว่า run จริง วัดผลได้ไหม · ปรับก่อน scale · เจาะ bottleneck ที่ยังเหลืออยู่ในระบบปัจจุบัน',
+    body: 'ทบทวน AI workflow ที่ build ใน Day 1 ว่า run จริง วัดผลได้ไหม แก้ bottleneck ที่เจอจากการใช้งานจริง ก่อน scale ต่อ',
   },
   {
     no: 'Module 2',
     title: 'Multi-Step Automation Workflow (Advanced)',
-    body: 'Trigger chain ที่รันเองโดยไม่ต้องสั่ง · เช่น lead ใหม่เข้า → qualify → assign → notify ทีม → log CRM · ทั้งกระบวนการวิ่งเองครบ',
+    body: 'Trigger chain ที่วิ่งเองทั้งกระบวนการโดยไม่ต้องสั่ง ตัวอย่าง: lead ใหม่เข้า → qualify → assign → notify → log ใน CRM อัตโนมัติทุกขั้น',
   },
   {
     no: 'Module 3',
     title: 'External Integration — LINE OA / CRM / Sheet',
-    body: 'ต่อ LINE OA · CRM · Google Sheet · Email ให้ทำงานร่วมกัน realtime · ข้อมูลไหลเองทั้งระบบ ไม่มีใครต้อง copy ด้วยมืออีก',
+    body: 'เชื่อม LINE OA + CRM + Google Sheet + Email ให้ส่งข้อมูลหากันแบบ real-time ข้อมูลไหลเอง ไม่มีใครต้อง copy อีก',
   },
   {
     no: 'Module 4',
     title: 'Sales Automation Pipeline',
-    body: 'Lead qualifier + follow-up sequence อัตโนมัติ · ทีมขายรับแต่ lead ที่ qualify แล้ว · ดีลไม่ cold เพราะ follow-up ไม่สม่ำเสมออีกต่อไป',
+    body: 'Lead qualifier + follow-up sequence ที่วิ่งเอง ทีมขายรับแต่ lead ที่ผ่าน qualify มาแล้ว ดีลไม่ cold เพราะ follow-up ขาดช่วงอีกต่อไป',
   },
   {
     no: 'Module 5',
     title: 'Advanced Claude Agent Design',
-    body: 'System prompt + memory + context ที่ทำให้ AI "จำ" ลูกค้าแต่ละคน · ตอบแตกต่างกันตาม stage · ไม่ใช่ AI ตอบเหมือนกันทุกคน',
+    body: 'System prompt + memory + context ที่ทำให้ AI จำ context ลูกค้าแต่ละราย ตอบแตกต่างกันตาม stage ไม่ใช่ AI ตอบเหมือนกันทุกคน',
   },
   {
     no: 'Module 6',
     title: 'Auto-Report & KPI Dashboard',
-    body: 'ระบบรายงาน KPI ส่งตอนเช้าทุกวัน · เจ้าของเห็นภาพธุรกิจใน 5 นาที · ไม่ต้องรอทีมสรุป ไม่ต้องนั่งทำ spreadsheet สิ้นเดือน',
+    body: 'ระบบรายงาน KPI ส่งอัตโนมัติทุกเช้า เจ้าของเห็นภาพรวมธุรกิจใน 5 นาที ไม่ต้องนั่งทำ spreadsheet หรือรอทีมสรุปสิ้นเดือน',
   },
   {
     no: 'Module 7',
     title: 'Multi-Agent Orchestration',
-    body: 'สร้าง AI หลายตัวทำงานร่วมกัน · แบ่ง role: orchestrator + worker + reviewer · ระบบที่ scale ได้จริง ทำงานพร้อมกันหลาย process',
+    body: 'สร้าง AI หลายตัวทำงานร่วมกัน แบ่ง role ชัดเจน: orchestrator + worker + reviewer ระบบที่ scale ได้จริง ทำงานหลาย process พร้อมกันได้',
   },
   {
     no: 'Module 8',
     title: 'Governance + Handover SOP',
-    body: 'คู่มือดูแลระบบฉบับสมบูรณ์ · training หัวหน้าทีมให้ขยาย scope เองได้ · ระบบเป็นของบริษัท ไม่ใช่ความรู้ที่ผูกกับคนคนเดียว',
+    body: 'คู่มือดูแลระบบฉบับสมบูรณ์ + training หัวหน้าทีมให้ขยาย scope เองได้ ระบบเป็นของบริษัท ไม่ผูกกับคนคนเดียว',
   },
 ];
 
 const pains = [
   {
     emoji: '🔁',
-    title: 'build AI Agent แล้ว แต่ต้องสั่งทุกครั้ง',
-    body: 'ยังไม่มี trigger อัตโนมัติ ทีมยังต้องจำว่า "ต้องกด" · ถ้าลืม ระบบก็ไม่ทำงาน · ยังไม่ใช่ระบบจริง',
+    title: 'AI Agent ที่สร้างไว้ ยังต้องสั่งทุกครั้งอยู่',
+    body: 'ทีมรู้วิธีใช้ AI Agent แล้ว แต่ยังต้องคอยกดสั่งงานเองทุกครั้ง ถ้าวันไหนลืมกด ระบบก็ไม่วิ่ง...นั่นยังไม่เรียกว่า \'อัตโนมัติ\' จริงๆ',
   },
   {
     emoji: '🏝',
-    title: 'AI ช่วยได้แค่คนที่สร้าง ทีมอื่นยังไม่ได้ประโยชน์',
-    body: 'ความรู้ติดอยู่กับคนที่ไปเรียน ไม่ได้กระจายเป็น system · ถ้าคนนั้นลาออก ระบบก็ตายตาม',
+    title: 'ความรู้ AI กระจุกตัว คนอื่นในทีมยังไม่ได้ใช้',
+    body: 'ความรู้ AI อยู่แค่กับคนที่มาเรียน ระบบที่สร้างใน Day 1 เลยอยู่ในมือคนแค่ 1-2 คน ถ้าเกิดวันนึงคนนั้นลาออก...ทั้งระบบก็พังตามไปด้วย',
   },
   {
     emoji: '🔌',
-    title: 'LINE OA กับ CRM กับ Sheet ยังทำงานแยกกัน',
-    body: 'ข้อมูลไม่ flow ทีมยังนั่ง copy ด้วยมือ · เสียเวลา 2-3 ชม./วัน กับงานที่ระบบควรทำให้',
+    title: 'LINE OA / CRM / Sheet ยังทำงานแยกกัน',
+    body: 'ข้อมูลจาก LINE OA, CRM, Sheet ยังไม่เชื่อมกัน ทีมยังต้องนั่ง copy-paste ข้อมูลด้วยมือ เสียเวลาไปเปล่าๆ วันละ 2-3 ชั่วโมงกับงานที่ควรเป็นหน้าที่ของระบบ',
   },
   {
     emoji: '📊',
-    title: 'ยังทำ KPI report ด้วยมือทุกสิ้นเดือน',
-    body: 'เจ้าของรอข้อมูล ทีมเสียเวลา 3-5 ชม. รวม Excel · ตัวเลขออกมาช้า แก้ไขไม่ทัน',
+    title: 'KPI report ยังทำมือทุกสิ้นเดือน',
+    body: 'เจ้าของรอข้อมูล ทีมเสียเวลา 3-5 ชม. รวม Excel ตัวเลขออกมาช้า แก้ไม่ทัน ตัดสินใจช้ากว่าที่ควรจะเป็น',
   },
   {
     emoji: '📨',
-    title: 'ทีมขายยังต้อง follow-up ทีละคนด้วยมือ',
-    body: 'ดีล cold เพราะ follow-up ไม่สม่ำเสมอ · ทีมลืม หรือไม่มีเวลา · lead ที่ควรปิดได้ หลุดไป',
+    title: 'ทีมขายยัง follow-up ทีละคนด้วยมือ',
+    body: 'ดีล cold เพราะ sequence ขาดช่วง ทีมลืมหรือไม่มีเวลา lead ที่ควรปิดได้กลับหลุดไปหาคู่แข่ง',
   },
   {
     emoji: '🧯',
     title: 'ถ้าระบบพัง ไม่มีใครในทีมแก้ได้',
-    body: 'ต้องรอผมเข้าไปแก้ · หรือทีมปรับเองไม่เป็น · ขาด governance + ไม่มี SOP ที่ทีมอ่านได้',
+    body: 'ต้องรอผมเข้าไปแก้ให้ หรือบางทีทีมอยากปรับแก้เองก็ทำไม่เป็น เพราะไม่มีคู่มือ (SOP) หรือคนที่คอยดูแลภาพรวมชัดเจน',
   },
 ];
 
 const outcomes = [
-  'ระบบ AI ทำงานทั้งองค์กรโดยไม่ต้องสั่งทุกครั้ง — trigger อัตโนมัติเต็มรูปแบบ',
-  'LINE OA / CRM / Sheet เชื่อมกันเป็น pipeline เดียว — ข้อมูลไหลเอง ไม่มีช่อง manual',
-  'ทีมขาย focus แค่ปิดดีล — qualify, follow-up, nurture ระบบทำให้ครบ',
-  'รายงาน KPI ส่งทุกเช้า — เจ้าของเห็นภาพธุรกิจก่อนเริ่มวัน ไม่ต้องรอทีมสรุป',
-  'หัวหน้าทีมดูแล ต่อยอด และขยาย workflow ได้เองโดยไม่พึ่งผม',
+  'ระบบ AI ทำงานเองทั้งองค์กร ไม่ต้องมีคนคอยสั่ง Trigger ทำงานอัตโนมัติตั้งแต่ lead ใหม่เข้าจนปิดดีล',
+  'ข้อมูลจาก LINE OA, CRM และ Sheet ไหลเชื่อมกันเป็น pipeline เดียว ไม่ต้องมีใครมานั่ง copy-paste ข้อมูลข้ามโปรแกรมอีก',
+  'ทีมขาย focus ได้แค่ปิดดีล ส่วน qualify / follow-up / nurture ระบบจัดการให้ครบ',
+  'รายงาน KPI ส่งให้ทุกเช้า เจ้าของเห็นภาพธุรกิจก่อนเริ่มวัน ไม่ต้องนั่งรอทีมสรุปสิ้นเดือน',
+  'หัวหน้าทีมดูแล ต่อยอด และขยาย workflow ได้เองโดยไม่ต้องพึ่งผม',
 ];
 
 const faqs = [
   {
     q: 'ต้องผ่าน Day 1 (Basic Workshop) ก่อนไหม',
-    a: 'ใช่ครับ — Advance Workshop ออกแบบมาต่อจาก Day 1 โดยตรง เนื้อหา Module 1-3 ของ Day 2 วางอยู่บน workflow ที่สร้างใน Day 1 ถ้ายังไม่ผ่าน Basic ก็เริ่มจาก /services/ai-workshop ก่อน',
+    a: 'หากไม่มีพื้นฐานด้าน AI ต้องเรียน Basic Workshop ก่อนครับ Advance Workshop ออกแบบมาต่อจาก Day 1 โดยตรง Module 1-3 ของ Day 2 วางอยู่บน workflow ที่สร้างไว้ใน Day 1 ถ้ายังไม่ผ่าน Basic ให้เริ่มที่ <a href="/services/ai-workshop" class="underline underline-offset-2 hover:opacity-80" style="color: var(--color-pun-cyan);">/services/ai-workshop</a> ก่อน แต่หากองค์กรของคุณมีการใช้ AI ในการทำงานอยู่แล้วให้นัดคุยกับผมเพื่อประเมินทีมงานก่อน <a href="/intake-form" class="underline underline-offset-2 hover:opacity-80" style="color: var(--color-pun-cyan);">กดที่นี้ได้เลย</a>',
   },
   {
     q: 'Day 2 ควรห่างจาก Day 1 กี่วัน',
-    a: 'ผมแนะนำ 2-4 สัปดาห์หลัง Day 1 — เพื่อให้ทีมได้ทดลองใช้ workflow จริงก่อน แล้วเอา insight จากหน้างานมา build ต่อใน Day 2 · ถ้าซื้อ Bundle จอง Day 2 ล่วงหน้าแล้วยืนยันวันทีหลังได้',
+    a: 'ผมแนะนำ 2-4 สัปดาห์ เพื่อให้ทีมได้ทดลองใช้ workflow จริงก่อน แล้วเอา insight จากหน้างานมา build ต่อใน Day 2 ถ้าซื้อ Bundle จอง Day 2 ล่วงหน้าแล้วยืนยันวันทีหลังได้',
   },
   {
     q: 'ทีมต้อง tech background ไหม',
-    a: 'ไม่จำเป็นครับ · stack ที่ใช้ (AI Automation Platform + Claude + Google Sheets) ออกแบบให้ non-tech ดูแลต่อเองได้ · Module 8 โดยเฉพาะสอนหัวหน้าทีมให้ maintain และ expand ระบบเองได้',
+    a: 'ไม่จำเป็นครับ stack ที่ใช้ (AI Automation Platform + Claude + Google Sheets) ออกแบบให้ non-tech ดูแลต่อเองได้ Module 8 สอนหัวหน้าทีมโดยเฉพาะให้ maintain และขยาย workflow ได้เอง',
   },
   {
     q: 'Bundle Day 1+2 จัดสองวันติดกันหรือแยก',
-    a: 'แยกกันครับ ห่างกัน 2-4 สัปดาห์ตามที่แนะนำ · ไม่ได้จัดติดกัน เพราะต้องการให้ทีมนำ workflow ไปใช้จริงก่อน แล้วค่อย build ต่อใน Day 2 ตาม learning จริง',
+    a: 'แยกครับ ห่างกัน 2-4 สัปดาห์ตามที่แนะนำ ไม่ได้จัดติดกัน เพราะต้องการให้ทีมนำ workflow ไปใช้จริงก่อน แล้วค่อย build ต่อใน Day 2 ตาม learning จากหน้างาน',
   },
   {
-    q: 'Retainer หลัง Day 2 ต่างจาก Consulting Retainer แบบเก่ายังไง',
-    a: 'Retainer v2.1 เปลี่ยนจาก session 90 นาที เป็น 1 Full Day ต่อเดือน · ทำงานได้จริงกว่า เห็นผลใน 1 วัน ไม่กระจาย · มี 2 track: Advisory Day (กลยุทธ์ + แก้ปัญหา) และ Skill Injection Day (สอน skill ใหม่ + build tool ร่วมกัน)',
+    q: 'Retainer หลัง Day 2 คืออะไร ต่างจาก Consulting แบบเก่ายังไง',
+    a: 'Retainer v2.1 เปลี่ยนจาก session 90 นาที เป็น 1 Full Day ต่อเดือน ทำงานได้จริงกว่า เห็นผลใน 1 วัน มี 2 track: Advisory Day สำหรับปรับกลยุทธ์และแก้ปัญหา กับ Skill Injection Day สำหรับ upskill ทีมและ build tool ใหม่ร่วมกัน',
   },
 ];
 ---
@@ -393,7 +393,7 @@ const faqs = [
         Retainer — ผมเข้าไป 1 วัน/เดือน ระบบโตต่อเนื่อง
       </h2>
       <p class="mt-4 max-w-2xl text-base leading-relaxed text-base-content/65">
-        หลัง Day 2 ระบบพร้อมแล้ว แต่ธุรกิจโต · ปัญหาใหม่เกิด · ผมเข้าไป 1 วัน/เดือนเพื่อปรับ ต่อยอด และ build workflow ใหม่ตามที่โตขึ้น
+        หลัง Day 2 ระบบพร้อมแล้ว แต่ธุรกิจยังโต ปัญหาใหม่เกิดทุกเดือน ผมเข้าไป 1 วัน/เดือน เพื่อปรับ ต่อยอด และ build workflow ที่ธุรกิจต้องการตอนนั้นจริงๆ
       </p>
 
       <div class="mt-10 grid gap-6 md:grid-cols-2">
@@ -417,10 +417,10 @@ const faqs = [
           <p class="mt-0.5 text-xs text-base-content/45">Founding Rate · Regular ฿70,000/เดือน</p>
           <ul class="mt-5 space-y-2 text-sm text-base-content/75">
             {[
-              '1 Full Day ต่อเดือน เข้าไปที่บริษัทคุณ',
-              'Agenda ส่งล่วงหน้า 1 สัปดาห์ — focus ปัญหาจริง',
-              'แก้ bottleneck + ปรับกลยุทธ์ + build workflow ใหม่',
-              'ไม่มีสัญญาผูกมัด · ยกเลิกได้ก่อนรอบถัดไป',
+              '1 Full Day เข้าไปที่บริษัทคุณทุกเดือน',
+              'ส่ง agenda ล่วงหน้า 1 สัปดาห์ โฟกัสปัญหาจริงที่เกิดในรอบนั้น',
+              'แก้ bottleneck + ปรับกลยุทธ์ + build workflow ใหม่ตามสถานการณ์',
+              'ไม่มีสัญญาผูกมัด ยกเลิกได้ก่อนรอบถัดไป',
             ].map((item) => (
               <li class="flex items-start gap-2">
                 <span style={`color: ${accent};`}>✓</span>
@@ -428,7 +428,7 @@ const faqs = [
               </li>
             ))}
           </ul>
-          <p class="mt-4 text-xs text-base-content/40">สำหรับ: เจ้าของที่อยาก scale กลยุทธ์ + แก้ปัญหา strategic</p>
+          <p class="mt-4 text-xs text-base-content/40">สำหรับ: เจ้าของที่ต้องการ strategic partner คอยดู ปรับ และขยายระบบตามที่ธุรกิจโต</p>
         </div>
 
         <!-- Track B -->
@@ -454,10 +454,10 @@ const faqs = [
           <p class="mt-0.5 text-xs text-base-content/45">Founding Rate · Regular ฿80,000/เดือน</p>
           <ul class="mt-5 space-y-2 text-sm text-base-content/75">
             {[
-              '1 Full Day ต่อเดือน ทีม training session',
-              'สอน skill ใหม่ให้ทีม + build tool ร่วมกัน',
-              'ทีมเอา workflow กลับไปใช้ได้ทันทีหลังวัน training',
-              'ไม่มีสัญญาผูกมัด · ยกเลิกได้ก่อนรอบถัดไป',
+              '1 Full Day training session เข้าไปที่บริษัทคุณทุกเดือน',
+              'สอน skill ใหม่ให้ทีม + build tool ร่วมกันในวันนั้นเลย',
+              'ทีมออกจาก session พร้อม workflow จริงที่กลับไปใช้ได้ทันที',
+              'ไม่มีสัญญาผูกมัด ยกเลิกได้ก่อนรอบถัดไป',
             ].map((item) => (
               <li class="flex items-start gap-2">
                 <span style={`color: ${accent};`}>✓</span>
@@ -465,7 +465,7 @@ const faqs = [
               </li>
             ))}
           </ul>
-          <p class="mt-4 text-xs text-base-content/40">สำหรับ: เจ้าของที่อยาก upskill ทีมและ build capability ภายในองค์กร</p>
+          <p class="mt-4 text-xs text-base-content/40">สำหรับ: เจ้าของที่อยาก build capability ภายในทีม ให้ทีมทำได้มากขึ้นในแต่ละเดือน</p>
         </div>
       </div>
 
@@ -500,7 +500,7 @@ const faqs = [
               <span class="font-semibold leading-snug">{f.q}</span>
               <span class="mt-0.5 shrink-0 text-base-content/40 transition group-open:rotate-45">＋</span>
             </summary>
-            <p class="mt-4 text-sm leading-relaxed text-base-content/70">{f.a}</p>
+            <p class="mt-4 text-sm leading-relaxed text-base-content/70" set:html={f.a}></p>
           </details>
         ))}
       </div>
