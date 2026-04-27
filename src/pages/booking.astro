@@ -530,10 +530,22 @@ const pkgLookupJson = JSON.stringify({
   const copyBtn = document.getElementById('booking-copy-ref') as HTMLButtonElement | null;
   const errPackages = document.getElementById('err-packages');
 
-  // Pre-select package from ?package= query param
+  // Pre-select package(s) from ?package= and ?bundle= query params
   const params = new URLSearchParams(window.location.search);
   const initialPkg = params.get('package');
-  if (initialPkg) {
+  const bundle = params.get('bundle');
+
+  // bundle=day1-day2 → pre-select both ai-workshop + ai-workshop-advance
+  if (bundle === 'day1-day2') {
+    ['ai-workshop', 'ai-workshop-advance'].forEach((slug) => {
+      const el = document.querySelector<HTMLInputElement>(
+        `.pkg-card[data-pkg="${CSS.escape(slug)}"] .pkg-input`
+      );
+      if (el) el.checked = true;
+    });
+    document.querySelector('.pkg-card[data-pkg="ai-workshop"]')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else if (initialPkg) {
     const preselect = document.querySelector<HTMLInputElement>(
       `.pkg-card[data-pkg="${CSS.escape(initialPkg)}"] .pkg-input`
     );
