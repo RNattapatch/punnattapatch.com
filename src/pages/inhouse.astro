@@ -4,7 +4,7 @@ import { SITE } from '../data/site';
 
 const accent = 'var(--color-pun-coral)';
 const accentHex = '#dd4155';
-const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
+
 ---
 
 <BaseLayout
@@ -99,104 +99,21 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
         </div>
       </div>
 
-      {/* Form */}
-      <form
-        id="inhouse-form"
-        class="mt-6 space-y-4 rounded-2xl border border-base-content/10 bg-base-100 p-6"
-        novalidate
-      >
-        <p class="font-display text-base font-bold">แจ้งความสนใจ — ฟรี ไม่มีผูกมัด</p>
-        <p class="text-sm text-base-content/60">ปันจะ reply ภายใน 24 ชม. เพื่อนัดคุยรายละเอียด</p>
-
-        <input type="hidden" id="ih-utm_source" name="utm_source" value="" />
-        <input type="hidden" id="ih-utm_medium" name="utm_medium" value="" />
-        <input type="hidden" id="ih-utm_campaign" name="utm_campaign" value="" />
-        <input type="hidden" id="ih-utm_content" name="utm_content" value="" />
-        <input type="hidden" id="ih-utm_term" name="utm_term" value="" />
-        <input type="hidden" id="ih-fbclid" name="fbclid" value="" />
-        <input type="hidden" id="ih-ttclid" name="ttclid" value="" />
-        <input type="hidden" name="program" value="inhouse-workshop" />
-        <input type="hidden" name="source_page" value="/inhouse" />
-        <input type="hidden" name="service" value="AI Workshop In-house" />
-
-        <div>
-          <label class="block text-sm font-bold" for="ih-name">
-            ชื่อ-นามสกุล <span style={`color: ${accent};`}>*</span>
-          </label>
-          <input
-            type="text" id="ih-name" name="name" required autocomplete="name"
-            class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
-            style={`--tw-ring-color: ${accentHex};`}
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-bold" for="ih-company">
-            ชื่อบริษัท <span style={`color: ${accent};`}>*</span>
-          </label>
-          <input
-            type="text" id="ih-company" name="company" required autocomplete="organization"
-            class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
-            style={`--tw-ring-color: ${accentHex};`}
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-bold" for="ih-contact">
-            LINE ID / โทรศัพท์ <span style={`color: ${accent};`}>*</span>
-          </label>
-          <input
-            type="text" id="ih-contact" name="phone" required autocomplete="tel"
-            placeholder="เช่น @yourline หรือ 081-234-5678"
-            class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
-            style={`--tw-ring-color: ${accentHex};`}
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-bold" for="ih-teamsize">
-            ขนาดทีมที่เข้าร่วม (ประมาณ) <span style={`color: ${accent};`}>*</span>
-          </label>
-          <select
-            id="ih-teamsize" name="team_size" required
-            class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
-            style={`--tw-ring-color: ${accentHex};`}
-          >
-            <option value="">เลือก...</option>
-            <option value="5-8">5-8 คน</option>
-            <option value="9-15">9-15 คน</option>
-            <option value="16-20">16-20 คน</option>
-            <option value="20+">20+ คน (คุยก่อน)</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-sm font-bold" for="ih-message">
-            บอกเพิ่มเติม (ไม่บังคับ)
-          </label>
-          <textarea
-            id="ih-message" name="message" rows="3"
-            placeholder="เช่น อยากสอนทีมขาย ให้ใช้ AI ทำ follow-up อัตโนมัติ หรือ build chatbot รับ inquiry..."
-            class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2 resize-none"
-            style={`--tw-ring-color: ${accentHex};`}
-          ></textarea>
-        </div>
-
-        <button
-          type="submit"
-          id="ih-submit-btn"
-          class="w-full rounded-full px-6 py-3.5 font-display text-base font-bold shadow-lg transition-all hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
+      {/* CTA */}
+      <div class="mt-6 rounded-2xl border border-base-content/10 bg-base-100 p-6 text-center space-y-4">
+        <p class="font-display text-base font-bold">นัดคุยรายละเอียด — ฟรี ไม่มีผูกมัด</p>
+        <p class="text-sm text-base-content/60">ผมจะ reply ภายใน 24 ชม. เพื่อนัดคุยและประเมิน scope ให้</p>
+        <a
+          href="https://punnattapatch.com/booking?package=ai-workshop"
+          class="inline-block w-full rounded-full px-6 py-3.5 font-display text-base font-bold shadow-lg transition-all hover:scale-[1.02]"
           style={`background: ${accent}; color: white;`}
         >
           ส่งข้อมูล — ผมจะติดต่อกลับภายใน 24 ชม.
-        </button>
-
-        <p id="ih-form-msg" class="hidden rounded-xl p-3 text-sm" />
-
+        </a>
         <p class="text-center text-xs text-base-content/45">
           เวิร์คช็อปนี้จัดที่บริษัทของคุณ (กรุงเทพฯ และปริมณฑล) ชำระหลังคุยรายละเอียดและยืนยันวันครับ
         </p>
-      </form>
+      </div>
 
       {/* Secondary CTAs */}
       <div class="mt-6 space-y-3">
@@ -246,70 +163,11 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
     </div>
   </div>
 
-  <script is:inline define:vars={{ accentHex, N8N_WEBHOOK }}>
+  <script is:inline define:vars={{ accentHex }}>
     (function () {
       if (window.ttq && typeof window.ttq.track === 'function') {
         try { window.ttq.track('ViewContent', { contents: [{ content_id: 'inhouse-workshop', content_type: 'service', content_name: 'AI Workshop In-house' }], value: 29800, currency: 'THB' }); } catch (_) {}
       }
-
-      const form = document.getElementById('inhouse-form');
-      const btn = document.getElementById('ih-submit-btn');
-      const msg = document.getElementById('ih-form-msg');
-      if (!form || !btn || !msg) return;
-
-      const params = new URLSearchParams(location.search);
-      ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','ttclid'].forEach(function (k) {
-        var el = document.getElementById('ih-' + k);
-        if (el && params.get(k)) el.value = params.get(k);
-      });
-
-      function genRef() {
-        var ts = Date.now().toString(36);
-        var rnd = Math.random().toString(36).slice(2, 7);
-        return ('PN-IH-' + ts + '-' + rnd).toUpperCase();
-      }
-
-      form.addEventListener('submit', async function (ev) {
-        ev.preventDefault();
-        msg.classList.add('hidden');
-        if (!form.checkValidity()) { form.reportValidity(); return; }
-
-        btn.disabled = true;
-        btn.textContent = 'กำลังส่ง...';
-
-        var fd = new FormData(form);
-        var ref = genRef();
-        var payload = { _meta: { reference: ref, page: location.pathname } };
-        fd.forEach(function (v, k) { payload[k] = v; });
-
-        if (typeof window.plausible === 'function') {
-          try { window.plausible('Inhouse Inquiry', { props: { ref: ref } }); } catch (_) {}
-        }
-        if (window.ttq && typeof window.ttq.track === 'function') {
-          try { window.ttq.track('CompleteRegistration', { contents: [{ content_id: 'inhouse-workshop', content_name: 'AI Workshop In-house' }], value: 29800, currency: 'THB', event_id: ref }); } catch (_) {}
-        }
-
-        try {
-          var ctrl = new AbortController();
-          var t = setTimeout(function () { ctrl.abort(); }, 8000);
-          await fetch(N8N_WEBHOOK, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-            signal: ctrl.signal,
-          });
-          clearTimeout(t);
-        } catch (e) {
-          console.error('[inhouse-form] webhook error', e);
-        }
-
-        msg.classList.remove('hidden');
-        msg.style.background = 'color-mix(in oklch, ' + accentHex + ' 12%, transparent)';
-        msg.style.color = accentHex;
-        msg.textContent = '✅ ขอบคุณครับ ผมได้รับข้อมูลแล้ว — จะติดต่อกลับภายใน 1 วันทำการเพื่อนัดคุยรายละเอียดสั้นๆ · Ref: ' + ref;
-        btn.textContent = 'ส่งแล้ว ✓';
-        btn.style.background = 'color-mix(in oklch, ' + accentHex + ' 70%, transparent)';
-      });
     })();
   </script>
 </BaseLayout>
