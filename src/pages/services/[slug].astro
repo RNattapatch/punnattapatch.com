@@ -6,7 +6,9 @@ import { SITE, SERVICES } from '../../data/site';
 import { SERVICE_DETAILS, type AccentToken } from '../../data/serviceDetails';
 
 export function getStaticPaths() {
-  return SERVICES.map((svc) => ({ params: { slug: svc.slug } }));
+  return SERVICES
+    .filter((svc) => SERVICE_DETAILS[svc.slug as string])
+    .map((svc) => ({ params: { slug: svc.slug } }));
 }
 
 const { slug } = Astro.params;
@@ -148,6 +150,8 @@ const GALLERY_MAP: Record<string, { src: string; alt: string }[]> = {
     { src: '/advance-ai-course/gallery1.JPG', alt: 'ทีมใช้ laptop ในห้อง workshop · จอฉาย "Advance AI & Business Automation"' },
     { src: '/advance-ai-course/gallery7.JPG', alt: 'บรรยากาศ workshop hands-on · ทีมกำลัง build workflow' },
     { src: '/advance-ai-course/IMG_5218.JPG', alt: 'ปัน ณัฐพัชร์ สอน AI workshop' },
+    { src: '/advance-ai-course/testimonial6.JPG', alt: 'บรรยากาศห้อง workshop · ทีมใช้งาน laptop พร้อมกัน' },
+    { src: '/advance-ai-course/testimonial7.JPG', alt: 'บรรยากาศ workshop ทีมใหญ่ · participants กว่า 30 คน' },
   ],
 };
 const gallery = GALLERY_MAP[slug as string] ?? [];

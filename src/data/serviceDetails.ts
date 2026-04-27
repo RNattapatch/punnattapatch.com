@@ -63,7 +63,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
   'ai-workshop': {
     slug: 'ai-workshop',
     accent: 'cyan',
-    eyebrow: 'Advance AI & Business Automation · 1 วัน',
+    eyebrow: 'Basic AI Workshop · Day 1 · 1 วัน',
     headline: 'ผมไม่ได้แค่มาสอนคุณใช้ AI',
     headlineAccent: 'แต่ผมจะจับมือคุณสร้าง AI Agent ตัวแรก',
     headlineTail: 'ให้ธุรกิจของคุณ',

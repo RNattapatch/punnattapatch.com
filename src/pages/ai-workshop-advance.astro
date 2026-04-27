@@ -507,6 +507,28 @@ const faqs = [
     </div>
   </section>
 
+  <!-- ===== GALLERY ===== -->
+  <section class="border-t border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-5xl">
+      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>Gallery</p>
+      <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">บรรยากาศ Workshop จริง</h2>
+      <p class="mt-3 max-w-2xl text-sm text-base-content/70">
+        ภาพถ่ายจากงานจริง · ไม่ใช่ stock photo · ทุก session ปันลงไปสอน + จับมือทำ + feedback รายคน
+      </p>
+      <div class="mt-8 grid gap-4 md:grid-cols-2">
+        {[
+          { src: '/advance-ai-course/testimonial6.JPG', alt: 'บรรยากาศห้อง workshop · ทีมใช้งาน laptop พร้อมกัน' },
+          { src: '/advance-ai-course/testimonial7.JPG', alt: 'บรรยากาศ workshop ทีมใหญ่ · participants กว่า 30 คน' },
+        ].map((photo) => (
+          <div class="overflow-hidden rounded-2xl border border-base-content/10 bg-base-200 shadow-sm">
+            <img src={photo.src} alt={photo.alt} loading="lazy" decoding="async"
+                 class="aspect-[4/3] w-full object-cover transition hover:scale-105" />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <!-- ===== FINAL CTA ===== -->
   <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
     <div class="mx-auto max-w-3xl">

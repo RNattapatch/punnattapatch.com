@@ -29,6 +29,7 @@ export const SITE = {
   nav: [
     { label: 'หน้าหลัก', href: '/' },
     { label: 'บริการ', href: '/services' },
+    { label: 'Advance Workshop', href: '/ai-workshop-advance' },
     { label: 'Public Training', href: '/training' },
     { label: 'Free Kit', href: '/agent-builder-kit' },
     { label: 'BOSI Quiz', href: '/bosi-dna-quiz' },
@@ -51,8 +52,8 @@ export const BRAND_COLORS = {
 export const SERVICES = [
   {
     id: 'ai-workshop',
-    title: 'Advance AI & Business Automation',
-    subtitle: 'Workshop 1 วัน · Build AI Agent แรก',
+    title: 'Basic AI Workshop',
+    subtitle: 'Day 1 · Build AI Agent แรก',
     hook: 'ทีมขายเสียเวลา 5+ ชั่วโมง/สัปดาห์ กับงานที่ AI ทำได้ใน 10 นาที',
     priceThb: 24900,
     priceLabel: '฿24,900 · Early Bird ถึง 30 เม.ย. · 1 พ.ค. แยกเป็น Basic ฿29,900 + Advance ฿29,900',
@@ -65,6 +66,24 @@ export const SERVICES = [
       'ทีมใช้ต่อเองได้ — team lead maintain เป็น',
     ],
     slug: 'ai-workshop',
+  },
+  {
+    id: 'ai-workshop-advance',
+    title: 'Advance AI Workshop',
+    subtitle: 'Day 2 · Multi-agent System ทั้งองค์กร',
+    hook: 'Day 1 สร้าง AI Agent แรกได้แล้ว — Day 2 คือระบบทั้งบริษัทวิ่งด้วย AI',
+    priceThb: 29900,
+    priceLabel: '฿29,900 / Day 2 (pre-req: Day 1) · Bundle Day1+2 = ฿50,000',
+    duration: '1 วัน (6-7 ชม.)',
+    format: 'On-site เท่านั้น (In-house)',
+    audience: 'ผู้ที่ผ่าน Basic Workshop (Day 1) แล้ว · อยากให้ระบบ AI วิ่งเองทั้งองค์กร',
+    outcome: [
+      'ระบบ AI ทำงานทั้งองค์กรโดยไม่ต้องสั่งทุกครั้ง — trigger อัตโนมัติเต็มรูปแบบ',
+      'LINE OA / CRM / Sheet เชื่อมกันเป็น pipeline เดียว',
+      'Auto-report KPI ส่งทุกเช้า ไม่ต้องรอทีมสรุป',
+      'หัวหน้าทีมดูแลและขยาย workflow เองได้โดยไม่พึ่งผม',
+    ],
+    slug: 'ai-workshop-advance',
   },
   {
     id: 'sales-system-sprint',
