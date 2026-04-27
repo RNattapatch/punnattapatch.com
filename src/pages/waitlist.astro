@@ -8,8 +8,8 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
 ---
 
 <BaseLayout
-  title="จองสิทธิ์ P1 — AI Quick Launch Waitlist | ปัน ณัฐพัชร์"
-  description="ลงชื่อจองสิทธิ์ P1 AI Quick Launch · 1 วันสร้าง AI Agent ตัวแรกของธุรกิจ · 20 ที่นั่ง · ราคา Waitlist ฿12,900 · ไม่ต้องจ่ายวันนี้"
+  title="P1 — สร้าง AI เป็นพนักงานตัวแรกของบริษัทคุณ ใน 1 วัน | ปัน ณัฐพัชร์"
+  description="Waitlist P1 AI Quick Launch · จบ 1 วันมี AI Agent ของจริงกลับไปใช้ที่บริษัท · 20 ที่นั่ง · ฿12,900 · ยังไม่ต้องจ่ายวันนี้"
   noindex={false}
 >
   <div class="min-h-screen px-4 py-12 lg:py-20">
@@ -21,31 +21,31 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
           class="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
           style={`border-color: color-mix(in oklch, ${accent} 40%, transparent); background: color-mix(in oklch, ${accent} 10%, transparent); color: ${accent};`}
         >
-          P1 · Founding Cohort #1 · 20 ที่นั่งเท่านั้น
+          P1 รุ่นแรก · รับแค่ 20 คน · รอบเดียวเท่านั้น
         </span>
       </div>
 
       {/* Headline */}
       <h1 class="mt-6 text-center font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
-        จบ 1 วัน คุณจะมี
+        สร้าง AI เป็นพนักงาน
         <br />
-        <span style={`color: ${accent};`}>AI Agent ตัวแรกของธุรกิจ</span>
+        <span style={`color: ${accent};`}>คนแรกของบริษัทคุณ</span>
         <br />
-        build ด้วยมือคุณเอง
+        จบใน 1 วัน ไม่ต้องเขียนโค้ด
       </h1>
 
       <p class="mt-4 text-center text-base leading-relaxed text-base-content/75">
-        ลงชื่อ Waitlist ก่อน — ฟรี ไม่ต้องจ่ายวันนี้
+        ลงชื่อใน Waitlist ตอนนี้ เพื่อรับสิทธิ์จองที่นั่งในราคาสำหรับรุ่นแรก
         <br class="hidden sm:block" />
-        lock ราคา <strong style={`color: ${accent};`}>฿12,900</strong>
+        <strong style={`color: ${accent};`}>฿12,900</strong>
         <span class="text-base-content/50"> · ราคาหลังเต็ม ฿16,900</span>
       </p>
 
       {/* Social proof strip */}
       <div class="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-base-content/55">
-        <span>✅ 83K+ views TikTok</span>
-        <span>✅ Hands-on build ตลอดวัน</span>
-        <span>✅ ออกจากห้องพร้อม Agent ใช้จริง</span>
+        <span>✅ 83K+ views ใน TikTok เดียว</span>
+        <span>✅ ลงมือสร้าง Agent ของคุณเอง ไม่ใช่แค่ดู</span>
+        <span>✅ จบวัน มี AI Agent ของจริงกลับไปใช้ที่บริษัท</span>
       </div>
 
       {/* Scarcity card */}
@@ -81,7 +81,7 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
           style={`background: color-mix(in oklch, ${accent} 5%, transparent);`}
         >
           <p class="text-sm font-bold uppercase tracking-widest" style={`color: ${accent};`}>
-            ช่วยธุรกิจมาแล้ว 10+ ราย
+            ผมช่วย SME รายได้ ฿30-200M สร้าง AI Agents ลดต้นทุนและเพิ่มยอดขายมาแล้ว
           </p>
           <blockquote class="mt-3 text-sm leading-relaxed text-base-content/85 md:text-base">
             "Workshop จบตอนบ่าย — ผมเอา AI Agent กลับไปรันจริงวันจันทร์ถัดมาเลย
@@ -160,13 +160,13 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
           class="w-full rounded-full px-6 py-3.5 font-display text-base font-bold shadow-lg transition-all hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
           style={`background: ${accent}; color: #0a1020;`}
         >
-          ขึ้น Waitlist + lock ราคา ฿12,900
+          จองคิวเพื่อรับสิทธิ์ราคา ฿12,900
         </button>
 
         <p id="wl-form-msg" class="hidden rounded-xl p-3 text-sm" />
 
         <p class="text-center text-xs text-base-content/45">
-          ลงชื่อฟรี · ไม่ต้องจ่ายวันนี้ · ชำระ ฿12,900 หลังยืนยันที่นั่ง
+          ลงชื่อตอนนี้ยังไม่เสียเงินครับ ผมจะแจ้งผ่าน LINE/โทรเมื่อถึงคิว เพื่อยืนยันที่นั่งและชำระเงิน
         </p>
       </form>
 
@@ -179,10 +179,10 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
         >
           <div>
             <p class="font-display text-base font-bold leading-snug" style={`color: ${accent};`}>
-              อยากรู้ว่าคอร์สสอนอะไรบ้าง?
+              ยังไม่แน่ใจว่าเหมาะกับคุณไหม?
             </p>
             <p class="mt-1 text-sm text-base-content/65">
-              ดูว่าเรียนอะไรบ้าง · ผลลัพธ์จริงจากลูกค้า · FAQ ครบ →
+              ดูเนื้อหาทั้งหมด เคสลูกค้าจริง และ FAQ แล้วค่อยตัดสินใจ →
             </p>
           </div>
           <span
@@ -251,7 +251,7 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
         msg.classList.remove('hidden');
         msg.style.background = 'color-mix(in oklch, ' + accentHex + ' 12%, transparent)';
         msg.style.color = accentHex;
-        msg.textContent = '✅ ขึ้น Waitlist สำเร็จ — ผมจะแจ้งก่อนใครเมื่อถึงคิวคุณ · Ref: ' + ref;
+        msg.textContent = '✅ ขอบคุณครับ ได้รับข้อมูลแล้ว — ผมจะ LINE หาคุณก่อนใครเมื่อถึงคิว · Ref: ' + ref;
         btn.textContent = 'บันทึกแล้ว ✓';
         btn.style.background = 'color-mix(in oklch, ' + accentHex + ' 70%, transparent)';
       });
