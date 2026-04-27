@@ -79,7 +79,7 @@ export const SERVICES = [
     outcome: [
       'ยอดขายเพิ่มโดยไม่ต้อง push ด้วยมือ',
       'KPI + Commission ชัดเจน — ทีมรู้เป้า รู้รางวัล',
-      'n8n workflow + AI tools พร้อมใช้ทันที',
+      'AI workflow อัตโนมัติ + tools พร้อมใช้ทันที',
     ],
     slug: 'sales-system-sprint',
   },

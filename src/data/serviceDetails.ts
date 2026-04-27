@@ -68,7 +68,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
     headlineAccent: 'แต่ผมจะจับมือคุณสร้าง AI Agent ตัวแรก',
     headlineTail: 'ให้ธุรกิจของคุณ',
     subhead:
-      '1 วันเต็ม 6-7 ชั่วโมง · ทีมขาย 5-20 คน · ออกจากห้องพร้อม n8n workflow + AI Agent ที่ run ได้จริง + 30 prompts ready-to-use · ทีม build ด้วยมือตัวเอง Pun จับมือทำเคียงข้าง output เห็นหน้างานทุก session',
+      '1 วันเต็ม 6-7 ชั่วโมง · ทีมขาย 5-20 คน · ออกจากห้องพร้อม AI workflow อัตโนมัติ + AI Agent ที่ run ได้จริง + 30 prompts ready-to-use · ทีม build ด้วยมือตัวเอง Pun จับมือทำเคียงข้าง output เห็นหน้างานทุก session',
     pains: [
       {
         emoji: '💬',
@@ -108,11 +108,11 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
     ],
     preparation: {
       requirements: [
-        { title: 'Laptop ส่วนตัว + Internet', detail: 'laptop ของทีมแต่ละคน · WiFi ที่เข้า Google + n8n ได้' },
+        { title: 'Laptop ส่วนตัว + Internet', detail: 'laptop ของทีมแต่ละคน · WiFi ที่เข้า Google ได้' },
         { title: 'Gmail คนละ 1 account', detail: 'ใช้สมัคร AI tools + access Google Sheets/Drive' },
       ],
       tools: [
-        { name: 'n8n', tagline: 'สร้างระบบ Automation แบบไม่ต้องเขียนโค้ด' },
+        { name: 'Workflow Automation', tagline: 'สร้างระบบ Automation แบบไม่ต้องเขียนโค้ด' },
         { name: 'Claude.ai', tagline: 'AI ที่ช่วยคิด วางแผน และลงมือทำ' },
         { name: 'Claude Code', tagline: 'AI ที่ "ทำงาน" ให้ ไม่ใช่แค่ "เขียนโค้ด" · ใช้สร้าง Business OS ขององค์กร' },
         { name: 'Gemini Gems + NotebookLM', tagline: 'ระบบ Onboarding + Product Knowledge Hub · AI ที่รู้ข้อมูลบริษัท' },
@@ -163,7 +163,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       },
     ],
     outcomes: [
-      'กลับบ้านพร้อม n8n workflow + AI Agent ที่ run ได้จริง · ใช้งานวันรุ่งขึ้นได้เลย',
+      'กลับบ้านพร้อม AI workflow อัตโนมัติ + AI Agent ที่ run ได้จริง · ใช้งานวันรุ่งขึ้นได้เลย',
       'Prompt library 30 ตัว tested · ทีมขาย copy-paste ใช้ทันที',
       'วัดผล Before / After ภายใน workshop วันเดียว · ไม่ใช่รอเดือน',
       'Team lead maintain ระบบเองได้ ไม่ต้องพึ่งผมต่อเดือน',
@@ -192,7 +192,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       },
       pointOfParity: [
         'Workshop เน้นลงมือทำจริง ไม่ใช่นั่งฟังบรรยายอย่างเดียว',
-        'ใช้เครื่องมือล่าสุดเสมอ เช่น Claude Code · n8n · Gemini · Kie.Ai',
+        'ใช้เครื่องมือล่าสุดเสมอ เช่น Claude Code · Automation Workflow · Gemini · Kie.Ai',
         'กลุ่มซัพพอร์ตสำหรับถามตอบและให้คำปรึกษาต่อเนื่อง 30 วันหลังจบ workshop',
         'เอกสารสรุป + วิดีโอบันทึกหน้าจอทุก session · ทีมกลับไปทบทวนได้',
       ],
@@ -207,7 +207,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
         },
         {
           title: 'สร้างระบบ AI ที่ทำงานแทน ไม่ใช่แค่ถาม-ตอบ',
-          body: 'เน้นสร้าง Agentic AI (AI ที่ทำงานแทน) ด้วย Claude Code + n8n เพื่อสร้างระบบอัตโนมัติที่ช่วยทีมขายจริงๆ ไม่ใช่แค่สอนเขียน prompt พื้นฐาน',
+          body: 'เน้นสร้าง Agentic AI (AI ที่ทำงานแทน) ด้วย Claude Code + AI Automation Platform เพื่อสร้างระบบอัตโนมัติที่ช่วยทีมขายจริงๆ ไม่ใช่แค่สอนเขียน prompt พื้นฐาน',
         },
         {
           title: 'วัดผล ROI ได้ตั้งแต่วันแรก',
@@ -224,7 +224,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
     priceNote: 'จองก่อน 30 เม.ย. = ประหยัด ฿5,000 และ lock สิทธิ์ Advance course ราคาเดิม · จัดแบบ in-house on-demand · ปันเข้าไปจัด workshop ตามตารางทีม · ชำระ 100% ก่อนเริ่มงาน',
     inclusions: [
       'Workshop 1 วัน 6-7 ชม. · On-site เท่านั้น (In-house)',
-      'n8n workflow + AI Agent 1 ตัวที่ build ในห้อง (production-ready)',
+      'AI workflow อัตโนมัติ + AI Agent 1 ตัวที่ build ในห้อง (production-ready)',
       'Prompt library 30 prompts tested สำหรับงาน admin + sales',
       '30-day async LINE support หลัง workshop (Mon-Fri)',
       'Handover document + screen recording ทุก session',
@@ -242,7 +242,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       },
       {
         q: 'ถ้าทีมไม่เก่ง tech จะตามทันไหม',
-        a: 'ทันแน่นอนครับ · ลูกค้าผม 8/10 ทีมไม่มีใครเขียน code · stack ที่ผมใช้ (Sheets + n8n + Claude) ออกแบบให้ non-tech ดูแลต่อเองได้ 100%',
+        a: 'ทันแน่นอนครับ · ลูกค้าผม 8/10 ทีมไม่มีใครเขียน code · stack ที่ผมใช้ (Sheets + Automation Platform + Claude) ออกแบบให้ non-tech ดูแลต่อเองได้ 100%',
       },
       {
         q: 'หลัง Workshop ถ้าเจอปัญหาถามใครได้',
@@ -262,7 +262,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
     headlineAccent: '80% มาจากคุณคนเดียว',
     headlineTail: 'วางระบบให้ทีมวิ่งเอง ใน 1 เดือน',
     subhead:
-      '1 เดือนจบครบ: คุยเก็บข้อมูล → ออกแบบระบบ → ติดตั้ง → อบรมทีม · พร้อม KPI dashboard (หน้าจอดูยอดเรียลไทม์) + ตัวคำนวณค่าคอมมิชชั่น + n8n workflow (ระบบทำงานซ้ำอัตโนมัติ) — ทีมใช้ต่อเองได้หลังส่งมอบ',
+      '1 เดือนจบครบ: คุยเก็บข้อมูล → ออกแบบระบบ → ติดตั้ง → อบรมทีม · พร้อม KPI dashboard (หน้าจอดูยอดเรียลไทม์) + ตัวคำนวณค่าคอมมิชชั่น + Automation workflow (ระบบทำงานซ้ำอัตโนมัติ) — ทีมใช้ต่อเองได้หลังส่งมอบ',
     pains: [
       {
         emoji: '⚖️',
@@ -314,7 +314,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       {
         time: 'สัปดาห์ที่ 3 — ติดตั้งระบบ',
         title: 'ลงมือสร้างระบบจริง',
-        body: 'ตัวคำนวณค่าคอมที่ทีมคำนวณเองได้ · KPI dashboard ดูยอดแบบเรียลไทม์ · n8n workflow + AI ช่วยทำงานซ้ำๆ อัตโนมัติ',
+        body: 'ตัวคำนวณค่าคอมที่ทีมคำนวณเองได้ · KPI dashboard ดูยอดแบบเรียลไทม์ · Automation workflow + AI ช่วยทำงานซ้ำๆ อัตโนมัติ',
       },
       {
         time: 'สัปดาห์ที่ 4 — อบรม + ส่งมอบ',
@@ -325,7 +325,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
     outcomes: [
       'ทีมเห็น KPI ของตัวเองแบบเรียลไทม์ ไม่ต้องรอสิ้นเดือน',
       'โครงสร้างค่าคอมมิชชั่นที่ทีมเข้าใจทุกคน คำนวณเองได้',
-      'n8n workflow ช่วยคัดกรองลูกค้า + แจ้งเตือนติดตาม + สรุปรายงาน ให้อัตโนมัติ',
+      'AI workflow อัตโนมัติช่วยคัดกรองลูกค้า + แจ้งเตือนติดตาม + สรุปรายงาน',
       'เจ้าของลดเวลาจุกจิกกับทีมลง 50%+ ปล่อยให้ทีมวิ่งเอง',
     ],
     whyMe: {
@@ -365,8 +365,8 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
           body: 'ผมออกแบบ KPI และ Commission จาก revenue model + cost structure + margin ของธุรกิจคุณจริงๆ · ไม่ copy template จากบริษัทอื่น · ทีมใหญ่ที่ตอบได้ว่า "ปิดดีลขนาดนี้ได้คอมเท่าไหร่" ทันที',
         },
         {
-          title: 'n8n automation integrated ไม่ใช่แค่ dashboard',
-          body: 'ระบบที่ผมสร้างมี workflow automation ด้วย n8n สำหรับแจ้งเตือน follow-up / สร้าง report อัตโนมัติ / sync ข้อมูล · ไม่ใช่แค่ CRM ที่ต้องคีย์ข้อมูลเอง',
+          title: 'Workflow Automation integrated ไม่ใช่แค่ dashboard',
+          body: 'ระบบที่ผมสร้างมี Automation workflow สำหรับแจ้งเตือน follow-up / สร้าง report อัตโนมัติ / sync ข้อมูล · ไม่ใช่แค่ CRM ที่ต้องคีย์ข้อมูลเอง',
         },
         {
           title: '1 เดือนจบ ไม่ลากยาว 3-6 เดือน',
@@ -374,7 +374,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
         },
         {
           title: 'Handover ให้ทีมเจ้าของ maintain เอง',
-          body: 'ผมสร้างระบบบน Google Sheets + n8n ที่เข้าถึงง่าย · ทีมเจ้าของปรับปรุงแก้ไขได้เอง · ไม่ต้องจ้าง retainer รายเดือน · ระบบที่เจ้าของเป็นเจ้าของจริงๆ',
+          body: 'ผมสร้างระบบบน Google Sheets + Automation Platform ที่เข้าถึงง่าย · ทีมเจ้าของปรับปรุงแก้ไขได้เอง · ไม่ต้องจ้าง retainer รายเดือน · ระบบที่เจ้าของเป็นเจ้าของจริงๆ',
         },
       ],
     },
@@ -384,7 +384,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       'คุยสัมภาษณ์ + ตรวจข้อมูลย้อนหลัง',
       'KPI + โครงสร้างค่าคอมมิชชั่น (เอกสาร + ตัวคำนวณ)',
       'KPI dashboard ดูยอดเรียลไทม์ (Google Sheets + Apps Script)',
-      'n8n workflow 2-3 ชุด สำหรับงานซ้ำที่ทำอัตโนมัติได้',
+      'Automation workflow 2-3 ชุด สำหรับงานซ้ำที่ทำอัตโนมัติได้',
       'อบรม 2 วัน + เอกสารส่งมอบ + วิดีโออัดหน้าจอ',
       'ตอบคำถามผ่าน LINE ต่ออีก 30 วันหลังส่งมอบ',
     ],
