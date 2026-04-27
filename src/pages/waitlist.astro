@@ -1,0 +1,218 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/site';
+
+const accent = 'var(--color-pun-cyan)';
+const accentHex = '#22d3ee';
+const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
+---
+
+<BaseLayout
+  title="จองสิทธิ์ P1 — AI Quick Launch Waitlist | ปัน ณัฐพัชร์"
+  description="ลงชื่อจองสิทธิ์ P1 AI Quick Launch · 1 วันสร้าง AI Agent ตัวแรกของธุรกิจ · 20 ที่นั่ง · ราคา Waitlist ฿12,900 · ไม่ต้องจ่ายวันนี้"
+  noindex={false}
+>
+  <div class="min-h-screen px-4 py-12 lg:py-20">
+    <div class="mx-auto max-w-xl">
+
+      {/* Badge */}
+      <div class="flex justify-center">
+        <span
+          class="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
+          style={`border-color: color-mix(in oklch, ${accent} 40%, transparent); background: color-mix(in oklch, ${accent} 10%, transparent); color: ${accent};`}
+        >
+          P1 · Founding Cohort #1 · 20 ที่นั่งเท่านั้น
+        </span>
+      </div>
+
+      {/* Headline */}
+      <h1 class="mt-6 text-center font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+        จบ 1 วัน คุณจะมี
+        <br />
+        <span style={`color: ${accent};`}>AI Agent ตัวแรกของธุรกิจ</span>
+        <br />
+        build ด้วยมือคุณเอง
+      </h1>
+
+      <p class="mt-4 text-center text-base leading-relaxed text-base-content/75">
+        ลงชื่อ Waitlist ก่อน — ฟรี ไม่ต้องจ่ายวันนี้
+        <br class="hidden sm:block" />
+        lock ราคา <strong style={`color: ${accent};`}>฿12,900</strong>
+        <span class="text-base-content/50"> · ราคาหลังเต็ม ฿16,900</span>
+      </p>
+
+      {/* Social proof strip */}
+      <div class="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-base-content/55">
+        <span>✅ 83K+ views TikTok</span>
+        <span>✅ Hands-on build ตลอดวัน</span>
+        <span>✅ ออกจากห้องพร้อม Agent ใช้จริง</span>
+      </div>
+
+      {/* Scarcity card */}
+      <div
+        class="mt-8 grid grid-cols-2 gap-4 rounded-2xl border p-5"
+        style={`border-color: color-mix(in oklch, ${accent} 30%, transparent); background: color-mix(in oklch, ${accent} 5%, transparent);`}
+      >
+        <div class="text-center">
+          <p class="text-xs font-bold uppercase tracking-widest text-base-content/55">ที่นั่งทั้งหมด</p>
+          <p class="mt-1 font-display text-4xl font-black" style={`color: ${accent};`}>20</p>
+          <p class="text-xs text-base-content/55">คน · ปิดเมื่อเต็ม</p>
+        </div>
+        <div class="text-center">
+          <p class="text-xs font-bold uppercase tracking-widest text-base-content/55">ราคา Waitlist</p>
+          <p class="mt-1 font-display text-4xl font-black" style={`color: ${accent};`}>฿12,900</p>
+          <p class="text-xs text-base-content/55">วันที่ 17 พ.ค. 2026</p>
+        </div>
+      </div>
+
+      {/* Form */}
+      <form
+        id="p1-waitlist-form"
+        class="mt-6 space-y-4 rounded-2xl border border-base-content/10 bg-base-100 p-6"
+        novalidate
+      >
+        <input type="hidden" id="wl-utm_source" name="utm_source" value="" />
+        <input type="hidden" id="wl-utm_medium" name="utm_medium" value="" />
+        <input type="hidden" id="wl-utm_campaign" name="utm_campaign" value="" />
+        <input type="hidden" id="wl-utm_content" name="utm_content" value="" />
+        <input type="hidden" id="wl-utm_term" name="utm_term" value="" />
+        <input type="hidden" id="wl-fbclid" name="fbclid" value="" />
+        <input type="hidden" id="wl-ttclid" name="ttclid" value="" />
+        <input type="hidden" name="program" value="p1" />
+        <input type="hidden" name="source_page" value="/waitlist" />
+
+        <div>
+          <label class="block text-sm font-bold" for="wl-name">
+            ชื่อ-นามสกุล <span style={`color: ${accent};`}>*</span>
+          </label>
+          <input
+            type="text" id="wl-name" name="name" required autocomplete="name"
+            class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
+            style={`--tw-ring-color: ${accentHex};`}
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold" for="wl-email">
+            Email <span style={`color: ${accent};`}>*</span>
+          </label>
+          <input
+            type="email" id="wl-email" name="email" required autocomplete="email"
+            class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
+            style={`--tw-ring-color: ${accentHex};`}
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold" for="wl-contact">
+            LINE ID / โทรศัพท์ <span style={`color: ${accent};`}>*</span>
+          </label>
+          <input
+            type="text" id="wl-contact" name="contact" required autocomplete="tel"
+            placeholder="เช่น @yourline หรือ 081-234-5678"
+            class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
+            style={`--tw-ring-color: ${accentHex};`}
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold" for="wl-company">
+            ชื่อบริษัท / แบรนด์ <span style={`color: ${accent};`}>*</span>
+          </label>
+          <input
+            type="text" id="wl-company" name="company" required autocomplete="organization"
+            class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
+            style={`--tw-ring-color: ${accentHex};`}
+          />
+        </div>
+
+        <button
+          type="submit"
+          id="wl-submit-btn"
+          class="w-full rounded-full px-6 py-3.5 font-display text-base font-bold shadow-lg transition-all hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
+          style={`background: ${accent}; color: #0a1020;`}
+        >
+          ขึ้น Waitlist + lock ราคา ฿12,900
+        </button>
+
+        <p id="wl-form-msg" class="hidden rounded-xl p-3 text-sm" />
+
+        <p class="text-center text-xs text-base-content/45">
+          ลงชื่อฟรี · ไม่ต้องจ่ายวันนี้ · ชำระ ฿12,900 หลังยืนยันที่นั่ง
+        </p>
+      </form>
+
+      {/* Link to full page */}
+      <div class="mt-6 text-center">
+        <a
+          href="/training/p1-ai-workshop-1-day"
+          class="text-sm text-base-content/55 underline underline-offset-2 hover:text-base-content/80"
+        >
+          อ่านรายละเอียดคอร์สเต็มๆ →
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script is:inline define:vars={{ accentHex, N8N_WEBHOOK }}>
+    (function () {
+      const form = document.getElementById('p1-waitlist-form');
+      const btn = document.getElementById('wl-submit-btn');
+      const msg = document.getElementById('wl-form-msg');
+      if (!form || !btn || !msg) return;
+
+      // Populate UTM from URL params
+      const params = new URLSearchParams(location.search);
+      ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','ttclid'].forEach(function (k) {
+        var el = document.getElementById('wl-' + k);
+        if (el && params.get(k)) el.value = params.get(k);
+      });
+
+      function genRef() {
+        var ts = Date.now().toString(36);
+        var rnd = Math.random().toString(36).slice(2, 7);
+        return ('PN-WL-' + ts + '-' + rnd).toUpperCase();
+      }
+
+      form.addEventListener('submit', async function (ev) {
+        ev.preventDefault();
+        msg.classList.add('hidden');
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+
+        btn.disabled = true;
+        btn.textContent = 'กำลังบันทึก...';
+
+        var fd = new FormData(form);
+        var ref = genRef();
+        var payload = { _meta: { reference: ref, page: location.pathname } };
+        fd.forEach(function (v, k) { payload[k] = v; });
+
+        if (typeof window.plausible === 'function') {
+          try { window.plausible('P1 Waitlist Signup', { props: { ref: ref, source: 'waitlist-page' } }); } catch (_) {}
+        }
+
+        try {
+          var ctrl = new AbortController();
+          var t = setTimeout(function () { ctrl.abort(); }, 8000);
+          await fetch(N8N_WEBHOOK, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            signal: ctrl.signal,
+          });
+          clearTimeout(t);
+        } catch (e) {
+          console.error('[p1-waitlist] webhook error', e);
+        }
+
+        msg.classList.remove('hidden');
+        msg.style.background = 'color-mix(in oklch, ' + accentHex + ' 12%, transparent)';
+        msg.style.color = accentHex;
+        msg.textContent = '✅ ขึ้น Waitlist สำเร็จ — ผมจะแจ้งก่อนใครเมื่อถึงคิวคุณ · Ref: ' + ref;
+        btn.textContent = 'บันทึกแล้ว ✓';
+        btn.style.background = 'color-mix(in oklch, ' + accentHex + ' 70%, transparent)';
+      });
+    })();
+  </script>
+</BaseLayout>
