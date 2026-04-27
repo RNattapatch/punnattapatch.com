@@ -29,7 +29,6 @@ export const SITE = {
   nav: [
     { label: 'หน้าหลัก', href: '/' },
     { label: 'บริการ', href: '/services' },
-    { label: 'Advance Workshop', href: '/ai-workshop-advance' },
     { label: 'Public Training', href: '/training' },
     { label: 'Free Kit', href: '/agent-builder-kit' },
     { label: 'BOSI Quiz', href: '/bosi-dna-quiz' },
