@@ -8,12 +8,12 @@ const accentBtnText = '#0a1020';
 const pains = [
   {
     emoji: '🔁',
-    title: 'AI ช่วยได้ แต่ต้องคอยสั่งงานใหม่ทุกครั้ง',
+    title: 'AI ช่วยได้ก็จริง แต่ต้องรอคนมาสั่งงานใหม่ทุกครั้ง',
     body: 'ถึงจะใช้ ChatGPT เป็น แต่ก็ยังต้องมานั่ง copy-paste prompt เดิมๆ ซ้ำๆ เพื่อทำงานรูทีน ทำให้เสียเวลาและมีโอกาสผิดพลาดสูง',
   },
   {
     emoji: '🏝',
-    title: 'ความรู้ AI อยู่แค่กับคนไม่กี่คน',
+    title: 'ความรู้ AI อยู่แค่กับคนในทีมไม่กี่คน',
     body: 'มีแค่เจ้าของหรือหัวหน้าทีมไม่กี่คนที่ใช้ AI เป็น ทำให้งานค้างเป็นคอขวด พออยากจะขยายผลให้ทั้งทีมใช้ ก็ไม่รู้จะเริ่มสอนจากตรงไหน',
   },
   {
@@ -28,7 +28,7 @@ const pains = [
   },
   {
     emoji: '📨',
-    title: 'ทีมขายตามลูกค้าใหม่ด้วยตัวเอง',
+    title: 'ทีมขายมานั่งตามข้อมูลลูกค้าด้วยตัวเอง',
     body: 'พอมี lead ใหม่เข้ามา ทีมขายต้องคอยเช็คและ follow-up เอง ทำให้ตอบช้าบ้าง ตกหล่นบ้าง เสียโอกาสการขายไปอย่างน่าเสียดาย',
   },
 ];
@@ -47,8 +47,61 @@ const day2Modules = [
   { title: 'Auto-Report + Governance', body: 'KPI ส่งทุกเช้าอัตโนมัติ + คู่มือดูแลระบบให้หัวหน้าทีมขยายต่อเองได้' },
 ];
 
+const whyPodItems = [
+  {
+    title: 'สอนโดยคนทำธุรกิจจริงๆ ไม่ใช่โปรแกรมเมอร์',
+    body: 'ผมทำ B2B Sales มา 5 ปี ปิดดีลเอง เจอปัญหาหน้างานมาเหมือนกับทีมของคุณทุกอย่าง workflow ในเวิร์กชอปนี้เลยมาจากประสบการณ์จริง ไม่ได้มาจากตำราเล่มไหน',
+  },
+  {
+    title: 'เวิร์กชอปส่วนตัวที่บริษัทคุณ ใช้โจทย์จริงของคุณ',
+    body: 'ผมเข้าไปจัดที่ออฟฟิศของคุณเลย เราเอาปัญหาและข้อมูลจริงๆ ของคุณมาเป็นโจทย์ตั้งต้น ทีมคุณจึงได้เครื่องมือที่แก้ปัญหาตัวเองกลับไปใช้โดยตรง',
+  },
+  {
+    title: 'สร้างระบบที่ทำงานเองได้ ไม่ใช่แค่ผู้ช่วยตอบคำถาม',
+    body: 'เราเน้นสร้าง AI Agent ที่ trigger ตัวเอง ทำงาน และสรุปผลได้โดยที่ทีมไม่ต้องเข้าไปสั่งทุกครั้ง ทีม non-tech ดูแลต่อได้',
+  },
+  {
+    title: 'วัดผล ROI ได้ตั้งแต่วันแรกที่เรียน',
+    body: 'เราคำนวณเวลาและต้นทุนที่ประหยัดได้จาก workflow ที่สร้างเสร็จในห้องเรียนวันนั้นเลย คุณเห็นตัวเลข Before/After ก่อนกลับบ้าน',
+  },
+  {
+    title: 'สร้างระบบให้เป็นของบริษัท ไม่ใช่ของที่ปรึกษา',
+    body: 'ผมสอนให้หัวหน้าทีมสามารถดูแล ปรับปรุง และต่อยอด workflow ได้ด้วยตัวเอง ระบบทั้งหมดกลายเป็นทรัพย์สินของบริษัทคุณจริงๆ',
+  },
+];
+
+const faqs = [
+  {
+    q: 'ทีมต้องเตรียมตัวอะไรบ้างก่อนวันเวิร์กชอป',
+    a: 'ผมจะส่ง checklist ให้ล่วงหน้า 1 สัปดาห์ครับ สิ่งที่ต้องเตรียมหลักๆ คือ Google account, permission เข้าถึงข้อมูลที่อยากเอามาทำ automation และเตรียม workflow จริงๆ 2-3 เคสมาเล่าให้ฟังในวันงาน นอกนั้นไม่ต้องเตรียมอะไรด้านเทคนิคเลยครับ',
+  },
+  {
+    q: 'ถ้าทีมไม่เก่งเทคโนโลยีเลย จะเรียนทันไหม',
+    a: 'ทันแน่นอนครับ เวิร์กชอปนี้ออกแบบมาสำหรับ non-tech โดยเฉพาะ ลูกค้าของผม 8 ใน 10 ทีมก็ไม่มีใครเขียนโค้ดเป็น เครื่องมือที่เราใช้ถูกเลือกมาแล้วว่าคนที่ไม่ใช่โปรแกรมเมอร์ดูแลและแก้ไขเองได้ 100%',
+  },
+  {
+    q: 'Basic Workshop (Day 1) ต่างจาก Advance Workshop (Day 2) ยังไง',
+    a: 'Day 1 เน้นสร้าง AI Agent ตัวแรกให้สำเร็จ เพื่อให้ทีมเห็นภาพและลงมือทำเป็นก่อน Day 2 คือการนำ Agent ที่สร้างในวันแรกมาเชื่อมต่อกับระบบอื่น เช่น LINE OA, CRM, Google Sheets ให้ทำงานเชื่อมกันเป็น pipeline อัตโนมัติ',
+  },
+  {
+    q: 'ต้องผ่าน Day 1 ก่อนถึงจะเรียน Day 2 ได้ไหม',
+    a: 'ถ้าทีมยังไม่มีพื้นฐาน AI เลย ผมแนะนำ Bundle Day 1+2 ครับ แต่ถ้าองค์กรของคุณใช้ AI ในการทำงานอยู่แล้ว ทักมาคุยกับผมก่อนได้เลย ผมช่วยประเมินให้ว่าเริ่มจาก Day ไหนถึงจะคุ้มที่สุด',
+  },
+  {
+    q: 'Bundle Day 1+2 จัดสองวันติดกันหรือแยก',
+    a: 'แยกครับ ห่างกัน 2-4 สัปดาห์ตามที่แนะนำ เพราะต้องการให้ทีมนำ workflow ไปใช้จริงก่อน แล้วค่อย build ต่อใน Day 2 ตาม learning จากหน้างาน ถ้าซื้อ Bundle จอง Day 2 ล่วงหน้าแล้วยืนยันวันทีหลังได้',
+  },
+  {
+    q: 'ทีมต้อง tech background ไหม',
+    a: 'ไม่จำเป็นครับ stack ที่ใช้ (AI Automation Platform + Claude + Google Sheets) ออกแบบให้ non-tech ดูแลต่อเองได้ Module สุดท้ายของทุก Day สอนหัวหน้าทีมโดยเฉพาะให้ maintain และขยาย workflow ได้เอง',
+  },
+  {
+    q: 'หลังจบเวิร์กชอป ถ้าเจอปัญหาหรือมีคำถาม ปรึกษาได้ไหม',
+    a: 'ได้ครับ ในแพ็กเกจรวม 30-day LINE support อยู่แล้ว ส่งคำถามทิ้งไว้ได้เลย ผมตอบกลับภายใน 24 ชม. (จันทร์-ศุกร์) ถ้าต้องการดูแลต่อเนื่อง คุยเรื่อง Monthly Consulting เพิ่มเติมได้ครับ',
+  },
+];
+
 const galleryImages = [
-  { src: '/advance-ai-course/gallery7.JPG', alt: 'กิจกรรม workshop จริง' },
   { src: '/advance-ai-course/IMG_5218.JPG', alt: 'บรรยากาศ workshop in-house' },
   { src: '/advance-ai-course/testimonial5.png', alt: 'ผลลัพธ์ testimonial workshop' },
   { src: '/advance-ai-course/testimonial6.JPG', alt: 'testimonial workshop' },
@@ -57,7 +110,6 @@ const galleryImages = [
   { src: '/testimonial/testimonial2.jpg', alt: 'testimonial ผู้เข้าร่วม' },
   { src: '/testimonial/testimonial3.jpg', alt: 'testimonial ผู้เข้าร่วม' },
   { src: '/testimonial/testimonial4.jpg', alt: 'testimonial ผู้เข้าร่วม' },
-  { src: '/testimonial/testimonial5.jpg', alt: 'testimonial ผู้เข้าร่วม' },
 ];
 ---
 
@@ -156,6 +208,16 @@ const galleryImages = [
           </div>
 
         </div>
+
+        {/* Intake CTA — under path selector */}
+        <a
+          href="/intake-form"
+          class="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border px-5 py-4 text-center text-sm transition-all hover:scale-[1.01]"
+          style={`border-color: color-mix(in oklch, ${accent} 20%, transparent); background: color-mix(in oklch, ${accent} 3%, transparent);`}
+        >
+          <span class="text-base-content/70">หากยังไม่แน่ใจ อยากนัดคุยกับผมก่อน</span>
+          <span class="font-bold" style={`color: ${accent};`}>กดที่ปุ่มนี้เลยครับ →</span>
+        </a>
       </div>
 
       {/* Pain Points */}
@@ -173,6 +235,65 @@ const galleryImages = [
               <div>
                 <p class="font-display text-sm font-bold">{p.title}</p>
                 <p class="mt-0.5 text-sm leading-relaxed text-base-content/65">{p.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Why Pun */}
+      <div class="mt-14">
+        <p class="text-center text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+          ทำไมต้องเรียน AI กับผม
+        </p>
+        <h2 class="mt-3 text-center font-display text-2xl font-bold tracking-tight">
+          ผมไม่ได้แค่มาสอนคุณใช้ AI
+        </h2>
+        <p class="mt-2 text-center text-sm text-base-content/60">
+          แต่ผมจะจับมือคุณสร้าง AI Agent ตัวแรก ให้ธุรกิจของคุณ
+        </p>
+
+        {/* 3 Stat Cards */}
+        <div class="mt-6 grid grid-cols-3 gap-3">
+          {[
+            { stat: '5 ปี', body: 'ฟิลด์ sales B2B ปิดดีลด้วยมือตัวเอง ไม่ใช่ academic trainer' },
+            { stat: '฿100M+', body: 'มูลค่าธุรกิจลูกค้า SME 10+ ราย (฿30-200M) ที่ดูแลตั้งแต่ 2025' },
+            { stat: '2.29M', body: 'TikTok views organic · proof ว่าเจ้าของ SME ฟังผม' },
+          ].map((item) => (
+            <div
+              class="rounded-2xl border p-4 text-center"
+              style={`border-color: color-mix(in oklch, ${accent} 20%, transparent); background: color-mix(in oklch, ${accent} 4%, transparent);`}
+            >
+              <p class="font-display text-xl font-black" style={`color: ${accent};`}>{item.stat}</p>
+              <p class="mt-1 text-[11px] leading-relaxed text-base-content/60">{item.body}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Position statement */}
+        <div
+          class="mt-5 rounded-2xl border-l-4 px-5 py-4"
+          style={`border-left-color: ${accent}; background: color-mix(in oklch, ${accent} 5%, transparent);`}
+        >
+          <p class="text-sm leading-relaxed text-base-content/85">
+            💡 Workshop ของผมเติมช่องว่างที่คอร์ส AI ทั่วไปทำไม่ได้: <strong>AI Workshop สำหรับทีมขาย B2B ของ SME ไทยโดยเฉพาะ</strong> ที่เน้นสร้างระบบที่ใช้ได้จริง ไม่ใช่แค่ความรู้ลอยๆ
+          </p>
+        </div>
+
+        {/* 5 POD items */}
+        <div class="mt-5 space-y-3">
+          {whyPodItems.map((item, i) => (
+            <div
+              class="flex items-start gap-4 rounded-2xl border p-4"
+              style={`border-color: color-mix(in oklch, ${accent} 15%, transparent);`}
+            >
+              <span
+                class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-display text-xs font-black"
+                style={`background: color-mix(in oklch, ${accent} 15%, transparent); color: ${accent};`}
+              >{i + 1}</span>
+              <div>
+                <p class="font-display text-sm font-bold">{item.title}</p>
+                <p class="mt-0.5 text-sm leading-relaxed text-base-content/65">{item.body}</p>
               </div>
             </div>
           ))}
@@ -267,10 +388,31 @@ const galleryImages = [
         style={`border-color: color-mix(in oklch, ${accent} 30%, transparent); background: color-mix(in oklch, ${accent} 6%, transparent);`}
       >
         <p class="text-xs font-bold uppercase tracking-widest text-base-content/55">Slot ว่างเดือนนี้</p>
-        <p class="mt-1 font-display text-3xl font-black" style={`color: ${accent};`}>2 วัน</p>
+        <p class="mt-2 font-display text-xl font-black leading-tight" style={`color: ${accent};`}>
+          เหลือ Slot ว่างอีก 8 บริษัท<br />
+          <span class="text-base font-bold text-base-content/50">จาก 10 บริษัท/เดือน</span>
+        </p>
         <p class="mt-2 text-sm leading-relaxed text-base-content/70">
           ผมรับงาน In-house ได้แค่เดือนละ 10 บริษัท และมี session พิเศษสอนสร้าง web-app ด้วย AI Agent เฉพาะรอบนี้เท่านั้น
         </p>
+      </div>
+
+      {/* CTA under Scarcity */}
+      <div class="mt-4 space-y-3">
+        <a
+          href="/booking?package=ai-workshop&bundle=day1-day2"
+          class="inline-block w-full rounded-full px-6 py-3.5 text-center font-display text-base font-bold shadow-lg transition-all hover:scale-[1.02]"
+          style={`background: ${accent}; color: ${accentBtnText}; box-shadow: 0 12px 30px -10px color-mix(in oklch, ${accent} 50%, transparent);`}
+        >
+          จอง Bundle Day 1+2 · ฿48,900 →
+        </a>
+        <a
+          href="/intake-form"
+          class="inline-block w-full rounded-full border px-6 py-3.5 text-center font-display text-sm font-bold transition-all hover:scale-[1.01]"
+          style={`border-color: color-mix(in oklch, ${accent} 40%, transparent); color: ${accent};`}
+        >
+          นัดคุยก่อนตัดสินใจ →
+        </a>
       </div>
 
       {/* Social Proof */}
@@ -324,6 +466,23 @@ const galleryImages = [
         </div>
       </div>
 
+      {/* FAQ */}
+      <div class="mt-12">
+        <p class="text-center text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>FAQ</p>
+        <h2 class="mt-3 text-center font-display text-xl font-bold tracking-tight">คำถามที่ถามบ่อย</h2>
+        <div class="mt-5 space-y-3">
+          {faqs.map((f) => (
+            <details class="group rounded-2xl border border-base-content/10 bg-base-100 p-5 open:shadow-md">
+              <summary class="flex cursor-pointer list-none items-start justify-between gap-4">
+                <span class="font-semibold leading-snug text-sm">{f.q}</span>
+                <span class="mt-0.5 shrink-0 text-base-content/40 transition group-open:rotate-45">＋</span>
+              </summary>
+              <p class="mt-3 text-sm leading-relaxed text-base-content/70">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
       {/* Primary CTAs */}
       <div class="mt-10 space-y-3 rounded-2xl border border-base-content/10 bg-base-100 p-6 text-center">
         <p class="font-display text-base font-bold">พร้อมให้ทีมสร้าง AI Agent ของจริงแล้วใช่ไหม?</p>
@@ -345,6 +504,31 @@ const galleryImages = [
           ราคานี้สำหรับเวิร์คช็อป On-site ในกรุงเทพฯ และปริมณฑลเท่านั้นครับ
           สามารถชำระเงินหลังจากทีมงานยืนยันวันและเวลาเรียบร้อยแล้ว
         </p>
+      </div>
+
+      {/* Bottom CTA — นัดคุย + จอง */}
+      <div
+        class="mt-6 rounded-2xl border p-6 text-center"
+        style={`border-color: color-mix(in oklch, ${accent} 25%, transparent); background: color-mix(in oklch, ${accent} 4%, transparent);`}
+      >
+        <p class="text-sm font-bold text-base-content/80">ยังไม่แน่ใจว่า Package ไหนเหมาะกับทีมคุณ?</p>
+        <p class="mt-1 text-xs text-base-content/55">ผมอ่าน intake form ทุกใบด้วยตัวเอง · ตอบกลับภายใน 24 ชม.</p>
+        <div class="mt-4 space-y-2">
+          <a
+            href="/intake-form"
+            class="inline-block w-full rounded-full px-6 py-3 font-display text-sm font-bold transition-all hover:scale-[1.02]"
+            style={`background: ${accent}; color: ${accentBtnText};`}
+          >
+            นัดคุยกับผมก่อน — ฟรี ไม่มีผูกมัด →
+          </a>
+          <a
+            href="/booking?package=ai-workshop&bundle=day1-day2"
+            class="inline-block w-full rounded-full border px-6 py-3 font-display text-xs font-bold transition-all hover:scale-[1.01]"
+            style={`border-color: color-mix(in oklch, ${accent} 35%, transparent); color: ${accent};`}
+          >
+            จอง Bundle ฿48,900 เลย →
+          </a>
+        </div>
       </div>
 
       {/* Secondary CTAs */}
