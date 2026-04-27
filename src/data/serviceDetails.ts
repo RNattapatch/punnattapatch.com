@@ -219,9 +219,9 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
         },
       ],
     },
-    priceHeadline: '฿24,900 / 1 วัน',
-    priceCompare: '⏰ Early Bird ฿24,900 · เปิดถึง 30 เมษายน 2026 เท่านั้น · 1 พฤษภาคม ราคาขึ้นเป็น ฿29,900 · จองตอนนี้เพื่อ lock ราคา',
-    priceNote: '"ผมไม่อยากขึ้นราคาครับ แต่ตอนนี้ทำงานไม่ทัน — ตัดสินใจขึ้นเพื่อรักษาคุณภาพการดูแลลูกค้าทุกคนให้สูงสุด" · จัดแบบ in-house on-demand · ปันเข้าไปจัด workshop ให้ตามตารางที่ทีมคุณสะดวก · ชำระ 100% ก่อนเริ่มงาน',
+    priceHeadline: '฿24,900 / 1 วัน (Early Bird)',
+    priceCompare: '⏰ Early Bird ฿24,900 ถึง 30 เมษายน 2026 เท่านั้น · 1 พฤษภาคม course แยกเป็น Basic ฿29,900 + Advance ฿29,900 ต่อวัน · หรือ Bundle Day 1+2 ฿50,000',
+    priceNote: 'จองก่อน 30 เม.ย. = ประหยัด ฿5,000 และ lock สิทธิ์ Advance course ราคาเดิม · จัดแบบ in-house on-demand · ปันเข้าไปจัด workshop ตามตารางทีม · ชำระ 100% ก่อนเริ่มงาน',
     inclusions: [
       'Workshop 1 วัน 6-7 ชม. · On-site เท่านั้น (In-house)',
       'n8n workflow + AI Agent 1 ตัวที่ build ในห้อง (production-ready)',
@@ -231,8 +231,8 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       'Team lead training session — ทีมดูแลต่อเองได้',
     ],
     notIncluded: [
-      'Monthly retainer (คุยได้หลัง workshop ถ้าต้องการต่อยอด)',
-      'Custom agent development เกิน scope 1 วัน (scope แยก)',
+      'Advance Workshop Day 2 — สร้าง Multi-agent system ทั้งองค์กร (ดูรายละเอียด /ai-workshop-advance)',
+      'Monthly Retainer · Advisory Day หรือ Skill Injection Day (คุยได้หลัง workshop)',
       'ค่าเดินทาง on-site ต่างจังหวัด (คิดแยก ตามระยะทาง)',
     ],
     faqs: [

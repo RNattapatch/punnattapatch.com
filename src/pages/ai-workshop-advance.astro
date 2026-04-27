@@ -1,0 +1,545 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/site';
+
+const accent = 'var(--color-pun-cyan)';
+const accentBtnText = '#0a1020';
+
+const modules = [
+  {
+    no: 'Module 1',
+    title: 'Debrief + System Audit',
+    body: 'ทบทวน AI ที่สร้างใน Day 1 ว่า run จริง วัดผลได้ไหม · ปรับก่อน scale · เจาะ bottleneck ที่ยังเหลืออยู่ในระบบปัจจุบัน',
+  },
+  {
+    no: 'Module 2',
+    title: 'Multi-Step n8n Workflow (Advanced)',
+    body: 'Trigger chain ที่รันเองโดยไม่ต้องสั่ง · เช่น lead ใหม่เข้า → qualify → assign → notify ทีม → log CRM · ทั้งกระบวนการวิ่งเองครบ',
+  },
+  {
+    no: 'Module 3',
+    title: 'External Integration — LINE OA / CRM / Sheet',
+    body: 'ต่อ LINE OA · CRM · Google Sheet · Email ให้ทำงานร่วมกัน realtime · ข้อมูลไหลเองทั้งระบบ ไม่มีใครต้อง copy ด้วยมืออีก',
+  },
+  {
+    no: 'Module 4',
+    title: 'Sales Automation Pipeline',
+    body: 'Lead qualifier + follow-up sequence อัตโนมัติ · ทีมขายรับแต่ lead ที่ qualify แล้ว · ดีลไม่ cold เพราะ follow-up ไม่สม่ำเสมออีกต่อไป',
+  },
+  {
+    no: 'Module 5',
+    title: 'Advanced Claude Agent Design',
+    body: 'System prompt + memory + context ที่ทำให้ AI "จำ" ลูกค้าแต่ละคน · ตอบแตกต่างกันตาม stage · ไม่ใช่ AI ตอบเหมือนกันทุกคน',
+  },
+  {
+    no: 'Module 6',
+    title: 'Auto-Report & KPI Dashboard',
+    body: 'ระบบรายงาน KPI ส่งตอนเช้าทุกวัน · เจ้าของเห็นภาพธุรกิจใน 5 นาที · ไม่ต้องรอทีมสรุป ไม่ต้องนั่งทำ spreadsheet สิ้นเดือน',
+  },
+  {
+    no: 'Module 7',
+    title: 'Multi-Agent Orchestration',
+    body: 'สร้าง AI หลายตัวทำงานร่วมกัน · แบ่ง role: orchestrator + worker + reviewer · ระบบที่ scale ได้จริง ทำงานพร้อมกันหลาย process',
+  },
+  {
+    no: 'Module 8',
+    title: 'Governance + Handover SOP',
+    body: 'คู่มือดูแลระบบฉบับสมบูรณ์ · training หัวหน้าทีมให้ขยาย scope เองได้ · ระบบเป็นของบริษัท ไม่ใช่ความรู้ที่ผูกกับคนคนเดียว',
+  },
+];
+
+const pains = [
+  {
+    emoji: '🔁',
+    title: 'build AI Agent แล้ว แต่ต้องสั่งทุกครั้ง',
+    body: 'ยังไม่มี trigger อัตโนมัติ ทีมยังต้องจำว่า "ต้องกด" · ถ้าลืม ระบบก็ไม่ทำงาน · ยังไม่ใช่ระบบจริง',
+  },
+  {
+    emoji: '🏝',
+    title: 'AI ช่วยได้แค่คนที่สร้าง ทีมอื่นยังไม่ได้ประโยชน์',
+    body: 'ความรู้ติดอยู่กับคนที่ไปเรียน ไม่ได้กระจายเป็น system · ถ้าคนนั้นลาออก ระบบก็ตายตาม',
+  },
+  {
+    emoji: '🔌',
+    title: 'LINE OA กับ CRM กับ Sheet ยังทำงานแยกกัน',
+    body: 'ข้อมูลไม่ flow ทีมยังนั่ง copy ด้วยมือ · เสียเวลา 2-3 ชม./วัน กับงานที่ระบบควรทำให้',
+  },
+  {
+    emoji: '📊',
+    title: 'ยังทำ KPI report ด้วยมือทุกสิ้นเดือน',
+    body: 'เจ้าของรอข้อมูล ทีมเสียเวลา 3-5 ชม. รวม Excel · ตัวเลขออกมาช้า แก้ไขไม่ทัน',
+  },
+  {
+    emoji: '📨',
+    title: 'ทีมขายยังต้อง follow-up ทีละคนด้วยมือ',
+    body: 'ดีล cold เพราะ follow-up ไม่สม่ำเสมอ · ทีมลืม หรือไม่มีเวลา · lead ที่ควรปิดได้ หลุดไป',
+  },
+  {
+    emoji: '🧯',
+    title: 'ถ้าระบบพัง ไม่มีใครในทีมแก้ได้',
+    body: 'ต้องรอผมเข้าไปแก้ · หรือทีมปรับเองไม่เป็น · ขาด governance + ไม่มี SOP ที่ทีมอ่านได้',
+  },
+];
+
+const outcomes = [
+  'ระบบ AI ทำงานทั้งองค์กรโดยไม่ต้องสั่งทุกครั้ง — trigger อัตโนมัติเต็มรูปแบบ',
+  'LINE OA / CRM / Sheet เชื่อมกันเป็น pipeline เดียว — ข้อมูลไหลเอง ไม่มีช่อง manual',
+  'ทีมขาย focus แค่ปิดดีล — qualify, follow-up, nurture ระบบทำให้ครบ',
+  'รายงาน KPI ส่งทุกเช้า — เจ้าของเห็นภาพธุรกิจก่อนเริ่มวัน ไม่ต้องรอทีมสรุป',
+  'หัวหน้าทีมดูแล ต่อยอด และขยาย workflow ได้เองโดยไม่พึ่งผม',
+];
+
+const faqs = [
+  {
+    q: 'ต้องผ่าน Day 1 (Basic Workshop) ก่อนไหม',
+    a: 'ใช่ครับ — Advance Workshop ออกแบบมาต่อจาก Day 1 โดยตรง เนื้อหา Module 1-3 ของ Day 2 วางอยู่บน workflow ที่สร้างใน Day 1 ถ้ายังไม่ผ่าน Basic ก็เริ่มจาก /services/ai-workshop ก่อน',
+  },
+  {
+    q: 'Day 2 ควรห่างจาก Day 1 กี่วัน',
+    a: 'ผมแนะนำ 2-4 สัปดาห์หลัง Day 1 — เพื่อให้ทีมได้ทดลองใช้ workflow จริงก่อน แล้วเอา insight จากหน้างานมา build ต่อใน Day 2 · ถ้าซื้อ Bundle จอง Day 2 ล่วงหน้าแล้วยืนยันวันทีหลังได้',
+  },
+  {
+    q: 'ทีมต้อง tech background ไหม',
+    a: 'ไม่จำเป็นครับ · เหมือน Day 1 stack ที่ใช้ (n8n + Claude + Google Sheets) ออกแบบให้ non-tech ดูแลต่อเองได้ · Module 8 โดยเฉพาะสอนหัวหน้าทีมให้ maintain และ expand ระบบเองได้',
+  },
+  {
+    q: 'Bundle Day 1+2 จัดสองวันติดกันหรือแยก',
+    a: 'แยกกันครับ ห่างกัน 2-4 สัปดาห์ตามที่แนะนำ · ไม่ได้จัดติดกัน เพราะต้องการให้ทีมนำ workflow ไปใช้จริงก่อน แล้วค่อย build ต่อใน Day 2 ตาม learning จริง',
+  },
+  {
+    q: 'Retainer หลัง Day 2 ต่างจาก Consulting Retainer แบบเก่ายังไง',
+    a: 'Retainer v2.1 เปลี่ยนจาก session 90 นาที เป็น 1 Full Day ต่อเดือน · ทำงานได้จริงกว่า เห็นผลใน 1 วัน ไม่กระจาย · มี 2 track: Advisory Day (กลยุทธ์ + แก้ปัญหา) และ Skill Injection Day (สอน skill ใหม่ + build tool ร่วมกัน)',
+  },
+];
+---
+
+<BaseLayout
+  title="Advance AI Workshop (Day 2) — สร้าง Multi-agent System ทั้งองค์กร"
+  description="Day 2 ต่อจาก Basic Workshop · Multi-agent orchestration · LINE OA + CRM integration · Auto-report KPI · ทีมดูแลต่อเองได้ · ฿29,900 หรือ Bundle Day1+2 ฿50,000"
+>
+  <!-- ===== PRE-REQ BANNER ===== -->
+  <div
+    class="border-b px-4 py-3 text-center text-sm font-semibold"
+    style={`border-color: color-mix(in oklch, ${accent} 30%, transparent); background: color-mix(in oklch, ${accent} 8%, transparent); color: ${accent};`}
+  >
+    🎓 หน้านี้สำหรับผู้ที่ผ่าน <a href="/services/ai-workshop" class="underline underline-offset-2 hover:opacity-80">Basic Workshop (Day 1)</a> แล้ว — ยังไม่ผ่านเริ่มที่ Day 1 ก่อน
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <section class="overflow-hidden px-4 pb-16 pt-16 lg:px-8 lg:pt-24">
+    <div class="mx-auto max-w-5xl text-center">
+      <div
+        class="mb-6 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-widest backdrop-blur"
+        style={`border-color: color-mix(in oklch, ${accent} 30%, transparent); background: color-mix(in oklch, ${accent} 8%, transparent); color: ${accent};`}
+      >
+        <span class="relative flex h-2 w-2">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style={`background: ${accent};`}></span>
+          <span class="relative inline-flex h-2 w-2 rounded-full" style={`background: ${accent};`}></span>
+        </span>
+        Advance AI Workshop · Day 2 · In-house Only
+      </div>
+
+      <h1 class="font-display text-4xl font-black leading-[1.1] tracking-tight md:text-5xl lg:text-6xl">
+        Day 1 build AI Agent แรกได้แล้ว
+        <br />
+        <span style={`color: ${accent};`}>Day 2 คือระบบทั้งบริษัทวิ่งด้วย AI</span>
+      </h1>
+
+      <p class="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-base-content/70 md:text-lg">
+        1 วัน · 8 modules · ต่อ LINE OA กับ CRM กับ Sheet ทั้งหมดให้ทำงานร่วมกัน · ทีมขาย focus แค่ปิดดีล ส่วนที่เหลือ AI ทำให้ครบ
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+        <a
+          href="/booking?package=ai-workshop-advance"
+          class="btn btn-lg border-none font-bold shadow-xl transition-all hover:scale-105"
+          style={`background: ${accent}; color: ${accentBtnText}; box-shadow: 0 15px 40px -15px color-mix(in oklch, ${accent} 50%, transparent);`}
+        >
+          จอง Advance · ฿29,900 →
+        </a>
+        <a
+          href="/booking?package=ai-workshop&bundle=day1-day2"
+          class="btn btn-lg border font-bold"
+          style={`border-color: color-mix(in oklch, ${accent} 40%, transparent); color: ${accent};`}
+        >
+          Bundle Day 1+2 · ฿50,000
+        </a>
+      </div>
+
+      <p class="mt-4 text-xs text-base-content/50">ชำระ 100% ก่อนเริ่มงาน · On-site เท่านั้น · ยืนยันวันได้ภายใน 30 วันหลังจอง</p>
+    </div>
+  </section>
+
+  <!-- ===== PAIN POINTS ===== -->
+  <section class="border-t border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-5xl">
+      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+        ยังมีปัญหาเหล่านี้อยู่ไหม
+      </p>
+      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+        หลัง Day 1 ระบบยังไม่สมบูรณ์จริง
+      </h2>
+      <p class="mt-3 max-w-xl text-base-content/65">
+        Day 1 สร้าง foundation ได้ · Day 2 คือส่วนที่ทำให้มันวิ่งได้จริงโดยไม่ต้องคอยดูแล
+      </p>
+
+      <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {pains.map((p) => (
+          <div
+            class="rounded-2xl border bg-base-100 p-6 transition hover:border-opacity-60"
+            style={`border-color: color-mix(in oklch, ${accent} 20%, transparent);`}
+          >
+            <div class="mb-3 text-3xl">{p.emoji}</div>
+            <h3 class="mb-2 font-display font-bold text-base-content">{p.title}</h3>
+            <p class="text-sm leading-relaxed text-base-content/65">{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WHO THIS IS FOR ===== -->
+  <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-4xl">
+      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+        สำหรับใคร
+      </p>
+      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+        Advance Workshop เหมาะถ้าคุณ...
+      </h2>
+      <div class="mt-8 grid gap-4 sm:grid-cols-2">
+        {[
+          { check: '✓', text: 'ผ่าน Day 1 และ workflow ที่สร้างไว้ run อยู่จริง' },
+          { check: '✓', text: 'อยากให้ระบบ trigger เองโดยไม่ต้องสั่ง' },
+          { check: '✓', text: 'มี LINE OA / CRM ที่อยากเชื่อมกับ workflow AI' },
+          { check: '✓', text: 'ต้องการ auto-report ที่ส่งเช้าทุกวันโดยไม่ต้องทำมือ' },
+          { check: '✓', text: 'อยากให้ทีมขายปิดดีลได้มากขึ้นโดยไม่ต้องจ้างเพิ่ม' },
+          { check: '✓', text: 'อยากส่งมอบ governance ให้หัวหน้าทีม ไม่ต้องพึ่งผมตลอด' },
+        ].map((item) => (
+          <div class="flex items-start gap-3 rounded-xl border border-base-content/10 bg-base-100 p-4">
+            <span class="mt-0.5 text-lg font-bold" style={`color: ${accent};`}>{item.check}</span>
+            <span class="text-sm text-base-content/85">{item.text}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== AGENDA ===== -->
+  <section
+    class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20"
+    style="background: linear-gradient(180deg, transparent 0%, color-mix(in oklch, var(--color-pun-cyan) 3%, transparent) 100%);"
+  >
+    <div class="mx-auto max-w-4xl">
+      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>Agenda</p>
+      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+        8 modules · 1 วัน · ระบบวิ่งจริงก่อนกลับบ้าน
+      </h2>
+      <p class="mt-3 max-w-xl text-base-content/65">
+        แต่ละ module ต่อกันตาม logic จริง ไม่ใช่ theory · ออกจากห้องพร้อม production-ready system
+      </p>
+
+      <div class="mt-10 space-y-4">
+        {modules.map((m, i) => (
+          <div
+            class="grid grid-cols-[auto_1fr] gap-5 rounded-2xl border bg-base-100 p-6 transition hover:shadow-md"
+            style={`border-color: color-mix(in oklch, ${accent} ${i === 0 ? 30 : 15}%, transparent);`}
+          >
+            <div
+              class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-display text-xs font-bold"
+              style={`background: color-mix(in oklch, ${accent} 12%, transparent); color: ${accent};`}
+            >
+              {i + 1}
+            </div>
+            <div>
+              <p class="text-xs font-bold uppercase tracking-widest text-base-content/50">{m.no}</p>
+              <h3 class="mt-1 font-display font-bold text-base-content">{m.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-base-content/65">{m.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== OUTCOMES ===== -->
+  <section class="border-t border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-4xl">
+      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>Outcomes</p>
+      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+        ออกจากห้องพร้อมอะไรบ้าง
+      </h2>
+
+      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {outcomes.map((o) => (
+          <div
+            class="rounded-2xl border bg-base-100 p-5"
+            style={`border-color: color-mix(in oklch, ${accent} 25%, transparent); background: color-mix(in oklch, ${accent} 3%, transparent);`}
+          >
+            <span class="text-xl" style={`color: ${accent};`}>✓</span>
+            <p class="mt-2 text-sm leading-relaxed text-base-content/85">{o}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRICING ===== -->
+  <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-4xl">
+      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>Pricing</p>
+      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+        ราคาและตัวเลือก
+      </h2>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        <!-- Advance only -->
+        <div
+          class="rounded-3xl border p-8"
+          style={`border-color: color-mix(in oklch, ${accent} 30%, transparent); background: color-mix(in oklch, ${accent} 4%, transparent);`}
+        >
+          <p class="text-xs font-bold uppercase tracking-widest text-base-content/55">Advance Only</p>
+          <div class="mt-3 font-display text-4xl font-bold" style={`color: ${accent};`}>฿29,900</div>
+          <p class="mt-1 text-sm text-base-content/60">1 วัน · 8 modules · On-site เท่านั้น</p>
+          <p class="mt-3 text-xs text-base-content/50">ต้องผ่าน Basic Workshop (Day 1) ก่อน</p>
+          <ul class="mt-6 space-y-2 text-sm text-base-content/80">
+            {[
+              'Workshop Day 2 เต็ม 6-7 ชม.',
+              'n8n Multi-agent workflow production-ready',
+              'LINE OA + CRM + Sheet integration',
+              'Auto-report KPI system',
+              '30-day async LINE support (Mon-Fri)',
+              'Handover SOP + วิดีโออัดหน้าจอทุก session',
+            ].map((inc) => (
+              <li class="flex items-start gap-2">
+                <span style={`color: ${accent};`}>✓</span>
+                <span>{inc}</span>
+              </li>
+            ))}
+          </ul>
+          <a
+            href="/booking?package=ai-workshop-advance"
+            class="btn btn-md mt-8 w-full border-none font-bold"
+            style={`background: ${accent}; color: ${accentBtnText};`}
+          >
+            จอง Advance ฿29,900 →
+          </a>
+        </div>
+
+        <!-- Bundle Day 1+2 -->
+        <div
+          class="rounded-3xl border-2 p-8"
+          style={`border-color: ${accent}; background: color-mix(in oklch, ${accent} 6%, transparent);`}
+        >
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-bold uppercase tracking-widest text-base-content/55">Bundle Day 1+2</p>
+            <span
+              class="rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider"
+              style={`background: ${accent}; color: ${accentBtnText};`}
+            >
+              ประหยัด ฿9,800
+            </span>
+          </div>
+          <div class="mt-3 font-display text-4xl font-bold" style={`color: ${accent};`}>฿50,000</div>
+          <p class="mt-1 text-sm text-base-content/60">2 วัน · แยก 2-4 สัปดาห์ · On-site เท่านั้น</p>
+          <div class="mt-3 rounded-xl border border-base-content/10 bg-base-100/50 p-3 text-xs text-base-content/55">
+            <div class="flex justify-between"><span>Basic Workshop (Day 1)</span><span>฿29,900</span></div>
+            <div class="mt-1 flex justify-between"><span>Advance Workshop (Day 2)</span><span>฿29,900</span></div>
+            <div class="mt-2 flex justify-between border-t border-base-content/10 pt-2 text-base-content/40">
+              <span>ถ้าซื้อแยก</span><span class="line-through">฿59,800</span>
+            </div>
+            <div class="mt-1 flex justify-between font-bold" style={`color: ${accent};`}>
+              <span>Bundle</span><span>฿50,000</span>
+            </div>
+          </div>
+          <ul class="mt-5 space-y-2 text-sm text-base-content/80">
+            {[
+              'Workshop Day 1 เต็ม 6-7 ชม. (Basic · 8 modules)',
+              'Workshop Day 2 เต็ม 6-7 ชม. (Advance · 8 modules)',
+              'n8n Multi-agent workflow สำหรับทั้งองค์กร',
+              '30-day async LINE support ตลอดทั้ง 2 workshops',
+              'Handover SOP + วิดีโออัดหน้าจอทุก session',
+            ].map((inc) => (
+              <li class="flex items-start gap-2">
+                <span style={`color: ${accent};`}>✓</span>
+                <span>{inc}</span>
+              </li>
+            ))}
+          </ul>
+          <a
+            href="/booking?package=ai-workshop&bundle=day1-day2"
+            class="btn btn-md mt-8 w-full border-none font-bold shadow-xl"
+            style={`background: ${accent}; color: ${accentBtnText}; box-shadow: 0 12px 30px -10px color-mix(in oklch, ${accent} 50%, transparent);`}
+          >
+            จอง Bundle Day 1+2 · ฿50,000 →
+          </a>
+        </div>
+      </div>
+
+      <p class="mt-6 text-center text-xs text-base-content/45">
+        ชำระ 100% ก่อนเริ่มงานทุกครั้ง · จัดแบบ in-house on-demand · ปันเข้าไปที่บริษัทคุณ · ยืนยันวันอบรมได้ภายใน 30 วันหลังจอง
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== RETAINER ===== -->
+  <section
+    class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20"
+    style="background: linear-gradient(135deg, color-mix(in oklch, var(--color-pun-cyan) 4%, transparent) 0%, transparent 60%);"
+  >
+    <div class="mx-auto max-w-4xl">
+      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>ต่อยอดระยะยาว</p>
+      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+        Retainer — ผมเข้าไป 1 วัน/เดือน ระบบโตต่อเนื่อง
+      </h2>
+      <p class="mt-4 max-w-2xl text-base leading-relaxed text-base-content/65">
+        หลัง Day 2 ระบบพร้อมแล้ว แต่ธุรกิจโต · ปัญหาใหม่เกิด · ผมเข้าไป 1 วัน/เดือนเพื่อปรับ ต่อยอด และ build workflow ใหม่ตามที่โตขึ้น
+      </p>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        <!-- Track A -->
+        <div class="rounded-2xl border border-base-content/15 bg-base-100 p-7">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-widest text-base-content/50">Track A</p>
+              <h3 class="mt-1 font-display text-xl font-bold">Advisory Day</h3>
+            </div>
+            <span
+              class="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider"
+              style={`background: color-mix(in oklch, ${accent} 15%, transparent); color: ${accent};`}
+            >
+              Founding ฿45K
+            </span>
+          </div>
+          <p class="mt-3 text-2xl font-bold" style={`color: ${accent};`}>
+            ฿45,000<span class="text-sm font-normal text-base-content/50">/เดือน</span>
+          </p>
+          <p class="mt-0.5 text-xs text-base-content/45">Founding Rate · Regular ฿70,000/เดือน</p>
+          <ul class="mt-5 space-y-2 text-sm text-base-content/75">
+            {[
+              '1 Full Day ต่อเดือน เข้าไปที่บริษัทคุณ',
+              'Agenda ส่งล่วงหน้า 1 สัปดาห์ — focus ปัญหาจริง',
+              'แก้ bottleneck + ปรับกลยุทธ์ + build workflow ใหม่',
+              'ไม่มีสัญญาผูกมัด · ยกเลิกได้ก่อนรอบถัดไป',
+            ].map((item) => (
+              <li class="flex items-start gap-2">
+                <span style={`color: ${accent};`}>✓</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-4 text-xs text-base-content/40">สำหรับ: เจ้าของที่อยาก scale กลยุทธ์ + แก้ปัญหา strategic</p>
+        </div>
+
+        <!-- Track B -->
+        <div
+          class="rounded-2xl border p-7"
+          style={`border-color: color-mix(in oklch, ${accent} 35%, transparent); background: color-mix(in oklch, ${accent} 4%, transparent);`}
+        >
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-widest text-base-content/50">Track B</p>
+              <h3 class="mt-1 font-display text-xl font-bold">Skill Injection Day</h3>
+            </div>
+            <span
+              class="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider"
+              style={`background: color-mix(in oklch, ${accent} 15%, transparent); color: ${accent};`}
+            >
+              Founding ฿55K
+            </span>
+          </div>
+          <p class="mt-3 text-2xl font-bold" style={`color: ${accent};`}>
+            ฿55,000<span class="text-sm font-normal text-base-content/50">/เดือน</span>
+          </p>
+          <p class="mt-0.5 text-xs text-base-content/45">Founding Rate · Regular ฿80,000/เดือน</p>
+          <ul class="mt-5 space-y-2 text-sm text-base-content/75">
+            {[
+              '1 Full Day ต่อเดือน ทีม training session',
+              'สอน skill ใหม่ให้ทีม + build tool ร่วมกัน',
+              'ทีมเอา workflow กลับไปใช้ได้ทันทีหลังวัน training',
+              'ไม่มีสัญญาผูกมัด · ยกเลิกได้ก่อนรอบถัดไป',
+            ].map((item) => (
+              <li class="flex items-start gap-2">
+                <span style={`color: ${accent};`}>✓</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-4 text-xs text-base-content/40">สำหรับ: เจ้าของที่อยาก upskill ทีมและ build capability ภายในองค์กร</p>
+        </div>
+      </div>
+
+      <p class="mt-6 text-center text-xs text-base-content/40">
+        Founding Rate สำหรับ 3 บริษัทแรกเท่านั้น · เมื่อครบ 3 รายจะปรับเป็น Regular Rate · ชำระล่วงหน้า 1 รอบต่อเดือน
+      </p>
+
+      <div class="mt-8 text-center">
+        <a
+          href="/intake-form"
+          class="btn btn-lg border font-bold"
+          style={`border-color: color-mix(in oklch, ${accent} 40%, transparent); color: ${accent};`}
+        >
+          นัดคุยเรื่อง Retainer กับผม →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="border-t border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>FAQ</p>
+      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+        คำถามที่ถามบ่อย
+      </h2>
+
+      <div class="mt-8 space-y-3">
+        {faqs.map((f) => (
+          <details class="group rounded-2xl border border-base-content/10 bg-base-100 p-6 open:shadow-md">
+            <summary class="flex cursor-pointer list-none items-start justify-between gap-4">
+              <span class="font-semibold leading-snug">{f.q}</span>
+              <span class="mt-0.5 shrink-0 text-base-content/40 transition group-open:rotate-45">＋</span>
+            </summary>
+            <p class="mt-4 text-sm leading-relaxed text-base-content/70">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FINAL CTA ===== -->
+  <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+    <div class="mx-auto max-w-3xl">
+      <div
+        class="overflow-hidden rounded-3xl border p-8 text-center md:p-12"
+        style={`border-color: color-mix(in oklch, ${accent} 35%, transparent); background: linear-gradient(135deg, color-mix(in oklch, ${accent} 10%, transparent) 0%, color-mix(in oklch, ${accent} 4%, transparent) 70%, transparent 100%);`}
+      >
+        <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>ขั้นตอนถัดไป</p>
+        <h2 class="mt-3 font-display text-2xl font-bold leading-tight md:text-3xl">
+          ถ้าดู 8 modules แล้วคิดว่า "นั่นคือสิ่งที่ทีมผมต้องการ"
+          <br />
+          <span style={`color: ${accent};`}>นัดคุยก่อนตัดสินใจได้เลย</span>
+        </h2>
+        <p class="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-base-content/65">
+          ผมอ่าน intake form ทุกใบด้วยตัวเอง · ถ้า fit ผมนัดคุย 30 นาที เพื่อให้มั่นใจว่า Day 2 ตรงกับสิ่งที่ทีมต้องการจริงๆ
+        </p>
+
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <a
+            href="/booking?package=ai-workshop-advance"
+            class="btn btn-lg border-none font-bold shadow-xl transition-all hover:scale-105"
+            style={`background: ${accent}; color: ${accentBtnText}; box-shadow: 0 15px 40px -15px color-mix(in oklch, ${accent} 50%, transparent);`}
+          >
+            จอง Advance Day 2 · ฿29,900 →
+          </a>
+          <a
+            href="/intake-form"
+            class="btn btn-lg btn-ghost border border-base-content/25 hover:bg-base-200"
+          >
+            นัดคุยกับผมก่อน
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
