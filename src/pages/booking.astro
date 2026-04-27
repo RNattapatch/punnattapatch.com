@@ -672,12 +672,21 @@ const pkgLookupJson = JSON.stringify({
       (lookup.prices[s] ?? 0).toLocaleString('en-US')
     );
 
+    const attr = (window as unknown as { pnAttribution?: Record<string, string> }).pnAttribution ?? {};
+
     const payload: BookingPayload = {
       source_page: 'booking-astro',
       booking_type: 'package-booking',
       package: pkgNames.join(', '),
       package_price: pkgPrices.join(', '),
       packages: selectedPkgs,
+      utm_source:   attr.utm_source   ?? '',
+      utm_medium:   attr.utm_medium   ?? '',
+      utm_campaign: attr.utm_campaign ?? '',
+      utm_content:  attr.utm_content  ?? '',
+      utm_term:     attr.utm_term     ?? '',
+      fbclid:       attr.fbclid       ?? '',
+      ttclid:       attr.ttclid       ?? '',
       _meta: {
         reference: makeReference(),
         submitted_at: new Date().toISOString(),
