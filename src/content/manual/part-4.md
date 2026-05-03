@@ -112,7 +112,7 @@ https://punnattapatch.com/agent-builder-kit/prompts/<slug>
 
 นี่คือสถานการณ์ที่ผมเห็นบ่อยที่สุดในงาน consult เลยออกแบบ **AI Agent 101 For Sale Team** มาเฉพาะคุณ
 
-**AI Agent 101 For Sale Team — 1-day public training · max 25 ที่นั่ง · 1 ธุรกิจ / 1 อุตสาหกรรม per public course**
+**AI Agent 101 For Sale Team — 1-day public training · max 25 ที่นั่ง · application-based screening**
 
 - ครอบคลุมทั้ง 4 phase: Setup → Build → Operate → Scale (compressed ในวันเดียว)
 - คุณติดตั้ง Claude Code จริง build agent ตัวแรกของธุรกิจคุณในห้อง ออกจากห้องพร้อม Action Plan 30 วัน

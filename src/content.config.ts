@@ -109,6 +109,18 @@ const training = defineCollection({
         text: z.string(),
       })).optional(),
     }).optional(),
+    /** Instructor profile section — appears after Differentiators · usually shared content but per-program override possible */
+    instructor: z.object({
+      eyebrow: z.string().optional(),
+      name: z.string(),
+      title: z.string(),
+      photo: z.string().optional(),
+      bio: z.array(z.string()),
+      highlights: z.array(z.object({
+        metric: z.string(),
+        label: z.string(),
+      })).optional(),
+    }).optional(),
     gallery: z.array(z.object({
       src: z.string(),
       alt: z.string(),
