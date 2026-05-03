@@ -90,7 +90,7 @@ instructor:
   bio:
     - "ผมจบวิศวกรรมเครื่องกล ม.เกษตรศาสตร์ บางเขน แต่รู้ตัวตั้งแต่ในห้องเรียนแล้วว่าชอบงานขายมากกว่างานวิศวกรรม จบมาเลยไปเป็น Sale Engineer ที่ค่ายรถญี่ปุ่นค่ายหนึ่ง — เป็นจุดเริ่มต้นที่ทำให้ผมเข้าใจ B2B sales จากมุมคนยืนหน้างานจริง ไม่ใช่จากตำราเรียน"
     - "หลังจากนั้นกลับมาทำธุรกิจครอบครัวและออกมาทำธุรกิจของตัวเอง ระหว่างทางช่วยเพื่อนนักธุรกิจหลายคนจัดระบบทีมขาย วาง Pipeline เพิ่ม Conversion จนยอดขายรวมที่ผ่านมือทะลุ 100 ล้านบาท ตัดสินใจเอาประสบการณ์สะสมมาช่วย SME ไทยเต็มตัวปี 2025"
-    - "วันนี้บริการของผมรวม **ประสบการณ์ขาย + ความเข้าใจธุรกิจ + AI ที่ลงมือ build เอง** เข้าด้วยกัน ทุก engagement ลูกค้าต้องได้ AI workflow กลับไปใช้ได้จริงตั้งแต่วันส่งมอบ ไม่ใช่ roadmap หรือ presentation"
+  winningStatement: "วันนี้บริการของผมรวม <strong>ประสบการณ์ขาย + ความเข้าใจธุรกิจ + AI ที่ลงมือ build เอง</strong> เข้าด้วยกัน — ทุก engagement ลูกค้าต้องได้ AI workflow กลับไปใช้ได้จริงตั้งแต่วันส่งมอบ ไม่ใช่ roadmap หรือ presentation"
   highlights:
     - metric: "100M+"
       label: "ยอดขาย B2B ที่ผมและทีมสร้างผ่านมือ"
@@ -126,12 +126,29 @@ priceThb:
   founding: 12900
 priceCompare: "🎟️ Waiting List Lock ฿12,900 (ราคาเปิดจริง ฿16,900) · public course · 25 ที่ · ปิดรับสมัคร 31 พ.ค. 2026 · ผมคัดเลือกผู้เรียนเอง"
 closesAt: 2026-05-31T23:59:00+07:00
-startsAt: 2026-05-17T09:00:00+07:00
-endsAt: 2026-05-17T16:00:00+07:00
+startsAt: 2026-06-14T09:00:00+07:00
+endsAt: 2026-06-14T17:00:00+07:00
 location:
-  name: "Co-working Premium Bangkok (Beacon Rama 9 / Common Ground)"
-  address: "กรุงเทพมหานคร — ประกาศ venue final ก่อนวันจริง 1 สัปดาห์"
+  name: "Premium Co-working · กรุงเทพฯ"
+  address: "กรุงเทพฯ · เน้นพื้นที่ใกล้รถไฟฟ้า BTS/MRT — ประกาศ venue final 1 สัปดาห์ก่อนวันงาน"
   virtual: false
+venueFormat:
+  eyebrow: "Venue + Format"
+  heading: "เจอกันที่ไหน เมื่อไหร่"
+  monthDisplay: "เดือนมิถุนายน 2026"
+  monthSubtitle: "ผมจะ confirm วันที่แน่นอน 2 สัปดาห์ก่อนเปิดคลาส หลังคัดเลือกผู้เรียนเสร็จ"
+  locationDisplay: "กรุงเทพฯ"
+  locationSubtitle: "เน้นพื้นที่ใกล้รถไฟฟ้า BTS/MRT เพื่อให้ทุกท่านเดินทางสะดวก · ประกาศสถานที่จริง 1 สัปดาห์ก่อนวันงาน"
+  perks:
+    - icon: "🪑"
+      label: "25 ที่นั่ง"
+      sub: "Premium co-working · บรรยากาศ hands-on จริง"
+    - icon: "⏱️"
+      label: "1 วัน 8 ชม. เต็ม"
+      sub: "เริ่ม 09:00 · จบประมาณ 17:00 · มี break ระหว่างวัน"
+    - icon: "🍱"
+      label: "Lunch + coffee break"
+      sub: "อิ่มท้องตลอดวัน · พร้อม networking ระหว่างพัก"
 outcomes:
   - "กลับบ้านพร้อม AI Agent ตัวแรกที่คุณสร้างเองใน workshop พร้อมใช้งานได้ทันทีในวันจันทร์"
   - "แผนงาน 30 วันที่ชัดเจน เพื่อให้ทีมขายของคุณเริ่มใช้ AI ทำงานได้จริง ไม่ใช่แค่ฟังแล้วลืม"
@@ -153,15 +170,23 @@ syllabus:
       - "20 Prompts library — Lead qualification / Follow-up / Proposal / Negotiation"
       - "Prompt chaining — ต่อ prompt หลายขั้นเพื่อ output ที่ลึกขึ้น"
       - "Custom Instructions / Projects — ทีมขายแชร์ context ธุรกิจให้ AI ใช้ร่วมกัน"
-  - title: "Module 3 — Hands-on Build: AI Agent ตัวแรกของธุรกิจคุณ"
-    body: "หัวใจของ workshop · ไม่ใช่ demo ของผม แต่เป็น Agent ของคุณเอง — เลือก use case จริงจากธุรกิจคุณมา 1 อัน แล้วเราสร้างให้เสร็จในห้อง พร้อมใช้งานวันจันทร์ถัดมา"
+  - title: "Module 3 — สร้าง 'AI Agent พี่เลี้ยงเซลล์' ด้วย Gemini Gems + NotebookLM"
+    body: "หมดปัญหาเหนื่อยสอนเซลล์ใหม่ทุกครั้ง · สร้าง AI Agent ที่ทำหน้าที่พี่เลี้ยงให้ทีมขายของคุณ — เก็บความรู้จาก deal จริงเข้า NotebookLM แล้วต่อยอดเป็น Gemini Gem ที่เซลล์ทุกคนเรียกใช้ได้ตลอด เพิ่มศักยภาพทีมโดยไม่ต้อง onboarding ซ้ำ"
+    duration: "1 ชม."
+    topics:
+      - "NotebookLM 101 — ป้อน sales playbook / proposal / call recording เข้าให้ AI ดูดความรู้"
+      - "Gemini Gems setup — สร้าง 'พี่เลี้ยงเซลล์' ที่ตอบคำถาม role-play ปิดดีลให้ junior"
+      - "เชื่อม Gem + NotebookLM ให้ทำงานร่วมกัน — ทีมเข้าถึง know-how จุดเดียวจบ"
+      - "Use cases จริง: Coaching · Pitch rehearsal · Objection handling · New-hire ramp"
+  - title: "Module 4 — Hands-on Build: AI Agent ตัวแรกของธุรกิจคุณด้วย Claude AI"
+    body: "หัวใจของ workshop · ไม่ใช่ demo ของผม แต่เป็น Agent ของคุณเอง — เลือก use case จริงจากธุรกิจคุณมา 1 อัน แล้ว build ด้วย Claude AI (Project + Code) ให้เสร็จในห้อง พร้อมใช้งานวันจันทร์ถัดมา"
     duration: "2.5 ชม."
     topics:
       - "เลือก use case ที่กินเวลาทีมขายมากที่สุด (workshop จะช่วยคุณคัด)"
-      - "Build AI Agent ใน Claude Project / Custom GPT — มี context ธุรกิจคุณครบ"
-      - "เชื่อม automation ด้วย n8n เบื้องต้น — trigger จาก LINE / form / email"
+      - "Build AI Agent ใน Claude Project — มี context ธุรกิจคุณครบใน knowledge base"
+      - "ต่อยอดด้วย Claude Code (สำหรับ workflow ลึก) + เชื่อม n8n เบื้องต้น"
       - "Test + iterate ในห้อง · feedback รายคน · ฟิกซ์ก่อนกลับบ้าน"
-  - title: "Module 4 — Peer Showcase + Action Plan 30 วัน"
+  - title: "Module 5 — Peer Showcase + Action Plan 30 วัน"
     body: "Module นี้บังคับนำเสนอ — ทุกคนต้องโชว์ Agent ตัวเองต่อหน้ากลุ่ม · เปิดให้ผมและเพื่อนร่วมคลาสคอมเมนต์ + แลกไอเดียข้ามอุตสาหกรรม · ปิดท้ายด้วย Action Plan 30 วันที่ชัดเจนกลับไปทำต่อ"
     duration: "1 ชม."
     topics:
@@ -205,14 +230,6 @@ faq:
   - q: "จ่าย ฿12,900 จะคุ้มค่าไหม?"
     a: "ลองคำนวณง่ายๆ ครับ ถ้า AI Agent ที่สร้างในคลาสช่วยให้ทีมขาย 5 คนประหยัดเวลาได้คนละ 1 ชั่วโมงต่อสัปดาห์ ใน 1 ปีจะประหยัดเวลาได้มากกว่า 250 ชั่วโมง คิดเป็นมูลค่าเท่าไหร่? จากเคสจริง ผู้เข้าร่วมสามารถลดค่าใช้จ่ายซอฟต์แวร์และเวลาทำงานซ้ำๆ ได้ทันทีหลังจบ workshop 30 วันหลังจบ ถามผมได้โดยตรง"
 ---
-
-## Venue + Format
-
-AI Agent 101 For Sale Team จัดขึ้นในวันเสาร์ที่ 17 พฤษภาคม 2026 ตั้งแต่เวลา 09:00 ถึง 16:00 น.
-
-เราจะเจอกันที่ Co-working space เกรดพรีเมียมใจกลางกรุงเทพฯ (ระหว่าง Beacon Rama 9 หรือ Common Ground) ผมจะยืนยันสถานที่ที่แน่นอนให้ทราบ 1 สัปดาห์ก่อนวันงานครับ
-
-Workshop นี้จำกัดเพียง 25 ที่นั่ง เพื่อให้ทุกคนได้รับการดูแลใกล้ชิดและบรรยากาศคลาสเป็น hands-on จริงตลอด 1 วัน 8 ชม. เต็ม
 
 ## วิธีจองสิทธิ์
 

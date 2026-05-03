@@ -271,6 +271,28 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
             </div>
           ))}
         </div>
+
+        {/* CTA: นัดคุยกับผมก่อน · LINE OA */}
+        <div
+          class="mx-auto mt-12 max-w-2xl rounded-2xl border-2 p-6 text-center md:p-8"
+          style={`border-color: color-mix(in oklch, ${accent} 30%, transparent); background: color-mix(in oklch, ${accent} 6%, transparent);`}
+        >
+          <p class="font-display text-lg font-black md:text-xl">
+            ไม่แน่ใจว่าคุณเหมาะกับคอร์สนี้ไหม?
+          </p>
+          <p class="mt-2 text-sm text-base-content/75 md:text-base">
+            อยากนัดคุยกับผมก่อน เพื่อเช็คว่าธุรกิจคุณจะได้คุ้มจาก workshop นี้จริง
+          </p>
+          <a
+            href={SITE.social.line}
+            rel="noopener"
+            target="_blank"
+            class="mt-5 inline-flex items-center gap-2 rounded-full px-7 py-3 font-display text-sm font-bold shadow-lg transition-all hover:scale-105 md:text-base"
+            style={`background: ${accent}; color: ${accentButtonText}; box-shadow: 0 12px 30px -10px color-mix(in oklch, ${accent} 50%, transparent);`}
+          >
+            💬 ทักผมที่ LINE OA →
+          </a>
+        </div>
       </div>
     </section>
   )}
@@ -335,7 +357,7 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
             </p>
           )}
           <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
-            ใครคือคนสอน — และทำไมต้องเป็นคนนี้
+            ทำความรู้จักผู้สอน และ ทำไมต้องเรียนกับผม
           </h2>
         </div>
 
@@ -358,6 +380,25 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
             <p class="mt-6 font-display text-2xl font-black md:text-3xl">{data.instructor.name}</p>
             <p class="mt-2 max-w-md text-sm font-semibold leading-snug text-base-content/70 md:text-base">{data.instructor.title}</p>
           </div>
+
+          {/* Winning Statement — pulled out as visual callout */}
+          {data.instructor.winningStatement && (
+            <div
+              class="relative mx-auto mt-12 max-w-2xl rounded-3xl border-2 p-7 shadow-xl md:p-10"
+              style={`border-color: color-mix(in oklch, ${accent} 40%, transparent); background: linear-gradient(135deg, color-mix(in oklch, ${accent} 10%, transparent) 0%, color-mix(in oklch, ${accent} 4%, transparent) 100%); box-shadow: 0 20px 60px -20px color-mix(in oklch, ${accent} 40%, transparent);`}
+            >
+              <span
+                class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full border px-4 py-1 text-xs font-bold uppercase tracking-widest shadow-lg"
+                style={`border-color: ${accent}; color: ${accent}; background: var(--color-base-100, #0a0e14);`}
+              >
+                ⭐ ทำไมต้องเรียนกับผม
+              </span>
+              <p
+                class="text-center font-display text-base font-bold leading-relaxed md:text-xl md:leading-relaxed"
+                set:html={data.instructor.winningStatement}
+              />
+            </div>
+          )}
 
           {/* Bio paragraphs · single-column readable column */}
           <div class="mx-auto mt-10 max-w-2xl space-y-6 text-base leading-loose text-base-content/85 md:text-lg md:leading-loose">
@@ -384,7 +425,26 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
           </div>
         )}
 
-        <div class="mt-10 text-center">
+        {/* CTAs after Instructor section */}
+        <div class="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <a
+            href={SITE.social.line}
+            rel="noopener"
+            target="_blank"
+            class="btn btn-lg border-none px-8 font-bold shadow-xl transition-all hover:scale-105"
+            style={`background: ${accent}; color: ${accentButtonText}; box-shadow: 0 15px 40px -15px color-mix(in oklch, ${accent} 50%, transparent);`}
+          >
+            💬 ทักผมที่ LINE OA →
+          </a>
+          <a
+            href="/waitlist"
+            class="btn btn-lg btn-outline px-8 font-bold"
+          >
+            🎟️ จอง Waiting List
+          </a>
+        </div>
+
+        <div class="mt-6 text-center">
           <a
             href="/about"
             class="inline-flex items-center gap-2 text-sm font-semibold underline-offset-4 hover:underline"
@@ -855,6 +915,84 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
     </div>
   </section>
 
+  {/* ===== VENUE + FORMAT (designed section) ===== */}
+  {data.venueFormat && (
+    <section class="border-b border-base-content/10 bg-base-200/30 px-4 py-20 lg:px-8 lg:py-24">
+      <div class="mx-auto max-w-5xl">
+        <div class="text-center">
+          {data.venueFormat.eyebrow && (
+            <span
+              class="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
+              style={`border-color: ${accent}; color: ${accent}; background: color-mix(in oklch, ${accent} 12%, transparent);`}
+            >
+              📍 {data.venueFormat.eyebrow}
+            </span>
+          )}
+          <h2 class="mt-5 font-display text-3xl font-black tracking-tight md:text-4xl">
+            {data.venueFormat.heading}
+          </h2>
+        </div>
+
+        {/* When + Where 2-column hero */}
+        <div class="mt-12 grid gap-6 md:grid-cols-2">
+          <div
+            class="rounded-3xl border-2 bg-base-100 p-8 shadow-md md:p-10"
+            style={`border-color: color-mix(in oklch, ${accent} 25%, transparent);`}
+          >
+            <p class="text-xs font-bold uppercase tracking-widest text-base-content/55">📅 เมื่อไหร่</p>
+            <p class="mt-3 font-display text-2xl font-black md:text-3xl" style={`color: ${accent};`}>
+              {data.venueFormat.monthDisplay}
+            </p>
+            {data.venueFormat.monthSubtitle && (
+              <p class="mt-3 text-sm leading-relaxed text-base-content/75 md:text-[15px]">
+                {data.venueFormat.monthSubtitle}
+              </p>
+            )}
+          </div>
+          <div
+            class="rounded-3xl border-2 bg-base-100 p-8 shadow-md md:p-10"
+            style={`border-color: color-mix(in oklch, ${accent} 25%, transparent);`}
+          >
+            <p class="text-xs font-bold uppercase tracking-widest text-base-content/55">🚉 ที่ไหน</p>
+            <p class="mt-3 font-display text-2xl font-black md:text-3xl" style={`color: ${accent};`}>
+              {data.venueFormat.locationDisplay}
+            </p>
+            {data.venueFormat.locationSubtitle && (
+              <p class="mt-3 text-sm leading-relaxed text-base-content/75 md:text-[15px]">
+                {data.venueFormat.locationSubtitle}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Perks row */}
+        {data.venueFormat.perks && data.venueFormat.perks.length > 0 && (
+          <div class="mt-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+            {data.venueFormat.perks.map((perk) => (
+              <div
+                class="flex items-start gap-4 rounded-2xl border bg-base-100 p-5 shadow-sm"
+                style={`border-color: color-mix(in oklch, ${accent} 22%, transparent);`}
+              >
+                {perk.icon && (
+                  <span
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xl"
+                    style={`background: color-mix(in oklch, ${accent} 14%, transparent);`}
+                  >
+                    {perk.icon}
+                  </span>
+                )}
+                <div class="flex-1">
+                  <p class="font-display text-sm font-black md:text-base">{perk.label}</p>
+                  {perk.sub && <p class="mt-1 text-xs leading-snug text-base-content/65">{perk.sub}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
   {/* ===== LONG-FORM BODY (markdown content) ===== */}
   <section class="border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
     <div
@@ -1002,17 +1140,24 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
         ลงชื่อ Waitlist ก่อน — ฟรี ไม่ต้องจ่ายวันนี้ · lock ราคา ฿12,900 (post-cap ฿16,900)
       </p>
       {data.programCode === 'p1' && (
-        <p class="mt-3 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold" style={`border-color: color-mix(in oklch, ${accent} 35%, transparent); color: ${accent}; background: color-mix(in oklch, ${accent} 8%, transparent);`}>
-          🎯 Application-only · ผมคัดผู้เรียนเอง เพื่อรักษา High Performer ในคลาส
-        </p>
+        <div class="mt-5 flex justify-center">
+          <span
+            class="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold"
+            style={`border-color: color-mix(in oklch, ${accent} 35%, transparent); color: ${accent}; background: color-mix(in oklch, ${accent} 8%, transparent);`}
+          >
+            🎯 Application-only · ผมคัดผู้เรียนเอง เพื่อรักษา High Performer ในคลาส
+          </span>
+        </div>
       )}
-      <a
-        href="/waitlist"
-        class="btn btn-lg mt-8 border-none px-10 font-bold shadow-xl transition-all hover:scale-105"
-        style={`background: ${accent}; color: ${accentButtonText}; box-shadow: 0 15px 40px -15px color-mix(in oklch, ${accent} 50%, transparent);`}
-      >
-        จองที่นั่ง Waitlist →
-      </a>
+      <div class="mt-8 flex justify-center">
+        <a
+          href="/waitlist"
+          class="btn btn-lg border-none px-10 font-bold shadow-xl transition-all hover:scale-105"
+          style={`background: ${accent}; color: ${accentButtonText}; box-shadow: 0 15px 40px -15px color-mix(in oklch, ${accent} 50%, transparent);`}
+        >
+          จองที่นั่ง Waitlist →
+        </a>
+      </div>
       <p class="mt-4 text-xs text-base-content/55">
         ลง Waitlist ก่อน → ผมส่งใบสมัครให้ → ถ้าผ่านการคัดเลือก ค่อยชำระเงิน
       </p>

@@ -139,9 +139,25 @@ const training = defineCollection({
       title: z.string(),
       photo: z.string().optional(),
       bio: z.array(z.string()),
+      /** Highlighted "winning zone" statement — rendered as visual callout above bio paragraphs */
+      winningStatement: z.string().optional(),
       highlights: z.array(z.object({
         metric: z.string(),
         label: z.string(),
+      })).optional(),
+    }).optional(),
+    /** Venue + Format designed section · replaces plain markdown body */
+    venueFormat: z.object({
+      eyebrow: z.string().optional(),
+      heading: z.string(),
+      monthDisplay: z.string(),
+      monthSubtitle: z.string().optional(),
+      locationDisplay: z.string(),
+      locationSubtitle: z.string().optional(),
+      perks: z.array(z.object({
+        icon: z.string().optional(),
+        label: z.string(),
+        sub: z.string().optional(),
       })).optional(),
     }).optional(),
     gallery: z.array(z.object({
