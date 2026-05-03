@@ -301,12 +301,61 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
     </div>
   </section>
 
+  {/* ===== POST-SYLLABUS CTA · P1 only · Waitlist + Discovery call ===== */}
+  {data.programCode === 'p1' && (
+    <section class="border-b border-base-content/10 px-4 py-14 lg:px-8">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+          Next Step
+        </p>
+        <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+          เห็นโครงสร้างแล้ว — เลือกได้ 2 ทาง
+        </h2>
+        <p class="mt-3 text-base text-base-content/70">
+          พร้อมแล้วก็จอง Waitlist เลย · หรือถ้าอยากคุยให้ชัดก่อนว่าธุรกิจคุณเหมาะไหม นัดคุยกับผมก่อนได้
+        </p>
+        <div class="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+          <a
+            href="/waitlist"
+            class="btn btn-lg border-none px-8 font-bold shadow-xl transition-all hover:scale-105"
+            style={`background: ${accent}; color: ${accentButtonText}; box-shadow: 0 15px 40px -15px color-mix(in oklch, ${accent} 50%, transparent);`}
+          >
+            จอง Waitlist + lock ราคา ฿12,900 →
+          </a>
+          <a
+            href="/intake-form"
+            class="btn btn-lg btn-outline px-8 font-bold"
+          >
+            นัดคุยกับผมก่อน
+          </a>
+        </div>
+        <p class="mt-4 text-xs text-base-content/55">
+          Waitlist = ฟรี ไม่มีค่าใช้จ่ายตอนนี้ · นัดคุย = 30 นาที discovery call
+        </p>
+      </div>
+    </section>
+  )}
+
   {/* ===== TESTIMONIAL (if present) ===== */}
   {
     data.testimonial && (
       <section class="border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
-        <div class="mx-auto max-w-3xl">
+        <div class="mx-auto max-w-4xl">
           <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>Alumni Voice</p>
+          {data.testimonial.images && data.testimonial.images.length > 0 && (
+            <div class="mt-6 grid gap-4 md:grid-cols-3">
+              {data.testimonial.images.map((src) => (
+                <figure class="overflow-hidden rounded-2xl border border-base-content/10">
+                  <img
+                    src={src}
+                    alt={`บรรยากาศ workshop · ${data.testimonial!.author}`}
+                    loading="lazy"
+                    class="aspect-[4/3] h-full w-full object-cover"
+                  />
+                </figure>
+              ))}
+            </div>
+          )}
           <figure
             class="mt-6 rounded-3xl border p-8 md:p-10"
             style={`border-color: color-mix(in oklch, ${accent} 25%, transparent); background: color-mix(in oklch, ${accent} 4%, transparent);`}
@@ -408,7 +457,7 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
       >
         <div>
           <p class="font-display text-base font-bold">พร้อมแล้ว? ลงชื่อได้เลย — ไม่ต้องจ่ายวันนี้</p>
-          <p class="mt-1 text-sm text-base-content/65">20 ที่นั่ง · First Come, First Serve · ปิดเมื่อเต็ม</p>
+          <p class="mt-1 text-sm text-base-content/65">{data.seats.total} ที่นั่ง · First Come, First Serve · ปิดเมื่อเต็ม</p>
         </div>
         <a
           href="/waitlist"
@@ -533,7 +582,7 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
     <div class="mx-auto max-w-3xl text-center">
       <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>จองสิทธิ์ตอนนี้</p>
       <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
-        20 ที่นั่ง · First Come, First Serve
+        {data.seats.total} ที่นั่ง · First Come, First Serve
       </h2>
       <p class="mt-4 text-base-content/80">
         ลงชื่อ Waitlist ก่อน — ฟรี ไม่ต้องจ่ายวันนี้ · lock ราคา ฿12,900 (post-cap ฿16,900) · 1 บริษัท / อุตสาหกรรม
