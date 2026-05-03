@@ -98,7 +98,13 @@ const training = defineCollection({
       title: z.string(),
       body: z.string(),
     })).optional(),
-    tools: z.array(z.string()).optional(),
+    tools: z.array(z.union([
+      z.string(),
+      z.object({
+        name: z.string(),
+        description: z.string().optional(),
+      }),
+    ])).optional(),
     prerequisites: z.array(z.string()).optional(),
     postClassSupport: z.object({
       eyebrow: z.string().optional(),
@@ -147,6 +153,7 @@ const training = defineCollection({
       title: z.string(),
       body: z.string(),
       duration: z.string().optional(),
+      topics: z.array(z.string()).optional(),
     })),
     founding_perks: z.array(z.string()).default([]),
     qualifies: z.array(z.string()).default([]),
