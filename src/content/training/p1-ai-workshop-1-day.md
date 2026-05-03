@@ -38,6 +38,23 @@ caseStudyImages:
   - "/advance-ai-course/testimonial7.JPG"
   - "/advance-ai-course/IMG_6453.JPG"
   - "/advance-ai-course/gallery2.jpg"
+differentiators:
+  - title: "เนื้อหาเน้น AI Feature ที่ใช้ได้จริงเพื่อเพิ่มยอดขาย"
+    body: "ใช้ AI Agent ทำงานเอกสารแทนพนักงานขาย · ออกแบบกระบวนการปิดการขายที่นำ AI เข้ามาช่วย · ใช้ AI Agent บริหารองค์กรและฝ่ายขาย · สร้าง AI Agent เป็น 'พี่เลี้ยงเซลล์' เพิ่ม know-how ลดขั้นตอนการทดลองงาน เพิ่มโอกาสชนะดีลสำคัญ · ทำให้ AI เข้าใจบริบทธุรกิจของเราโดยไม่ต้องสอนใหม่ทุกรอบ"
+  - title: "ออกแบบจากประสบการณ์ตรง ไม่ใช่เอาทฤษฎีมาเล่า"
+    body: "ผมนำประสบการณ์ด้านการบริหารธุรกิจ + การคุมทีมขายยอดขาย 100 ล้าน + ประสบการณ์เป็นเซลล์เอง + ความรู้จากการใช้ AI Agent ทำธุรกิจจริงทุกวัน มาออกแบบเนื้อหาในคอร์สนี้"
+  - title: "เน้นจับมือทำให้ได้ผลลัพธ์จริง ไม่เน้นเปิดสไลด์"
+    body: "Workshop hands-on ตลอด 6-7 ชั่วโมง ทุกคนได้ลงมือสร้าง AI Agent ของธุรกิจตัวเองในห้อง — ไม่ใช่นั่งฟังบรรยายแล้วกลับบ้านมือเปล่า"
+tools:
+  - "Claude (Claude · Claude Co-Work · Claude Code)"
+  - "Gemini + NotebookLM"
+  - "Kie.ai"
+  - "OpenRouter"
+prerequisites:
+  - "บัญชี Claude Pro Plan ขึ้นไป"
+  - "Claude Desktop App ติดตั้งบนเครื่องที่จะใช้เรียน"
+  - "คอมพิวเตอร์ส่วนตัว (Mac หรือ Windows ก็ได้)"
+  - "บัญชี Gmail ที่พร้อมใช้งาน"
 gallery:
   - src: "/advance-ai-course/gallery1.JPG"
     alt: "ทีมใช้ laptop ในห้อง workshop · จอฉาย Advance AI & Business Automation"

@@ -237,6 +237,86 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
     )
   }
 
+  {/* ===== DIFFERENTIATORS (why this course is different) ===== */}
+  {data.differentiators && data.differentiators.length > 0 && (
+    <section class="border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
+      <div class="mx-auto max-w-4xl">
+        <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+          คอร์สนี้ต่างกับคอร์สอื่นยังไง
+        </p>
+        <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+          ทำไม {data.title.split('—')[0].trim()} ถึงไม่เหมือนใคร
+        </h2>
+        <div class="mt-8 grid gap-5 md:grid-cols-3">
+          {data.differentiators.map((d, i) => (
+            <div
+              class="rounded-2xl border p-6"
+              style={`border-color: color-mix(in oklch, ${accent} 22%, transparent); background: color-mix(in oklch, ${accent} 4%, transparent);`}
+            >
+              <p class="font-display text-3xl font-black" style={`color: ${accent};`}>0{i + 1}</p>
+              <h3 class="mt-3 font-display text-base font-bold leading-snug md:text-lg">{d.title}</h3>
+              <p class="mt-3 text-sm leading-relaxed text-base-content/75">{d.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {/* ===== TOOLS (what you'll learn to use) ===== */}
+  {data.tools && data.tools.length > 0 && (
+    <section class="border-b border-base-content/10 bg-base-200/30 px-4 py-14 lg:px-8 lg:py-16">
+      <div class="mx-auto max-w-4xl">
+        <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+          เครื่องมือที่ใช้เรียน
+        </p>
+        <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+          AI Stack ที่จะได้ลงมือใช้จริงในห้อง
+        </h2>
+        <ul class="mt-8 grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+          {data.tools.map((t) => (
+            <li
+              class="flex items-center gap-3 rounded-xl border bg-base-100 p-4"
+              style={`border-color: color-mix(in oklch, ${accent} 25%, transparent);`}
+            >
+              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold" style={`background: color-mix(in oklch, ${accent} 18%, transparent); color: ${accent};`}>
+                ⚡
+              </span>
+              <span class="font-display text-sm font-bold">{t}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {/* ===== PREREQUISITES (what to bring) ===== */}
+  {data.prerequisites && data.prerequisites.length > 0 && (
+    <section class="border-b border-base-content/10 px-4 py-14 lg:px-8 lg:py-16">
+      <div class="mx-auto max-w-3xl">
+        <p class="text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+          ก่อนเข้าคลาส
+        </p>
+        <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+          สิ่งที่ผู้เรียนต้องเตรียมมาเอง
+        </h2>
+        <p class="mt-3 text-base text-base-content/70">
+          เพื่อให้เวลา 6-7 ชั่วโมงในห้องไหลลื่น ลงมือทำได้เต็มที่ ไม่เสียเวลาตั้งค่าตอนคลาส
+        </p>
+        <ul class="mt-6 space-y-3">
+          {data.prerequisites.map((p) => (
+            <li
+              class="flex items-start gap-3 rounded-xl border border-base-content/10 bg-base-100/50 p-4"
+            >
+              <span class="mt-0.5 shrink-0 text-lg" style={`color: ${accent};`}>☐</span>
+              <span class="text-base text-base-content/85">{p}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
   {/* ===== GALLERY (if present · real phone-shot workshop photos) ===== */}
   {
     data.gallery.length > 0 && (

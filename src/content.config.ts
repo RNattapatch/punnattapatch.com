@@ -92,6 +92,12 @@ const training = defineCollection({
       image: z.string().optional(),
     }).optional(),
     caseStudyImages: z.array(z.string()).optional(),
+    differentiators: z.array(z.object({
+      title: z.string(),
+      body: z.string(),
+    })).optional(),
+    tools: z.array(z.string()).optional(),
+    prerequisites: z.array(z.string()).optional(),
     gallery: z.array(z.object({
       src: z.string(),
       alt: z.string(),
