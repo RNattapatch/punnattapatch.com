@@ -47,7 +47,7 @@ seats:
 priceThb:
   normal: 19900
   founding: 16900
-priceCompare: "🔥 Founding Cohort #1 ฿16,900 (ปกติ ฿19,900) · 12 ที่แรกได้ priority seat cohort ถัดไป · หลังเต็มราคากลับเป็น ฿19,900"
+priceCompare: "🔥 Public Course #1 ฿16,900 (ปกติ ฿19,900) · 12 ที่แรกได้ priority seat รอบถัดไป · หลังเต็มราคากลับเป็น ฿19,900"
 closesAt: 2026-05-15T23:59:00+07:00
 startsAt: 2026-05-31T09:00:00+07:00
 endsAt: 2026-06-01T16:00:00+07:00
@@ -73,7 +73,7 @@ syllabus:
 founding_perks:
   - "ราคา Founding ฿16,900 (ปกติ ฿19,900 — ประหยัด ฿3,000)"
   - "ทีม 2 คนแรกของแต่ละบริษัทเข้าได้ราคาเดียวกัน"
-  - "Priority seat for P5 (Sales Team Builder) next cohort"
+  - "Priority seat for P5 (Sales Team Builder) public course รอบถัดไป"
   - "Alumni → Tier 2 Agentic AI Transformation 15% off"
 qualifies:
   - "มีทีมขาย 3+ คน ที่ปิดดีลด้วยส่วนลดเป็นหลัก"
@@ -93,8 +93,8 @@ faq:
     a: "ถ้าทีมทำตามขั้นตอนที่ผมวางให้จริงจัง + ใช้ swipe file + ซ้อม AI Role-play Bot อย่างน้อย 2 ครั้ง/สัปดาห์ · client ผม 5+ ราย เห็นยอดขยับ 20-40% ภายใน 60 วัน · แต่ถ้าทีมไม่ commit practice จะไม่เห็นผล — ทำครึ่งๆ กลางๆ ไม่มีใครช่วยได้"
   - q: "ต่างจากคอร์ส value selling ในตลาดยังไง?"
     a: "ตลาดสอน framework แล้วลูกค้าลืม · เราส่ง AI Role-play Bot ให้ซ้อมต่อ 24 ชม. + 30-day async LINE support"
-  - q: "ราคา Founding Cohort กับราคาปกติต่างกันยังไง?"
-    a: "Founding Cohort #1 (12 คนแรก) ได้ราคา ฿16,900 + priority seat สำหรับ cohort ถัดไป หลังจากนั้น ฿19,900"
+  - q: "ราคา Public Course #1 กับราคาปกติต่างกันยังไง?"
+    a: "Public Course #1 (12 คนแรก) ได้ราคา ฿16,900 + priority seat สำหรับรอบถัดไป หลังจากนั้น ฿19,900"
   - q: "ถ้าทีมมี manager — เหมาะกับ manager ด้วยไหม?"
     a: "เหมาะมาก · Day 2 ช่วง Negotiation + Closing Psychology เป็น framework ที่ manager ใช้ coach ทีมต่อได้"
 ---

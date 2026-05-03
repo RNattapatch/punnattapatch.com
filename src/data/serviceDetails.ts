@@ -727,8 +727,8 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
           body: 'ผมสอนทั้ง funnel ตั้งแต่ทำ clip · ออกแบบ bio · สร้าง form เก็บ lead · จนถึงเทคนิคปิดการขาย B2B ที่ทักเข้ามา · ไม่ใช่แค่สอนทำ content แล้วจบ · ได้ business result ทั้งระบบ',
         },
         {
-          title: 'On-site at your business · ไม่ใช่ open cohort',
-          body: 'ผมเข้าไปสอนที่บริษัทลูกค้าเอง · use case + script ทั้งหมดมาจากธุรกิจของคุณจริง · ไม่ใช่การเรียนรวมใน open cohort ที่ใช้ template · ทีมได้ content plan ที่เหมาะกับอุตสาหกรรมตัวเอง',
+          title: 'On-site at your business · ไม่ใช่ public course เปิดทั่วไป',
+          body: 'ผมเข้าไปสอนที่บริษัทลูกค้าเอง · use case + script ทั้งหมดมาจากธุรกิจของคุณจริง · ไม่ใช่การเรียนรวมใน public course ที่ใช้ template · ทีมได้ content plan ที่เหมาะกับอุตสาหกรรมตัวเอง',
         },
         {
           title: 'AI ช่วยได้ แต่ยังคง authentic ของเจ้าของ',

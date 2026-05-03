@@ -14,8 +14,8 @@ const formatPrice = (n: number): string => '฿' + n.toLocaleString('en-US');
 const formatDate = (d: Date): string =>
   d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
 
-const title = 'Public Training — Founding Cohort #1 เปิดรับสมัคร';
-const description = 'เรียนกับ Pun Nattapatch · AI Quick Launch + Sales Mastery + Sales Team Builder · Founding pricing สำหรับ cohort แรก · max 8-12 seats ต่อ program';
+const title = 'Public Training — Public Course #1 เปิดรับสมัคร';
+const description = 'เรียนกับ Pun Nattapatch · AI Agent 101 For Sale Team + Sales Mastery + Sales Team Builder · Early Bird pricing สำหรับ public course รอบแรก · max 8-25 seats ต่อ program';
 ---
 
 <BaseLayout
@@ -35,11 +35,11 @@ const description = 'เรียนกับ Pun Nattapatch · AI Quick Launch 
     <div class="mx-auto max-w-5xl">
       <p class="text-xs font-bold uppercase tracking-widest text-secondary">Public Training</p>
       <h1 class="mt-3 font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl">
-        Founding Cohort #1<br class="hidden md:block" />
-        <span class="text-secondary">เปิดรับ 8-12 ที่นั่ง</span>ต่อ program
+        Public Course #1<br class="hidden md:block" />
+        <span class="text-secondary">เปิดรับ 8-25 ที่นั่ง</span>ต่อ program
       </h1>
       <p class="mt-5 max-w-2xl text-lg text-base-content/75">
-        เรียนกับผมโดยตรง · application-based screening · 1-per-industry-per-cohort · hands-on ลงมือทำจริงในห้อง · Founding alumni ได้ราคาพิเศษเข้า Tier 2 Advisory ต่อ
+        เรียนกับผมโดยตรง · application-based screening · 1 บริษัท / 1 อุตสาหกรรมต่อรอบ · hands-on ลงมือทำจริงในห้อง · ศิษย์เก่าได้ราคาพิเศษเข้า Tier 2 Advisory ต่อ
       </p>
     </div>
   </section>
@@ -48,9 +48,9 @@ const description = 'เรียนกับ Pun Nattapatch · AI Quick Launch 
     sorted.length === 0 ? (
       <section class="px-4 pb-20 lg:px-8">
         <div class="mx-auto max-w-2xl rounded-2xl border border-dashed border-base-content/20 bg-base-200/30 p-10 text-center">
-          <p class="font-display text-xl font-bold">Cohort ถัดไปยังไม่ประกาศ</p>
+          <p class="font-display text-xl font-bold">รอบถัดไปยังไม่ประกาศ</p>
           <p class="mt-3 text-base-content/70">
-            ลงชื่อไว้ที่ <a href="/intake-form" class="text-secondary underline">intake form</a> — จะแจ้งทันที cohort ใหม่เปิด
+            ลงชื่อไว้ที่ <a href="/intake-form" class="text-secondary underline">intake form</a> — จะแจ้งทันทีรอบใหม่เปิด
           </p>
         </div>
       </section>
@@ -110,7 +110,7 @@ const description = 'เรียนกับ Pun Nattapatch · AI Quick Launch 
                         )}
                       </p>
                       <p class="mt-2 text-xs text-base-content/55">
-                        {hasFounding ? 'Founding Cohort #1' : 'Standard enrollment'}
+                        {hasFounding ? 'Public Course #1' : 'Standard enrollment'}
                       </p>
                     </div>
 

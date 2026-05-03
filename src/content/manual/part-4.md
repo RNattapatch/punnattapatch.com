@@ -112,12 +112,12 @@ https://punnattapatch.com/agent-builder-kit/prompts/<slug>
 
 นี่คือสถานการณ์ที่ผมเห็นบ่อยที่สุดในงาน consult เลยออกแบบ **AI Agent 101 For Sale Team** มาเฉพาะคุณ
 
-**AI Agent 101 For Sale Team — 1-day public training · max 25 ที่นั่ง · 1 ธุรกิจ / 1 อุตสาหกรรม per cohort**
+**AI Agent 101 For Sale Team — 1-day public training · max 25 ที่นั่ง · 1 ธุรกิจ / 1 อุตสาหกรรม per public course**
 
 - ครอบคลุมทั้ง 4 phase: Setup → Build → Operate → Scale (compressed ในวันเดียว)
 - คุณติดตั้ง Claude Code จริง build agent ตัวแรกของธุรกิจคุณในห้อง ออกจากห้องพร้อม Action Plan 30 วัน
 - เพื่อนร่วมคลาส 24 คนจาก 24 อุตสาหกรรมที่ไม่เป็นคู่แข่งคุณ แลก use case เอา idea กลับไปนำเสนอนายได้
-- Cohort-cap 25 ที่ปิดเมื่อเต็ม early-bird Waitlist Lock ฿12,900 (ราคาเปิดจริง ฿16,900)
+- Public course · 25 ที่ปิดเมื่อเต็ม early-bird Waitlist Lock ฿12,900 (ราคาเปิดจริง ฿16,900)
 
 > Course เล็ก เน้นลงมือ ห้องเรียนที่คุยเปิด ทุกคนได้แชร์ use case จริง นี่คือสิ่งที่ open course ใหญ่ๆ 100 คนทำไม่ได้ ติดตรงไหนมาปรึกษากันในห้องเลย ผมช่วยดูให้ คอร์สนี้เราจะไปพร้อมกัน
 

@@ -56,6 +56,17 @@ prerequisites:
   - "Claude Desktop App ติดตั้งบนเครื่องที่จะใช้เรียน"
   - "คอมพิวเตอร์ส่วนตัว (Mac หรือ Windows ก็ได้)"
   - "บัญชี Gmail ที่พร้อมใช้งาน"
+postClassSupport:
+  eyebrow: "Exclusive Community"
+  title: "จบคลาสแล้วไม่ต้องกลัวงงหรือไปต่อไม่ดี"
+  body: "เรามี Exclusive Community LINE Chat สำหรับผู้เข้าอบรมเท่านั้น — ติดขัดตรงไหนหลังคอร์สมาคุยกันต่อได้ ไม่ปล่อยให้ใครหายไปกับ AI Agent ที่ยังใช้ไม่เต็มที่"
+  items:
+    - icon: "💬"
+      text: "ห้องแชทเฉพาะศิษย์เก่า — ถามตอบกับผมและเพื่อนร่วมรอบโดยตรง"
+    - icon: "🔒"
+      text: "Members-only · เข้าได้เฉพาะคนที่ผ่านคอร์สเท่านั้น · ไม่มี promote ไม่มีคนนอก"
+    - icon: "🚀"
+      text: "Update tip ใหม่ ๆ ของ AI Agent ที่ผมเจอจาก consult จริง · ส่งให้สมาชิกก่อนใคร"
 gallery:
   - src: "/advance-ai-course/gallery1.JPG"
     alt: "ทีมใช้ laptop ในห้อง workshop · จอฉาย Advance AI & Business Automation"
@@ -69,7 +80,7 @@ seats:
 priceThb:
   normal: 16900
   founding: 12900
-priceCompare: "🎟️ Waitlist Lock ฿12,900 (ราคาเปิดจริง ฿16,900) · cohort-cap 25 ที่ · First Come, First Serve · ปิดเมื่อเต็ม"
+priceCompare: "🎟️ Waitlist Lock ฿12,900 (ราคาเปิดจริง ฿16,900) · public course · 25 ที่ · First Come, First Serve · ปิดเมื่อเต็ม"
 closesAt: 2026-05-31T23:59:00+07:00
 startsAt: 2026-05-17T09:00:00+07:00
 endsAt: 2026-05-17T16:00:00+07:00

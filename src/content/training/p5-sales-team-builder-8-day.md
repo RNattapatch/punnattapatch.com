@@ -47,7 +47,7 @@ seats:
 priceThb:
   normal: 34900
   founding: 27900
-priceCompare: "🔥 Founding Cohort #1 ฿27,900 (ปกติ ฿34,900) · 8 ที่แรกได้ Quarterly reunion ฟรี 4 ครั้ง + graduation dinner bundled · หลังเต็มราคากลับเป็น ฿34,900"
+priceCompare: "🔥 Public Course #1 ฿27,900 (ปกติ ฿34,900) · 8 ที่แรกได้ Quarterly reunion ฟรี 4 ครั้ง + graduation dinner bundled · หลังเต็มราคากลับเป็น ฿34,900"
 closesAt: 2026-05-31T23:59:00+07:00
 startsAt: 2026-06-14T09:00:00+07:00
 endsAt: 2026-06-22T21:00:00+07:00
@@ -72,12 +72,12 @@ syllabus:
     body: "KPI Dashboard design · Commission structure (3-tier) · 1:1 Coaching rhythm · PIP (Performance Improvement Plan) · Firing framework · Succession planning · Graduation dinner Sunday"
     duration: "2 วัน · 12 ชั่วโมง + dinner"
   - title: "Graduation Dinner (Sunday Weekend 2 · 18:00-21:00)"
-    body: "Hotel venue · network กับ cohort 7 รายอื่น + Pun · Founding Cohort #1 badge ceremony + commitment ritual สำหรับ 90-day post-program"
+    body: "Hotel venue · network กับเพื่อนร่วมรอบอีก 7 ราย + Pun · Public Course #1 badge ceremony + commitment ritual สำหรับ 90-day post-program"
     duration: "3 ชั่วโมง"
 founding_perks:
   - "ราคา Founding ฿27,900 (ปกติ ฿34,900 — ประหยัด ฿7,000)"
   - "Graduation dinner บุฟเฟ่ต์ 5-star hotel included"
-  - "Founding Cohort #1 badge — ชื่ออยู่ใน P5 alumni wall ตลอดไป"
+  - "Public Course #1 badge — ชื่ออยู่ใน P5 alumni wall ตลอดไป"
   - "Quarterly alumni reunion 2026 (4 ครั้ง) ฟรี · ปกติ ฿5,000/ครั้ง"
   - "Alumni → Tier 2 Agentic AI Transformation 15% off"
   - "Priority access Inner Circle Founding Lifetime ฿14,900 (ปกติ ฿19,900/ปี)"
@@ -104,7 +104,7 @@ faq:
   - q: "หลังจบ alumni มีอะไรต่อ?"
     a: "4 reunion/ปี ฟรี · priority Inner Circle Founding Lifetime (฿14,900) · Tier 2 Agentic AI Transformation 15% off ถ้าอยากติดตั้งระบบทั้งองค์กร"
   - q: "ราคา Founding กับราคาปกติต่างกันยังไง?"
-    a: "Founding Cohort #1 (8 คนแรก) ได้ราคา ฿27,900 + Quarterly reunion 2026 ฟรี + dinner bundled · หลังจากนั้น ฿34,900"
+    a: "Public Course #1 (8 คนแรก) ได้ราคา ฿27,900 + Quarterly reunion 2026 ฟรี + dinner bundled · หลังจากนั้น ฿34,900"
 ---
 
 ## ทำไม P5 ต่างจาก sales training ทั่วไป
@@ -149,7 +149,7 @@ faq:
 ## Graduation Dinner (Sunday Weekend 2 · 18:00-21:00)
 
 - ดินเนอร์บุฟเฟต์ที่โรงแรม 5 ดาว (จะประกาศสถานที่ล่วงหน้า 1 สัปดาห์)
-- พิธีมอบเข็มกลัดสำหรับ Founding Cohort #1
+- พิธีมอบเข็มกลัดสำหรับ Public Course #1
 - กิจกรรม commitment ritual เพื่อสร้างความรับผิดชอบร่วมกันในช่วง 90 วันหลังจบโปรแกรม
 
 Dinner เป็นส่วนหนึ่งของโปรแกรมซึ่งบังคับเข้าร่วม ไม่ใช่กิจกรรมเสริม เจ้าของ SME ทั้ง 8 คนในห้องจะได้สร้างเครือข่ายที่ปรึกษา (peer advisory network) ที่ช่วยเหลือกันต่อไปหลังจบคอร์ส

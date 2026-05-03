@@ -4,7 +4,7 @@
  *
  * Props:
  *   targetDate: ISO 8601 string OR Date — the deadline (closesAt)
- *   label?: string — headline above digits (default: "Founding Cohort ปิดรับสมัครใน")
+ *   label?: string — headline above digits (default: "Public Course ปิดรับสมัครใน")
  *
  * Client-side: re-renders every 1s using Thai time (Asia/Bangkok).
  * Fallback: prints the static closesAt date if JS disabled.
@@ -14,7 +14,7 @@ interface Props {
   label?: string;
 }
 
-const { targetDate, label = 'Founding Cohort ปิดรับสมัครใน' } = Astro.props;
+const { targetDate, label = 'Public Course ปิดรับสมัครใน' } = Astro.props;
 const iso = targetDate instanceof Date ? targetDate.toISOString() : targetDate;
 const formatted = new Date(iso).toLocaleDateString('th-TH', {
   day: 'numeric',

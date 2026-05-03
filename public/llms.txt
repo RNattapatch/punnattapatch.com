@@ -12,7 +12,7 @@
 - [Intake Form](https://punnattapatch.com/intake-form): แบบประเมินปัญหาทีมขาย 3 นาที · รับ `?program=p1|p4|p5` pre-fill สำหรับ Public Training
 - [Booking](https://punnattapatch.com/booking): จอง package + preferred date + contact ครบที่เดียว
 - [Case Studies](https://punnattapatch.com/case-studies): 3 anonymized cases พร้อม real numbers + methodology
-- [Public Training](https://punnattapatch.com/training): Founding Cohort #1 · 3 programs เปิดรับสมัคร
+- [Public Training](https://punnattapatch.com/training): Public Course #1 · 3 programs เปิดรับสมัคร
 
 ## Services & Pricing (v3 — 2026-04-22)
 
@@ -25,7 +25,7 @@
 - Team AI Readiness Workshop — ฿50,000 / 1 วัน · เตรียมทีม mindset ก่อน Tier 2 Advisory
 
 ### Tier 2 — Agentic AI Transformation (Premium · ฿95-120K)
-- Agentic AI Transformation for Owner + Executive Team — 7 touchpoints (pre-work + 3 วัน on-site + 30-day follow-up) · Triple Guarantee · Bundled with Retainer ฿225K (save ฿30K) · Founding Cohort first 5 clients = ฿95K + Inner Circle Lifetime ฟรี
+- Agentic AI Transformation for Owner + Executive Team — 7 touchpoints (pre-work + 3 วัน on-site + 30-day follow-up) · Triple Guarantee · Bundled with Retainer ฿225K (save ฿30K) · Early Bird first 5 clients = ฿95K + Inner Circle Lifetime ฟรี
 
 ### Tier 3 — Retainer
 - Monthly Consulting — ฿45-50K/mo · 2 sessions + 1 AI workflow จับมือทำใหม่/เดือน + async LINE support · locked rate ฿30K สำหรับลูกค้าเก่า
@@ -34,7 +34,7 @@
 - Sales System Sprint — ฿65,000 / โครงการ · 1 เดือนจบ · Discovery → Design → Build → Training · KPI dashboard + Commission calculator + n8n automation · https://punnattapatch.com/services/sales-system-sprint
 - Inner Circle (annual membership) — ฿19,900/ปี (Founding Lifetime ฿14,900 one-time) · Monthly Office Hour + Private Community + Quarterly meetup + AI Template library
 
-### Public Training (Individual enrollment · Founding Cohort #1)
+### Public Training (Individual enrollment · Public Course #1)
 - AI Agent 101 For Sale Team — ฿12,900 Waitlist Lock (฿16,900 standard) / 1 วัน · max 25 ที่ · Sat 17 พ.ค. 2026 · https://punnattapatch.com/training/p1-ai-workshop-1-day
 - P4 — Sales Mastery — ฿16,900 Founding (฿19,900 standard) / 2 วัน · max 12 · 31 พ.ค.-1 มิ.ย. 2026 · https://punnattapatch.com/training/p4-sales-training-2-day
 - P5 — Sales Team Builder — ฿27,900 Founding (฿34,900 standard) / 2 weekends + graduation dinner · max 8 · 14-22 มิ.ย. 2026 · https://punnattapatch.com/training/p5-sales-team-builder-8-day

@@ -100,6 +100,15 @@ const training = defineCollection({
     })).optional(),
     tools: z.array(z.string()).optional(),
     prerequisites: z.array(z.string()).optional(),
+    postClassSupport: z.object({
+      eyebrow: z.string().optional(),
+      title: z.string(),
+      body: z.string(),
+      items: z.array(z.object({
+        icon: z.string().optional(),
+        text: z.string(),
+      })).optional(),
+    }).optional(),
     gallery: z.array(z.object({
       src: z.string(),
       alt: z.string(),
