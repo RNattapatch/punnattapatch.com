@@ -51,38 +51,46 @@ const painPoints = [
   <div class="min-h-screen px-4 py-12 lg:py-20">
     <div class="mx-auto max-w-xl">
 
-      {/* Badge */}
+      {/* Eyebrow — problem hook */}
       <div class="flex justify-center">
-        <span
-          class="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
-          style={`border-color: color-mix(in oklch, ${accent} 40%, transparent); background: color-mix(in oklch, ${accent} 10%, transparent); color: ${accent};`}
-        >
-          'AI Agent 101' รุ่นแรก · รับแค่ 20 คน · รอบเดียวเท่านั้น
-        </span>
+        <p class="text-center text-sm font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+          เจ้าของ SME · ทีมขาย 5-20 คน · อ่านก่อนตัดสินใจ
+        </p>
       </div>
 
-      {/* Headline */}
-      <h1 class="mt-6 text-center font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
-        ให้ AI Agent เป็นพนักงาน
-        <br />
-        <span style={`color: ${accent};`}>คนแรกของบริษัทคุณ</span>
+      {/* Pain bullets — Doctor Model 70% */}
+      <div class="mt-6 space-y-3">
+        {[
+          'ทีมขาย 5-20 คน · แต่ผม owner ตัดสินใจทุกเรื่องเอง · ไม่มีระบบ · ไม่มี backup',
+          'เซลล์ลาออกปีละ 2-3 · พอลาออกความรู้ลูกค้าหายไปด้วย',
+          'ตี 1 ยังเปิด LINE ตอบลูกค้าเอง · เพราะไม่เชื่อมือทีม',
+        ].map((pain) => (
+          <div
+            class="flex items-start gap-3 rounded-xl border-l-4 px-4 py-3"
+            style={`border-color: color-mix(in oklch, ${accent} 50%, transparent); background: color-mix(in oklch, ${accent} 6%, transparent);`}
+          >
+            <span class="mt-0.5 shrink-0 text-base leading-relaxed" style={`color: ${accent};`}>●</span>
+            <p class="text-sm leading-relaxed text-base-content/85 md:text-base">{pain}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Tension turn */}
+      <p class="mt-5 text-center text-base font-bold leading-relaxed text-base-content/90 md:text-lg">
+        จะปล่อยให้ทีมเดินด้วยมือคุณคนเดียวอีกนานแค่ไหน?
+      </p>
+
+      {/* Headline — solution promise */}
+      <h1 class="mt-4 text-center font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+        <span style={`color: ${accent};`}>AI Agent ตัวแรกของบริษัทคุณ</span>
         <br />
         จบใน 1 วัน ไม่ต้องเขียนโค้ด
       </h1>
 
-      <p class="mt-4 text-center text-base leading-relaxed text-base-content/75">
-        ลงชื่อใน Waitlist ตอนนี้ เพื่อรับสิทธิ์จองที่นั่งในราคาสำหรับรุ่นแรก
-        <br class="hidden sm:block" />
-        <strong style={`color: ${accent};`}>฿12,900</strong>
-        <span class="text-base-content/50"> · จากราคาเต็ม ฿16,900</span>
+      {/* Credibility */}
+      <p class="mt-4 text-center text-sm text-base-content/65">
+        จากประสบการณ์ดูแล SME <strong style={`color: ${accent};`}>฿30-200M</strong> ทีมขาย 5-20 คน · <strong style={`color: ${accent};`}>10+ บริษัท</strong>
       </p>
-
-      {/* Social proof strip */}
-      <div class="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-base-content/55">
-        <span>✅ ประสบการณ์ดูแลและให้คำปรึกษาด้านการใช้ AI Agent ในองค์กร มากกว่า 10+ องค์กร</span>
-        <span>✅ ลงมือสร้าง Agent ของคุณเอง ไม่ใช่แค่ดู</span>
-        <span>✅ จบวัน มี AI Agent ของจริงกลับไปใช้ที่บริษัท</span>
-      </div>
 
       {/* Scarcity card */}
       <div
