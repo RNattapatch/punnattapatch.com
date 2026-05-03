@@ -90,8 +90,8 @@ const training = defineCollection({
       author: z.string(),
       role: z.string(),
       image: z.string().optional(),
-      images: z.array(z.string()).optional(),
     }).optional(),
+    caseStudyImages: z.array(z.string()).optional(),
     gallery: z.array(z.object({
       src: z.string(),
       alt: z.string(),
