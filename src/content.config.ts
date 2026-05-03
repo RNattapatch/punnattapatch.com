@@ -146,6 +146,17 @@ const training = defineCollection({
         label: z.string(),
       })).optional(),
     }).optional(),
+    /** "วิธีจองสิทธิ์" designed timeline · replaces plain markdown body */
+    howToApply: z.object({
+      eyebrow: z.string().optional(),
+      heading: z.string(),
+      intro: z.string().optional(),
+      steps: z.array(z.object({
+        title: z.string(),
+        body: z.string(),
+      })),
+      closing: z.string().optional(),
+    }).optional(),
     /** Venue + Format designed section · replaces plain markdown body */
     venueFormat: z.object({
       eyebrow: z.string().optional(),

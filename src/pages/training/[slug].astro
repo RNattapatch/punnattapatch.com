@@ -18,6 +18,7 @@ interface Props { entry: CollectionEntry<'training'> }
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const data = entry.data;
+const hasBody = Boolean(entry.body && entry.body.trim().length > 0);
 
 const url = `${SITE.url}/training/${entry.id}`;
 const hasFounding = Boolean(data.priceThb.founding && data.priceThb.founding < data.priceThb.normal);
@@ -287,8 +288,8 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
             href={SITE.social.line}
             rel="noopener"
             target="_blank"
-            class="mt-5 inline-flex items-center gap-2 rounded-full px-7 py-3 font-display text-sm font-bold shadow-lg transition-all hover:scale-105 md:text-base"
-            style={`background: ${accent}; color: ${accentButtonText}; box-shadow: 0 12px 30px -10px color-mix(in oklch, ${accent} 50%, transparent);`}
+            class="mt-5 inline-flex items-center gap-2 rounded-full px-7 py-3 font-display text-sm font-bold text-white shadow-lg transition-all hover:scale-105 md:text-base"
+            style="background: #06C755; box-shadow: 0 12px 30px -10px rgba(6, 199, 85, 0.5);"
           >
             💬 ทักผมที่ LINE OA →
           </a>
@@ -431,8 +432,8 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
             href={SITE.social.line}
             rel="noopener"
             target="_blank"
-            class="btn btn-lg border-none px-8 font-bold shadow-xl transition-all hover:scale-105"
-            style={`background: ${accent}; color: ${accentButtonText}; box-shadow: 0 15px 40px -15px color-mix(in oklch, ${accent} 50%, transparent);`}
+            class="btn btn-lg border-none px-8 font-bold text-white shadow-xl transition-all hover:scale-105"
+            style="background: #06C755; box-shadow: 0 15px 40px -15px rgba(6, 199, 85, 0.5);"
           >
             💬 ทักผมที่ LINE OA →
           </a>
@@ -993,34 +994,95 @@ const accentButtonText = data.accent === 'cyan' ? '#0a1020' : 'white';
     </section>
   )}
 
-  {/* ===== LONG-FORM BODY (markdown content) ===== */}
-  <section class="border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
-    <div
-      class="prose prose-lg mx-auto max-w-3xl font-body text-base-content prose-headings:font-display prose-headings:text-base-content prose-strong:text-base-content"
-      style={`--tw-prose-links: ${accent};`}
-    >
-      <Content />
-    </div>
-    {/* Inline waitlist CTA — captures readers who finished the long-form section */}
-    <div class="mx-auto mt-10 max-w-3xl">
+  {/* ===== LONG-FORM BODY (markdown content) — skip when body empty ===== */}
+  {hasBody && (
+    <section class="border-b border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
       <div
-        class="flex flex-col items-start gap-4 rounded-2xl border p-6 sm:flex-row sm:items-center sm:justify-between"
-        style={`border-color: color-mix(in oklch, ${accent} 30%, transparent); background: color-mix(in oklch, ${accent} 6%, transparent);`}
+        class="prose prose-lg mx-auto max-w-3xl font-body text-base-content prose-headings:font-display prose-headings:text-base-content prose-strong:text-base-content"
+        style={`--tw-prose-links: ${accent};`}
       >
-        <div>
-          <p class="font-display text-base font-bold">พร้อมแล้ว? ลงชื่อได้เลย — ไม่ต้องจ่ายวันนี้</p>
-          <p class="mt-1 text-sm text-base-content/65">{data.seats.total} ที่นั่ง · Waiting List ปิด 31 พ.ค. 2026 · ผมคัดเลือกผู้เรียนเอง</p>
-        </div>
-        <a
-          href="/waitlist"
-          class="btn btn-sm shrink-0 border-none font-bold"
-          style={`background: ${accent}; color: ${accentButtonText};`}
-        >
-          จองสิทธิ์ Waitlist →
-        </a>
+        <Content />
       </div>
-    </div>
-  </section>
+      {/* Inline waitlist CTA — captures readers who finished the long-form section */}
+      <div class="mx-auto mt-10 max-w-3xl">
+        <div
+          class="flex flex-col items-start gap-4 rounded-2xl border p-6 sm:flex-row sm:items-center sm:justify-between"
+          style={`border-color: color-mix(in oklch, ${accent} 30%, transparent); background: color-mix(in oklch, ${accent} 6%, transparent);`}
+        >
+          <div>
+            <p class="font-display text-base font-bold">พร้อมแล้ว? ลงชื่อได้เลย — ไม่ต้องจ่ายวันนี้</p>
+            <p class="mt-1 text-sm text-base-content/65">{data.seats.total} ที่นั่ง · Waiting List ปิด 31 พ.ค. 2026 · ผมคัดเลือกผู้เรียนเอง</p>
+          </div>
+          <a
+            href="/waitlist"
+            class="btn btn-sm shrink-0 border-none font-bold"
+            style={`background: ${accent}; color: ${accentButtonText};`}
+          >
+            จองสิทธิ์ Waitlist →
+          </a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  {/* ===== HOW TO APPLY (วิธีจองสิทธิ์ designed timeline) ===== */}
+  {data.howToApply && (
+    <section
+      class="relative overflow-hidden border-b border-base-content/10 px-4 py-20 lg:px-8 lg:py-28"
+      style={`background: linear-gradient(180deg, color-mix(in oklch, ${accent} 4%, transparent) 0%, color-mix(in oklch, ${accent} 10%, transparent) 100%);`}
+    >
+      <div class="mx-auto max-w-4xl">
+        <div class="text-center">
+          {data.howToApply.eyebrow && (
+            <span
+              class="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
+              style={`border-color: ${accent}; color: ${accent}; background: color-mix(in oklch, ${accent} 12%, transparent);`}
+            >
+              📋 {data.howToApply.eyebrow}
+            </span>
+          )}
+          <h2 class="mt-5 font-display text-3xl font-black tracking-tight md:text-4xl">
+            {data.howToApply.heading}
+          </h2>
+          {data.howToApply.intro && (
+            <p class="mx-auto mt-4 max-w-2xl text-base text-base-content/75 md:text-lg">
+              {data.howToApply.intro}
+            </p>
+          )}
+        </div>
+
+        <ol class="mt-12 space-y-5">
+          {data.howToApply.steps.map((step, i) => (
+            <li
+              class="relative rounded-3xl border-2 bg-base-100 p-6 shadow-md md:p-8 md:pl-24"
+              style={`border-color: color-mix(in oklch, ${accent} 30%, transparent);`}
+            >
+              <div
+                class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl font-display text-xl font-black shadow-lg md:absolute md:left-6 md:top-6 md:mb-0"
+                style={`background: ${accent}; color: ${accentButtonText}; box-shadow: 0 10px 30px -8px color-mix(in oklch, ${accent} 60%, transparent);`}
+              >
+                {i + 1}
+              </div>
+              <h3 class="font-display text-lg font-black md:text-xl">{step.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-base-content/80 md:text-[15px]">{step.body}</p>
+            </li>
+          ))}
+        </ol>
+
+        {data.howToApply.closing && (
+          <div
+            class="mx-auto mt-10 max-w-3xl rounded-2xl border-l-4 p-5 md:p-6"
+            style={`border-left-color: ${accent}; background: color-mix(in oklch, ${accent} 6%, transparent);`}
+          >
+            <p
+              class="text-sm leading-relaxed text-base-content/85 md:text-base"
+              set:html={data.howToApply.closing}
+            />
+          </div>
+        )}
+      </div>
+    </section>
+  )}
 
   {/* ===== FAQ ===== */}
   {
