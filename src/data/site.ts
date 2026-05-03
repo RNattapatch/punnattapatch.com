@@ -29,7 +29,7 @@ export const SITE = {
   nav: [
     { label: 'หน้าหลัก', href: '/' },
     { label: 'บริการ', href: '/services' },
-    { label: 'Public Training', href: '/training' },
+    { label: 'Public Training', href: '/training/p1-ai-workshop-1-day' },
     { label: 'Free Kit', href: '/agent-builder-kit' },
     { label: 'BOSI Quiz', href: '/bosi-dna-quiz' },
     { label: 'Case Study', href: '/case-studies' },
