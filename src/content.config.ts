@@ -92,6 +92,8 @@ const training = defineCollection({
       image: z.string().optional(),
     }).optional(),
     caseStudyImages: z.array(z.string()).optional(),
+    /** Short display name for badge/dropdown slots (e.g. "AI Agent 101"). Falls back to programCode.toUpperCase() if absent. */
+    shortName: z.string().optional(),
     differentiators: z.array(z.object({
       title: z.string(),
       body: z.string(),

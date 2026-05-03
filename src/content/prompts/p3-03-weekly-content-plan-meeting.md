@@ -17,7 +17,7 @@ workedExample:
   output: "./output/content/weekly-plan-<date>.md — 21 ช่อง (3 platform x 7 วัน) · แต่ละช่องมี: angle / hook / CTA / asset type / agent ที่จะเขียน · พร้อม 1 cross-promote thread"
   timeSaved: "วาง plan เอง 2-3 ชม./สัปดาห์ + คุณภาพไม่สม่ำเสมอ · meeting 25 นาที + agent ทำ draft ตามแผนได้เลย"
 phaseCtaHref: "/training/p1-ai-workshop-1-day#waitlist"
-phaseCtaLabel: "อยากเห็น pattern advanced กว่านี้? → ดู P1 Public Training Waitlist"
+phaseCtaLabel: "อยากเห็น pattern advanced กว่านี้? → ดู AI Agent 101 For Sale Team Waitlist"
 published: 2026-04-22
 ---
 

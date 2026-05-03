@@ -1,6 +1,6 @@
 ---
 title: "Prompt Library 20 ท่า + Next Steps"
-description: "ตาราง 20 prompts พร้อมใช้ แบ่งตาม Phase × Tier, routing แนะนำสำหรับ session แรก, In-house Workshop สำหรับเจ้าของ, P1 Public Training สำหรับ Manager"
+description: "ตาราง 20 prompts พร้อมใช้ แบ่งตาม Phase × Tier, routing แนะนำสำหรับ session แรก, In-house Workshop สำหรับเจ้าของ, AI Agent 101 For Sale Team Public Training สำหรับ Manager"
 part: 4
 partTitle: "Prompt Library 20 ท่า + Next Steps"
 readingTime: 6
@@ -106,28 +106,28 @@ https://punnattapatch.com/agent-builder-kit/prompts/<slug>
 
 ---
 
-## §22 · Next Step สำหรับ Manager → P1 Public Training
+## §22 · Next Step สำหรับ Manager → AI Agent 101 For Sale Team
 
 นาย / หัวหน้าผมส่งให้คุณอ่าน Kit นี้ บอกว่า "ลองดูซิว่า AI ใช้กับทีมเราได้ยังไง" 6 เดือนต่อมานายต้องการเห็นผลงาน แต่คุณไม่มีงบจ้างที่ปรึกษาเข้ามาทั้งทีม
 
-นี่คือสถานการณ์ที่ผมเห็นบ่อยที่สุดในงาน consult เลยออกแบบ **P1 AI Workshop** มาเฉพาะคุณ
+นี่คือสถานการณ์ที่ผมเห็นบ่อยที่สุดในงาน consult เลยออกแบบ **AI Agent 101 For Sale Team** มาเฉพาะคุณ
 
-**P1 — 1-day public training · max 12 ที่นั่ง · 1 ธุรกิจ / 1 อุตสาหกรรม per cohort**
+**AI Agent 101 For Sale Team — 1-day public training · max 25 ที่นั่ง · 1 ธุรกิจ / 1 อุตสาหกรรม per cohort**
 
 - ครอบคลุมทั้ง 4 phase: Setup → Build → Operate → Scale (compressed ในวันเดียว)
 - คุณติดตั้ง Claude Code จริง build agent ตัวแรกของธุรกิจคุณในห้อง ออกจากห้องพร้อม Action Plan 30 วัน
-- เพื่อนร่วมคลาส 11 คนจาก 11 อุตสาหกรรมที่ไม่เป็นคู่แข่งคุณ แลก use case เอา idea กลับไปนำเสนอนายได้
-- Cohort-cap 12 ที่ปิดเมื่อเต็ม early-bird Waitlist Lock ฿11,900 (ราคาเปิดจริง ฿19,900)
+- เพื่อนร่วมคลาส 24 คนจาก 24 อุตสาหกรรมที่ไม่เป็นคู่แข่งคุณ แลก use case เอา idea กลับไปนำเสนอนายได้
+- Cohort-cap 25 ที่ปิดเมื่อเต็ม early-bird Waitlist Lock ฿12,900 (ราคาเปิดจริง ฿16,900)
 
 > Course เล็ก เน้นลงมือ ห้องเรียนที่คุยเปิด ทุกคนได้แชร์ use case จริง นี่คือสิ่งที่ open course ใหญ่ๆ 100 คนทำไม่ได้ ติดตรงไหนมาปรึกษากันในห้องเลย ผมช่วยดูให้ คอร์สนี้เราจะไปพร้อมกัน
 
-[ดูรอบและลงชื่อ Waitlist สำหรับ P1](https://punnattapatch.com/training/p1-ai-workshop-1-day)
+[ดูรอบและลงชื่อ Waitlist สำหรับ AI Agent 101 For Sale Team](https://punnattapatch.com/training/p1-ai-workshop-1-day)
 
 ---
 
 ## §22.5 · ยังไม่พร้อมเลือก? · คุยก่อนได้
 
-ถ้ายังไม่แน่ใจว่า Workshop หรือ P1 เหมาะกับธุรกิจคุณกว่ากัน จองคุยกับผม 30 นาที ผม audit ธุรกิจคุณ + แนะ wedge แรก ฟรี ไม่มี hard sell
+ถ้ายังไม่แน่ใจว่า Workshop หรือ AI Agent 101 For Sale Team เหมาะกับธุรกิจคุณกว่ากัน จองคุยกับผม 30 นาที ผม audit ธุรกิจคุณ + แนะ wedge แรก ฟรี ไม่มี hard sell
 
 [จอง Discovery Call → punnattapatch.com/intake-form?source=kit-manual](https://punnattapatch.com/intake-form?source=kit-manual)
 

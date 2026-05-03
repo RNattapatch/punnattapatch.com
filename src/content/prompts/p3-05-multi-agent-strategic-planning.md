@@ -17,7 +17,7 @@ workedExample:
   output: "./output/strategy/2026-04-strategy.md — 1 ฉบับ · 6 section: Q recap / cross-functional analysis (ทุก head ตอบ) / 3 strategic option / 1 recommended option + reason / 30-day execution plan / risk + mitigation"
   timeSaved: "meeting จริง 4 ชม. + เขียน notes + กระจาย action 2 ชม. = 6 ชม./เดือน · session AI 90 นาที + เอกสารพร้อม"
 phaseCtaHref: "/training/p1-ai-workshop-1-day#waitlist"
-phaseCtaLabel: "ใช้ pattern นี้ใน workshop → ดู P1 Public Training Waitlist"
+phaseCtaLabel: "ใช้ pattern นี้ใน workshop → ดู AI Agent 101 For Sale Team Waitlist"
 published: 2026-04-22
 ---
 

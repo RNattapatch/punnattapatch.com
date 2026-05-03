@@ -17,7 +17,7 @@ workedExample:
   output: "3 prompt template พร้อม fill-in-the-blank — ใช้ได้ทุกวัน"
   timeSaved: "พิมพ์ context เต็ม 200-300 คำ/ครั้ง · @agent shortcut 20-50 คำ/ครั้ง · 10+ ครั้ง/วัน"
 phaseCtaHref: "/training/p1-ai-workshop-1-day#waitlist"
-phaseCtaLabel: "ต้องการให้ปันมาติดตั้งให้ทั้งทีม? → ดู P1 Public Training Waitlist"
+phaseCtaLabel: "ต้องการให้ปันมาติดตั้งให้ทั้งทีม? → ดู AI Agent 101 For Sale Team Waitlist"
 published: 2026-04-22
 ---
 

@@ -17,7 +17,7 @@ workedExample:
   output: "5-bullet briefing: 1) priority deal ที่ค้างนานสุด 2) meeting prep ที่ต้องทำก่อนบ่าย 3) decision pending จากเมื่อวาน 4) blocker ที่ต้องแก้ก่อน 5) win เล็กที่ฉลองได้"
   timeSaved: "อ่าน log เอง 25-40 นาที/เช้า · briefing 30 วินาที + คุณเลือกทำตามได้เลย"
 phaseCtaHref: "/training/p1-ai-workshop-1-day#waitlist"
-phaseCtaLabel: "ต้องการให้ปันมาติดตั้งให้ทั้งทีม? → ดู P1 Public Training Waitlist"
+phaseCtaLabel: "ต้องการให้ปันมาติดตั้งให้ทั้งทีม? → ดู AI Agent 101 For Sale Team Waitlist"
 published: 2026-04-22
 ---
 

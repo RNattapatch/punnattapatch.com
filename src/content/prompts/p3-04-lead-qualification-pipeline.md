@@ -17,7 +17,7 @@ workedExample:
   output: "Verdict (qualified / not / borderline) + 3 reason ที่ map กับ ICP criteria + next-step recommendation 1 อัน + draft message 3-4 บรรทัดสำหรับ next-step"
   timeSaved: "qualify เอง 15 นาที/lead · agent 60 วินาที + draft message พร้อมส่ง"
 phaseCtaHref: "/training/p1-ai-workshop-1-day#waitlist"
-phaseCtaLabel: "อยากเห็น pattern advanced กว่านี้? → ดู P1 Public Training Waitlist"
+phaseCtaLabel: "อยากเห็น pattern advanced กว่านี้? → ดู AI Agent 101 For Sale Team Waitlist"
 published: 2026-04-22
 ---
 
