@@ -117,7 +117,7 @@ https://punnattapatch.com/agent-builder-kit/prompts/<slug>
 - ครอบคลุมทั้ง 4 phase: Setup → Build → Operate → Scale (compressed ในวันเดียว)
 - คุณติดตั้ง Claude Code จริง build agent ตัวแรกของธุรกิจคุณในห้อง ออกจากห้องพร้อม Action Plan 30 วัน
 - เพื่อนร่วมคลาส 24 คนจาก 24 อุตสาหกรรมที่ไม่เป็นคู่แข่งคุณ แลก use case เอา idea กลับไปนำเสนอนายได้
-- Public course · 25 ที่ปิดเมื่อเต็ม early-bird Waitlist Lock ฿12,900 (ราคาเปิดจริง ฿16,900)
+- Public course · 25 ที่ · Waiting List ปิด 31 พ.ค. · application-based · Early Bird Lock ฿12,900 (ราคาเปิดจริง ฿16,900)
 
 > Course เล็ก เน้นลงมือ ห้องเรียนที่คุยเปิด ทุกคนได้แชร์ use case จริง นี่คือสิ่งที่ open course ใหญ่ๆ 100 คนทำไม่ได้ ติดตรงไหนมาปรึกษากันในห้องเลย ผมช่วยดูให้ คอร์สนี้เราจะไปพร้อมกัน
 

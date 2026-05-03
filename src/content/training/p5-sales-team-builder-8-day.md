@@ -75,12 +75,12 @@ syllabus:
     body: "Hotel venue · network กับเพื่อนร่วมรอบอีก 7 ราย + Pun · Public Course #1 badge ceremony + commitment ritual สำหรับ 90-day post-program"
     duration: "3 ชั่วโมง"
 founding_perks:
-  - "ราคา Founding ฿27,900 (ปกติ ฿34,900 — ประหยัด ฿7,000)"
+  - "ราคา Early Bird ฿27,900 (ปกติ ฿34,900 — ประหยัด ฿7,000)"
   - "Graduation dinner บุฟเฟ่ต์ 5-star hotel included"
   - "Public Course #1 badge — ชื่ออยู่ใน P5 alumni wall ตลอดไป"
   - "Quarterly alumni reunion 2026 (4 ครั้ง) ฟรี · ปกติ ฿5,000/ครั้ง"
   - "Alumni → Tier 2 Agentic AI Transformation 15% off"
-  - "Priority access Inner Circle Founding Lifetime ฿14,900 (ปกติ ฿19,900/ปี)"
+  - "Priority access Inner Circle Lifetime Early Bird ฿14,900 (ปกติ ฿19,900/ปี)"
 qualifies:
   - "เจ้าของ/Sales Director มีทีมขาย 5-20 คน"
   - "ยังไม่มีระบบ KPI · Commission · Onboarding ชัดเจน (หรือมีแต่ยังไม่ work)"
@@ -102,8 +102,8 @@ faq:
   - q: "Graduation dinner จำเป็นไหม?"
     a: "Optional แต่แนะนำมากๆ — network กับ SME owner 7 ราย + peer advisory post-program · ตัวโปรแกรมหลัง graduation คือ alumni community"
   - q: "หลังจบ alumni มีอะไรต่อ?"
-    a: "4 reunion/ปี ฟรี · priority Inner Circle Founding Lifetime (฿14,900) · Tier 2 Agentic AI Transformation 15% off ถ้าอยากติดตั้งระบบทั้งองค์กร"
-  - q: "ราคา Founding กับราคาปกติต่างกันยังไง?"
+    a: "4 reunion/ปี ฟรี · priority Inner Circle Lifetime Early Bird (฿14,900) · Tier 2 Agentic AI Transformation 15% off ถ้าอยากติดตั้งระบบทั้งองค์กร"
+  - q: "ราคา Early Bird กับราคาปกติต่างกันยังไง?"
     a: "Public Course #1 (8 คนแรก) ได้ราคา ฿27,900 + Quarterly reunion 2026 ฟรี + dinner bundled · หลังจากนั้น ฿34,900"
 ---
 

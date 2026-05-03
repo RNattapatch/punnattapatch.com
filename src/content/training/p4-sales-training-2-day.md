@@ -71,7 +71,7 @@ syllabus:
     body: "Prompt library + AI bot สำหรับซ้อมต่อที่บ้าน 24 ชม. ไม่ต้องรอ coach"
     duration: "unlimited post-class"
 founding_perks:
-  - "ราคา Founding ฿16,900 (ปกติ ฿19,900 — ประหยัด ฿3,000)"
+  - "ราคา Early Bird ฿16,900 (ปกติ ฿19,900 — ประหยัด ฿3,000)"
   - "ทีม 2 คนแรกของแต่ละบริษัทเข้าได้ราคาเดียวกัน"
   - "Priority seat for P5 (Sales Team Builder) public course รอบถัดไป"
   - "Alumni → Tier 2 Agentic AI Transformation 15% off"
