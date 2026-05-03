@@ -170,7 +170,7 @@ syllabus:
       - "20 Prompts library — Lead qualification / Follow-up / Proposal / Negotiation"
       - "Prompt chaining — ต่อ prompt หลายขั้นเพื่อ output ที่ลึกขึ้น"
       - "Custom Instructions / Projects — ทีมขายแชร์ context ธุรกิจให้ AI ใช้ร่วมกัน"
-  - title: "Module 3 — สร้าง 'AI Agent พี่เลี้ยงเซลล์' ด้วย Gemini Gems + NotebookLM"
+  - title: "Module 3 — สูตรลับสร้าง 'AI Agent พี่เลี้ยงเซลล์' ด้วย Gemini Gems + NotebookLM"
     body: "หมดปัญหาเหนื่อยสอนเซลล์ใหม่ทุกครั้ง · สร้าง AI Agent ที่ทำหน้าที่พี่เลี้ยงให้ทีมขายของคุณ — เก็บความรู้จาก deal จริงเข้า NotebookLM แล้วต่อยอดเป็น Gemini Gem ที่เซลล์ทุกคนเรียกใช้ได้ตลอด เพิ่มศักยภาพทีมโดยไม่ต้อง onboarding ซ้ำ"
     duration: "1 ชม."
     topics:
