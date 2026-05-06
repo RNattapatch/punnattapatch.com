@@ -5,6 +5,42 @@ import { SITE } from '../data/site';
 const accent = 'var(--color-pun-cyan)';
 const accentHex = '#22d3ee';
 const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
+
+const roles = [
+  'เจ้าของ / CEO / Co-founder',
+  'ผู้บริหาร / Director / GM',
+  'ทำคนเดียว / ทำคอนเทนต์ / ที่ปรึกษาคนเดียว',
+  'Sales Manager / พนักงาน',
+  'อื่นๆ',
+];
+
+const teamSizes = [
+  'มากกว่า 20 คน',
+  '10 - 20 คน',
+  '5 - 10 คน',
+  '2 - 5 คน',
+  'ทำคนเดียว ไม่มีทีม',
+];
+
+const businessTypes = [
+  'ธุรกิจ B2B — ขายให้ธุรกิจ (โรงงาน · เครื่องจักร · IT · บริการมืออาชีพ · เกษตร)',
+  'ทำคอนเทนต์ / ขายความรู้ / ที่ปรึกษาคนเดียว',
+  'ธุรกิจบริการ (ร้านค้า · คลินิก · สปา · บริการ on-site)',
+  'B2C / ค้าปลีก / สินค้าอุปโภคบริโภค',
+  'รับจ้าง / Agency / freelance / digital service',
+  'อื่นๆ',
+];
+
+const painPoints = [
+  'ทีมเสียเวลากับงาน manual ซ้ำๆ (report, follow-up, data entry)',
+  'เจ้าของแบกยอดขายเอง ทีมไม่ run เอง',
+  'ไม่มีระบบ KPI / Commission ที่ fair + วัดได้',
+  'ทีมปิดการขายด้วยลดราคาเป็นหลัก',
+  'เคยจ่าย workshop แล้วทีมเลิกใช้ภายใน 2 สัปดาห์',
+  'อยากเริ่มใช้ AI แต่ไม่รู้จะเริ่มจากไหน',
+  'ทีมใช้ ChatGPT แต่ไม่ได้ result · ไม่เป็นระบบ',
+  'ติดตั้ง tool/automation แล้ว แต่ทีมไม่ adopt',
+];
 ---
 
 <BaseLayout
@@ -15,38 +51,46 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
   <div class="min-h-screen px-4 py-12 lg:py-20">
     <div class="mx-auto max-w-xl">
 
-      {/* Badge */}
+      {/* Eyebrow — problem hook */}
       <div class="flex justify-center">
-        <span
-          class="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
-          style={`border-color: color-mix(in oklch, ${accent} 40%, transparent); background: color-mix(in oklch, ${accent} 10%, transparent); color: ${accent};`}
-        >
-          'AI Agent 101' รุ่นแรก · รับแค่ 20 คน · รอบเดียวเท่านั้น
-        </span>
+        <p class="text-center text-sm font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+          เจ้าของ SME · ทีมขาย 5-20 คน · อ่านก่อนตัดสินใจ
+        </p>
       </div>
 
-      {/* Headline */}
-      <h1 class="mt-6 text-center font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
-        ให้ AI Agent เป็นพนักงาน
-        <br />
-        <span style={`color: ${accent};`}>คนแรกของบริษัทคุณ</span>
+      {/* Pain bullets — Doctor Model 70% */}
+      <div class="mt-6 space-y-3">
+        {[
+          'ทีมขาย 5-20 คน · แต่ผม owner ตัดสินใจทุกเรื่องเอง · ไม่มีระบบ · ไม่มี backup',
+          'เซลล์ลาออกปีละ 2-3 · พอลาออกความรู้ลูกค้าหายไปด้วย',
+          'ตี 1 ยังเปิด LINE ตอบลูกค้าเอง · เพราะไม่เชื่อมือทีม',
+        ].map((pain) => (
+          <div
+            class="flex items-start gap-3 rounded-xl border-l-4 px-4 py-3"
+            style={`border-color: color-mix(in oklch, ${accent} 50%, transparent); background: color-mix(in oklch, ${accent} 6%, transparent);`}
+          >
+            <span class="mt-0.5 shrink-0 text-base leading-relaxed" style={`color: ${accent};`}>●</span>
+            <p class="text-sm leading-relaxed text-base-content/85 md:text-base">{pain}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Tension turn */}
+      <p class="mt-5 text-center text-base font-bold leading-relaxed text-base-content/90 md:text-lg">
+        จะปล่อยให้ทีมเดินด้วยมือคุณคนเดียวอีกนานแค่ไหน?
+      </p>
+
+      {/* Headline — solution promise */}
+      <h1 class="mt-4 text-center font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+        <span style={`color: ${accent};`}>AI Agent ตัวแรกของบริษัทคุณ</span>
         <br />
         จบใน 1 วัน ไม่ต้องเขียนโค้ด
       </h1>
 
-      <p class="mt-4 text-center text-base leading-relaxed text-base-content/75">
-        ลงชื่อใน Waitlist ตอนนี้ เพื่อรับสิทธิ์จองที่นั่งในราคาสำหรับรุ่นแรก
-        <br class="hidden sm:block" />
-        <strong style={`color: ${accent};`}>฿12,900</strong>
-        <span class="text-base-content/50"> · จากราคาเต็ม ฿16,900</span>
+      {/* Credibility */}
+      <p class="mt-4 text-center text-sm text-base-content/65">
+        จากประสบการณ์ดูแล SME <strong style={`color: ${accent};`}>฿30-200M</strong> ทีมขาย 5-20 คน · <strong style={`color: ${accent};`}>10+ บริษัท</strong>
       </p>
-
-      {/* Social proof strip */}
-      <div class="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-base-content/55">
-        <span>✅ ประสบการณ์ดูแลและให้คำปรึกษาด้านการใช้ AI Agent ในองค์กร มากกว่า 10+ องค์กร</span>
-        <span>✅ ลงมือสร้าง Agent ของคุณเอง ไม่ใช่แค่ดู</span>
-        <span>✅ จบวัน มี AI Agent ของจริงกลับไปใช้ที่บริษัท</span>
-      </div>
 
       {/* Scarcity card */}
       <div
@@ -96,7 +140,7 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
       {/* Form */}
       <form
         id="p1-waitlist-form"
-        class="mt-6 space-y-4 rounded-2xl border border-base-content/10 bg-base-100 p-6"
+        class="mt-6 space-y-7 rounded-2xl border border-base-content/10 bg-base-100 p-6"
         novalidate
       >
         <input type="hidden" id="wl-utm_source" name="utm_source" value="" />
@@ -109,66 +153,336 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
         <input type="hidden" name="program" value="p1" />
         <input type="hidden" name="source_page" value="/waitlist" />
 
-        <div>
-          <label class="block text-sm font-bold" for="wl-name">
-            ชื่อ-นามสกุล <span style={`color: ${accent};`}>*</span>
-          </label>
-          <input
-            type="text" id="wl-name" name="name" required autocomplete="name"
-            class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
-            style={`--tw-ring-color: ${accentHex};`}
-          />
-        </div>
+        {/* Section 1 — ข้อมูลติดต่อ */}
+        <section class="space-y-4">
+          <header class="border-b border-base-content/10 pb-2">
+            <h2 class="font-display text-sm font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+              ส่วนที่ 1 — ข้อมูลติดต่อ
+            </h2>
+          </header>
 
-        <div>
-          <label class="block text-sm font-bold" for="wl-email">
-            Email <span style={`color: ${accent};`}>*</span>
-          </label>
-          <input
-            type="email" id="wl-email" name="email" required autocomplete="email"
-            class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
-            style={`--tw-ring-color: ${accentHex};`}
-          />
-        </div>
+          <div>
+            <label class="block text-sm font-bold" for="wl-name">
+              ชื่อ-นามสกุล <span style={`color: ${accent};`}>*</span>
+            </label>
+            <input
+              type="text" id="wl-name" name="name" required autocomplete="name"
+              class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
+              style={`--tw-ring-color: ${accentHex};`}
+            />
+          </div>
 
-        <div>
-          <label class="block text-sm font-bold" for="wl-contact">
-            LINE ID / โทรศัพท์ <span style={`color: ${accent};`}>*</span>
-          </label>
-          <input
-            type="text" id="wl-contact" name="contact" required autocomplete="tel"
-            placeholder="เช่น @yourline หรือ 081-234-5678"
-            class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
-            style={`--tw-ring-color: ${accentHex};`}
-          />
-        </div>
+          <div>
+            <label class="block text-sm font-bold" for="wl-email">
+              Email <span style={`color: ${accent};`}>*</span>
+            </label>
+            <input
+              type="email" id="wl-email" name="email" required autocomplete="email"
+              class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
+              style={`--tw-ring-color: ${accentHex};`}
+            />
+          </div>
 
-        <div>
-          <label class="block text-sm font-bold" for="wl-company">
-            ชื่อบริษัท / แบรนด์ <span style={`color: ${accent};`}>*</span>
-          </label>
-          <input
-            type="text" id="wl-company" name="company" required autocomplete="organization"
-            class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
-            style={`--tw-ring-color: ${accentHex};`}
-          />
-        </div>
+          <div>
+            <label class="block text-sm font-bold" for="wl-contact">
+              LINE ID / โทรศัพท์ <span style={`color: ${accent};`}>*</span>
+            </label>
+            <input
+              type="text" id="wl-contact" name="contact" required autocomplete="tel"
+              placeholder="เช่น @yourline หรือ 081-234-5678"
+              class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
+              style={`--tw-ring-color: ${accentHex};`}
+            />
+          </div>
 
-        <button
-          type="submit"
-          id="wl-submit-btn"
-          class="w-full rounded-full px-6 py-3.5 font-display text-base font-bold shadow-lg transition-all hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
+          <div>
+            <label class="block text-sm font-bold" for="wl-company">
+              ชื่อบริษัท / แบรนด์ <span style={`color: ${accent};`}>*</span>
+            </label>
+            <input
+              type="text" id="wl-company" name="company" required autocomplete="organization"
+              placeholder="หรือหากยังไม่ได้เปิดบริษัท พิมพ์ว่า ยังไม่ได้เปิดบริษัท"
+              class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
+              style={`--tw-ring-color: ${accentHex};`}
+            />
+            <p class="mt-1 text-xs text-base-content/55">
+              หรือหากยังไม่ได้เปิดบริษัท พิมพ์ว่า "ยังไม่ได้เปิดบริษัท"
+            </p>
+          </div>
+        </section>
+
+        {/* Section 2 — ข้อมูลธุรกิจ */}
+        <section class="space-y-5">
+          <header class="border-b border-base-content/10 pb-2">
+            <h2 class="font-display text-sm font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+              ส่วนที่ 2 — ข้อมูลธุรกิจ
+            </h2>
+          </header>
+
+          {/* Role */}
+          <fieldset class="space-y-2">
+            <legend class="block text-sm font-bold">
+              บทบาทของคุณในธุรกิจ <span style={`color: ${accent};`}>*</span>
+            </legend>
+            <div class="space-y-2">
+              {roles.map((opt, i) => (
+                <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-base-content/15 px-4 py-3 transition-colors hover:bg-base-200/50">
+                  <input
+                    type="radio" name="role" value={opt} required
+                    class="mt-0.5 h-4 w-4 shrink-0 cursor-pointer"
+                    style={`accent-color: ${accentHex};`}
+                  />
+                  <span class="text-sm leading-relaxed">{opt}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          {/* Team size */}
+          <fieldset class="space-y-2">
+            <legend class="block text-sm font-bold">
+              ขนาดทีม <span style={`color: ${accent};`}>*</span>
+            </legend>
+            <div class="space-y-2">
+              {teamSizes.map((opt) => (
+                <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-base-content/15 px-4 py-3 transition-colors hover:bg-base-200/50">
+                  <input
+                    type="radio" name="team_size" value={opt} required
+                    class="mt-0.5 h-4 w-4 shrink-0 cursor-pointer"
+                    style={`accent-color: ${accentHex};`}
+                  />
+                  <span class="text-sm leading-relaxed">{opt}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          {/* Business type */}
+          <fieldset class="space-y-2">
+            <legend class="block text-sm font-bold">
+              ประเภทธุรกิจ <span style={`color: ${accent};`}>*</span>
+            </legend>
+            <div class="space-y-2">
+              {businessTypes.map((opt) => (
+                <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-base-content/15 px-4 py-3 transition-colors hover:bg-base-200/50">
+                  <input
+                    type="radio" name="business_type" value={opt} required
+                    class="mt-0.5 h-4 w-4 shrink-0 cursor-pointer"
+                    style={`accent-color: ${accentHex};`}
+                    data-business-type={opt}
+                  />
+                  <span class="text-sm leading-relaxed">{opt}</span>
+                </label>
+              ))}
+            </div>
+
+            {/* Conditional textarea — shown only when "อื่นๆ" selected */}
+            <div id="wl-business-type-other-wrap" class="hidden">
+              <label class="block text-sm font-bold" for="wl-business_type_other">
+                ระบุประเภทธุรกิจของคุณ <span style={`color: ${accent};`}>*</span>
+              </label>
+              <textarea
+                id="wl-business_type_other" name="business_type_other" rows="2"
+                placeholder="เช่น ธุรกิจครอบครัว · NGO · social enterprise · etc."
+                class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
+                style={`--tw-ring-color: ${accentHex};`}
+              ></textarea>
+            </div>
+          </fieldset>
+        </section>
+
+        {/* Section 3 — ปัญหาที่เจอ */}
+        <section class="space-y-4">
+          <header class="border-b border-base-content/10 pb-2">
+            <h2 class="font-display text-sm font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+              ส่วนที่ 3 — ปัญหาที่เจอ
+            </h2>
+          </header>
+
+          <fieldset class="space-y-2">
+            <legend class="block text-sm font-bold">
+              ปัญหาหลักที่เจอตอนนี้ <span class="font-normal text-base-content/55">(เลือกได้หลายข้อ)</span>
+            </legend>
+            <div class="space-y-2">
+              {painPoints.map((opt) => (
+                <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-base-content/15 px-4 py-3 transition-colors hover:bg-base-200/50">
+                  <input
+                    type="checkbox" name="pain_points" value={opt}
+                    class="mt-0.5 h-4 w-4 shrink-0 cursor-pointer"
+                    style={`accent-color: ${accentHex};`}
+                  />
+                  <span class="text-sm leading-relaxed">{opt}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <div>
+            <label class="block text-sm font-bold" for="wl-pain_other">
+              หรือบอกปัญหาที่คุณเจอให้ผมฟังที
+              <span class="ml-2 text-xs font-normal text-base-content/55">(ไม่บังคับ)</span>
+            </label>
+            <textarea
+              id="wl-pain_other" name="pain_other" rows="3"
+              placeholder="เล่าให้ผมฟัง — สิ่งที่เจอจริงในธุรกิจตอนนี้"
+              class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
+              style={`--tw-ring-color: ${accentHex};`}
+            ></textarea>
+          </div>
+        </section>
+
+        {/* Section 4 — ความสนใจในคอร์ส */}
+        <section class="space-y-4">
+          <header class="border-b border-base-content/10 pb-2">
+            <h2 class="font-display text-sm font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+              ส่วนที่ 4 — ความสนใจในคอร์ส
+            </h2>
+          </header>
+
+          <div>
+            <label class="block text-sm font-bold" for="wl-why_join">
+              ทำไมอยากเรียนคอร์สนี้ <span style={`color: ${accent};`}>*</span>
+            </label>
+            <textarea
+              id="wl-why_join" name="why_join" rows="3" required minlength="10"
+              placeholder="เล่าให้ผมฟังสั้นๆ"
+              class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
+              style={`--tw-ring-color: ${accentHex};`}
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold" for="wl-what_to_learn">
+              อยากเรียนรู้เรื่องอะไรจากคอร์สนี้ <span style={`color: ${accent};`}>*</span>
+            </label>
+            <textarea
+              id="wl-what_to_learn" name="what_to_learn" rows="3" required minlength="10"
+              placeholder="หัวข้อที่อยากให้ผมสอนหรือลงลึก"
+              class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
+              style={`--tw-ring-color: ${accentHex};`}
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold" for="wl-after_course_apply">
+              หลังจากเรียนจบแล้ว อยากเอา AI Agent ไปช่วยเรื่องไหนก่อน <span style={`color: ${accent};`}>*</span>
+            </label>
+            <textarea
+              id="wl-after_course_apply" name="after_course_apply" rows="3" required minlength="10"
+              placeholder="งานแรกที่อยากให้ AI Agent ทำให้คุณ"
+              class="mt-1.5 w-full rounded-xl border border-base-content/20 bg-base-100 px-4 py-2.5 text-base focus:outline-none focus:ring-2"
+              style={`--tw-ring-color: ${accentHex};`}
+            ></textarea>
+          </div>
+        </section>
+
+        {/* Section 5 — แจ้งข่าวคลาสในอนาคต */}
+        <section class="space-y-3">
+          <header class="border-b border-base-content/10 pb-2">
+            <h2 class="font-display text-sm font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+              ส่วนที่ 5 — แจ้งข่าวคลาสในอนาคต
+            </h2>
+          </header>
+
+          <fieldset class="space-y-2">
+            <legend class="block text-sm font-bold leading-relaxed">
+              หากในอนาคตผมเปิด Class ใหม่ · สนใจให้ผมติดต่อไปแจ้งข่าวก่อนใครให้คุณไหม?
+              <span class="ml-1" style={`color: ${accent};`}>*</span>
+              <span class="mt-1 block text-xs font-normal text-base-content/65">
+                ผมจะมีราคา Super Early Bird ให้ด้วยครับ
+              </span>
+            </legend>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-base-content/15 px-4 py-3 transition-colors hover:bg-base-200/50">
+                <input
+                  type="radio" name="future_class_notify" value="yes" required
+                  class="h-4 w-4 cursor-pointer"
+                  style={`accent-color: ${accentHex};`}
+                />
+                <span class="text-sm font-bold">สนใจ</span>
+              </label>
+              <label class="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-base-content/15 px-4 py-3 transition-colors hover:bg-base-200/50">
+                <input
+                  type="radio" name="future_class_notify" value="no" required
+                  class="h-4 w-4 cursor-pointer"
+                  style={`accent-color: ${accentHex};`}
+                />
+                <span class="text-sm">ไม่ ขอบคุณ</span>
+              </label>
+            </div>
+          </fieldset>
+        </section>
+
+        {/* Submit */}
+        <div class="space-y-3 pt-2">
+          <button
+            type="submit"
+            id="wl-submit-btn"
+            class="w-full rounded-full px-6 py-3.5 font-display text-base font-bold shadow-lg transition-all hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
+            style={`background: ${accent}; color: #0a1020;`}
+          >
+            จองคิวเพื่อรับสิทธิ์ราคา ฿12,900
+          </button>
+
+          <p id="wl-form-msg" class="hidden rounded-xl p-3 text-sm" />
+
+          <p class="text-center text-xs text-base-content/45">
+            ลงชื่อตอนนี้ยังไม่เสียเงินครับ ผมจะแจ้งผ่าน LINE/โทรเมื่อถึงคิว เพื่อยืนยันที่นั่งและชำระเงิน
+          </p>
+        </div>
+      </form>
+
+      {/* Success state — inline reveal (hidden until submit) */}
+      <div
+        id="wl-success-card"
+        class="mt-6 hidden rounded-2xl border p-8 text-center"
+        style={`border-color: color-mix(in oklch, ${accent} 35%, transparent); background: color-mix(in oklch, ${accent} 6%, transparent);`}
+      >
+        <div
+          class="mx-auto flex h-14 w-14 items-center justify-center rounded-full text-2xl"
           style={`background: ${accent}; color: #0a1020;`}
         >
-          จองคิวเพื่อรับสิทธิ์ราคา ฿12,900
-        </button>
-
-        <p id="wl-form-msg" class="hidden rounded-xl p-3 text-sm" />
-
-        <p class="text-center text-xs text-base-content/45">
-          ลงชื่อตอนนี้ยังไม่เสียเงินครับ ผมจะแจ้งผ่าน LINE/โทรเมื่อถึงคิว เพื่อยืนยันที่นั่งและชำระเงิน
+          ✓
+        </div>
+        <h2 class="mt-4 font-display text-2xl font-bold leading-tight">
+          ขอบคุณครับ <span id="wl-success-name"></span> — ได้รับข้อมูลแล้ว
+        </h2>
+        <p class="mt-3 text-sm leading-relaxed text-base-content/75">
+          ขั้นตอนสุดท้าย — <strong style={`color: ${accent};`}>ทักหาผมใน LINE OA</strong> พร้อมแนบ Reference ด้านล่าง
         </p>
-      </form>
+
+        <div class="mt-5">
+          <p class="text-xs font-bold uppercase tracking-widest text-base-content/55">Reference</p>
+          <code
+            id="wl-success-ref"
+            class="mt-2 inline-block rounded-lg px-4 py-2 font-mono text-base font-bold"
+            style={`background: color-mix(in oklch, ${accent} 12%, transparent); color: ${accent};`}
+          ></code>
+        </div>
+
+        <a
+          href={SITE.social.line}
+          target="_blank"
+          rel="noopener"
+          class="mt-6 inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 font-display text-base font-bold shadow-lg transition-all hover:scale-[1.02]"
+          style="background: #06C755; color: #ffffff;"
+        >
+          💬 ทักใน LINE OA →
+        </a>
+
+        <div class="mt-6 space-y-1 text-xs text-base-content/55">
+          <p>ติดตามเนื้อหาใหม่ทุกวัน:</p>
+          <p>
+            <a href={SITE.social.tiktok} target="_blank" rel="noopener" class="underline hover:text-base-content/85">
+              TikTok @pun_nattapatch
+            </a>
+            <span class="mx-2">·</span>
+            <a href={SITE.social.instagram} target="_blank" rel="noopener" class="underline hover:text-base-content/85">
+              Instagram @pun_nattapatch
+            </a>
+          </p>
+        </div>
+      </div>
 
       {/* Secondary CTA — full detail page */}
       <div class="mt-6">
@@ -206,6 +520,9 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
       const form = document.getElementById('p1-waitlist-form');
       const btn = document.getElementById('wl-submit-btn');
       const msg = document.getElementById('wl-form-msg');
+      const successCard = document.getElementById('wl-success-card');
+      const successName = document.getElementById('wl-success-name');
+      const successRef = document.getElementById('wl-success-ref');
       if (!form || !btn || !msg) return;
 
       // Populate UTM from URL params
@@ -213,6 +530,24 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
       ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','ttclid'].forEach(function (k) {
         var el = document.getElementById('wl-' + k);
         if (el && params.get(k)) el.value = params.get(k);
+      });
+
+      // Conditional reveal — business_type = "อื่นๆ" → show textarea
+      const businessTypeOtherWrap = document.getElementById('wl-business-type-other-wrap');
+      const businessTypeOtherInput = document.getElementById('wl-business_type_other');
+      const businessTypeRadios = form.querySelectorAll('input[name="business_type"]');
+      businessTypeRadios.forEach(function (radio) {
+        radio.addEventListener('change', function () {
+          var isOther = radio.checked && radio.value === 'อื่นๆ';
+          if (isOther) {
+            businessTypeOtherWrap.classList.remove('hidden');
+            businessTypeOtherInput.required = true;
+          } else if (radio.checked) {
+            businessTypeOtherWrap.classList.add('hidden');
+            businessTypeOtherInput.required = false;
+            businessTypeOtherInput.value = '';
+          }
+        });
       });
 
       function genRef() {
@@ -231,8 +566,43 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
 
         var fd = new FormData(form);
         var ref = genRef();
-        var payload = { _meta: { reference: ref, page: location.pathname } };
-        fd.forEach(function (v, k) { payload[k] = v; });
+        var name = (fd.get('name') || '').toString().trim();
+
+        // Collect pain_points as array (multi-checkbox)
+        var painPointsArr = fd.getAll('pain_points');
+
+        var payload = {
+          _meta: {
+            reference: ref,
+            submitted_at: new Date().toISOString(),
+            user_agent: navigator.userAgent,
+            referrer: document.referrer || '',
+            page: location.pathname,
+            utm_source: fd.get('utm_source') || '',
+            utm_medium: fd.get('utm_medium') || '',
+            utm_campaign: fd.get('utm_campaign') || '',
+            utm_content: fd.get('utm_content') || '',
+            utm_term: fd.get('utm_term') || '',
+            fbclid: fd.get('fbclid') || '',
+            ttclid: fd.get('ttclid') || '',
+          },
+          program: 'p1',
+          source_page: '/waitlist',
+          name: name,
+          email: (fd.get('email') || '').toString().trim(),
+          contact: (fd.get('contact') || '').toString().trim(),
+          company: (fd.get('company') || '').toString().trim(),
+          role: (fd.get('role') || '').toString(),
+          team_size: (fd.get('team_size') || '').toString(),
+          business_type: (fd.get('business_type') || '').toString(),
+          business_type_other: (fd.get('business_type_other') || '').toString().trim(),
+          pain_points: painPointsArr,
+          pain_other: (fd.get('pain_other') || '').toString().trim(),
+          why_join: (fd.get('why_join') || '').toString().trim(),
+          what_to_learn: (fd.get('what_to_learn') || '').toString().trim(),
+          after_course_apply: (fd.get('after_course_apply') || '').toString().trim(),
+          future_class_notify: (fd.get('future_class_notify') || '').toString(),
+        };
 
         if (typeof window.plausible === 'function') {
           try { window.plausible('P1 Waitlist Signup', { props: { ref: ref, source: 'waitlist-page' } }); } catch (_) {}
@@ -255,12 +625,21 @@ const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';
           console.error('[p1-waitlist] webhook error', e);
         }
 
-        msg.classList.remove('hidden');
-        msg.style.background = 'color-mix(in oklch, ' + accentHex + ' 12%, transparent)';
-        msg.style.color = accentHex;
-        msg.textContent = '✅ ขอบคุณครับ ได้รับข้อมูลแล้ว — ผมจะ LINE หาคุณก่อนใครเมื่อถึงคิว · Ref: ' + ref;
-        btn.textContent = 'บันทึกแล้ว ✓';
-        btn.style.background = 'color-mix(in oklch, ' + accentHex + ' 70%, transparent)';
+        // Reveal success card · hide form
+        if (successCard && successName && successRef) {
+          successName.textContent = name ? name : '';
+          successRef.textContent = ref;
+          form.classList.add('hidden');
+          successCard.classList.remove('hidden');
+          successCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          msg.classList.remove('hidden');
+          msg.style.background = 'color-mix(in oklch, ' + accentHex + ' 12%, transparent)';
+          msg.style.color = accentHex;
+          msg.textContent = '✅ ขอบคุณครับ ได้รับข้อมูลแล้ว — Ref: ' + ref;
+          btn.textContent = 'บันทึกแล้ว ✓';
+          btn.style.background = 'color-mix(in oklch, ' + accentHex + ' 70%, transparent)';
+        }
       });
     })();
   </script>
