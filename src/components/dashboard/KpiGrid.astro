@@ -1,20 +1,23 @@
 ---
 import KpiCard from './KpiCard.astro';
 ---
-<section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
-  <KpiCard id="kpi-sales-total" label="ยอดขายรวม" accent="cyan" />
+<section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3 mb-4">
+  <KpiCard id="kpi-sales-total" label="ยอดขายรวม" accent="emerald" />
   <KpiCard id="kpi-sales-month" label="ยอดเดือนนี้" accent="coral" />
-  <KpiCard id="kpi-leads" label="Leads" accent="violet" />
-  <KpiCard id="kpi-pipeline" label="Pipeline" accent="cyan" />
-  <KpiCard id="kpi-conversion" label="Conversion" accent="emerald" />
-  <KpiCard id="kpi-industry" label="Top อุตสาหกรรม" accent="violet" />
+  <KpiCard id="kpi-leads" label="Leads ทั้งหมด" accent="violet" />
+  <KpiCard id="kpi-pipeline" label="In Pipeline" accent="warning" />
+  <KpiCard id="kpi-conversion" label="Conversion" accent="cyan" />
+  <KpiCard id="kpi-industry" label="Top อุตสาหกรรม" accent="info" />
 </section>
 
 <script>
   import { subscribe, getState } from '../../scripts/dashboard/store';
 
   function fmtTHB(n: number): string {
-    return new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB', maximumFractionDigits: 0 }).format(n || 0);
+    if (!n) return '฿0';
+    if (n >= 1_000_000) return `฿${(n / 1_000_000).toFixed(1)}M`;
+    if (n >= 1_000) return `฿${(n / 1_000).toFixed(0)}K`;
+    return `฿${n}`;
   }
   function fmtPct(n: number): string {
     if (!Number.isFinite(n)) return '—';
@@ -30,23 +33,23 @@ import KpiCard from './KpiCard.astro';
     const k = getState().kpis;
     if (!k) return;
     setText('kpi-sales-total', fmtTHB(k.sales_total));
-    setText('kpi-sales-total-sub', `เดือนก่อน ${fmtTHB(k.sales_prev_month)}`);
+    setText('kpi-sales-total-sub', `ก่อนหน้า ${fmtTHB(k.sales_prev_month)}`);
 
     setText('kpi-sales-month', fmtTHB(k.sales_this_month));
     setText('kpi-sales-month-sub', `Δ ${fmtPct(k.sales_delta_pct)}`);
 
     setText('kpi-leads', String(k.leads_total));
-    setText('kpi-leads-sub', `เดือนนี้ ${k.leads_this_month}`);
+    setText('kpi-leads-sub', `เดือนนี้ +${k.leads_this_month}`);
 
-    setText('kpi-pipeline', `${k.pipeline.in_progress} · ${k.pipeline.proposal_sent} · ${k.pipeline.walkthrough_done} · ${k.pipeline.won}`);
-    setText('kpi-pipeline-sub', 'in · prop · walk · won');
+    setText('kpi-pipeline', String(k.pipeline.in_progress));
+    setText('kpi-pipeline-sub', `prop ${k.pipeline.proposal_sent} · walk ${k.pipeline.walkthrough_done}`);
 
     setText('kpi-conversion', fmtPct(k.conversion_rate));
-    setText('kpi-conversion-sub', '');
+    setText('kpi-conversion-sub', `won ${k.pipeline.won}`);
 
     const top = k.top_industry || [];
-    setText('kpi-industry', top.map((t) => t.label).slice(0, 3).join(' · ') || '—');
-    setText('kpi-industry-sub', top.map((t) => `${t.label}(${t.count})`).join(' · '));
+    setText('kpi-industry', top[0]?.label || '—');
+    setText('kpi-industry-sub', top[0] ? `${top[0].count} leads` : '');
   }
 
   render();

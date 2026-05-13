@@ -3,6 +3,10 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
 import PinGate from '../components/dashboard/PinGate.astro';
 import DashboardHeader from '../components/dashboard/DashboardHeader.astro';
 import KpiGrid from '../components/dashboard/KpiGrid.astro';
+import PipelineDonut from '../components/dashboard/PipelineDonut.astro';
+import IndustryBar from '../components/dashboard/IndustryBar.astro';
+import SalesTrend from '../components/dashboard/SalesTrend.astro';
+import SourceDonut from '../components/dashboard/SourceDonut.astro';
 import TodayPanel from '../components/dashboard/TodayPanel.astro';
 import LeadList from '../components/dashboard/LeadList.astro';
 import FabAddLead from '../components/dashboard/FabAddLead.astro';
@@ -13,9 +17,20 @@ import Toast from '../components/dashboard/Toast.astro';
 ---
 <DashboardLayout>
   <PinGate />
-  <main id="dashboard-app" class="hidden mx-auto max-w-5xl px-4 pb-32 pt-4">
+  <main id="dashboard-app" class="hidden mx-auto max-w-7xl px-3 md:px-4 pb-32 pt-3 md:pt-4">
     <DashboardHeader />
     <KpiGrid />
+
+    <section class="grid gap-3 md:grid-cols-2 mb-4">
+      <PipelineDonut />
+      <IndustryBar />
+    </section>
+
+    <section class="grid gap-3 md:grid-cols-2 mb-4">
+      <SalesTrend />
+      <SourceDonut />
+    </section>
+
     <TodayPanel />
     <LeadList />
     <FabAddLead />

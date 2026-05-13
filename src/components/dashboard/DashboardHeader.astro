@@ -1,11 +1,25 @@
 ---
 ---
-<header class="flex items-center justify-between gap-2 mb-4">
-  <div>
-    <h1 class="text-lg font-display tracking-tight">Today Command Center</h1>
-    <p id="dash-meta" class="text-xs opacity-60"></p>
+<header class="mb-4 rounded-2xl border border-base-300 bg-base-200 px-4 py-3 flex items-center gap-3">
+  <div class="flex items-center gap-2 flex-1 min-w-0">
+    <div class="size-9 rounded-full bg-[color:var(--color-pun-coral)] grid place-items-center text-base-100 font-bold text-lg shrink-0">
+      P
+    </div>
+    <div class="min-w-0">
+      <h1 class="font-display text-base md:text-lg leading-tight truncate">Pun CRM Dashboard</h1>
+      <p class="text-xs opacity-60 leading-tight">Sales + Pipeline · Realtime</p>
+    </div>
   </div>
-  <div class="flex items-center gap-2">
+
+  <div class="flex items-center gap-2 shrink-0">
+    <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-[color:var(--color-error)]/15 px-2 py-1 text-xs font-medium text-[color:var(--color-error)]">
+      <span class="relative flex size-2">
+        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[color:var(--color-error)] opacity-75"></span>
+        <span class="relative inline-flex size-2 rounded-full bg-[color:var(--color-error)]"></span>
+      </span>
+      LIVE
+    </span>
+    <p id="dash-meta" class="hidden md:block text-xs opacity-60 tabular-nums">—</p>
     <button id="dash-refresh" class="btn btn-sm btn-ghost tap-44" aria-label="Refresh">
       <span aria-hidden="true">↻</span>
       <span class="sr-only">Refresh</span>
@@ -26,7 +40,7 @@
     const m = Math.floor(s / 60);
     if (m < 60) return `อัปเดต ${m} นาทีที่แล้ว`;
     const h = Math.floor(m / 60);
-    if (h < 24) return `อัปเดต ${h} ชั่วโมงที่แล้ว`;
+    if (h < 24) return `อัปเดต ${h} ชม.ที่แล้ว`;
     return `อัปเดต ${new Date(iso).toLocaleString('th-TH')}`;
   }
 

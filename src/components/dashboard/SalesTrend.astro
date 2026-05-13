@@ -1,0 +1,85 @@
+---
+---
+<div class="rounded-2xl border border-base-300 bg-base-200 p-3">
+  <div class="flex items-center justify-between mb-1">
+    <h3 class="text-xs uppercase tracking-wider opacity-70">Sales Trend</h3>
+    <span id="sales-delta" class="text-[10px] tabular-nums opacity-70"></span>
+  </div>
+  <div id="chart-sales" class="min-h-[220px]"></div>
+</div>
+
+<script>
+  import { subscribe, getState } from '../../scripts/dashboard/store';
+  import { waitForApex, baseOptions, PALETTE } from '../../scripts/dashboard/charts';
+
+  let chart: any = null;
+
+  function dataFromState() {
+    const k = getState().kpis;
+    return [k?.sales_prev_month || 0, k?.sales_this_month || 0];
+  }
+
+  function updateDelta() {
+    const k = getState().kpis;
+    const el = document.getElementById('sales-delta');
+    if (!el || !k) return;
+    const pct = Math.round((k.sales_delta_pct || 0) * 1000) / 10;
+    const sign = pct > 0 ? '+' : '';
+    el.textContent = `Δ ${sign}${pct.toFixed(1)}%`;
+    el.className = `text-[10px] tabular-nums ${pct > 0 ? 'text-success' : pct < 0 ? 'text-error' : 'opacity-70'}`;
+  }
+
+  async function init() {
+    const ApexCharts = await waitForApex();
+    const el = document.getElementById('chart-sales');
+    if (!el || !ApexCharts) return;
+    const opts = {
+      ...baseOptions(),
+      series: [{ name: 'Sales', data: dataFromState() }],
+      chart: { ...baseOptions().chart, type: 'bar', height: 240 },
+      colors: [PALETTE.cyan, PALETTE.coral],
+      plotOptions: {
+        bar: {
+          borderRadius: 6,
+          columnWidth: '50%',
+          distributed: true,
+          dataLabels: { position: 'top' },
+        },
+      },
+      dataLabels: {
+        enabled: true,
+        offsetY: -22,
+        formatter: (v: number) => {
+          if (!v) return '—';
+          if (v >= 1_000_000) return `฿${(v / 1_000_000).toFixed(1)}M`;
+          if (v >= 1_000) return `฿${(v / 1_000).toFixed(0)}K`;
+          return `฿${v}`;
+        },
+        style: { fontSize: '11px', colors: ['#cbd5e1'] },
+      },
+      legend: { show: false },
+      xaxis: {
+        categories: ['เดือนก่อน', 'เดือนนี้'],
+        labels: { style: { fontSize: '11px', colors: '#cbd5e1' } },
+      },
+      yaxis: {
+        labels: {
+          style: { fontSize: '10px', colors: '#94a3b8' },
+          formatter: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(0)}K` : String(v),
+        },
+      },
+    };
+    chart = new ApexCharts(el, opts);
+    chart.render();
+    updateDelta();
+  }
+
+  function update() {
+    if (!chart) return;
+    chart.updateSeries([{ name: 'Sales', data: dataFromState() }]);
+    updateDelta();
+  }
+
+  init();
+  subscribe(update);
+</script>

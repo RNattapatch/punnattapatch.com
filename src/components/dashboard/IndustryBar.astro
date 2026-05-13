@@ -1,0 +1,72 @@
+---
+---
+<div class="rounded-2xl border border-base-300 bg-base-200 p-3">
+  <div class="flex items-center justify-between mb-1">
+    <h3 class="text-xs uppercase tracking-wider opacity-70">Top อุตสาหกรรม</h3>
+    <span class="text-[10px] opacity-50">by lead count</span>
+  </div>
+  <div id="chart-industry" class="min-h-[220px]"></div>
+</div>
+
+<script>
+  import { subscribe, getState } from '../../scripts/dashboard/store';
+  import { waitForApex, baseOptions, PALETTE_ARRAY } from '../../scripts/dashboard/charts';
+
+  let chart: any = null;
+
+  function dataFromState() {
+    const top = getState().kpis?.top_industry || [];
+    const slice = top.slice(0, 7);
+    return {
+      cats: slice.map((t) => t.label || '—'),
+      vals: slice.map((t) => t.count),
+    };
+  }
+
+  async function init() {
+    const ApexCharts = await waitForApex();
+    const el = document.getElementById('chart-industry');
+    if (!el || !ApexCharts) return;
+    const d = dataFromState();
+    const opts = {
+      ...baseOptions(),
+      series: [{ name: 'Leads', data: d.vals }],
+      chart: { ...baseOptions().chart, type: 'bar', height: 240 },
+      colors: PALETTE_ARRAY,
+      plotOptions: {
+        bar: {
+          horizontal: true,
+          borderRadius: 4,
+          distributed: true,
+          dataLabels: { position: 'top' },
+        },
+      },
+      dataLabels: {
+        enabled: true,
+        offsetX: 24,
+        style: { fontSize: '11px', colors: ['#cbd5e1'] },
+        formatter: (v: number) => String(v),
+      },
+      legend: { show: false },
+      xaxis: {
+        categories: d.cats,
+        labels: { style: { fontSize: '10px', colors: '#94a3b8' } },
+      },
+      yaxis: {
+        labels: { style: { fontSize: '11px', colors: '#cbd5e1' } },
+      },
+    };
+    chart = new ApexCharts(el, opts);
+    chart.render();
+  }
+
+  function update() {
+    if (!chart) return;
+    const d = dataFromState();
+    chart.updateOptions({ xaxis: { categories: d.cats } });
+    chart.updateSeries([{ name: 'Leads', data: d.vals }]);
+  }
+
+  init();
+  subscribe(update);
+</script>

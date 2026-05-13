@@ -1,0 +1,65 @@
+---
+---
+<div class="rounded-2xl border border-base-300 bg-base-200 p-3">
+  <div class="flex items-center justify-between mb-1">
+    <h3 class="text-xs uppercase tracking-wider opacity-70">Pipeline Funnel</h3>
+    <span class="text-[10px] opacity-50">stages</span>
+  </div>
+  <div id="chart-pipeline" class="min-h-[220px]"></div>
+</div>
+
+<script>
+  import { subscribe, getState } from '../../scripts/dashboard/store';
+  import { waitForApex, baseOptions, PALETTE } from '../../scripts/dashboard/charts';
+
+  let chart: any = null;
+
+  function dataFromState() {
+    const k = getState().kpis;
+    const p = k?.pipeline || { in_progress: 0, proposal_sent: 0, walkthrough_done: 0, won: 0 };
+    return [p.in_progress, p.proposal_sent, p.walkthrough_done, p.won];
+  }
+
+  async function init() {
+    const ApexCharts = await waitForApex();
+    const el = document.getElementById('chart-pipeline');
+    if (!el || !ApexCharts) return;
+    const opts = {
+      ...baseOptions(),
+      series: dataFromState(),
+      labels: ['In Progress', 'Proposal Sent', 'Walkthrough', 'Won'],
+      chart: { ...baseOptions().chart, type: 'donut', height: 240 },
+      colors: [PALETTE.cyan, PALETTE.amber, PALETTE.violet, PALETTE.emerald],
+      plotOptions: {
+        pie: {
+          donut: {
+            size: '68%',
+            labels: {
+              show: true,
+              name: { fontSize: '11px', color: '#94a3b8' },
+              value: { fontSize: '20px', color: '#f1f5f9', fontWeight: 600 },
+              total: {
+                show: true,
+                label: 'Total',
+                fontSize: '11px',
+                color: '#94a3b8',
+                formatter: (w: any) => String(w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0)),
+              },
+            },
+          },
+        },
+      },
+      legend: { ...baseOptions().legend, position: 'bottom' },
+    };
+    chart = new ApexCharts(el, opts);
+    chart.render();
+  }
+
+  function update() {
+    if (!chart) return;
+    chart.updateSeries(dataFromState());
+  }
+
+  init();
+  subscribe(update);
+</script>
