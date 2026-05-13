@@ -11,6 +11,7 @@
           <option value="in_progress">in_progress</option>
           <option value="won">won</option>
           <option value="lost">lost</option>
+          <option value="unqualified">🚫 unqualified</option>
         </select>
       </label>
       <label class="form-control">
@@ -31,8 +32,20 @@
         </select>
       </label>
       <label id="close-reason-wrap" class="form-control hidden">
-        <span class="label-text text-xs opacity-70">Close reason (จำเป็นเมื่อ lost)</span>
-        <input name="close_reason" class="input input-bordered input-sm tap-44" autocomplete="off" />
+        <span class="label-text text-xs opacity-70" id="close-reason-label">Close reason</span>
+        <select name="close_reason_key" class="select select-bordered select-sm tap-44">
+          <option value="">— เลือกเหตุผล —</option>
+          <option value="freebie_seeker">มาหลอกถามหวังของฟรี</option>
+          <option value="scam">scam / แชร์ลูกโซ่</option>
+          <option value="cheap_client">ไม่พร้อมลงทุน / cheap</option>
+          <option value="mismatch">ไม่ตรง target</option>
+          <option value="price_too_high">ราคาแพงเกินไป</option>
+          <option value="no_budget">ไม่มีงบในตอนนี้</option>
+          <option value="wrong_timing">timing ไม่เหมาะ</option>
+          <option value="competitor">เลือกใช้ทีมอื่น</option>
+          <option value="other">อื่นๆ (ระบุข้างล่าง)</option>
+        </select>
+        <input name="close_reason_other" placeholder="ระบุเหตุผล..." class="input input-bordered input-sm tap-44 hidden mt-1" autocomplete="off" />
       </label>
       <div class="modal-action mt-2">
         <button type="button" id="edit-deal-cancel" class="btn btn-sm btn-ghost tap-44">ยกเลิก</button>
@@ -50,6 +63,9 @@
   const dlg = document.getElementById('edit-deal-modal') as HTMLDialogElement | null;
   const form = document.getElementById('edit-deal-form') as HTMLFormElement | null;
 
+  // Map known close_reason keys → Thai labels (mirror of <option> values).
+  const REASON_KEYS = ['freebie_seeker', 'scam', 'cheap_client', 'mismatch', 'price_too_high', 'no_budget', 'wrong_timing', 'competitor', 'other'];
+
   function setField(name: string, value: string) {
     const el = form?.querySelector<HTMLInputElement | HTMLSelectElement>(`[name="${name}"]`);
     if (el) el.value = value;
@@ -57,13 +73,26 @@
   function syncCloseReason() {
     const sel = form?.querySelector<HTMLSelectElement>('[name="deal_outcome"]');
     const wrap = document.getElementById('close-reason-wrap');
+    const label = document.getElementById('close-reason-label');
     if (!sel || !wrap) return;
-    wrap.classList.toggle('hidden', sel.value !== 'lost');
+    const needReason = sel.value === 'lost' || sel.value === 'unqualified';
+    wrap.classList.toggle('hidden', !needReason);
+    if (label) {
+      label.textContent = sel.value === 'unqualified'
+        ? 'เหตุผลที่ไม่รับ (จำเป็น)'
+        : 'Close reason (จำเป็นเมื่อ lost)';
+    }
+  }
+  function syncOtherInput() {
+    const sel = form?.querySelector<HTMLSelectElement>('[name="close_reason_key"]');
+    const other = form?.querySelector<HTMLInputElement>('[name="close_reason_other"]');
+    if (!sel || !other) return;
+    other.classList.toggle('hidden', sel.value !== 'other');
   }
 
   on('modal:edit-deal', (e) => {
     if (!dlg || !form) return;
-    const detail = (e.detail || {}) as { lead: LeadUi; preset?: 'won' | 'lost' };
+    const detail = (e.detail || {}) as { lead: LeadUi; preset?: 'won' | 'lost' | 'unqualified' };
     const lead = detail.lead;
     if (!lead) return;
     form.reset();
@@ -72,12 +101,25 @@
     setField('package', String(lead.package || ''));
     setField('package_price', String(lead.package_price || ''));
     setField('payment_status', String(lead.payment_status || ''));
-    setField('close_reason', String(lead.close_reason || ''));
+    // Hydrate close_reason: if value matches predefined key → set dropdown; else "other" + free text
+    const cr = String(lead.close_reason || '').trim();
+    if (REASON_KEYS.includes(cr)) {
+      setField('close_reason_key', cr);
+      setField('close_reason_other', '');
+    } else if (cr) {
+      setField('close_reason_key', 'other');
+      setField('close_reason_other', cr);
+    } else {
+      setField('close_reason_key', '');
+      setField('close_reason_other', '');
+    }
     syncCloseReason();
+    syncOtherInput();
     dlg.showModal();
   });
 
   form?.querySelector<HTMLSelectElement>('[name="deal_outcome"]')?.addEventListener('change', syncCloseReason);
+  form?.querySelector<HTMLSelectElement>('[name="close_reason_key"]')?.addEventListener('change', syncOtherInput);
 
   document.getElementById('edit-deal-cancel')?.addEventListener('click', () => dlg?.close());
 
@@ -88,7 +130,7 @@
     const lead_id = String(fd.get('lead_id') || '');
     if (!lead_id) return;
     const fields: Partial<LeadUi> = {};
-    const outcome = String(fd.get('deal_outcome') || 'in_progress') as 'in_progress' | 'won' | 'lost';
+    const outcome = String(fd.get('deal_outcome') || 'in_progress') as 'in_progress' | 'won' | 'lost' | 'unqualified';
     fields.deal_outcome = outcome;
     const pkg = String(fd.get('package') || '').trim();
     if (pkg) fields.package = pkg;
@@ -96,12 +138,15 @@
     if (price) fields.package_price = Number(price);
     const pay = String(fd.get('payment_status') || '').trim();
     if (pay) fields.payment_status = pay as 'unpaid' | 'partial' | 'paid';
-    const reason = String(fd.get('close_reason') || '').trim();
-    if (outcome === 'lost' && !reason) {
-      toast('ใส่ close_reason ก่อน mark lost', 'error');
+    // Resolve close_reason: predefined key OR free text (when "other")
+    const reasonKey = String(fd.get('close_reason_key') || '').trim();
+    const reasonOther = String(fd.get('close_reason_other') || '').trim();
+    const finalReason = reasonKey === 'other' ? reasonOther : reasonKey;
+    if ((outcome === 'lost' || outcome === 'unqualified') && !finalReason) {
+      toast('เลือกเหตุผลก่อน (close_reason)', 'error');
       return;
     }
-    if (reason) fields.close_reason = reason;
+    if (finalReason) fields.close_reason = finalReason;
     await patchLead(lead_id, fields);
     dlg?.close();
   });

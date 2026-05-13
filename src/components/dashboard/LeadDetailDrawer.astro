@@ -199,6 +199,9 @@ import InteractionLog from './InteractionLog.astro';
     const payCur = val('cc-payment');
     if (payCur !== ((lead.payment_status as string) || '')) patch.payment_status = payCur;
 
+    const tempCur = val('cc-temperature');
+    if (tempCur !== ((lead.temperature as string) || '')) patch.temperature = tempCur;
+
     // Memorable facts
     for (const [id, key] of [
       ['mf-nickname', 'nickname'],

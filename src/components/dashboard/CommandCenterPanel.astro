@@ -3,6 +3,15 @@
 <section class="mb-3">
   <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Command Center</h3>
   <div class="grid gap-2">
+    <div>
+      <span class="label-text text-xs opacity-70">Temperature</span>
+      <div class="flex gap-2 mt-1">
+        <button type="button" data-temp="hot" class="temp-btn btn btn-sm btn-outline tap-44 flex-1">🔥 Hot</button>
+        <button type="button" data-temp="warm" class="temp-btn btn btn-sm btn-outline tap-44 flex-1">🌤 Warm</button>
+        <button type="button" data-temp="cold" class="temp-btn btn btn-sm btn-outline tap-44 flex-1">❄️ Cold</button>
+      </div>
+      <input id="cc-temperature" type="hidden" value="" />
+    </div>
     <label class="form-control">
       <span class="label-text text-xs opacity-70">Next action</span>
       <input id="cc-next-action" class="input input-bordered input-sm tap-44" placeholder="ส่ง assessment, นัด follow-up..." autocomplete="off" />
@@ -66,7 +75,26 @@
     setVal('cc-payment', (lead.payment_status as string) || '');
     const lt = document.getElementById('cc-last-touch');
     if (lt) lt.textContent = lead.last_touch_at ? `Last touch: ${new Date(lead.last_touch_at as string).toLocaleString('th-TH')}` : 'ยังไม่มี touch';
+    setTemp((lead.temperature as string) || '');
   }
+
+  function setTemp(v: string) {
+    const hidden = document.getElementById('cc-temperature') as HTMLInputElement | null;
+    if (hidden) hidden.value = v;
+    document.querySelectorAll<HTMLButtonElement>('.temp-btn').forEach((b) => {
+      const active = b.getAttribute('data-temp') === v;
+      b.classList.toggle('btn-primary', active);
+      b.classList.toggle('btn-outline', !active);
+    });
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.temp-btn').forEach((b) => {
+    b.addEventListener('click', () => {
+      const t = b.getAttribute('data-temp') || '';
+      const hidden = document.getElementById('cc-temperature') as HTMLInputElement | null;
+      setTemp(hidden?.value === t ? '' : t);
+    });
+  });
 
   apply();
   subscribe(apply);

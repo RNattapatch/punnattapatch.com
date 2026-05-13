@@ -7,6 +7,7 @@
   <button id="qa-log" class="btn btn-outline btn-sm tap-44">บันทึก touch</button>
   <button id="qa-mark-won" class="btn btn-success btn-sm tap-44">Mark won</button>
   <button id="qa-mark-lost" class="btn btn-error btn-sm tap-44">Mark lost</button>
+  <button id="qa-disqualify" class="btn btn-neutral btn-sm col-span-2 tap-44">🚫 Disqualify (freebie/scam/cheap)</button>
   <button id="qa-proposal" class="btn btn-primary btn-sm col-span-2 tap-44">สร้างงาน proposal (+1d)</button>
 </div>
 
@@ -64,6 +65,10 @@
   document.getElementById('qa-mark-lost')?.addEventListener('click', () => {
     const lead = getState().selectedLead;
     if (lead) emit('modal:edit-deal', { lead, preset: 'lost' });
+  });
+  document.getElementById('qa-disqualify')?.addEventListener('click', () => {
+    const lead = getState().selectedLead;
+    if (lead) emit('modal:edit-deal', { lead, preset: 'unqualified' });
   });
   document.getElementById('qa-proposal')?.addEventListener('click', () => {
     const lead = getState().selectedLead;

@@ -23,7 +23,11 @@ type FilterChip =
   | 'walkthrough_done'
   | 'won'
   | 'lost'
-  | 'manual';
+  | 'unqualified'
+  | 'manual'
+  | 'hot'
+  | 'warm'
+  | 'cold';
 
 type SortMode = 'submitted_desc' | 'next_due_asc' | 'amount_desc';
 
@@ -290,8 +294,20 @@ export function visibleLeads(): LeadUi[] {
     case 'lost':
       rows = rows.filter((r) => r.deal_outcome === 'lost');
       break;
+    case 'unqualified':
+      rows = rows.filter((r) => r.deal_outcome === 'unqualified');
+      break;
     case 'manual':
       rows = rows.filter((r) => (r.manual_source || '') !== '' && r.manual_source !== 'intake-form');
+      break;
+    case 'hot':
+      rows = rows.filter((r) => r.temperature === 'hot');
+      break;
+    case 'warm':
+      rows = rows.filter((r) => r.temperature === 'warm');
+      break;
+    case 'cold':
+      rows = rows.filter((r) => r.temperature === 'cold');
       break;
   }
   switch (state.sort) {

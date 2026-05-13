@@ -43,8 +43,9 @@ export type LeadUi = Record<string, unknown> & {
   fact_2?: string;
   fact_3?: string;
   crm_notes?: string;
-  deal_outcome?: 'in_progress' | 'won' | 'lost';
+  deal_outcome?: 'in_progress' | 'won' | 'lost' | 'unqualified';
   close_reason?: string;
+  temperature?: 'hot' | 'warm' | 'cold' | '';
   next_action?: string;
   next_action_due?: string;
   last_touch_at?: string;

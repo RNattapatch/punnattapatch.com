@@ -25,11 +25,15 @@ import LeadCard from './LeadCard.astro';
   <div id="lead-filters" class="flex flex-wrap gap-2 mb-3 text-xs">
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="all">All</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="today">Today</button>
+    <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="hot">🔥 Hot</button>
+    <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="warm">🌤 Warm</button>
+    <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="cold">❄️ Cold</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="in_progress">In Progress</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="proposal_sent">Proposal Sent</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="walkthrough_done">Walkthrough Done</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="won">Won</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="lost">Lost</button>
+    <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="unqualified">🚫 Unqualified</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="manual">Manual</button>
   </div>
 
@@ -62,9 +66,27 @@ import LeadCard from './LeadCard.astro';
   function badgeFor(l: LeadUi): { text: string; cls: string } {
     if (l.deal_outcome === 'won') return { text: 'won', cls: 'badge-success' };
     if (l.deal_outcome === 'lost') return { text: 'lost', cls: 'badge-error' };
+    if (l.deal_outcome === 'unqualified') return { text: 'unqualified', cls: 'badge-neutral' };
     if (l.walkthrough_at) return { text: 'walk', cls: 'badge-info' };
     if (l.proposal_sent_at) return { text: 'prop', cls: 'badge-warning' };
     return { text: 'in progress', cls: 'badge-ghost' };
+  }
+  function tempEmoji(t: unknown): string {
+    if (t === 'hot') return '🔥';
+    if (t === 'warm') return '🌤';
+    if (t === 'cold') return '❄️';
+    return '';
+  }
+  function relAgo(iso?: string): string {
+    if (!iso) return '';
+    const ms = Date.now() - new Date(iso).getTime();
+    if (!Number.isFinite(ms) || ms < 0) return '';
+    const d = Math.floor(ms / 86400000);
+    if (d === 0) return 'วันนี้';
+    if (d === 1) return 'เมื่อวาน';
+    if (d < 30) return `${d}d ago`;
+    const mo = Math.floor(d / 30);
+    return `${mo}mo ago`;
   }
   function setField(node: HTMLElement, sel: string, v: string) {
     const el = node.querySelector(`[data-field="${sel}"]`);
@@ -76,11 +98,17 @@ import LeadCard from './LeadCard.astro';
 
   function fillCard(node: HTMLElement, lead: LeadUi) {
     node.setAttribute('data-lead-id', String(lead.lead_id || ''));
+    setField(node, 'temp', tempEmoji(lead.temperature));
     setField(node, 'name', (lead.nickname || lead.full_name || '—').toString());
     setField(node, 'company', (lead.company_name || '').toString());
     const due = lead.next_action_due ? `ครบ ${new Date(lead.next_action_due).toLocaleDateString('th-TH')}` : '';
     const next = (lead.next_action || '').toString();
     setField(node, 'meta', [next, due].filter(Boolean).join(' · '));
+    const touch = lead.last_touch_at ? `📞 last ${relAgo(lead.last_touch_at as string)}` : '';
+    const reason = lead.deal_outcome === 'unqualified' || lead.deal_outcome === 'lost'
+      ? (lead.close_reason ? `· ${lead.close_reason}` : '')
+      : '';
+    setField(node, 'log', [touch, reason].filter(Boolean).join(' '));
     setField(node, 'amount', fmtTHB(lead.package_price));
     setField(node, 'age', ageDays(lead.submitted_at));
     const badge = node.querySelector('[data-field="badge"]') as HTMLElement | null;
