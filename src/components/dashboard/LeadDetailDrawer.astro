@@ -13,12 +13,12 @@ import InteractionLog from './InteractionLog.astro';
   aria-modal="true"
   aria-labelledby="lead-drawer-name"
 >
-  <div class="sticky top-0 bg-base-100/95 backdrop-blur border-b border-base-300 px-4 py-3 flex items-center gap-3">
+  <div class="sticky top-0 z-10 bg-[color:var(--color-pun-coral)] text-base-100 border-b border-base-300 px-4 py-3 flex items-center gap-3 shadow-lg">
     <div class="flex-1 min-w-0">
-      <h2 id="lead-drawer-name" class="font-display text-lg leading-snug break-words">—</h2>
-      <p id="lead-drawer-sub" class="text-xs opacity-70 break-words"></p>
+      <h2 id="lead-drawer-name" class="font-display text-lg leading-snug break-words font-semibold">—</h2>
+      <p id="lead-drawer-sub" class="text-xs opacity-80 break-words"></p>
     </div>
-    <button id="drawer-close" class="btn btn-sm btn-ghost tap-44" aria-label="ปิด">✕</button>
+    <button id="drawer-close" class="btn btn-sm btn-ghost tap-44 text-base-100 hover:bg-black/15" aria-label="ปิด">✕</button>
   </div>
 
   <div class="px-4 py-3 grid gap-3">
