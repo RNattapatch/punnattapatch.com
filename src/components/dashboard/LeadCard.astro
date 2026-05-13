@@ -11,16 +11,16 @@ const { variant = 'list' } = Astro.props;
     data-variant={variant}
   >
     <div class="flex-1 min-w-0">
-      <div class="flex items-center gap-2">
-        <span class="font-display text-base truncate" data-field="name"></span>
-        <span class="badge badge-sm" data-field="badge"></span>
+      <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+        <span class="font-display text-base break-words" data-field="name"></span>
+        <span class="badge badge-sm shrink-0" data-field="badge"></span>
       </div>
-      <div class="text-xs opacity-70 truncate" data-field="company"></div>
-      <div class="text-xs opacity-60 mt-0.5" data-field="meta"></div>
+      <div class="text-xs opacity-70 break-words" data-field="company"></div>
+      <div class="text-xs opacity-60 mt-0.5 break-words" data-field="meta"></div>
     </div>
     <div class="text-right shrink-0">
-      <div class="text-sm font-semibold" data-field="amount"></div>
-      <div class="text-[10px] opacity-60" data-field="age"></div>
+      <div class="text-sm font-semibold whitespace-nowrap" data-field="amount"></div>
+      <div class="text-[10px] opacity-60 whitespace-nowrap" data-field="age"></div>
     </div>
   </button>
 </template>

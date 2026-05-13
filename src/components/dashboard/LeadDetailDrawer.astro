@@ -15,8 +15,8 @@ import InteractionLog from './InteractionLog.astro';
 >
   <div class="sticky top-0 bg-base-100/95 backdrop-blur border-b border-base-300 px-4 py-3 flex items-center gap-3">
     <div class="flex-1 min-w-0">
-      <h2 id="lead-drawer-name" class="font-display text-lg truncate">—</h2>
-      <p id="lead-drawer-sub" class="text-xs opacity-70 truncate"></p>
+      <h2 id="lead-drawer-name" class="font-display text-lg leading-snug break-words">—</h2>
+      <p id="lead-drawer-sub" class="text-xs opacity-70 break-words"></p>
     </div>
     <button id="drawer-close" class="btn btn-sm btn-ghost tap-44" aria-label="ปิด">✕</button>
   </div>
@@ -24,7 +24,7 @@ import InteractionLog from './InteractionLog.astro';
   <div class="px-4 py-3 grid gap-3">
     <section>
       <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Contact</h3>
-      <div id="lead-contact" class="text-sm grid gap-1"></div>
+      <div id="lead-contact" class="grid gap-2"></div>
     </section>
 
     <section>
@@ -44,14 +44,14 @@ import InteractionLog from './InteractionLog.astro';
 
     <section>
       <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Read-only context</h3>
-      <div id="lead-context" class="text-sm grid gap-1 opacity-90"></div>
+      <div id="lead-context" class="grid gap-2 opacity-90"></div>
     </section>
 
     <InteractionLog />
 
     <section>
       <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Audit</h3>
-      <div id="lead-audit" class="text-xs opacity-70 grid gap-0.5"></div>
+      <div id="lead-audit" class="grid gap-1 opacity-70"></div>
     </section>
 
     <div class="h-16"></div><!-- spacer for sticky save bar -->
@@ -69,12 +69,12 @@ import InteractionLog from './InteractionLog.astro';
 
   function row(label: string, value: string) {
     const wrap = document.createElement('div');
-    wrap.className = 'flex justify-between gap-2';
-    const l = document.createElement('span');
-    l.className = 'opacity-60';
+    wrap.className = 'min-w-0';
+    const l = document.createElement('div');
+    l.className = 'text-[10px] uppercase tracking-wider opacity-50 mb-0.5';
     l.textContent = label;
-    const v = document.createElement('span');
-    v.className = 'truncate';
+    const v = document.createElement('div');
+    v.className = 'text-sm break-words whitespace-pre-wrap';
     v.textContent = value || '—';
     wrap.appendChild(l);
     wrap.appendChild(v);
