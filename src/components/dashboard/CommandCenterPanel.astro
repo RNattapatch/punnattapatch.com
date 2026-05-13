@@ -33,7 +33,7 @@
 </section>
 
 <script>
-  import { subscribe, getState, patchLead } from '../../scripts/dashboard/store';
+  import { subscribe, getState } from '../../scripts/dashboard/store';
 
   function dt(iso?: string): string {
     if (!iso) return '';
@@ -55,7 +55,9 @@
     if (!lead) return;
     const setVal = (id: string, v: string) => {
       const el = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null;
-      if (el) el.value = v;
+      if (!el) return;
+      if (document.activeElement === el) return; // don't clobber user input
+      el.value = v;
     };
     setVal('cc-next-action', (lead.next_action as string) || '');
     setVal('cc-next-due', ymd(lead.next_action_due as string));
@@ -68,31 +70,5 @@
 
   apply();
   subscribe(apply);
-
-  function bind(id: string, key: string, conv: (v: string) => unknown) {
-    const el = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null;
-    el?.addEventListener('change', () => {
-      const lead = getState().selectedLead;
-      if (!lead) return;
-      void patchLead(String(lead.lead_id), { [key]: conv(el.value) });
-    });
-  }
-  function bindBlur(id: string, key: string, conv: (v: string) => unknown) {
-    const el = document.getElementById(id) as HTMLInputElement | null;
-    el?.addEventListener('blur', () => {
-      const lead = getState().selectedLead;
-      if (!lead) return;
-      const orig = ((lead as Record<string, unknown>)[key] as string) || '';
-      if (orig === el.value) return;
-      void patchLead(String(lead.lead_id), { [key]: conv(el.value) });
-    });
-  }
-
-  const ident = (v: string) => v;
-  const isoFromLocal = (v: string) => (v ? new Date(v).toISOString() : '');
-  bindBlur('cc-next-action', 'next_action', ident);
-  bind('cc-next-due', 'next_action_due', (v) => v || '');
-  bind('cc-proposal', 'proposal_sent_at', isoFromLocal);
-  bind('cc-walk', 'walkthrough_at', isoFromLocal);
-  bind('cc-payment', 'payment_status', ident);
+  // Save is triggered by the drawer's bottom "บันทึก" button — see LeadDetailDrawer.astro.
 </script>

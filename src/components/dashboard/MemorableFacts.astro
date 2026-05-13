@@ -11,7 +11,7 @@
 </section>
 
 <script>
-  import { subscribe, getState, patchLead } from '../../scripts/dashboard/store';
+  import { subscribe, getState } from '../../scripts/dashboard/store';
 
   const fields: Array<[string, string]> = [
     ['mf-nickname', 'nickname'],
@@ -25,23 +25,13 @@
     if (!lead) return;
     for (const [id, key] of fields) {
       const el = document.getElementById(id) as HTMLInputElement | null;
-      if (el) el.value = ((lead as Record<string, unknown>)[key] as string) || '';
+      if (!el) continue;
+      if (document.activeElement === el) continue; // don't clobber user input
+      el.value = ((lead as Record<string, unknown>)[key] as string) || '';
     }
   }
 
   apply();
   subscribe(apply);
-
-  for (const [id, key] of fields) {
-    const el = document.getElementById(id) as HTMLInputElement | null;
-    if (!el) continue;
-    el.addEventListener('blur', () => {
-      const lead = getState().selectedLead;
-      if (!lead) return;
-      const orig = (lead as Record<string, unknown>)[key] || '';
-      const next = el.value.trim();
-      if (String(orig) === next) return;
-      void patchLead(String(lead.lead_id), { [key]: next });
-    });
-  }
+  // Save is triggered by the drawer's bottom "บันทึก" button — see LeadDetailDrawer.astro.
 </script>

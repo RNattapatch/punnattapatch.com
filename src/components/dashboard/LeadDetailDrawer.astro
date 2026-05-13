@@ -53,11 +53,19 @@ import InteractionLog from './InteractionLog.astro';
       <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Audit</h3>
       <div id="lead-audit" class="text-xs opacity-70 grid gap-0.5"></div>
     </section>
+
+    <div class="h-16"></div><!-- spacer for sticky save bar -->
+  </div>
+
+  <div class="sticky bottom-0 inset-x-0 bg-base-100/95 backdrop-blur border-t border-base-300 px-4 py-3">
+    <button id="drawer-save" class="btn btn-primary btn-block tap-44">
+      <span id="drawer-save-label">💾 บันทึกการเปลี่ยนแปลง</span>
+    </button>
   </div>
 </aside>
 
 <script>
-  import { subscribe, getState, closeLead, emit } from '../../scripts/dashboard/store';
+  import { subscribe, getState, closeLead, emit, patchLead, toast } from '../../scripts/dashboard/store';
 
   function row(label: string, value: string) {
     const wrap = document.createElement('div');
@@ -143,5 +151,84 @@ import InteractionLog from './InteractionLog.astro';
   document.getElementById('deal-edit')?.addEventListener('click', () => {
     const lead = getState().selectedLead;
     if (lead) emit('modal:edit-deal', { lead });
+  });
+
+  // ---------- Bottom Save button: diff all drawer inputs vs lead, send patch ----------
+  function dtToIso(v: string): string {
+    if (!v) return '';
+    const d = new Date(v);
+    return Number.isNaN(d.getTime()) ? '' : d.toISOString();
+  }
+  function dtFmt(iso?: string): string {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return '';
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+  function ymdFmt(iso?: string): string {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return '';
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  }
+  function val(id: string): string {
+    const el = document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
+    return el ? el.value : '';
+  }
+
+  document.getElementById('drawer-save')?.addEventListener('click', async () => {
+    const lead = getState().selectedLead;
+    if (!lead) return;
+    const patch: Record<string, unknown> = {};
+
+    // Command Center
+    const ncur = val('cc-next-action');
+    if (ncur !== ((lead.next_action as string) || '')) patch.next_action = ncur;
+
+    const dueCur = val('cc-next-due');
+    if (dueCur !== ymdFmt(lead.next_action_due as string)) patch.next_action_due = dueCur;
+
+    const propCur = val('cc-proposal');
+    if (propCur !== dtFmt(lead.proposal_sent_at as string)) patch.proposal_sent_at = dtToIso(propCur);
+
+    const walkCur = val('cc-walk');
+    if (walkCur !== dtFmt(lead.walkthrough_at as string)) patch.walkthrough_at = dtToIso(walkCur);
+
+    const payCur = val('cc-payment');
+    if (payCur !== ((lead.payment_status as string) || '')) patch.payment_status = payCur;
+
+    // Memorable facts
+    for (const [id, key] of [
+      ['mf-nickname', 'nickname'],
+      ['mf-fact-1', 'fact_1'],
+      ['mf-fact-2', 'fact_2'],
+      ['mf-fact-3', 'fact_3'],
+    ] as const) {
+      const cur = val(id).trim();
+      const orig = ((lead as Record<string, unknown>)[key] as string) || '';
+      if (cur !== orig) patch[key] = cur;
+    }
+
+    // Notes
+    const notesCur = val('notes-textarea');
+    if (notesCur !== ((lead.crm_notes as string) || '')) patch.crm_notes = notesCur;
+
+    if (Object.keys(patch).length === 0) {
+      toast('ยังไม่มีการเปลี่ยนแปลง', 'info');
+      return;
+    }
+
+    const btn = document.getElementById('drawer-save') as HTMLButtonElement | null;
+    const label = document.getElementById('drawer-save-label');
+    if (btn) btn.disabled = true;
+    if (label) label.textContent = 'กำลังบันทึก...';
+    try {
+      await patchLead(String(lead.lead_id), patch);
+    } finally {
+      if (btn) btn.disabled = false;
+      if (label) label.textContent = '💾 บันทึกการเปลี่ยนแปลง';
+    }
   });
 </script>

@@ -3,40 +3,21 @@
 <section class="mb-3">
   <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Notes</h3>
   <textarea id="notes-textarea" rows="4" class="textarea textarea-bordered w-full tap-44" placeholder="memo อิสระ..." autocomplete="off"></textarea>
-  <div id="notes-status" class="text-xs opacity-60 mt-1">บันทึกอัตโนมัติเมื่อย้ายโฟกัสออก</div>
+  <div class="text-xs opacity-60 mt-1">กดปุ่ม "บันทึก" ด้านล่าง drawer เพื่อ save</div>
 </section>
 
 <script>
-  import { subscribe, getState, patchLead } from '../../scripts/dashboard/store';
+  import { subscribe, getState } from '../../scripts/dashboard/store';
 
-  let debounce: number | undefined;
   function apply() {
     const lead = getState().selectedLead;
     const ta = document.getElementById('notes-textarea') as HTMLTextAreaElement | null;
     if (!ta || !lead) return;
-    if (document.activeElement === ta) return;
+    if (document.activeElement === ta) return; // don't clobber while typing
     ta.value = (lead.crm_notes as string) || '';
   }
 
   apply();
   subscribe(apply);
-
-  const ta = document.getElementById('notes-textarea') as HTMLTextAreaElement | null;
-  ta?.addEventListener('input', () => {
-    if (debounce) window.clearTimeout(debounce);
-    debounce = window.setTimeout(() => {
-      const lead = getState().selectedLead;
-      if (!lead) return;
-      const orig = (lead.crm_notes as string) || '';
-      if (ta.value === orig) return;
-      void patchLead(String(lead.lead_id), { crm_notes: ta.value });
-    }, 800);
-  });
-  ta?.addEventListener('blur', () => {
-    const lead = getState().selectedLead;
-    if (!lead) return;
-    const orig = (lead.crm_notes as string) || '';
-    if (ta.value === orig) return;
-    void patchLead(String(lead.lead_id), { crm_notes: ta.value });
-  });
+  // Save is triggered by the drawer's bottom "บันทึก" button — see LeadDetailDrawer.astro.
 </script>
