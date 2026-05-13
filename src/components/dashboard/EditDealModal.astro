@@ -1,0 +1,108 @@
+---
+---
+<dialog id="edit-deal-modal" class="modal">
+  <div class="modal-box max-w-md bg-base-200 border border-base-300">
+    <h3 class="font-display text-lg mb-2">แก้ deal</h3>
+    <form id="edit-deal-form" class="grid gap-2">
+      <input type="hidden" name="lead_id" />
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">Outcome</span>
+        <select name="deal_outcome" class="select select-bordered select-sm tap-44">
+          <option value="in_progress">in_progress</option>
+          <option value="won">won</option>
+          <option value="lost">lost</option>
+        </select>
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">Package</span>
+        <input name="package" class="input input-bordered input-sm tap-44" autocomplete="off" />
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">Amount (THB)</span>
+        <input name="package_price" type="number" inputmode="numeric" min="0" class="input input-bordered input-sm tap-44" />
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">Payment status</span>
+        <select name="payment_status" class="select select-bordered select-sm tap-44">
+          <option value="">—</option>
+          <option value="unpaid">unpaid</option>
+          <option value="partial">partial</option>
+          <option value="paid">paid</option>
+        </select>
+      </label>
+      <label id="close-reason-wrap" class="form-control hidden">
+        <span class="label-text text-xs opacity-70">Close reason (จำเป็นเมื่อ lost)</span>
+        <input name="close_reason" class="input input-bordered input-sm tap-44" autocomplete="off" />
+      </label>
+      <div class="modal-action mt-2">
+        <button type="button" id="edit-deal-cancel" class="btn btn-sm btn-ghost tap-44">ยกเลิก</button>
+        <button type="submit" class="btn btn-sm btn-primary tap-44">บันทึก</button>
+      </div>
+    </form>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>
+
+<script>
+  import { on, patchLead, toast } from '../../scripts/dashboard/store';
+  import type { LeadUi } from '../../scripts/dashboard/adapter';
+
+  const dlg = document.getElementById('edit-deal-modal') as HTMLDialogElement | null;
+  const form = document.getElementById('edit-deal-form') as HTMLFormElement | null;
+
+  function setField(name: string, value: string) {
+    const el = form?.querySelector<HTMLInputElement | HTMLSelectElement>(`[name="${name}"]`);
+    if (el) el.value = value;
+  }
+  function syncCloseReason() {
+    const sel = form?.querySelector<HTMLSelectElement>('[name="deal_outcome"]');
+    const wrap = document.getElementById('close-reason-wrap');
+    if (!sel || !wrap) return;
+    wrap.classList.toggle('hidden', sel.value !== 'lost');
+  }
+
+  on('modal:edit-deal', (e) => {
+    if (!dlg || !form) return;
+    const detail = (e.detail || {}) as { lead: LeadUi; preset?: 'won' | 'lost' };
+    const lead = detail.lead;
+    if (!lead) return;
+    form.reset();
+    setField('lead_id', String(lead.lead_id || ''));
+    setField('deal_outcome', detail.preset || (lead.deal_outcome as string) || 'in_progress');
+    setField('package', String(lead.package || ''));
+    setField('package_price', String(lead.package_price || ''));
+    setField('payment_status', String(lead.payment_status || ''));
+    setField('close_reason', String(lead.close_reason || ''));
+    syncCloseReason();
+    dlg.showModal();
+  });
+
+  form?.querySelector<HTMLSelectElement>('[name="deal_outcome"]')?.addEventListener('change', syncCloseReason);
+
+  document.getElementById('edit-deal-cancel')?.addEventListener('click', () => dlg?.close());
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form) return;
+    const fd = new FormData(form);
+    const lead_id = String(fd.get('lead_id') || '');
+    if (!lead_id) return;
+    const fields: Partial<LeadUi> = {};
+    const outcome = String(fd.get('deal_outcome') || 'in_progress') as 'in_progress' | 'won' | 'lost';
+    fields.deal_outcome = outcome;
+    const pkg = String(fd.get('package') || '').trim();
+    if (pkg) fields.package = pkg;
+    const price = String(fd.get('package_price') || '').trim();
+    if (price) fields.package_price = Number(price);
+    const pay = String(fd.get('payment_status') || '').trim();
+    if (pay) fields.payment_status = pay as 'unpaid' | 'partial' | 'paid';
+    const reason = String(fd.get('close_reason') || '').trim();
+    if (outcome === 'lost' && !reason) {
+      toast('ใส่ close_reason ก่อน mark lost', 'error');
+      return;
+    }
+    if (reason) fields.close_reason = reason;
+    await patchLead(lead_id, fields);
+    dlg?.close();
+  });
+</script>

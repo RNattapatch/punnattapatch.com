@@ -1,0 +1,93 @@
+---
+import LeadCard from './LeadCard.astro';
+---
+<section class="mb-6">
+  <div class="flex items-center justify-between mb-2">
+    <h2 class="font-display text-base">วันนี้</h2>
+    <span id="today-count" class="badge badge-ghost"></span>
+  </div>
+  <div id="today-list" class="grid gap-2"></div>
+  <div id="today-empty" class="hidden text-sm opacity-70 px-2 py-6 text-center">ไม่มีงานค้างวันนี้ 🎉</div>
+</section>
+
+<LeadCard variant="today" />
+
+<script>
+  import { subscribe, getState, openLead } from '../../scripts/dashboard/store';
+  import type { LeadUi } from '../../scripts/dashboard/adapter';
+
+  function ageDays(iso?: string): string {
+    if (!iso) return '';
+    const ms = Date.now() - new Date(iso).getTime();
+    if (!Number.isFinite(ms)) return '';
+    const d = Math.max(0, Math.floor(ms / 86400000));
+    return d === 0 ? 'วันนี้' : `${d} วัน`;
+  }
+  function fmtTHB(n: number | string | undefined): string {
+    const v = Number(n) || 0;
+    if (!v) return '—';
+    return new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(v) + ' ฿';
+  }
+  function badgeFor(l: LeadUi): { text: string; cls: string } {
+    if (l.deal_outcome === 'won') return { text: 'won', cls: 'badge-success' };
+    if (l.deal_outcome === 'lost') return { text: 'lost', cls: 'badge-error' };
+    if (l.walkthrough_at) return { text: 'walk', cls: 'badge-info' };
+    if (l.proposal_sent_at) return { text: 'prop', cls: 'badge-warning' };
+    return { text: 'in progress', cls: 'badge-ghost' };
+  }
+
+  function fillCard(node: HTMLElement, lead: LeadUi) {
+    node.setAttribute('data-lead-id', String(lead.lead_id || ''));
+    const name = (lead.nickname || lead.full_name || '—').toString();
+    const company = (lead.company_name || '').toString();
+    const due = lead.next_action_due ? `ครบกำหนด ${new Date(lead.next_action_due).toLocaleDateString('th-TH')}` : '';
+    const next = (lead.next_action || '').toString();
+    const meta = [next, due].filter(Boolean).join(' · ');
+    const b = badgeFor(lead);
+    const setField = (sel: string, v: string) => {
+      const el = node.querySelector(`[data-field="${sel}"]`);
+      if (el) el.textContent = v;
+    };
+    setField('name', name);
+    setField('company', company);
+    setField('meta', meta);
+    setField('amount', fmtTHB(lead.package_price as number | string | undefined));
+    setField('age', ageDays(lead.submitted_at));
+    const badge = node.querySelector('[data-field="badge"]') as HTMLElement | null;
+    if (badge) {
+      badge.className = `badge badge-sm ${b.cls}`;
+      badge.textContent = b.text;
+    }
+  }
+
+  function clearChildren(el: HTMLElement) {
+    while (el.firstChild) el.removeChild(el.firstChild);
+  }
+
+  function render() {
+    const list = document.getElementById('today-list');
+    const empty = document.getElementById('today-empty');
+    const count = document.getElementById('today-count');
+    const tpl = document.getElementById('lead-card-tpl-today') as HTMLTemplateElement | null;
+    if (!list || !empty || !count || !tpl) return;
+    const today = getState().today;
+    count.textContent = String(today.length);
+    clearChildren(list as HTMLElement);
+    if (!today.length) {
+      empty.classList.remove('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+    for (const lead of today) {
+      const frag = tpl.content.cloneNode(true) as DocumentFragment;
+      const btn = frag.querySelector('button') as HTMLElement | null;
+      if (!btn) continue;
+      fillCard(btn, lead);
+      btn.addEventListener('click', () => void openLead(String(lead.lead_id || '')));
+      list.appendChild(frag);
+    }
+  }
+
+  render();
+  subscribe(render);
+</script>

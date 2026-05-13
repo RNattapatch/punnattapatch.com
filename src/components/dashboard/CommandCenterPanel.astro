@@ -1,0 +1,98 @@
+---
+---
+<section class="mb-3">
+  <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Command Center</h3>
+  <div class="grid gap-2">
+    <label class="form-control">
+      <span class="label-text text-xs opacity-70">Next action</span>
+      <input id="cc-next-action" class="input input-bordered input-sm tap-44" placeholder="ส่ง assessment, นัด follow-up..." autocomplete="off" />
+    </label>
+    <label class="form-control">
+      <span class="label-text text-xs opacity-70">Next action due</span>
+      <input id="cc-next-due" type="date" class="input input-bordered input-sm tap-44" />
+    </label>
+    <label class="form-control">
+      <span class="label-text text-xs opacity-70">Proposal sent at</span>
+      <input id="cc-proposal" type="datetime-local" class="input input-bordered input-sm tap-44" />
+    </label>
+    <label class="form-control">
+      <span class="label-text text-xs opacity-70">Walkthrough at</span>
+      <input id="cc-walk" type="datetime-local" class="input input-bordered input-sm tap-44" />
+    </label>
+    <label class="form-control">
+      <span class="label-text text-xs opacity-70">Payment status</span>
+      <select id="cc-payment" class="select select-bordered select-sm tap-44">
+        <option value="">—</option>
+        <option value="unpaid">unpaid</option>
+        <option value="partial">partial</option>
+        <option value="paid">paid</option>
+      </select>
+    </label>
+    <p id="cc-last-touch" class="text-xs opacity-70"></p>
+  </div>
+</section>
+
+<script>
+  import { subscribe, getState, patchLead } from '../../scripts/dashboard/store';
+
+  function dt(iso?: string): string {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return '';
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+  function ymd(iso?: string): string {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return '';
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  }
+
+  function apply() {
+    const lead = getState().selectedLead;
+    if (!lead) return;
+    const setVal = (id: string, v: string) => {
+      const el = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null;
+      if (el) el.value = v;
+    };
+    setVal('cc-next-action', (lead.next_action as string) || '');
+    setVal('cc-next-due', ymd(lead.next_action_due as string));
+    setVal('cc-proposal', dt(lead.proposal_sent_at as string));
+    setVal('cc-walk', dt(lead.walkthrough_at as string));
+    setVal('cc-payment', (lead.payment_status as string) || '');
+    const lt = document.getElementById('cc-last-touch');
+    if (lt) lt.textContent = lead.last_touch_at ? `Last touch: ${new Date(lead.last_touch_at as string).toLocaleString('th-TH')}` : 'ยังไม่มี touch';
+  }
+
+  apply();
+  subscribe(apply);
+
+  function bind(id: string, key: string, conv: (v: string) => unknown) {
+    const el = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null;
+    el?.addEventListener('change', () => {
+      const lead = getState().selectedLead;
+      if (!lead) return;
+      void patchLead(String(lead.lead_id), { [key]: conv(el.value) });
+    });
+  }
+  function bindBlur(id: string, key: string, conv: (v: string) => unknown) {
+    const el = document.getElementById(id) as HTMLInputElement | null;
+    el?.addEventListener('blur', () => {
+      const lead = getState().selectedLead;
+      if (!lead) return;
+      const orig = ((lead as Record<string, unknown>)[key] as string) || '';
+      if (orig === el.value) return;
+      void patchLead(String(lead.lead_id), { [key]: conv(el.value) });
+    });
+  }
+
+  const ident = (v: string) => v;
+  const isoFromLocal = (v: string) => (v ? new Date(v).toISOString() : '');
+  bindBlur('cc-next-action', 'next_action', ident);
+  bind('cc-next-due', 'next_action_due', (v) => v || '');
+  bind('cc-proposal', 'proposal_sent_at', isoFromLocal);
+  bind('cc-walk', 'walkthrough_at', isoFromLocal);
+  bind('cc-payment', 'payment_status', ident);
+</script>

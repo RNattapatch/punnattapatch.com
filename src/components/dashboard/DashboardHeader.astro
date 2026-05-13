@@ -1,0 +1,46 @@
+---
+---
+<header class="flex items-center justify-between gap-2 mb-4">
+  <div>
+    <h1 class="text-lg font-display tracking-tight">Today Command Center</h1>
+    <p id="dash-meta" class="text-xs opacity-60"></p>
+  </div>
+  <div class="flex items-center gap-2">
+    <button id="dash-refresh" class="btn btn-sm btn-ghost tap-44" aria-label="Refresh">
+      <span aria-hidden="true">↻</span>
+      <span class="sr-only">Refresh</span>
+    </button>
+    <button id="dash-logout" class="btn btn-sm btn-outline tap-44">ออก</button>
+  </div>
+</header>
+
+<script>
+  import { refresh, logout, subscribe, getState } from '../../scripts/dashboard/store';
+
+  function relTime(iso: string | null): string {
+    if (!iso) return '—';
+    const ms = Date.now() - new Date(iso).getTime();
+    if (!Number.isFinite(ms)) return '—';
+    const s = Math.floor(ms / 1000);
+    if (s < 60) return `อัปเดต ${s} วิที่แล้ว`;
+    const m = Math.floor(s / 60);
+    if (m < 60) return `อัปเดต ${m} นาทีที่แล้ว`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `อัปเดต ${h} ชั่วโมงที่แล้ว`;
+    return `อัปเดต ${new Date(iso).toLocaleString('th-TH')}`;
+  }
+
+  function render() {
+    const meta = document.getElementById('dash-meta');
+    if (!meta) return;
+    const s = getState();
+    meta.textContent = relTime(s.generatedAt);
+  }
+
+  render();
+  subscribe(render);
+  setInterval(render, 30000);
+
+  document.getElementById('dash-refresh')?.addEventListener('click', () => void refresh());
+  document.getElementById('dash-logout')?.addEventListener('click', () => logout());
+</script>

@@ -23,7 +23,8 @@ export default defineConfig({
         !page.includes('/_') &&
         !page.endsWith('/thank-you') && // intake thank-you is noindex
         !page.endsWith('/agent-builder-kit/thank-you') && // Kit thank-you is noindex
-        !page.includes('/agent-builder-kit/manual/'), // manual dark pages — distributed via email/PDF only
+        !page.includes('/agent-builder-kit/manual/') && // manual dark pages — distributed via email/PDF only
+        !page.includes('/dashboard'), // private CRM — noindex
       // Per-URL priority + changefreq so crawlers grasp information
       // hierarchy: revenue pages (home, services, booking, quiz) rank
       // highest, insights/FAQ next, secondary last.

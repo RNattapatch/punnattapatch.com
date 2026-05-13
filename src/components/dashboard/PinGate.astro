@@ -1,0 +1,70 @@
+---
+---
+<section id="pin-gate" class="fixed inset-0 z-50 flex items-center justify-center px-6">
+  <div class="card bg-base-200 border border-base-300 shadow-xl w-full max-w-sm">
+    <div class="card-body items-stretch text-center gap-4">
+      <h1 class="text-xl font-display tracking-tight">เข้าสู่ Dashboard</h1>
+      <p class="text-sm opacity-70">ใส่ PIN 6 หลัก</p>
+      <input
+        id="pin-input"
+        type="password"
+        inputmode="numeric"
+        autocomplete="off"
+        maxlength="6"
+        pattern="[0-9]*"
+        class="input input-bordered text-center text-2xl tracking-[0.4em] tap-44"
+        aria-label="PIN"
+      />
+      <button id="pin-submit" class="btn btn-primary tap-44">ปลดล็อก</button>
+      <div id="pin-error" class="text-error text-sm min-h-[1.25rem]" role="alert" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { tryLogin, subscribe, getState } from '../../scripts/dashboard/store';
+
+  function applyAuthVisibility() {
+    const gate = document.getElementById('pin-gate');
+    const app = document.getElementById('dashboard-app');
+    const authed = getState().authed;
+    if (gate) gate.classList.toggle('hidden', authed);
+    if (app) app.classList.toggle('hidden', !authed);
+  }
+
+  applyAuthVisibility();
+  subscribe(applyAuthVisibility);
+
+  const input = document.getElementById('pin-input') as HTMLInputElement | null;
+  const btn = document.getElementById('pin-submit') as HTMLButtonElement | null;
+  const errEl = document.getElementById('pin-error');
+
+  async function submit() {
+    if (!input || !btn || !errEl) return;
+    const pin = input.value.trim();
+    if (!/^\d{4,8}$/.test(pin)) {
+      errEl.textContent = 'PIN ต้องเป็นตัวเลข 4–8 หลัก';
+      return;
+    }
+    errEl.textContent = '';
+    btn.disabled = true;
+    btn.classList.add('loading');
+    try {
+      await tryLogin(pin);
+      input.value = '';
+    } catch (err) {
+      const e = err as Error & { code?: string };
+      if (e.code === 'locked') errEl.textContent = 'ถูกล็อก 15 นาที — ลองใหม่ภายหลัง';
+      else errEl.textContent = e.message || 'PIN ไม่ถูกต้อง';
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+    }
+  }
+
+  btn?.addEventListener('click', submit);
+  input?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submit();
+  });
+  input?.focus();
+</script>

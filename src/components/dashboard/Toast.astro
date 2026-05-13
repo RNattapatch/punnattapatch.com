@@ -1,0 +1,25 @@
+---
+---
+<div id="toast-host" class="fixed inset-x-0 top-4 z-50 flex justify-center pointer-events-none"></div>
+
+<script>
+  import { on } from '../../scripts/dashboard/store';
+
+  on('toast', (e) => {
+    const host = document.getElementById('toast-host');
+    if (!host) return;
+    const detail = (e.detail || {}) as { message: string; kind?: 'success' | 'error' | 'info' };
+    const wrap = document.createElement('div');
+    const kind = detail.kind || 'success';
+    const cls = kind === 'error' ? 'alert-error' : kind === 'info' ? 'alert-info' : 'alert-success';
+    wrap.className = `alert ${cls} shadow-lg max-w-sm w-[90%] pointer-events-auto mb-2`;
+    const span = document.createElement('span');
+    span.textContent = detail.message || '';
+    wrap.appendChild(span);
+    host.appendChild(wrap);
+    setTimeout(() => {
+      wrap.style.opacity = '0';
+      setTimeout(() => wrap.remove(), 250);
+    }, 2400);
+  });
+</script>

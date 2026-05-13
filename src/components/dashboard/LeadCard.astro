@@ -1,0 +1,26 @@
+---
+interface Props {
+  variant?: 'list' | 'today';
+}
+const { variant = 'list' } = Astro.props;
+---
+<template id={`lead-card-tpl-${variant}`}>
+  <button
+    class="lead-card group w-full text-left bg-base-200 hover:bg-base-300 border border-base-300 rounded-box px-4 py-3 flex items-start gap-3 transition tap-44"
+    data-lead-id=""
+    data-variant={variant}
+  >
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2">
+        <span class="font-display text-base truncate" data-field="name"></span>
+        <span class="badge badge-sm" data-field="badge"></span>
+      </div>
+      <div class="text-xs opacity-70 truncate" data-field="company"></div>
+      <div class="text-xs opacity-60 mt-0.5" data-field="meta"></div>
+    </div>
+    <div class="text-right shrink-0">
+      <div class="text-sm font-semibold" data-field="amount"></div>
+      <div class="text-[10px] opacity-60" data-field="age"></div>
+    </div>
+  </button>
+</template>

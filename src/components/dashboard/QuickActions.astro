@@ -1,0 +1,72 @@
+---
+---
+<div id="quick-actions" class="grid grid-cols-2 gap-2 mb-3">
+  <a id="qa-call" class="btn btn-outline btn-sm tap-44" href="#" target="_self">โทร</a>
+  <a id="qa-line" class="btn btn-outline btn-sm tap-44" href="#" target="_blank" rel="noopener">เปิด LINE</a>
+  <button id="qa-copy" class="btn btn-outline btn-sm tap-44">คัดลอก follow-up</button>
+  <button id="qa-log" class="btn btn-outline btn-sm tap-44">บันทึก touch</button>
+  <button id="qa-mark-won" class="btn btn-success btn-sm tap-44">Mark won</button>
+  <button id="qa-mark-lost" class="btn btn-error btn-sm tap-44">Mark lost</button>
+  <button id="qa-proposal" class="btn btn-primary btn-sm col-span-2 tap-44">สร้างงาน proposal (+1d)</button>
+</div>
+
+<script>
+  import { subscribe, getState, copyFollowUp, createProposalTask, emit, logInteraction } from '../../scripts/dashboard/store';
+  import type { LeadUi } from '../../scripts/dashboard/adapter';
+
+  function ph(v: unknown): string { return (v ?? '').toString().trim(); }
+
+  function applyLead() {
+    const lead = getState().selectedLead;
+    if (!lead) return;
+    const phone = ph(lead.phone);
+    const callA = document.getElementById('qa-call') as HTMLAnchorElement | null;
+    if (callA) {
+      if (phone) {
+        callA.href = `tel:${phone}`;
+        callA.classList.remove('btn-disabled');
+      } else {
+        callA.href = '#';
+        callA.classList.add('btn-disabled');
+      }
+    }
+    const lineId = ph(lead.line_id);
+    const lineA = document.getElementById('qa-line') as HTMLAnchorElement | null;
+    if (lineA) {
+      if (lineId) {
+        lineA.href = lineId.startsWith('http') ? lineId : `https://line.me/ti/p/~${encodeURIComponent(lineId)}`;
+        lineA.classList.remove('btn-disabled');
+      } else {
+        lineA.href = '#';
+        lineA.classList.add('btn-disabled');
+      }
+    }
+  }
+
+  applyLead();
+  subscribe(applyLead);
+
+  document.getElementById('qa-copy')?.addEventListener('click', () => {
+    const lead = getState().selectedLead as LeadUi | null;
+    if (lead) copyFollowUp(lead);
+  });
+  document.getElementById('qa-log')?.addEventListener('click', () => {
+    const lead = getState().selectedLead;
+    if (!lead) return;
+    const summary = window.prompt('สรุป interaction (ผ่าน touch)');
+    if (summary === null) return;
+    void logInteraction(String(lead.lead_id), 'note', summary || 'touch');
+  });
+  document.getElementById('qa-mark-won')?.addEventListener('click', () => {
+    const lead = getState().selectedLead;
+    if (lead) emit('modal:edit-deal', { lead, preset: 'won' });
+  });
+  document.getElementById('qa-mark-lost')?.addEventListener('click', () => {
+    const lead = getState().selectedLead;
+    if (lead) emit('modal:edit-deal', { lead, preset: 'lost' });
+  });
+  document.getElementById('qa-proposal')?.addEventListener('click', () => {
+    const lead = getState().selectedLead;
+    if (lead) void createProposalTask(String(lead.lead_id));
+  });
+</script>

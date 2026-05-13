@@ -1,0 +1,77 @@
+---
+---
+<section class="mb-3">
+  <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Interaction log</h3>
+  <form id="ix-form" class="flex flex-wrap gap-2 mb-2">
+    <select id="ix-type" class="select select-bordered select-sm tap-44">
+      <option value="call">call</option>
+      <option value="line">line</option>
+      <option value="meeting">meeting</option>
+      <option value="email">email</option>
+      <option value="note">note</option>
+    </select>
+    <input id="ix-summary" class="input input-bordered input-sm flex-1 tap-44" placeholder="สรุปสั้นๆ" autocomplete="off" />
+    <button id="ix-add" type="submit" class="btn btn-sm btn-primary tap-44">เพิ่ม</button>
+  </form>
+  <ul id="ix-timeline" class="grid gap-2 text-sm"></ul>
+  <div id="ix-empty" class="hidden text-sm opacity-70 px-2 py-3 text-center">ยังไม่มี interaction</div>
+</section>
+
+<script>
+  import { subscribe, getState, logInteraction } from '../../scripts/dashboard/store';
+  import type { Interaction } from '../../scripts/dashboard/api';
+
+  function clearChildren(el: HTMLElement) {
+    while (el.firstChild) el.removeChild(el.firstChild);
+  }
+
+  function render() {
+    const list = getState().interactions;
+    const ul = document.getElementById('ix-timeline');
+    const empty = document.getElementById('ix-empty');
+    if (!ul || !empty) return;
+    clearChildren(ul as HTMLElement);
+    if (!list.length) {
+      empty.classList.remove('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+    for (const ix of list) {
+      const li = document.createElement('li');
+      li.className = 'border border-base-300 bg-base-200 rounded-box px-3 py-2';
+      const meta = document.createElement('div');
+      meta.className = 'text-xs opacity-60 flex items-center gap-2';
+      const at = document.createElement('span');
+      at.textContent = ix.at ? new Date(ix.at).toLocaleString('th-TH') : '';
+      const typ = document.createElement('span');
+      typ.className = 'badge badge-xs badge-ghost';
+      typ.textContent = (ix as Interaction).type;
+      const by = document.createElement('span');
+      by.textContent = ix.by ? `· ${ix.by}` : '';
+      meta.appendChild(at);
+      meta.appendChild(typ);
+      meta.appendChild(by);
+      const body = document.createElement('div');
+      body.className = 'text-sm';
+      body.textContent = ix.summary || '';
+      li.appendChild(meta);
+      li.appendChild(body);
+      ul.appendChild(li);
+    }
+  }
+
+  render();
+  subscribe(render);
+
+  document.getElementById('ix-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const lead = getState().selectedLead;
+    if (!lead) return;
+    const t = (document.getElementById('ix-type') as HTMLSelectElement | null)?.value as Interaction['type'];
+    const sumEl = document.getElementById('ix-summary') as HTMLInputElement | null;
+    const summary = (sumEl?.value || '').trim();
+    if (!t) return;
+    void logInteraction(String(lead.lead_id), t, summary);
+    if (sumEl) sumEl.value = '';
+  });
+</script>

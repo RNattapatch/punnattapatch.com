@@ -1,0 +1,47 @@
+---
+---
+<section class="mb-3">
+  <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Memorable facts</h3>
+  <div class="grid gap-2">
+    <input id="mf-nickname" class="input input-bordered input-sm tap-44" placeholder="Nickname" autocomplete="off" />
+    <input id="mf-fact-1" class="input input-bordered input-sm tap-44" placeholder="Fact #1" autocomplete="off" />
+    <input id="mf-fact-2" class="input input-bordered input-sm tap-44" placeholder="Fact #2" autocomplete="off" />
+    <input id="mf-fact-3" class="input input-bordered input-sm tap-44" placeholder="Fact #3" autocomplete="off" />
+  </div>
+</section>
+
+<script>
+  import { subscribe, getState, patchLead } from '../../scripts/dashboard/store';
+
+  const fields: Array<[string, string]> = [
+    ['mf-nickname', 'nickname'],
+    ['mf-fact-1', 'fact_1'],
+    ['mf-fact-2', 'fact_2'],
+    ['mf-fact-3', 'fact_3'],
+  ];
+
+  function apply() {
+    const lead = getState().selectedLead;
+    if (!lead) return;
+    for (const [id, key] of fields) {
+      const el = document.getElementById(id) as HTMLInputElement | null;
+      if (el) el.value = ((lead as Record<string, unknown>)[key] as string) || '';
+    }
+  }
+
+  apply();
+  subscribe(apply);
+
+  for (const [id, key] of fields) {
+    const el = document.getElementById(id) as HTMLInputElement | null;
+    if (!el) continue;
+    el.addEventListener('blur', () => {
+      const lead = getState().selectedLead;
+      if (!lead) return;
+      const orig = (lead as Record<string, unknown>)[key] || '';
+      const next = el.value.trim();
+      if (String(orig) === next) return;
+      void patchLead(String(lead.lead_id), { [key]: next });
+    });
+  }
+</script>

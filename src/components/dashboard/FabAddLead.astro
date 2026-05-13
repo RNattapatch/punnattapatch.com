@@ -1,0 +1,14 @@
+---
+---
+<button
+  id="fab-add-lead"
+  class="fixed bottom-6 right-6 z-30 btn btn-circle btn-primary shadow-xl tap-44"
+  aria-label="เพิ่ม lead"
+>
+  <span aria-hidden="true" class="text-2xl">+</span>
+</button>
+
+<script>
+  import { emit } from '../../scripts/dashboard/store';
+  document.getElementById('fab-add-lead')?.addEventListener('click', () => emit('modal:add-lead'));
+</script>

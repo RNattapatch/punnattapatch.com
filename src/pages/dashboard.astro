@@ -1,0 +1,33 @@
+---
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+import PinGate from '../components/dashboard/PinGate.astro';
+import DashboardHeader from '../components/dashboard/DashboardHeader.astro';
+import KpiGrid from '../components/dashboard/KpiGrid.astro';
+import TodayPanel from '../components/dashboard/TodayPanel.astro';
+import LeadList from '../components/dashboard/LeadList.astro';
+import FabAddLead from '../components/dashboard/FabAddLead.astro';
+import LeadDetailDrawer from '../components/dashboard/LeadDetailDrawer.astro';
+import AddLeadModal from '../components/dashboard/AddLeadModal.astro';
+import EditDealModal from '../components/dashboard/EditDealModal.astro';
+import Toast from '../components/dashboard/Toast.astro';
+---
+<DashboardLayout>
+  <PinGate />
+  <main id="dashboard-app" class="hidden mx-auto max-w-5xl px-4 pb-32 pt-4">
+    <DashboardHeader />
+    <KpiGrid />
+    <TodayPanel />
+    <LeadList />
+    <FabAddLead />
+  </main>
+
+  <LeadDetailDrawer />
+  <AddLeadModal />
+  <EditDealModal />
+  <Toast />
+
+  <script>
+    import { initDashboard } from '../scripts/dashboard/store';
+    initDashboard();
+  </script>
+</DashboardLayout>

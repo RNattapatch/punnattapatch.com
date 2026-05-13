@@ -1,0 +1,54 @@
+---
+import KpiCard from './KpiCard.astro';
+---
+<section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+  <KpiCard id="kpi-sales-total" label="ยอดขายรวม" accent="cyan" />
+  <KpiCard id="kpi-sales-month" label="ยอดเดือนนี้" accent="coral" />
+  <KpiCard id="kpi-leads" label="Leads" accent="violet" />
+  <KpiCard id="kpi-pipeline" label="Pipeline" accent="cyan" />
+  <KpiCard id="kpi-conversion" label="Conversion" accent="emerald" />
+  <KpiCard id="kpi-industry" label="Top อุตสาหกรรม" accent="violet" />
+</section>
+
+<script>
+  import { subscribe, getState } from '../../scripts/dashboard/store';
+
+  function fmtTHB(n: number): string {
+    return new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB', maximumFractionDigits: 0 }).format(n || 0);
+  }
+  function fmtPct(n: number): string {
+    if (!Number.isFinite(n)) return '—';
+    const v = Math.round(n * 1000) / 10;
+    const sign = v > 0 ? '+' : '';
+    return `${sign}${v.toFixed(1)}%`;
+  }
+  function setText(id: string, txt: string) {
+    const el = document.getElementById(id); if (el) el.textContent = txt;
+  }
+
+  function render() {
+    const k = getState().kpis;
+    if (!k) return;
+    setText('kpi-sales-total', fmtTHB(k.sales_total));
+    setText('kpi-sales-total-sub', `เดือนก่อน ${fmtTHB(k.sales_prev_month)}`);
+
+    setText('kpi-sales-month', fmtTHB(k.sales_this_month));
+    setText('kpi-sales-month-sub', `Δ ${fmtPct(k.sales_delta_pct)}`);
+
+    setText('kpi-leads', String(k.leads_total));
+    setText('kpi-leads-sub', `เดือนนี้ ${k.leads_this_month}`);
+
+    setText('kpi-pipeline', `${k.pipeline.in_progress} · ${k.pipeline.proposal_sent} · ${k.pipeline.walkthrough_done} · ${k.pipeline.won}`);
+    setText('kpi-pipeline-sub', 'in · prop · walk · won');
+
+    setText('kpi-conversion', fmtPct(k.conversion_rate));
+    setText('kpi-conversion-sub', '');
+
+    const top = k.top_industry || [];
+    setText('kpi-industry', top.map((t) => t.label).slice(0, 3).join(' · ') || '—');
+    setText('kpi-industry-sub', top.map((t) => `${t.label}(${t.count})`).join(' · '));
+  }
+
+  render();
+  subscribe(render);
+</script>

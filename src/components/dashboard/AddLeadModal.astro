@@ -1,0 +1,89 @@
+---
+---
+<dialog id="add-lead-modal" class="modal">
+  <div class="modal-box max-w-md bg-base-200 border border-base-300">
+    <h3 class="font-display text-lg mb-2">เพิ่ม lead ใหม่</h3>
+    <form id="add-lead-form" class="grid gap-2">
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">ชื่อ-นามสกุล (จำเป็น)</span>
+        <input name="full_name" required class="input input-bordered input-sm tap-44" autocomplete="off" />
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">Nickname</span>
+        <input name="nickname" class="input input-bordered input-sm tap-44" autocomplete="off" />
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">บริษัท</span>
+        <input name="company_name" class="input input-bordered input-sm tap-44" autocomplete="off" />
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">อุตสาหกรรม</span>
+        <input name="business_type" class="input input-bordered input-sm tap-44" autocomplete="off" />
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">โทร</span>
+        <input name="phone" type="tel" inputmode="tel" class="input input-bordered input-sm tap-44" autocomplete="off" />
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">LINE</span>
+        <input name="line_id" class="input input-bordered input-sm tap-44" autocomplete="off" />
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">Email</span>
+        <input name="email" type="email" inputmode="email" class="input input-bordered input-sm tap-44" autocomplete="off" />
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">ที่มา</span>
+        <select name="manual_source" class="select select-bordered select-sm tap-44">
+          <option value="manual">manual</option>
+          <option value="referral">referral</option>
+          <option value="walk-in">walk-in</option>
+        </select>
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">Next action</span>
+        <input name="next_action" class="input input-bordered input-sm tap-44" autocomplete="off" />
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">Next due</span>
+        <input name="next_action_due" type="date" class="input input-bordered input-sm tap-44" />
+      </label>
+      <div class="modal-action mt-2">
+        <button type="button" id="add-lead-cancel" class="btn btn-sm btn-ghost tap-44">ยกเลิก</button>
+        <button type="submit" class="btn btn-sm btn-primary tap-44">บันทึก</button>
+      </div>
+    </form>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>
+
+<script>
+  import { on, createLead, openLead } from '../../scripts/dashboard/store';
+  import type { LeadUi } from '../../scripts/dashboard/adapter';
+
+  const dlg = document.getElementById('add-lead-modal') as HTMLDialogElement | null;
+  const form = document.getElementById('add-lead-form') as HTMLFormElement | null;
+
+  on('modal:add-lead', () => {
+    if (!dlg) return;
+    if (form) form.reset();
+    dlg.showModal();
+  });
+
+  document.getElementById('add-lead-cancel')?.addEventListener('click', () => dlg?.close());
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form) return;
+    const fd = new FormData(form);
+    const fields: Partial<LeadUi> = {};
+    fd.forEach((v, k) => {
+      const s = (v as string).toString().trim();
+      if (s) (fields as Record<string, unknown>)[k] = s;
+    });
+    if (!fields.full_name) return;
+    const lead = await createLead(fields);
+    dlg?.close();
+    if (lead?.lead_id) void openLead(String(lead.lead_id));
+  });
+</script>

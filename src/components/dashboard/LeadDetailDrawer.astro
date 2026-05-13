@@ -1,0 +1,147 @@
+---
+import QuickActions from './QuickActions.astro';
+import CommandCenterPanel from './CommandCenterPanel.astro';
+import MemorableFacts from './MemorableFacts.astro';
+import NotesPanel from './NotesPanel.astro';
+import InteractionLog from './InteractionLog.astro';
+---
+<aside
+  id="lead-drawer"
+  class="hidden fixed inset-x-0 bottom-0 z-40 bg-base-100 border-t border-base-300 rounded-t-box shadow-2xl overflow-y-auto"
+  style="max-height: 92dvh;"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="lead-drawer-name"
+>
+  <div class="sticky top-0 bg-base-100/95 backdrop-blur border-b border-base-300 px-4 py-3 flex items-center gap-3">
+    <div class="flex-1 min-w-0">
+      <h2 id="lead-drawer-name" class="font-display text-lg truncate">—</h2>
+      <p id="lead-drawer-sub" class="text-xs opacity-70 truncate"></p>
+    </div>
+    <button id="drawer-close" class="btn btn-sm btn-ghost tap-44" aria-label="ปิด">✕</button>
+  </div>
+
+  <div class="px-4 py-3 grid gap-3">
+    <section>
+      <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Contact</h3>
+      <div id="lead-contact" class="text-sm grid gap-1"></div>
+    </section>
+
+    <section>
+      <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Deal</h3>
+      <div class="flex items-center gap-2 mb-1">
+        <span id="deal-badge" class="badge badge-sm">—</span>
+        <span id="deal-amount" class="text-sm"></span>
+        <span id="deal-package" class="text-xs opacity-70"></span>
+      </div>
+      <button id="deal-edit" class="btn btn-xs btn-outline tap-44">แก้ deal</button>
+    </section>
+
+    <QuickActions />
+    <CommandCenterPanel />
+    <MemorableFacts />
+    <NotesPanel />
+
+    <section>
+      <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Read-only context</h3>
+      <div id="lead-context" class="text-sm grid gap-1 opacity-90"></div>
+    </section>
+
+    <InteractionLog />
+
+    <section>
+      <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Audit</h3>
+      <div id="lead-audit" class="text-xs opacity-70 grid gap-0.5"></div>
+    </section>
+  </div>
+</aside>
+
+<script>
+  import { subscribe, getState, closeLead, emit } from '../../scripts/dashboard/store';
+
+  function row(label: string, value: string) {
+    const wrap = document.createElement('div');
+    wrap.className = 'flex justify-between gap-2';
+    const l = document.createElement('span');
+    l.className = 'opacity-60';
+    l.textContent = label;
+    const v = document.createElement('span');
+    v.className = 'truncate';
+    v.textContent = value || '—';
+    wrap.appendChild(l);
+    wrap.appendChild(v);
+    return wrap;
+  }
+  function clearChildren(el: HTMLElement) {
+    while (el.firstChild) el.removeChild(el.firstChild);
+  }
+
+  function render() {
+    const drawer = document.getElementById('lead-drawer');
+    if (!drawer) return;
+    const lead = getState().selectedLead;
+    drawer.classList.toggle('hidden', !lead);
+    if (!lead) return;
+
+    const name = (lead.nickname || lead.full_name || '—').toString();
+    const company = (lead.company_name || '').toString();
+    const nameEl = document.getElementById('lead-drawer-name');
+    const subEl = document.getElementById('lead-drawer-sub');
+    if (nameEl) nameEl.textContent = name;
+    if (subEl) subEl.textContent = [company, lead.business_type as string].filter(Boolean).join(' · ');
+
+    const contact = document.getElementById('lead-contact');
+    if (contact) {
+      clearChildren(contact);
+      contact.appendChild(row('ชื่อจริง', String(lead.full_name || '')));
+      contact.appendChild(row('ตำแหน่ง', String(lead.position || lead.position_other || '')));
+      contact.appendChild(row('โทร', String(lead.phone || '')));
+      contact.appendChild(row('LINE', String(lead.line_id || '')));
+      contact.appendChild(row('Email', String(lead.email || '')));
+    }
+
+    const dealBadge = document.getElementById('deal-badge');
+    const dealAmount = document.getElementById('deal-amount');
+    const dealPackage = document.getElementById('deal-package');
+    if (dealBadge) {
+      const oc = lead.deal_outcome || 'in_progress';
+      dealBadge.className = `badge badge-sm ${oc === 'won' ? 'badge-success' : oc === 'lost' ? 'badge-error' : 'badge-ghost'}`;
+      dealBadge.textContent = oc;
+    }
+    const amount = Number(lead.package_price) || 0;
+    if (dealAmount) dealAmount.textContent = amount ? `${new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(amount)} ฿` : '—';
+    if (dealPackage) dealPackage.textContent = (lead.package as string) || '';
+
+    const ctx = document.getElementById('lead-context');
+    if (ctx) {
+      clearChildren(ctx);
+      ctx.appendChild(row('Pain points', String(lead.pain_points || '')));
+      ctx.appendChild(row('Product', String(lead.product || '')));
+      ctx.appendChild(row('Score', String(lead.score ?? '')));
+      ctx.appendChild(row('Tier', String(lead.tier || '')));
+      ctx.appendChild(row('Hook', String(lead.hook_variant || '')));
+      ctx.appendChild(row('Team size', String(lead.team_size || '')));
+      ctx.appendChild(row('Comment', String(lead.comment || '')));
+      ctx.appendChild(row('Message', String(lead.message || '')));
+    }
+
+    const audit = document.getElementById('lead-audit');
+    if (audit) {
+      clearChildren(audit);
+      audit.appendChild(row('submitted_at', String(lead.submitted_at || '')));
+      audit.appendChild(row('source', String(lead.source || '')));
+      audit.appendChild(row('source_page', String(lead.source_page || '')));
+      audit.appendChild(row('manual_source', String(lead.manual_source || '')));
+      audit.appendChild(row('lead_id', String(lead.lead_id || '')));
+    }
+  }
+
+  render();
+  subscribe(render);
+
+  document.getElementById('drawer-close')?.addEventListener('click', () => closeLead());
+  document.getElementById('deal-edit')?.addEventListener('click', () => {
+    const lead = getState().selectedLead;
+    if (lead) emit('modal:edit-deal', { lead });
+  });
+</script>
