@@ -622,24 +622,92 @@ const budgets = [
 
   const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
 
-  async function postToWebhook(payload: IntakePayload): Promise<'sent' | 'failed'> {
+  // Apps Script Web App fallback — activated when n8n is unreachable.
+  // Empty string disables fallback (primary-only behavior). After deploying
+  // output/web-app/landing-pages/intake-form-fallback.gs, paste the Web App URL here.
+  const APPSCRIPT_FALLBACK = '';
+
+  type SubmitStatus = 'sent-primary' | 'sent-fallback' | 'failed';
+
+  async function tryPost(
+    url: string,
+    payload: IntakePayload,
+    timeoutMs: number,
+    contentType: string
+  ): Promise<boolean> {
     const ctrl = new AbortController();
-    const kill = setTimeout(() => ctrl.abort(), 10_000);
+    const kill = setTimeout(() => ctrl.abort(), timeoutMs);
     try {
-      const res = await fetch(N8N_WEBHOOK, {
+      const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': contentType },
         body: JSON.stringify(payload),
         signal: ctrl.signal,
         keepalive: true,
       });
       clearTimeout(kill);
-      return res.ok ? 'sent' : 'failed';
+      return res.ok;
     } catch (err) {
       clearTimeout(kill);
-      console.error('[intake-form] webhook error', err);
-      return 'failed';
+      console.error('[intake-form] post failed', url, err);
+      return false;
     }
+  }
+
+  async function postWithFallback(payload: IntakePayload): Promise<SubmitStatus> {
+    const ok = await tryPost(N8N_WEBHOOK, payload, 8000, 'application/json');
+    if (ok) return 'sent-primary';
+
+    // Apps Script Web Apps reject application/json (CORS preflight) — text/plain
+    // keeps the request "simple" so it passes through. JSON.parse on the body
+    // still works server-side.
+    if (APPSCRIPT_FALLBACK && APPSCRIPT_FALLBACK.indexOf('https://') === 0) {
+      const fbOk = await tryPost(APPSCRIPT_FALLBACK, payload, 8000, 'text/plain;charset=UTF-8');
+      if (fbOk) return 'sent-fallback';
+    }
+
+    return 'failed';
+  }
+
+  function showRecoveryUI(ref: string): void {
+    if (refNode) refNode.textContent = ref;
+    if (form) form.classList.add('hidden');
+    if (success) success.classList.remove('hidden');
+
+    // Build the warning banner via DOM APIs (no innerHTML — content is static
+    // here, but textContent keeps the pattern safe if copy ever changes).
+    const banner = document.createElement('div');
+    banner.className = 'mb-4 rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error';
+
+    const heading = document.createElement('strong');
+    heading.textContent = '⚠️ ระบบบันทึกข้อมูลขัดข้องชั่วคราว';
+    banner.appendChild(heading);
+    banner.appendChild(document.createElement('br'));
+
+    banner.appendChild(
+      document.createTextNode('ข้อมูลของคุณถูกเก็บในเครื่องนี้แล้ว แต่ยังไม่ได้ส่งถึงผม')
+    );
+    banner.appendChild(document.createElement('br'));
+
+    const cta = document.createElement('strong');
+    cta.textContent = 'กรุณาส่ง Reference ด้านล่างทาง LINE OA ทันที';
+    banner.appendChild(cta);
+    banner.appendChild(
+      document.createTextNode(' — ผมจะตอบกลับขอข้อมูลเพิ่มเติม')
+    );
+
+    success?.prepend(banner);
+
+    try {
+      navigator.clipboard.writeText(ref);
+    } catch {
+      /* clipboard blocked — user can tap the copy button instead */
+    }
+
+    window.scrollTo({
+      top: (success?.offsetTop ?? 0) - 80,
+      behavior: 'smooth',
+    });
   }
 
   const submitBtn = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
@@ -746,19 +814,28 @@ const budgets = [
       submitBtn.textContent = 'กำลังส่ง...';
     }
 
-    const status = await postToWebhook(payload);
+    const status = await postWithFallback(payload);
     (payload._meta as Record<string, unknown>).webhook_status = status;
     journalPayload(payload);
 
-    // Plausible custom event — tracks conversion funnel
+    // Plausible custom event — tracks conversion funnel + which path persisted
     (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.(
       'Intake Submit',
-      { props: { source: (payload.source as string) ?? 'unknown' } }
+      { props: { source: (payload.source as string) ?? 'unknown', status } }
     );
 
     if (submitBtn) {
       submitBtn.disabled = false;
       submitBtn.textContent = submitBtnLabel;
+    }
+
+    if (status === 'failed') {
+      // Both n8n primary + Apps Script fallback unreachable. Don't redirect to
+      // /thank-you — the conversion didn't persist server-side, so showing the
+      // success page would mislead the user and fire a false conversion event
+      // for the Meta/TikTok ad pixels watching that URL.
+      showRecoveryUI(payload._meta.reference);
+      return;
     }
 
     // Redirect to /thank-you with ref + attribution passthrough so the
