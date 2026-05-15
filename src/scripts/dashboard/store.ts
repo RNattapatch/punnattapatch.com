@@ -8,9 +8,14 @@ import {
   addLead,
   addInteraction,
   getLeadsPage,
+  getExpenses,
+  addExpense as apiAddExpense,
+  deleteExpense as apiDeleteExpense,
   type DashboardData,
   type Interaction,
   type Kpis,
+  type ExpenseRow,
+  type ExpenseSummary,
 } from './api';
 import type { LeadUi } from './adapter';
 import { pickTemplate } from './templates';
@@ -45,6 +50,10 @@ type State = {
   selectedLeadId: string | null;
   selectedLead: LeadUi | null;
   interactions: Interaction[];
+  activeTab: 'leads' | 'expenses';
+  expenses: ExpenseRow[];
+  expenseSummary: ExpenseSummary | null;
+  expensesLoaded: boolean;
 };
 
 const state: State = {
@@ -61,6 +70,10 @@ const state: State = {
   selectedLeadId: null,
   selectedLead: null,
   interactions: [],
+  activeTab: 'leads',
+  expenses: [],
+  expenseSummary: null,
+  expensesLoaded: false,
 };
 
 type Listener = () => void;
@@ -113,6 +126,10 @@ export function logout(): void {
   state.selectedLeadId = null;
   state.selectedLead = null;
   state.interactions = [];
+  state.activeTab = 'leads';
+  state.expenses = [];
+  state.expenseSummary = null;
+  state.expensesLoaded = false;
   notify();
   emit('auth:logged_out');
 }
@@ -247,6 +264,54 @@ export function copyFollowUp(lead: LeadUi): void {
     );
   } else {
     toast('เบราว์เซอร์ไม่รองรับ clipboard', 'error');
+  }
+}
+
+// ------- Expense tab -------
+export function switchTab(tab: 'leads' | 'expenses'): void {
+  state.activeTab = tab;
+  notify();
+  if (tab === 'expenses' && !state.expensesLoaded) {
+    void loadExpenses();
+  }
+}
+
+export async function loadExpenses(): Promise<void> {
+  try {
+    const data = await getExpenses();
+    state.expenses = data.rows;
+    state.expenseSummary = data.summary;
+    state.expensesLoaded = true;
+    notify();
+  } catch (err) {
+    handleApiError(err, 'โหลดค่าใช้จ่ายไม่สำเร็จ');
+  }
+}
+
+export async function createExpense(data: {
+  date: string;
+  category: string;
+  amount_thb: number;
+  description: string;
+}): Promise<boolean> {
+  try {
+    await apiAddExpense(data);
+    await loadExpenses();
+    toast('บันทึกค่าใช้จ่ายแล้ว');
+    return true;
+  } catch (err) {
+    handleApiError(err, 'บันทึกค่าใช้จ่ายไม่สำเร็จ');
+    return false;
+  }
+}
+
+export async function removeExpense(id: string): Promise<void> {
+  try {
+    await apiDeleteExpense(id);
+    await loadExpenses();
+    toast('ลบค่าใช้จ่ายแล้ว');
+  } catch (err) {
+    handleApiError(err, 'ลบค่าใช้จ่ายไม่สำเร็จ');
   }
 }
 
