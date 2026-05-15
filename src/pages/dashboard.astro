@@ -10,6 +10,9 @@ import SourceDonut from '../components/dashboard/SourceDonut.astro';
 import TodayPanel from '../components/dashboard/TodayPanel.astro';
 import LeadList from '../components/dashboard/LeadList.astro';
 import FabAddLead from '../components/dashboard/FabAddLead.astro';
+import TabBar from '../components/dashboard/TabBar.astro';
+import ExpenseTab from '../components/dashboard/ExpenseTab.astro';
+import AddExpenseModal from '../components/dashboard/AddExpenseModal.astro';
 import LeadDetailDrawer from '../components/dashboard/LeadDetailDrawer.astro';
 import AddLeadModal from '../components/dashboard/AddLeadModal.astro';
 import EditDealModal from '../components/dashboard/EditDealModal.astro';
@@ -20,25 +23,34 @@ import Toast from '../components/dashboard/Toast.astro';
   <main id="dashboard-app" class="hidden mx-auto max-w-7xl px-3 md:px-4 pb-32 pt-3 md:pt-4">
     <DashboardHeader />
     <KpiGrid />
+    <TabBar />
 
-    <section class="grid gap-3 md:grid-cols-2 mb-4">
-      <PipelineDonut />
-      <IndustryBar />
-    </section>
+    <div id="leads-view">
+      <section class="grid gap-3 md:grid-cols-2 mb-4">
+        <PipelineDonut />
+        <IndustryBar />
+      </section>
 
-    <section class="grid gap-3 md:grid-cols-2 mb-4">
-      <SalesTrend />
-      <SourceDonut />
-    </section>
+      <section class="grid gap-3 md:grid-cols-2 mb-4">
+        <SalesTrend />
+        <SourceDonut />
+      </section>
 
-    <TodayPanel />
-    <LeadList />
+      <TodayPanel />
+      <LeadList />
+    </div>
+
+    <div id="expenses-view" class="hidden">
+      <ExpenseTab />
+    </div>
+
     <FabAddLead />
   </main>
 
   <LeadDetailDrawer />
   <AddLeadModal />
   <EditDealModal />
+  <AddExpenseModal />
   <Toast />
 
   <script>
