@@ -1,0 +1,203 @@
+---
+---
+<div id="expense-tab-inner">
+  <!-- Summary cards -->
+  <section class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+    <div class="relative overflow-hidden rounded-xl border border-base-300 bg-base-200 px-3 py-3 pl-4">
+      <div class="absolute inset-y-0 left-0 w-1" style="background-color:var(--color-pun-coral)"></div>
+      <div class="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">เดือนนี้</div>
+      <div id="exp-this-month" class="text-2xl font-display font-semibold leading-none tabular-nums" style="color:var(--color-pun-coral)">—</div>
+    </div>
+    <div class="relative overflow-hidden rounded-xl border border-base-300 bg-base-200 px-3 py-3 pl-4">
+      <div class="absolute inset-y-0 left-0 w-1 bg-base-content" style="opacity:0.3"></div>
+      <div class="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">เดือนก่อน</div>
+      <div id="exp-prev-month" class="text-2xl font-display font-semibold leading-none tabular-nums opacity-50">—</div>
+    </div>
+    <div class="relative overflow-hidden rounded-xl border border-base-300 bg-base-200 px-3 py-3 pl-4">
+      <div class="absolute inset-y-0 left-0 w-1" style="background-color:var(--color-pun-violet)"></div>
+      <div class="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">รวมทั้งหมด</div>
+      <div id="exp-total" class="text-2xl font-display font-semibold leading-none tabular-nums" style="color:var(--color-pun-violet)">—</div>
+    </div>
+    <div class="relative overflow-hidden rounded-xl border border-base-300 bg-base-200 px-3 py-3 pl-4">
+      <div class="absolute inset-y-0 left-0 w-1" style="background-color:var(--color-pun-cyan)"></div>
+      <div class="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">รายการเดือนนี้</div>
+      <div id="exp-count-month" class="text-2xl font-display font-semibold leading-none tabular-nums" style="color:var(--color-pun-cyan)">—</div>
+    </div>
+  </section>
+
+  <!-- Category breakdown -->
+  <section class="rounded-xl border border-base-300 bg-base-200 p-4 mb-4">
+    <div class="text-xs font-semibold uppercase tracking-wider opacity-60 mb-3">แบ่งตามประเภท (เดือนนี้)</div>
+    <div id="exp-cat-bars" class="space-y-3"></div>
+  </section>
+
+  <!-- Expense list -->
+  <section>
+    <div class="text-xs font-semibold uppercase tracking-wider opacity-60 mb-2">รายการทั้งหมด</div>
+    <div id="exp-loading" class="text-center py-8 opacity-40 text-sm">กำลังโหลด...</div>
+    <div id="exp-empty" class="hidden text-center py-8 opacity-40 text-sm">ยังไม่มีค่าใช้จ่ายที่บันทึก</div>
+    <div id="exp-list" class="space-y-2 pb-4"></div>
+  </section>
+</div>
+
+<script>
+  import { getState, subscribe, removeExpense } from '../../scripts/dashboard/store';
+  import type { ExpenseRow } from '../../scripts/dashboard/api';
+
+  const CAT_LABEL: Record<string, string> = {
+    travel: 'ค่าเดินทาง',
+    client_gift: 'ค่าของขวัญ',
+    ai_subscription: 'AI Subscription',
+    other: 'อื่นๆ',
+  };
+  const CAT_EMOJI: Record<string, string> = {
+    travel: '✈️', client_gift: '🎁', ai_subscription: '🤖', other: '📌',
+  };
+  const CAT_COLOR: Record<string, string> = {
+    travel: 'var(--color-pun-cyan)',
+    client_gift: 'var(--color-pun-coral)',
+    ai_subscription: 'var(--color-pun-violet)',
+    other: '#9fb3c8',
+  };
+  const CATS = ['travel', 'client_gift', 'ai_subscription', 'other'] as const;
+
+  function fmtTHB(n: number): string {
+    if (!n) return '฿0';
+    if (n >= 1_000_000) return `฿${(n / 1_000_000).toFixed(1)}M`;
+    if (n >= 1_000) return `฿${(n / 1_000).toFixed(0)}K`;
+    return `฿${n.toLocaleString()}`;
+  }
+
+  function setText(id: string, txt: string) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = txt;
+  }
+
+  function currentYm(): number {
+    const now = new Date();
+    return now.getFullYear() * 100 + (now.getMonth() + 1);
+  }
+
+  function buildCatBar(cat: string, amt: number, total: number): HTMLElement {
+    const pct = Math.round((amt / (total || 1)) * 100);
+    const color = CAT_COLOR[cat] || '#9fb3c8';
+    const wrap = document.createElement('div');
+    wrap.className = 'space-y-1';
+
+    const labelRow = document.createElement('div');
+    labelRow.className = 'flex justify-between text-xs';
+    const labelSpan = document.createElement('span');
+    labelSpan.textContent = `${CAT_EMOJI[cat] || ''} ${CAT_LABEL[cat] || cat}`;
+    const amtSpan = document.createElement('span');
+    amtSpan.className = 'tabular-nums';
+    amtSpan.textContent = fmtTHB(amt);
+    labelRow.appendChild(labelSpan);
+    labelRow.appendChild(amtSpan);
+
+    const track = document.createElement('div');
+    track.className = 'w-full h-1.5 bg-base-300 rounded-full overflow-hidden';
+    const fill = document.createElement('div');
+    fill.className = 'h-full rounded-full transition-all';
+    fill.style.cssText = `width:${pct}%;background-color:${color}`;
+    track.appendChild(fill);
+
+    wrap.appendChild(labelRow);
+    wrap.appendChild(track);
+    return wrap;
+  }
+
+  function buildExpenseRow(e: ExpenseRow): HTMLElement {
+    const color = CAT_COLOR[e.category] || '#9fb3c8';
+    const labelText = `${CAT_EMOJI[e.category] || ''} ${CAT_LABEL[e.category] || e.category}`;
+
+    const row = document.createElement('div');
+    row.className = 'flex items-center gap-3 rounded-xl border border-base-300 bg-base-200 px-3 py-2.5';
+
+    const dateEl = document.createElement('div');
+    dateEl.className = 'text-xs opacity-50 w-[68px] shrink-0 tabular-nums';
+    dateEl.textContent = e.date || '';
+
+    const badge = document.createElement('span');
+    badge.className = 'text-[11px] px-1.5 py-0.5 rounded-full text-base-100 shrink-0';
+    badge.style.backgroundColor = color;
+    badge.textContent = labelText;
+
+    const info = document.createElement('div');
+    info.className = 'flex-1 min-w-0';
+    const amtEl = document.createElement('div');
+    amtEl.className = 'text-sm font-semibold tabular-nums';
+    amtEl.style.color = color;
+    amtEl.textContent = fmtTHB(e.amount_thb);
+    info.appendChild(amtEl);
+    if (e.description) {
+      const descEl = document.createElement('div');
+      descEl.className = 'text-xs opacity-50 truncate';
+      descEl.textContent = e.description;
+      info.appendChild(descEl);
+    }
+
+    const del = document.createElement('button');
+    del.className = 'btn btn-xs btn-ghost opacity-40 hover:opacity-100 tap-44';
+    del.setAttribute('aria-label', 'ลบ');
+    del.textContent = '🗑';
+    del.addEventListener('click', async (ev) => {
+      ev.stopPropagation();
+      if (!window.confirm('ลบรายการนี้?')) return;
+      await removeExpense(e.id);
+    });
+
+    row.appendChild(dateEl);
+    row.appendChild(badge);
+    row.appendChild(info);
+    row.appendChild(del);
+    return row;
+  }
+
+  function render() {
+    const { expenses, expenseSummary, expensesLoaded } = getState();
+    const loadingEl = document.getElementById('exp-loading');
+    const emptyEl = document.getElementById('exp-empty');
+    const listEl = document.getElementById('exp-list');
+    const catBarsEl = document.getElementById('exp-cat-bars');
+
+    if (!expensesLoaded) {
+      loadingEl?.classList.remove('hidden');
+      emptyEl?.classList.add('hidden');
+      return;
+    }
+    loadingEl?.classList.add('hidden');
+
+    const sum = expenseSummary;
+    if (sum) {
+      setText('exp-this-month', fmtTHB(sum.this_month_thb));
+      setText('exp-prev-month', fmtTHB(sum.prev_month_thb));
+      setText('exp-total', fmtTHB(sum.total_thb));
+
+      const ym = currentYm();
+      const countMonth = expenses.filter((e) => {
+        const d = e.date ? new Date(e.date) : null;
+        return d ? d.getFullYear() * 100 + (d.getMonth() + 1) === ym : false;
+      }).length;
+      setText('exp-count-month', `${countMonth} รายการ`);
+
+      if (catBarsEl) {
+        catBarsEl.replaceChildren(
+          ...CATS.map((cat) => buildCatBar(cat, sum.by_category[cat] || 0, sum.this_month_thb))
+        );
+      }
+    }
+
+    if (listEl) {
+      if (expenses.length === 0) {
+        listEl.replaceChildren();
+        emptyEl?.classList.remove('hidden');
+      } else {
+        emptyEl?.classList.add('hidden');
+        listEl.replaceChildren(...expenses.map(buildExpenseRow));
+      }
+    }
+  }
+
+  render();
+  subscribe(render);
+</script>
