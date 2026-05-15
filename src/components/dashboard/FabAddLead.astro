@@ -3,12 +3,27 @@
 <button
   id="fab-add-lead"
   class="fixed bottom-6 right-6 z-30 btn btn-circle btn-primary shadow-xl tap-44"
-  aria-label="เพิ่ม lead"
+  aria-label="เพิ่ม"
 >
   <span aria-hidden="true" class="text-2xl">+</span>
 </button>
 
 <script>
-  import { emit } from '../../scripts/dashboard/store';
-  document.getElementById('fab-add-lead')?.addEventListener('click', () => emit('modal:add-lead'));
+  import { getState, subscribe, emit } from '../../scripts/dashboard/store';
+
+  const btn = document.getElementById('fab-add-lead') as HTMLButtonElement | null;
+
+  function render() {
+    if (!btn) return;
+    const { activeTab } = getState();
+    btn.setAttribute('aria-label', activeTab === 'expenses' ? 'เพิ่มค่าใช้จ่าย' : 'เพิ่ม lead');
+  }
+
+  btn?.addEventListener('click', () => {
+    const { activeTab } = getState();
+    emit(activeTab === 'expenses' ? 'modal:add-expense' : 'modal:add-lead');
+  });
+
+  render();
+  subscribe(render);
 </script>
