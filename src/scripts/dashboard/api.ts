@@ -128,3 +128,48 @@ export function getLeadsPage(
 ): Promise<{ leads: LeadUi[]; total: number; offset: number }> {
   return apiPost('getLeadsPage', { offset, limit, filter });
 }
+
+export type ExpenseRow = {
+  id: string;
+  date: string;
+  category: 'travel' | 'client_gift' | 'ai_subscription' | 'other';
+  amount_thb: number;
+  description: string;
+  linked_lead_id: string;
+  created_at: string;
+};
+
+export type ExpenseSummary = {
+  total_thb: number;
+  this_month_thb: number;
+  prev_month_thb: number;
+  by_category: {
+    travel: number;
+    client_gift: number;
+    ai_subscription: number;
+    other: number;
+  };
+};
+
+export type ExpensesData = {
+  rows: ExpenseRow[];
+  summary: ExpenseSummary;
+};
+
+export function getExpenses(): Promise<ExpensesData> {
+  return apiPost<ExpensesData>('getExpenses');
+}
+
+export function addExpense(data: {
+  date: string;
+  category: string;
+  amount_thb: number;
+  description: string;
+  linked_lead_id?: string;
+}): Promise<{ id: string }> {
+  return apiPost('addExpense', data as Record<string, unknown>);
+}
+
+export function deleteExpense(id: string): Promise<{ deleted: boolean }> {
+  return apiPost('deleteExpense', { id });
+}
