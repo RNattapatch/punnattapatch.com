@@ -1,0 +1,43 @@
+---
+---
+<div class="flex gap-2 mb-4">
+  <button
+    id="tab-leads"
+    class="btn btn-sm tap-44 btn-primary"
+    aria-pressed="true"
+  >📋 Leads</button>
+  <button
+    id="tab-expenses"
+    class="btn btn-sm tap-44 btn-outline btn-primary"
+    aria-pressed="false"
+  >💸 ค่าใช้จ่าย</button>
+</div>
+
+<script>
+  import { getState, subscribe, switchTab } from '../../scripts/dashboard/store';
+
+  const btnLeads = document.getElementById('tab-leads') as HTMLButtonElement | null;
+  const btnExp = document.getElementById('tab-expenses') as HTMLButtonElement | null;
+
+  function render() {
+    const { activeTab, authed } = getState();
+    if (!authed) return;
+    const onLeads = activeTab === 'leads';
+    btnLeads?.classList.toggle('btn-primary', onLeads);
+    btnLeads?.classList.toggle('btn-outline', !onLeads);
+    btnLeads?.setAttribute('aria-pressed', String(onLeads));
+    btnExp?.classList.toggle('btn-primary', !onLeads);
+    btnExp?.classList.toggle('btn-outline', onLeads);
+    btnExp?.setAttribute('aria-pressed', String(!onLeads));
+    const leadsView = document.getElementById('leads-view');
+    const expView = document.getElementById('expenses-view');
+    if (leadsView) leadsView.classList.toggle('hidden', !onLeads);
+    if (expView) expView.classList.toggle('hidden', onLeads);
+  }
+
+  btnLeads?.addEventListener('click', () => switchTab('leads'));
+  btnExp?.addEventListener('click', () => switchTab('expenses'));
+
+  render();
+  subscribe(render);
+</script>
