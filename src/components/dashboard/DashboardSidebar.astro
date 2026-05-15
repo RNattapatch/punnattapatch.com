@@ -62,9 +62,15 @@
   document.querySelectorAll<HTMLAnchorElement>('[data-scroll-to]').forEach((a) => {
     a.addEventListener('click', (e) => {
       e.preventDefault();
-      const target = document.getElementById(a.dataset.scrollTo || '');
-      target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      (document.getElementById('dash-sidebar-toggle') as HTMLInputElement | null)?.click();
+      // Always switch back to leads view first (scroll targets live inside #leads-view)
+      switchTab('leads');
+      const toggle = document.getElementById('dash-sidebar-toggle') as HTMLInputElement | null;
+      toggle?.click();
+      // Wait one frame so leads-view is visible before scrolling
+      requestAnimationFrame(() => {
+        const target = document.getElementById(a.dataset.scrollTo || '');
+        target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
     });
   });
 
