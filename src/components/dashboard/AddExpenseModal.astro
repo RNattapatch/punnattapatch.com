@@ -1,0 +1,87 @@
+---
+---
+<dialog id="add-expense-modal" class="modal">
+  <div class="modal-box max-w-md bg-base-200 border border-base-300">
+    <h3 class="font-display text-lg mb-2">เพิ่มค่าใช้จ่าย</h3>
+    <form id="add-expense-form" class="grid gap-2">
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">วันที่</span>
+        <input name="date" type="date" required class="input input-bordered input-sm tap-44" />
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">ประเภท</span>
+        <select name="category" required class="select select-bordered select-sm tap-44">
+          <option value="travel">✈️ ค่าเดินทาง</option>
+          <option value="client_gift">🎁 ค่าของขวัญลูกค้า</option>
+          <option value="ai_subscription">🤖 AI Subscription</option>
+          <option value="other">📌 อื่นๆ</option>
+        </select>
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">จำนวนเงิน (฿)</span>
+        <input
+          name="amount_thb"
+          type="number"
+          min="1"
+          step="1"
+          required
+          class="input input-bordered input-sm tap-44"
+          inputmode="numeric"
+          placeholder="1500"
+        />
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">รายละเอียด</span>
+        <input
+          name="description"
+          maxlength="200"
+          class="input input-bordered input-sm tap-44"
+          autocomplete="off"
+          placeholder="เช่น Uber ไป Ascend One"
+        />
+      </label>
+      <div class="modal-action mt-2">
+        <button type="button" id="add-expense-cancel" class="btn btn-sm btn-ghost tap-44">ยกเลิก</button>
+        <button type="submit" id="add-expense-submit" class="btn btn-sm btn-primary tap-44">บันทึก</button>
+      </div>
+    </form>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>
+
+<script>
+  import { on, createExpense } from '../../scripts/dashboard/store';
+
+  const dlg = document.getElementById('add-expense-modal') as HTMLDialogElement | null;
+  const form = document.getElementById('add-expense-form') as HTMLFormElement | null;
+  const submitBtn = document.getElementById('add-expense-submit') as HTMLButtonElement | null;
+
+  function setDefaultDate() {
+    const dateInput = form?.querySelector<HTMLInputElement>('[name="date"]');
+    if (dateInput) dateInput.value = new Date().toISOString().slice(0, 10);
+  }
+
+  on('modal:add-expense', () => {
+    if (!dlg || !form) return;
+    form.reset();
+    setDefaultDate();
+    dlg.showModal();
+  });
+
+  document.getElementById('add-expense-cancel')?.addEventListener('click', () => dlg?.close());
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form || !submitBtn) return;
+    const fd = new FormData(form);
+    const date = (fd.get('date') as string).trim();
+    const category = (fd.get('category') as string).trim();
+    const amount_thb = parseInt((fd.get('amount_thb') as string).trim(), 10);
+    const description = (fd.get('description') as string).trim();
+    if (!date || !category || !amount_thb || amount_thb < 1) return;
+    submitBtn.disabled = true;
+    const ok = await createExpense({ date, category, amount_thb, description });
+    submitBtn.disabled = false;
+    if (ok) dlg?.close();
+  });
+</script>
