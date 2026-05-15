@@ -1,0 +1,136 @@
+---
+---
+<section id="kanban-section" class="mb-6">
+  <div class="mb-3 flex items-center justify-between">
+    <h2 class="font-display text-base font-semibold">Sales Pipeline</h2>
+    <span class="text-xs opacity-50">scroll → เพื่อดูทุก stage</span>
+  </div>
+
+  <div class="overflow-x-auto pb-2 -mx-3 px-3">
+    <div id="kanban-board" class="flex gap-3 min-w-max">
+    </div>
+  </div>
+</section>
+
+<script>
+  import { subscribe, getState, openLead } from '../../scripts/dashboard/store';
+  import type { LeadUi } from '../../scripts/dashboard/adapter';
+
+  const STAGES: { key: string; label: string; color: string }[] = [
+    { key: 'new',         label: 'New Lead',      color: 'var(--color-pun-cyan)' },
+    { key: 'discovery',   label: 'Discovery',     color: 'var(--color-warning)' },
+    { key: 'proposal',    label: 'Proposal Sent', color: 'var(--color-pun-violet)' },
+    { key: 'walkthrough', label: 'Walkthrough',   color: 'var(--color-info)' },
+    { key: 'won',         label: 'Won ✓',         color: 'var(--color-success)' },
+    { key: 'lost',        label: 'Lost / Out',    color: 'var(--color-error)' },
+  ];
+
+  function stageOf(l: LeadUi): string {
+    if (l.deal_outcome === 'won') return 'won';
+    if (l.deal_outcome === 'lost' || l.deal_outcome === 'unqualified') return 'lost';
+    if (l.walkthrough_at) return 'walkthrough';
+    if (l.proposal_sent_at) return 'proposal';
+    const ps = (l.pipeline_status || '').toLowerCase();
+    if (ps.includes('discovery') || ps.includes('call')) return 'discovery';
+    return 'new';
+  }
+
+  function fmtTHB(n: unknown): string {
+    const v = Number(n) || 0;
+    if (!v) return '';
+    if (v >= 1000) return `฿${(v / 1000).toFixed(0)}K`;
+    return `฿${v}`;
+  }
+
+  function tempDot(l: LeadUi): string {
+    if (l.temperature === 'hot') return '🔥';
+    if (l.temperature === 'warm') return '🌤';
+    return '';
+  }
+
+  function makeCard(lead: LeadUi, stageColor: string): HTMLButtonElement {
+    const card = document.createElement('button');
+    card.className = 'text-left w-full bg-base-100 border border-base-300 rounded-2xl p-3 hover:border-base-content/30 transition-colors cursor-pointer';
+
+    const topRow = document.createElement('div');
+    topRow.className = 'flex justify-between items-start mb-1 gap-1';
+    const name = document.createElement('span');
+    name.className = 'text-sm font-semibold leading-tight line-clamp-1';
+    name.textContent = (lead.nickname || lead.full_name || '—').toString();
+    const temp = document.createElement('span');
+    temp.className = 'shrink-0 text-sm';
+    temp.textContent = tempDot(lead);
+    topRow.append(name, temp);
+
+    const company = document.createElement('div');
+    company.className = 'text-xs opacity-50 line-clamp-1 mb-2';
+    company.textContent = (lead.company_name || '').toString();
+
+    const bottomRow = document.createElement('div');
+    bottomRow.className = 'flex items-center justify-between border-t border-base-300 pt-2';
+    const industry = document.createElement('span');
+    industry.className = 'text-xs opacity-50 line-clamp-1';
+    industry.textContent = (lead.business_type || '').toString();
+    const amount = document.createElement('span');
+    amount.className = 'text-xs font-semibold';
+    amount.style.color = stageColor;
+    amount.textContent = fmtTHB(lead.package_price);
+    bottomRow.append(industry, amount);
+
+    card.append(topRow, company, bottomRow);
+    card.addEventListener('click', () => void openLead(String(lead.lead_id || '')));
+    return card;
+  }
+
+  function render() {
+    const board = document.getElementById('kanban-board');
+    if (!board) return;
+    const { leads } = getState();
+
+    const groups: Record<string, LeadUi[]> = {};
+    const totals: Record<string, number> = {};
+    STAGES.forEach((s) => { groups[s.key] = []; totals[s.key] = 0; });
+    for (const l of leads) {
+      const s = stageOf(l);
+      totals[s]++;
+      if (groups[s].length < 4) groups[s].push(l);
+    }
+
+    board.replaceChildren();
+    STAGES.forEach((stage) => {
+      const col = document.createElement('div');
+      col.className = 'w-56 bg-base-200 rounded-2xl p-3 flex flex-col gap-2 border border-base-300';
+
+      const header = document.createElement('div');
+      header.className = 'flex items-center justify-between px-1 mb-1';
+      const titleEl = document.createElement('span');
+      titleEl.className = 'text-xs font-bold uppercase tracking-wide';
+      titleEl.style.color = stage.color;
+      titleEl.textContent = stage.label;
+      const countEl = document.createElement('span');
+      countEl.className = 'badge badge-xs border-0 bg-base-300 opacity-70';
+      countEl.textContent = String(totals[stage.key]);
+      header.append(titleEl, countEl);
+      col.appendChild(header);
+
+      if (!groups[stage.key].length) {
+        const empty = document.createElement('p');
+        empty.className = 'text-center text-xs opacity-30 py-4';
+        empty.textContent = '—';
+        col.appendChild(empty);
+      } else {
+        groups[stage.key].forEach((lead) => col.appendChild(makeCard(lead, stage.color)));
+        if (totals[stage.key] > groups[stage.key].length) {
+          const more = document.createElement('p');
+          more.className = 'text-center text-xs opacity-40 pt-1';
+          more.textContent = `+${totals[stage.key] - groups[stage.key].length} more`;
+          col.appendChild(more);
+        }
+      }
+      board.appendChild(col);
+    });
+  }
+
+  render();
+  subscribe(render);
+</script>

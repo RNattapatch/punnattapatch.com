@@ -48,7 +48,7 @@ import LeadCard from './LeadCard.astro';
 <LeadCard variant="list" />
 
 <script>
-  import { subscribe, getState, openLead, setFilter, setSort, setSearch, visibleLeads, loadMore } from '../../scripts/dashboard/store';
+  import { subscribe, getState, openLead, setFilter, setSort, setSearch, visibleLeads, loadMore, on } from '../../scripts/dashboard/store';
   import type { LeadUi } from '../../scripts/dashboard/adapter';
 
   function ageDays(iso?: string): string {
@@ -156,6 +156,11 @@ import LeadCard from './LeadCard.astro';
 
   render();
   subscribe(render);
+
+  // Save scroll position when drawer opens; restore when it closes
+  let savedScrollY = 0;
+  on('drawer:open', () => { savedScrollY = window.scrollY; });
+  on('drawer:close', () => { requestAnimationFrame(() => window.scrollTo({ top: savedScrollY, behavior: 'instant' })); });
 
   document.querySelectorAll<HTMLButtonElement>('.filter-chip').forEach((b) => {
     b.addEventListener('click', () => setFilter(b.getAttribute('data-chip') as never));

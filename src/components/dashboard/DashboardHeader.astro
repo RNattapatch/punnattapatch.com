@@ -1,35 +1,36 @@
 ---
 ---
-<header class="mb-4 rounded-2xl border border-base-300 bg-base-200 px-4 py-3 flex items-center gap-3">
-  <div class="flex items-center gap-2 flex-1 min-w-0">
-    <div class="size-9 rounded-full bg-[color:var(--color-pun-coral)] grid place-items-center text-base-100 font-bold text-lg shrink-0">
-      P
-    </div>
-    <div class="min-w-0">
-      <h1 class="font-display text-base md:text-lg leading-tight truncate">Pun CRM Dashboard</h1>
-      <p class="text-xs opacity-60 leading-tight">Sales + Pipeline · Realtime</p>
-    </div>
-  </div>
+<header class="sticky top-0 z-30 border-b border-base-300 bg-base-100/90 backdrop-blur">
+  <div class="navbar px-4 lg:px-6 min-h-14">
 
-  <div class="flex items-center gap-2 shrink-0">
-    <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-[color:var(--color-error)]/15 px-2 py-1 text-xs font-medium text-[color:var(--color-error)]">
-      <span class="relative flex size-2">
-        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[color:var(--color-error)] opacity-75"></span>
-        <span class="relative inline-flex size-2 rounded-full bg-[color:var(--color-error)]"></span>
-      </span>
-      LIVE
-    </span>
-    <p id="dash-meta" class="hidden md:block text-xs opacity-60 tabular-nums">—</p>
-    <button id="dash-refresh" class="btn btn-sm btn-ghost tap-44" aria-label="Refresh">
-      <span aria-hidden="true">↻</span>
-      <span class="sr-only">Refresh</span>
-    </button>
-    <button id="dash-logout" class="btn btn-sm btn-outline tap-44">ออก</button>
+    <!-- Hamburger (mobile) -->
+    <div class="flex-none lg:hidden">
+      <label for="dash-sidebar-toggle" class="btn btn-square btn-ghost btn-sm tap-44" aria-label="เมนู">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </label>
+    </div>
+
+    <!-- Brand -->
+    <div class="flex-1 min-w-0 ml-2 lg:ml-0">
+      <h1 class="font-display text-base font-bold leading-tight truncate" style="color:var(--color-pun-cyan)">Pun Nattapatch</h1>
+      <p class="text-xs opacity-50 leading-tight hidden sm:block">AI Agent Workspace</p>
+    </div>
+
+    <!-- Right actions -->
+    <div class="flex items-center gap-2 shrink-0">
+      <p id="dash-meta" class="hidden md:block text-xs opacity-40 tabular-nums">—</p>
+      <button id="dash-refresh" class="btn btn-sm btn-ghost tap-44" aria-label="Refresh">↻</button>
+      <button id="dash-add-lead-header" class="btn btn-sm rounded-2xl tap-44" style="background-color:var(--color-brand-navy);color:white;">
+        + Add Lead
+      </button>
+    </div>
   </div>
 </header>
 
 <script>
-  import { refresh, logout, subscribe, getState } from '../../scripts/dashboard/store';
+  import { refresh, logout, subscribe, getState, emit } from '../../scripts/dashboard/store';
 
   function relTime(iso: string | null): string {
     if (!iso) return '—';
@@ -56,5 +57,5 @@
   setInterval(render, 30000);
 
   document.getElementById('dash-refresh')?.addEventListener('click', () => void refresh());
-  document.getElementById('dash-logout')?.addEventListener('click', () => logout());
+  document.getElementById('dash-add-lead-header')?.addEventListener('click', () => emit('modal:add-lead'));
 </script>

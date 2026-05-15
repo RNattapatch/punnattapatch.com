@@ -1,13 +1,15 @@
 ---
 import KpiCard from './KpiCard.astro';
 ---
-<section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3 mb-4">
+<section class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-4">
   <KpiCard id="kpi-sales-total" label="ยอดขายรวม" accent="emerald" />
   <KpiCard id="kpi-sales-month" label="ยอดเดือนนี้" accent="coral" />
   <KpiCard id="kpi-leads" label="Leads ทั้งหมด" accent="violet" />
   <KpiCard id="kpi-pipeline" label="In Pipeline" accent="warning" />
   <KpiCard id="kpi-conversion" label="Conversion" accent="cyan" />
   <KpiCard id="kpi-industry" label="Top อุตสาหกรรม" accent="info" />
+  <KpiCard id="kpi-expense-month" label="ค่าใช้จ่ายเดือนนี้" accent="coral" />
+  <KpiCard id="kpi-net-revenue" label="Net Revenue เดือนนี้" accent="emerald" />
 </section>
 
 <script>
@@ -30,26 +32,41 @@ import KpiCard from './KpiCard.astro';
   }
 
   function render() {
-    const k = getState().kpis;
-    if (!k) return;
-    setText('kpi-sales-total', fmtTHB(k.sales_total));
-    setText('kpi-sales-total-sub', `ก่อนหน้า ${fmtTHB(k.sales_prev_month)}`);
+    const { kpis, expenseSummary } = getState();
+    if (!kpis) return;
+    setText('kpi-sales-total', fmtTHB(kpis.sales_total));
+    setText('kpi-sales-total-sub', `ก่อนหน้า ${fmtTHB(kpis.sales_prev_month)}`);
 
-    setText('kpi-sales-month', fmtTHB(k.sales_this_month));
-    setText('kpi-sales-month-sub', `Δ ${fmtPct(k.sales_delta_pct)}`);
+    setText('kpi-sales-month', fmtTHB(kpis.sales_this_month));
+    setText('kpi-sales-month-sub', `เทียบเดือนก่อน ${fmtTHB(kpis.sales_prev_month)}`);
+    const deltaEl = document.getElementById('kpi-sales-month-badge');
+    if (deltaEl) {
+      const d = kpis.sales_delta_pct;
+      const positive = d >= 0;
+      deltaEl.textContent = fmtPct(d);
+      deltaEl.className = `badge badge-sm border-0 ${positive ? 'bg-success/20 text-success' : 'bg-error/20 text-error'}`;
+    }
 
-    setText('kpi-leads', String(k.leads_total));
-    setText('kpi-leads-sub', `เดือนนี้ +${k.leads_this_month}`);
+    setText('kpi-leads', String(kpis.leads_total));
+    setText('kpi-leads-sub', `เดือนนี้ +${kpis.leads_this_month}`);
 
-    setText('kpi-pipeline', String(k.pipeline.in_progress));
-    setText('kpi-pipeline-sub', `prop ${k.pipeline.proposal_sent} · walk ${k.pipeline.walkthrough_done}`);
+    setText('kpi-pipeline', String(kpis.pipeline.in_progress));
+    setText('kpi-pipeline-sub', `prop ${kpis.pipeline.proposal_sent} · walk ${kpis.pipeline.walkthrough_done}`);
 
-    setText('kpi-conversion', fmtPct(k.conversion_rate));
-    setText('kpi-conversion-sub', `won ${k.pipeline.won}`);
+    setText('kpi-conversion', fmtPct(kpis.conversion_rate));
+    setText('kpi-conversion-sub', `won ${kpis.pipeline.won}`);
 
-    const top = k.top_industry || [];
+    const top = kpis.top_industry || [];
     setText('kpi-industry', top[0]?.label || '—');
     setText('kpi-industry-sub', top[0] ? `${top[0].count} leads` : '');
+
+    const expMonth = expenseSummary?.this_month_thb ?? 0;
+    setText('kpi-expense-month', fmtTHB(expMonth));
+    setText('kpi-expense-month-sub', expenseSummary ? `รวมทั้งหมด ${fmtTHB(expenseSummary.total_thb)}` : '—');
+
+    const netRev = kpis.sales_this_month - expMonth;
+    setText('kpi-net-revenue', fmtTHB(netRev));
+    setText('kpi-net-revenue-sub', `ยอดขาย ${fmtTHB(kpis.sales_this_month)} − ค่าใช้จ่าย ${fmtTHB(expMonth)}`);
   }
 
   render();

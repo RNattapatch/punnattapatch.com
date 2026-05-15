@@ -136,15 +136,26 @@ export function logout(): void {
 
 // ------- Data flow -------
 export async function refresh(): Promise<void> {
+  const prevLeadCount = state.leads.length;
   state.loading = true;
   notify();
   try {
     const data: DashboardData = await getDashboardData();
     state.kpis = data.kpis;
     state.today = data.today;
-    state.leads = data.leads;
     state.total = data.total;
     state.generatedAt = data.generated_at;
+    if (data.expense_summary) {
+      state.expenseSummary = data.expense_summary;
+      state.expensesLoaded = true;
+    }
+    // Re-fetch extra pages if user had loaded more than initial 30
+    if (prevLeadCount > data.leads.length && data.total > data.leads.length) {
+      const extra = await getLeadsPage(data.leads.length, prevLeadCount - data.leads.length);
+      state.leads = [...data.leads, ...extra.leads];
+    } else {
+      state.leads = data.leads;
+    }
   } catch (err) {
     handleApiError(err, 'โหลดข้อมูลไม่สำเร็จ');
   } finally {

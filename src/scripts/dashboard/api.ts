@@ -35,6 +35,7 @@ export type DashboardData = {
   today: LeadUi[];
   leads: LeadUi[];
   total: number;
+  expense_summary: ExpenseSummary | null;
   generated_at: string;
 };
 
