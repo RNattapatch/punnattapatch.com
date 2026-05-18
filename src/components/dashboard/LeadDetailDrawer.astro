@@ -184,6 +184,12 @@ import InteractionLog from './InteractionLog.astro';
     const patch: Record<string, unknown> = {};
 
     // Command Center
+    const STAGE_OPTIONS = ['discovery', 'proposal_sent', 'walkthrough_done'];
+    const stageCur = val('cc-stage');
+    const psRaw = (lead.pipeline_status as string) || '';
+    const stageOrig = STAGE_OPTIONS.includes(psRaw) ? psRaw : '';
+    if (stageCur !== stageOrig) patch.pipeline_status = stageCur;
+
     const ncur = val('cc-next-action');
     if (ncur !== ((lead.next_action as string) || '')) patch.next_action = ncur;
 

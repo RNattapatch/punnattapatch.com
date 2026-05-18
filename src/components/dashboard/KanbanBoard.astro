@@ -28,10 +28,15 @@
   function stageOf(l: LeadUi): string {
     if (l.deal_outcome === 'won') return 'won';
     if (l.deal_outcome === 'lost' || l.deal_outcome === 'unqualified') return 'lost';
+    const ps = (l.pipeline_status || '').toLowerCase().trim();
+    // Explicit stage values (set via Pipeline Stage dropdown) take priority over timestamps
+    if (ps === 'walkthrough_done') return 'walkthrough';
+    if (ps === 'proposal_sent') return 'proposal';
+    if (ps === 'discovery') return 'discovery';
+    // Timestamp-based fallbacks for leads set before stage selector existed
     if (l.walkthrough_at) return 'walkthrough';
     if (l.proposal_sent_at) return 'proposal';
-    const ps = (l.pipeline_status || '').toLowerCase();
-    if (ps.includes('discovery') || ps.includes('call')) return 'discovery';
+    if (ps.includes('call')) return 'discovery';
     return 'new';
   }
 

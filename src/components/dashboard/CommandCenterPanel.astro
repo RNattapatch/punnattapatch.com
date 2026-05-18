@@ -3,6 +3,15 @@
 <section class="mb-3">
   <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Command Center</h3>
   <div class="grid gap-2">
+    <label class="form-control">
+      <span class="label-text text-xs opacity-70">Pipeline Stage</span>
+      <select id="cc-stage" class="select select-bordered select-sm tap-44">
+        <option value="">— New Lead</option>
+        <option value="discovery">Discovery</option>
+        <option value="proposal_sent">Proposal Sent</option>
+        <option value="walkthrough_done">Walkthrough Done</option>
+      </select>
+    </label>
     <div>
       <span class="label-text text-xs opacity-70">Temperature</span>
       <div class="flex gap-2 mt-1">
@@ -44,6 +53,13 @@
 <script>
   import { subscribe, getState } from '../../scripts/dashboard/store';
 
+  const STAGE_OPTIONS = ['discovery', 'proposal_sent', 'walkthrough_done'];
+
+  // tempDirty prevents apply() from overriding the user's temp click while the
+  // drawer is open. Resets whenever a new lead is opened.
+  let tempDirty = false;
+  let lastLeadId: string | null = null;
+
   function dt(iso?: string): string {
     if (!iso) return '';
     const d = new Date(iso);
@@ -62,12 +78,26 @@
   function apply() {
     const lead = getState().selectedLead;
     if (!lead) return;
+
+    const currentId = String(lead.lead_id || '');
+    if (currentId !== lastLeadId) {
+      lastLeadId = currentId;
+      tempDirty = false;
+    }
+
     const setVal = (id: string, v: string) => {
       const el = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null;
       if (!el) return;
-      if (document.activeElement === el) return; // don't clobber user input
+      if (document.activeElement === el) return;
       el.value = v;
     };
+
+    const stageEl = document.getElementById('cc-stage') as HTMLSelectElement | null;
+    if (stageEl && document.activeElement !== stageEl) {
+      const ps = (lead.pipeline_status as string) || '';
+      stageEl.value = STAGE_OPTIONS.includes(ps) ? ps : '';
+    }
+
     setVal('cc-next-action', (lead.next_action as string) || '');
     setVal('cc-next-due', ymd(lead.next_action_due as string));
     setVal('cc-proposal', dt(lead.proposal_sent_at as string));
@@ -75,7 +105,7 @@
     setVal('cc-payment', (lead.payment_status as string) || '');
     const lt = document.getElementById('cc-last-touch');
     if (lt) lt.textContent = lead.last_touch_at ? `Last touch: ${new Date(lead.last_touch_at as string).toLocaleString('th-TH')}` : 'ยังไม่มี touch';
-    setTemp((lead.temperature as string) || '');
+    if (!tempDirty) setTemp((lead.temperature as string) || '');
   }
 
   function setTemp(v: string) {
@@ -90,6 +120,7 @@
 
   document.querySelectorAll<HTMLButtonElement>('.temp-btn').forEach((b) => {
     b.addEventListener('click', () => {
+      tempDirty = true;
       const t = b.getAttribute('data-temp') || '';
       const hidden = document.getElementById('cc-temperature') as HTMLInputElement | null;
       setTemp(hidden?.value === t ? '' : t);
