@@ -11,6 +11,7 @@ import {
   getExpenses,
   addExpense as apiAddExpense,
   deleteExpense as apiDeleteExpense,
+  editExpense as apiEditExpense,
   type DashboardData,
   type Interaction,
   type Kpis,
@@ -323,6 +324,23 @@ export async function removeExpense(id: string): Promise<void> {
     toast('ลบค่าใช้จ่ายแล้ว');
   } catch (err) {
     handleApiError(err, 'ลบค่าใช้จ่ายไม่สำเร็จ');
+  }
+}
+
+export async function updateExpense(id: string, data: {
+  date: string;
+  category: string;
+  amount_thb: number;
+  description: string;
+}): Promise<boolean> {
+  try {
+    await apiEditExpense(id, data);
+    await loadExpenses();
+    toast('แก้ไขค่าใช้จ่ายแล้ว');
+    return true;
+  } catch (err) {
+    handleApiError(err, 'แก้ไขค่าใช้จ่ายไม่สำเร็จ');
+    return false;
   }
 }
 

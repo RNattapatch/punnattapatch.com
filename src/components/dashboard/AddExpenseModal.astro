@@ -2,8 +2,9 @@
 ---
 <dialog id="add-expense-modal" class="modal">
   <div class="modal-box max-w-md bg-base-200 border border-base-300">
-    <h3 class="font-display text-lg mb-2">เพิ่มค่าใช้จ่าย</h3>
+    <h3 id="add-expense-title" class="font-display text-lg mb-2">เพิ่มค่าใช้จ่าย</h3>
     <form id="add-expense-form" class="grid gap-2">
+      <input type="hidden" id="expense-edit-id" value="" />
       <label class="form-control">
         <span class="label-text text-xs opacity-70">วันที่</span>
         <input name="date" type="date" required class="input input-bordered input-sm tap-44" />
@@ -50,11 +51,13 @@
 </dialog>
 
 <script>
-  import { on, createExpense } from '../../scripts/dashboard/store';
+  import { on, createExpense, updateExpense } from '../../scripts/dashboard/store';
 
   const dlg = document.getElementById('add-expense-modal') as HTMLDialogElement | null;
   const form = document.getElementById('add-expense-form') as HTMLFormElement | null;
   const submitBtn = document.getElementById('add-expense-submit') as HTMLButtonElement | null;
+  const titleEl = document.getElementById('add-expense-title');
+  const editIdInput = document.getElementById('expense-edit-id') as HTMLInputElement | null;
 
   function setDefaultDate() {
     const dateInput = form?.querySelector<HTMLInputElement>('[name="date"]');
@@ -65,6 +68,29 @@
     if (!dlg || !form) return;
     form.reset();
     setDefaultDate();
+    if (editIdInput) editIdInput.value = '';
+    if (titleEl) titleEl.textContent = 'เพิ่มค่าใช้จ่าย';
+    if (submitBtn) submitBtn.textContent = 'บันทึก';
+    dlg.showModal();
+  });
+
+  on('modal:edit-expense', (expense: Record<string, unknown>) => {
+    if (!dlg || !form) return;
+    form.reset();
+    if (editIdInput) editIdInput.value = String(expense.id ?? '');
+    if (titleEl) titleEl.textContent = 'แก้ไขค่าใช้จ่าย';
+    if (submitBtn) submitBtn.textContent = 'บันทึกการแก้ไข';
+
+    const dateInput = form.querySelector<HTMLInputElement>('[name="date"]');
+    const categoryInput = form.querySelector<HTMLSelectElement>('[name="category"]');
+    const amountInput = form.querySelector<HTMLInputElement>('[name="amount_thb"]');
+    const descInput = form.querySelector<HTMLInputElement>('[name="description"]');
+
+    if (dateInput) dateInput.value = String(expense.date ?? '');
+    if (categoryInput) categoryInput.value = String(expense.category ?? 'other');
+    if (amountInput) amountInput.value = String(expense.amount_thb ?? '');
+    if (descInput) descInput.value = String(expense.description ?? '');
+
     dlg.showModal();
   });
 
@@ -79,8 +105,17 @@
     const amount_thb = parseInt((fd.get('amount_thb') as string).trim(), 10);
     const description = (fd.get('description') as string).trim();
     if (!date || !category || !amount_thb || amount_thb < 1) return;
+
+    const editId = editIdInput?.value ?? '';
     submitBtn.disabled = true;
-    const ok = await createExpense({ date, category, amount_thb, description });
+
+    let ok: boolean;
+    if (editId) {
+      ok = await updateExpense(editId, { date, category, amount_thb, description });
+    } else {
+      ok = await createExpense({ date, category, amount_thb, description });
+    }
+
     submitBtn.disabled = false;
     if (ok) dlg?.close();
   });

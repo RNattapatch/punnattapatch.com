@@ -41,7 +41,7 @@
 </div>
 
 <script>
-  import { getState, subscribe, removeExpense } from '../../scripts/dashboard/store';
+  import { getState, subscribe, removeExpense, emit } from '../../scripts/dashboard/store';
   import type { ExpenseRow } from '../../scripts/dashboard/api';
 
   const CAT_LABEL: Record<string, string> = {
@@ -136,6 +136,15 @@
       info.appendChild(descEl);
     }
 
+    const edit = document.createElement('button');
+    edit.className = 'btn btn-xs btn-ghost opacity-40 hover:opacity-100 tap-44';
+    edit.setAttribute('aria-label', 'แก้ไข');
+    edit.textContent = '✏️';
+    edit.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      emit('modal:edit-expense', e as unknown as Record<string, unknown>);
+    });
+
     const del = document.createElement('button');
     del.className = 'btn btn-xs btn-ghost opacity-40 hover:opacity-100 tap-44';
     del.setAttribute('aria-label', 'ลบ');
@@ -149,6 +158,7 @@
     row.appendChild(dateEl);
     row.appendChild(badge);
     row.appendChild(info);
+    row.appendChild(edit);
     row.appendChild(del);
     return row;
   }

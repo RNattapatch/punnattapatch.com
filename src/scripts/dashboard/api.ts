@@ -174,3 +174,12 @@ export function addExpense(data: {
 export function deleteExpense(id: string): Promise<{ deleted: boolean }> {
   return apiPost('deleteExpense', { id });
 }
+
+export function editExpense(id: string, data: {
+  date: string;
+  category: string;
+  amount_thb: number;
+  description: string;
+}): Promise<{ updated: boolean }> {
+  return apiPost('editExpense', { id, ...data } as Record<string, unknown>);
+}
