@@ -148,7 +148,9 @@ export async function refresh(): Promise<void> {
     state.generatedAt = data.generated_at;
     if (data.expense_summary) {
       state.expenseSummary = data.expense_summary;
-      state.expensesLoaded = true;
+      // expensesLoaded stays false until loadExpenses() populates state.expenses rows.
+      // If user is already on expenses tab when refresh runs, reload rows too.
+      if (state.activeTab === 'expenses') void loadExpenses();
     }
     // Re-fetch extra pages if user had loaded more than initial 30
     if (prevLeadCount > data.leads.length && data.total > data.leads.length) {
