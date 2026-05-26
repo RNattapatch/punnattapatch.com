@@ -184,7 +184,7 @@ import InteractionLog from './InteractionLog.astro';
     const patch: Record<string, unknown> = {};
 
     // Command Center
-    const STAGE_OPTIONS = ['discovery', 'proposal_sent', 'walkthrough_done'];
+    const STAGE_OPTIONS = ['New', 'Discovery Call', 'Site Visit', 'Proposal Sent', 'Proposal — Follow-up'];
     const stageCur = val('cc-stage');
     const psRaw = (lead.pipeline_status as string) || '';
     const stageOrig = STAGE_OPTIONS.includes(psRaw) ? psRaw : '';

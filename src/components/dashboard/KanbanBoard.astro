@@ -19,8 +19,8 @@
   const STAGES: { key: string; label: string; color: string }[] = [
     { key: 'new',         label: 'New Lead',      color: 'var(--color-pun-cyan)' },
     { key: 'discovery',   label: 'Discovery',     color: 'var(--color-warning)' },
+    { key: 'site_visit',  label: 'Site Visit',    color: 'var(--color-info)' },
     { key: 'proposal',    label: 'Proposal Sent', color: 'var(--color-pun-violet)' },
-    { key: 'walkthrough', label: 'Walkthrough',   color: 'var(--color-info)' },
     { key: 'won',         label: 'Won ✓',         color: 'var(--color-success)' },
     { key: 'lost',        label: 'Lost / Out',    color: 'var(--color-error)' },
   ];
@@ -29,14 +29,17 @@
     if (l.deal_outcome === 'won') return 'won';
     if (l.deal_outcome === 'lost' || l.deal_outcome === 'unqualified') return 'lost';
     const ps = (l.pipeline_status || '').toLowerCase().trim();
-    // Explicit stage values (set via Pipeline Stage dropdown) take priority over timestamps
-    if (ps === 'walkthrough_done') return 'walkthrough';
-    if (ps === 'proposal_sent') return 'proposal';
-    if (ps === 'discovery') return 'discovery';
-    // Timestamp-based fallbacks for leads set before stage selector existed
-    if (l.walkthrough_at) return 'walkthrough';
+    // Sheet canonical (strategy/inbound_crm_setup.gs STATUS_OPTIONS) — Title Case stored,
+    // lowercased here for case-insensitive matching.
+    if (ps === 'proposal — won') return 'won';
+    if (ps === 'proposal — lost' || ps === 'discovery — lost') return 'lost';
+    if (ps === 'proposal sent' || ps === 'proposal — follow-up') return 'proposal';
+    if (ps === 'site visit') return 'site_visit';
+    if (ps === 'discovery call') return 'discovery';
+    if (ps === 'new') return 'new';
+    // Timestamp-based fallbacks for leads with no explicit stage set
+    if (l.walkthrough_at) return 'site_visit';
     if (l.proposal_sent_at) return 'proposal';
-    if (ps.includes('call')) return 'discovery';
     return 'new';
   }
 
