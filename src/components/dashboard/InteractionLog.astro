@@ -25,7 +25,22 @@
     while (el.firstChild) el.removeChild(el.firstChild);
   }
 
+  // Reset draft form whenever a new lead is opened — previously typed summary
+  // would otherwise leak across leads.
+  let lastLeadIxId = '';
+  function resetDraftIfLeadChanged() {
+    const lead = getState().selectedLead;
+    const currentId = String(lead?.lead_id || '');
+    if (currentId === lastLeadIxId) return;
+    lastLeadIxId = currentId;
+    const sumEl = document.getElementById('ix-summary') as HTMLInputElement | null;
+    if (sumEl && document.activeElement !== sumEl) sumEl.value = '';
+    const typeEl = document.getElementById('ix-type') as HTMLSelectElement | null;
+    if (typeEl && document.activeElement !== typeEl) typeEl.value = 'call';
+  }
+
   function render() {
+    resetDraftIfLeadChanged();
     const list = getState().interactions;
     const ul = document.getElementById('ix-timeline');
     const empty = document.getElementById('ix-empty');
