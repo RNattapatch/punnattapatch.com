@@ -52,6 +52,7 @@ export type LeadUi = Record<string, unknown> & {
   proposal_sent_at?: string;
   walkthrough_at?: string;
   payment_status?: 'unpaid' | 'partial' | 'paid';
+  tax_mode?: '' | 'cash' | 'wht_3' | 'vat_7';
   manual_source?: string;
   pain_points?: string;
   hook_variant?: string;

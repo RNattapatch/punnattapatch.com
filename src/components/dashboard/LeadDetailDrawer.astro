@@ -42,6 +42,16 @@ import InteractionLog from './InteractionLog.astro';
         <span id="deal-amount" class="text-sm"></span>
         <span id="deal-package" class="text-xs opacity-70"></span>
       </div>
+      <label class="form-control mb-1">
+        <span class="label-text text-xs opacity-70">รูปแบบภาษี</span>
+        <select id="deal-tax-mode" class="select select-bordered select-sm tap-44">
+          <option value="">— ไม่ระบุ —</option>
+          <option value="cash">💵 จ่ายเงินสด (ไม่เสียภาษี)</option>
+          <option value="wht_3">🏛️ หัก ณ ที่จ่าย 3%</option>
+          <option value="vat_7">📄 ออกบิลบริษัท + VAT 7%</option>
+        </select>
+      </label>
+      <p id="deal-net" class="text-xs opacity-80 mb-2"></p>
       <button id="deal-edit" class="btn btn-xs btn-outline tap-44">แก้ deal</button>
     </section>
 
@@ -121,6 +131,24 @@ import InteractionLog from './InteractionLog.astro';
   // when the user jumps to a different lead.
   let lastDrawerLeadId = '';
 
+  function renderNetLine(grossAmount: number, taxMode: string) {
+    const netEl = document.getElementById('deal-net');
+    if (!netEl) return;
+    if (!grossAmount) { netEl.textContent = ''; return; }
+    const fmt = (n: number) => `฿${new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(Math.round(n))}`;
+    if (taxMode === 'wht_3') {
+      const net = grossAmount * 0.97;
+      netEl.textContent = `รับจริง ${fmt(net)} (หัก 3% = ${fmt(grossAmount - net)})`;
+    } else if (taxMode === 'vat_7') {
+      const billed = grossAmount * 1.07;
+      netEl.textContent = `ลูกค้าจ่าย ${fmt(billed)} (+VAT ${fmt(billed - grossAmount)}) · รับจริง ${fmt(grossAmount)}`;
+    } else if (taxMode === 'cash') {
+      netEl.textContent = `รับจริง ${fmt(grossAmount)} (เงินสด ไม่หัก ไม่บวก)`;
+    } else {
+      netEl.textContent = '— ยังไม่ระบุรูปแบบภาษี —';
+    }
+  }
+
   function clearChildren(el: HTMLElement) {
     while (el.firstChild) el.removeChild(el.firstChild);
   }
@@ -167,6 +195,11 @@ import InteractionLog from './InteractionLog.astro';
     if (dealAmount) dealAmount.textContent = amount ? `${new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(amount)} ฿` : '—';
     if (dealPackage) dealPackage.textContent = (lead.package as string) || '';
 
+    const taxEl = document.getElementById('deal-tax-mode') as HTMLSelectElement | null;
+    const taxMode = (lead.tax_mode as string) || '';
+    if (taxEl && document.activeElement !== taxEl) taxEl.value = taxMode;
+    renderNetLine(amount, taxEl?.value || taxMode);
+
     const ctx = document.getElementById('lead-context');
     if (ctx) {
       clearChildren(ctx);
@@ -198,6 +231,15 @@ import InteractionLog from './InteractionLog.astro';
   document.getElementById('deal-edit')?.addEventListener('click', () => {
     const lead = getState().selectedLead;
     if (lead) emit('modal:edit-deal', { lead });
+  });
+
+  // Live-update net line when user changes tax mode (before save)
+  document.getElementById('deal-tax-mode')?.addEventListener('change', () => {
+    const lead = getState().selectedLead;
+    if (!lead) return;
+    const amount = Number(lead.package_price) || 0;
+    const taxCur = (document.getElementById('deal-tax-mode') as HTMLSelectElement | null)?.value || '';
+    renderNetLine(amount, taxCur);
   });
 
   document.getElementById('contact-edit-toggle')?.addEventListener('click', () => {
@@ -260,6 +302,10 @@ import InteractionLog from './InteractionLog.astro';
 
     const emCur = val('contact-email').trim();
     if (emCur !== ((lead.email as string) || '').trim()) patch.email = emCur;
+
+    // Deal — tax_mode lives in section (other deal fields use EditDealModal)
+    const taxCur = val('deal-tax-mode');
+    if (taxCur !== ((lead.tax_mode as string) || '')) patch.tax_mode = taxCur;
 
     // Command Center
     const STAGE_OPTIONS = ['New', 'Discovery Call', 'Site Visit', 'Proposal Sent', 'Proposal — Follow-up'];
