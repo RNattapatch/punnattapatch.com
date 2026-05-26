@@ -22,10 +22,18 @@ import InteractionLog from './InteractionLog.astro';
   </div>
 
   <div class="px-4 py-3 grid gap-3">
-    <section>
-      <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Contact</h3>
+    <section id="contact-section" data-editing="false">
+      <div class="flex items-center justify-between mb-1">
+        <h3 class="text-xs uppercase tracking-wider opacity-70">Contact</h3>
+        <button id="contact-edit-toggle" type="button" class="btn btn-xs btn-ghost tap-44">✏️ แก้ไข</button>
+      </div>
       <div id="lead-contact" class="grid gap-2"></div>
     </section>
+
+    <style>
+      #contact-section[data-editing='false'] .contact-input { display: none; }
+      #contact-section[data-editing='true']  .contact-display { display: none; }
+    </style>
 
     <section>
       <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Deal</h3>
@@ -80,6 +88,39 @@ import InteractionLog from './InteractionLog.astro';
     wrap.appendChild(v);
     return wrap;
   }
+
+  function contactRow(label: string, value: string, inputId: string, inputType: string = 'text') {
+    const wrap = document.createElement('div');
+    wrap.className = 'min-w-0';
+    const l = document.createElement('div');
+    l.className = 'text-[10px] uppercase tracking-wider opacity-50 mb-0.5';
+    l.textContent = label;
+    const v = document.createElement('div');
+    v.className = 'contact-display text-sm break-words whitespace-pre-wrap';
+    v.textContent = value || '—';
+    const input = document.createElement('input');
+    input.type = inputType;
+    input.id = inputId;
+    input.className = 'contact-input input input-bordered input-sm tap-44 w-full';
+    input.value = value;
+    input.autocomplete = 'off';
+    wrap.appendChild(l);
+    wrap.appendChild(v);
+    wrap.appendChild(input);
+    return wrap;
+  }
+
+  function setContactEditing(on: boolean) {
+    const sec = document.getElementById('contact-section');
+    if (sec) sec.setAttribute('data-editing', on ? 'true' : 'false');
+    const btn = document.getElementById('contact-edit-toggle');
+    if (btn) btn.textContent = on ? '✕ ยกเลิกแก้ไข' : '✏️ แก้ไข';
+  }
+
+  // Track the lead currently rendered so we can auto-close Contact edit mode
+  // when the user jumps to a different lead.
+  let lastDrawerLeadId = '';
+
   function clearChildren(el: HTMLElement) {
     while (el.firstChild) el.removeChild(el.firstChild);
   }
@@ -98,14 +139,20 @@ import InteractionLog from './InteractionLog.astro';
     if (nameEl) nameEl.textContent = name;
     if (subEl) subEl.textContent = [company, lead.business_type as string].filter(Boolean).join(' · ');
 
+    const currentLeadId = String(lead.lead_id || '');
+    if (currentLeadId !== lastDrawerLeadId) {
+      lastDrawerLeadId = currentLeadId;
+      setContactEditing(false);
+    }
+
     const contact = document.getElementById('lead-contact');
     if (contact) {
       clearChildren(contact);
-      contact.appendChild(row('ชื่อจริง', String(lead.full_name || '')));
-      contact.appendChild(row('ตำแหน่ง', String(lead.position || lead.position_other || '')));
-      contact.appendChild(row('โทร', String(lead.phone || '')));
-      contact.appendChild(row('LINE', String(lead.line_id || '')));
-      contact.appendChild(row('Email', String(lead.email || '')));
+      contact.appendChild(contactRow('ชื่อจริง', String(lead.full_name || ''), 'contact-full-name'));
+      contact.appendChild(contactRow('ตำแหน่ง', String(lead.position || lead.position_other || ''), 'contact-position'));
+      contact.appendChild(contactRow('โทร', String(lead.phone || ''), 'contact-phone', 'tel'));
+      contact.appendChild(contactRow('LINE', String(lead.line_id || ''), 'contact-line'));
+      contact.appendChild(contactRow('Email', String(lead.email || ''), 'contact-email', 'email'));
     }
 
     const dealBadge = document.getElementById('deal-badge');
@@ -153,6 +200,20 @@ import InteractionLog from './InteractionLog.astro';
     if (lead) emit('modal:edit-deal', { lead });
   });
 
+  document.getElementById('contact-edit-toggle')?.addEventListener('click', () => {
+    const sec = document.getElementById('contact-section');
+    const isEditing = sec?.getAttribute('data-editing') === 'true';
+    if (isEditing) {
+      // Cancel: revert inputs by re-rendering from state
+      render();
+      setContactEditing(false);
+    } else {
+      setContactEditing(true);
+      const first = document.getElementById('contact-full-name') as HTMLInputElement | null;
+      first?.focus();
+    }
+  });
+
   // ---------- Bottom Save button: diff all drawer inputs vs lead, send patch ----------
   function dtToIso(v: string): string {
     if (!v) return '';
@@ -182,6 +243,23 @@ import InteractionLog from './InteractionLog.astro';
     const lead = getState().selectedLead;
     if (!lead) return;
     const patch: Record<string, unknown> = {};
+
+    // Contact (always-diff: inputs exist in DOM regardless of edit mode visibility)
+    const fnCur = val('contact-full-name').trim();
+    if (fnCur !== ((lead.full_name as string) || '').trim()) patch.full_name = fnCur;
+
+    const posCur = val('contact-position').trim();
+    const posOrig = ((lead.position as string) || (lead.position_other as string) || '').trim();
+    if (posCur !== posOrig) patch.position = posCur;
+
+    const phCur = val('contact-phone').trim();
+    if (phCur !== ((lead.phone as string) || '').trim()) patch.phone = phCur;
+
+    const lnCur = val('contact-line').trim();
+    if (lnCur !== ((lead.line_id as string) || '').trim()) patch.line_id = lnCur;
+
+    const emCur = val('contact-email').trim();
+    if (emCur !== ((lead.email as string) || '').trim()) patch.email = emCur;
 
     // Command Center
     const STAGE_OPTIONS = ['New', 'Discovery Call', 'Site Visit', 'Proposal Sent', 'Proposal — Follow-up'];
@@ -235,6 +313,7 @@ import InteractionLog from './InteractionLog.astro';
     if (label) label.textContent = 'กำลังบันทึก...';
     try {
       await patchLead(String(lead.lead_id), patch);
+      setContactEditing(false);
     } finally {
       if (btn) btn.disabled = false;
       if (label) label.textContent = '💾 บันทึกการเปลี่ยนแปลง';
