@@ -1,0 +1,85 @@
+---
+import StatusBadge from './StatusBadge.astro';
+---
+
+<div class="ai-panel">
+  <div class="ai-panel-header">
+    <span class="ai-panel-label">AI WORKING WITH YOU</span>
+    <span class="ai-panel-dots" aria-hidden="true">···</span>
+  </div>
+  <ul class="ai-panel-rows">
+    <li class="ai-panel-row">
+      <span class="ai-row-icon">🎯</span>
+      <span class="ai-row-label">Lead Qualifying</span>
+      <StatusBadge label="Active" status="active" pulse />
+    </li>
+    <li class="ai-panel-row">
+      <span class="ai-row-icon">📨</span>
+      <span class="ai-row-label">Follow-up Automation</span>
+      <StatusBadge label="Running" status="running" pulse />
+    </li>
+    <li class="ai-panel-row">
+      <span class="ai-row-icon">📝</span>
+      <span class="ai-row-label">Proposal Generation</span>
+      <StatusBadge label="Ready" status="ready" />
+    </li>
+    <li class="ai-panel-row">
+      <span class="ai-row-icon">📊</span>
+      <span class="ai-row-label">Sales Summary</span>
+      <StatusBadge label="Synced" status="synced" />
+    </li>
+  </ul>
+</div>
+
+<style>
+  .ai-panel {
+    width: 300px;
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    background: var(--pun-surface-2);
+    border: 1px solid var(--pun-border);
+    border-radius: 1.5rem;
+    padding: 1rem 1.25rem;
+    box-shadow:
+      inset 1px 1px 0 rgba(255,255,255,0.06),
+      0 8px 40px var(--pun-glow-navy),
+      0 0 60px var(--pun-glow-cyan);
+  }
+  .ai-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  .ai-panel-label {
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.63rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--pun-cyan);
+  }
+  .ai-panel-dots {
+    color: var(--pun-text-muted);
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+  }
+  .ai-panel-rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .ai-panel-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.78rem;
+    color: var(--pun-text);
+  }
+  .ai-row-icon { font-size: 0.9rem; flex-shrink: 0; }
+  .ai-row-label { flex: 1; }
+</style>
