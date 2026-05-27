@@ -15,6 +15,7 @@ import OutcomeCard from '../components/OutcomeCard.astro';
 import { Image } from 'astro:assets';
 import { SITE, SERVICES, PROOF_STATS } from '../data/site';
 import avatar from '../assets/pun-avatar.png';
+import heroImage from '../assets/hero-ai-walking.jpg';
 
 // Fetch 3 featured articles — one per pillar category for home preview.
 // Picks most recent non-draft entry per pillar, falls back to any latest.
@@ -329,7 +330,7 @@ const socials = [
       <div class="hero-right">
         <div
           class="hero-bg-visual"
-          style="background-image: url('/assets/hero-ai-walking.jpg')"
+          style={`background-image: url('${heroImage.src}')`}
           aria-hidden="true"
         />
 
@@ -1517,7 +1518,7 @@ const socials = [
   align-items: center;
   width: 100%;
 }
-.hero-left { display: flex; justify-content: center; }
+.hero-left { display: flex; justify-content: center; min-width: 0; }
 .hero-avatar-wrap { position: relative; display: inline-block; text-align: center; }
 .hero-avatar {
   width: 340px;
@@ -1541,6 +1542,7 @@ const socials = [
 .hero-right {
   position: relative;
   padding: 2.5rem;
+  min-width: 0;
 }
 .hero-bg-visual {
   position: absolute;
