@@ -28,7 +28,7 @@ const { label, status, pulse = false } = Astro.props;
   .s-active, .s-running {
     background: rgba(34,211,238,0.10);
     border: 1px solid rgba(34,211,238,0.25);
-    color: #22d3ee;
+    color: var(--pun-cyan);
   }
   .s-ready {
     background: rgba(251,191,36,0.10);
@@ -51,5 +51,8 @@ const { label, status, pulse = false } = Astro.props;
   @keyframes badge-pulse {
     0%, 100% { opacity: 1; }
     50%       { opacity: 0.25; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pulse-dot { animation: none; }
   }
 </style>

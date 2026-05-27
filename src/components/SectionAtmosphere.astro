@@ -6,6 +6,8 @@ interface Props {
   class?: string;
 }
 const { coral = false, cyan = false, navy = false, class: className = '' } = Astro.props;
+// Note: coral and navy are mutually exclusive — both use ::before.
+// Pass only one at a time. cyan is independent (uses ::after).
 ---
 
 <div class:list={['atmo', { coral, cyan, navy }, className]}>
@@ -62,5 +64,9 @@ const { coral = false, cyan = false, navy = false, class: className = '' } = Ast
   @keyframes atmo-pulse {
     0%, 100% { opacity: 0.65; }
     50%       { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .atmo.coral::before,
+    .atmo.cyan::after { animation: none; }
   }
 </style>
