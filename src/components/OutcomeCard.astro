@@ -1,0 +1,66 @@
+---
+interface Props {
+  bucket: 'time' | 'money' | 'scale' | 'freedom' | 'cost';
+  headline: string;
+  body: string;
+  icon: string;
+}
+const { bucket, headline, body, icon } = Astro.props;
+
+const bucketColor: Record<string, string> = {
+  time:    '#22d3ee',
+  money:   '#4ade80',
+  scale:   '#4ade80',
+  freedom: '#818cf8',
+  cost:    '#fbbf24',
+};
+const accent = bucketColor[bucket] ?? '#22d3ee';
+---
+
+<div class="outcome-card" style={`--accent: ${accent}`}>
+  <span class="outcome-icon" aria-hidden="true">{icon}</span>
+  <h3 class="outcome-headline">{headline}</h3>
+  <p class="outcome-body">{body}</p>
+</div>
+
+<style>
+  .outcome-card {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: var(--pun-surface-1);
+    border: 1px solid var(--pun-border);
+    border-left: 3px solid var(--accent, #22d3ee);
+    border-radius: var(--pun-radius-card);
+    padding: 1.25rem 1.5rem;
+    box-shadow:
+      inset 1px 1px 0 rgba(255,255,255,0.06),
+      0 8px 40px var(--pun-glow-navy);
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .outcome-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      inset 1px 1px 0 rgba(255,255,255,0.08),
+      0 12px 48px var(--pun-glow-navy);
+  }
+  .outcome-icon {
+    font-size: 1.4rem;
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+  .outcome-headline {
+    font-family: 'Bai Jamjuree', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 0.4rem;
+    line-height: 1.3;
+  }
+  .outcome-body {
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.85rem;
+    color: var(--pun-text-muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+</style>
