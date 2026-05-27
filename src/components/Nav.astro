@@ -1,73 +1,131 @@
 ---
-import { SITE } from '../data/site';
-
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 
 function isActive(href: string): boolean {
   if (href === '/') return currentPath === '/';
   return currentPath === href || currentPath.startsWith(`${href}/`);
 }
+
+const navLinks = [
+  { label: 'Solutions',     href: '/services' },
+  { label: 'Approach',      href: '/#approach' },
+  { label: 'Case Studies',  href: '/case-studies' },
+  { label: 'Resources',     href: '/insights' },
+];
 ---
 
-<nav
-  class="navbar sticky top-0 z-50 border-b border-base-content/5 bg-base-100/80 px-4 backdrop-blur-md lg:px-8"
-  aria-label="หลัก"
->
-  <div class="navbar-start">
-    <a href="/" class="font-display text-lg font-bold tracking-tight" aria-label="กลับหน้าแรก">
-      <span class="text-base-content">Pun</span><span class="text-secondary"> Nattapatch</span>
-    </a>
-  </div>
+<nav class="site-nav" aria-label="หลัก">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <a href="/" class="font-display text-lg font-bold tracking-tight" aria-label="กลับหน้าแรก">
+        <span class="text-base-content">Pun</span><span class="text-secondary"> Nattapatch</span>
+      </a>
+    </div>
 
-  <div class="navbar-center hidden md:flex">
-    <ul class="menu menu-horizontal gap-1 text-base">
-      {
-        SITE.nav
-          .filter((item) => !item.cta)
-          .map((item) => (
-            <li>
-              <a
-                href={item.href}
-                class:list={[
-                  'rounded-md px-3 py-2 font-medium transition-colors',
-                  isActive(item.href) && 'text-secondary',
-                ]}
-                aria-current={isActive(item.href) ? 'page' : undefined}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))
-      }
-    </ul>
-  </div>
+    <div class="nav-links hidden md:flex">
+      <ul class="menu menu-horizontal gap-1 text-base">
+        {navLinks.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class:list={[
+                'rounded-md px-3 py-2 font-medium transition-colors',
+                isActive(item.href) && 'text-secondary',
+              ]}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
 
-  <div class="navbar-end gap-2">
-    <a
-      href="/intake-form"
-      class="btn btn-sm bg-secondary text-secondary-content shadow-md shadow-secondary/20 hover:bg-secondary/90 sm:btn-md"
-    >
-      นัดคุยกับผม
-    </a>
+    <div class="nav-end">
+      <a href="/assessment" class="nav-cta">Get Assessment</a>
+    </div>
   </div>
 </nav>
 
 <!-- Mobile menu (below nav) -->
-<details class="menu-mobile md:hidden border-b border-base-content/5 bg-base-100/80 backdrop-blur-md">
+<details class="menu-mobile md:hidden">
   <summary class="cursor-pointer px-4 py-2 text-sm font-medium text-base-content/70">
     เมนู ▾
   </summary>
   <ul class="menu px-2 pb-3">
-    {
-      SITE.nav
-        .filter((item) => !item.cta)
-        .map((item) => (
-          <li>
-            <a href={item.href} class={isActive(item.href) ? 'text-secondary' : ''}>
-              {item.label}
-            </a>
-          </li>
-        ))
-    }
+    {navLinks.map((item) => (
+      <li>
+        <a href={item.href} class={isActive(item.href) ? 'text-secondary' : ''}>
+          {item.label}
+        </a>
+      </li>
+    ))}
   </ul>
 </details>
+
+<style>
+  .site-nav {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(11, 22, 35, 0.85);
+    border-bottom: 1px solid var(--pun-border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding-inline: 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    .site-nav {
+      padding-inline: 2rem;
+    }
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 4rem;
+    max-width: var(--pun-container);
+    margin-inline: auto;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-links {
+    align-items: center;
+  }
+
+  .nav-end {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .nav-cta {
+    background: var(--pun-coral);
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--pun-radius-btn);
+    font-family: 'Bai Jamjuree', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    box-shadow: 0 0 20px var(--pun-glow-coral);
+    transition: box-shadow 0.15s;
+  }
+
+  .nav-cta:hover {
+    box-shadow: 0 0 35px var(--pun-glow-coral);
+  }
+
+  .menu-mobile {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(11, 22, 35, 0.85);
+    border-bottom: 1px solid var(--pun-border);
+  }
+</style>
