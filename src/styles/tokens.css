@@ -1,0 +1,40 @@
+/* punnattapatch.com — Design Tokens · 2026-05-27 */
+/* Augments pundark DaisyUI theme. Do NOT override base-100/base-content. */
+
+:root {
+  /* Brand */
+  --pun-ink:    #0b1623;
+  --pun-navy:   #072b4e;
+  --pun-coral:  #dd4155;
+  --pun-cyan:   #22d3ee;
+
+  /* Glass surfaces */
+  --pun-surface-1: rgba(255, 255, 255, 0.05);
+  --pun-surface-2: rgba(255, 255, 255, 0.10);
+
+  /* Borders */
+  --pun-border:        rgba(255, 255, 255, 0.10);
+  --pun-border-bright: rgba(255, 255, 255, 0.20);
+
+  /* Glows */
+  --pun-glow-coral: rgba(221, 65, 85, 0.25);
+  --pun-glow-navy:  rgba(7, 43, 78, 0.30);
+  --pun-glow-cyan:  rgba(34, 211, 238, 0.15);
+
+  /* Text */
+  --pun-text:       #dce3ed;
+  --pun-text-muted: rgba(220, 227, 237, 0.60);
+
+  /* Spacing */
+  --pun-section-y:        96px;
+  --pun-section-y-mobile: 64px;
+  --pun-container:        1280px;
+  --pun-gutter:           2rem;
+
+  /* Radius */
+  --pun-radius-panel: 2rem;
+  --pun-radius-card:  1.5rem;
+  --pun-radius-btn:   1rem;
+  --pun-radius-badge: 9999px;
+  --pun-radius-small: 0.75rem;
+}
