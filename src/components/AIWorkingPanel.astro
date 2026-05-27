@@ -1,5 +1,6 @@
 ---
 import StatusBadge from './StatusBadge.astro';
+import Icon from './Icon.astro';
 ---
 
 <div class="ai-panel">
@@ -9,22 +10,22 @@ import StatusBadge from './StatusBadge.astro';
   </div>
   <ul class="ai-panel-rows">
     <li class="ai-panel-row">
-      <span class="ai-row-icon">🎯</span>
+      <span class="ai-row-icon"><Icon name="magnifying-glass" size={16} /></span>
       <span class="ai-row-label">Lead Qualifying</span>
       <StatusBadge label="Active" status="active" pulse />
     </li>
     <li class="ai-panel-row">
-      <span class="ai-row-icon">📨</span>
+      <span class="ai-row-icon"><Icon name="paper-airplane" size={16} /></span>
       <span class="ai-row-label">Follow-up Automation</span>
       <StatusBadge label="Running" status="running" pulse />
     </li>
     <li class="ai-panel-row">
-      <span class="ai-row-icon">📝</span>
+      <span class="ai-row-icon"><Icon name="pencil-square" size={16} /></span>
       <span class="ai-row-label">Proposal Generation</span>
       <StatusBadge label="Ready" status="ready" />
     </li>
     <li class="ai-panel-row">
-      <span class="ai-row-icon">📊</span>
+      <span class="ai-row-icon"><Icon name="chart-bar" size={16} /></span>
       <span class="ai-row-label">Sales Summary</span>
       <StatusBadge label="Synced" status="synced" />
     </li>
@@ -80,6 +81,6 @@ import StatusBadge from './StatusBadge.astro';
     font-size: 0.78rem;
     color: var(--pun-text);
   }
-  .ai-row-icon { font-size: 0.9rem; flex-shrink: 0; }
+  .ai-row-icon { display: flex; align-items: center; flex-shrink: 0; color: var(--pun-cyan); }
   .ai-row-label { flex: 1; }
 </style>

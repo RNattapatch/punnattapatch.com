@@ -8,7 +8,8 @@ function isActive(href: string): boolean {
   return currentPath === href || currentPath.startsWith(`${href}/`);
 }
 
-const navLinks = SITE.nav.filter((item) => !item.cta);
+const hideFromNav = new Set(['Free Kit', 'Public Training']);
+const navLinks = SITE.nav.filter((item) => !item.cta && !hideFromNav.has(item.label));
 const ctaItem = SITE.nav.find((item) => item.cta);
 ---
 

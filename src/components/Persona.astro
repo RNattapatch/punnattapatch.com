@@ -1,22 +1,8 @@
 ---
-/**
- * Persona.astro — Single persona card (3-column grid on desktop).
- *
- * Implements Pakorn model landing page Section 2 — "Workshop นี้เหมาะกับใคร"
- * Self-identification card that lets prospect match their role to the product.
- *
- * Usage:
- *   <Persona
- *     icon="building-2"
- *     role="เจ้าของธุรกิจ SME"
- *     scope="รายได้ ฿30-200M · ทีมขาย 5-20 คน"
- *     pain="ทีมใช้เวลา 60% กับ proposal/research"
- *     outcome="คืนเวลาเจ้าของ 1-2 ชม/วัน + ระบบให้ทีมทำเองได้"
- *   />
- */
+import Icon from './Icon.astro';
+
 interface Props {
-  icon: string; // Lucide icon name (just for visual hint — use emoji fallback)
-  emoji?: string; // Optional emoji if not using icon lib
+  icon: string;
   role: string;
   scope: string;
   pain: string;
@@ -25,8 +11,7 @@ interface Props {
 }
 
 const {
-  icon: _icon,
-  emoji = '👤',
+  icon,
   role,
   scope,
   pain,
@@ -51,10 +36,10 @@ const accentVar =
   ></div>
 
   <div
-    class="flex h-12 w-12 items-center justify-center rounded-2xl"
-    style="background: color-mix(in oklch, var(--persona-accent) 15%, transparent);"
+    class="flex h-12 w-12 items-center justify-center rounded-2xl persona-icon-wrap"
+    style="background: color-mix(in oklch, var(--persona-accent) 15%, transparent); color: var(--persona-accent);"
   >
-    <span class="text-2xl">{emoji}</span>
+    <Icon name={icon} size={24} />
   </div>
 
   <h3 class="mt-4 font-display text-lg font-bold">{role}</h3>

@@ -1,4 +1,6 @@
 ---
+import Icon from './Icon.astro';
+
 interface Props {
   bucket: 'time' | 'money' | 'scale' | 'freedom' | 'cost';
   headline: string;
@@ -18,7 +20,9 @@ const accent = bucketColor[bucket] ?? '#22d3ee';
 ---
 
 <div class="outcome-card" style={`--accent: ${accent}`}>
-  <span class="outcome-icon" aria-hidden="true">{icon}</span>
+  <span class="outcome-icon" aria-hidden="true">
+    <Icon name={icon} size={22} />
+  </span>
   <h3 class="outcome-headline">{headline}</h3>
   <p class="outcome-body">{body}</p>
 </div>
@@ -44,9 +48,9 @@ const accent = bucketColor[bucket] ?? '#22d3ee';
       0 12px 48px var(--pun-glow-navy);
   }
   .outcome-icon {
-    font-size: 1.4rem;
     display: block;
     margin-bottom: 0.6rem;
+    color: var(--accent, #22d3ee);
   }
   .outcome-headline {
     font-family: 'Bai Jamjuree', sans-serif;

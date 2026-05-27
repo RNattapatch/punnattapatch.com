@@ -12,6 +12,7 @@ import CTAButton from '../components/CTAButton.astro';
 import SectionAtmosphere from '../components/SectionAtmosphere.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import OutcomeCard from '../components/OutcomeCard.astro';
+import Icon from '../components/Icon.astro';
 import { Image } from 'astro:assets';
 import { SITE, SERVICES, PROOF_STATS } from '../data/site';
 import avatar from '../assets/pun-avatar.png';
@@ -269,10 +270,10 @@ const galleryPhotos = Array.from({ length: 8 }, (_, i) => ({
 }));
 
 const trustPoints = [
-  { icon: '⏱', title: 'กรอกฟอร์ม 3 นาที', body: 'ใช้เวลาไม่ถึง 3 นาที' },
-  { icon: '🛡', title: 'ประเมินฟรี', body: 'ไม่มีค่าใช้จ่าย ไม่มีข้อผูกมัด' },
-  { icon: '👤', title: 'ปันอ่านและตอบเอง', body: 'ไม่ใช่ bot ปันดูเองทุกใบ' },
-  { icon: '💬', title: 'ได้คำตอบใน 24 ชม.', body: 'ได้ feedback ภายในวันถัดไป' },
+  { icon: 'clock', title: 'กรอกฟอร์ม 3 นาที', body: 'ใช้เวลาไม่ถึง 3 นาที' },
+  { icon: 'check-circle', title: 'ประเมินฟรี', body: 'ไม่มีค่าใช้จ่าย ไม่มีข้อผูกมัด' },
+  { icon: 'user', title: 'ปันอ่านและตอบเอง', body: 'ไม่ใช่ bot ปันดูเองทุกใบ' },
+  { icon: 'pencil-square', title: 'ได้คำตอบใน 24 ชม.', body: 'ได้ feedback ภายในวันถัดไป' },
 ];
 
 const socials = [
@@ -335,7 +336,7 @@ const socials = [
         />
 
         <div class="hero-content">
-          <span class="hero-badge">AI TRANSFORMATION CONSULTANT</span>
+          <p class="hero-role">ที่ปรึกษา AI Transformation สำหรับธุรกิจ B2B ไทย</p>
 
           <h1 class="hero-headline">
             เมื่อ AI ทำงานแทนทีม<br />
@@ -354,7 +355,11 @@ const socials = [
           </div>
 
           <p class="hero-trust">
-            <span class="trust-avatars" aria-hidden="true">👤👤👤</span>
+            <span class="trust-avatars" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0zM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0zM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0zM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+          </span>
             <span>15+ SME Clients</span>
             <span class="trust-sep">·</span>
             <span>Limited Slots</span>
@@ -378,12 +383,12 @@ const socials = [
         accentWord="ชีวิตที่เปลี่ยนไป"
       />
       <div class="outcome-grid">
-        <OutcomeCard bucket="time"    icon="⏰" headline="พนักงานได้เวลาคืน 80%"            body="AI ทำงานซ้ำแทน ทีมมีเวลาโฟกัสงานสร้างมูลค่า" />
-        <OutcomeCard bucket="scale"   icon="⚡" headline="1 คน + AI Agent = ผลงาน 10 คน"    body="ขยายผลได้โดยไม่ต้องจ้างเพิ่ม ระบบ scale ตามงาน" />
-        <OutcomeCard bucket="money"   icon="💰" headline="ยอดขายขึ้น เพราะเซลล์มีเวลาหาลูกค้า" body="AI รับงานเอกสาร proposal ให้หมด เซลล์เอาเวลาไปสร้างความสัมพันธ์แทน" />
-        <OutcomeCard bucket="freedom" icon="🔓" headline="เจ้าของถอดตัวออกจากธุรกิจได้"     body={`สร้าง "สมองที่ 2" จาก AI ทีมถาม AI แทนถามเจ้าของ`} />
-        <OutcomeCard bucket="cost"    icon="🏗️" headline="ไม่ต้องจ่าย ERP/CRM แพง"          body="build ระบบที่ตอบโจทย์ธุรกิจคุณเลย เร็วกว่า ถูกกว่า ยืดหยุ่นกว่า" />
-        <OutcomeCard bucket="time"    icon="📋" headline="ประชุมลดลง 60%"                    body="AI สรุปงาน รายงาน แจ้งเตือนให้อัตโนมัติ ไม่ต้องนัดประชุมทุกเรื่อง" />
+        <OutcomeCard bucket="time"    icon="clock"             headline="พนักงานได้เวลาคืน 80%"            body="AI ทำงานซ้ำแทน ทีมมีเวลาโฟกัสงานสร้างมูลค่า" />
+        <OutcomeCard bucket="scale"   icon="bolt"             headline="1 คน + AI Agent = ผลงาน 10 คน"    body="ขยายผลได้โดยไม่ต้องจ้างเพิ่ม ระบบ scale ตามงาน" />
+        <OutcomeCard bucket="money"   icon="banknotes"        headline="ยอดขายขึ้น เพราะเซลล์มีเวลาหาลูกค้า" body="AI รับงานเอกสาร proposal ให้หมด เซลล์เอาเวลาไปสร้างความสัมพันธ์แทน" />
+        <OutcomeCard bucket="freedom" icon="lock-open"        headline="เจ้าของถอดตัวออกจากธุรกิจได้"     body={`สร้าง "สมองที่ 2" จาก AI ทีมถาม AI แทนถามเจ้าของ`} />
+        <OutcomeCard bucket="cost"    icon="wrench-screwdriver" headline="ไม่ต้องจ่าย ERP/CRM แพง"        body="build ระบบที่ตอบโจทย์ธุรกิจคุณเลย เร็วกว่า ถูกกว่า ยืดหยุ่นกว่า" />
+        <OutcomeCard bucket="time"    icon="clipboard-list"   headline="ประชุมลดลง 60%"                    body="AI สรุปงาน รายงาน แจ้งเตือนให้อัตโนมัติ ไม่ต้องนัดประชุมทุกเรื่อง" />
       </div>
       <p class="outcome-disclaimer">* ตัวเลขจากการทำงานร่วมกับ SME clients — ผลลัพธ์จริงขึ้นอยู่กับธุรกิจของคุณ</p>
     </div>
@@ -394,7 +399,7 @@ const socials = [
     <div class="mx-auto max-w-5xl">
       <div class="flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex items-start gap-4">
-          <div class="flex-shrink-0 rounded-xl bg-secondary/15 p-3 text-2xl">🎟</div>
+          <div class="flex-shrink-0 rounded-xl bg-secondary/15 p-3 text-secondary"><Icon name="academic-cap" size={28} /></div>
           <div>
             <div class="inline-flex items-center gap-2 rounded-full bg-secondary/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-secondary">
               <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-secondary"></span>
@@ -425,7 +430,7 @@ const socials = [
     <div class="mx-auto max-w-5xl">
       <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex items-start gap-4">
-          <div class="flex-shrink-0 rounded-xl bg-[#22d3ee]/10 p-3 text-2xl">🎁</div>
+          <div class="flex-shrink-0 rounded-xl bg-[#22d3ee]/10 p-3 text-[#22d3ee]"><Icon name="check-circle" size={28} /></div>
           <div>
             <p class="text-xs font-bold uppercase tracking-widest text-[#22d3ee]">Free Download · Form-Gated</p>
             <p class="mt-1 font-display text-lg font-black tracking-tight md:text-xl">
@@ -464,7 +469,7 @@ const socials = [
           <span class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style="background: #dd4155;"></span>
           <span class="relative inline-flex h-2 w-2 rounded-full" style="background: #dd4155;"></span>
         </span>
-        🎯 In-house Workshop สำหรับทีมของคุณ
+        In-house Workshop สำหรับทีมของคุณ
       </div>
 
       {/* Course Name — Billboard Heading */}
@@ -548,22 +553,22 @@ const socials = [
       />
       <div class="pain-grid">
         <GlassPanel class="pain-card">
-          <span class="pain-icon" aria-hidden="true">😰</span>
+          <span class="pain-icon" aria-hidden="true"><Icon name="user-circle" size={22} /></span>
           <h3 class="pain-title">เจ้าของต้องอยู่ทุกที่ ตัดสินใจทุกอย่าง</h3>
           <p class="pain-body">ทีมทำงานไม่ได้ถ้าไม่มีคุณ — ลาพักผ่อนก็ยังต้องรับโทรศัพท์</p>
         </GlassPanel>
         <GlassPanel class="pain-card">
-          <span class="pain-icon" aria-hidden="true">📑</span>
+          <span class="pain-icon" aria-hidden="true"><Icon name="document-text" size={22} /></span>
           <h3 class="pain-title">เซลล์เสียเวลากับงานเอกสารมากกว่างานขาย</h3>
           <p class="pain-body">เขียน proposal · พิมพ์รายงาน · กรอก Excel จนไม่มีเวลาโทรหาลูกค้า</p>
         </GlassPanel>
         <GlassPanel class="pain-card">
-          <span class="pain-icon" aria-hidden="true">🎓</span>
+          <span class="pain-icon" aria-hidden="true"><Icon name="academic-cap" size={22} /></span>
           <h3 class="pain-title">เคยเรียน workshop ใหญ่มาแล้ว แต่กลับมาก็ทำไม่ได้</h3>
           <p class="pain-body">ได้ไอเดียดีมาก แต่ไม่มีใครจับมือ implement ให้จนเสร็จ</p>
         </GlassPanel>
         <GlassPanel class="pain-card">
-          <span class="pain-icon" aria-hidden="true">🗂️</span>
+          <span class="pain-icon" aria-hidden="true"><Icon name="folder-open" size={22} /></span>
           <h3 class="pain-title">ข้อมูลกระจัดกระจาย Line ที Excel ที สมุดจดที</h3>
           <p class="pain-body">ไม่มีใครรู้ว่า pipeline ตอนนี้อยู่ไหน จนกว่าเจ้าของจะนั่งรวบเอง</p>
         </GlassPanel>
@@ -582,22 +587,22 @@ const socials = [
       />
       <div class="wheels-grid">
         <GlassPanel class="wheel-card" glow="cyan">
-          <span class="wheel-icon" aria-hidden="true">💼</span>
+          <span class="wheel-icon" aria-hidden="true"><Icon name="briefcase" size={28} /></span>
           <h3 class="wheel-name">Sales</h3>
           <p class="wheel-desc">Lead qualifying · Proposal automation · Follow-up cadence · Pipeline reporting</p>
         </GlassPanel>
         <GlassPanel class="wheel-card" glow="cyan">
-          <span class="wheel-icon" aria-hidden="true">⚙️</span>
+          <span class="wheel-icon" aria-hidden="true"><Icon name="cog-6-tooth" size={28} /></span>
           <h3 class="wheel-name">Operations</h3>
           <p class="wheel-desc">SOP automation · Task routing · Document generation · Status tracking</p>
         </GlassPanel>
         <GlassPanel class="wheel-card" glow="cyan">
-          <span class="wheel-icon" aria-hidden="true">💰</span>
+          <span class="wheel-icon" aria-hidden="true"><Icon name="banknotes" size={28} /></span>
           <h3 class="wheel-name">Finance</h3>
           <p class="wheel-desc">Invoice processing · Expense categorization · Cash flow dashboards · Alerts</p>
         </GlassPanel>
         <GlassPanel class="wheel-card" glow="cyan">
-          <span class="wheel-icon" aria-hidden="true">👥</span>
+          <span class="wheel-icon" aria-hidden="true"><Icon name="users" size={28} /></span>
           <h3 class="wheel-name">HR</h3>
           <p class="wheel-desc">Onboarding flows · Policy Q&A bot · Performance tracking · Leave management</p>
         </GlassPanel>
@@ -654,8 +659,7 @@ const socials = [
 
       <div class="mt-10 grid gap-6 md:grid-cols-3">
         <Persona
-          icon="building-2"
-          emoji="🏢"
+          icon="building-office"
           role="เจ้าของธุรกิจ SME"
           scope="รายได้ ฿30-200M · ทีมขาย 5-20 คน · B2B relationship-based"
           pain="ทีมขายใช้เวลา 60% กับ proposal/research · เจ้าของตอบ LINE ลูกค้าเองทุกวัน · เดือนไหน busy ยอดสะดุด"
@@ -664,7 +668,6 @@ const socials = [
         />
         <Persona
           icon="users"
-          emoji="👥"
           role="ผู้จัดการฝ่ายขาย"
           scope="ทีม 5-15 คน · scale มาจาก founder led · ต้องเริ่มวางระบบ"
           pain="ทีมใช้ ChatGPT กันเอง ผลไม่สม่ำเสมอ · no playbook · top performer ลาออก = knowledge หายไปด้วย"
@@ -672,8 +675,7 @@ const socials = [
           accent="cyan"
         />
         <Persona
-          icon="trending-up"
-          emoji="🎯"
+          icon="arrow-trending-up"
           role="ทีมขาย / KAM senior"
           scope="ปิดดีล ฿500K+ ต่อ deal · relationship-based · client retention = commission"
           pain="Follow-up + proposal writing กินเวลา 40%/week · quote เก่าต้องค้นทุกครั้ง · post-call summary ไม่ทัน"
@@ -899,8 +901,8 @@ const socials = [
 
       <div class="mt-12 grid gap-6 md:grid-cols-3">
         <div class="rounded-2xl border border-base-content/10 bg-base-100/40 p-6 text-center">
-          <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary/15">
-            <span class="text-2xl">⏱</span>
+          <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary/15 text-secondary">
+            <Icon name="clock" size={28} />
           </div>
           <h3 class="font-display text-lg font-bold">More Time</h3>
           <p class="mt-2 text-sm leading-relaxed text-base-content/75">
@@ -908,8 +910,8 @@ const socials = [
           </p>
         </div>
         <div class="rounded-2xl border border-base-content/10 bg-base-100/40 p-6 text-center">
-          <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary/15">
-            <span class="text-2xl">📈</span>
+          <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary/15 text-secondary">
+            <Icon name="arrow-trending-up" size={28} />
           </div>
           <h3 class="font-display text-lg font-bold">More Money</h3>
           <p class="mt-2 text-sm leading-relaxed text-base-content/75">
@@ -917,8 +919,8 @@ const socials = [
           </p>
         </div>
         <div class="rounded-2xl border border-base-content/10 bg-base-100/40 p-6 text-center">
-          <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary/15">
-            <span class="text-2xl">🛡</span>
+          <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary/15 text-secondary">
+            <Icon name="lock-open" size={28} />
           </div>
           <h3 class="font-display text-lg font-bold">Less Risk</h3>
           <p class="mt-2 text-sm leading-relaxed text-base-content/75">
@@ -1348,7 +1350,7 @@ const socials = [
               <div
                 class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary/15"
               >
-                <span class="text-xl">📘</span>
+                <Icon name="document-text" size={22} class="text-secondary" />
               </div>
               <h3 class="font-display text-lg font-bold leading-tight">{item.title}</h3>
               <p class="mt-2 text-sm leading-relaxed text-base-content/75">{item.body}</p>
@@ -1443,8 +1445,8 @@ const socials = [
         {
           trustPoints.map((point) => (
             <div class="text-center">
-              <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full border border-base-content/15 bg-base-200/60 text-xl">
-                {point.icon}
+              <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full border border-base-content/15 bg-base-200/60 text-base-content/70">
+                <Icon name={point.icon} size={22} />
               </div>
               <p class="font-display text-sm font-bold text-base-content">
                 {point.title}
@@ -1558,19 +1560,14 @@ const socials = [
   opacity: 0.55;
 }
 .hero-content { position: relative; z-index: 1; display: block; padding: 0; max-width: 100%; }
-.hero-badge {
-  display: inline-block;
-  font-family: 'Sarabun', sans-serif;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.hero-role {
+  font-family: 'Bai Jamjuree', sans-serif;
+  font-size: clamp(1.15rem, 2.2vw, 1.75rem);
+  font-weight: 600;
   color: var(--pun-cyan);
-  border: 1px solid color-mix(in srgb, var(--pun-cyan) 30%, transparent);
-  background: color-mix(in srgb, var(--pun-cyan) 8%, transparent);
-  border-radius: 9999px;
-  padding: 3px 12px;
-  margin-bottom: 1rem;
+  line-height: 1.35;
+  margin: 0 0 1.25rem;
+  letter-spacing: 0.01em;
 }
 .hero-headline {
   font-family: 'Bai Jamjuree', sans-serif;
@@ -1608,6 +1605,7 @@ const socials = [
   margin: 0;
 }
 .trust-sep { opacity: 0.4; }
+.trust-avatars { display: flex; align-items: center; gap: 2px; color: var(--pun-cyan); }
 .hero-ai-panel {
   position: relative;
   z-index: 2;
@@ -1642,16 +1640,16 @@ const socials = [
 
 /* PAIN POINTS */
 .pain-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-.pain-card { padding: 1.5rem; border-left: 3px solid var(--pun-coral) !important; }
-.pain-icon { font-size: 1.6rem; display: block; margin-bottom: 0.75rem; }
+.pain-card { padding: 2rem; border-left: 3px solid var(--pun-coral) !important; }
+.pain-icon { display: block; margin-bottom: 0.75rem; color: var(--pun-coral); }
 .pain-title { font-family: 'Bai Jamjuree', sans-serif; font-size: 1rem; font-weight: 700; color: white; margin: 0 0 0.4rem; }
 .pain-body  { font-family: 'Sarabun', sans-serif; font-size: 0.85rem; color: var(--pun-text-muted); margin: 0; line-height: 1.6; }
 @media (max-width: 640px) { .pain-grid { grid-template-columns: 1fr; } }
 
 /* 4 WHEELS */
 .wheels-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
-.wheel-card { padding: 1.5rem; text-align: center; }
-.wheel-icon { font-size: 2rem; display: block; margin-bottom: 0.75rem; }
+.wheel-card { padding: 2rem 1.75rem; text-align: center; }
+.wheel-icon { display: flex; justify-content: center; margin-bottom: 0.75rem; color: var(--pun-cyan); }
 .wheel-name { font-family: 'Bai Jamjuree', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--pun-cyan); margin: 0 0 0.4rem; }
 .wheel-desc { font-family: 'Sarabun', sans-serif; font-size: 0.82rem; color: var(--pun-text-muted); margin: 0; line-height: 1.55; }
 @media (max-width: 900px) { .wheels-grid { grid-template-columns: repeat(2, 1fr); } }
