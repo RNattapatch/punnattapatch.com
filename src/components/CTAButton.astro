@@ -1,0 +1,58 @@
+---
+interface Props {
+  href: string;
+  label: string;
+  variant?: 'primary' | 'ghost';
+  size?: 'md' | 'lg';
+  external?: boolean;
+}
+const { href, label, variant = 'primary', size = 'md', external = false } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={['cta-btn', `v-${variant}`, `s-${size}`]}
+  {...external ? { target: '_blank', rel: 'noopener noreferrer' } : {}}
+>
+  {label}
+</a>
+
+<style>
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bai Jamjuree', sans-serif;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: var(--pun-radius-btn);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    white-space: nowrap;
+  }
+  .cta-btn:hover { transform: translateY(-1px); }
+  .cta-btn:active { transform: translateY(0); }
+
+  .s-md { padding: 0.625rem 1.5rem;  font-size: 0.95rem; }
+  .s-lg { padding: 0.875rem 2.25rem; font-size: 1.05rem; }
+
+  .v-primary {
+    background: var(--pun-coral);
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 0 30px var(--pun-glow-coral);
+  }
+  .v-primary:hover {
+    box-shadow: 0 0 50px var(--pun-glow-coral);
+  }
+  .v-ghost {
+    background: transparent;
+    color: #ffffff;
+    border: 1px solid var(--pun-border-bright);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .v-ghost:hover {
+    background: var(--pun-surface-1);
+  }
+</style>
