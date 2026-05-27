@@ -1,4 +1,6 @@
 ---
+import { SITE } from '../data/site';
+
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 
 function isActive(href: string): boolean {
@@ -6,12 +8,8 @@ function isActive(href: string): boolean {
   return currentPath === href || currentPath.startsWith(`${href}/`);
 }
 
-const navLinks = [
-  { label: 'Solutions',     href: '/services' },
-  { label: 'Approach',      href: '/#approach' },
-  { label: 'Case Studies',  href: '/case-studies' },
-  { label: 'Resources',     href: '/insights' },
-];
+const navLinks = SITE.nav.filter((item) => !item.cta);
+const ctaItem = SITE.nav.find((item) => item.cta);
 ---
 
 <nav class="site-nav" aria-label="หลัก">
@@ -23,14 +21,14 @@ const navLinks = [
     </div>
 
     <div class="nav-links hidden md:flex">
-      <ul class="menu menu-horizontal gap-1 text-base">
+      <ul class="menu menu-horizontal gap-0 text-sm">
         {navLinks.map((item) => (
           <li>
             <a
               href={item.href}
               class:list={[
-                'rounded-md px-3 py-2 font-medium transition-colors',
-                isActive(item.href) && 'text-secondary',
+                'rounded-md px-2.5 py-2 font-medium transition-colors',
+                isActive(item.href) ? 'text-secondary' : 'text-base-content/80 hover:text-base-content',
               ]}
               aria-current={isActive(item.href) ? 'page' : undefined}
             >
@@ -42,7 +40,9 @@ const navLinks = [
     </div>
 
     <div class="nav-end">
-      <a href="/assessment" class="nav-cta">Get Assessment</a>
+      {ctaItem && (
+        <a href={ctaItem.href} class="nav-cta">{ctaItem.label}</a>
+      )}
     </div>
   </div>
 </nav>
@@ -60,6 +60,13 @@ const navLinks = [
         </a>
       </li>
     ))}
+    {ctaItem && (
+      <li class="mt-2 px-2">
+        <a href={ctaItem.href} class="btn btn-sm w-full bg-secondary text-secondary-content">
+          {ctaItem.label}
+        </a>
+      </li>
+    )}
   </ul>
 </details>
 
@@ -93,16 +100,20 @@ const navLinks = [
   .nav-brand {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
   }
 
   .nav-links {
     align-items: center;
+    flex: 1;
+    justify-content: center;
   }
 
   .nav-end {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex-shrink: 0;
   }
 
   .nav-cta {
@@ -114,6 +125,7 @@ const navLinks = [
     font-weight: 700;
     font-size: 0.9rem;
     text-decoration: none;
+    white-space: nowrap;
     box-shadow: 0 0 20px var(--pun-glow-coral);
     transition: box-shadow 0.15s;
   }
