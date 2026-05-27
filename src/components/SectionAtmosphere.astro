@@ -1,0 +1,66 @@
+---
+interface Props {
+  coral?: boolean;
+  cyan?: boolean;
+  navy?: boolean;
+  class?: string;
+}
+const { coral = false, cyan = false, navy = false, class: className = '' } = Astro.props;
+---
+
+<div class:list={['atmo', { coral, cyan, navy }, className]}>
+  <slot />
+</div>
+
+<style>
+  .atmo {
+    position: relative;
+    overflow: hidden;
+  }
+  .atmo.coral::before,
+  .atmo.cyan::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    animation: atmo-pulse 4s ease-in-out infinite;
+  }
+  .atmo.navy::before {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .atmo.coral::before {
+    width: 600px;
+    height: 600px;
+    top: -200px;
+    right: -100px;
+    background: radial-gradient(circle, var(--pun-glow-coral) 0%, transparent 70%);
+  }
+  .atmo.cyan::after {
+    width: 500px;
+    height: 500px;
+    bottom: -150px;
+    left: -100px;
+    background: radial-gradient(circle, var(--pun-glow-cyan) 0%, transparent 70%);
+  }
+  .atmo.navy::before {
+    width: 900px;
+    height: 900px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, var(--pun-glow-navy) 0%, transparent 65%);
+  }
+  .atmo > :global(*) {
+    position: relative;
+    z-index: 1;
+  }
+  @keyframes atmo-pulse {
+    0%, 100% { opacity: 0.65; }
+    50%       { opacity: 1; }
+  }
+</style>
