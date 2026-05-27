@@ -1,0 +1,47 @@
+---
+interface Props {
+  class?: string;
+  elevated?: boolean;
+  glow?: 'coral' | 'cyan' | 'navy';
+}
+const { class: className = '', elevated = false, glow } = Astro.props;
+---
+
+<div class:list={['glass-panel', { elevated }, glow && `glow-${glow}`, className]}>
+  <slot />
+</div>
+
+<style>
+  .glass-panel {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: var(--pun-surface-1);
+    border: 1px solid var(--pun-border);
+    border-radius: var(--pun-radius-panel);
+    box-shadow:
+      inset 1px 1px 0 rgba(255,255,255,0.06),
+      0 8px 40px var(--pun-glow-navy);
+  }
+  .glass-panel.elevated {
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    background: var(--pun-surface-2);
+  }
+  .glass-panel.glow-coral {
+    box-shadow:
+      inset 1px 1px 0 rgba(255,255,255,0.06),
+      0 8px 40px var(--pun-glow-navy),
+      0 0 60px var(--pun-glow-coral);
+  }
+  .glass-panel.glow-cyan {
+    box-shadow:
+      inset 1px 1px 0 rgba(255,255,255,0.06),
+      0 8px 40px var(--pun-glow-navy),
+      0 0 60px var(--pun-glow-cyan);
+  }
+  .glass-panel.glow-navy {
+    box-shadow:
+      inset 1px 1px 0 rgba(255,255,255,0.06),
+      0 0 80px var(--pun-glow-navy);
+  }
+</style>
