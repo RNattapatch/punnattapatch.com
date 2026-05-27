@@ -368,6 +368,26 @@ const socials = [
     </div>
   </SectionAtmosphere>
 
+  <!-- OUTCOME PROOF -->
+  <SectionAtmosphere cyan class="section-pad">
+    <div class="container">
+      <SectionHeader
+        badge="BEFORE → AFTER AI"
+        headline="ชีวิตที่เปลี่ยนไป หลังจากที่ AI เข้ามาทำงานแทน"
+        accentWord="ชีวิตที่เปลี่ยนไป"
+      />
+      <div class="outcome-grid">
+        <OutcomeCard bucket="time"    icon="⏰" headline="พนักงานได้เวลาคืน 80%"            body="AI ทำงานซ้ำแทน ทีมมีเวลาโฟกัสงานสร้างมูลค่า" />
+        <OutcomeCard bucket="scale"   icon="⚡" headline="1 คน + AI Agent = ผลงาน 10 คน"    body="ขยายผลได้โดยไม่ต้องจ้างเพิ่ม ระบบ scale ตามงาน" />
+        <OutcomeCard bucket="money"   icon="💰" headline="ยอดขายขึ้น เพราะเซลล์มีเวลาหาลูกค้า" body="AI รับงานเอกสาร proposal ให้หมด เซลล์เอาเวลาไปสร้างความสัมพันธ์แทน" />
+        <OutcomeCard bucket="freedom" icon="🔓" headline="เจ้าของถอดตัวออกจากธุรกิจได้"     body={`สร้าง "สมองที่ 2" จาก AI ทีมถาม AI แทนถามเจ้าของ`} />
+        <OutcomeCard bucket="cost"    icon="🏗️" headline="ไม่ต้องจ่าย ERP/CRM แพง"          body="build ระบบที่ตอบโจทย์ธุรกิจคุณเลย เร็วกว่า ถูกกว่า ยืดหยุ่นกว่า" />
+        <OutcomeCard bucket="time"    icon="📋" headline="ประชุมลดลง 60%"                    body="AI สรุปงาน รายงาน แจ้งเตือนให้อัตโนมัติ ไม่ต้องนัดประชุมทุกเรื่อง" />
+      </div>
+      <p class="outcome-disclaimer">* ตัวเลขจากการทำงานร่วมกับ SME clients — ผลลัพธ์จริงขึ้นอยู่กับธุรกิจของคุณ</p>
+    </div>
+  </SectionAtmosphere>
+
   <!-- ===== AI AGENT 101 PUBLIC TRAINING — WAITLIST BANNER ===== -->
   <section class="border-b border-secondary/20 px-4 py-8 lg:px-8" style="background: linear-gradient(135deg, rgba(221,65,85,0.08) 0%, rgba(221,65,85,0.03) 100%);">
     <div class="mx-auto max-w-5xl">
@@ -517,59 +537,105 @@ const socials = [
     </div>
   </section>
 
-  <!-- ===== PROBLEM ===== -->
-  <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
-    <div class="mx-auto max-w-5xl">
-      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Problem</p>
-      <h2 class="mt-3 max-w-2xl font-display text-3xl font-bold tracking-tight md:text-4xl">
-        ปัญหาที่เจ้าของธุรกิจส่วนใหญ่หนีไม่พ้น
-      </h2>
-
-      <div class="mt-10 grid gap-4 md:grid-cols-3">
-        {
-          painPoints.map((p) => (
-            <div class="rounded-2xl border border-base-content/15 bg-base-200/40 p-6 transition hover:border-secondary/40">
-              <div class="text-3xl">{p.emoji}</div>
-              <h3 class="mt-4 font-display text-base font-bold">{p.title}</h3>
-              <p class="mt-2 text-sm leading-relaxed text-base-content/75">{p.body}</p>
-            </div>
-          ))
-        }
+  <!-- PAIN POINTS -->
+  <SectionAtmosphere coral class="section-pad">
+    <div class="container">
+      <SectionHeader
+        badge="คุณรู้จักอาการเหล่านี้ไหม?"
+        headline="ทีมขายทำงานหนักอยู่แล้ว แต่ยอดก็ยังไม่ขยับ"
+        accentWord="ยังไม่ขยับ"
+      />
+      <div class="pain-grid">
+        <GlassPanel class="pain-card">
+          <span class="pain-icon" aria-hidden="true">😰</span>
+          <h3 class="pain-title">เจ้าของต้องอยู่ทุกที่ ตัดสินใจทุกอย่าง</h3>
+          <p class="pain-body">ทีมทำงานไม่ได้ถ้าไม่มีคุณ — ลาพักผ่อนก็ยังต้องรับโทรศัพท์</p>
+        </GlassPanel>
+        <GlassPanel class="pain-card">
+          <span class="pain-icon" aria-hidden="true">📑</span>
+          <h3 class="pain-title">เซลล์เสียเวลากับงานเอกสารมากกว่างานขาย</h3>
+          <p class="pain-body">เขียน proposal · พิมพ์รายงาน · กรอก Excel จนไม่มีเวลาโทรหาลูกค้า</p>
+        </GlassPanel>
+        <GlassPanel class="pain-card">
+          <span class="pain-icon" aria-hidden="true">🎓</span>
+          <h3 class="pain-title">เคยเรียน workshop ใหญ่มาแล้ว แต่กลับมาก็ทำไม่ได้</h3>
+          <p class="pain-body">ได้ไอเดียดีมาก แต่ไม่มีใครจับมือ implement ให้จนเสร็จ</p>
+        </GlassPanel>
+        <GlassPanel class="pain-card">
+          <span class="pain-icon" aria-hidden="true">🗂️</span>
+          <h3 class="pain-title">ข้อมูลกระจัดกระจาย Line ที Excel ที สมุดจดที</h3>
+          <p class="pain-body">ไม่มีใครรู้ว่า pipeline ตอนนี้อยู่ไหน จนกว่าเจ้าของจะนั่งรวบเอง</p>
+        </GlassPanel>
       </div>
+    </div>
+  </SectionAtmosphere>
 
-      <div
-        class="mt-8 rounded-2xl border border-secondary/40 bg-secondary/10 p-8 text-center"
-      >
-        <p class="text-sm font-bold uppercase tracking-widest text-secondary">
-          เสียโอกาสกว่าเดือนละ
-        </p>
-        <p class="mt-3 font-display text-4xl font-bold md:text-5xl">
-          ฿150,000 — 500,000
-        </p>
-        <p class="mt-3 text-sm font-semibold text-secondary">
-          เพราะขาด "ระบบ" ที่ทำงานแทนคุณ
-        </p>
-        <p class="mt-4 mx-auto max-w-lg text-sm text-base-content/70">
-          ยอดขายที่น่าจะได้แต่ไม่ได้ + เงินเดือนเซลล์ที่ไม่ทำเงิน + เวลาที่ทีมเสียไปกับงานงอก
-        </p>
+  <!-- 4 WHEELS / BUSINESS OS -->
+  <SectionAtmosphere navy class="section-pad">
+    <div class="container">
+      <SectionHeader
+        badge="BUSINESS OS"
+        headline="AI ที่ครอบทุกล้อของธุรกิจ"
+        accentWord="ทุกล้อ"
+        sub="ไม่ใช่แค่สอนให้ใช้ AI เป็น แต่ติดตั้งให้ทุก function ในธุรกิจคุณทำงานได้เองอย่างเป็นระบบ"
+      />
+      <div class="wheels-grid">
+        <GlassPanel class="wheel-card" glow="cyan">
+          <span class="wheel-icon" aria-hidden="true">💼</span>
+          <h3 class="wheel-name">Sales</h3>
+          <p class="wheel-desc">Lead qualifying · Proposal automation · Follow-up cadence · Pipeline reporting</p>
+        </GlassPanel>
+        <GlassPanel class="wheel-card" glow="cyan">
+          <span class="wheel-icon" aria-hidden="true">⚙️</span>
+          <h3 class="wheel-name">Operations</h3>
+          <p class="wheel-desc">SOP automation · Task routing · Document generation · Status tracking</p>
+        </GlassPanel>
+        <GlassPanel class="wheel-card" glow="cyan">
+          <span class="wheel-icon" aria-hidden="true">💰</span>
+          <h3 class="wheel-name">Finance</h3>
+          <p class="wheel-desc">Invoice processing · Expense categorization · Cash flow dashboards · Alerts</p>
+        </GlassPanel>
+        <GlassPanel class="wheel-card" glow="cyan">
+          <span class="wheel-icon" aria-hidden="true">👥</span>
+          <h3 class="wheel-name">HR</h3>
+          <p class="wheel-desc">Onboarding flows · Policy Q&A bot · Performance tracking · Leave management</p>
+        </GlassPanel>
       </div>
+    </div>
+  </SectionAtmosphere>
 
-      <div
-        class="mx-auto mt-12 max-w-md rounded-2xl border-2 border-dashed border-secondary/40 bg-secondary/[0.04] p-8 text-center"
-      >
-        <p class="text-lg leading-relaxed text-base-content/80">ถ้าอ่านแล้วรู้สึกว่า</p>
-        <p class="mt-1 font-display text-xl font-bold text-secondary">
-          "เฮ้ย! นี่มันเรื่องของเราเลยนี่หว่า..."
-        </p>
-        <a
-          href="/intake-form"
-          class="btn btn-lg mt-5 bg-secondary text-secondary-content shadow-lg shadow-secondary/25 hover:bg-secondary/90"
-        >
-          เช็คสุขภาพทีมขายฟรี →
-        </a>
-        <p class="mt-3 text-xs text-base-content/55">
-          3 นาที · ไม่มีค่าใช้จ่าย · ปันอ่านเองทุกใบ
-        </p>
+  <!-- AI TRANSFORMATION CONCEPT -->
+  <section id="transformation" class="section-pad">
+    <div class="container">
+      <div class="shift-grid">
+        <div class="shift-text">
+          <SectionHeader
+            badge="THE SHIFT"
+            headline="จาก แบกทุกอย่างคนเดียว สู่ระบบที่วิ่งได้เอง"
+            accentWord="วิ่งได้เอง"
+            align="left"
+          />
+          <p class="shift-body">ปัญหาไม่ได้อยู่ที่ทีมขาย — แต่ที่ธุรกิจยังไม่มี "สมองที่ 2"</p>
+          <p class="shift-body">
+            AI Agent คือระบบที่คิดและทำงานแทนคุณในส่วนที่ซ้ำๆ:<br />
+            รับ Lead · ส่ง Proposal · ติดตาม Follow-up · รายงานผล
+          </p>
+          <p class="shift-body">
+            ทีมคุณมีเวลาทำงานสร้างมูลค่า<br />
+            คุณมีเวลาทำงานที่เฉพาะคุณทำได้
+          </p>
+        </div>
+        <div class="shift-visual">
+          <GlassPanel class="shift-card before-card">
+            <span class="shift-card-label">BEFORE</span>
+            <p class="shift-card-desc">เจ้าของ ← ทุกเรื่อง ← ทีมขาย · ลูกค้า · รายงาน · ตัดสินใจ</p>
+          </GlassPanel>
+          <div class="shift-arrow" aria-hidden="true">↓ AI Agent</div>
+          <GlassPanel class="shift-card after-card" glow="cyan">
+            <span class="shift-card-label after-label">AFTER</span>
+            <p class="shift-card-desc">AI Agent → เซลล์ · ลูกค้า · รายงาน · ตัดสินใจ → เจ้าของ (ถอดตัวออกได้)</p>
+          </GlassPanel>
+        </div>
       </div>
     </div>
   </section>
@@ -887,89 +953,7 @@ const socials = [
     </div>
   </section>
 
-  <!-- ===== WHY PUN — 3-Column Positioning ===== -->
-  <section class="border-t border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8 lg:py-20">
-    <div class="mx-auto max-w-5xl">
-      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Why Pun</p>
-      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
-        ทำไมต้องเป็นปัน?
-      </h2>
-      <p class="mt-3 max-w-2xl text-base-content/75">
-        ในตลาดมีทั้งที่ปรึกษาการขายและ AI Guru แต่ทั้งสองฝั่งมีจุดบอดที่ทำให้ SME ยังใช้ AI ได้ไม่เต็มที่
-      </p>
-
-      <div class="mt-12 grid gap-6 md:grid-cols-3">
-        {
-          whyPun.map((col) => (
-            <div
-              class:list={[
-                'rounded-2xl p-6',
-                col.style === 'sweet-spot'
-                  ? 'relative border-2 border-secondary/50 bg-secondary/10 shadow-lg shadow-secondary/10 md:scale-[1.02]'
-                  : 'border border-base-content/15 bg-base-100/40',
-              ]}
-            >
-              {col.style === 'sweet-spot' && (
-                <span class="absolute right-4 top-4 rounded-full bg-secondary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-secondary-content">
-                  Sweet Spot
-                </span>
-              )}
-              <h3
-                class:list={[
-                  'mb-4 font-display font-bold',
-                  col.style === 'sweet-spot'
-                    ? 'text-lg text-base-content'
-                    : 'text-base text-base-content/65',
-                ]}
-              >
-                {col.title}
-              </h3>
-              <ul class:list={['space-y-3 text-sm', col.style === 'sweet-spot' ? 'text-base-content/85' : 'text-base-content/55']}>
-                {col.points.map((point) => (
-                  <li class="flex items-start gap-2">
-                    <span class:list={[col.style === 'sweet-spot' ? 'text-secondary font-bold' : 'text-base-content/40']}>
-                      {col.style === 'sweet-spot' ? '✓' : '•'}
-                    </span>
-                    <span>{point}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))
-        }
-      </div>
-
-      <div
-        class="mt-14 rounded-2xl border-l-4 border-l-secondary border border-base-content/15 bg-primary/40 p-8 text-center md:p-10"
-      >
-        <p class="text-xs font-bold uppercase tracking-widest text-secondary">Mission</p>
-        <h3
-          class="mx-auto mt-4 max-w-2xl font-display text-2xl font-bold leading-tight md:text-3xl"
-        >
-          ผมเชื่อว่า SME ไทยไม่ควรแพ้<br class="hidden md:block" />เพราะ "ไม่มีระบบ"
-        </h3>
-        <p class="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-base-content/80">
-          ตอนนี้ AI เปลี่ยนเกมทุกอุตสาหกรรม ธุรกิจที่ปรับตัวทันจะวิ่งนำ ธุรกิจที่รอจะถูกทิ้งไว้ข้างหลัง
-          ผมอยากให้เจ้าของ SME มีระบบขายที่แข็งแกร่ง และใช้ AI เป็นเครื่องมือจริงๆ ไม่ใช่แค่ของเล่น
-        </p>
-        <p class="mx-auto mt-3 max-w-xl text-[15px] leading-relaxed text-base-content/80">
-          เป้าหมายของผมไม่ใช่แค่ขาย Workshop แล้วจบ ผมอยากเห็นทีมขายของลูกค้า
-          <strong class="text-base-content">หลุดจากสงครามราคา</strong>
-          แล้วขายด้วยคุณค่าของสินค้าจริงๆ ได้
-        </p>
-
-        <div class="mt-8 inline-block rounded-2xl border border-secondary/30 bg-secondary/10 px-8 py-5">
-          <p class="text-sm text-base-content/75">เป้าหมายปี 2026</p>
-          <p class="mt-1 font-display text-lg font-bold">
-            ช่วย SME ไทย <span class="text-2xl text-secondary">50</span> ธุรกิจ ให้มีระบบขายที่ทำเงินได้จริง
-          </p>
-          <p class="mt-1 text-sm text-base-content/65">
-            ตอนนี้เดินมาแล้ว <strong class="text-base-content/85">10 ธุรกิจ</strong>
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- ===== WHY PUN — kept as anchor for existing content flow ===== -->
 
   <!-- ===== PUN'S STORY (ported from landing-page-live-v2) ===== -->
   <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
@@ -1194,239 +1178,106 @@ const socials = [
     </div>
   </section>
 
-  <!-- ===== SERVICES TEASER — 2-Path layout ===== -->
-  <section
-    id="services-teaser"
-    class="border-t border-base-content/10 bg-base-200/30 px-4 py-20 lg:px-8"
-  >
-    <div class="mx-auto max-w-6xl">
-      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Services</p>
-      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">
-        เลือกทางที่เหมาะกับธุรกิจคุณที่สุด
-      </h2>
-      <p class="mt-3 max-w-2xl text-base-content/75">
-        ผมมี 2 แนวทางให้เลือกตามเป้าหมายของธุรกิจคุณตอนนี้
-      </p>
-
-      <div class="mt-12 grid gap-8 lg:grid-cols-2">
-        <!-- PATH A: AI Transformation (cyan) -->
-        <div
-          class="rounded-2xl border p-6 lg:p-8"
-          style="border-color: color-mix(in oklch, var(--color-pun-cyan) 25%, transparent); background: color-mix(in oklch, var(--color-pun-cyan) 4%, transparent);"
-        >
-          <div class="mb-2 flex items-center gap-3">
-            <div
-              class="flex h-10 w-10 items-center justify-center rounded-lg"
-              style="background: color-mix(in oklch, var(--color-pun-cyan) 12%, transparent);"
-            >
-              <span class="font-display text-lg font-bold" style="color: var(--color-pun-cyan);">A</span>
-            </div>
-            <p class="text-xs font-bold uppercase tracking-widest" style="color: var(--color-pun-cyan);">
-              Path A
-            </p>
-          </div>
-          <h3 class="font-display text-2xl font-bold">AI Transformation</h3>
-          <p class="mt-2 text-sm text-base-content/65">
-            ปลดล็อกเวลาทีมขายด้วย AI ลดงานซ้ำซ้อน
-          </p>
-
-          <div class="mt-6 space-y-3">
-            <a
-              href="/services/ai-workshop"
-              class="group flex items-center justify-between rounded-xl border border-base-content/10 bg-base-100/40 p-4 transition-all hover:-translate-y-0.5"
-              style="--hover: var(--color-pun-cyan);"
-            >
-              <div>
-                <p class="text-xs uppercase tracking-widest text-base-content/45">1 Day · Day 1</p>
-                <p class="mt-0.5 font-display text-base font-bold">Basic AI Workshop</p>
-              </div>
-              <span class="font-display text-lg font-bold" style="color: var(--color-pun-cyan);">฿29,800</span>
-            </a>
-            <a
-              href="/services/ai-workshop#bundle"
-              class="group flex items-center justify-between rounded-xl border p-4 transition-all hover:-translate-y-0.5"
-              style="border-color: color-mix(in oklch, var(--color-pun-cyan) 40%, transparent); background: color-mix(in oklch, var(--color-pun-cyan) 6%, transparent);"
-            >
-              <div>
-                <div class="flex items-center gap-2">
-                  <p class="text-xs uppercase tracking-widest text-base-content/45">Day 1 + Day 2</p>
-                  <span
-                    class="rounded-full px-2 py-0.5 text-[10px] font-bold"
-                    style="background: color-mix(in oklch, var(--color-pun-cyan) 20%, transparent); color: var(--color-pun-cyan);"
-                  >
-                    Bundle แนะนำ
-                  </span>
-                  <span class="rounded-full bg-secondary/20 px-2 py-0.5 text-[10px] font-bold text-secondary">
-                    ประหยัด ฿16,700
-                  </span>
-                </div>
-                <p class="mt-0.5 font-display text-base font-bold">Basic + Advance Bundle</p>
-              </div>
-              <div class="text-right">
-                <span class="font-display text-lg font-bold" style="color: var(--color-pun-cyan);">฿48,900</span>
-                <p class="text-[10px] text-base-content/55">แยก Basic + Advance = ฿65,600</p>
-              </div>
-            </a>
-          </div>
-
-          <a
-            href="/services#ai-workshop"
-            class="mt-5 block text-center text-sm font-semibold transition-colors"
-            style="color: var(--color-pun-cyan);"
-          >
-            ดูรายละเอียด Path A →
-          </a>
-        </div>
-
-        <!-- PATH B: ปั้นทีมขาย (coral) -->
-        <div
-          class="rounded-2xl border p-6 lg:p-8"
-          style="border-color: color-mix(in oklch, var(--color-pun-coral) 25%, transparent); background: color-mix(in oklch, var(--color-pun-coral) 4%, transparent);"
-        >
-          <div class="mb-2 flex items-center gap-3">
-            <div
-              class="flex h-10 w-10 items-center justify-center rounded-lg"
-              style="background: color-mix(in oklch, var(--color-pun-coral) 12%, transparent);"
-            >
-              <span class="font-display text-lg font-bold" style="color: var(--color-pun-coral);">B</span>
-            </div>
-            <p class="text-xs font-bold uppercase tracking-widest" style="color: var(--color-pun-coral);">
-              Path B
-            </p>
-          </div>
-          <h3 class="font-display text-2xl font-bold">ปั้นทีมขาย</h3>
-          <p class="mt-2 text-sm text-base-content/65">
-            วางโครงสร้างทีมขาย ทั้ง KPI, Commission และ Training
-          </p>
-
-          <div class="mt-6 space-y-3">
-            <a
-              href="/services/sale-training-bundle"
-              class="group flex items-center justify-between rounded-xl border border-base-content/10 bg-base-100/40 p-4 transition-all hover:-translate-y-0.5"
-            >
-              <div>
-                <p class="text-xs uppercase tracking-widest text-base-content/45">2 Days</p>
-                <p class="mt-0.5 font-display text-base font-bold">Sale Training Bundle</p>
-              </div>
-              <span class="font-display text-lg font-bold text-secondary">฿50,000</span>
-            </a>
-            <a
-              href="/services/sales-system-sprint"
-              class="group flex items-center justify-between rounded-xl border p-4 transition-all hover:-translate-y-0.5"
-              style="border-color: color-mix(in oklch, var(--color-pun-coral) 40%, transparent); background: color-mix(in oklch, var(--color-pun-coral) 6%, transparent);"
-            >
-              <div>
-                <div class="flex items-center gap-2">
-                  <p class="text-xs uppercase tracking-widest text-base-content/45">1 Month</p>
-                  <span
-                    class="rounded-full bg-secondary/20 px-2 py-0.5 text-[10px] font-bold text-secondary"
-                  >
-                    ครบจบ
-                  </span>
-                </div>
-                <p class="mt-0.5 font-display text-base font-bold">Sales System Sprint</p>
-              </div>
-              <span class="font-display text-lg font-bold text-secondary">฿65,000</span>
-            </a>
-          </div>
-
-          <a
-            href="/services#sale-training-bundle"
-            class="mt-5 block text-center text-sm font-semibold text-secondary transition-colors"
-          >
-            ดูรายละเอียด Path B →
-          </a>
-        </div>
+  <!-- SERVICES OVERVIEW -->
+  <SectionAtmosphere navy class="section-pad">
+    <div class="container">
+      <SectionHeader badge="4 ENGINES OF YOUR BUSINESS" headline="AI ที่ครอบทุกล้อของธุรกิจ" sub="ดู services ทั้งหมดที่ออกแบบมาสำหรับ SME B2B" />
+      <div class="services-grid">
+        <GlassPanel class="service-card">
+          <h3 class="service-name">AI Day Workshop</h3>
+          <p class="service-price">฿30,000</p>
+          <p class="service-outcome">ทีมขายได้เวลาคืน ≥5 ชม/สัปดาห์ — เห็นผลวันเดียว</p>
+        </GlassPanel>
+        <GlassPanel class="service-card">
+          <h3 class="service-name">AI Workshop + 1-Month Follow-up</h3>
+          <p class="service-price">฿50,000</p>
+          <p class="service-outcome">ระบบ AI ที่ build ยังใช้งานอยู่หลัง 30 วัน — ทีมไม่หลุด</p>
+        </GlassPanel>
+        <GlassPanel class="service-card">
+          <h3 class="service-name">1-Month Sales System Sprint</h3>
+          <p class="service-price">฿65,000</p>
+          <p class="service-outcome">KPI + Commission + AI Workflow ครบในเดือนเดียว</p>
+        </GlassPanel>
       </div>
-
-      <!-- Connector note -->
-      <div class="mt-8 text-center">
-        <div
-          class="inline-flex items-center gap-3 rounded-full border border-base-content/15 bg-base-100/50 px-6 py-3"
-        >
-          <span class="text-base" aria-hidden="true">✦</span>
-          <span class="text-sm text-base-content/75">
-            <strong class="text-base-content">ทำได้ทั้งสองทาง</strong> ลูกค้าหลายเจ้าเริ่มจาก AI Workshop แล้วต่อ Sales System Sprint
-          </span>
-        </div>
+      <div style="text-align: center; margin-top: 2rem;">
+        <CTAButton href="/services" label="ดูรายละเอียดบริการทั้งหมด →" variant="ghost" />
       </div>
+    </div>
+  </SectionAtmosphere>
 
-      <!-- Special Workshop: Trust Content TikTok (violet) -->
-      <a
-        href="/services/trust-content-tiktok-workshop"
-        class="relative mt-10 block overflow-hidden rounded-2xl border p-6 lg:p-8"
-        style="border-color: color-mix(in oklch, var(--color-pun-violet) 25%, transparent); background: color-mix(in oklch, var(--color-pun-violet) 4%, transparent);"
-      >
-        <div
-          class="absolute right-4 top-4 rounded-full px-2.5 py-0.5 text-[10px] font-bold"
-          style="background: color-mix(in oklch, var(--color-pun-violet) 18%, transparent); color: var(--color-pun-violet); border: 1px solid color-mix(in oklch, var(--color-pun-violet) 40%, transparent);"
-        >
-          Special Workshop
-        </div>
-        <div class="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-          <div>
-            <div class="mb-2 flex items-center gap-2">
-              <div
-                class="flex h-8 w-8 items-center justify-center rounded-lg"
-                style="background: color-mix(in oklch, var(--color-pun-violet) 12%, transparent);"
-              >
-                <span class="font-bold" style="color: var(--color-pun-violet);">★</span>
-              </div>
-              <p class="text-xs font-bold uppercase tracking-widest" style="color: var(--color-pun-violet);">
-                New
-              </p>
-            </div>
-            <h3 class="font-display text-xl font-bold md:text-2xl">Trust Content Workshop for TikTok</h3>
-            <p class="mt-2 max-w-xl text-sm text-base-content/65">
-              1 Day In-House — เจ้าของถ่ายคลิปเอง 3 คลิปเสร็จวันนั้น + Content Calendar 30 วัน
-            </p>
-          </div>
-          <div class="flex-shrink-0 text-right">
-            <p class="text-xs text-base-content/55">ปกติ ฿52,800</p>
-            <p class="font-display text-3xl font-bold" style="color: var(--color-pun-violet);">฿44,900</p>
-            <span class="mt-1 inline-block rounded-full border border-secondary/30 bg-secondary/10 px-2 py-0.5 text-[10px] font-bold text-secondary">
-              Early Bird · 5 ธุรกิจแรก
-            </span>
+  <!-- WHY PUN -->
+  <SectionAtmosphere coral class="section-pad">
+    <div class="container">
+      <div class="why-grid">
+        <div>
+          <SectionHeader
+            badge="ทำไมถึงเลือกผม"
+            headline="ผมไม่ได้สอนวิธีใช้ AI ผมเข้าไปทำในบริษัทคุณ"
+            accentWord="เข้าไปทำในบริษัทคุณ"
+            align="left"
+          />
+          <p class="why-body">เจ้าของธุรกิจ B2B Sales Consultant + AI Practitioner ที่ใช้ Claude + n8n ทุกวัน<br />
+          ผ่านงานขาย B2B และช่วย SME ไทยปิดยอดกว่า 100 ล้านบาท</p>
+          <p class="why-body">ผมไม่จัดคลาสขนาดใหญ่ที่ไปไวๆ ตามไม่ทัน<br />
+          ผมเข้าไปที่บริษัทคุณ · ทีมของคุณเท่านั้น<br />
+          จนระบบ AI ทำงานได้จริง และทีมคุณใช้เองได้ตั้งแต่วันนั้น</p>
+          <div class="why-stats">
+            <span>ยอดขาย SME ที่ช่วยปิด 100M+</span>
+            <span class="why-sep">·</span>
+            <span>สัมภาษณ์เซลล์ 1,000+ คน</span>
+            <span class="why-sep">·</span>
+            <span>ใช้ AI Agent ทุกวัน</span>
           </div>
         </div>
-      </a>
-
-      <!-- ===== Services Booking CTA Block ===== -->
-      <div class="mx-auto mt-14 max-w-4xl">
-        <div
-          class="rounded-3xl border-2 bg-secondary/[0.08] p-8 text-center shadow-2xl md:p-12"
-          style="border-color: var(--color-secondary); box-shadow: 0 30px 80px -30px color-mix(in oklch, var(--color-secondary) 50%, transparent);"
-        >
-          <p class="text-xs font-bold uppercase tracking-widest text-secondary">Ready to Start?</p>
-          <h3
-            class="mx-auto mt-4 max-w-2xl font-display text-2xl font-bold leading-tight md:text-3xl"
-          >
-            เลือก package ได้แล้ว? จองเลยไม่ต้องรอ
-          </h3>
-          <p class="mx-auto mt-3 max-w-xl text-base text-base-content/75">
-            ทุก package ชำระ 100% ก่อนเริ่ม · ปันอ่านคำจองเองทุกใบ · ตอบกลับภายใน 24 ชม. พร้อม link นัดเวลา + ใบเสนอราคา
-          </p>
-          <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row sm:gap-4">
-            <a
-              href="/booking"
-              class="btn btn-lg bg-secondary px-10 text-base font-bold text-secondary-content shadow-xl shadow-secondary/40 transition-all hover:scale-[1.03] hover:bg-secondary/90"
-            >
-              จองเลย →
-            </a>
-            <a
-              href="/intake-form"
-              class="btn btn-lg btn-ghost border-2 border-base-content/25 text-base hover:bg-base-200 hover:border-base-content/40"
-            >
-              ไม่แน่ใจ? นัดคุยกับผมก่อน
-            </a>
-          </div>
-          <p class="mt-5 text-xs text-base-content/50">
-            ปันอ่านทุกคำจองเอง · ไม่มี sales team · ไม่มี upsell แปลกๆ
-          </p>
+        <div class="why-avatar-col">
+          <Image src={avatar} alt="ปัน ณัฐพัชร์" width={280} height={280} class="why-avatar" />
         </div>
       </div>
     </div>
-  </section>
+  </SectionAtmosphere>
+
+  <!-- CASE STUDY PREVIEW -->
+  <SectionAtmosphere navy class="section-pad">
+    <div class="container">
+      <SectionHeader
+        badge="PROOF OF TRANSFORMATION"
+        headline="ผลลัพธ์ที่เกิดขึ้นจริง"
+        sub="Client stories — ธุรกิจที่เปลี่ยนไปหลัง AI Transformation"
+      />
+      <div class="case-preview-grid">
+        {[
+          { industry: 'SME · Manufacturing', result: 'เวลาทีมคืน 40 ชม/สัปดาห์' },
+          { industry: 'SME · Distribution', result: 'Proposal time ลด 80%' },
+          { industry: 'SME · B2B Services', result: 'เจ้าของถอดตัวออกจาก ops ได้' },
+        ].map(c => (
+          <GlassPanel class="case-placeholder">
+            <span class="case-industry">{c.industry}</span>
+            <p class="case-result">{c.result}</p>
+            <span class="case-coming">Client story coming soon</span>
+          </GlassPanel>
+        ))}
+      </div>
+      <div style="text-align: center; margin-top: 2rem;">
+        <CTAButton href="/case-studies" label="ดู Case Studies ทั้งหมด →" variant="ghost" />
+      </div>
+    </div>
+  </SectionAtmosphere>
+
+  <!-- FINAL CTA -->
+  <SectionAtmosphere coral navy class="section-pad">
+    <div class="container" style="text-align: center;">
+      <SectionHeader
+        badge="GET STARTED"
+        headline="ธุรกิจคุณพร้อมสำหรับ AI แล้วหรือยัง?"
+        accentWord="พร้อม"
+        sub="กรอกแบบฟอร์ม 3 นาที — ผมอ่านทุกใบเอง แล้วคุณจะรู้ว่าจุดไหนที่ AI เข้ามาช่วยได้เร็วที่สุดในธุรกิจของคุณ"
+      />
+      <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+        <CTAButton href="/assessment" label="ทำ AI Readiness Assessment →" variant="primary" size="lg" />
+      </div>
+      <p class="final-cta-sub">ผมคัดเลือกลูกค้าเอง · Limited Slots</p>
+    </div>
+  </SectionAtmosphere>
 
   <!-- ===== QUALIFY — Is this for you? ===== -->
   <section class="border-t border-base-content/10 px-4 py-16 lg:px-8 lg:py-20">
@@ -1763,5 +1614,90 @@ const socials = [
   .hero-left { display: none; }
   .hero-ai-panel { position: static; margin-top: 1.5rem; }
   .hero-right { padding: 1.5rem; }
+}
+
+/* OUTCOME PROOF */
+.section-pad { padding: var(--pun-section-y) var(--pun-gutter); }
+.container { max-width: var(--pun-container); margin: 0 auto; }
+.outcome-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+.outcome-disclaimer {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 0.72rem;
+  color: var(--pun-text-muted);
+  text-align: center;
+  margin-top: 1.25rem;
+  opacity: 0.7;
+}
+@media (max-width: 900px) { .outcome-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 580px) { .outcome-grid { grid-template-columns: 1fr; } }
+
+/* PAIN POINTS */
+.pain-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.pain-card { padding: 1.5rem; border-left: 3px solid var(--pun-coral) !important; }
+.pain-icon { font-size: 1.6rem; display: block; margin-bottom: 0.75rem; }
+.pain-title { font-family: 'Bai Jamjuree', sans-serif; font-size: 1rem; font-weight: 700; color: white; margin: 0 0 0.4rem; }
+.pain-body  { font-family: 'Sarabun', sans-serif; font-size: 0.85rem; color: var(--pun-text-muted); margin: 0; line-height: 1.6; }
+@media (max-width: 640px) { .pain-grid { grid-template-columns: 1fr; } }
+
+/* 4 WHEELS */
+.wheels-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.wheel-card { padding: 1.5rem; text-align: center; }
+.wheel-icon { font-size: 2rem; display: block; margin-bottom: 0.75rem; }
+.wheel-name { font-family: 'Bai Jamjuree', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--pun-cyan); margin: 0 0 0.4rem; }
+.wheel-desc { font-family: 'Sarabun', sans-serif; font-size: 0.82rem; color: var(--pun-text-muted); margin: 0; line-height: 1.55; }
+@media (max-width: 900px) { .wheels-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .wheels-grid { grid-template-columns: 1fr; } }
+
+/* AI TRANSFORMATION SHIFT */
+.shift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+.shift-body { font-family: 'Sarabun', sans-serif; font-size: 1rem; color: var(--pun-text-muted); line-height: 1.7; margin: 0 0 1rem; }
+.shift-visual { display: flex; flex-direction: column; gap: 0.75rem; }
+.shift-card { padding: 1.25rem 1.5rem; }
+.shift-card-label { font-family: 'Sarabun', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--pun-text-muted); display: block; margin-bottom: 0.5rem; }
+.after-label { color: var(--pun-cyan); }
+.shift-card-desc { font-family: 'Sarabun', sans-serif; font-size: 0.85rem; color: var(--pun-text); margin: 0; line-height: 1.6; }
+.before-card { opacity: 0.65; }
+.shift-arrow { text-align: center; font-family: 'Sarabun', sans-serif; font-size: 0.78rem; font-weight: 700; color: var(--pun-cyan); letter-spacing: 0.05em; }
+@media (max-width: 768px) { .shift-grid { grid-template-columns: 1fr; } }
+
+/* SERVICES */
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.service-card { padding: 1.5rem; transition: border-color 0.2s; }
+.service-card:hover { border-color: var(--pun-coral) !important; }
+.service-name { font-family: 'Bai Jamjuree', sans-serif; font-size: 1rem; font-weight: 700; color: white; margin: 0 0 0.4rem; }
+.service-price { font-family: 'Bai Jamjuree', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--pun-coral); margin: 0 0 0.5rem; }
+.service-outcome { font-family: 'Sarabun', sans-serif; font-size: 0.82rem; color: var(--pun-text-muted); margin: 0; line-height: 1.55; }
+@media (max-width: 768px) { .services-grid { grid-template-columns: 1fr; } }
+
+/* WHY PUN */
+.why-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 3rem; align-items: center; }
+.why-body { font-family: 'Sarabun', sans-serif; font-size: 1rem; color: var(--pun-text-muted); line-height: 1.7; margin: 0 0 1rem; }
+.why-stats { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; font-family: 'Sarabun', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--pun-text-muted); margin-top: 1.5rem; }
+.why-sep { opacity: 0.4; }
+.why-avatar-col { display: flex; justify-content: center; }
+.why-avatar { width: 240px; height: 240px; border-radius: 50%; object-fit: cover; border: 2px solid var(--pun-border-bright); box-shadow: 0 0 40px var(--pun-glow-coral); }
+@media (max-width: 768px) { .why-grid { grid-template-columns: 1fr; } .why-avatar-col { display: none; } }
+
+/* CASE STUDY PREVIEW */
+.case-preview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.case-placeholder { padding: 1.5rem; }
+.case-industry { font-family: 'Sarabun', sans-serif; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--pun-text-muted); display: block; margin-bottom: 0.5rem; }
+.case-result { font-family: 'Bai Jamjuree', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--pun-cyan); margin: 0 0 0.5rem; }
+.case-coming { font-family: 'Sarabun', sans-serif; font-size: 0.75rem; color: var(--pun-text-muted); opacity: 0.6; }
+@media (max-width: 768px) { .case-preview-grid { grid-template-columns: 1fr; } }
+
+/* FINAL CTA */
+.final-cta-sub {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pun-text-muted);
+  margin-top: 1rem;
 }
 </style>
