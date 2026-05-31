@@ -213,11 +213,14 @@ const accentColor = (a: Accent): string =>
       : 'var(--color-pun-coral)';
 
 const testimonials = [
-  { src: '/testimonial/testimonial1.jpg', alt: 'รีวิวจากลูกค้า 1' },
-  { src: '/testimonial/testimonial2.jpg', alt: 'รีวิวจากลูกค้า 2' },
-  { src: '/testimonial/testimonial3.jpg', alt: 'รีวิวจากลูกค้า 3' },
-  { src: '/testimonial/testimonial4.jpg', alt: 'รีวิวจากลูกค้า 4' },
-  { src: '/testimonial/testimonial5.jpg', alt: 'รีวิวจากลูกค้า 5' },
+  { src: '/testimonial/2026-05/review-01.jpg', alt: 'รีวิวลูกค้า — ทีมงานร่วม Workshop AI กับอาจารย์ปั้น' },
+  { src: '/testimonial/2026-05/review-02.jpg', alt: 'รีวิวลูกค้า — แชทขอบคุณหลังเวิร์กช็อป "ชีวิตเปลี่ยนใน 24 ชม."' },
+  { src: '/testimonial/2026-05/review-03.jpg', alt: 'รีวิวลูกค้า — บรรยากาศห้องอบรม AI เต็มห้อง' },
+  { src: '/testimonial/2026-05/review-04.jpg', alt: 'รีวิวลูกค้า — แชทผู้เข้าอบรมหลังจบคลาส' },
+  { src: '/testimonial/2026-05/review-05.jpg', alt: 'รีวิวลูกค้า — แชท "อาจารย์ปั้นสอนถูกใจทีมงาน Ai ทั้งบริษัท"' },
+  { src: '/testimonial/2026-05/review-06.jpg', alt: 'รีวิวลูกค้า — ทีมงานถ่ายภาพร่วมกันที่ออฟฟิศ' },
+  { src: '/testimonial/2026-05/review-07.jpg', alt: 'รีวิวลูกค้า — ทีมงานสังสรรค์หลังเวิร์กช็อป' },
+  { src: '/testimonial/2026-05/review-08.jpg', alt: 'รีวิวลูกค้า — โพสต์รีวิว "องค์กรที่เรียนรู้เร็วที่สุด"' },
 ];
 
 const clientLogos = [
@@ -697,7 +700,7 @@ const socials = [
       <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
         เสียงจากผู้ประกอบการที่ให้ผมดูแล
       </h2>
-      <div class="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+      <div class="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
         {
           testimonials.map((t) => (
             <div class="overflow-hidden rounded-2xl border border-base-content/10 bg-base-200/40 shadow-sm">
@@ -706,7 +709,7 @@ const socials = [
                 alt={t.alt}
                 loading="lazy"
                 decoding="async"
-                class="aspect-[3/4] w-full object-cover"
+                class="aspect-square w-full object-cover"
               />
             </div>
           ))
