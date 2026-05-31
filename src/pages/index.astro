@@ -1640,7 +1640,7 @@ const socials = [
 
 /* PAIN POINTS */
 .pain-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-.pain-card { padding: 2rem; border-left: 3px solid var(--pun-coral) !important; }
+:global(.pain-card) { padding: 2rem 2.25rem; border-left: 3px solid var(--pun-coral) !important; }
 .pain-icon { display: block; margin-bottom: 0.75rem; color: var(--pun-coral); }
 .pain-title { font-family: 'Bai Jamjuree', sans-serif; font-size: 1rem; font-weight: 700; color: white; margin: 0 0 0.4rem; }
 .pain-body  { font-family: 'Sarabun', sans-serif; font-size: 0.85rem; color: var(--pun-text-muted); margin: 0; line-height: 1.6; }
@@ -1648,7 +1648,7 @@ const socials = [
 
 /* 4 WHEELS */
 .wheels-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
-.wheel-card { padding: 2rem 1.75rem; text-align: center; }
+:global(.wheel-card) { padding: 2rem 2.25rem; text-align: center; }
 .wheel-icon { display: flex; justify-content: center; margin-bottom: 0.75rem; color: var(--pun-cyan); }
 .wheel-name { font-family: 'Bai Jamjuree', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--pun-cyan); margin: 0 0 0.4rem; }
 .wheel-desc { font-family: 'Sarabun', sans-serif; font-size: 0.82rem; color: var(--pun-text-muted); margin: 0; line-height: 1.55; }
@@ -1659,18 +1659,18 @@ const socials = [
 .shift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
 .shift-body { font-family: 'Sarabun', sans-serif; font-size: 1rem; color: var(--pun-text-muted); line-height: 1.7; margin: 0 0 1rem; }
 .shift-visual { display: flex; flex-direction: column; gap: 0.75rem; }
-.shift-card { padding: 1.25rem 1.5rem; }
+:global(.shift-card) { padding: 1.5rem 2.25rem; }
 .shift-card-label { font-family: 'Sarabun', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--pun-text-muted); display: block; margin-bottom: 0.5rem; }
 .after-label { color: var(--pun-cyan); }
 .shift-card-desc { font-family: 'Sarabun', sans-serif; font-size: 0.85rem; color: var(--pun-text); margin: 0; line-height: 1.6; }
-.before-card { opacity: 0.65; }
+:global(.before-card) { opacity: 0.65; }
 .shift-arrow { text-align: center; font-family: 'Sarabun', sans-serif; font-size: 0.78rem; font-weight: 700; color: var(--pun-cyan); letter-spacing: 0.05em; }
 @media (max-width: 768px) { .shift-grid { grid-template-columns: 1fr; } }
 
 /* SERVICES */
 .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-.service-card { padding: 1.5rem; transition: border-color 0.2s; }
-.service-card:hover { border-color: var(--pun-coral) !important; }
+:global(.service-card) { padding: 1.75rem 2.25rem; transition: border-color 0.2s; }
+:global(.service-card:hover) { border-color: var(--pun-coral) !important; }
 .service-name { font-family: 'Bai Jamjuree', sans-serif; font-size: 1rem; font-weight: 700; color: white; margin: 0 0 0.4rem; }
 .service-price { font-family: 'Bai Jamjuree', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--pun-coral); margin: 0 0 0.5rem; }
 .service-outcome { font-family: 'Sarabun', sans-serif; font-size: 0.82rem; color: var(--pun-text-muted); margin: 0; line-height: 1.55; }
@@ -1687,7 +1687,7 @@ const socials = [
 
 /* CASE STUDY PREVIEW */
 .case-preview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-.case-placeholder { padding: 1.5rem; }
+:global(.case-placeholder) { padding: 1.75rem 2.25rem; }
 .case-industry { font-family: 'Sarabun', sans-serif; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--pun-text-muted); display: block; margin-bottom: 0.5rem; }
 .case-result { font-family: 'Bai Jamjuree', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--pun-cyan); margin: 0 0 0.5rem; }
 .case-coming { font-family: 'Sarabun', sans-serif; font-size: 0.75rem; color: var(--pun-text-muted); opacity: 0.6; }
