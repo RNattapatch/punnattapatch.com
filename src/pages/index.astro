@@ -404,11 +404,7 @@ const socials = [
         <div class="flex items-start gap-4">
           <div class="flex-shrink-0 rounded-xl bg-secondary/15 p-3 text-secondary"><Icon name="academic-cap" size={28} /></div>
           <div>
-            <div class="inline-flex items-center gap-2 rounded-full bg-secondary/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-secondary">
-              <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-secondary"></span>
-              Waitlist เปิดรับแล้ว · 25 ที่นั่ง
-            </div>
-            <h2 class="mt-2 font-display text-2xl font-black tracking-tight md:text-3xl">
+            <h2 class="font-display text-2xl font-black tracking-tight md:text-3xl">
               AI Agent 101 For Sale Team
             </h2>
             <p class="mt-1 text-base-content/70">
@@ -435,8 +431,7 @@ const socials = [
         <div class="flex items-start gap-4">
           <div class="flex-shrink-0 rounded-xl bg-[#22d3ee]/10 p-3 text-[#22d3ee]"><Icon name="check-circle" size={28} /></div>
           <div>
-            <p class="text-xs font-bold uppercase tracking-widest text-[#22d3ee]">Free Download · Form-Gated</p>
-            <p class="mt-1 font-display text-lg font-black tracking-tight md:text-xl">
+            <p class="font-display text-lg font-black tracking-tight md:text-xl">
               AI Agent Builder Kit
             </p>
             <p class="mt-1 text-sm text-base-content/65">
@@ -1617,7 +1612,8 @@ const socials = [
 }
 @media (max-width: 768px) {
   .hero-container { grid-template-columns: 1fr; }
-  .hero-left { display: none; }
+  .hero-left { margin-bottom: 0.5rem; }
+  .hero-avatar { width: 200px; height: 200px; }
   .hero-ai-panel { align-self: stretch; margin-top: 1.5rem; }
   .hero-right { padding: 1.5rem; }
 }
