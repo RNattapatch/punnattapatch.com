@@ -221,11 +221,20 @@ const description =
       --sponsor-glass-blur: 22px;
       --sponsor-glass-sat: 180%;
       --sponsor-coral: #dd4155;
-      --sponsor-cyan: #22d3ee;
-      --sponsor-violet: #7c3aed;
+      --sponsor-cyan: #fe596b;
+      --sponsor-violet: #dd4155;
       --sponsor-r-outer: 22px;
       --sponsor-r-field: 12px;
     }
+
+    /* This page is a deliberately dark "Liquid Glass" pitch — force navy-deep
+       canvas on the editorial (ivory) body, scoped to /sponsor only. */
+    :global(body) {
+      background: #00162f !important;
+      background-image: none !important;
+      color: #f4f1ea;
+    }
+    :global(body)::before { display: none !important; }
 
     .sponsor-section {
       position: relative;
