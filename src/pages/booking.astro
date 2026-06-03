@@ -686,13 +686,23 @@ const pkgLookupJson = JSON.stringify({
       (lookup.prices[s] ?? 0).toLocaleString('en-US')
     );
 
+    // When bundle=day1-day2 → override package/price to show bundle pricing (฿48,900)
+    // not the sum of individual prices (฿65,600)
+    const bundleParam = params.get('bundle');
+    const isBundle = bundleParam === 'day1-day2';
+    const packageLabel = isBundle
+      ? 'Bundle Day 1+2 (Basic + Advance AI Workshop)'
+      : pkgNames.join(', ');
+    const packagePrice = isBundle ? '48,900' : pkgPrices.join(', ');
+
     const attr = (window as unknown as { pnAttribution?: Record<string, string> }).pnAttribution ?? {};
 
     const payload: BookingPayload = {
       source_page: 'booking-astro',
       booking_type: 'package-booking',
-      package: pkgNames.join(', '),
-      package_price: pkgPrices.join(', '),
+      package: packageLabel,
+      package_price: packagePrice,
+      bundle: bundleParam ?? '',
       packages: selectedPkgs,
       utm_source:   attr.utm_source   ?? '',
       utm_medium:   attr.utm_medium   ?? '',

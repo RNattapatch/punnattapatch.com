@@ -22,12 +22,12 @@ const { href, label, variant = 'primary', size = 'md', external = false } = Astr
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Bai Jamjuree', sans-serif;
-    font-weight: 700;
+    font-family: 'Sarabun', sans-serif;
+    font-weight: 600;
     text-decoration: none;
     border-radius: var(--pun-radius-btn);
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    transition: opacity 0.15s ease, background 0.15s ease, transform 0.15s ease;
     white-space: nowrap;
   }
   .cta-btn:hover { transform: translateY(-1px); }
@@ -36,23 +36,19 @@ const { href, label, variant = 'primary', size = 'md', external = false } = Astr
   .s-md { padding: 0.625rem 1.5rem;  font-size: 0.95rem; }
   .s-lg { padding: 0.875rem 2.25rem; font-size: 1.05rem; }
 
+  /* Coral CTA — no glow */
   .v-primary {
     background: var(--pun-coral);
     color: #ffffff;
     border: none;
-    box-shadow: 0 0 30px var(--pun-glow-coral);
   }
-  .v-primary:hover {
-    box-shadow: 0 0 50px var(--pun-glow-coral);
-  }
+  .v-primary:hover { opacity: 0.9; }
+
+  /* Ghost — ink outline on paper */
   .v-ghost {
     background: transparent;
-    color: #ffffff;
-    border: 1px solid var(--pun-border-bright);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    color: var(--pun-navy);
+    border: 1px solid var(--pun-ink);
   }
-  .v-ghost:hover {
-    background: var(--pun-surface-1);
-  }
+  .v-ghost:hover { background: var(--pun-surface-2); }
 </style>

@@ -36,23 +36,39 @@ const parts = accentWord && headline.includes(accentWord)
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--pun-cyan);
-    border: 1px solid rgba(34,211,238,0.30);
-    background: rgba(34,211,238,0.08);
+    color: var(--pun-coral);
+    border: 1px solid rgba(221, 65, 85, 0.3);
+    background: rgba(221, 65, 85, 0.08);
     border-radius: var(--pun-radius-badge);
     padding: 3px 12px;
     margin-bottom: 0.75rem;
   }
   .sh-headline {
-    font-family: 'Bai Jamjuree', sans-serif;
-    font-size: clamp(1.6rem, 4vw, 2rem);
-    font-weight: 700;
-    color: white;
-    line-height: 1.2;
-    letter-spacing: -0.01em;
+    font-family: 'Trirong', serif;
+    font-size: clamp(1.7rem, 4vw, 2.25rem);
+    font-weight: 600;
+    color: var(--pun-navy);
+    line-height: 1.25;
     margin: 0 0 0.75rem;
   }
-  .sh-accent { color: var(--pun-coral); }
+  /* Hand-drawn coral underline on the accent word */
+  .sh-accent {
+    position: relative;
+    display: inline-block;
+  }
+  .sh-accent::after {
+    content: '';
+    position: absolute;
+    width: 102%;
+    height: 6px;
+    bottom: 3px;
+    left: -1%;
+    background-color: var(--pun-coral);
+    z-index: -1;
+    border-radius: 3px;
+    transform: rotate(-1.2deg);
+    opacity: 0.9;
+  }
   .sh-sub {
     font-family: 'Sarabun', sans-serif;
     font-size: 1rem;

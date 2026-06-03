@@ -3,49 +3,49 @@ import { SITE } from '../data/site';
 const year = new Date().getFullYear();
 ---
 
-<footer class="mt-24 border-t border-base-content/10 bg-base-200/50">
-  <div class="mx-auto max-w-6xl px-6 py-12">
+<footer class="mt-24 w-full bg-[#00162f] text-[#f4f1ea]/80">
+  <div class="mx-auto max-w-6xl px-6 py-14">
     <div class="grid gap-10 md:grid-cols-3">
       <!-- Brand -->
       <div>
-        <p class="font-display text-xl font-bold">{SITE.nameTh}</p>
-        <p class="mt-2 text-sm text-base-content/70">{SITE.author.jobTitle}</p>
-        <p class="mt-4 text-sm text-base-content/60">
+        <p class="font-display text-xl font-semibold text-white">{SITE.nameTh}</p>
+        <p class="mt-2 text-sm text-[#f4f1ea]/60">{SITE.author.jobTitle}</p>
+        <p class="mt-4 text-sm text-[#f4f1ea]/50">
           {SITE.author.city}, Thailand
         </p>
       </div>
 
       <!-- Nav -->
       <div>
-        <p class="mb-3 text-sm font-semibold uppercase tracking-wide text-base-content/50">
+        <p class="mb-3 text-sm font-semibold uppercase tracking-wide text-[#fe596b]">
           เมนู
         </p>
         <ul class="space-y-2 text-sm">
-          <li><a href="/" class="hover:text-secondary">หน้าแรก</a></li>
-          <li><a href="/services" class="hover:text-secondary">บริการ</a></li>
-          <li><a href="/about" class="hover:text-secondary">เกี่ยวกับปัน</a></li>
-          <li><a href="/intake-form" class="hover:text-secondary">นัดคุยกับผม</a></li>
+          <li><a href="/" class="text-[#f4f1ea]/70 hover:text-white transition-colors">หน้าแรก</a></li>
+          <li><a href="/services" class="text-[#f4f1ea]/70 hover:text-white transition-colors">บริการ</a></li>
+          <li><a href="/about" class="text-[#f4f1ea]/70 hover:text-white transition-colors">เกี่ยวกับปัน</a></li>
+          <li><a href="/intake-form" class="text-[#f4f1ea]/70 hover:text-white transition-colors">นัดคุยกับผม</a></li>
         </ul>
       </div>
 
       <!-- Social -->
       <div>
-        <p class="mb-3 text-sm font-semibold uppercase tracking-wide text-base-content/50">
+        <p class="mb-3 text-sm font-semibold uppercase tracking-wide text-[#fe596b]">
           ติดตาม
         </p>
         <ul class="space-y-2 text-sm">
           <li>
-            <a href={SITE.social.tiktok} rel="me noopener" target="_blank" class="hover:text-secondary">
+            <a href={SITE.social.tiktok} rel="me noopener" target="_blank" class="text-[#f4f1ea]/70 hover:text-white transition-colors">
               TikTok @pun_nattapatch
             </a>
           </li>
           <li>
-            <a href={SITE.social.instagram} rel="me noopener" target="_blank" class="hover:text-secondary">
+            <a href={SITE.social.instagram} rel="me noopener" target="_blank" class="text-[#f4f1ea]/70 hover:text-white transition-colors">
               Instagram @pun_nattapatch
             </a>
           </li>
           <li>
-            <a href={SITE.social.line} rel="noopener" target="_blank" class="hover:text-secondary">
+            <a href={SITE.social.line} rel="noopener" target="_blank" class="text-[#f4f1ea]/70 hover:text-white transition-colors">
               LINE Official
             </a>
           </li>
@@ -54,7 +54,7 @@ const year = new Date().getFullYear();
     </div>
 
     <div
-      class="mt-10 flex flex-col items-start justify-between gap-3 border-t border-base-content/10 pt-6 text-xs text-base-content/50 md:flex-row md:items-center"
+      class="mt-10 flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-6 text-xs text-[#f4f1ea]/50 md:flex-row md:items-center"
     >
       <p>&copy; {year} Pun Nattapatch. ทุกบทความในเว็บนี้ผมเขียนและตรวจเองทุกชิ้น</p>
       <p>

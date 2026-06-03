@@ -401,9 +401,9 @@ const socials = [
   <section class="relative overflow-hidden px-4 py-20 lg:px-8 lg:py-28" style="background: linear-gradient(135deg, #040f1e 0%, #072b4e 50%, #0d3a5c 100%);">
     {/* Ambient orbs */}
     <div class="pointer-events-none absolute inset-0 opacity-50">
-      <div class="absolute -left-32 -top-20 h-[500px] w-[500px] rounded-full" style="background: radial-gradient(circle, rgba(34,211,238,0.18) 0%, transparent 70%); filter: blur(80px);"></div>
-      <div class="absolute -right-20 top-1/3 h-[400px] w-[400px] rounded-full" style="background: radial-gradient(circle, rgba(221,65,85,0.12) 0%, transparent 70%); filter: blur(80px);"></div>
-      <div class="absolute -bottom-32 left-1/3 h-[600px] w-[600px] rounded-full" style="background: radial-gradient(circle, rgba(6,182,212,0.10) 0%, transparent 70%); filter: blur(100px);"></div>
+      <div class="absolute -left-32 -top-20 h-[500px] w-[500px] rounded-full" style="background: radial-gradient(circle, rgba(221,65,85,0.14) 0%, transparent 70%); filter: blur(80px);"></div>
+      <div class="absolute -right-20 top-1/3 h-[400px] w-[400px] rounded-full" style="background: radial-gradient(circle, rgba(221,65,85,0.10) 0%, transparent 70%); filter: blur(80px);"></div>
+      <div class="absolute -bottom-32 left-1/3 h-[600px] w-[600px] rounded-full" style="background: radial-gradient(circle, rgba(254,89,107,0.08) 0%, transparent 70%); filter: blur(100px);"></div>
     </div>
     {/* Dot grid */}
     <div class="pointer-events-none absolute inset-0 opacity-40" style="background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 32px 32px;"></div>
@@ -422,20 +422,20 @@ const socials = [
       <h2 class="mt-6 font-display font-black tracking-tight leading-[1.05] text-white text-5xl md:text-6xl lg:text-7xl">
         Advance AI &
         <br />
-        <span class="bg-gradient-to-r from-cyan-300 via-cyan-200 to-cyan-400 bg-clip-text text-transparent">Business Automation</span>
+        <span class="text-[#fe596b]">Business Automation</span>
       </h2>
 
-      <div class="mt-5 inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-200 backdrop-blur-md">
+      <div class="mt-5 inline-flex items-center gap-2 rounded-full border border-[#fe596b]/40 bg-[#fe596b]/10 px-4 py-2 text-sm font-semibold text-[#fe596b] backdrop-blur-md">
         <span>⏱</span>
         <span>Workshop 1 วัน · 6-7 ชั่วโมง · Hands-on</span>
       </div>
 
       {/* Hook — Scroll Stopper (glassmorphism with cyan accent) */}
-      <div class="mt-10 rounded-2xl border border-white/10 border-l-4 py-6 pl-7 pr-6 backdrop-blur-xl md:py-7" style="background: rgba(255,255,255,0.04); border-left-color: #22d3ee;">
+      <div class="mt-10 rounded-2xl border border-white/10 border-l-4 py-6 pl-7 pr-6 backdrop-blur-xl md:py-7" style="background: rgba(255,255,255,0.04); border-left-color: #dd4155;">
         <p class="font-display text-3xl font-black leading-tight text-white md:text-4xl">
           คอร์ส AI ที่ไม่เหมือนใคร
         </p>
-        <p class="mt-2 font-display text-2xl font-bold leading-tight text-cyan-300 md:text-3xl">
+        <p class="mt-2 font-display text-2xl font-bold leading-tight text-[#fe596b] md:text-3xl">
           จับมือคุณสร้าง AI Agent ตัวแรก
         </p>
       </div>
@@ -452,15 +452,15 @@ const socials = [
 
       {/* Quick Facts — glassmorphism cards */}
       <div class="mt-8 grid gap-4 md:grid-cols-3">
-        <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl transition hover:border-cyan-300/40">
+        <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl transition hover:border-[#fe596b]/40">
           <div class="font-display text-3xl font-black text-white md:text-4xl">฿29,800</div>
           <p class="mt-2 text-sm text-white/70">Basic Workshop · On-site · เริ่มต้น Day 1</p>
         </div>
-        <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl transition hover:border-cyan-300/40">
+        <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl transition hover:border-[#fe596b]/40">
           <div class="font-display text-3xl font-black text-white md:text-4xl">1 วัน</div>
           <p class="mt-2 text-sm text-white/70">6-7 ชั่วโมง · Hands-on · Build จริง</p>
         </div>
-        <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl transition hover:border-cyan-300/40">
+        <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl transition hover:border-[#fe596b]/40">
           <div class="font-display text-3xl font-black text-white md:text-4xl">On-site</div>
           <p class="mt-2 text-sm text-white/70">In-house · เข้าไปสอนที่บริษัทคุณ</p>
         </div>
@@ -1452,7 +1452,7 @@ const socials = [
 <style>
 /* HERO */
 .hero-section {
-  min-height: 90vh;
+  min-height: 88vh;
   display: flex;
   align-items: center;
   padding: var(--pun-section-y) var(--pun-gutter);
@@ -1473,19 +1473,23 @@ const socials = [
   height: 340px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--pun-border-bright);
-  box-shadow: 0 0 60px var(--pun-glow-coral);
+  border: 1px solid var(--pun-border);
+  box-shadow: 4px 6px 0 rgba(30, 27, 22, 0.08);
 }
 .hero-avatar-badge {
-  display: block;
+  display: inline-block;
   text-align: center;
-  margin-top: 0.75rem;
+  margin-top: 1rem;
   font-family: 'Sarabun', sans-serif;
   font-size: 0.6rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--pun-text-muted);
+  color: var(--pun-coral);
+  border: 1px solid rgba(221, 65, 85, 0.3);
+  background: rgba(221, 65, 85, 0.07);
+  border-radius: 9999px;
+  padding: 3px 12px;
 }
 .hero-right {
   position: relative;
@@ -1500,35 +1504,53 @@ const socials = [
   inset: 0;
   background-size: cover;
   background-position: center;
-  border-radius: 2rem;
-  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 30%, black 60%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 30%, black 60%);
-  opacity: 0.55;
+  border-radius: 1rem;
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 40%, black 75%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 40%, black 75%);
+  opacity: 0.14;
 }
 .hero-content { position: relative; z-index: 1; display: block; padding: 0; max-width: 100%; }
 .hero-role {
-  font-family: 'Bai Jamjuree', sans-serif;
-  font-size: clamp(1.15rem, 2.2vw, 1.75rem);
-  font-weight: 600;
-  color: var(--pun-cyan);
+  font-family: 'Sarabun', sans-serif;
+  font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+  font-weight: 700;
+  color: var(--pun-coral);
   line-height: 1.35;
   margin: 0 0 1.25rem;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 .hero-headline {
-  font-family: 'Bai Jamjuree', sans-serif;
-  font-size: clamp(2.2rem, 5vw, 3.5rem);
-  font-weight: 700;
-  color: white;
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  font-family: 'Trirong', serif;
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 600;
+  color: var(--pun-navy);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
   margin: 0 0 1.25rem;
 }
-.hero-accent { color: var(--pun-coral); }
+.hero-accent {
+  position: relative;
+  display: inline-block;
+  color: var(--pun-navy);
+}
+.hero-accent::after {
+  content: '';
+  position: absolute;
+  width: 102%;
+  height: 9px;
+  bottom: 6px;
+  left: -1%;
+  background-color: var(--pun-coral);
+  z-index: -1;
+  border-radius: 4px;
+  transform: rotate(-1.2deg);
+  opacity: 0.9;
+}
 .hero-sub {
   font-family: 'Sarabun', sans-serif;
   font-size: 1.05rem;
-  color: var(--pun-text-muted);
+  color: rgba(30, 27, 22, 0.78);
   line-height: 1.7;
   margin: 0 0 1.75rem;
 }
@@ -1589,54 +1611,54 @@ const socials = [
 .pain-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
 :global(.pain-card) { padding: 2rem 2.25rem; border-left: 3px solid var(--pun-coral) !important; }
 .pain-icon { display: block; margin-bottom: 0.75rem; color: var(--pun-coral); }
-.pain-title { font-family: 'Bai Jamjuree', sans-serif; font-size: 1rem; font-weight: 700; color: white; margin: 0 0 0.4rem; }
+.pain-title { font-family: 'Trirong', serif; font-size: 1.05rem; font-weight: 600; color: var(--pun-navy); margin: 0 0 0.4rem; }
 .pain-body  { font-family: 'Sarabun', sans-serif; font-size: 0.85rem; color: var(--pun-text-muted); margin: 0; line-height: 1.6; }
 @media (max-width: 640px) { .pain-grid { grid-template-columns: 1fr; } }
 
 /* 4 WHEELS */
 .wheels-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
 :global(.wheel-card) { padding: 2rem 2.25rem; text-align: center; }
-.wheel-icon { display: flex; justify-content: center; margin-bottom: 0.75rem; color: var(--pun-cyan); }
-.wheel-name { font-family: 'Bai Jamjuree', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--pun-cyan); margin: 0 0 0.4rem; }
+.wheel-icon { display: flex; justify-content: center; margin-bottom: 0.75rem; color: var(--pun-coral); }
+.wheel-name { font-family: 'Trirong', serif; font-size: 1.15rem; font-weight: 600; color: var(--pun-navy); margin: 0 0 0.4rem; }
 .wheel-desc { font-family: 'Sarabun', sans-serif; font-size: 0.82rem; color: var(--pun-text-muted); margin: 0; line-height: 1.55; }
 @media (max-width: 900px) { .wheels-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 540px) { .wheels-grid { grid-template-columns: 1fr; } }
 
 /* AI TRANSFORMATION SHIFT */
 .shift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
-.shift-body { font-family: 'Sarabun', sans-serif; font-size: 1rem; color: var(--pun-text-muted); line-height: 1.7; margin: 0 0 1rem; }
+.shift-body { font-family: 'Sarabun', sans-serif; font-size: 1rem; color: rgba(30, 27, 22, 0.78); line-height: 1.7; margin: 0 0 1rem; }
 .shift-visual { display: flex; flex-direction: column; gap: 0.75rem; }
 :global(.shift-card) { padding: 1.5rem 2.25rem; }
 .shift-card-label { font-family: 'Sarabun', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--pun-text-muted); display: block; margin-bottom: 0.5rem; }
-.after-label { color: var(--pun-cyan); }
+.after-label { color: var(--pun-coral); }
 .shift-card-desc { font-family: 'Sarabun', sans-serif; font-size: 0.85rem; color: var(--pun-text); margin: 0; line-height: 1.6; }
-:global(.before-card) { opacity: 0.65; }
-.shift-arrow { text-align: center; font-family: 'Sarabun', sans-serif; font-size: 0.78rem; font-weight: 700; color: var(--pun-cyan); letter-spacing: 0.05em; }
+:global(.before-card) { opacity: 0.7; }
+.shift-arrow { text-align: center; font-family: 'Sarabun', sans-serif; font-size: 0.78rem; font-weight: 700; color: var(--pun-coral); letter-spacing: 0.05em; }
 @media (max-width: 768px) { .shift-grid { grid-template-columns: 1fr; } }
 
 /* SERVICES */
 .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
 :global(.service-card) { padding: 1.75rem 2.25rem; transition: border-color 0.2s; }
 :global(.service-card:hover) { border-color: var(--pun-coral) !important; }
-.service-name { font-family: 'Bai Jamjuree', sans-serif; font-size: 1rem; font-weight: 700; color: white; margin: 0 0 0.4rem; }
-.service-price { font-family: 'Bai Jamjuree', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--pun-coral); margin: 0 0 0.5rem; }
+.service-name { font-family: 'Trirong', serif; font-size: 1.1rem; font-weight: 600; color: var(--pun-navy); margin: 0 0 0.4rem; }
+.service-price { font-family: 'Trirong', serif; font-size: 1.5rem; font-weight: 700; color: var(--pun-coral); margin: 0 0 0.5rem; }
 .service-outcome { font-family: 'Sarabun', sans-serif; font-size: 0.82rem; color: var(--pun-text-muted); margin: 0; line-height: 1.55; }
 @media (max-width: 768px) { .services-grid { grid-template-columns: 1fr; } }
 
 /* WHY PUN */
 .why-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 3rem; align-items: center; }
-.why-body { font-family: 'Sarabun', sans-serif; font-size: 1rem; color: var(--pun-text-muted); line-height: 1.7; margin: 0 0 1rem; }
+.why-body { font-family: 'Sarabun', sans-serif; font-size: 1rem; color: rgba(30, 27, 22, 0.78); line-height: 1.7; margin: 0 0 1rem; }
 .why-stats { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; font-family: 'Sarabun', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--pun-text-muted); margin-top: 1.5rem; }
 .why-sep { opacity: 0.4; }
 .why-avatar-col { display: flex; justify-content: center; }
-.why-avatar { width: 240px; height: 240px; border-radius: 50%; object-fit: cover; border: 2px solid var(--pun-border-bright); box-shadow: 0 0 40px var(--pun-glow-coral); }
+.why-avatar { width: 240px; height: 240px; border-radius: 50%; object-fit: cover; border: 1px solid var(--pun-border); box-shadow: 4px 6px 0 rgba(30, 27, 22, 0.08); }
 @media (max-width: 768px) { .why-grid { grid-template-columns: 1fr; } .why-avatar-col { display: none; } }
 
 /* CASE STUDY PREVIEW */
 .case-preview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
 :global(.case-placeholder) { padding: 1.75rem 2.25rem; }
 .case-industry { font-family: 'Sarabun', sans-serif; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--pun-text-muted); display: block; margin-bottom: 0.5rem; }
-.case-result { font-family: 'Bai Jamjuree', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--pun-cyan); margin: 0 0 0.5rem; }
+.case-result { font-family: 'Trirong', serif; font-size: 1.3rem; font-weight: 600; color: var(--pun-navy); margin: 0 0 0.5rem; }
 .case-coming { font-family: 'Sarabun', sans-serif; font-size: 0.75rem; color: var(--pun-text-muted); opacity: 0.6; }
 @media (max-width: 768px) { .case-preview-grid { grid-template-columns: 1fr; } }
 

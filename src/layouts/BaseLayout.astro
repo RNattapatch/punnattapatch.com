@@ -30,13 +30,12 @@ const fullTitle = title === SITE.titleDefault ? title : `${title} · ${SITE.name
 ---
 
 <!doctype html>
-<html lang="th">
+<html lang="th" data-theme="punpaper">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#072b4e" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#fdfaf4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#F4F1EA" />
 
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
@@ -67,7 +66,7 @@ const fullTitle = title === SITE.titleDefault ? title : `${title} · ${SITE.name
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <!-- Google Fonts: Bai Jamjuree (display) + Sarabun (body) -->
+    <!-- Google Fonts: Trirong (display serif) + Sarabun (body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!--
@@ -78,13 +77,13 @@ const fullTitle = title === SITE.titleDefault ? title : `${title} · ${SITE.name
     <link
       rel="preload"
       as="style"
-      href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Trirong:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700;800&display=swap"
       onload="this.onload=null;this.rel='stylesheet'"
     />
     <noscript>
       <link
         rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Trirong:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700;800&display=swap"
       />
     </noscript>
 

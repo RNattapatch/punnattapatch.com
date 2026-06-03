@@ -12,36 +12,18 @@ const { class: className = '', elevated = false, glow } = Astro.props;
 </div>
 
 <style>
+  /* Editorial card — ivory/sand paper, ink border, no blur/glow */
   .glass-panel {
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     background: var(--pun-surface-1);
     border: 1px solid var(--pun-border);
     border-radius: var(--pun-radius-panel);
-    box-shadow:
-      inset 1px 1px 0 rgba(255,255,255,0.06),
-      0 8px 40px var(--pun-glow-navy);
   }
   .glass-panel.elevated {
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    background: var(--pun-surface-2);
+    background: #ffffff;
+    box-shadow: 3px 5px 0 rgba(30, 27, 22, 0.06);
   }
-  .glass-panel.glow-coral {
-    box-shadow:
-      inset 1px 1px 0 rgba(255,255,255,0.06),
-      0 8px 40px var(--pun-glow-navy),
-      0 0 60px var(--pun-glow-coral);
-  }
-  .glass-panel.glow-cyan {
-    box-shadow:
-      inset 1px 1px 0 rgba(255,255,255,0.06),
-      0 8px 40px var(--pun-glow-navy),
-      0 0 60px var(--pun-glow-cyan);
-  }
-  .glass-panel.glow-navy {
-    box-shadow:
-      inset 1px 1px 0 rgba(255,255,255,0.06),
-      0 0 80px var(--pun-glow-navy);
-  }
+  /* glow variants → subtle accent left-border on paper */
+  .glass-panel.glow-coral { border-left: 3px solid var(--pun-coral); }
+  .glass-panel.glow-cyan  { border-left: 3px solid var(--pun-navy); }
+  .glass-panel.glow-navy  { border-left: 3px solid var(--pun-navy); }
 </style>

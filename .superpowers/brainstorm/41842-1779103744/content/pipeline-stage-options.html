@@ -1,0 +1,94 @@
+<h2>Pipeline Stage Selector — 3 Approaches</h2>
+<p class="subtitle">เลือก design ที่ชอบสำหรับการ set stage ใน lead card</p>
+
+<div class="section">
+  <h3>Bug Summary (พบแล้ว ✅)</h3>
+  <div style="display:grid;gap:8px;">
+    <div style="background:#1e2d1e;border:1px solid #3d6b3d;border-radius:8px;padding:12px;">
+      <span style="color:#4ade80;font-size:0.75rem;font-weight:700;text-transform:uppercase;">Bug 1 Fixed</span>
+      <p style="margin:4px 0 0;font-size:0.875rem;">🔥 Hot button resets — เกิดเพราะ <code>apply()</code> override click ทุกครั้งที่ store refresh → เพิ่ม <code>tempDirty</code> flag แก้ได้</p>
+    </div>
+    <div style="background:#2d1e1e;border:1px solid #6b3d3d;border-radius:8px;padding:12px;">
+      <span style="color:#f87171;font-size:0.75rem;font-weight:700;text-transform:uppercase;">Bug 2 — ต้องเลือก design</span>
+      <p style="margin:4px 0 0;font-size:0.875rem;">Pipeline stage ไม่มี UI ให้ตั้ง — stage ถูก derive จาก timestamps + pipeline_status field แต่ไม่มี selector ให้ user กดได้โดยตรง</p>
+    </div>
+  </div>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Stage Dropdown ใน Command Center</h3>
+      <p>เพิ่ม <strong>Pipeline Stage</strong> select เป็น field แรกใน Command Center panel — ค่า: New Lead / Discovery / Proposal Sent / Walkthrough (Won/Lost ยังใช้ EditDeal modal เดิม)</p>
+      <div style="margin-top:10px;background:#111827;border-radius:8px;padding:10px;font-size:0.8rem;">
+        <div style="color:#9ca3af;font-size:0.65rem;text-transform:uppercase;margin-bottom:6px;">Command Center Preview</div>
+        <div style="margin-bottom:8px;">
+          <div style="color:#6b7280;font-size:0.7rem;margin-bottom:4px;">Pipeline Stage</div>
+          <div style="background:#1f2937;border:1px solid #374151;border-radius:6px;padding:6px 10px;color:#e5e7eb;font-size:0.8rem;display:flex;justify-content:space-between;">Discovery<span>▾</span></div>
+        </div>
+        <div style="margin-bottom:8px;">
+          <div style="color:#6b7280;font-size:0.7rem;margin-bottom:4px;">Temperature</div>
+          <div style="display:flex;gap:4px;">
+            <div style="flex:1;background:#1d3a1d;border:1px solid #4ade80;border-radius:4px;padding:4px;text-align:center;font-size:0.75rem;">🔥 Hot</div>
+            <div style="flex:1;background:#1f2937;border:1px solid #374151;border-radius:4px;padding:4px;text-align:center;font-size:0.75rem;">🌤 Warm</div>
+            <div style="flex:1;background:#1f2937;border:1px solid #374151;border-radius:4px;padding:4px;text-align:center;font-size:0.75rem;">❄️ Cold</div>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>ดี</h4><ul><li>Explicit — ตั้งตรงๆ ได้เลย</li><li>ไม่เพิ่ม UI clutter มาก</li></ul></div>
+        <div class="cons"><h4>ข้อเสีย</h4><ul><li>ต้อง scroll เข้า drawer</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Quick Stage Buttons ใน Quick Actions</h3>
+      <p>เพิ่ม row <strong>"Move to Stage →"</strong> ใน Quick Actions section (ด้านบน drawer) — เป็น pill buttons: <code>Discovery</code> <code>Proposal</code> <code>Walkthrough</code></p>
+      <div style="margin-top:10px;background:#111827;border-radius:8px;padding:10px;font-size:0.8rem;">
+        <div style="color:#9ca3af;font-size:0.65rem;text-transform:uppercase;margin-bottom:6px;">Quick Actions Preview</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px;">
+          <div style="background:#1f2937;border:1px solid #374151;border-radius:6px;padding:5px;text-align:center;font-size:0.75rem;">โทร</div>
+          <div style="background:#1f2937;border:1px solid #374151;border-radius:6px;padding:5px;text-align:center;font-size:0.75rem;">เปิด LINE</div>
+          <div style="background:#1f2937;border:1px solid #374151;border-radius:6px;padding:5px;text-align:center;font-size:0.75rem;">คัดลอก follow-up</div>
+          <div style="background:#1f2937;border:1px solid #374151;border-radius:6px;padding:5px;text-align:center;font-size:0.75rem;">บันทึก touch</div>
+        </div>
+        <div style="color:#6b7280;font-size:0.7rem;margin-bottom:4px;">Move to Stage →</div>
+        <div style="display:flex;gap:4px;">
+          <div style="background:#1e293b;border:1px solid #3b82f6;border-radius:14px;padding:3px 8px;font-size:0.7rem;color:#93c5fd;">Discovery</div>
+          <div style="background:#1e293b;border:1px solid #f59e0b;border-radius:14px;padding:3px 8px;font-size:0.7rem;color:#fcd34d;">Proposal</div>
+          <div style="background:#1e293b;border:1px solid #06b6d4;border-radius:14px;padding:3px 8px;font-size:0.7rem;color:#67e8f9;">Walkthrough</div>
+        </div>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>ดี</h4><ul><li>เร็ว — กด 1 ครั้ง save เลย</li><li>อยู่ด้านบน drawer เข้าถึงง่าย</li></ul></div>
+        <div class="cons"><h4>ข้อเสีย</h4><ul><li>กลับ stage ไม่ได้ง่ายๆ (เช่น Discovery → New)</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Both — Quick Buttons + Stage Dropdown</h3>
+      <p>รวมทั้ง 2: <strong>Quick Stage Buttons</strong> ใน Quick Actions (สำหรับ move forward เร็วๆ) + <strong>Pipeline Stage Dropdown</strong> ใน Command Center (สำหรับ set/correct ได้ทุก stage)</p>
+      <div style="margin-top:10px;background:#111827;border-radius:8px;padding:10px;font-size:0.8rem;">
+        <div style="color:#9ca3af;font-size:0.65rem;text-transform:uppercase;margin-bottom:4px;">Best of both</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <div style="background:#1e293b;border:1px solid #3b82f6;border-radius:14px;padding:3px 8px;font-size:0.7rem;color:#93c5fd;">→ Discovery</div>
+          <div style="background:#1e293b;border:1px solid #f59e0b;border-radius:14px;padding:3px 8px;font-size:0.7rem;color:#fcd34d;">→ Proposal</div>
+          <div style="background:#1e293b;border:1px solid #06b6d4;border-radius:14px;padding:3px 8px;font-size:0.7rem;color:#67e8f9;">→ Walkthrough</div>
+        </div>
+        <div style="color:#6b7280;font-size:0.7rem;margin-bottom:4px;">+ Full Stage Control ใน Command Center</div>
+        <div style="background:#1f2937;border:1px solid #374151;border-radius:6px;padding:5px 8px;font-size:0.75rem;display:flex;justify-content:space-between;color:#e5e7eb;">New Lead<span>▾</span></div>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>ดี</h4><ul><li>เร็วสำหรับ common case</li><li>ยืดหยุ่นสำหรับ correction</li></ul></div>
+        <div class="cons"><h4>ข้อเสีย</h4><ul><li>UI มากกว่าเล็กน้อย</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

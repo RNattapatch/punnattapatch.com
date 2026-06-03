@@ -1,29 +1,33 @@
-/* punnattapatch.com — Design Tokens · 2026-05-27 */
-/* Augments pundark DaisyUI theme. Do NOT override base-100/base-content. */
+/* punnattapatch.com — Design Tokens · Warm Editorial AI (2026-06) */
+/* Consumed by shared components. Editorial values cascade to all of them. */
 
 :root {
   /* Brand */
-  --pun-ink:    #0b1623;
+  --pun-ink:    #1e1b16;
   --pun-navy:   #072b4e;
+  --pun-navy-deep: #00162f;
   --pun-coral:  #dd4155;
-  --pun-cyan:   #22d3ee;
+  --pun-coral-dark: #c43245;
+  --pun-coral-soft: #fe596b;
+  --pun-cyan:   #0e7490;
+  --pun-ivory:  #f4f1ea;
 
-  /* Glass surfaces */
-  --pun-surface-1: rgba(255, 255, 255, 0.05);
-  --pun-surface-2: rgba(255, 255, 255, 0.10);
+  /* Surfaces (solid, paper — was translucent glass) */
+  --pun-surface-1: #fcf9f2;   /* brightest card */
+  --pun-surface-2: #ece6da;   /* sand tonal layer */
 
-  /* Borders */
-  --pun-border:        rgba(255, 255, 255, 0.10);
-  --pun-border-bright: rgba(255, 255, 255, 0.20);
+  /* Borders (ink-on-paper, was white-translucent) */
+  --pun-border:        #c9c2b2;
+  --pun-border-bright: #8a8175;
 
-  /* Glows */
-  --pun-glow-coral: rgba(221, 65, 85, 0.25);
-  --pun-glow-navy:  rgba(7, 43, 78, 0.30);
-  --pun-glow-cyan:  rgba(34, 211, 238, 0.15);
+  /* Glows — removed in editorial (kept as transparent so old box-shadows vanish) */
+  --pun-glow-coral: transparent;
+  --pun-glow-navy:  transparent;
+  --pun-glow-cyan:  transparent;
 
   /* Text */
-  --pun-text:       #dce3ed;
-  --pun-text-muted: rgba(220, 227, 237, 0.60);
+  --pun-text:       #1e1b16;
+  --pun-text-muted: #8a8175;
 
   /* Spacing */
   --pun-section-y:        96px;
@@ -31,9 +35,9 @@
   --pun-container:        1280px;
   --pun-gutter:           2rem;
 
-  /* Radius */
-  --pun-radius-panel: 2rem;
-  --pun-radius-card:  1.5rem;
+  /* Radius (16px editorial) */
+  --pun-radius-panel: 1rem;
+  --pun-radius-card:  1rem;
   --pun-radius-btn:   1rem;
   --pun-radius-badge: 9999px;
   --pun-radius-small: 0.75rem;

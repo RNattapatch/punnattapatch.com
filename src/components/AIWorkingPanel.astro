@@ -1,86 +1,53 @@
 ---
-import StatusBadge from './StatusBadge.astro';
-import Icon from './Icon.astro';
+// Paper "notebook" checklist — the human-touch reinterpretation of the
+// AI status panel (editorial decision: ink checkmarks, not glowing badges).
 ---
 
-<div class="ai-panel">
-  <div class="ai-panel-header">
-    <span class="ai-panel-label">AI WORKING WITH YOU</span>
-    <span class="ai-panel-dots" aria-hidden="true">···</span>
-  </div>
-  <ul class="ai-panel-rows">
-    <li class="ai-panel-row">
-      <span class="ai-row-icon"><Icon name="magnifying-glass" size={16} /></span>
-      <span class="ai-row-label">Lead Qualifying</span>
-      <StatusBadge label="Active" status="active" pulse />
-    </li>
-    <li class="ai-panel-row">
-      <span class="ai-row-icon"><Icon name="paper-airplane" size={16} /></span>
-      <span class="ai-row-label">Follow-up Automation</span>
-      <StatusBadge label="Running" status="running" pulse />
-    </li>
-    <li class="ai-panel-row">
-      <span class="ai-row-icon"><Icon name="pencil-square" size={16} /></span>
-      <span class="ai-row-label">Proposal Generation</span>
-      <StatusBadge label="Ready" status="ready" />
-    </li>
-    <li class="ai-panel-row">
-      <span class="ai-row-icon"><Icon name="chart-bar" size={16} /></span>
-      <span class="ai-row-label">Sales Summary</span>
-      <StatusBadge label="Synced" status="synced" />
-    </li>
+<div class="notebook">
+  <p class="notebook-title">สิ่งที่ AI ทำให้คุณวันนี้</p>
+  <ul class="notebook-rows">
+    <li><span class="ink-check">✓</span> คัดกรอง Lead เข้าใหม่</li>
+    <li><span class="ink-check">✓</span> ส่ง Follow-up อัตโนมัติ</li>
+    <li><span class="ink-check">✓</span> ร่าง Proposal ให้</li>
+    <li><span class="ink-check">✓</span> สรุปยอดขายทุกเช้า</li>
   </ul>
 </div>
 
 <style>
-  .ai-panel {
-    width: 300px;
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    background: var(--pun-surface-2);
-    border: 1px solid var(--pun-border);
-    border-radius: var(--pun-radius-card);
-    padding: 1.25rem 1.75rem;
-    box-shadow:
-      inset 1px 1px 0 rgba(255,255,255,0.06),
-      0 8px 40px var(--pun-glow-navy),
-      0 0 60px var(--pun-glow-cyan);
+  .notebook {
+    width: 280px;
+    max-width: 100%;
+    background: #FCF9F2;
+    border: 1px solid #C9C2B2;
+    border-radius: 0.75rem;
+    padding: 1.1rem 1.35rem;
+    box-shadow: 2px 4px 0 rgba(30, 27, 22, 0.08);
+    transform: rotate(1.3deg);
   }
-  .ai-panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
+  .notebook-title {
+    font-family: 'Trirong', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--pun-navy);
+    margin: 0 0 0.6rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dashed #D8D1C0;
   }
-  .ai-panel-label {
-    font-family: 'Sarabun', sans-serif;
-    font-size: 0.63rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--pun-cyan);
-  }
-  .ai-panel-dots {
-    color: var(--pun-text-muted);
-    font-size: 0.9rem;
-    letter-spacing: 2px;
-  }
-  .ai-panel-rows {
+  .notebook-rows {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.45rem;
   }
-  .ai-panel-row {
+  .notebook-rows li {
     display: flex;
-    align-items: center;
     gap: 0.5rem;
     font-family: 'Sarabun', sans-serif;
-    font-size: 0.78rem;
-    color: var(--pun-text);
+    font-size: 0.82rem;
+    color: rgba(30, 27, 22, 0.8);
   }
-  .ai-row-icon { display: flex; align-items: center; flex-shrink: 0; color: var(--pun-cyan); }
-  .ai-row-label { flex: 1; }
+  .ink-check { color: var(--pun-coral); font-weight: 700; }
+  @media (hover: none) { .notebook { transform: rotate(1deg); } }
 </style>
