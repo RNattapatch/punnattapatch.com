@@ -96,6 +96,25 @@
 @theme {
   --font-display: "Trirong", "Noto Serif", serif;
   --font-body: "Sarabun", "IBM Plex Sans Thai", sans-serif;
+  /* Map Tailwind's font-serif / font-sans to match the mockup verbatim */
+  --font-serif: "Trirong", "Noto Serif", serif;
+  --font-sans: "Sarabun", "IBM Plex Sans Thai", sans-serif;
+
+  /* Page gutter (matches editorial mockup `px-margin-page`) */
+  --spacing-margin-page: clamp(1.5rem, 5vw, 6rem);
+
+  /* Editorial palette — bare names match the Stitch mockup verbatim
+     so mockup markup can be ported 1:1 (text-navy, bg-sand, text-coral …) */
+  --color-navy: #072b4e;
+  --color-navy-deep: #00162f;
+  --color-coral: #dd4155;
+  --color-coral-soft: #fe596b;
+  --color-ivory: #f4f1ea;
+  --color-surface: #fcf9f2;
+  --color-sand: #ece6da;
+  --color-sand-deep: #e2dbcb;
+  --color-warm-ink: #1e1b16;
+  --color-muted: #8a8175;
 
   --color-brand-navy: #072b4e;
   --color-brand-navy-deep: #00162f;

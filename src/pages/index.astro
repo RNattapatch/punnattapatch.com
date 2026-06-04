@@ -17,6 +17,7 @@ import { Image } from 'astro:assets';
 import { SITE, SERVICES, PROOF_STATS } from '../data/site';
 import avatar from '../assets/pun-avatar.png';
 import heroImage from '../assets/hero-ai-walking.jpg';
+import ceoPhoto from '../assets/pun-ceo-1.jpg';
 
 // Fetch 3 featured articles — one per pillar category for home preview.
 // Picks most recent non-draft entry per pillar, falls back to any latest.
@@ -313,69 +314,51 @@ const socials = [
   description={SITE.description}
   schema={{ types: ['Person', 'WebPage', 'ServiceList'] }}
 >
-  <!-- HERO -->
-  <SectionAtmosphere coral navy class="hero-section">
-    <div class="hero-container">
-      <!-- LEFT: Avatar -->
-      <div class="hero-left">
-        <div class="hero-avatar-wrap">
-          <Image
-            src={avatar}
-            alt="ปัน ณัฐพัชร์ — AI Transformation Consultant"
-            width={340}
-            height={340}
-            class="hero-avatar"
-          />
-          <span class="hero-avatar-badge">AI TRANSFORMATION CONSULTANT</span>
-        </div>
+  <!-- HERO (editorial mockup: text-left · framed scrapbook photo · floating avatar + notebook) -->
+  <section class="hero-editorial max-w-7xl mx-auto px-margin-page py-14 md:py-20 grid md:grid-cols-12 gap-12 md:gap-12 items-center">
+    <!-- LEFT: copy -->
+    <div class="md:col-span-7 space-y-7 relative z-10">
+      <span class="inline-block text-xs font-semibold tracking-[0.15em] uppercase text-muted">ที่ปรึกษา AI Transformation · ธุรกิจ B2B</span>
+      <h1 class="font-serif text-4xl md:text-6xl font-semibold text-navy leading-[1.15]">
+        เมื่อ AI ทำงานแทนทีม<br />
+        เจ้าของก็<span class="hand-underline">ถอดตัวออกได้</span>
+      </h1>
+      <p class="text-lg text-warm-ink/75 max-w-xl leading-relaxed">
+        ผมไม่ได้สอนวิธีใช้ AI — แต่เข้าไปติดตั้ง AI Agent ในบริษัทคุณโดยตรง
+        จนทีมของคุณสร้างและใช้งานได้จริง ตั้งแต่วันแรก
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 pt-2">
+        <a class="bg-coral text-white font-medium px-8 py-3.5 rounded-xl text-center hover:opacity-90 transition-all" href="/assessment">ดูว่าธุรกิจคุณพร้อมแค่ไหน →</a>
+        <a class="border ink-border text-navy font-medium px-8 py-3.5 rounded-xl text-center hover:bg-sand transition-all" href="#transformation">ดูวิธีคิดของผม</a>
       </div>
+      <p class="flex flex-wrap items-center gap-3 text-xs font-semibold tracking-[0.08em] uppercase text-muted pt-2">
+        <span>ดูแลลูกค้ามาแล้ว 20+ องค์กร</span><span class="opacity-40">·</span><span>On-site เท่านั้น</span><span class="opacity-40">·</span><span>Limited Slots</span>
+      </p>
+    </div>
 
-      <!-- RIGHT: Text + visual -->
-      <div class="hero-right">
-        <div
-          class="hero-bg-visual"
-          style={`background-image: url('${heroImage.src}')`}
-          aria-hidden="true"
+    <!-- RIGHT: framed scrapbook photo + floating avatar badge + notebook -->
+    <div class="md:col-span-5 relative">
+      <Image
+        src={avatar}
+        alt="ปัน ณัฐพัชร์"
+        width={224}
+        height={224}
+        class="absolute -top-12 right-2 w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border-[3px] border-ivory shadow-lg z-30 -rotate-3"
+      />
+      <div class="rounded-xl overflow-hidden muted-border bg-sand p-2 rotate-1 paper-shadow">
+        <Image
+          src={ceoPhoto}
+          alt="ปัน ณัฐพัชร์ — ที่ปรึกษา AI Transformation"
+          width={640}
+          height={800}
+          class="w-full aspect-[4/5] object-cover object-top rounded-lg"
         />
-
-        <div class="hero-content">
-          <p class="hero-role">ที่ปรึกษา AI Transformation สำหรับธุรกิจ B2B ไทย</p>
-
-          <h1 class="hero-headline">
-            เมื่อ AI ทำงานแทนทีม<br />
-            <span class="hero-accent">เจ้าของก็ถอดตัวออกได้</span>
-          </h1>
-
-          <p class="hero-sub">
-            ผมไม่ได้สอนวิธีใช้ AI<br />
-            แต่เข้าไปติดตั้ง AI Agent ในบริษัทคุณโดยตรง<br />
-            จนทีมคุณสร้างและใช้งานได้จริง — ตั้งแต่วันแรก
-          </p>
-
-          <div class="hero-ctas">
-            <CTAButton href="/assessment" label="ดูว่าธุรกิจคุณพร้อมแค่ไหน →" variant="primary" size="lg" />
-            <CTAButton href="#transformation" label="▶ ดู AI ทำงานจริง" variant="ghost" size="lg" />
-          </div>
-
-          <p class="hero-trust">
-            <span class="trust-avatars" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0zM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0zM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0zM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
-          </span>
-            <span>15+ SME Clients</span>
-            <span class="trust-sep">·</span>
-            <span>Limited Slots</span>
-          </p>
-        </div>
-
-        <!-- Floating AI panel -->
-        <div class="hero-ai-panel">
-          <AIWorkingPanel />
-        </div>
+      </div>
+      <div class="hero-notebook absolute -bottom-16 -left-4 sm:-left-8 z-20 hidden sm:block">
+        <AIWorkingPanel />
       </div>
     </div>
-  </SectionAtmosphere>
+  </section>
 
   <!-- OUTCOME PROOF -->
   <SectionAtmosphere cyan class="section-pad">

@@ -21,6 +21,8 @@ import EditDealModal from '../components/dashboard/EditDealModal.astro';
 import Toast from '../components/dashboard/Toast.astro';
 ---
 <DashboardLayout>
+  <!-- Google Identity Services — loads the official Sign in with Google client -->
+  <script is:inline async src="https://accounts.google.com/gsi/client"></script>
   <PinGate />
 
   <!-- DaisyUI drawer layout (sidebar left on desktop, hamburger on mobile) -->
