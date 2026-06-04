@@ -1588,8 +1588,11 @@ const socials = [
 }
 
 /* OUTCOME PROOF */
-.section-pad { padding: var(--pun-section-y) var(--pun-gutter); }
-.container { max-width: var(--pun-container); margin: 0 auto; }
+/* :global because these classes are passed to the <SectionAtmosphere> component
+   root, which lives in a different Astro style scope. Generous page gutter
+   (matches mockup px-margin-page) keeps content off the edges on all widths. */
+:global(.section-pad) { padding: var(--pun-section-y) clamp(1.5rem, 5vw, 6rem); }
+:global(.container) { max-width: var(--pun-container); margin: 0 auto; }
 .outcome-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
