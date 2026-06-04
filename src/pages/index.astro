@@ -19,6 +19,7 @@ import avatar from '../assets/pun-avatar.png';
 import heroImage from '../assets/hero-ai-walking.jpg';
 import ceoPhoto from '../assets/pun-ceo-1.jpg';
 import storyPhoto from '../assets/pun-story.jpg';
+import whyPhoto from '../assets/pun-why.jpg';
 
 // Fetch 3 featured articles — one per pillar category for home preview.
 // Picks most recent non-draft entry per pillar, falls back to any latest.
@@ -627,16 +628,22 @@ const socials = [
       <h2 class="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
         เสียงจากผู้ประกอบการที่ให้ผมดูแล
       </h2>
-      <div class="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div class="mt-12 grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-8">
         {
-          testimonials.map((t) => (
-            <div class="overflow-hidden rounded-2xl border border-base-content/10 bg-base-200/40 shadow-sm">
+          testimonials.map((t, i) => (
+            <div
+              class:list={[
+                'scrapbook-photo relative rounded-xl bg-surface p-2 muted-border paper-shadow',
+                i % 2 === 0 ? 'rotate-1' : '-rotate-1',
+              ]}
+            >
+              <span class="tape" aria-hidden="true"></span>
               <img
                 src={t.src}
                 alt={t.alt}
                 loading="lazy"
                 decoding="async"
-                class="aspect-square w-full object-cover"
+                class="aspect-square w-full rounded-lg object-cover"
               />
             </div>
           ))
@@ -1163,7 +1170,15 @@ const socials = [
           </div>
         </div>
         <div class="why-avatar-col">
-          <Image src={avatar} alt="ปัน ณัฐพัชร์" width={280} height={280} class="why-avatar" />
+          <div class="why-photo-frame rounded-xl overflow-hidden muted-border bg-surface p-2 rotate-1 paper-shadow">
+            <Image
+              src={whyPhoto}
+              alt="ปัน ณัฐพัชร์ — ที่ปรึกษา AI Transformation"
+              width={520}
+              height={650}
+              class="w-full aspect-[4/5] object-cover object-top rounded-lg"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -1630,13 +1645,13 @@ const socials = [
 @media (max-width: 768px) { .services-grid { grid-template-columns: 1fr; } }
 
 /* WHY PUN */
-.why-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 3rem; align-items: center; }
+.why-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 3rem; align-items: center; }
 .why-body { font-family: 'Sarabun', sans-serif; font-size: 1rem; color: rgba(30, 27, 22, 0.78); line-height: 1.7; margin: 0 0 1rem; }
 .why-stats { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; font-family: 'Sarabun', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--pun-text-muted); margin-top: 1.5rem; }
 .why-sep { opacity: 0.4; }
 .why-avatar-col { display: flex; justify-content: center; }
-.why-avatar { width: 240px; height: 240px; border-radius: 50%; object-fit: cover; border: 1px solid var(--pun-border); box-shadow: 4px 6px 0 rgba(30, 27, 22, 0.08); }
-@media (max-width: 768px) { .why-grid { grid-template-columns: 1fr; } .why-avatar-col { display: none; } }
+.why-photo-frame { width: 100%; max-width: 300px; }
+@media (max-width: 768px) { .why-grid { grid-template-columns: 1fr; } .why-avatar-col { margin-top: 0.5rem; } .why-photo-frame { max-width: 260px; } }
 
 /* CASE STUDY PREVIEW */
 .case-preview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
