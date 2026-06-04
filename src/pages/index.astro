@@ -18,6 +18,7 @@ import { SITE, SERVICES, PROOF_STATS } from '../data/site';
 import avatar from '../assets/pun-avatar.png';
 import heroImage from '../assets/hero-ai-walking.jpg';
 import ceoPhoto from '../assets/pun-ceo-1.jpg';
+import storyPhoto from '../assets/pun-story.jpg';
 
 // Fetch 3 featured articles — one per pillar category for home preview.
 // Picks most recent non-draft entry per pillar, falls back to any latest.
@@ -896,15 +897,15 @@ const socials = [
         <div class="flex flex-col items-start gap-8 md:flex-row">
           <div class="mx-auto flex-shrink-0 md:mx-0">
             <Picture
-              src={avatar}
+              src={storyPhoto}
               alt="ปัน ณัฐพัชร์ — B2B Sales Consultant"
-              widths={[128, 192, 256]}
-              sizes="(min-width: 768px) 128px, 112px"
+              widths={[224, 320, 448]}
+              sizes="(min-width: 768px) 224px, 160px"
               formats={['avif', 'webp']}
               quality={85}
               loading="lazy"
               fallbackFormat="webp"
-              class="h-28 w-28 rounded-full border-4 border-secondary/40 object-cover shadow-lg shadow-secondary/10 md:h-32 md:w-32"
+              class="h-40 w-40 rounded-2xl border border-muted object-cover object-top paper-shadow md:h-56 md:w-44"
             />
           </div>
           <div class="flex-1">
