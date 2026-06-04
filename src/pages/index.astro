@@ -516,27 +516,33 @@ const socials = [
         accentWord="ทุกล้อ"
         sub="ไม่ใช่แค่สอนให้ใช้ AI เป็น แต่ติดตั้งให้ทุก function ในธุรกิจคุณทำงานได้เองอย่างเป็นระบบ"
       />
-      <div class="wheels-grid">
-        <GlassPanel class="wheel-card" glow="cyan">
-          <span class="wheel-icon" aria-hidden="true"><Icon name="briefcase" size={28} /></span>
-          <h3 class="wheel-name">Sales</h3>
-          <p class="wheel-desc">Lead qualifying · Proposal automation · Follow-up cadence · Pipeline reporting</p>
-        </GlassPanel>
-        <GlassPanel class="wheel-card" glow="cyan">
-          <span class="wheel-icon" aria-hidden="true"><Icon name="cog-6-tooth" size={28} /></span>
-          <h3 class="wheel-name">Operations</h3>
-          <p class="wheel-desc">SOP automation · Task routing · Document generation · Status tracking</p>
-        </GlassPanel>
-        <GlassPanel class="wheel-card" glow="cyan">
-          <span class="wheel-icon" aria-hidden="true"><Icon name="banknotes" size={28} /></span>
-          <h3 class="wheel-name">Finance</h3>
-          <p class="wheel-desc">Invoice processing · Expense categorization · Cash flow dashboards · Alerts</p>
-        </GlassPanel>
-        <GlassPanel class="wheel-card" glow="cyan">
-          <span class="wheel-icon" aria-hidden="true"><Icon name="users" size={28} /></span>
-          <h3 class="wheel-name">HR</h3>
-          <p class="wheel-desc">Onboarding flows · Policy Q&A bot · Performance tracking · Leave management</p>
-        </GlassPanel>
+      <div class="bento-grid grid grid-cols-1 gap-5 md:grid-cols-12 md:auto-rows-[228px]">
+        <!-- Sales (wide) -->
+        <div class="relative overflow-hidden rounded-xl border border-[#c9c2b2] bg-surface p-7 md:col-span-8">
+          <div class="relative z-10 md:w-2/3">
+            <div class="mb-4 inline-flex items-center gap-2 rounded-full bg-sand px-3 py-1 text-xs font-medium ink-border">
+              <span class="h-2 w-2 rounded-full bg-coral"></span> Sales &amp; Marketing
+            </div>
+            <h3 class="mb-2 font-serif text-xl text-navy">Lead → ปิดการขาย อัตโนมัติ</h3>
+            <p class="text-sm leading-relaxed text-warm-ink/70">Lead qualifying · Proposal automation · Follow-up cadence · Pipeline reporting</p>
+          </div>
+          <span class="pointer-events-none absolute -bottom-6 -right-6 text-sand-deep opacity-60" aria-hidden="true"><Icon name="briefcase" size={150} /></span>
+        </div>
+        <!-- Operations -->
+        <div class="relative overflow-hidden rounded-xl border border-[#c9c2b2] bg-sand p-7 md:col-span-4">
+          <div class="relative z-10"><h3 class="mb-2 font-serif text-xl text-navy">Operations</h3><p class="text-sm leading-relaxed text-warm-ink/70">SOP automation · Task routing · Document generation · Status tracking</p></div>
+          <span class="pointer-events-none absolute bottom-3 right-3 text-navy opacity-[0.12]" aria-hidden="true"><Icon name="cog-6-tooth" size={72} /></span>
+        </div>
+        <!-- Finance -->
+        <div class="relative overflow-hidden rounded-xl border border-[#c9c2b2] bg-sand p-7 md:col-span-5">
+          <div class="relative z-10"><h3 class="mb-2 font-serif text-xl text-navy">Finance</h3><p class="text-sm leading-relaxed text-warm-ink/70">Invoice processing · Expense categorization · Cash flow dashboards · Alerts</p></div>
+          <span class="pointer-events-none absolute bottom-3 right-3 text-navy opacity-[0.12]" aria-hidden="true"><Icon name="banknotes" size={72} /></span>
+        </div>
+        <!-- HR (wide, coral accent) -->
+        <div class="relative overflow-hidden rounded-xl border border-l-4 border-[#c9c2b2] border-l-coral bg-surface p-7 md:col-span-7">
+          <div class="relative z-10 md:w-2/3"><h3 class="mb-2 font-serif text-xl text-navy">HR &amp; Team</h3><p class="text-sm leading-relaxed text-warm-ink/70">Onboarding flows · Policy Q&amp;A bot · Performance tracking · Leave management</p></div>
+          <span class="pointer-events-none absolute -bottom-6 -right-6 text-sand-deep opacity-60" aria-hidden="true"><Icon name="users" size={150} /></span>
+        </div>
       </div>
     </div>
   </SectionAtmosphere>
