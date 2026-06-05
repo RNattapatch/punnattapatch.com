@@ -11,4 +11,4 @@
 //
 // The SAME Client ID must be set as GOOGLE_CLIENT_ID in the Apps Script
 // Script Properties so the backend's `aud` check matches.
-export const GOOGLE_CLIENT_ID = '__GOOGLE_CLIENT_ID__';
+export const GOOGLE_CLIENT_ID = '480908944227-dm9a8q28k8ec79no1n89dgabp5mtg4sd.apps.googleusercontent.com';
