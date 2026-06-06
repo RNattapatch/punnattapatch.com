@@ -6,8 +6,10 @@ interface Props {
   headline: string;
   body: string;
   icon: string;
+  /** Optional hand-drawn line-art image (e.g. /lineart/out-time.png). Replaces the glyph icon. */
+  art?: string;
 }
-const { bucket, headline, body, icon } = Astro.props;
+const { bucket, headline, body, icon, art } = Astro.props;
 
 // Editorial accent palette (was neon) — navy / coral / muted earth tones
 const bucketColor: Record<string, string> = {
@@ -21,9 +23,13 @@ const accent = bucketColor[bucket] ?? '#072b4e';
 ---
 
 <div class="outcome-card" style={`--accent: ${accent}`}>
-  <span class="outcome-icon" aria-hidden="true">
-    <Icon name={icon} size={22} />
-  </span>
+  {art ? (
+    <img src={art} alt="" aria-hidden="true" loading="lazy" decoding="async" class="outcome-art" />
+  ) : (
+    <span class="outcome-icon" aria-hidden="true">
+      <Icon name={icon} size={22} />
+    </span>
+  )}
   <h3 class="outcome-headline">{headline}</h3>
   <p class="outcome-body">{body}</p>
 </div>
@@ -45,6 +51,13 @@ const accent = bucketColor[bucket] ?? '#072b4e';
     display: block;
     margin-bottom: 0.6rem;
     color: var(--accent, #072b4e);
+  }
+  .outcome-art {
+    display: block;
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    margin-bottom: 0.6rem;
   }
   .outcome-headline {
     font-family: 'Trirong', serif;

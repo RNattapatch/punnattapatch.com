@@ -372,12 +372,12 @@ const socials = [
         accentWord="ชีวิตที่เปลี่ยนไป"
       />
       <div class="outcome-grid">
-        <OutcomeCard bucket="time"    icon="clock"             headline="พนักงานได้เวลาคืน 80%"            body="AI ทำงานซ้ำแทน ทีมมีเวลาโฟกัสงานสร้างมูลค่า" />
-        <OutcomeCard bucket="scale"   icon="bolt"             headline="1 คน + AI Agent = ผลงาน 10 คน"    body="ขยายผลได้โดยไม่ต้องจ้างเพิ่ม ระบบ scale ตามงาน" />
-        <OutcomeCard bucket="money"   icon="banknotes"        headline="ยอดขายขึ้น เพราะเซลล์มีเวลาหาลูกค้า" body="AI รับงานเอกสาร proposal ให้หมด เซลล์เอาเวลาไปสร้างความสัมพันธ์แทน" />
-        <OutcomeCard bucket="freedom" icon="lock-open"        headline="เจ้าของถอดตัวออกจากธุรกิจได้"     body={`สร้าง "สมองที่ 2" จาก AI ทีมถาม AI แทนถามเจ้าของ`} />
-        <OutcomeCard bucket="cost"    icon="wrench-screwdriver" headline="ไม่ต้องจ่าย ERP/CRM แพง"        body="build ระบบที่ตอบโจทย์ธุรกิจคุณเลย เร็วกว่า ถูกกว่า ยืดหยุ่นกว่า" />
-        <OutcomeCard bucket="time"    icon="clipboard-list"   headline="ประชุมลดลง 60%"                    body="AI สรุปงาน รายงาน แจ้งเตือนให้อัตโนมัติ ไม่ต้องนัดประชุมทุกเรื่อง" />
+        <OutcomeCard bucket="time"    art="/lineart/out-time.png" icon="clock"             headline="พนักงานได้เวลาคืน 80%"            body="AI ทำงานซ้ำแทน ทีมมีเวลาโฟกัสงานสร้างมูลค่า" />
+        <OutcomeCard bucket="scale"   art="/lineart/out-scale.png" icon="bolt"             headline="1 คน + AI Agent = ผลงาน 10 คน"    body="ขยายผลได้โดยไม่ต้องจ้างเพิ่ม ระบบ scale ตามงาน" />
+        <OutcomeCard bucket="money"   art="/lineart/out-money.png" icon="banknotes"        headline="ยอดขายขึ้น เพราะเซลล์มีเวลาหาลูกค้า" body="AI รับงานเอกสาร proposal ให้หมด เซลล์เอาเวลาไปสร้างความสัมพันธ์แทน" />
+        <OutcomeCard bucket="freedom" art="/lineart/out-freedom.png" icon="lock-open"        headline="เจ้าของถอดตัวออกจากธุรกิจได้"     body={`สร้าง "สมองที่ 2" จาก AI ทีมถาม AI แทนถามเจ้าของ`} />
+        <OutcomeCard bucket="cost"    art="/lineart/out-cost.png" icon="wrench-screwdriver" headline="ไม่ต้องจ่าย ERP/CRM แพง"        body="build ระบบที่ตอบโจทย์ธุรกิจคุณเลย เร็วกว่า ถูกกว่า ยืดหยุ่นกว่า" />
+        <OutcomeCard bucket="time"    art="/lineart/out-meetings.png" icon="clipboard-list"   headline="ประชุมลดลง 60%"                    body="AI สรุปงาน รายงาน แจ้งเตือนให้อัตโนมัติ ไม่ต้องนัดประชุมทุกเรื่อง" />
       </div>
       <p class="outcome-disclaimer">* ตัวเลขจากการทำงานร่วมกับ SME clients — ผลลัพธ์จริงขึ้นอยู่กับธุรกิจของคุณ</p>
     </div>
@@ -395,6 +395,15 @@ const socials = [
     <div class="pointer-events-none absolute inset-0 opacity-40" style="background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 32px 32px;"></div>
 
     <div class="relative mx-auto max-w-5xl">
+      {/* Hand-drawn human + AI hands — faint ivory line motif */}
+      <img
+        src="/lineart/advance-hands.png"
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        decoding="async"
+        class="pointer-events-none absolute right-0 top-1/2 hidden w-[26rem] -translate-y-1/2 opacity-[0.13] lg:block"
+      />
       {/* Badge with pulsing coral dot */}
       <div class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.08] px-4 py-2 text-sm font-semibold text-white/90 backdrop-blur-md">
         <span class="relative flex h-2 w-2">
@@ -485,22 +494,22 @@ const socials = [
       />
       <div class="pain-grid">
         <GlassPanel class="pain-card">
-          <span class="pain-icon" aria-hidden="true"><Icon name="user-circle" size={22} /></span>
+          <img class="pain-art" src="/lineart/pain-owner.png" alt="" aria-hidden="true" loading="lazy" decoding="async" />
           <h3 class="pain-title">เจ้าของต้องอยู่ทุกที่ ตัดสินใจทุกอย่าง</h3>
           <p class="pain-body">ทีมทำงานไม่ได้ถ้าไม่มีคุณ — ลาพักผ่อนก็ยังต้องรับโทรศัพท์</p>
         </GlassPanel>
         <GlassPanel class="pain-card">
-          <span class="pain-icon" aria-hidden="true"><Icon name="document-text" size={22} /></span>
+          <img class="pain-art" src="/lineart/pain-paperwork.png" alt="" aria-hidden="true" loading="lazy" decoding="async" />
           <h3 class="pain-title">เซลล์เสียเวลากับงานเอกสารมากกว่างานขาย</h3>
           <p class="pain-body">เขียน proposal · พิมพ์รายงาน · กรอก Excel จนไม่มีเวลาโทรหาลูกค้า</p>
         </GlassPanel>
         <GlassPanel class="pain-card">
-          <span class="pain-icon" aria-hidden="true"><Icon name="academic-cap" size={22} /></span>
+          <img class="pain-art" src="/lineart/pain-training.png" alt="" aria-hidden="true" loading="lazy" decoding="async" />
           <h3 class="pain-title">เคยเรียน workshop ใหญ่มาแล้ว แต่กลับมาก็ทำไม่ได้</h3>
           <p class="pain-body">ได้ไอเดียดีมาก แต่ไม่มีใครจับมือ implement ให้จนเสร็จ</p>
         </GlassPanel>
         <GlassPanel class="pain-card">
-          <span class="pain-icon" aria-hidden="true"><Icon name="folder-open" size={22} /></span>
+          <img class="pain-art" src="/lineart/pain-data.png" alt="" aria-hidden="true" loading="lazy" decoding="async" />
           <h3 class="pain-title">ข้อมูลกระจัดกระจาย Line ที Excel ที สมุดจดที</h3>
           <p class="pain-body">ไม่มีใครรู้ว่า pipeline ตอนนี้อยู่ไหน จนกว่าเจ้าของจะนั่งรวบเอง</p>
         </GlassPanel>
@@ -573,6 +582,13 @@ const socials = [
           </p>
         </div>
         <div class="shift-visual">
+          <img
+            src="/lineart/shift.png"
+            alt="จากเจ้าของที่แบกทุกอย่างคนเดียว สู่ระบบที่ทำงานได้เอง"
+            loading="lazy"
+            decoding="async"
+            class="mb-3 w-full max-w-md self-center"
+          />
           <GlassPanel class="shift-card before-card">
             <span class="shift-card-label">BEFORE</span>
             <p class="shift-card-desc">เจ้าของ ← ทุกเรื่อง ← ทีมขาย · ลูกค้า · รายงาน · ตัดสินใจ</p>
@@ -1623,6 +1639,7 @@ const socials = [
 .pain-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
 :global(.pain-card) { padding: 2rem 2.25rem; border-left: 3px solid var(--pun-coral) !important; }
 .pain-icon { display: block; margin-bottom: 0.75rem; color: var(--pun-coral); }
+.pain-art { display: block; width: 60px; height: 60px; object-fit: contain; margin-bottom: 0.75rem; }
 .pain-title { font-family: 'Trirong', serif; font-size: 1.05rem; font-weight: 600; color: var(--pun-navy); margin: 0 0 0.4rem; }
 .pain-body  { font-family: 'Sarabun', sans-serif; font-size: 0.85rem; color: var(--pun-text-muted); margin: 0; line-height: 1.6; }
 @media (max-width: 640px) { .pain-grid { grid-template-columns: 1fr; } }
