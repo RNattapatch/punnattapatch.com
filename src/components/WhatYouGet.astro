@@ -1,0 +1,166 @@
+---
+/**
+ * WhatYouGet.astro — "สิ่งที่จะได้ หากให้ผมดูแล" (Why-over-How section)
+ * Copy is FINALIZED per output/web-app/section-design-what-you-get.md
+ * (6-phase editorial relay). DO NOT edit wording without Editorial sign-off.
+ * Visual execution only — editorial design system (ivory / navy / coral).
+ *
+ * Blocks: A Why opener · B 5 outcome cards · C Winning Zone (navy band) · D How · E Soft CTA
+ */
+const cards = [
+  {
+    title: 'เช้าวันจันทร์ที่คุณไม่ต้องเร่ง',
+    body: 'งานเอกสารที่เคยกินเวลาทั้งเช้า — ใบเสนอราคา สรุปประชุม ตอบคำถามซ้ำๆ — ระบบจัดการให้เสร็จตั้งแต่ก่อนคุณตื่น',
+    proof: 'เวลาคืน ~80%',
+  },
+  {
+    title: 'ทีมเท่าเดิม แต่ทำงานได้เท่าทีมสิบคน',
+    body: 'พนักงานคนเดียวที่มี AI agent ช่วยอยู่เบื้องหลัง ทำงานได้เทียบเท่าทีมที่ใหญ่กว่าหลายเท่า โดยไม่ต้องจ้างคนเพิ่ม',
+  },
+  {
+    title: 'เซลล์เลิกจมกับเอกสาร',
+    body: 'งานกรอกข้อมูล ตามเอกสาร ทำรายงาน — ยกให้ AI · เซลล์เอาเวลาที่ได้คืนไปทำสิ่งเดียวที่สร้างยอด คือคุยกับลูกค้า',
+  },
+  {
+    title: 'ธุรกิจที่เดินได้โดยไม่ต้องรอคุณ',
+    body: 'ผมช่วยสร้าง "สมองที่สอง" ให้ธุรกิจด้วย AI — ที่ทีมวิ่งไปถามระบบแทนที่จะวิ่งมาถามคุณทุกเรื่อง · วันที่คุณอยากพักได้จริงๆ คือวันที่ระบบโตพอจะดูแลตัวเอง',
+  },
+  {
+    title: 'ระบบที่ตัดเย็บมาให้ธุรกิจคุณ',
+    body: 'ไม่ใช่ ERP ราคาล้านที่ซื้อมาแล้วใช้ได้ไม่ถึงครึ่ง · เราสร้างด้วย AI เฉพาะส่วนที่ธุรกิจคุณใช้จริง — ตรงโจทย์กว่า เร็วกว่า ถูกกว่า และคุณเป็นเจ้าของมันเอง',
+  },
+];
+
+const angles = [
+  {
+    k: 'มุมคนขาย',
+    body: 'ผมปั้นยอดขายด้วยตัวเองมาถึงร้อยล้าน และสัมภาษณ์เซลล์มาแล้วกว่าพันคน — ผมรู้ว่าหน้างานขายจริงมันติดตรงไหน',
+  },
+  {
+    k: 'มุมเจ้าของ',
+    body: 'ผมบริหารทีมจริง ตัดสินใจจริง เจ็บกับต้นทุนจริง — ไม่ใช่คนนอกที่อ่านมาแล้วเอามาเล่า',
+  },
+  {
+    k: 'มุมคนสร้างระบบ',
+    body: 'ผมลงมือสร้าง AI agent ใช้ในธุรกิจตัวเองทุกวัน — ใครๆ ก็สั่ง AI ให้สร้างแอปได้ แต่ถ้าไม่วางระบบให้ดีตั้งแต่แรก ธุรกิจจะจบลงด้วยแอป 40 ตัวกับชีตอีก 70 อันที่ไม่คุยกัน · ผมวางภาพรวมให้ก่อนลงมือ',
+  },
+];
+
+const how = [
+  { lead: 'จับมือทำ ไม่ใช่แค่ส่งสไลด์', body: 'ผมลงไปสร้างระบบกับทีมคุณจริง จนทีมรันต่อเองได้' },
+  { lead: 'เริ่มจากจุดที่เจ็บที่สุด', body: 'ไม่เริ่มจากสอน AI ทั้งตำรา · เลือกงานที่กินเวลาคุณมากที่สุดมาแก้ก่อน' },
+  { lead: 'ส่งมอบของที่ใช้ต่อเองได้', body: 'จบงานคุณได้ระบบที่เป็นของคุณ ไม่ต้องผูกติดกับผมตลอดไป' },
+];
+---
+
+<!-- ===== BLOCK A + B — Why opener + 5 outcome cards (ivory · "ฝัน/ปลายทาง") ===== -->
+<section class="relative border-t border-[#c9c2b2]/60 px-margin-page py-20 md:py-28" id="what-you-get">
+  <div class="mx-auto max-w-7xl">
+    <!-- BLOCK A -->
+    <div class="mx-auto max-w-3xl text-center">
+      <span class="text-xs font-semibold uppercase tracking-[0.15em] text-coral">ก่อนจะเล่าว่าผมทำอะไร</span>
+      <h2 class="mt-4 font-serif text-3xl font-semibold leading-[1.2] text-navy md:text-5xl">
+        สิ่งที่จะได้ หาก<span class="hand-underline">ให้ผมดูแล</span>
+      </h2>
+      <div class="mt-7 space-y-5 text-left text-lg leading-relaxed text-warm-ink/80 md:text-center">
+        <p>
+          ลูกค้าที่ทักผมมา ส่วนใหญ่ถามก่อนว่า "ปันทำอะไรให้ได้บ้าง"
+          ผมขอตอบกลับด้วยคำถามเดียว — อีก 6 เดือนข้างหน้า คุณอยากเห็นธุรกิจตัวเองเป็นแบบไหน
+        </p>
+        <p>
+          เพราะสิ่งที่คุณจ่ายให้ผม ไม่ใช่ค่าคอร์ส ไม่ใช่ชั่วโมงที่ปรึกษา และไม่ใช่ "วิธีใช้ AI"
+          แต่คือภาพธุรกิจของคุณที่เปลี่ยนไปจริง — แบบที่วัดผลได้ ไม่ใช่แค่รู้สึกดีไปเอง
+        </p>
+      </div>
+    </div>
+
+    <!-- BLOCK B lead-in -->
+    <div class="mx-auto mt-14 max-w-3xl rounded-xl border border-l-4 border-[#c9c2b2] border-l-coral bg-surface px-6 py-5 md:px-8">
+      <p class="text-base leading-relaxed text-warm-ink/85 md:text-lg">
+        ขอบอกไว้ก่อน — ผมไม่ได้เอา AI มาแทนคนของคุณ<br class="hidden sm:block" />
+        ผมเอามาคืนเวลาให้คนของคุณ ไปทำงานที่สร้างคุณค่าจริงๆ ส่วนงานซ้ำๆ จำเจ ปล่อยให้ AI รับไป
+      </p>
+    </div>
+
+    <!-- BLOCK B — 5 cards -->
+    <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {cards.map((c) => (
+        <div class="flex h-full flex-col rounded-2xl border border-[#c9c2b2] bg-surface p-7 transition hover:-translate-y-0.5 hover:shadow-[3px_5px_0_rgba(30,27,22,0.06)]">
+          <h3 class="font-serif text-xl font-semibold leading-snug text-navy">{c.title}</h3>
+          <p class="mt-3 text-sm leading-relaxed text-warm-ink/75 md:text-base">{c.body}</p>
+          {c.proof && (
+            <span class="mt-4 inline-flex w-fit items-center rounded-full border border-coral/30 bg-coral/[0.07] px-3 py-1 text-xs font-semibold text-coral">
+              {c.proof}
+            </span>
+          )}
+        </div>
+      ))}
+    </div>
+
+    <!-- BLOCK B closing quote (emotional anchor) -->
+    <p class="mx-auto mt-14 max-w-4xl text-center font-serif text-2xl font-medium leading-snug text-navy md:text-[2rem]">
+      ผมไม่ได้ขายเวลาหนึ่งชั่วโมง — ผมขายระบบที่จะรันในธุรกิจคุณต่อไปอีกหลายปี
+      <span class="text-coral">หลังผมเดินออกไปแล้ว</span>
+    </p>
+  </div>
+</section>
+
+<!-- ===== BLOCK C — Winning Zone (navy band · "หลักฐาน/หนักแน่น") ===== -->
+<section class="bg-navy px-margin-page py-20 md:py-24">
+  <div class="mx-auto max-w-6xl">
+    <p class="mx-auto max-w-3xl text-center text-lg leading-relaxed text-[#f4f1ea]/85 md:text-xl">
+      ที่ผมกล้าสัญญาภาพเหล่านี้ ไม่ใช่เพราะผมเก่ง AI ที่สุด — แต่เพราะผมไม่ได้มองธุรกิจคุณจากมุมเดียว
+    </p>
+
+    <div class="mt-12 grid gap-6 md:grid-cols-3">
+      {angles.map((a) => (
+        <div class="rounded-2xl border border-white/12 bg-white/[0.04] p-7">
+          <p class="font-serif text-lg font-semibold text-white">{a.k}</p>
+          <div class="mt-3 h-px w-10 bg-[#fe596b]"></div>
+          <p class="mt-4 text-sm leading-relaxed text-[#f4f1ea]/75 md:text-base">{a.body}</p>
+        </div>
+      ))}
+    </div>
+
+    <!-- closing line (Winning Zone anchor) -->
+    <p class="mx-auto mt-14 max-w-3xl text-center font-serif text-2xl font-medium leading-snug text-white md:text-[2.1rem]">
+      สามมุมนี้มาบรรจบกันตรงไหน — ตรงนั้นคือที่ที่ธุรกิจคุณจะได้เปรียบ<br class="hidden md:block" />
+      และตรงนั้น <span class="text-[#fe596b]">แทบไม่มีใครยืนอยู่</span>
+    </p>
+  </div>
+</section>
+
+<!-- ===== BLOCK D + E — How we work + Soft CTA (ivory) ===== -->
+<section class="px-margin-page py-20 md:py-24">
+  <div class="mx-auto max-w-5xl">
+    <!-- BLOCK D -->
+    <h3 class="font-serif text-2xl font-semibold text-navy md:text-3xl">แล้วผมทำงานกับคุณยังไง</h3>
+    <div class="mt-8 grid gap-6 md:grid-cols-3">
+      {how.map((h) => (
+        <div class="border-t-2 border-coral pt-4">
+          <p class="font-serif text-lg font-semibold text-navy">{h.lead}</p>
+          <p class="mt-2 text-sm leading-relaxed text-warm-ink/75 md:text-base">{h.body}</p>
+        </div>
+      ))}
+    </div>
+
+    <!-- BLOCK E — Soft CTA -->
+    <div class="mt-16 rounded-2xl border border-[#c9c2b2] bg-surface px-7 py-10 text-center md:px-12">
+      <p class="mx-auto max-w-2xl text-lg leading-relaxed text-warm-ink/85 md:text-xl">
+        ถ้าภาพข้างบนคือสิ่งที่คุณอยากให้ธุรกิจเป็น — เราคุยกันก่อนได้<br class="hidden sm:block" />
+        ผมรับลูกค้าทีละไม่กี่ราย และคัดเลือกเอง เพราะงานแบบจับมือทำ ทำเยอะพร้อมกันไม่ได้
+      </p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <a
+          href="https://punnattapatch.com/booking"
+          class="rounded-xl bg-coral px-9 py-3.5 font-medium text-white transition hover:opacity-90"
+        >
+          คุยกับผม
+        </a>
+        <a href="/services" class="text-sm font-medium text-navy underline-offset-4 hover:underline">
+          อ่านวิธีที่ผมทำงาน →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
