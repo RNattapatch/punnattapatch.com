@@ -21,6 +21,18 @@
   </div>
 </section>
 
+<!-- Strip the GIS button's framed focus ring (the offset outline that reads as a
+     white/blue box) so the white CI button sits flush on the dark background.
+     is:global because the button DOM is injected by Google after hydration. -->
+<style is:global>
+  #g-btn :focus,
+  #g-btn :focus-visible,
+  #g-btn :active {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+</style>
+
 <script>
   import { tryLoginGoogle, subscribe, getState } from '../../scripts/dashboard/store';
   import { GOOGLE_CLIENT_ID } from '../../scripts/dashboard/auth-config';
@@ -78,7 +90,7 @@
     const btn = document.getElementById('g-btn');
     if (btn) {
       gid.renderButton(btn, {
-        type: 'standard', theme: 'filled_black', size: 'large',
+        type: 'standard', theme: 'outline', size: 'large',
         shape: 'pill', text: 'signin_with', logo_alignment: 'center', width: 280,
       });
     }
