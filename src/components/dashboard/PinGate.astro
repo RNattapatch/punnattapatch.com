@@ -1,4 +1,7 @@
 ---
+// Auth gate — Google Sign-In (GIS). Replaces the old 6-digit PIN gate.
+// Identity is proven by Google; the backend (dashboard-api.gs) verifies the
+// ID token and checks the email allowlist before returning any data.
 ---
 <section id="pin-gate" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-base-100 px-6">
   <div class="flex flex-col items-center gap-8 w-full max-w-xs">
@@ -7,65 +10,28 @@
         <span class="text-primary-content text-2xl font-bold">P</span>
       </div>
       <h1 class="text-xl font-display font-semibold">Dashboard</h1>
-      <p class="text-sm opacity-60 mt-1">ใส่ PIN 6 หลักเพื่อเข้าใช้งาน</p>
+      <p class="text-sm opacity-60 mt-1">เข้าสู่ระบบด้วยบัญชี Google</p>
     </div>
 
-    <!-- Dot indicators -->
-    <div id="pin-dots" class="flex gap-4" aria-hidden="true">
-      <div class="pin-dot w-4 h-4 rounded-full border-2 border-base-content/40" data-index="0"></div>
-      <div class="pin-dot w-4 h-4 rounded-full border-2 border-base-content/40" data-index="1"></div>
-      <div class="pin-dot w-4 h-4 rounded-full border-2 border-base-content/40" data-index="2"></div>
-      <div class="pin-dot w-4 h-4 rounded-full border-2 border-base-content/40" data-index="3"></div>
-      <div class="pin-dot w-4 h-4 rounded-full border-2 border-base-content/40" data-index="4"></div>
-      <div class="pin-dot w-4 h-4 rounded-full border-2 border-base-content/40" data-index="5"></div>
-    </div>
+    <!-- GIS renders the official "Sign in with Google" button here -->
+    <div id="g-btn" class="min-h-[44px] flex items-center justify-center"></div>
 
-    <!-- Error message -->
-    <div id="pin-error" class="text-error text-sm min-h-[1.25rem] text-center -mt-4" role="alert" aria-live="polite"></div>
-
-    <!-- Number keypad -->
-    <div id="pin-keypad" class="grid grid-cols-3 gap-3 w-full">
-      {[1,2,3,4,5,6,7,8,9].map(n => (
-        <button
-          class="pin-key btn btn-ghost text-xl font-semibold h-16 rounded-2xl border border-base-300 active:scale-95 transition-transform"
-          data-digit={String(n)}
-          aria-label={String(n)}
-        >{n}</button>
-      ))}
-      <button
-        id="pin-submit"
-        class="btn h-16 rounded-2xl border border-base-300 active:scale-95 transition-transform text-xl font-semibold opacity-30"
-        aria-label="ยืนยัน"
-        disabled
-      >✓</button>
-      <button
-        class="pin-key btn btn-ghost text-xl font-semibold h-16 rounded-2xl border border-base-300 active:scale-95 transition-transform"
-        data-digit="0"
-        aria-label="0"
-      >0</button>
-      <button
-        id="pin-delete"
-        class="btn btn-ghost h-16 rounded-2xl border border-base-300 active:scale-95 transition-transform"
-        aria-label="ลบ"
-      >⌫</button>
-    </div>
-
-    <!-- Hidden input for accessibility / physical keyboard -->
-    <input
-      id="pin-input"
-      type="password"
-      inputmode="numeric"
-      autocomplete="off"
-      maxlength="6"
-      pattern="[0-9]*"
-      class="sr-only"
-      aria-label="PIN"
-    />
+    <!-- Loading / error message -->
+    <div id="pin-error" class="text-error text-sm min-h-[1.25rem] text-center" role="alert" aria-live="polite"></div>
   </div>
 </section>
 
 <script>
-  import { tryLogin, subscribe, getState } from '../../scripts/dashboard/store';
+  import { tryLoginGoogle, subscribe, getState } from '../../scripts/dashboard/store';
+  import { GOOGLE_CLIENT_ID } from '../../scripts/dashboard/auth-config';
+
+  type CredentialResponse = { credential?: string };
+  type GoogleId = {
+    initialize: (cfg: { client_id: string; callback: (r: CredentialResponse) => void }) => void;
+    renderButton: (el: HTMLElement, opts: Record<string, unknown>) => void;
+  };
+
+  const errEl = document.getElementById('pin-error');
 
   function applyAuthVisibility() {
     const gate = document.getElementById('pin-gate');
@@ -78,82 +44,45 @@
   applyAuthVisibility();
   subscribe(applyAuthVisibility);
 
-  const errEl = document.getElementById('pin-error');
-  const hiddenInput = document.getElementById('pin-input') as HTMLInputElement | null;
-  const submitBtn = document.getElementById('pin-submit') as HTMLButtonElement | null;
-  let pinBuffer = '';
-  let submitting = false;
-
-  function updateDots() {
-    document.querySelectorAll<HTMLElement>('.pin-dot').forEach((dot, i) => {
-      const filled = i < pinBuffer.length;
-      dot.classList.toggle('bg-primary', filled);
-      dot.classList.toggle('border-primary', filled);
-      dot.classList.toggle('border-base-content/40', !filled);
-    });
-    if (submitBtn) {
-      const hasDigits = pinBuffer.length > 0 && !submitting;
-      submitBtn.disabled = !hasDigits;
-      submitBtn.classList.toggle('opacity-30', !hasDigits);
-      submitBtn.classList.toggle('btn-primary', hasDigits);
+  async function onCredential(resp: CredentialResponse) {
+    if (!resp.credential) {
+      if (errEl) errEl.textContent = 'ไม่ได้รับ token จาก Google';
+      return;
     }
-  }
-
-  function shakeError() {
-    const dots = document.getElementById('pin-dots');
-    dots?.classList.add('animate-[shake_0.35s_ease-in-out]');
-    setTimeout(() => dots?.classList.remove('animate-[shake_0.35s_ease-in-out]'), 400);
-  }
-
-  async function submitPin() {
-    if (submitting || pinBuffer.length !== 6) return;
-    submitting = true;
-    if (errEl) errEl.textContent = '';
+    if (errEl) errEl.textContent = 'กำลังตรวจสอบสิทธิ์...';
     try {
-      await tryLogin(pinBuffer);
-      pinBuffer = '';
-      updateDots();
+      await tryLoginGoogle(resp.credential);
+      if (errEl) errEl.textContent = '';
     } catch (err) {
       const e = err as Error & { code?: string };
-      if (e.code === 'locked') {
-        if (errEl) errEl.textContent = 'ถูกล็อก 15 นาที — ลองใหม่ภายหลัง';
+      if (e.code === 'not_allowed') {
+        if (errEl) errEl.textContent = 'บัญชีนี้ไม่มีสิทธิ์เข้าถึง';
       } else {
-        if (errEl) errEl.textContent = 'PIN ไม่ถูกต้อง';
+        if (errEl) errEl.textContent = 'เข้าสู่ระบบไม่สำเร็จ — ลองใหม่อีกครั้ง';
       }
-      shakeError();
-      pinBuffer = '';
-      updateDots();
-    } finally {
-      submitting = false;
     }
   }
 
-  function pushDigit(d: string) {
-    if (submitting || pinBuffer.length >= 6) return;
-    pinBuffer += d;
-    updateDots();
-    if (pinBuffer.length === 6) void submitPin();
+  function initGoogle(attempt = 0) {
+    const gid = (window as unknown as { google?: { accounts?: { id?: GoogleId } } }).google?.accounts?.id;
+    if (!gid) {
+      if (attempt > 50) { if (errEl) errEl.textContent = 'โหลด Google Sign-In ไม่สำเร็จ'; return; }
+      setTimeout(() => initGoogle(attempt + 1), 100);
+      return;
+    }
+    if (GOOGLE_CLIENT_ID === '__GOOGLE_CLIENT_ID__') {
+      if (errEl) errEl.textContent = 'ยังไม่ได้ตั้งค่า GOOGLE_CLIENT_ID (auth-config.ts)';
+      return;
+    }
+    gid.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onCredential });
+    const btn = document.getElementById('g-btn');
+    if (btn) {
+      gid.renderButton(btn, {
+        type: 'standard', theme: 'filled_blue', size: 'large',
+        shape: 'pill', text: 'signin_with', width: 280,
+      });
+    }
   }
 
-  function popDigit() {
-    if (submitting || !pinBuffer.length) return;
-    pinBuffer = pinBuffer.slice(0, -1);
-    if (errEl) errEl.textContent = '';
-    updateDots();
-  }
-
-  document.querySelectorAll<HTMLButtonElement>('.pin-key').forEach((btn) => {
-    btn.addEventListener('click', () => pushDigit(btn.dataset.digit || ''));
-  });
-  document.getElementById('pin-delete')?.addEventListener('click', popDigit);
-  submitBtn?.addEventListener('click', () => void submitPin());
-
-  // Physical keyboard support
-  document.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (getState().authed) return;
-    if (/^\d$/.test(e.key)) { e.preventDefault(); pushDigit(e.key); }
-    else if (e.key === 'Backspace') { e.preventDefault(); popDigit(); }
-  });
-
-  updateDots();
+  initGoogle();
 </script>

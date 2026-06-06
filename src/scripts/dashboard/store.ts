@@ -1,5 +1,5 @@
 import {
-  login,
+  loginWithGoogle,
   getToken,
   clearToken,
   getDashboardData,
@@ -111,8 +111,8 @@ export function toast(message: string, kind: 'success' | 'error' | 'info' = 'suc
 }
 
 // ------- Auth flow -------
-export async function tryLogin(pin: string): Promise<void> {
-  await login(pin);
+export async function tryLoginGoogle(idToken: string): Promise<void> {
+  await loginWithGoogle(idToken);
   state.authed = true;
   notify();
   await refresh();

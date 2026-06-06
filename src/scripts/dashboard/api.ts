@@ -84,10 +84,10 @@ async function apiPost<T>(action: string, payload: Record<string, unknown> = {})
   return json.data;
 }
 
-export async function login(pin: string): Promise<{ token: string; expires_at: string }> {
+export async function loginWithGoogle(idToken: string): Promise<{ token: string; expires_at: string }> {
   const data = await apiPost<{ ok?: boolean; token?: string; expires_at?: string; error?: string; message?: string }>(
     'login',
-    { pin }
+    { id_token: idToken }
   );
   if (!data.token || !data.expires_at) {
     const err = new Error(data.message || data.error || 'login_failed') as Error & { code?: string };
