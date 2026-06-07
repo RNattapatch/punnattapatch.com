@@ -30,36 +30,9 @@ interface BundleUpsell {
   ctaLabel: string;
   ctaHref: string;
 }
-const BUNDLE_MAP: Record<string, BundleUpsell> = {
-  'ai-workshop': {
-    eyebrow: 'Day 1 + Day 2 Bundle · ทำระบบครบทั้งองค์กร',
-    headline: 'Workshop วันเดียวคือจุดเริ่มต้น — Day 2 คือระบบทั้งบริษัทวิ่งด้วย AI',
-    tagline: 'Day 1: AI Agent แรก · Day 2: Multi-agent + LINE OA + Auto-report · ซื้อ 2 วันประหยัด ฿16,700',
-    timeline: [
-      { step: 'Day 1',   label: 'Basic Workshop',   body: 'Build AI Agent แรก · Prompt Library · Team lead เข้าใจระบบ' },
-      { step: 'Day 2',   label: 'Advance Workshop',  body: 'Multi-agent system · ต่อ LINE OA/CRM · Auto-report dashboard' },
-      { step: 'สัปดาห์ 1', label: 'Live in Production', body: 'ระบบ AI วิ่งจริง · ทีมใช้ต่อเองได้' },
-      { step: 'เดือน 1',  label: 'Measure ROI',      body: 'วัดผล Before/After · ปรับ workflow ตามหน้างาน' },
-    ],
-    compareTitle: 'ซื้อแยก vs Bundle',
-    compareLines: [
-      { item: 'Basic AI Workshop (Day 1)', price: '฿29,800' },
-      { item: 'Advance AI Workshop (Day 2)', price: '฿35,800' },
-    ],
-    totalSeparate: '฿65,600',
-    totalBundle:   '฿48,900',
-    savings:       'ประหยัด ฿16,700',
-    includes: [
-      'Workshop Day 1 เต็ม 6-7 ชม. (Basic · 8 modules)',
-      'Workshop Day 2 เต็ม 6-7 ชม. (Advance · 8 modules) · ต้องผ่าน Day 1 ก่อน',
-      'AI Multi-agent workflow สำหรับทั้งองค์กร',
-      '30-day async LINE support ตลอดทั้ง 2 workshops',
-      'Handover SOP',
-    ],
-    ctaLabel: 'จอง Bundle Day 1+2 · ฿48,900',
-    ctaHref:  '/booking?package=ai-workshop&bundle=day1-day2',
-  },
-};
+// Day1+2 bundle retired in canonical 2026-06-07 (Package A = Advance + Consult now).
+// Bundle upsell box disabled; the /services ladder promotes Package A instead.
+const BUNDLE_MAP: Record<string, BundleUpsell> = {};
 const bundle = BUNDLE_MAP[slug as string];
 
 // ROI benefit cards per service — concrete before/after numbers per Pun's calculation (2026-04-20)

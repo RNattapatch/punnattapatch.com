@@ -63,7 +63,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
   'ai-workshop': {
     slug: 'ai-workshop',
     accent: 'cyan',
-    eyebrow: 'Basic AI Workshop · Day 1 · 1 วัน',
+    eyebrow: 'Basic Foundation AI for Business · 1 วัน',
     headline: 'ผมไม่ได้แค่มาสอนคุณใช้ AI',
     headlineAccent: 'แต่ผมจะจับมือคุณสร้าง AI Agent ตัวแรก',
     headlineTail: 'ให้ธุรกิจของคุณ',
@@ -219,8 +219,8 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
         },
       ],
     },
-    priceHeadline: '฿29,800 / 1 วัน',
-    priceCompare: 'Basic Workshop (Day 1) ฿29,800 · Bundle Day 1+2 ฿48,900 (ประหยัด ฿16,700) · Advance Workshop (Day 2) ฿35,800 สำหรับผู้ผ่าน Day 1 แล้ว หรือมีพื้นฐานการใช้ AI เบื้องต้น',
+    priceHeadline: '฿29,900 / 1 วัน',
+    priceCompare: 'Basic Foundation AI ฿29,900 · Advance AI & Business Automation ฿39,900 · Package A (Advance + Consult 2 วัน) ฿54,900',
     priceNote: 'จัดแบบ private on-site ผมเดินทางไปที่บริษัทของคุณ · ยืนยันวันอบรมได้ภายใน 30 วันหลังจอง · ชำระ 100% ก่อนเริ่มงาน',
     inclusions: [
       'Workshop 1 วัน 6-7 ชม. · On-site เท่านั้น (In-house)',
@@ -736,9 +736,9 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
         },
       ],
     },
-    priceHeadline: '฿44,900 · ราคาเปิดตัว 5 ธุรกิจแรก',
-    priceCompare: 'ราคาปกติ ฿52,800 · ราคาเปิดตัวลดให้ 5 ธุรกิจแรก → ฿44,900',
-    priceNote: 'Workshop 1 วัน ที่บริษัทลูกค้า · ชำระเต็มจำนวนก่อนเริ่ม · ราคาเปิดตัวปิดเมื่อครบ 5 ธุรกิจ',
+    priceHeadline: '฿49,900 · ราคาเปิดตัว',
+    priceCompare: 'ราคาปกติ ฿59,900 · ราคาเปิดตัวลดให้ → ฿49,900',
+    priceNote: '2 วัน + ดูแลต่อผ่าน LINE 30 วัน · ที่บริษัทลูกค้า · ชำระเต็มจำนวนก่อนเริ่ม',
     tiktokProof: {
       stats: {
         totalViews: '2.29M',
@@ -840,8 +840,8 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
         a: 'มือถือเครื่องเดียวพอ ไม่ต้องลงทุนไมโครโฟน หรือกล้อง DSLR · Workshop นี้ทำเพื่อให้คุณถ่ายต่อเองไหว ไม่ใช่ทำให้ต้องจ้างคนมาถ่ายต่อ',
       },
       {
-        q: 'ราคาเปิดตัว ฿44,900 ถึงเมื่อไหร่',
-        a: 'ถึง 5 ธุรกิจแรกที่จองเข้ามา หลังจากนั้นกลับเป็นราคาปกติ ฿52,800 · ดูสถานะได้ที่หน้านี้ ถ้ายังเห็นคำว่า "5 ธุรกิจแรก" คือยังเปิดอยู่',
+        q: 'ราคาเปิดตัว ฿49,900 ต่างจากราคาปกติยังไง',
+        a: 'ราคาปกติ ฿59,900 · ช่วงเปิดตัวลดให้เหลือ ฿49,900 · ดูสถานะราคาได้ที่หน้านี้',
       },
     ],
   },
