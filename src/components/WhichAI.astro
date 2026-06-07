@@ -1,0 +1,112 @@
+---
+/**
+ * WhichAI.astro — "จะใช้ AI ตัวไหนดี?" (Mindset > Model)
+ * Copy FINALIZED per output/web-app/section-design-which-ai-to-use.md (6-phase editorial relay).
+ * DO NOT edit wording without Editorial sign-off. Visual execution only — editorial system.
+ *
+ * Blocks: A Hook+หักมุม · B 3 ทหารเสือ (equal weight) · C Mindset→Context→Data · D Takeaway+CTA
+ * Model-agnostic moat: the 3 names MUST render at equal weight — never rank them.
+ */
+const tools = ['Gemini', 'Claude', 'GPT'];
+
+const pillars = [
+  {
+    n: '1',
+    k: 'Mindset',
+    t: 'วิธีคิด ไม่ใช่วิธีกดปุ่ม',
+    body: 'คนที่รู้ว่าจะเอา AI ไปแก้โจทย์ธุรกิจตรงไหน ใช้ AI ตัวไหนก็ได้งาน แต่คนที่ไม่เข้าใจเรื่องนี้ ต่อให้ใช้ตัวที่แพงที่สุด ก็ได้แค่ของเล่นราคาแพง',
+  },
+  {
+    n: '2',
+    k: 'Context',
+    t: 'AI ที่ไม่รู้จักธุรกิจคุณ ก็เหมือนน้องฝึกงานวันแรก',
+    body: 'AI เก่งเหมือนน้องฝึกงานที่รู้ทุกอย่างบนโลก แต่ไม่รู้จักบริษัทคุณ ไม่รู้ลูกค้าคุณคือใคร องค์กรทำงานกันแบบไหน ยิ่งเราป้อน Context ให้ดีเท่าไหร่ มันก็ยิ่งทำงานให้เราได้ฉลาดขึ้นเท่านั้น',
+  },
+  {
+    n: '3',
+    k: 'Data',
+    t: 'AI ทำงานจากข้อมูลที่คุณมี',
+    body: 'ข้อมูลที่สะอาดและอยู่เป็นที่ คือเชื้อเพลิงชั้นดีของ AI ถ้าข้อมูลยังกระจัดกระจาย ต่อให้เป็น AI ตัวท็อปก็ช่วยได้ไม่เต็มร้อย',
+  },
+];
+---
+
+<!-- ===== WHICH AI — "จะใช้ AI ตัวไหนดี?" (Mindset > Model · model-agnostic moat) ===== -->
+<section class="px-margin-page py-20 md:py-28" id="which-ai">
+  <div class="mx-auto max-w-5xl">
+    <!-- BLOCK A — Hook + หักมุม -->
+    <div class="mx-auto max-w-3xl text-center">
+      <span class="text-xs font-semibold uppercase tracking-[0.15em] text-coral">คำถามที่ผมเจอประจำ</span>
+      <h2 class="mt-4 font-serif text-3xl font-semibold leading-[1.2] text-navy md:text-5xl">
+        จะใช้ AI <span class="hand-underline">ตัวไหนดี?</span>
+      </h2>
+      <p class="mt-6 text-lg leading-relaxed text-warm-ink/75">
+        "พี่ครับ Gemini, Claude, GPT… ใช้ตัวไหนดีครับ ตัวไหนเก่งสุด?"
+        เป็นคำถามแรกที่แทบทุกคนถามผม
+      </p>
+    </div>
+
+    <!-- หักมุม (พระเอก typography) -->
+    <p class="mx-auto mt-10 max-w-3xl text-center font-serif text-2xl font-medium leading-snug text-navy md:text-[2rem]">
+      ผมขอพูดตรงๆ นะครับ — คุณกำลังตั้งคำถามผิด<br class="hidden md:block" />
+      หัวใจที่ทำให้ AI ช่วยธุรกิจคุณได้จริง ไม่ใช่ "ยี่ห้อ" ของ AI
+      แต่คือ <span class="text-coral">Mindset</span> ของคนใช้ บวกกับ <span class="text-coral">Context</span> และ <span class="text-coral">Data</span> ที่คุณป้อนให้มัน
+    </p>
+
+    <!-- BLOCK B — 3 ทหารเสือ (equal weight · no ranking) -->
+    <div class="mx-auto mt-16 max-w-3xl rounded-2xl border border-[#c9c2b2] bg-surface p-8 text-center paper-shadow">
+      <p class="text-xs font-semibold uppercase tracking-[0.15em] text-muted">3 ทหารเสือแห่ง AI</p>
+      <p class="mt-3 text-warm-ink/75">ถ้าให้เลือกตัวที่ผมใช้เองแล้วว่าเวิร์ค ก็มี 3 ตัวนี้</p>
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+        {tools.map((tool) => (
+          <span class="inline-flex min-w-[120px] items-center justify-center rounded-xl border border-navy/20 bg-ivory px-6 py-3 font-serif text-xl font-semibold text-navy">
+            {tool}
+          </span>
+        ))}
+      </div>
+      <p class="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-warm-ink/70">
+        เก่งทั้งสามตัวครับ ผมใช้สลับกันทุกวันในธุรกิจของผมเอง หยิบตัวไหนมาใช้ก็ได้ผลเหมือนกัน
+        เลิกกังวลว่าจะ "เลือกผิด" ได้เลย เพราะหัวใจของเรื่องไม่ได้อยู่ตรงนั้น
+      </p>
+    </div>
+
+    <!-- BLOCK C — Mindset → Context → Data (Mindset เด่นสุด · มาก่อน) -->
+    <p class="mt-20 text-center font-serif text-2xl font-semibold text-navy md:text-3xl">
+      ของจริงอยู่ที่ 3 อย่างนี้ — มาก่อน Model เสมอ
+    </p>
+    <div class="mt-10 grid gap-6 md:grid-cols-3">
+      {pillars.map((p, i) => (
+        <div
+          class:list={[
+            'flex h-full flex-col rounded-2xl bg-surface p-7 transition hover:-translate-y-0.5 hover:shadow-[3px_5px_0_rgba(30,27,22,0.06)]',
+            i === 0 ? 'border-l-4 border-coral border-l-coral' : 'border border-[#c9c2b2]',
+          ]}
+        >
+          <span class="font-serif text-4xl font-semibold text-coral/30">{p.n}</span>
+          <p class="mt-2 text-xs font-semibold uppercase tracking-[0.15em] text-coral">{p.k}</p>
+          <h3 class="mt-2 font-serif text-xl font-semibold leading-snug text-navy">{p.t}</h3>
+          <p class="mt-3 text-sm leading-relaxed text-warm-ink/75 md:text-base">{p.body}</p>
+        </div>
+      ))}
+    </div>
+
+    <!-- BLOCK D — Takeaway (emotional anchor) + soft CTA -->
+    <div class="mt-16 rounded-2xl bg-navy px-7 py-12 text-center md:px-12">
+      <p class="mx-auto max-w-3xl font-serif text-2xl font-medium leading-snug text-white md:text-[2rem]">
+        ทั้งหมดนี้คือเหตุผลที่ผมไม่เคยแนะนำให้ใครผูกติดกับ AI แค่ตัวเดียว<br class="hidden md:block" />
+        Model เปลี่ยนทุกไตรมาส แต่ Mindset, Context และ Data ที่คุณวางรากฐานไว้ จะอยู่กับธุรกิจไปอีกหลายปี
+      </p>
+      <p class="mt-5 text-lg text-[#f4f1ea]/85">
+        ลงทุนที่วิธีคิดก่อน แล้วจะหยิบทหารเสือตัวไหนมาใช้ ก็ชนะเหมือนกัน
+      </p>
+      <div class="mt-8">
+        <a
+          href="/booking"
+          class="inline-flex items-center rounded-xl bg-coral px-8 py-3.5 font-medium text-white transition hover:opacity-90"
+        >
+          อยากเริ่มที่ "วิธีคิด" ก่อน — คุยกับผม →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
