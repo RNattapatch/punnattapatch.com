@@ -1243,9 +1243,25 @@ const socials = [
         }
       </div>
 
-      <p class="mt-6 text-xs text-base-content/55">
-        <strong class="text-base-content/80">ผมติดต่อลูกค้าเองทุกราย</strong> หากติดจัดอบรม ผมจะติดต่อกลับในช่วงนอกเวลาทำการครับ
-      </p>
+      <!-- Personal note from Pun — avatar + speech bubble -->
+      <div class="mt-8 flex items-start justify-center gap-3 sm:gap-4">
+        <Image
+          src={avatar}
+          alt="ปัน ณัฐพัชร์"
+          width={128}
+          height={128}
+          class="h-14 w-14 shrink-0 rounded-full border border-[#c9c2b2] object-cover shadow-sm sm:h-16 sm:w-16"
+        />
+        <div class="relative max-w-md rounded-2xl rounded-tl-sm border border-[#c9c2b2] bg-surface px-5 py-4 text-left paper-shadow">
+          <span
+            class="absolute -left-1.5 top-5 h-3.5 w-3.5 rotate-45 border-b border-l border-[#c9c2b2] bg-surface"
+            aria-hidden="true"
+          ></span>
+          <p class="text-sm leading-relaxed text-warm-ink/85">
+            <strong class="text-navy">ผมติดต่อลูกค้าเองทุกราย</strong> หากติดจัดอบรม ผมจะติดต่อกลับในช่วงนอกเวลาทำการครับ
+          </p>
+        </div>
+      </div>
     </div>
   </section>
 
