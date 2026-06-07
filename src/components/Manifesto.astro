@@ -1,0 +1,86 @@
+---
+/**
+ * Manifesto.astro — "ความเชื่อของผม" · หลักคิดมาก่อนเครื่องมือ
+ *
+ * Copy is the APPROVED v2 manifesto (PART B "✅ FINAL") from
+ * branding/output/brand-manifesto-mindset-over-tools-2026-06.md
+ * (Pun's voice = master · บก. polish 2026-06-07). DO NOT reword without Editorial sign-off.
+ *
+ * v2 web version — NOT v1 (v1 is the longer flex→pivot reel variant, archived).
+ * Typography-led editorial section: ivory ground, navy serif, coral accent,
+ * generous whitespace, hand-underline on the key word "หลักคิด".
+ *
+ * The 4-item micro-gloss is the OPTIONAL enrichment from the manifesto file
+ * ("micro-gloss 4 ข้อ ถ้าหน้าเว็บมีที่") — used because the web has room.
+ * The closing line is the OPTIONAL "ประโยคปิด" from the same options block.
+ */
+
+// 4 อย่างที่มาก่อนเครื่องมือเสมอ (verbatim labels + approved optional micro-gloss)
+const fourThings = [
+  { k: 'หลักคิด', gloss: 'รู้ว่าจะแก้อะไรก่อนเปิด AI' },
+  { k: 'Context', gloss: 'AI ไม่รู้จักธุรกิจคุณ = น้องฝึกงานวันแรก' },
+  { k: 'Data', gloss: 'เชื้อเพลิงของ AI' },
+  { k: 'การวางระบบ', gloss: 'ไม่งั้นจมกองแอป' },
+];
+---
+
+<!-- ===== MANIFESTO — "ความเชื่อของผม" (typography-led · brand spine) ===== -->
+<section class="px-margin-page py-24 md:py-32" id="manifesto">
+  <div class="mx-auto max-w-3xl">
+    <!-- Eyebrow -->
+    <p class="text-center text-xs font-semibold uppercase tracking-[0.18em] text-coral">
+      ความเชื่อของผม
+    </p>
+
+    <!-- Headline (hand-underline on the key word) -->
+    <h2 class="mt-5 text-center font-serif text-4xl font-semibold leading-[1.2] text-navy md:text-6xl">
+      <span class="hand-underline">หลักคิด</span>มาก่อนเครื่องมือ
+    </h2>
+
+    <!-- Body — read slow, generous whitespace -->
+    <div class="mx-auto mt-14 max-w-2xl space-y-9 text-center font-serif text-2xl leading-[1.6] text-warm-ink/85 md:text-[1.7rem]">
+      <p>
+        ทุกวันนี้ใครๆ ก็ใช้ AI เป็น<br class="hidden sm:block" />
+        พิมพ์ prompt สั่งงานกันได้หมดแล้ว
+      </p>
+
+      <p class="text-navy">
+        แต่สิ่งที่สำคัญกว่าการเลือกว่าจะใช้ AI ตัวไหน<br class="hidden sm:block" />
+        คือ <span class="text-coral">"หลักคิด"</span> และ <span class="text-coral">"ความเข้าใจ"</span> ในการเอา AI มาใช้กับองค์กร
+      </p>
+
+      <p>
+        เพราะ Model ของ AI เปลี่ยนทุกเดือน<br class="hidden sm:block" />
+        แต่หลักคิดที่ดี อยู่กับธุรกิจคุณไปได้อีกหลายปี
+      </p>
+    </div>
+
+    <!-- 4 things before tools (bare-label list — Pun's intent) -->
+    <p class="mt-16 text-center text-base leading-relaxed text-warm-ink/70 md:text-lg">
+      ผมเลยให้ความสำคัญกับสี่อย่างนี้ ก่อนเครื่องมือเสมอ
+    </p>
+    <div class="mx-auto mt-8 grid max-w-3xl gap-4 sm:grid-cols-2">
+      {fourThings.map((item) => (
+        <div class="rounded-2xl border border-[#c9c2b2] border-l-4 border-l-coral bg-surface px-6 py-5">
+          <p class="font-serif text-xl font-semibold text-navy">{item.k}</p>
+          <p class="mt-1.5 text-sm leading-relaxed text-warm-ink/70">{item.gloss}</p>
+        </div>
+      ))}
+    </div>
+
+    <!-- Closing line (approved optional ประโยคปิด) -->
+    <p class="mx-auto mt-16 max-w-2xl text-center font-serif text-2xl font-medium leading-snug text-navy md:text-[2rem]">
+      เครื่องมือไหนก็ใช้ได้ — <span class="text-coral">ถ้าหลักคิดแน่นพอ</span>
+    </p>
+
+    <!-- Soft CTA (not a sell — per manifesto Web Plan §5) -->
+    <div class="mt-12 text-center">
+      <a
+        href="/booking"
+        class="inline-flex items-center text-base font-medium text-navy underline decoration-coral/50 decoration-2 underline-offset-[6px] transition hover:decoration-coral"
+      >
+        ถ้าคิดแบบเดียวกัน — เราน่าจะคุยกันรู้เรื่อง →
+      </a>
+    </div>
+  </div>
+</section>

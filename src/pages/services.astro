@@ -1,33 +1,33 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 import { SITE, SERVICES } from '../data/site';
 
-const title = 'บริการ — 2 Path สำหรับ SME + Special TikTok Workshop';
+const title = 'บริการ — AI Transformation สำหรับ SME + CEO Advisory + AI Trust Content';
 const description =
-  'Path A — AI Transformation: Basic AI Workshop ฿29,800 + Advance ฿35,800 + Bundle Day1+2 ฿48,900. Path B — ปั้นทีมขาย: Sale Training Bundle ฿50K (Early Bird ฿44,900) + Sales System Sprint ฿65,000. Plus: Trust Content Workshop TikTok ฿39,900.';
+  'AI Transformation สำหรับ SME: Basic AI Workshop ฿29,800 · Advance ฿35,800 · Bundle Day1+2 ฿48,900 · ที่ปรึกษา AI ส่วนตัวสำหรับผู้บริหาร (CEO Advisory) · AI-Powered Trust Content. จับมือทำจริง ส่งระบบที่รันได้ ไม่ใช่สไลด์';
 
 const svcBySlug = (slug: string) => SERVICES.find((s) => s.slug === slug)!;
 
 const aiDay = svcBySlug('ai-workshop');
-const saleBundle = svcBySlug('sale-training-bundle');
-const saleSprint = svcBySlug('sales-system-sprint');
 const tiktokWorkshop = svcBySlug('trust-content-tiktok-workshop');
+// Sales packages (Sale Training Bundle / Sales System Sprint) removed from web showcase
+// per refocus 2026-06-07 — still sold 1-on-1 via catalog · sales = credibility not product.
 
-type PathCardProps = {
+const priceShort = (label: string) => label.replace(/\s*\/.*$/, '');
+
+type AiPkg = {
   svc: (typeof SERVICES)[number];
   durationLabel: string;
-  featured?: boolean;
-  badgeText?: string;
+  persona: string;
+  tier: 'entry' | 'advanced';
   bullets: string[];
-  persona?: string;
-  tier?: 'entry' | 'advanced';
 };
 
-const pathAPackages: PathCardProps[] = [
+const aiPackages: AiPkg[] = [
   {
     svc: aiDay,
     durationLabel: '1 Day · Day 1',
-    featured: true,
     tier: 'entry',
     persona: '👋 ไม่รู้จะเริ่มยังไง — เรียนตัวนี้ก่อน',
     bullets: [
@@ -41,7 +41,6 @@ const pathAPackages: PathCardProps[] = [
   {
     svc: svcBySlug('ai-workshop-advance'),
     durationLabel: '1 Day · Day 2',
-    featured: false,
     tier: 'advanced',
     persona: '⚡ อยากเก่งขึ้น เทพขึ้น — มาทางนี้เลย',
     bullets: [
@@ -54,29 +53,28 @@ const pathAPackages: PathCardProps[] = [
   },
 ];
 
-const pathBPackages: PathCardProps[] = [
-  {
-    svc: saleBundle,
-    durationLabel: '2 Days',
-    bullets: [
-      'Day 1: Value-Based Selling',
-      'Day 2: Consultative Closing',
-      'Role-play + Real Case Practice',
-      'Post-training KPI tracking',
-    ],
-  },
-  {
-    svc: saleSprint,
-    durationLabel: '1 Month',
-    featured: true,
-    badgeText: 'ครบจบ',
-    bullets: [
-      'Discovery → Design → Build → Training',
-      'KPI Dashboard + Commission Calculator',
-      'AI workflow อัตโนมัติ + tools สำหรับทีม',
-      'Async LINE support 30 วัน',
-    ],
-  },
+// TYPE C — AI Consultant for CEO (web price ฿35,000/วัน ONLY · retainer ฿50K/เดือน = backstage, NOT on web)
+// Copy from agent/sale-team/service-detail.md TYPE C (scope verbatim).
+const ceoAdvisory = {
+  name: 'AI Consultant for CEO',
+  th: 'ที่ปรึกษา AI ส่วนตัวสำหรับผู้บริหาร',
+  price: '฿35,000 / วัน',
+  hook: 'CEO อยากใช้ AI ให้ถูกทาง แต่ไม่มีเวลานั่งเรียนเอง',
+  bullets: [
+    'คู่คิด AI ส่วนตัวของ CEO — รับโจทย์ธุรกิจ แปลงเป็น direction AI ที่ทำได้',
+    'ช่วยตัดสินใจ: ควร build / ซื้อ / รอ · เลือก use case ที่คุ้มสุดก่อน',
+    'วาง roadmap AI ทั้งองค์กร + กรองความเสี่ยง (System Design · Cyber Security)',
+    'จับมือคิด ไม่ใช่รับจ้าง implement',
+  ],
+};
+
+// AI layer chips for the rescoped Trust Content service (P6 → AI-Powered Trust Content)
+const trustChips = [
+  'AI หา Content Pillar จากธุรกิจ',
+  'AI gen script / hook',
+  'Repurpose 1 คลิป → หลาย format',
+  'ระบบ content ที่ไหลเอง',
+  '3 คลิปถ่ายจริง + follow-up',
 ];
 ---
 
@@ -94,348 +92,127 @@ const pathBPackages: PathCardProps[] = [
   }}
 >
   <!-- ===== HEADER ===== -->
-  <section class="px-4 py-16 lg:px-8 lg:py-20">
+  <section class="px-margin-page py-16 md:py-20">
     <div class="mx-auto max-w-4xl">
-      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Services</p>
-      <h1 class="mt-3 font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl">
-        เลือกทางที่เหมาะกับธุรกิจคุณที่สุด
+      <p class="text-xs font-semibold uppercase tracking-[0.15em] text-coral">Services</p>
+      <h1 class="mt-3 font-serif text-4xl font-semibold leading-tight text-navy md:text-5xl">
+        บริการ AI Transformation สำหรับธุรกิจคุณ
       </h1>
-      <p class="mt-5 max-w-2xl text-lg text-base-content/75">
-        ผมมี 2 แนวทางให้เลือกตามเป้าหมายของธุรกิจคุณตอนนี้ ทุก package 100% upfront ส่งระบบที่รันได้จริงไม่ใช่สไลด์
+      <p class="mt-5 max-w-2xl text-lg text-warm-ink/75">
+        จับมือวางระบบ AI ให้ทีมใช้ได้จริง — จากอบรมทั้งทีม ไปจนถึงคู่คิดส่วนตัวระดับผู้บริหาร
+        ทุก package ชำระ 100% upfront · ส่งระบบที่รันได้จริง ไม่ใช่สไลด์
       </p>
     </div>
   </section>
 
-  <!-- ===== 2-PATH PRICING ===== -->
-  <section class="px-4 pb-16 lg:px-8 lg:pb-20">
+  <!-- ===== AI TRANSFORMATION — Basic / Advance ===== -->
+  <section class="px-margin-page pb-12">
     <div class="mx-auto max-w-6xl">
-      <div class="grid gap-8 lg:grid-cols-2">
-        <!-- PATH A: AI Transformation (cyan) -->
-        <div
-          class="rounded-2xl border p-6 lg:p-8"
-          style="border-color: color-mix(in oklch, var(--color-pun-cyan) 25%, transparent); background: color-mix(in oklch, var(--color-pun-cyan) 4%, transparent);"
-        >
-          <div class="mb-2 flex items-center gap-3">
-            <div
-              class="flex h-10 w-10 items-center justify-center rounded-lg"
-              style="background: color-mix(in oklch, var(--color-pun-cyan) 12%, transparent);"
-            >
-              <span
-                class="font-display text-lg font-bold"
-                style="color: var(--color-pun-cyan);">A</span
-              >
-            </div>
-            <p
-              class="text-xs font-bold uppercase tracking-widest"
-              style="color: var(--color-pun-cyan);"
-            >
-              Path A
-            </p>
-          </div>
-          <h2 class="font-display text-2xl font-bold">AI Transformation</h2>
-          <p class="mt-2 text-sm text-base-content/65">
-            คืนเวลาให้ทีมขายด้วย AI ที่รับงานซ้ำๆ ไปทำแทน สร้าง Workflow อัตโนมัติ
-          </p>
+      <h2 class="font-serif text-2xl font-semibold text-navy md:text-3xl">AI Transformation Workshop</h2>
+      <p class="mt-2 text-warm-ink/70">เริ่มที่ Day 1 สร้าง AI Agent ตัวแรก แล้วต่อ Day 2 ให้ระบบทั้งบริษัทวิ่งด้วย AI</p>
 
-          <div class="mt-6 space-y-4">
-            {
-              pathAPackages.map((p) => (
-                <div
-                  id={p.svc.slug}
-                  class="scroll-mt-24 rounded-xl border p-5 transition-all"
-                  style={
-                    p.tier === 'advanced'
-                      ? 'border-color: var(--color-pun-cyan); background: color-mix(in oklch, var(--color-pun-cyan) 7%, transparent); box-shadow: 0 16px 50px -15px color-mix(in oklch, var(--color-pun-cyan) 45%, transparent);'
-                      : 'border-color: color-mix(in oklch, var(--color-pun-cyan) 35%, transparent); background: color-mix(in oklch, var(--color-pun-cyan) 3%, transparent); box-shadow: 0 8px 24px -12px color-mix(in oklch, var(--color-pun-cyan) 20%, transparent);'
-                  }
-                >
-                  {/* Persona tag */}
-                  {p.persona && (
-                    <p
-                      class="mb-3 text-xs font-bold"
-                      style={
-                        p.tier === 'advanced'
-                          ? 'color: var(--color-pun-cyan);'
-                          : 'color: color-mix(in oklch, var(--color-pun-cyan) 75%, transparent);'
-                      }
-                    >
-                      {p.persona}
-                    </p>
-                  )}
-
-                  <div class="mb-3 flex items-start justify-between gap-3">
-                    <div>
-                      <span class="text-xs uppercase tracking-widest text-base-content/45">
-                        {p.durationLabel}
-                      </span>
-                      <h3 class="font-display text-lg font-bold">
-                        <a
-                          href={p.tier === 'advanced' ? '/ai-workshop-advance' : `/services/${p.svc.slug}`}
-                          class="transition-colors hover:text-[var(--color-pun-cyan)]"
-                        >
-                          {p.svc.title}
-                        </a>
-                      </h3>
-                    </div>
-                    <div
-                      class="font-display text-xl font-bold"
-                      style={
-                        p.tier === 'advanced'
-                          ? 'color: var(--color-pun-cyan);'
-                          : 'color: var(--color-secondary);'
-                      }
-                    >
-                      {p.svc.priceLabel.replace(/\s*\/.*$/, '')}
-                    </div>
-                  </div>
-
-                  <p class="mb-3 text-sm text-base-content/65">"{p.svc.hook}"</p>
-                  <ul class="mb-4 space-y-1.5 text-sm text-base-content/75">
-                    {p.bullets.map((b) => (
-                      <li class="flex items-start gap-2">
-                        <span
-                          class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
-                          style="background: var(--color-pun-cyan);"
-                        />
-                        <span>{b}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <a
-                    href={`/booking?package=${p.svc.slug}`}
-                    class="btn btn-lg mt-2 w-full border-none text-base font-bold shadow-xl transition-all hover:scale-[1.02]"
-                    style={
-                      p.tier === 'advanced'
-                        ? 'background: var(--color-pun-cyan); color: #0a1020; box-shadow: 0 14px 36px -10px color-mix(in oklch, var(--color-pun-cyan) 65%, transparent);'
-                        : 'background: color-mix(in oklch, var(--color-pun-cyan) 18%, transparent); color: var(--color-pun-cyan); border: 1px solid color-mix(in oklch, var(--color-pun-cyan) 40%, transparent);'
-                    }
-                  >
-                    {p.tier === 'advanced' ? 'Level Up · ' : 'เริ่มเลย · '}{p.svc.priceLabel.replace(/\s*\/.*$/, '')} →
-                  </a>
-                  <a
-                    href={p.tier === 'advanced' ? '/ai-workshop-advance' : `/services/${p.svc.slug}`}
-                    class="mt-1.5 block text-center text-xs transition-colors hover:text-[var(--color-pun-cyan)]"
-                    style="color: color-mix(in oklch, var(--color-pun-cyan) 70%, transparent);"
-                  >
-                    ดูรายละเอียดเพิ่มเติม →
-                  </a>
-                </div>
-              ))
-            }
-          </div>
-
-          <p class="mt-5 text-center text-xs text-base-content/45">
-            Basic ฿29,800 · Advance ฿35,800 · Bundle Day1+2 ฿48,900 (ประหยัด ฿16,700)
-          </p>
-        </div>
-
-        <!-- PATH B: ปั้นทีมขาย (coral) -->
-        <div
-          class="rounded-2xl border p-6 lg:p-8"
-          style="border-color: color-mix(in oklch, var(--color-pun-coral) 25%, transparent); background: color-mix(in oklch, var(--color-pun-coral) 4%, transparent);"
-        >
-          <div class="mb-2 flex items-center gap-3">
-            <div
-              class="flex h-10 w-10 items-center justify-center rounded-lg"
-              style="background: color-mix(in oklch, var(--color-pun-coral) 12%, transparent);"
-            >
-              <span
-                class="font-display text-lg font-bold"
-                style="color: var(--color-pun-coral);">B</span
-              >
-            </div>
-            <p
-              class="text-xs font-bold uppercase tracking-widest"
-              style="color: var(--color-pun-coral);"
-            >
-              Path B
-            </p>
-          </div>
-          <h2 class="font-display text-2xl font-bold">ปั้นทีมขาย</h2>
-          <p class="mt-2 text-sm text-base-content/65">
-            วางโครงสร้างทีมขาย ทั้งระบบ KPI, Commission และ Training
-          </p>
-
-          <div class="mt-6 space-y-4">
-            {
-              pathBPackages.map((p) => (
-                <div
-                  id={p.svc.slug}
-                  class:list={[
-                    'scroll-mt-24 rounded-xl border p-5 transition-all',
-                    p.featured ? 'shadow-lg' : '',
-                  ]}
-                  style={
-                    p.featured
-                      ? 'border-color: color-mix(in oklch, var(--color-pun-coral) 45%, transparent); background: color-mix(in oklch, var(--color-pun-coral) 3%, transparent); box-shadow: 0 10px 30px -15px color-mix(in oklch, var(--color-pun-coral) 30%, transparent);'
-                      : 'border-color: rgb(255 255 255 / 0.1); background: rgb(255 255 255 / 0.02);'
-                  }
-                >
-                  {p.badgeText && (
-                    <div
-                      class="mb-3 inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold"
-                      style="background: color-mix(in oklch, var(--color-pun-coral) 18%, transparent); color: var(--color-pun-coral); border: 1px solid color-mix(in oklch, var(--color-pun-coral) 40%, transparent);"
-                    >
-                      {p.badgeText}
-                    </div>
-                  )}
-                  <div class="mb-3 flex items-start justify-between gap-3">
-                    <div>
-                      <span class="text-xs uppercase tracking-widest text-base-content/45">
-                        {p.durationLabel}
-                      </span>
-                      <h3 class="font-display text-lg font-bold">
-                        <a
-                          href={`/services/${p.svc.slug}`}
-                          class="transition-colors hover:text-secondary"
-                        >
-                          {p.svc.title}
-                        </a>
-                      </h3>
-                    </div>
-                    <div class="font-display text-xl font-bold text-secondary">
-                      {p.svc.priceLabel.replace(/\s*\/.*$/, '')}
-                    </div>
-                  </div>
-                  <p class="mb-3 text-sm text-base-content/65">"{p.svc.hook}"</p>
-                  <ul class="mb-4 space-y-1.5 text-sm text-base-content/75">
-                    {p.bullets.map((b) => (
-                      <li class="flex items-start gap-2">
-                        <span
-                          class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
-                          style="background: var(--color-pun-coral);"
-                        />
-                        <span>{b}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <a
-                    href={`/booking?package=${p.svc.slug}`}
-                    class="btn btn-lg mt-2 w-full border-none text-base font-bold shadow-xl transition-all hover:scale-[1.02]"
-                    style={
-                      p.featured
-                        ? 'background: var(--color-pun-coral); color: white; box-shadow: 0 14px 32px -10px color-mix(in oklch, var(--color-pun-coral) 55%, transparent);'
-                        : 'background: color-mix(in oklch, var(--color-pun-coral) 18%, transparent); color: var(--color-pun-coral); border: 1px solid color-mix(in oklch, var(--color-pun-coral) 45%, transparent);'
-                    }
-                  >
-                    จองเลย {p.svc.priceLabel.replace(/\s*\/.*$/, '')} →
-                  </a>
-                  <a
-                    href={`/services/${p.svc.slug}`}
-                    class="mt-1.5 block text-center text-xs transition-colors hover:text-secondary"
-                    style="color: color-mix(in oklch, var(--color-pun-coral) 70%, transparent);"
-                  >
-                    ดูรายละเอียดเพิ่มเติม →
-                  </a>
-                </div>
-              ))
-            }
-          </div>
-
-          <p class="mt-5 text-center text-xs text-base-content/45">
-            ไม่แน่ใจ? เริ่มจาก Training 2 วัน → ต่อ Sprint ได้ภายหลัง
-          </p>
-        </div>
-      </div>
-
-      <div class="mt-10 text-center">
-        <div
-          class="inline-flex items-center gap-3 rounded-full border border-base-content/15 bg-base-200/40 px-6 py-3"
-        >
-          <span class="text-base" aria-hidden="true">✦</span>
-          <span class="text-sm text-base-content/75">
-            <strong class="text-base-content">ทำได้ทั้งสองทาง</strong> ลูกค้าหลายเจ้าเริ่มจาก AI Workshop แล้วค่อยต่อด้วย Sales System Sprint
-          </span>
-        </div>
-      </div>
-
-      <!-- ===== SPECIAL WORKSHOP: Trust Content TikTok (violet) ===== -->
-      <div
-        id={tiktokWorkshop.slug}
-        class="relative mt-12 scroll-mt-24 rounded-2xl border p-6 lg:p-8"
-        style="border-color: color-mix(in oklch, var(--color-pun-violet) 25%, transparent); background: color-mix(in oklch, var(--color-pun-violet) 4%, transparent);"
-      >
-        <div
-          class="absolute right-4 top-4 rounded-full px-2.5 py-0.5 text-[10px] font-bold"
-          style="background: color-mix(in oklch, var(--color-pun-violet) 18%, transparent); color: var(--color-pun-violet); border: 1px solid color-mix(in oklch, var(--color-pun-violet) 40%, transparent);"
-        >
-          Special Workshop
-        </div>
-        <div class="flex flex-col items-start gap-8 lg:flex-row">
-          <div class="flex-1">
-            <div class="mb-2 flex items-center gap-3">
-              <div
-                class="flex h-10 w-10 items-center justify-center rounded-lg"
-                style="background: color-mix(in oklch, var(--color-pun-violet) 12%, transparent);"
-              >
-                <span
-                  class="font-display text-lg font-bold"
-                  style="color: var(--color-pun-violet);">★</span
-                >
-              </div>
-              <p
-                class="text-xs font-bold uppercase tracking-widest"
-                style="color: var(--color-pun-violet);"
-              >
-                New
-              </p>
-            </div>
-            <h3 class="font-display text-2xl font-bold">{tiktokWorkshop.title}</h3>
-            <p class="mt-2 text-sm text-base-content/65">
-              เปลี่ยนมือถือเครื่องเดียวให้เป็นเครื่องจักรสร้างลูกค้า B2B ผ่าน TikTok — content ที่ปิดการขาย ไม่ใช่แค่ได้ยอดวิว
-            </p>
-
-            <div class="mt-4 flex flex-wrap gap-2">
-              {
-                [
-                  '3 คลิปถ่ายเสร็จ',
-                  'Content Calendar 30 วัน',
-                  'Trust Framework PDF',
-                  'Script Template Kit',
-                ].map((chip) => (
-                  <span class="inline-flex items-center gap-1.5 rounded-full border border-base-content/15 bg-base-200/50 px-3 py-1 text-xs text-base-content/70">
-                    {chip}
-                  </span>
-                ))
-              }
-            </div>
-          </div>
-
+      <div class="mt-8 grid gap-6 md:grid-cols-2">
+        {aiPackages.map((p) => (
           <div
-            class="w-full rounded-xl border p-5 text-center lg:w-64 lg:flex-shrink-0"
-            style="border-color: color-mix(in oklch, var(--color-pun-violet) 25%, transparent); background: rgb(255 255 255 / 0.02);"
+            id={p.svc.slug}
+            class:list={[
+              'scroll-mt-24 flex flex-col rounded-2xl bg-surface p-7 transition hover:-translate-y-0.5 hover:shadow-[3px_5px_0_rgba(30,27,22,0.06)]',
+              p.tier === 'advanced' ? 'border-2 border-coral/50' : 'border border-[#c9c2b2]',
+            ]}
           >
-            <span class="text-xs uppercase tracking-widest text-base-content/45">
-              1 Day In-House
-            </span>
-            <p class="mt-2 text-sm text-base-content/55">ปกติ ฿52,800</p>
-            <div
-              class="font-display text-3xl font-bold"
-              style="color: var(--color-pun-violet);"
-            >
-              ฿44,900
+            <p class="text-xs font-semibold text-coral">{p.persona}</p>
+            <span class="mt-3 text-xs uppercase tracking-widest text-muted">{p.durationLabel}</span>
+            <div class="mt-1 flex items-baseline justify-between gap-3">
+              <h3 class="font-serif text-xl font-semibold text-navy">{p.svc.title}</h3>
+              <div class="font-serif text-2xl font-semibold text-coral">{priceShort(p.svc.priceLabel)}</div>
             </div>
-            <span
-              class="mb-3 mt-1 inline-block rounded-full border border-secondary/30 bg-secondary/10 px-2.5 py-0.5 text-xs font-bold text-secondary"
-            >
-              5 ธุรกิจแรก
-            </span>
+            <p class="mt-3 text-sm text-warm-ink/70">"{p.svc.hook}"</p>
+            <ul class="mt-4 flex-1 space-y-2 text-sm text-warm-ink/75">
+              {p.bullets.map((b) => (
+                <li class="flex items-start gap-2">
+                  <span class="mt-0.5 shrink-0 text-coral"><Icon name="check-circle" size={16} /></span>
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
             <a
-              href={`/booking?package=${tiktokWorkshop.slug}`}
-              class="btn btn-lg w-full border-none text-base font-bold text-white shadow-xl transition-all hover:scale-[1.02]"
-              style="background: var(--color-pun-violet); box-shadow: 0 14px 32px -10px color-mix(in oklch, var(--color-pun-violet) 55%, transparent);"
+              href={`/booking?package=${p.svc.slug}`}
+              class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-coral px-6 py-3.5 font-medium text-white transition hover:opacity-90"
             >
-              จอง Workshop ฿39,900 →
+              {p.tier === 'advanced' ? 'Level Up' : 'เริ่มเลย'} · {priceShort(p.svc.priceLabel)} →
             </a>
             <a
-              href={`/services/${tiktokWorkshop.slug}`}
-              class="mt-1.5 block text-xs text-base-content/45 hover:text-[var(--color-pun-violet)]"
+              href={p.tier === 'advanced' ? '/ai-workshop-advance' : `/services/${p.svc.slug}`}
+              class="mt-2 block text-center text-xs font-medium text-navy/70 transition hover:text-coral"
             >
               ดูรายละเอียดเพิ่มเติม →
             </a>
           </div>
+        ))}
+      </div>
+
+      <p class="mt-5 text-center text-xs text-muted">
+        Basic ฿29,800 · Advance ฿35,800 · Bundle Day1+2 ฿48,900 (ประหยัด ฿16,700)
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== CEO ADVISORY + AI TRUST CONTENT ===== -->
+  <section class="px-margin-page pb-16 md:pb-20">
+    <div class="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
+      <!-- AI Consultant for CEO (TYPE C · web price ฿35,000/วัน only) -->
+      <div id="ceo-advisory" class="scroll-mt-24 flex flex-col rounded-2xl border-2 border-coral/40 bg-surface p-7 paper-shadow">
+        <div class="flex items-center justify-between gap-3">
+          <span class="inline-flex items-center gap-2 rounded-full bg-navy px-3 py-1 text-xs font-semibold text-ivory">
+            <span class="h-1.5 w-1.5 rounded-full bg-coral" aria-hidden="true"></span> ใหม่ · 1-on-1
+          </span>
+          <span class="text-coral" aria-hidden="true"><Icon name="user-circle" size={32} /></span>
         </div>
+        <h3 class="mt-4 font-serif text-2xl font-semibold leading-snug text-navy">{ceoAdvisory.th}</h3>
+        <div class="mt-1 font-serif text-2xl font-semibold text-coral">{ceoAdvisory.price}</div>
+        <p class="mt-3 text-sm text-warm-ink/70">"{ceoAdvisory.hook}"</p>
+        <ul class="mt-4 flex-1 space-y-2 text-sm text-warm-ink/75">
+          {ceoAdvisory.bullets.map((b) => (
+            <li class="flex items-start gap-2">
+              <span class="mt-0.5 shrink-0 text-coral"><Icon name="check-circle" size={16} /></span>
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
+        <a
+          href="/booking"
+          class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-coral px-6 py-3.5 font-medium text-white transition hover:opacity-90"
+        >
+          คุยกับผม · {ceoAdvisory.price} →
+        </a>
+      </div>
+
+      <!-- AI-Powered Trust Content (rescoped from TikTok workshop · P6) -->
+      <div id="trust-content" class="scroll-mt-24 flex flex-col rounded-2xl border border-[#c9c2b2] bg-surface p-7">
+        <div class="flex items-center justify-between gap-3">
+          <span class="inline-flex items-center rounded-full border border-navy/20 bg-ivory px-3 py-1 text-xs font-semibold text-navy">
+            Special · 1 Day In-house
+          </span>
+          <span class="text-coral" aria-hidden="true"><Icon name="paper-airplane" size={30} /></span>
+        </div>
+        <h3 class="mt-4 font-serif text-2xl font-semibold leading-snug text-navy">AI-Powered Trust Content</h3>
+        <p class="mt-3 text-sm text-warm-ink/70">
+          ใช้ AI ช่วยผลิตและ scale trust content B2B ที่ปิดการขาย — ถ่ายครั้งเดียว AI ช่วยคิด pillar/script
+          และ repurpose เป็นหลายชิ้น เป็นระบบ content ที่ไหลเองโดยไม่ต้องจ้างทีม
+        </p>
+        <div class="mt-4 flex flex-1 flex-wrap content-start gap-2">
+          {trustChips.map((chip) => (
+            <span class="inline-flex items-center rounded-full border border-[#c9c2b2] bg-ivory px-3 py-1 text-xs text-warm-ink/75">{chip}</span>
+          ))}
+        </div>
+        {/* TODO(price · Pun confirm): catalog P6 = ฿39,900 (list ฿50,000) · site.ts trust-content = ฿44,900 (list ฿52,800) · เดิม button = ฿39,900 — 3 ตัวเลขไม่ตรงกัน ยังไม่แก้ตัวเลข รอ Pun ยืนยัน */}
+        <p class="mt-5 text-sm text-warm-ink/60">ราคา In-house — สอบถาม/นัดคุยเพื่อรับใบเสนอราคา</p>
+        <a
+          href={`/booking?package=${tiktokWorkshop.slug}`}
+          class="mt-3 inline-flex w-full items-center justify-center rounded-xl border border-navy/30 bg-transparent px-6 py-3.5 font-medium text-navy transition hover:border-coral hover:text-coral"
+        >
+          สอบถามรายละเอียด →
+        </a>
       </div>
     </div>
   </section>
@@ -533,7 +310,7 @@ const pathBPackages: PathCardProps[] = [
               </td>
             </tr>
             <tr>
-              <td class="px-4 py-4 font-medium md:px-6">ทีมขาย</td>
+              <td class="px-4 py-4 font-medium md:px-6">ทีมงาน</td>
               <td class="px-4 py-4 text-center text-base-content/75 md:px-6">
                 ท่องสเปคไปขอส่วนลด
               </td>
@@ -566,14 +343,14 @@ const pathBPackages: PathCardProps[] = [
         ไม่แน่ใจว่าเริ่มจาก package ไหน?
       </h2>
       <p class="mt-4 max-w-2xl text-primary-content/80">
-        ตอบแบบประเมิน 3 นาที บอก context ทีมขายของคุณ ผมตอบกลับภายใน 2 วันทำการว่าเคสคุณตรงกับ package ไหนที่สุด
+        ตอบแบบประเมิน 3 นาที บอก context ธุรกิจของคุณ ผมตอบกลับภายใน 2 วันทำการว่าเคสคุณตรงกับ package ไหนที่สุด
       </p>
       <div class="mt-7 flex flex-wrap gap-4">
         <a
           href="/intake-form"
           class="btn btn-lg bg-secondary text-secondary-content shadow-lg shadow-secondary/30 hover:bg-secondary/90"
         >
-          นัดคุยกับผมเพื่อดูว่าองค์กรของคุณทำ AI Transformation ได้ไหม
+          นัดคุยกับผม — เช็คว่าองค์กรคุณพร้อมแค่ไหน
         </a>
         <a
           href={SITE.social.line}

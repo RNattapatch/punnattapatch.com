@@ -4,6 +4,7 @@ import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import WhatYouGet from '../components/WhatYouGet.astro';
+import Manifesto from '../components/Manifesto.astro';
 import WhichAI from '../components/WhichAI.astro';
 import AIWorkingPanel from '../components/AIWorkingPanel.astro';
 import Icon from '../components/Icon.astro';
@@ -103,7 +104,7 @@ const services3 = [
 // Cross-department reach (Business OS · v1.2) — every wheel feeds into AI
 const crossDept = ['ฝ่ายขาย', 'บัญชี', 'ผลิต / โรงงาน', 'การตลาด', 'IT'];
 
-// ===== DIAGNOSE — problem → service (recolored navy/coral · was cyan/violet) =====
+// ===== DIAGNOSE — problem → service · AI Transformation only (sales packages removed from showcase) =====
 type Accent = 'navy' | 'coral';
 const diagnoseCards: Array<{
   pain: string;
@@ -130,28 +131,20 @@ const diagnoseCards: Array<{
     accent: 'navy',
   },
   {
-    pain: 'ขายได้ก็ต่อเมื่อ',
-    highlight: 'ยอมตัดราคาสู้',
-    service: 'Sale Training Bundle',
-    oneLiner: 'สอนทีมปิดดีลด้วยคุณค่า ไม่ใช่ส่วนลด',
-    href: '/services#sale-training-bundle',
-    accent: 'coral',
-  },
-  {
-    pain: 'มีทีมขาย แต่ยอด 80% มาจาก',
+    pain: 'มีทีม แต่ยอด 80% มาจาก',
     highlight: 'เจ้าของคนเดียว',
-    service: 'Sales System Sprint',
-    oneLiner: 'วางระบบ KPI + Commission + AI ครบใน 1 เดือน',
-    href: '/services#sales-system-sprint',
+    service: 'AI Consultant for CEO',
+    oneLiner: 'วางทิศ AI ทั้งองค์กร ให้ทีมใช้ AI แทน เจ้าของถอดตัวออกได้',
+    href: '/services#ceo-advisory',
     accent: 'coral',
   },
   {
     pain: 'จ้างคนทำ content แพงๆ ยอดวิวดี แต่',
     highlight: 'ไม่เคยมีลูกค้าทักมาซื้อสักคน',
-    service: 'TikTok Trust Content (เร็วๆ นี้)',
-    oneLiner: 'สร้าง content ที่คนเชื่อแล้วทักมาซื้อเอง',
-    href: '/intake-form',
-    accent: 'navy',
+    service: 'AI-Powered Trust Content',
+    oneLiner: 'ใช้ AI ผลิต content B2B ที่คนเชื่อแล้วทักมาซื้อเอง',
+    href: '/services#trust-content',
+    accent: 'coral',
   },
 ];
 const accentColor = (a: Accent): string =>
@@ -192,14 +185,14 @@ const galleryPhotos = Array.from({ length: 8 }, (_, i) => ({
 
 // Who this is for — 3 personas (condensed · merged into Qualify)
 const personas = [
-  { icon: 'building-office', role: 'เจ้าของธุรกิจ SME', line: 'รายได้ ฿30-200M · ทีมขาย 5-20 คน · รู้สึกเหมือนแบกยอดอยู่คนเดียว' },
-  { icon: 'users', role: 'ผู้จัดการฝ่ายขาย', line: 'ทีมต่างคนต่างใช้ AI ผลไม่สม่ำเสมอ · ยังไม่มีระบบกลางให้ทั้งทีม' },
-  { icon: 'arrow-trending-up', role: 'ทีมขาย / KAM', line: 'follow-up กับเขียน proposal กินเวลา · อยากได้เวลาคืนไปปิดดีล' },
+  { icon: 'building-office', role: 'เจ้าของธุรกิจ SME', line: 'รายได้ ฿30-200M · ทีม 5-20 คน · รู้สึกเหมือนแบกทุกอย่างอยู่คนเดียว' },
+  { icon: 'users', role: 'ผู้บริหาร / หัวหน้าทีม', line: 'ทีมต่างคนต่างใช้ AI ผลไม่สม่ำเสมอ · ยังไม่มีระบบกลางให้ทั้งทีม' },
+  { icon: 'arrow-trending-up', role: 'CEO ที่เวลาน้อย', line: 'อยากใช้ AI ให้ถูกทาง แต่ไม่มีเวลานั่งเรียนเอง · อยากมีคู่คิด' },
 ];
 
 const qualifyYes = [
-  'มีทีมขายอยู่แล้ว แต่ยอดไม่ไปไหน',
-  'รู้สึกเหมือน "แบกยอดอยู่คนเดียว" ทั้งที่มีทีม',
+  'มีทีมอยู่แล้ว แต่ยังทำงานซ้ำซ้อนเยอะ',
+  'รู้สึกเหมือน "แบกอยู่คนเดียว" ทั้งที่มีทีม',
   'อยากให้มีระบบที่เดินได้เอง ไม่ต้องจ้ำจี้จ้ำไช',
   'พร้อมลงทุนเพื่อสร้างระบบจริงๆ จังๆ',
 ];
@@ -207,22 +200,17 @@ const qualifyYes = [
 const qualifyNo = [
   'เป็น Freelancer หรือทำงานคนเดียว',
   'ทำธุรกิจ B2C ขายของจำนวนเยอะ ราคาไม่สูง',
-  'อยากได้ "เทคนิคปิดการขาย" แบบทางลัด',
+  'อยากได้ "ทางลัด" แบบไม่ต้องเปลี่ยนวิธีทำงาน',
   'มองหาของฟรี หรือยังไม่มีงบลงทุน',
 ];
 
-const freeStuff = [
-  {
-    title: 'รวม 60+ คำถามสัมภาษณ์เซลล์ที่ควรถาม',
-    body: 'E-book สำหรับเจ้าของธุรกิจที่อยากคัดคนขายให้ตรงจุด ไม่ต้องเดาสุ่ม',
-    href: 'https://drive.google.com/file/d/1GXUOGavkL9vXhlcUcM1ztbZqCf5n8xgb/view',
-  },
-  {
-    title: 'คู่มือสร้างทีมขาย 100 ล้าน คุณก็ทำได้',
-    body: 'E-book สำหรับเจ้าของ SME ที่อยากสร้างทีมขายให้วิ่งเองได้ ไม่ต้องแบกยอดคนเดียว',
-    href: 'https://drive.google.com/file/d/1FXouSCK7XXo_xig8nrk-Gc_mshotCNgX/view',
-  },
-];
+// Free lead magnet — AI Agent Builder Kit (replaced sales e-books · refocus 2026-06-07)
+const freeKit = {
+  title: 'AI Agent Builder Kit',
+  body: 'Kit ฟรี (form-gated) สำหรับเจ้าของ SME ฿30M+ ที่อยากสร้าง AI Agent ใช้งานจริง — Manual 50 หน้า + 5 setup files + 20+ prompts (มูลค่ารวม ฿29,900)',
+  href: '/agent-builder-kit',
+  cta: 'รับ Kit ฟรี →',
+};
 
 const trustPoints = [
   { icon: 'clock', title: 'กรอกฟอร์ม 3 นาที', body: 'ใช้เวลาไม่ถึง 3 นาที' },
@@ -265,7 +253,7 @@ const socials = [
       </p>
       <div class="flex flex-col sm:flex-row gap-4 pt-2">
         <a class="bg-coral text-white font-medium px-8 py-3.5 rounded-xl text-center hover:opacity-90 transition-all" href="/intake-form">ดูว่าธุรกิจคุณพร้อมแค่ไหน →</a>
-        <a class="border ink-border text-navy font-medium px-8 py-3.5 rounded-xl text-center hover:bg-sand transition-all" href="#what-you-get">ดูวิธีคิดของผม</a>
+        <a class="border ink-border text-navy font-medium px-8 py-3.5 rounded-xl text-center hover:bg-sand transition-all" href="#manifesto">ดูวิธีคิดของผม</a>
       </div>
       <p class="flex flex-wrap items-center gap-3 text-xs font-semibold tracking-[0.08em] uppercase text-muted pt-2">
         <span>ดูแลลูกค้ามาแล้ว 20+ องค์กร</span><span class="opacity-40">·</span><span>On-site เท่านั้น</span><span class="opacity-40">·</span><span>Limited Slots</span>
@@ -297,16 +285,37 @@ const socials = [
   </section>
 
   <!-- ============================================================= -->
-  <!-- 2. WHAT YOU GET — "สิ่งที่จะได้ หากให้ผมดูแล" (Why-over-How · พระเอก) -->
+  <!-- 2. CLIENT LOGOS — early trust (moved to top · conversion-first) -->
   <!-- ============================================================= -->
-  <WhatYouGet />
+  <section class="bg-sand px-margin-page py-16 md:py-20">
+    <div class="mx-auto max-w-6xl">
+      <div class="text-center">
+        <span class="text-xs font-semibold uppercase tracking-[0.15em] text-coral">องค์กรที่ไว้ใจ</span>
+        <h2 class="mt-3 font-serif text-3xl font-semibold text-navy md:text-4xl">
+          องค์กรบางส่วนที่ไว้ใจให้ผมดูแล
+        </h2>
+      </div>
+      <div class="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        {clientLogos.map((logo) => (
+          <div class="logo-box rounded-2xl">
+            <img
+              src={logo.src}
+              alt={logo.alt}
+              loading="lazy"
+              decoding="async"
+              class="max-h-full max-w-full object-contain opacity-80 grayscale transition duration-300 hover:opacity-100 hover:grayscale-0"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
 
   <!-- ============================================================= -->
-  <!-- 3. PROOF ZONE — testimonial + client logos + gallery (one wall of trust) -->
+  <!-- 3. TESTIMONIAL — chat screenshots (moved to top · conversion-first) -->
   <!-- ============================================================= -->
-  <section class="bg-sand px-margin-page py-20 md:py-24">
+  <section class="px-margin-page py-16 md:py-20">
     <div class="mx-auto max-w-6xl">
-      <!-- 3a · Testimonial scrapbook -->
       <div class="text-center">
         <span class="text-xs font-semibold uppercase tracking-[0.15em] text-coral">เสียงจากลูกค้า</span>
         <h2 class="mt-3 font-serif text-3xl font-semibold text-navy md:text-4xl">
@@ -332,63 +341,107 @@ const socials = [
           </div>
         ))}
       </div>
+    </div>
+  </section>
 
-      <!-- 3b · Client logos -->
-      <div class="mt-20 text-center">
-        <span class="text-xs font-semibold uppercase tracking-[0.15em] text-coral">องค์กรที่ไว้ใจ</span>
-        <h2 class="mt-3 font-serif text-3xl font-semibold text-navy md:text-4xl">
-          องค์กรบางส่วนที่ไว้ใจให้ผมดูแล
-        </h2>
-      </div>
-      <div class="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        {clientLogos.map((logo) => (
-          <div class="logo-box rounded-2xl">
-            <img
-              src={logo.src}
-              alt={logo.alt}
-              loading="lazy"
-              decoding="async"
-              class="max-h-full max-w-full object-contain opacity-80 grayscale transition duration-300 hover:opacity-100 hover:grayscale-0"
-            />
-          </div>
-        ))}
-      </div>
+  <!-- ============================================================= -->
+  <!-- 4. MY SERVICE — AI Transformation / Consult / CEO Advisory + cross-department -->
+  <!-- ============================================================= -->
+  <section class="px-margin-page py-16 md:py-24">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-xs font-semibold uppercase tracking-[0.15em] text-coral">@pun_nattapatch · ปัน ณัฐพัชร์</p>
+      <h2 class="mt-3 font-serif text-3xl font-semibold text-navy md:text-4xl">ให้บริการอะไรบ้าง</h2>
 
-      <!-- 3c · Gallery (polaroid wall) -->
-      <div class="mt-20 text-center">
-        <span class="text-xs font-semibold uppercase tracking-[0.15em] text-coral">ภาพจากงานจริง</span>
-        <h2 class="mt-3 font-serif text-2xl font-semibold text-navy md:text-3xl">
-          จากห้องประชุม Corporate สู่การสร้างระบบให้ SME
-        </h2>
-      </div>
-      <div class="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
-        {galleryPhotos.map((photo, i) => (
+      <div class="mt-10 grid gap-6 md:grid-cols-3">
+        {services3.map((s) => (
           <div
             class:list={[
-              'scrapbook-photo relative rounded-xl bg-surface p-2 muted-border paper-shadow',
-              i % 2 === 0 ? 'rotate-1' : '-rotate-1',
+              'relative flex flex-col rounded-2xl bg-surface p-8 transition hover:-translate-y-0.5 hover:shadow-[3px_5px_0_rgba(30,27,22,0.06)]',
+              s.badge ? 'border-2 border-coral/40' : 'border border-[#c9c2b2]',
             ]}
           >
-            <img
-              src={photo.src}
-              alt={photo.alt}
-              loading="lazy"
-              decoding="async"
-              class="aspect-square w-full rounded-lg object-cover"
-            />
+            {s.badge && (
+              <span class="absolute -top-3 right-5 rounded-full bg-coral px-3 py-1 text-xs font-semibold text-white shadow-sm">
+                {s.badge}
+              </span>
+            )}
+            <span class="text-coral" aria-hidden="true"><Icon name={s.icon} size={36} /></span>
+            <h3 class="mt-4 font-serif text-2xl font-semibold leading-snug text-navy">{s.name}</h3>
+            <p class="mt-2 leading-relaxed text-warm-ink/75">{s.desc}</p>
           </div>
         ))}
+      </div>
+
+      <!-- Cross-department / Business OS — every wheel feeds into AI -->
+      <div class="mt-12 rounded-2xl border border-[#c9c2b2] bg-surface px-6 py-10 md:px-10">
+        <div class="mx-auto max-w-3xl text-center">
+          <h3 class="font-serif text-2xl font-semibold text-navy md:text-3xl">เริ่มที่ฝ่ายขาย แล้วต่อยอดได้ทั้งบริษัท</h3>
+          <p class="mt-3 leading-relaxed text-warm-ink/75">
+            ลูกค้าหลายรายเริ่มจากให้ผมช่วยทีมขาย แล้วให้ผมดูแลต่อทั้งบ้าน —
+            เพราะเมื่อข้อมูลทุกแผนกเชื่อมกันได้ ธุรกิจถึงเดินเองได้จริง
+          </p>
+        </div>
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+          {crossDept.map((d) => (
+            <span class="rounded-full border border-navy/20 bg-ivory px-4 py-2 text-sm font-medium text-navy">{d}</span>
+          ))}
+        </div>
+        <div class="mt-4 flex justify-center text-2xl text-coral" aria-hidden="true">↓</div>
+        <div class="mt-2 flex justify-center">
+          <span class="inline-flex h-20 w-20 items-center justify-center rounded-full bg-navy font-serif text-xl font-semibold text-white">AI</span>
+        </div>
+      </div>
+
+      <div class="mt-10">
+        <a
+          href="/services"
+          class="inline-flex items-center rounded-xl bg-coral px-8 py-3.5 font-medium text-white transition hover:opacity-90"
+        >
+          ดูบริการทั้งหมด →
+        </a>
       </div>
     </div>
   </section>
 
   <!-- ============================================================= -->
-  <!-- 4. WHICH AI — "จะใช้ AI ตัวไหนดี?" (Mindset > Model) -->
+  <!-- ▶ CTA #1 — นัดคุยกับผม (interstitial · copy reuses existing site microcopy) -->
+  <!-- ============================================================= -->
+  <section class="px-margin-page pb-4">
+    <div class="mx-auto flex max-w-3xl flex-col items-center gap-4 rounded-2xl border border-[#c9c2b2] bg-surface px-6 py-9 text-center paper-shadow">
+      <p class="font-serif text-2xl font-semibold text-navy md:text-3xl">ให้ผมช่วยดูให้ก่อนก็ได้</p>
+      <p class="text-warm-ink/70">กรอก 3 นาที ผมอ่านเองแล้วบอกตรงๆ ว่าเคสของคุณควรเริ่มจากไหน — ไม่มีค่าใช้จ่าย</p>
+      <a href="/booking" class="inline-flex items-center rounded-xl bg-coral px-9 py-3.5 font-medium text-white transition hover:opacity-90">นัดคุยกับผม →</a>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- 5. WHAT YOU GET — "สิ่งที่จะได้ หากให้ผมดูแล" (Why content begins) -->
+  <!-- ============================================================= -->
+  <WhatYouGet />
+
+  <!-- ============================================================= -->
+  <!-- 6. MANIFESTO — "ความเชื่อของผม · หลักคิดมาก่อนเครื่องมือ" (brand spine) -->
+  <!-- ============================================================= -->
+  <Manifesto />
+
+  <!-- ============================================================= -->
+  <!-- 7. WHICH AI — "จะใช้ AI ตัวไหนดี?" (Mindset > Model) -->
   <!-- ============================================================= -->
   <WhichAI />
 
   <!-- ============================================================= -->
-  <!-- 5. ADOPTION GAP — the real pain (clients buy AI, team never uses it) -->
+  <!-- ▶ CTA #2 — นัดคุยกับผม (interstitial · after the Why cluster) -->
+  <!-- ============================================================= -->
+  <section class="px-margin-page py-4">
+    <div class="mx-auto flex max-w-3xl flex-col items-center gap-4 rounded-2xl border border-[#c9c2b2] bg-surface px-6 py-9 text-center paper-shadow">
+      <p class="font-serif text-2xl font-semibold text-navy md:text-3xl">คุยกับผมก่อนตัดสินใจก็ได้</p>
+      <p class="text-warm-ink/70">เล่าโจทย์ธุรกิจคุณมา ผมช่วยดูว่า AI เข้าไปช่วยตรงไหนได้บ้าง · ตอบกลับใน 24 ชม.</p>
+      <a href="/booking" class="inline-flex items-center rounded-xl bg-coral px-9 py-3.5 font-medium text-white transition hover:opacity-90">นัดคุยกับผม →</a>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- 8. ADOPTION GAP — the real pain (clients buy AI, team never uses it) -->
   <!-- ============================================================= -->
   <section class="px-margin-page py-20 md:py-28" style="background: rgba(221,65,85,0.04);">
     <div class="mx-auto max-w-5xl">
@@ -446,66 +499,7 @@ const socials = [
   </section>
 
   <!-- ============================================================= -->
-  <!-- 6. MY SERVICE — Training / Consult / CEO Advisory + cross-department -->
-  <!-- ============================================================= -->
-  <section class="px-margin-page py-20 md:py-24">
-    <div class="mx-auto max-w-6xl">
-      <p class="text-xs font-semibold uppercase tracking-[0.15em] text-coral">@pun_nattapatch · ปัน ณัฐพัชร์</p>
-      <h2 class="mt-3 font-serif text-3xl font-semibold text-navy md:text-4xl">ให้บริการอะไรบ้าง</h2>
-
-      <div class="mt-10 grid gap-6 md:grid-cols-3">
-        {services3.map((s) => (
-          <div
-            class:list={[
-              'relative flex flex-col rounded-2xl bg-surface p-8 transition hover:-translate-y-0.5 hover:shadow-[3px_5px_0_rgba(30,27,22,0.06)]',
-              s.badge ? 'border-2 border-coral/40' : 'border border-[#c9c2b2]',
-            ]}
-          >
-            {s.badge && (
-              <span class="absolute -top-3 right-5 rounded-full bg-coral px-3 py-1 text-xs font-semibold text-white shadow-sm">
-                {s.badge}
-              </span>
-            )}
-            <span class="text-coral" aria-hidden="true"><Icon name={s.icon} size={36} /></span>
-            <h3 class="mt-4 font-serif text-2xl font-semibold leading-snug text-navy">{s.name}</h3>
-            <p class="mt-2 leading-relaxed text-warm-ink/75">{s.desc}</p>
-          </div>
-        ))}
-      </div>
-
-      <!-- Cross-department / Business OS — every wheel feeds into AI -->
-      <div class="mt-12 rounded-2xl border border-[#c9c2b2] bg-surface px-6 py-10 md:px-10">
-        <div class="mx-auto max-w-3xl text-center">
-          <h3 class="font-serif text-2xl font-semibold text-navy md:text-3xl">เริ่มที่ฝ่ายขาย แล้วต่อยอดได้ทั้งบริษัท</h3>
-          <p class="mt-3 leading-relaxed text-warm-ink/75">
-            ลูกค้าหลายรายเริ่มจากให้ผมช่วยทีมขาย แล้วให้ผมดูแลต่อทั้งบ้าน —
-            เพราะเมื่อข้อมูลทุกแผนกเชื่อมกันได้ ธุรกิจถึงเดินเองได้จริง
-          </p>
-        </div>
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-          {crossDept.map((d) => (
-            <span class="rounded-full border border-navy/20 bg-ivory px-4 py-2 text-sm font-medium text-navy">{d}</span>
-          ))}
-        </div>
-        <div class="mt-4 flex justify-center text-2xl text-coral" aria-hidden="true">↓</div>
-        <div class="mt-2 flex justify-center">
-          <span class="inline-flex h-20 w-20 items-center justify-center rounded-full bg-navy font-serif text-xl font-semibold text-white">AI</span>
-        </div>
-      </div>
-
-      <div class="mt-10">
-        <a
-          href="/services"
-          class="inline-flex items-center rounded-xl bg-coral px-8 py-3.5 font-medium text-white transition hover:opacity-90"
-        >
-          ดูบริการทั้งหมด →
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================= -->
-  <!-- 7. FEATURED COURSE: ADVANCE AI (intentional dark feature moment · coral) -->
+  <!-- 9. FEATURED COURSE: ADVANCE AI (intentional dark feature moment · coral) -->
   <!-- ============================================================= -->
   <section class="relative overflow-hidden px-4 py-20 lg:px-8 lg:py-28" style="background: linear-gradient(135deg, #040f1e 0%, #072b4e 50%, #0d3a5c 100%);">
     {/* Ambient coral orbs */}
@@ -608,7 +602,7 @@ const socials = [
   </section>
 
   <!-- ============================================================= -->
-  <!-- 8. DIAGNOSE — problem → service + 2 paths (book vs intake) -->
+  <!-- 10. DIAGNOSE — problem → AI Transformation service + 2 paths -->
   <!-- ============================================================= -->
   <section id="diagnose" class="bg-sand px-margin-page py-20 md:py-24">
     <div class="mx-auto max-w-6xl">
@@ -620,7 +614,7 @@ const socials = [
         <p class="mt-3 text-warm-ink/70">กดที่ปัญหาของคุณ ผมมีบริการที่แก้ได้ตรงจุด</p>
       </div>
 
-      <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-12 grid gap-5 md:grid-cols-2">
         {diagnoseCards.map((card) => {
           const accent = accentColor(card.accent);
           return (
@@ -688,7 +682,39 @@ const socials = [
   </section>
 
   <!-- ============================================================= -->
-  <!-- 9. ABOUT / WHY PUN — merged (story + ไม่ใช่โค้ช + why) into one -->
+  <!-- 11. GALLERY — real photos (polaroid wall · proof before story) -->
+  <!-- ============================================================= -->
+  <section class="px-margin-page py-16 md:py-20">
+    <div class="mx-auto max-w-6xl">
+      <div class="text-center">
+        <span class="text-xs font-semibold uppercase tracking-[0.15em] text-coral">ภาพจากงานจริง</span>
+        <h2 class="mt-3 font-serif text-2xl font-semibold text-navy md:text-3xl">
+          จากห้องประชุม Corporate สู่การสร้างระบบให้ SME
+        </h2>
+      </div>
+      <div class="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
+        {galleryPhotos.map((photo, i) => (
+          <div
+            class:list={[
+              'scrapbook-photo relative rounded-xl bg-surface p-2 muted-border paper-shadow',
+              i % 2 === 0 ? 'rotate-1' : '-rotate-1',
+            ]}
+          >
+            <img
+              src={photo.src}
+              alt={photo.alt}
+              loading="lazy"
+              decoding="async"
+              class="aspect-square w-full rounded-lg object-cover"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- 12. ABOUT / WHY PUN — AI Transformation identity (sales = credit) -->
   <!-- ============================================================= -->
   <section class="px-margin-page py-20 md:py-28">
     <div class="mx-auto grid max-w-6xl gap-12 md:grid-cols-12 md:items-center">
@@ -709,18 +735,18 @@ const socials = [
       <div class="md:col-span-7">
         <span class="text-xs font-semibold uppercase tracking-[0.15em] text-coral">ทำไมต้องเป็นผม</span>
         <h2 class="mt-3 font-serif text-3xl font-semibold leading-[1.2] text-navy md:text-4xl">
-          ผมไม่ใช่ 'โค้ช' — ผมคือคนที่ลงมือสร้างระบบขายด้วย AI ให้ SME
+          ผมไม่ใช่ 'โค้ช' — ผมคือคนที่ลงมือวางระบบ AI ให้ทั้งธุรกิจ
         </h2>
         <p class="mt-5 leading-relaxed text-warm-ink/80">
           ผมคลุกคลีกับงานขาย B2B มา 5 ปี ทั้งฝั่ง Corporate และ SME จบวิศวกรรมเครื่องกล
-          แต่เลือกเส้นทางงานขาย เพราะสนุกกับการแก้โจทย์ให้คนจริงๆ วันนี้ผมช่วยเจ้าของธุรกิจ
-          สร้างทีมขายที่ทำเงินได้จริง ด้วย AI ที่ผมลงมือ build เองทุกวัน
+          แต่เลือกเส้นทางงานขายเพราะสนุกกับการแก้โจทย์ให้คนจริงๆ —
+          วันนี้ผมเอาประสบการณ์นั้นมาวางระบบ AI ให้ทั้งธุรกิจของเจ้าของ SME เดินเองได้ ด้วย AI ที่ผมลงมือ build เองทุกวัน
         </p>
 
         <ul class="mt-7 space-y-4">
           <li class="flex items-start gap-3 text-warm-ink/85">
             <span class="mt-0.5 shrink-0 text-coral"><Icon name="check-circle" size={22} /></span>
-            <span>วางระบบให้ทีมขาย SME มาแล้วกว่า 10 ราย รายได้รวม 100M+ บาท</span>
+            <span>ปั้นยอดขายให้ SME มาแล้วกว่า 10 ราย ยอดขายรวม 100M+ บาท — เข้าใจหน้างานจริงก่อนเอามาทำ AI</span>
           </li>
           <li class="flex items-start gap-3 text-warm-ink/85">
             <span class="mt-0.5 shrink-0 text-coral"><Icon name="check-circle" size={22} /></span>
@@ -761,7 +787,7 @@ const socials = [
   </section>
 
   <!-- ============================================================= -->
-  <!-- 10. QUALIFY — who this is for (personas) + fit check (yes/no) -->
+  <!-- 13. QUALIFY — who this is for (personas) + fit check (yes/no) -->
   <!-- ============================================================= -->
   <section class="bg-sand px-margin-page py-20 md:py-24">
     <div class="mx-auto max-w-5xl">
@@ -814,7 +840,7 @@ const socials = [
   </section>
 
   <!-- ============================================================= -->
-  <!-- 11. FREE RESOURCES + FEATURED ARTICLES — learn-for-free zone -->
+  <!-- 14. FREE RESOURCE (Agent Builder Kit) + FEATURED ARTICLES -->
   <!-- ============================================================= -->
   <section class="px-margin-page py-20 md:py-24">
     <div class="mx-auto max-w-6xl">
@@ -825,23 +851,18 @@ const socials = [
         </h2>
       </div>
 
-      <!-- Free e-books -->
-      <div class="mt-12 grid gap-6 md:grid-cols-2">
-        {freeStuff.map((item) => (
-          <div class="flex flex-col rounded-2xl border border-[#c9c2b2] bg-surface p-7 transition hover:-translate-y-0.5 hover:shadow-[3px_5px_0_rgba(30,27,22,0.06)]">
-            <span class="text-coral" aria-hidden="true"><Icon name="document-text" size={28} /></span>
-            <h3 class="mt-4 font-serif text-lg font-semibold leading-snug text-navy">{item.title}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-warm-ink/75">{item.body}</p>
-            <a
-              href={item.href}
-              target="_blank"
-              rel="noopener"
-              class="mt-5 inline-flex items-center justify-center rounded-xl border border-navy/25 px-6 py-3 font-medium text-navy transition hover:border-coral hover:text-coral"
-            >
-              ดาวน์โหลดฟรี ↓
-            </a>
+      <!-- Free Kit (AI lead magnet · replaced sales e-books) -->
+      <div class="mt-12">
+        <div class="mx-auto flex max-w-3xl flex-col items-start gap-5 rounded-2xl border-2 border-coral/40 bg-surface p-8 paper-shadow md:flex-row md:items-center md:gap-8">
+          <span class="text-coral" aria-hidden="true"><Icon name="folder-open" size={44} /></span>
+          <div class="flex-1">
+            <h3 class="font-serif text-2xl font-semibold leading-snug text-navy">{freeKit.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-warm-ink/75 md:text-base">{freeKit.body}</p>
           </div>
-        ))}
+          <a href={freeKit.href} class="inline-flex shrink-0 items-center rounded-xl bg-coral px-7 py-3.5 font-medium text-white transition hover:opacity-90">
+            {freeKit.cta}
+          </a>
+        </div>
       </div>
 
       <!-- Featured articles -->
@@ -880,7 +901,7 @@ const socials = [
   </section>
 
   <!-- ============================================================= -->
-  <!-- 12. FINAL CTA + CONTACT — one closing section -->
+  <!-- 15. FINAL CTA + CONTACT — one closing section -->
   <!-- ============================================================= -->
   <section class="bg-navy px-margin-page py-20 md:py-24">
     <div class="mx-auto max-w-3xl text-center">
