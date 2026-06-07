@@ -1,7 +1,11 @@
 ---
-// Auth gate — Google Sign-In (GIS). Replaces the old 6-digit PIN gate.
-// Identity is proven by Google; the backend (dashboard-api.gs) verifies the
-// ID token and checks the email allowlist before returning any data.
+// Auth gate — custom "Sign in with Google" button + Google OAuth token flow.
+// We use google.accounts.oauth2 (NOT the GIS rendered button) so the button is
+// fully custom-styled with zero Google-injected iframe / white frame. The
+// personalized GIS button renders its PII inside a cross-origin iframe whose
+// white background can't be themed — switching to the OAuth popup avoids it.
+// Backend (dashboard-api.gs) verifies the returned access token via tokeninfo
+// (aud == our client id + email allowlist) before issuing a session token.
 ---
 <section id="pin-gate" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-base-100 px-6">
   <div class="flex flex-col items-center gap-8 w-full max-w-xs">
@@ -13,37 +17,44 @@
       <p class="text-sm opacity-60 mt-1">เข้าสู่ระบบด้วยบัญชี Google</p>
     </div>
 
-    <!-- GIS renders the official "Sign in with Google" button here -->
-    <div id="g-btn" class="min-h-[44px] flex items-center justify-center"></div>
+    <!-- Fully custom button — no GIS iframe, no white frame. -->
+    <button
+      id="g-signin"
+      type="button"
+      disabled
+      class="flex items-center justify-center gap-3 w-[280px] h-11 rounded-full bg-white text-[#1f1f1f] text-sm font-medium shadow-sm transition hover:bg-gray-100 active:scale-[0.99] disabled:opacity-60 disabled:cursor-wait"
+    >
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.616z"/>
+        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.583-5.036-3.71H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+        <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
+        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+      </svg>
+      <span>ลงชื่อเข้าใช้ด้วย Google</span>
+    </button>
 
     <!-- Loading / error message -->
     <div id="pin-error" class="text-error text-sm min-h-[1.25rem] text-center" role="alert" aria-live="polite"></div>
   </div>
 </section>
 
-<!-- Strip the GIS button's framed focus ring (the offset outline that reads as a
-     white/blue box) so the white CI button sits flush on the dark background.
-     is:global because the button DOM is injected by Google after hydration. -->
-<style is:global>
-  #g-btn :focus,
-  #g-btn :focus-visible,
-  #g-btn :active {
-    outline: none !important;
-    box-shadow: none !important;
-  }
-</style>
-
 <script>
-  import { tryLoginGoogle, subscribe, getState } from '../../scripts/dashboard/store';
+  import { tryLoginGoogleToken, subscribe, getState } from '../../scripts/dashboard/store';
   import { GOOGLE_CLIENT_ID } from '../../scripts/dashboard/auth-config';
 
-  type CredentialResponse = { credential?: string };
-  type GoogleId = {
-    initialize: (cfg: { client_id: string; callback: (r: CredentialResponse) => void }) => void;
-    renderButton: (el: HTMLElement, opts: Record<string, unknown>) => void;
+  type TokenResponse = { access_token?: string; error?: string };
+  type TokenClient = { requestAccessToken: () => void };
+  type OAuth2 = {
+    initTokenClient: (cfg: {
+      client_id: string;
+      scope: string;
+      callback: (r: TokenResponse) => void;
+      error_callback?: (e: unknown) => void;
+    }) => TokenClient;
   };
 
   const errEl = document.getElementById('pin-error');
+  const btn = document.getElementById('g-signin') as HTMLButtonElement | null;
 
   function applyAuthVisibility() {
     const gate = document.getElementById('pin-gate');
@@ -56,14 +67,15 @@
   applyAuthVisibility();
   subscribe(applyAuthVisibility);
 
-  async function onCredential(resp: CredentialResponse) {
-    if (!resp.credential) {
-      if (errEl) errEl.textContent = 'ไม่ได้รับ token จาก Google';
+  async function onToken(resp: TokenResponse) {
+    if (!resp || resp.error || !resp.access_token) {
+      if (errEl) errEl.textContent = 'ไม่ได้รับสิทธิ์จาก Google';
+      if (btn) btn.disabled = false;
       return;
     }
     if (errEl) errEl.textContent = 'กำลังตรวจสอบสิทธิ์...';
     try {
-      await tryLoginGoogle(resp.credential);
+      await tryLoginGoogleToken(resp.access_token);
       if (errEl) errEl.textContent = '';
     } catch (err) {
       const e = err as Error & { code?: string };
@@ -72,12 +84,13 @@
       } else {
         if (errEl) errEl.textContent = 'เข้าสู่ระบบไม่สำเร็จ — ลองใหม่อีกครั้ง';
       }
+      if (btn) btn.disabled = false;
     }
   }
 
   function initGoogle(attempt = 0) {
-    const gid = (window as unknown as { google?: { accounts?: { id?: GoogleId } } }).google?.accounts?.id;
-    if (!gid) {
+    const oauth2 = (window as unknown as { google?: { accounts?: { oauth2?: OAuth2 } } }).google?.accounts?.oauth2;
+    if (!oauth2) {
       if (attempt > 50) { if (errEl) errEl.textContent = 'โหลด Google Sign-In ไม่สำเร็จ'; return; }
       setTimeout(() => initGoogle(attempt + 1), 100);
       return;
@@ -86,12 +99,21 @@
       if (errEl) errEl.textContent = 'ยังไม่ได้ตั้งค่า GOOGLE_CLIENT_ID (auth-config.ts)';
       return;
     }
-    gid.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onCredential });
-    const btn = document.getElementById('g-btn');
+    const client = oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: 'openid email profile',
+      callback: onToken,
+      error_callback: () => {
+        if (errEl) errEl.textContent = 'เปิดหน้าต่าง Google ไม่สำเร็จ — ลองใหม่อีกครั้ง';
+        if (btn) btn.disabled = false;
+      },
+    });
     if (btn) {
-      gid.renderButton(btn, {
-        type: 'standard', theme: 'outline', size: 'large',
-        shape: 'pill', text: 'signin_with', logo_alignment: 'center', width: 280,
+      btn.disabled = false;
+      btn.addEventListener('click', () => {
+        if (errEl) errEl.textContent = '';
+        btn.disabled = true;
+        client.requestAccessToken();
       });
     }
   }
