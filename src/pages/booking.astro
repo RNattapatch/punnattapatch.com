@@ -50,7 +50,10 @@ const accentVar = (a: AccentToken): string =>
       ? 'var(--color-pun-violet)'
       : 'var(--color-pun-coral)';
 
-const packages = SERVICES.map((s) => ({
+// Sales-consulting packages removed from booking picker (refocus 2026-06-07) — still sold 1-on-1
+const packages = SERVICES.filter(
+  (s) => !['sale-training-bundle', 'sales-system-sprint'].includes(s.slug)
+).map((s) => ({
   slug: s.slug,
   title: s.title,
   subtitle: s.subtitle,
