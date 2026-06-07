@@ -7,32 +7,34 @@
  *
  * Blocks: A Why opener · B 5 outcome cards · C Winning Zone (navy band) · D How · E Soft CTA
  */
+import Icon from './Icon.astro';
+
 const cards = [
   {
     title: 'เช้าวันจันทร์ที่คุณไม่ต้องเร่ง',
     body: 'งานเอกสารที่เคยกินเวลาทั้งเช้า — ใบเสนอราคา สรุปประชุม ตอบคำถามซ้ำๆ — ระบบจัดการให้เสร็จตั้งแต่ก่อนคุณตื่น',
     proof: 'เวลาคืน ~80%',
-    art: '/lineart/out-time.png',
+    icon: 'clock',
   },
   {
     title: 'ทีมเท่าเดิม แต่ทำงานได้เท่าทีมสิบคน',
     body: 'พนักงานคนเดียวที่มี AI agent ช่วยอยู่เบื้องหลัง ทำงานได้เทียบเท่าทีมที่ใหญ่กว่าหลายเท่า โดยไม่ต้องจ้างคนเพิ่ม',
-    art: '/lineart/out-scale.png',
+    icon: 'bolt',
   },
   {
     title: 'เซลล์เลิกจมกับเอกสาร',
     body: 'งานกรอกข้อมูล ตามเอกสาร ทำรายงาน — ยกให้ AI · เซลล์เอาเวลาที่ได้คืนไปทำสิ่งเดียวที่สร้างยอด คือคุยกับลูกค้า',
-    art: '/lineart/out-money.png',
+    icon: 'banknotes',
   },
   {
     title: 'ธุรกิจที่เดินได้โดยไม่ต้องรอคุณ',
     body: 'ผมช่วยสร้าง "สมองที่สอง" ให้ธุรกิจด้วย AI — ที่ทีมวิ่งไปถามระบบแทนที่จะวิ่งมาถามคุณทุกเรื่อง · วันที่คุณอยากพักได้จริงๆ คือวันที่ระบบโตพอจะดูแลตัวเอง',
-    art: '/lineart/out-freedom.png',
+    icon: 'lock-open',
   },
   {
     title: 'ระบบที่ตัดเย็บมาให้ธุรกิจคุณ',
     body: 'ไม่ใช่ ERP ราคาล้านที่ซื้อมาแล้วใช้ได้ไม่ถึงครึ่ง · เราสร้างด้วย AI เฉพาะส่วนที่ธุรกิจคุณใช้จริง — ตรงโจทย์กว่า เร็วกว่า ถูกกว่า และคุณเป็นเจ้าของมันเอง',
-    art: '/lineart/out-cost.png',
+    icon: 'wrench-screwdriver',
   },
 ];
 
@@ -91,7 +93,7 @@ const how = [
     <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {cards.map((c) => (
         <div class="flex h-full flex-col rounded-2xl border border-[#c9c2b2] bg-surface p-7 transition hover:-translate-y-0.5 hover:shadow-[3px_5px_0_rgba(30,27,22,0.06)]">
-          <img src={c.art} alt="" aria-hidden="true" loading="lazy" decoding="async" class="mb-4 h-14 w-14 object-contain" />
+          <span class="mb-4 text-coral" aria-hidden="true"><Icon name={c.icon} size={30} /></span>
           <h3 class="font-serif text-xl font-semibold leading-snug text-navy">{c.title}</h3>
           <p class="mt-3 text-sm leading-relaxed text-warm-ink/75 md:text-base">{c.body}</p>
           {c.proof && (
