@@ -98,6 +98,20 @@ export async function loginWithGoogle(idToken: string): Promise<{ token: string;
   return { token: data.token, expires_at: data.expires_at };
 }
 
+export async function loginWithGoogleToken(accessToken: string): Promise<{ token: string; expires_at: string }> {
+  const data = await apiPost<{ ok?: boolean; token?: string; expires_at?: string; error?: string; message?: string }>(
+    'login',
+    { access_token: accessToken }
+  );
+  if (!data.token || !data.expires_at) {
+    const err = new Error(data.message || data.error || 'login_failed') as Error & { code?: string };
+    err.code = data.error;
+    throw err;
+  }
+  setToken(data.token, data.expires_at);
+  return { token: data.token, expires_at: data.expires_at };
+}
+
 export function getDashboardData(): Promise<DashboardData> {
   return apiPost<DashboardData>('getDashboardData');
 }
