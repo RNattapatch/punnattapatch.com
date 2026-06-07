@@ -101,14 +101,8 @@ const services3 = [
   },
 ];
 
-// Cross-department reach (Business OS · v1.2) — AI at the hub reaches OUT to every department
-const crossDept = [
-  { name: 'ฝ่ายขาย', pos: 'left-1/2 top-[10%]' },
-  { name: 'บัญชี', pos: 'left-[86%] top-[38%]' },
-  { name: 'ผลิต / โรงงาน', pos: 'left-[72%] top-[83%]' },
-  { name: 'การตลาด', pos: 'left-[28%] top-[83%]' },
-  { name: 'IT', pos: 'left-[14%] top-[38%]' },
-];
+// Cross-department reach (Business OS · v1.2) — AI hub connected to every department
+const crossDept = ['ฝ่ายขาย', 'บัญชี', 'ผลิต / โรงงาน', 'การตลาด', 'IT'];
 
 // ===== DIAGNOSE — problem → service · AI Transformation only (sales packages removed from showcase) =====
 type Accent = 'navy' | 'coral';
@@ -387,35 +381,23 @@ const socials = [
             เพราะเมื่อข้อมูลทุกแผนกเชื่อมกันได้ ธุรกิจถึงเดินเองได้จริง
           </p>
         </div>
-        <!-- Radial hub — AI at center reaching OUT to every department (arrows point outward) -->
-        <div class="relative mx-auto mt-10 aspect-square w-full max-w-md">
-          <svg viewBox="0 0 100 100" class="absolute inset-0 h-full w-full" aria-hidden="true">
-            <defs>
-              <marker id="dept-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-                <path d="M1,1 L9,5 L1,9" fill="none" stroke="#dd4155" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </marker>
-            </defs>
-            <g stroke="#dd4155" stroke-width="0.7" stroke-dasharray="2.5 2.5" opacity="0.6" marker-end="url(#dept-arrow)">
-              <line x1="50" y1="50" x2="50" y2="22" />
-              <line x1="50" y1="50" x2="78" y2="40" />
-              <line x1="50" y1="50" x2="68" y2="75" />
-              <line x1="50" y1="50" x2="32" y2="75" />
-              <line x1="50" y1="50" x2="22" y2="40" />
-            </g>
-          </svg>
-          <span class="absolute left-1/2 top-1/2 z-10 inline-flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-navy font-serif text-xl font-semibold text-white shadow-md md:h-24 md:w-24 md:text-2xl">AI</span>
-          {crossDept.map((d) => (
-            <span
-              class:list={[
-                'absolute z-10 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full border border-navy/20 bg-ivory px-3 py-1.5 text-xs font-medium text-navy shadow-sm sm:px-4 sm:text-sm',
-                d.pos,
-              ]}
-            >
-              {d.name}
-            </span>
+        <!-- Business OS — AI hub connected to every department (generated line-art · per Pun) -->
+        <img
+          src="/lineart/business-os.png"
+          alt="AI เป็นศูนย์กลางเชื่อมทุกแผนก: ฝ่ายขาย บัญชี ผลิต/โรงงาน การตลาด และ IT"
+          loading="lazy"
+          decoding="async"
+          class="mx-auto mt-8 w-full max-w-md"
+        />
+        <div class="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm font-medium text-navy">
+          {crossDept.map((d, i) => (
+            <>
+              {i > 0 && <span class="text-coral/50" aria-hidden="true">·</span>}
+              <span>{d}</span>
+            </>
           ))}
         </div>
-        <p class="mt-6 text-center text-sm text-warm-ink/60">AI เข้าไปช่วยทุกแผนก — ไม่ใช่แค่ฝ่ายใดฝ่ายหนึ่ง</p>
+        <p class="mt-5 text-center text-sm text-warm-ink/60">AI เข้าไปช่วยทุกแผนก — ไม่ใช่แค่ฝ่ายใดฝ่ายหนึ่ง</p>
       </div>
 
       <div class="mt-10">
