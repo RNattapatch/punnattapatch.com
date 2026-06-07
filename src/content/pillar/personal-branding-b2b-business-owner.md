@@ -162,6 +162,6 @@ Total tool cost อยู่ในหลักพันบาท/เดือน
 
 ## อยากเริ่มก่อนจ้าง agency
 
-- [Trust Content Workshop for TikTok ฿39,900](/services/trust-content-tiktok-workshop): 1 วัน in-house workshop ถ่าย 3 คลิปเสร็จ + content calendar 30 วัน
-- [Advance AI Workshop ฿24,900](/services/ai-workshop): ใช้ AI ช่วย scale content production ให้ทีม
+- [AI Trust Content Cycle System ฿49,900](/services/trust-content-tiktok-workshop): 1 วัน in-house workshop ถ่าย 3 คลิปเสร็จ + content calendar 30 วัน
+- [Advance AI & Business Automation ฿39,900](/services/ai-workshop): ใช้ AI ช่วย scale content production ให้ทีม
 - [จองคิวคุย 30 นาที](/booking): ดูว่า personal brand strategy ไหน match กับธุรกิจคุณ

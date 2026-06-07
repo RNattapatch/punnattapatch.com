@@ -96,16 +96,13 @@ const faqs = [
   },
   {
     q: 'Day 2 ควรห่างจาก Day 1 กี่วัน',
-    a: 'ผมแนะนำ 2-4 สัปดาห์ เพื่อให้ทีมได้ทดลองใช้ workflow จริงก่อน แล้วเอา insight จากหน้างานมา build ต่อใน Day 2 ถ้าซื้อ Bundle จอง Day 2 ล่วงหน้าแล้วยืนยันวันทีหลังได้',
+    a: 'ผมแนะนำ 2-4 สัปดาห์ เพื่อให้ทีมได้ทดลองใช้ workflow จริงก่อน แล้วเอา insight จากหน้างานมา build ต่อใน Day 2 จอง Day 2 ล่วงหน้าแล้วยืนยันวันทีหลังได้',
   },
   {
     q: 'ทีมต้อง tech background ไหม',
     a: 'ไม่จำเป็นครับ stack ที่ใช้ (AI Automation Platform + Claude + Google Sheets) ออกแบบให้ non-tech ดูแลต่อเองได้ Module 8 สอนหัวหน้าทีมโดยเฉพาะให้ maintain และขยาย workflow ได้เอง',
   },
-  {
-    q: 'Bundle Day 1+2 จัดสองวันติดกันหรือแยก',
-    a: 'แยกครับ ห่างกัน 2-4 สัปดาห์ตามที่แนะนำ ไม่ได้จัดติดกัน เพราะต้องการให้ทีมนำ workflow ไปใช้จริงก่อน แล้วค่อย build ต่อใน Day 2 ตาม learning จากหน้างาน',
-  },
+  
   {
     q: 'Retainer หลัง Day 2 คืออะไร ต่างจาก Consulting แบบเก่ายังไง',
     a: 'Retainer v2.1 เปลี่ยนจาก session 90 นาที เป็น 1 Full Day ต่อเดือน ทำงานได้จริงกว่า เห็นผลใน 1 วัน มี 2 track: Advisory Day สำหรับปรับกลยุทธ์และแก้ปัญหา กับ Skill Injection Day สำหรับ upskill ทีมและ build tool ใหม่ร่วมกัน',
@@ -115,7 +112,7 @@ const faqs = [
 
 <BaseLayout
   title="Advance AI Workshop (Day 2) — สร้าง Multi-agent System ทั้งองค์กร"
-  description="Day 2 ต่อจาก Basic Workshop · Multi-agent orchestration · LINE OA + CRM integration · Auto-report KPI · ทีมดูแลต่อเองได้ · ฿39,900 หรือ Bundle Day1+2 ฿48,900"
+  description="Day 2 ต่อจาก Basic Foundation AI · Multi-agent orchestration · LINE OA + CRM integration · Auto-report KPI · ทีมดูแลต่อเองได้ · ฿39,900"
 >
   <!-- ===== PRE-REQ BANNER ===== -->
   <div
@@ -157,14 +154,7 @@ const faqs = [
         >
           จอง Advance · ฿39,900 →
         </a>
-        <a
-          href="/booking?package=ai-workshop&bundle=day1-day2"
-          class="btn btn-lg border font-bold"
-          style={`border-color: color-mix(in oklch, ${accent} 40%, transparent); color: ${accent};`}
-        >
-          Bundle Day 1+2 · ฿48,900
-        </a>
-      </div>
+        </div>
 
       <p class="mt-4 text-xs text-base-content/50">ชำระ 100% ก่อนเริ่มงาน · On-site เท่านั้น · ยืนยันวันได้ภายใน 30 วันหลังจอง</p>
     </div>
@@ -292,7 +282,7 @@ const faqs = [
         ราคาและตัวเลือก
       </h2>
 
-      <div class="mt-10 grid gap-6 md:grid-cols-2">
+      <div class="mt-10 mx-auto max-w-md">
         <!-- Advance only -->
         <div
           class="rounded-3xl border p-8"
@@ -323,55 +313,6 @@ const faqs = [
             style={`background: ${accent}; color: ${accentBtnText};`}
           >
             จอง Advance ฿39,900 →
-          </a>
-        </div>
-
-        <!-- Bundle Day 1+2 -->
-        <div
-          class="rounded-3xl border-2 p-8"
-          style={`border-color: ${accent}; background: color-mix(in oklch, ${accent} 6%, transparent);`}
-        >
-          <div class="flex items-center justify-between">
-            <p class="text-xs font-bold uppercase tracking-widest text-base-content/55">Bundle Day 1+2</p>
-            <span
-              class="rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider"
-              style={`background: ${accent}; color: ${accentBtnText};`}
-            >
-              ประหยัด ฿16,700
-            </span>
-          </div>
-          <div class="mt-3 font-display text-4xl font-bold" style={`color: ${accent};`}>฿48,900</div>
-          <p class="mt-1 text-sm text-base-content/60">2 วัน · แยก 2-4 สัปดาห์ · On-site เท่านั้น</p>
-          <div class="mt-3 rounded-xl border border-base-content/10 bg-base-100/50 p-3 text-xs text-base-content/55">
-            <div class="flex justify-between"><span>Basic Workshop (Day 1)</span><span>฿29,800</span></div>
-            <div class="mt-1 flex justify-between"><span>Advance Workshop (Day 2)</span><span>฿39,900</span></div>
-            <div class="mt-2 flex justify-between border-t border-base-content/10 pt-2 text-base-content/40">
-              <span>ถ้าซื้อแยก</span><span class="line-through">฿65,600</span>
-            </div>
-            <div class="mt-1 flex justify-between font-bold" style={`color: ${accent};`}>
-              <span>Bundle</span><span>฿48,900</span>
-            </div>
-          </div>
-          <ul class="mt-5 space-y-2 text-sm text-base-content/80">
-            {[
-              'Workshop Day 1 เต็ม 6-7 ชม. (Basic · 8 modules)',
-              'Workshop Day 2 เต็ม 6-7 ชม. (Advance · 8 modules)',
-              'AI Multi-agent workflow สำหรับทั้งองค์กร',
-              '30-day async LINE support ตลอดทั้ง 2 workshops',
-              'Handover SOP + วิดีโออัดหน้าจอทุก session',
-            ].map((inc) => (
-              <li class="flex items-start gap-2">
-                <span style={`color: ${accent};`}>✓</span>
-                <span>{inc}</span>
-              </li>
-            ))}
-          </ul>
-          <a
-            href="/booking?package=ai-workshop&bundle=day1-day2"
-            class="btn btn-md mt-8 w-full border-none font-bold shadow-xl"
-            style={`background: ${accent}; color: ${accentBtnText}; box-shadow: 0 12px 30px -10px color-mix(in oklch, ${accent} 50%, transparent);`}
-          >
-            จอง Bundle Day 1+2 · ฿48,900 →
           </a>
         </div>
       </div>

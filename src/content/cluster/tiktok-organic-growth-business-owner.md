@@ -178,7 +178,7 @@ B2B selling คือ trust economy. ลูกค้าเลือกคนท�
 
 ถ้าอยากได้ผลลัพธ์เหมือนช่องผม (funnel ที่ปิดดีล B2B ได้จริง) แบบไม่ต้องลองผิดลองถูก 4 เดือน
 
-**[Trust Content Workshop for TikTok ฿39,900 →](/services/trust-content-tiktok-workshop)**
+**[AI Trust Content Cycle System ฿49,900 →](/services/trust-content-tiktok-workshop)**
 
 1 วัน in-house workshop ที่บริษัทคุณ ผมเข้าไปถ่ายทำจริง 3 คลิปกับทีมคุณ + ออกแบบ content calendar 30 วัน + ส่งมอบ `playbook (คู่มือการทำงาน)` ที่ทีมคุณ maintain ต่อได้เอง เน้น authenticity ไม่ใช่ AI-generated content
 

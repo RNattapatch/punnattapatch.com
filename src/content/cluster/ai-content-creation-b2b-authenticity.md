@@ -104,7 +104,7 @@ AI สามารถลอกเลียนไอเดีย, หัวข้
 
 ### หากคุณต้องการสร้าง Personal Brand ที่แข็งแกร่งและน่าเชื่อถือ
 
-*   [**Trust Content Workshop for TikTok** ราคา ฿39,900](/services/trust-content-tiktok-workshop): เวิร์กชอป 1 วันเต็มแบบ on-site ที่จะช่วยคุณถ่ายคลิปจริง 3 คลิป พร้อมวาง content calendar สำหรับ 30 วันข้างหน้า โดยเน้นที่การสร้างความจริงใจ (authenticity) ไม่ใช่คอนเทนต์จาก AI
+*   [**AI Trust Content Cycle System** ราคา ฿49,900](/services/trust-content-tiktok-workshop): เวิร์กชอป 1 วันเต็มแบบ on-site ที่จะช่วยคุณถ่ายคลิปจริง 3 คลิป พร้อมวาง content calendar สำหรับ 30 วันข้างหน้า โดยเน้นที่การสร้างความจริงใจ (authenticity) ไม่ใช่คอนเทนต์จาก AI
 *   อ่านต่อเรื่อง **Personal Branding**: [สร้างตัวตนให้โดดเด่นสำหรับเจ้าของธุรกิจ B2B](/insights/personal-branding-b2b-business-owner)
 *   อ่านเคส **TikTok**: [สร้าง Funnel ผู้ติดตาม 10,000 คนใน 24 วันบน TikTok](/insights/tiktok-organic-growth-business-owner)
 *   สนใจเรียนรู้การใช้ AI สำหรับงาน Business: [AI Day Workshop สำหรับองค์กร](/services/ai-workshop)

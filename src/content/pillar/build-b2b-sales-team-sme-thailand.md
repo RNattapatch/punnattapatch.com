@@ -128,7 +128,7 @@ KPI dashboard (หน้าจอสรุปข้อมูล) พื้นฐ
 
 ## อยากเริ่มก่อนจ้าง project ใหญ่
 
-- [Advance AI Workshop 1 วัน ฿24,900](/services/ai-workshop) — วางระบบ + ได้ AI workflow (ขั้นตอนการทำงาน) ใช้งานจริงใน 1 วัน
+- [Advance AI & Business Automation 1 วัน ฿39,900](/services/ai-workshop) — วางระบบ + ได้ AI workflow (ขั้นตอนการทำงาน) ใช้งานจริงใน 1 วัน
 - [Sales System Sprint 1 เดือน ฿65,000](/services/sales-system-sprint) — ระบบขายครบพร้อม KPI dashboard + CRM automation
 - [BOSI DNA Quiz ฟรี](/bosi-dna-quiz) — รู้ DNA ทีมขายใน 5-10 นาที ก่อนวางระบบ
 - [จองคิวคุย 30 นาที](/booking) — ดูว่าผมเข้ากับ culture ของทีมคุณไหม

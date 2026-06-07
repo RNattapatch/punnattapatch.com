@@ -103,6 +103,6 @@ ROI (ผลตอบแทนการลงทุน): ทุน ฿65,000 ไ�
 ## Package ที่เกี่ยวข้อง
 
 - [Sales System Sprint ฿65,000](/services/sales-system-sprint): 1 เดือนวาง dealer portal + รอบการ check-in + ระบบติดตาม concentration risk
-- [Advance AI Workshop ฿24,900](/services/ai-workshop): 1 วัน สอนทำระบบอัปเดต dealer และแจ้งเตือน follow-up อัตโนมัติ
+- [Advance AI & Business Automation ฿39,900](/services/ai-workshop): 1 วัน สอนทำระบบอัปเดต dealer และแจ้งเตือน follow-up อัตโนมัติ
 
 อ่านต่อ: [คู่มือสร้างทีมขาย B2B](/insights/build-b2b-sales-team-sme-thailand) | [เพิ่มพนักงานขายแล้วยอดจะเพิ่มไหม](/faq#add-sales-staff-revenue-not-increase) | [Forklift Distributor 5 คน case study](/case-studies/forklift-distributor-5-person-team)

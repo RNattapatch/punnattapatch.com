@@ -51,7 +51,7 @@ Sheet 2: Dashboard (สร้างขึ้นอัตโนมัติ)
 
 ## Package ที่เกี่ยวข้อง
 
-- [Advance AI Workshop ฿24,900](/services/ai-workshop) — สร้าง KPI dashboard + 1 automation ในวันเดียว
+- [Advance AI & Business Automation ฿39,900](/services/ai-workshop) — สร้าง KPI dashboard + 1 automation ในวันเดียว
 - [Sales System Sprint ฿65,000](/services/sales-system-sprint) — วางระบบ KPI + Commission + automation ครบ 1 เดือน
 
 ทั้ง 2 package ส่งมอบ template (ไฟล์ต้นแบบ) Sheets ที่ลูกค้า copy ไปใช้ต่อเองได้ + documentation (เอกสารคู่มือ) + screen recording

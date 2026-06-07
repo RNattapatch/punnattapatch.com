@@ -114,7 +114,7 @@ anonymized: true
 
 ## อยากได้ผลลัพธ์แบบนี้ไหม?
 
-- [Advance AI Workshop ฿24,900](/services/ai-workshop) — 1 วัน build automation ตัวแรก
+- [Advance AI & Business Automation ฿39,900](/services/ai-workshop) — 1 วัน build automation ตัวแรก
 - [Sales System Sprint ฿65,000](/services/sales-system-sprint) — 1 เดือน วางระบบครบ (KPI + Commission + workflow)
 - [BOSI DNA Quiz](/bosi-dna-quiz) — รู้ DNA ทีมก่อนเริ่ม
 - [กรอกฟอร์ม 3 นาที](/intake-form) — ผมอ่านแล้วบอกว่าเคสคุณเหมือน/ต่างจากลูกค้ารายนี้ยังไง

@@ -122,6 +122,6 @@ Agency เขียนคอนเทนต์ให้ ได้แค่กา
 
 ## เริ่มสร้าง "ความคุ้นเคย" วันนี้
 
-- [Trust Content Workshop for TikTok ฿39,900](/services/trust-content-tiktok-workshop) — 1 วัน in-house workshop ถ่าย 3 คลิปเสร็จจริง + content calendar 30 วัน
-- [Advance AI Workshop ฿24,900](/services/ai-workshop) — ใช้ AI ช่วย scale การผลิตคอนเทนต์
+- [AI Trust Content Cycle System ฿49,900](/services/trust-content-tiktok-workshop) — 1 วัน in-house workshop ถ่าย 3 คลิปเสร็จจริง + content calendar 30 วัน
+- [Advance AI & Business Automation ฿39,900](/services/ai-workshop) — ใช้ AI ช่วย scale การผลิตคอนเทนต์
 - [กรอกฟอร์มประเมิน 3 นาที](/intake-form) — ผมอ่านแล้วจะบอกให้ว่าธุรกิจคุณควรเริ่มที่ช่องทางไหนก่อน
