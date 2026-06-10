@@ -1,0 +1,149 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/site';
+import promptRaw from '../data/nissan-prompt.txt?raw';
+
+const title = 'ของขวัญจากงาน Nissan Summit — AI Image Prompt Generator';
+const description =
+  'Welcome ผู้เข้าร่วมงาน Nissan Summit — รับเครื่องมือเขียน prompt ทำภาพด้วย AI ระดับเอเจนซี ฟรีจากปัน ณัฐพัชร์';
+---
+
+<BaseLayout title={title} description={description} noindex={true}>
+  <section class="px-4 py-16 md:py-24">
+    <div class="mx-auto max-w-2xl">
+      <div class="text-center">
+        <img src="/logos/nissan-2020.svg" alt="Nissan" class="mx-auto h-16 w-auto md:h-20" />
+        <p class="mt-6 text-xs uppercase tracking-[0.25em] text-base-content/50">Welcome</p>
+        <h1 class="mt-2 font-display text-3xl font-bold leading-snug text-base-content md:text-4xl">
+          ยินดีต้อนรับผู้เข้าร่วมงาน<br />Nissan Summit 🤝
+        </h1>
+        <p class="mt-4 text-lg leading-relaxed text-base-content/80">
+          ขอบคุณที่ทักมาครับ — นี่คือของขวัญจากผม<br class="hidden md:block" />
+          <strong class="text-secondary">AI Image Prompt Generator</strong> เครื่องมือเขียน prompt ทำภาพระดับเอเจนซี
+        </p>
+      </div>
+
+      <div class="mt-10 rounded-2xl border border-base-content/10 bg-base-200 p-6 text-center">
+        <p class="text-sm text-base-content/70">กดปุ่มเดียว แล้วเอาไปวางใน ChatGPT / Claude / Gemini ได้เลย</p>
+        <button
+          id="copy-prompt"
+          type="button"
+          class="btn btn-secondary btn-lg mt-4 w-full font-bold text-white shadow-lg md:w-auto md:px-10"
+        >
+          📋 คัดลอก Prompt ทั้งหมด
+        </button>
+        <p id="copy-done" class="mt-3 hidden text-sm font-bold text-success">
+          คัดลอกแล้ว ✓ ไปวางใน AI ได้เลยครับ
+        </p>
+      </div>
+
+      <div class="mt-10">
+        <h2 class="font-display text-xl font-bold text-base-content">วิธีใช้ 3 ขั้น</h2>
+        <ol class="mt-4 space-y-3">
+          <li class="flex gap-4 rounded-xl border border-base-content/10 bg-base-100 p-4">
+            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary font-bold text-primary-content">1</span>
+            <p class="text-base-content/85">กดปุ่ม <strong>"คัดลอก Prompt ทั้งหมด"</strong> ด้านบน</p>
+          </li>
+          <li class="flex gap-4 rounded-xl border border-base-content/10 bg-base-100 p-4">
+            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary font-bold text-primary-content">2</span>
+            <p class="text-base-content/85">
+              เปิด <strong>ChatGPT / Claude / Gemini</strong> แล้ววางทั้งหมด
+              (หรือสร้างเป็น Project / Gem / Custom GPT ไว้ใช้ยาวๆ)
+            </p>
+          </li>
+          <li class="flex gap-4 rounded-xl border border-base-content/10 bg-base-100 p-4">
+            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary font-bold text-primary-content">3</span>
+            <p class="text-base-content/85">
+              พิมพ์ว่า <strong>"เริ่ม"</strong> — ตัวช่วยจะถามทีละข้อ
+              แล้วเขียน prompt ภาพระดับเอเจนซีให้คุณเอาไปเจนเอง
+            </p>
+          </li>
+        </ol>
+      </div>
+
+      <div class="mt-10">
+        <h2 class="font-display text-xl font-bold text-base-content">ตัว Prompt เต็มๆ (เผื่ออยากอ่านก่อน)</h2>
+        <pre
+          id="prompt-view"
+          class="mt-4 max-h-96 overflow-auto whitespace-pre-wrap rounded-xl border border-base-content/10 bg-base-100 p-4 text-xs leading-relaxed text-base-content/80">{promptRaw}</pre>
+      </div>
+
+      <div class="mt-12 rounded-2xl border border-secondary/30 bg-secondary/5 p-6 text-center">
+        <p class="font-display text-lg font-bold text-base-content">อยากให้ AI ช่วยทั้งระบบงานขาย ไม่ใช่แค่ทำภาพ?</p>
+        <p class="mt-2 text-sm leading-relaxed text-base-content/75">
+          ผมช่วยธุรกิจ B2B ไทยวางระบบขาย + AI ที่ใช้ได้จริง — ทักมาคุยกันได้ครับ
+        </p>
+        <div class="mt-5 flex flex-wrap justify-center gap-3">
+          <a
+            href={SITE.social.line}
+            target="_blank"
+            rel="noopener"
+            class="btn gap-2 border-none font-bold text-white hover:opacity-90"
+            style="background: #06C755;"
+          >
+            <img src="/line-logo.png" alt="" class="h-5 w-5 shrink-0" aria-hidden="true" />
+            ทักใน LINE OA
+          </a>
+          <a href="/" class="btn btn-outline">ดูว่าผมทำอะไร →</a>
+        </div>
+        <p class="mt-4 text-xs text-base-content/50">
+          ปัน ณัฐพัชร์ · @pun_nattapatch · B2B Sales & Agentic AI Transformation
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <textarea
+    id="prompt-source"
+    readonly
+    aria-hidden="true"
+    tabindex="-1"
+    style="position:fixed;left:-9999px;top:0;opacity:0;">{promptRaw}</textarea>
+
+  <script is:inline>
+    (function () {
+      const btn = document.getElementById('copy-prompt');
+      const done = document.getElementById('copy-done');
+      const src = document.getElementById('prompt-source');
+      if (!btn || !src) return;
+      const ORIG = btn.textContent;
+      function success() {
+        if (done) done.classList.remove('hidden');
+        btn.textContent = '✓ คัดลอกแล้ว';
+        setTimeout(function () {
+          btn.textContent = ORIG;
+          if (done) done.classList.add('hidden');
+        }, 3000);
+      }
+      btn.addEventListener('click', async function () {
+        const text = src.value;
+        try {
+          await navigator.clipboard.writeText(text);
+          success();
+          return;
+        } catch (e) {}
+        try {
+          if (/ipad|iphone/i.test(navigator.userAgent)) {
+            src.contentEditable = 'true';
+            const range = document.createRange();
+            range.selectNodeContents(src);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            src.setSelectionRange(0, text.length);
+            src.contentEditable = 'false';
+          } else {
+            src.focus();
+            src.select();
+            src.setSelectionRange(0, text.length);
+          }
+          if (document.execCommand('copy')) {
+            success();
+            return;
+          }
+        } catch (e) {}
+        alert('คัดลอกอัตโนมัติไม่สำเร็จ — กดค้างที่กล่อง Prompt ด้านล่าง แล้วเลือก Copy ได้ครับ');
+      });
+    })();
+  </script>
+</BaseLayout>
