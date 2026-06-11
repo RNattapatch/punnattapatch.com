@@ -13,7 +13,6 @@ const EXAMPLES = [
     img: '/images/nissan/textad-kicks.jpg',
     file: 'nissan-kicks-ai-ad.jpg',
     title: 'KICKS e-Power — เจาะ First Jobber',
-    technique: 'image-to-image จากรูปรถจริง 1 รูป · AI วางข้อความไทยในภาพเอง',
     prompt: `Keep the Nissan Kicks EXACTLY as the reference photo, photorealistic, same model/color/wheels/badges.
 Make a premium VERTICAL mobile ad 9:16, Bangkok city scene for a young Thai first-jobber.
 Render a bold legible Thai headline at top: "ออกตัวทันใจ เหมือนรถไฟฟ้า ไม่ต้องชาร์จ" + English tagline: "KICKS ON. GAME ON."
@@ -24,7 +23,6 @@ Render a bold legible Thai headline at top: "ออกตัวทันใจ �
     img: '/images/nissan/textad-serena.jpg',
     file: 'nissan-serena-ai-ad.jpg',
     title: 'SERENA — เจาะครอบครัว',
-    technique: 'image-to-image จากรูปรถจริง 1 รูป · AI วางข้อความไทยในภาพเอง',
     prompt: `Keep the Nissan Serena EXACTLY as the reference photo, photorealistic, same model/color/wheels/badges.
 Make a premium VERTICAL mobile ad 9:16, warm candid scene of a Thai family loading up for a trip.
 Render a bold legible Thai headline at top: "พื้นที่รถตู้ ประตูเปิดได้แม้มือไม่ว่าง" + English tagline: "Convenience in Every Detail."
@@ -35,7 +33,6 @@ Render a bold legible Thai headline at top: "พื้นที่รถตู�
     img: '/images/nissan/textad-xtrail.jpg',
     file: 'nissan-xtrail-ai-ad.jpg',
     title: 'X-TRAIL e-4ORCE — เจาะผู้บริหาร',
-    technique: 'image-to-image จากรูปรถจริง 1 รูป · AI วางข้อความไทยในภาพเอง',
     prompt: `Keep the Nissan X-Trail EXACTLY as the reference photo, photorealistic, same model/color/wheels/badges.
 Make a premium VERTICAL mobile ad 9:16, misty mountain road scene with a confident executive mood.
 Render a bold legible Thai headline at top: "ขับ 4 ล้อจริง มั่นใจทุกเส้นทาง" + English tagline: "Excitement in Every Drive."
@@ -45,16 +42,14 @@ Render a bold legible Thai headline at top: "ขับ 4 ล้อจริง �
     id: 'almera',
     img: '/images/nissan/final-almera-ad.jpg',
     file: 'nissan-almera-ai-ad.jpg',
-    title: 'NEW ALMERA — ขั้นสูง: 2 reference',
-    technique: 'reference 2 รูป — ภาพฉากจริง + ภาพต้นแบบ layout → AI ลอก style typography มาวางเป๊ะ',
+    title: 'NEW ALMERA Turbo — เจาะสายประหยัด',
     prompt: `The first reference image is the base photo: a Nissan Almera sedan with a Thai family at a scenic morning viewpoint. Keep this photo, the car, the people, and the scenery EXACTLY unchanged. The second reference image shows the exact Nissan advertising text layout style to copy. Add advertising text and graphic elements onto the first image in EXACTLY the same graphic style, typography and layout system as the second reference: (1) Top-left: red square Nissan logo block with white NISSAN circular emblem. (2) Upper area over the sky: big bold italic Thai headline in three stacked lines exactly like the second reference typography — first line 'เติม 30 ลิตร' in red bold Thai font, second line 'วิ่งทางไกล 800 โล' in black bold Thai font, third line smaller black bold text 'จากรีวิวเจ้าของจริง' with a short red underline swoosh beneath it. (3) Bottom center above the button: white bold logo text 'NEW ALMERA' with small 'TURBO' badge below, then small white Thai text 'ออปชั่นเต็มคัน ในราคาที่เอื้อมถึง' (4) Bottom center: glossy red pill-shaped button with white Thai text 'นัดทดลองขับ' with subtle highlight, same style as the second reference. Render all Thai text accurately and crisply, professional Thai advertising typography, high contrast, premium automotive ad finish. 9:16 vertical.`,
   },
   {
     id: 'navara',
     img: '/images/nissan/final-navara-ad.jpg',
     file: 'nissan-navara-ai-ad.jpg',
-    title: 'NAVARA PRO-4X — ขั้นสูง: 2 reference',
-    technique: 'reference 2 รูป — ภาพฉากจริง + ภาพต้นแบบ layout → AI ลอก style typography มาวางเป๊ะ',
+    title: 'NAVARA PRO-4X — เจาะเจ้าของธุรกิจสายลุย',
     prompt: `The first reference image is the base photo: a Nissan Navara PRO-4X pickup with a Thai man on a mountain dirt road at golden hour. Keep this photo, the truck, the man, and the scenery EXACTLY unchanged. The second reference image shows the exact Nissan advertising text layout style to copy. Add advertising text and graphic elements onto the first image in EXACTLY the same graphic style, typography and layout system as the second reference: (1) Top-left: red square Nissan logo block with white NISSAN circular emblem and small white text 'Innovation that excites' below it. (2) Upper area over the sky: big bold italic Thai headline in two stacked lines — first line 'ขับสบายเหมือนเก๋ง' in white bold Thai font, second line 'ลุยได้แบบกระบะ' in white bold Thai font on an angled red banner ribbon, exactly like the red angled banner in the second reference. (3) Below the headline: smaller white italic English tagline 'Tough in Every Way.' (4) Bottom-left corner: white bold logo text 'NAVARA' with 'PRO-4X' badge styling below it. (5) Bottom-right corner: glossy red pill-shaped button with white Thai text 'นัดทดลองขับ' with subtle highlight, same style as the second reference. Render all Thai text accurately and crisply, professional Thai advertising typography, high contrast, premium automotive ad finish. 9:16 vertical.`,
   },
 ];
@@ -141,7 +136,6 @@ Render a bold legible Thai headline at top: "ขับ 4 ล้อจริง �
                 />
                 <div class="p-4">
                   <p class="font-display text-base font-bold text-base-content">{ex.title}</p>
-                  <p class="mt-1 text-xs leading-relaxed text-base-content/60">{ex.technique}</p>
                   <div class="mt-3 flex flex-wrap gap-2">
                     <button
                       type="button"
