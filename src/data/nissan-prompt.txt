@@ -97,9 +97,9 @@ Create a premium healthcare awareness infographic poster.
   icon positioning, color flow and emotional tone — BUT redesign into a premium healthcare campaign
   style. DO NOT copy the reference or reproduce logos exactly. Create a NEW premium version.
 [THEME] "โรคฮิตในเด็กช่วงเปิดเทอม" — premium healthcare infographic, modern Thai corporate, educational poster
-[BRAND] AS Broker x MSIG · mood: trustworthy, family-friendly, premium, clean, educational · audience: parents & families
+[BRAND] "InsureCare" (แบรนด์ประกันสมมุติ) · mood: trustworthy, family-friendly, premium, clean, educational · audience: parents & families
 [COLOR] teal/emerald green + turquoise + white primary · yellow & soft-orange + medical-red highlights · clean medical gradient background with subtle shield/protection motifs
-[LAYOUT] top-left AS Broker logo · top-right MSIG logo · large bold Thai headline "5 โรคฮิตในเด็ก ช่วงเปิดเทอม" · sub headline "Back to School · รู้ทัน ป้องกันได้"
+[LAYOUT] top-left brand logo · top-right partner logo · large bold Thai headline "5 โรคฮิตในเด็ก ช่วงเปิดเทอม" · sub headline "Back to School · รู้ทัน ป้องกันได้"
 [VISUAL] semi-realistic Thai school children, a parent caring for a child, clean educational medical illustrations (NOT scary)
 [CONTENT] disease cards: RSV · ไข้หวัดใหญ่ · มือเท้าปาก · ไข้เลือดออก · ท้องเสีย/อาหารเป็นพิษ ·
   a "วิธีป้องกัน" section (ล้างมือ · ใส่แมส · กินของสะอาด · นอนพอ · เลี่ยงคนป่วย) ·
@@ -107,7 +107,7 @@ Create a premium healthcare awareness infographic poster.
 [TYPOGRAPHY] large, readable, premium, modern Thai sans-serif, high contrast — white / teal / yellow-highlight text
 [LIGHTING & QUALITY] soft daylight, premium medical glow, clean reflections, ultra detailed, cinematic, social-media optimized
 [RATIO] 1:1 square Facebook post
-[CLOSER] make it look like a professional healthcare campaign designed by a premium Thai advertising agency for AS Broker
+[CLOSER] make it look like a professional healthcare campaign designed by a premium Thai advertising agency for the brand
 ```
 
 > นี่คือระดับ "ละเอียด" ที่ตั้งเป้า — สังเกตว่าทุกบล็อกมีรายละเอียดจริง ไม่ใช่คำลอยๆ
