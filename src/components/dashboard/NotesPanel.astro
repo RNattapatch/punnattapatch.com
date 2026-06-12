@@ -9,13 +9,33 @@
 <script>
   import { subscribe, getState } from '../../scripts/dashboard/store';
 
+  // Unsaved-edit guard: a focus check alone isn't enough — on mobile, tapping
+  // anywhere to dismiss the keyboard blurs the textarea, and the next store
+  // notify (e.g. background refresh after a save) would clobber the typed note
+  // with the stale server value. Track dirty state per lead instead.
+  let dirty = false;
+  let currentLeadId = '';
+
   function apply() {
     const lead = getState().selectedLead;
     const ta = document.getElementById('notes-textarea') as HTMLTextAreaElement | null;
     if (!ta || !lead) return;
+    const leadId = String(lead.lead_id || '');
+    const serverVal = (lead.crm_notes as string) || '';
+    if (leadId !== currentLeadId) {
+      // Switched to another lead — show its saved notes fresh.
+      currentLeadId = leadId;
+      dirty = false;
+      ta.value = serverVal;
+      return;
+    }
+    if (ta.value === serverVal) { dirty = false; return; } // save round-trip confirmed
     if (document.activeElement === ta) return; // don't clobber while typing
-    ta.value = (lead.crm_notes as string) || '';
+    if (dirty) return; // never clobber unsaved edits
+    ta.value = serverVal;
   }
+
+  document.getElementById('notes-textarea')?.addEventListener('input', () => { dirty = true; });
 
   apply();
   subscribe(apply);

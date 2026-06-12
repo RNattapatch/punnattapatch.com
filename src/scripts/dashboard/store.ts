@@ -230,7 +230,11 @@ export async function patchLead(leadId: string, fields: Partial<LeadUi>): Promis
     state.selectedLead = res.lead;
     mergeIntoLeadList(res.lead);
     notify();
-    toast('บันทึกแล้ว');
+    if (res.dropped_fields && res.dropped_fields.length) {
+      toast(`บันทึกไม่ครบ — Sheet ไม่มีคอลัมน์: ${res.dropped_fields.join(', ')} (รัน runEnsureCrmColumns ใน Apps Script)`, 'error');
+    } else {
+      toast('บันทึกแล้ว');
+    }
     void refresh();
   } catch (err) {
     handleApiError(err, 'บันทึกไม่สำเร็จ');

@@ -4,6 +4,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbxGxIc44_3S4VQHoGScVZx3
 
 const TOKEN_KEY = 'pun_dash_token';
 const TOKEN_EXP_KEY = 'pun_dash_exp';
+const TOKEN_TTL_KEY = 'pun_dash_ttl';
 
 export type ApiOk<T> = { ok: true; data: T };
 export type ApiErr = { ok: false; error: string; message: string };
@@ -59,8 +60,21 @@ export function clearToken(): void {
 }
 
 function setToken(token: string, expiresAt: string): void {
+  const expMs = new Date(expiresAt).getTime();
   sessionStorage.setItem(TOKEN_KEY, token);
-  sessionStorage.setItem(TOKEN_EXP_KEY, String(new Date(expiresAt).getTime()));
+  sessionStorage.setItem(TOKEN_EXP_KEY, String(expMs));
+  sessionStorage.setItem(TOKEN_TTL_KEY, String(expMs - Date.now()));
+}
+
+// Server renews the token TTL on every authenticated call (sliding session —
+// see verifyToken_ in dashboard-api.gs). Mirror that locally so getToken()
+// doesn't hard-expire the session 30 min after login while Pun is mid-call.
+function slideTokenExpiry(): void {
+  if (typeof sessionStorage === 'undefined') return;
+  if (!sessionStorage.getItem(TOKEN_KEY)) return;
+  const ttl = parseInt(sessionStorage.getItem(TOKEN_TTL_KEY) || '', 10);
+  if (!Number.isFinite(ttl) || ttl <= 0) return;
+  sessionStorage.setItem(TOKEN_EXP_KEY, String(Date.now() + ttl));
 }
 
 async function apiPost<T>(action: string, payload: Record<string, unknown> = {}): Promise<T> {
@@ -81,6 +95,7 @@ async function apiPost<T>(action: string, payload: Record<string, unknown> = {})
     e.code = json.error;
     throw e;
   }
+  slideTokenExpiry();
   return json.data;
 }
 
@@ -120,7 +135,12 @@ export function getLead(lead_id: string): Promise<{ lead: LeadUi; interactions: 
   return apiPost('getLead', { lead_id });
 }
 
-export function updateLead(lead_id: string, fields: Partial<LeadUi>): Promise<{ lead: LeadUi }> {
+// dropped_fields: whitelisted fields the backend could not persist because the
+// Sheet has no column for them — surface these to the user, never ignore.
+export function updateLead(
+  lead_id: string,
+  fields: Partial<LeadUi>
+): Promise<{ lead: LeadUi; dropped_fields?: string[] }> {
   return apiPost('updateLead', { lead_id, fields });
 }
 
