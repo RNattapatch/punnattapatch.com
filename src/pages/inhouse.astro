@@ -5,6 +5,15 @@ import { SITE } from '../data/site';
 const accent = 'var(--color-pun-coral)';
 const accentHex = '#dd4155';
 
+// Testimonial gallery — authority + trust (real workshops + client reviews)
+const testimonials = [
+  { src: '/testimonial/web/class-selfie.jpg', alt: 'ทีมพนักงานร่วม Workshop AI Agent กับปัน — ภาพหมู่หลังอบรม' },
+  { src: '/testimonial/web/chat-highway.jpg', alt: 'รีวิวจากลูกค้า — อาจารย์ปันสอนถูกใจทีมงานมาก ใช้ AI ได้ทั้งบริษัท' },
+  { src: '/testimonial/web/fb-learning-org.jpg', alt: 'โพสต์รีวิวการอบรม AI ในองค์กร — บรรยากาศ Workshop จริง' },
+  { src: '/testimonial/web/seminar-room.jpg', alt: 'บรรยากาศห้องสัมมนา AI Agent — ผู้เข้าร่วมเต็มห้อง' },
+  { src: '/testimonial/web/pun-consulting.jpg', alt: 'ปันให้คำปรึกษาและสอนการใช้ AI Agent กับทีมลูกค้า' },
+  { src: '/testimonial/web/client-gift.jpg', alt: 'ลูกค้านำของขวัญมาขอบคุณปันหลังใช้ระบบ AI ได้จริง' },
+];
 ---
 
 <BaseLayout
@@ -97,6 +106,29 @@ const accentHex = '#dd4155';
             — เจ้าของธุรกิจ B2B (นามแฝง ตาม NDA) · ผู้จัดจำหน่ายอุปกรณ์อุตสาหกรรม · ทีม 8 คน
           </p>
         </div>
+      </div>
+
+      {/* Testimonial gallery — authority + trust */}
+      <div class="mt-6">
+        <p class="text-center text-xs font-bold uppercase tracking-widest" style={`color: ${accent};`}>
+          เสียงจริง · บรรยากาศจริง จากทีมที่อบรมไปแล้ว
+        </p>
+        <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {testimonials.map((t) => (
+            <div class="overflow-hidden rounded-xl border border-base-content/10 bg-base-200">
+              <img
+                src={t.src}
+                alt={t.alt}
+                class="aspect-square w-full object-cover transition hover:scale-105"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          ))}
+        </div>
+        <p class="mt-3 text-center text-xs text-base-content/45">
+          ภาพและรีวิวจากลูกค้าจริง · เผยแพร่โดยได้รับความยินยอม
+        </p>
       </div>
 
       {/* CTA */}

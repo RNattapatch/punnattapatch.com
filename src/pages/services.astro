@@ -47,6 +47,16 @@ const consultRow = [
 const ceo = svcBySlug('ceo-advisory');
 const trust = svcBySlug('trust-content-tiktok-workshop');
 const baht = (n: number) => '฿' + n.toLocaleString('en-US');
+
+// ===== Social proof — testimonial gallery (authority + trust) =====
+const testimonials = [
+  { src: '/testimonial/web/class-selfie.jpg', alt: 'ทีมพนักงานร่วม Workshop AI Agent กับปัน — ภาพหมู่หลังอบรม' },
+  { src: '/testimonial/web/chat-highway.jpg', alt: 'รีวิวจากลูกค้า — อาจารย์ปันสอนถูกใจทีมงานมาก ใช้ AI ได้ทั้งบริษัท' },
+  { src: '/testimonial/web/fb-learning-org.jpg', alt: 'โพสต์รีวิวการอบรม AI ในองค์กร — บรรยากาศ Workshop จริง' },
+  { src: '/testimonial/web/seminar-room.jpg', alt: 'บรรยากาศห้องสัมมนา AI Agent — ผู้เข้าร่วมเต็มห้อง' },
+  { src: '/testimonial/web/pun-consulting.jpg', alt: 'ปันให้คำปรึกษาและสอนการใช้ AI Agent กับทีมลูกค้า' },
+  { src: '/testimonial/web/client-gift.jpg', alt: 'ลูกค้านำของขวัญมาขอบคุณปันหลังใช้ระบบ AI ได้จริง' },
+];
 ---
 
 <BaseLayout
@@ -302,6 +312,37 @@ const baht = (n: number) => '฿' + n.toLocaleString('en-US');
           กลับไปวันรุ่งขึ้นเปิดเครื่องมือที่สร้างไว้ใช้งานได้เลย ไม่ต้องรอใคร
         </p>
       </div>
+    </div>
+  </section>
+
+  <!-- ===== SOCIAL PROOF — Testimonials ===== -->
+  <section class="bg-sand px-margin-page py-14 md:py-20">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-xs font-semibold uppercase tracking-[0.15em] text-coral">เสียงจากลูกค้า</p>
+      <h2 class="mt-3 font-serif text-2xl font-semibold leading-tight text-navy md:text-3xl">
+        ทีมที่ผมเข้าไปวางระบบให้ — ใช้งานได้จริง
+      </h2>
+      <p class="mt-2 max-w-2xl text-warm-ink/70">
+        รีวิวและบรรยากาศจริงจากองค์กรที่ผมจับมือทำ — ไม่ใช่สไลด์ แต่เป็นผลลัพธ์ที่ทีมรันต่อเองได้
+      </p>
+
+      <div class="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3">
+        {testimonials.map((t) => (
+          <figure class="overflow-hidden rounded-2xl border border-[#c9c2b2] bg-surface p-2 paper-shadow transition hover:-translate-y-0.5">
+            <img
+              src={t.src}
+              alt={t.alt}
+              class="aspect-square w-full rounded-xl object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        ))}
+      </div>
+
+      <p class="mt-5 text-center text-xs text-muted">
+        ภาพและรีวิวจากลูกค้าจริง · เผยแพร่โดยได้รับความยินยอม
+      </p>
     </div>
   </section>
 
