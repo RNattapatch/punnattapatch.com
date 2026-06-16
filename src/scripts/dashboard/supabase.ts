@@ -27,9 +27,11 @@ export async function getSupabaseSession(): Promise<Session | null> {
 
 // Bridge: exchange a Google ID token (from GIS) for a Supabase session so RLS
 // reads work. Never throws — a failure here must not block the GAS login.
-export async function signInToSupabase(idToken: string): Promise<boolean> {
+export async function signInToSupabase(idToken: string, nonce?: string): Promise<boolean> {
   try {
-    const { error } = await supabase.auth.signInWithIdToken({ provider: 'google', token: idToken });
+    // nonce: raw value whose SHA-256 hash is embedded in the FedCM ID token.
+    // Supabase rejects the token if the nonces don't match (or one is missing).
+    const { error } = await supabase.auth.signInWithIdToken({ provider: 'google', token: idToken, nonce });
     if (error) {
       console.error('[supabase] signInWithIdToken failed:', error.message);
       return false;

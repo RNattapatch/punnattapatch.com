@@ -116,11 +116,12 @@ export function toast(message: string, kind: 'success' | 'error' | 'info' = 'suc
 }
 
 // ------- Auth flow -------
-export async function tryLoginGoogle(idToken: string): Promise<void> {
+export async function tryLoginGoogle(idToken: string, nonce?: string): Promise<void> {
   await loginWithGoogle(idToken);
   // Bridge the same Google identity into a Supabase session so RLS-scoped reads
   // work. Non-fatal: if it fails, refresh() falls back to the Apps Script read.
-  await signInToSupabase(idToken);
+  // nonce: raw value matching the hashed nonce baked into the FedCM ID token.
+  await signInToSupabase(idToken, nonce);
   state.authed = true;
   notify();
   await refresh();

@@ -50,12 +50,27 @@
       auto_select?: boolean;
       use_fedcm_for_prompt?: boolean;
       cancel_on_tap_outside?: boolean;
+      nonce?: string;
     }) => void;
     prompt: (listener?: (n: PromptNotification) => void) => void;
   };
 
   const errEl = document.getElementById('pin-error');
   const btn = document.getElementById('g-signin') as HTMLButtonElement | null;
+
+  // Nonce binds the Google FedCM ID token to this session: Google embeds the
+  // hashed nonce in the token; we hand Supabase the raw value so it can verify
+  // the match. Without this, signInWithIdToken 400s ("nonce ... should either
+  // both exist or not") because FedCM always stamps a nonce into the token.
+  let rawNonce = '';
+  async function makeNonce(): Promise<{ raw: string; hashed: string }> {
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    const raw = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw));
+    const hashed = Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, '0')).join('');
+    return { raw, hashed };
+  }
 
   function applyAuthVisibility() {
     const gate = document.getElementById('pin-gate');
@@ -76,7 +91,7 @@
     }
     if (errEl) errEl.textContent = 'กำลังตรวจสอบสิทธิ์...';
     try {
-      await tryLoginGoogle(resp.credential);
+      await tryLoginGoogle(resp.credential, rawNonce);
       if (errEl) errEl.textContent = '';
     } catch (err) {
       const e = err as Error & { code?: string };
@@ -89,23 +104,26 @@
     }
   }
 
-  function initGoogle(attempt = 0) {
+  async function initGoogle(attempt = 0) {
     const gid = (window as unknown as { google?: { accounts?: { id?: GoogleId } } }).google?.accounts?.id;
     if (!gid) {
       if (attempt > 50) { if (errEl) errEl.textContent = 'โหลด Google Sign-In ไม่สำเร็จ'; return; }
-      setTimeout(() => initGoogle(attempt + 1), 100);
+      setTimeout(() => { void initGoogle(attempt + 1); }, 100);
       return;
     }
     if (GOOGLE_CLIENT_ID === '__GOOGLE_CLIENT_ID__') {
       if (errEl) errEl.textContent = 'ยังไม่ได้ตั้งค่า GOOGLE_CLIENT_ID (auth-config.ts)';
       return;
     }
+    const { raw, hashed } = await makeNonce();
+    rawNonce = raw;
     gid.initialize({
       client_id: GOOGLE_CLIENT_ID,
       callback: onCredential,
       auto_select: false,
       use_fedcm_for_prompt: true,
       cancel_on_tap_outside: true,
+      nonce: hashed,
     });
     if (btn) {
       btn.disabled = false;
@@ -122,5 +140,5 @@
     }
   }
 
-  initGoogle();
+  void initGoogle();
 </script>
