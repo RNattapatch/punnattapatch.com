@@ -1,9 +1,13 @@
 import {
+  getDashboardDataSmart,
+  signInToSupabase,
+  signOutSupabase,
+} from './supabase';
+import {
   loginWithGoogle,
   loginWithGoogleToken,
   getToken,
   clearToken,
-  getDashboardData,
   getLead,
   updateLead,
   addLead,
@@ -114,6 +118,9 @@ export function toast(message: string, kind: 'success' | 'error' | 'info' = 'suc
 // ------- Auth flow -------
 export async function tryLoginGoogle(idToken: string): Promise<void> {
   await loginWithGoogle(idToken);
+  // Bridge the same Google identity into a Supabase session so RLS-scoped reads
+  // work. Non-fatal: if it fails, refresh() falls back to the Apps Script read.
+  await signInToSupabase(idToken);
   state.authed = true;
   notify();
   await refresh();
@@ -128,6 +135,7 @@ export async function tryLoginGoogleToken(accessToken: string): Promise<void> {
 
 export function logout(): void {
   clearToken();
+  void signOutSupabase();
   state.authed = false;
   state.kpis = null;
   state.today = [];
@@ -149,7 +157,7 @@ export async function refresh(): Promise<void> {
   state.loading = true;
   notify();
   try {
-    const data: DashboardData = await getDashboardData();
+    const data: DashboardData = await getDashboardDataSmart();
     state.kpis = data.kpis;
     state.today = data.today;
     state.total = data.total;

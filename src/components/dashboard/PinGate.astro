@@ -1,11 +1,10 @@
 ---
-// Auth gate — custom "Sign in with Google" button + Google OAuth token flow.
-// We use google.accounts.oauth2 (NOT the GIS rendered button) so the button is
-// fully custom-styled with zero Google-injected iframe / white frame. The
-// personalized GIS button renders its PII inside a cross-origin iframe whose
-// white background can't be themed — switching to the OAuth popup avoids it.
-// Backend (dashboard-api.gs) verifies the returned access token via tokeninfo
-// (aud == our client id + email allowlist) before issuing a session token.
+// Auth gate — custom "Sign in with Google" button + Google ID-token flow.
+// Uses google.accounts.id with FedCM (browser-native dialog, NO GIS white
+// iframe — the reason we left the rendered button). The single ID token serves
+// BOTH backends: the Apps Script verify (writes) and Supabase signInWithIdToken
+// (reads under RLS, bridged in store.tryLoginGoogle). Backend (dashboard-api.gs)
+// verifies the token via tokeninfo (aud == our client id + email allowlist).
 ---
 <section id="pin-gate" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-base-100 px-6">
   <div class="flex flex-col items-center gap-8 w-full max-w-xs">
@@ -39,18 +38,20 @@
 </section>
 
 <script>
-  import { tryLoginGoogleToken, subscribe, getState } from '../../scripts/dashboard/store';
+  import { tryLoginGoogle, subscribe, getState } from '../../scripts/dashboard/store';
   import { GOOGLE_CLIENT_ID } from '../../scripts/dashboard/auth-config';
 
-  type TokenResponse = { access_token?: string; error?: string };
-  type TokenClient = { requestAccessToken: () => void };
-  type OAuth2 = {
-    initTokenClient: (cfg: {
+  type CredentialResponse = { credential?: string };
+  type PromptNotification = { isNotDisplayed?: () => boolean; isSkippedMoment?: () => boolean };
+  type GoogleId = {
+    initialize: (cfg: {
       client_id: string;
-      scope: string;
-      callback: (r: TokenResponse) => void;
-      error_callback?: (e: unknown) => void;
-    }) => TokenClient;
+      callback: (r: CredentialResponse) => void;
+      auto_select?: boolean;
+      use_fedcm_for_prompt?: boolean;
+      cancel_on_tap_outside?: boolean;
+    }) => void;
+    prompt: (listener?: (n: PromptNotification) => void) => void;
   };
 
   const errEl = document.getElementById('pin-error');
@@ -67,15 +68,15 @@
   applyAuthVisibility();
   subscribe(applyAuthVisibility);
 
-  async function onToken(resp: TokenResponse) {
-    if (!resp || resp.error || !resp.access_token) {
+  async function onCredential(resp: CredentialResponse) {
+    if (!resp || !resp.credential) {
       if (errEl) errEl.textContent = 'ไม่ได้รับสิทธิ์จาก Google';
       if (btn) btn.disabled = false;
       return;
     }
     if (errEl) errEl.textContent = 'กำลังตรวจสอบสิทธิ์...';
     try {
-      await tryLoginGoogleToken(resp.access_token);
+      await tryLoginGoogle(resp.credential);
       if (errEl) errEl.textContent = '';
     } catch (err) {
       const e = err as Error & { code?: string };
@@ -89,8 +90,8 @@
   }
 
   function initGoogle(attempt = 0) {
-    const oauth2 = (window as unknown as { google?: { accounts?: { oauth2?: OAuth2 } } }).google?.accounts?.oauth2;
-    if (!oauth2) {
+    const gid = (window as unknown as { google?: { accounts?: { id?: GoogleId } } }).google?.accounts?.id;
+    if (!gid) {
       if (attempt > 50) { if (errEl) errEl.textContent = 'โหลด Google Sign-In ไม่สำเร็จ'; return; }
       setTimeout(() => initGoogle(attempt + 1), 100);
       return;
@@ -99,21 +100,24 @@
       if (errEl) errEl.textContent = 'ยังไม่ได้ตั้งค่า GOOGLE_CLIENT_ID (auth-config.ts)';
       return;
     }
-    const client = oauth2.initTokenClient({
+    gid.initialize({
       client_id: GOOGLE_CLIENT_ID,
-      scope: 'openid email profile',
-      callback: onToken,
-      error_callback: () => {
-        if (errEl) errEl.textContent = 'เปิดหน้าต่าง Google ไม่สำเร็จ — ลองใหม่อีกครั้ง';
-        if (btn) btn.disabled = false;
-      },
+      callback: onCredential,
+      auto_select: false,
+      use_fedcm_for_prompt: true,
+      cancel_on_tap_outside: true,
     });
     if (btn) {
       btn.disabled = false;
       btn.addEventListener('click', () => {
         if (errEl) errEl.textContent = '';
         btn.disabled = true;
-        client.requestAccessToken();
+        gid.prompt((n) => {
+          if (n && (n.isNotDisplayed?.() || n.isSkippedMoment?.())) {
+            if (btn) btn.disabled = false;
+            if (errEl) errEl.textContent = 'กดอีกครั้งเพื่อเข้าสู่ระบบ';
+          }
+        });
       });
     }
   }
