@@ -43,8 +43,13 @@ export type LeadUi = Record<string, unknown> & {
   fact_2?: string;
   fact_3?: string;
   crm_notes?: string;
-  deal_outcome?: 'in_progress' | 'won' | 'lost' | 'unqualified';
+  deal_outcome?: 'in_progress' | 'won' | 'repeat' | 'lost' | 'unqualified';
   close_reason?: string;
+  // LTV (trigger-maintained from the purchases ledger — read-only here)
+  purchase_count?: number;
+  lifetime_value_thb?: number | string;
+  first_purchase_at?: string;
+  last_purchase_at?: string;
   temperature?: 'hot' | 'warm' | 'cold' | '';
   next_action?: string;
   next_action_due?: string;

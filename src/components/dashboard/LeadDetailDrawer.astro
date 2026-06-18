@@ -42,6 +42,7 @@ import InteractionLog from './InteractionLog.astro';
         <span id="deal-amount" class="text-sm"></span>
         <span id="deal-package" class="text-xs opacity-70"></span>
       </div>
+      <p id="deal-ltv" class="text-xs text-[color:var(--color-pun-coral)] font-medium mb-1"></p>
       <label class="form-control mb-1">
         <span class="label-text text-xs opacity-70">รูปแบบภาษี</span>
         <select id="deal-tax-mode" class="select select-bordered select-sm tap-44">
@@ -188,12 +189,23 @@ import InteractionLog from './InteractionLog.astro';
     const dealPackage = document.getElementById('deal-package');
     if (dealBadge) {
       const oc = lead.deal_outcome || 'in_progress';
-      dealBadge.className = `badge badge-sm ${oc === 'won' ? 'badge-success' : oc === 'lost' ? 'badge-error' : 'badge-ghost'}`;
-      dealBadge.textContent = oc;
+      const cls = oc === 'repeat' ? 'badge-secondary' : oc === 'won' ? 'badge-success' : oc === 'lost' ? 'badge-error' : 'badge-ghost';
+      dealBadge.className = `badge badge-sm ${cls}`;
+      dealBadge.textContent = oc === 'repeat' ? '🔁 repeat' : oc;
     }
     const amount = Number(lead.package_price) || 0;
     if (dealAmount) dealAmount.textContent = amount ? `${new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(amount)} ฿` : '—';
     if (dealPackage) dealPackage.textContent = (lead.package as string) || '';
+
+    // LTV line (from purchases ledger)
+    const ltvEl = document.getElementById('deal-ltv');
+    if (ltvEl) {
+      const pc = Number(lead.purchase_count) || 0;
+      const fmt0 = (n: number) => new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(n);
+      ltvEl.textContent = pc > 0
+        ? `🔁 ลูกค้าเก่า · ซื้อมาแล้ว ${pc} ครั้ง · LTV ฿${fmt0(Number(lead.lifetime_value_thb) || 0)}`
+        : '';
+    }
 
     const taxEl = document.getElementById('deal-tax-mode') as HTMLSelectElement | null;
     const taxMode = (lead.tax_mode as string) || '';

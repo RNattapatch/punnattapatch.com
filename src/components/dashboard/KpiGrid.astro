@@ -10,6 +10,7 @@ import KpiCard from './KpiCard.astro';
   <KpiCard id="kpi-industry" label="Top อุตสาหกรรม" accent="info" />
   <KpiCard id="kpi-expense-month" label="ค่าใช้จ่ายเดือนนี้" accent="coral" />
   <KpiCard id="kpi-net-revenue" label="Net Revenue เดือนนี้" accent="emerald" />
+  <KpiCard id="kpi-ltv" label="🔁 ลูกค้าซื้อซ้ำ / LTV" accent="violet" />
 </section>
 
 <script>
@@ -67,6 +68,11 @@ import KpiCard from './KpiCard.astro';
     const netRev = kpis.sales_this_month - expMonth;
     setText('kpi-net-revenue', fmtTHB(netRev));
     setText('kpi-net-revenue-sub', `ยอดขาย ${fmtTHB(kpis.sales_this_month)} − ค่าใช้จ่าย ${fmtTHB(expMonth)}`);
+
+    const repeatCount = kpis.repeat_customers ?? 0;
+    const served = kpis.served_count ?? 0;
+    setText('kpi-ltv', String(repeatCount));
+    setText('kpi-ltv-sub', `ให้บริการรวม ${served} ครั้ง · LTV ${fmtTHB(kpis.ltv_total ?? 0)}`);
   }
 
   render();

@@ -3,6 +3,7 @@ import {
   signInToSupabase,
   signOutSupabase,
   generateDoc,
+  logPurchase,
 } from './supabase';
 import {
   loginWithGoogle,
@@ -34,6 +35,7 @@ type FilterChip =
   | 'proposal_sent'
   | 'walkthrough_done'
   | 'won'
+  | 'repeat'
   | 'lost'
   | 'unqualified'
   | 'manual'
@@ -294,20 +296,49 @@ export async function createProposalTask(leadId: string): Promise<void> {
 // Generate QO/Invoice/Receipt for a lead → download PDF (+ optional LINE push).
 // Sends lead_id (Supabase uuid) — the doc-api resolves the full lead from Supabase
 // (name / tax_id / address / package / tax_mode) and links the document to the lead.
+export type DocItem = { description: string; quantity: number; unit: string; unit_price: number };
+
 export async function generateDocFor(
   lead: LeadUi,
   docType: 'qo' | 'invoice' | 'receipt',
-  deliver: boolean
-): Promise<void> {
+  deliver: boolean,
+  opts?: { items?: DocItem[]; tax_mode?: string; note?: string }
+): Promise<boolean> {
   const leadId = ((lead as Record<string, unknown>).lead_id ?? '').toString().trim();
-  if (!leadId) { toast('ลูกค้านี้ไม่มี id — เปิดการ์ดใหม่อีกครั้ง', 'error'); return; }
+  if (!leadId) { toast('ลูกค้านี้ไม่มี id — เปิดการ์ดใหม่อีกครั้ง', 'error'); return false; }
   toast('กำลังออกเอกสาร...', 'info');
   try {
-    const r = await generateDoc({ doc_type: docType, lead_id: leadId, valid_days: 7, deliver });
+    const spec: Record<string, unknown> = { doc_type: docType, lead_id: leadId, valid_days: 7, deliver };
+    if (opts?.items && opts.items.length) spec.items = opts.items;
+    if (opts?.tax_mode) spec.tax_mode = opts.tax_mode;
+    if (opts?.note) spec.note = opts.note;
+    const r = await generateDoc(spec);
     toast(`✅ ${r.doc_number} พร้อมแล้ว${deliver ? ' · ส่ง LINE แล้ว' : ''}`);
     if (r.pdf_url && typeof window !== 'undefined') window.open(r.pdf_url, '_blank');
+    void refresh();
+    return true;
   } catch (err) {
     handleApiError(err, 'ออกเอกสารไม่สำเร็จ');
+    return false;
+  }
+}
+
+// Log a repeat/manual sale into the LTV ledger (no document). Flips the lead to
+// won/repeat and refreshes so the LTV badge + KPIs update immediately.
+export async function logRepeatPurchaseFor(
+  lead: LeadUi,
+  data: { package?: string; amount_thb: number; tax_mode?: 'cash' | 'wht_3' | 'vat_7'; note?: string }
+): Promise<boolean> {
+  const leadId = ((lead as Record<string, unknown>).lead_id ?? '').toString().trim();
+  if (!leadId) { toast('ลูกค้านี้ไม่มี id — เปิดการ์ดใหม่อีกครั้ง', 'error'); return false; }
+  try {
+    const r = await logPurchase({ lead_id: leadId, ...data });
+    toast(`🔁 บันทึกการซื้อแล้ว · ครั้งที่ ${r.purchase_count} · LTV ฿${new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(Number(r.lifetime_value_thb) || 0)}`);
+    void refresh();
+    return true;
+  } catch (err) {
+    handleApiError(err, 'บันทึกการซื้อไม่สำเร็จ');
+    return false;
   }
 }
 
@@ -415,10 +446,13 @@ export function visibleLeads(): LeadUi[] {
   }
   switch (state.filter) {
     case 'today':
-      rows = rows.filter((r) => isDueByToday(r) && r.deal_outcome !== 'won' && r.deal_outcome !== 'lost');
+      rows = rows.filter((r) => isDueByToday(r) && r.deal_outcome !== 'won' && r.deal_outcome !== 'repeat' && r.deal_outcome !== 'lost');
       break;
     case 'in_progress':
       rows = rows.filter((r) => (r.deal_outcome || 'in_progress') === 'in_progress');
+      break;
+    case 'repeat':
+      rows = rows.filter((r) => r.deal_outcome === 'repeat' || (Number(r.purchase_count) || 0) > 1);
       break;
     case 'proposal_sent':
       rows = rows.filter((r) => !!r.proposal_sent_at);

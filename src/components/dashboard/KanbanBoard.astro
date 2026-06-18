@@ -26,7 +26,7 @@
   ];
 
   function stageOf(l: LeadUi): string {
-    if (l.deal_outcome === 'won') return 'won';
+    if (l.deal_outcome === 'won' || l.deal_outcome === 'repeat') return 'won';
     if (l.deal_outcome === 'lost' || l.deal_outcome === 'unqualified') return 'lost';
     const ps = (l.pipeline_status || '').toLowerCase().trim();
     // Sheet canonical (strategy/inbound_crm_setup.gs STATUS_OPTIONS) — Title Case stored,

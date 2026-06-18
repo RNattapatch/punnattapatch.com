@@ -83,3 +83,28 @@ export async function generateDoc(
   if (!res.ok || !json.ok) throw new Error(json.error || `doc-api ${res.status}`);
   return json as { doc_number: string; pdf_url: string; png_url?: string; grand_total?: number; line_sent?: boolean };
 }
+
+const PURCHASE_API_URL = 'https://doc-api.punnattapatch.com/purchase';
+
+// Log a repeat/manual sale into the LTV ledger (Supabase, via doc-api service_role).
+// Flips the lead to won/repeat and returns the updated aggregates. Authenticated
+// with the Supabase session JWT — same trust model as generateDoc.
+export async function logPurchase(spec: {
+  lead_id: string;
+  package?: string;
+  amount_thb: number;
+  tax_mode?: 'cash' | 'wht_3' | 'vat_7';
+  note?: string;
+}): Promise<{ purchase_count: number; lifetime_value_thb: number; deal_outcome: string }> {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  if (!token) throw new Error('ยังไม่ได้เข้าสู่ระบบ Supabase — ออกแล้วล็อกอินใหม่');
+  const res = await fetch(PURCHASE_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(spec),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok || !json.ok) throw new Error(json.error || `purchase-api ${res.status}`);
+  return json as { purchase_count: number; lifetime_value_thb: number; deal_outcome: string };
+}

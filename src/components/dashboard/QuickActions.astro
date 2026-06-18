@@ -17,6 +17,7 @@
   <button id="qa-doc-invoice" class="btn btn-outline btn-sm tap-44">🧾 ใบแจ้งหนี้</button>
   <button id="qa-doc-receipt" class="btn btn-outline btn-sm tap-44">🧾 ใบเสร็จ</button>
 </div>
+<button id="qa-repeat" class="btn btn-secondary btn-sm tap-44 w-full mt-2">🔁 ซื้อซ้ำ / ออกแพ็กเกจเดิม</button>
 <label class="label cursor-pointer justify-start gap-2 mt-1 mb-3">
   <input id="qa-doc-line" type="checkbox" class="checkbox checkbox-xs" />
   <span class="label-text text-xs opacity-70">ส่งเข้า LINE ด้วย (นอกจากดาวน์โหลด)</span>
@@ -96,4 +97,8 @@
   document.getElementById('qa-doc-qo')?.addEventListener('click', () => genDoc('qo'));
   document.getElementById('qa-doc-invoice')?.addEventListener('click', () => genDoc('invoice'));
   document.getElementById('qa-doc-receipt')?.addEventListener('click', () => genDoc('receipt'));
+  document.getElementById('qa-repeat')?.addEventListener('click', () => {
+    const lead = getState().selectedLead;
+    if (lead) emit('modal:repeat-purchase', { lead });
+  });
 </script>
