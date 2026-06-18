@@ -13,6 +13,7 @@ import {
   addLead,
   addInteraction,
   getLeadsPage,
+  generateDoc,
   getExpenses,
   addExpense as apiAddExpense,
   deleteExpense as apiDeleteExpense,
@@ -288,6 +289,41 @@ export async function createProposalTask(leadId: string): Promise<void> {
   const due = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
   await patchLead(leadId, { next_action: 'ส่ง proposal', next_action_due: due });
   await logInteraction(leadId, 'note', 'กำหนดส่ง proposal');
+}
+
+// Generate QO/Invoice/Receipt from the lead's package → download PDF (+ optional LINE push).
+export async function generateDocFor(
+  lead: LeadUi,
+  docType: 'qo' | 'invoice' | 'receipt',
+  deliver: boolean
+): Promise<void> {
+  const L = lead as Record<string, unknown>;
+  const str = (v: unknown) => (v ?? '').toString().trim();
+  const name = str(L.company_name) || str(L.full_name);
+  if (!name) { toast('ลูกค้านี้ไม่มีชื่อ — เติมก่อนออกเอกสาร', 'error'); return; }
+  const price = Number(str(L.package_price).replace(/,/g, '')) || 0;
+  const spec = {
+    doc_type: docType,
+    customer: {
+      name,
+      tax_id: str(L.tax_id),
+      address_line1: str(L.address_1) || str(L.address_line1),
+      address_line2: str(L.address_2) || str(L.address_line2),
+      branch_type: str(L.branch_type) || 'hq',
+    },
+    items: [{ description: str(L.package) || 'บริการให้คำปรึกษา', quantity: 1, unit: 'งาน', unit_price: price }],
+    tax_mode: str(L.tax_mode) || 'wht_3',
+    valid_days: 7,
+    deliver,
+  };
+  toast('กำลังออกเอกสาร...', 'info');
+  try {
+    const r = await generateDoc(spec);
+    toast(`✅ ${r.doc_number} พร้อมแล้ว${deliver ? ' · ส่ง LINE แล้ว' : ''}`);
+    if (r.pdf_url && typeof window !== 'undefined') window.open(r.pdf_url, '_blank');
+  } catch (err) {
+    handleApiError(err, 'ออกเอกสารไม่สำเร็จ');
+  }
 }
 
 export function copyFollowUp(lead: LeadUi): void {

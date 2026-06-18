@@ -217,3 +217,11 @@ export function editExpense(id: string, data: {
 }): Promise<{ updated: boolean }> {
   return apiPost('editExpense', { id, ...data } as Record<string, unknown>);
 }
+
+// Generate a document (QO/Invoice/Receipt) — Apps Script proxies to the Mac mini
+// doc-api (Puppeteer render → Supabase Storage). Returns a signed PDF URL.
+export function generateDoc(
+  spec: Record<string, unknown>
+): Promise<{ doc_number: string; pdf_url: string; png_url?: string; grand_total?: number; line_sent?: boolean }> {
+  return apiPost('generateDoc', { spec });
+}

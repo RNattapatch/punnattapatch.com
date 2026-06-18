@@ -11,8 +11,19 @@
   <button id="qa-proposal" class="btn btn-primary btn-sm col-span-2 tap-44">สร้างงาน proposal (+1d)</button>
 </div>
 
+<div class="text-xs opacity-60 mb-1">ออกเอกสาร → ดาวน์โหลด PDF</div>
+<div id="doc-actions" class="grid grid-cols-3 gap-2">
+  <button id="qa-doc-qo" class="btn btn-primary btn-sm tap-44">📄 ใบเสนอราคา</button>
+  <button id="qa-doc-invoice" class="btn btn-outline btn-sm tap-44">🧾 ใบแจ้งหนี้</button>
+  <button id="qa-doc-receipt" class="btn btn-outline btn-sm tap-44">🧾 ใบเสร็จ</button>
+</div>
+<label class="label cursor-pointer justify-start gap-2 mt-1 mb-3">
+  <input id="qa-doc-line" type="checkbox" class="checkbox checkbox-xs" />
+  <span class="label-text text-xs opacity-70">ส่งเข้า LINE ด้วย (นอกจากดาวน์โหลด)</span>
+</label>
+
 <script>
-  import { subscribe, getState, copyFollowUp, createProposalTask, emit, logInteraction } from '../../scripts/dashboard/store';
+  import { subscribe, getState, copyFollowUp, createProposalTask, emit, logInteraction, generateDocFor } from '../../scripts/dashboard/store';
   import type { LeadUi } from '../../scripts/dashboard/adapter';
 
   function ph(v: unknown): string { return (v ?? '').toString().trim(); }
@@ -74,4 +85,15 @@
     const lead = getState().selectedLead;
     if (lead) void createProposalTask(String(lead.lead_id));
   });
+
+  function docLineChecked(): boolean {
+    return (document.getElementById('qa-doc-line') as HTMLInputElement | null)?.checked ?? false;
+  }
+  function genDoc(t: 'qo' | 'invoice' | 'receipt') {
+    const lead = getState().selectedLead;
+    if (lead) void generateDocFor(lead, t, docLineChecked());
+  }
+  document.getElementById('qa-doc-qo')?.addEventListener('click', () => genDoc('qo'));
+  document.getElementById('qa-doc-invoice')?.addEventListener('click', () => genDoc('invoice'));
+  document.getElementById('qa-doc-receipt')?.addEventListener('click', () => genDoc('receipt'));
 </script>
