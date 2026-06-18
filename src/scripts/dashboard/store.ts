@@ -291,34 +291,19 @@ export async function createProposalTask(leadId: string): Promise<void> {
   await logInteraction(leadId, 'note', 'กำหนดส่ง proposal');
 }
 
-// Generate QO/Invoice/Receipt from the lead's package → download PDF (+ optional LINE push).
+// Generate QO/Invoice/Receipt for a lead → download PDF (+ optional LINE push).
+// Sends lead_id (Supabase uuid) — the doc-api resolves the full lead from Supabase
+// (name / tax_id / address / package / tax_mode) and links the document to the lead.
 export async function generateDocFor(
   lead: LeadUi,
   docType: 'qo' | 'invoice' | 'receipt',
   deliver: boolean
 ): Promise<void> {
-  const L = lead as Record<string, unknown>;
-  const str = (v: unknown) => (v ?? '').toString().trim();
-  const name = str(L.company_name) || str(L.full_name);
-  if (!name) { toast('ลูกค้านี้ไม่มีชื่อ — เติมก่อนออกเอกสาร', 'error'); return; }
-  const price = Number(str(L.package_price).replace(/,/g, '')) || 0;
-  const spec = {
-    doc_type: docType,
-    customer: {
-      name,
-      tax_id: str(L.tax_id),
-      address_line1: str(L.address_1) || str(L.address_line1),
-      address_line2: str(L.address_2) || str(L.address_line2),
-      branch_type: str(L.branch_type) || 'hq',
-    },
-    items: [{ description: str(L.package) || 'บริการให้คำปรึกษา', quantity: 1, unit: 'งาน', unit_price: price }],
-    tax_mode: str(L.tax_mode) || 'wht_3',
-    valid_days: 7,
-    deliver,
-  };
+  const leadId = ((lead as Record<string, unknown>).lead_id ?? '').toString().trim();
+  if (!leadId) { toast('ลูกค้านี้ไม่มี id — เปิดการ์ดใหม่อีกครั้ง', 'error'); return; }
   toast('กำลังออกเอกสาร...', 'info');
   try {
-    const r = await generateDoc(spec);
+    const r = await generateDoc({ doc_type: docType, lead_id: leadId, valid_days: 7, deliver });
     toast(`✅ ${r.doc_number} พร้อมแล้ว${deliver ? ' · ส่ง LINE แล้ว' : ''}`);
     if (r.pdf_url && typeof window !== 'undefined') window.open(r.pdf_url, '_blank');
   } catch (err) {
