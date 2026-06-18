@@ -63,3 +63,23 @@ export async function getDashboardDataSmart(): Promise<DashboardData> {
   }
   return getDashboardDataGas();
 }
+
+const DOC_API_URL = 'https://doc-api.punnattapatch.com/generate';
+
+// Generate a document via the Mac mini doc-api, authenticated with the current
+// Supabase session JWT (owner-only, verified server-side). Returns a signed PDF URL.
+export async function generateDoc(
+  spec: Record<string, unknown>
+): Promise<{ doc_number: string; pdf_url: string; png_url?: string; grand_total?: number; line_sent?: boolean }> {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  if (!token) throw new Error('ยังไม่ได้เข้าสู่ระบบ Supabase — ออกแล้วล็อกอินใหม่');
+  const res = await fetch(DOC_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(spec),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok || !json.ok) throw new Error(json.error || `doc-api ${res.status}`);
+  return json as { doc_number: string; pdf_url: string; png_url?: string; grand_total?: number; line_sent?: boolean };
+}

@@ -2,6 +2,7 @@ import {
   getDashboardDataSmart,
   signInToSupabase,
   signOutSupabase,
+  generateDoc,
 } from './supabase';
 import {
   loginWithGoogle,
@@ -13,7 +14,6 @@ import {
   addLead,
   addInteraction,
   getLeadsPage,
-  generateDoc,
   getExpenses,
   addExpense as apiAddExpense,
   deleteExpense as apiDeleteExpense,
