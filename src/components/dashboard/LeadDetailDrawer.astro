@@ -39,6 +39,14 @@ import InteractionLog from './InteractionLog.astro';
     <div class="flex flex-wrap items-center gap-2" id="lead-badges"></div>
 
     <section>
+      <button id="detail-toggle" type="button" class="btn btn-sm btn-ghost btn-block justify-between tap-44" aria-expanded="false" aria-controls="lead-detail-body">
+        <span class="text-xs opacity-80">📋 รายละเอียดที่ลูกค้ากรอก / ข้อมูลเชิงลึก</span>
+        <span id="detail-chevron" aria-hidden="true">▾</span>
+      </button>
+      <div id="lead-detail-body" class="grid gap-2 mt-2"></div>
+    </section>
+
+    <section>
       <label class="label-text text-xs opacity-70" for="lead-status">สถานะดีล</label>
       <select id="lead-status" class="select select-bordered select-sm w-full tap-44 mt-1">
         <optgroup label="กำลังคุย">
@@ -117,14 +125,6 @@ import InteractionLog from './InteractionLog.astro';
       <textarea id="lead-notes" class="ed textarea textarea-bordered textarea-sm w-full mt-1" data-field="crm_notes" rows="3" placeholder="จดอะไรก็ได้ — ชอบกาแฟ, ลูก 2 คน, สนใจ automation ทีมขาย..."></textarea>
     </section>
 
-    <section>
-      <button id="detail-toggle" type="button" class="btn btn-sm btn-ghost btn-block justify-between tap-44" aria-expanded="false" aria-controls="lead-detail-body">
-        <span class="text-xs opacity-80">📋 รายละเอียดที่ลูกค้ากรอก / ข้อมูลเชิงลึก</span>
-        <span id="detail-chevron" aria-hidden="true">▾</span>
-      </button>
-      <div id="lead-detail-body" class="grid gap-2 mt-2"></div>
-    </section>
-
     <InteractionLog />
 
     <div class="h-16"></div>
@@ -200,7 +200,7 @@ import InteractionLog from './InteractionLog.astro';
     if (!lead) return;
 
     const id = String(lead.lead_id || '');
-    if (id !== lastId) { lastId = id; setEditing(false); setDetail(false); }
+    if (id !== lastId) { lastId = id; setEditing(false); setDetail(true); }
 
     const name = String(lead.nickname || lead.full_name || '—');
     const company = String(lead.company_name || '');
