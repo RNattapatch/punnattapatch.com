@@ -4,17 +4,19 @@ import {
   signOutSupabase,
   generateDoc,
   logPurchase,
+  // Lead reads/writes — Supabase-native (writes land where reads come from, so
+  // status changes stick instead of reverting on the next refresh).
+  getLeadSmart as getLead,
+  updateLeadSmart as updateLead,
+  addLeadSmart as addLead,
+  addInteractionSmart as addInteraction,
+  getLeadsPageSmart as getLeadsPage,
 } from './supabase';
 import {
   loginWithGoogle,
   loginWithGoogleToken,
   getToken,
   clearToken,
-  getLead,
-  updateLead,
-  addLead,
-  addInteraction,
-  getLeadsPage,
   getExpenses,
   addExpense as apiAddExpense,
   deleteExpense as apiDeleteExpense,

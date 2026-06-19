@@ -6,7 +6,17 @@
 // signInWithIdToken — same Google account, no extra redirect.
 
 import { createClient, type Session } from '@supabase/supabase-js';
-import { getDashboardData as getDashboardDataGas, type DashboardData } from './api';
+import {
+  getDashboardData as getDashboardDataGas,
+  getLead as gasGetLead,
+  updateLead as gasUpdateLead,
+  addLead as gasAddLead,
+  addInteraction as gasAddInteraction,
+  getLeadsPage as gasGetLeadsPage,
+  type DashboardData,
+  type Interaction,
+} from './api';
+import type { LeadUi } from './adapter';
 
 export const SUPABASE_URL = 'https://yykocvhorgcgzaluuldn.supabase.co';
 
@@ -107,4 +117,134 @@ export async function logPurchase(spec: {
   const json = await res.json().catch(() => ({}));
   if (!res.ok || !json.ok) throw new Error(json.error || `purchase-api ${res.status}`);
   return json as { purchase_count: number; lifetime_value_thb: number; deal_outcome: string };
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Lead reads/writes — Supabase-native (browser client under RLS owner_all).
+//
+// WHY: the dashboard READS leads from Supabase (RPC get_dashboard_data), but the
+// legacy write path went to Apps Script → Google Sheets (one-time migration, no
+// live sync). So a status change saved to Sheets never reached Supabase, and the
+// next refresh() re-read Supabase and reverted the card/kanban. Writing to
+// Supabase (where reads live) makes edits stick. Falls back to Apps Script only
+// when there's no Supabase session (so login still degrades gracefully).
+// ──────────────────────────────────────────────────────────────────────────
+
+// Real, writable columns on public.leads (everything else — score/tier/raw_payload
+// /purchase_count/etc — is derived or lives in raw_payload, never written here).
+const LEAD_COLS = new Set([
+  'full_name', 'nickname', 'company_name', 'business_type', 'position', 'phone', 'email', 'line_id',
+  'fact_1', 'fact_2', 'fact_3', 'pipeline_status', 'temperature', 'deal_outcome', 'close_reason',
+  'package', 'package_price', 'deal_value_thb', 'tax_mode', 'crm_notes', 'next_action', 'pain_points',
+  'source', 'payment_status', 'manual_source', 'tax_id', 'address_line1', 'address_line2',
+  'branch_type', 'branch_number', 'next_action_due', 'proposal_sent_at', 'walkthrough_at',
+  'last_touch_at', 'submitted_at',
+]);
+
+function cleanLeadPatch(fields: Record<string, unknown>): { patch: Record<string, unknown>; dropped: string[] } {
+  const patch: Record<string, unknown> = {};
+  const dropped: string[] = [];
+  for (const [k, v] of Object.entries(fields)) {
+    if (!LEAD_COLS.has(k)) { dropped.push(k); continue; }
+    patch[k] = v === '' ? null : v; // empty string clears → null (date/text safe)
+  }
+  return { patch, dropped };
+}
+
+// Map a raw leads row → the UI shape the dashboard expects (lead_id = id, score/tier
+// lifted out of raw_payload — mirrors what the RPC does for the list rows).
+function rowToLeadUi(row: Record<string, unknown> | null): LeadUi {
+  if (!row) return {} as LeadUi;
+  const { raw_payload, ...rest } = row as Record<string, unknown> & { raw_payload?: Record<string, unknown> };
+  return {
+    ...rest,
+    lead_id: row.id as string,
+    score: raw_payload?.score,
+    tier: raw_payload?.tier,
+  } as LeadUi;
+}
+
+function mapInteraction(r: Record<string, unknown>): Interaction {
+  return {
+    id: String(r.id),
+    lead_id: String(r.lead_id),
+    at: String(r.occurred_at || r.created_at || ''),
+    type: r.type as Interaction['type'],
+    summary: String(r.summary || ''),
+    by: String(r.created_by || ''),
+  };
+}
+
+export async function updateLeadSmart(
+  lead_id: string,
+  fields: Partial<LeadUi>
+): Promise<{ lead: LeadUi; dropped_fields?: string[] }> {
+  const session = await getSupabaseSession();
+  if (!session) return gasUpdateLead(lead_id, fields);
+  const { patch, dropped } = cleanLeadPatch(fields as Record<string, unknown>);
+  patch.updated_at = new Date().toISOString();
+  const { data, error } = await supabase.from('leads').update(patch).eq('id', lead_id).select('*').single();
+  if (error) throw new Error(error.message);
+  return { lead: rowToLeadUi(data), dropped_fields: dropped };
+}
+
+export async function addLeadSmart(fields: Partial<LeadUi>): Promise<{ lead: LeadUi }> {
+  const session = await getSupabaseSession();
+  if (!session) return gasAddLead(fields);
+  const { patch } = cleanLeadPatch(fields as Record<string, unknown>);
+  if (!patch.full_name) patch.full_name = patch.company_name || 'New Lead'; // NOT NULL
+  if (!patch.submitted_at) patch.submitted_at = new Date().toISOString();
+  if (!patch.source) patch.source = 'manual';
+  if (!patch.manual_source) patch.manual_source = 'dashboard';
+  const { data, error } = await supabase.from('leads').insert(patch).select('*').single();
+  if (error) throw new Error(error.message);
+  return { lead: rowToLeadUi(data) };
+}
+
+export async function getLeadSmart(lead_id: string): Promise<{ lead: LeadUi; interactions: Interaction[] }> {
+  const session = await getSupabaseSession();
+  if (!session) return gasGetLead(lead_id);
+  const [leadRes, ixRes] = await Promise.all([
+    supabase.from('leads').select('*').eq('id', lead_id).single(),
+    supabase.from('interactions').select('*').eq('lead_id', lead_id).order('occurred_at', { ascending: false }),
+  ]);
+  if (leadRes.error) throw new Error(leadRes.error.message);
+  const interactions = (ixRes.data || []).map(mapInteraction);
+  return { lead: rowToLeadUi(leadRes.data), interactions };
+}
+
+export async function addInteractionSmart(
+  lead_id: string,
+  type: Interaction['type'],
+  summary: string
+): Promise<{ interaction: Interaction; lead: LeadUi }> {
+  const session = await getSupabaseSession();
+  if (!session) return gasAddInteraction(lead_id, type, summary);
+  const nowIso = new Date().toISOString();
+  const { data: ixRow, error } = await supabase
+    .from('interactions')
+    .insert({ lead_id, type, summary, occurred_at: nowIso, created_by: session.user?.email || 'dashboard' })
+    .select('*').single();
+  if (error) throw new Error(error.message);
+  const { data: lead } = await supabase.from('leads').update({ last_touch_at: nowIso }).eq('id', lead_id).select('*').single();
+  return { interaction: mapInteraction(ixRow), lead: rowToLeadUi(lead) };
+}
+
+export async function getLeadsPageSmart(
+  offset: number,
+  limit: number,
+  filter?: { outcome?: string; manual_only?: boolean }
+): Promise<{ leads: LeadUi[]; total: number; offset: number }> {
+  const session = await getSupabaseSession();
+  if (!session) return gasGetLeadsPage(offset, limit, filter);
+  let q = supabase
+    .from('leads')
+    .select('*', { count: 'exact' })
+    .order('submitted_at', { ascending: false, nullsFirst: false })
+    .range(offset, offset + limit - 1);
+  if (filter?.outcome) q = q.eq('deal_outcome', filter.outcome);
+  if (filter?.manual_only) q = q.not('manual_source', 'is', null);
+  const { data, error, count } = await q;
+  if (error) throw new Error(error.message);
+  return { leads: (data || []).map(rowToLeadUi), total: count ?? (data ? data.length : 0), offset };
 }
