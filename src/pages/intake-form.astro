@@ -588,12 +588,9 @@ const budgets = [
   const refNode = document.getElementById('intake-ref');
   const copyBtn = document.getElementById('intake-copy-ref') as HTMLButtonElement | null;
 
-  // Read ?program=p1|p4|p5 → pre-fill hidden field + show banner
-  const PROGRAM_LABELS: Record<string, string> = {
-    p1: 'AI Agent 101 For Sale Team (1 วัน · ฿12,900 Early Bird)',
-    p4: 'P4 — Sales Mastery (2 วัน · ฿16,900 Early Bird)',
-    p5: 'P5 — Sales Team Builder (2 weekends · ฿27,900 Early Bird)',
-  };
+  // Public Training (P1/P4/P5) ปิดชั่วคราว — กำลัง redesign · ปิด program banner ไว้ก่อน
+  // (ใส่ p1/p4/p5 labels กลับเมื่อเปิด public course ใหม่)
+  const PROGRAM_LABELS: Record<string, string> = {};
   try {
     const params = new URLSearchParams(window.location.search);
     const program = (params.get('program') ?? '').toLowerCase();

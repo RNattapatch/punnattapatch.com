@@ -3,7 +3,7 @@ title: "P4 — Sales Mastery"
 description: "เปลี่ยนทีมจากปิดดีลด้วยส่วนลดเป็นปิดด้วยคุณค่า · 2 วันเต็ม Role-play 3 รอบ + AI Role-play Bot ต่อที่บ้าน 24 ชม."
 lang: th
 published: 2026-04-20
-draft: false
+draft: true
 tags: [public-training, sales, value-selling, founding-cohort]
 programCode: p4
 accent: coral
