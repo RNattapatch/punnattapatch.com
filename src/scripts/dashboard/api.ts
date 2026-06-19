@@ -23,10 +23,11 @@ export type Kpis = {
   sales_delta_pct: number;
   leads_total: number;
   leads_this_month: number;
-  pipeline: { in_progress: number; proposal_sent: number; walkthrough_done: number; won: number; repeat?: number };
+  pipeline: { in_progress: number; proposal_sent: number; walkthrough_done: number; won: number; repeat?: number; retainer?: number };
   conversion_rate: number;
   // LTV / repeat (from the purchases ledger) — optional for back-compat
   repeat_customers?: number;
+  retainer_customers?: number;
   ltv_total?: number;
   served_count?: number;
   top_industry: { label: string; count: number }[];

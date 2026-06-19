@@ -43,7 +43,8 @@ export type LeadUi = Record<string, unknown> & {
   fact_2?: string;
   fact_3?: string;
   crm_notes?: string;
-  deal_outcome?: 'in_progress' | 'won' | 'repeat' | 'lost' | 'unqualified';
+  deal_outcome?: 'in_progress' | 'won' | 'repeat' | 'retainer' | 'lost' | 'unqualified';
+  raw_payload?: Record<string, unknown> | null;
   close_reason?: string;
   // LTV (trigger-maintained from the purchases ledger — read-only here)
   purchase_count?: number;

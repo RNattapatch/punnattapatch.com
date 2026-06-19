@@ -21,6 +21,7 @@
     <!-- Right actions -->
     <div class="flex items-center gap-2 shrink-0">
       <p id="dash-meta" class="hidden md:block text-xs opacity-40 tabular-nums">—</p>
+      <button id="dash-theme" class="btn btn-sm btn-ghost tap-44" aria-label="สลับธีม สว่าง/มืด">🌙</button>
       <button id="dash-refresh" class="btn btn-sm btn-ghost tap-44" aria-label="Refresh">↻</button>
       <button id="dash-add-lead-header" class="btn btn-sm rounded-2xl tap-44" style="background-color:var(--color-brand-navy);color:white;">
         + Add Lead
@@ -58,4 +59,19 @@
 
   document.getElementById('dash-refresh')?.addEventListener('click', () => void refresh());
   document.getElementById('dash-add-lead-header')?.addEventListener('click', () => emit('modal:add-lead'));
+
+  // Light (punpaper, matches the website) ↔ dark (pundark) — persisted.
+  const themeBtn = document.getElementById('dash-theme');
+  function syncThemeIcon() {
+    const dark = document.documentElement.getAttribute('data-theme') === 'pundark';
+    if (themeBtn) themeBtn.textContent = dark ? '☀️' : '🌙';
+  }
+  syncThemeIcon();
+  themeBtn?.addEventListener('click', () => {
+    const dark = document.documentElement.getAttribute('data-theme') === 'pundark';
+    const next = dark ? 'punpaper' : 'pundark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('pun_dash_theme', next); } catch (e) {}
+    syncThemeIcon();
+  });
 </script>

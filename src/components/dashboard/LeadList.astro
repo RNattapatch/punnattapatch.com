@@ -33,8 +33,10 @@ import LeadCard from './LeadCard.astro';
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="walkthrough_done">Walkthrough Done</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="won">Won</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="repeat">🔁 ซื้อซ้ำ</button>
+    <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="retainer">🗓️ รายเดือน</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="lost">Lost</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="unqualified">🚫 Unqualified</button>
+    <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="sponsor">🤝 Sponsor</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="manual">Manual</button>
   </div>
 
@@ -66,6 +68,7 @@ import LeadCard from './LeadCard.astro';
   }
   function badgeFor(l: LeadUi): { text: string; cls: string } {
     if (l.deal_outcome === 'repeat') return { text: '🔁 repeat', cls: 'badge-secondary' };
+    if (l.deal_outcome === 'retainer') return { text: '🗓️ retainer', cls: 'badge-info' };
     if (l.deal_outcome === 'won') return { text: 'won', cls: 'badge-success' };
     if (l.deal_outcome === 'lost') return { text: 'lost', cls: 'badge-error' };
     if (l.deal_outcome === 'unqualified') return { text: 'unqualified', cls: 'badge-neutral' };
@@ -112,7 +115,8 @@ import LeadCard from './LeadCard.astro';
       : '';
     const pc = Number(lead.purchase_count) || 0;
     const ltv = pc > 0 ? `🔁 ซื้อ ${pc} ครั้ง · ฿${new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(Number(lead.lifetime_value_thb) || 0)}` : '';
-    setField(node, 'log', [ltv, touch, reason].filter(Boolean).join('  '));
+    const sponsor = (lead.source || '').toString().toLowerCase().includes('sponsor') ? '🤝 sponsor' : '';
+    setField(node, 'log', [sponsor, ltv, touch, reason].filter(Boolean).join('  '));
     setField(node, 'amount', fmtTHB(lead.package_price));
     setField(node, 'age', ageDays(lead.submitted_at));
     const badge = node.querySelector('[data-field="badge"]') as HTMLElement | null;

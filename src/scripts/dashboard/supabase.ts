@@ -198,7 +198,11 @@ export async function getLeadSmart(lead_id: string): Promise<{ lead: LeadUi; int
   ]);
   if (leadRes.error) throw new Error(leadRes.error.message);
   const interactions = (ixRes.data || []).map(mapInteraction);
-  return { lead: rowToLeadUi(leadRes.data), interactions };
+  // Keep raw_payload on the detail object so the drawer can render the full
+  // form submission (brand website, brief, utm, etc.). The list rows (RPC) omit it.
+  const lead = rowToLeadUi(leadRes.data);
+  (lead as Record<string, unknown>).raw_payload = (leadRes.data as Record<string, unknown>)?.raw_payload ?? null;
+  return { lead, interactions };
 }
 
 export async function addInteractionSmart(

@@ -35,8 +35,10 @@ type FilterChip =
   | 'walkthrough_done'
   | 'won'
   | 'repeat'
+  | 'retainer'
   | 'lost'
   | 'unqualified'
+  | 'sponsor'
   | 'manual'
   | 'hot'
   | 'warm'
@@ -243,6 +245,26 @@ export async function patchLead(leadId: string, fields: Partial<LeadUi>): Promis
   }
 }
 
+// Unified status setter — the single "Pipeline Stage" dropdown writes here.
+// Maps the chosen option to pipeline_status + deal_outcome (won/lost/repeat/retainer)
+// so won/lost/repeat/retainer all live in one control. Saves immediately.
+const PIPELINE_STAGES = ['New', 'Discovery Call', 'Site Visit', 'Proposal Sent', 'Proposal — Follow-up'];
+export async function setLeadStatus(leadId: string, statusKey: string, closeReason?: string): Promise<void> {
+  const fields: Partial<LeadUi> = {};
+  if (PIPELINE_STAGES.includes(statusKey)) {
+    fields.pipeline_status = statusKey;
+    fields.deal_outcome = 'in_progress';
+  } else if (statusKey === 'won' || statusKey === 'repeat' || statusKey === 'retainer') {
+    fields.deal_outcome = statusKey as LeadUi['deal_outcome'];
+  } else if (statusKey === 'lost' || statusKey === 'unqualified') {
+    fields.deal_outcome = statusKey as LeadUi['deal_outcome'];
+    if (closeReason) fields.close_reason = closeReason;
+  } else {
+    return;
+  }
+  await patchLead(leadId, fields);
+}
+
 export async function createLead(fields: Partial<LeadUi>): Promise<LeadUi | null> {
   try {
     const res = await addLead(fields);
@@ -436,7 +458,13 @@ export function visibleLeads(): LeadUi[] {
   }
   switch (state.filter) {
     case 'today':
-      rows = rows.filter((r) => isDueByToday(r) && r.deal_outcome !== 'won' && r.deal_outcome !== 'repeat' && r.deal_outcome !== 'lost');
+      rows = rows.filter((r) => isDueByToday(r) && r.deal_outcome !== 'won' && r.deal_outcome !== 'repeat' && r.deal_outcome !== 'retainer' && r.deal_outcome !== 'lost');
+      break;
+    case 'retainer':
+      rows = rows.filter((r) => r.deal_outcome === 'retainer');
+      break;
+    case 'sponsor':
+      rows = rows.filter((r) => (r.source || '').toString().toLowerCase().includes('sponsor'));
       break;
     case 'in_progress':
       rows = rows.filter((r) => (r.deal_outcome || 'in_progress') === 'in_progress');
