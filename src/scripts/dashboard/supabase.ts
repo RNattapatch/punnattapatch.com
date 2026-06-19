@@ -82,6 +82,38 @@ export async function generateDoc(
   return json as { doc_number: string; pdf_url: string; png_url?: string; grand_total?: number; line_sent?: boolean };
 }
 
+const RESEARCH_API_URL = 'https://doc-api.punnattapatch.com/research';
+
+// Client War Room — run multi-agent research on the doc-api (server-side; the
+// OpenRouter key lives on the server, never in this browser bundle).
+export async function runResearch(spec: {
+  mode: 'client' | 'competitor';
+  lead_id?: string; company?: string; sector?: string; competitor?: string;
+}): Promise<Record<string, unknown>> {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  if (!token) throw new Error('ยังไม่ได้เข้าสู่ระบบ Supabase');
+  const res = await fetch(RESEARCH_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(spec),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok || !json.ok) throw new Error(json.error || `research-api ${res.status}`);
+  return json;
+}
+
+// Brief history — read directly from Supabase under RLS (owner-only).
+export async function getBriefs(leadId?: string): Promise<Record<string, unknown>[]> {
+  const session = await getSupabaseSession();
+  if (!session) return [];
+  let q = supabase.from('client_briefs').select('*').order('created_at', { ascending: false }).limit(20);
+  if (leadId) q = q.eq('lead_id', leadId);
+  const { data, error } = await q;
+  if (error) throw new Error(error.message);
+  return (data || []) as Record<string, unknown>[];
+}
+
 const PURCHASE_API_URL = 'https://doc-api.punnattapatch.com/purchase';
 
 // Log a repeat/manual sale into the LTV ledger (Supabase, via doc-api service_role).

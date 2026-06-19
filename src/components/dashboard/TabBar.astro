@@ -23,16 +23,20 @@
     const { activeTab, authed } = getState();
     if (!authed) return;
     const onLeads = activeTab === 'leads';
+    const onExp = activeTab === 'expenses';
+    const onWar = activeTab === 'war-room';
     btnLeads?.classList.toggle('btn-primary', onLeads);
     btnLeads?.classList.toggle('btn-outline', !onLeads);
     btnLeads?.setAttribute('aria-pressed', String(onLeads));
-    btnExp?.classList.toggle('btn-primary', !onLeads);
-    btnExp?.classList.toggle('btn-outline', onLeads);
-    btnExp?.setAttribute('aria-pressed', String(!onLeads));
+    btnExp?.classList.toggle('btn-primary', onExp);
+    btnExp?.classList.toggle('btn-outline', !onExp);
+    btnExp?.setAttribute('aria-pressed', String(onExp));
     const leadsView = document.getElementById('leads-view');
     const expView = document.getElementById('expenses-view');
+    const warView = document.getElementById('war-room-view');
     if (leadsView) leadsView.classList.toggle('hidden', !onLeads);
-    if (expView) expView.classList.toggle('hidden', onLeads);
+    if (expView) expView.classList.toggle('hidden', !onExp);
+    if (warView) warView.classList.toggle('hidden', !onWar);
   }
 
   btnLeads?.addEventListener('click', () => switchTab('leads'));

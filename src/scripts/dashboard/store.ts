@@ -60,7 +60,7 @@ type State = {
   selectedLeadId: string | null;
   selectedLead: LeadUi | null;
   interactions: Interaction[];
-  activeTab: 'leads' | 'expenses';
+  activeTab: 'leads' | 'expenses' | 'war-room';
   expenses: ExpenseRow[];
   expenseSummary: ExpenseSummary | null;
   expensesLoaded: boolean;
@@ -367,7 +367,7 @@ export function copyFollowUp(lead: LeadUi): void {
 }
 
 // ------- Expense tab -------
-export function switchTab(tab: 'leads' | 'expenses'): void {
+export function switchTab(tab: 'leads' | 'expenses' | 'war-room'): void {
   state.activeTab = tab;
   notify();
   if (tab === 'expenses' && !state.expensesLoaded) {

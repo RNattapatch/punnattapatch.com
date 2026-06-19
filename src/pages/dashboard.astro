@@ -13,6 +13,7 @@ import KanbanBoard from '../components/dashboard/KanbanBoard.astro';
 import LeadList from '../components/dashboard/LeadList.astro';
 import TabBar from '../components/dashboard/TabBar.astro';
 import ExpenseTab from '../components/dashboard/ExpenseTab.astro';
+import WarRoom from '../components/dashboard/WarRoom.astro';
 import FabAddLead from '../components/dashboard/FabAddLead.astro';
 import AddExpenseModal from '../components/dashboard/AddExpenseModal.astro';
 import LeadDetailDrawer from '../components/dashboard/LeadDetailDrawer.astro';
@@ -81,6 +82,11 @@ import Toast from '../components/dashboard/Toast.astro';
           <!-- Expenses view -->
           <div id="expenses-view" class="hidden">
             <ExpenseTab />
+          </div>
+
+          <!-- Client War Room view -->
+          <div id="war-room-view" class="hidden">
+            <WarRoom />
           </div>
         </main>
       </div>

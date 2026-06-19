@@ -1,0 +1,176 @@
+---
+---
+<section class="mb-20">
+  <div class="rounded-3xl p-5 md:p-6 text-white mb-4" style="background-color:var(--color-brand-navy);">
+    <div class="inline-flex rounded-full bg-white/10 px-3 py-1 text-xs font-medium mb-2">🎯 AI Research Desk</div>
+    <h2 class="font-display text-2xl md:text-3xl font-bold leading-tight text-balance">Client War Room Center</h2>
+    <p class="mt-1 text-sm text-white/60 max-w-xl text-pretty">ทีม AI agents ช่วยสืบลูกค้า · sector · คู่แข่ง แล้วสรุปมุมเข้าทำงาน · ทุก agent รันฝั่ง server (key ปลอดภัย) + กัน prompt injection</p>
+  </div>
+
+  <div class="rounded-box border border-base-300 bg-base-200 p-4 grid gap-3">
+    <div class="flex gap-2">
+      <button id="wr-mode-client" class="btn btn-sm btn-primary tap-44 flex-1">🔍 วิจัยลูกค้า</button>
+      <button id="wr-mode-comp" class="btn btn-sm btn-outline btn-primary tap-44 flex-1">⚔️ คู่แข่ง vs ปัน</button>
+    </div>
+
+    <div id="wr-client-inputs" class="grid gap-2">
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">เลือกจาก CRM (ถ้ามี)</span>
+        <select id="wr-lead" class="select select-bordered select-sm tap-44"><option value="">— พิมพ์เองด้านล่าง —</option></select>
+      </label>
+      <div class="grid grid-cols-2 gap-2">
+        <input id="wr-company" class="input input-bordered input-sm tap-44" placeholder="ชื่อบริษัท/ลูกค้า" autocomplete="off" />
+        <input id="wr-sector" class="input input-bordered input-sm tap-44" placeholder="sector / ประเภทธุรกิจ" autocomplete="off" />
+      </div>
+    </div>
+
+    <div id="wr-comp-inputs" class="hidden grid gap-2">
+      <input id="wr-competitor" class="input input-bordered input-sm tap-44" placeholder="ชื่อคู่แข่ง (AI guru / เอเจนซี / เทรนเนอร์...)" autocomplete="off" />
+    </div>
+
+    <button id="wr-run" class="btn btn-primary tap-44">🚀 เริ่ม Research</button>
+    <p class="text-xs opacity-55">⏱️ ใช้เวลา ~30-60 วิ (AI agents หลายตัวทำงาน) · อย่าปิดหน้า</p>
+  </div>
+
+  <div id="wr-status" class="hidden mt-4 rounded-box border border-base-300 bg-base-200 p-6 text-center">
+    <span class="loading loading-spinner loading-md"></span>
+    <p id="wr-status-text" class="mt-2 text-sm opacity-70">กำลังให้ AI agents วิเคราะห์...</p>
+  </div>
+
+  <div id="wr-result" class="mt-4 grid gap-3"></div>
+
+  <div class="mt-6">
+    <h3 class="text-xs uppercase tracking-wider opacity-60 mb-2">Briefs ล่าสุด</h3>
+    <div id="wr-history" class="grid gap-2"></div>
+  </div>
+</section>
+
+<script>
+  import { getState, subscribe, toast } from '../../scripts/dashboard/store';
+  import { runResearch, getBriefs } from '../../scripts/dashboard/supabase';
+
+  let mode: 'client' | 'competitor' = 'client';
+
+  function esc(s: unknown): string {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string
+    ));
+  }
+  const LABELS: Record<string, string> = {
+    one_liner: 'สรุป', situation: 'สถานการณ์จริง', opportunity: 'โอกาส', reality: 'ความจริง/อุปสรรค',
+    recommended_pitch: 'มุมเสนอ', suggested_package: 'แพ็กเกจที่เหมาะ', ai_workflow: 'AI workflow',
+    roi_angle: 'ผลลัพธ์ (ROI)', next_action: 'สเต็ปถัดไป', readiness_score: 'ความพร้อม (1-10)',
+    competitor_summary: 'สรุปคู่แข่ง', their_strengths: 'จุดแข็งเขา', their_weaknesses: 'จุดอ่อนเขา',
+    pun_wins: 'ปันชนะตรงไหน', pun_gaps: 'ปันเสียเปรียบ', counter_angles: 'มุมสู้', market_gap: 'ช่องว่างตลาด',
+    content_hooks: 'ไอเดีย content', injection_flag: '⚠️ พบความพยายาม injection',
+  };
+
+  function renderVal(v: unknown): string {
+    if (Array.isArray(v)) return `<ul class="list-disc ml-5 grid gap-0.5">${v.map((x) => `<li>${renderVal(x)}</li>`).join('')}</ul>`;
+    if (v && typeof v === 'object') {
+      return Object.entries(v as Record<string, unknown>)
+        .filter(([, val]) => val != null && String(val).trim() !== '' && !(Array.isArray(val) && val.length === 0))
+        .map(([k, val]) => `<div class="mb-1"><span class="text-xs font-semibold opacity-70">${esc(LABELS[k] || k)}:</span> <span class="text-sm whitespace-pre-wrap">${renderVal(val)}</span></div>`).join('');
+    }
+    return esc(v);
+  }
+
+  function renderBrief(b: Record<string, unknown>): string {
+    const verdict = (b.verdict || {}) as Record<string, unknown>;
+    const sections = (b.sections || {}) as Record<string, unknown>;
+    const inj = String(verdict.injection_flag || (sections.debate as any)?.injection_flag || '').trim();
+    const warn = inj ? `<div class="alert alert-warning text-sm">⚠️ ระบบพบข้อความที่พยายามสั่ง AI ในเนื้อหาเว็บ (กันไว้แล้ว ไม่ทำตาม): ${esc(inj)}</div>` : '';
+    const rawKeys = Object.keys(sections).filter((k) => typeof sections[k] === 'string' && sections[k]);
+    const raw = rawKeys.map((k) => `<details class="rounded-box bg-base-200 p-2"><summary class="text-xs opacity-70 cursor-pointer">📄 ${esc(LABELS[k] || k)} (ข้อมูลดิบจาก analyst)</summary><div class="text-sm whitespace-pre-wrap mt-2 opacity-90">${esc(sections[k])}</div></details>`).join('');
+    return `${warn}
+      <div class="rounded-box border border-[color:var(--color-pun-coral)]/40 bg-base-100 p-4">
+        <div class="text-xs uppercase tracking-wider opacity-55 mb-2">${b.mode === 'competitor' ? '⚔️ คู่แข่ง vs ปัน' : '🎯 สรุปมุมเข้าทำงาน'} · ${esc(b.subject)}</div>
+        ${renderVal(verdict)}
+      </div>
+      <div class="grid gap-2 mt-2">${raw}</div>`;
+  }
+
+  function populateLeads() {
+    const sel = document.getElementById('wr-lead') as HTMLSelectElement | null;
+    if (!sel) return;
+    const cur = sel.value;
+    const leads = getState().leads || [];
+    sel.innerHTML = '<option value="">— พิมพ์เองด้านล่าง —</option>' +
+      leads.map((l) => `<option value="${esc(l.lead_id)}">${esc(l.company_name || l.full_name || '—')}</option>`).join('');
+    sel.value = cur;
+  }
+
+  async function loadHistory() {
+    const el = document.getElementById('wr-history'); if (!el) return;
+    try {
+      const briefs = await getBriefs();
+      el.innerHTML = briefs.length
+        ? briefs.map((b: any) => `<button class="wr-hist text-left rounded-box border border-base-300 bg-base-100 px-3 py-2 hover:bg-base-200" data-id="${esc(b.id)}">
+            <span class="text-sm font-medium">${b.mode === 'competitor' ? '⚔️' : '🎯'} ${esc(b.subject)}</span>
+            <span class="text-xs opacity-50"> · ${new Date(b.created_at).toLocaleString('th-TH')}</span></button>`).join('')
+        : '<p class="text-sm opacity-50">ยังไม่มี brief</p>';
+      el.querySelectorAll<HTMLButtonElement>('.wr-hist').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const b = briefs.find((x: any) => String(x.id) === btn.dataset.id) as any;
+          if (b) showResult({ mode: b.mode, subject: b.subject, ...(b.payload || {}) });
+        });
+      });
+    } catch (e) { /* not logged in / empty */ }
+  }
+
+  function showResult(b: Record<string, unknown>) {
+    const r = document.getElementById('wr-result'); if (!r) return;
+    r.innerHTML = renderBrief(b);
+    r.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function setMode(m: 'client' | 'competitor') {
+    mode = m;
+    document.getElementById('wr-client-inputs')?.classList.toggle('hidden', m !== 'client');
+    document.getElementById('wr-comp-inputs')?.classList.toggle('hidden', m !== 'competitor');
+    const bc = document.getElementById('wr-mode-client'); const bx = document.getElementById('wr-mode-comp');
+    bc?.classList.toggle('btn-primary', m === 'client'); bc?.classList.toggle('btn-outline', m !== 'client');
+    bx?.classList.toggle('btn-primary', m === 'competitor'); bx?.classList.toggle('btn-outline', m !== 'competitor');
+  }
+
+  document.getElementById('wr-mode-client')?.addEventListener('click', () => setMode('client'));
+  document.getElementById('wr-mode-comp')?.addEventListener('click', () => setMode('competitor'));
+
+  document.getElementById('wr-run')?.addEventListener('click', async () => {
+    const status = document.getElementById('wr-status');
+    const statusText = document.getElementById('wr-status-text');
+    const runBtn = document.getElementById('wr-run') as HTMLButtonElement;
+    let spec: Record<string, unknown>;
+    if (mode === 'competitor') {
+      const competitor = (document.getElementById('wr-competitor') as HTMLInputElement).value.trim();
+      if (!competitor) { toast('ใส่ชื่อคู่แข่งก่อน', 'error'); return; }
+      spec = { mode: 'competitor', competitor };
+    } else {
+      const leadId = (document.getElementById('wr-lead') as HTMLSelectElement).value;
+      const company = (document.getElementById('wr-company') as HTMLInputElement).value.trim();
+      const sector = (document.getElementById('wr-sector') as HTMLInputElement).value.trim();
+      if (!leadId && !company && !sector) { toast('เลือกลูกค้า หรือพิมพ์ชื่อ/sector', 'error'); return; }
+      spec = { mode: 'client', lead_id: leadId || undefined, company: company || undefined, sector: sector || undefined };
+    }
+    status?.classList.remove('hidden');
+    if (statusText) statusText.textContent = 'กำลังให้ AI agents วิเคราะห์ (analyst → debate → สรุป)...';
+    runBtn.disabled = true;
+    try {
+      const res = await runResearch(spec as any);
+      showResult(res);
+      toast('Research เสร็จแล้ว ✅');
+      void loadHistory();
+    } catch (e) {
+      toast('Research ไม่สำเร็จ: ' + (e as Error).message, 'error');
+    } finally {
+      status?.classList.add('hidden');
+      runBtn.disabled = false;
+    }
+  });
+
+  populateLeads();
+  subscribe(populateLeads);
+  loadHistory();
+  setMode('client');
+</script>
+</section>
