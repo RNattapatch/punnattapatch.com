@@ -73,5 +73,6 @@
     document.documentElement.setAttribute('data-theme', next);
     try { localStorage.setItem('pun_dash_theme', next); } catch (e) {}
     syncThemeIcon();
+    window.dispatchEvent(new Event('pun-theme-change')); // charts re-init with theme colors
   });
 </script>

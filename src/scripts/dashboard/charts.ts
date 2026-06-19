@@ -47,32 +47,43 @@ export const PALETTE_ARRAY = [
 
 const FONT = '"Sukhumvit Set", Tahoma, "Helvetica Neue", sans-serif';
 
+// Theme-aware chart colors — pundark (dark) vs punpaper (light/ivory). Read the
+// live data-theme so text/grid stay readable in both modes. Charts re-init on
+// the 'pun-theme-change' event (see each chart component).
+export function themeColors() {
+  const dark = typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'pundark';
+  return dark
+    ? { fore: '#cbd5e1', faint: '#94a3b8', strong: '#f1f5f9', grid: '#1f2937', mode: 'dark' as const, tooltip: 'dark' as const }
+    : { fore: '#44403a', faint: '#78716c', strong: '#072b4e', grid: '#e0dac9', mode: 'light' as const, tooltip: 'light' as const };
+}
+
 export function baseOptions() {
+  const tc = themeColors();
   return {
     chart: {
       fontFamily: FONT,
-      foreColor: '#cbd5e1',
+      foreColor: tc.fore,
       toolbar: { show: false },
       animations: { enabled: true, speed: 300 },
       background: 'transparent',
     },
     grid: {
-      borderColor: '#1f2937',
+      borderColor: tc.grid,
       strokeDashArray: 3,
     },
     legend: {
       fontFamily: FONT,
       fontSize: '11px',
-      labels: { colors: '#cbd5e1' },
+      labels: { colors: tc.fore },
       markers: { size: 6, strokeWidth: 0 },
       itemMargin: { horizontal: 6, vertical: 2 },
     },
     tooltip: {
-      theme: 'dark',
+      theme: tc.tooltip,
       style: { fontFamily: FONT, fontSize: '12px' },
     },
     dataLabels: { enabled: false },
     stroke: { curve: 'smooth', width: 2 },
-    theme: { mode: 'dark' },
+    theme: { mode: tc.mode },
   };
 }

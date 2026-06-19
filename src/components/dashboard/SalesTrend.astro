@@ -10,7 +10,7 @@
 
 <script>
   import { subscribe, getState } from '../../scripts/dashboard/store';
-  import { waitForApex, baseOptions, PALETTE } from '../../scripts/dashboard/charts';
+  import { waitForApex, baseOptions, PALETTE, themeColors } from '../../scripts/dashboard/charts';
 
   let chart: any = null;
 
@@ -33,6 +33,7 @@
     const ApexCharts = await waitForApex();
     const el = document.getElementById('chart-sales');
     if (!el || !ApexCharts) return;
+    const tc = themeColors();
     const opts = {
       ...baseOptions(),
       series: [{ name: 'Sales', data: dataFromState() }],
@@ -55,16 +56,16 @@
           if (v >= 1_000) return `฿${(v / 1_000).toFixed(0)}K`;
           return `฿${v}`;
         },
-        style: { fontSize: '11px', colors: ['#cbd5e1'] },
+        style: { fontSize: '11px', colors: [tc.fore] },
       },
       legend: { show: false },
       xaxis: {
         categories: ['เดือนก่อน', 'เดือนนี้'],
-        labels: { style: { fontSize: '11px', colors: '#cbd5e1' } },
+        labels: { style: { fontSize: '11px', colors: tc.fore } },
       },
       yaxis: {
         labels: {
-          style: { fontSize: '10px', colors: '#94a3b8' },
+          style: { fontSize: '10px', colors: tc.faint },
           formatter: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(0)}K` : String(v),
         },
       },
@@ -82,4 +83,5 @@
 
   init();
   subscribe(update);
+  window.addEventListener('pun-theme-change', () => { if (chart) { chart.destroy(); chart = null; } void init(); });
 </script>
