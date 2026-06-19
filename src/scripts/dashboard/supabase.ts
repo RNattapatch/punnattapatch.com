@@ -1,21 +1,13 @@
-// Supabase client + auth bridge for the dashboard (Week 3 — migrate reads).
+// Supabase data layer for the dashboard — SINGLE SOURCE OF TRUTH.
 //
-// Reads move to Supabase (Postgres RPC `get_dashboard_data`, computed under RLS).
-// Writes still go through the Apps Script backend (api.ts) during the transition.
-// The login bridges a Google ID token into a Supabase session via
-// signInWithIdToken — same Google account, no extra redirect.
+// All reads AND writes go to Supabase (Postgres + RLS owner_all). Auth is a pure
+// Supabase Google session (signInWithIdToken). The legacy Apps Script / Google
+// Sheets backend has been retired — api.ts now only holds shared TYPES.
+// Reason for the migration: keeping reads on Supabase but writes on Sheets made
+// edits silently revert (no live sync). One datastore = no divergence.
 
 import { createClient, type Session } from '@supabase/supabase-js';
-import {
-  getDashboardData as getDashboardDataGas,
-  getLead as gasGetLead,
-  updateLead as gasUpdateLead,
-  addLead as gasAddLead,
-  addInteraction as gasAddInteraction,
-  getLeadsPage as gasGetLeadsPage,
-  type DashboardData,
-  type Interaction,
-} from './api';
+import type { DashboardData, Interaction, ExpenseRow, ExpenseSummary, ExpensesData } from './api';
 import type { LeadUi } from './adapter';
 
 export const SUPABASE_URL = 'https://yykocvhorgcgzaluuldn.supabase.co';
@@ -61,17 +53,13 @@ export async function signOutSupabase(): Promise<void> {
   }
 }
 
-// Read path: prefer the Supabase RPC (computed in Postgres, RLS-scoped). Falls
-// back to the legacy Apps Script endpoint if there's no Supabase session yet or
-// the RPC errors — so the dashboard never goes blank mid-migration.
+// Read path: Supabase RPC get_dashboard_data (computed in Postgres, RLS-scoped).
 export async function getDashboardDataSmart(): Promise<DashboardData> {
   const session = await getSupabaseSession();
-  if (session) {
-    const { data, error } = await supabase.rpc('get_dashboard_data');
-    if (!error && data) return data as DashboardData;
-    console.warn('[supabase] get_dashboard_data RPC failed, falling back to GAS:', error?.message);
-  }
-  return getDashboardDataGas();
+  if (!session) throw Object.assign(new Error('ยังไม่ได้เข้าสู่ระบบ'), { code: 'invalid_token' });
+  const { data, error } = await supabase.rpc('get_dashboard_data');
+  if (error) throw new Error(error.message);
+  return data as DashboardData;
 }
 
 const DOC_API_URL = 'https://doc-api.punnattapatch.com/generate';
@@ -180,7 +168,7 @@ export async function updateLeadSmart(
   fields: Partial<LeadUi>
 ): Promise<{ lead: LeadUi; dropped_fields?: string[] }> {
   const session = await getSupabaseSession();
-  if (!session) return gasUpdateLead(lead_id, fields);
+  if (!session) throw Object.assign(new Error('ยังไม่ได้เข้าสู่ระบบ'), { code: 'invalid_token' });
   const { patch, dropped } = cleanLeadPatch(fields as Record<string, unknown>);
   patch.updated_at = new Date().toISOString();
   const { data, error } = await supabase.from('leads').update(patch).eq('id', lead_id).select('*').single();
@@ -190,7 +178,7 @@ export async function updateLeadSmart(
 
 export async function addLeadSmart(fields: Partial<LeadUi>): Promise<{ lead: LeadUi }> {
   const session = await getSupabaseSession();
-  if (!session) return gasAddLead(fields);
+  if (!session) throw Object.assign(new Error('ยังไม่ได้เข้าสู่ระบบ'), { code: 'invalid_token' });
   const { patch } = cleanLeadPatch(fields as Record<string, unknown>);
   if (!patch.full_name) patch.full_name = patch.company_name || 'New Lead'; // NOT NULL
   if (!patch.submitted_at) patch.submitted_at = new Date().toISOString();
@@ -203,7 +191,7 @@ export async function addLeadSmart(fields: Partial<LeadUi>): Promise<{ lead: Lea
 
 export async function getLeadSmart(lead_id: string): Promise<{ lead: LeadUi; interactions: Interaction[] }> {
   const session = await getSupabaseSession();
-  if (!session) return gasGetLead(lead_id);
+  if (!session) throw Object.assign(new Error('ยังไม่ได้เข้าสู่ระบบ'), { code: 'invalid_token' });
   const [leadRes, ixRes] = await Promise.all([
     supabase.from('leads').select('*').eq('id', lead_id).single(),
     supabase.from('interactions').select('*').eq('lead_id', lead_id).order('occurred_at', { ascending: false }),
@@ -219,7 +207,7 @@ export async function addInteractionSmart(
   summary: string
 ): Promise<{ interaction: Interaction; lead: LeadUi }> {
   const session = await getSupabaseSession();
-  if (!session) return gasAddInteraction(lead_id, type, summary);
+  if (!session) throw Object.assign(new Error('ยังไม่ได้เข้าสู่ระบบ'), { code: 'invalid_token' });
   const nowIso = new Date().toISOString();
   const { data: ixRow, error } = await supabase
     .from('interactions')
@@ -236,7 +224,7 @@ export async function getLeadsPageSmart(
   filter?: { outcome?: string; manual_only?: boolean }
 ): Promise<{ leads: LeadUi[]; total: number; offset: number }> {
   const session = await getSupabaseSession();
-  if (!session) return gasGetLeadsPage(offset, limit, filter);
+  if (!session) throw Object.assign(new Error('ยังไม่ได้เข้าสู่ระบบ'), { code: 'invalid_token' });
   let q = supabase
     .from('leads')
     .select('*', { count: 'exact' })
@@ -247,4 +235,67 @@ export async function getLeadsPageSmart(
   const { data, error, count } = await q;
   if (error) throw new Error(error.message);
   return { leads: (data || []).map(rowToLeadUi), total: count ?? (data ? data.length : 0), offset };
+}
+
+// ── Expenses — Supabase-native CRUD (table public.expenses, RLS owner_all) ──
+function computeExpenseSummary(rows: ExpenseRow[]): ExpenseSummary {
+  const now = new Date();
+  const curM = `${now.getFullYear()}-${now.getMonth()}`;
+  const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const prevM = `${prev.getFullYear()}-${prev.getMonth()}`;
+  const by = { travel: 0, client_gift: 0, ai_subscription: 0, other: 0 };
+  let total = 0, thisM = 0, prevMo = 0;
+  for (const r of rows) {
+    const a = Number(r.amount_thb) || 0;
+    total += a;
+    const d = new Date(r.date);
+    const ym = `${d.getFullYear()}-${d.getMonth()}`;
+    if (ym === curM) thisM += a;
+    if (ym === prevM) prevMo += a;
+    if (r.category in by) by[r.category as keyof typeof by] += a; else by.other += a;
+  }
+  return { total_thb: total, this_month_thb: thisM, prev_month_thb: prevMo, by_category: by };
+}
+
+export async function getExpensesSmart(): Promise<ExpensesData> {
+  const session = await getSupabaseSession();
+  if (!session) throw Object.assign(new Error('ยังไม่ได้เข้าสู่ระบบ'), { code: 'invalid_token' });
+  const { data, error } = await supabase.from('expenses').select('*').order('date', { ascending: false });
+  if (error) throw new Error(error.message);
+  const rows = (data || []) as ExpenseRow[];
+  return { rows, summary: computeExpenseSummary(rows) };
+}
+
+export async function addExpenseSmart(data: {
+  date: string; category: string; amount_thb: number; description: string; linked_lead_id?: string;
+}): Promise<{ id: string }> {
+  const session = await getSupabaseSession();
+  if (!session) throw Object.assign(new Error('ยังไม่ได้เข้าสู่ระบบ'), { code: 'invalid_token' });
+  const row: Record<string, unknown> = {
+    date: data.date, category: data.category, amount_thb: data.amount_thb, description: data.description || null,
+  };
+  if (data.linked_lead_id) row.linked_lead_id = data.linked_lead_id;
+  const { data: ins, error } = await supabase.from('expenses').insert(row).select('id').single();
+  if (error) throw new Error(error.message);
+  return { id: String(ins.id) };
+}
+
+export async function deleteExpenseSmart(id: string): Promise<{ deleted: boolean }> {
+  const session = await getSupabaseSession();
+  if (!session) throw Object.assign(new Error('ยังไม่ได้เข้าสู่ระบบ'), { code: 'invalid_token' });
+  const { error } = await supabase.from('expenses').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+  return { deleted: true };
+}
+
+export async function editExpenseSmart(id: string, data: {
+  date: string; category: string; amount_thb: number; description: string;
+}): Promise<{ updated: boolean }> {
+  const session = await getSupabaseSession();
+  if (!session) throw Object.assign(new Error('ยังไม่ได้เข้าสู่ระบบ'), { code: 'invalid_token' });
+  const { error } = await supabase.from('expenses')
+    .update({ date: data.date, category: data.category, amount_thb: data.amount_thb, description: data.description || null })
+    .eq('id', id);
+  if (error) throw new Error(error.message);
+  return { updated: true };
 }

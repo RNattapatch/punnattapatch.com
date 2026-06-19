@@ -2,30 +2,27 @@ import {
   getDashboardDataSmart,
   signInToSupabase,
   signOutSupabase,
+  getSupabaseSession,
   generateDoc,
   logPurchase,
-  // Lead reads/writes — Supabase-native (writes land where reads come from, so
-  // status changes stick instead of reverting on the next refresh).
+  // All lead + expense reads/writes are Supabase-native (single source of truth —
+  // writes land where reads come from, so edits stick instead of reverting).
   getLeadSmart as getLead,
   updateLeadSmart as updateLead,
   addLeadSmart as addLead,
   addInteractionSmart as addInteraction,
   getLeadsPageSmart as getLeadsPage,
+  getExpensesSmart as getExpenses,
+  addExpenseSmart as apiAddExpense,
+  deleteExpenseSmart as apiDeleteExpense,
+  editExpenseSmart as apiEditExpense,
 } from './supabase';
-import {
-  loginWithGoogle,
-  loginWithGoogleToken,
-  getToken,
-  clearToken,
-  getExpenses,
-  addExpense as apiAddExpense,
-  deleteExpense as apiDeleteExpense,
-  editExpense as apiEditExpense,
-  type DashboardData,
-  type Interaction,
-  type Kpis,
-  type ExpenseRow,
-  type ExpenseSummary,
+import type {
+  DashboardData,
+  Interaction,
+  Kpis,
+  ExpenseRow,
+  ExpenseSummary,
 } from './api';
 import type { LeadUi } from './adapter';
 import { pickTemplate } from './templates';
@@ -122,25 +119,16 @@ export function toast(message: string, kind: 'success' | 'error' | 'info' = 'suc
 
 // ------- Auth flow -------
 export async function tryLoginGoogle(idToken: string, nonce?: string): Promise<void> {
-  await loginWithGoogle(idToken);
-  // Bridge the same Google identity into a Supabase session so RLS-scoped reads
-  // work. Non-fatal: if it fails, refresh() falls back to the Apps Script read.
-  // nonce: raw value matching the hashed nonce baked into the FedCM ID token.
-  await signInToSupabase(idToken, nonce);
-  state.authed = true;
-  notify();
-  await refresh();
-}
-
-export async function tryLoginGoogleToken(accessToken: string): Promise<void> {
-  await loginWithGoogleToken(accessToken);
+  // Pure Supabase auth: exchange the Google ID token for a Supabase session (RLS
+  // owner_all gates the data). nonce = raw value matching the hash in the FedCM token.
+  const ok = await signInToSupabase(idToken, nonce);
+  if (!ok) throw new Error('เข้าสู่ระบบไม่สำเร็จ — ลองอีกครั้ง');
   state.authed = true;
   notify();
   await refresh();
 }
 
 export function logout(): void {
-  clearToken();
   void signOutSupabase();
   state.authed = false;
   state.kpis = null;
@@ -530,11 +518,15 @@ function handleApiError(err: unknown, fallback: string): void {
 // ------- Init -------
 export function initDashboard(): void {
   if (typeof window === 'undefined') return;
-  if (getToken()) {
-    state.authed = true;
-    notify();
-    void refresh();
-  } else {
-    notify();
-  }
+  // Restore the persisted Supabase session (localStorage) on load.
+  void (async () => {
+    const session = await getSupabaseSession();
+    if (session) {
+      state.authed = true;
+      notify();
+      await refresh();
+    } else {
+      notify();
+    }
+  })();
 }
