@@ -3,7 +3,7 @@ title: "AI Agent 101 — Workshop เจ้าของธุรกิจสร�
 description: "คอร์สอบรม AI แบบ offline public training จบวันเดียว ได้ AI Agent ตัวแรกของธุรกิจ + Action Plan 30 วัน · Hands-on build ในห้อง ไม่ใช่ฟัง theory"
 lang: th
 published: 2026-04-19
-draft: false
+draft: true
 tags: [public-training, ai, workshop, early-bird]
 programCode: p1
 shortName: "AI Agent 101"

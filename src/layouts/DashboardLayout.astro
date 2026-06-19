@@ -2,12 +2,20 @@
 import '../styles/global.css';
 ---
 <!doctype html>
-<html lang="th" data-theme="pundark">
+<html lang="th" data-theme="punpaper">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content" />
     <meta name="robots" content="noindex,nofollow" />
-    <meta name="theme-color" content="#072b4e" />
+    <meta name="theme-color" content="#F4F1EA" />
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('pun_dash_theme');
+          if (t === 'pundark' || t === 'punpaper') document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <title>Dashboard — Pun</title>

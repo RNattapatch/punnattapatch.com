@@ -1,368 +1,359 @@
 ---
 import QuickActions from './QuickActions.astro';
-import CommandCenterPanel from './CommandCenterPanel.astro';
-import MemorableFacts from './MemorableFacts.astro';
-import NotesPanel from './NotesPanel.astro';
 import InteractionLog from './InteractionLog.astro';
 ---
 <aside
   id="lead-drawer"
+  data-editing="false"
+  data-detail="closed"
   class="hidden fixed inset-x-0 bottom-0 z-40 bg-base-100 border-t border-base-300 rounded-t-box shadow-2xl overflow-y-auto"
   style="max-height: 92dvh;"
   role="dialog"
   aria-modal="true"
   aria-labelledby="lead-drawer-name"
 >
+  <style is:global>
+    @keyframes drawerUp { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    #lead-drawer:not(.hidden) { animation: drawerUp 180ms ease-out; }
+    @media (prefers-reduced-motion: reduce) { #lead-drawer:not(.hidden) { animation: none; } }
+    #lead-drawer[data-editing='false'] .ed { display: none; }
+    #lead-drawer[data-editing='true']  .ro { display: none; }
+    #lead-drawer[data-detail='closed'] #lead-detail-body { display: none; }
+    #lead-drawer[data-editing='true'] #lead-detail-body { display: block; }
+  </style>
+
   <div class="sticky top-0 z-10 bg-[color:var(--color-pun-coral)] text-base-100 border-b border-base-300 px-4 py-3 flex items-center gap-3 shadow-lg">
+    <div class="size-9 shrink-0 rounded-full bg-base-100/20 grid place-items-center font-display font-semibold" id="lead-avatar" aria-hidden="true">—</div>
     <div class="flex-1 min-w-0">
-      <h2 id="lead-drawer-name" class="font-display text-lg leading-snug break-words font-semibold">—</h2>
+      <h2 id="lead-drawer-name" class="font-display text-lg leading-snug break-words font-semibold text-balance">—</h2>
       <p id="lead-drawer-sub" class="text-xs opacity-80 break-words"></p>
     </div>
+    <button id="drawer-edit" class="btn btn-xs btn-ghost tap-44 text-base-100 hover:bg-black/15 gap-1" aria-label="แก้ไขข้อมูลลูกค้า">
+      <span id="drawer-edit-icon">✏️</span><span id="drawer-edit-label" class="hidden sm:inline">แก้ไข</span>
+    </button>
     <button id="drawer-close" class="btn btn-sm btn-ghost tap-44 text-base-100 hover:bg-black/15" aria-label="ปิด">✕</button>
   </div>
 
   <div class="px-4 py-3 grid gap-3">
-    <section id="contact-section" data-editing="false">
-      <div class="flex items-center justify-between mb-1">
-        <h3 class="text-xs uppercase tracking-wider opacity-70">Contact</h3>
-        <button id="contact-edit-toggle" type="button" class="btn btn-xs btn-ghost tap-44">✏️ แก้ไข</button>
-      </div>
-      <div id="lead-contact" class="grid gap-2"></div>
-    </section>
 
-    <style>
-      #contact-section[data-editing='false'] .contact-input { display: none; }
-      #contact-section[data-editing='true']  .contact-display { display: none; }
-    </style>
+    <div class="flex flex-wrap items-center gap-2" id="lead-badges"></div>
 
     <section>
-      <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Deal</h3>
-      <div class="flex items-center gap-2 mb-1">
-        <span id="deal-badge" class="badge badge-sm">—</span>
-        <span id="deal-amount" class="text-sm"></span>
-        <span id="deal-package" class="text-xs opacity-70"></span>
-      </div>
-      <label class="form-control mb-1">
-        <span class="label-text text-xs opacity-70">รูปแบบภาษี</span>
-        <select id="deal-tax-mode" class="select select-bordered select-sm tap-44">
-          <option value="">— ไม่ระบุ —</option>
-          <option value="cash">💵 จ่ายเงินสด (ไม่เสียภาษี)</option>
-          <option value="wht_3">🏛️ หัก ณ ที่จ่าย 3%</option>
-          <option value="vat_7">📄 ออกบิลบริษัท + VAT 7%</option>
+      <button id="detail-toggle" type="button" class="btn btn-sm btn-ghost btn-block justify-between tap-44" aria-expanded="false" aria-controls="lead-detail-body">
+        <span class="text-xs opacity-80">📋 รายละเอียดที่ลูกค้ากรอก / ข้อมูลเชิงลึก</span>
+        <span id="detail-chevron" aria-hidden="true">▾</span>
+      </button>
+      <div id="lead-detail-body" class="grid gap-2 mt-2"></div>
+    </section>
+
+    <section>
+      <label class="label-text text-xs opacity-70" for="lead-status">สถานะดีล</label>
+      <select id="lead-status" class="select select-bordered select-sm w-full tap-44 mt-1">
+        <optgroup label="กำลังคุย">
+          <option value="New">🆕 New</option>
+          <option value="Discovery Call">📞 Discovery Call</option>
+          <option value="Site Visit">🏠 Site Visit</option>
+          <option value="Proposal Sent">📄 Proposal Sent</option>
+          <option value="Proposal — Follow-up">🔄 Follow-up</option>
+        </optgroup>
+        <optgroup label="ปิดดีล (นับเป็นรายได้)">
+          <option value="won">✅ ปิดได้ (Won)</option>
+          <option value="repeat">🔁 ใช้บริการซ้ำ</option>
+          <option value="retainer">🗓️ ดูแลรายเดือน</option>
+        </optgroup>
+        <optgroup label="ไม่ได้ดีล">
+          <option value="lost">❌ Lost</option>
+          <option value="unqualified">🚫 ไม่ผ่านเกณฑ์</option>
+        </optgroup>
+      </select>
+      <div id="lead-reason-wrap" class="hidden mt-2">
+        <label class="label-text text-xs opacity-70" for="lead-reason">เหตุผล (จำเป็น)</label>
+        <select id="lead-reason" class="select select-bordered select-sm w-full tap-44 mt-1">
+          <option value="">— เลือกเหตุผล —</option>
+          <option value="freebie_seeker">มาหลอกถามหวังของฟรี</option>
+          <option value="scam">scam / แชร์ลูกโซ่</option>
+          <option value="cheap_client">ไม่พร้อมลงทุน / cheap</option>
+          <option value="mismatch">ไม่ตรง target</option>
+          <option value="price_too_high">ราคาแพงเกินไป</option>
+          <option value="no_budget">ไม่มีงบในตอนนี้</option>
+          <option value="wrong_timing">timing ไม่เหมาะ</option>
+          <option value="competitor">เลือกใช้ทีมอื่น</option>
+          <option value="other">อื่นๆ</option>
         </select>
-      </label>
-      <p id="deal-net" class="text-xs opacity-80 mb-2"></p>
-      <button id="deal-edit" class="btn btn-xs btn-outline tap-44">แก้ deal</button>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-3 gap-2">
+      <div class="bg-base-200 rounded-box px-3 py-2 min-w-0">
+        <div class="text-[10px] uppercase tracking-wider opacity-55">แพ็กเกจ</div>
+        <div class="text-sm font-medium truncate ro" data-ro="package">—</div>
+        <input class="ed input input-bordered input-xs w-full mt-1" data-field="package" autocomplete="off" />
+      </div>
+      <div class="bg-base-200 rounded-box px-3 py-2 min-w-0">
+        <div class="text-[10px] uppercase tracking-wider opacity-55">ยอด</div>
+        <div class="text-sm font-medium tabular-nums ro" data-ro="amount">—</div>
+        <input class="ed input input-bordered input-xs w-full mt-1" data-field="package_price" type="number" inputmode="numeric" min="0" />
+      </div>
+      <div class="bg-base-200 rounded-box px-3 py-2 min-w-0">
+        <div class="text-[10px] uppercase tracking-wider opacity-55">รับจริง</div>
+        <div class="text-sm font-medium tabular-nums ro" data-ro="net" style="color:var(--color-success)">—</div>
+        <select class="ed select select-bordered select-xs w-full mt-1" data-field="tax_mode">
+          <option value="">— ภาษี —</option>
+          <option value="cash">เงินสด</option>
+          <option value="wht_3">หัก 3%</option>
+          <option value="vat_7">+VAT 7%</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="rounded-box border border-[color:var(--color-pun-coral)]/30 bg-[color:var(--color-pun-coral)]/5 px-3 py-2">
+      <div class="text-[10px] uppercase tracking-wider opacity-55">ขั้นต่อไป <span id="lead-next-due" class="tabular-nums"></span></div>
+      <div class="text-sm ro" data-ro="next_action">—</div>
+      <input class="ed input input-bordered input-xs w-full mt-1" data-field="next_action" placeholder="นัด demo, ส่ง proposal..." autocomplete="off" />
+      <input class="ed input input-bordered input-xs w-full mt-1" data-field="next_action_due" type="date" />
     </section>
 
     <QuickActions />
-    <CommandCenterPanel />
-    <MemorableFacts />
-    <NotesPanel />
 
     <section>
-      <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Read-only context</h3>
-      <div id="lead-context" class="grid gap-2 opacity-90"></div>
+      <div class="flex items-center justify-between">
+        <label class="label-text text-xs opacity-70" for="lead-notes">โน้ต · ชื่อเล่น</label>
+      </div>
+      <input class="ed input input-bordered input-sm w-full mt-1" data-field="nickname" placeholder="ชื่อเล่น" autocomplete="off" />
+      <p class="ro text-xs opacity-60 mt-1" data-ro="nickname_ro"></p>
+      <div class="ro text-sm whitespace-pre-wrap mt-1 min-h-5" data-ro="crm_notes">—</div>
+      <textarea id="lead-notes" class="ed textarea textarea-bordered textarea-sm w-full mt-1" data-field="crm_notes" rows="3" placeholder="จดอะไรก็ได้ — ชอบกาแฟ, ลูก 2 คน, สนใจ automation ทีมขาย..."></textarea>
     </section>
 
     <InteractionLog />
 
-    <section>
-      <h3 class="text-xs uppercase tracking-wider opacity-70 mb-1">Audit</h3>
-      <div id="lead-audit" class="grid gap-1 opacity-70"></div>
-    </section>
-
-    <div class="h-16"></div><!-- spacer for sticky save bar -->
+    <div class="h-16"></div>
   </div>
 
-  <div class="sticky bottom-0 inset-x-0 bg-base-100/95 backdrop-blur border-t border-base-300 px-4 py-3">
-    <button id="drawer-save" class="btn btn-primary btn-block tap-44">
-      <span id="drawer-save-label">💾 บันทึกการเปลี่ยนแปลง</span>
-    </button>
+  <div id="drawer-savebar" class="hidden sticky bottom-0 inset-x-0 bg-base-100/95 backdrop-blur border-t border-base-300 px-4 py-3 flex gap-2" style="padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));">
+    <button id="drawer-cancel" class="btn btn-sm btn-ghost flex-1 tap-44">ยกเลิก</button>
+    <button id="drawer-save" class="btn btn-sm btn-primary flex-1 tap-44"><span id="drawer-save-label">💾 บันทึก</span></button>
   </div>
 </aside>
 
 <script>
-  import { subscribe, getState, closeLead, emit, patchLead, toast } from '../../scripts/dashboard/store';
+  import { subscribe, getState, closeLead, patchLead, setLeadStatus, toast } from '../../scripts/dashboard/store';
 
-  function row(label: string, value: string) {
-    const wrap = document.createElement('div');
-    wrap.className = 'min-w-0';
-    const l = document.createElement('div');
-    l.className = 'text-[10px] uppercase tracking-wider opacity-50 mb-0.5';
-    l.textContent = label;
-    const v = document.createElement('div');
-    v.className = 'text-sm break-words whitespace-pre-wrap';
-    v.textContent = value || '—';
-    wrap.appendChild(l);
-    wrap.appendChild(v);
-    return wrap;
+  const REASON_KEYS = ['freebie_seeker', 'scam', 'cheap_client', 'mismatch', 'price_too_high', 'no_budget', 'wrong_timing', 'competitor', 'other'];
+  const OUTCOMES = ['won', 'repeat', 'retainer', 'lost', 'unqualified'];
+  const fmt0 = (n: number) => new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(Math.round(n || 0));
+
+  const drawer = () => document.getElementById('lead-drawer');
+  function dtLocal(iso?: string): string {
+    if (!iso) return ''; const d = new Date(iso); if (Number.isNaN(d.getTime())) return '';
+    const p = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+  }
+  function ymd(iso?: string): string {
+    if (!iso) return ''; const d = new Date(iso); if (Number.isNaN(d.getTime())) return '';
+    const p = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+  }
+  function relAgo(iso?: string): string {
+    if (!iso) return '—'; const ms = Date.now() - new Date(iso).getTime();
+    if (!Number.isFinite(ms)) return '—'; const d = Math.floor(ms / 86400000);
+    return d <= 0 ? 'วันนี้' : d === 1 ? 'เมื่อวาน' : d < 30 ? `${d} วันก่อน` : `${Math.floor(d / 30)} เดือนก่อน`;
   }
 
-  function contactRow(label: string, value: string, inputId: string, inputType: string = 'text') {
-    const wrap = document.createElement('div');
-    wrap.className = 'min-w-0';
-    const l = document.createElement('div');
-    l.className = 'text-[10px] uppercase tracking-wider opacity-50 mb-0.5';
-    l.textContent = label;
-    const v = document.createElement('div');
-    v.className = 'contact-display text-sm break-words whitespace-pre-wrap';
-    v.textContent = value || '—';
-    const input = document.createElement('input');
-    input.type = inputType;
-    input.id = inputId;
-    input.className = 'contact-input input input-bordered input-sm tap-44 w-full';
-    input.value = value;
-    input.autocomplete = 'off';
-    wrap.appendChild(l);
-    wrap.appendChild(v);
-    wrap.appendChild(input);
-    return wrap;
+  let lastId = '';
+
+  function statusValue(lead: Record<string, unknown>): string {
+    const oc = String(lead.deal_outcome || '');
+    if (OUTCOMES.includes(oc)) return oc;
+    const ps = String(lead.pipeline_status || '');
+    return ['New', 'Discovery Call', 'Site Visit', 'Proposal Sent', 'Proposal — Follow-up'].includes(ps) ? ps : 'New';
   }
 
-  function setContactEditing(on: boolean) {
-    const sec = document.getElementById('contact-section');
-    if (sec) sec.setAttribute('data-editing', on ? 'true' : 'false');
-    const btn = document.getElementById('contact-edit-toggle');
-    if (btn) btn.textContent = on ? '✕ ยกเลิกแก้ไข' : '✏️ แก้ไข';
+  function netLine(amount: number, tax: string): string {
+    if (!amount) return '—';
+    if (tax === 'wht_3') return `฿${fmt0(amount * 0.97)}`;
+    if (tax === 'vat_7') return `฿${fmt0(amount)} (+VAT)`;
+    return `฿${fmt0(amount)}`;
   }
 
-  // Track the lead currently rendered so we can auto-close Contact edit mode
-  // when the user jumps to a different lead.
-  let lastDrawerLeadId = '';
-
-  function renderNetLine(grossAmount: number, taxMode: string) {
-    const netEl = document.getElementById('deal-net');
-    if (!netEl) return;
-    if (!grossAmount) { netEl.textContent = ''; return; }
-    const fmt = (n: number) => `฿${new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(Math.round(n))}`;
-    if (taxMode === 'wht_3') {
-      const net = grossAmount * 0.97;
-      netEl.textContent = `รับจริง ${fmt(net)} (หัก 3% = ${fmt(grossAmount - net)})`;
-    } else if (taxMode === 'vat_7') {
-      const billed = grossAmount * 1.07;
-      netEl.textContent = `ลูกค้าจ่าย ${fmt(billed)} (+VAT ${fmt(billed - grossAmount)}) · รับจริง ${fmt(grossAmount)}`;
-    } else if (taxMode === 'cash') {
-      netEl.textContent = `รับจริง ${fmt(grossAmount)} (เงินสด ไม่หัก ไม่บวก)`;
-    } else {
-      netEl.textContent = '— ยังไม่ระบุรูปแบบภาษี —';
-    }
+  // Escape ALL interpolated values — detail rows render user-submitted form data
+  // (pain points, brand website, brief) via innerHTML → must prevent stored XSS.
+  function esc(s: unknown): string {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string
+    ));
   }
-
-  function clearChildren(el: HTMLElement) {
-    while (el.firstChild) el.removeChild(el.firstChild);
+  function detailRow(label: string, value: string, field?: string, type = 'text'): string {
+    const v = value || '';
+    const ed = field
+      ? `<input class="ed input input-bordered input-xs" data-field="${esc(field)}" type="${esc(type)}" value="${esc(v)}" aria-label="${esc(label)}" autocomplete="off" style="max-width:60%" />`
+      : '';
+    return `<div class="flex items-start justify-between gap-3 py-1.5 border-b border-base-300/60 last:border-0">
+      <span class="text-xs opacity-55 shrink-0">${esc(label)}</span>
+      <span class="ro text-sm text-right break-words">${v ? esc(v) : '—'}</span>${ed}</div>`;
   }
 
   function render() {
-    const drawer = document.getElementById('lead-drawer');
-    if (!drawer) return;
-    const lead = getState().selectedLead;
-    drawer.classList.toggle('hidden', !lead);
+    const d = drawer(); if (!d) return;
+    const lead = getState().selectedLead as Record<string, unknown> | null;
+    d.classList.toggle('hidden', !lead);
     if (!lead) return;
 
-    const name = (lead.nickname || lead.full_name || '—').toString();
-    const company = (lead.company_name || '').toString();
-    const nameEl = document.getElementById('lead-drawer-name');
-    const subEl = document.getElementById('lead-drawer-sub');
-    if (nameEl) nameEl.textContent = name;
-    if (subEl) subEl.textContent = [company, lead.business_type as string].filter(Boolean).join(' · ');
+    const id = String(lead.lead_id || '');
+    if (id !== lastId) { lastId = id; setEditing(false); setDetail(true); }
 
-    const currentLeadId = String(lead.lead_id || '');
-    if (currentLeadId !== lastDrawerLeadId) {
-      lastDrawerLeadId = currentLeadId;
-      setContactEditing(false);
-    }
+    const name = String(lead.nickname || lead.full_name || '—');
+    const company = String(lead.company_name || '');
+    (document.getElementById('lead-avatar') as HTMLElement).textContent = (name[0] || '—').toUpperCase();
+    (document.getElementById('lead-drawer-name') as HTMLElement).textContent = name;
+    (document.getElementById('lead-drawer-sub') as HTMLElement).textContent = [company, String(lead.business_type || '')].filter(Boolean).join(' · ');
 
-    const contact = document.getElementById('lead-contact');
-    if (contact) {
-      clearChildren(contact);
-      contact.appendChild(contactRow('ชื่อจริง', String(lead.full_name || ''), 'contact-full-name'));
-      contact.appendChild(contactRow('ตำแหน่ง', String(lead.position || lead.position_other || ''), 'contact-position'));
-      contact.appendChild(contactRow('โทร', String(lead.phone || ''), 'contact-phone', 'tel'));
-      contact.appendChild(contactRow('LINE', String(lead.line_id || ''), 'contact-line'));
-      contact.appendChild(contactRow('Email', String(lead.email || ''), 'contact-email', 'email'));
-    }
+    const pc = Number(lead.purchase_count) || 0;
+    const temp = String(lead.temperature || '');
+    const isSponsor = String(lead.source || '').toLowerCase().includes('sponsor');
+    const badges: string[] = [];
+    if (temp) badges.push(`<span class="badge badge-sm ${temp === 'hot' ? 'badge-error' : temp === 'warm' ? 'badge-warning' : 'badge-ghost'}">${temp === 'hot' ? '🔥' : temp === 'warm' ? '🌤' : '❄️'} ${temp}</span>`);
+    if (pc > 0) badges.push(`<span class="badge badge-sm badge-secondary tabular-nums">🔁 ซื้อ ${pc} ครั้ง · ฿${fmt0(Number(lead.lifetime_value_thb) || 0)}</span>`);
+    if (isSponsor) badges.push(`<span class="badge badge-sm badge-info">🤝 Sponsor</span>`);
+    (document.getElementById('lead-badges') as HTMLElement).innerHTML = badges.join('');
 
-    const dealBadge = document.getElementById('deal-badge');
-    const dealAmount = document.getElementById('deal-amount');
-    const dealPackage = document.getElementById('deal-package');
-    if (dealBadge) {
-      const oc = lead.deal_outcome || 'in_progress';
-      dealBadge.className = `badge badge-sm ${oc === 'won' ? 'badge-success' : oc === 'lost' ? 'badge-error' : 'badge-ghost'}`;
-      dealBadge.textContent = oc;
-    }
+    const statusSel = document.getElementById('lead-status') as HTMLSelectElement;
+    if (document.activeElement !== statusSel) statusSel.value = statusValue(lead);
+    syncReason();
+
     const amount = Number(lead.package_price) || 0;
-    if (dealAmount) dealAmount.textContent = amount ? `${new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(amount)} ฿` : '—';
-    if (dealPackage) dealPackage.textContent = (lead.package as string) || '';
+    const tax = String(lead.tax_mode || '');
+    setRo('package', String(lead.package || '—'));
+    setRo('amount', amount ? `฿${fmt0(amount)}` : '—');
+    setRo('net', netLine(amount, tax));
+    setRo('next_action', String(lead.next_action || '—'));
+    setRo('nickname_ro', lead.nickname ? `ชื่อเล่น: ${lead.nickname}` : '');
+    setRo('crm_notes', String(lead.crm_notes || '—'));
+    const due = document.getElementById('lead-next-due') as HTMLElement;
+    due.textContent = lead.next_action_due ? `· ครบ ${new Date(String(lead.next_action_due)).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' })}` : '';
 
-    const taxEl = document.getElementById('deal-tax-mode') as HTMLSelectElement | null;
-    const taxMode = (lead.tax_mode as string) || '';
-    if (taxEl && document.activeElement !== taxEl) taxEl.value = taxMode;
-    renderNetLine(amount, taxEl?.value || taxMode);
+    setEd('package', String(lead.package || ''));
+    setEd('package_price', amount ? String(amount) : '');
+    setEd('tax_mode', tax);
+    setEd('next_action', String(lead.next_action || ''));
+    setEd('next_action_due', ymd(String(lead.next_action_due || '')));
+    setEd('nickname', String(lead.nickname || ''));
+    setEd('crm_notes', String(lead.crm_notes || ''));
 
-    const ctx = document.getElementById('lead-context');
-    if (ctx) {
-      clearChildren(ctx);
-      ctx.appendChild(row('Pain points', String(lead.pain_points || '')));
-      ctx.appendChild(row('Product', String(lead.product || '')));
-      ctx.appendChild(row('Score', String(lead.score ?? '')));
-      ctx.appendChild(row('Tier', String(lead.tier || '')));
-      ctx.appendChild(row('Hook', String(lead.hook_variant || '')));
-      ctx.appendChild(row('Team size', String(lead.team_size || '')));
-      ctx.appendChild(row('Comment', String(lead.comment || '')));
-      ctx.appendChild(row('Message', String(lead.message || '')));
-    }
+    const rp = (lead.raw_payload as Record<string, unknown>) || {};
+    const detail = document.getElementById('lead-detail-body') as HTMLElement;
+    const brandWeb = String(rp.brandWebsite || rp.brand_website || '');
+    const rows = [
+      detailRow('ชื่อจริง', String(lead.full_name || ''), 'full_name'),
+      detailRow('ตำแหน่ง', String(lead.position || rp.role || ''), 'position'),
+      detailRow('บริษัท', company, 'company_name'),
+      detailRow('ประเภทธุรกิจ', String(lead.business_type || ''), 'business_type'),
+      detailRow('โทร', String(lead.phone || ''), 'phone', 'tel'),
+      detailRow('LINE', String(lead.line_id || ''), 'line_id'),
+      detailRow('Email', String(lead.email || ''), 'email', 'email'),
+      detailRow('ขนาดทีม', String(rp.team_size || rp.teamSize || '')),
+      detailRow('ปัญหา / ความต้องการ', String(lead.pain_points || '')),
+      isSponsor ? detailRow('Brand / ช่องทาง', brandWeb) : '',
+      isSponsor ? detailRow('Brief', String(rp.message || lead.crm_notes || '')) : '',
+      detailRow('Proposal sent', dtLocal(String(lead.proposal_sent_at || '')), 'proposal_sent_at', 'datetime-local'),
+      detailRow('Walkthrough', dtLocal(String(lead.walkthrough_at || '')), 'walkthrough_at', 'datetime-local'),
+      detailRow('Payment', String(lead.payment_status || '')),
+      detailRow('Temperature', temp),
+      detailRow('ที่มา', [String(lead.source || ''), String(rp.source_page || '')].filter(Boolean).join(' · ')),
+      detailRow('Score / Tier', [String(lead.score ?? ''), String(lead.tier || '')].filter(Boolean).join(' · ')),
+      detailRow('วันที่เข้ามา', lead.submitted_at ? new Date(String(lead.submitted_at)).toLocaleDateString('th-TH') : ''),
+      detailRow('Last touch', relAgo(String(lead.last_touch_at || ''))),
+      detailRow('lead_id', id),
+    ].filter(Boolean).join('');
+    detail.innerHTML = rows;
+    syncEditClass();
+  }
 
-    const audit = document.getElementById('lead-audit');
-    if (audit) {
-      clearChildren(audit);
-      audit.appendChild(row('submitted_at', String(lead.submitted_at || '')));
-      audit.appendChild(row('source', String(lead.source || '')));
-      audit.appendChild(row('source_page', String(lead.source_page || '')));
-      audit.appendChild(row('manual_source', String(lead.manual_source || '')));
-      audit.appendChild(row('lead_id', String(lead.lead_id || '')));
+  function setRo(key: string, v: string) { document.querySelectorAll(`[data-ro="${key}"]`).forEach((e) => { (e as HTMLElement).textContent = v; }); }
+  function setEd(field: string, v: string) {
+    const el = document.querySelector(`.ed[data-field="${field}"]`) as HTMLInputElement | null;
+    if (el && document.activeElement !== el) el.value = v;
+  }
+
+  function setEditing(on: boolean) {
+    const d = drawer(); if (!d) return;
+    d.setAttribute('data-editing', on ? 'true' : 'false');
+    document.getElementById('drawer-savebar')!.classList.toggle('hidden', !on);
+    (document.getElementById('drawer-edit-label') as HTMLElement).textContent = on ? 'กำลังแก้' : 'แก้ไข';
+    (document.getElementById('drawer-edit-icon') as HTMLElement).textContent = on ? '✕' : '✏️';
+    if (on) setDetail(true);
+    syncEditClass();
+  }
+  function setDetail(open: boolean) {
+    const d = drawer(); if (!d) return;
+    d.setAttribute('data-detail', open ? 'open' : 'closed');
+    const t = document.getElementById('detail-toggle'); if (t) t.setAttribute('aria-expanded', open ? 'true' : 'false');
+    const c = document.getElementById('detail-chevron'); if (c) c.textContent = open ? '▴' : '▾';
+  }
+  function syncEditClass() { /* CSS handles .ro/.ed via [data-editing] */ }
+
+  function syncReason() {
+    const sel = document.getElementById('lead-status') as HTMLSelectElement;
+    const need = sel.value === 'lost' || sel.value === 'unqualified';
+    document.getElementById('lead-reason-wrap')!.classList.toggle('hidden', !need);
+    if (need) {
+      const lead = getState().selectedLead as Record<string, unknown> | null;
+      const cur = String(lead?.close_reason || '');
+      const r = document.getElementById('lead-reason') as HTMLSelectElement;
+      if (document.activeElement !== r) r.value = REASON_KEYS.includes(cur) ? cur : '';
     }
   }
+
+  function curLeadId(): string { return String((getState().selectedLead as Record<string, unknown>)?.lead_id || ''); }
 
   render();
   subscribe(render);
 
   document.getElementById('drawer-close')?.addEventListener('click', () => closeLead());
-  document.getElementById('deal-edit')?.addEventListener('click', () => {
-    const lead = getState().selectedLead;
-    if (lead) emit('modal:edit-deal', { lead });
+  document.getElementById('drawer-edit')?.addEventListener('click', () => {
+    setEditing(drawer()?.getAttribute('data-editing') !== 'true');
+  });
+  document.getElementById('detail-toggle')?.addEventListener('click', () => {
+    setDetail(drawer()?.getAttribute('data-detail') !== 'open');
   });
 
-  // Live-update net line when user changes tax mode (before save)
-  document.getElementById('deal-tax-mode')?.addEventListener('change', () => {
-    const lead = getState().selectedLead;
-    if (!lead) return;
-    const amount = Number(lead.package_price) || 0;
-    const taxCur = (document.getElementById('deal-tax-mode') as HTMLSelectElement | null)?.value || '';
-    renderNetLine(amount, taxCur);
+  const statusSel = document.getElementById('lead-status') as HTMLSelectElement;
+  statusSel.addEventListener('change', () => {
+    const id = curLeadId(); if (!id) return;
+    const v = statusSel.value;
+    if (v === 'lost' || v === 'unqualified') { syncReason(); return; } // wait for reason
+    void setLeadStatus(id, v);
+  });
+  document.getElementById('lead-reason')?.addEventListener('change', () => {
+    const id = curLeadId(); if (!id) return;
+    const reason = (document.getElementById('lead-reason') as HTMLSelectElement).value;
+    if (!reason) return;
+    void setLeadStatus(id, statusSel.value, reason);
   });
 
-  document.getElementById('contact-edit-toggle')?.addEventListener('click', () => {
-    const sec = document.getElementById('contact-section');
-    const isEditing = sec?.getAttribute('data-editing') === 'true';
-    if (isEditing) {
-      // Cancel: revert inputs by re-rendering from state
-      render();
-      setContactEditing(false);
-    } else {
-      setContactEditing(true);
-      const first = document.getElementById('contact-full-name') as HTMLInputElement | null;
-      first?.focus();
-    }
-  });
-
-  // ---------- Bottom Save button: diff all drawer inputs vs lead, send patch ----------
-  function dtToIso(v: string): string {
-    if (!v) return '';
-    const d = new Date(v);
-    return Number.isNaN(d.getTime()) ? '' : d.toISOString();
-  }
-  function dtFmt(iso?: string): string {
-    if (!iso) return '';
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return '';
-    const pad = (n: number) => String(n).padStart(2, '0');
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  }
-  function ymdFmt(iso?: string): string {
-    if (!iso) return '';
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return '';
-    const pad = (n: number) => String(n).padStart(2, '0');
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-  }
-  function val(id: string): string {
-    const el = document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
-    return el ? el.value : '';
-  }
-
+  document.getElementById('drawer-cancel')?.addEventListener('click', () => { setEditing(false); render(); });
   document.getElementById('drawer-save')?.addEventListener('click', async () => {
-    const lead = getState().selectedLead;
+    const lead = getState().selectedLead as Record<string, unknown> | null;
     if (!lead) return;
+    const id = String(lead.lead_id || '');
     const patch: Record<string, unknown> = {};
-
-    // Contact (always-diff: inputs exist in DOM regardless of edit mode visibility)
-    const fnCur = val('contact-full-name').trim();
-    if (fnCur !== ((lead.full_name as string) || '').trim()) patch.full_name = fnCur;
-
-    const posCur = val('contact-position').trim();
-    const posOrig = ((lead.position as string) || (lead.position_other as string) || '').trim();
-    if (posCur !== posOrig) patch.position = posCur;
-
-    const phCur = val('contact-phone').trim();
-    if (phCur !== ((lead.phone as string) || '').trim()) patch.phone = phCur;
-
-    const lnCur = val('contact-line').trim();
-    if (lnCur !== ((lead.line_id as string) || '').trim()) patch.line_id = lnCur;
-
-    const emCur = val('contact-email').trim();
-    if (emCur !== ((lead.email as string) || '').trim()) patch.email = emCur;
-
-    // Deal — tax_mode lives in section (other deal fields use EditDealModal)
-    const taxCur = val('deal-tax-mode');
-    if (taxCur !== ((lead.tax_mode as string) || '')) patch.tax_mode = taxCur;
-
-    // Command Center
-    const STAGE_OPTIONS = ['New', 'Discovery Call', 'Site Visit', 'Proposal Sent', 'Proposal — Follow-up'];
-    const stageCur = val('cc-stage');
-    const psRaw = (lead.pipeline_status as string) || '';
-    const stageOrig = STAGE_OPTIONS.includes(psRaw) ? psRaw : '';
-    if (stageCur !== stageOrig) patch.pipeline_status = stageCur;
-
-    const ncur = val('cc-next-action');
-    if (ncur !== ((lead.next_action as string) || '')) patch.next_action = ncur;
-
-    const dueCur = val('cc-next-due');
-    if (dueCur !== ymdFmt(lead.next_action_due as string)) patch.next_action_due = dueCur;
-
-    const propCur = val('cc-proposal');
-    if (propCur !== dtFmt(lead.proposal_sent_at as string)) patch.proposal_sent_at = dtToIso(propCur);
-
-    const walkCur = val('cc-walk');
-    if (walkCur !== dtFmt(lead.walkthrough_at as string)) patch.walkthrough_at = dtToIso(walkCur);
-
-    const payCur = val('cc-payment');
-    if (payCur !== ((lead.payment_status as string) || '')) patch.payment_status = payCur;
-
-    const tempCur = val('cc-temperature');
-    if (tempCur !== ((lead.temperature as string) || '')) patch.temperature = tempCur;
-
-    // Memorable facts
-    for (const [id, key] of [
-      ['mf-nickname', 'nickname'],
-      ['mf-fact-1', 'fact_1'],
-      ['mf-fact-2', 'fact_2'],
-      ['mf-fact-3', 'fact_3'],
-    ] as const) {
-      const cur = val(id).trim();
-      const orig = ((lead as Record<string, unknown>)[key] as string) || '';
-      if (cur !== orig) patch[key] = cur;
-    }
-
-    // Notes
-    const notesCur = val('notes-textarea');
-    if (notesCur !== ((lead.crm_notes as string) || '')) patch.crm_notes = notesCur;
-
-    if (Object.keys(patch).length === 0) {
-      toast('ยังไม่มีการเปลี่ยนแปลง', 'info');
-      return;
-    }
-
-    const btn = document.getElementById('drawer-save') as HTMLButtonElement | null;
-    const label = document.getElementById('drawer-save-label');
-    if (btn) btn.disabled = true;
-    if (label) label.textContent = 'กำลังบันทึก...';
-    try {
-      await patchLead(String(lead.lead_id), patch);
-      setContactEditing(false);
-    } finally {
-      if (btn) btn.disabled = false;
-      if (label) label.textContent = '💾 บันทึกการเปลี่ยนแปลง';
-    }
+    document.querySelectorAll<HTMLInputElement>('#lead-drawer .ed[data-field]').forEach((el) => {
+      const f = el.getAttribute('data-field')!;
+      let v: unknown = el.value;
+      if (f === 'package_price') { v = el.value.trim() === '' ? '' : Number(el.value); }
+      else if (f === 'proposal_sent_at' || f === 'walkthrough_at') { v = el.value ? new Date(el.value).toISOString() : ''; }
+      const cur = f === 'next_action_due' ? ymd(String(lead.next_action_due || ''))
+        : f === 'proposal_sent_at' ? (lead.proposal_sent_at ? new Date(String(lead.proposal_sent_at)).toISOString() : '')
+        : f === 'walkthrough_at' ? (lead.walkthrough_at ? new Date(String(lead.walkthrough_at)).toISOString() : '')
+        : f === 'package_price' ? (Number(lead.package_price) || '')
+        : (lead[f] ?? '');
+      if (String(v ?? '') !== String(cur ?? '')) patch[f] = v;
+    });
+    if (Object.keys(patch).length === 0) { toast('ยังไม่มีการเปลี่ยนแปลง', 'info'); setEditing(false); return; }
+    const btn = document.getElementById('drawer-save') as HTMLButtonElement;
+    btn.disabled = true;
+    try { await patchLead(id, patch); setEditing(false); }
+    finally { btn.disabled = false; }
   });
 </script>
+</aside>

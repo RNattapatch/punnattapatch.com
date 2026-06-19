@@ -10,7 +10,7 @@
 
 <script>
   import { subscribe, getState } from '../../scripts/dashboard/store';
-  import { waitForApex, baseOptions, PALETTE_ARRAY } from '../../scripts/dashboard/charts';
+  import { waitForApex, baseOptions, PALETTE_ARRAY, themeColors } from '../../scripts/dashboard/charts';
 
   let chart: any = null;
 
@@ -28,6 +28,7 @@
     const el = document.getElementById('chart-industry');
     if (!el || !ApexCharts) return;
     const d = dataFromState();
+    const tc = themeColors();
     const opts = {
       ...baseOptions(),
       series: [{ name: 'Leads', data: d.vals }],
@@ -44,16 +45,16 @@
       dataLabels: {
         enabled: true,
         offsetX: 24,
-        style: { fontSize: '11px', colors: ['#cbd5e1'] },
+        style: { fontSize: '11px', colors: [tc.fore] },
         formatter: (v: number) => String(v),
       },
       legend: { show: false },
       xaxis: {
         categories: d.cats,
-        labels: { style: { fontSize: '10px', colors: '#94a3b8' } },
+        labels: { style: { fontSize: '10px', colors: tc.faint } },
       },
       yaxis: {
-        labels: { style: { fontSize: '11px', colors: '#cbd5e1' } },
+        labels: { style: { fontSize: '11px', colors: tc.fore } },
       },
     };
     chart = new ApexCharts(el, opts);
@@ -69,4 +70,5 @@
 
   init();
   subscribe(update);
+  window.addEventListener('pun-theme-change', () => { if (chart) { chart.destroy(); chart = null; } void init(); });
 </script>

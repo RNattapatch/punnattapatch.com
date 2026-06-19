@@ -10,7 +10,7 @@
 
 <script>
   import { subscribe, getState } from '../../scripts/dashboard/store';
-  import { waitForApex, baseOptions, PALETTE } from '../../scripts/dashboard/charts';
+  import { waitForApex, baseOptions, PALETTE, themeColors } from '../../scripts/dashboard/charts';
 
   let chart: any = null;
 
@@ -24,6 +24,7 @@
     const ApexCharts = await waitForApex();
     const el = document.getElementById('chart-pipeline');
     if (!el || !ApexCharts) return;
+    const tc = themeColors();
     const opts = {
       ...baseOptions(),
       series: dataFromState(),
@@ -36,13 +37,13 @@
             size: '68%',
             labels: {
               show: true,
-              name: { fontSize: '11px', color: '#94a3b8' },
-              value: { fontSize: '20px', color: '#f1f5f9', fontWeight: 600 },
+              name: { fontSize: '11px', color: tc.faint },
+              value: { fontSize: '20px', color: tc.strong, fontWeight: 600 },
               total: {
                 show: true,
                 label: 'Total',
                 fontSize: '11px',
-                color: '#94a3b8',
+                color: tc.faint,
                 formatter: (w: any) => String(w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0)),
               },
             },
@@ -62,4 +63,5 @@
 
   init();
   subscribe(update);
+  window.addEventListener('pun-theme-change', () => { if (chart) { chart.destroy(); chart = null; } void init(); });
 </script>

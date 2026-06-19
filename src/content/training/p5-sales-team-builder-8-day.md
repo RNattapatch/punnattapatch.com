@@ -3,7 +3,7 @@ title: "P5 — Sales Team Builder"
 description: "ได้ 5 ระบบ Recruit → Onboard → Manage → Coach → Retain ครบวงจรที่ implement หน้างานได้ทันที · 2 weekends + break week + graduation dinner"
 lang: th
 published: 2026-04-20
-draft: false
+draft: true
 tags: [public-training, sales-management, team-building, founding-cohort]
 programCode: p5
 accent: coral

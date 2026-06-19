@@ -37,6 +37,12 @@
         </a>
       </li>
       <li>
+        <a id="nav-warroom" class="rounded-2xl" href="#" data-tab="war-room">
+          <svg class="w-4 h-4 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/></svg>
+          🎯 Client War Room
+        </a>
+      </li>
+      <li>
         <a id="nav-expenses" class="rounded-2xl" href="#" data-tab="expenses">
           <svg class="w-4 h-4 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2m2 4h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm7-5a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/></svg>
           Expenses
@@ -77,7 +83,7 @@
   document.querySelectorAll<HTMLAnchorElement>('[data-tab]').forEach((a) => {
     a.addEventListener('click', (e) => {
       e.preventDefault();
-      switchTab(a.dataset.tab as 'leads' | 'expenses');
+      switchTab(a.dataset.tab as 'leads' | 'expenses' | 'war-room');
       (document.getElementById('dash-sidebar-toggle') as HTMLInputElement | null)?.click();
     });
   });

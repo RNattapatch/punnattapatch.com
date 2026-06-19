@@ -2,6 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../data/site';
 
+// Public Training (incl. P1) ปิดชั่วคราว — กำลัง redesign public course structure.
+// ส่งคนที่เข้าหน้านี้กลับหน้าแรก. ลบ 1 บรรทัดล่างเพื่อเปิด waitlist กลับมา.
+return Astro.redirect('/', 302);
+
 const accent = 'var(--color-pun-cyan)';
 const accentHex = '#22d3ee';
 const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/p1-waitlist-v1';

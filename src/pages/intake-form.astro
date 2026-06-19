@@ -588,12 +588,9 @@ const budgets = [
   const refNode = document.getElementById('intake-ref');
   const copyBtn = document.getElementById('intake-copy-ref') as HTMLButtonElement | null;
 
-  // Read ?program=p1|p4|p5 → pre-fill hidden field + show banner
-  const PROGRAM_LABELS: Record<string, string> = {
-    p1: 'AI Agent 101 For Sale Team (1 วัน · ฿12,900 Early Bird)',
-    p4: 'P4 — Sales Mastery (2 วัน · ฿16,900 Early Bird)',
-    p5: 'P5 — Sales Team Builder (2 weekends · ฿27,900 Early Bird)',
-  };
+  // Public Training (P1/P4/P5) ปิดชั่วคราว — กำลัง redesign · ปิด program banner ไว้ก่อน
+  // (ใส่ p1/p4/p5 labels กลับเมื่อเปิด public course ใหม่)
+  const PROGRAM_LABELS: Record<string, string> = {};
   try {
     const params = new URLSearchParams(window.location.search);
     const program = (params.get('program') ?? '').toLowerCase();
@@ -631,12 +628,40 @@ const budgets = [
 
   const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
 
-  // Apps Script Web App fallback — activated when n8n is unreachable.
-  // Empty string disables fallback (primary-only behavior). After deploying
-  // output/web-app/landing-pages/intake-form-fallback.gs, paste the Web App URL here.
-  const APPSCRIPT_FALLBACK = '';
+  // Fallback when n8n is unreachable → write the lead straight into Supabase via
+  // the submit_lead RPC (SECURITY DEFINER, anon-callable). Same datastore as the
+  // dashboard reads — no Google Sheets anywhere. Anon key is public by design.
+  const SUPABASE_FALLBACK_RPC = 'https://yykocvhorgcgzaluuldn.supabase.co/rest/v1/rpc/submit_lead';
+  const SUPABASE_ANON_KEY =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5a29jdmhvcmdjZ3phbHV1bGRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjYwNTYsImV4cCI6MjA5NTgwMjA1Nn0.04ya1crnMRK6SgLfwhhxIp14DQ1n_ZkY5Fj-urTsv1E';
 
   type SubmitStatus = 'sent-primary' | 'sent-fallback' | 'failed';
+
+  async function postSupabaseLead(payload: IntakePayload, timeoutMs: number): Promise<boolean> {
+    const ctrl = new AbortController();
+    const kill = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+      // flatten _meta into the payload so submit_lead sees source_page/utm/etc.
+      const flat = { ...payload, ...(payload._meta || {}), source_page: payload._meta?.path };
+      const res = await fetch(SUPABASE_FALLBACK_RPC, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ payload: flat }),
+        signal: ctrl.signal,
+        keepalive: true,
+      });
+      clearTimeout(kill);
+      return res.ok;
+    } catch (err) {
+      clearTimeout(kill);
+      console.error('[intake-form] supabase fallback failed', err);
+      return false;
+    }
+  }
 
   async function tryPost(
     url: string,
@@ -667,13 +692,9 @@ const budgets = [
     const ok = await tryPost(N8N_WEBHOOK, payload, 8000, 'application/json');
     if (ok) return 'sent-primary';
 
-    // Apps Script Web Apps reject application/json (CORS preflight) — text/plain
-    // keeps the request "simple" so it passes through. JSON.parse on the body
-    // still works server-side.
-    if (APPSCRIPT_FALLBACK && APPSCRIPT_FALLBACK.indexOf('https://') === 0) {
-      const fbOk = await tryPost(APPSCRIPT_FALLBACK, payload, 8000, 'text/plain;charset=UTF-8');
-      if (fbOk) return 'sent-fallback';
-    }
+    // n8n unreachable → persist the lead directly to Supabase (one datastore).
+    const fbOk = await postSupabaseLead(payload, 8000);
+    if (fbOk) return 'sent-fallback';
 
     return 'failed';
   }

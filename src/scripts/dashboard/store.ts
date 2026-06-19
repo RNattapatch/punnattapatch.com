@@ -2,26 +2,27 @@ import {
   getDashboardDataSmart,
   signInToSupabase,
   signOutSupabase,
+  getSupabaseSession,
+  generateDoc,
+  logPurchase,
+  // All lead + expense reads/writes are Supabase-native (single source of truth —
+  // writes land where reads come from, so edits stick instead of reverting).
+  getLeadSmart as getLead,
+  updateLeadSmart as updateLead,
+  addLeadSmart as addLead,
+  addInteractionSmart as addInteraction,
+  getLeadsPageSmart as getLeadsPage,
+  getExpensesSmart as getExpenses,
+  addExpenseSmart as apiAddExpense,
+  deleteExpenseSmart as apiDeleteExpense,
+  editExpenseSmart as apiEditExpense,
 } from './supabase';
-import {
-  loginWithGoogle,
-  loginWithGoogleToken,
-  getToken,
-  clearToken,
-  getLead,
-  updateLead,
-  addLead,
-  addInteraction,
-  getLeadsPage,
-  getExpenses,
-  addExpense as apiAddExpense,
-  deleteExpense as apiDeleteExpense,
-  editExpense as apiEditExpense,
-  type DashboardData,
-  type Interaction,
-  type Kpis,
-  type ExpenseRow,
-  type ExpenseSummary,
+import type {
+  DashboardData,
+  Interaction,
+  Kpis,
+  ExpenseRow,
+  ExpenseSummary,
 } from './api';
 import type { LeadUi } from './adapter';
 import { pickTemplate } from './templates';
@@ -33,8 +34,11 @@ type FilterChip =
   | 'proposal_sent'
   | 'walkthrough_done'
   | 'won'
+  | 'repeat'
+  | 'retainer'
   | 'lost'
   | 'unqualified'
+  | 'sponsor'
   | 'manual'
   | 'hot'
   | 'warm'
@@ -56,7 +60,7 @@ type State = {
   selectedLeadId: string | null;
   selectedLead: LeadUi | null;
   interactions: Interaction[];
-  activeTab: 'leads' | 'expenses';
+  activeTab: 'leads' | 'expenses' | 'war-room';
   expenses: ExpenseRow[];
   expenseSummary: ExpenseSummary | null;
   expensesLoaded: boolean;
@@ -117,25 +121,16 @@ export function toast(message: string, kind: 'success' | 'error' | 'info' = 'suc
 
 // ------- Auth flow -------
 export async function tryLoginGoogle(idToken: string, nonce?: string): Promise<void> {
-  await loginWithGoogle(idToken);
-  // Bridge the same Google identity into a Supabase session so RLS-scoped reads
-  // work. Non-fatal: if it fails, refresh() falls back to the Apps Script read.
-  // nonce: raw value matching the hashed nonce baked into the FedCM ID token.
-  await signInToSupabase(idToken, nonce);
-  state.authed = true;
-  notify();
-  await refresh();
-}
-
-export async function tryLoginGoogleToken(accessToken: string): Promise<void> {
-  await loginWithGoogleToken(accessToken);
+  // Pure Supabase auth: exchange the Google ID token for a Supabase session (RLS
+  // owner_all gates the data). nonce = raw value matching the hash in the FedCM token.
+  const ok = await signInToSupabase(idToken, nonce);
+  if (!ok) throw new Error('เข้าสู่ระบบไม่สำเร็จ — ลองอีกครั้ง');
   state.authed = true;
   notify();
   await refresh();
 }
 
 export function logout(): void {
-  clearToken();
   void signOutSupabase();
   state.authed = false;
   state.kpis = null;
@@ -250,6 +245,26 @@ export async function patchLead(leadId: string, fields: Partial<LeadUi>): Promis
   }
 }
 
+// Unified status setter — the single "Pipeline Stage" dropdown writes here.
+// Maps the chosen option to pipeline_status + deal_outcome (won/lost/repeat/retainer)
+// so won/lost/repeat/retainer all live in one control. Saves immediately.
+const PIPELINE_STAGES = ['New', 'Discovery Call', 'Site Visit', 'Proposal Sent', 'Proposal — Follow-up'];
+export async function setLeadStatus(leadId: string, statusKey: string, closeReason?: string): Promise<void> {
+  const fields: Partial<LeadUi> = {};
+  if (PIPELINE_STAGES.includes(statusKey)) {
+    fields.pipeline_status = statusKey;
+    fields.deal_outcome = 'in_progress';
+  } else if (statusKey === 'won' || statusKey === 'repeat' || statusKey === 'retainer') {
+    fields.deal_outcome = statusKey as LeadUi['deal_outcome'];
+  } else if (statusKey === 'lost' || statusKey === 'unqualified') {
+    fields.deal_outcome = statusKey as LeadUi['deal_outcome'];
+    if (closeReason) fields.close_reason = closeReason;
+  } else {
+    return;
+  }
+  await patchLead(leadId, fields);
+}
+
 export async function createLead(fields: Partial<LeadUi>): Promise<LeadUi | null> {
   try {
     const res = await addLead(fields);
@@ -290,6 +305,55 @@ export async function createProposalTask(leadId: string): Promise<void> {
   await logInteraction(leadId, 'note', 'กำหนดส่ง proposal');
 }
 
+// Generate QO/Invoice/Receipt for a lead → download PDF (+ optional LINE push).
+// Sends lead_id (Supabase uuid) — the doc-api resolves the full lead from Supabase
+// (name / tax_id / address / package / tax_mode) and links the document to the lead.
+export type DocItem = { description: string; quantity: number; unit: string; unit_price: number };
+
+export async function generateDocFor(
+  lead: LeadUi,
+  docType: 'qo' | 'invoice' | 'receipt',
+  deliver: boolean,
+  opts?: { items?: DocItem[]; tax_mode?: string; note?: string }
+): Promise<boolean> {
+  const leadId = ((lead as Record<string, unknown>).lead_id ?? '').toString().trim();
+  if (!leadId) { toast('ลูกค้านี้ไม่มี id — เปิดการ์ดใหม่อีกครั้ง', 'error'); return false; }
+  toast('กำลังออกเอกสาร...', 'info');
+  try {
+    const spec: Record<string, unknown> = { doc_type: docType, lead_id: leadId, valid_days: 7, deliver };
+    if (opts?.items && opts.items.length) spec.items = opts.items;
+    if (opts?.tax_mode) spec.tax_mode = opts.tax_mode;
+    if (opts?.note) spec.note = opts.note;
+    const r = await generateDoc(spec);
+    toast(`✅ ${r.doc_number} พร้อมแล้ว${deliver ? ' · ส่ง LINE แล้ว' : ''}`);
+    if (r.pdf_url && typeof window !== 'undefined') window.open(r.pdf_url, '_blank');
+    void refresh();
+    return true;
+  } catch (err) {
+    handleApiError(err, 'ออกเอกสารไม่สำเร็จ');
+    return false;
+  }
+}
+
+// Log a repeat/manual sale into the LTV ledger (no document). Flips the lead to
+// won/repeat and refreshes so the LTV badge + KPIs update immediately.
+export async function logRepeatPurchaseFor(
+  lead: LeadUi,
+  data: { package?: string; amount_thb: number; tax_mode?: 'cash' | 'wht_3' | 'vat_7'; note?: string }
+): Promise<boolean> {
+  const leadId = ((lead as Record<string, unknown>).lead_id ?? '').toString().trim();
+  if (!leadId) { toast('ลูกค้านี้ไม่มี id — เปิดการ์ดใหม่อีกครั้ง', 'error'); return false; }
+  try {
+    const r = await logPurchase({ lead_id: leadId, ...data });
+    toast(`🔁 บันทึกการซื้อแล้ว · ครั้งที่ ${r.purchase_count} · LTV ฿${new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(Number(r.lifetime_value_thb) || 0)}`);
+    void refresh();
+    return true;
+  } catch (err) {
+    handleApiError(err, 'บันทึกการซื้อไม่สำเร็จ');
+    return false;
+  }
+}
+
 export function copyFollowUp(lead: LeadUi): void {
   const text = pickTemplate(lead);
   if (typeof navigator !== 'undefined' && navigator.clipboard) {
@@ -303,7 +367,7 @@ export function copyFollowUp(lead: LeadUi): void {
 }
 
 // ------- Expense tab -------
-export function switchTab(tab: 'leads' | 'expenses'): void {
+export function switchTab(tab: 'leads' | 'expenses' | 'war-room'): void {
   state.activeTab = tab;
   notify();
   if (tab === 'expenses' && !state.expensesLoaded) {
@@ -394,10 +458,19 @@ export function visibleLeads(): LeadUi[] {
   }
   switch (state.filter) {
     case 'today':
-      rows = rows.filter((r) => isDueByToday(r) && r.deal_outcome !== 'won' && r.deal_outcome !== 'lost');
+      rows = rows.filter((r) => isDueByToday(r) && r.deal_outcome !== 'won' && r.deal_outcome !== 'repeat' && r.deal_outcome !== 'retainer' && r.deal_outcome !== 'lost');
+      break;
+    case 'retainer':
+      rows = rows.filter((r) => r.deal_outcome === 'retainer');
+      break;
+    case 'sponsor':
+      rows = rows.filter((r) => (r.source || '').toString().toLowerCase().includes('sponsor'));
       break;
     case 'in_progress':
       rows = rows.filter((r) => (r.deal_outcome || 'in_progress') === 'in_progress');
+      break;
+    case 'repeat':
+      rows = rows.filter((r) => r.deal_outcome === 'repeat' || (Number(r.purchase_count) || 0) > 1);
       break;
     case 'proposal_sent':
       rows = rows.filter((r) => !!r.proposal_sent_at);
@@ -473,11 +546,15 @@ function handleApiError(err: unknown, fallback: string): void {
 // ------- Init -------
 export function initDashboard(): void {
   if (typeof window === 'undefined') return;
-  if (getToken()) {
-    state.authed = true;
-    notify();
-    void refresh();
-  } else {
-    notify();
-  }
+  // Restore the persisted Supabase session (localStorage) on load.
+  void (async () => {
+    const session = await getSupabaseSession();
+    if (session) {
+      state.authed = true;
+      notify();
+      await refresh();
+    } else {
+      notify();
+    }
+  })();
 }

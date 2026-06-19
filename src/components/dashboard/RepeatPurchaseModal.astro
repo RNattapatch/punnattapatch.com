@@ -1,0 +1,140 @@
+---
+---
+<dialog id="repeat-purchase-modal" class="modal">
+  <div class="modal-box max-w-md bg-base-200 border border-base-300">
+    <h3 class="font-display text-lg mb-1">🔁 ซื้อซ้ำ / ออกเอกสารแพ็กเกจเดิม</h3>
+    <p id="rp-lead-name" class="text-xs opacity-70 mb-3">—</p>
+    <form id="repeat-purchase-form" class="grid gap-2">
+      <input type="hidden" name="lead_id" />
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">แพ็กเกจ / บริการ</span>
+        <input name="package" class="input input-bordered input-sm tap-44" autocomplete="off" placeholder="เช่น Advance AI + 1 Day Consult" />
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">ราคา (บาท)</span>
+        <input name="amount_thb" type="number" inputmode="numeric" min="0" class="input input-bordered input-sm tap-44" />
+      </label>
+      <label class="form-control">
+        <span class="label-text text-xs opacity-70">รูปแบบภาษี</span>
+        <select name="tax_mode" class="select select-bordered select-sm tap-44">
+          <option value="wht_3">🏛️ หัก ณ ที่จ่าย 3%</option>
+          <option value="cash">💵 เงินสด (ไม่หัก)</option>
+          <option value="vat_7">📄 +VAT 7%</option>
+        </select>
+      </label>
+      <p id="rp-net" class="text-xs opacity-70"></p>
+
+      <fieldset class="form-control mt-1">
+        <span class="label-text text-xs opacity-70 mb-1">จะทำอะไร</span>
+        <label class="flex items-center gap-2 py-1 cursor-pointer">
+          <input type="radio" name="action" value="receipt" class="radio radio-xs" checked />
+          <span class="text-sm">🧾 ออกใบเสร็จ (บันทึก LTV อัตโนมัติ)</span>
+        </label>
+        <label class="flex items-center gap-2 py-1 cursor-pointer">
+          <input type="radio" name="action" value="qo" class="radio radio-xs" />
+          <span class="text-sm">📄 ออกใบเสนอราคา (ยังไม่นับ LTV)</span>
+        </label>
+        <label class="flex items-center gap-2 py-1 cursor-pointer">
+          <input type="radio" name="action" value="ltv" class="radio radio-xs" />
+          <span class="text-sm">🔁 บันทึกการซื้อซ้ำอย่างเดียว (ไม่ออกเอกสาร)</span>
+        </label>
+      </fieldset>
+
+      <label id="rp-line-wrap" class="label cursor-pointer justify-start gap-2">
+        <input id="rp-line" name="deliver" type="checkbox" class="checkbox checkbox-xs" checked />
+        <span class="label-text text-xs opacity-70">ส่งเข้า LINE ด้วย</span>
+      </label>
+
+      <div class="modal-action mt-1">
+        <button type="button" id="rp-cancel" class="btn btn-sm btn-ghost tap-44">ยกเลิก</button>
+        <button type="submit" id="rp-submit" class="btn btn-sm btn-primary tap-44">ทำเลย</button>
+      </div>
+    </form>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>
+
+<script>
+  import { on, getState, generateDocFor, logRepeatPurchaseFor, toast } from '../../scripts/dashboard/store';
+  import type { LeadUi } from '../../scripts/dashboard/adapter';
+
+  const dlg = document.getElementById('repeat-purchase-modal') as HTMLDialogElement | null;
+  const form = document.getElementById('repeat-purchase-form') as HTMLFormElement | null;
+
+  function setField(name: string, value: string) {
+    const el = form?.querySelector<HTMLInputElement | HTMLSelectElement>(`[name="${name}"]`);
+    if (el) el.value = value;
+  }
+  function fmt0(n: number) { return new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(Math.round(n)); }
+
+  function renderNet() {
+    const amt = Number((form?.querySelector('[name="amount_thb"]') as HTMLInputElement)?.value) || 0;
+    const tax = (form?.querySelector('[name="tax_mode"]') as HTMLSelectElement)?.value || 'wht_3';
+    const el = document.getElementById('rp-net');
+    if (!el) return;
+    if (!amt) { el.textContent = ''; return; }
+    if (tax === 'wht_3') el.textContent = `รับจริง ฿${fmt0(amt * 0.97)} (หัก 3% = ฿${fmt0(amt * 0.03)})`;
+    else if (tax === 'vat_7') el.textContent = `ลูกค้าจ่าย ฿${fmt0(amt * 1.07)} · รับจริง ฿${fmt0(amt)}`;
+    else el.textContent = `รับจริง ฿${fmt0(amt)}`;
+  }
+  function syncLineVisibility() {
+    const action = (form?.querySelector('[name="action"]:checked') as HTMLInputElement)?.value;
+    const wrap = document.getElementById('rp-line-wrap');
+    if (wrap) wrap.classList.toggle('hidden', action === 'ltv');
+  }
+
+  on('modal:repeat-purchase', (e) => {
+    if (!dlg || !form) return;
+    const lead = (e.detail as { lead: LeadUi })?.lead;
+    if (!lead) return;
+    form.reset();
+    setField('lead_id', String(lead.lead_id || ''));
+    setField('package', String(lead.package || ''));
+    setField('amount_thb', String(lead.package_price || ''));
+    setField('tax_mode', String(lead.tax_mode || 'wht_3'));
+    const nm = document.getElementById('rp-lead-name');
+    if (nm) {
+      const pc = Number(lead.purchase_count) || 0;
+      nm.textContent = `${lead.company_name || lead.full_name || ''}${pc > 0 ? ` · ซื้อมาแล้ว ${pc} ครั้ง · LTV ฿${fmt0(Number(lead.lifetime_value_thb) || 0)}` : ''}`;
+    }
+    renderNet();
+    syncLineVisibility();
+    dlg.showModal();
+  });
+
+  form?.querySelector('[name="amount_thb"]')?.addEventListener('input', renderNet);
+  form?.querySelector('[name="tax_mode"]')?.addEventListener('change', renderNet);
+  form?.querySelectorAll('[name="action"]').forEach((el) => el.addEventListener('change', syncLineVisibility));
+  document.getElementById('rp-cancel')?.addEventListener('click', () => dlg?.close());
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form) return;
+    const lead = getState().selectedLead as LeadUi | null;
+    if (!lead) return;
+    const fd = new FormData(form);
+    const pkg = String(fd.get('package') || '').trim();
+    const amount = Number(fd.get('amount_thb') || 0);
+    const tax = String(fd.get('tax_mode') || 'wht_3') as 'cash' | 'wht_3' | 'vat_7';
+    const action = String(fd.get('action') || 'receipt');
+    const deliver = (document.getElementById('rp-line') as HTMLInputElement | null)?.checked ?? false;
+    if (!amount || amount <= 0) { toast('ใส่ราคาก่อน', 'error'); return; }
+
+    const btn = document.getElementById('rp-submit') as HTMLButtonElement | null;
+    if (btn) { btn.disabled = true; btn.textContent = 'กำลังทำ...'; }
+    try {
+      let ok = false;
+      const items = [{ description: pkg || 'บริการ (ซื้อซ้ำ)', quantity: 1, unit: 'งาน', unit_price: amount }];
+      if (action === 'receipt') {
+        ok = await generateDocFor(lead, 'receipt', deliver, { items, tax_mode: tax, note: 'ซื้อซ้ำ' });
+      } else if (action === 'qo') {
+        ok = await generateDocFor(lead, 'qo', deliver, { items, tax_mode: tax, note: 'ซื้อซ้ำ' });
+      } else {
+        ok = await logRepeatPurchaseFor(lead, { package: pkg, amount_thb: amount, tax_mode: tax, note: 'manual repeat' });
+      }
+      if (ok) dlg?.close();
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'ทำเลย'; }
+    }
+  });
+</script>
