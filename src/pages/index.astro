@@ -95,7 +95,7 @@ const services3 = [
   },
   {
     icon: 'user-circle',
-    name: 'ที่ปรึกษา AI ส่วนตัวสำหรับผู้บริหาร',
+    name: 'บริการที่ปรึกษาส่วนตัวด้าน AI Agent สำหรับผู้บริหาร',
     desc: 'สำหรับเจ้าของและ CEO ที่อยากใช้ AI ให้เกิดผลจริง แต่ไม่มีเวลานั่งเรียนเอง — ให้ผมเป็นคู่คิดที่เข้าใจว่าธุรกิจคุณต้องการอะไร แล้วช่วยหาทางออกให้',
     badge: 'ใหม่',
   },
@@ -238,25 +238,60 @@ const socials = [
   <!-- ============================================================= -->
   <section class="hero-editorial max-w-7xl mx-auto px-margin-page py-14 md:py-20 grid md:grid-cols-12 gap-12 md:gap-12 items-center">
     <!-- LEFT: copy -->
-    <div class="md:col-span-7 space-y-7 relative z-10">
-      <span class="inline-flex items-center gap-2 rounded-full bg-navy px-4 py-2 text-sm font-semibold tracking-wide text-ivory shadow-sm md:text-base">
-        <span class="h-2 w-2 rounded-full bg-coral" aria-hidden="true"></span>
-        ที่ปรึกษาด้าน AI Agent สำหรับองค์กร
-      </span>
-      <h1 class="font-serif text-4xl md:text-6xl font-semibold text-navy leading-[1.15]">
-        เมื่อ AI ทำงานแทนทีม<br />
-        เจ้าของก็<span class="hand-underline">ถอดตัวออกได้</span>
-      </h1>
-      <p class="text-lg text-warm-ink/75 max-w-xl leading-relaxed">
-        ผมไม่ได้สอนวิธีใช้ AI — แต่เข้าไปติดตั้ง AI Agent ในบริษัทคุณโดยตรง
-        จนทีมของคุณสร้างและใช้งานได้จริง ตั้งแต่วันแรก
-      </p>
-      <div class="flex flex-col sm:flex-row gap-4 pt-2">
-        <a class="bg-coral text-white font-medium px-8 py-3.5 rounded-xl text-center hover:opacity-90 transition-all" href="/intake-form">ดูว่าธุรกิจคุณพร้อมแค่ไหน →</a>
-        <a class="border ink-border text-navy font-medium px-8 py-3.5 rounded-xl text-center hover:bg-sand transition-all" href="#manifesto">ดูวิธีคิดของผม</a>
+    <div class="md:col-span-7 relative z-10">
+      <!-- Masthead: ink rule + publication-style identity (editorial signature) -->
+      <div class="flex items-baseline justify-between gap-4 border-t-2 border-warm-ink pt-3">
+        <span class="font-serif text-lg md:text-xl font-semibold text-navy">ปัน ณัฐพัชร์</span>
+        <span class="inline-flex items-center gap-2 text-[0.7rem] md:text-xs font-semibold uppercase tracking-[0.2em] text-warm-ink/70">
+          <span class="size-1.5 rounded-full bg-coral" aria-hidden="true"></span>
+          AI Agent Consultant
+        </span>
       </div>
-      <p class="flex flex-wrap items-center gap-3 text-xs font-semibold tracking-[0.08em] uppercase text-muted pt-2">
-        <span>ดูแลลูกค้ามาแล้ว 20+ องค์กร</span><span class="opacity-40">·</span><span>On-site เท่านั้น</span><span class="opacity-40">·</span><span>Limited Slots</span>
+
+      <!-- Cover headline — opens with the customer's Why (hook) -->
+      <h1 class="mt-7 font-serif text-[2.6rem] leading-[1.1] md:text-6xl md:leading-[1.12] font-semibold text-navy text-balance">
+        ผมช่วยเจ้าของธุรกิจไทย<br class="hidden md:block" />
+        เอางานซ้ำๆ <span class="hand-underline">โยนให้ AI ทำ</span>
+      </h1>
+
+      <!-- Outcome — the Why payoff. Made prominent via presence (navy) + weight contrast on
+           the two real wins, not extra accent color (coral budget already spent above). -->
+      <!-- Outcome — Why payoff, led by a small growth icon (kie.ai sketch) that reads left→right -->
+      <div class="mt-6 flex items-center gap-3 md:gap-4 max-w-xl">
+        <img
+          src="/hero-growth-sketch.png"
+          alt=""
+          width="114"
+          height="64"
+          decoding="async"
+          class="h-11 md:h-14 w-auto shrink-0 select-none pointer-events-none"
+        />
+        <p class="text-2xl md:text-[1.75rem] lg:text-3xl text-navy leading-snug text-pretty">
+          ให้ทีมมีเวลาไป<strong class="font-bold">เพิ่มยอดขาย</strong> และเจ้าของ<strong class="font-bold">ถอดตัวจากงานจุกจิก</strong>ได้
+        </p>
+      </div>
+
+      <!-- Positioning (the "what") — lands after the Why, leads into the ask -->
+      <div class="mt-8 flex gap-4 max-w-xl">
+        <span class="w-[3px] shrink-0 self-stretch rounded-full bg-coral" aria-hidden="true"></span>
+        <p class="font-serif text-2xl md:text-[2rem] font-bold text-coral leading-snug text-balance">ที่ปรึกษาด้าน AI Agent สำหรับฝ่ายขายและองค์กร</p>
+      </div>
+
+      <!-- CTAs: scrapbook primary (hard paper-shadow, press to seat) + quiet ink secondary -->
+      <div class="mt-9 flex flex-col sm:flex-row gap-4">
+        <a class="inline-flex flex-col items-center justify-center text-center sm:flex-1 rounded-xl ink-border bg-coral px-7 py-3.5 text-white paper-shadow transition duration-150 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0" href="/intake-form">
+          <span class="text-lg md:text-xl font-bold leading-tight">นัดคุยกับผม</span>
+          <span class="mt-1 text-xs md:text-sm font-medium leading-snug text-white/90 text-pretty">เพื่อหาทางนำ AI Agent ไปใช้กับธุรกิจของคุณ</span>
+        </a>
+        <a class="group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl ink-border px-7 py-4 font-semibold text-navy transition duration-150 hover:bg-sand active:scale-[0.99]" href="/services">
+          บริการของผม
+          <span class="transition-transform duration-150 group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden="true">→</span>
+        </a>
+      </div>
+
+      <!-- Trust line -->
+      <p class="mt-7 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold uppercase tracking-[0.08em] text-muted">
+        <span>ดูแลลูกค้ามาแล้ว 20+ องค์กร</span><span class="text-coral" aria-hidden="true">·</span><span>On-site เท่านั้น</span><span class="text-coral" aria-hidden="true">·</span><span>Limited Slots</span>
       </p>
     </div>
 
