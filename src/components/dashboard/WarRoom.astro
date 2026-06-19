@@ -29,12 +29,17 @@
     </div>
 
     <button id="wr-run" class="btn btn-primary tap-44">🚀 เริ่ม Research</button>
-    <p class="text-xs opacity-55">⏱️ ใช้เวลา ~30-60 วิ (AI agents หลายตัวทำงาน) · อย่าปิดหน้า</p>
+    <p class="text-xs opacity-55">⏱️ ใช้เวลา ~1-3 นาที (analyst + ดึงงบ DBD → debate Bull⇄Bear → สรุป) · รันเบื้องหลัง ถ้าปิดหน้าไป ผลจะไปโผล่ใน "Briefs ล่าสุด"</p>
   </div>
 
   <div id="wr-status" class="hidden mt-4 rounded-box border border-base-300 bg-base-200 p-6 text-center">
     <span class="loading loading-spinner loading-md"></span>
     <p id="wr-status-text" class="mt-2 text-sm opacity-70">กำลังให้ AI agents วิเคราะห์...</p>
+  </div>
+
+  <div id="wr-export" class="hidden mt-4 flex gap-2 justify-end">
+    <button id="wr-export-md" class="btn btn-sm btn-outline tap-44" aria-label="ดาวน์โหลดเป็น Markdown">⬇️ MD</button>
+    <button id="wr-export-pdf" class="btn btn-sm btn-outline tap-44" aria-label="พิมพ์ / บันทึกเป็น PDF">🖨️ PDF</button>
   </div>
 
   <div id="wr-result" class="mt-4 grid gap-3"></div>
@@ -50,6 +55,7 @@
   import { runResearch, getBriefs } from '../../scripts/dashboard/supabase';
 
   let mode: 'client' | 'competitor' = 'client';
+  let currentBrief: Record<string, unknown> | null = null;
 
   function esc(s: unknown): string {
     return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => (
@@ -57,12 +63,20 @@
     ));
   }
   const LABELS: Record<string, string> = {
-    one_liner: 'สรุป', situation: 'สถานการณ์จริง', opportunity: 'โอกาส', reality: 'ความจริง/อุปสรรค',
+    one_liner: 'สรุป', business_health: 'สุขภาพธุรกิจ', situation: 'สถานการณ์จริง', opportunity: 'โอกาส', reality: 'ความจริง/อุปสรรค',
     recommended_pitch: 'มุมเสนอ', suggested_package: 'แพ็กเกจที่เหมาะ', ai_workflow: 'AI workflow',
-    roi_angle: 'ผลลัพธ์ (ROI)', next_action: 'สเต็ปถัดไป', readiness_score: 'ความพร้อม (1-10)',
+    roi_angle: 'ผลลัพธ์ (ROI)', evidence: 'หลักฐานอ้างอิง', key_evidence: 'หลักฐานสำคัญ', confidence: 'ความเชื่อมั่น',
+    next_action: 'สเต็ปถัดไป', readiness_score: 'ความพร้อม (1-10)',
     competitor_summary: 'สรุปคู่แข่ง', their_strengths: 'จุดแข็งเขา', their_weaknesses: 'จุดอ่อนเขา',
     pun_wins: 'ปันชนะตรงไหน', pun_gaps: 'ปันเสียเปรียบ', counter_angles: 'มุมสู้', market_gap: 'ช่องว่างตลาด',
     content_hooks: 'ไอเดีย content', injection_flag: '⚠️ พบความพยายาม injection',
+    // raw analyst sections + financials sub-fields
+    financials: 'ทะเบียน + งบการเงิน', debate: 'บทวิเคราะห์', bull: 'ฝ่ายมองโอกาส (Bull)', bear: 'ฝ่ายมองความจริง (Bear)',
+    company: 'ข้อมูลบริษัท', sector: 'sector / ตลาด', competitor: 'คู่แข่ง', voice: 'เสียงลูกค้า',
+    offer: 'บริการ / ราคา', moves: 'ความเคลื่อนไหวล่าสุด',
+    legal_name: 'ชื่อนิติบุคคล', juristic_id: 'เลขทะเบียน', status: 'สถานะ', registered_capital: 'ทุนจดทะเบียน',
+    incorporated: 'ปีจดทะเบียน', category: 'ประเภทธุรกิจ', directors: 'กรรมการ', source: 'แหล่งอ้างอิง', note: 'หมายเหตุ',
+    year: 'ปี', revenue: 'รายได้รวม', net_profit: 'กำไรสุทธิ',
   };
 
   function renderVal(v: unknown): string {
@@ -75,19 +89,108 @@
     return esc(v);
   }
 
+  // drop the injection_flag from a card body — it's surfaced separately in the warn banner
+  function clean(o: unknown): unknown {
+    if (!o || typeof o !== 'object' || Array.isArray(o)) return o;
+    const c = { ...(o as Record<string, unknown>) }; delete c.injection_flag; return c;
+  }
+  function card(title: string, body: string, accent = false): string {
+    return `<div class="rounded-box border ${accent ? 'border-[color:var(--color-pun-coral)]/40' : 'border-base-300'} bg-base-100 p-4">
+      <div class="text-xs uppercase tracking-wider opacity-55 mb-2">${title}</div>${body}</div>`;
+  }
+
   function renderBrief(b: Record<string, unknown>): string {
     const verdict = (b.verdict || {}) as Record<string, unknown>;
     const sections = (b.sections || {}) as Record<string, unknown>;
     const inj = String(verdict.injection_flag || (sections.debate as any)?.injection_flag || '').trim();
     const warn = inj ? `<div class="alert alert-warning text-sm">⚠️ ระบบพบข้อความที่พยายามสั่ง AI ในเนื้อหาเว็บ (กันไว้แล้ว ไม่ทำตาม): ${esc(inj)}</div>` : '';
+    const fin = sections.financials;
+    const finCard = fin && typeof fin === 'object' ? card('🏢 ทะเบียน + งบการเงิน (DBD)', renderVal(fin)) : '';
+    const debate = sections.debate;
+    const analysisCard = debate && typeof debate === 'object' ? card('🔬 บทวิเคราะห์ (Bull ⇄ Bear)', renderVal(clean(debate))) : '';
     const rawKeys = Object.keys(sections).filter((k) => typeof sections[k] === 'string' && sections[k]);
     const raw = rawKeys.map((k) => `<details class="rounded-box bg-base-200 p-2"><summary class="text-xs opacity-70 cursor-pointer">📄 ${esc(LABELS[k] || k)} (ข้อมูลดิบจาก analyst)</summary><div class="text-sm whitespace-pre-wrap mt-2 opacity-90">${esc(sections[k])}</div></details>`).join('');
+    const head = `${b.mode === 'competitor' ? '⚔️ คู่แข่ง vs ปัน' : '🎯 สรุปมุมเข้าทำงาน'} · ${esc(b.subject)}`;
     return `${warn}
-      <div class="rounded-box border border-[color:var(--color-pun-coral)]/40 bg-base-100 p-4">
-        <div class="text-xs uppercase tracking-wider opacity-55 mb-2">${b.mode === 'competitor' ? '⚔️ คู่แข่ง vs ปัน' : '🎯 สรุปมุมเข้าทำงาน'} · ${esc(b.subject)}</div>
-        ${renderVal(verdict)}
-      </div>
+      ${card(head, renderVal(clean(verdict)), true)}
+      ${finCard}
+      ${analysisCard}
       <div class="grid gap-2 mt-2">${raw}</div>`;
+  }
+
+  // ── Export ───────────────────────────────────────────────────────────────
+  function slug(s: unknown): string {
+    return String(s || 'brief').trim().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '').slice(0, 50) || 'brief';
+  }
+  const keep = ([k, v]: [string, unknown]) =>
+    k !== 'injection_flag' && v != null && String(v).trim() !== '' && !(Array.isArray(v) && v.length === 0);
+
+  function objToMd(o: unknown, indent = ''): string {
+    if (o == null) return '';
+    if (Array.isArray(o)) return o.map((x) => (x && typeof x === 'object') ? objToMd(x, indent) : `${indent}- ${x}`).join('\n');
+    if (typeof o === 'object') {
+      return Object.entries(o as Record<string, unknown>).filter(keep).map(([k, v]) => {
+        const lab = LABELS[k] || k;
+        return (v && typeof v === 'object') ? `${indent}**${lab}:**\n${objToMd(v, indent + '  ')}` : `${indent}**${lab}:** ${v}`;
+      }).join('\n');
+    }
+    return `${indent}${o}`;
+  }
+  function briefToMarkdown(b: Record<string, unknown>): string {
+    const v = (b.verdict || {}) as Record<string, unknown>;
+    const s = (b.sections || {}) as Record<string, unknown>;
+    const out: string[] = [
+      `# ${b.mode === 'competitor' ? 'คู่แข่ง vs ปัน' : 'Client War Room'} — ${b.subject || ''}`,
+      `_${new Date().toLocaleString('th-TH')} · @pun_nattapatch_\n`,
+      `## ${b.mode === 'competitor' ? '⚔️ คู่แข่ง vs ปัน' : '🎯 สรุปมุมเข้าทำงาน'}`, objToMd(v),
+    ];
+    if (s.financials && typeof s.financials === 'object') out.push('\n## 🏢 ทะเบียน + งบการเงิน (DBD)', objToMd(s.financials));
+    if (s.debate && typeof s.debate === 'object') out.push('\n## 🔬 บทวิเคราะห์ (Bull ⇄ Bear)', objToMd(s.debate));
+    Object.keys(s).filter((k) => typeof s[k] === 'string' && s[k]).forEach((k) => out.push(`\n## ${LABELS[k] || k}`, String(s[k])));
+    return out.join('\n');
+  }
+  function objToHtml(o: unknown): string {
+    if (o == null) return '';
+    if (Array.isArray(o)) return `<ul>${o.map((x) => `<li>${(x && typeof x === 'object') ? objToHtml(x) : esc(x)}</li>`).join('')}</ul>`;
+    if (typeof o === 'object') {
+      return Object.entries(o as Record<string, unknown>).filter(keep).map(([k, v]) => {
+        const lab = esc(LABELS[k] || k);
+        return (v && typeof v === 'object') ? `<div class="row"><strong>${lab}:</strong>${objToHtml(v)}</div>` : `<div class="row"><strong>${lab}:</strong> ${esc(v)}</div>`;
+      }).join('');
+    }
+    return esc(o);
+  }
+  function exportMd(): void {
+    if (!currentBrief) return;
+    const blob = new Blob([briefToMarkdown(currentBrief)], { type: 'text/markdown;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `war-room-${slug(currentBrief.subject)}-${currentBrief.mode}.md`;
+    a.click(); URL.revokeObjectURL(a.href);
+  }
+  function exportPdf(): void {
+    if (!currentBrief) return;
+    const b = currentBrief; const v = (b.verdict || {}) as Record<string, unknown>; const s = (b.sections || {}) as Record<string, unknown>;
+    const secs: string[] = [`<h2>${b.mode === 'competitor' ? '⚔️ คู่แข่ง vs ปัน' : '🎯 สรุปมุมเข้าทำงาน'}</h2>${objToHtml(v)}`];
+    if (s.financials && typeof s.financials === 'object') secs.push(`<h2>🏢 ทะเบียน + งบการเงิน (DBD)</h2>${objToHtml(s.financials)}`);
+    if (s.debate && typeof s.debate === 'object') secs.push(`<h2>🔬 บทวิเคราะห์ (Bull ⇄ Bear)</h2>${objToHtml(s.debate)}`);
+    Object.keys(s).filter((k) => typeof s[k] === 'string' && s[k]).forEach((k) => secs.push(`<h2>${esc(LABELS[k] || k)}</h2><div class="pre">${esc(s[k])}</div>`));
+    const html = `<!doctype html><html lang="th"><head><meta charset="utf-8"><title>War Room — ${esc(b.subject)}</title>
+      <style>
+        body{font-family:"Sukhumvit Set","Sarabun",sans-serif;max-width:760px;margin:24px auto;padding:0 16px;color:#1a1a1a;line-height:1.6}
+        h1{font-size:20px;margin:0 0 2px} h2{font-size:15px;margin:18px 0 6px;border-bottom:1px solid #ddd;padding-bottom:3px;color:#c4503e}
+        .meta{color:#888;font-size:12px;margin-bottom:8px} .row{margin:3px 0;font-size:13px} strong{color:#333}
+        ul{margin:4px 0 4px 18px;padding:0} li{font-size:13px;margin:2px 0} .pre{white-space:pre-wrap;font-size:12px;color:#444}
+        @media print{body{margin:0}}
+      </style></head><body>
+      <h1>Client War Room · ${esc(b.subject)}</h1>
+      <div class="meta">${esc(new Date().toLocaleString('th-TH'))} · @pun_nattapatch</div>
+      ${secs.join('')}
+      <script>window.onload=function(){window.print()}<\/script>
+      </body></html>`;
+    const w = window.open('', '_blank');
+    if (!w) { toast('เบราว์เซอร์บล็อก popup — อนุญาตก่อนแล้วลองใหม่', 'error'); return; }
+    w.document.write(html); w.document.close();
   }
 
   function populateLeads() {
@@ -120,9 +223,14 @@
 
   function showResult(b: Record<string, unknown>) {
     const r = document.getElementById('wr-result'); if (!r) return;
+    currentBrief = b;
     r.innerHTML = renderBrief(b);
+    document.getElementById('wr-export')?.classList.remove('hidden');
     r.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+
+  document.getElementById('wr-export-md')?.addEventListener('click', exportMd);
+  document.getElementById('wr-export-pdf')?.addEventListener('click', exportPdf);
 
   function setMode(m: 'client' | 'competitor') {
     mode = m;
@@ -153,7 +261,7 @@
       spec = { mode: 'client', lead_id: leadId || undefined, company: company || undefined, sector: sector || undefined };
     }
     status?.classList.remove('hidden');
-    if (statusText) statusText.textContent = 'กำลังให้ AI agents วิเคราะห์ (analyst → debate → สรุป)...';
+    if (statusText) statusText.textContent = 'AI agents กำลังทำงานเบื้องหลัง: ค้นข้อมูล + ดึงงบ DBD → debate Bull⇄Bear → สรุป (รอสักครู่ อย่าเพิ่งปิด)...';
     runBtn.disabled = true;
     try {
       const res = await runResearch(spec as any);

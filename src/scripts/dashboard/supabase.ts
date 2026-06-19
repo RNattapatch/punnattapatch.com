@@ -93,21 +93,36 @@ export async function runResearch(spec: {
   const { data } = await supabase.auth.getSession();
   const token = data.session?.access_token;
   if (!token) throw new Error('ยังไม่ได้เข้าสู่ระบบ Supabase');
+  // The deep pipeline runs for minutes — past the Cloudflare tunnel's ~100s limit — so
+  // the API kicks off a background job and returns a brief id; we poll Supabase for it.
   const res = await fetch(RESEARCH_API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify(spec),
   });
   const json = await res.json().catch(() => ({}));
-  if (!res.ok || !json.ok) throw new Error(json.error || `research-api ${res.status}`);
-  return json;
+  if (!res.ok || !json.ok || !json.id) throw new Error(json.error || `research-api ${res.status}`);
+  return pollBrief(json.id as string);
+}
+
+// Poll the client_briefs row (RLS owner) until the async War Room job finishes.
+async function pollBrief(id: string, tries = 90, intervalMs = 4000): Promise<Record<string, unknown>> {
+  for (let i = 0; i < tries; i++) {
+    await new Promise((r) => setTimeout(r, intervalMs));
+    const { data, error } = await supabase.from('client_briefs').select('*').eq('id', id).maybeSingle();
+    if (error || !data) continue; // transient — keep polling
+    const row = data as Record<string, unknown>;
+    if (row.status === 'done') return { id, mode: row.mode, subject: row.subject, ...((row.payload as object) || {}) };
+    if (row.status === 'error') throw new Error((row.error as string) || 'research job failed');
+  }
+  throw new Error('research ใช้เวลานานผิดปกติ — ผลจะไปโผล่ใน Briefs ล่าสุดเมื่อเสร็จ ลองรีเฟรชดูอีกครั้ง');
 }
 
 // Brief history — read directly from Supabase under RLS (owner-only).
 export async function getBriefs(leadId?: string): Promise<Record<string, unknown>[]> {
   const session = await getSupabaseSession();
   if (!session) return [];
-  let q = supabase.from('client_briefs').select('*').order('created_at', { ascending: false }).limit(20);
+  let q = supabase.from('client_briefs').select('*').eq('status', 'done').order('created_at', { ascending: false }).limit(20);
   if (leadId) q = q.eq('lead_id', leadId);
   const { data, error } = await q;
   if (error) throw new Error(error.message);
