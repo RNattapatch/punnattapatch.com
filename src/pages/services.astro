@@ -119,12 +119,18 @@ const testimonials = [
             <p class="mt-2 text-sm leading-relaxed text-warm-ink/65">เหมาะกับ: {p.forWho}</p>
 
             <div class="mt-5 space-y-2 border-t border-[#e7e0d2] pt-4">
-              {p.levels.map((lv) => (
-                <div class="flex items-baseline justify-between gap-3 text-sm">
-                  <span class="text-warm-ink/85">{lv.title}</span>
-                  <span class="shrink-0 font-medium text-coral">{baht(lv.priceThb)}</span>
-                </div>
-              ))}
+              {p.levels.map((lv) => {
+                const lvTitle = lv.slug === 'consult' ? 'AI Consult บริการที่ปรึกษาสำหรับองค์กร' : lv.title;
+                const lvPrice = lv.slug === 'consult' ? '฿25,000/วัน'
+                  : lv.slug === 'consult-package' ? 'รายเดือน — ติดต่อผมเพื่อประเมินก่อน'
+                  : baht(lv.priceThb);
+                return (
+                  <div class="flex items-baseline justify-between gap-3 text-sm">
+                    <span class="text-warm-ink/85">{lvTitle}</span>
+                    <span class="shrink-0 font-medium text-coral">{lvPrice}</span>
+                  </div>
+                );
+              })}
             </div>
 
             <p class="mt-4 flex flex-1 items-start gap-2 text-sm text-warm-ink/75">
@@ -136,7 +142,7 @@ const testimonials = [
               href={`/booking?path=${p.key}`}
               class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-coral px-6 py-3.5 font-medium text-white transition hover:opacity-90"
             >
-              คุยกับผม →
+              จองคิวบริการปรึกษาหรืออบรม →
             </a>
           </div>
         ))}
@@ -207,7 +213,7 @@ const testimonials = [
             <span class="text-sm text-muted line-through">{baht(59900)}</span>
           </div>
           <a href="/booking?path=trust-content" class="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-coral px-6 py-3.5 font-medium text-white transition hover:opacity-90">
-            คุยกับผม →
+            จองคิวบริการปรึกษาหรืออบรม →
           </a>
         </div>
 
@@ -361,7 +367,7 @@ const testimonials = [
           href="/intake-form"
           class="btn btn-lg bg-secondary text-secondary-content shadow-lg shadow-secondary/30 hover:bg-secondary/90"
         >
-          นัดคุยกับผม — เช็คว่าองค์กรคุณพร้อมแค่ไหน
+          ประเมินความพร้อมกับผม — ผมดูให้ว่าเริ่มจากไหน
         </a>
         <a
           href={SITE.social.line}
