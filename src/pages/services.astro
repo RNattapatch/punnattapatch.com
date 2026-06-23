@@ -8,45 +8,51 @@ const description =
   'Basic Foundation AI for Business ฿29,900 · Advance AI & Business Automation ฿39,900 · Package A ฿54,900 (แนะนำ) · Consult ฿25,000/วัน · AI Consultant for CEO ฿35,000/วัน · AI Trust Content Cycle System ฿49,900. จับมือทำจริง ส่งระบบที่รันได้ ไม่ใช่สไลด์';
 
 const svcBySlug = (slug: string) => SERVICES.find((s) => s.slug === slug)!;
+const baht = (n: number) => '฿' + n.toLocaleString('en-US');
 
-// ===== Section 1 — AI Transformation ladder =====
-const ladder = [
+// ===== ยุบเหลือ 3 ทาง: Training / Consult / ทั้งคู่ (2026-06-23) =====
+// ลูกค้าเลือก "เป้าหมาย" ไม่ใช่ "level" — ผมคัด level ให้หลัง intake
+// line art แทน emoji (DESIGN.md) · CEO แยกเป็น section เด่น
+const paths = [
   {
-    svc: svcBySlug('ai-workshop'),
-    art: '/lineart/basic-workshop.png',
-    expand: 'สำหรับองค์กรที่ยังไม่เคยแตะ AI — ปูพื้นให้ทีมเห็นภาพและลงมือใช้กับงานจริงตั้งแต่วันแรก ไม่ใช่แค่รู้จักศัพท์',
-    detailHref: '/services/ai-workshop',
-    featured: false,
-    ribbon: '',
-  },
-  {
-    svc: svcBySlug('ai-workshop-advance'),
+    key: 'training',
     art: '/lineart/advance-workshop.png',
-    expand: 'เจาะลึก Agentic AI + Automation (Google Sheet, n8n) — สร้างระบบที่ทำงานเบื้องหลังเองจริง',
-    detailHref: '/ai-workshop-advance',
+    name: 'Training — ปั้นทีมให้ใช้ AI เป็น',
+    tagline: 'อยากให้ทีมใช้ AI เป็น ทำระบบเองได้',
+    forWho: 'องค์กรที่อยากให้พนักงานลงมือใช้ AI กับงานจริง',
+    levels: [svcBySlug('ai-workshop'), svcBySlug('ai-workshop-advance')],
+    note: 'ผมดูให้ว่าทีมคุณควรเริ่มที่ระดับไหนก่อน',
     featured: false,
     ribbon: '',
   },
   {
-    svc: svcBySlug('package-a'),
-    art: '',
-    expand: 'Advance + Consult 2 วัน (จับมือทำถึงหน้างาน) · คุ้มสุดในพอร์ต',
-    detailHref: '',
+    key: 'consult',
+    art: '/lineart/ceo-advisory.png',
+    name: 'Consult — คู่คิด วางให้',
+    tagline: 'ไม่มีเวลาเรียนเอง อยากมีคนวางโครง ตัดสินใจด้วย',
+    forWho: 'เจ้าของที่อยากได้คนเข้าใจ AI แทน แล้วแปลงเป็นผลลัพธ์',
+    levels: [svcBySlug('consult'), svcBySlug('consult-package')],
+    note: 'ผมดูให้ว่าคุณควรเริ่มแบบไหนก่อน',
+    featured: false,
+    ribbon: '',
+  },
+  {
+    key: 'both',
+    art: '/lineart/business-os.png',
+    name: 'ทั้งคู่ — วางระบบ + สอนทีม',
+    tagline: 'อยากได้ทั้งระบบที่รันได้ และทีมทำต่อเองเป็น',
+    forWho: 'อยากให้ผมลงไปวางระบบกับทีมจริง พร้อมปั้นให้ทำต่อเอง',
+    levels: [svcBySlug('package-a')],
+    note: 'Package A · Advance + Consult 2 วัน · คุ้มสุดในพอร์ต',
     featured: true,
     ribbon: 'แนะนำ',
   },
 ];
 
-// ===== Section 2 — Consult =====
-const consultRow = [
-  { svc: svcBySlug('consult'), expand: 'ที่ปรึกษา AI ลงมาช่วยเป็นราย session — วางทิศ แก้ติดหน้างาน' },
-  { svc: svcBySlug('consult-package'), expand: 'ดูแลต่อเนื่อง 1 เดือน จนทีมใช้เป็นเอง ระบบเดินเองได้' },
-];
-
-// ===== Section 3 — specialised offerings =====
+// AI Consultant for CEO — บริการเด่น (แยกชูเดี่ยว ตาม Pun)
 const ceo = svcBySlug('ceo-advisory');
-const trust = svcBySlug('trust-content-tiktok-workshop');
-const baht = (n: number) => '฿' + n.toLocaleString('en-US');
+// เฉพาะทาง (แยกจาก 3 ทางหลัก)
+const special = svcBySlug('trust-content-tiktok-workshop');
 
 // ===== Social proof — testimonial gallery (authority + trust) =====
 const testimonials = [
@@ -80,22 +86,23 @@ const testimonials = [
         บริการ AI Transformation สำหรับธุรกิจคุณ
       </h1>
       <p class="mt-5 max-w-2xl text-lg text-warm-ink/75">
-        จับมือวางระบบ AI ให้ทีมใช้ได้จริง — จากปูพื้นทั้งทีม ไปจนถึงคู่คิดส่วนตัวระดับผู้บริหาร
-        ทุก package ชำระ 100% upfront · ส่งระบบที่รันได้จริง ไม่ใช่สไลด์
+        จับมือวางระบบ AI ให้ทีมใช้ได้จริง — ปูพื้นทั้งทีมจากศูนย์ ไปจนถึงคู่คิดส่วนตัวระดับผู้บริหาร
       </p>
     </div>
   </section>
 
-  <!-- ===== SECTION 1 — AI Transformation ladder ===== -->
+  <!-- ===== 3 ทางหลัก: Training / Consult / ทั้งคู่ (ยุบ 2026-06-23) ===== -->
   <section class="px-margin-page pb-12">
     <div class="mx-auto max-w-6xl">
-      <h2 class="font-serif text-2xl font-semibold text-navy md:text-3xl">เส้นหลัก — AI Transformation</h2>
-      <p class="mt-2 text-warm-ink/70">เริ่มที่ปูพื้น → เจาะลึกให้ AI ทำงานแทนทีม → ให้ผมลงไปวางระบบกับทีมจริง</p>
+      <h2 class="font-serif text-2xl font-semibold text-navy md:text-3xl">เลือกทางที่ใช่ — แล้วผมคัด level ให้</h2>
+      <p class="mt-2 max-w-2xl text-warm-ink/70">
+        ไม่ต้องเลือกแพ็กเกจเองให้ปวดหัว — บอกแค่ว่าอยากได้แบบไหน เล่าเรื่องธุรกิจของคุณให้ผมฟัง แล้วผมจะดูให้ว่าควรเริ่มที่ระดับไหน
+      </p>
 
       <div class="mt-8 grid items-start gap-6 md:grid-cols-3">
-        {ladder.map((p) => (
+        {paths.map((p) => (
           <div
-            id={p.svc.slug}
+            id={p.key}
             class:list={[
               'relative flex h-full flex-col rounded-2xl bg-surface p-7 transition hover:-translate-y-0.5 hover:shadow-[3px_5px_0_rgba(30,27,22,0.06)]',
               p.featured ? 'border-2 border-coral md:-mt-2 md:mb-2 paper-shadow' : 'border border-[#c9c2b2]',
@@ -106,102 +113,89 @@ const testimonials = [
                 ⭐ {p.ribbon}
               </span>
             )}
-            {p.art && (
-              <img src={p.art} alt="" aria-hidden="true" loading="lazy" decoding="async" class="mx-auto mb-2 h-28 w-auto" />
-            )}
-            <span class="text-xs uppercase tracking-widest text-muted">{p.svc.subtitle}</span>
-            <h3 class="mt-1 font-serif text-xl font-semibold text-navy">{p.svc.title}</h3>
-            <p class="mt-3 font-serif text-base font-medium leading-snug text-navy">{p.svc.hook}</p>
-            <p class="mt-2 text-sm leading-relaxed text-warm-ink/70">{p.expand}</p>
-            <ul class="mt-4 flex-1 space-y-2 text-sm text-warm-ink/75">
-              {p.svc.outcome.map((o) => (
-                <li class="flex items-start gap-2">
-                  <span class="mt-0.5 shrink-0 text-coral"><Icon name="check-circle" size={16} /></span>
-                  <span>{o}</span>
-                </li>
+            <img src={p.art} alt="" aria-hidden="true" loading="lazy" decoding="async" class="mx-auto mb-3 h-28 w-auto" />
+            <h3 class="font-serif text-xl font-semibold text-navy">{p.name}</h3>
+            <p class="mt-2 font-serif text-base font-medium leading-snug text-navy">{p.tagline}</p>
+            <p class="mt-2 text-sm leading-relaxed text-warm-ink/65">เหมาะกับ: {p.forWho}</p>
+
+            <div class="mt-5 space-y-2 border-t border-[#e7e0d2] pt-4">
+              {p.levels.map((lv) => (
+                <div class="flex items-baseline justify-between gap-3 text-sm">
+                  <span class="text-warm-ink/85">{lv.title}</span>
+                  <span class="shrink-0 font-medium text-coral">{baht(lv.priceThb)}</span>
+                </div>
               ))}
-            </ul>
-            <div class="mt-5 font-serif text-2xl font-semibold text-coral">{baht(p.svc.priceThb)}</div>
+            </div>
+
+            <p class="mt-4 flex flex-1 items-start gap-2 text-sm text-warm-ink/75">
+              <span class="mt-0.5 shrink-0 text-coral"><Icon name="check-circle" size={16} /></span>
+              <span>{p.note}</span>
+            </p>
+
             <a
-              href="/booking"
-              class="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-coral px-6 py-3.5 font-medium text-white transition hover:opacity-90"
+              href={`/booking?path=${p.key}`}
+              class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-coral px-6 py-3.5 font-medium text-white transition hover:opacity-90"
             >
               คุยกับผม →
             </a>
-            {p.detailHref && (
-              <a href={p.detailHref} class="mt-2 block text-center text-xs font-medium text-navy/70 transition hover:text-coral">
-                ดูรายละเอียดเพิ่มเติม →
-              </a>
-            )}
           </div>
         ))}
       </div>
 
       <p class="mt-5 text-center text-xs text-muted">
-        Basic ฿29,900 → Advance ฿39,900 → Package A ฿54,900 (Advance + Consult 2 วัน · คุ้มสุด)
+        ทุก package ชำระ 100% ก่อนเริ่มบริการ · อบรมหรือปรึกษาที่บริษัทของลูกค้า (On-site)
       </p>
     </div>
   </section>
 
-  <!-- ===== SECTION 2 — Consult ===== -->
-  <section class="bg-sand px-margin-page py-14 md:py-16">
-    <div class="mx-auto max-w-5xl">
-      <h2 class="font-serif text-2xl font-semibold text-navy md:text-3xl">ปรึกษาต่อเนื่อง — ดูแลจนใช้เป็น</h2>
-      <p class="mt-2 text-warm-ink/70">มีคู่คิดที่เข้าใจธุรกิจคุณ จนระบบเดินได้เอง</p>
-
-      <div class="mt-8 grid gap-6 md:grid-cols-2">
-        {consultRow.map((c) => (
-          <div class="flex flex-col rounded-2xl border border-[#c9c2b2] bg-surface p-7">
-            <span class="text-xs uppercase tracking-widest text-muted">{c.svc.subtitle}</span>
-            <h3 class="mt-1 font-serif text-xl font-semibold text-navy">{c.svc.title}</h3>
-            <p class="mt-3 text-sm leading-relaxed text-warm-ink/75">{c.expand}</p>
-            <div class="mt-5 flex items-end justify-between gap-3">
-              <div class="font-serif text-2xl font-semibold text-coral">{c.svc.priceLabel}</div>
-              <a href="/booking" class="inline-flex items-center rounded-xl bg-coral px-6 py-3 font-medium text-white transition hover:opacity-90">คุยกับผม →</a>
+  <!-- ===== AI Consultant for CEO — บริการเด่น (navy band · ชูเดี่ยว) ===== -->
+  <section class="px-margin-page pb-14">
+    <div class="mx-auto max-w-6xl">
+      <div class="overflow-hidden rounded-2xl bg-navy px-7 py-10 text-ivory paper-shadow md:px-12 md:py-12">
+        <div class="grid items-center gap-8 md:grid-cols-[1.35fr_1fr]">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.15em] text-coral-soft">สำหรับผู้บริหารโดยเฉพาะ</p>
+            <h2 class="mt-3 font-serif text-3xl font-semibold leading-snug md:text-4xl">{ceo.title}</h2>
+            <p class="mt-1 text-sm text-ivory/70">{ceo.subtitle}</p>
+            <p class="mt-4 max-w-xl font-serif text-lg leading-snug text-ivory/90">{ceo.hook}</p>
+            <ul class="mt-5 space-y-2 text-sm text-ivory/80">
+              {ceo.outcome.map((o) => (
+                <li class="flex items-start gap-2">
+                  <span class="mt-0.5 shrink-0 text-coral-soft"><Icon name="check-circle" size={16} /></span>
+                  <span>{o}</span>
+                </li>
+              ))}
+            </ul>
+            <div class="mt-6 flex flex-wrap items-center gap-5">
+              <span class="font-serif text-2xl font-semibold text-coral-soft">{ceo.priceLabel}</span>
+              <a href="/booking?path=ceo-advisory" class="inline-flex items-center rounded-xl bg-coral px-6 py-3 font-medium text-white transition hover:opacity-90">
+                นัดคุยกับผม →
+              </a>
             </div>
           </div>
-        ))}
+          <img src="/lineart/advance-hands.png" alt="มือคนกับมือ AI สัมผัสกัน — คู่คิด AI ของผู้บริหาร" loading="lazy" decoding="async" class="hidden w-full rounded-xl md:block" />
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== SECTION 3 — specialised: CEO Advisory + AI Trust Content ===== -->
-  <section class="px-margin-page py-14 md:py-20">
-    <div class="mx-auto max-w-6xl">
+  <!-- ===== เฉพาะทาง — AI Trust Content + ตัวช่วยเลือก ===== -->
+  <section class="bg-sand px-margin-page py-14 md:py-16">
+    <div class="mx-auto max-w-5xl">
       <h2 class="font-serif text-2xl font-semibold text-navy md:text-3xl">บริการเฉพาะทาง</h2>
-      <div class="mt-8 grid gap-6 lg:grid-cols-2">
-        <!-- AI Consultant for CEO -->
-        <div id="ceo-advisory" class="scroll-mt-24 flex flex-col rounded-2xl border-2 border-coral/40 bg-surface p-7 paper-shadow">
-          <span class="inline-flex w-fit items-center gap-2 rounded-full bg-navy px-3 py-1 text-xs font-semibold text-ivory">
-            <span class="h-1.5 w-1.5 rounded-full bg-coral" aria-hidden="true"></span> {ceo.subtitle}
-          </span>
-          <img src="/lineart/ceo-advisory.png" alt="ที่ปรึกษา AI นั่งคุยกับผู้บริหาร — คู่คิด ไม่ใช่คอร์ส" loading="lazy" decoding="async" class="mx-auto mt-4 h-40 w-auto" />
-          <h3 class="mt-2 font-serif text-2xl font-semibold leading-snug text-navy">{ceo.title}</h3>
-          <p class="mt-3 font-serif text-base font-medium leading-snug text-navy">{ceo.hook}</p>
-          <ul class="mt-4 flex-1 space-y-2 text-sm text-warm-ink/75">
-            {ceo.outcome.map((o) => (
-              <li class="flex items-start gap-2">
-                <span class="mt-0.5 shrink-0 text-coral"><Icon name="check-circle" size={16} /></span>
-                <span>{o}</span>
-              </li>
-            ))}
-          </ul>
-          <div class="mt-5 font-serif text-2xl font-semibold text-coral">{ceo.priceLabel}</div>
-          <a href="/booking" class="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-coral px-6 py-3.5 font-medium text-white transition hover:opacity-90">
-            คุยกับผม →
-          </a>
-        </div>
+      <p class="mt-2 text-warm-ink/70">สำหรับเป้าหมายเฉพาะ — ไม่ใช่เส้นหลัก แต่เป็นระบบที่ทำให้ลูกค้าทักมาเอง</p>
 
-        <!-- AI Trust Content Cycle System (list strikethrough → sale) -->
+      <div class="mt-8 grid gap-6 md:grid-cols-2">
+        <!-- AI Trust Content Cycle System -->
         <div id="trust-content" class="scroll-mt-24 flex flex-col rounded-2xl border border-[#c9c2b2] bg-surface p-7">
           <span class="inline-flex w-fit items-center rounded-full border border-navy/20 bg-ivory px-3 py-1 text-xs font-semibold text-navy">
-            {trust.subtitle}
+            {special.subtitle}
           </span>
           <img src="/lineart/tiktok-funnel.png" alt="ทีมถ่ายคอนเทนต์โดยมี AI เป็นผู้ช่วยในกองถ่าย" loading="lazy" decoding="async" class="mx-auto mt-4 h-40 w-auto" />
-          <h3 class="mt-2 font-serif text-2xl font-semibold leading-snug text-navy">{trust.title}</h3>
-          <p class="mt-3 font-serif text-base font-medium leading-snug text-navy">{trust.hook}</p>
+          <h3 class="mt-2 font-serif text-2xl font-semibold leading-snug text-navy">{special.title}</h3>
+          <p class="mt-3 font-serif text-base font-medium leading-snug text-navy">{special.hook}</p>
           <ul class="mt-4 flex-1 space-y-2 text-sm text-warm-ink/75">
-            {trust.outcome.map((o) => (
+            {special.outcome.map((o) => (
               <li class="flex items-start gap-2">
                 <span class="mt-0.5 shrink-0 text-coral"><Icon name="check-circle" size={16} /></span>
                 <span>{o}</span>
@@ -209,11 +203,22 @@ const testimonials = [
             ))}
           </ul>
           <div class="mt-5 flex items-baseline gap-2">
-            <span class="font-serif text-2xl font-semibold text-coral">{baht(49900)}</span>
+            <span class="font-serif text-2xl font-semibold text-coral">{baht(special.priceThb)}</span>
             <span class="text-sm text-muted line-through">{baht(59900)}</span>
           </div>
-          <a href="/booking" class="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-coral px-6 py-3.5 font-medium text-white transition hover:opacity-90">
+          <a href="/booking?path=trust-content" class="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-coral px-6 py-3.5 font-medium text-white transition hover:opacity-90">
             คุยกับผม →
+          </a>
+        </div>
+
+        <!-- ตัวช่วยเลือก (ยังไม่แน่ใจ → intake) -->
+        <div class="flex flex-col justify-center rounded-2xl border border-dashed border-[#c9c2b2] bg-surface/60 p-7">
+          <h3 class="font-serif text-xl font-semibold text-navy">ยังไม่แน่ใจว่าทางไหนใช่?</h3>
+          <p class="mt-3 text-sm leading-relaxed text-warm-ink/70">
+            เล่าธุรกิจให้ผมฟังสั้นๆ ผมอ่านเองแล้วบอกตรงๆ ว่าควรเริ่มจาก Training, Consult หรือทั้งคู่ — และระดับไหนที่คุ้มกับคุณที่สุด
+          </p>
+          <a href="/intake-form" class="mt-5 inline-flex w-fit items-center rounded-xl border border-coral px-6 py-3 font-medium text-coral transition hover:bg-coral hover:text-white">
+            ให้ผมช่วยดูให้ →
           </a>
         </div>
       </div>

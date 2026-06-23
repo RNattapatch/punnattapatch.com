@@ -1,10 +1,39 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 import { SITE, SERVICES } from '../data/site';
 
 const title = 'จองบริการกับปัน';
 const description =
-  'กรอก 3 นาที — เลือก package ที่อยากเริ่ม + ส่งให้ผม ผมอ่านเองทุกใบและตอบกลับใน 24 ชม. พร้อม link นัดเวลา';
+  'กรอก 3 นาที — บอกผมว่าสนใจแบบไหน ผมอ่านเองทุกใบ ตอบกลับใน 24 ชม. พร้อม level ที่เหมาะ + link นัดเวลา';
+
+// ===== เลือก "ทาง" เดียว — 3 ทางหลัก + เฉพาะทาง (mirror /services) =====
+// ปันคัด level ให้หลัง intake · n8n payload schema เดิมยังทำงาน (map ทาง → slugs)
+const mainPaths = [
+  { key: 'training', name: 'Training — ปั้นทีมให้ใช้ AI เป็น', desc: 'อยากให้ทีมใช้ AI เป็น ทำระบบเองได้', priceHint: 'เริ่ม ฿29,900', featured: false },
+  { key: 'consult', name: 'Consult — คู่คิด วางให้', desc: 'ไม่มีเวลาเรียนเอง อยากมีคนวางโครงให้', priceHint: 'เริ่ม ฿25,000/วัน', featured: false },
+  { key: 'both', name: 'ทั้งคู่ — วางระบบ + สอนทีม', desc: 'อยากได้ทั้งระบบที่รันได้ และทีมทำต่อเองเป็น', priceHint: 'Package A ฿54,900', featured: true },
+];
+const otherPaths = [
+  { key: 'ceo-advisory', name: 'AI Consultant for CEO', desc: '1-on-1 · คู่คิด AI ส่วนตัวของผู้บริหาร', priceHint: '฿35,000/วัน' },
+  { key: 'trust-content', name: 'AI Trust Content Cycle', desc: 'ให้ลูกค้าเชื่อใจจนทักมาผ่าน content', priceHint: '฿49,900' },
+];
+
+// path → representative service slugs (คง n8n schema: packages[] + package + price)
+const pathToSlugs: Record<string, string[]> = {
+  training: ['ai-workshop', 'ai-workshop-advance'],
+  consult: ['consult', 'consult-package'],
+  both: ['package-a'],
+  'ceo-advisory': ['ceo-advisory'],
+  'trust-content': ['trust-content-tiktok-workshop'],
+};
+const pathLabels: Record<string, string> = {
+  training: 'Training (ปั้นทีม)',
+  consult: 'Consult (คู่คิด)',
+  both: 'ทั้งคู่ — Package A',
+  'ceo-advisory': 'AI Consultant for CEO',
+  'trust-content': 'AI Trust Content Cycle',
+};
 
 const teamSizes = [
   '1-2 คน (เจ้าของ + ผู้ช่วย)',
@@ -37,43 +66,10 @@ const sources = [
   { value: 'other', label: 'อื่นๆ' },
 ];
 
-type AccentToken = 'cyan' | 'coral' | 'violet';
-const accentFor = (slug: string): AccentToken => {
-  if (slug.startsWith('ai-')) return 'cyan';
-  if (slug.startsWith('trust-')) return 'violet';
-  return 'coral';
-};
-const accentVar = (a: AccentToken): string =>
-  a === 'cyan'
-    ? 'var(--color-pun-cyan)'
-    : a === 'violet'
-      ? 'var(--color-pun-violet)'
-      : 'var(--color-pun-coral)';
-
-// Sales-consulting packages removed from booking picker (refocus 2026-06-07) — still sold 1-on-1
-const packages = SERVICES.filter(
-  (s) => !['sale-training-bundle', 'sales-system-sprint'].includes(s.slug)
-).map((s) => ({
-  slug: s.slug,
-  title: s.title,
-  subtitle: s.subtitle,
-  priceLabel: s.priceLabel,
-  priceThb: s.priceThb,
-  accent: accentFor(s.slug),
-}));
-
-// Map slug → display name + numeric price for CRM/Telegram schema
-// (matches legacy booking-form.html PKG_MAP shape)
-const pkgNameBySlug: Record<string, string> = Object.fromEntries(
-  SERVICES.map((s) => [s.slug, s.title])
-);
-const pkgPriceBySlug: Record<string, number> = Object.fromEntries(
-  SERVICES.map((s) => [s.slug, s.priceThb])
-);
-const pkgLookupJson = JSON.stringify({
-  names: pkgNameBySlug,
-  prices: pkgPriceBySlug,
-});
+// slug → name/price for CRM/Telegram (คง schema เดิม) + path map for client script
+const pkgNameBySlug: Record<string, string> = Object.fromEntries(SERVICES.map((s) => [s.slug, s.title]));
+const pkgPriceBySlug: Record<string, number> = Object.fromEntries(SERVICES.map((s) => [s.slug, s.priceThb]));
+const lookupJson = JSON.stringify({ names: pkgNameBySlug, prices: pkgPriceBySlug, pathToSlugs, pathLabels });
 ---
 
 <BaseLayout
@@ -95,334 +91,191 @@ const pkgLookupJson = JSON.stringify({
       href="https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/css/intlTelInput.css"
     />
     <style is:global>
-      /* Dark-theme + row-reorder for intl-tel-input v24 (see intake-form.astro for rationale) */
+      /* intl-tel-input v24 — navy dropdown (brand) on editorial form */
       .iti { width: 100%; display: block; }
-
       .iti__dropdown-content {
-        background: #0f1a2b !important;
+        background: #072b4e !important;
         color: #ffffff !important;
         border: 1px solid rgb(255 255 255 / 0.18) !important;
-        border-radius: 0.5rem;
-        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.7);
+        border-radius: 0.75rem;
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.55);
       }
-      .iti__country-list {
-        background: #0f1a2b !important;
-        max-height: 280px;
-      }
+      .iti__country-list { background: #072b4e !important; max-height: 280px; }
       .iti__search-input {
         background: rgb(255 255 255 / 0.06) !important;
         color: #ffffff !important;
         border: 1px solid rgb(255 255 255 / 0.18) !important;
         padding: 10px 12px !important;
       }
-      .iti__search-input::placeholder {
-        color: rgb(255 255 255 / 0.5) !important;
-      }
-
+      .iti__search-input::placeholder { color: rgb(255 255 255 / 0.5) !important; }
       .iti__country {
-        display: flex !important;
-        align-items: center !important;
-        gap: 10px !important;
-        padding: 10px 12px !important;
-        color: #ffffff !important;
+        display: flex !important; align-items: center !important;
+        gap: 10px !important; padding: 10px 12px !important; color: #ffffff !important;
       }
-      .iti__country .iti__flag-box,
-      .iti__country > .iti__flag {
-        order: 1 !important;
-        flex-shrink: 0;
-      }
+      .iti__country .iti__flag-box, .iti__country > .iti__flag { order: 1 !important; flex-shrink: 0; }
       .iti__country .iti__dial-code {
-        order: 2 !important;
-        color: #072b4e !important;
-        font-weight: 600;
-        min-width: 52px;
-        flex-shrink: 0;
+        order: 2 !important; color: #fcf9f2 !important; font-weight: 600;
+        min-width: 52px; flex-shrink: 0;
       }
       .iti__country .iti__country-name {
-        order: 3 !important;
-        color: #ffffff !important;
-        flex: 1;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        order: 3 !important; color: #ffffff !important; flex: 1;
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
       }
-
-      .iti__country.iti__highlight,
-      .iti__country:hover {
-        background: color-mix(in oklch, var(--color-secondary) 30%, transparent) !important;
+      .iti__country.iti__highlight, .iti__country:hover {
+        background: rgb(221 65 85 / 0.30) !important;
       }
-
-      .iti__selected-country,
-      .iti__selected-country-primary {
-        background: rgb(255 255 255 / 0.04) !important;
-      }
-      .iti__selected-country:hover,
-      .iti__selected-country-primary:hover {
-        background: rgb(255 255 255 / 0.08) !important;
-      }
-      .iti--separate-dial-code .iti__selected-dial-code,
-      .iti--separate-dial-code .iti__dial-code {
-        color: #ffffff !important;
-      }
-
-      .iti__divider {
-        border-bottom-color: rgb(255 255 255 / 0.12) !important;
-        padding: 0 !important;
-      }
-
-      .iti__no-results {
-        color: rgb(255 255 255 / 0.7) !important;
-        padding: 12px !important;
-      }
+      .iti__selected-country, .iti__selected-country-primary { background: transparent !important; }
+      .iti--separate-dial-code .iti__selected-dial-code, .iti--separate-dial-code .iti__dial-code { color: #1e1b16 !important; }
+      .iti__divider { border-bottom-color: rgb(255 255 255 / 0.12) !important; padding: 0 !important; }
+      .iti__no-results { color: rgb(255 255 255 / 0.7) !important; padding: 12px !important; }
     </style>
   </Fragment>
 
-  <section class="px-4 py-16 lg:px-8">
+  <section class="px-margin-page py-16 md:py-20">
     <div class="mx-auto max-w-3xl">
-      <p class="text-xs font-bold uppercase tracking-widest text-secondary">Booking</p>
-      <h1 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
-        จอง Workshop / Consulting กับปัน
+      <p class="text-xs font-semibold uppercase tracking-[0.15em] text-coral">จองบริการ</p>
+      <h1 class="mt-3 font-serif text-4xl font-semibold leading-tight text-navy md:text-5xl">
+        คุยกับผม — เริ่มจากบอกว่าสนใจแบบไหน
       </h1>
-      <p class="mt-4 text-lg text-base-content/75">
-        เลือก package ที่อยากเริ่ม กรอกข้อมูล 3 นาที ผมอ่านเองทุกใบ ตอบกลับภายใน 24 ชม. พร้อม link นัดเวลา
+      <p class="mt-5 text-lg text-warm-ink/75">
+        ไม่ต้องเลือก level เอง · บอกแค่ทางที่ใช่ + เล่าธุรกิจให้ผมฟัง ผมอ่านเองทุกใบ ตอบกลับใน 24 ชม. พร้อม level ที่เหมาะ + link นัดเวลา
       </p>
 
       <form id="booking-form" class="mt-10 space-y-8" novalidate>
-        <!-- ===== 1. เลือก Package ===== -->
-        <fieldset class="space-y-4 rounded-2xl border border-base-content/10 bg-base-100 p-6">
-          <legend class="px-2 font-display text-lg font-bold">1. เลือก Package ที่สนใจ</legend>
-          <p class="text-sm text-base-content/65">เลือกได้มากกว่า 1 รายการ</p>
+        <!-- ===== 1. เลือกทาง ===== -->
+        <fieldset class="space-y-5 rounded-2xl border border-[#c9c2b2] bg-surface p-6 md:p-7">
+          <legend class="px-2 font-serif text-lg font-semibold text-navy">1. สนใจแบบไหน?</legend>
 
           <div class="space-y-3">
-            {
-              packages.map((p) => {
-                const accent = accentVar(p.accent);
-                return (
-                  <label
-                    data-pkg={p.slug}
-                    data-accent={p.accent}
-                    class="pkg-card relative flex cursor-pointer items-start gap-4 rounded-xl border border-base-content/15 bg-base-200/30 p-5 transition-all hover:-translate-y-0.5"
-                    style={`--pkg-accent: ${accent};`}
-                  >
-                    <input
-                      type="checkbox"
-                      name="packages"
-                      value={p.slug}
-                      class="pkg-input peer sr-only"
-                    />
-                    <div
-                      class="pkg-dot mt-1 h-5 w-5 flex-shrink-0 rounded-full border-2 border-base-content/25 transition-all"
-                    />
-                    <div class="flex-1">
-                      <p class="text-xs uppercase tracking-widest text-base-content/55">
-                        {p.subtitle}
-                      </p>
-                      <p class="mt-1 font-display text-base font-bold">{p.title}</p>
-                    </div>
-                    <span class="pkg-price font-display text-base font-bold text-secondary">
-                      {p.priceLabel}
-                    </span>
-                  </label>
-                );
-              })
-            }
+            {mainPaths.map((p) => (
+              <label
+                data-path={p.key}
+                class:list={[
+                  'path-card relative flex cursor-pointer items-start gap-4 rounded-xl border bg-surface p-5 transition hover:-translate-y-0.5',
+                  p.featured ? 'border-coral/50' : 'border-[#c9c2b2]',
+                ]}
+              >
+                <input type="radio" name="path" value={p.key} class="path-input peer sr-only" />
+                <div class="path-dot mt-1 h-5 w-5 flex-shrink-0 rounded-full border-2 border-[#c9c2b2] transition-all" />
+                <div class="flex-1">
+                  <div class="flex items-center gap-2">
+                    <p class="font-serif text-base font-semibold text-navy">{p.name}</p>
+                    {p.featured && (
+                      <span class="rounded-full bg-coral px-2 py-0.5 text-[10px] font-semibold text-white">แนะนำ</span>
+                    )}
+                  </div>
+                  <p class="mt-1 text-sm text-warm-ink/70">{p.desc}</p>
+                </div>
+                <span class="path-price shrink-0 font-serif text-sm font-semibold text-coral">{p.priceHint}</span>
+              </label>
+            ))}
           </div>
-          <p id="err-packages" class="hidden text-sm font-medium text-error">
-            เลือกอย่างน้อย 1 package
-          </p>
+
+          <details class="group rounded-xl border border-dashed border-[#c9c2b2] bg-surface/60 p-4">
+            <summary class="cursor-pointer list-none text-sm font-medium text-navy/80 transition group-open:text-coral">
+              + บริการเฉพาะทางอื่นๆ (สำหรับผู้บริหาร / สาย content)
+            </summary>
+            <div class="mt-4 space-y-3">
+              {otherPaths.map((p) => (
+                <label data-path={p.key} class="path-card relative flex cursor-pointer items-start gap-4 rounded-xl border border-[#c9c2b2] bg-surface p-4 transition hover:-translate-y-0.5">
+                  <input type="radio" name="path" value={p.key} class="path-input peer sr-only" />
+                  <div class="path-dot mt-1 h-5 w-5 flex-shrink-0 rounded-full border-2 border-[#c9c2b2] transition-all" />
+                  <div class="flex-1">
+                    <p class="font-serif text-base font-semibold text-navy">{p.name}</p>
+                    <p class="mt-1 text-sm text-warm-ink/70">{p.desc}</p>
+                  </div>
+                  <span class="path-price shrink-0 font-serif text-sm font-semibold text-coral">{p.priceHint}</span>
+                </label>
+              ))}
+            </div>
+          </details>
+
+          <p id="err-path" class="hidden text-sm font-medium text-coral">เลือก 1 ทางที่สนใจก่อนนะครับ</p>
         </fieldset>
 
-        <!-- ===== 2. Contact ===== -->
-        <fieldset class="space-y-5 rounded-2xl border border-base-content/10 bg-base-100 p-6">
-          <legend class="px-2 font-display text-lg font-bold">2. ติดต่อ</legend>
+        <!-- ===== 2. ติดต่อ ===== -->
+        <fieldset class="space-y-5 rounded-2xl border border-[#c9c2b2] bg-surface p-6 md:p-7">
+          <legend class="px-2 font-serif text-lg font-semibold text-navy">2. ติดต่อ</legend>
 
           <div class="grid gap-5 sm:grid-cols-2">
-            <div class="form-control">
-              <label for="b-name" class="label">
-                <span class="label-text font-medium">ชื่อ-นามสกุล *</span>
-              </label>
-              <input
-                id="b-name"
-                name="name"
-                type="text"
-                required
-                class="input input-bordered w-full"
-                placeholder="ปัน ณัฐพัชร์"
-              />
+            <div>
+              <label for="b-name" class="text-sm font-medium text-warm-ink">ชื่อ-นามสกุล <span class="text-coral">*</span></label>
+              <input id="b-name" name="name" type="text" required class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" placeholder="ปัน ณัฐพัชร์" />
             </div>
-
-            <div class="form-control">
-              <label for="b-company" class="label">
-                <span class="label-text font-medium">บริษัท *</span>
-              </label>
-              <input
-                id="b-company"
-                name="company"
-                type="text"
-                required
-                class="input input-bordered w-full"
-                placeholder="Pun Nattapatch Co., Ltd."
-              />
+            <div>
+              <label for="b-company" class="text-sm font-medium text-warm-ink">บริษัท <span class="text-coral">*</span></label>
+              <input id="b-company" name="company" type="text" required class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" placeholder="บริษัทของคุณ จำกัด" />
             </div>
           </div>
 
           <div class="grid gap-5 sm:grid-cols-2">
-            <div class="form-control">
-              <label for="b-position" class="label">
-                <span class="label-text font-medium">ตำแหน่ง</span>
-              </label>
-              <input
-                id="b-position"
-                name="position"
-                type="text"
-                class="input input-bordered w-full"
-                placeholder="เจ้าของ / CEO / Sales Manager"
-              />
+            <div>
+              <label for="b-position" class="text-sm font-medium text-warm-ink">ตำแหน่ง</label>
+              <input id="b-position" name="position" type="text" class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" placeholder="เจ้าของ / CEO / Sales Manager" />
             </div>
-            <div class="form-control">
-              <label for="b-industry" class="label">
-                <span class="label-text font-medium">อุตสาหกรรม</span>
-              </label>
-              <input
-                id="b-industry"
-                name="industry"
-                type="text"
-                class="input input-bordered w-full"
-                placeholder="เช่น วัสดุก่อสร้าง / ที่พัก / IT"
-              />
+            <div>
+              <label for="b-industry" class="text-sm font-medium text-warm-ink">อุตสาหกรรม</label>
+              <input id="b-industry" name="industry" type="text" class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" placeholder="เช่น วัสดุก่อสร้าง / ที่พัก / IT" />
             </div>
           </div>
 
           <div class="grid gap-5 sm:grid-cols-2">
-            <div class="form-control">
-              <label for="b-phone" class="label">
-                <span class="label-text font-medium">เบอร์โทร *</span>
-              </label>
-              <input
-                id="b-phone"
-                name="phone"
-                type="tel"
-                required
-                autocomplete="tel"
-                class="input input-bordered w-full"
-                placeholder="812345678"
-              />
-              <p id="b-phone-err" class="mt-1.5 hidden text-xs font-medium text-error">
-                กรุณาใส่เบอร์โทรให้ถูก format (เลือกประเทศจาก dropdown ก่อน)
-              </p>
+            <div>
+              <label for="b-phone" class="text-sm font-medium text-warm-ink">เบอร์โทร <span class="text-coral">*</span></label>
+              <input id="b-phone" name="phone" type="tel" required autocomplete="tel" class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" placeholder="812345678" />
+              <p id="b-phone-err" class="mt-1.5 hidden text-xs font-medium text-coral">กรุณาใส่เบอร์โทรให้ถูก format (เลือกประเทศจาก dropdown ก่อน)</p>
             </div>
-
-            <div class="form-control">
-              <label for="b-email" class="label">
-                <span class="label-text font-medium">อีเมล</span>
-              </label>
-              <input
-                id="b-email"
-                name="email"
-                type="email"
-                class="input input-bordered w-full"
-                placeholder="you@company.co.th"
-              />
+            <div>
+              <label for="b-email" class="text-sm font-medium text-warm-ink">อีเมล</label>
+              <input id="b-email" name="email" type="email" class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" placeholder="you@company.co.th" />
             </div>
           </div>
 
-          <div class="form-control">
-            <label for="b-line" class="label">
-              <span class="label-text font-medium">LINE ID (optional)</span>
-            </label>
-            <input
-              id="b-line"
-              name="line"
-              type="text"
-              class="input input-bordered w-full"
-              placeholder="@punnattapatch"
-            />
-          </div>
-
-          <div class="form-control">
-            <label for="b-team" class="label">
-              <span class="label-text font-medium">ขนาดทีมขายปัจจุบัน *</span>
-            </label>
-            <select
-              id="b-team"
-              name="teamSize"
-              required
-              class="select select-bordered w-full"
-            >
-              <option value="">— เลือก —</option>
-              {teamSizes.map((t) => <option value={t}>{t}</option>)}
-            </select>
-          </div>
-
-          <div class="form-control">
-            <span class="label">
-              <span class="label-text font-medium">
-                ปัญหาหลักที่เจอ (เลือกได้หลายข้อ)
-              </span>
-            </span>
-            <div class="space-y-2">
-              {
-                painPoints.map((p) => (
-                  <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-base-content/10 p-3 transition hover:bg-base-200/50">
-                    <input
-                      type="checkbox"
-                      name="problems"
-                      value={p}
-                      class="checkbox checkbox-sm mt-0.5"
-                    />
-                    <span class="text-sm">{p}</span>
-                  </label>
-                ))
-              }
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="b-line" class="text-sm font-medium text-warm-ink">LINE ID</label>
+              <input id="b-line" name="line" type="text" class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" placeholder="@punnattapatch" />
+            </div>
+            <div>
+              <label for="b-team" class="text-sm font-medium text-warm-ink">ขนาดทีมปัจจุบัน <span class="text-coral">*</span></label>
+              <select id="b-team" name="teamSize" required class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none">
+                <option value="">— เลือก —</option>
+                {teamSizes.map((t) => <option value={t}>{t}</option>)}
+              </select>
             </div>
           </div>
 
-          <div class="form-control">
-            <label for="b-comment" class="label">
-              <span class="label-text font-medium">
-                ปัญหาอื่นๆที่เจอ (ไม่อยู่ในรายการข้างบน)
-              </span>
-            </label>
-            <textarea
-              id="b-comment"
-              name="comment"
-              rows="3"
-              class="textarea textarea-bordered w-full"
-              placeholder="อธิบาย pain point เฉพาะของคุณ หรือข้อมูลเพิ่มเติมที่อยากให้ผมรู้ก่อน"
-            />
+          <div>
+            <span class="text-sm font-medium text-warm-ink">ปัญหาหลักที่เจอ (เลือกได้หลายข้อ)</span>
+            <div class="mt-2 space-y-2">
+              {painPoints.map((p) => (
+                <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-[#c9c2b2] bg-ivory p-3 transition hover:border-coral/40">
+                  <input type="checkbox" name="problems" value={p} class="mt-0.5 h-4 w-4 shrink-0 accent-[#dd4155]" />
+                  <span class="text-sm text-warm-ink/85">{p}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label for="b-comment" class="text-sm font-medium text-warm-ink">อยากเล่าอะไรเพิ่มให้ผมรู้ก่อน?</label>
+            <textarea id="b-comment" name="comment" rows="3" class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" placeholder="เล่า pain point เฉพาะของคุณ หรือข้อมูลเพิ่มเติมที่อยากให้ผมรู้ก่อนคุย"></textarea>
           </div>
         </fieldset>
 
         <!-- ===== 3. Timing ===== -->
-        <fieldset class="space-y-5 rounded-2xl border border-base-content/10 bg-base-100 p-6">
-          <legend class="px-2 font-display text-lg font-bold">3. Timing</legend>
+        <fieldset class="space-y-5 rounded-2xl border border-[#c9c2b2] bg-surface p-6 md:p-7">
+          <legend class="px-2 font-serif text-lg font-semibold text-navy">3. ช่วงเวลา</legend>
 
-          <div class="form-control">
-            <label for="b-date" class="label">
-              <span class="label-text font-medium">วันที่สะดวกเริ่ม (ประมาณ)</span>
-            </label>
-            <input
-              id="b-date"
-              name="preferred_date"
-              type="date"
-              min={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)}
-              class="input input-bordered w-full"
-            />
-            <p class="mt-1.5 text-xs text-base-content/55">
-              เลือกวันที่จากปฏิทิน (เริ่มได้เร็วสุด 7 วันจากวันนี้) · ไม่ fix ได้ — แค่ประมาณการ
-            </p>
+          <div>
+            <label for="b-date" class="text-sm font-medium text-warm-ink">วันที่สะดวกเริ่ม (ประมาณ)</label>
+            <input id="b-date" name="preferred_date" type="date" min={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)} class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" />
+            <p class="mt-1.5 text-xs text-muted">เริ่มได้เร็วสุด 7 วันจากวันนี้ · ไม่ fix ได้ แค่ประมาณการ</p>
           </div>
 
-          <div class="form-control">
-            <label for="b-source" class="label">
-              <span class="label-text font-medium">เจอเว็บนี้ผ่าน *</span>
-            </label>
-            <select
-              id="b-source"
-              name="source"
-              required
-              class="select select-bordered w-full"
-            >
+          <div>
+            <label for="b-source" class="text-sm font-medium text-warm-ink">เจอเว็บนี้ผ่าน <span class="text-coral">*</span></label>
+            <select id="b-source" name="source" required class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none">
               <option value="">— เลือก —</option>
               {sources.map((s) => <option value={s.value}>{s.label}</option>)}
             </select>
@@ -430,63 +283,35 @@ const pkgLookupJson = JSON.stringify({
         </fieldset>
 
         <!-- ===== Submit ===== -->
-        <div class="rounded-2xl border border-base-content/10 bg-base-200/30 p-6">
-          <button
-            type="submit"
-            id="btn-submit"
-            class="btn btn-lg w-full bg-secondary text-secondary-content shadow-xl shadow-secondary/30 hover:scale-[1.02] hover:bg-secondary/90"
-          >
-            ส่งคำจอง →
+        <div class="rounded-2xl border border-[#c9c2b2] bg-sand p-6">
+          <button type="submit" id="btn-submit" class="inline-flex w-full items-center justify-center rounded-xl bg-coral px-6 py-4 font-medium text-white transition hover:opacity-90">
+            ส่งให้ผมดู →
           </button>
-          <p class="mt-3 text-center text-xs text-base-content/55">
-            ผมอ่านเองภายใน 24 ชม. · ตอบกลับพร้อม link นัดเวลา + ใบเสนอราคา
+          <p class="mt-3 text-center text-xs text-muted">
+            ผมอ่านเองภายใน 24 ชม. · ตอบกลับพร้อม level ที่เหมาะ + link นัดเวลา · ผมคุยเอง ไม่ได้ใช้ AI ตอบ
           </p>
         </div>
       </form>
 
       <!-- ===== Success state ===== -->
-      <div
-        id="booking-success"
-        class="hidden rounded-3xl border border-success/30 bg-success/[0.06] p-10 text-center"
-      >
-        <div
-          class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-success text-3xl text-success-content"
-        >
-          ✓
+      <div id="booking-success" class="hidden rounded-3xl border border-coral/30 bg-surface p-10 text-center paper-shadow">
+        <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-coral text-white">
+          <Icon name="check-circle" size={34} />
         </div>
-        <h2 class="font-display text-2xl font-bold leading-tight">
-          รับคำจองแล้ว
-        </h2>
-        <p class="mt-3 text-base text-base-content/80">
+        <h2 class="font-serif text-2xl font-semibold text-navy">รับเรื่องแล้ว ขอบคุณครับ</h2>
+        <p class="mt-3 text-base text-warm-ink/80">
           เก็บ reference number ไว้ ถ้าทัก LINE OA ก่อน 24 ชม. พิมพ์ reference นี้ ผมจะเปิดเคสของคุณได้เร็วขึ้น
         </p>
-        <div
-          class="mx-auto mt-6 inline-flex items-center gap-3 rounded-xl border border-base-content/15 bg-base-100 px-5 py-3 font-mono text-lg font-bold"
-        >
+        <div class="mx-auto mt-6 inline-flex items-center gap-3 rounded-xl border border-[#c9c2b2] bg-ivory px-5 py-3 font-mono text-lg font-bold text-navy">
           <span id="booking-ref">—</span>
-          <button
-            id="booking-copy-ref"
-            type="button"
-            class="btn btn-ghost btn-sm"
-            aria-label="Copy reference"
-          >
-            Copy
-          </button>
+          <button id="booking-copy-ref" type="button" class="rounded-lg px-3 py-1 text-sm font-medium text-coral transition hover:bg-coral/10" aria-label="Copy reference">Copy</button>
         </div>
         <div class="mt-6 flex flex-wrap justify-center gap-4">
-          <a
-            href={SITE.social.line}
-            target="_blank"
-            rel="noopener"
-            class="btn btn-lg gap-2 border-none font-bold text-white hover:opacity-90 active:opacity-80"
-            style="background: #06C755;"
-          >
+          <a href={SITE.social.line} target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-xl px-6 py-3 font-medium text-white transition hover:opacity-90" style="background: #06C755;">
             <img src="/line-logo.png" alt="" class="h-6 w-6 shrink-0" aria-hidden="true" />
             ทักมา LINE OA ต่อ →
           </a>
-          <a href="/" class="btn btn-lg btn-outline">
-            กลับหน้าแรก
-          </a>
+          <a href="/" class="inline-flex items-center rounded-xl border border-[#c9c2b2] px-6 py-3 font-medium text-navy transition hover:border-coral hover:text-coral">กลับหน้าแรก</a>
         </div>
       </div>
     </div>
@@ -494,25 +319,20 @@ const pkgLookupJson = JSON.stringify({
 </BaseLayout>
 
 <style>
-  .pkg-card:has(.pkg-input:checked) {
-    border-color: var(--pkg-accent);
-    background: color-mix(in oklch, var(--pkg-accent) 10%, transparent);
+  .path-card:has(.path-input:checked) {
+    border-color: var(--color-coral);
+    background: color-mix(in oklch, var(--color-coral) 6%, transparent);
   }
-  .pkg-card:has(.pkg-input:checked) .pkg-dot {
-    border-color: var(--pkg-accent);
-    background: radial-gradient(circle, var(--pkg-accent) 0 55%, transparent 60%);
-    box-shadow: 0 0 0 2px color-mix(in oklch, var(--pkg-accent) 20%, transparent);
+  .path-card:has(.path-input:checked) .path-dot {
+    border-color: var(--color-coral);
+    background: radial-gradient(circle, var(--color-coral) 0 55%, transparent 60%);
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-coral) 20%, transparent);
   }
-  .pkg-card:has(.pkg-input:checked) .pkg-price {
-    color: var(--pkg-accent);
-  }
-  .pkg-card:hover {
-    border-color: color-mix(in oklch, var(--pkg-accent) 40%, transparent);
-  }
+  .path-card:hover { border-color: color-mix(in oklch, var(--color-coral) 40%, transparent); }
 </style>
 
-<script is:inline define:vars={{ pkgLookupJson }}>
-  window.__PKG_LOOKUP__ = JSON.parse(pkgLookupJson);
+<script is:inline define:vars={{ lookupJson }}>
+  window.__BK_LOOKUP__ = JSON.parse(lookupJson);
 </script>
 <script>
   interface BookingPayload {
@@ -523,7 +343,7 @@ const pkgLookupJson = JSON.stringify({
       user_agent: string;
       referrer: string | null;
       path: string;
-      initial_package: string | null;
+      interest_path: string | null;
     };
   }
 
@@ -531,38 +351,44 @@ const pkgLookupJson = JSON.stringify({
   const success = document.getElementById('booking-success');
   const refNode = document.getElementById('booking-ref');
   const copyBtn = document.getElementById('booking-copy-ref') as HTMLButtonElement | null;
-  const errPackages = document.getElementById('err-packages');
+  const errPath = document.getElementById('err-path');
 
-  // Pre-select package(s) from ?package= and ?bundle= query params
+  // Pre-select path from ?path= (sent by /services CTAs)
   const params = new URLSearchParams(window.location.search);
-  const initialPkg = params.get('package');
-  const bundle = params.get('bundle');
+  // back-compat: old ?package=<slug> → map slug back to its path
+  const lookup = (window as unknown as {
+    __BK_LOOKUP__: {
+      names: Record<string, string>;
+      prices: Record<string, number>;
+      pathToSlugs: Record<string, string[]>;
+      pathLabels: Record<string, string>;
+    };
+  }).__BK_LOOKUP__;
 
-  // bundle=day1-day2 → pre-select both ai-workshop + ai-workshop-advance
-  if (bundle === 'day1-day2') {
-    ['ai-workshop', 'ai-workshop-advance'].forEach((slug) => {
-      const el = document.querySelector<HTMLInputElement>(
-        `.pkg-card[data-pkg="${CSS.escape(slug)}"] .pkg-input`
-      );
-      if (el) el.checked = true;
-    });
-    document.querySelector('.pkg-card[data-pkg="ai-workshop"]')
-      ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  } else if (initialPkg) {
-    const preselect = document.querySelector<HTMLInputElement>(
-      `.pkg-card[data-pkg="${CSS.escape(initialPkg)}"] .pkg-input`
-    );
-    if (preselect) {
-      preselect.checked = true;
-      preselect.closest('.pkg-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  let initialPath = params.get('path');
+  if (!initialPath) {
+    const legacyPkg = params.get('package');
+    if (legacyPkg) {
+      initialPath = Object.keys(lookup.pathToSlugs).find((k) =>
+        lookup.pathToSlugs[k].includes(legacyPkg)
+      ) ?? null;
+    } else if (params.get('bundle') === 'day1-day2') {
+      initialPath = 'training';
+    }
+  }
+  if (initialPath) {
+    const radio = document.querySelector<HTMLInputElement>(`.path-card[data-path="${CSS.escape(initialPath)}"] .path-input`);
+    if (radio) {
+      radio.checked = true;
+      // open the <details> if the pre-selected path (CEO / Trust) lives inside it
+      const det = radio.closest('details') as HTMLDetailsElement | null;
+      if (det) det.open = true;
+      radio.closest('.path-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
 
   function makeReference(): string {
-    const stamp = new Date()
-      .toISOString()
-      .replace(/[-:T.Z]/g, '')
-      .slice(0, 12);
+    const stamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 12);
     const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
     return `PN-BK-${stamp}-${rand}`;
   }
@@ -603,16 +429,8 @@ const pkgLookupJson = JSON.stringify({
   const submitBtn = document.getElementById('btn-submit') as HTMLButtonElement | null;
   const submitBtnLabel = submitBtn?.textContent ?? '';
 
-  /* ==== intl-tel-input init ================================================
-   * Same validation setup as /intake-form. Accepts Thai formats like
-   * 081-234-5678, 02-1234-5678, 0812345678 and international (+1 US, +65 SG).
-   * On submit: block if iti.isValidNumber() === false, else normalize to E.164
-   * so Sheet stores canonical +66XXXXXXXXX.
-   */
-  interface ItiInstance {
-    isValidNumber(): boolean;
-    getNumber(): string;
-  }
+  // intl-tel-input init (same as /intake-form) — validate + normalize to E.164
+  interface ItiInstance { isValidNumber(): boolean; getNumber(): string; }
   type ItiFactory = (el: HTMLInputElement, opts: Record<string, unknown>) => ItiInstance;
   let phoneIti: ItiInstance | null = null;
   const phoneInput = document.getElementById('b-phone') as HTMLInputElement | null;
@@ -631,9 +449,7 @@ const pkgLookupJson = JSON.stringify({
   (async () => {
     if (!phoneInput) return;
     try {
-      await loadScript(
-        'https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/js/intlTelInput.min.js'
-      );
+      await loadScript('https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/js/intlTelInput.min.js');
       const factory = (window as unknown as { intlTelInput: ItiFactory }).intlTelInput;
       phoneIti = factory(phoneInput, {
         initialCountry: 'th',
@@ -641,8 +457,7 @@ const pkgLookupJson = JSON.stringify({
         separateDialCode: true,
         autoPlaceholder: 'polite',
         nationalMode: true,
-        loadUtilsOnInit:
-          'https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/js/utils.js',
+        loadUtilsOnInit: 'https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/js/utils.js',
       });
     } catch (err) {
       console.error('[booking-form] intl-tel-input failed to load', err);
@@ -652,20 +467,16 @@ const pkgLookupJson = JSON.stringify({
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const selectedPkgs = Array.from(
-      form.querySelectorAll<HTMLInputElement>('.pkg-input:checked')
-    ).map((el) => el.value);
-
-    if (selectedPkgs.length === 0) {
-      errPackages?.classList.remove('hidden');
-      errPackages?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const selectedPath = form.querySelector<HTMLInputElement>('.path-input:checked')?.value ?? '';
+    if (!selectedPath) {
+      errPath?.classList.remove('hidden');
+      errPath?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    errPackages?.classList.add('hidden');
+    errPath?.classList.add('hidden');
 
     if (!form.reportValidity()) return;
 
-    // Phone validation
     if (phoneIti && phoneInput) {
       if (!phoneIti.isValidNumber()) {
         phoneErr?.classList.remove('hidden');
@@ -679,34 +490,21 @@ const pkgLookupJson = JSON.stringify({
 
     const formData = new FormData(form);
 
-    // Build legacy-compatible `package` + `package_price` from selected slugs
-    // so n8n/Telegram can render package name + price without mapping changes.
-    const lookup = (window as unknown as {
-      __PKG_LOOKUP__: { names: Record<string, string>; prices: Record<string, number> };
-    }).__PKG_LOOKUP__;
-    const pkgNames = selectedPkgs.map((s) => lookup.names[s] ?? s);
-    const pkgPrices = selectedPkgs.map((s) =>
-      (lookup.prices[s] ?? 0).toLocaleString('en-US')
-    );
-
-    // When bundle=day1-day2 → override package/price to show bundle pricing (฿48,900)
-    // not the sum of individual prices (฿65,600)
-    const bundleParam = params.get('bundle');
-    const isBundle = bundleParam === 'day1-day2';
-    const packageLabel = isBundle
-      ? 'Bundle Day 1+2 (Basic + Advance AI Workshop)'
-      : pkgNames.join(', ');
-    const packagePrice = isBundle ? '48,900' : pkgPrices.join(', ');
+    // Map selected path → representative slugs → keep legacy package/price schema for n8n.
+    const slugs = lookup.pathToSlugs[selectedPath] ?? [];
+    const pkgNames = slugs.map((s) => lookup.names[s] ?? s);
+    const pkgPrices = slugs.map((s) => (lookup.prices[s] ?? 0).toLocaleString('en-US'));
 
     const attr = (window as unknown as { pnAttribution?: Record<string, string> }).pnAttribution ?? {};
 
     const payload: BookingPayload = {
       source_page: 'booking-astro',
-      booking_type: 'package-booking',
-      package: packageLabel,
-      package_price: packagePrice,
-      bundle: bundleParam ?? '',
-      packages: selectedPkgs,
+      booking_type: 'path-booking',
+      interest_path: selectedPath,
+      interest_label: lookup.pathLabels[selectedPath] ?? selectedPath,
+      package: pkgNames.join(', '),
+      package_price: pkgPrices.join(', '),
+      packages: slugs,
       utm_source:   attr.utm_source   ?? '',
       utm_medium:   attr.utm_medium   ?? '',
       utm_campaign: attr.utm_campaign ?? '',
@@ -720,12 +518,12 @@ const pkgLookupJson = JSON.stringify({
         user_agent: navigator.userAgent,
         referrer: document.referrer || null,
         path: window.location.pathname,
-        initial_package: initialPkg,
+        interest_path: selectedPath,
       },
     };
 
     formData.forEach((value, key) => {
-      if (key === 'packages') return;
+      if (key === 'path') return;
       if (payload[key]) {
         if (Array.isArray(payload[key])) {
           (payload[key] as unknown[]).push(value);
@@ -750,12 +548,7 @@ const pkgLookupJson = JSON.stringify({
 
     (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.(
       'Booking Submit',
-      {
-        props: {
-          source: (payload.source as string) ?? 'unknown',
-          packages: selectedPkgs.join('+'),
-        },
-      }
+      { props: { source: (payload.source as string) ?? 'unknown', path: selectedPath } }
     );
 
     if (refNode) refNode.textContent = payload._meta.reference;
@@ -766,10 +559,7 @@ const pkgLookupJson = JSON.stringify({
       submitBtn.disabled = false;
       submitBtn.textContent = submitBtnLabel;
     }
-    window.scrollTo({
-      top: (success?.offsetTop ?? 0) - 80,
-      behavior: 'smooth',
-    });
+    window.scrollTo({ top: (success?.offsetTop ?? 0) - 80, behavior: 'smooth' });
   });
 
   copyBtn?.addEventListener('click', async () => {
@@ -779,9 +569,7 @@ const pkgLookupJson = JSON.stringify({
       await navigator.clipboard.writeText(ref);
       const original = copyBtn.textContent;
       copyBtn.textContent = 'Copied ✓';
-      setTimeout(() => {
-        copyBtn.textContent = original;
-      }, 2000);
+      setTimeout(() => { copyBtn.textContent = original; }, 2000);
     } catch {
       /* clipboard blocked */
     }
