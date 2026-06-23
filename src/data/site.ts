@@ -36,7 +36,7 @@ export const SITE = {
     { label: 'FAQ', href: '/faq' },
     { label: 'เกี่ยวกับปัน', href: '/about' },
     { label: 'ติดต่องาน', href: '/sponsor' },
-    { label: 'นัดคุยกับผม', href: '/intake-form', cta: true },
+    { label: 'จองคิวรับบริการ', href: '/intake-form', cta: true },
   ],
 } as const;
 
