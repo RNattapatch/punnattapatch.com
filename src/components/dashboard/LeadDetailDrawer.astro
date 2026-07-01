@@ -67,7 +67,7 @@ import InteractionLog from './InteractionLog.astro';
         </optgroup>
       </select>
       <div id="lead-reason-wrap" class="hidden mt-2">
-        <label class="label-text text-xs opacity-70" for="lead-reason">เหตุผล (จำเป็น)</label>
+        <label class="label-text text-xs opacity-70" for="lead-reason">เหตุผล (ใส่เพื่อวิเคราะห์ทีหลังได้)</label>
         <select id="lead-reason" class="select select-bordered select-sm w-full tap-44 mt-1">
           <option value="">— เลือกเหตุผล —</option>
           <option value="freebie_seeker">มาหลอกถามหวังของฟรี</option>
@@ -321,7 +321,17 @@ import InteractionLog from './InteractionLog.astro';
   statusSel.addEventListener('change', () => {
     const id = curLeadId(); if (!id) return;
     const v = statusSel.value;
-    if (v === 'lost' || v === 'unqualified') { syncReason(); return; } // wait for reason
+    if (v === 'lost' || v === 'unqualified') {
+      // Save the outcome IMMEDIATELY (reason is an optional refinement). Previously
+      // this returned early to wait for a reason, so picking Lost never persisted
+      // and the status looked stuck / reverted on refresh. Now Lost sticks on the
+      // first click like every other status; the reason picker still shows and, if
+      // already chosen, is sent along.
+      syncReason();
+      const r = (document.getElementById('lead-reason') as HTMLSelectElement).value;
+      void setLeadStatus(id, v, r || undefined);
+      return;
+    }
     void setLeadStatus(id, v);
   });
   document.getElementById('lead-reason')?.addEventListener('change', () => {
