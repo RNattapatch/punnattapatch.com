@@ -1,0 +1,380 @@
+---
+/**
+ * HomeIntakeForm — minimal lead capture for homepage (not full intake-form.astro)
+ *
+ * Usage:
+ *   <HomeIntakeForm formId="home-intake-1" />
+ *   <HomeIntakeForm formId="home-intake-2" />  (can place 2+ instances)
+ *
+ * Submits to same pipeline as intake-form.astro (n8n → Supabase fallback)
+ * Field subset: name, phone, line, company, serviceInterest, problems, consent
+ */
+
+interface Props {
+  formId: string;
+}
+
+const { formId } = Astro.props;
+
+const serviceOptions = [
+  { value: 'training', label: 'Training (AI Workshop)' },
+  { value: 'consult', label: 'Consulting (AI Transformation)' },
+  { value: 'ceo-advisory', label: 'CEO Advisory' },
+  { value: 'unsure', label: 'ยังไม่แน่ใจ' },
+];
+
+const painPointOptions = [
+  'ทีมทำ report ด้วยมือซ้ำๆ',
+  'เจ้าของแบกยอดขายเอง',
+  'ทีมทำงานไม่มีระบบ',
+  'ต้องการใช้ AI แต่ไม่รู้เริ่มจากไหน',
+];
+---
+
+<form
+  id={formId}
+  class="home-intake-form space-y-5 rounded-2xl border border-[#c9c2b2] bg-surface p-6 md:p-8"
+  novalidate
+>
+  {/* Hidden fields — webhook status + source tracking */}
+  <input type="hidden" name="source_page" value="homepage-inline" />
+  <input type="hidden" name="honeypot-name" value="" />
+  <input type="hidden" class="intake-problems" value="" />
+
+  {/* Name + Phone row */}
+  <div class="grid gap-4 md:grid-cols-2">
+    <div class="form-control">
+      <label for={`${formId}-name`} class="label">
+        <span class="label-text font-medium text-navy">ชื่อ-นามสกุล *</span>
+      </label>
+      <input
+        id={`${formId}-name`}
+        name="name"
+        type="text"
+        required
+        class="input input-bordered w-full text-sm"
+        placeholder="สมชาย ใจดี"
+      />
+    </div>
+
+    <div class="form-control">
+      <label for={`${formId}-phone`} class="label">
+        <span class="label-text font-medium text-navy">เบอร์โทร (081-234-5678) *</span>
+      </label>
+      <input
+        id={`${formId}-phone`}
+        name="phone"
+        type="tel"
+        required
+        class="input input-bordered w-full text-sm"
+        placeholder="0812345678"
+      />
+      <p id={`${formId}-phone-err`} class="mt-1 hidden text-xs font-medium text-error">
+        กรุณาใส่เบอร์โทรให้ถูก
+      </p>
+    </div>
+  </div>
+
+  {/* LINE ID (optional) */}
+  <div class="form-control">
+    <label for={`${formId}-line`} class="label">
+      <span class="label-text font-medium text-navy">LINE ID (optional)</span>
+    </label>
+    <input
+      id={`${formId}-line`}
+      name="line"
+      type="text"
+      class="input input-bordered w-full text-sm"
+      placeholder="@punnattapatch หรือ LINE ID"
+    />
+  </div>
+
+  {/* Company + Service Interest row */}
+  <div class="grid gap-4 md:grid-cols-2">
+    <div class="form-control">
+      <label for={`${formId}-company`} class="label">
+        <span class="label-text font-medium text-navy">ชื่อบริษัท *</span>
+      </label>
+      <input
+        id={`${formId}-company`}
+        name="company"
+        type="text"
+        required
+        class="input input-bordered w-full text-sm"
+        placeholder="บริษัท..."
+      />
+    </div>
+
+    <div class="form-control">
+      <label for={`${formId}-service`} class="label">
+        <span class="label-text font-medium text-navy">สนใจบริการไหน? *</span>
+      </label>
+      <select
+        id={`${formId}-service`}
+        name="serviceInterest"
+        required
+        class="select select-bordered w-full text-sm"
+      >
+        <option value="">เลือก...</option>
+        {serviceOptions.map((opt) => (
+          <option value={opt.value}>{opt.label}</option>
+        ))}
+      </select>
+    </div>
+  </div>
+
+  {/* Problems (checkboxes) */}
+  <div class="form-control">
+    <label class="label">
+      <span class="label-text font-medium text-navy">ปัญหาหลัก (เลือกได้หลายข้อ)</span>
+    </label>
+    <div class="space-y-2">
+      {painPointOptions.map((pain) => (
+        <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-base-content/10 p-3 transition hover:bg-sand/30">
+          <input
+            type="checkbox"
+            class="checkbox checkbox-sm mt-0.5 intake-problems-checkbox"
+            value={pain}
+            data-form-id={formId}
+          />
+          <span class="text-sm text-warm-ink/85">{pain}</span>
+        </label>
+      ))}
+    </div>
+  </div>
+
+  {/* Brief message */}
+  <div class="form-control">
+    <label for={`${formId}-msg`} class="label">
+      <span class="label-text font-medium text-navy">บอกปัญหาของคุณสั้นๆ (1-2 ประโยค)</span>
+    </label>
+    <textarea
+      id={`${formId}-msg`}
+      name="message"
+      rows="2"
+      class="textarea textarea-bordered w-full text-sm"
+      placeholder="ที่ปรึกษา AI อ่านเองแล้วตอบกลับ"
+    ></textarea>
+  </div>
+
+  {/* PDPA consent */}
+  <label class="flex cursor-pointer items-start gap-3">
+    <input type="checkbox" name="consent" required class="checkbox mt-0.5" />
+    <span class="text-xs text-warm-ink/75 leading-snug">
+      ยินยอมให้ Pun Nattapatch เก็บข้อมูลเพื่อตอบกลับและประเมินเคสเท่านั้น (ไม่ส่งต่อบุคคลที่สาม · PDPA) *
+    </span>
+  </label>
+
+  {/* Submit button */}
+  <button
+    type="submit"
+    class="btn w-full bg-coral text-white hover:opacity-90"
+  >
+    ส่งข้อมูล + นัดคุยผม
+  </button>
+
+  <p class="text-center text-xs text-warm-ink/60">
+    ผมอ่านเองทุกใบ · ตอบกลับใน 24 ชม.
+  </p>
+</form>
+
+<script define:vars={{ formId }}>
+  /**
+   * Minimal intake handler — scoped to single form instance
+   * Submits to same n8n/Supabase pipeline as full intake-form.astro
+   */
+
+  const form = document.getElementById(formId);
+  if (!form) throw new Error(`[HomeIntakeForm] form ${formId} not found`);
+
+  // Gather all checked problems via data-form-id scope
+  function captureProblems() {
+    const checkboxes = form.querySelectorAll(`.intake-problems-checkbox[data-form-id="${formId}"]`);
+    const selected = Array.from(checkboxes)
+      .filter((c) => (c as HTMLInputElement).checked)
+      .map((c) => (c as HTMLInputElement).value);
+    return selected;
+  }
+
+  // Generate reference token (matches intake-form.astro style)
+  function makeReference() {
+    const stamp = new Date()
+      .toISOString()
+      .replace(/[-:T.Z]/g, '')
+      .slice(0, 12);
+    const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+    return `PN-${stamp}-${rand}`;
+  }
+
+  // n8n webhook (primary)
+  const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
+
+  // Supabase fallback RPC
+  const SUPABASE_FALLBACK_RPC = 'https://yykocvhorgcgzaluuldn.supabase.co/rest/v1/rpc/submit_lead';
+  const SUPABASE_ANON_KEY =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5a29jdmhvcmdjZ3phbHV1bGRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjYwNTYsImV4cCI6MjA5NTgwMjA1Nn0.04ya1crnMRK6SgLfwhhxIp14DQ1n_ZkY5Fj-urTsv1E';
+
+  async function tryPost(url, payload, timeoutMs) {
+    const ctrl = new AbortController();
+    const kill = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: ctrl.signal,
+        keepalive: true,
+      });
+      clearTimeout(kill);
+      return res.ok;
+    } catch (err) {
+      clearTimeout(kill);
+      console.error(`[HomeIntakeForm ${formId}] post failed`, err);
+      return false;
+    }
+  }
+
+  async function postSupabaseLead(payload, timeoutMs) {
+    const ctrl = new AbortController();
+    const kill = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+      const flat = { ...payload, ...(payload._meta || {}), source_page: payload._meta?.path };
+      const res = await fetch(SUPABASE_FALLBACK_RPC, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ payload: flat }),
+        signal: ctrl.signal,
+        keepalive: true,
+      });
+      clearTimeout(kill);
+      return res.ok;
+    } catch (err) {
+      clearTimeout(kill);
+      console.error(`[HomeIntakeForm ${formId}] supabase fallback failed`, err);
+      return false;
+    }
+  }
+
+  async function postWithFallback(payload) {
+    const ok = await tryPost(N8N_WEBHOOK, payload, 8000);
+    if (ok) return 'sent-primary';
+
+    const fbOk = await postSupabaseLead(payload, 8000);
+    if (fbOk) return 'sent-fallback';
+
+    return 'failed';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+
+    // Honeypot check (ห้ามแตะ honeypot-name)
+    const honeypot = form.querySelector('input[name="honeypot-name"]');
+    if (honeypot && (honeypot as HTMLInputElement).value) {
+      console.warn(`[HomeIntakeForm ${formId}] honeypot triggered`);
+      return;
+    }
+
+    const formData = new FormData(form);
+    const problems = captureProblems();
+
+    const payload = {
+      name: formData.get('name') || '',
+      phone: formData.get('phone') || '',
+      line: formData.get('line') || '',
+      company: formData.get('company') || '',
+      serviceInterest: formData.get('serviceInterest') || '',
+      problems: problems.length > 0 ? problems : [],
+      message: formData.get('message') || '',
+      comment: '',
+      consent: formData.get('consent') ? 'yes' : 'no',
+      source: 'homepage-inline',
+      source_page: 'homepage-inline',
+      email: '', // not collected in this form
+      position: '', // not collected in this form
+      teamSize: '', // not collected in this form
+      revenue: '', // not collected in this form
+      timeline: '', // not collected in this form
+      budget: '', // not collected in this form
+      ai_source_note: '', // not collected in this form
+      _meta: {
+        reference: makeReference(),
+        submitted_at: new Date().toISOString(),
+        user_agent: navigator.userAgent,
+        referrer: document.referrer || null,
+        path: window.location.pathname,
+        form_id: formId,
+      },
+    };
+
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalLabel = submitBtn?.textContent || '';
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังส่ง...';
+    }
+
+    const status = await postWithFallback(payload);
+
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel;
+    }
+
+    if (status === 'failed') {
+      // Show inline error + keep form visible
+      const errorMsg = document.createElement('div');
+      errorMsg.className = 'mt-4 rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error';
+      errorMsg.innerHTML = `
+        <strong>⚠️ ขัดข้องชั่วคราว</strong><br/>
+        ข้อมูลของคุณถูกเก็บในเครื่องนี้ · กรุณาทักใน LINE OA (<a href="https://lin.ee/ioSnSUG" target="_blank" class="underline">line.me/pun</a>) แล้วบอกปัญหา
+      `;
+      form.after(errorMsg);
+      setTimeout(() => errorMsg.remove(), 8000);
+      return;
+    }
+
+    // Success — show inline message
+    const successMsg = document.createElement('div');
+    successMsg.className = 'mt-4 rounded-xl border border-success/40 bg-success/10 p-4 text-sm text-success text-center';
+    successMsg.innerHTML = `
+      <strong>✓ ส่งเรียบร้อย!</strong><br/>
+      <span class="text-xs mt-1 block">ทักใน LINE OA ส่ง Reference: <code>${payload._meta.reference}</code></span>
+    `;
+    form.replaceWith(successMsg);
+
+    // Auto-scroll to success message
+    successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+</script>
+
+<style>
+  .home-intake-form {
+    max-width: 100%;
+  }
+
+  /* Match design-system.md + index.astro theme vars */
+  .home-intake-form .label-text {
+    color: var(--color-navy, #072b4e);
+  }
+
+  .home-intake-form .input,
+  .home-intake-form .select,
+  .home-intake-form .textarea {
+    border-color: #c9c2b2;
+    background-color: white;
+  }
+
+  .home-intake-form .input:focus,
+  .home-intake-form .select:focus,
+  .home-intake-form .textarea:focus {
+    border-color: var(--color-coral, #dd4155);
+    outline: none;
+  }
+</style>

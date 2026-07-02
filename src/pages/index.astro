@@ -9,6 +9,7 @@ import Manifesto from '../components/Manifesto.astro';
 import WhichAI from '../components/WhichAI.astro';
 import AIWorkingPanel from '../components/AIWorkingPanel.astro';
 import Icon from '../components/Icon.astro';
+import HomeIntakeForm from '../components/HomeIntakeForm.astro';
 import { SITE } from '../data/site';
 import avatar from '../assets/pun-avatar.png';
 import ceoPhoto from '../assets/pun-ceo-1.jpg';
@@ -126,7 +127,7 @@ const diagnoseCards: Array<{
   {
     pain: 'สอน AI ไปแล้ว ตื่นเต้นได้ 2 อาทิตย์ แล้วทีม',
     highlight: 'ก็กลับไปทำแบบเดิม',
-    service: 'Package A · ฿54,900',
+    service: 'Package A · ฿69,900',
     oneLiner: 'Advance + ผมลงไปวางระบบกับทีม 2 วัน จนทีมใช้เป็นจริง ไม่ใช่เรียนแล้วลืม',
     href: '/services#both',
     accent: 'navy',
@@ -422,6 +423,19 @@ const socials = [
         >
           จองคิวบริการปรึกษาหรืออบรม →
         </a>
+      </div>
+
+      <!-- Inline Lead Capture — Location 1: After Services -->
+      <div class="mt-16">
+        <div class="mx-auto max-w-2xl text-center mb-6">
+          <h3 class="font-serif text-2xl font-semibold text-navy md:text-3xl">
+            เล่าธุรกิจให้ผมฟัง
+          </h3>
+          <p class="mt-2 text-warm-ink/75">
+            กรอกฟอร์มสั้นๆ ผมอ่านเองแล้วบอกว่าเหมาะ AI แทนไหนในธุรกิจของคุณ
+          </p>
+        </div>
+        <HomeIntakeForm formId="home-intake-services" />
       </div>
 
       <!-- Cross-department / Business OS — every wheel feeds into AI -->
@@ -723,7 +737,7 @@ const socials = [
             จองเลย เริ่มต้น Basic Foundation AI ฿29,900
           </p>
           <p class="mt-1 text-sm font-semibold text-coral">
-            Package A · ฿54,900 (Advance + Consult 2 วัน · คุ้มสุด)
+            Package A · ฿69,900 (Advance + Consult 2 วัน · คุ้มสุด)
           </p>
           <p class="mt-2 text-sm text-warm-ink/70">
             เลือก package แล้วกรอก 3 นาที ผมตอบกลับใน 24 ชม. พร้อม link นัดเวลา
@@ -968,6 +982,23 @@ const socials = [
           </a>
         ))}
       </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- 14b. INLINE LEAD CAPTURE — Location 2: Before footer CTA -->
+  <!-- ============================================================= -->
+  <section class="px-margin-page py-16 md:py-20">
+    <div class="mx-auto max-w-2xl">
+      <div class="text-center mb-8">
+        <h3 class="font-serif text-2xl font-semibold text-navy md:text-3xl">
+          ยังไม่แน่ใจ? เล่าปัญหาให้ผมก่อน
+        </h3>
+        <p class="mt-2 text-warm-ink/75">
+          ตอบแค่ 5 ข้อ ผมจะบอกไป step by step ว่าจะเริ่มยังไง
+        </p>
+      </div>
+      <HomeIntakeForm formId="home-intake-footer" />
     </div>
   </section>
 

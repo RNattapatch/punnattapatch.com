@@ -1,69 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Icon from '../components/Icon.astro';
-import FaqWork from '../components/FaqWork.astro';
-import { SITE, SERVICES } from '../data/site';
+import { SITE } from '../data/site';
 
-const title = 'บริการ — AI Transformation สำหรับ SME + CEO Advisory + AI Trust Content';
-const description =
-  'Basic Foundation AI for Business ฿29,900 · Advance AI & Business Automation ฿39,900 · Package A ฿54,900 (แนะนำ) · Consult ฿25,000/วัน · AI Consultant for CEO ฿35,000/วัน · AI Trust Content Cycle System ฿49,900. จับมือทำจริง ส่งระบบที่รันได้ ไม่ใช่สไลด์';
-
-const svcBySlug = (slug: string) => SERVICES.find((s) => s.slug === slug)!;
-const baht = (n: number) => '฿' + n.toLocaleString('en-US');
-
-// ===== ยุบเหลือ 3 ทาง: Training / Consult / ทั้งคู่ (2026-06-23) =====
-// ลูกค้าเลือก "เป้าหมาย" ไม่ใช่ "level" — ผมคัด level ให้หลัง intake
-// line art แทน emoji (DESIGN.md) · CEO แยกเป็น section เด่น
-const paths = [
-  {
-    key: 'training',
-    art: '/lineart/advance-workshop.png',
-    name: 'Training — ปั้นทีมให้ใช้ AI เป็น',
-    tagline: 'อยากให้ทีมใช้ AI เป็น ทำระบบเองได้',
-    forWho: 'องค์กรที่อยากให้พนักงานลงมือใช้ AI กับงานจริง',
-    levels: [svcBySlug('ai-workshop'), svcBySlug('ai-workshop-advance')],
-    note: 'ผมดูให้ว่าทีมคุณควรเริ่มที่ระดับไหนก่อน',
-    featured: false,
-    ribbon: '',
-  },
-  {
-    key: 'consult',
-    art: '/lineart/ceo-advisory.png',
-    name: 'Consult — คู่คิด วางให้',
-    tagline: 'ไม่มีเวลาเรียนเอง อยากมีคนวางโครง ตัดสินใจด้วย',
-    forWho: 'เจ้าของที่อยากได้คนเข้าใจ AI แทน แล้วแปลงเป็นผลลัพธ์',
-    levels: [svcBySlug('consult'), svcBySlug('consult-package')],
-    note: 'ผมดูให้ว่าคุณควรเริ่มแบบไหนก่อน',
-    featured: false,
-    ribbon: '',
-  },
-  {
-    key: 'both',
-    art: '/lineart/business-os.png',
-    name: 'ทั้งคู่ — วางระบบ + สอนทีม',
-    tagline: 'อยากได้ทั้งระบบที่รันได้ และทีมทำต่อเองเป็น',
-    forWho: 'อยากให้ผมลงไปวางระบบกับทีมจริง พร้อมปั้นให้ทำต่อเอง',
-    levels: [svcBySlug('package-a')],
-    note: 'Package A · Advance + Consult 2 วัน · คุ้มสุดในพอร์ต',
-    featured: true,
-    ribbon: 'แนะนำ',
-  },
-];
-
-// AI Consultant for CEO — บริการเด่น (แยกชูเดี่ยว ตาม Pun)
-const ceo = svcBySlug('ceo-advisory');
-// เฉพาะทาง (แยกจาก 3 ทางหลัก)
-const special = svcBySlug('trust-content-tiktok-workshop');
-
-// ===== Social proof — testimonial gallery (authority + trust) =====
-const testimonials = [
-  { src: '/testimonial/web/class-selfie.jpg', alt: 'ทีมพนักงานร่วม Workshop AI Agent กับปัน — ภาพหมู่หลังอบรม' },
-  { src: '/testimonial/web/chat-highway.jpg', alt: 'รีวิวจากลูกค้า — อาจารย์ปันสอนถูกใจทีมงานมาก ใช้ AI ได้ทั้งบริษัท' },
-  { src: '/testimonial/web/fb-learning-org.jpg', alt: 'โพสต์รีวิวการอบรม AI ในองค์กร — บรรยากาศ Workshop จริง' },
-  { src: '/testimonial/web/seminar-room.jpg', alt: 'บรรยากาศห้องสัมมนา AI Agent — ผู้เข้าร่วมเต็มห้อง' },
-  { src: '/testimonial/web/pun-consulting.jpg', alt: 'ปันให้คำปรึกษาและสอนการใช้ AI Agent กับทีมลูกค้า' },
-  { src: '/testimonial/web/client-gift.jpg', alt: 'ลูกค้านำของขวัญมาขอบคุณปันหลังใช้ระบบ AI ได้จริง' },
-];
+const title = 'บริการ — ปัน ณัฐพัชร์ | AI Agent สำหรับทีมขาย หลังบ้าน เทคนิค การตลาด';
+const description = 'เลือกตามทีมของคุณ — ทีมขาย หลังบ้าน เทคนิค การตลาด · หรือเอาโจทย์มาให้ผมจับมือทำจนระบบขึ้นจริง · ออกไปมีระบบที่รันได้ ไม่ใช่สไลด์';
 ---
 
 <BaseLayout
@@ -79,311 +19,626 @@ const testimonials = [
     ],
   }}
 >
-  <!-- ===== HEADER ===== -->
-  <section class="px-margin-page py-16 md:py-20">
-    <div class="mx-auto max-w-4xl">
-      <p class="text-xs font-semibold uppercase tracking-[0.15em] text-coral">บริการ</p>
-      <h1 class="mt-3 font-serif text-4xl font-semibold leading-tight text-navy md:text-5xl">
-        บริการ AI Transformation สำหรับธุรกิจคุณ
-      </h1>
-      <p class="mt-5 max-w-2xl text-lg text-warm-ink/75">
-        จับมือวางระบบ AI ให้ทีมใช้ได้จริง — ปูพื้นทั้งทีมจากศูนย์ ไปจนถึงคู่คิดส่วนตัวระดับผู้บริหาร
-      </p>
-    </div>
-  </section>
-
-  <!-- ===== 3 ทางหลัก: Training / Consult / ทั้งคู่ (ยุบ 2026-06-23) ===== -->
-  <section class="px-margin-page pb-12">
-    <div class="mx-auto max-w-6xl">
-      <h2 class="font-serif text-2xl font-semibold text-navy md:text-3xl">เลือกทางที่ใช่ — แล้วผมคัด level ให้</h2>
-      <p class="mt-2 max-w-2xl text-warm-ink/70">
-        ไม่ต้องเลือกแพ็กเกจเองให้ปวดหัว — บอกแค่ว่าอยากได้แบบไหน เล่าเรื่องธุรกิจของคุณให้ผมฟัง แล้วผมจะดูให้ว่าควรเริ่มที่ระดับไหน
-      </p>
-
-      <div class="mt-8 grid items-start gap-6 md:grid-cols-3">
-        {paths.map((p) => (
-          <div
-            id={p.key}
-            class:list={[
-              'relative flex h-full flex-col rounded-2xl bg-surface p-7 transition hover:-translate-y-0.5 hover:shadow-[3px_5px_0_rgba(30,27,22,0.06)]',
-              p.featured ? 'border-2 border-coral md:-mt-2 md:mb-2 paper-shadow' : 'border border-[#c9c2b2]',
-            ]}
-          >
-            {p.ribbon && (
-              <span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-coral px-4 py-1 text-xs font-semibold text-white shadow-sm">
-                ⭐ {p.ribbon}
-              </span>
-            )}
-            <img src={p.art} alt="" aria-hidden="true" loading="lazy" decoding="async" class="mx-auto mb-3 h-28 w-auto" />
-            <h3 class="font-serif text-xl font-semibold text-navy">{p.name}</h3>
-            <p class="mt-2 font-serif text-base font-medium leading-snug text-navy">{p.tagline}</p>
-            <p class="mt-2 text-sm leading-relaxed text-warm-ink/65">เหมาะกับ: {p.forWho}</p>
-
-            <div class="mt-5 space-y-2 border-t border-[#e7e0d2] pt-4">
-              {p.levels.map((lv) => {
-                const lvTitle = lv.slug === 'consult' ? 'AI Consult บริการที่ปรึกษาสำหรับองค์กร' : lv.title;
-                const lvPrice = lv.slug === 'consult' ? '฿25,000/วัน'
-                  : lv.slug === 'consult-package' ? 'รายเดือน — ติดต่อผมเพื่อประเมินก่อน'
-                  : baht(lv.priceThb);
-                return (
-                  <div class="flex items-baseline justify-between gap-3 text-sm">
-                    <span class="text-warm-ink/85">{lvTitle}</span>
-                    <span class="shrink-0 font-medium text-coral">{lvPrice}</span>
-                  </div>
-                );
-              })}
-            </div>
-
-            <p class="mt-4 flex flex-1 items-start gap-2 text-sm text-warm-ink/75">
-              <span class="mt-0.5 shrink-0 text-coral"><Icon name="check-circle" size={16} /></span>
-              <span>{p.note}</span>
-            </p>
-
-            <a
-              href={`/booking?path=${p.key}`}
-              class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-coral px-6 py-3.5 font-medium text-white transition hover:opacity-90"
-            >
-              จองคิวรับบริการ →
+  <!-- ===== HERO (human-first) ===== -->
+  <section class="px-margin-page py-14 md:py-20">
+    <div class="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[1.1fr_0.9fr]">
+      <div>
+        <h1 class="font-display text-5xl font-bold leading-[1.05] text-coral md:text-6xl">Service <span class="font-normal text-navy/25">|</span> <span class="text-navy">บริการของผม</span></h1>
+        <p class="mt-5 font-display text-3xl font-semibold leading-[1.15] text-navy md:text-4xl">
+          ให้ AI ทำงานแทนทีม<br />จน<span class="hand-underline">เจ้าของถอดตัวออกได้</span>
+        </p>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-warm-ink/80">
+          ผมช่วยได้ 3 ทาง — <strong class="text-navy">สอนทีมใช้ AI เป็น</strong> (Training) ·
+          <strong class="text-navy">เอาโจทย์มาให้ผมจับมือทำจนระบบขึ้นจริง</strong> (Consult) ·
+          หรือเป็น <strong class="text-navy">คู่คิด AI ส่วนตัวให้ผู้บริหาร</strong> (CEO)
+        </p>
+        <p class="mt-3 max-w-xl text-base leading-relaxed text-warm-ink/70">
+          AI เก่งเหมือนน้องฝึกงานที่รู้ทุกอย่างบนโลก แต่ไม่รู้จักบริษัทคุณ — ผมเข้าไปทำให้มันรู้จัก
+        </p>
+        <div class="mt-6 inline-flex items-start gap-2 rounded-xl border border-coral/30 bg-coral/[0.06] px-4 py-3">
+          <i data-lucide="package-check" class="mt-0.5 size-5 shrink-0 text-coral" aria-hidden="true"></i>
+          <p class="text-sm font-medium text-navy">หลังจบงาน ทีมคุณได้<span class="font-semibold">ระบบ AI Agent ที่ใช้ได้จริง</span>กลับไปใช้เลย ไม่ใช่ได้แค่สไลด์สอนกับความรู้</p>
+        </div>
+        <!-- quick-jump box: 3 บริการ → scroll ไปหมวดนั้น -->
+        <nav class="mt-7 rounded-2xl border border-[#c9c2b2] bg-surface/70 p-4" aria-label="ไปยังบริการ">
+          <p class="mb-2.5 text-xs font-semibold uppercase tracking-wide text-muted">บริการของผม — กดเพื่อไปดูเลย</p>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <a href="#doors" class="group flex items-center justify-between gap-2 rounded-xl border border-[#c9c2b2] bg-ivory px-3.5 py-2.5 text-sm font-medium text-navy transition hover:border-coral hover:text-coral">
+              <span>Training <span class="text-muted transition group-hover:text-coral/70">· ปั้นทีม</span></span>
+              <i data-lucide="arrow-down" class="size-4 shrink-0 text-coral" aria-hidden="true"></i>
+            </a>
+            <a href="#consult" class="group flex items-center justify-between gap-2 rounded-xl border border-[#c9c2b2] bg-ivory px-3.5 py-2.5 text-sm font-medium text-navy transition hover:border-coral hover:text-coral">
+              <span>Consult <span class="text-muted transition group-hover:text-coral/70">· คู่คิด</span></span>
+              <i data-lucide="arrow-down" class="size-4 shrink-0 text-coral" aria-hidden="true"></i>
+            </a>
+            <a href="#ceo" class="group flex items-center justify-between gap-2 rounded-xl border border-[#c9c2b2] bg-ivory px-3.5 py-2.5 text-sm font-medium text-navy transition hover:border-coral hover:text-coral">
+              <span>CEO Consult</span>
+              <i data-lucide="arrow-down" class="size-4 shrink-0 text-coral" aria-hidden="true"></i>
             </a>
           </div>
-        ))}
+          <a href="#start" class="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-coral px-6 py-3.5 font-medium text-white shadow-sm transition hover:opacity-90">
+            <i data-lucide="messages-square" class="size-5" aria-hidden="true"></i> ยังไม่แน่ใจว่าทางไหนใช่? คุยกับผมก่อน
+          </a>
+        </nav>
       </div>
 
-      <p class="mt-5 text-center text-xs text-muted">
-        ทุก package ชำระ 100% ก่อนเริ่มบริการ · อบรมหรือปรึกษาที่บริษัทของลูกค้า (On-site)
-      </p>
+      <!-- รูปคุณปันจริง -->
+      <figure class="relative">
+        <span class="tape" aria-hidden="true"></span>
+        <img src="/services/ceo/ceo3.jpg" alt="ปัน ณัฐพัชร์ — ที่ปรึกษา AI Agent สำหรับเจ้าของธุรกิจ SME" width="933" height="1400" loading="eager" decoding="async" class="aspect-[4/5] w-full rounded-2xl border border-[#c9c2b2] object-cover object-top paper-shadow" />
+      </figure>
     </div>
   </section>
 
-  <!-- ===== AI Consultant for CEO — บริการเด่น (navy band · ชูเดี่ยว) ===== -->
-  <section id="ceo-advisory" class="scroll-mt-24 px-margin-page pb-14">
+  <!-- ===== TRUST BAR ===== -->
+  <section class="border-y border-[#c9c2b2] bg-surface px-margin-page py-8" aria-label="ประสบการณ์ของปัน">
+    <div class="mx-auto grid max-w-6xl gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="flex flex-col gap-1">
+        <span class="font-display text-2xl font-semibold text-coral">ยอดขายแตะ 100 ล้าน</span>
+        <span class="text-sm leading-snug text-warm-ink/70">ทำธุรกิจจริง ไม่ได้สอนจากสไลด์อย่างเดียว</span>
+      </div>
+      <div class="flex flex-col gap-1">
+        <span class="font-display text-2xl font-semibold text-coral">งานขาย 5 ปี</span>
+        <span class="text-sm leading-snug text-warm-ink/70">เข้าใจทั้งเจ้าของ เซลล์ และดีลที่หล่นกลางทาง</span>
+      </div>
+      <div class="flex flex-col gap-1">
+        <span class="font-display text-2xl font-semibold text-coral">สัมภาษณ์เซลล์ 1,000+ คน</span>
+        <span class="text-sm leading-snug text-warm-ink/70">เห็น pattern ว่าทีมขายพังตรงไหนซ้ำๆ</span>
+      </div>
+      <div class="flex flex-col gap-1">
+        <span class="font-display text-2xl font-semibold text-coral">ใช้ AI Agent ทุกวัน</span>
+        <span class="text-sm leading-snug text-warm-ink/70">ระบบที่ทำให้ลูกค้า ผมใช้เองก่อนเสมอ</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PAIN CHECKLIST ===== -->
+  <section class="px-margin-page py-14 md:py-20" aria-label="ปัญหาที่เจ้าของเจอ">
     <div class="mx-auto max-w-6xl">
-      <div class="overflow-hidden rounded-2xl bg-navy px-7 py-10 text-ivory paper-shadow md:px-12 md:py-12">
-        <div class="grid items-center gap-8 md:grid-cols-[1.35fr_1fr]">
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.15em] text-coral-soft">สำหรับผู้บริหารโดยเฉพาะ</p>
-            <h2 class="mt-3 font-serif text-3xl font-semibold leading-snug md:text-4xl">{ceo.title}</h2>
-            <p class="mt-1 text-sm text-ivory/70">{ceo.subtitle}</p>
-            <p class="mt-4 max-w-xl font-serif text-lg leading-snug text-ivory/90">{ceo.hook}</p>
-            <ul class="mt-5 space-y-2 text-sm text-ivory/80">
-              {ceo.outcome.map((o) => (
-                <li class="flex items-start gap-2">
-                  <span class="mt-0.5 shrink-0 text-coral-soft"><Icon name="check-circle" size={16} /></span>
-                  <span>{o}</span>
-                </li>
-              ))}
-            </ul>
-            <div class="mt-6 flex flex-wrap items-center gap-5">
-              <span class="font-serif text-2xl font-semibold text-coral-soft">{ceo.priceLabel}</span>
-              <a href="/booking?path=ceo-advisory" class="inline-flex items-center rounded-xl bg-coral px-6 py-3 font-medium text-white transition hover:opacity-90">
-                จองคิวรับบริการ →
-              </a>
-            </div>
-          </div>
-          <img src="/lineart/advance-hands.png" alt="มือคนกับมือ AI สัมผัสกัน — คู่คิด AI ของผู้บริหาร" loading="lazy" decoding="async" class="hidden w-full rounded-xl md:block" />
-        </div>
+      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-coral">ปัญหาที่เจ้าของ SME เจอทุกวัน</p>
+      <h2 class="mt-3 max-w-3xl font-display text-3xl font-semibold leading-snug text-navy md:text-4xl">ถ้าคุณกำลังเป็นแบบนี้อยู่ ธุรกิจอาจไม่ได้ขาดคน <span class="hand-underline">แต่ขาดระบบที่ทำงานแทนงานซ้ำๆ</span></h2>
+
+      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <article class="editorial-card flex flex-col gap-2 p-6">
+          <i data-lucide="circle-alert" class="size-6 text-coral" aria-hidden="true"></i>
+          <h3 class="font-display text-lg font-semibold text-navy">ตอบแชทเองทุกดึก</h3>
+          <p class="text-sm leading-relaxed text-warm-ink/70">LINE เด้ง IG เด้ง Facebook เด้ง ลูกค้าถามเรื่องเดิมซ้ำๆ แต่สุดท้ายคนที่ต้องตอบคือเจ้าของ</p>
+        </article>
+        <article class="editorial-card flex flex-col gap-2 p-6">
+          <i data-lucide="circle-alert" class="size-6 text-coral" aria-hidden="true"></i>
+          <h3 class="font-display text-lg font-semibold text-navy">ดีลหล่นเพราะ follow-up ไม่ทัน</h3>
+          <p class="text-sm leading-relaxed text-warm-ink/70">วันนี้จดใน Excel พรุ่งนี้เตือนใน LINE อีกวันลืมไปแล้ว ดีลไม่ได้หายเพราะลูกค้าไม่สนใจ แต่หายเพราะไม่มีระบบตามต่อ</p>
+        </article>
+        <article class="editorial-card flex flex-col gap-2 p-6">
+          <i data-lucide="circle-alert" class="size-6 text-coral" aria-hidden="true"></i>
+          <h3 class="font-display text-lg font-semibold text-navy">เซลล์เสียเวลา 2-4 ชม./วัน กับเอกสาร</h3>
+          <p class="text-sm leading-relaxed text-warm-ink/70">เซลล์ควรได้คุยกับลูกค้าเพิ่ม แต่กลับต้องสรุปแชท ทำใบเสนอราคา อัปเดตไฟล์ ส่งรายงาน</p>
+        </article>
+        <article class="editorial-card flex flex-col gap-2 p-6">
+          <i data-lucide="circle-alert" class="size-6 text-coral" aria-hidden="true"></i>
+          <h3 class="font-display text-lg font-semibold text-navy">เซลล์ลาออก ความรู้ก็หายไปด้วย</h3>
+          <p class="text-sm leading-relaxed text-warm-ink/70">วิธีคุยกับลูกค้า เหตุผลที่ลูกค้าซื้อ objection ที่เจอบ่อย ข้อมูลพวกนี้อยู่ในหัวคนเก่งไม่กี่คน</p>
+        </article>
+        <article class="editorial-card flex flex-col gap-2 p-6">
+          <i data-lucide="circle-alert" class="size-6 text-coral" aria-hidden="true"></i>
+          <h3 class="font-display text-lg font-semibold text-navy">เปิดวันหยุดไม่ได้</h3>
+          <p class="text-sm leading-relaxed text-warm-ink/70">พนักงานรอคำตอบ ลูกค้ารอราคา เซลล์รออนุมัติ สุดท้ายธุรกิจเดินได้ก็ต่อเมื่อเจ้าของว่างตอบ</p>
+        </article>
+        <article class="editorial-card flex flex-col gap-2 p-6">
+          <i data-lucide="circle-alert" class="size-6 text-coral" aria-hidden="true"></i>
+          <h3 class="font-display text-lg font-semibold text-navy">ลงทุน AI ไปแล้ว แต่ตอบไม่ได้ว่าคุ้มไหม</h3>
+          <p class="text-sm leading-relaxed text-warm-ink/70">ทีมบอกว่า "ใช้อยู่ครับพี่" แต่ไม่มีตัวเลขว่าเวลาลดลงกี่ชั่วโมง ดีลตามทันขึ้นไหม</p>
+        </article>
       </div>
     </div>
   </section>
 
-  <!-- ===== FAQ — คำถามที่พบบ่อยเกี่ยวกับการทำงานกับผม (ใต้ CEO) ===== -->
-  <FaqWork />
-
-  <!-- ===== เฉพาะทาง — AI Trust Content + ตัวช่วยเลือก ===== -->
-  <section class="bg-sand px-margin-page py-14 md:py-16">
-    <div class="mx-auto max-w-5xl">
-      <h2 class="font-serif text-2xl font-semibold text-navy md:text-3xl">บริการเฉพาะทาง</h2>
-      <p class="mt-2 text-warm-ink/70">สำหรับเป้าหมายเฉพาะ — ไม่ใช่เส้นหลัก แต่เป็นระบบที่ทำให้ลูกค้าทักมาเอง</p>
-
-      <div class="mt-8 grid gap-6 md:grid-cols-2">
-        <!-- AI Trust Content Cycle System -->
-        <div id="trust-content" class="scroll-mt-24 flex flex-col rounded-2xl border border-[#c9c2b2] bg-surface p-7">
-          <span class="inline-flex w-fit items-center rounded-full border border-navy/20 bg-ivory px-3 py-1 text-xs font-semibold text-navy">
-            {special.subtitle}
-          </span>
-          <img src="/lineart/tiktok-funnel.png" alt="ทีมถ่ายคอนเทนต์โดยมี AI เป็นผู้ช่วยในกองถ่าย" loading="lazy" decoding="async" class="mx-auto mt-4 h-40 w-auto" />
-          <h3 class="mt-2 font-serif text-2xl font-semibold leading-snug text-navy">{special.title}</h3>
-          <p class="mt-3 font-serif text-base font-medium leading-snug text-navy">{special.hook}</p>
-          <ul class="mt-4 flex-1 space-y-2 text-sm text-warm-ink/75">
-            {special.outcome.map((o) => (
-              <li class="flex items-start gap-2">
-                <span class="mt-0.5 shrink-0 text-coral"><Icon name="check-circle" size={16} /></span>
-                <span>{o}</span>
-              </li>
-            ))}
-          </ul>
-          <div class="mt-5 flex items-baseline gap-2">
-            <span class="font-serif text-2xl font-semibold text-coral">{baht(special.priceThb)}</span>
-            <span class="text-sm text-muted line-through">{baht(59900)}</span>
-          </div>
-          <a href="/booking?path=trust-content" class="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-coral px-6 py-3.5 font-medium text-white transition hover:opacity-90">
-            จองคิวรับบริการ →
-          </a>
-        </div>
-
-        <!-- ตัวช่วยเลือก (ยังไม่แน่ใจ → intake) -->
-        <div class="flex flex-col justify-center rounded-2xl border border-dashed border-[#c9c2b2] bg-surface/60 p-7">
-          <h3 class="font-serif text-xl font-semibold text-navy">ยังไม่แน่ใจว่าทางไหนใช่?</h3>
-          <p class="mt-3 text-sm leading-relaxed text-warm-ink/70">
-            เล่าธุรกิจให้ผมฟังสั้นๆ ผมอ่านเองแล้วบอกตรงๆ ว่าควรเริ่มจาก Training, Consult หรือทั้งคู่ — และระดับไหนที่คุ้มกับคุณที่สุด
-          </p>
-          <a href="/intake-form" class="mt-5 inline-flex w-fit items-center rounded-xl border border-coral px-6 py-3 font-medium text-coral transition hover:bg-coral hover:text-white">
-            ให้ผมช่วยดูให้ →
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== PAYMENT TERMS ===== -->
-  <section class="border-y border-base-content/10 bg-base-200/30 px-4 py-16 lg:px-8">
-    <div class="mx-auto max-w-3xl">
-      <h2 class="font-display text-2xl font-bold tracking-tight">เงื่อนไขร่วมกันทุกแพ็กเกจ</h2>
-      <dl class="mt-8 space-y-5">
-        <div class="flex flex-col gap-1 border-b border-base-content/10 pb-4 sm:flex-row sm:items-baseline sm:justify-between">
-          <dt class="font-semibold">ชำระเงิน</dt>
-          <dd class="text-base-content/80">ชำระก่อนเริ่มการรับบริการ 100%</dd>
-        </div>
-        <div class="flex flex-col gap-1 border-b border-base-content/10 pb-4 sm:flex-row sm:items-baseline sm:justify-between">
-          <dt class="font-semibold">AI ที่ใช้ในการ Training &amp; Consult</dt>
-          <dd class="text-base-content/80">Claude AI (Chat/Code) · Gemini (Chat/Gems) + NotebookLM · ChatGPT (Chat/Codex)</dd>
-        </div>
-        <div class="flex flex-col gap-1 border-b border-base-content/10 pb-4 sm:flex-row sm:items-baseline sm:justify-between">
-          <dt class="font-semibold">การส่งมอบงาน</dt>
-          <dd class="text-base-content/80">ทีมของลูกค้าดูแลระบบต่อเองได้ — มีคู่มือและการอบรมให้</dd>
-        </div>
-        <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-          <dt class="font-semibold">ค่าเดินทาง (on-site ต่างจังหวัด)</dt>
-          <dd class="text-base-content/80">ไม่มีค่าเดินทางในระยะไม่เกิน 150 กม. (วัดจากที่พักของผู้ให้บริการ) · เขตนอกพื้นที่คำนวณแยกตามจริง แจ้งก่อนเริ่มการให้บริการ</dd>
-        </div>
-      </dl>
-    </div>
-  </section>
-
-  <!-- ===== ROI COMPARISON — Public vs In-house ===== -->
-  <section class="border-b border-base-content/10 px-4 py-20 lg:px-8">
+  <!-- ===== THE SHIFT ===== -->
+  <section class="border-y border-[#c9c2b2] bg-sand px-margin-page py-14 md:py-20" aria-label="หลักคิดมาก่อนเครื่องมือ">
     <div class="mx-auto max-w-4xl">
-      <p class="text-xs font-bold uppercase tracking-widest text-secondary">ทำไมต้องเรียนกับผม</p>
-      <h2 class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
-        ทำไมผมไม่จัดคอร์สเปิดทั่วไป
+      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-coral">หลักคิดมาก่อนเครื่องมือ</p>
+      <h2 class="mt-3 font-display text-3xl font-semibold leading-snug text-navy md:text-4xl">ใครๆ ก็ใช้ AI ได้ แต่ถ้า AI ไม่รู้จักบริษัทคุณ <span class="hand-underline">มันก็เป็นแค่น้องฝึกงานที่ตอบเก่ง</span></h2>
+      <div class="mt-5 space-y-4 text-base leading-relaxed text-warm-ink/80">
+        <p>ทุกวันนี้ใครๆ ก็พิมพ์คำสั่งให้ AI ช่วยเขียน ช่วยสรุป ช่วยคิดได้ครับ เครื่องมือใหม่ออกแทบทุกเดือน</p>
+        <p>แต่คำถามที่สำคัญกว่า "ใช้ตัวไหนดี" คือ "เราจะทำให้ AI เข้าใจธุรกิจเราได้ยังไง" เพราะ AI เหมือนน้องฝึกงานที่รู้ทุกอย่างบนโลก แต่ไม่รู้จักบริษัทคุณ</p>
+        <p>ผมเลยไม่เริ่มจากเครื่องมือก่อน ผมเริ่มจากหลักคิดมาก่อนเครื่องมือเสมอ</p>
+      </div>
+      <div class="mt-8 grid gap-4 sm:grid-cols-2">
+        <div class="editorial-card flex flex-col gap-1 p-5">
+          <span class="font-display text-lg font-semibold text-coral">หลักคิด</span>
+          <span class="text-sm leading-relaxed text-warm-ink/75">AI ควรช่วยงานไหน และงานไหนไม่ควรให้ AI ทำ</span>
+        </div>
+        <div class="editorial-card flex flex-col gap-1 p-5">
+          <span class="font-display text-lg font-semibold text-coral">Context</span>
+          <span class="text-sm leading-relaxed text-warm-ink/75">ให้ AI รู้จักสินค้า ลูกค้า วิธีขาย และกติกาของบริษัท</span>
+        </div>
+        <div class="editorial-card flex flex-col gap-1 p-5">
+          <span class="font-display text-lg font-semibold text-coral">Data</span>
+          <span class="text-sm leading-relaxed text-warm-ink/75">จัดข้อมูลให้ใช้ได้จริง ไม่ใช่กองอยู่ในแชท ไฟล์ และหัวคน</span>
+        </div>
+        <div class="editorial-card flex flex-col gap-1 p-5">
+          <span class="font-display text-lg font-semibold text-coral">การวางระบบ</span>
+          <span class="text-sm leading-relaxed text-warm-ink/75">ทำให้ AI ทำงานซ้ำได้เอง ไม่ต้องรอคนเปิดมาใช้ทุกครั้ง</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== POD STRIP ===== -->
+  <section class="border-y border-[#c9c2b2] bg-sand px-margin-page py-6">
+    <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-8 gap-y-3 text-center text-sm md:text-base">
+      <span class="inline-flex items-center gap-2 font-medium text-navy"><i data-lucide="hammer" class="size-4 text-coral" aria-hidden="true"></i> ออกไปมีระบบจริง</span>
+      <span class="hidden text-muted md:inline">·</span>
+      <span class="inline-flex items-center gap-2 font-medium text-navy"><i data-lucide="home" class="size-4 text-coral" aria-hidden="true"></i> ข้อมูลไหลเข้าบ้านเดียว</span>
+      <span class="hidden text-muted md:inline">·</span>
+      <span class="inline-flex items-center gap-2 font-medium text-navy"><i data-lucide="handshake" class="size-4 text-coral" aria-hidden="true"></i> จับมือทำทุกคน on-site</span>
+    </div>
+  </section>
+
+  <!-- ===== DOOR 1: Training ===== -->
+  <section id="doors" class="scroll-mt-20 px-margin-page py-14 md:py-20">
+    <div class="mx-auto max-w-6xl">
+      <h2 class="font-display text-4xl font-bold leading-tight text-navy md:text-5xl">ทางที่ 1 : <span class="text-coral">Training</span> อบรมทีมให้ใช้ AI Agent เป็น</h2>
+      <p class="mt-3 font-display text-2xl font-semibold text-navy/75">เลือกทีมที่เจ็บที่สุดก่อน</p>
+      <p class="mt-3 max-w-2xl text-base leading-relaxed text-warm-ink/80"><strong class="text-navy">ผมเข้าไปอบรมที่บริษัทคุณ 1 วันต่อสายงาน</strong> แล้วพาทีมลงมือทำ AI Agent ตัวแรกกับงานจริงของตัวเองในวันนั้น</p>
+
+      <!-- ปูพื้น -->
+      <div class="mt-8 flex flex-col gap-4 rounded-2xl bg-navy px-7 py-6 text-ivory md:flex-row md:items-center md:justify-between">
+        <div>
+          <h3 class="font-display text-2xl font-semibold text-coral-soft">Basic AI Foundation For Business</h3>
+          <p class="mt-0.5 text-xs font-semibold uppercase tracking-wide text-ivory/60">ปูพื้นฐาน AI ให้องค์กร</p>
+          <p class="mt-1.5 font-display text-xl font-semibold text-ivory">เห็นทั้งบริษัทในวันเดียว</p>
+          <p class="mt-1 text-sm text-ivory/75">สำหรับเจ้าของ + ทุกทีม ที่ยังไม่เคยวาง AI อย่างเป็นระบบ</p>
+        </div>
+        <div class="flex shrink-0 flex-col items-start gap-3 md:items-end">
+          <div class="flex items-baseline gap-2">
+            <span class="font-display text-2xl font-semibold text-coral-soft tabular-nums">฿29,900</span>
+            <span class="text-sm text-ivory/50 line-through tabular-nums">฿39,900</span>
+          </div>
+          <div class="flex gap-2">
+            <a href="#start" class="inline-flex items-center justify-center gap-1.5 rounded-xl bg-coral px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90"><i data-lucide="calendar-check" class="size-4" aria-hidden="true"></i> จองบริการ</a>
+            <button type="button" data-line-service="Basic AI Foundation For Business (ปูพื้นฐาน AI)" class="line-btn inline-flex items-center justify-center gap-1.5 rounded-xl border border-ivory/40 px-4 py-2.5 text-sm font-medium text-ivory transition hover:bg-ivory hover:text-navy"><i data-lucide="message-circle" class="size-4" aria-hidden="true"></i> ทัก LINE</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 tracks -->
+      <div class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-2">
+        <article class="editorial-card flex flex-col p-6 transition hover:-translate-y-0.5 hover:paper-shadow">
+          <div class="flex items-center gap-2 text-coral"><i data-lucide="trending-up" class="size-5" aria-hidden="true"></i><span class="text-xs font-semibold uppercase tracking-wide">ทีมขาย</span></div>
+          <h3 class="mt-3 font-display text-2xl font-semibold leading-snug text-coral">Advance AI Agent For Sale Team</h3>
+          <p class="mt-1 text-xs text-muted">จับมือสร้าง AI Agent สำหรับฝ่ายขาย</p>
+          <p class="mt-2 font-display text-xl font-semibold leading-snug text-navy">ดีลไม่หล่นจากมือ เซลล์มีเวลาไปหาลูกค้าใหม่</p>
+          <p class="mt-3 text-sm font-medium text-warm-ink/80">ออกไปมี:</p>
+          <ul class="mt-1 space-y-1.5 text-sm text-warm-ink/70">
+            <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 size-4 shrink-0 text-coral" aria-hidden="true"></i> ระบบ follow-up อัตโนมัติ + ตัวช่วยออกใบเสนอราคา</li>
+            <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 size-4 shrink-0 text-coral" aria-hidden="true"></i> AI ซ้อมเจรจา + prompt library งานขาย</li>
+          </ul>
+          <div class="mt-5 flex items-baseline gap-2 border-t border-[#e7e0d2] pt-4">
+            <span class="font-display text-2xl font-semibold text-coral tabular-nums">฿39,900</span>
+            <span class="text-sm text-muted line-through tabular-nums">฿49,900</span>
+          </div>
+          <div class="mt-4 flex gap-2">
+            <a href="#start" class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-coral px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90"><i data-lucide="calendar-check" class="size-4" aria-hidden="true"></i> จองบริการ</a>
+            <button type="button" data-line-service="Advance AI Agent For Sale Team (ทีมขาย)" class="line-btn inline-flex items-center justify-center gap-1.5 rounded-xl border border-navy/25 px-4 py-2.5 text-sm font-medium text-navy transition hover:bg-navy hover:text-ivory"><i data-lucide="message-circle" class="size-4" aria-hidden="true"></i> ทัก LINE</button>
+          </div>
+        </article>
+
+        <article class="editorial-card flex flex-col p-6 transition hover:-translate-y-0.5 hover:paper-shadow">
+          <div class="flex items-center gap-2 text-coral"><i data-lucide="file-stack" class="size-5" aria-hidden="true"></i><span class="text-xs font-semibold uppercase tracking-wide">ทีมหลังบ้าน</span></div>
+          <h3 class="mt-3 font-display text-2xl font-semibold leading-snug text-coral">Advance AI Agent For Back Office</h3>
+          <p class="mt-1 text-xs text-muted">จับมือสร้าง AI Agent สำหรับงานออฟฟิศ</p>
+          <p class="mt-2 font-display text-xl font-semibold leading-snug text-navy">งานเอกสารเดินเอง คนแตะน้อยลง</p>
+          <p class="mt-3 text-sm font-medium text-warm-ink/80">ออกไปมี:</p>
+          <ul class="mt-1 space-y-1.5 text-sm text-warm-ink/70">
+            <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 size-4 shrink-0 text-coral" aria-hidden="true"></i> ระบบสรุป/ออกเอกสารอัตโนมัติ</li>
+            <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 size-4 shrink-0 text-coral" aria-hidden="true"></i> report ที่เคยใช้ครึ่งวัน เหลือ 10 นาที</li>
+          </ul>
+          <div class="mt-5 flex items-baseline gap-2 border-t border-[#e7e0d2] pt-4">
+            <span class="font-display text-2xl font-semibold text-coral tabular-nums">฿39,900</span>
+            <span class="text-sm text-muted line-through tabular-nums">฿49,900</span>
+          </div>
+          <div class="mt-4 flex gap-2">
+            <a href="#start" class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-coral px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90"><i data-lucide="calendar-check" class="size-4" aria-hidden="true"></i> จองบริการ</a>
+            <button type="button" data-line-service="Advance AI Agent For Back Office (ทีมหลังบ้าน)" class="line-btn inline-flex items-center justify-center gap-1.5 rounded-xl border border-navy/25 px-4 py-2.5 text-sm font-medium text-navy transition hover:bg-navy hover:text-ivory"><i data-lucide="message-circle" class="size-4" aria-hidden="true"></i> ทัก LINE</button>
+          </div>
+        </article>
+
+        <article class="editorial-card flex flex-col p-6 transition hover:-translate-y-0.5 hover:paper-shadow">
+          <div class="flex items-center gap-2 text-coral"><i data-lucide="wrench" class="size-5" aria-hidden="true"></i><span class="text-xs font-semibold uppercase tracking-wide">ทีมเทคนิค</span></div>
+          <h3 class="mt-3 font-display text-2xl font-semibold leading-snug text-coral">Advance AI Agent For Engineering Team</h3>
+          <p class="mt-1 text-xs text-muted">จับมือสร้าง AI Agent สำหรับฝ่ายวิศวกรรม</p>
+          <p class="mt-2 font-display text-xl font-semibold leading-snug text-navy">จากหน้างานถึงใบเสนอราคา ไม่ตกหล่น</p>
+          <p class="mt-3 text-sm font-medium text-warm-ink/80">ออกไปมี:</p>
+          <ul class="mt-1 space-y-1.5 text-sm text-warm-ink/70">
+            <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 size-4 shrink-0 text-coral" aria-hidden="true"></i> ช่างอัดเสียงหน้างาน → service report อัตโนมัติ</li>
+            <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 size-4 shrink-0 text-coral" aria-hidden="true"></i> ออฟฟิศร่าง spec + ใบเสนอราคาจากข้อมูลหน้างาน</li>
+          </ul>
+          <div class="mt-5 flex items-baseline gap-2 border-t border-[#e7e0d2] pt-4">
+            <span class="font-display text-2xl font-semibold text-coral tabular-nums">฿39,900</span>
+            <span class="text-sm text-muted line-through tabular-nums">฿49,900</span>
+          </div>
+          <div class="mt-4 flex gap-2">
+            <a href="#start" class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-coral px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90"><i data-lucide="calendar-check" class="size-4" aria-hidden="true"></i> จองบริการ</a>
+            <button type="button" data-line-service="Advance AI Agent For Engineering Team (ทีมเทคนิค)" class="line-btn inline-flex items-center justify-center gap-1.5 rounded-xl border border-navy/25 px-4 py-2.5 text-sm font-medium text-navy transition hover:bg-navy hover:text-ivory"><i data-lucide="message-circle" class="size-4" aria-hidden="true"></i> ทัก LINE</button>
+          </div>
+        </article>
+
+        <article class="editorial-card flex flex-col p-6 transition hover:-translate-y-0.5 hover:paper-shadow">
+          <div class="flex items-center gap-2 text-coral"><i data-lucide="clapperboard" class="size-5" aria-hidden="true"></i><span class="text-xs font-semibold uppercase tracking-wide">ทีมการตลาด</span></div>
+          <h3 class="mt-3 font-display text-2xl font-semibold leading-snug text-coral">Advance AI Agent For Marketing</h3>
+          <p class="mt-1 text-xs text-muted">สร้าง Full Funnel Marketing ด้วย AI Agent</p>
+          <p class="mt-2 font-display text-xl font-semibold leading-snug text-navy">ไม่ต้องนั่งคิดว่าวันนี้โพสต์อะไร</p>
+          <p class="mt-3 text-sm font-medium text-warm-ink/80">ออกไปมี:</p>
+          <ul class="mt-1 space-y-1.5 text-sm text-warm-ink/70">
+            <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 size-4 shrink-0 text-coral" aria-hidden="true"></i> ระบบโรงงานคอนเทนต์</li>
+            <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 size-4 shrink-0 text-coral" aria-hidden="true"></i> เดินเองได้ ไม่ต้องจ้าง agency</li>
+          </ul>
+          <div class="mt-5 flex items-baseline gap-2 border-t border-[#e7e0d2] pt-4">
+            <span class="font-display text-2xl font-semibold text-coral tabular-nums">฿39,900</span>
+            <span class="text-sm text-muted line-through tabular-nums">฿49,900</span>
+          </div>
+          <div class="mt-4 flex gap-2">
+            <a href="#start" class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-coral px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90"><i data-lucide="calendar-check" class="size-4" aria-hidden="true"></i> จองบริการ</a>
+            <button type="button" data-line-service="Advance AI Agent For Marketing (ทีมการตลาด)" class="line-btn inline-flex items-center justify-center gap-1.5 rounded-xl border border-navy/25 px-4 py-2.5 text-sm font-medium text-navy transition hover:bg-navy hover:text-ivory"><i data-lucide="message-circle" class="size-4" aria-hidden="true"></i> ทัก LINE</button>
+          </div>
+        </article>
+      </div>
+
+      <!-- Package A -->
+      <div class="relative mt-6 overflow-hidden rounded-2xl border-2 border-coral bg-surface p-7 paper-shadow">
+        <span class="absolute right-6 top-6 rounded-full bg-coral px-3 py-1 text-xs font-semibold text-white">⭐ แนะนำ · คุ้มสุด</span>
+        <div class="flex items-center gap-2.5 text-coral"><i data-lucide="layers" class="size-7" aria-hidden="true"></i><h3 class="font-display text-3xl font-semibold text-coral">Package A</h3></div>
+        <p class="mt-3 font-display text-2xl font-semibold leading-snug text-navy">อบรมเสร็จไม่ทิ้งคุณไว้กับสไลด์</p>
+        <p class="mt-2 max-w-2xl text-sm text-warm-ink/70">track ไหนก็ได้ + Consult 2 วัน</p>
+        <div class="mt-5 flex flex-wrap items-baseline gap-3 border-t border-[#e7e0d2] pt-4">
+          <span class="font-display text-3xl font-semibold text-coral tabular-nums">฿69,900</span>
+          <span class="text-base text-muted line-through tabular-nums">฿89,900</span>
+          <span class="rounded-full bg-coral/10 px-3 py-1 text-xs font-medium text-coral">ประหยัด ฿20,000</span>
+        </div>
+        <div class="mt-5 flex flex-wrap gap-2">
+          <a href="#start" class="inline-flex items-center justify-center gap-1.5 rounded-xl bg-coral px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"><i data-lucide="calendar-check" class="size-4" aria-hidden="true"></i> จองบริการ</a>
+          <button type="button" data-line-service="Package A (Advance + Consult 2 วัน)" class="line-btn inline-flex items-center justify-center gap-1.5 rounded-xl border border-navy/25 px-5 py-2.5 text-sm font-medium text-navy transition hover:bg-navy hover:text-ivory"><i data-lucide="message-circle" class="size-4" aria-hidden="true"></i> ทัก LINE</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DOOR 2: Consult ===== -->
+  <section id="consult" class="scroll-mt-20 bg-sand px-margin-page py-14 md:py-20">
+    <div class="mx-auto max-w-6xl">
+      <h2 class="font-display text-4xl font-bold leading-tight text-navy md:text-5xl">ทางที่ 2 : <span class="text-coral">Consult</span> คู่คิดวางระบบ AI Agent</h2>
+      <p class="mt-3 font-display text-2xl font-semibold text-navy/75">เอาโจทย์ของคุณมา ผมหาทางออกให้</p>
+      <p class="mt-3 max-w-2xl text-base leading-relaxed text-warm-ink/80"><strong class="text-navy">เอาโจทย์จริงของธุรกิจคุณมาให้ผมวางระบบให้เป็นขั้นบันได</strong></p>
+
+      <div class="mt-8 grid gap-5 md:grid-cols-3">
+        <article class="editorial-card flex flex-col p-6">
+          <span class="font-display text-4xl font-semibold text-coral/30">01</span>
+          <h3 class="mt-2 font-display text-2xl font-semibold leading-snug text-coral">AI Blueprint Day</h3>
+          <p class="mt-0.5 font-display text-xl font-semibold text-navy">วันวางแผน</p>
+          <p class="mt-2 text-sm text-warm-ink/75">ผมเข้าไปดูหน้างาน 1 วัน → คุณได้ <strong class="text-navy">เอกสารแผนระบบ AI</strong></p>
+          <div class="mt-auto flex items-baseline gap-2 border-t border-[#e7e0d2] pt-4">
+            <span class="font-display text-2xl font-semibold text-coral tabular-nums">฿39,900</span>
+          </div>
+          <div class="mt-4 flex gap-2">
+            <a href="#start" class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-coral px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90"><i data-lucide="calendar-check" class="size-4" aria-hidden="true"></i> จองบริการ</a>
+            <button type="button" data-line-service="AI Blueprint Day (วันวางแผน)" class="line-btn inline-flex items-center justify-center gap-1.5 rounded-xl border border-navy/25 px-4 py-2.5 text-sm font-medium text-navy transition hover:bg-navy hover:text-ivory"><i data-lucide="message-circle" class="size-4" aria-hidden="true"></i> ทัก LINE</button>
+          </div>
+        </article>
+
+        <article class="editorial-card flex flex-col p-6">
+          <span class="font-display text-4xl font-semibold text-coral/30">02</span>
+          <h3 class="mt-2 font-display text-2xl font-semibold leading-snug text-coral">AI System Build</h3>
+          <p class="mt-0.5 font-display text-xl font-semibold text-navy">จับมือทำ</p>
+          <p class="mt-2 text-sm text-warm-ink/75">ทำ workflow ตามแผนจนระบบขึ้นจริง</p>
+          <div class="mt-auto flex items-baseline gap-2 border-t border-[#e7e0d2] pt-4">
+            <span class="font-display text-2xl font-semibold text-coral tabular-nums">฿69,000</span>
+          </div>
+          <div class="mt-4 flex gap-2">
+            <a href="#start" class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-coral px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90"><i data-lucide="calendar-check" class="size-4" aria-hidden="true"></i> จองบริการ</a>
+            <button type="button" data-line-service="AI System Build (จับมือทำ)" class="line-btn inline-flex items-center justify-center gap-1.5 rounded-xl border border-navy/25 px-4 py-2.5 text-sm font-medium text-navy transition hover:bg-navy hover:text-ivory"><i data-lucide="message-circle" class="size-4" aria-hidden="true"></i> ทัก LINE</button>
+          </div>
+        </article>
+
+        <article class="editorial-card flex flex-col p-6">
+          <span class="font-display text-4xl font-semibold text-coral/30">03</span>
+          <h3 class="mt-2 font-display text-2xl font-semibold leading-snug text-coral">Monthly Consultant</h3>
+          <p class="mt-0.5 font-display text-xl font-semibold text-navy">ดูแลต่อเนื่อง</p>
+          <p class="mt-2 text-sm text-warm-ink/75">พาทีมคุณเก่ง AI ขึ้นทุกเดือน</p>
+          <div class="mt-auto flex items-baseline gap-2 border-t border-[#e7e0d2] pt-4">
+            <span class="font-display text-2xl font-semibold text-coral tabular-nums">฿35,000–85,000</span>
+            <span class="text-sm text-muted">/เดือน</span>
+          </div>
+          <div class="mt-4 flex gap-2">
+            <a href="#start" class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-coral px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90"><i data-lucide="calendar-check" class="size-4" aria-hidden="true"></i> จองบริการ</a>
+            <button type="button" data-line-service="Monthly AI Agent Consultant (ดูแลต่อเนื่อง)" class="line-btn inline-flex items-center justify-center gap-1.5 rounded-xl border border-navy/25 px-4 py-2.5 text-sm font-medium text-navy transition hover:bg-navy hover:text-ivory"><i data-lucide="message-circle" class="size-4" aria-hidden="true"></i> ทัก LINE</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DOOR 3: CEO ===== -->
+  <section id="ceo" class="scroll-mt-20 px-margin-page py-14">
+    <div class="mx-auto max-w-6xl">
+      <div class="grid items-center gap-8 rounded-2xl bg-navy px-7 py-10 text-ivory paper-shadow md:grid-cols-[1.3fr_1fr] md:px-12">
+        <div>
+          <h2 class="font-display text-4xl font-bold leading-tight md:text-5xl">ทางที่ 3 : <span class="text-coral-soft">CEO Advisory</span> คู่คิด AI ส่วนตัว</h2>
+          <p class="mt-3 font-display text-2xl font-semibold text-ivory/80">คู่คิด AI ส่วนตัวของผู้บริหาร</p>
+          <p class="mt-4 max-w-xl text-lg leading-snug text-ivory/90">CEO ที่ไม่มีเวลาเรียน AI เอง — <strong class="text-white">ผมเป็นคู่คิด 1-on-1</strong> ที่คุณคุยลงลึกได้ก่อนตัดสินใจ</p>
+          <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+            <span class="font-display text-2xl font-semibold text-coral-soft tabular-nums">฿49,000<span class="text-base font-medium text-ivory/60">/วัน</span></span>
+            <span class="text-ivory/30">·</span>
+            <span class="font-display text-2xl font-semibold text-coral-soft tabular-nums">฿65,000<span class="text-base font-medium text-ivory/60">/เดือน</span></span>
+          </div>
+          <div class="mt-5 flex flex-wrap gap-2">
+            <a href="#start" class="inline-flex items-center justify-center gap-1.5 rounded-xl bg-coral px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"><i data-lucide="calendar-check" class="size-4" aria-hidden="true"></i> จองบริการ</a>
+            <button type="button" data-line-service="AI Agent Consultant For CEO" class="line-btn inline-flex items-center justify-center gap-1.5 rounded-xl border border-ivory/40 px-5 py-2.5 text-sm font-medium text-ivory transition hover:bg-ivory hover:text-navy"><i data-lucide="message-circle" class="size-4" aria-hidden="true"></i> ทัก LINE</button>
+          </div>
+        </div>
+        <figure class="relative hidden md:block">
+          <img src="/services/ceo/ceo1.jpg" alt="ปัน ณัฐพัชร์ — คู่คิด AI สำหรับ CEO" width="933" height="1400" loading="lazy" decoding="async" class="aspect-square w-full rounded-xl border border-ivory/15 object-cover object-top" />
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="px-margin-page py-14 md:py-20" aria-label="ขั้นตอนการทำงาน">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-coral">ทำงานกันยังไง</p>
+      <h2 class="mt-3 font-display text-3xl font-semibold text-navy md:text-4xl">จากทักมาคุย จนทีมคุณใช้ระบบต่อเองได้</h2>
+      <div class="mt-8 grid gap-5 md:grid-cols-4">
+        <article class="editorial-card flex flex-col p-6">
+          <span class="font-display text-4xl font-semibold text-coral/30">01</span>
+          <h3 class="mt-2 font-display text-lg font-semibold text-navy">เล่าธุรกิจให้ผมฟัง</h3>
+          <p class="mt-2 text-sm leading-relaxed text-warm-ink/70">คุณกรอกฟอร์มหรือทัก LINE มาเล่าว่าธุรกิจขายอะไร ทีมขายทำงานยังไง</p>
+        </article>
+        <article class="editorial-card flex flex-col p-6">
+          <span class="font-display text-4xl font-semibold text-coral/30">02</span>
+          <h3 class="mt-2 font-display text-lg font-semibold text-navy">ผมอ่านเอง แล้วคุยกัน 30 นาที</h3>
+          <p class="mt-2 text-sm leading-relaxed text-warm-ink/70">ผมอ่านเอง ไม่ใช่บอทคัดคนให้ จากนั้นเราคุยกันเพื่อดูว่า fit ไหม</p>
+        </article>
+        <article class="editorial-card flex flex-col p-6">
+          <span class="font-display text-4xl font-semibold text-coral/30">03</span>
+          <h3 class="mt-2 font-display text-lg font-semibold text-navy">จับมือทำ on-site</h3>
+          <p class="mt-2 text-sm leading-relaxed text-warm-ink/70">ผมไม่ได้ส่งไฟล์ให้แล้วจบ เราจะดูหน้างานจริง คุยกับทีมจริง</p>
+        </article>
+        <article class="editorial-card flex flex-col p-6">
+          <span class="font-display text-4xl font-semibold text-coral/30">04</span>
+          <h3 class="mt-2 font-display text-lg font-semibold text-navy">ส่งมอบให้ทีม run เองได้</h3>
+          <p class="mt-2 text-sm leading-relaxed text-warm-ink/70">เป้าหมายคือทีมมีคู่มือ เข้าใจ และดูแลระบบต่อเองได้</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WHY ME ===== -->
+  <section class="border-y border-[#c9c2b2] bg-sand px-margin-page py-14 md:py-20" aria-label="ทำไมต้องเป็นปัน">
+    <div class="mx-auto grid max-w-6xl items-start gap-10 md:grid-cols-[1.15fr_0.85fr]">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-coral">ทำไมต้องเป็นผม</p>
+        <h2 class="mt-3 max-w-3xl font-display text-3xl font-semibold leading-snug text-navy md:text-4xl">ผมไม่ได้มาจากฝั่งสอนเครื่องมืออย่างเดียว <span class="hand-underline">ผมมาจากฝั่งที่ต้องทำยอดจริง</span></h2>
+        <div class="mt-5 space-y-4 text-base leading-relaxed text-warm-ink/80">
+          <p>ผมเป็นเจ้าของธุรกิจจริง เคยปั้นยอดขายแตะ 100 ล้าน ผ่านงานขายมา 5 ปี และสัมภาษณ์เซลล์มากกว่า 1,000 คน</p>
+          <p>อีกบทบาทหนึ่งของผมคือ master recruiter ในธุรกิจครอบครัว ผมสัมภาษณ์คนมา 100+ คนหลายตำแหน่ง เลยรู้ว่าการแก้ปัญหาด้วย "จ้างเพิ่ม" ไม่ได้ง่ายเสมอไป</p>
+          <p>ทุกวันนี้ผมใช้ Claude Code และ n8n ทำงานเองทุกวัน Agent ที่ผมทำให้ลูกค้า ผมใช้เองก่อนเสมอ</p>
+        </div>
+      </div>
+      <figure class="rounded-2xl border-l-4 border-coral bg-surface p-6 paper-shadow">
+        <i data-lucide="quote" class="size-7 text-coral/40" aria-hidden="true"></i>
+        <blockquote class="mt-2 font-display text-xl font-medium leading-snug text-navy">ปันคุยง่าย เข้าใจสิ่งที่ CEO ต้องการ และหาทางออกให้ได้</blockquote>
+        <figcaption class="mt-3 text-sm text-muted">เสียงจากลูกค้า (ปิดดีลจริง)</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ===== WINNING ZONE ===== -->
+  <section class="border-y border-[#c9c2b2] bg-surface px-margin-page py-14 md:py-20">
+    <div class="mx-auto max-w-4xl">
+      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-coral">ก่อนคุณจ่ายเงินให้ใคร</p>
+      <h2 class="mt-3 font-display text-3xl font-semibold leading-snug text-navy md:text-4xl">
+        ใครๆ ก็สั่ง AI สร้างแอปได้ — <span class="hand-underline">แต่นั่นแหละจุดเริ่มของปัญหา</span>
       </h2>
-      <p class="mt-3 max-w-2xl text-base-content/75">
-        ลูกค้าของผมต้องได้มากกว่าที่จ่ายมาเสมอ ไม่ใช่แค่ได้ฟังบรรยาย
+      <p class="mt-4 max-w-2xl text-warm-ink/75">
+        เดี๋ยวนี้มีคอร์สบอกว่า "ไม่ต้องมีพื้นฐาน สั่ง AI สร้างเว็บได้เลย" — สั่งได้จริง แต่ถ้าไม่เข้าใจ <strong class="text-navy">ระบบข้อมูล · ความปลอดภัย · ภาพรวมธุรกิจ</strong> สุดท้ายได้ webapp ที่ไม่มีใครกล้าใช้
       </p>
 
-      <div class="mt-10 overflow-x-auto rounded-2xl border border-base-content/15">
+      <div class="mt-8 overflow-hidden rounded-2xl muted-border">
         <table class="w-full text-sm md:text-base">
           <thead>
-            <tr class="border-b border-base-content/15">
-              <th class="px-4 py-4 text-left font-medium text-base-content/65 md:px-6"></th>
-              <th class="px-4 py-4 text-center font-semibold text-base-content/75 md:px-6">
-                คอร์สทั่วไป
-              </th>
-              <th class="bg-secondary/10 px-4 py-4 text-center font-bold text-secondary md:px-6">
-                เรียนกับผม (In-house)
-              </th>
+            <tr class="border-b border-[#c9c2b2]">
+              <th class="px-4 py-4 text-left font-medium text-muted md:px-6"></th>
+              <th class="px-4 py-4 text-center font-semibold text-warm-ink/70 md:px-6">คอร์สสอน "สั่ง AI สร้างของ"</th>
+              <th class="bg-coral/[0.07] px-4 py-4 text-center font-bold text-coral md:px-6">จับมือทำกับผม</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-base-content/10">
+          <tbody class="divide-y divide-[#e7e0d2]">
             <tr>
-              <td class="px-4 py-4 font-medium md:px-6">รูปแบบ</td>
-              <td class="px-4 py-4 text-center text-base-content/75 md:px-6">พูดเร็ว ข้ามเร็ว ตามไม่ทันก็ช่างมัน</td>
-              <td class="bg-secondary/[0.04] px-4 py-4 text-center text-base-content md:px-6">ไม่ปล่อยกลับบ้านถ้ายังไม่เข้าใจ</td>
+              <td class="px-4 py-4 font-medium md:px-6">ออกไปได้อะไร</td>
+              <td class="px-4 py-4 text-center text-warm-ink/70 md:px-6">ของที่สั่งสร้าง (ใช้ได้บ้าง ไม่ได้บ้าง)</td>
+              <td class="bg-coral/[0.03] px-4 py-4 text-center md:px-6">ระบบที่ออกแบบให้ใช้ได้ทั้งองค์กร</td>
             </tr>
             <tr>
-              <td class="px-4 py-4 font-medium md:px-6">Workshop</td>
-              <td class="px-4 py-4 text-center text-base-content/75 md:px-6">ดูสไลด์แล้วจบ</td>
-              <td class="bg-secondary/[0.04] px-4 py-4 text-center text-base-content md:px-6">จับมือทำทุกขั้นตอน</td>
+              <td class="px-4 py-4 font-medium md:px-6">ระบบข้อมูล</td>
+              <td class="px-4 py-4 text-center text-warm-ink/70 md:px-6">ต่างคนต่างสร้าง กระจัดกระจาย</td>
+              <td class="bg-coral/[0.03] px-4 py-4 text-center md:px-6">ไหลเข้าบ้านเดียว ต่อยอดได้</td>
             </tr>
             <tr>
-              <td class="px-4 py-4 font-medium md:px-6">กลับไปแล้ว</td>
-              <td class="px-4 py-4 text-center text-base-content/75 md:px-6">ทำเองไม่ได้</td>
-              <td class="bg-secondary/[0.04] px-4 py-4 text-center text-base-content md:px-6">พนักงานใช้งานได้จริงทันที</td>
+              <td class="px-4 py-4 font-medium md:px-6">ความปลอดภัย</td>
+              <td class="px-4 py-4 text-center text-warm-ink/70 md:px-6">ไม่ได้พูดถึง</td>
+              <td class="bg-coral/[0.03] px-4 py-4 text-center md:px-6">ออกแบบให้ปลอดภัยตั้งแต่ต้น</td>
             </tr>
             <tr>
-              <td class="px-4 py-4 font-medium md:px-6">ค่า Software</td>
-              <td class="px-4 py-4 text-center text-base-content/75 md:px-6">จ่ายรายเดือนไปเรื่อยๆ</td>
-              <td class="bg-secondary/[0.04] px-4 py-4 text-center text-base-content md:px-6">เขียน App ใช้เองได้เลย</td>
-            </tr>
-            <tr>
-              <td class="px-4 py-4 font-medium md:px-6">ทีมงาน</td>
-              <td class="px-4 py-4 text-center text-base-content/75 md:px-6">ท่องสเปคไปขอส่วนลด</td>
-              <td class="bg-secondary/[0.04] px-4 py-4 text-center text-base-content md:px-6">คุยกับลูกค้าได้ลึก เข้าใจ pain จริงๆ</td>
+              <td class="px-4 py-4 font-medium md:px-6">คนสอน</td>
+              <td class="px-4 py-4 text-center text-warm-ink/70 md:px-6">สอนวิธีใช้ tool</td>
+              <td class="bg-coral/[0.03] px-4 py-4 text-center md:px-6">เจ้าของที่ปั้นยอดขาย 100 ล้าน</td>
             </tr>
           </tbody>
         </table>
       </div>
-
-      <div class="mt-8 rounded-2xl border border-secondary/30 bg-secondary/[0.06] p-8 text-center">
-        <p class="font-display text-xl font-bold leading-tight md:text-2xl">
-          จบ Workshop แล้ว ทีมคุณต้องเอาไปใช้งานได้จริง
-        </p>
-        <p class="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-base-content/75">
-          ผมไม่ได้มาสอนแค่ให้ฟังแล้วจบ ทุกคนที่เข้า Workshop ต้องลงมือทำจริงในห้อง
-          กลับไปวันรุ่งขึ้นเปิดเครื่องมือที่สร้างไว้ใช้งานได้เลย ไม่ต้องรอใคร
-        </p>
-      </div>
     </div>
   </section>
 
-  <!-- ===== SOCIAL PROOF — Testimonials ===== -->
+  <!-- ===== SOCIAL PROOF (รูปจริง) ===== -->
   <section class="bg-sand px-margin-page py-14 md:py-20">
     <div class="mx-auto max-w-6xl">
-      <p class="text-xs font-semibold uppercase tracking-[0.15em] text-coral">เสียงจากลูกค้า</p>
-      <h2 class="mt-3 font-serif text-2xl font-semibold leading-tight text-navy md:text-3xl">
-        ทีมที่ผมเข้าไปวางระบบให้ — ใช้งานได้จริง
-      </h2>
-      <p class="mt-2 max-w-2xl text-warm-ink/70">
-        รีวิวและบรรยากาศจริงจากองค์กรที่ผมจับมือทำ — ไม่ใช่สไลด์ แต่เป็นผลลัพธ์ที่ทีมรันต่อเองได้
-      </p>
+      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-coral">เสียงจากลูกค้า</p>
+      <h2 class="mt-3 font-display text-3xl font-semibold leading-tight text-navy md:text-4xl">ทีมที่ผมเข้าไปวางระบบให้ — ใช้งานได้จริง</h2>
+      <p class="mt-2 max-w-2xl text-warm-ink/70">บรรยากาศจริงจากองค์กรที่ผมจับมือทำ ไม่ใช่สไลด์</p>
 
-      <div class="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3">
-        {testimonials.map((t) => (
-          <figure class="overflow-hidden rounded-2xl border border-[#c9c2b2] bg-surface p-2 paper-shadow transition hover:-translate-y-0.5">
-            <img
-              src={t.src}
-              alt={t.alt}
-              class="aspect-square w-full rounded-xl object-cover"
-              loading="lazy"
-              decoding="async"
-            />
-          </figure>
-        ))}
+      <h3 class="mt-8 flex items-center gap-2 font-display text-lg font-semibold text-navy"><i data-lucide="message-square-quote" class="size-5 text-coral" aria-hidden="true"></i> รีวิวจากแชตลูกค้า</h3>
+      <div class="mt-4 columns-2 gap-3 sm:columns-3 lg:columns-4">
+        <img src="/services/chat/chat-01.jpg" alt="รีวิวจากลูกค้า" loading="lazy" decoding="async" class="mb-3 w-full break-inside-avoid rounded-xl border border-[#c9c2b2] bg-white paper-shadow" />
+        <img src="/services/chat/chat-02.jpg" alt="รีวิวจากลูกค้า" loading="lazy" decoding="async" class="mb-3 w-full break-inside-avoid rounded-xl border border-[#c9c2b2] bg-white paper-shadow" />
+        <img src="/services/chat/chat-03.jpg" alt="รีวิวจากลูกค้า" loading="lazy" decoding="async" class="mb-3 w-full break-inside-avoid rounded-xl border border-[#c9c2b2] bg-white paper-shadow" />
+        <img src="/services/chat/chat-04.jpg" alt="รีวิวจากลูกค้า" loading="lazy" decoding="async" class="mb-3 w-full break-inside-avoid rounded-xl border border-[#c9c2b2] bg-white paper-shadow" />
+        <img src="/services/chat/chat-05.jpg" alt="รีวิวจากลูกค้า" loading="lazy" decoding="async" class="mb-3 w-full break-inside-avoid rounded-xl border border-[#c9c2b2] bg-white paper-shadow" />
+        <img src="/services/chat/chat-06.jpg" alt="รีวิวจากลูกค้า" loading="lazy" decoding="async" class="mb-3 w-full break-inside-avoid rounded-xl border border-[#c9c2b2] bg-white paper-shadow" />
+        <img src="/services/chat/chat-07.jpg" alt="รีวิวจากลูกค้า" loading="lazy" decoding="async" class="mb-3 w-full break-inside-avoid rounded-xl border border-[#c9c2b2] bg-white paper-shadow" />
+      </div>
+
+      <h3 class="mt-10 flex items-center gap-2 font-display text-lg font-semibold text-navy"><i data-lucide="camera" class="size-5 text-coral" aria-hidden="true"></i> บรรยากาศหน้างานจริง</h3>
+      <div class="mt-4 columns-2 gap-4 md:columns-3">
+        <img src="/services/onsite/onsite-01.jpg" alt="ปันจับมือทำ AI Agent กับทีมลูกค้า" loading="lazy" decoding="async" class="mb-4 w-full break-inside-avoid rounded-2xl border border-[#c9c2b2] paper-shadow" />
+        <img src="/services/onsite/onsite-02.jpg" alt="อบรมทีมลูกค้า" loading="lazy" decoding="async" class="mb-4 w-full break-inside-avoid rounded-2xl border border-[#c9c2b2] paper-shadow" />
+        <img src="/services/onsite/onsite-03.jpg" alt="workshop หน้างาน" loading="lazy" decoding="async" class="mb-4 w-full break-inside-avoid rounded-2xl border border-[#c9c2b2] paper-shadow" />
+        <img src="/services/onsite/onsite-04.jpg" alt="ปันวางระบบ AI" loading="lazy" decoding="async" class="mb-4 w-full break-inside-avoid rounded-2xl border border-[#c9c2b2] paper-shadow" />
+        <img src="/services/onsite/onsite-05.jpg" alt="ทีมลูกค้าทำ AI Agent" loading="lazy" decoding="async" class="mb-4 w-full break-inside-avoid rounded-2xl border border-[#c9c2b2] paper-shadow" />
+        <img src="/services/onsite/onsite-06.jpg" alt="ปันให้คำปรึกษา" loading="lazy" decoding="async" class="mb-4 w-full break-inside-avoid rounded-2xl border border-[#c9c2b2] paper-shadow" />
       </div>
     </div>
   </section>
 
-  <!-- ===== CTA ===== -->
-  <section class="px-4 py-20 lg:px-8">
-    <div class="mx-auto max-w-4xl rounded-3xl bg-primary px-6 py-12 text-primary-content md:px-12">
-      <h2 class="font-display text-2xl font-bold leading-tight md:text-3xl">
-        ไม่แน่ใจว่าเริ่มจากแพ็กเกจไหน?
-      </h2>
-      <p class="mt-4 max-w-2xl text-primary-content/80">
-        ตอบแบบประเมิน 3 นาที เล่าข้อมูลธุรกิจของคุณ ผมตอบกลับภายใน 2 วันทำการว่าเคสคุณตรงกับแพ็กเกจไหนที่สุด
-      </p>
-      <div class="mt-7 flex flex-wrap gap-4">
-        <a
-          href="/intake-form"
-          class="btn btn-lg bg-secondary text-secondary-content shadow-lg shadow-secondary/30 hover:bg-secondary/90"
-        >
-          ประเมินความพร้อมกับผม — ผมดูให้ว่าเริ่มจากไหน
-        </a>
-        <a
-          href={SITE.social.line}
-          rel="noopener"
-          target="_blank"
-          class="btn btn-lg btn-outline text-primary-content hover:bg-primary-content hover:text-primary"
-        >
-          ทักมาคุยใน LINE OA
-        </a>
-      </div>
-      <div class="mt-4 inline-flex items-start gap-2 rounded-lg bg-black/25 px-3 py-2 text-xs text-primary-content max-w-md">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 flex-shrink-0 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
-        <span>ผมคุยเอง ไม่ได้ใช้ AI ตอบครับ :)</span>
+  <!-- ===== WHO IT'S FOR ===== -->
+  <section class="px-margin-page py-14 md:py-20" aria-label="เหมาะกับใคร">
+    <div class="mx-auto max-w-5xl">
+      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-coral">ตรงไปตรงมา</p>
+      <h2 class="mt-3 font-display text-3xl font-semibold text-navy md:text-4xl">ผมไม่ได้เหมาะกับทุกคน</h2>
+      <p class="mt-2 max-w-2xl text-warm-ink/70">บอกก่อนดีกว่าเสียเวลาทั้งคู่</p>
+
+      <div class="mt-8 grid gap-5 md:grid-cols-2">
+        <div class="editorial-card p-7">
+          <div class="flex items-center gap-2"><i data-lucide="circle-check" class="size-5 text-coral" aria-hidden="true"></i><span class="font-display text-lg font-semibold text-navy">เหมาะกับคุณถ้า</span></div>
+          <ul class="mt-4 space-y-3 text-sm leading-relaxed text-warm-ink/80">
+            <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 size-4 shrink-0 text-coral" aria-hidden="true"></i> คุณเป็นเจ้าของ SME รายได้ประมาณ 30-200 ล้านต่อปี</li>
+            <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 size-4 shrink-0 text-coral" aria-hidden="true"></i> คุณมีทีมขายประมาณ 5-20 คน</li>
+            <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 size-4 shrink-0 text-coral" aria-hidden="true"></i> คุณอยากได้ระบบที่ทีม run เองได้</li>
+            <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 size-4 shrink-0 text-coral" aria-hidden="true"></i> คุณพร้อมลงมือจริง</li>
+            <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 size-4 shrink-0 text-coral" aria-hidden="true"></i> คุณเข้าใจว่าชำระ 100% ก่อนเริ่ม</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl border border-dashed border-[#c9c2b2] bg-surface/60 p-7">
+          <div class="flex items-center gap-2"><i data-lucide="circle-slash" class="size-5 text-muted" aria-hidden="true"></i><span class="font-display text-lg font-semibold text-warm-ink/70">ยังไม่ใช่ตอนนี้ ถ้า</span></div>
+          <ul class="mt-4 space-y-3 text-sm leading-relaxed text-warm-ink/65">
+            <li class="flex gap-2"><i data-lucide="minus" class="mt-0.5 size-4 shrink-0 text-muted" aria-hidden="true"></i> คุณมองหาคอร์สราคาถูก</li>
+            <li class="flex gap-2"><i data-lucide="minus" class="mt-0.5 size-4 shrink-0 text-muted" aria-hidden="true"></i> คุณอยากจ้าง dev มาดูแลระบบแทน</li>
+            <li class="flex gap-2"><i data-lucide="minus" class="mt-0.5 size-4 shrink-0 text-muted" aria-hidden="true"></i> บริษัทคุณเป็น enterprise</li>
+            <li class="flex gap-2"><i data-lucide="minus" class="mt-0.5 size-4 shrink-0 text-muted" aria-hidden="true"></i> มองหาสัญญายอดโต 10 เท่า</li>
+            <li class="flex gap-2"><i data-lucide="minus" class="mt-0.5 size-4 shrink-0 text-muted" aria-hidden="true"></i> ยังไม่พร้อมให้เวลา ข้อมูล เปลี่ยนวิธีทำงาน</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="border-t border-[#c9c2b2] bg-sand px-margin-page py-14 md:py-20" aria-label="คำถามที่พบบ่อย">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-coral">คำถามที่พบบ่อย</p>
+      <h2 class="mt-3 font-display text-3xl font-semibold text-navy md:text-4xl">ก่อนตัดสินใจ</h2>
+      <div class="mt-8 space-y-3">
+        <details class="editorial-card group p-5">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-3 font-display text-lg font-semibold text-navy">ใช้ ChatGPT อยู่แล้ว ทำไมต้องจ้างปัน?<i data-lucide="chevron-down" class="size-5 shrink-0 text-coral transition-transform group-open:rotate-180" aria-hidden="true"></i></summary>
+          <p class="mt-3 text-sm leading-relaxed text-warm-ink/75">ChatGPT เป็นเครื่องมือที่คนต้องเปิดมาใช้เอง แต่สิ่งที่ผมทำคือระบบที่ช่วยงานซ้ำๆ ได้ต่อเนื่อง โดยไม่ต้องรอให้เจ้าของมานั่งพิมพ์เองทุกครั้ง</p>
+        </details>
+        <details class="editorial-card group p-5">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-3 font-display text-lg font-semibold text-navy">ราคาสูงไป คอร์ส ฿2,890 ก็มี<i data-lucide="chevron-down" class="size-5 shrink-0 text-coral transition-transform group-open:rotate-180" aria-hidden="true"></i></summary>
+          <p class="mt-3 text-sm leading-relaxed text-warm-ink/75">คนละขอบเขตครับ คอร์สสอนให้ 1 คนใช้เครื่องมือ แต่ผมเข้าไปดูงานจริงของทั้งทีม วางระบบกับข้อมูลจริง และจับมือทำจนทีม run เองได้</p>
+        </details>
+        <details class="editorial-card group p-5">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-3 font-display text-lg font-semibold text-navy">จะรู้ได้ไงว่าไม่โดนหลอก?<i data-lucide="chevron-down" class="size-5 shrink-0 text-coral transition-transform group-open:rotate-180" aria-hidden="true"></i></summary>
+          <p class="mt-3 text-sm leading-relaxed text-warm-ink/75">ดูที่ผมทำ ไม่ใช่ที่ผมพูดครับ ผมเป็นเจ้าของธุรกิจจริง ใช้ Agent ในงานตัวเองทุกวัน และสิ่งที่เอาไปทำให้ลูกค้า ผมต้องใช้เองก่อนเสมอ</p>
+        </details>
+        <details class="editorial-card group p-5">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-3 font-display text-lg font-semibold text-navy">อยากลองทำเองก่อนได้ไหม?<i data-lucide="chevron-down" class="size-5 shrink-0 text-coral transition-transform group-open:rotate-180" aria-hidden="true"></i></summary>
+          <p class="mt-3 text-sm leading-relaxed text-warm-ink/75">ได้เลยครับ ผมไม่เร่ง ถ้าอยากเริ่มเอง ลองใช้ Claude คู่กับ n8n แล้วเลือกงานซ้ำๆ 1 งานมาทำให้วัดผลได้ใน 30 วัน</p>
+        </details>
+        <details class="editorial-card group p-5">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-3 font-display text-lg font-semibold text-navy">จบแล้วทีมทำต่อไม่ได้จะทำยังไง?<i data-lucide="chevron-down" class="size-5 shrink-0 text-coral transition-transform group-open:rotate-180" aria-hidden="true"></i></summary>
+          <p class="mt-3 text-sm leading-relaxed text-warm-ink/75">ตอนส่งมอบจะมีคู่มือ อบรม handover และวางวิธีดูแลพื้นฐาน เป้าหมายคือทีมคุณต้อง run เองได้ ไม่ใช่ผูกติดกับผม</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== START / FORM ===== -->
+  <section id="start" class="scroll-mt-20 px-margin-page py-16 md:py-20">
+    <div class="mx-auto max-w-3xl">
+      <div class="rounded-3xl bg-navy px-6 py-10 text-ivory md:px-10">
+        <h2 class="font-display text-2xl font-semibold leading-tight md:text-3xl">ยังไม่แน่ใจว่าทางไหนใช่? เล่าธุรกิจให้ผมฟัง</h2>
+        <p class="mt-4 max-w-xl text-ivory/80">กรอกแบบประเมินสั้นๆ ผมอ่านเองทุกเคส แล้วบอกตรงๆ ว่าควรเริ่มจากทางไหน</p>
+        <div class="mt-5 flex flex-wrap items-center gap-3">
+          <a href="https://line.me/R/ti/p/@punnattapatch" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-xl border border-ivory/40 px-5 py-3 font-medium text-ivory transition hover:bg-ivory hover:text-navy">
+            <i data-lucide="message-circle" class="size-5" aria-hidden="true"></i> หรือทักมาคุยใน LINE เลย
+          </a>
+          <span class="inline-flex items-center gap-2 rounded-lg bg-black/20 px-3 py-2 text-xs text-ivory/80">
+            <i data-lucide="hand" class="size-4 text-coral-soft" aria-hidden="true"></i> ผมคุยเอง ไม่ได้ใช้ AI ตอบครับ :)
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Lucide icons
+    lucide.createIcons();
+
+    // LINE copy-message modal
+    (function () {
+      const modal = document.getElementById('line-modal');
+      if (!modal) {
+        console.log('Creating LINE modal...');
+        const dialog = document.createElement('dialog');
+        dialog.id = 'line-modal';
+        dialog.className = 'w-[92%] max-w-md rounded-2xl border border-[#c9c2b2] bg-surface p-0 text-warm-ink shadow-xl backdrop:bg-black/40';
+        dialog.innerHTML = `
+          <div class="p-6">
+            <div class="flex items-start justify-between gap-4">
+              <h3 class="font-display text-lg font-semibold text-navy">ทักไปคุยใน LINE OA</h3>
+              <button type="button" id="line-modal-close" aria-label="ปิด" class="shrink-0 text-muted transition hover:text-navy"><i data-lucide="x" class="size-5" aria-hidden="true"></i></button>
+            </div>
+            <p class="mt-2 text-sm text-warm-ink/70">คัดลอกข้อความนี้ไปวางใน LINE ได้เลย</p>
+            <p id="line-msg" class="mt-3 rounded-xl border border-[#c9c2b2] bg-ivory p-3 text-sm leading-relaxed text-warm-ink"></p>
+            <div class="mt-4 flex flex-col gap-2 sm:flex-row">
+              <button type="button" id="line-copy" class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-coral px-4 py-2.5 text-sm font-medium text-coral transition hover:bg-coral hover:text-white"><i data-lucide="copy" class="size-4" aria-hidden="true"></i> <span id="line-copy-label">คัดลอกข้อความ</span></button>
+              <a href="https://line.me/R/ti/p/@punnattapatch" target="_blank" rel="noopener" id="line-open" class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90" style="background:#06C755"><i data-lucide="message-circle" class="size-4" aria-hidden="true"></i> เปิด LINE OA</a>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(dialog);
+      }
+
+      const msgEl = document.getElementById('line-msg');
+      const copyBtn = document.getElementById('line-copy');
+      const copyLabel = document.getElementById('line-copy-label');
+      let currentMsg = '';
+      const build = (svc) => 'สนใจบริการ ' + svc + ' ครับ อยากสอบถามรายละเอียดเพิ่มเติมครับ 🙏';
+
+      document.querySelectorAll('.line-btn').forEach((b) => {
+        b.addEventListener('click', () => {
+          currentMsg = build(b.getAttribute('data-line-service') || 'ของคุณปัน');
+          msgEl.textContent = currentMsg;
+          copyLabel.textContent = 'คัดลอกข้อความ';
+          const m = document.getElementById('line-modal');
+          if (typeof m.showModal === 'function') m.showModal(); else m.setAttribute('open', '');
+        });
+      });
+      document.getElementById('line-modal-close')?.addEventListener('click', () => document.getElementById('line-modal').close());
+      copyBtn?.addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(currentMsg); copyLabel.textContent = 'คัดลอกแล้ว ✓'; }
+        catch { copyLabel.textContent = 'คัดลอกไม่ได้ — เลือกข้อความเอง'; }
+      });
+    })();
+  </script>
 </BaseLayout>
