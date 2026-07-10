@@ -22,7 +22,8 @@ const OUT = 'dist-app';
 
 // Static assets (from public/) the private apps rely on. Bundled CSS/JS lives in
 // _astro and is always kept. Sukhumvit Set is a system font (not bundled).
-const KEEP_ASSETS = ['_astro', 'favicon-32x32.png', 'favicon.ico', 'favicon.svg'];
+// 404.html lets Cloudflare serve a real 404 for unknown app paths.
+const KEEP_ASSETS = ['_astro', '404.html', 'favicon-32x32.png', 'favicon.ico', 'favicon.svg'];
 
 const appDir = join(DIST, 'app');
 try {
