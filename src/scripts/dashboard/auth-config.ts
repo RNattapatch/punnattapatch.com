@@ -6,7 +6,10 @@
 //
 // This value is PUBLIC by design (it ships in the browser bundle). Security
 // does NOT depend on keeping it secret — it depends on:
-//   1. Authorized JavaScript origins set to https://punnattapatch.com (GCP)
+//   1. Authorized JavaScript origins in GCP = https://app.punnattapatch.com
+//      (the private app hub — the dashboard moved here from the root domain).
+//      Keep https://punnattapatch.com listed only until the app-subdomain
+//      cutover is verified, then remove it.
 //   2. The backend (dashboard-api.gs) verifying the ID token + email allowlist
 //
 // The SAME Client ID must be set as GOOGLE_CLIENT_ID in the Apps Script
