@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+const { title = 'Dashboard — Pun' } = Astro.props;
 ---
 <!doctype html>
 <html lang="th" data-theme="punpaper">
@@ -18,7 +19,7 @@ import '../styles/global.css';
     </script>
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <title>Dashboard — Pun</title>
+    <title>{title}</title>
     <script is:inline src="https://cdn.jsdelivr.net/npm/apexcharts@4.4.0/dist/apexcharts.min.js"></script>
     <style>
       :root {

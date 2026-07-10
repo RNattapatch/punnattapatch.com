@@ -1,0 +1,522 @@
+---
+// Marketing War Room — Phase 1 "War Room Lite"
+// Spec: claude-code repo → output/docs/marketing-war-room-content-planning-system-v2-2026-07-10.md
+// State truth = Supabase (RLS is_owner) · Content truth = repo .md (Save = copy/download)
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
+---
+<DashboardLayout title="Marketing War Room — Pun">
+  <script is:inline async src="https://accounts.google.com/gsi/client"></script>
+  <WarRoomGate />
+
+  <div id="war-room-app" class="hidden min-h-screen">
+    <!-- Header -->
+    <header class="sticky top-0 z-30 border-b border-base-300 bg-base-100/90 backdrop-blur">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="grid size-9 shrink-0 place-items-center rounded-xl text-white" style="background-color:var(--color-brand-coral);">🎬</span>
+          <div class="min-w-0">
+            <h1 class="font-display text-lg font-bold leading-tight truncate">Marketing War Room</h1>
+            <p id="wr-date" class="text-xs opacity-60"></p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <a href="/app/dashboard" class="btn btn-sm btn-ghost tap-44">📊 CRM</a>
+          <button id="wr-logout" class="btn btn-sm btn-ghost tap-44" aria-label="ออกจากระบบ">ออก</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-6xl space-y-4 p-4 pb-24">
+
+      <!-- Today strip: งานที่เริ่มไว้แล้วแต่ยังไม่จบ loop -->
+      <section aria-label="Production status">
+        <div id="wr-stats" class="grid grid-cols-2 gap-2 md:grid-cols-4"></div>
+        <div id="wr-stale" class="mt-2 hidden rounded-2xl p-3 text-sm text-white" style="background-color:var(--color-brand-navy);"></div>
+      </section>
+
+      <div class="grid gap-4 lg:grid-cols-[2fr_3fr] lg:items-start">
+        <!-- Left column -->
+        <div class="space-y-4">
+          <!-- Idea Inbox -->
+          <section class="card border border-base-300 bg-base-200">
+            <div class="card-body p-4 gap-3">
+              <div class="flex items-center justify-between">
+                <h2 class="font-display font-bold">💡 Idea Inbox</h2>
+                <span id="wr-untriaged" class="badge badge-sm" style="background-color:var(--color-brand-navy);color:white;"></span>
+              </div>
+              <label class="form-control">
+                <textarea id="wr-idea-title" class="textarea textarea-bordered min-h-20 text-base" placeholder="โยนไอเดียตรงนี้ — 1 ประโยคก็พอ" aria-label="ไอเดียใหม่"></textarea>
+              </label>
+              <input id="wr-idea-angle" class="input input-bordered input-sm" placeholder="canonical angle (มุมหลัก — ใส่ทีหลังได้)" aria-label="Canonical angle" autocomplete="off" />
+              <div class="grid grid-cols-2 gap-2">
+                <select id="wr-idea-pillar" class="select select-bordered select-sm" aria-label="Pillar bucket">
+                  <option value="">pillar (mix)</option>
+                  <option value="ai_in_business">AI ในธุรกิจจริง 40%</option>
+                  <option value="sales_team">ทีมขาย/บริหาร 30%</option>
+                  <option value="intersection">จุดตัด AI×ขาย 20%</option>
+                  <option value="persona">ตัวตน 10%</option>
+                </select>
+                <select id="wr-idea-funnel" class="select select-bordered select-sm" aria-label="Funnel stage">
+                  <option value="">funnel</option>
+                  <option value="top">top</option>
+                  <option value="middle">middle</option>
+                  <option value="bottom">bottom</option>
+                </select>
+              </div>
+              <div id="wr-similar" class="hidden rounded-xl border p-3 text-sm" style="border-color:var(--color-brand-coral);"></div>
+              <button id="wr-idea-save" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);">💾 Save idea</button>
+            </div>
+          </section>
+
+          <!-- Ideas list -->
+          <section class="card border border-base-300 bg-base-200">
+            <div class="card-body p-4 gap-3">
+              <div class="flex items-center justify-between gap-2">
+                <h2 class="font-display font-bold">📚 Ideas</h2>
+                <input id="wr-search" class="input input-bordered input-sm w-36" placeholder="ค้นหา..." aria-label="ค้นหา idea" autocomplete="off" />
+              </div>
+              <div id="wr-filter" class="flex flex-wrap gap-1 text-xs">
+                <button class="btn btn-xs btn-active" data-f="all">ทั้งหมด</button>
+                <button class="btn btn-xs" data-f="captured">ยังไม่ triage</button>
+                <button class="btn btn-xs" data-f="active">กำลังผลิต</button>
+                <button class="btn btn-xs" data-f="published">ลงแล้ว</button>
+                <button class="btn btn-xs" data-f="archived">archive</button>
+              </div>
+              <ul id="wr-idea-list" class="menu w-full gap-1 p-0"></ul>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right column: Content Detail -->
+        <section id="wr-detail" class="card border border-base-300 bg-base-200 lg:sticky lg:top-20">
+          <div class="card-body p-4" id="wr-detail-body">
+            <p class="py-10 text-center text-sm opacity-50">เลือก idea จากลิสต์ หรือโยน idea ใหม่</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Script Studio dialog -->
+    <dialog id="wr-studio" class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box max-w-3xl">
+        <h3 class="font-display font-bold" id="wr-studio-title">Script Studio</h3>
+        <p class="text-xs opacity-60 mt-1" id="wr-studio-path"></p>
+        <textarea id="wr-studio-body" class="textarea textarea-bordered mt-3 w-full min-h-72 font-mono text-sm" placeholder="# Hook&#10;&#10;# Script&#10;&#10;# Caption&#10;&#10;# First Comment" aria-label="Script markdown body"></textarea>
+        <p class="mt-2 text-xs opacity-60">💡 เนื้อ script อยู่ในไฟล์ repo ไม่อยู่ใน database — Download แล้ววางตาม path ข้างบน (Mac mini API จะ automate ใน Phase 3)</p>
+        <div class="modal-action flex-wrap gap-2">
+          <button id="wr-studio-copy-body" class="btn btn-sm tap-44">คัดลอกเนื้อหา</button>
+          <button id="wr-studio-copy" class="btn btn-sm tap-44">คัดลอกทั้งไฟล์ (.md)</button>
+          <button id="wr-studio-dl" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);">⬇️ Download .md</button>
+          <form method="dialog"><button class="btn btn-sm btn-ghost tap-44">ปิด</button></form>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop"><button aria-label="ปิด">close</button></form>
+    </dialog>
+
+    <!-- Analytics snapshot dialog -->
+    <dialog id="wr-snap" class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box">
+        <h3 class="font-display font-bold">📊 Analytics snapshot</h3>
+        <p class="text-xs opacity-60 mt-1" id="wr-snap-sub"></p>
+        <div class="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3" id="wr-snap-fields">
+          <label class="form-control"><span class="label-text text-xs">views</span><input data-m="views" type="number" min="0" class="input input-bordered input-sm" /></label>
+          <label class="form-control"><span class="label-text text-xs">reach</span><input data-m="reach" type="number" min="0" class="input input-bordered input-sm" /></label>
+          <label class="form-control"><span class="label-text text-xs">likes</span><input data-m="likes" type="number" min="0" class="input input-bordered input-sm" /></label>
+          <label class="form-control"><span class="label-text text-xs">comments</span><input data-m="comments" type="number" min="0" class="input input-bordered input-sm" /></label>
+          <label class="form-control"><span class="label-text text-xs">shares</span><input data-m="shares" type="number" min="0" class="input input-bordered input-sm" /></label>
+          <label class="form-control"><span class="label-text text-xs">saves</span><input data-m="saves" type="number" min="0" class="input input-bordered input-sm" /></label>
+          <label class="form-control"><span class="label-text text-xs">keyword comments</span><input data-m="keyword_comments" type="number" min="0" class="input input-bordered input-sm" /></label>
+          <label class="form-control"><span class="label-text text-xs">DM</span><input data-m="dm_count" type="number" min="0" class="input input-bordered input-sm" /></label>
+          <label class="form-control"><span class="label-text text-xs">LINE adds</span><input data-m="line_adds" type="number" min="0" class="input input-bordered input-sm" /></label>
+          <label class="form-control"><span class="label-text text-xs">leads</span><input data-m="leads_created" type="number" min="0" class="input input-bordered input-sm" /></label>
+          <label class="form-control col-span-2"><span class="label-text text-xs">notes</span><input data-m="notes" type="text" class="input input-bordered input-sm" /></label>
+        </div>
+        <div class="modal-action">
+          <button id="wr-snap-save" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);">บันทึก</button>
+          <form method="dialog"><button class="btn btn-sm btn-ghost tap-44">ยกเลิก</button></form>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop"><button aria-label="ปิด">close</button></form>
+    </dialog>
+
+    <!-- Toast -->
+    <div class="toast toast-end z-50">
+      <div id="wr-toast" class="alert hidden text-sm shadow-lg"></div>
+    </div>
+  </div>
+
+  <script>
+    import {
+      FORMAT_CODES, PLATFORMS, bkkToday,
+      listIdeas, listVariants, listPublications, snapshotPubIds, findSimilar,
+      createIdea, updateIdea, createVariant, updateVariant, addPublication,
+      setDecision, addSnapshot, buildVariantMarkdown, downloadText, copyText,
+      type Idea, type Variant, type Publication, type FormatCode,
+      type IdeaStatus, type VariantStatus, type DecisionLabel,
+    } from '../../scripts/war-room/data';
+    import { supabase, getSupabaseSession } from '../../scripts/dashboard/supabase';
+
+    // ---------- state ----------
+    let ideas: Idea[] = [];
+    let variants: Variant[] = [];
+    let pubs: Publication[] = [];
+    let snapIds = new Set<string>();
+    let selectedId: string | null = null;
+    let filter = 'all';
+    let search = '';
+    let pendingIdea: { title: string; angle: string } | null = null; // waiting for similar-confirm
+    let studioVariantId: string | null = null;
+    let snapPubId: string | null = null;
+
+    const $ = (id: string) => document.getElementById(id)!;
+    const esc = (s: unknown) =>
+      String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+
+    const VARIANT_STATUSES: VariantStatus[] = ['draft','ai_improved','ready_to_record','recorded','editing','edited','scheduled','posted','analyzed','repurposed'];
+    const IDEA_STATUSES: IdeaStatus[] = ['captured','triaged','selected','active','published','repurpose_candidate','archived'];
+    const DECISIONS: DecisionLabel[] = ['kill','iterate','repurpose','boost','pillar','sales_asset'];
+    const daysAgo = (iso: string) => Math.floor((Date.now() - new Date(iso).getTime()) / 864e5);
+
+    function toast(msg: string, kind: 'success' | 'error' = 'success') {
+      const el = $('wr-toast');
+      el.className = `alert text-sm shadow-lg ${kind === 'error' ? 'alert-error' : 'alert-success'}`;
+      el.textContent = msg;
+      window.clearTimeout((window as any).__wrToast);
+      (window as any).__wrToast = window.setTimeout(() => el.classList.add('hidden'), 2200);
+    }
+    const oops = (e: unknown) => toast((e as Error).message || 'ผิดพลาด ลองใหม่', 'error');
+
+    // ---------- data refresh ----------
+    async function refresh() {
+      [ideas, variants, pubs, snapIds] = await Promise.all([listIdeas(), listVariants(), listPublications(), snapshotPubIds()]);
+      renderStats(); renderList(); renderDetail();
+    }
+
+    // ---------- Today strip ----------
+    function bucket(status: VariantStatus[]) { return variants.filter((v) => status.includes(v.variant_status)); }
+    function analyticsDue(): Publication[] {
+      const cutoff = Date.now() - 48 * 3600e3;
+      return pubs.filter((p) => p.status === 'posted' && p.published_at
+        && new Date(p.published_at).getTime() < cutoff && !snapIds.has(p.publication_id));
+    }
+
+    function statCard(icon: string, n: number, label: string, sub: string, hot: boolean) {
+      return `<article class="rounded-2xl border ${hot && n > 0 ? 'border-2' : 'border-base-300'} bg-base-200 p-3" ${hot && n > 0 ? 'style="border-color:var(--color-brand-coral);"' : ''}>
+        <div class="flex items-center justify-between">
+          <span aria-hidden="true">${icon}</span>
+          <span class="font-display text-2xl font-bold tabular-nums">${n}</span>
+        </div>
+        <p class="mt-1 text-sm font-semibold">${label}</p>
+        <p class="text-xs opacity-60">${sub}</p>
+      </article>`;
+    }
+
+    function renderStats() {
+      const ready = bucket(['ready_to_record']);
+      const recorded = bucket(['recorded', 'editing']);
+      const edited = bucket(['edited', 'scheduled']);
+      const due = analyticsDue();
+      const oldest = (vs: Variant[]) => vs.length ? `เก่าสุด ${Math.max(...vs.map((v) => daysAgo(v.status_changed_at)))} วัน` : '—';
+      $('wr-stats').innerHTML =
+        statCard('🎤', ready.length, 'Ready to record', oldest(ready), false) +
+        statCard('✂️', recorded.length, 'ถ่ายแล้วยังไม่ตัด', oldest(recorded), true) +
+        statCard('📤', edited.length, 'ตัดแล้วยังไม่ลง', oldest(edited), true) +
+        statCard('📊', due.length, 'Analytics due', 'ลงแล้วเกิน 48 ชม.', false);
+
+      const stale = [...recorded, ...edited].filter((v) => daysAgo(v.status_changed_at) >= 3)
+        .sort((a, b) => daysAgo(b.status_changed_at) - daysAgo(a.status_changed_at))[0];
+      const staleEl = $('wr-stale');
+      if (stale) {
+        staleEl.classList.remove('hidden');
+        staleEl.innerHTML = `⚠️ <strong>${esc(stale.variant_id)}</strong> ค้างสถานะ ${esc(stale.variant_status)} มา ${daysAgo(stale.status_changed_at)} วันแล้ว`;
+      } else staleEl.classList.add('hidden');
+
+      const untriaged = ideas.filter((i) => i.idea_status === 'captured').length;
+      $('wr-untriaged').textContent = untriaged ? `${untriaged} ยังไม่ triage` : 'inbox ว่าง 🎉';
+    }
+
+    // ---------- Ideas list ----------
+    const STATUS_BADGE: Record<string, string> = {
+      captured: 'badge-neutral', triaged: 'badge-info', selected: 'badge-primary',
+      active: 'badge-warning', published: 'badge-success', repurpose_candidate: 'badge-secondary', archived: 'badge-ghost',
+    };
+
+    function renderList() {
+      const q = search.trim().toLowerCase();
+      const rows = ideas.filter((i) => {
+        if (filter === 'all') { /* keep */ }
+        else if (filter === 'active' && !['selected', 'active'].includes(i.idea_status)) return false;
+        else if (filter === 'published' && !['published', 'repurpose_candidate'].includes(i.idea_status)) return false;
+        else if ((filter === 'captured' || filter === 'archived') && i.idea_status !== filter) return false;
+        if (q && !`${i.content_id} ${i.title} ${i.canonical_angle ?? ''} ${i.topic_cluster ?? ''}`.toLowerCase().includes(q)) return false;
+        return true;
+      });
+      $('wr-idea-list').innerHTML = rows.length
+        ? rows.map((i) => `<li><button data-id="${esc(i.content_id)}" class="flex w-full flex-col items-start gap-0.5 rounded-xl px-3 py-2 text-left ${i.content_id === selectedId ? 'bg-base-300' : ''}">
+            <span class="flex w-full items-center justify-between gap-2">
+              <span class="font-mono text-[11px] opacity-60">${esc(i.content_id)}</span>
+              <span class="badge badge-xs ${STATUS_BADGE[i.idea_status] ?? ''}">${esc(i.idea_status)}</span>
+            </span>
+            <span class="text-sm font-medium leading-snug">${esc(i.title)}</span>
+          </button></li>`).join('')
+        : '<li class="px-3 py-6 text-center text-sm opacity-50">ไม่พบ idea</li>';
+    }
+
+    // ---------- Content Detail ----------
+    function renderDetail() {
+      const body = $('wr-detail-body');
+      const idea = ideas.find((i) => i.content_id === selectedId);
+      if (!idea) {
+        body.innerHTML = '<p class="py-10 text-center text-sm opacity-50">เลือก idea จากลิสต์ หรือโยน idea ใหม่</p>';
+        return;
+      }
+      const vs = variants.filter((v) => v.content_id === idea.content_id);
+      const opt = (v: string, cur: string | null, label?: string) =>
+        `<option value="${esc(v)}" ${v === cur ? 'selected' : ''}>${esc(label ?? v)}</option>`;
+
+      const variantCards = (Object.keys(FORMAT_CODES) as FormatCode[]).map((code) => {
+        const meta = FORMAT_CODES[code];
+        const v = vs.find((x) => x.variant_id.endsWith(`-${code}`));
+        if (!v) {
+          return `<article class="rounded-xl border border-dashed border-base-300 p-3">
+            <p class="font-display text-sm font-semibold opacity-60">${code} · ${esc(meta.label)}</p>
+            <button data-action="create-variant" data-code="${code}" class="btn btn-xs mt-2 tap-44">+ สร้าง</button>
+          </article>`;
+        }
+        const vPubs = pubs.filter((p) => p.variant_id === v.variant_id);
+        const pubRows = vPubs.map((p) => `
+          <div class="flex flex-wrap items-center gap-1 rounded-lg bg-base-100 px-2 py-1 text-xs">
+            <span class="font-semibold">${esc(p.platform)}</span>
+            ${p.post_url ? `<a class="link max-w-32 truncate" href="${esc(p.post_url)}" target="_blank" rel="noopener">link</a>` : ''}
+            <span class="opacity-50">${p.published_at ? esc(new Date(p.published_at).toLocaleDateString('th-TH')) : ''}</span>
+            <select data-action="decision" data-pub="${esc(p.publication_id)}" class="select select-ghost select-xs" aria-label="decision label">
+              ${opt('', p.decision_label, 'decision?')}${DECISIONS.map((d) => opt(d, p.decision_label)).join('')}
+            </select>
+            <button data-action="snap" data-pub="${esc(p.publication_id)}" data-label="${esc(v.variant_id)} · ${esc(p.platform)}" class="btn btn-ghost btn-xs">📊${snapIds.has(p.publication_id) ? '✓' : ''}</button>
+          </div>`).join('');
+        const platOpts = PLATFORMS.filter((pl) => !vPubs.some((p) => p.platform === pl))
+          .map((pl) => `<option value="${pl}">${pl}</option>`).join('');
+        return `<article class="rounded-xl border border-base-300 bg-base-100 p-3 space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <p class="font-display text-sm font-semibold">${code} · ${esc(meta.label)}</p>
+            <button data-action="copy-id" data-v="${esc(v.variant_id)}" class="btn btn-ghost btn-xs" aria-label="copy variant id">📋 ID</button>
+          </div>
+          <select data-action="v-status" data-v="${esc(v.variant_id)}" class="select select-bordered select-xs w-full" aria-label="variant status">
+            ${VARIANT_STATUSES.map((s) => opt(s, v.variant_status)).join('')}
+          </select>
+          <p class="break-all font-mono text-[10px] opacity-50">${esc(v.markdown_path ?? '')}</p>
+          <button data-action="studio" data-v="${esc(v.variant_id)}" class="btn btn-xs w-full tap-44">📝 Script Studio</button>
+          ${pubRows}
+          ${platOpts ? `<div class="flex gap-1">
+            <select data-role="pub-platform" data-v="${esc(v.variant_id)}" class="select select-bordered select-xs flex-1" aria-label="platform">${platOpts}</select>
+            <input data-role="pub-url" data-v="${esc(v.variant_id)}" class="input input-bordered input-xs flex-1" placeholder="post URL" aria-label="post url" />
+            <button data-action="add-pub" data-v="${esc(v.variant_id)}" class="btn btn-xs tap-44">ลงแล้ว</button>
+          </div>` : ''}
+        </article>`;
+      }).join('');
+
+      body.innerHTML = `
+        <div class="flex items-start justify-between gap-2">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-xs opacity-60">${esc(idea.content_id)}</span>
+              <button data-action="copy-id" data-v="${esc(idea.content_id)}" class="btn btn-ghost btn-xs" aria-label="copy content id">📋</button>
+            </div>
+            <h2 class="font-display text-lg font-bold leading-snug">${esc(idea.title)}</h2>
+          </div>
+        </div>
+        <label class="form-control mt-2">
+          <span class="label-text text-xs opacity-60">canonical angle</span>
+          <textarea data-action="angle" class="textarea textarea-bordered textarea-sm" rows="2" aria-label="canonical angle">${esc(idea.canonical_angle ?? '')}</textarea>
+        </label>
+        <div class="mt-2 grid grid-cols-2 gap-2 md:grid-cols-4">
+          <select data-action="i-status" class="select select-bordered select-xs" aria-label="idea status">${IDEA_STATUSES.map((s) => opt(s, idea.idea_status)).join('')}</select>
+          <select data-action="i-acid" class="select select-bordered select-xs" aria-label="acid test">
+            ${opt('pending', idea.acid_test, 'acid: pending')}${opt('passed', idea.acid_test, 'acid: passed ✅')}${opt('failed', idea.acid_test, 'acid: failed 🔴')}
+          </select>
+          <select data-action="i-pillar" class="select select-bordered select-xs" aria-label="pillar">
+            ${opt('', idea.pillar_bucket, 'pillar?')}${opt('ai_in_business', idea.pillar_bucket)}${opt('sales_team', idea.pillar_bucket)}${opt('intersection', idea.pillar_bucket)}${opt('persona', idea.pillar_bucket)}
+          </select>
+          <select data-action="i-funnel" class="select select-bordered select-xs" aria-label="funnel">
+            ${opt('', idea.funnel_stage, 'funnel?')}${opt('top', idea.funnel_stage)}${opt('middle', idea.funnel_stage)}${opt('bottom', idea.funnel_stage)}
+          </select>
+        </div>
+        ${idea.acid_test !== 'passed' ? `<p class="mt-2 rounded-lg bg-warning/20 px-3 py-2 text-xs">🧪 Triage Gate: ถามก่อนถ่าย — "ตัดหน้า/ชื่อปันออก คนดูยังได้ของกลับบ้านไหม?" ผ่านแล้วตั้ง acid: passed ก่อนเข้า weekly plan</p>` : ''}
+        <h3 class="mt-4 font-display text-sm font-bold">Variants <span class="font-normal opacity-50">(format เท่านั้น — platform บันทึกตอนลงจริง)</span></h3>
+        <div class="mt-2 grid gap-2 sm:grid-cols-2">${variantCards}</div>`;
+    }
+
+    // ---------- Idea inbox flow ----------
+    async function saveIdea(confirmed: boolean) {
+      const title = ($('wr-idea-title') as HTMLTextAreaElement).value.trim();
+      if (!title) { toast('พิมพ์ไอเดียก่อน', 'error'); return; }
+      const angle = ($('wr-idea-angle') as HTMLInputElement).value.trim();
+      const simBox = $('wr-similar');
+      try {
+        if (!confirmed) {
+          const hits = (await findSimilar(`${title} ${angle}`)).filter((h) => h.sim >= 0.22);
+          if (hits.length) {
+            pendingIdea = { title, angle };
+            simBox.classList.remove('hidden');
+            simBox.innerHTML = `<p class="font-semibold" style="color:var(--color-brand-coral);">⚠️ คล้ายกับ idea เดิม:</p>
+              ${hits.map((h) => `<p class="mt-1"><span class="font-mono text-xs opacity-60">${esc(h.content_id)}</span> ${esc(h.title)} <span class="opacity-50">(${Math.round(h.sim * 100)}%)</span></p>`).join('')}
+              <div class="mt-2 flex gap-2">
+                <button id="wr-sim-force" class="btn btn-xs tap-44">บันทึกเป็น idea ใหม่</button>
+                <button id="wr-sim-cancel" class="btn btn-xs btn-ghost tap-44">ยกเลิก</button>
+              </div>`;
+            $('wr-sim-force').addEventListener('click', () => void saveIdea(true));
+            $('wr-sim-cancel').addEventListener('click', () => { pendingIdea = null; simBox.classList.add('hidden'); });
+            return;
+          }
+        }
+        const idea = await createIdea({
+          title,
+          canonical_angle: angle || null,
+          pillar_bucket: (($('wr-idea-pillar') as HTMLSelectElement).value || null) as Idea['pillar_bucket'],
+          funnel_stage: (($('wr-idea-funnel') as HTMLSelectElement).value || null) as Idea['funnel_stage'],
+        });
+        pendingIdea = null;
+        simBox.classList.add('hidden');
+        ($('wr-idea-title') as HTMLTextAreaElement).value = '';
+        ($('wr-idea-angle') as HTMLInputElement).value = '';
+        selectedId = idea.content_id;
+        toast(`บันทึกแล้ว → ${idea.content_id}`);
+        await refresh();
+      } catch (e) { oops(e); }
+    }
+
+    // ---------- Script Studio ----------
+    function openStudio(variantId: string) {
+      const v = variants.find((x) => x.variant_id === variantId);
+      const idea = ideas.find((i) => i.content_id === v?.content_id);
+      if (!v || !idea) return;
+      studioVariantId = variantId;
+      $('wr-studio-title').textContent = `${v.variant_id} · ${idea.title}`;
+      $('wr-studio-path').textContent = v.markdown_path ?? '';
+      ($('wr-studio') as HTMLDialogElement).showModal();
+    }
+
+    function studioFile(): { name: string; md: string } | null {
+      const v = variants.find((x) => x.variant_id === studioVariantId);
+      const idea = ideas.find((i) => i.content_id === v?.content_id);
+      if (!v || !idea) return null;
+      const body = ($('wr-studio-body') as HTMLTextAreaElement).value;
+      return { name: (v.markdown_path ?? `${v.variant_id}.md`).split('/').pop()!, md: buildVariantMarkdown(idea, v, body) };
+    }
+
+    // ---------- events ----------
+    function wire() {
+      $('wr-date').textContent = new Date().toLocaleDateString('th-TH', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      $('wr-idea-save').addEventListener('click', () => void saveIdea(false));
+      $('wr-search').addEventListener('input', (e) => { search = (e.target as HTMLInputElement).value; renderList(); });
+      $('wr-filter').addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest('button[data-f]') as HTMLButtonElement | null;
+        if (!b) return;
+        filter = b.dataset.f!;
+        $('wr-filter').querySelectorAll('button').forEach((x) => x.classList.toggle('btn-active', x === b));
+        renderList();
+      });
+      $('wr-idea-list').addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest('button[data-id]') as HTMLButtonElement | null;
+        if (!b) return;
+        selectedId = b.dataset.id!;
+        renderList(); renderDetail();
+      });
+      $('wr-logout').addEventListener('click', () => { void supabase.auth.signOut().then(() => location.reload()); });
+
+      // Detail panel — event delegation
+      $('wr-detail-body').addEventListener('click', (e) => void (async () => {
+        const el = (e.target as HTMLElement).closest('[data-action]') as HTMLElement | null;
+        if (!el || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') return;
+        const idea = ideas.find((i) => i.content_id === selectedId);
+        if (!idea) return;
+        try {
+          switch (el.dataset.action) {
+            case 'copy-id': await copyText(el.dataset.v!); toast(`คัดลอก ${el.dataset.v}`); break;
+            case 'create-variant': await createVariant(idea, el.dataset.code as FormatCode); toast('สร้าง variant แล้ว'); await refresh(); break;
+            case 'studio': openStudio(el.dataset.v!); break;
+            case 'snap': {
+              snapPubId = el.dataset.pub!;
+              $('wr-snap-sub').textContent = el.dataset.label ?? '';
+              $('wr-snap-fields').querySelectorAll('input').forEach((i) => { (i as HTMLInputElement).value = ''; });
+              ($('wr-snap') as HTMLDialogElement).showModal();
+              break;
+            }
+            case 'add-pub': {
+              const vId = el.dataset.v!;
+              const platform = (document.querySelector(`select[data-role="pub-platform"][data-v="${CSS.escape(vId)}"]`) as HTMLSelectElement).value;
+              const url = (document.querySelector(`input[data-role="pub-url"][data-v="${CSS.escape(vId)}"]`) as HTMLInputElement).value.trim();
+              await addPublication(vId, platform, url, new Date().toISOString());
+              if (idea.idea_status !== 'published' && idea.idea_status !== 'repurpose_candidate') {
+                await updateIdea(idea.content_id, { idea_status: 'published' });
+              }
+              toast(`บันทึกการลง ${platform} แล้ว`);
+              await refresh();
+              break;
+            }
+          }
+        } catch (err) { oops(err); }
+      })());
+
+      $('wr-detail-body').addEventListener('change', (e) => void (async () => {
+        const el = e.target as HTMLElement;
+        const action = el.dataset.action;
+        const idea = ideas.find((i) => i.content_id === selectedId);
+        if (!action || !idea) return;
+        try {
+          if (action === 'v-status') await updateVariant(el.dataset.v!, { variant_status: (el as HTMLSelectElement).value as VariantStatus });
+          else if (action === 'decision') await setDecision(el.dataset.pub!, ((el as HTMLSelectElement).value || null) as DecisionLabel | null);
+          else if (action === 'i-status') await updateIdea(idea.content_id, { idea_status: (el as HTMLSelectElement).value as IdeaStatus });
+          else if (action === 'i-acid') await updateIdea(idea.content_id, { acid_test: (el as HTMLSelectElement).value as Idea['acid_test'] });
+          else if (action === 'i-pillar') await updateIdea(idea.content_id, { pillar_bucket: ((el as HTMLSelectElement).value || null) as Idea['pillar_bucket'] });
+          else if (action === 'i-funnel') await updateIdea(idea.content_id, { funnel_stage: ((el as HTMLSelectElement).value || null) as Idea['funnel_stage'] });
+          else if (action === 'angle') await updateIdea(idea.content_id, { canonical_angle: (el as HTMLTextAreaElement).value.trim() || null });
+          else return;
+          toast('อัปเดตแล้ว');
+          await refresh();
+        } catch (err) { oops(err); }
+      })());
+
+      // Studio buttons
+      $('wr-studio-copy-body').addEventListener('click', () => {
+        void copyText(($('wr-studio-body') as HTMLTextAreaElement).value).then(() => toast('คัดลอกเนื้อหาแล้ว'));
+      });
+      $('wr-studio-copy').addEventListener('click', () => {
+        const f = studioFile();
+        if (f) void copyText(f.md).then(() => toast('คัดลอกทั้งไฟล์แล้ว'));
+      });
+      $('wr-studio-dl').addEventListener('click', () => {
+        const f = studioFile();
+        if (f) { downloadText(f.name, f.md); toast(`ดาวน์โหลด ${f.name}`); }
+      });
+
+      // Snapshot save
+      $('wr-snap-save').addEventListener('click', () => void (async () => {
+        if (!snapPubId) return;
+        const metrics: Record<string, unknown> = {};
+        $('wr-snap-fields').querySelectorAll('input').forEach((i) => {
+          const input = i as HTMLInputElement;
+          if (input.value !== '') metrics[input.dataset.m!] = input.dataset.m === 'notes' ? input.value : Number(input.value);
+        });
+        try {
+          await addSnapshot(snapPubId, metrics);
+          ($('wr-snap') as HTMLDialogElement).close();
+          toast('บันทึก snapshot แล้ว');
+          await refresh();
+        } catch (err) { oops(err); }
+      })());
+    }
+
+    // ---------- boot ----------
+    let booted = false;
+    async function boot() {
+      if (booted) return;
+      booted = true;
+      wire();
+      try { await refresh(); } catch (e) { oops(e); }
+    }
+    document.addEventListener('war-room:authed', () => void boot());
+    void (async () => { if (await getSupabaseSession()) void boot(); })();
+  </script>
+</DashboardLayout>
