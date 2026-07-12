@@ -1,7 +1,8 @@
 ---
-// Marketing War Room — Phase 1 "War Room Lite"
+// Marketing War Room — Phase 1 "War Room Lite" (Kanban revision)
 // Spec: claude-code repo → output/docs/marketing-war-room-content-planning-system-v2-2026-07-10.md
 // State truth = Supabase (RLS is_owner) · Content truth = repo .md (Save = copy/download)
+// UI: Kanban pipeline board (default) + List capture view + slide-in detail drawer.
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
 ---
@@ -9,36 +10,60 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
   <script is:inline async src="https://accounts.google.com/gsi/client"></script>
   <WarRoomGate />
 
-  <div id="war-room-app" class="hidden min-h-screen">
+  <div id="war-room-app" class="hidden min-h-dvh bg-base-100">
     <!-- Header -->
     <header class="sticky top-0 z-30 border-b border-base-300 bg-base-100/90 backdrop-blur">
-      <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5">
         <div class="flex items-center gap-3 min-w-0">
-          <span class="grid size-9 shrink-0 place-items-center rounded-xl text-white" style="background-color:var(--color-brand-coral);">🎬</span>
+          <span class="grid size-9 shrink-0 place-items-center rounded-xl text-white" style="background-color:var(--color-brand-coral);" aria-hidden="true">🎬</span>
           <div class="min-w-0">
             <h1 class="font-display text-lg font-bold leading-tight truncate">Marketing War Room</h1>
             <p id="wr-date" class="text-xs opacity-60"></p>
           </div>
         </div>
         <div class="flex items-center gap-2">
-          <a href="/app/dashboard" class="btn btn-sm btn-ghost tap-44">📊 CRM</a>
+          <!-- View toggle -->
+          <div role="tablist" aria-label="มุมมอง" class="join rounded-full border border-base-300 p-0.5">
+            <button id="wr-view-board" role="tab" aria-selected="true" class="join-item btn btn-sm rounded-full border-0 text-white tap-44" style="background-color:var(--color-brand-navy);">🗂 Board</button>
+            <button id="wr-view-list" role="tab" aria-selected="false" class="join-item btn btn-sm rounded-full border-0 btn-ghost tap-44">📋 List</button>
+          </div>
+          <a href="/app/dashboard" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า CRM">📊<span class="hidden sm:inline"> CRM</span></a>
           <button id="wr-logout" class="btn btn-sm btn-ghost tap-44" aria-label="ออกจากระบบ">ออก</button>
         </div>
       </div>
     </header>
 
-    <main class="mx-auto max-w-6xl space-y-4 p-4 pb-24">
+    <div class="mx-auto max-w-7xl px-4 py-4 space-y-4">
+      <!-- Pipeline stat pills -->
+      <section aria-label="สถานะการผลิต" class="-mx-4 overflow-x-auto px-4">
+        <div id="wr-stats" class="flex min-w-max gap-2 sm:grid sm:min-w-0 sm:grid-cols-4"></div>
+      </section>
+      <div id="wr-stale" class="hidden rounded-2xl px-4 py-2.5 text-sm text-white" style="background-color:var(--color-brand-navy);" role="status"></div>
 
-      <!-- Today strip: งานที่เริ่มไว้แล้วแต่ยังไม่จบ loop -->
-      <section aria-label="Production status">
-        <div id="wr-stats" class="grid grid-cols-2 gap-2 md:grid-cols-4"></div>
-        <div id="wr-stale" class="mt-2 hidden rounded-2xl p-3 text-sm text-white" style="background-color:var(--color-brand-navy);"></div>
+      <!-- ============ BOARD VIEW ============ -->
+      <section id="wr-board-view" aria-label="Kanban pipeline">
+        <!-- Quick capture + search bar -->
+        <div class="mb-3 flex flex-wrap items-center gap-2">
+          <div class="flex flex-1 min-w-[240px] items-center gap-2 rounded-full border border-base-300 bg-base-200 pl-3 pr-1 focus-within:border-[color:var(--color-brand-coral)] transition-colors">
+            <span aria-hidden="true" class="opacity-50">💡</span>
+            <input id="wr-quick-idea" class="input input-ghost flex-1 border-0 px-1 focus:outline-none" placeholder="โยนไอเดียเร็ว ๆ แล้วกด Enter…" aria-label="เพิ่มไอเดียเร็ว" autocomplete="off" />
+            <button id="wr-quick-save" class="btn btn-sm rounded-full text-white tap-44" style="background-color:var(--color-brand-coral);">เพิ่ม</button>
+          </div>
+          <label class="flex items-center gap-2 rounded-full border border-base-300 bg-base-200 px-3">
+            <span aria-hidden="true" class="opacity-50">🔍</span>
+            <input id="wr-board-search" class="input input-ghost w-40 border-0 px-0 focus:outline-none" placeholder="ค้นหา…" aria-label="ค้นหาในบอร์ด" autocomplete="off" />
+          </label>
+        </div>
+        <div id="wr-quick-similar" class="mb-3 hidden rounded-xl border p-3 text-sm" style="border-color:var(--color-brand-coral);"></div>
+
+        <!-- Columns -->
+        <div id="wr-board" class="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-3"></div>
       </section>
 
-      <div class="grid gap-4 lg:grid-cols-[2fr_3fr] lg:items-start">
-        <!-- Left column -->
+      <!-- ============ LIST VIEW ============ -->
+      <section id="wr-list-view" class="hidden grid gap-4 lg:grid-cols-[2fr_3fr] lg:items-start" aria-label="รายการไอเดีย">
         <div class="space-y-4">
-          <!-- Idea Inbox -->
+          <!-- Idea Inbox (full capture form) -->
           <section class="card border border-base-300 bg-base-200">
             <div class="card-body p-4 gap-3">
               <div class="flex items-center justify-between">
@@ -87,15 +112,21 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
             </div>
           </section>
         </div>
+        <p class="hidden lg:block py-10 text-center text-sm opacity-40">เลือก idea เพื่อดูรายละเอียด (เปิดแผงด้านขวา)</p>
+      </section>
+    </div>
 
-        <!-- Right column: Content Detail -->
-        <section id="wr-detail" class="card border border-base-300 bg-base-200 lg:sticky lg:top-20">
-          <div class="card-body p-4" id="wr-detail-body">
-            <p class="py-10 text-center text-sm opacity-50">เลือก idea จากลิสต์ หรือโยน idea ใหม่</p>
-          </div>
-        </section>
-      </div>
-    </main>
+    <!-- ============ DETAIL DRAWER (slide-in right) ============ -->
+    <div id="wr-drawer" class="fixed inset-0 z-40 hidden" role="dialog" aria-modal="true" aria-label="รายละเอียดคอนเทนต์">
+      <div id="wr-drawer-scrim" class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-200"></div>
+      <aside id="wr-drawer-panel" class="absolute right-0 top-0 flex h-full w-full max-w-md translate-x-full flex-col bg-base-100 shadow-2xl transition-transform duration-200 will-change-transform">
+        <div class="flex items-center justify-between border-b border-base-300 px-4 py-2.5">
+          <span class="font-display text-sm font-bold opacity-70">รายละเอียด</span>
+          <button id="wr-drawer-close" class="btn btn-sm btn-circle btn-ghost tap-44" aria-label="ปิดแผง">✕</button>
+        </div>
+        <div id="wr-detail-body" class="flex-1 overflow-y-auto p-4"></div>
+      </aside>
+    </div>
 
     <!-- Script Studio dialog -->
     <dialog id="wr-studio" class="modal modal-bottom sm:modal-middle">
@@ -148,7 +179,7 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
 
   <script>
     import {
-      FORMAT_CODES, PLATFORMS, bkkToday,
+      FORMAT_CODES, PLATFORMS,
       listIdeas, listVariants, listPublications, snapshotPubIds, findSimilar,
       createIdea, updateIdea, createVariant, updateVariant, addPublication,
       setDecision, addSnapshot, buildVariantMarkdown, downloadText, copyText,
@@ -165,7 +196,9 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
     let selectedId: string | null = null;
     let filter = 'all';
     let search = '';
-    let pendingIdea: { title: string; angle: string } | null = null; // waiting for similar-confirm
+    let boardSearch = '';
+    let view: 'board' | 'list' = 'board';
+    let pendingIdea: { title: string; angle: string; source: 'list' | 'quick' } | null = null;
     let studioVariantId: string | null = null;
     let snapPubId: string | null = null;
 
@@ -177,6 +210,18 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
     const IDEA_STATUSES: IdeaStatus[] = ['captured','triaged','selected','active','published','repurpose_candidate','archived'];
     const DECISIONS: DecisionLabel[] = ['kill','iterate','repurpose','boost','pillar','sales_asset'];
     const daysAgo = (iso: string) => Math.floor((Date.now() - new Date(iso).getTime()) / 864e5);
+
+    // Kanban columns: pipeline stages. `statuses` = which variant_status land here;
+    // `primary` = the status a card is set to when dragged into this column.
+    type Col = { key: string; label: string; icon: string; statuses: VariantStatus[]; primary: VariantStatus };
+    const COLUMNS: Col[] = [
+      { key: 'ready',    label: 'Ready to record', icon: '🎤', statuses: ['draft','ai_improved','ready_to_record'], primary: 'ready_to_record' },
+      { key: 'recorded', label: 'ถ่ายแล้ว/กำลังตัด', icon: '✂️', statuses: ['recorded','editing'],                   primary: 'recorded' },
+      { key: 'edited',   label: 'ตัดแล้ว/ตั้งเวลา',   icon: '📤', statuses: ['edited','scheduled'],                   primary: 'edited' },
+      { key: 'posted',   label: 'ลงแล้ว',            icon: '🚀', statuses: ['posted'],                              primary: 'posted' },
+      { key: 'analyzed', label: 'วิเคราะห์แล้ว',      icon: '📊', statuses: ['analyzed','repurposed'],               primary: 'analyzed' },
+    ];
+    const colOf = (s: VariantStatus) => COLUMNS.find((c) => c.statuses.includes(s));
 
     function toast(msg: string, kind: 'success' | 'error' = 'success') {
       const el = $('wr-toast');
@@ -190,19 +235,18 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
     // ---------- data refresh ----------
     async function refresh() {
       [ideas, variants, pubs, snapIds] = await Promise.all([listIdeas(), listVariants(), listPublications(), snapshotPubIds()]);
-      renderStats(); renderList(); renderDetail();
+      renderStats(); renderBoard(); renderList(); if (selectedId) renderDetail();
     }
 
-    // ---------- Today strip ----------
+    // ---------- stat pills ----------
     function bucket(status: VariantStatus[]) { return variants.filter((v) => status.includes(v.variant_status)); }
     function analyticsDue(): Publication[] {
       const cutoff = Date.now() - 48 * 3600e3;
       return pubs.filter((p) => p.status === 'posted' && p.published_at
         && new Date(p.published_at).getTime() < cutoff && !snapIds.has(p.publication_id));
     }
-
-    function statCard(icon: string, n: number, label: string, sub: string, hot: boolean) {
-      return `<article class="rounded-2xl border ${hot && n > 0 ? 'border-2' : 'border-base-300'} bg-base-200 p-3" ${hot && n > 0 ? 'style="border-color:var(--color-brand-coral);"' : ''}>
+    function statPill(icon: string, n: number, label: string, sub: string, hot: boolean) {
+      return `<article class="min-w-[150px] flex-1 rounded-2xl border ${hot && n > 0 ? 'border-2' : 'border-base-300'} bg-base-200 p-3" ${hot && n > 0 ? 'style="border-color:var(--color-brand-coral);"' : ''}>
         <div class="flex items-center justify-between">
           <span aria-hidden="true">${icon}</span>
           <span class="font-display text-2xl font-bold tabular-nums">${n}</span>
@@ -211,7 +255,6 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
         <p class="text-xs opacity-60">${sub}</p>
       </article>`;
     }
-
     function renderStats() {
       const ready = bucket(['ready_to_record']);
       const recorded = bucket(['recorded', 'editing']);
@@ -219,10 +262,10 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
       const due = analyticsDue();
       const oldest = (vs: Variant[]) => vs.length ? `เก่าสุด ${Math.max(...vs.map((v) => daysAgo(v.status_changed_at)))} วัน` : '—';
       $('wr-stats').innerHTML =
-        statCard('🎤', ready.length, 'Ready to record', oldest(ready), false) +
-        statCard('✂️', recorded.length, 'ถ่ายแล้วยังไม่ตัด', oldest(recorded), true) +
-        statCard('📤', edited.length, 'ตัดแล้วยังไม่ลง', oldest(edited), true) +
-        statCard('📊', due.length, 'Analytics due', 'ลงแล้วเกิน 48 ชม.', false);
+        statPill('🎤', ready.length, 'Ready to record', oldest(ready), false) +
+        statPill('✂️', recorded.length, 'ถ่ายแล้วยังไม่ตัด', oldest(recorded), true) +
+        statPill('📤', edited.length, 'ตัดแล้วยังไม่ลง', oldest(edited), true) +
+        statPill('📊', due.length, 'Analytics due', 'ลงแล้วเกิน 48 ชม.', false);
 
       const stale = [...recorded, ...edited].filter((v) => daysAgo(v.status_changed_at) >= 3)
         .sort((a, b) => daysAgo(b.status_changed_at) - daysAgo(a.status_changed_at))[0];
@@ -236,12 +279,90 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
       $('wr-untriaged').textContent = untriaged ? `${untriaged} ยังไม่ triage` : 'inbox ว่าง 🎉';
     }
 
-    // ---------- Ideas list ----------
+    // ---------- Kanban board ----------
+    const titleOf = (cid: string) => ideas.find((i) => i.content_id === cid)?.title ?? cid;
+    function matchesBoard(v: Variant): boolean {
+      if (!boardSearch) return true;
+      const q = boardSearch.toLowerCase();
+      return `${v.content_id} ${v.variant_id} ${v.working_title ?? ''} ${titleOf(v.content_id)}`.toLowerCase().includes(q);
+    }
+    function matchesBoardIdea(i: Idea): boolean {
+      if (!boardSearch) return true;
+      const q = boardSearch.toLowerCase();
+      return `${i.content_id} ${i.title} ${i.canonical_angle ?? ''}`.toLowerCase().includes(q);
+    }
+    const fmtMeta = (vid: string) => {
+      const code = vid.slice(-2) as FormatCode;
+      return FORMAT_CODES[code] ?? { label: code };
+    };
+
+    function variantCard(v: Variant): string {
+      const meta: any = fmtMeta(v.variant_id);
+      const age = daysAgo(v.status_changed_at);
+      const stale = age >= 3;
+      const idea = ideas.find((i) => i.content_id === v.content_id);
+      const vPubs = pubs.filter((p) => p.variant_id === v.variant_id);
+      return `<article draggable="true" data-card="variant" data-v="${esc(v.variant_id)}" data-cid="${esc(v.content_id)}"
+        class="wr-card group cursor-grab rounded-xl border border-base-300 bg-base-100 p-2.5 shadow-sm transition hover:border-[color:var(--color-brand-coral)] hover:shadow-md active:cursor-grabbing">
+        <div class="flex items-center justify-between gap-2">
+          <span class="badge badge-xs font-semibold" style="background-color:var(--color-brand-navy);color:white;">${esc(meta.label ?? '')}</span>
+          <span class="font-mono text-[10px] opacity-50">${esc(v.content_id.replace('CNT-', ''))}</span>
+        </div>
+        <p class="mt-1.5 line-clamp-2 text-sm font-medium leading-snug">${esc(idea?.title ?? v.working_title ?? v.variant_id)}</p>
+        <div class="mt-1.5 flex items-center justify-between gap-2">
+          <span class="text-[11px] ${stale ? 'font-semibold text-error' : 'opacity-50'}">${stale ? `⏳ ค้าง ${age} วัน` : (age ? `${age} วัน` : 'วันนี้')}</span>
+          ${vPubs.length ? `<span class="text-[11px] opacity-60">${vPubs.map((p) => esc(p.platform)).slice(0, 3).join(' · ')}</span>` : ''}
+        </div>
+      </article>`;
+    }
+
+    function ideaCard(i: Idea): string {
+      const acid = i.acid_test === 'passed' ? '✅' : i.acid_test === 'failed' ? '🔴' : '🧪';
+      return `<article data-card="idea" data-cid="${esc(i.content_id)}"
+        class="wr-card cursor-pointer rounded-xl border border-dashed border-base-300 bg-base-100 p-2.5 shadow-sm transition hover:border-[color:var(--color-brand-coral)] hover:shadow-md">
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-xs" aria-hidden="true" title="acid test">${acid}</span>
+          <span class="font-mono text-[10px] opacity-50">${esc(i.content_id.replace('CNT-', ''))}</span>
+        </div>
+        <p class="mt-1 line-clamp-2 text-sm font-medium leading-snug">${esc(i.title)}</p>
+        <button data-action="quick-produce" data-cid="${esc(i.content_id)}" class="btn btn-xs mt-2 w-full tap-44">+ เริ่มผลิต</button>
+      </article>`;
+    }
+
+    function column(key: string, icon: string, label: string, count: number, cardsHtml: string, dropStatus?: string): string {
+      return `<section data-col="${dropStatus ?? ''}" class="wr-col flex w-[78vw] max-w-[300px] shrink-0 snap-start flex-col rounded-2xl border border-base-300 bg-base-200/60 sm:w-72">
+        <header class="flex items-center justify-between gap-2 px-3 py-2.5">
+          <span class="flex items-center gap-1.5 font-display text-sm font-bold"><span aria-hidden="true">${icon}</span> ${label}</span>
+          <span class="badge badge-sm tabular-nums">${count}</span>
+        </header>
+        <div class="wr-drop flex-1 space-y-2 overflow-y-auto px-2 pb-3" style="min-height:80px;max-height:min(60vh,640px);">
+          ${cardsHtml || `<p class="px-1 py-6 text-center text-xs opacity-40">— ว่าง —</p>`}
+        </div>
+      </section>`;
+    }
+
+    function renderBoard() {
+      // Ideas backlog = ideas with no variant yet, not archived/published.
+      const withVariant = new Set(variants.map((v) => v.content_id));
+      const backlog = ideas
+        .filter((i) => !withVariant.has(i.content_id) && !['archived', 'published', 'repurpose_candidate'].includes(i.idea_status))
+        .filter(matchesBoardIdea);
+
+      const cols = COLUMNS.map((c) => {
+        const vs = variants.filter((v) => c.statuses.includes(v.variant_status)).filter(matchesBoard)
+          .sort((a, b) => daysAgo(b.status_changed_at) - daysAgo(a.status_changed_at));
+        return column(c.key, c.icon, c.label, vs.length, vs.map(variantCard).join(''), c.primary);
+      }).join('');
+
+      $('wr-board').innerHTML =
+        column('ideas', '💡', 'Ideas', backlog.length, backlog.map(ideaCard).join('')) + cols;
+    }
+
+    // ---------- Ideas list (List view) ----------
     const STATUS_BADGE: Record<string, string> = {
       captured: 'badge-neutral', triaged: 'badge-info', selected: 'badge-primary',
       active: 'badge-warning', published: 'badge-success', repurpose_candidate: 'badge-secondary', archived: 'badge-ghost',
     };
-
     function renderList() {
       const q = search.trim().toLowerCase();
       const rows = ideas.filter((i) => {
@@ -263,12 +384,12 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
         : '<li class="px-3 py-6 text-center text-sm opacity-50">ไม่พบ idea</li>';
     }
 
-    // ---------- Content Detail ----------
+    // ---------- Detail (drawer) ----------
     function renderDetail() {
       const body = $('wr-detail-body');
       const idea = ideas.find((i) => i.content_id === selectedId);
       if (!idea) {
-        body.innerHTML = '<p class="py-10 text-center text-sm opacity-50">เลือก idea จากลิสต์ หรือโยน idea ใหม่</p>';
+        body.innerHTML = '<p class="py-10 text-center text-sm opacity-50">เลือก idea จากบอร์ด หรือโยน idea ใหม่</p>';
         return;
       }
       const vs = variants.filter((v) => v.content_id === idea.content_id);
@@ -347,40 +468,70 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
         <div class="mt-2 grid gap-2 sm:grid-cols-2">${variantCards}</div>`;
     }
 
-    // ---------- Idea inbox flow ----------
-    async function saveIdea(confirmed: boolean) {
-      const title = ($('wr-idea-title') as HTMLTextAreaElement).value.trim();
+    // ---------- drawer open/close ----------
+    function openDrawer(cid: string) {
+      selectedId = cid;
+      renderDetail();
+      const d = $('wr-drawer'), scrim = $('wr-drawer-scrim'), panel = $('wr-drawer-panel');
+      d.classList.remove('hidden');
+      requestAnimationFrame(() => { scrim.classList.remove('opacity-0'); panel.classList.remove('translate-x-full'); });
+    }
+    function closeDrawer() {
+      const d = $('wr-drawer'), scrim = $('wr-drawer-scrim'), panel = $('wr-drawer-panel');
+      scrim.classList.add('opacity-0'); panel.classList.add('translate-x-full');
+      window.setTimeout(() => d.classList.add('hidden'), 200);
+    }
+
+    // ---------- view toggle ----------
+    function setView(v: 'board' | 'list') {
+      view = v;
+      $('wr-board-view').classList.toggle('hidden', v !== 'board');
+      $('wr-list-view').classList.toggle('hidden', v !== 'list');
+      const b = $('wr-view-board'), l = $('wr-view-list');
+      b.setAttribute('aria-selected', String(v === 'board'));
+      l.setAttribute('aria-selected', String(v === 'list'));
+      b.classList.toggle('btn-ghost', v !== 'board');
+      l.classList.toggle('btn-ghost', v !== 'list');
+      (b as HTMLElement).style.backgroundColor = v === 'board' ? 'var(--color-brand-navy)' : '';
+      (l as HTMLElement).style.backgroundColor = v === 'list' ? 'var(--color-brand-navy)' : '';
+      b.classList.toggle('text-white', v === 'board');
+      l.classList.toggle('text-white', v === 'list');
+    }
+
+    // ---------- Idea capture (shared by list + quick) ----------
+    async function saveIdea(confirmed: boolean, source: 'list' | 'quick') {
+      const titleEl = source === 'quick' ? $('wr-quick-idea') as HTMLInputElement : $('wr-idea-title') as HTMLTextAreaElement;
+      const title = titleEl.value.trim();
       if (!title) { toast('พิมพ์ไอเดียก่อน', 'error'); return; }
-      const angle = ($('wr-idea-angle') as HTMLInputElement).value.trim();
-      const simBox = $('wr-similar');
+      const angle = source === 'list' ? ($('wr-idea-angle') as HTMLInputElement).value.trim() : '';
+      const simBox = source === 'quick' ? $('wr-quick-similar') : $('wr-similar');
       try {
         if (!confirmed) {
           const hits = (await findSimilar(`${title} ${angle}`)).filter((h) => h.sim >= 0.22);
           if (hits.length) {
-            pendingIdea = { title, angle };
+            pendingIdea = { title, angle, source };
             simBox.classList.remove('hidden');
             simBox.innerHTML = `<p class="font-semibold" style="color:var(--color-brand-coral);">⚠️ คล้ายกับ idea เดิม:</p>
               ${hits.map((h) => `<p class="mt-1"><span class="font-mono text-xs opacity-60">${esc(h.content_id)}</span> ${esc(h.title)} <span class="opacity-50">(${Math.round(h.sim * 100)}%)</span></p>`).join('')}
               <div class="mt-2 flex gap-2">
-                <button id="wr-sim-force" class="btn btn-xs tap-44">บันทึกเป็น idea ใหม่</button>
-                <button id="wr-sim-cancel" class="btn btn-xs btn-ghost tap-44">ยกเลิก</button>
+                <button data-sim="force" class="btn btn-xs tap-44">บันทึกเป็น idea ใหม่</button>
+                <button data-sim="cancel" class="btn btn-xs btn-ghost tap-44">ยกเลิก</button>
               </div>`;
-            $('wr-sim-force').addEventListener('click', () => void saveIdea(true));
-            $('wr-sim-cancel').addEventListener('click', () => { pendingIdea = null; simBox.classList.add('hidden'); });
+            simBox.querySelector('[data-sim="force"]')!.addEventListener('click', () => void saveIdea(true, source));
+            simBox.querySelector('[data-sim="cancel"]')!.addEventListener('click', () => { pendingIdea = null; simBox.classList.add('hidden'); });
             return;
           }
         }
         const idea = await createIdea({
           title,
           canonical_angle: angle || null,
-          pillar_bucket: (($('wr-idea-pillar') as HTMLSelectElement).value || null) as Idea['pillar_bucket'],
-          funnel_stage: (($('wr-idea-funnel') as HTMLSelectElement).value || null) as Idea['funnel_stage'],
+          pillar_bucket: source === 'list' ? ((($('wr-idea-pillar') as HTMLSelectElement).value || null) as Idea['pillar_bucket']) : null,
+          funnel_stage: source === 'list' ? ((($('wr-idea-funnel') as HTMLSelectElement).value || null) as Idea['funnel_stage']) : null,
         });
         pendingIdea = null;
         simBox.classList.add('hidden');
-        ($('wr-idea-title') as HTMLTextAreaElement).value = '';
-        ($('wr-idea-angle') as HTMLInputElement).value = '';
-        selectedId = idea.content_id;
+        titleEl.value = '';
+        if (source === 'list') ($('wr-idea-angle') as HTMLInputElement).value = '';
         toast(`บันทึกแล้ว → ${idea.content_id}`);
         await refresh();
       } catch (e) { oops(e); }
@@ -396,7 +547,6 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
       $('wr-studio-path').textContent = v.markdown_path ?? '';
       ($('wr-studio') as HTMLDialogElement).showModal();
     }
-
     function studioFile(): { name: string; md: string } | null {
       const v = variants.find((x) => x.variant_id === studioVariantId);
       const idea = ideas.find((i) => i.content_id === v?.content_id);
@@ -408,7 +558,18 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
     // ---------- events ----------
     function wire() {
       $('wr-date').textContent = new Date().toLocaleDateString('th-TH', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-      $('wr-idea-save').addEventListener('click', () => void saveIdea(false));
+
+      // View toggle
+      $('wr-view-board').addEventListener('click', () => setView('board'));
+      $('wr-view-list').addEventListener('click', () => setView('list'));
+
+      // Quick capture
+      $('wr-quick-save').addEventListener('click', () => void saveIdea(false, 'quick'));
+      $('wr-quick-idea').addEventListener('keydown', (e) => { if ((e as KeyboardEvent).key === 'Enter') { e.preventDefault(); void saveIdea(false, 'quick'); } });
+      $('wr-board-search').addEventListener('input', (e) => { boardSearch = (e.target as HTMLInputElement).value.trim(); renderBoard(); });
+
+      // Full capture (list view)
+      $('wr-idea-save').addEventListener('click', () => void saveIdea(false, 'list'));
       $('wr-search').addEventListener('input', (e) => { search = (e.target as HTMLInputElement).value; renderList(); });
       $('wr-filter').addEventListener('click', (e) => {
         const b = (e.target as HTMLElement).closest('button[data-f]') as HTMLButtonElement | null;
@@ -420,12 +581,63 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
       $('wr-idea-list').addEventListener('click', (e) => {
         const b = (e.target as HTMLElement).closest('button[data-id]') as HTMLButtonElement | null;
         if (!b) return;
-        selectedId = b.dataset.id!;
-        renderList(); renderDetail();
+        renderList();
+        openDrawer(b.dataset.id!);
       });
       $('wr-logout').addEventListener('click', () => { void supabase.auth.signOut().then(() => location.reload()); });
 
-      // Detail panel — event delegation
+      // Board interactions (click card → drawer; quick-produce)
+      $('wr-board').addEventListener('click', (e) => void (async () => {
+        const produce = (e.target as HTMLElement).closest('[data-action="quick-produce"]') as HTMLElement | null;
+        if (produce) {
+          e.stopPropagation();
+          const idea = ideas.find((i) => i.content_id === produce.dataset.cid);
+          if (idea) { try { await createVariant(idea, 'RL'); toast('สร้าง Reel variant แล้ว'); await refresh(); openDrawer(idea.content_id); } catch (err) { oops(err); } }
+          return;
+        }
+        const card = (e.target as HTMLElement).closest('[data-card]') as HTMLElement | null;
+        if (card?.dataset.cid) openDrawer(card.dataset.cid);
+      })());
+
+      // Board drag-drop (variant cards → columns)
+      let dragVid: string | null = null;
+      $('wr-board').addEventListener('dragstart', (e) => {
+        const card = (e.target as HTMLElement).closest('[data-card="variant"]') as HTMLElement | null;
+        if (!card) return;
+        dragVid = card.dataset.v!;
+        card.classList.add('opacity-40');
+        (e as DragEvent).dataTransfer!.effectAllowed = 'move';
+      });
+      $('wr-board').addEventListener('dragend', (e) => {
+        (e.target as HTMLElement).closest('[data-card]')?.classList.remove('opacity-40');
+        document.querySelectorAll('.wr-col').forEach((c) => c.classList.remove('ring-2'));
+      });
+      $('wr-board').addEventListener('dragover', (e) => {
+        const col = (e.target as HTMLElement).closest('.wr-col[data-col]') as HTMLElement | null;
+        if (!col || !col.dataset.col || !dragVid) return;
+        e.preventDefault();
+        (e as DragEvent).dataTransfer!.dropEffect = 'move';
+        document.querySelectorAll('.wr-col').forEach((c) => c.classList.toggle('ring-2', c === col));
+        col.classList.add('ring-[color:var(--color-brand-coral)]');
+      });
+      $('wr-board').addEventListener('drop', (e) => void (async () => {
+        const col = (e.target as HTMLElement).closest('.wr-col[data-col]') as HTMLElement | null;
+        document.querySelectorAll('.wr-col').forEach((c) => c.classList.remove('ring-2'));
+        if (!col || !col.dataset.col || !dragVid) return;
+        e.preventDefault();
+        const vid = dragVid; dragVid = null;
+        const v = variants.find((x) => x.variant_id === vid);
+        const target = col.dataset.col as VariantStatus;
+        if (!v || v.variant_status === target || colOf(v.variant_status)?.key === COLUMNS.find((c) => c.primary === target)?.key) return;
+        try { await updateVariant(vid, { variant_status: target }); toast(`ย้าย → ${target}`); await refresh(); } catch (err) { oops(err); }
+      })());
+
+      // Drawer close
+      $('wr-drawer-close').addEventListener('click', closeDrawer);
+      $('wr-drawer-scrim').addEventListener('click', closeDrawer);
+      document.addEventListener('keydown', (e) => { if ((e as KeyboardEvent).key === 'Escape' && !$('wr-drawer').classList.contains('hidden')) closeDrawer(); });
+
+      // Detail — click delegation
       $('wr-detail-body').addEventListener('click', (e) => void (async () => {
         const el = (e.target as HTMLElement).closest('[data-action]') as HTMLElement | null;
         if (!el || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') return;
@@ -479,17 +691,9 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
       })());
 
       // Studio buttons
-      $('wr-studio-copy-body').addEventListener('click', () => {
-        void copyText(($('wr-studio-body') as HTMLTextAreaElement).value).then(() => toast('คัดลอกเนื้อหาแล้ว'));
-      });
-      $('wr-studio-copy').addEventListener('click', () => {
-        const f = studioFile();
-        if (f) void copyText(f.md).then(() => toast('คัดลอกทั้งไฟล์แล้ว'));
-      });
-      $('wr-studio-dl').addEventListener('click', () => {
-        const f = studioFile();
-        if (f) { downloadText(f.name, f.md); toast(`ดาวน์โหลด ${f.name}`); }
-      });
+      $('wr-studio-copy-body').addEventListener('click', () => { void copyText(($('wr-studio-body') as HTMLTextAreaElement).value).then(() => toast('คัดลอกเนื้อหาแล้ว')); });
+      $('wr-studio-copy').addEventListener('click', () => { const f = studioFile(); if (f) void copyText(f.md).then(() => toast('คัดลอกทั้งไฟล์แล้ว')); });
+      $('wr-studio-dl').addEventListener('click', () => { const f = studioFile(); if (f) { downloadText(f.name, f.md); toast(`ดาวน์โหลด ${f.name}`); } });
 
       // Snapshot save
       $('wr-snap-save').addEventListener('click', () => void (async () => {
@@ -514,6 +718,7 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
       if (booted) return;
       booted = true;
       wire();
+      setView('board');
       try { await refresh(); } catch (e) { oops(e); }
     }
     document.addEventListener('war-room:authed', () => void boot());
