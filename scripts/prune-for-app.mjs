@@ -53,18 +53,20 @@ for (const asset of KEEP_ASSETS) {
 // 3. Strict app security headers (renamed from _headers.app -> _headers).
 await cp(join(DIST, '_headers.app'), join(OUT, '_headers'));
 
-// 4. Until a launcher page (src/pages/app/index.astro) exists, send the app
-//    root to the dashboard. Once index.html is present, skip the redirect so
-//    the launcher wins.
+// 4. Redirects.
+//    - /app/* → flattened root: internal links use /app/... to match the src
+//      route + Astro dev server, but prod serves the pages flattened at root.
+//      This bridges the gap so cross-app links (dashboard ⇄ war-room) resolve.
+//    - / → /dashboard until a launcher (src/pages/app/index.astro) exists.
+const redirects = ['/app/*  /:splat  302'];
 let hasIndex = true;
 try {
   await access(join(OUT, 'index.html'));
 } catch {
   hasIndex = false;
 }
-if (!hasIndex) {
-  await writeFile(join(OUT, '_redirects'), '/  /dashboard  302\n');
-}
+if (!hasIndex) redirects.push('/  /dashboard  302');
+await writeFile(join(OUT, '_redirects'), redirects.join('\n') + '\n');
 
 // 5. Lock crawlers out (Cloudflare Access already blocks them; belt-and-suspenders).
 await writeFile(join(OUT, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
