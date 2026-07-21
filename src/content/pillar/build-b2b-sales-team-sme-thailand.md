@@ -95,7 +95,7 @@ KPI dashboard (หน้าจอสรุปข้อมูล) พื้นฐ
 2. วางระบบ: สร้าง dealer portal แบบง่ายบน Google Sites + sheet ที่เก็บ stock + ETA + ข้อมูลสินค้าใหม่ทุกเดือน
 3. KPI ใหม่: วัด dealer activation rate (dealer ที่สั่งอย่างน้อย 1 ครั้ง/เดือน) + revenue per active dealer
 
-ผลหลัง 4 เดือน: dealer active เพิ่มจาก 11 → 15 ราย, concentration จาก top-4 = 80% ลงมาที่ 65%, เจ้าของเอาเวลา follow-up dealer กลับมาได้ 3 ชม./วัน. งบทำระบบรวม ฿65,000
+ผลหลัง 4 เดือน: dealer active เพิ่มจาก 11 → 15 ราย, concentration จาก top-4 = 80% ลงมาที่ 65%, เจ้าของเอาเวลา follow-up dealer กลับมาได้ 3 ชม./วัน. งบทำระบบรวม ฿65,000 <!-- price:historical -->
 
 เคสเต็มอ่านที่ [Dealer หนีไปคู่แข่งแก้ยังไง](/faq#dealer-switching-to-competitor) + [Forklift Distributor ทีม 5 คน](/case-studies/forklift-distributor-5-person-team) สำหรับเคสลักษณะคล้ายกัน
 
@@ -128,7 +128,7 @@ KPI dashboard (หน้าจอสรุปข้อมูล) พื้นฐ
 
 ## อยากเริ่มก่อนจ้าง project ใหญ่
 
-- [Advance AI & Business Automation 1 วัน ฿39,900](/services/ai-workshop) — วางระบบ + ได้ AI workflow (ขั้นตอนการทำงาน) ใช้งานจริงใน 1 วัน
-- [Sales System Sprint 1 เดือน ฿65,000](/services/sales-system-sprint) — ระบบขายครบพร้อม KPI dashboard + CRM automation
+- [Advance AI & Business Automation 1 วัน {{price:ai-workshop-advance}}](/services/ai-workshop) — วางระบบ + ได้ AI workflow (ขั้นตอนการทำงาน) ใช้งานจริงใน 1 วัน
+- [Sales System Sprint 1 เดือน {{price:sales-system-sprint}}](/services/sales-system-sprint) — ระบบขายครบพร้อม KPI dashboard + CRM automation
 - [BOSI DNA Quiz ฟรี](/bosi-dna-quiz) — รู้ DNA ทีมขายใน 5-10 นาที ก่อนวางระบบ
 - [จองคิวคุย 30 นาที](/booking) — ดูว่าผมเข้ากับ culture ของทีมคุณไหม

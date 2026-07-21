@@ -4,12 +4,17 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
+import remarkPrice from './plugins/remark-price.mjs';
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://punnattapatch.com',
   trailingSlash: 'never',
   build: {
     format: 'file',
+  },
+  markdown: {
+    remarkPlugins: [remarkPrice],
   },
   redirects: {
     '/services/ai-workshop-followup': '/services/ai-workshop',

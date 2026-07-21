@@ -15,11 +15,11 @@ tags: [faq, pricing, bangkok, consulting]
 
 | Package | ราคา | ระยะเวลา |
 |---|---|---|
-| Advance AI & Business Automation | ฿39,900 | 1 วัน |
+| Advance AI & Business Automation | {{price:ai-workshop-advance}} | 1 วัน |
 | Consult Package | ฿45,000 | 1 วัน + 30 วัน |
-| Sale Training Bundle | ฿50,000 (Early Bird ฿44,900 · 3 ทีม/เดือน) | 2 วัน |
-| Sales System Sprint | ฿65,000 | 1 เดือน (4 sessions) |
-| AI Trust Content Cycle System | ฿49,900 | 1 วัน (5 ธุรกิจแรก) |
+| Sale Training Bundle | ฿50,000 (Early Bird {{price:sale-training-bundle}} · 3 ทีม/เดือน) | 2 วัน |
+| Sales System Sprint | {{price:sales-system-sprint}} | 1 เดือน (4 sessions) |
+| AI Trust Content Cycle System | {{price:tiktok-workshop}} | 1 วัน (5 ธุรกิจแรก) |
 
 ราคาในใบเสนอราคาคือราคาสุทธิ ไม่มีค่าใช้จ่ายแอบแฝง ส่วนค่าเดินทางสำหรับงาน on-site ต่างจังหวัดจะคิดแยกและแจ้งให้ทราบล่วงหน้า
 
@@ -35,7 +35,7 @@ tags: [faq, pricing, bangkok, consulting]
 
 ## ประเภทงานที่ไม่ได้รับ
 
-- งานที่มีงบประมาณต่ำกว่า ฿39,900 → แนะนำให้เริ่มต้นจาก [E-book ฟรี](/) ของผมก่อน
+- งานที่มีงบประมาณต่ำกว่า {{price:ai-workshop-advance}} → แนะนำให้เริ่มต้นจาก [E-book ฟรี](/) ของผมก่อน
 - องค์กรขนาดใหญ่ (Enterprise) ที่ต้องการสัญญาจ้างแบบ Retainer (สัญญาจ่ายรายเดือน) ระยะยาวเกิน 12 เดือน → ไม่สอดคล้องกับโมเดลการทำงานของผม
 - ธุรกิจที่ยังไม่มีทีมขาย หรือเจ้าของทำคนเดียว → บริการของผมเน้นการเข้าไปวางระบบให้กับทีม
 

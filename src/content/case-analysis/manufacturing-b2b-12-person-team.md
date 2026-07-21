@@ -142,7 +142,7 @@ anonymized: true
 
 ## อยากได้ผลลัพธ์แบบนี้ไหม?
 
-- [Sales System Sprint ฿65,000](/services/sales-system-sprint) — 1 เดือน compact version ของเคสนี้ (เหมาะทีม 10-15 คน)
-- [Advance AI & Business Automation ฿39,900](/services/ai-workshop) — Starting point ของลูกค้ารายนี้ (Consult Package ฿44,900)
+- [Sales System Sprint {{price:sales-system-sprint}}](/services/sales-system-sprint) — 1 เดือน compact version ของเคสนี้ (เหมาะทีม 10-15 คน)
+- [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop) — Starting point ของลูกค้ารายนี้ (Consult Package ฿44,900) <!-- price:literal -->
 - [Sale Training Bundle ฿50,000](/services/sale-training-bundle) — Module ที่ 4 ของเคสนี้
 - [กรอกฟอร์ม 3 นาที](/intake-form) — ผมอ่านแล้วบอกว่าเคสคุณ match กับลูกค้ารายนี้แค่ไหน + ควร start ตรงไหน

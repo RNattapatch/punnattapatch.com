@@ -1,3 +1,5 @@
+import { fmtPrice } from './pricing.mjs';
+
 export type AccentToken = 'cyan' | 'coral' | 'violet';
 
 /**
@@ -219,8 +221,8 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
         },
       ],
     },
-    priceHeadline: '฿29,900 / 1 วัน',
-    priceCompare: 'Basic Foundation AI ฿29,900 · Advance AI & Business Automation ฿39,900 · Package A (Advance + Consult 2 วัน) ฿54,900',
+    priceHeadline: `${fmtPrice('ai-workshop-basic')} / 1 วัน`,
+    priceCompare: `Basic Foundation AI ${fmtPrice('ai-workshop-basic')} · Advance AI & Business Automation ${fmtPrice('ai-workshop-advance')} · Package A (Advance + Consult 2 วัน) ${fmtPrice('package-a')}`,
     priceNote: 'จัดแบบ private on-site ผมเดินทางไปที่บริษัทของคุณ · ยืนยันวันอบรมได้ภายใน 30 วันหลังจอง · ชำระ 100% ก่อนเริ่มงาน',
     inclusions: [
       'Workshop 1 วัน 6-7 ชม. · On-site เท่านั้น (In-house)',
@@ -378,7 +380,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
         },
       ],
     },
-    priceHeadline: '฿65,000 / โครงการ',
+    priceHeadline: `${fmtPrice('sales-system-sprint')} / โครงการ`,
     priceNote: '1 เดือนจบ · ชำระเต็มจำนวนก่อนเริ่ม · ไม่มีสัญญารายเดือนผูกมัดหลังจบ',
     inclusions: [
       'คุยสัมภาษณ์ + ตรวจข้อมูลย้อนหลัง',
@@ -591,8 +593,8 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
         },
       ],
     },
-    priceHeadline: '฿44,900 / 2 วัน · Early Bird',
-    priceCompare: '🔥 Early Bird ฿44,900 · รับเพียง 3 ทีมต่อเดือน · หลังเต็มกลับเป็นราคาปกติ ฿52,800',
+    priceHeadline: `${fmtPrice('sale-training-bundle')} / 2 วัน · Early Bird`,
+    priceCompare: `🔥 Early Bird ${fmtPrice('sale-training-bundle')} · รับเพียง 3 ทีมต่อเดือน · หลังเต็มกลับเป็นราคาปกติ ${fmtPrice('sale-training-regular')}`,
     priceNote: 'อบรมที่บริษัทลูกค้า (On-site) สำหรับทีมขนาดไม่เกิน 20 คน ราคานี้สำหรับการอบรมในกรุงเทพและปริมณฑล ชำระ 100% ก่อนวันอบรม ค่าเดินทางสำหรับต่างจังหวัดจะคิดแยกตามระยะทางจริง',
     inclusions: [
       'Workshop 2 วันเต็ม (ประมาณ 12-14 ชั่วโมง) ณ บริษัทของลูกค้า',
@@ -736,8 +738,8 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
         },
       ],
     },
-    priceHeadline: '฿49,900 · ราคาเปิดตัว',
-    priceCompare: 'ราคาปกติ ฿59,900 · ราคาเปิดตัวลดให้ → ฿49,900',
+    priceHeadline: `${fmtPrice('tiktok-workshop')} · ราคาเปิดตัว`,
+    priceCompare: `ราคาปกติ ${fmtPrice('tiktok-workshop-regular')} · ราคาเปิดตัวลดให้ → ${fmtPrice('tiktok-workshop')}`,
     priceNote: '2 วัน + ดูแลต่อผ่าน LINE 30 วัน · ที่บริษัทลูกค้า · ชำระเต็มจำนวนก่อนเริ่ม',
     tiktokProof: {
       stats: {

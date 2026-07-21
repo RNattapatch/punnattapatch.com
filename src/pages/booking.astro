@@ -1,577 +1,92 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Icon from '../components/Icon.astro';
-import { SITE, SERVICES } from '../data/site';
+import DarumaMark from '../components/DarumaMark.astro';
+import { SITE } from '../data/site';
 
-const title = 'จองบริการกับปัน';
-const description =
-  'กรอก 3 นาที — บอกผมว่าสนใจแบบไหน ผมอ่านเองทุกใบ ตอบกลับใน 24 ชม. พร้อม level ที่เหมาะ + link นัดเวลา';
-
-// ===== เลือก "ทาง" เดียว — 3 ทางหลัก + เฉพาะทาง (mirror /services) =====
-// ปันคัด level ให้หลัง intake · n8n payload schema เดิมยังทำงาน (map ทาง → slugs)
-const mainPaths = [
-  { key: 'training', name: 'Training — ปั้นทีมให้ใช้ AI เป็น', desc: 'อยากให้ทีมใช้ AI เป็น ทำระบบเองได้', priceHint: 'เริ่ม ฿29,900', featured: false },
-  { key: 'consult', name: 'Consult — คู่คิด วางระบบ AI Agent ให้', desc: 'ไม่มีเวลาเรียนเอง อยากมีคนวางโครงให้', priceHint: 'เริ่ม ฿35,000/วัน', featured: false },
-  { key: 'both', name: 'ทั้งคู่ — วางระบบ + สอนทีม', desc: 'อยากได้ทั้งระบบที่รันได้ และทีมทำต่อเองเป็น', priceHint: 'Package A ฿69,900', featured: true },
+const title = 'จองคิวคุยปั้นทีมขาย';
+const description = 'จองคิวคุย 15–20 นาที เพื่อดูว่าทีมขายของคุณควรเริ่มที่ Daruma Score หรือ AI Agent Transformation';
+const issues = [
+  'ข้อมูลลูกค้ากระจาย อยู่ในไลน์กับหัวคน',
+  'เซลล์หมดเวลาไปกับงานเอกสารและงานซ้ำ',
+  'ยอดขึ้นๆ ลงๆ เดาไม่ได้ว่าเดือนหน้าจะเป็นยังไง',
+  'ทีมพึ่งคนเก่งคนเดียว คนอื่นตามไม่ทัน',
+  'วัดผลทีมไม่ได้ ประชุมด้วยความรู้สึก',
+  'ลงทุนเรียนหรือซื้อเครื่องมือมาแล้ว แต่ทีมไม่ได้ใช้จริง',
 ];
-const otherPaths = [
-  { key: 'ceo-advisory', name: 'AI Consultant for CEO', desc: '1-on-1 · คู่คิด AI ส่วนตัวของผู้บริหาร', priceHint: '฿35,000/วัน' },
-  { key: 'trust-content', name: 'AI Trust Content Cycle', desc: 'ให้ลูกค้าเชื่อใจจนทักมาผ่าน content', priceHint: '฿49,900' },
-];
-
-// path → representative service slugs (คง n8n schema: packages[] + package + price)
-const pathToSlugs: Record<string, string[]> = {
-  training: ['ai-workshop', 'ai-workshop-advance'],
-  consult: ['consult', 'consult-package'],
-  both: ['package-a'],
-  'ceo-advisory': ['ceo-advisory'],
-  'trust-content': ['trust-content-tiktok-workshop'],
-};
-const pathLabels: Record<string, string> = {
-  training: 'Training (ปั้นทีม)',
-  consult: 'Consult (คู่คิด)',
-  both: 'ทั้งคู่ — Package A',
-  'ceo-advisory': 'AI Consultant for CEO',
-  'trust-content': 'AI Trust Content Cycle',
-};
-
-const teamSizes = [
-  '1-2 คน (เจ้าของ + ผู้ช่วย)',
-  '3-5 คน',
-  '6-10 คน',
-  '11-20 คน',
-  '20+ คน',
-];
-
-const painPoints = [
-  'ทีมเสียเวลากับงาน manual ซ้ำๆ (report, follow-up, data entry)',
-  'เจ้าของแบกยอดขายเอง ทีมไม่ run เอง',
-  'ไม่มีระบบ KPI / Commission ที่ fair + วัดได้',
-  'ทีมปิดการขายด้วยลดราคาเป็นหลัก',
-  'เคยจ่าย workshop แล้วทีมเลิกใช้ภายใน 2 สัปดาห์',
-  'อยากเริ่มใช้ AI แต่ไม่รู้จะเริ่มจากไหน',
-];
-
-const sources = [
-  { value: 'chatgpt', label: 'ChatGPT / GPT-4o / o1' },
-  { value: 'claude', label: 'Claude (claude.ai, Claude API)' },
-  { value: 'gemini', label: 'Gemini / Google AI Overview' },
-  { value: 'perplexity', label: 'Perplexity' },
-  { value: 'tiktok', label: 'TikTok (@pun_nattapatch)' },
-  { value: 'instagram', label: 'Instagram (@pun_nattapatch)' },
-  { value: 'facebook', label: 'Facebook' },
-  { value: 'google-search', label: 'Google (ผลลัพธ์ปกติ)' },
-  { value: 'referral', label: 'เพื่อน / ลูกค้าเก่าแนะนำ' },
-  { value: 'event', label: 'งานสัมมนา / event' },
-  { value: 'other', label: 'อื่นๆ' },
-];
-
-// slug → name/price for CRM/Telegram (คง schema เดิม) + path map for client script
-const pkgNameBySlug: Record<string, string> = Object.fromEntries(SERVICES.map((s) => [s.slug, s.title]));
-const pkgPriceBySlug: Record<string, number> = Object.fromEntries(SERVICES.map((s) => [s.slug, s.priceThb]));
-const lookupJson = JSON.stringify({ names: pkgNameBySlug, prices: pkgPriceBySlug, pathToSlugs, pathLabels });
 ---
 
 <BaseLayout
   title={title}
   description={description}
-  schema={{
-    types: ['WebPage', 'BreadcrumbList'],
-    title,
-    description,
-    breadcrumbs: [
-      { name: 'หน้าแรก', url: SITE.url },
-      { name: 'จองบริการ', url: `${SITE.url}/booking` },
-    ],
-  }}
+  schema={{ types: ['WebPage', 'BreadcrumbList'], title, description, breadcrumbs: [{ name: 'หน้าแรก', url: SITE.url }, { name: 'จองคิวคุย', url: `${SITE.url}/booking` }] }}
 >
-  <Fragment slot="head">
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/css/intlTelInput.css"
-    />
-    <style is:global>
-      /* intl-tel-input v24 — navy dropdown (brand) on editorial form */
-      .iti { width: 100%; display: block; }
-      .iti__dropdown-content {
-        background: #072b4e !important;
-        color: #ffffff !important;
-        border: 1px solid rgb(255 255 255 / 0.18) !important;
-        border-radius: 0.75rem;
-        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.55);
-      }
-      .iti__country-list { background: #072b4e !important; max-height: 280px; }
-      .iti__search-input {
-        background: rgb(255 255 255 / 0.06) !important;
-        color: #ffffff !important;
-        border: 1px solid rgb(255 255 255 / 0.18) !important;
-        padding: 10px 12px !important;
-      }
-      .iti__search-input::placeholder { color: rgb(255 255 255 / 0.5) !important; }
-      .iti__country {
-        display: flex !important; align-items: center !important;
-        gap: 10px !important; padding: 10px 12px !important; color: #ffffff !important;
-      }
-      .iti__country .iti__flag-box, .iti__country > .iti__flag { order: 1 !important; flex-shrink: 0; }
-      .iti__country .iti__dial-code {
-        order: 2 !important; color: #fcf9f2 !important; font-weight: 600;
-        min-width: 52px; flex-shrink: 0;
-      }
-      .iti__country .iti__country-name {
-        order: 3 !important; color: #ffffff !important; flex: 1;
-        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-      }
-      .iti__country.iti__highlight, .iti__country:hover {
-        background: rgb(221 65 85 / 0.30) !important;
-      }
-      .iti__selected-country, .iti__selected-country-primary { background: transparent !important; }
-      .iti--separate-dial-code .iti__selected-dial-code, .iti--separate-dial-code .iti__dial-code { color: #1e1b16 !important; }
-      .iti__divider { border-bottom-color: rgb(255 255 255 / 0.12) !important; padding: 0 !important; }
-      .iti__no-results { color: rgb(255 255 255 / 0.7) !important; padding: 12px !important; }
-    </style>
-  </Fragment>
+  <section class="border-b border-[#c9c2b2] bg-ivory px-6 py-16 md:py-20">
+    <div class="mx-auto max-w-6xl"><p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ปรึกษาปั้นทีมขาย สำหรับเจ้าของ SME ไทย</p><h1 class="mt-3 font-display text-4xl font-bold text-navy md:text-6xl">จองคิวคุยกับผม</h1><p class="mt-5 max-w-3xl text-lg leading-relaxed text-warm-ink/75">เล่าโจทย์ให้ฟัง 15–20 นาที ไม่มีค่าใช้จ่ายและไม่มีการขายแบบกดดัน คุยจบผมจะบอกตรงๆ ว่าเส้นทางไหนคุ้มสุดสำหรับคุณ แม้คำตอบคือยังไม่ต้องจ้างผมก็ตาม</p></div>
+  </section>
 
-  <section class="px-margin-page py-16 md:py-20">
-    <div class="mx-auto max-w-3xl">
-      <p class="text-xs font-semibold uppercase tracking-[0.15em] text-coral">จองบริการ</p>
-      <h1 class="mt-3 font-serif text-4xl font-semibold leading-tight text-navy md:text-5xl">
-        คุยกับผม — เริ่มจากบอกว่าสนใจแบบไหน
-      </h1>
-      <p class="mt-5 text-lg text-warm-ink/75">
-        ไม่ต้องเลือก level เอง · บอกแค่ทางที่ใช่ + เล่าธุรกิจให้ผมฟัง ผมอ่านเองทุกใบ ตอบกลับใน 24 ชม. พร้อม level ที่เหมาะ + link นัดเวลา
-      </p>
-
-      <form id="booking-form" class="mt-10 space-y-8" novalidate>
-        <!-- ===== 1. เลือกทาง ===== -->
-        <fieldset class="space-y-5 rounded-2xl border border-[#c9c2b2] bg-surface p-6 md:p-7">
-          <legend class="px-2 font-serif text-lg font-semibold text-navy">1. สนใจแบบไหน?</legend>
-
-          <div class="space-y-3">
-            {mainPaths.map((p) => (
-              <label
-                data-path={p.key}
-                class:list={[
-                  'path-card relative flex cursor-pointer items-start gap-4 rounded-xl border bg-surface p-5 transition hover:-translate-y-0.5',
-                  p.featured ? 'border-coral/50' : 'border-[#c9c2b2]',
-                ]}
-              >
-                <input type="radio" name="path" value={p.key} class="path-input peer sr-only" />
-                <div class="path-dot mt-1 h-5 w-5 flex-shrink-0 rounded-full border-2 border-[#c9c2b2] transition-all" />
-                <div class="flex-1">
-                  <div class="flex items-center gap-2">
-                    <p class="font-serif text-base font-semibold text-navy">{p.name}</p>
-                    {p.featured && (
-                      <span class="rounded-full bg-coral px-2 py-0.5 text-[10px] font-semibold text-white">แนะนำ</span>
-                    )}
-                  </div>
-                  <p class="mt-1 text-sm text-warm-ink/70">{p.desc}</p>
-                </div>
-                <span class="path-price shrink-0 font-serif text-sm font-semibold text-coral">{p.priceHint}</span>
-              </label>
-            ))}
-          </div>
-
-          <details class="group rounded-xl border border-dashed border-[#c9c2b2] bg-surface/60 p-4">
-            <summary class="cursor-pointer list-none text-sm font-medium text-navy/80 transition group-open:text-coral">
-              + บริการเฉพาะทางอื่นๆ (สำหรับผู้บริหาร / สาย content)
-            </summary>
-            <div class="mt-4 space-y-3">
-              {otherPaths.map((p) => (
-                <label data-path={p.key} class="path-card relative flex cursor-pointer items-start gap-4 rounded-xl border border-[#c9c2b2] bg-surface p-4 transition hover:-translate-y-0.5">
-                  <input type="radio" name="path" value={p.key} class="path-input peer sr-only" />
-                  <div class="path-dot mt-1 h-5 w-5 flex-shrink-0 rounded-full border-2 border-[#c9c2b2] transition-all" />
-                  <div class="flex-1">
-                    <p class="font-serif text-base font-semibold text-navy">{p.name}</p>
-                    <p class="mt-1 text-sm text-warm-ink/70">{p.desc}</p>
-                  </div>
-                  <span class="path-price shrink-0 font-serif text-sm font-semibold text-coral">{p.priceHint}</span>
-                </label>
-              ))}
-            </div>
-          </details>
-
-          <p id="err-path" class="hidden text-sm font-medium text-coral">เลือก 1 ทางที่สนใจก่อนนะครับ</p>
-        </fieldset>
-
-        <!-- ===== 2. ติดต่อ ===== -->
-        <fieldset class="space-y-5 rounded-2xl border border-[#c9c2b2] bg-surface p-6 md:p-7">
-          <legend class="px-2 font-serif text-lg font-semibold text-navy">2. ติดต่อ</legend>
-
-          <div class="grid gap-5 sm:grid-cols-2">
-            <div>
-              <label for="b-name" class="text-sm font-medium text-warm-ink">ชื่อ-นามสกุล <span class="text-coral">*</span></label>
-              <input id="b-name" name="name" type="text" required class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" placeholder="ปัน ณัฐพัชร์" />
-            </div>
-            <div>
-              <label for="b-company" class="text-sm font-medium text-warm-ink">บริษัท <span class="text-coral">*</span></label>
-              <input id="b-company" name="company" type="text" required class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" placeholder="บริษัทของคุณ จำกัด" />
-            </div>
-          </div>
-
-          <div class="grid gap-5 sm:grid-cols-2">
-            <div>
-              <label for="b-position" class="text-sm font-medium text-warm-ink">ตำแหน่ง</label>
-              <input id="b-position" name="position" type="text" class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" placeholder="เจ้าของ / CEO / Sales Manager" />
-            </div>
-            <div>
-              <label for="b-industry" class="text-sm font-medium text-warm-ink">อุตสาหกรรม</label>
-              <input id="b-industry" name="industry" type="text" class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" placeholder="เช่น วัสดุก่อสร้าง / ที่พัก / IT" />
-            </div>
-          </div>
-
-          <div class="grid gap-5 sm:grid-cols-2">
-            <div>
-              <label for="b-phone" class="text-sm font-medium text-warm-ink">เบอร์โทร <span class="text-coral">*</span></label>
-              <input id="b-phone" name="phone" type="tel" required autocomplete="tel" class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" placeholder="812345678" />
-              <p id="b-phone-err" class="mt-1.5 hidden text-xs font-medium text-coral">กรุณาใส่เบอร์โทรให้ถูก format (เลือกประเทศจาก dropdown ก่อน)</p>
-            </div>
-            <div>
-              <label for="b-email" class="text-sm font-medium text-warm-ink">อีเมล</label>
-              <input id="b-email" name="email" type="email" class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" placeholder="you@company.co.th" />
-            </div>
-          </div>
-
-          <div class="grid gap-5 sm:grid-cols-2">
-            <div>
-              <label for="b-line" class="text-sm font-medium text-warm-ink">LINE ID</label>
-              <input id="b-line" name="line" type="text" class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" placeholder="@punnattapatch" />
-            </div>
-            <div>
-              <label for="b-team" class="text-sm font-medium text-warm-ink">ขนาดทีมปัจจุบัน <span class="text-coral">*</span></label>
-              <select id="b-team" name="teamSize" required class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none">
-                <option value="">— เลือก —</option>
-                {teamSizes.map((t) => <option value={t}>{t}</option>)}
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <span class="text-sm font-medium text-warm-ink">ปัญหาหลักที่เจอ (เลือกได้หลายข้อ)</span>
-            <div class="mt-2 space-y-2">
-              {painPoints.map((p) => (
-                <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-[#c9c2b2] bg-ivory p-3 transition hover:border-coral/40">
-                  <input type="checkbox" name="problems" value={p} class="mt-0.5 h-4 w-4 shrink-0 accent-[#dd4155]" />
-                  <span class="text-sm text-warm-ink/85">{p}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label for="b-comment" class="text-sm font-medium text-warm-ink">อยากเล่าอะไรเพิ่มให้ผมรู้ก่อน?</label>
-            <textarea id="b-comment" name="comment" rows="3" class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" placeholder="เล่า pain point เฉพาะของคุณ หรือข้อมูลเพิ่มเติมที่อยากให้ผมรู้ก่อนคุย"></textarea>
-          </div>
-        </fieldset>
-
-        <!-- ===== 3. Timing ===== -->
-        <fieldset class="space-y-5 rounded-2xl border border-[#c9c2b2] bg-surface p-6 md:p-7">
-          <legend class="px-2 font-serif text-lg font-semibold text-navy">3. ช่วงเวลา</legend>
-
-          <div>
-            <label for="b-date" class="text-sm font-medium text-warm-ink">วันที่สะดวกเริ่ม (ประมาณ)</label>
-            <input id="b-date" name="preferred_date" type="date" min={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)} class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none" />
-            <p class="mt-1.5 text-xs text-muted">เริ่มได้เร็วสุด 7 วันจากวันนี้ · ไม่ fix ได้ แค่ประมาณการ</p>
-          </div>
-
-          <div>
-            <label for="b-source" class="text-sm font-medium text-warm-ink">เจอเว็บนี้ผ่าน <span class="text-coral">*</span></label>
-            <select id="b-source" name="source" required class="mt-1.5 w-full rounded-xl border border-[#c9c2b2] bg-ivory px-4 py-3 text-warm-ink transition focus:border-coral focus:outline-none">
-              <option value="">— เลือก —</option>
-              {sources.map((s) => <option value={s.value}>{s.label}</option>)}
-            </select>
-          </div>
-        </fieldset>
-
-        <!-- ===== Submit ===== -->
-        <div class="rounded-2xl border border-[#c9c2b2] bg-sand p-6">
-          <button type="submit" id="btn-submit" class="inline-flex w-full items-center justify-center rounded-xl bg-coral px-6 py-4 font-medium text-white transition hover:opacity-90">
-            ส่งให้ผมดู →
-          </button>
-          <p class="mt-3 text-center text-xs text-muted">
-            ผมอ่านเองภายใน 24 ชม. · ตอบกลับพร้อม level ที่เหมาะ + link นัดเวลา · ผมคุยเอง ไม่ได้ใช้ AI ตอบ
-          </p>
+  <section class="px-6 py-12 md:py-20">
+    <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-12">
+      <form id="booking-form" class="rounded-2xl border border-[#c9c2b2] bg-surface p-6 lg:col-span-7 md:p-9" novalidate>
+        <input name="honeypot-name" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true" />
+        <div class="flex items-start justify-between gap-5"><div><h2 class="font-display text-2xl font-bold text-navy">เล่าโจทย์ของคุณสั้นๆ</h2><p class="mt-1 text-sm text-warm-ink/65">กรอกไม่ถึง 2 นาที แล้วผมจะอ่านข้อมูลเพื่อเตรียมคุยให้ตรงเรื่อง</p></div><DarumaMark class="size-12 shrink-0" /></div>
+        <div class="mt-8 space-y-5">
+          <div class="grid gap-5 sm:grid-cols-2"><label class="field-label">ชื่อของคุณ<input name="name" required autocomplete="name" class="field" /></label><label class="field-label">ช่องทางติดต่อกลับ<input name="contact" required autocomplete="tel" placeholder="เบอร์โทร หรือ LINE ID" class="field" /></label></div>
+          <label class="field-label">ธุรกิจของคุณทำเกี่ยวกับอะไร<input name="business" required placeholder="เช่น ขายเครื่องจักร B2B, ตัวแทนจำหน่ายอะไหล่" class="field" /></label>
+          <div class="grid gap-5 sm:grid-cols-2"><label class="field-label">ทีมขายกี่คน<select name="team_size" required class="field"><option value="">เลือกขนาดทีม</option><option value="0">ยังไม่มีทีมขาย</option><option value="1-4">1–4 คน</option><option value="5-10">5–10 คน</option><option value="11-20">11–20 คน</option><option value="20+">มากกว่า 20 คน</option></select></label><label class="field-label">งบที่พร้อมลงทุน<select name="budget" required class="field"><option value="">เลือกช่วงงบ</option><option>ยังไม่ได้ตั้งงบ — อยากเห็นโจทย์ก่อน</option><option>ต่ำกว่า ฿50,000</option><option>฿50,000–฿100,000</option><option>฿100,000–฿300,000</option><option>มากกว่า ฿300,000</option></select></label></div>
+          <label class="field-label">ตอนนี้เรื่องไหนติดสุด<select name="issue" required class="field"><option value="">เลือกเรื่องที่ตรงที่สุด</option>{issues.map((issue) => <option value={issue}>{issue}</option>)}</select></label>
+          <label class="flex cursor-pointer items-start gap-3 pt-1"><input name="consent" type="checkbox" required class="checkbox mt-0.5" /><span class="text-sm leading-relaxed text-warm-ink/75">ยินยอมให้ติดต่อกลับตาม <a href="/privacy" class="font-semibold text-cyan underline">นโยบายความเป็นส่วนตัว</a></span></label>
+          <p id="booking-error" class="hidden rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error" role="alert"></p>
+          <button id="booking-submit" type="submit" class="btn w-full border-0 bg-coral py-4 text-base text-white hover:bg-[#c43245]">ส่งข้อมูล — ทีมติดต่อกลับภายใน 1 วันทำการ</button>
+          <div class="flex items-center gap-3 text-sm text-warm-ink/60"><span class="h-px flex-1 bg-[#c9c2b2]"></span>หรือสะดวกแชทมากกว่า<span class="h-px flex-1 bg-[#c9c2b2]"></span></div>
+          <a href={SITE.social.line} target="_blank" rel="noopener" class="btn w-full border-navy bg-transparent text-navy hover:bg-navy hover:text-white">ทัก LINE ได้เลย</a>
         </div>
       </form>
 
-      <!-- ===== Success state ===== -->
-      <div id="booking-success" class="hidden rounded-3xl border border-coral/30 bg-surface p-10 text-center paper-shadow">
-        <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-coral text-white">
-          <Icon name="check-circle" size={34} />
-        </div>
-        <h2 class="font-serif text-2xl font-semibold text-navy">รับเรื่องแล้ว ขอบคุณครับ</h2>
-        <p class="mt-3 text-base text-warm-ink/80">
-          เก็บ reference number ไว้ ถ้าทัก LINE OA ก่อน 24 ชม. พิมพ์ reference นี้ ผมจะเปิดเคสของคุณได้เร็วขึ้น
-        </p>
-        <div class="mx-auto mt-6 inline-flex items-center gap-3 rounded-xl border border-[#c9c2b2] bg-ivory px-5 py-3 font-mono text-lg font-bold text-navy">
-          <span id="booking-ref">—</span>
-          <button id="booking-copy-ref" type="button" class="rounded-lg px-3 py-1 text-sm font-medium text-coral transition hover:bg-coral/10" aria-label="Copy reference">Copy</button>
-        </div>
-        <div class="mt-6 flex flex-wrap justify-center gap-4">
-          <a href={SITE.social.line} target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-xl px-6 py-3 font-medium text-white transition hover:opacity-90" style="background: #06C755;">
-            <img src="/line-logo.png" alt="" class="h-6 w-6 shrink-0" aria-hidden="true" />
-            ทักมา LINE OA ต่อ →
-          </a>
-          <a href="/" class="inline-flex items-center rounded-xl border border-[#c9c2b2] px-6 py-3 font-medium text-navy transition hover:border-coral hover:text-coral">กลับหน้าแรก</a>
-        </div>
-      </div>
+      <aside class="lg:col-span-5"><h2 class="font-display text-3xl font-bold text-navy">หลังจากกดส่ง เกิดอะไรต่อ</h2><ol class="mt-6 space-y-4">{['ทีมทักกลับเพื่อนัดเวลา ภายใน 1 วันทำการ', 'คุยโจทย์ของคุณ 15–20 นาที ผมฟังมากกว่าพูด', 'ได้คำแนะนำเส้นทางที่คุ้มสุด — เริ่มเล็กก็ได้ ยังไม่เริ่มก็ได้'].map((item, index) => <li class="flex gap-4 rounded-2xl border border-[#c9c2b2] bg-surface p-5"><span class="font-display text-4xl font-bold text-coral">{index + 1}</span><p class="pt-1 leading-relaxed text-warm-ink/75">{item}</p></li>)}</ol><p class="mt-6 rounded-2xl border-l-4 border-cyan bg-sand p-5 text-sm leading-relaxed text-warm-ink/80"><strong class="text-navy">คุยก่อนได้ ไม่โดนขาย</strong><br />ถ้าโจทย์ของคุณแก้ได้ด้วยตัวเอง ผมจะบอกวิธีให้กลับไปทำต่อได้เลย ไม่ต้องเสียเงินกับผม</p></aside>
     </div>
+    <div id="booking-success" class="mx-auto mt-10 hidden max-w-2xl rounded-2xl border border-coral/40 bg-surface p-8 text-center"><DarumaMark class="mx-auto size-16" /><h2 class="mt-5 font-display text-3xl font-bold text-navy">รับเรื่องแล้ว ขอบคุณครับ</h2><p id="booking-recommendation" class="mt-3 leading-relaxed text-warm-ink/75"></p><a href={SITE.social.line} target="_blank" rel="noopener" class="btn mt-6 border-0 bg-[#06C755] text-white hover:bg-[#05a945]">ทัก LINE OA ต่อ</a></div>
   </section>
 </BaseLayout>
 
 <style>
-  .path-card:has(.path-input:checked) {
-    border-color: var(--color-coral);
-    background: color-mix(in oklch, var(--color-coral) 6%, transparent);
-  }
-  .path-card:has(.path-input:checked) .path-dot {
-    border-color: var(--color-coral);
-    background: radial-gradient(circle, var(--color-coral) 0 55%, transparent 60%);
-    box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-coral) 20%, transparent);
-  }
-  .path-card:hover { border-color: color-mix(in oklch, var(--color-coral) 40%, transparent); }
+  .field-label { display: grid; gap: .45rem; color: var(--pun-navy); font-size: .95rem; font-weight: 600; }
+  .field { width: 100%; border: 1px solid var(--pun-border); border-radius: .75rem; background: var(--pun-ivory); color: var(--pun-ink); padding: .75rem 1rem; }
+  .field:focus { border-color: var(--pun-coral); outline: 2px solid color-mix(in oklch, var(--pun-coral) 25%, transparent); outline-offset: 2px; }
 </style>
 
-<script is:inline define:vars={{ lookupJson }}>
-  window.__BK_LOOKUP__ = JSON.parse(lookupJson);
-</script>
 <script>
-  interface BookingPayload {
-    [key: string]: unknown;
-    _meta: {
-      reference: string;
-      submitted_at: string;
-      user_agent: string;
-      referrer: string | null;
-      path: string;
-      interest_path: string | null;
-    };
-  }
-
   const form = document.getElementById('booking-form') as HTMLFormElement | null;
   const success = document.getElementById('booking-success');
-  const refNode = document.getElementById('booking-ref');
-  const copyBtn = document.getElementById('booking-copy-ref') as HTMLButtonElement | null;
-  const errPath = document.getElementById('err-path');
+  const error = document.getElementById('booking-error');
+  const submit = document.getElementById('booking-submit') as HTMLButtonElement | null;
+  const recommendation = document.getElementById('booking-recommendation');
+  const WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
 
-  // Pre-select path from ?path= (sent by /services CTAs)
-  const params = new URLSearchParams(window.location.search);
-  // back-compat: old ?package=<slug> → map slug back to its path
-  const lookup = (window as unknown as {
-    __BK_LOOKUP__: {
-      names: Record<string, string>;
-      prices: Record<string, number>;
-      pathToSlugs: Record<string, string[]>;
-      pathLabels: Record<string, string>;
-    };
-  }).__BK_LOOKUP__;
-
-  let initialPath = params.get('path');
-  if (!initialPath) {
-    const legacyPkg = params.get('package');
-    if (legacyPkg) {
-      initialPath = Object.keys(lookup.pathToSlugs).find((k) =>
-        lookup.pathToSlugs[k].includes(legacyPkg)
-      ) ?? null;
-    } else if (params.get('bundle') === 'day1-day2') {
-      initialPath = 'training';
-    }
-  }
-  if (initialPath) {
-    const radio = document.querySelector<HTMLInputElement>(`.path-card[data-path="${CSS.escape(initialPath)}"] .path-input`);
-    if (radio) {
-      radio.checked = true;
-      // open the <details> if the pre-selected path (CEO / Trust) lives inside it
-      const det = radio.closest('details') as HTMLDetailsElement | null;
-      if (det) det.open = true;
-      radio.closest('.path-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }
-
-  function makeReference(): string {
-    const stamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 12);
-    const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
-    return `PN-BK-${stamp}-${rand}`;
-  }
-
-  function journalPayload(payload: BookingPayload): void {
-    try {
-      const raw = localStorage.getItem('pn_booking_journal');
-      const journal: BookingPayload[] = raw ? JSON.parse(raw) : [];
-      journal.unshift(payload);
-      localStorage.setItem('pn_booking_journal', JSON.stringify(journal.slice(0, 10)));
-    } catch {
-      /* non-fatal */
-    }
-  }
-
-  const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
-
-  async function postToWebhook(payload: BookingPayload): Promise<'sent' | 'failed'> {
-    const ctrl = new AbortController();
-    const kill = setTimeout(() => ctrl.abort(), 10_000);
-    try {
-      const res = await fetch(N8N_WEBHOOK, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        signal: ctrl.signal,
-        keepalive: true,
-      });
-      clearTimeout(kill);
-      return res.ok ? 'sent' : 'failed';
-    } catch (err) {
-      clearTimeout(kill);
-      console.error('[booking-form] webhook error', err);
-      return 'failed';
-    }
-  }
-
-  const submitBtn = document.getElementById('btn-submit') as HTMLButtonElement | null;
-  const submitBtnLabel = submitBtn?.textContent ?? '';
-
-  // intl-tel-input init (same as /intake-form) — validate + normalize to E.164
-  interface ItiInstance { isValidNumber(): boolean; getNumber(): string; }
-  type ItiFactory = (el: HTMLInputElement, opts: Record<string, unknown>) => ItiInstance;
-  let phoneIti: ItiInstance | null = null;
-  const phoneInput = document.getElementById('b-phone') as HTMLInputElement | null;
-  const phoneErr = document.getElementById('b-phone-err');
-
-  function loadScript(src: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.src = src;
-      s.onload = () => resolve();
-      s.onerror = () => reject(new Error(`failed to load ${src}`));
-      document.head.appendChild(s);
-    });
-  }
-
-  (async () => {
-    if (!phoneInput) return;
-    try {
-      await loadScript('https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/js/intlTelInput.min.js');
-      const factory = (window as unknown as { intlTelInput: ItiFactory }).intlTelInput;
-      phoneIti = factory(phoneInput, {
-        initialCountry: 'th',
-        countryOrder: ['th', 'us', 'sg', 'my', 'hk', 'jp', 'gb', 'au'],
-        separateDialCode: true,
-        autoPlaceholder: 'polite',
-        nationalMode: true,
-        loadUtilsOnInit: 'https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/js/utils.js',
-      });
-    } catch (err) {
-      console.error('[booking-form] intl-tel-input failed to load', err);
-    }
-  })();
-
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const selectedPath = form.querySelector<HTMLInputElement>('.path-input:checked')?.value ?? '';
-    if (!selectedPath) {
-      errPath?.classList.remove('hidden');
-      errPath?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
-    errPath?.classList.add('hidden');
-
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
     if (!form.reportValidity()) return;
-
-    if (phoneIti && phoneInput) {
-      if (!phoneIti.isValidNumber()) {
-        phoneErr?.classList.remove('hidden');
-        phoneInput.focus();
-        phoneInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-      }
-      phoneErr?.classList.add('hidden');
-      phoneInput.value = phoneIti.getNumber();
-    }
-
-    const formData = new FormData(form);
-
-    // Map selected path → representative slugs → keep legacy package/price schema for n8n.
-    const slugs = lookup.pathToSlugs[selectedPath] ?? [];
-    const pkgNames = slugs.map((s) => lookup.names[s] ?? s);
-    const pkgPrices = slugs.map((s) => (lookup.prices[s] ?? 0).toLocaleString('en-US'));
-
-    const attr = (window as unknown as { pnAttribution?: Record<string, string> }).pnAttribution ?? {};
-
-    const payload: BookingPayload = {
-      source_page: 'booking-astro',
-      booking_type: 'path-booking',
-      interest_path: selectedPath,
-      interest_label: lookup.pathLabels[selectedPath] ?? selectedPath,
-      package: pkgNames.join(', '),
-      package_price: pkgPrices.join(', '),
-      packages: slugs,
-      utm_source:   attr.utm_source   ?? '',
-      utm_medium:   attr.utm_medium   ?? '',
-      utm_campaign: attr.utm_campaign ?? '',
-      utm_content:  attr.utm_content  ?? '',
-      utm_term:     attr.utm_term     ?? '',
-      fbclid:       attr.fbclid       ?? '',
-      ttclid:       attr.ttclid       ?? '',
-      _meta: {
-        reference: makeReference(),
-        submitted_at: new Date().toISOString(),
-        user_agent: navigator.userAgent,
-        referrer: document.referrer || null,
-        path: window.location.pathname,
-        interest_path: selectedPath,
-      },
-    };
-
-    formData.forEach((value, key) => {
-      if (key === 'path') return;
-      if (payload[key]) {
-        if (Array.isArray(payload[key])) {
-          (payload[key] as unknown[]).push(value);
-        } else {
-          payload[key] = [payload[key], value];
-        }
-      } else {
-        payload[key] = value;
-      }
+    if ((new FormData(form).get('honeypot-name') as string)?.trim()) return;
+    const data = new FormData(form);
+    const teamSize = String(data.get('team_size') || '');
+    const payload = Object.fromEntries(data.entries());
+    Object.assign(payload, {
+      source: 'website-booking', source_page: 'website-booking', booking_type: 'daruma-qualification',
+      submitted_at: new Date().toISOString(), path: window.location.pathname,
+      recommended_path: /^(5-10|11-20|20\+)$/.test(teamSize) ? 'daruma-score' : 'advance-ai',
     });
-
-    journalPayload(payload);
-
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'กำลังส่ง...';
-    }
-
-    const status = await postToWebhook(payload);
-    (payload._meta as Record<string, unknown>).webhook_status = status;
-    journalPayload(payload);
-
-    (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.(
-      'Booking Submit',
-      { props: { source: (payload.source as string) ?? 'unknown', path: selectedPath } }
-    );
-
-    if (refNode) refNode.textContent = payload._meta.reference;
-
-    form.classList.add('hidden');
-    success?.classList.remove('hidden');
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.textContent = submitBtnLabel;
-    }
-    window.scrollTo({ top: (success?.offsetTop ?? 0) - 80, behavior: 'smooth' });
-  });
-
-  copyBtn?.addEventListener('click', async () => {
-    const ref = refNode?.textContent?.trim() ?? '';
-    if (!ref || ref === '—') return;
+    if (submit) { submit.disabled = true; submit.textContent = 'กำลังส่ง...'; }
+    if (error) error.classList.add('hidden');
     try {
-      await navigator.clipboard.writeText(ref);
-      const original = copyBtn.textContent;
-      copyBtn.textContent = 'Copied ✓';
-      setTimeout(() => { copyBtn.textContent = original; }, 2000);
+      const response = await fetch(WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), keepalive: true });
+      if (!response.ok) throw new Error('submission failed');
+      form.classList.add('hidden');
+      if (recommendation) recommendation.textContent = /^(5-10|11-20|20\+)$/.test(teamSize) ? 'จากข้อมูลเบื้องต้น ผมจะเตรียมคุยเรื่อง Daruma Score ให้เป็นจุดเริ่มต้นครับ' : 'จากข้อมูลเบื้องต้น ผมจะช่วยดูว่า Advance AI เหมาะเป็นจุดเริ่มต้นหรือไม่ครับ';
+      success?.classList.remove('hidden');
+      success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.('Booking Submit', { props: { source: 'website-booking' } });
     } catch {
-      /* clipboard blocked */
+      if (error) { error.textContent = 'ระบบรับข้อมูลขัดข้องชั่วคราว กรุณาทัก LINE OA เพื่อส่งโจทย์ให้ผมโดยตรง'; error.classList.remove('hidden'); }
+      if (submit) { submit.disabled = false; submit.textContent = 'ส่งข้อมูล — ทีมติดต่อกลับภายใน 1 วันทำการ'; }
     }
   });
 </script>

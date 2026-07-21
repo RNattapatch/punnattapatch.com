@@ -79,9 +79,9 @@ heroImage: "/og-image.jpg"
 
 ## อยากเริ่มก่อนจ้าง project ใหญ่?
 
-- [Advance AI & Business Automation 1 วัน ฿39,900](/services/ai-workshop) — เห็นวิธีทำงานจริง + ได้ AI workflow (ขั้นตอนการทำงานด้วย AI) ใช้ทันที
+- [Advance AI & Business Automation 1 วัน {{price:ai-workshop-advance}}](/services/ai-workshop) — เห็นวิธีทำงานจริง + ได้ AI workflow (ขั้นตอนการทำงานด้วย AI) ใช้ทันที
 - [BOSI DNA Quiz](/bosi-dna-quiz) — รู้ DNA ทีมขายฟรีใน 5-10 นาทีก่อนวางระบบ
-- [Sales System Sprint 1 เดือน ฿65,000](/services/sales-system-sprint) — สำหรับทีมที่พร้อมวางระบบครบ
+- [Sales System Sprint 1 เดือน {{price:sales-system-sprint}}](/services/sales-system-sprint) — สำหรับทีมที่พร้อมวางระบบครบ
 
 ## บทความถัดไป (ทยอยลง)
 

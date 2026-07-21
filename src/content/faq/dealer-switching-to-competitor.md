@@ -80,7 +80,7 @@ Dealer ไม่ได้ loyal กับสินค้า แต่ loyal ก�
 
 6 เดือนหลังจากนั้น สัดส่วนยอดขายจาก top-4 dealer ลดลงเหลือ 62% และจำนวน dealer ที่ active เพิ่มจาก 11 → 15 ราย
 
-## เคสจริง: ต้นทุน ฿65,000 ได้อะไร
+## เคสจริง: ต้นทุน ฿65,000 ได้อะไร <!-- price:historical -->
 
 ลูกค้ารายนี้ใช้ Sales System Sprint 1 เดือนเพื่อทำ 3 อย่างนี้
 
@@ -98,11 +98,11 @@ Dealer ไม่ได้ loyal กับสินค้า แต่ loyal ก�
 - เจ้าของเอาเวลาที่เคยใช้ follow-up (ติดตามลูกค้า) dealer กลับมาได้ 3 ชม./วัน (จากเดิมที่ใช้เวลา 60% ของวัน)
 - Revenue +14% (จาก dealer tier 2 ที่กลับมาสั่งซื้อ)
 
-ROI (ผลตอบแทนการลงทุน): ทุน ฿65,000 ได้ revenue เพิ่ม ฿1.2M ใน 6 เดือนแรก
+ROI (ผลตอบแทนการลงทุน): ทุน ฿65,000 ได้ revenue เพิ่ม ฿1.2M ใน 6 เดือนแรก <!-- price:historical -->
 
 ## Package ที่เกี่ยวข้อง
 
-- [Sales System Sprint ฿65,000](/services/sales-system-sprint): 1 เดือนวาง dealer portal + รอบการ check-in + ระบบติดตาม concentration risk
-- [Advance AI & Business Automation ฿39,900](/services/ai-workshop): 1 วัน สอนทำระบบอัปเดต dealer และแจ้งเตือน follow-up อัตโนมัติ
+- [Sales System Sprint {{price:sales-system-sprint}}](/services/sales-system-sprint): 1 เดือนวาง dealer portal + รอบการ check-in + ระบบติดตาม concentration risk
+- [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop): 1 วัน สอนทำระบบอัปเดต dealer และแจ้งเตือน follow-up อัตโนมัติ
 
 อ่านต่อ: [คู่มือสร้างทีมขาย B2B](/insights/build-b2b-sales-team-sme-thailand) | [เพิ่มพนักงานขายแล้วยอดจะเพิ่มไหม](/faq#add-sales-staff-revenue-not-increase) | [Forklift Distributor 5 คน case study](/case-studies/forklift-distributor-5-person-team)

@@ -76,10 +76,10 @@ tags: [faq, sales-system, hiring, sme, playbook]
 
 สรุปต้นทุนที่เสียไป: ฿280,000 (เงินเดือน 4 เดือน + commission + ค่า onboard) แถมยังเสียโอกาสขายไป 4 เดือนเต็มๆ
 
-หลังจากผมเข้าไปช่วย เราใช้เวลา 4 สัปดาห์วางระบบพื้นฐาน 3 ชิ้น (ICP, playbook, pipeline sheet) ในงบ ฿65,000 พอจ้างเซลล์คนใหม่เข้ามา เขาปิดดีลแรกได้ใน 5 สัปดาห์ และภายใน 3 เดือนปิดไป 9 ดีล ยอดขายรวม ฿3.1M
+หลังจากผมเข้าไปช่วย เราใช้เวลา 4 สัปดาห์วางระบบพื้นฐาน 3 ชิ้น (ICP, playbook, pipeline sheet) ในงบ ฿65,000 พอจ้างเซลล์คนใหม่เข้ามา เขาปิดดีลแรกได้ใน 5 สัปดาห์ และภายใน 3 เดือนปิดไป 9 ดีล ยอดขายรวม ฿3.1M <!-- price:historical -->
 
 ต้นทุนของการข้ามขั้น — ฿280,000 + opportunity cost
-ต้นทุนของการวางระบบก่อน — ฿65,000
+ต้นทุนของการวางระบบก่อน — ฿65,000 <!-- price:historical -->
 ความต่าง 4.3 เท่า
 
 ## ระบบที่ "ยังไม่ต้องมี" ตอนเริ่ม
@@ -109,7 +109,7 @@ tags: [faq, sales-system, hiring, sme, playbook]
 
 ## Package ที่เกี่ยวข้อง
 
-- [Sales System Sprint ฿65,000](/services/sales-system-sprint) — 1 เดือนครบทั้ง 3 ชิ้น + onboarding plan + training
-- [Advance AI & Business Automation ฿39,900](/services/ai-workshop) — 1 วันได้ ICP + objection script + pipeline template
+- [Sales System Sprint {{price:sales-system-sprint}}](/services/sales-system-sprint) — 1 เดือนครบทั้ง 3 ชิ้น + onboarding plan + training
+- [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop) — 1 วันได้ ICP + objection script + pipeline template
 
 อ่านต่อ: [ควรทำ research ก่อนจ้างเซลล์ไหม](/faq#research-market-before-hiring-sales) | [เพิ่มพนักงานขายแล้วยอดจะเพิ่มไหม](/faq#add-sales-staff-revenue-not-increase) | [คู่มือสร้างทีมขาย B2B](/insights/build-b2b-sales-team-sme-thailand)

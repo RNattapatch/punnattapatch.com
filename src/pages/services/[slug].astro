@@ -12,6 +12,9 @@ export function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
+if (slug === 'ai-workshop') {
+  return Astro.redirect('/ai-workshop-advance', 301);
+}
 const svc = SERVICES.find((s) => s.slug === slug)!;
 const detail = SERVICE_DETAILS[slug as string]!;
 

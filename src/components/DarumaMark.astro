@@ -1,0 +1,27 @@
+---
+interface Props {
+  class?: string;
+  title?: string;
+}
+
+const { class: className = 'size-16', title = 'โลโก้ดารุมะแมว — ตาซ้ายแต้มแล้ว ตาขวายังว่าง' } = Astro.props;
+---
+
+<svg class={className} viewBox="0 0 200 220" role="img" aria-label={title}>
+  <title>{title}</title>
+  <path d="M44 62 L30 10 L80 32 Z" fill="#dd4155" />
+  <path d="M156 62 L170 10 L120 32 Z" fill="#dd4155" />
+  <path d="M49 55 L40 25 L69 38 Z" fill="#c43245" />
+  <path d="M151 55 L160 25 L131 38 Z" fill="#c43245" />
+  <path d="M100 12c42 0 74 34 78 82 3 36-6 72-24 94-14 17-33 24-54 24s-40-7-54-24C28 166 21 130 22 94 26 46 58 12 100 12Z" fill="#dd4155" />
+  <path d="M31 172c15 24 40 34 69 34s54-10 69-34c-7 19-17 31-29 37-15 7-65 7-80 0-12-6-22-18-29-37Z" fill="#c43245" />
+  <ellipse cx="100" cy="86" rx="52" ry="46" fill="#f4f1ea" />
+  <path d="M64 55c7-8 22-9 30-3M106 52c8-6 23-5 30 3" fill="none" stroke="#1e1b16" stroke-width="4" stroke-linecap="round" />
+  <circle cx="80" cy="76" r="13" fill="#fff" stroke="#1e1b16" stroke-width="3" />
+  <circle cx="80" cy="76" r="5.5" fill="#1e1b16" />
+  <circle cx="120" cy="76" r="13" fill="#fff" stroke="#1e1b16" stroke-width="3" />
+  <path d="M94.5 90.5h11L100 97z" fill="#1e1b16" />
+  <path d="M100 97v3.5M100 100.5c0 4.5-4.5 6.5-7.5 3.8M100 100.5c0 4.5 4.5 6.5 7.5 3.8" fill="none" stroke="#1e1b16" stroke-width="3" stroke-linecap="round" />
+  <path d="M46 88 L26 81M45 96 L24 96M46 104 L27 110M154 88 L174 81M155 96 L176 96M154 104 L173 110" stroke="#f4f1ea" stroke-width="3" stroke-linecap="round" opacity=".92" />
+  <path d="M58 186c12 8 26 12 42 12s30-4 42-12" fill="none" stroke="#072b4e" stroke-width="6" stroke-linecap="round" />
+</svg>
