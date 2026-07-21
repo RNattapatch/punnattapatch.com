@@ -75,7 +75,7 @@ tags: [faq, hiring, sales-team, scaling, sme]
 
 ## Package ที่เกี่ยวข้อง
 
-- [Sales System Sprint ฿65,000](/services/sales-system-sprint): 1 เดือนวางระบบ + CRM + KPI (ตัววัดผลงาน) ก่อนตัดสินใจเพิ่มคน
-- [Advance AI & Business Automation ฿39,900](/services/ai-workshop): automate งาน admin ให้ทีมเดิมมี capacity เพิ่มใน 1 วัน
+- [Sales System Sprint {{price:sales-system-sprint}}](/services/sales-system-sprint): 1 เดือนวางระบบ + CRM + KPI (ตัววัดผลงาน) ก่อนตัดสินใจเพิ่มคน
+- [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop): automate งาน admin ให้ทีมเดิมมี capacity เพิ่มใน 1 วัน
 
 อ่านต่อ: [ต้องวางระบบขายก่อนจ้างเซลล์ไหม](/faq#sales-system-before-hiring-sales-team) | [KPI dashboard ทีมขาย](/faq#sales-kpi-dashboard-google-sheets) | [คู่มือสร้างทีมขาย B2B](/insights/build-b2b-sales-team-sme-thailand)

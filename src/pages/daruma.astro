@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DarumaMark from '../components/DarumaMark.astro';
+import { SITE } from '../data/site';
+
+const title = 'ปั้นทีมขายด้วย Daruma Framework';
+const description = 'Daruma Framework คือหลักคิดปั้นทีมขายให้ทำซ้ำ วัดผล และใช้ AI Agent กับงานจริง โดยเริ่มเองได้จาก 3 ขั้นตอน';
+const pillars = [
+  ['D', 'Data', 'ข้อมูลฝ่ายขายต้องเก็บได้', 'ข้อมูลบ้านเดียว — ลูกค้า/ดีล/ราคา ไม่อยู่ในหัวหรือไลน์ส่วนตัวของใครคนเดียว'],
+  ['A', 'AI Agent', 'นำ AI Agent มาลดงาน เพิ่มยอดขายจริงได้', 'น้องฝึกงานที่รู้จักบริษัทคุณ — งานซ้ำมี AI รับไป เซลล์เอาเวลาไปอยู่หน้าลูกค้า'],
+  ['R', 'Repeatable', 'ทำซ้ำได้ ไม่พึ่งดวง', 'ขั้นตอนขายที่ใครทำตามก็ได้ผลใกล้เคียง ยอดไม่ผูกกับพรสวรรค์คนเดียว'],
+  ['U', 'Upskill', 'คนเก่งขึ้นด้วยระบบ', 'พัฒนาคนบนระบบ ไม่ใช่ให้ระบบแขวนกับคน'],
+  ['M', 'Measurable', 'ทุกอย่างวัดผลได้ ไม่ใช้ความรู้สึก', 'KPI · ก่อน/หลัง — ประชุมเถียงกันด้วยตัวเลข'],
+  ['A', 'Actionable', 'นำไปใช้ได้จริงทันที', 'ทำทันที ใช้จริงวันจันทร์เช้า — ไม่จบแค่รู้'],
+];
+const startSteps = [
+  ['รวมข้อมูลลูกค้าไว้ที่เดียว', 'เลือกไฟล์เดียวที่ทุกคนเปิดดูได้ แล้วเริ่มเก็บชื่อลูกค้า ดีล สถานะ และราคาตรงนั้นก่อน ไม่ต้องหาเครื่องมือใหม่'],
+  ['เลือกงานซ้ำ 1 งานให้ AI ลอง', 'เริ่มจากงานที่กินเวลาแต่ไม่ต้องใช้การตัดสินใจยาก เช่น สรุปประชุม ร่างใบเสนอราคา หรือเตรียม follow-up'],
+  ['ตั้งตัวเลขวัด 1 ตัว', 'เลือกตัวเลขเดียวที่รู้ทุกสัปดาห์ เช่น ดีลที่ follow-up ครบ หรือเวลาที่ทีมใช้ทำ report แล้วดูมันต่อเนื่อง'],
+];
+---
+
+<BaseLayout title={title} description={description} schema={{ types: ['WebPage', 'Person'], title, description }}>
+  <section class="border-b border-[#c9c2b2] bg-ivory px-6 py-16 md:py-24">
+    <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.2fr_.8fr]">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">Sale × AI Agent · Daruma Framework</p>
+        <h1 class="mt-5 max-w-4xl font-display text-4xl font-bold leading-tight text-navy md:text-6xl"><span class="sr-only">Daruma Framework สำหรับปั้นทีมขาย: </span>เลิกขายแบบพึ่งดวง ด้วย Framework ที่จับต้องได้ และ AI Agent ที่ลดงานและเพิ่มยอดได้จริง</h1>
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-warm-ink/75">Daruma Framework คือหลักคิดปั้นทีมขายให้ทำงานแบบที่คนใหม่ตามได้ เจ้าของเห็นข้อมูล และทีมมีเวลาอยู่กับลูกค้ามากขึ้น</p>
+      </div>
+      <div class="rounded-2xl border border-[#c9c2b2] bg-surface p-8 text-center md:p-10"><DarumaMark class="mx-auto h-auto w-48 max-w-full" /><p class="mt-5 font-display text-2xl font-bold text-navy">ไม่ใช่เครื่องราง คือระบบ</p><p class="mt-3 text-sm leading-relaxed text-warm-ink/70">ดารุมะล้มแล้วลุกได้ เพราะฐานหนัก ไม่ใช่เพราะดวง</p></div>
+    </div>
+  </section>
+
+  <section class="px-6 py-16 md:py-24"><div class="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[.8fr_1.2fr]"><div><p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ทำไมชื่อดารุมะ</p><h2 class="mt-3 font-display text-3xl font-bold leading-snug text-navy md:text-5xl">ฐานถ่วงคือระบบ แต้มตาคือเป้าที่วัดได้</h2></div><div class="space-y-5 text-lg leading-relaxed text-warm-ink/75"><p>คนส่วนใหญ่คิดว่าดารุมะคือเครื่องรางขอพร แต่สิ่งที่น่าสนใจกว่าคือฐานถ่วงน้ำหนักที่ทำให้ล้มแล้วลุกเอง</p><p>ทีมขายก็เหมือนกัน ถ้าระบบอยู่ในหัวคนเก่งคนเดียว วันไหนคนนั้นหายไป ทุกอย่างก็ล้มตาม แต่ถ้าข้อมูล ขั้นตอน และวิธีวัดผลอยู่ในระบบ ทีมจะลุกต่อได้เอง</p><p>ตาข้างแรกคือการตั้งเป้า ตาข้างที่สองคือการทำให้สำเร็จจริง ไม่ใช่คำอธิษฐาน แต่คือสิ่งที่เปิดดูและวัดได้</p></div></div></section>
+
+  <section class="border-y border-[#c9c2b2] bg-sand px-6 py-16 md:py-24"><div class="mx-auto max-w-6xl"><p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">D-A-R-U-M-A</p><h2 class="mt-3 max-w-4xl font-display text-3xl font-bold text-navy md:text-5xl">เช็กลิสต์ 6 อย่างของทีมที่ไม่ต้องพึ่งดวง</h2><div class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">{pillars.map(([letter, name, spoken, gloss]) => <article class="rounded-2xl border border-[#c9c2b2] bg-surface p-6"><div class="flex items-baseline gap-3"><span class="font-display text-5xl font-bold text-coral">{letter}</span><span class="font-display text-xl font-bold text-navy">{name}</span></div><h3 class="mt-4 text-lg font-bold leading-snug text-navy">{spoken}</h3><p class="mt-2 text-sm leading-relaxed text-warm-ink/75">{gloss}</p></article>)}</div></div></section>
+
+  <section class="px-6 py-16 md:py-24"><div class="mx-auto max-w-6xl"><p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">เริ่มเองได้เลย</p><h2 class="mt-3 max-w-4xl font-display text-3xl font-bold text-navy md:text-5xl">เริ่มเองได้เลย 3 ขั้น</h2><p class="mt-5 max-w-3xl text-lg leading-relaxed text-warm-ink/75">ไม่ต้องรอให้พร้อมทุกอย่าง เลือกทำให้ครบหนึ่งขั้นก่อน แล้วค่อยต่อขั้นถัดไป</p><ol class="mt-9 grid gap-5 md:grid-cols-3">{startSteps.map(([heading, body], index) => <li class="rounded-2xl border border-[#c9c2b2] bg-surface p-7"><span class="font-display text-4xl font-bold text-coral">0{index + 1}</span><h3 class="mt-4 font-display text-2xl font-bold text-navy">{heading}</h3><p class="mt-3 leading-relaxed text-warm-ink/75">{body}</p></li>)}</ol></div></section>
+
+  <section class="border-y border-[#c9c2b2] bg-sand px-6 py-16"><div class="mx-auto max-w-4xl"><p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">เมื่อไหร่ที่ควรให้ผมเข้าไปช่วย</p><h2 class="mt-3 font-display text-3xl font-bold text-navy md:text-5xl">เมื่อเริ่มติดที่ “ของใครทำก็ไม่เหมือนกัน”</h2><p class="mt-5 text-lg leading-relaxed text-warm-ink/75">ถ้าข้อมูลกระจัดกระจายจนหาความจริงไม่เจอ งานซ้ำกินเวลาทีมจนไม่มีเวลาอยู่หน้าลูกค้า หรือมีหลายอย่างให้ทำแต่ไม่รู้ควรแก้อะไรก่อน ตรงนั้นคือจุดที่การตรวจระบบบนข้อมูลจริงช่วยให้ตัดสินใจง่ายขึ้น</p><p class="mt-4 leading-relaxed text-warm-ink/75">แต่ถ้ายังทำ 3 ขั้นข้างบนได้เอง เริ่มเลยครับ หลักคิดมีไว้ให้เอาไปใช้ ไม่ได้มีไว้เก็บเป็นของปันคนเดียว</p></div></section>
+
+  <section class="px-6 py-16 text-center md:py-24"><DarumaMark class="mx-auto h-auto w-24" /><h2 class="mx-auto mt-6 max-w-3xl font-display text-3xl font-bold leading-snug text-navy md:text-5xl">ถ้าอยากเห็นว่าทีมติดตรงไหน เริ่มจากดูข้อมูลจริงก่อน</h2><div class="mt-8 flex flex-wrap justify-center gap-3"><a href="/services" class="btn border-0 bg-coral text-white hover:bg-[#c43245]">เช็ค Daruma Score</a><a href="/booking" class="btn border-navy bg-transparent text-navy hover:bg-navy hover:text-white">จองคิวคุย</a><a href={SITE.social.line} target="_blank" rel="noopener" class="btn border-navy bg-transparent text-navy hover:bg-navy hover:text-white">ทัก LINE</a></div></section>
+</BaseLayout>

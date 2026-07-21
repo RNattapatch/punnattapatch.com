@@ -57,7 +57,7 @@ tags: [faq, ai-adoption, change-management, team]
 
 ## Package ที่ช่วยเรื่องการบริหารการเปลี่ยนแปลง (Change Management)
 
-- **[Advance AI & Business Automation ฿39,900](/services/ai-workshop)** — Workshop 1 วัน + Consult Package (รวม ฿44,900) สำหรับช่วงเปลี่ยนผ่าน (transition) ที่มีแรงต้าน (resistance) สูง
-- **[Sales System Sprint ฿65,000](/services/sales-system-sprint)** — รวมการบริหารการเปลี่ยนแปลง (change management) ในแพ็คเกจการส่งมอบระบบ (handover package)
+- **[Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop)** — Workshop 1 วัน + Consult Package (รวม ฿44,900) สำหรับช่วงเปลี่ยนผ่าน (transition) ที่มีแรงต้าน (resistance) สูง <!-- price:literal -->
+- **[Sales System Sprint {{price:sales-system-sprint}}](/services/sales-system-sprint)** — รวมการบริหารการเปลี่ยนแปลง (change management) ในแพ็คเกจการส่งมอบระบบ (handover package)
 
 อ่านต่อ: [AI Agent ต่างจาก chatbot ยังไง](/faq) | [ไม่เก่ง tech ใช้ AI ได้ไหม](/faq)

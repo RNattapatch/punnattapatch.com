@@ -100,7 +100,7 @@ https://punnattapatch.com/agent-builder-kit/prompts/<slug>
 
 > ผมเข้าไปเอง ทำกับทีมคุณ 1 วัน ไม่ใช่ส่งคนอื่นไปแทน ออกจากห้อง คุณไม่ได้ใบ certificate คุณได้ระบบที่ทีมคุณใช้ตั้งแต่วันจันทร์
 
-ราคา ฿44,900
+ราคา ฿44,900 <!-- price:literal -->
 
 [ดูรายละเอียดและจอง In-house Workshop](https://punnattapatch.com/services/ai-workshop)
 

@@ -1,3 +1,5 @@
+import { PRICES, fmtPrice } from './pricing.mjs';
+
 // Site-wide configuration + brand identity
 // Update here once, referenced everywhere.
 
@@ -89,8 +91,8 @@ export const SERVICES = [
     title: 'Package A',
     subtitle: 'Advance + Consult 2 วัน · คุ้มสุด',
     hook: 'ไม่ใช่แค่เรียน — ผมลงไปวางระบบกับทีมคุณจนใช้เป็น',
-    priceThb: 69900,
-    priceLabel: '฿69,900 (Advance + Consult 2 วัน)',
+    priceThb: PRICES['package-a'].amount,
+    priceLabel: `${fmtPrice('package-a')} (Advance + Consult 2 วัน)`,
     duration: '1 + 2 วัน',
     format: 'On-site เท่านั้น (In-house)',
     audience: 'อยากได้ทั้งความรู้และให้ผมลงไปวางระบบกับทีมจริงถึงหน้างาน',
@@ -106,8 +108,8 @@ export const SERVICES = [
     title: 'Consult องค์กร',
     subtitle: 'ที่ปรึกษาราย session',
     hook: 'มีคู่คิดที่เข้าใจธุรกิจคุณ จนระบบเดินได้เอง',
-    priceThb: 25000,
-    priceLabel: '฿25,000 / วัน',
+    priceThb: 35000,
+    priceLabel: '฿35,000 / วัน',
     duration: '1 วัน / session',
     format: 'On-site เท่านั้น (In-house)',
     audience: 'อยากได้ที่ปรึกษา AI ลงมาช่วยเป็นราย session',
