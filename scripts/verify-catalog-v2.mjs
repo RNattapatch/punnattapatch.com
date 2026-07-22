@@ -22,6 +22,12 @@ if (services.includes('Public Course') || services.includes('Daruma Score &amp; 
   throw new Error('retired public offer remains');
 }
 
+const proofImages = services.match(/\/testimonial\/2026-(?:05|07)\/review-\d+\.jpg/g) ?? [];
+if (proofImages.length < 8) throw new Error('service proof gallery needs at least 8 real review images');
+if (!services.includes('รีวิวและบรรยากาศจากงานที่เกิดขึ้นจริง')) {
+  throw new Error('service proof gallery heading missing');
+}
+
 for (const file of ['src/pages/index.astro', 'src/pages/daruma.astro', 'src/pages/booking.astro']) {
   const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
   if (source.includes('เช็ค Daruma Score') || source.includes('จองวันตรวจ')) {

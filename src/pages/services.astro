@@ -7,6 +7,20 @@ import { fmtPrice } from '../data/pricing.mjs';
 const title = 'บริการปั้นทีมขาย × AI Agent';
 const description = 'เริ่มจากงานขายจริงของทีมคุณ แล้วค่อยใช้ AI Agent ลดงานซ้ำและทำให้ทีมเดินต่อได้เอง';
 const darumaPhases = ['ดูข้อมูลจริงของทีม', 'จัดแนวเจ้าของและหัวหน้า', 'ฝึกทีม', 'ติดตั้งระบบจริง 1 ระบบ', 'ประคองใช้จริง 30 วัน', 'วัดผลก่อน-หลัง'];
+const proofGallery = [
+  { src: '/testimonial/2026-05/review-01.jpg', alt: 'รีวิวลูกค้า — ทีมงานร่วม Workshop AI กับอาจารย์ปั้น', width: 1000, height: 1000 },
+  { src: '/testimonial/2026-05/review-02.jpg', alt: 'รีวิวลูกค้า — แชทขอบคุณหลังเวิร์กช็อป "ชีวิตเปลี่ยนใน 24 ชม."', width: 1000, height: 1000 },
+  { src: '/testimonial/2026-05/review-03.jpg', alt: 'รีวิวลูกค้า — บรรยากาศห้องอบรม AI เต็มห้อง', width: 1000, height: 1000 },
+  { src: '/testimonial/2026-05/review-04.jpg', alt: 'รีวิวลูกค้า — แชทผู้เข้าอบรมหลังจบคลาส', width: 1000, height: 1000 },
+  { src: '/testimonial/2026-05/review-05.jpg', alt: 'รีวิวลูกค้า — แชท "อาจารย์ปั้นสอนถูกใจทีมงาน Ai ทั้งบริษัท"', width: 1000, height: 1000 },
+  { src: '/testimonial/2026-05/review-06.jpg', alt: 'รีวิวลูกค้า — ทีมงานถ่ายภาพร่วมกันที่ออฟฟิศ', width: 1000, height: 1000 },
+  { src: '/testimonial/2026-05/review-07.jpg', alt: 'รีวิวลูกค้า — ทีมงานสังสรรค์หลังเวิร์กช็อป', width: 1000, height: 1000 },
+  { src: '/testimonial/2026-05/review-08.jpg', alt: 'รีวิวลูกค้า — โพสต์รีวิว "องค์กรที่เรียนรู้เร็วที่สุด"', width: 1000, height: 1000 },
+  { src: '/testimonial/2026-07/review-09.jpg', alt: 'รีวิวลูกค้า — แชทลูกศิษย์เล่าว่านอนน้อยเพราะติดใช้ AI ทำเว็บจ้างหลายแสนจบในคืนเดียว', width: 1410, height: 1410 },
+  { src: '/testimonial/2026-07/review-10.jpg', alt: 'รีวิวลูกค้า — โพสต์แนะนำต่อว่า "ใครสนใจเรียน AI แนะนำน้องปันครับ เก่งมากๆ"', width: 736, height: 736 },
+  { src: '/testimonial/2026-07/review-11.jpg', alt: 'รีวิวลูกค้า — แชทลูกค้าต่อยอดโปรเจกต์เลขา AI "สนุกดีครับ"', width: 914, height: 914 },
+  { src: '/testimonial/2026-07/review-12.jpg', alt: 'รีวิวลูกค้า — งาน Nissan Sales Manager Seminar 2026 "One Team Energy Goal"', width: 1000, height: 1000 },
+];
 ---
 
 <BaseLayout
@@ -65,6 +79,26 @@ const darumaPhases = ['ดูข้อมูลจริงของทีม', 
           </ul>
           <a href="/booking?path=inhouse-b" class="btn mt-8 w-full border-0 bg-coral text-white hover:bg-[#c43245]">จองคิวคุยฟรี</a>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-[#c9c2b2] bg-sand px-6 py-16 md:py-24">
+    <div class="mx-auto max-w-6xl">
+      <div class="max-w-3xl">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">หลักฐานจากงานจริง</p>
+        <h2 class="mt-3 font-display text-3xl font-bold leading-snug text-navy md:text-5xl">รีวิวและบรรยากาศจากงานที่เกิดขึ้นจริง</h2>
+        <p class="mt-4 leading-relaxed text-warm-ink/75">ก่อนเลือกวันให้ทีม ผมอยากให้เห็นทั้งรูปกิจกรรมและแชทที่ลูกค้าส่งมาหลังจบงานครับ</p>
+      </div>
+      <div class="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        {proofGallery.map((proof, index) => (
+          <figure class:list={[
+            'rounded-2xl border border-[#c9c2b2] bg-surface p-2 shadow-[3px_5px_0_rgba(30,27,22,0.07)]',
+            index % 2 === 0 ? 'rotate-[0.4deg]' : '-rotate-[0.4deg]',
+          ]}>
+            <img src={proof.src} alt={proof.alt} width={proof.width} height={proof.height} loading="lazy" decoding="async" class="aspect-square w-full rounded-xl object-cover" />
+          </figure>
+        ))}
       </div>
     </div>
   </section>
