@@ -22,6 +22,9 @@
 export const PRICES = {
   'ai-workshop-basic':       { amount: 29900, url: '/services/ai-workshop',                   note: 'Basic Foundation AI · 1 วัน' },
   'ai-workshop-advance':     { amount: 39900, url: '/services/ai-workshop',                   note: 'Advance AI & Business Automation' },
+  'inhouse-a':               { amount: 34900, url: '/services#inhouse-a',                     note: 'Sales × AI Agent 1 วัน' },
+  'inhouse-b-list':          { amount: 69900, url: '/services#inhouse-b',                     note: 'Daruma Sales Office Bootcamp list price' },
+  'inhouse-b':               { amount: 59900, url: '/services#inhouse-b',                     note: 'Daruma Sales Office Bootcamp 2 วัน' },
   'package-a-list':          { amount: 69900, url: '/services#package-a',                     note: 'Package A list price (strikethrough)' },
   'package-a':               { amount: 59900, url: '/services#package-a',                     note: 'Advance + Consult 2 วัน (locked 2026-07-20)' },
   'daruma-score':            { amount: 25000, url: '/ads/daruma-score',                       note: 'Daruma Score — sales-system diagnostic day' },

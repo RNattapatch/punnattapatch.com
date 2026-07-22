@@ -4,7 +4,7 @@ import DarumaMark from '../components/DarumaMark.astro';
 import { SITE } from '../data/site';
 
 const title = 'จองคิวคุยปั้นทีมขาย';
-const description = 'จองคิวคุย 15–20 นาที เพื่อดูว่าทีมขายของคุณควรเริ่มที่ Daruma Score หรือ AI Agent Transformation';
+const description = 'จองคิวคุย 15–20 นาที เพื่อดูว่าทีมขายของคุณควรเริ่มตรงไหนระหว่าง In-house, Flagship และระบบคอนเทนต์';
 const issues = [
   'ข้อมูลลูกค้ากระจาย อยู่ในไลน์กับหัวคน',
   'เซลล์หมดเวลาไปกับงานเอกสารและงานซ้ำ',
@@ -67,12 +67,11 @@ const issues = [
     if (!form.reportValidity()) return;
     if ((new FormData(form).get('honeypot-name') as string)?.trim()) return;
     const data = new FormData(form);
-    const teamSize = String(data.get('team_size') || '');
     const payload = Object.fromEntries(data.entries());
     Object.assign(payload, {
       source: 'website-booking', source_page: 'website-booking', booking_type: 'daruma-qualification',
       submitted_at: new Date().toISOString(), path: window.location.pathname,
-      recommended_path: /^(5-10|11-20|20\+)$/.test(teamSize) ? 'daruma-score' : 'advance-ai',
+      recommended_path: 'free-consultation',
     });
     if (submit) { submit.disabled = true; submit.textContent = 'กำลังส่ง...'; }
     if (error) error.classList.add('hidden');
@@ -80,7 +79,7 @@ const issues = [
       const response = await fetch(WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), keepalive: true });
       if (!response.ok) throw new Error('submission failed');
       form.classList.add('hidden');
-      if (recommendation) recommendation.textContent = /^(5-10|11-20|20\+)$/.test(teamSize) ? 'จากข้อมูลเบื้องต้น ผมจะเตรียมคุยเรื่อง Daruma Score ให้เป็นจุดเริ่มต้นครับ' : 'จากข้อมูลเบื้องต้น ผมจะช่วยดูว่า Advance AI เหมาะเป็นจุดเริ่มต้นหรือไม่ครับ';
+      if (recommendation) recommendation.textContent = 'ผมจะอ่านโจทย์ของคุณก่อน แล้วคุยกันตรงๆ ว่าทีมควรเริ่มจาก In-house, โปรแกรมเต็ม หรือยังมีอะไรที่กลับไปทำเองได้ครับ';
       success?.classList.remove('hidden');
       success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.('Booking Submit', { props: { source: 'website-booking' } });
