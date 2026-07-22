@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # Cloudflare app-hub build output
 dist-app
+
+# Local linked worktrees
+.worktrees/
