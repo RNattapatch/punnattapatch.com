@@ -417,7 +417,7 @@ coursePhases.forEach((phase) => {
             <input id="utm_term" name="utm_term" type="hidden" />
             <label class="flex cursor-pointer items-start gap-3 pt-1"><input name="consent" type="checkbox" required class="checkbox mt-0.5" aria-label="ยินยอมให้ติดต่อกลับตามนโยบายความเป็นส่วนตัว" /><span class="text-sm leading-relaxed text-warm-ink/75">ยินยอมให้ติดต่อกลับตาม <a href="/privacy" class="font-semibold text-cyan underline">นโยบายความเป็นส่วนตัว</a></span></label>
             <p id="dealer-ai-error" class="hidden rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error" role="alert" aria-live="polite"></p>
-            <button id="dealer-ai-submit" type="submit" class="btn min-h-11 w-full border-0 bg-coral py-4 text-base text-white hover:bg-[#c43245]" aria-label="ส่งข้อมูลขอคิวคุยฟรี 15–20 นาที">ส่งข้อมูลขอคิวคุยฟรี 15–20 นาที</button>
+            <button id="dealer-ai-submit" type="submit" class="btn min-h-11 w-full border-0 bg-coral py-4 text-base text-white hover:bg-[#c43245]" aria-label="ส่งข้อมูล">ส่งข้อมูล</button>
           </div>
         </form>
 
@@ -544,7 +544,7 @@ coursePhases.forEach((phase) => {
       success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } catch {
       if (error) { error.textContent = 'ระบบรับข้อมูลขัดข้องชั่วคราว กรุณาลองใหม่ หรือแอด LINE เพื่อส่งโจทย์ให้ผม'; error.classList.remove('hidden'); }
-      if (submit) { submit.disabled = false; submit.textContent = 'ส่งข้อมูลขอคิวคุยฟรี 15–20 นาที'; }
+      if (submit) { submit.disabled = false; submit.textContent = 'ส่งข้อมูล'; }
     }
   });
 
