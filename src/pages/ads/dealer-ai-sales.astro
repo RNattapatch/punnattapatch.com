@@ -394,7 +394,21 @@ coursePhases.forEach((phase) => {
           <div class="space-y-5">
             <label class="field-label">ชื่อของคุณ<input name="name" required autocomplete="name" class="field" aria-label="ชื่อของคุณ" /></label>
             <label class="field-label">ดีลเลอร์ / โชว์รูมของคุณชื่ออะไรครับ<input name="business" required autocomplete="organization" class="field" aria-label="ดีลเลอร์ หรือ โชว์รูมของคุณชื่ออะไร" /></label>
-            <label class="field-label">เบอร์โทรหรือ LINE ที่ให้ผมติดต่อกลับ<input name="contact" required autocomplete="tel" class="field" aria-label="เบอร์โทรหรือ LINE ที่ให้ผมติดต่อกลับ" /></label>
+            <fieldset class="field-label">
+              <legend class="mb-2">อยากให้ผมติดต่อกลับแบบไหนครับ</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="intent-option flex cursor-pointer items-start gap-3 rounded-xl border border-[#c9c2b2] bg-ivory p-4">
+                  <input type="radio" name="intent" value="chat" required class="mt-1 accent-coral" aria-label="คุยเบื้องต้นก่อน" />
+                  <span><span class="block font-semibold text-navy">คุยเบื้องต้นก่อน</span><span class="mt-0.5 block text-sm font-normal text-warm-ink/70">อยากสอบถามรายละเอียดก่อน</span></span>
+                </label>
+                <label class="intent-option flex cursor-pointer items-start gap-3 rounded-xl border border-[#c9c2b2] bg-ivory p-4">
+                  <input type="radio" name="intent" value="booking" required class="mt-1 accent-coral" aria-label="ขอนัดจองคิวเลย" />
+                  <span><span class="block font-semibold text-navy">ขอนัดจองคิวเลย</span><span class="mt-0.5 block text-sm font-normal text-warm-ink/70">พร้อมนัดคุยจริงจัง</span></span>
+                </label>
+              </div>
+            </fieldset>
+            <label class="field-label">เบอร์โทรมือถือ<input name="phone" type="tel" required inputmode="tel" autocomplete="tel" pattern="[0-9()+\-\s]{9,15}" class="field" placeholder="เช่น 0812345678" aria-label="เบอร์โทรมือถือ" /></label>
+            <label class="field-label">LINE ID <span class="font-normal text-warm-ink/55">(ถ้ามี)</span><input name="line_id" autocomplete="off" class="field" placeholder="เช่น @yourshop หรือ ไอดีไลน์" aria-label="LINE ID" /></label>
             <label class="field-label">โจทย์ทีมขายที่อยากแก้ <span class="font-normal text-warm-ink/55">(ถ้ามี)</span><textarea name="sales_issue" rows="4" class="field resize-y" aria-label="โจทย์ทีมขายที่อยากแก้"></textarea></label>
             <input id="utm_source" name="utm_source" type="hidden" />
             <input id="utm_medium" name="utm_medium" type="hidden" />
@@ -433,6 +447,8 @@ coursePhases.forEach((phase) => {
   .consent-bar { background: #072b4e; color: #f4f1ea; }
   .consent-button { min-height: 44px; }
   .field-label { display: grid; gap: .45rem; color: var(--pun-navy); font-size: .95rem; font-weight: 600; }
+  .intent-option { transition: border-color .15s, background .15s, box-shadow .15s; }
+  .intent-option:has(input:checked) { border-color: var(--pun-coral); background: color-mix(in oklch, var(--pun-coral) 7%, transparent); box-shadow: inset 0 0 0 1px var(--pun-coral); }
   .field { width: 100%; border: 1px solid var(--pun-border); border-radius: .75rem; background: var(--pun-ivory); color: var(--pun-ink); padding: .75rem 1rem; min-height: 44px; }
   .field:focus { border-color: var(--pun-coral); outline: 2px solid color-mix(in oklch, var(--pun-coral) 25%, transparent); outline-offset: 2px; }
   .line-button { min-height: 44px; }
@@ -491,8 +507,17 @@ coursePhases.forEach((phase) => {
     if (!form.reportValidity()) return;
     if ((new FormData(form).get('honeypot-name') as string)?.trim()) return;
 
+    const phoneRaw = String(new FormData(form).get('phone') || '').replace(/[\s()\-]/g, '');
+    if (!/^(?:\+?66|0)\d{8,9}$/.test(phoneRaw)) {
+      if (error) { error.textContent = 'กรุณากรอกเบอร์โทรมือถือจริง เช่น 0812345678 ครับ'; error.classList.remove('hidden'); }
+      (form.querySelector('[name="phone"]') as HTMLInputElement | null)?.focus();
+      return;
+    }
+
     const payload = Object.fromEntries(new FormData(form).entries());
     Object.assign(payload, {
+      phone: phoneRaw,
+      lead_temp: payload.intent === 'booking' ? 'hot' : 'warm',
       source: 'ads-dealer-ai-sales',
       source_page: 'ads/dealer-ai-sales',
       booking_type: 'dealer-ai-sales',
@@ -512,8 +537,8 @@ coursePhases.forEach((phase) => {
         keepalive: true,
       });
       if (!response.ok) throw new Error('submission failed');
-      if (typeof pageWindow.fbq === 'function') fbq('track', 'Lead', { content_name: 'dealer_ai_booking' });
-      if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('SubmitForm', { content_name: 'dealer_ai_booking' });
+      if (typeof pageWindow.fbq === 'function') fbq('track', 'Lead', { content_name: 'dealer_ai_booking', lead_temp: payload.lead_temp });
+      if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('SubmitForm', { content_name: 'dealer_ai_booking', lead_temp: payload.lead_temp });
       form.classList.add('hidden');
       success?.classList.remove('hidden');
       success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
