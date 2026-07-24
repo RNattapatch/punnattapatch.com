@@ -41,7 +41,7 @@
 
 ---
 
-## Services (4 packages)
+## Services
 
 ### 1. AI Day Workshop — ฿30,000
 
@@ -74,51 +74,6 @@
 **Anchor:** Workshop เดี่ยว ฿30,000 = ไม่มี support | Workshop + Follow-up ฿50,000 = guarantee ระบบไม่ตาย
 
 **เหมาะกับ:** คนที่เคยจ่าย workshop แล้วทีมเลิกใช้ ต้องการ support หลัง workshop
-
-### 3. Sales System Sprint — ฿65,000 / 1 เดือน
-
-**Hook:** "มีทีมขาย 5-20 คน แต่ยอดขาย 80% มาจากคุณคนเดียว?"
-
-- ระยะเวลา: 1 เดือน
-- Sessions: 4 ครั้ง (Discovery → Design → Build → Training)
-- LINE Support: Async 30 วัน
-
-**Deliverables:**
-
-- Discovery Report + Quick Win ทันที
-- KPI Dashboard + Commission Calculator
-- n8n workflow + AI tools สำหรับทีม
-- Training Deck + Handover Checklist
-
-**Case study:** H.HomePlus วัสดุก่อสร้าง จ่าย ฿52,800 ได้ระบบ KPI + Commission + Training ทีม 16 คน 6 แผนก — ยอดขาย gap ฿1.95M/เดือน เริ่มปิดได้จริง
-
-**เหมาะกับ:** SME ที่มีทีมขาย 5-20 คน ยังไม่มีระบบ KPI/Commission ชัดเจน กำลัง scale หรือเปิดสาขา
-
-### 4. Sale Training Bundle — ฿42,500 / 2 วัน
-
-**Hook:** "ทีมขายยังปิดการขายด้วยการลดราคาอยู่เหรอ?"
-
-- Bundle: Value Selling (1 วัน) + Sales Psychology (1 วัน)
-- ราคาแยก: ฿25,000 × 2 = ฿50,000 | Bundle: ฿42,500 (ประหยัด ฿7,500)
-- รูปแบบ: In-house training ≤20 คน
-
-**หลักสูตร B: Value & Relationship Selling**
-
-1. จากสงครามราคาสู่การขายด้วยคุณค่า (Jobs to be Done)
-2. คัดกรองลูกค้า — รู้ว่าใคร "ใช่"
-3. จิตวิทยาการให้เพื่อความผูกพันระยะยาว
-4. เจรจาแบบ Win-Win — แลกผลประโยชน์ไม่ลดราคาฝ่ายเดียว
-
-**หลักสูตร C: Sale Psychology**
-
-1. ถอดรหัสกระบวนการตัดสินใจ (Functional / Emotional / Social)
-2. First Impression Code
-3. Trust & Social Proof
-4. Psychological Tactics for Closing
-
-**เหมาะกับ:** ทีมขายที่ปิดด้วยลดราคาเป็นหลัก, Telesales / Chat Commerce / Field Sales ที่ต้องเปลี่ยนวิธีขาย
-
----
 
 ## FAQ
 

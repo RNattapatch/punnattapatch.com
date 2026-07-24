@@ -157,7 +157,7 @@ SME ไทยมักอยากเริ่มจาก "Agent ขายข�
 ## เริ่มต้นกับผม
 
 - [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop) — 1 วันเต็ม สร้าง Agent ตัวแรกให้เสร็จในห้อง
-- [Consult Package ฿45,000](/services/ai-workshop) — ผมเป็นโค้ชส่วนตัวช่วงเริ่มต้น · save ฿25,000 <!-- price:literal -->
+- [Package A {{price:package-a}}](/services#package-a) — Advance workshop + Consult 2 วัน ผมเป็นโค้ชส่วนตัวช่วงเริ่มต้น
 - [BOSI DNA Quiz](/bosi-dna-quiz) — ค้นหา DNA ของทีมก่อนจะเลือกว่าจะเริ่มใช้ AI กับงานไหน
 
 หรือ [กรอกฟอร์มนี้ 3 นาที](/intake-form) ผมจะตอบกลับใน 24 ชม. พร้อมแนะนำว่า Agent แรกของคุณควรเป็นงานอะไร

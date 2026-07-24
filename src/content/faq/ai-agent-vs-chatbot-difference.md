@@ -54,4 +54,4 @@ Chatbot ทำแบบนี้ไม่ได้ เพราะทำได�
 - ใช้ Google Apps Script สำหรับงาน Automation ที่ต้องจัดการข้อมูลใน Sheets จำนวนมาก
 - ใช้ LINE Messaging API เป็นช่องทางสื่อสารกับลูกค้าและส่งแจ้งเตือน
 
-เครื่องมือทั้งหมดนี้มีราคาที่โปร่งใส เปิดเผย และไม่มีสัญญาผูกมัดแบบ lock-in (ผูกติดกับ vendor) ทำให้ทีมที่ไม่ใช่สายเทคนิคของลูกค้าสามารถดูแลระบบต่อเองได้ หลังจากเข้าร่วม [Advance AI & Business Automation 1 วัน {{price:ai-workshop-advance}}](/services/ai-workshop) หรือ [Consult Package ฿45,000](/services#package-a)
+เครื่องมือทั้งหมดนี้มีราคาที่โปร่งใส เปิดเผย และไม่มีสัญญาผูกมัดแบบ lock-in (ผูกติดกับ vendor) ทำให้ทีมที่ไม่ใช่สายเทคนิคของลูกค้าสามารถดูแลระบบต่อเองได้ หลังจากเข้าร่วม [Advance AI & Business Automation 1 วัน {{price:ai-workshop-advance}}](/services/ai-workshop) หรือ [Package A {{price:package-a}}](/services#package-a)

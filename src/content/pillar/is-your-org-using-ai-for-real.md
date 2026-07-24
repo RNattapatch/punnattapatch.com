@@ -120,7 +120,7 @@ readingTimeMinutes: 9
 ## เริ่ม audit องค์กรคุณ
 
 -   [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop) — 1 วัน audit + สร้าง Agent ตัวแรก
--   [Sales System Sprint {{price:sales-system-sprint}}](/services/sales-system-sprint) — 1 เดือน สร้างระบบการขายอัตโนมัติเต็มรูปแบบ
+-   [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — สร้างระบบการขายอัตโนมัติเต็มรูปแบบทั้งบริษัท
 -   [BOSI DNA Quiz](/bosi-dna-quiz) — รู้ DNA ทีมก่อนเลือก path
 
 หรือ [กรอกฟอร์ม 3 นาที](/intake-form) ผมอ่านแล้วบอกว่าองค์กรคุณอยู่ระดับไหนและควรเริ่มจากอะไร

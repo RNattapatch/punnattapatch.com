@@ -76,6 +76,6 @@ tags: [faq, hiring, sales-team, market-research, sme]
 ## Package ที่เกี่ยวข้อง
 
 - [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop) — 1 วันได้ framework research + ICP document ทำงานกันสด
-- [Sales System Sprint {{price:sales-system-sprint}}](/services/sales-system-sprint) — 1 เดือนรวม research → ICP → playbook (คู่มือการขาย) → CRM → KPI (ตัววัดผลงาน) dashboard (หน้าจอสรุปข้อมูล) ครบ
+- [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — รวม research → ICP → playbook (คู่มือการขาย) → CRM → KPI (ตัววัดผลงาน) dashboard (หน้าจอสรุปข้อมูล) ครบทั้งระบบ
 
 อ่านต่อ: [ต้องวางระบบขายก่อนจ้างเซลล์ไหม](/faq#sales-system-before-hiring-sales-team) | [จ้างเซลล์มีประสบการณ์ vs มือใหม่](/faq#experienced-vs-new-sales-hire) | [คู่มือสร้างทีมขาย B2B](/insights/build-b2b-sales-team-sme-thailand)

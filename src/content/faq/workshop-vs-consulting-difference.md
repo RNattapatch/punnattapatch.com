@@ -23,7 +23,7 @@ Workshop เป็นแบบลงมือทำ จบใน 1 วัน ส
 ## Consulting / Sprint (1-3 เดือน)
 
 - เป็นโปรเจกต์ระยะยาว ครอบคลุมตั้งแต่ Discovery (การพูดคุยเพื่อทำความเข้าใจปัญหา) → Design (การออกแบบระบบ) → Build (การสร้างระบบ) → Training (การฝึกอบรม)
-- ราคาเริ่มต้น {{price:sales-system-sprint}}-200,000 ต่อโปรเจกต์
+- ราคาเริ่มต้น {{price:package-a}}-200,000 ต่อโปรเจกต์
 - เหมาะกับธุรกิจที่พร้อมวางระบบการขายครบวงจร ไม่ใช่แค่การฝึกอบรม
 - ผลลัพธ์ที่ได้คือระบบ KPI (ตัววัดผลงาน), Commission, n8n workflow (ขั้นตอนการทำงาน) และเอกสารประกอบครบชุด
 - ผู้เกี่ยวข้องประกอบด้วยเจ้าของ, sales lead, ทีมขาย และฝ่าย IT ที่จะเข้ามาดูแลระบบต่อ
@@ -34,7 +34,7 @@ Workshop เป็นแบบลงมือทำ จบใน 1 วัน ส
 | มิติ | Workshop | Consulting |
 |---|---|---|
 | เวลา | 1-2 วัน | 1-3 เดือน |
-| ราคา | {{price:ai-workshop-basic}}-54,900 | {{price:sales-system-sprint}}-200,000+ |
+| ราคา | {{price:ai-workshop-basic}}-54,900 | {{price:package-a}}-200,000+ |
 | ความลึก | 1-2 use case (กรณีการใช้งาน) | วางระบบครบ |
 | Commitment | ต่ำ | สูง |
 | Deliverable (สิ่งที่ส่งมอบ) | 1 tool ใช้ทันที | ระบบครบ + documentation (เอกสารประกอบ) |
@@ -52,12 +52,12 @@ Workshop เป็นแบบลงมือทำ จบใน 1 วัน ส
 - ผ่าน Workshop แล้วและเห็นว่าสไตล์ของที่ปรึกษาเข้ากันได้
 - ต้องการระบบที่ครบวงจร ไม่ใช่แค่เครื่องมือชิ้นเดียว
 - ทีมมีขนาด 10-20 คนและต้องการออกแบบ KPI และ Commission ใหม่
-- มีงบประมาณ {{price:sales-system-sprint}}+ และมีเวลาให้โปรเจกต์ 1 เดือนเต็ม
+- มีงบประมาณตั้งแต่ {{price:package-a}} ขึ้นไป และมีเวลาให้โปรเจกต์หลายสัปดาห์
 
 ## Path ที่ผมแนะนำสำหรับ SME ส่วนใหญ่
 
 1. เริ่มจาก [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop) 1 วัน
-2. ถ้าอยากให้ระบบไม่ตายหลัง workshop → [Consult Package ฿45,000](/services/ai-workshop) หรือ [Sales System Sprint {{price:sales-system-sprint}}](/services/sales-system-sprint)
+2. ถ้าอยากให้ระบบไม่ตายหลัง workshop → [Package A {{price:package-a}}](/services#package-a) หรือถ้าอยากวางระบบขายทั้งบริษัท → [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation)
 3. ถ้าไม่เข้ากับที่ปรึกษา ก็ไม่ต้องเสียเงินก้อนใหญ่ ค่า workshop {{price:ai-workshop-advance}} คุ้มค่ากว่าการลงทุนในโปรเจกต์ ฿200,000 แล้วต้องยกเลิกกลางทาง
 
 ดูรายละเอียดเพิ่มเติมใน [Pillar: คู่มือเลือกที่ปรึกษาการขาย B2B 2026](/insights/sales-consulting-guide-2026)

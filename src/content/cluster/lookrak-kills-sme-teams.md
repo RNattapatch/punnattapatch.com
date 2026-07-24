@@ -114,6 +114,6 @@ Sales rep อาวุโสที่ closing rate (อัตราปิดก�
 
 ## Package ที่เกี่ยวข้อง
 
-- [Sales System Sprint {{price:sales-system-sprint}} / 1 เดือน](/services/sales-system-sprint) — ออกแบบ KPI + Commission structure ใหม่ + install dashboard transparent
-- [Sale Training Bundle ฿50,000 / 2 วัน (Early Bird {{price:sale-training-bundle}})](/services/sale-training-bundle) — ฝึกทีมให้ทำงานแบบ merit-based
+- [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — วางระบบขายทั้งบริษัท ออกแบบ KPI + Commission structure ใหม่ + dashboard โปร่งใสทั้งทีม
+- [Daruma Sales Office Bootcamp {{price:inhouse-b}} / 2 วัน](/services#inhouse-b) — ฝึกทีมให้ทำงานแบบ merit-based
 - [กรอกฟอร์มประเมิน 3 นาที](/intake-form) — ผมอ่านแล้วจะบอกได้ว่าทีมคุณติดกับดัก "ลูกรัก" อยู่ในระดับไหน

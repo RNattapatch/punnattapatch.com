@@ -113,9 +113,9 @@ anonymized: true
 ## Total Investment vs ROI (ผลตอบแทนการลงทุน)
 
 - **Investment:**
-  - AI Consult Package ฿45,000 (Bundle/แพ็คเกจรวม)
+  - Advance Workshop + Consult Bundle ฿45,000
   - Monthly Consulting 6 เดือน × ฿30,000 = ฿180,000
-  - Sale Training Bundle ฿50,000
+  - In-house Sales Training 2 วัน ฿50,000
   - Total: **฿280,000**
 - **Tool cost/เดือน:** ฿800-1,500
 - **Yearly saving:** ฿3.8M+
@@ -142,7 +142,7 @@ anonymized: true
 
 ## อยากได้ผลลัพธ์แบบนี้ไหม?
 
-- [Sales System Sprint {{price:sales-system-sprint}}](/services/sales-system-sprint) — 1 เดือน compact version ของเคสนี้ (เหมาะทีม 10-15 คน)
-- [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop) — Starting point ของลูกค้ารายนี้ (Consult Package ฿44,900) <!-- price:literal -->
-- [Sale Training Bundle ฿50,000](/services/sale-training-bundle) — Module ที่ 4 ของเคสนี้
+- [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — วางระบบขายทั้งบริษัทแบบเดียวกับเคสนี้ (เหมาะทีม 10-15 คน)
+- [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop) — Starting point ของลูกค้ารายนี้
+- [Daruma Sales Office Bootcamp {{price:inhouse-b}}](/services#inhouse-b) — Module ที่ 4 ของเคสนี้
 - [กรอกฟอร์ม 3 นาที](/intake-form) — ผมอ่านแล้วบอกว่าเคสคุณ match กับลูกค้ารายนี้แค่ไหน + ควร start ตรงไหน

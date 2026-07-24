@@ -27,11 +27,7 @@ export const PRICES = {
   'inhouse-b':               { amount: 59900, url: '/services#inhouse-b',                     note: 'Daruma Sales Office Bootcamp 2 วัน' },
   'package-a-list':          { amount: 69900, url: '/services#package-a',                     note: 'Package A list price (strikethrough)' },
   'package-a':               { amount: 59900, url: '/services#package-a',                     note: 'Advance + Consult 2 วัน (locked 2026-07-20)' },
-  'daruma-score':            { amount: 25000, url: '/ads/daruma-score',                       note: 'Daruma Score — sales-system diagnostic day' },
   'daruma-transformation':   { amount: 198000, url: '/services#daruma-transformation',        note: 'Daruma Sales Transformation — 45 days' },
-  'sales-system-sprint':     { amount: 65000, url: '/services/sales-system-sprint',           note: '1 เดือนจบ' },
-  'sale-training-bundle':    { amount: 44900, url: '/services/sale-training-bundle',          note: 'Early Bird' },
-  'sale-training-regular':   { amount: 52800, url: '/services/sale-training-bundle',          note: 'ราคาปกติ' },
   'tiktok-workshop':         { amount: 49900, url: '/services/trust-content-tiktok-workshop', note: 'ราคาเปิดตัว' },
   'tiktok-workshop-regular': { amount: 59900, url: '/services/trust-content-tiktok-workshop', note: 'ราคาปกติ' },
 };

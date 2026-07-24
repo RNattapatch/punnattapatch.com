@@ -82,7 +82,7 @@ Dealer ไม่ได้ loyal กับสินค้า แต่ loyal ก�
 
 ## เคสจริง: ต้นทุน ฿65,000 ได้อะไร <!-- price:historical -->
 
-ลูกค้ารายนี้ใช้ Sales System Sprint 1 เดือนเพื่อทำ 3 อย่างนี้
+ลูกค้ารายนี้วางระบบขายใหม่ทั้งบริษัทเพื่อทำ 3 อย่างนี้
 
 | งาน | เครื่องมือ | เวลา |
 |---|---|---|
@@ -102,7 +102,7 @@ ROI (ผลตอบแทนการลงทุน): ทุน ฿65,000 ไ�
 
 ## Package ที่เกี่ยวข้อง
 
-- [Sales System Sprint {{price:sales-system-sprint}}](/services/sales-system-sprint): 1 เดือนวาง dealer portal + รอบการ check-in + ระบบติดตาม concentration risk
+- [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation): วาง dealer portal + รอบการ check-in + ระบบติดตาม concentration risk ทั้งระบบ
 - [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop): 1 วัน สอนทำระบบอัปเดต dealer และแจ้งเตือน follow-up อัตโนมัติ
 
 อ่านต่อ: [คู่มือสร้างทีมขาย B2B](/insights/build-b2b-sales-team-sme-thailand) | [เพิ่มพนักงานขายแล้วยอดจะเพิ่มไหม](/faq#add-sales-staff-revenue-not-increase) | [Forklift Distributor 5 คน case study](/case-studies/forklift-distributor-5-person-team)

@@ -37,7 +37,7 @@ anonymized: true
 - Output: สคริปต์ที่ดึงข้อมูลจาก Google Sheets → generate summary → ส่ง LINE เจ้าของทุกเช้าจันทร์ 8:00
 - Measured outcome ในห้อง: 2 ชั่วโมง → 15 นาที (เวลาที่ senior sales rep ใช้)
 
-### เดือน 2: Sales System Sprint
+### เดือน 2: วางระบบขาย (Sales System Build)
 
 **Session 2-5 (รายสัปดาห์):** ฿65,000 <!-- price:historical -->
 - วาง KPI (ตัววัดผลงาน) dashboard (หน้าจอสรุปข้อมูล) (Google Sheets + Apps Script) ทีมเห็นตัวเองและเพื่อนร่วมทีม real-time
@@ -115,6 +115,6 @@ anonymized: true
 ## อยากได้ผลลัพธ์แบบนี้ไหม?
 
 - [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop) — 1 วัน build automation ตัวแรก
-- [Sales System Sprint {{price:sales-system-sprint}}](/services/sales-system-sprint) — 1 เดือน วางระบบครบ (KPI + Commission + workflow)
+- [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — วางระบบขายครบทั้งบริษัท (KPI + Commission + workflow)
 - [BOSI DNA Quiz](/bosi-dna-quiz) — รู้ DNA ทีมก่อนเริ่ม
 - [กรอกฟอร์ม 3 นาที](/intake-form) — ผมอ่านแล้วบอกว่าเคสคุณเหมือน/ต่างจากลูกค้ารายนี้ยังไง

@@ -28,7 +28,7 @@ anonymized: true
 
 **จุดชนวน:** Top performer #3 ลาออกเพราะ commission flat + เจ้านายประกาศจะคงระบบ "เพราะ junior จะน้อยใจ" — เจ้าของรู้ว่าถ้าไม่แก้ ที่เหลือจะตามไป
 
-## สิ่งที่ผมทำให้ (1 เดือน Sales System Sprint)
+## สิ่งที่ผมทำให้ (Daruma Sales Transformation · วางระบบขายทั้งบริษัท)
 
 ### Week 1: Discovery + Data Audit
 
@@ -135,7 +135,7 @@ Team bonus = top performer ยอมช่วย junior เพราะมัน
 
 ## Total Investment vs ROI (ผลตอบแทนการลงทุน)
 
-- **Investment:** Sales System Sprint ฿65,000 (1 เดือน) <!-- price:historical -->
+- **Investment:** วางระบบขายทั้งบริษัท ฿65,000 (โปรเจกต์ 1 เดือน) <!-- price:historical -->
 - **Tool cost/เดือน:** ฿700 (n8n only)
 - **Year 1 saving (retention):** ฿900,000 (ไม่ต้อง replace)
 - **Year 1 revenue lift:** ~฿20M (from rep productivity +45%)
@@ -149,6 +149,6 @@ Team bonus = top performer ยอมช่วย junior เพราะมัน
 
 ## อยากได้ผลลัพธ์แบบนี้ไหม?
 
-- [Sales System Sprint {{price:sales-system-sprint}}](/services/sales-system-sprint) — Workflow (ขั้นตอนการทำงาน) เดียวกับลูกค้ารายนี้ใน 1 เดือน
-- [Sale Training Bundle (แพ็คเกจรวมการฝึกอบรม) ฿50,000](/services/sale-training-bundle) — ถ้าต้องการฝึกทีมก่อน redesign commission
+- [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — Workflow (ขั้นตอนการทำงาน) วางระบบขายทั้งบริษัทแบบเดียวกับลูกค้ารายนี้
+- [Daruma Sales Office Bootcamp {{price:inhouse-b}}](/services#inhouse-b) — ถ้าต้องการฝึกทีมก่อน redesign commission
 - [กรอกฟอร์ม 3 นาที](/intake-form) — ผมอ่านแล้วบอกว่าเคสคุณควรเริ่มที่ตัวเลขเท่าไหร่

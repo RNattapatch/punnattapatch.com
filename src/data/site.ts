@@ -50,7 +50,7 @@ export const BRAND_COLORS = {
 } as const;
 
 // Public Catalog v2 lineup (approved 2026-07-22).
-// Daruma Score stays private for proposals/noindex ads; Public Course stays off-web until venue is confirmed.
+// Public Course stays off-web until venue is confirmed.
 export const SERVICES = [
   {
     id: 'inhouse-a',
@@ -182,8 +182,8 @@ export const MILESTONES = {
 export const SERVICE_TIERS_SUMMARY = {
   entry: 'AI Workshop (฿30k/วัน)',
   growth: 'Workshop + Follow-up (฿50k)',
-  system: 'Sales System Sprint (฿65k/เดือน)',
-  training: 'Sale Training Bundle (฿42.5k/2 วัน)',
+  system: 'Package A (฿59,900 · Advance + Consult 2 วัน)',
+  training: 'Daruma Sales Office Bootcamp (฿59,900 · 2 วัน)',
 } as const;
 
 /**

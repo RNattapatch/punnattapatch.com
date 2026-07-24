@@ -35,8 +35,8 @@ tags: [faq, consulting, agency, comparison]
 ส่วนของผมจะเป็นราคาเหมาจ่ายต่อโครงการ (fixed-price) และชำระ 100% ล่วงหน้า:
 
 - Advance AI & Business Automation ราคา {{price:ai-workshop-advance}} (1 วัน ได้ผลงานครบ)
-- Sales System Sprint ราคา {{price:sales-system-sprint}} (1 เดือน ได้ระบบสมบูรณ์)
-- Sale Training Bundle ราคา ฿50,000 · Early Bird {{price:sale-training-bundle}} (2 วัน · 3 ทีม/เดือน)
+- Daruma Sales Transformation ราคา {{price:daruma-transformation}} (45 วัน ได้ระบบขายครบทั้งบริษัท)
+- Daruma Sales Office Bootcamp ราคา {{price:inhouse-b}} (2 วัน · ฝึกทีมขาย)
 
 ข้อดีของราคาแบบ fixed-price คือคุณทราบต้นทุนที่แน่นอนตั้งแต่แรก มีขอบเขตงานชัดเจน และไม่มีค่าใช้จ่ายแฝงตามมา
 

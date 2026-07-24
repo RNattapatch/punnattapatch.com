@@ -81,7 +81,7 @@ heroImage: "/og-image.jpg"
 
 - [Advance AI & Business Automation 1 วัน {{price:ai-workshop-advance}}](/services/ai-workshop) — เห็นวิธีทำงานจริง + ได้ AI workflow (ขั้นตอนการทำงานด้วย AI) ใช้ทันที
 - [BOSI DNA Quiz](/bosi-dna-quiz) — รู้ DNA ทีมขายฟรีใน 5-10 นาทีก่อนวางระบบ
-- [Sales System Sprint 1 เดือน {{price:sales-system-sprint}}](/services/sales-system-sprint) — สำหรับทีมที่พร้อมวางระบบครบ
+- [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — สำหรับทีมที่พร้อมวางระบบขายครบทั้งบริษัท
 
 ## บทความถัดไป (ทยอยลง)
 
