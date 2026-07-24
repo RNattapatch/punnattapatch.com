@@ -14,6 +14,7 @@ interface Props {
   canonical?: string;
   ogImage?: string;
   noindex?: boolean;
+  robots?: string;
   schema?: SchemaProps;
 }
 
@@ -23,6 +24,7 @@ const {
   canonical = cleanUrl(Astro.url),
   ogImage = `${SITE.url}/og-image.jpg`,
   noindex = false,
+  robots,
   schema = { type: 'WebPage' as const },
 } = Astro.props;
 
@@ -41,7 +43,7 @@ const fullTitle = title === SITE.titleDefault ? title : `${title} · ${SITE.name
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
 
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {noindex && <meta name="robots" content={robots || 'noindex, nofollow'} />}
 
     <!-- Favicon (Pun avatar) -->
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
