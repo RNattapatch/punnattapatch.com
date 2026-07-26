@@ -10,8 +10,10 @@
 Astro form (src/pages/**)  ──POST──▶  n8n "Intake Form v2 — Split Path"
                                         webhook: rnat.app.n8n.cloud/webhook/intake-form-v2
                                         │
-                                        ├─ node "Validate Booking1"  (gate เฉพาะ source_page === '/booking')
-                                        ├─ node "Flatten Body1"      ⚠️ อ่าน key แบบ FIXED LIST — key นอก list = ทิ้ง
+                                        ├─ node "Validate Booking1"   (gate เฉพาะ source_page === '/booking')
+                                        ├─ node "Normalize Aliases"   🛡️ safety net — เติม canonical key ที่ว่างจาก
+                                        │       business/sales_issue/issue/intent/lead_temp (เพิ่ม 2026-07-26)
+                                        ├─ node "Flatten Body1"       ⚠️ อ่าน key แบบ FIXED LIST — key นอก list = ทิ้ง
                                         │       └─ ประกอบ telegram_message ที่นี่
                                         ├─ Telegram — Lead Alert (chat 1130338690)
                                         ├─ Supabase RPC submit_lead(payload) → table `leads`
@@ -19,6 +21,20 @@ Astro form (src/pages/**)  ──POST──▶  n8n "Intake Form v2 — Split Pa
 ```
 
 **กฎเหล็ก:** ชั้นที่ตัดสินว่า field รอด/หาย = **Flatten Body1** (n8n) และ **submit_lead** (RPC) — ฟอร์มตั้งชื่อ input ว่าอะไรก็ได้ แต่ **payload ตอน POST ต้องมี canonical key ตามตารางนี้**
+
+> 🛡️ **Safety net (2026-07-26):** node **Normalize Aliases** เติม `company` / `problems` / `tier` / `comment` ให้อัตโนมัติจาก `business` / `sales_issue` / `issue` / `intent` / `lead_temp` **เฉพาะตอนที่ key นั้นว่าง** — กันกรณีเบราว์เซอร์เสิร์ฟฟอร์มเวอร์ชันเก่าจาก cache หรือฟอร์มใหม่ลืมใส่ alias
+> **แต่ยังต้องส่ง alias จากฟอร์มเสมอ** — safety net คือกันพลาด ไม่ใช่ข้ออ้างให้ข้ามกฎ
+>
+> ⚠️ **n8n publish:** แก้ workflow แล้วต้องกด **Publish** ด้วย ไม่งั้น production ยังรัน version เดิม (เจอมาแล้ว)
+
+### ⚙️ ความทนทานของ pipeline (แก้ 2026-07-26)
+
+| จุด | เดิม | ตอนนี้ |
+|---|---|---|
+| Supabase insert timeout | 10s · **ไม่ retry** | 25s · **retry 3 ครั้ง** ห่าง 2s |
+| Supabase insert ล้มเหลว | เงียบ (`onError: continueRegularOutput`) → **lead หายจาก CRM แต่ execution ขึ้น success** | ยังไม่บล็อก Telegram (ตั้งใจ) แต่โอกาสหายลดมาก |
+
+**เคสจริง:** execution `733` (26 Jul) — `submit_lead` timeout 10s → ไม่มี row ใน CRM ทั้งที่ Telegram ส่งสำเร็จและ n8n รายงาน success · **ถ้าเจอ lead ใน Telegram แต่ไม่มีใน CRM ให้สงสัยจุดนี้ก่อน** (เช็คที่ n8n → Executions → node Supabase)
 
 ## Canonical keys — ตารางแม่ (สิ่งที่ n8n/RPC อ่านจริง)
 
@@ -96,6 +112,7 @@ Astro form (src/pages/**)  ──POST──▶  n8n "Intake Form v2 — Split Pa
 ## หมายเหตุระบบ (รู้ไว้)
 
 - **Validate Booking1** gate เข้มเฉพาะ `source_page === '/booking'` (เป๊ะๆ มี slash) — หน้า booking จริงส่ง `website-booking` จึง**ไม่ผ่าน gate นี้** (by design ปัจจุบัน; ถ้าจะเปิด gate ให้แก้เงื่อนไขใน n8n)
-- **Telegram บรรทัด tier** จะโชว์ `Score ?/15` เสมอเมื่อมี tier (template เดิมของ quiz) — cosmetic, ไม่พัง
+- **Telegram บรรทัด tier** จะโชว์ `Score ?/15` เสมอเมื่อมี tier (template เดิมของ quiz) — cosmetic, ไม่พัง · แก้ได้ต้องเขียนทับ jsCode ของ Flatten Body1 ทั้งก้อน (ยังไม่ทำ เพราะ blast radius กว้างกว่าประโยชน์)
+- **In-app browser (TikTok/FB/IG) ถือ cache นาน** — หลัง deploy แก้ฟอร์ม ให้ทดสอบใน Safari/Chrome ปกติ หรือเติม `?v=N` · lead จริงที่คลิกจาก ads ครั้งแรกไม่มี cache เก่า ไม่กระทบ
 - RPC `submit_lead` เป็น SECURITY DEFINER — ฟอร์มไม่ต้องมีสิทธิ์ insert ตรง
 - Lead เดิม 3 รายจาก dealer (Belel/Tuangrat/วิว 25–26 Jul) เกิดก่อน fix → company/tier/ปัญหา null ถาวร แต่เบอร์+LINE ครบ
