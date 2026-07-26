@@ -69,6 +69,9 @@ const issues = [
     const data = new FormData(form);
     const payload = Object.fromEntries(data.entries());
     Object.assign(payload, {
+      // Canonical aliases — shared intake flow reads company/problems (see docs/INTAKE-DATA-CONTRACT.md)
+      company: (payload.business as string) || '',
+      problems: (payload.issue as string) || '',
       source: 'website-booking', source_page: 'website-booking', booking_type: 'daruma-qualification',
       submitted_at: new Date().toISOString(), path: window.location.pathname,
       recommended_path: 'free-consultation',

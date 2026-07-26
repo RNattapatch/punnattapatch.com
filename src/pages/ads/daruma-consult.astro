@@ -1,0 +1,576 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DarumaMark from '../../components/DarumaMark.astro';
+import { SITE } from '../../data/site';
+import { PRICES, fmtPrice } from '../../data/pricing.mjs';
+
+const title = 'อบรม AI ทีมขายถึงออฟฟิศคุณ — In-house 1 วัน';
+const description = 'เซลล์ลืมตามลูกค้า = ยอดรั่วทุกเดือน AI ไม่ได้มาปิดการขายแทนเซลล์ แต่พาลูกค้ามาถึงมือเซลล์ให้เร็วขึ้น จัด in-house ที่ออฟฟิศคุณ 1 วัน ใช้โจทย์ธุรกิจจริง คุยฟรี 15–20 นาที';
+const canonical = `${SITE.url}/ads/daruma-consult`;
+const lineUrl = 'https://line.me/R/ti/p/@011xgvap';
+const perHead = Math.round(PRICES['inhouse-a'].amount / 20);
+// Qualification options mirrored from /booking so ads leads populate the same CRM columns via intake-form-v2
+const issues = [
+  'ข้อมูลลูกค้ากระจาย อยู่ในไลน์กับหัวคน',
+  'เซลล์หมดเวลาไปกับงานเอกสารและงานซ้ำ',
+  'ยอดขึ้นๆ ลงๆ เดาไม่ได้ว่าเดือนหน้าจะเป็นยังไง',
+  'ทีมพึ่งคนเก่งคนเดียว คนอื่นตามไม่ทัน',
+  'วัดผลทีมไม่ได้ ประชุมด้วยความรู้สึก',
+  'ลงทุนเรียนหรือซื้อเครื่องมือมาแล้ว แต่ทีมไม่ได้ใช้จริง',
+];
+const clientLogos = [
+  { src: '/logos/clients/hfc-healthfoods.png', alt: 'HFC HealthFoods Corporation' },
+  { src: '/logos/clients/home-plus.png', alt: 'ฮ.โฮมพลัส' },
+  { src: '/logos/clients/ving.png', alt: 'V!NG' },
+  { src: '/logos/clients/farevefarm.jpg', alt: 'Farevefarm' },
+  { src: '/logos/clients/farmsuk.jpg', alt: 'ฟาร์มสุข farmsuk' },
+  { src: '/logos/clients/business-boy.jpg', alt: 'เด็กประกอบการ The Business Boy' },
+  { src: '/logos/clients/gpx.jpg', alt: 'GPX' },
+  { src: '/logos/clients/aes.jpg', alt: 'AES' },
+  { src: '/logos/clients/nsscrap.avif', alt: 'NSSCRAP' },
+  { src: '/logos/clients/scenery-farm.jpeg', alt: 'Scenery' },
+];
+const testimonials = [
+  { src: '/testimonial/2026-05/review-01.jpg', alt: 'รีวิวลูกค้า — ทีมงานร่วม Workshop AI กับอาจารย์ปั้น', width: 1000, height: 1000 },
+  { src: '/testimonial/2026-05/review-02.jpg', alt: 'รีวิวลูกค้า — แชทขอบคุณหลังเวิร์กช็อป "ชีวิตเปลี่ยนใน 24 ชม."', width: 1000, height: 1000 },
+  { src: '/testimonial/2026-05/review-03.jpg', alt: 'รีวิวลูกค้า — บรรยากาศห้องอบรม AI เต็มห้อง', width: 1000, height: 1000 },
+  { src: '/testimonial/2026-05/review-05.jpg', alt: 'รีวิวลูกค้า — แชท "อาจารย์ปั้นสอนถูกใจทีมงาน Ai ทั้งบริษัท"', width: 1000, height: 1000 },
+  { src: '/testimonial/2026-07/review-09.jpg', alt: 'รีวิวลูกค้า — แชทลูกศิษย์เล่าว่าใช้ AI ทำเว็บจ้างหลายแสนจบในคืนเดียว', width: 1410, height: 1410 },
+  { src: '/testimonial/2026-07/review-10.jpg', alt: 'รีวิวลูกค้า — โพสต์แนะนำต่อว่า "ใครสนใจเรียน AI แนะนำน้องปันครับ เก่งมากๆ"', width: 736, height: 736 },
+  { src: '/testimonial/2026-07/review-11.jpg', alt: 'รีวิวลูกค้า — แชทลูกค้าต่อยอดโปรเจกต์เลขา AI "สนุกดีครับ"', width: 914, height: 914 },
+  { src: '/testimonial/2026-05/review-08.jpg', alt: 'รีวิวลูกค้า — โพสต์รีวิว "องค์กรที่เรียนรู้เร็วที่สุด"', width: 1000, height: 1000 },
+];
+const productFacts = [
+  ['ในคอร์สจะได้เรียนอะไร', 'ได้เรียนเทคนิคการขาย + การใช้ AI Agent โดยใช้ Daruma Framework — ทีมขายลงมือสร้าง AI Agent ตัวจริงเสร็จใน 1 วัน ไม่เขียน code โดยใช้ Claude หรือ ChatGPT'],
+  ['คอร์สนี้เหมาะกับใคร', 'ทีมขาย/เซลล์ + เจ้าของธุรกิจ (เหมาะทีม 5–20 คน)'],
+  ['จัดที่ไหน', 'ที่ออฟฟิศของคุณเอง (on-site กรุงเทพฯ และปริมณฑล ไม่คิดค่าเดินทาง)'],
+  ['ใช้ระยะเวลาเท่าไหร่', '1 วัน 8 ชม.เต็ม'],
+  ['ดีกว่ายังไง?', 'ถูกกว่าส่งไปเรียนข้างนอก + ใช้โจทย์ธุรกิจจริง + ถามได้เต็มที่'],
+  ['เรียนยังไง', 'จับมือทำทีละคนจนสร้าง AI Agent ของธุรกิจตัวเองได้ ก่อนกลับบ้าน'],
+];
+const productHighlights = [
+  ['ผมไปจัดให้ถึงที่ จับมือทำ — หารต่อหัวถูกกว่าส่งไปข้างนอก', `จัดทั้งทีมราคาเดียว เริ่ม ${fmtPrice('inhouse-a')} เฉลี่ยแค่ ฿${perHead.toLocaleString('en-US')}/คน (คิดจากทีม 20 คน) · เทียบส่งไปเรียน public หลักหมื่น/คน — ถ้าจัด in-house ทีม 20 คน ค่าเฉลี่ยต่อหัวถูกกว่าส่งไปเรียนข้างนอกมากครับ`],
+  ['In-house ใช้โจทย์จากธุรกิจคุณจริงๆ ในการเรียน', 'เอางานขายจริง — ลูกค้าเก่า / follow-up / เอกสารขายของธุรกิจคุณ มาสร้าง Agent ในห้องเลย'],
+  ['In-house ถามได้เต็มที่', 'เรียนกันเองในทีม ถามได้ทุกเรื่องของธุรกิจคุณ ไม่ต้องเกรงใจคนบริษัทอื่น'],
+];
+const courseMorning = [
+  {
+    code: 'C3',
+    heading: 'วางขั้นตอนขาย + follow-up ที่ทำซ้ำได้',
+    body: 'ใส่ขั้นดีล งานถัดไป วันครบกำหนด และหลักฐาน ให้คนอื่นเปิดแล้วรู้ว่าต้องทำอะไรต่อ ไม่พึ่งความจำครับ',
+  },
+  {
+    code: 'C4',
+    heading: '“สมองบริษัท”: รวมข้อมูลให้ AI รู้จักธุรกิจคุณ',
+    body: 'รวมข้อมูลลูกค้า สินค้า ราคา โปร และกติกาการขาย เป็นชุดบริบทให้ AI กลายเป็นน้องฝึกงานที่รู้จักบริษัทคุณ',
+  },
+];
+const courseAfternoon = [
+  {
+    code: 'C7/C8',
+    heading: 'จับลูกค้าใหม่ + คนทักเพจ แล้วเตือนเซลล์ follow-up',
+    body: 'เก็บลูกค้าเข้าระบบทันที แล้วส่งสัญญาณให้เซลล์ตามต่อได้ทันจังหวะครับ',
+  },
+  {
+    code: 'C7/C8',
+    heading: 'ช่วยตอบสเปค/ราคา/โปร + ร่างใบเสนอราคา',
+    body: 'AI ช่วยร่างจากข้อมูลจริงของธุรกิจคุณ และมีคนตรวจก่อนส่งให้ลูกค้าทุกครั้ง',
+  },
+  {
+    code: 'C10',
+    heading: 'แผนเอาไปใช้จริงวันจันทร์',
+    body: 'กำหนด Adoption (การนำไปใช้จริง) พร้อมเคสแรกและหลักฐานที่ทีมจะกลับไปทำต่อครับ',
+  },
+];
+const darumaPillars = [
+  { letter: 'D', name: 'Data', desc: 'ข้อมูลฝ่ายขายต้องเก็บได้' },
+  { letter: 'A', name: 'AI Agent', desc: 'นำ AI Agent มาลดงาน เพิ่มยอดขายจริงได้' },
+  { letter: 'R', name: 'Repeatable', desc: 'ทำซ้ำได้ ไม่พึ่งดวง' },
+  { letter: 'U', name: 'Upskill', desc: 'คนเก่งขึ้นด้วยระบบ' },
+  { letter: 'M', name: 'Measurable', desc: 'ทุกอย่างวัดผลได้ ไม่ใช้ความรู้สึก' },
+  { letter: 'A', name: 'Actionable', desc: 'นำไปใช้ได้จริงทันที' },
+];
+const coursePhases = [
+  { label: 'ช่วงเช้า · ระบบขายก่อนใส่ AI', items: courseMorning },
+  { label: 'ช่วงบ่าย · สร้าง AI Sales Office (สำนักงานขายด้วย AI)', items: courseAfternoon },
+];
+const courseSteps = [];
+coursePhases.forEach((phase) => {
+  phase.items.forEach((item, ii) => {
+    courseSteps.push({ ...item, phaseLabel: ii === 0 ? phase.label : null, n: courseSteps.length + 1 });
+  });
+});
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  ogImage={`${SITE.url}/og-image.jpg`}
+  noindex
+  robots="noindex,follow"
+  schema={{ types: ['WebPage'], title, description }}
+>
+  <Fragment slot="head">
+    <script is:inline>
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '890649354099149');
+      fbq('track', 'PageView');
+    </script>
+  </Fragment>
+
+  <div id="consent-bar" class="consent-bar hidden" role="region" aria-label="การยินยอมใช้ Meta Pixel">
+    <div class="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 py-2.5 text-sm sm:flex-row lg:px-8">
+      <p class="flex-1 text-center text-ivory/90 sm:text-left">
+        เราใช้ Meta Pixel เพื่อวัดผลโฆษณา · <a href="/privacy" class="underline underline-offset-2">นโยบายความเป็นส่วนตัว</a>
+      </p>
+      <div class="flex shrink-0 gap-2">
+        <button id="consent-decline" type="button" class="consent-button rounded-lg px-3 py-1.5 text-ivory/80 hover:bg-white/10" aria-label="ไม่ยินยอมให้ใช้ Meta Pixel">ไม่ยินยอม</button>
+        <button id="consent-accept" type="button" class="consent-button rounded-lg bg-coral px-4 py-1.5 font-semibold text-white hover:bg-[#c43245]" aria-label="ยินยอมให้ใช้ Meta Pixel">ยินยอม</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="daruma-consult-page">
+    <section class="border-b border-[#c9c2b2] bg-ivory px-6 py-14 md:py-24">
+      <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.15fr_.85fr]">
+        <div>
+          <p class="inline-flex items-center rounded-full border border-[#c9c2b2] bg-sand px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-cyan">In-house Workshop · อบรมทีมขายถึงออฟฟิศคุณ</p>
+          <h1 class="mt-5 font-display font-bold leading-[1.02] text-navy">
+            <span class="block text-5xl md:text-7xl">Sale <span class="text-coral">×</span> AI Agent</span>
+            <span class="mt-3 block text-xl font-semibold text-warm-ink/70 md:text-2xl">AI Agent สำหรับฝ่ายขาย · จัดอบรมที่ออฟฟิศคุณ 1 วัน</span>
+          </h1>
+          <p class="mt-6 max-w-2xl text-lg leading-relaxed text-warm-ink/80"><span class="font-bold text-navy">เซลล์ลืมตามลูกค้า = ยอดรั่วทุกเดือน</span> — AI ไม่ได้มาปิดการขายแทนเซลล์ครับ แต่พาลูกค้ามาถึงมือเซลล์ให้ <span class="font-semibold text-navy">เร็วขึ้น</span> ก่อนลูกค้าจะเดินไปเจอเจ้าอื่น</p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="#daruma-consult-form" data-primary-cta="booking" class="btn min-h-11 border-0 bg-coral px-6 text-base text-white hover:bg-[#c43245]" aria-label="จองคิวคุยฟรี 15–20 นาที">จองคิวคุยฟรี 15–20 นาที</a>
+            <a href={lineUrl} data-line-daruma target="_blank" rel="noopener" class="line-button inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#06c755] px-5 py-3 text-center font-semibold text-white transition-colors hover:bg-[#05b34c]" aria-label="Line คุยกับผมก่อน">
+              <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" d="M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 8.9 8.2-.2.2-.4.5-.5.8-.2.5-.1.9.4 1 .4.1.8-.1 1.2-.3l3.3-2.1c4.6-.8 8.2-3.7 8.2-7.6Z"/></svg>
+              <span>Line คุยกับผมก่อน</span>
+            </a>
+          </div>
+          <div class="mt-6 flex max-w-xl flex-wrap items-center gap-x-5 gap-y-3 rounded-2xl border-2 border-coral/30 bg-white px-5 py-4 shadow-[3px_4px_0_rgba(30,27,22,0.08)]" aria-label={`ราคาคอร์ส Sale × AI Agent — จัดทั้งทีมราคาเดียว เริ่ม ${fmtPrice('inhouse-a')} เฉลี่ย ฿${perHead.toLocaleString('en-US')} ต่อคน สำหรับทีม 20 คน จัด on-site ที่ออฟฟิศ 1 วัน`}>
+            <div>
+              <p class="text-[0.7rem] font-bold uppercase tracking-[0.12em] text-warm-ink/55">จัดทั้งทีม ราคาเดียว</p>
+              <p class="font-display text-3xl font-bold tabular-nums text-coral md:text-4xl">{fmtPrice('inhouse-a')}</p>
+            </div>
+            <div class="h-11 w-px bg-[#c9c2b2]" aria-hidden="true"></div>
+            <div>
+              <p class="text-[0.7rem] font-bold uppercase tracking-[0.12em] text-warm-ink/55">เฉลี่ยต่อคน (ทีม 20)</p>
+              <p class="font-display text-3xl font-bold tabular-nums text-navy md:text-4xl">฿{perHead.toLocaleString('en-US')}</p>
+            </div>
+            <div class="h-11 w-px bg-[#c9c2b2]" aria-hidden="true"></div>
+            <p class="text-sm font-semibold leading-snug text-navy">on-site<br />จัดที่ออฟฟิศคุณ · 1 วัน</p>
+          </div>
+          <p class="mt-3 text-sm text-warm-ink/60">ถูกกว่าส่งเซลล์ไปเรียนคอร์ส public หลักหมื่น/คนครับ</p>
+        </div>
+        <div class="relative mx-auto w-full max-w-sm">
+          <div class="editorial-card overflow-hidden p-0 shadow-[5px_7px_0_rgba(30,27,22,0.09)]">
+            <div class="relative">
+              <img src="/car-dealer-material/pun-ceo-photoshoot-1.jpg" alt="ปัน ณัฐพัชร์ — ผู้สอนคอร์ส Sale × AI Agent สำหรับทีมขาย" width="1100" height="1650" class="aspect-[4/5] w-full object-cover object-top" loading="eager" fetchpriority="high" decoding="async" />
+              <div class="absolute right-3 top-3 rounded-full border border-[#c9c2b2] bg-ivory/95 p-1.5 shadow-[2px_3px_0_rgba(30,27,22,0.12)]">
+                <DarumaMark class="h-14 w-auto" />
+              </div>
+            </div>
+            <div class="p-6">
+              <p class="font-display text-xl font-bold leading-snug text-navy">ตอนปิดจริง ลูกค้าอยากคุยกับ "คน"</p>
+              <p class="mt-2 text-sm leading-relaxed text-warm-ink/70">AI แค่พาเขามาถึงมือเซลล์ให้ไวที่สุดครับ ที่เหลือให้เซลล์คุยต่อ</p>
+            </div>
+          </div>
+          <p class="mt-4 text-center text-xs font-semibold uppercase tracking-[0.16em] text-warm-ink/55">ปัน ณัฐพัชร์ · ผู้สอน &amp; ที่ปรึกษา</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-[#c9c2b2] bg-sand px-6 py-16 md:py-24">
+      <div class="mx-auto max-w-6xl">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">Product · In-house Workshop</p>
+        <div class="mt-3 max-w-4xl">
+          <h2 class="font-display text-3xl font-bold leading-tight text-navy md:text-5xl">Sale × AI Agent</h2>
+          <p class="mt-4 max-w-3xl text-lg leading-relaxed text-warm-ink/75">ทีมขายลงมือสร้าง AI Agent ของธุรกิจตัวเองให้เสร็จในวันเดียวครับ เรียนจากโจทย์จริง แล้วกลับไปใช้ต่อได้ทันที</p>
+        </div>
+
+        <div class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {productFacts.map(([label, detail]) => (
+            <article class="editorial-card p-5">
+              <p class="font-display text-xl font-bold text-coral">{label}</p>
+              <p class="mt-3 leading-relaxed text-navy">{detail}</p>
+            </article>
+          ))}
+        </div>
+
+        <div class="mt-12 border-t border-[#c9c2b2] pt-8">
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">3 เหตุผลที่เจ้าของเลือก in-house</p>
+          <div class="mt-5 grid gap-4 lg:grid-cols-3">
+            {productHighlights.map(([heading, body]) => (
+              <article class="editorial-card p-6">
+                <h3 class="font-display text-2xl font-bold leading-snug text-navy">{heading}</h3>
+                <p class="mt-4 leading-relaxed text-warm-ink/75">{body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div class="mt-12 border-t border-[#c9c2b2] pt-8">
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">เสียงจากคนลงมือทำ</p>
+          <h3 class="mt-2 font-display text-3xl font-bold text-navy md:text-4xl">เสียงจริงจากทีมที่ผมไปอบรมมาแล้ว</h3>
+          <div class="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4" aria-label="แกลเลอรีเสียงจากลูกค้า">
+            {testimonials.map((testimonial, index) => (
+              <figure class={`editorial-card overflow-hidden p-2 ${index === 0 ? 'col-span-2 sm:row-span-2' : ''}`}>
+                <img src={testimonial.src} alt={testimonial.alt} width={testimonial.width} height={testimonial.height} loading="lazy" decoding="async" class="aspect-square w-full object-cover" />
+              </figure>
+            ))}
+          </div>
+        </div>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="#daruma-consult-form" class="btn min-h-11 border-0 bg-coral px-6 text-base text-white hover:bg-[#c43245]" aria-label="จองคิวคุยรายละเอียด Sale × AI Agent">จองคิวคุยรายละเอียด</a>
+          <a href={lineUrl} data-line-daruma target="_blank" rel="noopener" class="line-button inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#06c755] px-5 py-3 text-center font-semibold text-white transition-colors hover:bg-[#05b34c]" aria-label="Line คุยกับผมก่อน">
+            <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" d="M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 8.9 8.2-.2.2-.4.5-.5.8-.2.5-.1.9.4 1 .4.1.8-.1 1.2-.3l3.3-2.1c4.6-.8 8.2-3.7 8.2-7.6Z"/></svg>
+            <span>Line คุยกับผมก่อน</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-[#c9c2b2] bg-ivory px-6 py-16 md:py-24">
+      <div class="mx-auto max-w-6xl">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">เรียนอะไรใน 1 วัน 8 ชม.</p>
+        <div class="mt-3 max-w-4xl">
+          <h2 class="font-display text-3xl font-bold leading-tight text-navy md:text-5xl">เปิดมาก็ลงมือสร้าง AI Agent ของธุรกิจคุณเลยครับ</h2>
+          <p class="mt-4 max-w-3xl text-lg leading-relaxed text-warm-ink/75">ช่วงเช้าจัดระบบขายให้ชัด ช่วงบ่ายเอาโจทย์จริงมาสร้างผู้ช่วยของทีม แล้วกลับไปใช้ต่อได้ตั้งแต่วันจันทร์ครับ</p>
+        </div>
+
+        <div class="relative mt-12 max-w-3xl">
+          <div class="absolute bottom-4 left-4 top-3 w-0.5 bg-[#c9c2b2] md:left-5" aria-hidden="true"></div>
+          <ol class="space-y-8">
+            {courseSteps.map(({ n, phaseLabel, heading, body }) => (
+              <li>
+                {phaseLabel && <p class="mb-4 pl-12 text-xs font-bold uppercase tracking-[0.16em] text-cyan md:pl-16">{phaseLabel}</p>}
+                <div class="relative pl-12 md:pl-16">
+                  <span class="absolute left-0 top-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-coral bg-ivory font-display text-sm font-bold text-coral md:h-10 md:w-10 md:text-base">{n}</span>
+                  <h4 class="font-display text-xl font-bold leading-snug text-navy md:pt-1">{heading}</h4>
+                  <p class="mt-2 leading-relaxed text-warm-ink/75">{body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <div class="mt-10 flex flex-col gap-5 border-t border-[#c9c2b2] pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <p class="font-display text-2xl font-bold leading-snug text-navy">จับมือทำทุกคนจนได้ Agent ของตัวเองก่อนกลับบ้านครับ</p>
+          <div class="flex flex-wrap gap-3 sm:shrink-0">
+            <a href="#daruma-consult-form" class="btn min-h-11 border-0 bg-coral px-6 text-base text-white hover:bg-[#c43245]" aria-label="จองคิวคุยรายละเอียดคอร์ส Sale × AI Agent">จองคิวคุยรายละเอียดคอร์ส</a>
+            <a href={lineUrl} data-line-daruma target="_blank" rel="noopener" class="line-button inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#06c755] px-5 py-3 text-center font-semibold text-white transition-colors hover:bg-[#05b34c]" aria-label="Line คุยกับผมก่อน">
+              <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" d="M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 8.9 8.2-.2.2-.4.5-.5.8-.2.5-.1.9.4 1 .4.1.8-.1 1.2-.3l3.3-2.1c4.6-.8 8.2-3.7 8.2-7.6Z"/></svg>
+              <span>Line คุยกับผมก่อน</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-[#c9c2b2] bg-navy px-6 py-16 text-ivory md:py-24">
+      <div class="mx-auto max-w-6xl">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">หลักคิดหลักของคอร์ส Sale × AI Agent · by @pun_nattapatch</p>
+        <h2 class="mt-4 font-display font-bold leading-none">
+          <span class="block text-5xl tracking-[0.12em] text-white md:text-8xl">D.A.R.U.M.A</span>
+          <span class="mt-2 block text-2xl font-bold tracking-[0.35em] text-coral md:text-4xl">FRAMEWORK</span>
+        </h2>
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ivory/85">เลิกขายแบบพึ่งดวง ด้วย Framework ที่จับต้องได้ และ AI Agent ที่ลดงานและเพิ่มยอดได้จริง</p>
+        <div class="mt-10 flex max-w-3xl flex-col gap-3">
+          {darumaPillars.map(({ letter, name, desc }) => (
+            <article class="flex items-center gap-5 rounded-2xl border border-white/15 bg-white/5 p-5 md:gap-6 md:p-6">
+              <span class="w-12 shrink-0 text-center font-display text-5xl font-bold leading-none text-coral md:w-16 md:text-6xl">{letter}</span>
+              <div>
+                <p class="font-display text-xl font-bold text-white md:text-2xl">= {name}</p>
+                <p class="mt-1 leading-relaxed text-ivory/80">{desc}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 py-16 md:py-24">
+      <div class="mx-auto max-w-6xl">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ยอดรั่วตรงไหนบ้าง</p>
+        <div class="mt-3 grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
+          <h2 class="max-w-xl font-display text-3xl font-bold leading-tight text-navy md:text-5xl">ทีมขายคุณกำลังเจอข้อไหนอยู่ครับ?</h2>
+          <div class="grid border-t border-[#c9c2b2] sm:grid-cols-3">
+            {[
+              ['01', 'ลูกค้าเก่าเงียบหาย ไม่มีใครตามต่อ'],
+              ['02', 'คนทักเพจ / LINE ตกค้าง กว่าจะตอบลูกค้าไปเจ้าอื่นแล้ว'],
+              ['03', 'ไม่รู้ว่าลูกค้าคนไหนใกล้ปิด ควรโทรหาใครก่อน'],
+            ].map(([number, question]) => (
+              <article class="border-b border-[#c9c2b2] py-5 sm:border-b-0 sm:border-r sm:px-5 sm:first:pl-0 sm:last:border-r-0">
+                <p class="font-display text-4xl font-bold text-coral">{number}</p>
+                <p class="mt-3 text-lg font-semibold leading-relaxed text-navy">{question}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-[#c9c2b2] bg-sand px-6 py-16 md:py-20">
+      <div class="mx-auto max-w-6xl">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">3 อย่างที่ AI ช่วยทีมขายเพิ่มยอด (เซฟไว้เลย)</p>
+        <h2 class="mt-3 font-display text-3xl font-bold text-navy md:text-5xl">AI ช่วยพาลูกค้ามาถึงมือเซลล์เร็วขึ้นยังไงครับ?</h2>
+        <ul class="mt-8 grid gap-4 md:grid-cols-3">
+          {[
+            'จับลูกค้าใหม่ + คนทักเพจ เข้าระบบทันที แล้วเตือนเซลล์ตามใน LINE ให้เอง ไม่มีลืม',
+            'อ่าน data หลังบ้าน บอกเซลล์ว่าควรโฟกัสลูกค้าคนไหนก่อน',
+            'ตอบสเปค ราคา โปรเบื้องต้น 24 ชม. ตอนเซลล์ไม่ว่าง / ติดงานอื่น',
+          ].map((item, index) => (
+            <li class="editorial-card flex gap-4 p-6">
+              <span class="font-display text-3xl font-bold text-coral">0{index + 1}</span>
+              <span class="pt-1 font-semibold leading-relaxed text-navy">{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="px-6 py-14 md:py-20">
+      <div class="mx-auto max-w-6xl">
+        <div class="flex flex-col gap-3 border-b border-[#c9c2b2] pb-5 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">Proof</p>
+            <h2 class="mt-2 font-display text-3xl font-bold text-navy md:text-4xl">องค์กรที่ไว้ใจให้ผมดูแล</h2>
+          </div>
+          <p class="text-sm text-warm-ink/60">ลดงานซ้ำ คืนเวลาให้เซลล์ไปอยู่หน้าลูกค้า</p>
+        </div>
+
+        <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5" aria-label="องค์กรที่ไว้ใจให้ผมดูแล">
+          {clientLogos.map((logo) => (
+            <div class="editorial-card flex h-20 items-center justify-center p-3">
+              <img src={logo.src} alt={logo.alt} width="160" height="160" loading="lazy" decoding="async" class="max-h-full max-w-full object-contain opacity-75" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-[#c9c2b2] bg-ivory px-6 py-14 md:py-20">
+      <div class="mx-auto max-w-4xl">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ข้อความจากผม</p>
+        <div class="editorial-card mt-4 p-7 md:p-10">
+          <p class="font-display text-2xl font-bold leading-relaxed text-navy md:text-4xl">ผมโตมาจากการปั้นทีมขายและบริหารคนจริงๆ ครับ ก่อนออกมาทำธุรกิจของตัวเอง</p>
+          <p class="mt-5 text-lg leading-relaxed text-warm-ink/75">วันนี้ผมเอาความรู้เรื่องการพัฒนาทีมขาย × AI Agent มาช่วยผู้ประกอบการและธุรกิจไทย ให้ทีมขายลดงานซ้ำ แล้วมีเวลาไปอยู่หน้าลูกค้ามากขึ้นครับ</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-[#c9c2b2] bg-navy px-6 py-12 text-ivory md:py-16">
+      <div class="mx-auto max-w-4xl">
+        <p class="font-display text-2xl font-semibold leading-relaxed md:text-3xl">นี่คือเนื้อหาจากคอร์ส AI Agent สำหรับฝ่ายขาย ที่ผมสอนด้วย Daruma Framework — อยากให้ไปจัดอบรมที่ธุรกิจของคุณ ทักมาคุยกับผมได้เลยครับ ผมดูแลให้เอง</p>
+      </div>
+    </section>
+
+    <section id="daruma-consult-form" class="scroll-mt-20 px-6 py-16 md:py-24">
+      <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">จองคิวคุยฟรี</p>
+          <h2 class="mt-3 font-display text-3xl font-bold leading-tight text-navy md:text-5xl">เล่าโจทย์ทีมขายของคุณให้ผมฟัง</h2>
+          <p class="mt-5 leading-relaxed text-warm-ink/75">กรอกข้อมูลสั้นๆ ไว้ครับ เดี๋ยวผมทักกลับทาง LINE หรือโทรศัพท์ แล้วคุยกัน 15–20 นาที ว่าทีมขายคุณควรเริ่มวางระบบ AI ตรงไหนก่อน</p>
+        </div>
+
+        <form id="daruma-consult-booking-form" class="editorial-card p-6 md:p-9" novalidate>
+          <input name="honeypot-name" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true" />
+          <div class="space-y-5">
+            <fieldset aria-label="เลือกสิ่งที่คุณต้องการให้ผมช่วย">
+              <legend class="field-label mb-2">คุณอยากให้ผมช่วยเรื่องไหนครับ</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <button type="button" class="intent-btn" data-intent="book-training" aria-pressed="false">
+                  <span class="block font-bold">ขอนัดคิวจัดอบรม</span>
+                  <span class="mt-0.5 block text-sm opacity-80">Sale × AI Agent · in-house 1 วัน</span>
+                </button>
+                <button type="button" class="intent-btn is-selected" data-intent="free-consult" aria-pressed="true">
+                  <span class="block font-bold">ขอปรึกษาฟรีเบื้องต้น</span>
+                  <span class="mt-0.5 block text-sm opacity-80">คุยก่อน 15–20 นาที</span>
+                </button>
+              </div>
+              <input type="hidden" name="intent" id="intent-field" value="free-consult" />
+            </fieldset>
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="field-label">ชื่อของคุณ<input name="name" required autocomplete="name" class="field" aria-label="ชื่อของคุณ" /></label>
+              <label class="field-label">ช่องทางติดต่อกลับ<input name="contact" required autocomplete="tel" placeholder="เบอร์โทร หรือ LINE ID" class="field" aria-label="เบอร์โทร หรือ LINE ที่ติดต่อกลับ" /></label>
+            </div>
+            <label class="field-label">ธุรกิจของคุณทำเกี่ยวกับอะไร<input name="business" required autocomplete="organization" placeholder="เช่น ขายเครื่องจักร B2B, ตัวแทนจำหน่ายอะไหล่" class="field" aria-label="ธุรกิจของคุณทำเกี่ยวกับอะไร" /></label>
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="field-label">ทีมขายกี่คน<select name="team_size" required class="field" aria-label="ทีมขายกี่คน"><option value="">เลือกขนาดทีม</option><option value="0">ยังไม่มีทีมขาย</option><option value="1-4">1–4 คน</option><option value="5-10">5–10 คน</option><option value="11-20">11–20 คน</option><option value="20+">มากกว่า 20 คน</option></select></label>
+              <label class="field-label">งบที่พร้อมลงทุน<select name="budget" required class="field" aria-label="งบที่พร้อมลงทุน"><option value="">เลือกช่วงงบ</option><option>ยังไม่ได้ตั้งงบ — อยากเห็นโจทย์ก่อน</option><option>ต่ำกว่า ฿50,000</option><option>฿50,000–฿100,000</option><option>฿100,000–฿300,000</option><option>มากกว่า ฿300,000</option></select></label>
+            </div>
+            <label class="field-label">ตอนนี้เรื่องไหนติดสุด<select name="issue" required class="field" aria-label="ตอนนี้เรื่องไหนติดสุด"><option value="">เลือกเรื่องที่ตรงที่สุด</option>{issues.map((issue) => <option value={issue}>{issue}</option>)}</select></label>
+            <input id="utm_source" name="utm_source" type="hidden" />
+            <input id="utm_medium" name="utm_medium" type="hidden" />
+            <input id="utm_campaign" name="utm_campaign" type="hidden" />
+            <input id="utm_content" name="utm_content" type="hidden" />
+            <input id="utm_term" name="utm_term" type="hidden" />
+            <label class="flex cursor-pointer items-start gap-3 pt-1"><input name="consent" type="checkbox" required class="checkbox mt-0.5" aria-label="ยินยอมให้ติดต่อกลับตามนโยบายความเป็นส่วนตัว" /><span class="text-sm leading-relaxed text-warm-ink/75">ยินยอมให้ติดต่อกลับตาม <a href="/privacy" class="font-semibold text-cyan underline">นโยบายความเป็นส่วนตัว</a></span></label>
+            <p id="daruma-consult-error" class="hidden rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error" role="alert" aria-live="polite"></p>
+            <button id="daruma-consult-submit" type="submit" class="btn min-h-11 w-full border-0 bg-coral py-4 text-base text-white hover:bg-[#c43245]" aria-label="ส่งข้อมูล">ส่งข้อมูล</button>
+          </div>
+        </form>
+
+        <div id="daruma-consult-success" class="editorial-card hidden p-8 text-center lg:col-start-2" role="status" aria-live="polite">
+          <DarumaMark class="mx-auto h-auto w-20" />
+          <h2 class="mt-5 font-display text-3xl font-bold text-navy">รับข้อมูลแล้วครับ</h2>
+          <p class="mt-3 leading-relaxed text-warm-ink/75">ผมจะอ่านโจทย์ก่อนครับ แล้วทักกลับทาง LINE หรือโทรศัพท์ คุยกันฟรี 15–20 นาที</p>
+        </div>
+      </div>
+
+      <div class="mx-auto mt-12 max-w-6xl border-t border-[#c9c2b2] pt-10">
+        <p class="text-center text-lg font-semibold text-navy">ไม่แน่ใจว่าควรเริ่มยังไง? อยากคุยกับผมก่อนก็ได้ครับ</p>
+        <div class="mx-auto mt-5 flex max-w-sm justify-center">
+          <a href={lineUrl} data-line-daruma target="_blank" rel="noopener" class="line-button flex w-full min-h-11 items-center justify-center gap-2 rounded-xl bg-[#06c755] px-4 py-3 text-center font-semibold text-white transition-colors hover:bg-[#05b34c]" aria-label="แอดไลน์คุยกับปันก่อน">
+            <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" d="M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 8.9 8.2-.2.2-.4.5-.5.8-.2.5-.1.9.4 1 .4.1.8-.1 1.2-.3l3.3-2.1c4.6-.8 8.2-3.7 8.2-7.6Z"/></svg>
+            <span>แอดไลน์คุยกับปันก่อน</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=890649354099149&ev=PageView&noscript=1" alt="" /></noscript>
+</BaseLayout>
+
+<style>
+  .consent-bar { background: #072b4e; color: #f4f1ea; }
+  .consent-button { min-height: 44px; }
+  .field-label { display: grid; gap: .45rem; color: var(--pun-navy); font-size: .95rem; font-weight: 600; }
+  .field { width: 100%; border: 1px solid var(--pun-border); border-radius: .75rem; background: var(--pun-ivory); color: var(--pun-ink); padding: .75rem 1rem; min-height: 44px; }
+  .field:focus { border-color: var(--pun-coral); outline: 2px solid color-mix(in oklch, var(--pun-coral) 25%, transparent); outline-offset: 2px; }
+  .line-button { min-height: 44px; }
+  .intent-btn { width: 100%; text-align: left; border: 2px solid var(--pun-border); border-radius: .75rem; background: #fff; color: var(--pun-navy); padding: .7rem 1rem; min-height: 44px; cursor: pointer; transition: border-color .15s, background-color .15s, color .15s; }
+  .intent-btn:hover { border-color: var(--pun-coral); }
+  .intent-btn.is-selected { border-color: var(--pun-coral); background: var(--pun-coral); color: #fff; }
+  .intent-btn:focus-visible { outline: 2px solid color-mix(in oklch, var(--pun-coral) 40%, transparent); outline-offset: 2px; }
+  :global(body:has(#daruma-consult-page) .nav-cta),
+  :global(body:has(#daruma-consult-page) .menu-mobile li.mt-2) { display: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .line-button, .intent-btn { transition: none; }
+  }
+</style>
+
+<script>
+  type Attribution = Record<string, string | undefined>;
+  type MetaWindow = Window & { fbq?: (...args: unknown[]) => void; pnAttribution?: Attribution };
+
+  const pageWindow = window as MetaWindow;
+  const form = document.getElementById('daruma-consult-booking-form') as HTMLFormElement | null;
+  const formSection = document.getElementById('daruma-consult-form');
+  const success = document.getElementById('daruma-consult-success');
+  const error = document.getElementById('daruma-consult-error');
+  const submit = document.getElementById('daruma-consult-submit') as HTMLButtonElement | null;
+  const WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
+  const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+
+  function populateAttribution() {
+    const query = new URLSearchParams(window.location.search);
+    const stored = pageWindow.pnAttribution || {};
+    UTM_KEYS.forEach((key) => {
+      const input = document.getElementById(key) as HTMLInputElement | null;
+      if (input) input.value = query.get(key) || stored[key] || '';
+    });
+  }
+
+  populateAttribution();
+
+  if (formSection && 'IntersectionObserver' in window) {
+    let fired = false;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting) && !fired) {
+        fired = true;
+        if (typeof pageWindow.fbq === 'function') fbq('track', 'ViewContent', { content_name: 'daruma_consult_form' });
+        observer.disconnect();
+      }
+    }, { threshold: 0.4 });
+    observer.observe(formSection);
+  }
+
+  document.querySelectorAll('[data-line-daruma]').forEach((lineButton) => {
+    lineButton.addEventListener('click', () => {
+      if (typeof pageWindow.fbq === 'function') fbq('track', 'Contact', { content_name: 'line_add_daruma' });
+    });
+  });
+
+  // Intent selector — warm (free consult) vs hot (book training); value goes into the form payload
+  const intentField = document.getElementById('intent-field') as HTMLInputElement | null;
+  document.querySelectorAll('.intent-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.intent-btn').forEach((b) => {
+        b.classList.remove('is-selected');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('is-selected');
+      btn.setAttribute('aria-pressed', 'true');
+      if (intentField) intentField.value = (btn as HTMLElement).dataset.intent || '';
+    });
+  });
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    if ((new FormData(form).get('honeypot-name') as string)?.trim()) return;
+
+    const payload = Object.fromEntries(new FormData(form).entries());
+    const intentLabel = payload.intent === 'book-training' ? 'จองคิวจัดอบรม' : 'ขอคุยฟรีก่อน';
+    Object.assign(payload, {
+      // Canonical aliases — the shared intake-form-v2 flow + submit_lead RPC read
+      // company/tier/problems/comment (see docs/INTAKE-DATA-CONTRACT.md).
+      company: payload.business || '',
+      tier: payload.intent === 'book-training' ? 'HOT' : 'WARM',
+      problems: (payload.issue as string) || '',
+      comment: [intentLabel, payload.issue].filter(Boolean).join(' — '),
+      source: 'ads-daruma-consult',
+      source_page: 'ads/daruma-consult',
+      booking_type: 'daruma-consult',
+      submitted_at: new Date().toISOString(),
+      path: window.location.pathname,
+      recommended_path: 'free-consultation',
+    });
+
+    if (submit) { submit.disabled = true; submit.textContent = 'กำลังส่ง...'; }
+    error?.classList.add('hidden');
+
+    try {
+      const response = await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true,
+      });
+      if (!response.ok) throw new Error('submission failed');
+      const intentValue = (payload.intent as string) || 'free-consult';
+      if (typeof pageWindow.fbq === 'function') fbq('track', 'Lead', { content_name: 'daruma_consult_booking', content_category: intentValue });
+      (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.('Booking Submit', { props: { source: 'ads-daruma-consult', intent: intentValue } });
+      form.classList.add('hidden');
+      success?.classList.remove('hidden');
+      success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch {
+      if (error) { error.textContent = 'ระบบรับข้อมูลขัดข้องชั่วคราว กรุณาลองใหม่ หรือแอด LINE เพื่อส่งโจทย์ให้ผม'; error.classList.remove('hidden'); }
+      if (submit) { submit.disabled = false; submit.textContent = 'ส่งข้อมูล'; }
+    }
+  });
+
+  (function setupPixelConsent() {
+    const key = 'pixel_consent';
+    const bar = document.getElementById('consent-bar');
+    if (!bar) return;
+    try {
+      if (!localStorage.getItem(key)) bar.classList.remove('hidden');
+      const close = (value: string) => { localStorage.setItem(key, value); bar.classList.add('hidden'); };
+      document.getElementById('consent-accept')?.addEventListener('click', () => close('granted'));
+      document.getElementById('consent-decline')?.addEventListener('click', () => {
+        close('denied');
+        if (typeof pageWindow.fbq === 'function') fbq('consent', 'revoke');
+      });
+    } catch {
+      bar.classList.remove('hidden');
+    }
+  })();
+</script>
