@@ -515,9 +515,16 @@ coursePhases.forEach((phase) => {
     }
 
     const payload = Object.fromEntries(new FormData(form).entries());
+    const intentLabel = payload.intent === 'booking' ? 'ขอนัดจองคิว' : 'คุยเบื้องต้นก่อน';
     Object.assign(payload, {
       phone: phoneRaw,
       lead_temp: payload.intent === 'booking' ? 'hot' : 'warm',
+      // Compatibility aliases so the shared intake-form-v2 flow + submit_lead RPC
+      // map these into CRM columns (it reads company/tier/problems/comment, not the raw dealer field names).
+      company: payload.business || '',                        // -> company_name
+      tier: payload.intent === 'booking' ? 'HOT' : 'WARM',    // -> temperature (hot/warm)
+      problems: (payload.sales_issue as string) || '',        // -> pain_points
+      comment: [intentLabel, payload.sales_issue].filter(Boolean).join(' — '), // -> crm_notes + Telegram alert
       source: 'ads-dealer-ai-sales',
       source_page: 'ads/dealer-ai-sales',
       booking_type: 'dealer-ai-sales',
