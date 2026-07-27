@@ -9,6 +9,46 @@ const description = 'เซลล์ขายรถลืมตามลูก�
 const canonical = `${SITE.url}/ads/dealer-ai-sales`;
 const lineUrl = 'https://line.me/R/ti/p/@011xgvap';
 const perHead = Math.round(PRICES['inhouse-a'].amount / 20);
+
+// Tyre silhouette, drawn once and reused as an atmospheric layer in the dark
+// sections. A shape rather than a photo so it never competes with the text.
+const tyreSvg = `<svg viewBox="-118 -118 236 236" fill="none" aria-hidden="true" focusable="false">
+  <circle r="99" stroke="currentColor" stroke-width="30"/>
+  <circle r="56" stroke="currentColor" stroke-width="6"/>
+  <circle r="17" stroke="currentColor" stroke-width="6"/>
+  <g stroke="currentColor" stroke-width="6" stroke-linecap="round">
+    <path d="M0-17V-52"/><path d="M16 5.2l20.7 28.5"/><path d="M-16 5.2l-20.7 28.5"/>
+    <path d="M13.7-9.9L47-21.7"/><path d="M-13.7-9.9L-47-21.7"/>
+  </g>
+  <g stroke="currentColor" stroke-width="9" stroke-linecap="round">
+    <path d="M0-84v-30"/><path d="M49.4-68l17.6-24.3"/><path d="M79.9-26l28.5-9.3"/>
+    <path d="M79.9 26l28.5 9.3"/><path d="M49.4 68l17.6 24.3"/><path d="M0 84v30"/>
+    <path d="M-49.4 68l-17.6 24.3"/><path d="M-79.9 26l-28.5 9.3"/>
+    <path d="M-79.9-26l-28.5-9.3"/><path d="M-49.4-68l-17.6-24.3"/>
+  </g>
+</svg>`;
+
+// Side-view line art, one per dealer type. The strip exists to widen who reads
+// this page as "for me" — the copy says เซลล์ขายรถ, which a bike or truck
+// dealer would otherwise skip past.
+const vehicles = [
+  {
+    label: 'รถยนต์',
+    path: `<path d="M3 35V27c0-2 1.2-3.4 3.2-3.8L17 21l8.6-9.2C27.4 9.9 29.4 9 32 9h15c2.6 0 4.6.9 6.4 2.8L62 21l10.8 2.2C74.8 23.6 76 25 76 27v8"/><path d="M27 21l6-7.5h13l7 7.5z"/><path d="M3 35h8M25 35h29M68 35h8"/><circle cx="18" cy="35" r="6.5"/><circle cx="61" cy="35" r="6.5"/>`,
+  },
+  {
+    label: 'รถกระบะ',
+    path: `<path d="M3 35V25c0-2 1.2-3.4 3.2-3.8L15 19.5l7.4-8.2C24 9.6 25.8 8.8 28 8.8h13c2 0 3.2 1.2 3.2 3.2v9.5h32c1.6 0 2.8 1.2 2.8 2.8V35"/><path d="M25 19.5l5.5-7h11v7z"/><path d="M44.2 21.5V32h34"/><path d="M3 35h6M22 35h26M64 35h14"/><circle cx="15.5" cy="35" r="6.5"/><circle cx="56" cy="35" r="6.5"/>`,
+  },
+  {
+    label: 'รถบรรทุก',
+    path: `<path d="M3 35V19c0-1.6 1-2.6 2.6-2.6h11L21 24v11"/><path d="M6 17.5V11h8l3 6.5z"/><path d="M25 35V7.5c0-1.4 1-2.4 2.4-2.4H78c1.4 0 2.4 1 2.4 2.4V35"/><path d="M25 14h55"/><path d="M3 35h4M18 35h13M45 35h13M72 35h8"/><circle cx="12" cy="35" r="6.2"/><circle cx="38" cy="35" r="6.2"/><circle cx="65" cy="35" r="6.2"/>`,
+  },
+  {
+    label: 'มอเตอร์ไซค์',
+    path: `<circle cx="15" cy="31" r="10"/><circle cx="66" cy="31" r="10"/><path d="M15 31l11-13h16l9 13"/><path d="M26 18h-5l-4-6h-6"/><path d="M42 18l4-8h9"/><path d="M28 16.5h16c2.4 0 3.6 1.2 3.6 3"/><path d="M51 31l-6-9"/><path d="M32 31h18"/>`,
+  },
+];
 // Vehicle brands first — dealer visitors scan for their own industry before anything else.
 const clientLogos = [
   { src: '/logos/clients/nissan.png', alt: 'Nissan' },
@@ -103,19 +143,25 @@ const takeHome = [
 // Four angles instead of a linear résumé — each reader arrives doubting a different thing.
 const angles = [
   {
-    kicker: 'มุมที่ 2 · คนคัดคนเข้าทีมขาย',
-    heading: 'ผมสัมภาษณ์เซลล์มาแล้วหลักพันคน',
-    body: 'ก่อนมาเป็นที่ปรึกษา ผมเป็นคนคัดคนเข้าทีม — เลยรู้ว่าเซลล์ที่ทำยอดได้ต่างจากเซลล์ที่ขยันตรงไหน และงานส่วนไหนที่ควรโยนให้ AI ไม่ใช่โยนให้คน',
+    kicker: 'มุมที่ 2 · สายบริหาร',
+    heading: 'ผมบริหารทีมขายและบริหารธุรกิจมาเอง',
+    body: 'คนละช่วงกับตอนอยู่บริษัทรถครับ — ผมเป็นคนคัดคนเข้าทีม สัมภาษณ์มาแล้วหลักพันคน แล้วต้องมาคุมยอด คุมคน คุมต้นทุนเอง เลยรู้ว่างานไหนควรโยนให้ AI และงานไหนต้องเก็บไว้ให้คนทำ',
+    photo: { src: '/about/pun-cert-management.jpg', alt: 'ปัน ณัฐพัชร์ รับวุฒิบัตรหลักสูตรด้านบริหารธุรกิจ', width: 1100, height: 733 },
+    caption: 'ภาพ: วันรับวุฒิบัตร',
   },
   {
     kicker: 'มุมที่ 3 · คนสร้างระบบเอง',
     heading: 'ผมไม่ได้สอนอย่างเดียว — ผม build ใช้เองทุกวัน',
-    body: 'ระบบหลังบ้าน CRM และ AI Agent ที่ผมใช้ในธุรกิจตัวเอง ผมเขียนเอง ดังนั้นในห้องเรียนผมเปิดของจริงให้ดูได้ ไม่ใช่เปิดสไลด์ทฤษฎี',
+    body: 'ระบบหลังบ้าน CRM และ AI Agent ที่ผมใช้ในธุรกิจตัวเอง ผมเขียนเอง ในห้องเรียนผมเลยเปิดของจริงให้ดูได้ ไม่ใช่เปิดสไลด์ทฤษฎี',
+    photo: { src: '/about/pun-build-desk.jpg', alt: 'โต๊ะทำงานของปัน ณัฐพัชร์ จอสองใบเปิดโค้ดและเทอร์มินัลระหว่าง build ระบบ', width: 1100, height: 825 },
+    caption: 'ภาพ: โต๊ะที่ผมนั่ง build ระบบ',
   },
   {
-    kicker: 'มุมที่ 4 · ครู',
+    kicker: 'มุมที่ 4 · การทำงาน',
     heading: 'ผมจับมือทำทีละคน',
     body: 'ไม่ใช่ยืนบรรยาย 8 ชม.แล้วกลับ ทุกคนในห้องต้องมี Agent ของตัวเองก่อนเลิกเรียน ถ้าใครยังไม่ได้ ผมยังไม่ปล่อยกลับครับ',
+    photo: { src: '/about/pun-working-with-team.jpg', alt: 'ปัน ณัฐพัชร์ ยืนอธิบายหน้าจอให้ทีมลูกค้าที่เปิดโน้ตบุ๊กทำตามในออฟฟิศ', width: 1100, height: 825 },
+    caption: 'ภาพ: ระหว่างทำงานกับทีมลูกค้า',
   },
 ];
 const darumaPillars = [
@@ -230,6 +276,21 @@ coursePhases.forEach((phase) => {
 
     {/* Trust strip sits directly under the hero: the people who never scroll far are exactly
         the ones who still need proof. Kept as a short band so it doesn't crowd out the pain block. */}
+    {/* Widens who reads this as "for me" before the pain block lands. */}
+    <section class="border-b border-[#c9c2b2] bg-navy px-6 py-7 text-ivory">
+      <div class="mx-auto flex max-w-6xl flex-col gap-5 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
+        <p class="font-display text-xl font-bold leading-snug md:text-2xl">จัดให้ดีลเลอร์ได้ทุกประเภท</p>
+        <ul class="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4 lg:gap-x-10">
+          {vehicles.map(({ label, path }) => (
+            <li class="flex flex-col items-center gap-2">
+              <svg viewBox="0 0 84 46" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="h-10 w-auto text-[#7dd3e8]" aria-hidden="true" set:html={path} />
+              <span class="text-sm font-semibold text-ivory/85">{label}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
     <section class="border-b border-[#c9c2b2] bg-sand px-6 py-8">
       <div class="mx-auto max-w-6xl">
         <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
@@ -444,8 +505,9 @@ coursePhases.forEach((phase) => {
       </div>
     </section>
 
-    <section class="border-y border-[#c9c2b2] bg-navy px-6 py-16 text-ivory md:py-24">
-      <div class="mx-auto max-w-6xl">
+    <section class="relative overflow-hidden border-y border-[#c9c2b2] bg-navy px-6 py-16 text-ivory md:py-24">
+      <div class="tyre tyre-right" set:html={tyreSvg} />
+      <div class="relative mx-auto max-w-6xl">
         <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">หลักคิดหลักของคอร์ส Sale × AI Agent · by @pun_nattapatch</p>
         <h2 class="mt-4 font-display font-bold leading-none">
           <span class="block text-5xl tracking-[0.12em] text-white md:text-8xl">D.A.R.U.M.A</span>
@@ -484,11 +546,15 @@ coursePhases.forEach((phase) => {
         </article>
 
         <div class="mt-4 grid gap-4 md:grid-cols-3">
-          {angles.map(({ kicker, heading, body }) => (
-            <article class="editorial-card p-6">
-              <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">{kicker}</p>
-              <h3 class="mt-2 font-display text-2xl font-bold leading-snug text-navy">{heading}</h3>
-              <p class="mt-3 leading-relaxed text-warm-ink/75">{body}</p>
+          {angles.map(({ kicker, heading, body, photo, caption }) => (
+            <article class="editorial-card overflow-hidden p-0">
+              <img src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} loading="lazy" decoding="async" class="aspect-[4/3] w-full object-cover" />
+              <div class="p-6">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">{kicker}</p>
+                <h3 class="mt-2 font-display text-2xl font-bold leading-snug text-navy">{heading}</h3>
+                <p class="mt-3 leading-relaxed text-warm-ink/75">{body}</p>
+                <p class="mt-4 border-t border-[#c9c2b2] pt-3 text-sm text-warm-ink/60">{caption}</p>
+              </div>
             </article>
           ))}
         </div>
@@ -543,8 +609,9 @@ coursePhases.forEach((phase) => {
     </section>
 
     {/* The one place on the page that isn't selling — kept for a claim that cuts against the offer. */}
-    <section class="border-y border-[#c9c2b2] bg-navy px-6 py-16 text-ivory md:py-24">
-      <div class="mx-auto max-w-5xl">
+    <section class="relative overflow-hidden border-y border-[#c9c2b2] bg-navy px-6 py-16 text-ivory md:py-24">
+      <div class="tyre tyre-left" set:html={tyreSvg} />
+      <div class="relative mx-auto max-w-5xl">
         <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ข้อความจากผม</p>
         <div class="mt-6 grid items-center gap-6 sm:grid-cols-[minmax(0,10rem)_1fr] sm:gap-7 md:grid-cols-[minmax(0,13rem)_1fr] md:gap-10 lg:grid-cols-[minmax(0,17rem)_1fr] lg:gap-12">
           <figure class="mx-auto w-full max-w-[13rem] sm:mx-0 sm:max-w-none">
@@ -625,6 +692,14 @@ coursePhases.forEach((phase) => {
 </BaseLayout>
 
 <style>
+  /* Tyre silhouette layer — dealer page only. Low enough that it reads as
+     texture on the navy, never as an illustration competing with the copy. */
+  .tyre { position: absolute; pointer-events: none; width: 26rem; color: #7dd3e8; opacity: .07; }
+  .tyre :global(svg) { width: 100%; height: auto; display: block; }
+  .tyre-right { right: -9rem; bottom: -8rem; }
+  .tyre-left { left: -9rem; top: -7rem; }
+  @media (max-width: 767px) { .tyre { width: 17rem; } }
+
   .consent-bar { background: #072b4e; color: #f4f1ea; }
   .consent-button { min-height: 44px; }
   .field-label { display: grid; gap: .45rem; color: var(--pun-navy); font-size: .95rem; font-weight: 600; }
