@@ -122,21 +122,18 @@ const angles = [
     heading: 'ผมบริหารทีมขายและบริหารธุรกิจมาเอง',
     body: 'คนละช่วงกับตอนอยู่บริษัทรถครับ — ผมเป็นคนคัดคนเข้าทีม สัมภาษณ์มาแล้วหลักพันคน แล้วต้องมาคุมยอด คุมคน คุมต้นทุนเอง เลยรู้ว่างานไหนควรโยนให้ AI และงานไหนต้องเก็บไว้ให้คนทำ',
     photo: { src: '/about/pun-cert-management.jpg', alt: 'ปัน ณัฐพัชร์ รับวุฒิบัตรหลักสูตรด้านบริหารธุรกิจ', width: 1100, height: 733 },
-    caption: 'ภาพ: วันรับวุฒิบัตร',
   },
   {
     kicker: 'มุมที่ 3 · คนสร้างระบบเอง',
     heading: 'ผมไม่ได้สอนอย่างเดียว — ผม build ใช้เองทุกวัน',
     body: 'ระบบหลังบ้าน CRM และ AI Agent ที่ผมใช้ในธุรกิจตัวเอง ผมเขียนเอง ในห้องเรียนผมเลยเปิดของจริงให้ดูได้ ไม่ใช่เปิดสไลด์ทฤษฎี',
     photo: { src: '/about/pun-build-desk.jpg', alt: 'โต๊ะทำงานของปัน ณัฐพัชร์ จอสองใบเปิดโค้ดและเทอร์มินัลระหว่าง build ระบบ', width: 1100, height: 825 },
-    caption: 'ภาพ: โต๊ะที่ผมนั่ง build ระบบ',
   },
   {
     kicker: 'มุมที่ 4 · การทำงาน',
     heading: 'ผมจับมือทำทีละคน',
     body: 'ไม่ใช่ยืนบรรยาย 8 ชม.แล้วกลับ ทุกคนในห้องต้องมี Agent ของตัวเองก่อนเลิกเรียน ถ้าใครยังไม่ได้ ผมยังไม่ปล่อยกลับครับ',
     photo: { src: '/about/pun-working-with-team.jpg', alt: 'ปัน ณัฐพัชร์ ยืนอธิบายหน้าจอให้ทีมลูกค้าที่เปิดโน้ตบุ๊กทำตามในออฟฟิศ', width: 1100, height: 825 },
-    caption: 'ภาพ: ระหว่างทำงานกับทีมลูกค้า',
   },
 ];
 
@@ -537,14 +534,13 @@ const darumaPillars = [
         </article>
 
         <div class="mt-4 grid gap-4 md:grid-cols-3">
-          {angles.map(({ kicker, heading, body, photo, caption }) => (
+          {angles.map(({ kicker, heading, body, photo }) => (
             <article class="editorial-card overflow-hidden p-0">
               <img src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} loading="lazy" decoding="async" class="aspect-[4/3] w-full object-cover" />
               <div class="p-6">
                 <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">{kicker}</p>
                 <h3 class="mt-2 font-display text-2xl font-bold leading-snug text-navy">{heading}</h3>
                 <p class="mt-3 leading-relaxed text-warm-ink/75">{body}</p>
-                <p class="mt-4 border-t border-[#c9c2b2] pt-3 text-sm text-warm-ink/60">{caption}</p>
               </div>
             </article>
           ))}
