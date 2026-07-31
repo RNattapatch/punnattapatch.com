@@ -640,7 +640,10 @@ const darumaPillars = [
               <label class="field-label">ชื่อของคุณ<input name="name" required autocomplete="name" class="field" aria-label="ชื่อของคุณ" /></label>
               <label class="field-label">ช่องทางติดต่อกลับ<input name="contact" required autocomplete="tel" placeholder="เบอร์โทร หรือ LINE ID" class="field" aria-label="เบอร์โทร หรือ LINE ที่ติดต่อกลับ" /></label>
             </div>
-            <label class="field-label">ธุรกิจของคุณทำเกี่ยวกับอะไร<input name="business" required autocomplete="organization" placeholder="เช่น ขายเครื่องจักร B2B, ตัวแทนจำหน่ายอะไหล่" class="field" aria-label="ธุรกิจของคุณทำเกี่ยวกับอะไร" /></label>
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="field-label">ชื่อบริษัท<input name="company" required autocomplete="organization" placeholder="เช่น บจก. สยามเครื่องจักรกล" class="field" aria-label="ชื่อบริษัท" /></label>
+              <label class="field-label">ธุรกิจของคุณทำเกี่ยวกับอะไร<input name="business" required placeholder="เช่น ขายเครื่องจักร B2B, ตัวแทนจำหน่ายอะไหล่" class="field" aria-label="ธุรกิจของคุณทำเกี่ยวกับอะไร" /></label>
+            </div>
             <div class="grid gap-5 sm:grid-cols-2">
               <label class="field-label">ทีมขายกี่คน<select name="team_size" required class="field" aria-label="ทีมขายกี่คน"><option value="">เลือกขนาดทีม</option><option value="0">ยังไม่มีทีมขาย</option><option value="1-4">1–4 คน</option><option value="5-10">5–10 คน</option><option value="11-20">11–20 คน</option><option value="20+">มากกว่า 20 คน</option></select></label>
               <label class="field-label">งบที่พร้อมลงทุน<select name="budget" required class="field" aria-label="งบที่พร้อมลงทุน"><option value="">เลือกช่วงงบ</option><option>ยังไม่ได้ตั้งงบ — อยากเห็นโจทย์ก่อน</option><option>ต่ำกว่า ฿50,000</option><option>฿50,000–฿100,000</option><option>฿100,000–฿300,000</option><option>มากกว่า ฿300,000</option></select></label>
@@ -763,7 +766,10 @@ const darumaPillars = [
     Object.assign(payload, {
       // Canonical aliases — the shared intake-form-v2 flow + submit_lead RPC read
       // company/tier/problems/comment (see docs/INTAKE-DATA-CONTRACT.md).
-      company: payload.business || '',
+      // `company` is now a real required form field (ชื่อบริษัท) — the business
+      // description moves to `industry` → business_type column.
+      company: ((payload.company as string) || '').trim() || (payload.business as string) || '',
+      industry: payload.business || '',
       tier: payload.intent === 'book-training' ? 'HOT' : 'WARM',
       problems: (payload.issue as string) || '',
       comment: [intentLabel, payload.issue].filter(Boolean).join(' — '),
