@@ -47,11 +47,16 @@
         console.warn("[Meta Pixel] ยังไม่ได้ใส่ Pixel ID — โฆษณาจะวัดผล/optimize ไม่ได้ (แก้ที่ META_PIXEL_ID)");
         return;
       }
+      // Never pollute the production dataset from a dev server.
+      var host = window.location.hostname;
+      if (!host || host === "localhost" || host === "127.0.0.1" || host.endsWith(".local")) return;
       !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
       n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
       t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
       document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      // No consent gate — bar and stored-refusal check both removed 2026-08-01
+      // by owner decision. Disclosure lives in /privacy only.
       fbq('init', META_PIXEL_ID); fbq('track', 'PageView');
     })();
   </script>
@@ -119,25 +124,11 @@
       -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border-top: 1px solid var(--hairline);
       padding: .7rem 1rem calc(.7rem + env(safe-area-inset-bottom)); z-index: 40; }
     @media (max-width: 767px) { body { padding-bottom: 5.25rem; } }
-    /* Consent lives as a slim strip in normal flow at the top of the page —
-       no fixed bottom bar to stack on the sticky CTA and bury the hero button. */
-    .consent-bar { background: #072b4e; color: #f4f1ea; }
     *:focus-visible { outline: 2px solid #dd4155; outline-offset: 2px; }
     @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .line-btn, .line-btn:hover { transform: none; } }
   </style>
 </head>
 <body>
-
-  <!-- ===== PDPA / Pixel consent (slim top strip · normal flow, never covers the CTA) ===== -->
-  <div id="consent-bar" class="consent-bar hidden">
-    <div class="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 py-2.5 text-sm sm:flex-row lg:px-8">
-      <p class="flex-1 text-center text-ivory/90 sm:text-left">เราใช้ Meta Pixel เพื่อวัดผลและปรับปรุงโฆษณา · <a href="https://punnattapatch.com/privacy" class="underline underline-offset-2">นโยบายความเป็นส่วนตัว</a></p>
-      <div class="flex flex-shrink-0 gap-2">
-        <button id="consent-decline" class="rounded-lg px-3 py-1.5 text-ivory/80 hover:bg-white/10">ไม่ยินยอม</button>
-        <button id="consent-accept" class="rounded-lg bg-coral px-4 py-1.5 font-semibold text-white hover:bg-coral-dark">ยินยอม</button>
-      </div>
-    </div>
-  </div>
 
   <!-- LINE OA + Pixel-Lead wiring -->
   <script>
@@ -515,17 +506,6 @@
       io.observe(course);
     })();
 
-    // Lightweight PDPA consent for Meta Pixel
-    (function(){
-      var KEY = "pixel_consent";
-      var bar = document.getElementById("consent-bar");
-      if (!localStorage.getItem(KEY)) bar.classList.remove("hidden");
-      function close(v){ localStorage.setItem(KEY, v); bar.classList.add("hidden"); }
-      document.getElementById("consent-accept").addEventListener("click", function(){ close("granted"); });
-      document.getElementById("consent-decline").addEventListener("click", function(){
-        close("denied"); if (window.fbq) fbq('consent', 'revoke');
-      });
-    })();
   </script>
 </body>
 </html>

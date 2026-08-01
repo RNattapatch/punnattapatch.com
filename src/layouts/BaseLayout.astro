@@ -4,6 +4,7 @@ import { SITE, cleanUrl } from '../data/site';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Schema from '../components/Schema.astro';
+import MetaPixel from '../components/MetaPixel.astro';
 import type { ComponentProps } from 'astro/types';
 
 type SchemaProps = ComponentProps<typeof Schema>;
@@ -124,6 +125,11 @@ const fullTitle = title === SITE.titleDefault ? title : `${title} · ${SITE.name
         ttq.page();
       }(window, document, 'ttq');
     </script>
+
+    <!-- Meta Pixel — site-wide since 2026-08-01. Was previously inline in the
+         three /ads/* landing pages only, which left every other page (and the
+         Lead events on /thank-you and /agent-builder-kit) unmeasurable. -->
+    <MetaPixel />
 
     <Schema {...schema} />
 

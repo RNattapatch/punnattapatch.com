@@ -1,0 +1,67 @@
+---
+/**
+ * Meta Pixel — dataset "Pun-Web" (890649354099149)
+ *
+ * Loaded site-wide from BaseLayout. Before 2026-08-01 the pixel lived only in
+ * the <head> of the three /ads/* landing pages, which caused two problems:
+ *
+ *   1. Any ad pointing at a non-/ads/ page (the homepage, a boosted organic
+ *      post's caption link) was unmeasurable — no PageView, no conversions.
+ *   2. thank-you.astro and agent-builder-kit/index.astro both call
+ *      `window.fbq('track', 'Lead', …)` behind a `typeof fbq === 'function'`
+ *      guard. With no pixel on those pages the guard was always false, so the
+ *      Lead events were dead code and never fired once.
+ *
+ * Pages keep firing their own conversion events (ViewContent / Contact / Lead);
+ * this component only guarantees `fbq` exists and PageView is reported.
+ *
+ * No consent gate: the PDPA consent bar and the stored-refusal check were both
+ * removed on 2026-08-01 by owner decision — every visitor is tracked, and the
+ * disclosure lives in /privacy only. See agent/workstreams/ads-funnel-tracking.md.
+ *
+ * Renders in <head> via BaseLayout's head slot.
+ */
+const PIXEL_ID = '890649354099149';
+---
+
+<script is:inline define:vars={{ PIXEL_ID }}>
+  (function () {
+    // Never pollute the production dataset from a dev server. The Pun-Web
+    // dataset already carries stray events from http://localhost/ (27 Jul, 31 Jul)
+    // which skew audiences and event counts.
+    const host = window.location.hostname;
+    if (!host || host === 'localhost' || host === '127.0.0.1' || host === '[::1]' || host.endsWith('.local')) return;
+
+    /* eslint-disable */
+    !(function (f, b, e, v, n, t, s) {
+      if (f.fbq) return;
+      n = f.fbq = function () {
+        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      };
+      if (!f._fbq) f._fbq = n;
+      n.push = n;
+      n.loaded = !0;
+      n.version = '2.0';
+      n.queue = [];
+      t = b.createElement(e);
+      t.async = !0;
+      t.src = v;
+      s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s);
+    })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+    /* eslint-enable */
+
+    fbq('init', PIXEL_ID);
+    fbq('track', 'PageView');
+  })();
+</script>
+
+<noscript>
+  <img
+    height="1"
+    width="1"
+    style="display:none"
+    src={`https://www.facebook.com/tr?id=${PIXEL_ID}&ev=PageView&noscript=1`}
+    alt=""
+  />
+</noscript>

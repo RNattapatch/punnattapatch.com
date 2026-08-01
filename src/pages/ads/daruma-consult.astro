@@ -198,28 +198,8 @@ const darumaPillars = [
   robots="noindex,follow"
   schema={{ types: ['WebPage'], title, description }}
 >
-  <Fragment slot="head">
-    <script is:inline>
-      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '890649354099149');
-      fbq('track', 'PageView');
-    </script>
-  </Fragment>
-
-  <div id="consent-bar" class="consent-bar hidden" role="region" aria-label="การยินยอมใช้ Meta Pixel">
-    <div class="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 py-2.5 text-sm sm:flex-row lg:px-8">
-      <p class="flex-1 text-center text-ivory/90 sm:text-left">
-        เราใช้ Meta Pixel เพื่อวัดผลโฆษณา · <a href="/privacy" class="underline underline-offset-2">นโยบายความเป็นส่วนตัว</a>
-      </p>
-      <div class="flex shrink-0 gap-2">
-        <button id="consent-decline" type="button" class="consent-button rounded-lg px-3 py-1.5 text-ivory/80 hover:bg-white/10" aria-label="ไม่ยินยอมให้ใช้ Meta Pixel">ไม่ยินยอม</button>
-        <button id="consent-accept" type="button" class="consent-button rounded-lg bg-coral px-4 py-1.5 font-semibold text-white hover:bg-[#c43245]" aria-label="ยินยอมให้ใช้ Meta Pixel">ยินยอม</button>
-      </div>
-    </div>
-  </div>
+  {/* Meta Pixel loads site-wide from BaseLayout (MetaPixel.astro).
+      The conversion events below still fire from this page. */}
 
   <div id="daruma-consult-page">
     <section class="border-b border-[#c9c2b2] bg-ivory px-6 py-14 md:py-24">
@@ -679,12 +659,9 @@ const darumaPillars = [
     </section>
   </div>
 
-  <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=890649354099149&ev=PageView&noscript=1" alt="" /></noscript>
 </BaseLayout>
 
 <style>
-  .consent-bar { background: #072b4e; color: #f4f1ea; }
-  .consent-button { min-height: 44px; }
   .field-label { display: grid; gap: .45rem; color: var(--pun-navy); font-size: .95rem; font-weight: 600; }
   .field { width: 100%; border: 1px solid var(--pun-border); border-radius: .75rem; background: var(--pun-ivory); color: var(--pun-ink); padding: .75rem 1rem; min-height: 44px; }
   .field:focus { border-color: var(--pun-coral); outline: 2px solid color-mix(in oklch, var(--pun-coral) 25%, transparent); outline-offset: 2px; }
@@ -804,20 +781,4 @@ const darumaPillars = [
     }
   });
 
-  (function setupPixelConsent() {
-    const key = 'pixel_consent';
-    const bar = document.getElementById('consent-bar');
-    if (!bar) return;
-    try {
-      if (!localStorage.getItem(key)) bar.classList.remove('hidden');
-      const close = (value: string) => { localStorage.setItem(key, value); bar.classList.add('hidden'); };
-      document.getElementById('consent-accept')?.addEventListener('click', () => close('granted'));
-      document.getElementById('consent-decline')?.addEventListener('click', () => {
-        close('denied');
-        if (typeof pageWindow.fbq === 'function') fbq('consent', 'revoke');
-      });
-    } catch {
-      bar.classList.remove('hidden');
-    }
-  })();
 </script>
