@@ -1,14 +1,16 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DarumaMark from '../../components/DarumaMark.astro';
+import AdsContentV2 from '../../components/ads/AdsContentV2.astro';
 import { SITE } from '../../data/site';
 import { PRICES, fmtPrice } from '../../data/pricing.mjs';
 
-const title = 'Sale × AI Agent — คอร์ส AI สำหรับฝ่ายขายโดยเฉพาะ';
-const description = 'ไม่ใช่คอร์ส AI ทั่วไปที่ให้ไปปรับใช้กับงานขายเอง — ออกแบบมาเพื่อฝ่ายขายตั้งแต่ต้น สอนโดยคนที่ทำงานขายจริงและ build AI Agent ใช้เองจริง จัด in-house ที่ออฟฟิศคุณ 1 วัน คุยฟรี 15–20 นาที';
+const title = 'Sale × AI Agent · คอร์ส AI สำหรับฝ่ายขายโดยเฉพาะ';
+const description = 'ลดงานซ้ำ คืนเวลาเซลล์ไปอยู่หน้าลูกค้า อบรมในองค์กร 1 วัน ทีมสร้าง AI Agent จากข้อมูลจริงของบริษัทตัวเอง คุยฟรี 15–20 นาที';
 const canonical = `${SITE.url}/ads/daruma-consult`;
 const lineUrl = 'https://line.me/R/ti/p/@011xgvap';
 const perHead = Math.round(PRICES['inhouse-a'].amount / 20);
+
 // Qualification options mirrored from /booking so ads leads populate the same CRM columns via intake-form-v2
 const issues = [
   'ข้อมูลลูกค้ากระจาย อยู่ในไลน์กับหัวคน',
@@ -19,174 +21,161 @@ const issues = [
   'ลงทุนเรียนหรือซื้อเครื่องมือมาแล้ว แต่ทีมไม่ได้ใช้จริง',
 ];
 
-const painPoints = [
-  ['01', 'ลูกค้าที่เคยคุยไว้หายไปเงียบๆ ไม่มีใครตามต่อ'],
-  ['02', 'คนทักเพจ / LINE ตกค้าง กว่าจะตอบ ลูกค้าไปเจ้าอื่นแล้ว'],
-  ['03', 'ไม่รู้ว่าลูกค้าคนไหนใกล้ปิด ควรโทรหาใครก่อน'],
-];
+const content = {
+  pageId: 'daruma',
+  formAnchor: '#daruma-consult-form',
+  lineUrl,
+  capacity: 'ผมสอนเองทุกรุ่น รับสูงสุดเดือนละ 10 บริษัท',
+  capacityLeft: 'เดือนสิงหาคมเหลือ 4 บริษัท',
 
-// The whole point of this page: the course is built for one department, not
-// adapted to it. Each row contrasts what a general AI course leaves the team
-// holding vs. what this one hands them.
-const specificity = [
-  {
-    generic: 'สอนวิธี prompt แล้วให้ไปคิดต่อเองว่าจะใช้กับงานขายยังไง',
-    ours: 'เริ่มจากขั้นตอนขายของคุณก่อน แล้วค่อยวางว่า AI เข้าไปยืนตรงไหน',
-  },
-  {
-    generic: 'ใช้เคสตัวอย่างกลางๆ ที่ไม่ใช่สินค้าและลูกค้าของคุณ',
-    ours: 'เอาลูกค้าจริง ราคาจริง โปรจริง ของธุรกิจคุณมาสร้าง Agent ในห้อง',
-  },
-  {
-    generic: 'จบคอร์สได้ความรู้ แต่พรุ่งนี้เซลล์ยังทำงานแบบเดิม',
-    ours: 'จบคอร์สทีมมี Agent ของตัวเอง + แผนว่าใครใช้ตรงไหนตั้งแต่วันแรก',
-  },
-];
+  eyebrow: 'คอร์สอบรม In-house · ทีมขาย B2B 5–20 คน · 1 วันเต็ม',
+  headlineLead: 'ลดงานซ้ำ',
+  headlineNowrap: 'คืนเวลาเซลล์',
+  headlineAccent: 'ไปอยู่หน้าลูกค้า',
+  productName: 'Sale × AI Agent',
+  productTagline: 'คอร์สลงมือสร้าง AI Agent ที่รู้จักบริษัทคุณ จบใน 1 วัน',
+  lede: 'ทีมไม่ได้กลับพร้อมแค่สไลด์หรือ prompt ครับ ทุกคนสร้าง Specialist AI Agent ของตัวเองจาก context และข้อมูลจริงของบริษัท พร้อมกติกาให้คนตรวจ ก่อนนำไปใช้กับงานขายจริง',
+  badges: ['ทีมขาย 5–20 คน', 'จัดที่ออฟฟิศคุณ', `ราคาเดียวทั้งทีม ${fmtPrice('inhouse-a')}`],
+  ctaLabel: 'คุยเรื่องทีมของคุณ ฟรี 15 นาที',
+  ctaNote: 'คุยเพื่อเช็กความเหมาะสมก่อนครับ ถ้าทีมยังไม่พร้อม ผมบอกตรงๆ',
 
-const threeJobs = [
-  {
-    n: '01',
-    heading: 'จับลูกค้าเข้าระบบทันที แล้วเตือนเซลล์ให้ตามต่อ',
-    body: 'คนทักเพจ คนกรอกฟอร์ม คนเดินเข้ามา — เก็บเข้าระบบอัตโนมัติ แล้วส่งเตือนเข้า LINE ให้เซลล์ตามได้ทันจังหวะ ไม่มีลืม',
+  heroPhotos: {
+    main: { src: '/lp/inhouse/hero-pointing.jpg', alt: 'ปันยืนชี้อธิบายบนจอหน้าห้อง ขณะทีมขายลงมือทำบนเครื่องตัวเองในคลาสจริง', width: 1600, height: 1200 },
+    left: { src: '/lp/inhouse/hands-on.jpg', alt: 'ทีมขายนั่งทำงานกับเครื่องตัวเองระหว่างเวิร์คช็อป', width: 1600, height: 1200 },
+    right: { src: '/lp/inhouse/team-selfie.jpg', alt: 'ปันถ่ายรูปกับทีมผู้เรียนเต็มห้องหลังจบคลาส', width: 1200, height: 1600 },
   },
-  {
-    n: '02',
-    heading: 'อ่านข้อมูลหลังบ้าน บอกว่าควรโฟกัสใครก่อน',
-    body: 'แทนที่เซลล์จะไล่โทรตามลำดับที่จำได้ AI ช่วยจัดว่าดีลไหนใกล้ปิด ดีลไหนเงียบไปนานเกินไปแล้ว',
-  },
-  {
-    n: '03',
-    heading: 'ตอบสเปค ราคา โปรฯ และร่างใบเสนอราคาให้',
-    body: 'ตอบจากข้อมูลจริงของธุรกิจคุณ 24 ชม. ตอนเซลล์ติดประชุมหรือออกไปหาลูกค้า แล้วมีคนตรวจก่อนส่งทุกครั้ง',
-  },
-];
+  heroCaption: 'ภาพจากคลาสจริง · ผู้เรียนลงมือบนเครื่องตัวเอง',
 
-// Four angles instead of a linear résumé. The featured one carries the thesis
-// of this page: most AI teachers have never sold, most sales teachers have
-// never built. Nothing here is a credential he doesn't have.
-const angles = [
-  {
-    kicker: 'มุมที่ 2 · สายบริหาร',
-    heading: 'ผมบริหารทีมขายและบริหารธุรกิจมาเอง',
-    body: 'คนละช่วงกับตอนอยู่บริษัทรถครับ — ผมเป็นคนคัดคนเข้าทีม สัมภาษณ์มาแล้วหลักพันคน แล้วต้องมาคุมยอด คุมคน คุมต้นทุนเอง เลยรู้ว่างานไหนควรโยนให้ AI และงานไหนต้องเก็บไว้ให้คนทำ',
-    photo: { src: '/about/pun-cert-management.jpg', alt: 'ปัน ณัฐพัชร์ รับวุฒิบัตรหลักสูตรด้านบริหารธุรกิจ', width: 1100, height: 733 },
-  },
-  {
-    kicker: 'มุมที่ 3 · คนสร้างระบบเอง',
-    heading: 'ผมไม่ได้สอนอย่างเดียว — ผม build ใช้เองทุกวัน',
-    body: 'ระบบหลังบ้าน CRM และ AI Agent ที่ผมใช้ในธุรกิจตัวเอง ผมเขียนเอง ในห้องเรียนผมเลยเปิดของจริงให้ดูได้ ไม่ใช่เปิดสไลด์ทฤษฎี',
-    photo: { src: '/about/pun-build-desk.jpg', alt: 'โต๊ะทำงานของปัน ณัฐพัชร์ จอสองใบเปิดโค้ดและเทอร์มินัลระหว่าง build ระบบ', width: 1100, height: 825 },
-  },
-  {
-    kicker: 'มุมที่ 4 · การทำงาน',
-    heading: 'ผมจับมือทำทีละคน',
-    body: 'ไม่ใช่ยืนบรรยาย 8 ชม.แล้วกลับ ทุกคนในห้องต้องมี Agent ของตัวเองก่อนเลิกเรียน ถ้าใครยังไม่ได้ ผมยังไม่ปล่อยกลับครับ',
-    photo: { src: '/about/pun-working-with-team.jpg', alt: 'ปัน ณัฐพัชร์ ยืนอธิบายหน้าจอให้ทีมลูกค้าที่เปิดโน้ตบุ๊กทำตามในออฟฟิศ', width: 1100, height: 825 },
-  },
-];
+  clientLogos: [
+    { src: '/logos/clients/nissan.png', alt: 'Nissan' },
+    { src: '/logos/clients/royal-enfield.jpg', alt: 'Royal Enfield' },
+    { src: '/logos/clients/gpx.jpg', alt: 'GPX' },
+    { src: '/logos/clients/lambretta.png', alt: 'Lambretta' },
+    { src: '/logos/clients/zontes.png', alt: 'Zontes' },
+    { src: '/logos/clients/hfc-healthfoods.png', alt: 'HFC HealthFoods Corporation' },
+    { src: '/logos/clients/home-plus.png', alt: 'ฮ.โฮมพลัส' },
+    { src: '/logos/clients/ving.png', alt: 'V!NG' },
+    { src: '/logos/clients/scenery-farm.jpeg', alt: 'The Scenery สวนผึ้ง' },
+  ],
 
-const productFacts = [
-  ['ในคอร์สจะได้เรียนอะไร', 'เทคนิคการขาย + การใช้ AI Agent ด้วย Daruma Framework — ทีมลงมือสร้าง AI Agent ตัวจริงเสร็จใน 1 วัน ไม่เขียน code ใช้ Claude หรือ ChatGPT'],
-  ['คอร์สนี้เหมาะกับใคร', 'ทีมขาย/เซลล์ + เจ้าของธุรกิจ (เหมาะทีม 5–20 คน)'],
-  ['จัดที่ไหน', 'ที่ออฟฟิศของคุณเอง (on-site กรุงเทพฯ และปริมณฑล ไม่คิดค่าเดินทาง)'],
-  ['เรียนยังไง', 'จับมือทำทีละคน จนสร้าง AI Agent ของธุรกิจตัวเองได้ก่อนกลับบ้าน'],
-];
+  proofHeadline: 'องค์กรชั้นนำ และแบรนด์ดังไว้วางใจ',
+  proofBody: 'ตั้งแต่แบรนด์ระดับประเทศจนถึง SME ดูโลโก้ด้านบนได้เลยครับ',
+  perHeadNote: `มากัน 20 คน เฉลี่ยคนละ ${perHead.toLocaleString('th-TH')} บาท ถูกกว่าส่งไปเรียนคอร์ส public 1 ที่นั่ง`,
 
-const courseMorning = [
-  {
-    heading: 'วางขั้นตอนขาย + follow-up ที่ทำซ้ำได้',
-    body: 'ใส่ขั้นดีล งานถัดไป วันครบกำหนด และหลักฐาน ให้คนอื่นเปิดแล้วรู้ว่าต้องทำอะไรต่อ ไม่พึ่งความจำครับ',
-  },
-  {
-    heading: '“สมองบริษัท” — รวมข้อมูลให้ AI รู้จักธุรกิจคุณ',
-    body: 'รวมข้อมูลลูกค้า สินค้า ราคา โปรฯ และกติกาการขาย เป็นชุดบริบทให้ AI กลายเป็นน้องฝึกงานที่รู้จักบริษัทคุณ',
-  },
-];
+  calloutLead: 'เคยส่งทีมไปอบรม AI มาแล้วใช่ไหมครับ',
+  calloutAccent: 'ตอนนี้เหลือกี่คนที่ยังใช้อยู่?',
+  calloutBody: 'คำตอบที่ผมได้ยินบ่อยที่สุดคือ "สองอาทิตย์แรกก็ตื่นเต้นกันดีนะ" ปัญหาไม่ได้อยู่ที่ทีมคุณไม่เก่งครับ แต่อยู่ที่คอร์สส่วนใหญ่สอนด้วยตัวอย่างของคนอื่น พอกลับมานั่งโต๊ะตัวเอง มันไม่มีอะไรให้กดใช้ต่อ',
+  pains: [
+    { icon: 'user-x', text: 'ลูกค้า walk-in เข้ามาแล้วหายไปเฉยๆ ไม่มีใครตามต่อ รู้อีกทีคือไปปิดกับเจ้าอื่น' },
+    { icon: 'file', text: 'ใบเสนอราคาใช้เวลาทำเป็นวันๆ ทั้งที่ลูกค้าถามมาตั้งแต่เมื่อวาน' },
+    { icon: 'brain', text: 'ข้อมูลสินค้ากับวิธีขายกระจายอยู่ในไฟล์เก่า ในแชท และในหัวของคนเก่งไม่กี่คน' },
+    { icon: 'repeat', text: 'เจ้าของหรือหัวหน้าขายยังต้องเป็นคนตอบคำถามเดิมซ้ำๆ ทุกวัน จนกลายเป็นคอขวดของทุกดีล' },
+    { icon: 'wallet', text: 'จ่ายค่าอบรมไปแล้วหลายรอบ ของที่ได้กลับมาคือสไลด์กับความรู้สึกว่า "เดี๋ยวค่อยลองทำ"' },
+  ],
+  painsClose: 'ถ้าอ่านแล้วนึกหน้าคนในทีมออกทีละข้อ ผมเข้าใจครับ ผมเคยยืนอยู่ในทีมขายแบบนั้นเอง และนั่นคือเหตุผลที่คอร์สนี้ถูกออกแบบกลับหัวจากคอร์สทั่วไป',
 
-const courseAfternoon = [
-  {
-    heading: 'จับลูกค้าใหม่ + คนทักเพจ แล้วเตือนเซลล์ follow-up',
-    body: 'เก็บลูกค้าเข้าระบบทันที แล้วส่งสัญญาณให้เซลล์ตามต่อได้ทันจังหวะครับ',
-    proof: true,
-  },
-  {
-    heading: 'ช่วยตอบสเปค/ราคา/โปรฯ + ร่างใบเสนอราคา',
-    body: 'AI ช่วยร่างจากข้อมูลจริงของธุรกิจคุณ และมีคนตรวจก่อนส่งให้ลูกค้าทุกครั้ง',
-  },
-  {
-    heading: 'แผนเอาไปใช้จริงวันจันทร์',
-    body: 'กำหนดว่าใครดูแลอะไร เริ่มจากเคสไหนก่อน และวัดผลด้วยตัวเลขอะไร ทีมกลับไปทำต่อได้เลยครับ',
-  },
-];
+  whyTitle: 'ทำไมผมถึงยกคลาสไปที่ออฟฟิศคุณ แทนที่จะให้ทีมคุณมาหาผม',
+  whyCols: [
+    { heading: 'สอนด้วยข้อมูลขายของคุณเอง', body: 'ตัวอย่างในคลาสคือสินค้าของคุณ ราคาของคุณ ลูกค้าของคุณ ไม่ใช่เคสร้านกาแฟสมมติ agent ที่สร้างเสร็จจึงใช้ต่อได้ทันที ไม่ต้องแปลงเอง' },
+    { heading: 'ทั้งทีมขยับพร้อมกัน', body: 'ส่งไปเรียนคนเดียว กลับมาเปลี่ยนองค์กรไม่ได้ครับ แต่ถ้าทั้งทีมเห็นของจริงพร้อมกันในวันเดียว วันจันทร์ถัดไปทุกคนพูดภาษาเดียวกันแล้ว' },
+    { heading: 'งานไม่สะดุดทั้งแผนก', body: 'ไม่ต้องปิดออฟฟิศพาทีมเดินทาง ใครติดลูกค้าด่วนก็เดินไปคุยแล้วกลับเข้าห้องได้ และราคาเดียวทั้งทีม ถูกกว่าซื้อคอร์ส public รายหัวหลายเท่า' },
+  ],
+  principleQuote: '"AI เหมือนน้องฝึกงานที่รู้ทุกอย่างบนโลก แต่ยังไม่รู้จักบริษัทคุณ"',
+  principleBody: 'วันแรกของทีมคุณจึงต้องเริ่มจาก context และข้อมูลบริษัท ไม่ใช่เริ่มจากท่องจำ prompt นี่คือสิ่งที่คอร์สทั่วไปข้ามไป แล้วมางงว่าทำไมทีมเลิกใช้',
 
-const courseSteps = [];
-[
-  { label: 'ช่วงเช้า · จัดระบบขายก่อนเอา AI มาใช้', items: courseMorning },
-  { label: 'ช่วงบ่าย · สร้าง AI Sales Office (สำนักงานขายด้วย AI)', items: courseAfternoon },
-].forEach((phase) => {
-  phase.items.forEach((item, ii) => {
-    courseSteps.push({ ...item, phaseLabel: ii === 0 ? phase.label : null, n: courseSteps.length + 1 });
-  });
-});
+  agendaTitle: 'หนึ่งวันเดินจาก "งานขาย" ไปหา "Agent" ทุกช่วงมีชิ้นงานออก',
+  agendaLead: 'วงกลมข้างเวลาคือดารุมะของทีมคุณครับ เราแต้มตาให้มันช่วงท้ายวัน เมื่อ agent ของทุกคนมีกติกาใช้จริงครบ',
+  agenda: [
+    { time: '09:00', until: '–10:30', heading: 'ขายอะไร ให้ใคร เพราะอะไร', body: 'เริ่มจากปัญหาของทีมและสินค้าจริง 1 ตัว ด้วย DARUMA Mini-Score + Sales Mindset แล้วแปลง Feature ให้เชื่อมกับ pain และประโยชน์ที่ลูกค้าได้จริงด้วย FFAB', output: 'FFAB Sheet' },
+    { time: '10:45', until: '–12:00', heading: 'สร้างสมองบริษัทด้วย Context + Data', body: 'เรียบเรียงข้อมูลที่เตรียมมาให้กลายเป็นไฟล์กลางของบริษัท แล้วเทียบกันจะจะ คำตอบของ AI ก่อนมี context กับหลังมี context ต่างกันแค่ไหน', output: 'company-context.md' },
+    { time: '13:00', until: '–14:45', heading: 'สร้าง Specialist Agent คนละ 1 ตัว', body: 'แต่ละคนเลือกหน้าที่เดียวจาก Starter Kit ปรับด้วยข้อมูลบริษัท ทดสอบกับงานของตัวเอง แล้วแก้จากผลที่เห็นตรงหน้า เพราะ agent หน้าที่เดียวคุมง่ายกว่า agent ที่พยายามทำทุกอย่าง', output: 'Specialist Agent ของตัวเอง' },
+    { time: '15:00', until: '–16:25', heading: 'คุมและใช้ต่อ แล้วแต้มตาดารุมะ', body: 'จับผิดงานที่ AI ทำพลาดด้วยกัน กำหนด Data Rules ว่าข้อมูลไหนห้ามป้อน แล้วล็อกงานแรก วันเวลา และคนรับผิดชอบของแต่ละคนลง Monday Plan เพื่อไม่ให้มันจบแบบคอร์สที่คุณเคยเจ็บมา', output: 'Review Checklist + Monday Plan', final: true },
+  ],
+  nudgeAgenda: 'อ่านตารางแล้วยังนึกไม่ออกว่าทีมคุณจะทำอะไรในช่วงบ่าย? ทักมาถามได้ครับ ผมเล่าให้ฟังทีละช่วง',
 
-const takeHome = [
-  ['AI Agent ของธุรกิจคุณ', 'ที่ทีมสร้างเองกับมือในห้อง — ไม่ใช่เดโมของผม'],
-  ['“สมองบริษัท”', 'ชุดบริบทธุรกิจคุณที่ AI เอาไปใช้ต่อได้ทันที'],
-  ['ขั้นตอนขาย + follow-up ที่เขียนไว้', 'ให้คนอื่นเปิดแล้วทำต่อได้ ไม่พึ่งความจำใครคนเดียว'],
-  ['แผนเอาไปใช้จริงวันจันทร์', 'พร้อมเคสแรกที่จะลงมือทำ'],
-  ['ผมไปจัดให้ถึงออฟฟิศ', 'กรุงเทพฯ และปริมณฑล ไม่คิดค่าเดินทาง'],
-  ['ทั้งทีมราคาเดียว', '1 วัน 8 ชม.เต็ม (เหมาะทีม 5–20 คน) ไม่คิดเพิ่มรายหัว'],
-];
+  menuTitle: 'แต่ละคนเลือก agent ตามงานที่ตัวเองรับผิดชอบ',
+  menuLead: 'agent หน้าที่เดียวคุมง่ายกว่า agent ที่พยายามทำทุกอย่าง และทีมตรวจได้ว่ามันควรรับงานตรงไหน',
+  menu: [
+    { heading: 'เลขาสรุปและร่างตอบ LINE', body: 'จับประเด็นจากแชทแล้วเตรียมร่างให้เซลล์ตรวจ ก่อนส่งให้ลูกค้า' },
+    { heading: 'Follow-up Agent', body: 'เตรียมข้อความตามสถานะดีลและเหตุผลที่ลูกค้าเงียบ อิง context บริษัท' },
+    { heading: 'ตัวเตรียมเข้าพบลูกค้า', body: 'จัดข้อมูลที่ต้องรู้ คำถามที่ต้องถาม ก่อนเข้าประชุมทุกครั้ง' },
+    { heading: 'พี่เลี้ยงฝึกตอบ Objection', body: 'จำลองคำคัดค้านให้เซลล์ซ้อม ไม่ใช่ให้ AI ตอบแทนหน้าลูกค้าจริง' },
+    { heading: 'Product Specialist', body: 'ค้นและเรียบเรียงสเปคจากข้อมูลที่บริษัทอนุญาต ช่วยทีมตอบคำถามสินค้าได้เป็นระบบ' },
+  ],
 
-const clientLogos = [
-  { src: '/logos/clients/nissan.png', alt: 'Nissan' },
-  { src: '/logos/clients/hfc-healthfoods.png', alt: 'HFC HealthFoods Corporation' },
-  { src: '/logos/clients/home-plus.png', alt: 'ฮ.โฮมพลัส' },
-  { src: '/logos/clients/ving.png', alt: 'V!NG' },
-  { src: '/logos/clients/scenery-farm.jpeg', alt: 'The Scenery · สวนผึ้ง' },
-  { src: '/logos/clients/farevefarm.jpg', alt: 'Farevefarm' },
-  { src: '/logos/clients/farmsuk.jpg', alt: 'ฟาร์มสุข farmsuk' },
-  { src: '/logos/clients/zontes.png', alt: 'Zontes' },
-  { src: '/logos/clients/lambretta.png', alt: 'Lambretta' },
-  { src: '/logos/clients/gpx.jpg', alt: 'GPX' },
-  { src: '/logos/clients/royal-enfield.jpg', alt: 'Royal Enfield' },
-  { src: '/logos/clients/business-boy.jpg', alt: 'เด็กประกอบการ The Business Boy' },
-  { src: '/logos/clients/aes.jpg', alt: 'AES' },
-  { src: '/logos/clients/nsscrap.avif', alt: 'NSSCRAP' },
-];
+  takeHomeTitle: 'จบวันแล้ว ทีมไม่ได้ถือ "ความรู้" กลับไปอย่างเดียว',
+  takeHomeFeature: { heading: 'Specialist AI Agent คนละ 1 ตัว', body: 'สร้างเสร็จในห้อง ทดสอบกับงานของตัวเองแล้ว พร้อมใช้ต่อเช้าวันจันทร์ ทุกชิ้นต่อกันเป็น "สมองบริษัท" เวอร์ชันแรกของคุณ' },
+  takeHome: [
+    { heading: 'company-context.md', body: 'ไฟล์กลางที่บอกว่าเราขายอะไร ให้ใคร พูดแบบไหน มีข้อจำกัดอะไร' },
+    { heading: 'FFAB Sheet', body: 'Feature ของสินค้าคุณ เชื่อมกับข้อดี ประโยชน์ และ pain ของลูกค้าจริง' },
+    { heading: 'คลัง prompt งานขาย 23+ ตัว', body: 'ภาษาไทย ปรับเข้ากับธุรกิจคุณระหว่างคลาส ใช้ต่อได้ทันที' },
+    { heading: 'Review Checklist + Data Rules', body: 'กติกาว่างานไหนคนต้องตรวจ และข้อมูลไหนห้ามป้อนเข้า AI' },
+    { heading: 'Monday Plan รายคน', body: 'งานแรก วันเวลา และคนรับผิดชอบ กันโรค "อบรมเสร็จแล้วเงียบ"' },
+  ],
+  takeHomeNote: 'พร้อมติดตามผ่าน LINE 7 วันหลังเรียน ผมไม่รับประกันยอดขายนะครับ ผลขึ้นกับข้อมูลและวินัยของทีม แต่ของที่ต้องใช้ต่อ ผมวางให้ครบก่อนจบวัน',
 
-const classPhotos = [
-  { src: '/testimonial/web/class-selfie.jpg', alt: 'ทีมงานทั้งทีมใส่เสื้อบริษัทนั่งเรียนพร้อมโน้ตบุ๊ก ในคลาส in-house ที่ออฟฟิศลูกค้า', width: 1080, height: 1080 },
-  { src: '/testimonial/2026-07/scenery/scenery-room.jpg', alt: 'คลาส in-house ที่ The Scenery สวนผึ้ง — ทีมงานนั่งประจำโต๊ะพร้อมโน้ตบุ๊ก', width: 1100, height: 825 },
-  { src: '/testimonial/web/seminar-room.jpg', alt: 'ห้องอบรมเต็มห้อง ผู้เรียนนั่งประจำโต๊ะพร้อมโน้ตบุ๊ก', width: 1080, height: 1080 },
-];
+  fitTitle: 'คอร์สนี้เจาะจงกับทีมที่อยากเปลี่ยน "ของที่เรียน" ให้เป็น "ของที่ใช้"',
+  fitYes: [
+    'เจ้าของ SME ที่มีทีมขาย 5–20 คน และไม่อยากเป็นคอขวดของทุกดีลอีกต่อไป',
+    'ทายาทหรือ COO ที่ต้องเอาแผนและของจริงกลับไปคุยกับผู้บริหารให้ผ่าน',
+    'หัวหน้าฝ่ายขายหรือ HR ที่ไม่อยากจัดอบรมแล้วจบแค่แบบประเมินความพึงพอใจ',
+  ],
+  fitNo: 'เรียนคนเดียวโดยไม่มีทีม · อยากได้คอร์ส prompt กว้างๆ · อยากได้ระบบอัตโนมัติเต็มบริษัทในวันเดียว · ยังไม่มีข้อมูลงานจริงให้ใช้ในคลาส',
+  nudgeFit: 'อ่านแล้วยังไม่ชัดว่าทีมคุณเข้าข่ายไหม? เล่าให้ผมฟังสั้นๆ ในไลน์ ผมบอกตรงๆ ว่าเหมาะหรือยังไม่เหมาะ',
 
-const proofBuildIt = {
-  src: '/testimonial/2026-07/scenery/scenery-screen.jpg',
-  alt: 'ทีมลูกค้านั่งดูจอที่กำลังเปิดระบบ CRM ระหว่างคลาส in-house',
-  width: 825,
-  height: 1100,
+  classPhotos: [
+    { src: '/testimonial/2026-07/review-12.jpg', alt: 'เวที Nissan Sales Manager Seminar 2026 ที่ปันขึ้นบรรยาย', width: 1000, height: 1000 },
+    { src: '/lp/inhouse/class-full.jpg', alt: 'คลาสอบรมเต็มห้อง ผู้เรียนนั่งประจำโต๊ะพร้อมโน้ตบุ๊ก', width: 1600, height: 1200 },
+    { src: '/lp/inhouse/office-session.jpg', alt: 'อบรมในห้องประชุมบริษัท ทีมดูสไลด์แล้วทำตามบนเครื่องตัวเอง', width: 1600, height: 1200 },
+    { src: '/lp/inhouse/onsite-cafe.jpg', alt: 'เวิร์คช็อปหน้างานจริง ทีมนั่งทำงานกับเครื่องของตัวเอง', width: 1200, height: 1600 },
+    { src: '/lp/inhouse/team-group.jpg', alt: 'ทีมผู้เรียนถ่ายรูปรวมกันในห้องอบรม พร้อมโน้ตบุ๊กเปิดค้างบนโต๊ะ', width: 1200, height: 1600 },
+    { src: '/testimonial/web/fb-learning-org.jpg', alt: 'โพสต์จากองค์กรที่เข้าอบรม', width: 1080, height: 1080 },
+  ],
+  reviews: [
+    { src: '/testimonial/2026-07/review-09.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 1410, height: 1410 },
+    { src: '/testimonial/2026-07/review-10.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 736, height: 736 },
+    { src: '/testimonial/2026-07/review-11.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 914, height: 914 },
+    { src: '/testimonial/2026-05/review-02.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 1000, height: 1000 },
+    { src: '/testimonial/2026-05/review-04.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 1000, height: 1000 },
+    { src: '/testimonial/2026-05/review-05.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 1000, height: 1000 },
+  ],
+
+  instructorPhoto: { src: '/lp/inhouse/pun-portrait.jpg', alt: 'ปัน ณัฐพัชร์ ผู้สอนคอร์ส Sale × AI Agent', width: 1066, height: 1600 },
+  instructorParas: [
+    'ผมเป็นคนขายมาก่อนครับ เคยยืนเชียร์รถ เคยโดนลูกค้าเท เคยนั่งทำใบเสนอราคาถึงเที่ยงคืน เพราะงั้นเวลาสอน ผมรู้ว่างานไหน "พูดง่ายแต่ทำจริงเหนื่อย"',
+    'ทุกระบบ AI ที่สอนในคลาส ผมสร้างใช้เองในธุรกิจตัวเองก่อนทั้งหมด ตั้งแต่ตามลูกค้า ทำเอกสารขาย ไปจนถึงหลังบ้านของเพจที่คุณกำลังอ่านอยู่นี่แหละครับ',
+    'หน้าที่ของผมในวันอบรมคือเดินดูหน้าจอทีละคน ช่วยจัด context และถามคำถามให้ agent ของแต่ละคนผูกกับงานขายจริง ผมอยู่ในห้องเพื่อพาทีมทำ ไม่ได้อยู่บนเวทีเพื่อเล่าเรื่องตัวเอง',
+    'ผมไม่ใช่คนที่เก่ง AI ที่สุดในประเทศหรอกครับ แต่ผมน่าจะเป็นคนที่นั่งอยู่ตรงกลางระหว่าง "ทีมขายจริง" กับ "ของพวกนี้" มานานพอที่จะแปลให้สองฝั่งเข้าใจกันได้',
+  ],
+
+  priceLabel: 'Sale × AI Agent · In-house Workshop',
+  priceAmount: fmtPrice('inhouse-a'),
+  priceNote: `มากัน 20 คน เฉลี่ยคนละ ${perHead.toLocaleString('th-TH')} บาท ถูกกว่าค่าคอร์ส public ต่อ 1 ที่นั่ง`,
+  priceIncludes: [
+    'อบรม on-site ที่ออฟฟิศคุณ 1 วันเต็ม (ทีม 5–20 คน)',
+    'Specialist AI Agent คนละ 1 ตัว สร้างจากข้อมูลจริง เสร็จในวันนั้น',
+    'สมองบริษัท: company-context.md + FFAB Sheet + prompt 23+ ตัว',
+    'Review Checklist + Data Rules + Monday Plan รายคน',
+    'ติดตามผ่าน LINE 7 วันหลังเรียน',
+    'ใบกำกับภาษีนามบริษัท ฝ่ายบัญชีเบิกได้',
+  ],
+  priceTerms: [
+    'เงื่อนไขเดียวที่ผมขอ: ชำระเต็มจำนวนก่อนวันอบรมครับ เพื่อให้ทั้งสองฝั่งจริงจังกับวันนั้นเท่ากัน · on-site กรุงเทพฯ และปริมณฑล ไม่คิดค่าเดินทาง',
+    'อยากให้ผมอยู่ยาวกว่า 7 วัน มีแพ็กเกจ "พาลงมือทำ" ต่อยอดหลังคอร์ส ถามรายละเอียดได้ในคิวคุยฟรี',
+  ],
+  priceReassure: 'ยังไม่ต้องเชื่อผมครับ ให้ผมดูขั้นตอนขายของคุณก่อน แล้วค่อยตัดสินใจว่าคุ้มไหม',
+
+  faqs: [
+    { q: 'ทีมผมไม่เก่งเทคโนโลยีเลย เรียนไหวไหม', a: 'ไหวครับ ไม่ต้องเขียนโค้ด สั่งงานเป็นภาษาไทยได้ และเราเริ่มจาก template ไม่ใช่หน้าจอว่างๆ ทุกขั้นตอนทำตามพร้อมกันทีละคลิก ใครหลุดผมเดินไปนั่งข้างๆ จนตามทัน คนที่พิมพ์ช้าที่สุดในห้องคือ KPI ของผม' },
+    { q: 'ต้องเตรียมอะไรก่อนวันอบรม', a: 'เตรียมข้อมูลบริษัทและงานขายตาม Pre-work Checklist ที่ผมส่งให้หลังยืนยันวัน ติดตั้งเครื่องมือให้พร้อม และให้ IT เช็คการเข้าถึงเครือข่ายก่อนวันจริง เพื่อให้เวลาในห้องหมดไปกับการลงมือทำ ไม่ใช่การลงโปรแกรม' },
+    { q: 'ข้อมูลบริษัทที่ใช้ในคลาส ปลอดภัยไหม', a: 'ในคลาสมี Data Rules ชัดเจนครับ ข้อมูลส่วนตัวลูกค้า ต้นทุน สัญญา และข้อมูลที่บริษัทไม่อนุญาต ต้องตัดออกหรือทำให้ไม่ระบุตัวตนก่อนใช้ และกติกานี้เป็นหนึ่งในของที่ทีมได้กลับไปใช้ต่อด้วย' },
+    { q: 'AI จะมาแทนเซลล์ของผมหรือเปล่า', a: 'ไม่ครับ และผมพูดเรื่องนี้ตรงๆ ในคลาสด้วย agent มีหน้าที่ร่าง เตรียม สรุป และซ้อม ส่วนงานที่แตะลูกค้า ราคา หรือเงื่อนไข ต้องมีคนตรวจและอนุมัติทุกครั้ง AI รับงานครับ ไม่ได้รับตำแหน่งใคร' },
+    { q: 'จบคลาสแล้ว ถ้าติดปัญหาถามใครได้', a: 'มีติดตามผ่าน LINE 7 วันหลังเรียนครับ อาทิตย์แรกคือช่วงที่คำถามจริงโผล่ ผมตอบเองทั้งหมด ถ้าอยากได้คนพาไปต่อยาวกว่านั้น มีแพ็กเกจ "พาลงมือทำ" ที่ผมเข้าไปทำงานกับทีมต่อเนื่อง คุยกันได้ครับ' },
+    { q: 'อยากได้ระบบอัตโนมัติเต็มบริษัท ทำในวันเดียวได้ไหม', a: 'ไม่ได้ครับ และผมไม่รับปากในสิ่งที่วันเดียวทำไม่ได้ หนึ่งวันนี้ล็อก scope ที่ agent 1 ตัวต่อคน สมองบริษัทเวอร์ชันแรก และกติกาใช้ต่อ ระบบหลายแผนกหรือ automation เต็มรูปแบบต้องประเมินและออกแบบแยกเป็นงานที่ปรึกษา' },
+    { q: 'จ่ายเงินยังไง มีเอกสารให้ฝ่ายบัญชีไหม', a: 'ชำระเต็มจำนวนก่อนวันอบรม ออกใบกำกับภาษีในนามบริษัทให้ครบครับ ใบเสนอราคาสำหรับขออนุมัติภายในก็ทำให้ได้ บอกผมในคิวคุยฟรีได้เลย' },
+  ],
+  nudgeFaq: 'คำถามของคุณไม่อยู่ในลิสต์นี้ใช่ไหมครับ? ถามผมตรงๆ ในไลน์ได้เลย ไม่ต้องกรอกฟอร์ม',
 };
-
-const testimonials = [
-  { src: '/testimonial/2026-05/review-01.jpg', alt: 'รีวิวลูกค้า — ทีมงานร่วม Workshop AI', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-05/review-02.jpg', alt: 'รีวิวลูกค้า — แชทขอบคุณหลังเวิร์กช็อป', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-05/review-03.jpg', alt: 'รีวิวลูกค้า — บรรยากาศห้องอบรม AI เต็มห้อง', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-05/review-05.jpg', alt: 'รีวิวลูกค้า — แชทชมว่าสอนถูกใจทีมงาน AI ทั้งบริษัท', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-07/review-09.jpg', alt: 'รีวิวลูกค้า — แชทลูกศิษย์เล่าว่าใช้ AI ทำเว็บที่เคยจ้างหลายแสนจบในคืนเดียว', width: 1410, height: 1410 },
-  { src: '/testimonial/2026-07/review-10.jpg', alt: 'รีวิวลูกค้า — โพสต์แนะนำต่อว่าใครสนใจเรียน AI แนะนำน้องปัน', width: 736, height: 736 },
-  { src: '/testimonial/2026-07/review-11.jpg', alt: 'รีวิวลูกค้า — แชทลูกค้าต่อยอดโปรเจกต์เลขา AI', width: 914, height: 914 },
-  { src: '/testimonial/2026-05/review-08.jpg', alt: 'รีวิวลูกค้า — โพสต์รีวิวองค์กรที่เรียนรู้เร็วที่สุด', width: 1000, height: 1000 },
-];
-
-const darumaPillars = [
-  { letter: 'D', name: 'Data', desc: 'ข้อมูลฝ่ายขายต้องเก็บได้' },
-  { letter: 'A', name: 'AI Agent', desc: 'นำ AI Agent มาลดงาน เพิ่มยอดขายจริงได้' },
-  { letter: 'R', name: 'Repeatable', desc: 'ทำซ้ำได้ ไม่พึ่งดวง' },
-  { letter: 'U', name: 'Upskill', desc: 'คนเก่งขึ้นด้วยระบบ' },
-  { letter: 'M', name: 'Measurable', desc: 'ทุกอย่างวัดผลได้ ไม่ใช้ความรู้สึก' },
-  { letter: 'A', name: 'Actionable', desc: 'นำไปใช้ได้จริงทันที' },
-];
 ---
 
 <BaseLayout
@@ -198,398 +187,17 @@ const darumaPillars = [
   robots="noindex,follow"
   schema={{ types: ['WebPage'], title, description }}
 >
+  <link
+    slot="head"
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&display=swap"
+  />
+
   {/* Meta Pixel loads site-wide from BaseLayout (MetaPixel.astro).
       The conversion events below still fire from this page. */}
 
-  <div id="daruma-consult-page">
-    <section class="border-b border-[#c9c2b2] bg-ivory px-6 py-14 md:py-24">
-      <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.15fr_.85fr]">
-        <div>
-          <p class="inline-flex items-center rounded-full border border-[#c9c2b2] bg-sand px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-cyan">สำหรับทีมขาย B2B</p>
-          {/* What the thing is comes before its name — nobody arriving from an ad knows "Sale × AI Agent" yet. */}
-          <h1 class="mt-5">
-            <span class="block text-2xl font-bold leading-snug text-navy md:text-[2rem]">
-              <span class="block">คอร์สอบรมในองค์กร ที่ออกแบบมาเพื่อ<span class="whitespace-nowrap text-coral">ฝ่ายขาย</span>โดยเฉพาะ</span>
-              <span class="block">ผมไปจัดให้ถึงออฟฟิศของคุณเอง</span>
-            </span>
-            <span class="mt-4 block font-display text-5xl font-bold leading-[1.02] text-navy md:text-7xl">Sale <span class="text-coral">×</span> AI Agent</span>
-          </h1>
-          <p class="mt-6 max-w-2xl text-lg leading-relaxed text-warm-ink/80"><span class="font-bold text-navy">ไม่ใช่คอร์ส AI ทั่วไปที่ให้ไปปรับใช้กับงานขายเอง</span> — ที่นี่เริ่มจากขั้นตอนขายของคุณก่อน แล้วค่อยวางว่า AI Agent เข้าไปยืนตรงไหน สอนโดยคนที่ทำงานขายจริง และ build AI ใช้เองจริง</p>
-
-          <div class="mt-8 flex flex-wrap gap-3">
-            <a href="#daruma-consult-form" data-primary-cta="booking" class="btn min-h-11 border-0 bg-coral px-6 text-base text-white hover:bg-[#c43245]" aria-label="จองคิวคุยฟรี 15–20 นาที">จองคิวคุยฟรี 15–20 นาที</a>
-            <a href={lineUrl} data-line-daruma target="_blank" rel="noopener" class="line-button inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#06c755] px-5 py-3 text-center font-semibold text-white transition-colors hover:bg-[#05b34c]" aria-label="ทัก LINE ถามผมก่อน">
-              <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" d="M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 8.9 8.2-.2.2-.4.5-.5.8-.2.5-.1.9.4 1 .4.1.8-.1 1.2-.3l3.3-2.1c4.6-.8 8.2-3.7 8.2-7.6Z"/></svg>
-              <span>ทัก LINE ถามผมก่อน</span>
-            </a>
-          </div>
-          <p class="mt-3 text-sm text-warm-ink/60">ยังไม่อยากจองคิว? ทักไลน์มาถามสั้นๆ ก่อนก็ได้ครับ ว่าทีมขายคุณเอา AI ไปใช้ตรงไหนได้บ้าง</p>
-
-          {/* Price kept here only as a qualifier line — the full anchor lives after the value stack. */}
-          <p class="mt-6 inline-flex flex-wrap items-baseline gap-x-2 border-t border-[#c9c2b2] pt-4 text-sm text-warm-ink/70">
-            <span>จัดทั้งทีมราคาเดียว เริ่ม</span>
-            <span class="font-display text-xl font-bold tabular-nums text-navy">{fmtPrice('inhouse-a')}</span>
-            <span>· on-site ที่ออฟฟิศคุณ 1 วัน · เหมาะทีม 5–20 คน</span>
-          </p>
-        </div>
-
-        <div class="mx-auto w-full max-w-sm">
-          <figure class="editorial-card overflow-hidden p-0 shadow-[5px_7px_0_rgba(30,27,22,0.09)]">
-            <div class="relative">
-              <img src="/car-dealer-material/pun-ceo-photoshoot-1.jpg" alt="ปัน ณัฐพัชร์ — ผู้สอนคอร์ส Sale × AI Agent" width="1100" height="1650" class="aspect-[4/5] w-full object-cover object-top" loading="eager" fetchpriority="high" decoding="async" />
-              <div class="absolute right-3 top-3 rounded-full border border-[#c9c2b2] bg-ivory/95 p-1.5 shadow-[2px_3px_0_rgba(30,27,22,0.12)]">
-                <DarumaMark class="h-14 w-auto" />
-              </div>
-            </div>
-            <figcaption class="p-6">
-              <p class="font-display text-xl font-bold leading-snug text-navy">ตอนปิดจริง ลูกค้าอยากคุยกับ “คน”</p>
-              <p class="mt-2 text-sm leading-relaxed text-warm-ink/70">AI แค่พาเขามาถึงมือเซลล์ให้ไวที่สุดครับ ที่เหลือให้เซลล์คุยต่อ</p>
-            </figcaption>
-          </figure>
-          <p class="mt-4 text-center text-xs font-semibold uppercase tracking-[0.16em] text-warm-ink/55">ปัน ณัฐพัชร์ · ผู้สอน &amp; ที่ปรึกษา</p>
-
-          <figure class="mt-6">
-            <ul class="grid grid-cols-3 gap-2">
-              {classPhotos.map((photo) => (
-                <li class="editorial-card overflow-hidden p-1.5">
-                  <img src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} loading="lazy" decoding="async" class="aspect-square w-full rounded-lg object-cover" />
-                </li>
-              ))}
-            </ul>
-            <figcaption class="mt-3 text-center text-xs font-semibold uppercase tracking-[0.14em] text-warm-ink/55">ภาพจากคลาส in-house จริง · ถ่ายที่ออฟฟิศลูกค้า</figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    {/* Trust strip sits directly under the hero: the people who never scroll far
-        are exactly the ones who still need proof. */}
-    <section class="border-b border-[#c9c2b2] bg-sand px-6 py-8">
-      <div class="mx-auto max-w-6xl">
-        <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
-          <p class="text-sm font-bold text-navy">องค์กรที่ไว้ใจให้ผมดูแล</p>
-          <p class="text-sm text-warm-ink/65">— ทั้งค้าปลีก ยานยนต์ อาหาร บริการ และธุรกิจครอบครัว</p>
-        </div>
-        <ul class="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-7" aria-label="องค์กรที่ไว้ใจให้ผมดูแล">
-          {clientLogos.map((logo) => (
-            <li class="editorial-card flex h-16 items-center justify-center p-2">
-              <img src={logo.src} alt={logo.alt} width="160" height="160" loading="lazy" decoding="async" class="max-h-full max-w-full object-contain opacity-75" />
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-
-    {/* Pain before product: cold ad traffic has to agree it has a problem first. */}
-    <section class="px-6 py-16 md:py-24">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ยอดรั่วตรงไหนบ้าง</p>
-        <div class="mt-3 grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
-          <h2 class="max-w-xl font-display text-3xl font-bold leading-tight text-navy md:text-5xl">ทีมขายคุณกำลังเจอข้อไหนอยู่ครับ?</h2>
-          <div class="grid border-t border-[#c9c2b2] sm:grid-cols-3">
-            {painPoints.map(([number, question]) => (
-              <article class="border-b border-[#c9c2b2] py-5 sm:border-b-0 sm:border-r sm:px-5 sm:first:pl-0 sm:last:border-r-0">
-                <p class="font-display text-4xl font-bold tabular-nums text-coral">{number}</p>
-                <p class="mt-3 text-lg font-semibold leading-relaxed text-navy">{question}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <div class="editorial-card mt-8 max-w-3xl p-6 md:p-8">
-          <p class="text-lg leading-relaxed text-navy">ถ้าอ่านแล้วรู้สึกว่า “ใช่เลย” — ไม่ได้แปลว่าทีมคุณไม่เก่งครับ ธุรกิจที่ผมเข้าไปช่วยเกือบทุกที่เริ่มจากจุดเดียวกันนี้ เซลล์ไม่ได้ขี้เกียจ แต่คนคนเดียวจำลูกค้า 40 คนพร้อมกันว่าใครคุยถึงไหนแล้ว มันไม่ไหวจริงๆ ครับ</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="border-y border-[#c9c2b2] bg-sand px-6 py-16 md:py-20">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">3 อย่างที่ AI ช่วยฝ่ายขายเพิ่มยอด</p>
-        <h2 class="mt-3 max-w-3xl font-display text-3xl font-bold leading-tight text-navy md:text-5xl">AI พาลูกค้ามาถึงมือเซลล์เร็วขึ้นยังไงครับ?</h2>
-        <div class="mt-8 grid gap-4 md:grid-cols-3">
-          {threeJobs.map(({ n, heading, body }) => (
-            <article class="editorial-card flex flex-col p-6">
-              <p class="font-display text-3xl font-bold tabular-nums text-coral">{n}</p>
-              <h3 class="mt-3 font-display text-xl font-bold leading-snug text-navy">{heading}</h3>
-              <p class="mt-3 leading-relaxed text-warm-ink/75">{body}</p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    {/* The page's thesis, given its own block: this course was built for one
-        department rather than adapted to it. Three concrete contrasts, no adjectives. */}
-    <section class="px-6 py-16 md:py-24">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ต่างจากคอร์ส AI ทั่วไปตรงไหน</p>
-        <h2 class="mt-3 max-w-4xl font-display text-3xl font-bold leading-tight text-navy md:text-5xl">คอร์สนี้ทำมาเพื่อฝ่ายขาย ไม่ใช่คอร์ส AI ที่เอามาปรับใช้กับฝ่ายขาย</h2>
-        <p class="mt-4 max-w-3xl text-lg leading-relaxed text-warm-ink/75">ความต่างไม่ได้อยู่ที่เครื่องมือครับ — ทุกคนก็ใช้ Claude กับ ChatGPT เหมือนกัน แต่อยู่ที่ว่าเริ่มคิดจากอะไรก่อน</p>
-
-        <ul class="mt-10 divide-y divide-[#c9c2b2] border-y border-[#c9c2b2]">
-          {specificity.map(({ generic, ours }) => (
-            <li class="grid gap-4 py-6 md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-8">
-              <p class="leading-relaxed text-warm-ink/60">
-                <span class="mb-1 block text-xs font-bold uppercase tracking-[0.18em] text-warm-ink/45">คอร์ส AI ทั่วไป</span>
-                {generic}
-              </p>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden size-6 shrink-0 text-coral md:block" aria-hidden="true"><path d="M5 12h14" /><path d="M13 6l6 6-6 6" /></svg>
-              <p class="border-l-4 border-coral pl-4 font-semibold leading-relaxed text-navy md:border-l-0 md:pl-0">
-                <span class="mb-1 block text-xs font-bold uppercase tracking-[0.18em] text-coral">Sale × AI Agent</span>
-                {ours}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-
-    {/* Authority sits high on this page — with no industry hook to lead with,
-        who is teaching it IS the differentiator. Asymmetric so the sales-side
-        angle carries the photo. */}
-    <section class="border-y border-[#c9c2b2] bg-ivory px-6 py-16 md:py-24">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ใครสอน</p>
-        <h2 class="mt-3 max-w-4xl font-display text-3xl font-bold leading-tight text-navy md:text-5xl">คนสอน AI ส่วนใหญ่ไม่เคยขาย คนสอนขายส่วนใหญ่ไม่เคย build — <span class="text-coral">ผมทำทั้งสองอย่าง</span></h2>
-        <p class="mt-4 max-w-3xl text-lg leading-relaxed text-warm-ink/75">นี่คือเหตุผลเดียวที่คอร์สนี้ออกแบบมาแบบนี้ได้ครับ ถ้าไม่เคยยืนอยู่ในทีมขายจริง จะไม่รู้ว่างานไหนที่กินเวลาเซลล์จริงๆ และถ้าไม่เคย build เอง จะไม่รู้ว่าอันไหน AI ทำได้จริง อันไหนแค่พูดให้ดูดี — <span class="font-semibold text-navy">Daruma Framework ผมออกแบบเอง ไม่ได้ซื้อหลักสูตรสำเร็จรูปมาสอนต่อ</span></p>
-
-        <article class="editorial-card mt-8 grid gap-6 p-6 sm:grid-cols-[minmax(0,15rem)_1fr] sm:items-center md:gap-8 md:p-8">
-          <img src="/car-dealer-material/pun-past-exp-isuzu-mux.jpg" alt="ปัน ณัฐพัชร์ สมัยทำงานบริษัทรถ ยืนข้างรถในงานเปิดตัว" width="562" height="1000" loading="lazy" decoding="async" class="aspect-[3/4] w-full rounded-xl object-cover object-center" />
-          <div>
-            <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">มุมที่ 1 · สายขาย</p>
-            <h3 class="mt-2 font-display text-2xl font-bold leading-snug text-navy md:text-3xl">ผมโตมาจากงานขาย ไม่ได้โตมาจากงานสอน</h3>
-            <p class="mt-3 leading-relaxed text-warm-ink/75">เคยอยู่สำนักงานใหญ่แบรนด์รถญี่ปุ่น เคยเป็นคนคัดคนเข้าทีมขาย สัมภาษณ์มาแล้วหลักพันคน และปั้นทีมขายมาเอง — ผมรู้ว่าตอนสิ้นเดือนที่ยอดยังไม่เข้า ในห้องประชุมพูดกันว่าอะไร</p>
-          </div>
-        </article>
-
-        <div class="mt-4 grid gap-4 md:grid-cols-3">
-          {angles.map(({ kicker, heading, body, photo }) => (
-            <article class="editorial-card overflow-hidden p-0">
-              <img src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} loading="lazy" decoding="async" class="aspect-[4/3] w-full object-cover" />
-              <div class="p-6">
-                <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">{kicker}</p>
-                <h3 class="mt-2 font-display text-2xl font-bold leading-snug text-navy">{heading}</h3>
-                <p class="mt-3 leading-relaxed text-warm-ink/75">{body}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section class="px-6 py-16 md:py-24">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">Product · In-house Workshop</p>
-        <h2 class="mt-3 font-display text-3xl font-bold leading-tight text-navy md:text-5xl">Sale × AI Agent</h2>
-        <p class="mt-4 max-w-3xl text-lg leading-relaxed text-warm-ink/75">ทีมขายลงมือสร้าง AI Agent ของธุรกิจตัวเองให้เสร็จในวันเดียวครับ เรียนจากโจทย์จริง แล้วกลับไปใช้ต่อได้ทันที</p>
-
-        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {productFacts.map(([label, detail]) => (
-            <article class="editorial-card p-5">
-              <p class="font-display text-lg font-bold text-coral">{label}</p>
-              <p class="mt-2 leading-relaxed text-navy">{detail}</p>
-            </article>
-          ))}
-        </div>
-
-        {/* The per-head number is the strongest argument on the page — given its
-            own comparison panel instead of a paragraph inside an equal card. */}
-        <div class="mt-14 border-t-2 border-navy pt-10">
-          <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">3 เหตุผลที่ธุรกิจเลือก in-house</p>
-          <h3 class="mt-3 max-w-3xl font-display text-3xl font-bold leading-tight text-navy md:text-4xl">ทำไมถึงคุ้มกว่าส่งเซลล์ไปเรียนข้างนอก</h3>
-
-          <article class="editorial-card mt-6 overflow-hidden p-0">
-            <div class="border-b border-[#c9c2b2] bg-sand px-6 py-4 md:px-8">
-              <p class="flex items-center gap-3 font-display text-xl font-bold text-navy md:text-2xl">
-                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-8 shrink-0 text-coral" aria-hidden="true">
-                  <circle cx="8" cy="9" r="3.2" /><circle cx="16" cy="7.5" r="3.2" /><circle cx="24" cy="9" r="3.2" />
-                  <path d="M3 18c0-2.4 2.2-4 5-4s5 1.6 5 4" /><path d="M11 16.5c0-2.4 2.2-4 5-4s5 1.6 5 4" /><path d="M19 18c0-2.4 2.2-4 5-4s5 1.6 5 4" />
-                  <path d="M6 23h20" /><path d="M12 27h8" />
-                </svg>
-                <span>หารต่อหัวแล้วถูกกว่ามาก</span>
-              </p>
-            </div>
-            <div class="grid md:grid-cols-[1fr_auto_1fr]">
-              <div class="p-6 md:p-8">
-                <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">จัด in-house กับผม</p>
-                <p class="mt-2 font-display text-6xl font-bold leading-none tabular-nums text-coral md:text-7xl">฿{perHead.toLocaleString('en-US')}</p>
-                <p class="mt-2 text-lg font-semibold text-navy">ต่อคน</p>
-                <p class="mt-3 leading-relaxed text-warm-ink/70">คิดจากค่าจัดทั้งทีม <span class="font-semibold tabular-nums text-navy">{fmtPrice('inhouse-a')}</span> หารทีม 20 คน — ทีมเล็กกว่านี้ราคาก็เท่าเดิมครับ</p>
-                <div class="mt-4 h-3 w-full rounded-full bg-sand" aria-hidden="true"><div class="h-3 w-[17%] rounded-full bg-coral"></div></div>
-              </div>
-
-              <div class="flex items-center justify-center border-y border-[#c9c2b2] md:border-x md:border-y-0">
-                <p class="px-6 py-3 font-display text-lg font-bold text-warm-ink/45">เทียบกับ</p>
-              </div>
-
-              <div class="p-6 md:p-8">
-                <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ส่งไปเรียนคอร์ส public</p>
-                <p class="mt-2 font-display text-6xl font-bold leading-none tabular-nums text-warm-ink/45 line-through decoration-2 md:text-7xl">฿10,000+</p>
-                <p class="mt-2 text-lg font-semibold text-warm-ink/60">ต่อคน</p>
-                <p class="mt-3 leading-relaxed text-warm-ink/70">ส่งไปแค่ <span class="font-semibold text-navy">3 คน</span> ก็เท่าจัดให้ทั้งทีมแล้ว — และคนที่เหลือยังทำงานแบบเดิมอยู่</p>
-                <div class="mt-4 h-3 w-full rounded-full bg-sand" aria-hidden="true"><div class="h-3 w-full rounded-full bg-warm-ink/25"></div></div>
-              </div>
-            </div>
-          </article>
-
-          <div class="mt-4 grid gap-4 md:grid-cols-2">
-            <article class="editorial-card flex gap-5 p-6">
-              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-12 shrink-0 text-coral" aria-hidden="true">
-                <path d="M6 27V9a2 2 0 012-2h9a2 2 0 012 2v18" /><path d="M19 15h7a2 2 0 012 2v10" /><path d="M3 27h26" />
-                <path d="M10 12h5" /><path d="M10 17h5" /><path d="M10 22h5" /><path d="M22 20h3" />
-              </svg>
-              <div>
-                <h4 class="font-display text-xl font-bold leading-snug text-navy">ใช้โจทย์จากธุรกิจคุณจริงๆ</h4>
-                <p class="mt-2 leading-relaxed text-warm-ink/75">เอาลูกค้าจริง follow-up จริง เอกสารขายจริงของคุณมาสร้าง Agent ในห้องเลย ไม่ใช่เคสสมมติจากสไลด์</p>
-              </div>
-            </article>
-
-            <article class="editorial-card flex gap-5 p-6">
-              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-12 shrink-0 text-coral" aria-hidden="true">
-                <path d="M4 7h16v11H11l-5 4v-4H4z" /><path d="M8 11h8" /><path d="M8 14.5h5" /><path d="M23 12h5v9h-2v3.5L22.5 21H18v-3" />
-              </svg>
-              <div>
-                <h4 class="font-display text-xl font-bold leading-snug text-navy">ถามได้เต็มที่ ไม่ต้องเกรงใจใคร</h4>
-                <p class="mt-2 leading-relaxed text-warm-ink/75">เรียนกันเองในทีม เปิดตัวเลขจริง เปิดปัญหาจริงได้ ไม่ต้องกลัวคนบริษัทอื่นในห้องได้ยิน</p>
-              </div>
-            </article>
-          </div>
-        </div>
-
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a href="#daruma-consult-form" data-primary-cta="booking" class="btn min-h-11 border-0 bg-coral px-6 text-base text-white hover:bg-[#c43245]" aria-label="จองคิวจัดอบรม">จองคิวจัดอบรม</a>
-          <a href={lineUrl} data-line-daruma target="_blank" rel="noopener" class="line-button inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#06c755] px-5 py-3 text-center font-semibold text-white transition-colors hover:bg-[#05b34c]" aria-label="ทัก LINE ถามผมก่อน">
-            <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" d="M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 8.9 8.2-.2.2-.4.5-.5.8-.2.5-.1.9.4 1 .4.1.8-.1 1.2-.3l3.3-2.1c4.6-.8 8.2-3.7 8.2-7.6Z"/></svg>
-            <span>ทัก LINE ถามผมก่อน</span>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="border-y border-[#c9c2b2] bg-sand px-6 py-16 md:py-24">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">เรียนอะไรใน 1 วัน 8 ชม.</p>
-        <h2 class="mt-3 max-w-4xl font-display text-3xl font-bold leading-tight text-navy md:text-5xl">เปิดมาก็ลงมือสร้าง AI Agent ของธุรกิจคุณเลยครับ</h2>
-
-        <div class="relative mt-12 max-w-3xl">
-          <div class="absolute bottom-4 left-4 top-3 w-0.5 bg-[#c9c2b2] md:left-5" aria-hidden="true"></div>
-          <ol class="space-y-8">
-            {courseSteps.map(({ n, phaseLabel, heading, body, proof }) => (
-              <li>
-                {phaseLabel && <p class="mb-4 pl-12 text-xs font-bold uppercase tracking-[0.16em] text-cyan md:pl-16">{phaseLabel}</p>}
-                <div class="relative pl-12 md:pl-16">
-                  <span class="absolute left-0 top-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-coral bg-sand font-display text-sm font-bold tabular-nums text-coral md:h-10 md:w-10 md:text-base">{n}</span>
-                  <h3 class="font-display text-xl font-bold leading-snug text-navy md:pt-1">{heading}</h3>
-                  <p class="mt-2 leading-relaxed text-warm-ink/75">{body}</p>
-
-                  {proof && (
-                    <figure class="editorial-card mt-4 flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
-                      <img src={proofBuildIt.src} alt={proofBuildIt.alt} width={proofBuildIt.width} height={proofBuildIt.height} loading="lazy" decoding="async" class="size-28 shrink-0 rounded-xl object-cover" />
-                      <figcaption>
-                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-cyan">หลักฐานของขั้นนี้</p>
-                        <p class="mt-1.5 font-semibold leading-relaxed text-navy">ภาพจริงจากคลาส in-house — ทีมนั่งกันในออฟฟิศของตัวเอง แล้วต่อระบบขึ้นมาใช้จริงในวันนั้นเลยครับ</p>
-                      </figcaption>
-                    </figure>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-
-        <div class="mt-10 flex flex-col gap-5 border-t border-[#c9c2b2] pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <p class="font-display text-2xl font-bold leading-snug text-navy">จับมือทำทุกคนจนได้ Agent ของตัวเองก่อนกลับบ้านครับ</p>
-          <a href="#daruma-consult-form" class="btn min-h-11 shrink-0 border-0 bg-coral px-6 text-base text-white hover:bg-[#c43245]" aria-label="จองคิวจัดอบรม">จองคิวจัดอบรม</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="border-y border-[#c9c2b2] bg-navy px-6 py-16 text-ivory md:py-24">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">หลักคิดหลักของคอร์ส Sale × AI Agent · by @pun_nattapatch</p>
-        <h2 class="mt-4 font-display font-bold leading-none">
-          <span class="block text-5xl tracking-[0.12em] text-white md:text-8xl">D.A.R.U.M.A</span>
-          <span class="mt-2 block text-2xl font-bold tracking-[0.35em] text-coral md:text-4xl">FRAMEWORK</span>
-        </h2>
-        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ivory/85">เลิกขายแบบพึ่งดวง ด้วย Framework ที่จับต้องได้ และ AI Agent ที่ลดงานและเพิ่มยอดได้จริง</p>
-        <div class="mt-10 flex max-w-3xl flex-col gap-3">
-          {darumaPillars.map(({ letter, name, desc }) => (
-            <article class="flex items-center gap-5 rounded-2xl border border-white/15 bg-white/5 p-5 md:gap-6 md:p-6">
-              <span class="w-12 shrink-0 text-center font-display text-5xl font-bold leading-none text-coral md:w-16 md:text-6xl">{letter}</span>
-              <div>
-                <p class="font-display text-xl font-bold text-white md:text-2xl">= {name}</p>
-                <p class="mt-1 leading-relaxed text-ivory/80">{desc}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section class="px-6 py-16 md:py-24">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">เสียงจากคนลงมือทำ</p>
-        <h2 class="mt-2 font-display text-3xl font-bold text-navy md:text-4xl">เสียงจริงจากทีมที่ผมไปอบรมมาแล้ว</h2>
-        <div class="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4" aria-label="แกลเลอรีเสียงจากลูกค้า">
-          {testimonials.map((testimonial) => (
-            <figure class="editorial-card overflow-hidden p-2">
-              <img src={testimonial.src} alt={testimonial.alt} width={testimonial.width} height={testimonial.height} loading="lazy" decoding="async" class="aspect-square w-full rounded-lg object-cover" />
-            </figure>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    {/* Everything the team keeps is listed before the price. */}
-    <section class="border-y border-[#c9c2b2] bg-sand px-6 py-16 md:py-24">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">จบวันแล้วทีมคุณถืออะไรกลับ</p>
-        <h2 class="mt-3 max-w-3xl font-display text-3xl font-bold leading-tight text-navy md:text-5xl">ทีมได้ความรู้ ได้ลงมือทำ วันพรุ่งนี้ทำต่อได้เลย</h2>
-
-        <div class="mt-8 grid gap-8 lg:grid-cols-[1.15fr_.85fr] lg:items-start">
-          <ul class="divide-y divide-[#c9c2b2] border-y border-[#c9c2b2]">
-            {takeHome.map(([label, detail], index) => (
-              <li class="flex gap-4 py-4">
-                <span class="font-display text-xl font-bold tabular-nums text-coral">0{index + 1}</span>
-                <p class="leading-relaxed text-navy"><span class="font-bold">{label}</span> {detail}</p>
-              </li>
-            ))}
-          </ul>
-
-          <aside class="editorial-card p-6 md:p-8" aria-label={`ค่าจัดอบรม Sale × AI Agent — จัดทั้งทีมราคาเดียว ${fmtPrice('inhouse-a')} เฉลี่ย ฿${perHead.toLocaleString('en-US')} ต่อคน สำหรับทีม 20 คน`}>
-            <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ค่าจัดอบรม</p>
-            <p class="mt-2 font-display text-5xl font-bold tabular-nums text-coral">{fmtPrice('inhouse-a')}</p>
-            <p class="mt-1 text-sm text-warm-ink/70">จัดทั้งทีม ราคาเดียว · 1 วัน on-site</p>
-            <div class="mt-5 border-t border-[#c9c2b2] pt-5">
-              <p class="text-sm font-semibold text-warm-ink/70">เฉลี่ยต่อคน (ทีม 20 คน)</p>
-              <p class="font-display text-3xl font-bold tabular-nums text-navy">฿{perHead.toLocaleString('en-US')}</p>
-              <p class="mt-2 text-sm leading-relaxed text-warm-ink/70">ส่งเซลล์ไปเรียนคอร์ส public ตกหลักหมื่นต่อคน — ส่งไป 3 คนก็เท่าจัดทั้งทีมแล้วครับ</p>
-            </div>
-            <a href="#daruma-consult-form" data-primary-cta="booking" class="btn mt-6 min-h-11 w-full border-0 bg-coral text-base text-white hover:bg-[#c43245]" aria-label="จองคิวคุยฟรี 15–20 นาที">จองคิวคุยฟรี 15–20 นาที</a>
-            <p class="mt-3 text-center text-sm text-warm-ink/60">คุยก่อน ไม่มีข้อผูกมัด</p>
-          </aside>
-        </div>
-      </div>
-    </section>
-
-    {/* The one place on the page that isn't selling. */}
-    <section class="border-b border-[#c9c2b2] bg-navy px-6 py-16 text-ivory md:py-24">
-      <div class="mx-auto max-w-5xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ข้อความจากผม</p>
-        <div class="mt-6 grid items-center gap-6 sm:grid-cols-[minmax(0,10rem)_1fr] sm:gap-7 md:grid-cols-[minmax(0,13rem)_1fr] md:gap-10 lg:grid-cols-[minmax(0,17rem)_1fr] lg:gap-12">
-          <figure class="mx-auto w-full max-w-[13rem] sm:mx-0 sm:max-w-none">
-            <img src="/car-dealer-material/pun-ceo-portrait-message.jpg" alt="ปัน ณัฐพัชร์ มองตรงมาที่ผู้อ่าน" width="800" height="1200" loading="lazy" decoding="async" class="aspect-[3/4] w-full rounded-2xl border border-white/15 object-cover object-top" />
-            <figcaption class="mt-3 text-center text-xs font-semibold uppercase tracking-[0.16em] text-ivory/60 sm:text-left">ปัน ณัฐพัชร์ · ผู้สอน</figcaption>
-          </figure>
-
-          <blockquote class="font-display text-xl font-semibold leading-relaxed sm:text-[1.35rem] md:text-2xl lg:text-3xl">
-            <p>ผมไม่ได้จะบอกว่าเอา AI มาใช้แล้วยอดจะขึ้นเองครับ</p>
-            <p class="mt-4 md:mt-5">ธุรกิจบางที่ที่ผมไปคุย ผมบอกตรงๆ ว่า<span class="text-coral">ยังไม่ต้องรีบเอา AI มาใช้</span> — กลับไปทำให้ข้อมูลลูกค้าอยู่ที่เดียวกันก่อน เพราะถ้าข้อมูลยังกระจายอยู่ในหัวเซลล์แต่ละคน เอา AI มาใช้ตอนนี้ก็ได้แค่ของเล่น</p>
-            <p class="mt-4 md:mt-5">AI เก่งเหมือนน้องฝึกงานที่รู้ทุกอย่างบนโลก แต่เขาไม่รู้จักธุรกิจของคุณครับ — <span class="text-coral">งานผมคือทำให้เขารู้จัก</span></p>
-          </blockquote>
-        </div>
-      </div>
-    </section>
+  <div id="daruma-consult-page" class="lp-v2">
+    <AdsContentV2 {...content} />
 
     <section id="daruma-consult-form" class="scroll-mt-20 px-6 py-16 md:py-24">
       <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-start">

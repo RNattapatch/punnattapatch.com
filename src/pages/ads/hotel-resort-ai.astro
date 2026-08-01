@@ -1,194 +1,171 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DarumaMark from '../../components/DarumaMark.astro';
+import AdsContentV2 from '../../components/ads/AdsContentV2.astro';
 import { SITE } from '../../data/site';
 import { PRICES, fmtPrice } from '../../data/pricing.mjs';
 
-const title = 'อบรม AI ให้ทีมโรงแรม & รีสอร์ท — คุยฟรี';
-const description = 'แขกต่างชาติทักมาตอนตีสอง กว่าจะตอบตอนเช้าเขาจองที่อื่นไปแล้ว Advance AI Agent & Business Automation — อบรมในองค์กร 1 วันที่โรงแรมของคุณเอง คุยฟรี 15–20 นาที';
+const title = 'อบรม AI ให้ทีมโรงแรม & รีสอร์ท · คุยฟรี';
+const description = 'แขกทักมาตอนตีสอง กว่าจะตอบตอนเช้าเขาจองที่อื่นไปแล้ว อบรมในองค์กร 1 วันที่โรงแรมของคุณเอง ทีมสร้าง AI Agent จากข้อมูลจริงของที่พัก คุยฟรี 15–20 นาที';
 const canonical = `${SITE.url}/ads/hotel-resort-ai`;
 const lineUrl = 'https://line.me/R/ti/p/@011xgvap';
 const perHead = Math.round(PRICES['inhouse-a'].amount / 20);
 
-// Coconut palm silhouette, drawn once and reused as an atmospheric layer in the
-// dark sections. Kept as a shape rather than a photo so it never competes with
-// the content — it reads as moonlight through fronds, not as a stock beach.
-const palmSvg = `<svg viewBox="-150 -50 300 210" fill="currentColor" aria-hidden="true" focusable="false">
-  <g>
-    <path d="M0 0 C 32 -20, 82 -16, 116 4 C 78 6, 32 13, 0 0 Z" transform="rotate(-8)"/>
-    <path d="M0 0 C 32 -20, 82 -16, 116 4 C 78 6, 32 13, 0 0 Z" transform="rotate(-52)"/>
-    <path d="M0 0 C 32 -20, 82 -16, 116 4 C 78 6, 32 13, 0 0 Z" transform="rotate(38)"/>
-    <path d="M0 0 C 32 -20, 82 -16, 116 4 C 78 6, 32 13, 0 0 Z" transform="scale(-1,1) rotate(-8)"/>
-    <path d="M0 0 C 32 -20, 82 -16, 116 4 C 78 6, 32 13, 0 0 Z" transform="scale(-1,1) rotate(-52)"/>
-    <path d="M0 0 C 32 -20, 82 -16, 116 4 C 78 6, 32 13, 0 0 Z" transform="scale(-1,1) rotate(38)"/>
-    <circle cx="-6" cy="8" r="6"/><circle cx="7" cy="11" r="5"/>
-  </g>
-  <path d="M0 6 C -7 46, -16 92, -38 152" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round"/>
-</svg>`;
+const content = {
+  pageId: 'hotel',
+  formAnchor: '#hotel-ai-form',
+  lineUrl,
+  capacity: 'ผมสอนเองทุกรุ่น รับสูงสุดเดือนละ 10 บริษัท',
+  capacityLeft: 'เดือนสิงหาคมเหลือ 4 บริษัท',
 
-// A hotel's day, not a marketing timeline. Every entry is a moment the front
-// desk is either awake for or losing money on — which is the whole argument
-// for putting an agent on the messages that arrive outside working hours.
-const hotelDay = [
-  { time: '02:00', phase: 'ดึก', who: 'แขกจากยุโรป', event: 'ทักมาถามห้องว่างสุดสัปดาห์หน้า เป็นภาษาอังกฤษ', cost: 'ไม่มีใครตอบจนถึงเช้า' },
-  { time: '07:40', phase: 'เช้า', who: 'รีวิว 3 ดาว', event: 'โผล่ใน Google เรื่องเดิมกับเมื่อเดือนที่แล้ว', cost: 'ไม่มีใครเห็นว่ามันซ้ำ' },
-  { time: '13:20', phase: 'บ่าย', who: 'ลูกค้าองค์กร', event: 'ถามราคาพักยาว 10 คืน แต่คนที่รู้เรตลาหยุด', cost: 'ตอบช้า 2 วัน' },
-  { time: '22:30', phase: 'ค่ำ', who: 'คนทักเพจ', event: 'ขอจองห้องพรุ่งนี้ ถามว่ามีรถรับไหม', cost: 'แอดมินเลิกงานไปแล้ว' },
-];
+  eyebrow: 'คอร์สอบรม In-house · โรงแรมและรีสอร์ท · ทีม 5–20 คน · 1 วันเต็ม',
+  headlineLead: 'ลดงานตอบซ้ำ',
+  headlineNowrap: 'คืนเวลาทีม',
+  headlineAccent: 'ไปดูแลแขกตรงหน้า',
+  productName: 'Advance AI Agent สำหรับโรงแรม',
+  productTagline: 'คอร์สลงมือสร้าง AI Agent ที่รู้จักห้องพัก ราคา และแพ็กเกจของคุณ จบใน 1 วัน',
+  lede: 'ทีมไม่ได้กลับพร้อมแค่สไลด์หรือ prompt ครับ ทั้ง Front, Reservation และ Sales สร้าง AI Agent ของตัวเองจากข้อมูลจริงของที่พัก ทั้งประเภทห้อง ราคาแต่ละฤดู และเงื่อนไขการจอง พร้อมกติกาให้คนตรวจก่อนตอบแขก',
+  badges: ['ทีม 5–20 คน', 'จัดที่โรงแรมคุณ', `ราคาเดียวทั้งทีม ${fmtPrice('inhouse-a')}`],
+  ctaLabel: 'คุยเรื่องทีมของคุณ ฟรี 15 นาที',
+  ctaNote: 'คุยเพื่อเช็กความเหมาะสมก่อนครับ ถ้าทีมยังไม่พร้อม ผมบอกตรงๆ',
 
-const painPoints = [
-  ['01', 'แขกต่างชาติทักตอนตีสอง กว่าจะตอบตอนเช้า เขาจองที่อื่นไปแล้ว'],
-  ['02', 'รีวิวแย่โผล่มาทีหลัง ไม่รู้ว่าเรื่องไหนพังซ้ำๆ กว่าจะรู้ดาวก็ตกแล้ว'],
-  ['03', 'ราคากับโปรฯ แต่ละคนตอบไม่เหมือนกัน คนที่รู้จริงมีคนเดียว ลาทีวุ่นทั้งโรงแรม'],
-];
-
-// Straight from what Pun says on camera — three jobs, in his order.
-const threeJobs = [
-  {
-    n: '01',
-    heading: 'AI Agent รับและคัดกรองการจองผ่านแชต',
-    body: 'ตอบได้หลายภาษา ตลอด 24 ชั่วโมง แขกทักตอนตีสองก็ได้คำตอบทันที แล้วส่งต่อเคสที่ต้องใช้คนจริงให้ทีมตอนเช้า',
+  heroPhotos: {
+    main: { src: '/lp/inhouse/hero-pointing.jpg', alt: 'ปันยืนชี้อธิบายบนจอหน้าห้อง ขณะทีมลงมือทำบนเครื่องตัวเองในคลาสจริง', width: 1600, height: 1200 },
+    left: { src: '/lp/inhouse/hands-on.jpg', alt: 'ทีมนั่งทำงานกับเครื่องตัวเองระหว่างเวิร์คช็อป', width: 1600, height: 1200 },
+    right: { src: '/lp/inhouse/team-selfie.jpg', alt: 'ปันถ่ายรูปกับทีมผู้เรียนเต็มห้องหลังจบคลาส', width: 1200, height: 1600 },
   },
-  {
-    n: '02',
-    heading: 'รวมรีวิวกับคอมเพลนต์ทุกช่องทาง เป็นสรุปรายสัปดาห์',
-    body: 'เจ้าของกับฝ่ายบริหารเห็นเลยว่าอะไรพังซ้ำๆ ทำไมแขกไม่ happy — ไม่ต้องรอให้ปัญหาบานปลายก่อนถึงจะรู้',
-  },
-  {
-    n: '03',
-    heading: 'ข้อมูลห้องกับโปรโมชัน ให้ทุกคนตอบเหมือนกันหมด',
-    body: 'ทีม Front กับทีมเซลล์หยิบข้อมูลชุดเดียวกันมาตอบแขก ลดการพึ่ง keyman — คนที่รู้ทุกอย่างลาหยุดได้โดยที่งานไม่หยุด',
-  },
-];
+  heroCaption: 'ภาพจากคลาสจริง · ผู้เรียนลงมือบนเครื่องตัวเอง',
 
-const productFacts = [
-  ['ในคอร์สจะได้เรียนอะไร', 'สร้าง AI Agent ของโรงแรมคุณเองด้วย Daruma Framework — ทีมลงมือทำจนได้ Agent ตัวจริงใน 1 วัน ไม่เขียน code ใช้ Claude หรือ ChatGPT'],
-  ['คอร์สนี้เหมาะกับใคร', 'ทีม Front / Reservation / Sales + เจ้าของโรงแรมและรีสอร์ท (เหมาะทีม 5–20 คน)'],
-  ['จัดที่ไหน', 'ที่โรงแรมหรือรีสอร์ทของคุณเอง (on-site กรุงเทพฯ และปริมณฑล ไม่คิดค่าเดินทาง)'],
-  ['เรียนยังไง', 'จับมือทำทีละคน จนสร้าง AI Agent ของที่พักตัวเองได้ก่อนกลับบ้าน'],
-];
+  clientLogos: [
+    { src: '/logos/clients/scenery-farm.jpeg', alt: 'The Scenery สวนผึ้ง' },
+    { src: '/logos/clients/farevefarm.jpg', alt: 'Farevefarm' },
+    { src: '/logos/clients/farmsuk.jpg', alt: 'ฟาร์มสุข farmsuk' },
+    { src: '/logos/clients/nissan.png', alt: 'Nissan' },
+    { src: '/logos/clients/hfc-healthfoods.png', alt: 'HFC HealthFoods Corporation' },
+    { src: '/logos/clients/home-plus.png', alt: 'ฮ.โฮมพลัส' },
+    { src: '/logos/clients/ving.png', alt: 'V!NG' },
+    { src: '/logos/clients/business-boy.jpg', alt: 'เด็กประกอบการ The Business Boy' },
+    { src: '/logos/clients/aes.jpg', alt: 'AES' },
+  ],
 
-const courseMorning = [
-  {
-    heading: 'วางขั้นตอนรับจอง + ตามงานที่ทำซ้ำได้',
-    body: 'ใส่ขั้นของแต่ละเคส งานถัดไป วันครบกำหนด และหลักฐาน ให้คนเข้ากะถัดไปเปิดแล้วรู้ทันทีว่าค้างอะไรอยู่ ไม่ต้องพึ่งความจำครับ',
-  },
-  {
-    heading: '“สมองโรงแรม” — รวมข้อมูลให้ AI รู้จักที่พักของคุณ',
-    body: 'รวมประเภทห้อง เรตแต่ละฤดู โปรโมชัน กติกาเช็กอิน–เช็กเอาต์ และคำถามที่แขกถามบ่อย เป็นชุดบริบทเดียว ให้ AI กลายเป็นน้องฝึกงานที่รู้จักโรงแรมคุณ',
-  },
-];
+  proofHeadline: 'องค์กรชั้นนำ และแบรนด์ดังไว้วางใจ',
+  proofBody: 'รวมถึงที่พักและฟาร์มสเตย์ที่ผมเข้าไปอบรมให้ถึงหน้างานจริง',
+  perHeadNote: `มากัน 20 คน เฉลี่ยคนละ ${perHead.toLocaleString('th-TH')} บาท ถูกกว่าส่งพนักงานไปเรียนข้างนอก 1 ที่นั่ง`,
 
-const courseAfternoon = [
-  {
-    heading: 'AI ตอบแชตจอง + คัดกรอง + หลายภาษา 24 ชม.',
-    body: 'ต่อกับเพจและ LINE ของโรงแรม ตอบคำถามห้องว่าง–ราคา–ทางมาได้เอง แล้วส่งเคสที่ต้องใช้คนจริงเข้าคิวให้ทีม',
-    proof: true,
-  },
-  {
-    heading: 'รวมรีวิวกับคอมเพลนต์ เป็นสรุปให้ผู้บริหารอ่าน',
-    body: 'ดึงจากทุกช่องทางมารวมกัน จัดกลุ่มว่าเรื่องไหนซ้ำ เรื่องไหนโผล่ครั้งเดียว แล้วสรุปสั้นๆ ส่งเข้ามือถือเจ้าของทุกสัปดาห์',
-  },
-  {
-    heading: 'แผนเอาไปใช้จริงวันจันทร์',
-    body: 'กำหนดว่าใครดูแลอะไร เริ่มจากเคสไหนก่อน และวัดผลด้วยตัวเลขอะไร ทีมกลับไปทำต่อได้เลยครับ',
-  },
-];
+  calloutLead: 'คืนที่แล้วมีแขกทักเข้ามากี่ข้อความครับ',
+  calloutAccent: 'แล้วตอบทันกี่ข้อความ?',
+  calloutBody: 'คำตอบที่ผมได้ยินบ่อยที่สุดคือ "เช้ามาก็ตอบไปแล้วนะ แต่เขาไม่ตอบกลับ" ห้องที่ขายไม่ออกของโรงแรมส่วนใหญ่ไม่ได้หายตอนแขกต่อราคาครับ มันหายตอนไม่มีใครตอบตอนตีสองต่างหาก',
+  pains: [
+    { icon: 'moon', text: 'แขกต่างชาติทักตอนตีสอง กว่าจะตอบตอนเช้า เขาจองที่อื่นไปแล้ว' },
+    { icon: 'repeat', text: 'คำถามเดิมวนซ้ำทุกวัน ห้องแบบไหนต่างกันยังไง มีรถรับไหม เช็คอินกี่โมง ทีมพิมพ์ตอบเองทุกครั้ง' },
+    { icon: 'brain', text: 'ราคาแต่ละฤดูกับเงื่อนไขแพ็กเกจ อยู่ในหัวคนเก่งคนเดียว เขาลาทีวุ่นทั้งโรงแรม' },
+    { icon: 'star', text: 'รีวิวแย่โผล่มาทีหลัง ไม่รู้ว่าเรื่องไหนพังซ้ำๆ กว่าจะรู้ดาวก็ตกแล้ว' },
+    { icon: 'wallet', text: 'กรุ๊ปทัวร์กับลูกค้าองค์กรถามใบเสนอราคา กว่าจะทำเสร็จเขาก็ได้ที่อื่นไปแล้ว' },
+  ],
+  painsClose: 'ถ้าอ่านแล้วนึกหน้าทีมหน้าเคาน์เตอร์ออกทีละข้อ ผมเข้าใจครับ ทีมไม่ได้ทำงานช้า แต่คนคนเดียวตอบแขกสิบคนพร้อมกันตอนดึก มันไม่ไหวจริงๆ',
 
-const courseSteps = [];
-[
-  { label: 'ช่วงเช้า · จัดระบบงานก่อนเอา AI มาใช้', items: courseMorning },
-  { label: 'ช่วงบ่าย · ลงมือสร้าง AI Agent ของโรงแรมคุณ', items: courseAfternoon },
-].forEach((phase) => {
-  phase.items.forEach((item, ii) => {
-    courseSteps.push({ ...item, phaseLabel: ii === 0 ? phase.label : null, n: courseSteps.length + 1 });
-  });
-});
+  whyTitle: 'ทำไมผมถึงยกคลาสไปที่โรงแรมคุณ แทนที่จะให้ทีมเดินทางมาเรียน',
+  whyCols: [
+    { heading: 'สอนด้วยห้องพักและราคาของคุณเอง', body: 'ตัวอย่างในคลาสคือประเภทห้องจริง ราคาแต่ละฤดูจริง แพ็กเกจจริง agent ที่สร้างเสร็จจึงตอบแขกได้ทันที ไม่ต้องมานั่งแปลงเอง' },
+    { heading: 'ทั้งทีมขยับพร้อมกัน', body: 'ส่งไปเรียนคนเดียว กลับมาเปลี่ยนทั้งโรงแรมไม่ได้ครับ แต่ถ้า Front, Reservation และ Sales เห็นของจริงพร้อมกันในวันเดียว วันถัดไปทุกคนตอบแขกด้วยข้อมูลชุดเดียวกัน' },
+    { heading: 'โรงแรมไม่ต้องหยุดให้บริการ', body: 'ไม่ต้องพาทีมเดินทาง ใครติดแขกที่เคาน์เตอร์ก็ออกไปดูแลแล้วกลับเข้าห้องได้ และราคาเดียวทั้งทีม ถูกกว่าซื้อคอร์สรายหัวหลายเท่า' },
+  ],
+  principleQuote: '"AI เหมือนน้องฝึกงานที่รู้ทุกอย่างบนโลก แต่ยังไม่รู้จักโรงแรมคุณ"',
+  principleBody: 'วันแรกของทีมคุณจึงต้องเริ่มจากข้อมูลห้องพัก ราคา และเงื่อนไขการจองของที่พักเอง ไม่ใช่เริ่มจากท่องจำ prompt นี่คือสิ่งที่คอร์ส AI ทั่วไปข้ามไป แล้วมางงว่าทำไมทีมเลิกใช้',
 
-const takeHome = [
-  ['AI Agent ของโรงแรมคุณ', 'ที่ทีมสร้างเองกับมือในห้อง — ไม่ใช่เดโมของผม'],
-  ['“สมองโรงแรม”', 'ชุดข้อมูลห้อง เรต โปรฯ และกติกา ที่ AI เอาไปใช้ตอบแขกต่อได้ทันที'],
-  ['ขั้นตอนรับจอง + ตามงานที่เขียนไว้', 'ให้คนเข้ากะถัดไปเปิดแล้วทำต่อได้ ไม่พึ่งความจำใครคนเดียว'],
-  ['แผนเอาไปใช้จริงวันจันทร์', 'พร้อมเคสแรกที่จะลงมือทำ'],
-  ['ผมไปจัดให้ถึงที่พัก', 'กรุงเทพฯ และปริมณฑล ไม่คิดค่าเดินทาง'],
-  ['ทั้งทีมราคาเดียว', '1 วัน 8 ชม.เต็ม (เหมาะทีม 5–20 คน) ไม่คิดเพิ่มรายหัว'],
-];
+  agendaTitle: 'หนึ่งวันเดินจาก "งานหน้าเคาน์เตอร์" ไปหา "Agent" ทุกช่วงมีชิ้นงานออก',
+  agendaLead: 'วงกลมข้างเวลาคือดารุมะของทีมคุณครับ เราแต้มตาให้มันช่วงท้ายวัน เมื่อ agent ของทุกคนมีกติกาใช้จริงครบ',
+  agenda: [
+    { time: '09:00', until: '–10:30', heading: 'ขายห้องแบบไหน ให้แขกกลุ่มไหน', body: 'เริ่มจากปัญหาหน้างานและห้องจริง 1 ประเภท ด้วย DARUMA Mini-Score แล้วแปลงจุดเด่นของที่พักให้เชื่อมกับสิ่งที่แขกอยากได้จริง ไม่ใช่ท่องรายการสิ่งอำนวยความสะดวก', output: 'FFAB Sheet รายประเภทห้อง' },
+    { time: '10:45', until: '–12:00', heading: 'สร้างสมองโรงแรมด้วย Context + Data', body: 'รวมประเภทห้อง ราคาแต่ละฤดู แพ็กเกจ เงื่อนไขการจองและยกเลิก ให้เป็นไฟล์กลางของโรงแรม แล้วเทียบให้เห็นจะจะว่าคำตอบของ AI ก่อนกับหลังมี context ต่างกันแค่ไหน', output: 'company-context.md ของโรงแรม' },
+    { time: '13:00', until: '–14:45', heading: 'สร้าง Specialist Agent คนละ 1 ตัว', body: 'แต่ละคนเลือกหน้าที่เดียวจาก Starter Kit เช่น ร่างตอบแชทแขกต่างชาติ หรือทำใบเสนอราคากรุ๊ป ปรับด้วยข้อมูลที่พัก แล้วทดสอบกับข้อความแขกจริงของตัวเอง', output: 'Specialist Agent ของแต่ละคน' },
+    { time: '15:00', until: '–16:25', heading: 'คุมและใช้ต่อ แล้วแต้มตาดารุมะ', body: 'จับผิดงานที่ AI ทำพลาดด้วยกัน กำหนดว่าราคาและเงื่อนไขยกเลิกต้องมีคนตรวจก่อนส่งเสมอ แล้วล็อกงานแรก วันเวลา และคนรับผิดชอบลง Monday Plan', output: 'Review Checklist + Monday Plan', final: true },
+  ],
+  nudgeAgenda: 'อ่านตารางแล้วยังนึกไม่ออกว่าทีมคุณจะทำอะไรในช่วงบ่าย? ทักมาถามได้ครับ ผมเล่าให้ฟังทีละช่วง',
 
-// Four angles instead of a linear résumé — each reader arrives doubting a
-// different thing. Nothing here claims hotel-operator experience he doesn't have.
-const angles = [
-  {
-    kicker: 'มุมที่ 2 · สายบริหาร',
-    heading: 'ผมบริหารทีมขายและบริหารธุรกิจมาเอง',
-    body: 'คนละช่วงกับตอนอยู่บริษัทรถครับ — ผมเป็นคนคัดคนเข้าทีม สัมภาษณ์มาแล้วหลักพันคน แล้วต้องมาคุมยอด คุมคน คุมต้นทุนเอง เลยรู้ว่างานไหนควรโยนให้ AI และงานไหนต้องเก็บไว้ให้คนทำ',
-    photo: { src: '/about/pun-cert-management.jpg', alt: 'ปัน ณัฐพัชร์ รับวุฒิบัตรหลักสูตรด้านบริหารธุรกิจ', width: 1100, height: 733 },
-  },
-  {
-    kicker: 'มุมที่ 3 · คนสร้างระบบเอง',
-    heading: 'ผมไม่ได้สอนอย่างเดียว — ผม build ใช้เองทุกวัน',
-    body: 'ระบบหลังบ้าน CRM และ AI Agent ที่ผมใช้ในธุรกิจตัวเอง ผมเขียนเอง ในห้องเรียนผมเลยเปิดของจริงให้ดูได้ ไม่ใช่เปิดสไลด์ทฤษฎี',
-    photo: { src: '/about/pun-build-desk.jpg', alt: 'โต๊ะทำงานของปัน ณัฐพัชร์ จอสองใบเปิดโค้ดและเทอร์มินัลระหว่าง build ระบบ', width: 1100, height: 825 },
-  },
-  {
-    kicker: 'มุมที่ 4 · การทำงาน',
-    heading: 'ผมจับมือทำทีละคน',
-    body: 'ไม่ใช่ยืนบรรยาย 8 ชม.แล้วกลับ ทุกคนในห้องต้องมี Agent ของตัวเองก่อนเลิกเรียน ถ้าใครยังไม่ได้ ผมยังไม่ปล่อยกลับครับ',
-    photo: { src: '/about/pun-working-with-team.jpg', alt: 'ปัน ณัฐพัชร์ ยืนอธิบายหน้าจอให้ทีมลูกค้าที่เปิดโน้ตบุ๊กทำตามในออฟฟิศ', width: 1100, height: 825 },
-  },
-];
+  menuTitle: 'แต่ละคนเลือก agent ตามงานที่ตัวเองรับผิดชอบ',
+  menuLead: 'agent หน้าที่เดียวคุมง่ายกว่า agent ที่พยายามทำทุกอย่าง และหัวหน้าตรวจได้ว่ามันควรรับงานตรงไหน',
+  menu: [
+    { heading: 'ตัวร่างตอบแชทแขก ไทยและอังกฤษ', body: 'จับประเด็นจากข้อความแขกแล้วเตรียมร่างให้ทีมตรวจ ก่อนตอบกลับ' },
+    { heading: 'ตัวคัดกรองการจอง', body: 'ถามข้อมูลที่ต้องรู้ให้ครบ วันเข้าพัก จำนวนคน ประเภทห้อง ก่อนส่งต่อให้ Reservation' },
+    { heading: 'ตัวช่วยร่างใบเสนอราคากรุ๊ป', body: 'ร่างจากราคาและแพ็กเกจจริงของที่พัก แล้วให้คนตรวจก่อนส่งลูกค้าองค์กรทุกครั้ง' },
+    { heading: 'ตัวสรุปรีวิวและข้อร้องเรียน', body: 'อ่านรีวิวย้อนหลังแล้วบอกว่าเรื่องไหนพังซ้ำๆ ก่อนดาวจะตก' },
+    { heading: 'Product Specialist ของที่พัก', body: 'ตอบเรื่องห้อง สิ่งอำนวยความสะดวก และกิจกรรม จากข้อมูลที่โรงแรมอนุญาต' },
+  ],
 
-// Scenery leads on this page — it's the client closest to the reader's own business.
-const clientLogos = [
-  { src: '/logos/clients/scenery-farm.jpeg', alt: 'The Scenery · สวนผึ้ง' },
-  { src: '/logos/clients/nissan.png', alt: 'Nissan' },
-  { src: '/logos/clients/hfc-healthfoods.png', alt: 'HFC HealthFoods Corporation' },
-  { src: '/logos/clients/home-plus.png', alt: 'ฮ.โฮมพลัส' },
-  { src: '/logos/clients/ving.png', alt: 'V!NG' },
-  { src: '/logos/clients/farevefarm.jpg', alt: 'Farevefarm' },
-  { src: '/logos/clients/farmsuk.jpg', alt: 'ฟาร์มสุข farmsuk' },
-  { src: '/logos/clients/zontes.png', alt: 'Zontes' },
-  { src: '/logos/clients/lambretta.png', alt: 'Lambretta' },
-  { src: '/logos/clients/gpx.jpg', alt: 'GPX' },
-  { src: '/logos/clients/royal-enfield.jpg', alt: 'Royal Enfield' },
-  { src: '/logos/clients/business-boy.jpg', alt: 'เด็กประกอบการ The Business Boy' },
-  { src: '/logos/clients/aes.jpg', alt: 'AES' },
-  { src: '/logos/clients/nsscrap.avif', alt: 'NSSCRAP' },
-];
+  takeHomeTitle: 'จบวันแล้ว ทีมไม่ได้ถือ "ความรู้" กลับไปอย่างเดียว',
+  takeHomeFeature: { heading: 'Specialist AI Agent คนละ 1 ตัว', body: 'สร้างเสร็จในห้อง ทดสอบกับข้อความแขกจริงแล้ว พร้อมใช้ต่อกะถัดไป ทุกชิ้นต่อกันเป็น "สมองโรงแรม" เวอร์ชันแรกของคุณ' },
+  takeHome: [
+    { heading: 'company-context.md ของโรงแรม', body: 'ไฟล์กลางที่รวมประเภทห้อง ราคาแต่ละฤดู แพ็กเกจ และเงื่อนไขการจอง' },
+    { heading: 'FFAB Sheet รายประเภทห้อง', body: 'จุดเด่นของห้องเชื่อมกับสิ่งที่แขกแต่ละกลุ่มมองหาจริง' },
+    { heading: 'คลัง prompt งานโรงแรม 23+ ตัว', body: 'ไทยและอังกฤษ ปรับเข้ากับที่พักคุณระหว่างคลาส ใช้ต่อได้ทันที' },
+    { heading: 'Review Checklist + Data Rules', body: 'กติกาว่าราคาและเงื่อนไขยกเลิกต้องผ่านคนตรวจก่อนเสมอ' },
+    { heading: 'Monday Plan รายคน', body: 'งานแรก วันเวลา และคนรับผิดชอบ กันโรค "อบรมเสร็จแล้วเงียบ"' },
+  ],
+  takeHomeNote: 'พร้อมติดตามผ่าน LINE 7 วันหลังเรียน ผมไม่รับประกันยอดจองนะครับ ผลขึ้นกับข้อมูลและวินัยของทีม แต่ของที่ต้องใช้ต่อ ผมวางให้ครบก่อนจบวัน',
 
-const classPhotos = [
-  { src: '/testimonial/2026-07/scenery/scenery-room.jpg', alt: 'คลาส in-house ที่ The Scenery สวนผึ้ง — ทีมงานนั่งประจำโต๊ะพร้อมโน้ตบุ๊ก ในร้านผนังหินติดสวน', width: 1100, height: 825 },
-  { src: '/testimonial/web/class-selfie.jpg', alt: 'ทีมงานทั้งทีมใส่เสื้อบริษัทนั่งเรียนพร้อมโน้ตบุ๊ก ในคลาส in-house ที่ออฟฟิศลูกค้า', width: 1080, height: 1080 },
-  { src: '/testimonial/web/seminar-room.jpg', alt: 'ห้องอบรมเต็มห้อง ผู้เรียนนั่งประจำโต๊ะพร้อมโน้ตบุ๊ก', width: 1080, height: 1080 },
-];
+  fitTitle: 'คอร์สนี้เจาะจงกับที่พักที่อยากเปลี่ยน "ของที่เรียน" ให้เป็น "ของที่ใช้"',
+  fitYes: [
+    'เจ้าของโรงแรมหรือรีสอร์ท ที่มีทีม Front และ Reservation รวมกัน 5 คนขึ้นไป',
+    'ผู้จัดการทั่วไปที่อยากให้ทุกคนตอบแขกด้วยข้อมูลชุดเดียวกัน ไม่ใช่ตอบตามที่จำได้',
+    'ทายาทหรือผู้บริหารรุ่นใหม่ ที่ต้องเอาแผนกับของจริงกลับไปคุยกับที่บ้านให้ผ่าน',
+  ],
+  fitNo: 'ที่พักที่ยังไม่มีทีมประจำ · อยากได้คอร์ส prompt กว้างๆ · อยากได้ระบบจองอัตโนมัติเต็มรูปแบบในวันเดียว · ยังไม่มีข้อมูลห้องพักและราคาให้ใช้ในคลาส',
+  nudgeFit: 'อ่านแล้วยังไม่ชัดว่าที่พักคุณเข้าข่ายไหม? เล่าให้ผมฟังสั้นๆ ในไลน์ ผมบอกตรงๆ ว่าเหมาะหรือยังไม่เหมาะ',
 
-// Pinned inside the curriculum step it proves: a resort team building the thing
-// in their own dining room, not a chat screenshot that could be from anywhere.
-const proofBuildIt = {
-  src: '/testimonial/2026-07/scenery/scenery-screen.jpg',
-  alt: 'ทีม The Scenery สวนผึ้ง นั่งดูจอที่กำลังเปิดระบบ CRM ระหว่างคลาส in-house',
-  width: 825,
-  height: 1100,
+  classPhotos: [
+    { src: '/testimonial/2026-07/scenery/scenery-room.jpg', alt: 'คลาส in-house ที่ The Scenery สวนผึ้ง ทีมงานนั่งประจำโต๊ะพร้อมโน้ตบุ๊ก', width: 1100, height: 825 },
+    { src: '/lp/inhouse/class-full.jpg', alt: 'คลาสอบรมเต็มห้อง ผู้เรียนนั่งประจำโต๊ะพร้อมโน้ตบุ๊ก', width: 1600, height: 1200 },
+    { src: '/lp/inhouse/office-session.jpg', alt: 'อบรมในห้องประชุม ทีมดูสไลด์แล้วทำตามบนเครื่องตัวเอง', width: 1600, height: 1200 },
+    { src: '/lp/inhouse/onsite-cafe.jpg', alt: 'เวิร์คช็อปหน้างานจริง ทีมนั่งทำงานกับเครื่องของตัวเอง', width: 1200, height: 1600 },
+    { src: '/lp/inhouse/team-group.jpg', alt: 'ทีมผู้เรียนถ่ายรูปรวมกันในห้องอบรม พร้อมโน้ตบุ๊กเปิดค้างบนโต๊ะ', width: 1200, height: 1600 },
+    { src: '/testimonial/web/fb-learning-org.jpg', alt: 'โพสต์จากองค์กรที่เข้าอบรม', width: 1080, height: 1080 },
+  ],
+  reviews: [
+    { src: '/testimonial/2026-07/review-09.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 1410, height: 1410 },
+    { src: '/testimonial/2026-07/review-10.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 736, height: 736 },
+    { src: '/testimonial/2026-07/review-11.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 914, height: 914 },
+    { src: '/testimonial/2026-05/review-02.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 1000, height: 1000 },
+    { src: '/testimonial/2026-05/review-04.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 1000, height: 1000 },
+    { src: '/testimonial/2026-05/review-05.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 1000, height: 1000 },
+  ],
+
+  instructorPhoto: { src: '/lp/inhouse/pun-portrait.jpg', alt: 'ปัน ณัฐพัชร์ ผู้สอนคอร์ส Advance AI Agent สำหรับโรงแรม', width: 1066, height: 1600 },
+  instructorParas: [
+    'ผมเป็นคนขายมาก่อนครับ เคยยืนรอลูกค้า เคยโดนเทตอนใกล้ปิด เคยนั่งทำเอกสารเสนอราคาถึงเที่ยงคืน เพราะงั้นเวลาสอน ผมรู้ว่างานไหน "พูดง่ายแต่ทำจริงเหนื่อย"',
+    'ทุกระบบ AI ที่สอนในคลาส ผมสร้างใช้เองในธุรกิจตัวเองก่อนทั้งหมด ตั้งแต่ตามลูกค้า ตอบแชท ทำเอกสารขาย ไปจนถึงหลังบ้านของเพจที่คุณกำลังอ่านอยู่นี่แหละครับ',
+    'หน้าที่ของผมในวันอบรมคือเดินดูหน้าจอทีละคน ช่วยจัด context และถามคำถามให้ agent ของแต่ละคนผูกกับงานหน้าเคาน์เตอร์จริง ผมอยู่ในห้องเพื่อพาทีมทำ ไม่ได้อยู่บนเวทีเพื่อเล่าเรื่องตัวเอง',
+    'ผมไม่ใช่คนที่เก่ง AI ที่สุดในประเทศหรอกครับ แต่ผมน่าจะเป็นคนที่นั่งอยู่ตรงกลางระหว่าง "ทีมหน้างานจริง" กับ "ของพวกนี้" มานานพอที่จะแปลให้สองฝั่งเข้าใจกันได้',
+  ],
+
+  priceLabel: 'Advance AI Agent · In-house สำหรับโรงแรม',
+  priceAmount: fmtPrice('inhouse-a'),
+  priceNote: `มากัน 20 คน เฉลี่ยคนละ ${perHead.toLocaleString('th-TH')} บาท ถูกกว่าส่งพนักงานไปเรียนข้างนอก 1 ที่นั่ง`,
+  priceIncludes: [
+    'อบรม on-site ที่โรงแรมหรือรีสอร์ทของคุณ 1 วันเต็ม (ทีม 5–20 คน)',
+    'Specialist AI Agent คนละ 1 ตัว สร้างจากข้อมูลห้องพักจริง เสร็จในวันนั้น',
+    'สมองโรงแรม: company-context.md + FFAB Sheet + prompt 23+ ตัว',
+    'Review Checklist + Data Rules + Monday Plan รายคน',
+    'ติดตามผ่าน LINE 7 วันหลังเรียน',
+    'ใบกำกับภาษีนามบริษัท ฝ่ายบัญชีเบิกได้',
+  ],
+  priceTerms: [
+    'เงื่อนไขเดียวที่ผมขอ: ชำระเต็มจำนวนก่อนวันอบรมครับ เพื่อให้ทั้งสองฝั่งจริงจังกับวันนั้นเท่ากัน · on-site กรุงเทพฯ และปริมณฑล ไม่คิดค่าเดินทาง ต่างจังหวัดคุยกันได้',
+    'อยากให้ผมอยู่ยาวกว่า 7 วัน มีแพ็กเกจ "พาลงมือทำ" ต่อยอดหลังคอร์ส ถามรายละเอียดได้ในคิวคุยฟรี',
+  ],
+  priceReassure: 'ยังไม่ต้องเชื่อผมครับ ให้ผมดูงานหน้าเคาน์เตอร์ของคุณก่อน แล้วค่อยตัดสินใจว่าคุ้มไหม',
+
+  faqs: [
+    { q: 'ทีมผมไม่เก่งเทคโนโลยีเลย เรียนไหวไหม', a: 'ไหวครับ ไม่ต้องเขียนโค้ด สั่งงานเป็นภาษาไทยได้ และเราเริ่มจาก template ไม่ใช่หน้าจอว่างๆ ทุกขั้นตอนทำตามพร้อมกันทีละคลิก ใครหลุดผมเดินไปนั่งข้างๆ จนตามทัน คนที่พิมพ์ช้าที่สุดในห้องคือ KPI ของผม' },
+    { q: 'ต้องเตรียมอะไรก่อนวันอบรม', a: 'เตรียมข้อมูลประเภทห้อง ราคาแต่ละฤดู แพ็กเกจ เงื่อนไขการจอง และตัวอย่างแชทแขกจริง ตาม Pre-work Checklist ที่ผมส่งให้หลังยืนยันวัน แล้วให้ IT เช็คการเข้าถึงเครือข่ายก่อน เพื่อให้เวลาในห้องหมดไปกับการลงมือทำ' },
+    { q: 'ข้อมูลราคากับข้อมูลแขก ปลอดภัยไหม', a: 'ในคลาสมี Data Rules ชัดเจนครับ ข้อมูลส่วนตัวแขก เลขบัตร ข้อมูลการชำระเงิน และสัญญาที่โรงแรมไม่อนุญาต ต้องตัดออกหรือทำให้ไม่ระบุตัวตนก่อนใช้ และกติกานี้เป็นหนึ่งในของที่ทีมได้กลับไปใช้ต่อด้วย' },
+    { q: 'AI จะตอบแขกแทนทีมเลยไหม', a: 'ไม่ครับ และผมพูดเรื่องนี้ตรงๆ ในคลาสด้วย agent มีหน้าที่ร่าง คัดกรอง สรุป และเตรียมข้อมูล ส่วนราคาและเงื่อนไขยกเลิกต้องมีคนตรวจและอนุมัติทุกครั้ง งานบริการยังเป็นงานของคน' },
+    { q: 'จบคลาสแล้ว ถ้าติดปัญหาถามใครได้', a: 'มีติดตามผ่าน LINE 7 วันหลังเรียนครับ อาทิตย์แรกคือช่วงที่คำถามจริงโผล่ ผมตอบเองทั้งหมด ถ้าอยากได้คนพาไปต่อยาวกว่านั้น มีแพ็กเกจ "พาลงมือทำ" ที่ผมเข้าไปทำงานกับทีมต่อเนื่อง คุยกันได้ครับ' },
+    { q: 'ทีมเข้ากะกันคนละเวลา จัดยังไงดี', a: 'คุยกันก่อนได้ครับ ส่วนใหญ่ที่ทำกันคือเลือกวันที่ occupancy ต่ำแล้วรวมทีมให้ได้มากที่สุดในรอบเดียว ถ้าจำเป็นต้องแบ่ง 2 รอบ ผมจัดให้ได้ แต่ราคาจะคิดตามจำนวนวันจริง' },
+    { q: 'จ่ายเงินยังไง มีเอกสารให้ฝ่ายบัญชีไหม', a: 'ชำระเต็มจำนวนก่อนวันอบรม ออกใบกำกับภาษีในนามบริษัทให้ครบครับ ใบเสนอราคาสำหรับขออนุมัติภายในก็ทำให้ได้ บอกผมในคิวคุยฟรีได้เลย' },
+  ],
+  nudgeFaq: 'คำถามของคุณไม่อยู่ในลิสต์นี้ใช่ไหมครับ? ถามผมตรงๆ ในไลน์ได้เลย ไม่ต้องกรอกฟอร์ม',
 };
-
-const testimonials = [
-  { src: '/testimonial/2026-05/review-01.jpg', alt: 'รีวิวลูกค้า — ทีมงานร่วม Workshop AI', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-05/review-02.jpg', alt: 'รีวิวลูกค้า — แชทขอบคุณหลังเวิร์กช็อป', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-05/review-03.jpg', alt: 'รีวิวลูกค้า — บรรยากาศห้องอบรม AI เต็มห้อง', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-05/review-05.jpg', alt: 'รีวิวลูกค้า — แชทชมว่าสอนถูกใจทีมงาน AI ทั้งบริษัท', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-05/review-08.jpg', alt: 'รีวิวลูกค้า — โพสต์รีวิวองค์กรที่เรียนรู้เร็วที่สุด', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-07/review-10.jpg', alt: 'รีวิวลูกค้า — โพสต์แนะนำต่อว่าใครสนใจเรียน AI แนะนำน้องปัน', width: 736, height: 736 },
-  { src: '/testimonial/2026-07/review-11.jpg', alt: 'รีวิวลูกค้า — แชทลูกค้าต่อยอดโปรเจกต์เลขา AI', width: 914, height: 914 },
-  { src: '/testimonial/2026-05/review-06.jpg', alt: 'รีวิวลูกค้า — ทีมงานถ่ายภาพร่วมกันที่ออฟฟิศ', width: 1000, height: 1000 },
-];
-
-const darumaPillars = [
-  { letter: 'D', name: 'Data', desc: 'ข้อมูลของโรงแรมต้องเก็บได้' },
-  { letter: 'A', name: 'AI Agent', desc: 'นำ AI Agent มาลดงาน เพิ่มยอดจองได้จริง' },
-  { letter: 'R', name: 'Repeatable', desc: 'ทำซ้ำได้ ไม่พึ่งดวง' },
-  { letter: 'U', name: 'Upskill', desc: 'คนเก่งขึ้นด้วยระบบ' },
-  { letter: 'M', name: 'Measurable', desc: 'ทุกอย่างวัดผลได้ ไม่ใช้ความรู้สึก' },
-  { letter: 'A', name: 'Actionable', desc: 'นำไปใช้ได้จริงทันที' },
-];
 ---
 
 <BaseLayout
@@ -200,399 +177,14 @@ const darumaPillars = [
   robots="noindex,follow"
   schema={{ types: ['WebPage'], title, description }}
 >
-  {/* Meta Pixel loads site-wide from BaseLayout (MetaPixel.astro).
-      The conversion events below still fire from this page. */}
+  <link
+    slot="head"
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&display=swap"
+  />
 
-  <div id="hotel-ai-page">
-    <section class="hero-shore relative overflow-hidden border-b border-[#c9c2b2] px-6 py-14 md:py-24">
-      <div class="palm palm-hero" set:html={palmSvg} />
-      <div class="relative mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.15fr_.85fr]">
-        <div>
-          <p class="inline-flex items-center rounded-full border border-[#c9c2b2] bg-white/70 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-cyan">สำหรับโรงแรม &amp; รีสอร์ท</p>
-          <h1 class="mt-5">
-            <span class="block text-2xl font-bold leading-snug text-navy md:text-[2rem]">
-              <span class="block">คอร์สอบรมในองค์กร ที่ออกแบบมาเพื่อ<span class="whitespace-nowrap text-coral">งานโรงแรม</span>โดยเฉพาะ</span>
-              <span class="block">ผมไปจัดให้ถึงที่พักของคุณเอง</span>
-            </span>
-            <span class="mt-4 block font-display text-[2.75rem] font-bold leading-[1.05] tracking-tight text-navy md:text-6xl">Advance AI Agent<br /><span class="text-cyan">&amp;</span> Business Automation</span>
-          </h1>
-          <p class="mt-6 max-w-2xl text-lg leading-relaxed text-warm-ink/80"><span class="font-bold text-navy">แขกทักตอนตีสอง กว่าจะตอบตอนเช้า เขาจองที่อื่นไปแล้ว</span> — AI ไม่ได้มาต้อนรับแขกแทนคนครับ แต่รับสายที่ไม่มีใครรับ และเก็บงานซ้ำๆ ไปทำแทน</p>
-
-          <div class="mt-8 flex flex-wrap gap-3">
-            <a href="#hotel-ai-form" data-primary-cta="booking" class="btn min-h-11 border-0 bg-coral px-6 text-base text-white hover:bg-[#c43245]" aria-label="จองคิวคุยฟรี 15–20 นาที">จองคิวคุยฟรี 15–20 นาที</a>
-            <a href={lineUrl} data-line-hotel target="_blank" rel="noopener" class="line-button inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#06c755] px-5 py-3 text-center font-semibold text-white transition-colors hover:bg-[#05b34c]" aria-label="ทัก LINE ถามผมก่อน">
-              <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" d="M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 8.9 8.2-.2.2-.4.5-.5.8-.2.5-.1.9.4 1 .4.1.8-.1 1.2-.3l3.3-2.1c4.6-.8 8.2-3.7 8.2-7.6Z"/></svg>
-              <span>ทัก LINE ถามผมก่อน</span>
-            </a>
-          </div>
-          <p class="mt-3 text-sm text-warm-ink/60">ยังไม่อยากจองคิว? ทักไลน์มาถามสั้นๆ ก่อนก็ได้ครับ ว่าที่พักของคุณเอา AI ไปใช้ได้ไหม</p>
-
-          <p class="mt-6 inline-flex flex-wrap items-baseline gap-x-2 border-t border-[#c9c2b2] pt-4 text-sm text-warm-ink/70">
-            <span>จัดทั้งทีมราคาเดียว เริ่ม</span>
-            <span class="font-display text-xl font-bold tabular-nums text-navy">{fmtPrice('inhouse-a')}</span>
-            <span>· on-site ที่โรงแรมคุณ 1 วัน · เหมาะทีม 5–20 คน</span>
-          </p>
-        </div>
-
-        <div class="mx-auto w-full max-w-sm">
-          <figure class="editorial-card overflow-hidden p-0 shadow-[5px_7px_0_rgba(30,27,22,0.09)]">
-            <div class="relative">
-              <img src="/car-dealer-material/pun-ceo-photoshoot-1.jpg" alt="ปัน ณัฐพัชร์ — ผู้สอนคอร์ส Advance AI Agent &amp; Business Automation" width="1100" height="1650" class="aspect-[4/5] w-full object-cover object-top" loading="eager" fetchpriority="high" decoding="async" />
-              <div class="absolute right-3 top-3 rounded-full border border-[#c9c2b2] bg-ivory/95 p-1.5 shadow-[2px_3px_0_rgba(30,27,22,0.12)]">
-                <DarumaMark class="h-14 w-auto" />
-              </div>
-            </div>
-            <figcaption class="p-6">
-              <p class="font-display text-xl font-bold leading-snug text-navy">การต้อนรับด้วยใจ ยังไงคนก็ชนะ AI ครับ</p>
-              <p class="mt-2 text-sm leading-relaxed text-warm-ink/70">AI เอาไว้ทำงานซ้ำๆ ให้คนไปดูแลแขกให้มีความสุข</p>
-            </figcaption>
-          </figure>
-          <p class="mt-4 text-center text-xs font-semibold uppercase tracking-[0.16em] text-warm-ink/55">ปัน ณัฐพัชร์ · ผู้สอน &amp; ที่ปรึกษา</p>
-
-          <figure class="mt-6">
-            <ul class="grid grid-cols-3 gap-2">
-              {classPhotos.map((photo) => (
-                <li class="editorial-card overflow-hidden p-1.5">
-                  <img src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} loading="lazy" decoding="async" class="aspect-square w-full rounded-lg object-cover" />
-                </li>
-              ))}
-            </ul>
-            <figcaption class="mt-3 text-center text-xs font-semibold uppercase tracking-[0.14em] text-warm-ink/55">ภาพจากคลาส in-house จริง · รวมคลาสที่ The Scenery สวนผึ้ง</figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    <section class="border-b border-[#c9c2b2] bg-sand px-6 py-8">
-      <div class="mx-auto max-w-6xl">
-        <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
-          <p class="text-sm font-bold text-navy">องค์กรที่ไว้ใจให้ผมดูแล</p>
-          <p class="text-sm text-warm-ink/65">— รวมรีสอร์ท กลุ่มบริการ ค้าปลีก และธุรกิจครอบครัว</p>
-        </div>
-        <ul class="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-7" aria-label="องค์กรที่ไว้ใจให้ผมดูแล">
-          {clientLogos.map((logo) => (
-            <li class="editorial-card flex h-16 items-center justify-center p-2">
-              <img src={logo.src} alt={logo.alt} width="160" height="160" loading="lazy" decoding="async" class="max-h-full max-w-full object-contain opacity-75" />
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-
-    <section class="px-6 py-16 md:py-24">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ยอดจองรั่วตรงไหนบ้าง</p>
-        <div class="mt-3 grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
-          <h2 class="max-w-xl font-display text-3xl font-bold leading-tight text-navy md:text-5xl">ที่พักของคุณกำลังเจอข้อไหนอยู่ครับ?</h2>
-          <div class="grid border-t border-[#c9c2b2] sm:grid-cols-3">
-            {painPoints.map(([number, question]) => (
-              <article class="border-b border-[#c9c2b2] py-5 sm:border-b-0 sm:border-r sm:px-5 sm:first:pl-0 sm:last:border-r-0">
-                <p class="font-display text-4xl font-bold tabular-nums text-coral">{number}</p>
-                <p class="mt-3 text-lg font-semibold leading-relaxed text-navy">{question}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <div class="editorial-card mt-8 max-w-3xl p-6 md:p-8">
-          <p class="text-lg leading-relaxed text-navy">ถ้าอ่านแล้วรู้สึกว่า “ใช่เลย” — ไม่ได้แปลว่าทีมคุณไม่เก่งครับ โรงแรมกับรีสอร์ทที่ผมเข้าไปช่วยเกือบทุกที่เริ่มจากจุดเดียวกันนี้ ทีมไม่ได้ขี้เกียจ แต่โรงแรมเปิด 24 ชั่วโมง ส่วนคนทำงานเป็นกะ มันคนละเวลากันจริงๆ ครับ</p>
-        </div>
-      </div>
-    </section>
-
-    {/* Signature block: a real hotel day laid on a sky that runs night to night.
-        The gradient carries time — it is the argument, not decoration. */}
-    <section class="relative overflow-hidden bg-[#04283f] px-6 py-16 text-ivory md:py-24">
-      <div class="palm palm-left" set:html={palmSvg} />
-      <div class="palm palm-right" set:html={palmSvg} />
-      <div class="relative mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#7dd3e8]">หนึ่งวันของโรงแรมคุณ</p>
-        <h2 class="mt-3 max-w-3xl font-display text-3xl font-bold leading-tight text-white md:text-5xl">เวลาที่แขกทักมา ไม่ตรงกับเวลาทำการของโรงแรม</h2>
-        <p class="mt-4 max-w-2xl text-lg leading-relaxed text-ivory/80">นี่คือหนึ่งวันที่เกิดขึ้นจริงในที่พักส่วนใหญ่ — ลองดูว่าช่องไหนที่ไม่มีใครยืนอยู่ตรงนั้น</p>
-
-        <div class="sky-rail mt-10" aria-hidden="true"></div>
-
-        <ol class="mt-6 grid gap-4 md:grid-cols-4">
-          {hotelDay.map(({ time, phase, who, event, cost }) => (
-            <li class="day-card rounded-2xl border border-white/15 bg-white/[0.06] p-5">
-              <p class="flex items-baseline gap-2">
-                <span class="font-display text-2xl font-bold tabular-nums tracking-wider text-[#7dd3e8]">{time}</span>
-                <span class="text-xs font-bold uppercase tracking-[0.18em] text-ivory/50">{phase}</span>
-              </p>
-              <p class="mt-3 font-semibold text-white">{who}</p>
-              <p class="mt-1 leading-relaxed text-ivory/80">{event}</p>
-              <p class="mt-3 border-t border-white/15 pt-3 text-sm font-semibold text-coral">{cost}</p>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-
-    <section class="border-b border-[#c9c2b2] bg-ivory px-6 py-16 md:py-24">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">3 งานที่เอา AI ไปใช้แล้วได้ผลจริง</p>
-        <h2 class="mt-3 max-w-3xl font-display text-3xl font-bold leading-tight text-navy md:text-5xl">AI กับงานโรงแรม ทำได้มากกว่าเขียนเมลกับแปลภาษา</h2>
-        <p class="mt-4 max-w-3xl text-lg leading-relaxed text-warm-ink/75">จากที่ผมช่วยลูกค้ากลุ่มโรงแรมกับรีสอร์ทเอา AI Agent ไปใช้จริง มี 3 งานนี้ที่เพิ่มยอดและลดงานได้จริงครับ</p>
-
-        <div class="mt-10 grid gap-4 md:grid-cols-3">
-          {threeJobs.map(({ n, heading, body }) => (
-            <article class="editorial-card flex flex-col p-6">
-              <p class="font-display text-3xl font-bold tabular-nums text-coral">{n}</p>
-              <h3 class="mt-3 font-display text-xl font-bold leading-snug text-navy">{heading}</h3>
-              <p class="mt-3 leading-relaxed text-warm-ink/75">{body}</p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section class="px-6 py-16 md:py-24">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">Product · In-house Workshop</p>
-        <h2 class="mt-3 font-display text-3xl font-bold leading-tight text-navy md:text-4xl">Advance AI Agent &amp; Business Automation</h2>
-        <p class="mt-4 max-w-3xl text-lg leading-relaxed text-warm-ink/75">ทีมของคุณลงมือสร้าง AI Agent ของโรงแรมตัวเองให้เสร็จในวันเดียวครับ เรียนจากโจทย์จริงของที่พักคุณ แล้วกลับไปใช้ต่อได้ทันที</p>
-
-        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {productFacts.map(([label, detail]) => (
-            <article class="editorial-card p-5">
-              <p class="font-display text-lg font-bold text-coral">{label}</p>
-              <p class="mt-2 leading-relaxed text-navy">{detail}</p>
-            </article>
-          ))}
-        </div>
-
-        <div class="mt-14 border-t-2 border-navy pt-10">
-          <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">3 เหตุผลที่โรงแรมเลือก in-house</p>
-          <h3 class="mt-3 max-w-3xl font-display text-3xl font-bold leading-tight text-navy md:text-4xl">ทำไมถึงคุ้มกว่าส่งทีมไปเรียนข้างนอก</h3>
-
-          <article class="editorial-card mt-6 overflow-hidden p-0">
-            <div class="border-b border-[#c9c2b2] bg-sand px-6 py-4 md:px-8">
-              <p class="flex items-center gap-3 font-display text-xl font-bold text-navy md:text-2xl">
-                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-8 shrink-0 text-coral" aria-hidden="true">
-                  <circle cx="8" cy="9" r="3.2" /><circle cx="16" cy="7.5" r="3.2" /><circle cx="24" cy="9" r="3.2" />
-                  <path d="M3 18c0-2.4 2.2-4 5-4s5 1.6 5 4" /><path d="M11 16.5c0-2.4 2.2-4 5-4s5 1.6 5 4" /><path d="M19 18c0-2.4 2.2-4 5-4s5 1.6 5 4" />
-                  <path d="M6 23h20" /><path d="M12 27h8" />
-                </svg>
-                <span>หารต่อหัวแล้วถูกกว่ามาก</span>
-              </p>
-            </div>
-            <div class="grid md:grid-cols-[1fr_auto_1fr]">
-              <div class="p-6 md:p-8">
-                <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">จัด in-house กับผม</p>
-                <p class="mt-2 font-display text-6xl font-bold leading-none tabular-nums text-coral md:text-7xl">฿{perHead.toLocaleString('en-US')}</p>
-                <p class="mt-2 text-lg font-semibold text-navy">ต่อคน</p>
-                <p class="mt-3 leading-relaxed text-warm-ink/70">คิดจากค่าจัดทั้งทีม <span class="font-semibold tabular-nums text-navy">{fmtPrice('inhouse-a')}</span> หารทีม 20 คน — ทีมเล็กกว่านี้ราคาก็เท่าเดิมครับ</p>
-                <div class="mt-4 h-3 w-full rounded-full bg-sand" aria-hidden="true"><div class="h-3 w-[17%] rounded-full bg-coral"></div></div>
-              </div>
-
-              <div class="flex items-center justify-center border-y border-[#c9c2b2] md:border-x md:border-y-0">
-                <p class="px-6 py-3 font-display text-lg font-bold text-warm-ink/45">เทียบกับ</p>
-              </div>
-
-              <div class="p-6 md:p-8">
-                <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ส่งไปเรียนคอร์ส public</p>
-                <p class="mt-2 font-display text-6xl font-bold leading-none tabular-nums text-warm-ink/45 line-through decoration-2 md:text-7xl">฿10,000+</p>
-                <p class="mt-2 text-lg font-semibold text-warm-ink/60">ต่อคน</p>
-                <p class="mt-3 leading-relaxed text-warm-ink/70">ส่งไปแค่ <span class="font-semibold text-navy">3 คน</span> ก็เท่าจัดให้ทั้งทีมแล้ว — และคนที่เหลือยังตอบแขกแบบเดิมอยู่</p>
-                <div class="mt-4 h-3 w-full rounded-full bg-sand" aria-hidden="true"><div class="h-3 w-full rounded-full bg-warm-ink/25"></div></div>
-              </div>
-            </div>
-          </article>
-
-          <div class="mt-4 grid gap-4 md:grid-cols-2">
-            <article class="editorial-card flex gap-5 p-6">
-              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-12 shrink-0 text-coral" aria-hidden="true">
-                <path d="M4 27V13l12-8 12 8v14" /><path d="M4 27h24" /><path d="M10 27v-7h5v7" /><path d="M19 15h5v5h-5z" /><path d="M13 11h6" />
-              </svg>
-              <div>
-                <h4 class="font-display text-xl font-bold leading-snug text-navy">ใช้โจทย์จากที่พักคุณจริงๆ</h4>
-                <p class="mt-2 leading-relaxed text-warm-ink/75">เอาแชตจองจริง เรตจริง โปรฯ จริง และคำถามที่แขกถามบ่อยของคุณมาสร้าง Agent ในห้องเลย ไม่ใช่เคสสมมติจากสไลด์</p>
-              </div>
-            </article>
-
-            <article class="editorial-card flex gap-5 p-6">
-              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-12 shrink-0 text-coral" aria-hidden="true">
-                <path d="M4 7h16v11H11l-5 4v-4H4z" /><path d="M8 11h8" /><path d="M8 14.5h5" /><path d="M23 12h5v9h-2v3.5L22.5 21H18v-3" />
-              </svg>
-              <div>
-                <h4 class="font-display text-xl font-bold leading-snug text-navy">ถามได้เต็มที่ ไม่ต้องเกรงใจใคร</h4>
-                <p class="mt-2 leading-relaxed text-warm-ink/75">เรียนกันเองในทีม เปิดเรตจริง เปิดคอมเพลนต์จริงได้ ไม่ต้องกลัวโรงแรมอื่นในห้องได้ยิน</p>
-              </div>
-            </article>
-          </div>
-        </div>
-
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a href="#hotel-ai-form" data-primary-cta="booking" class="btn min-h-11 border-0 bg-coral px-6 text-base text-white hover:bg-[#c43245]" aria-label="จองคิวจัดอบรม">จองคิวจัดอบรม</a>
-          <a href={lineUrl} data-line-hotel target="_blank" rel="noopener" class="line-button inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#06c755] px-5 py-3 text-center font-semibold text-white transition-colors hover:bg-[#05b34c]" aria-label="ทัก LINE ถามผมก่อน">
-            <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" d="M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 8.9 8.2-.2.2-.4.5-.5.8-.2.5-.1.9.4 1 .4.1.8-.1 1.2-.3l3.3-2.1c4.6-.8 8.2-3.7 8.2-7.6Z"/></svg>
-            <span>ทัก LINE ถามผมก่อน</span>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="border-y border-[#c9c2b2] bg-sand px-6 py-16 md:py-24">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">เรียนอะไรใน 1 วัน 8 ชม.</p>
-        <h2 class="mt-3 max-w-4xl font-display text-3xl font-bold leading-tight text-navy md:text-5xl">เปิดมาก็ลงมือสร้าง AI Agent ของโรงแรมคุณเลยครับ</h2>
-
-        <div class="relative mt-12 max-w-3xl">
-          <div class="absolute bottom-4 left-4 top-3 w-0.5 bg-[#c9c2b2] md:left-5" aria-hidden="true"></div>
-          <ol class="space-y-8">
-            {courseSteps.map(({ n, phaseLabel, heading, body, proof }) => (
-              <li>
-                {phaseLabel && <p class="mb-4 pl-12 text-xs font-bold uppercase tracking-[0.16em] text-cyan md:pl-16">{phaseLabel}</p>}
-                <div class="relative pl-12 md:pl-16">
-                  <span class="absolute left-0 top-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-coral bg-sand font-display text-sm font-bold tabular-nums text-coral md:h-10 md:w-10 md:text-base">{n}</span>
-                  <h3 class="font-display text-xl font-bold leading-snug text-navy md:pt-1">{heading}</h3>
-                  <p class="mt-2 leading-relaxed text-warm-ink/75">{body}</p>
-
-                  {proof && (
-                    <figure class="editorial-card mt-4 flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
-                      <img src={proofBuildIt.src} alt={proofBuildIt.alt} width={proofBuildIt.width} height={proofBuildIt.height} loading="lazy" decoding="async" class="size-28 shrink-0 rounded-xl object-cover" />
-                      <figcaption>
-                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-cyan">หลักฐานของขั้นนี้</p>
-                        <p class="mt-1.5 font-semibold leading-relaxed text-navy">ภาพจริงจากคลาสที่ <span class="text-coral">The Scenery · สวนผึ้ง</span> — ทีมนั่งกันในร้านของตัวเอง แล้วต่อระบบขึ้นมาใช้จริงในวันนั้นเลยครับ</p>
-                      </figcaption>
-                    </figure>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-
-        <div class="mt-10 flex flex-col gap-5 border-t border-[#c9c2b2] pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <p class="font-display text-2xl font-bold leading-snug text-navy">จับมือทำทุกคนจนได้ Agent ของตัวเองก่อนกลับบ้านครับ</p>
-          <a href="#hotel-ai-form" class="btn min-h-11 shrink-0 border-0 bg-coral px-6 text-base text-white hover:bg-[#c43245]" aria-label="จองคิวจัดอบรม">จองคิวจัดอบรม</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="relative overflow-hidden border-y border-[#c9c2b2] bg-navy px-6 py-16 text-ivory md:py-24">
-      <div class="palm palm-right" set:html={palmSvg} />
-      <div class="relative mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#7dd3e8]">หลักคิดหลักของคอร์ส · by @pun_nattapatch</p>
-        <h2 class="mt-4 font-display font-bold leading-none">
-          <span class="block text-5xl tracking-[0.12em] text-white md:text-8xl">D.A.R.U.M.A</span>
-          <span class="mt-2 block text-2xl font-bold tracking-[0.35em] text-coral md:text-4xl">FRAMEWORK</span>
-        </h2>
-        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ivory/85">เลิกทำงานแบบพึ่งความจำคน ด้วย Framework ที่จับต้องได้ และ AI Agent ที่ลดงานกับเพิ่มยอดจองได้จริง</p>
-        <div class="mt-10 flex max-w-3xl flex-col gap-3">
-          {darumaPillars.map(({ letter, name, desc }) => (
-            <article class="flex items-center gap-5 rounded-2xl border border-white/15 bg-white/5 p-5 md:gap-6 md:p-6">
-              <span class="w-12 shrink-0 text-center font-display text-5xl font-bold leading-none text-coral md:w-16 md:text-6xl">{letter}</span>
-              <div>
-                <p class="font-display text-xl font-bold text-white md:text-2xl">= {name}</p>
-                <p class="mt-1 leading-relaxed text-ivory/80">{desc}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    {/* Deliberately asymmetric: the hotel-specific angle is the one owners doubt
-        most, so it gets the full-width row and the photo. */}
-    <section class="px-6 py-16 md:py-24">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ทำไมต้องเป็นผม</p>
-        <h2 class="mt-3 max-w-3xl font-display text-3xl font-bold leading-tight text-navy md:text-5xl">ผมมองเรื่องนี้จาก 4 มุมที่คนสอน AI ส่วนใหญ่ไม่มีครบ</h2>
-
-        <article class="editorial-card mt-8 grid gap-6 p-6 md:grid-cols-[minmax(0,26rem)_1fr] md:items-center md:gap-8 md:p-8">
-          <figure>
-            <img src="/testimonial/2026-07/scenery/scenery-team.jpg" alt="ปัน ณัฐพัชร์ ถ่ายรูปกับทีมงาน The Scenery สวนผึ้ง หลังคลาส in-house ในร้านของรีสอร์ท" width="1100" height="825" loading="lazy" decoding="async" class="aspect-[4/3] w-full rounded-xl object-cover" />
-            <figcaption class="mt-2 text-xs font-semibold uppercase tracking-[0.14em] text-warm-ink/55">The Scenery · สวนผึ้ง</figcaption>
-          </figure>
-          <div>
-            <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">มุมที่ 1 · คนที่ลงมือกับรีสอร์ทจริง</p>
-            <h3 class="mt-2 font-display text-2xl font-bold leading-snug text-navy md:text-3xl">ผมดูแลรีสอร์ทมาหลายราย — รวมถึง <span class="text-coral">The Scenery สวนผึ้ง</span></h3>
-            <p class="mt-3 leading-relaxed text-warm-ink/75">3 งานที่อยู่ในคอร์สนี้ ไม่ได้มาจากบทความหรือเคสเมืองนอกครับ — มาจากของที่ผมลงไปทำกับทีมหน้างานจริง ภาพนี้คือวันที่ผมไปนั่งจับมือทีม The Scenery ทำกันทั้งวันในร้านของเขาเอง ผมเลยรู้ว่าอันไหนได้ผล และอันไหนเสียเวลาเปล่า</p>
-            <p class="mt-4 border-t border-[#c9c2b2] pt-3 text-sm text-warm-ink/60">ผมไม่ได้โตมาในสายโรงแรมครับ — งานผมคือระบบ ส่วนเรื่องบริการทีมคุณเก่งกว่าผมอยู่แล้ว</p>
-          </div>
-        </article>
-
-        <div class="mt-4 grid gap-4 md:grid-cols-3">
-          {angles.map(({ kicker, heading, body, photo }) => (
-            <article class="editorial-card overflow-hidden p-0">
-              <img src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} loading="lazy" decoding="async" class="aspect-[4/3] w-full object-cover" />
-              <div class="p-6">
-                <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">{kicker}</p>
-                <h3 class="mt-2 font-display text-2xl font-bold leading-snug text-navy">{heading}</h3>
-                <p class="mt-3 leading-relaxed text-warm-ink/75">{body}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section class="border-y border-[#c9c2b2] bg-sand px-6 py-16 md:py-24">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">เสียงจากคนลงมือทำ</p>
-        <h2 class="mt-2 font-display text-3xl font-bold text-navy md:text-4xl">เสียงจริงจากทีมที่ผมไปอบรมมาแล้ว</h2>
-        <div class="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4" aria-label="แกลเลอรีเสียงจากลูกค้า">
-          {testimonials.map((testimonial) => (
-            <figure class="editorial-card overflow-hidden p-2">
-              <img src={testimonial.src} alt={testimonial.alt} width={testimonial.width} height={testimonial.height} loading="lazy" decoding="async" class="aspect-square w-full rounded-lg object-cover" />
-            </figure>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    {/* Everything the team keeps is listed before the price. */}
-    <section class="px-6 py-16 md:py-24">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">จบวันแล้วทีมคุณถืออะไรกลับ</p>
-        <h2 class="mt-3 max-w-3xl font-display text-3xl font-bold leading-tight text-navy md:text-5xl">ทีมได้ความรู้ ได้ลงมือทำ วันพรุ่งนี้ทำต่อได้เลย</h2>
-
-        <div class="mt-8 grid gap-8 lg:grid-cols-[1.15fr_.85fr] lg:items-start">
-          <ul class="divide-y divide-[#c9c2b2] border-y border-[#c9c2b2]">
-            {takeHome.map(([label, detail], index) => (
-              <li class="flex gap-4 py-4">
-                <span class="font-display text-xl font-bold tabular-nums text-coral">0{index + 1}</span>
-                <p class="leading-relaxed text-navy"><span class="font-bold">{label}</span> {detail}</p>
-              </li>
-            ))}
-          </ul>
-
-          <aside class="editorial-card p-6 md:p-8" aria-label={`ค่าจัดอบรม Advance AI Agent and Business Automation — จัดทั้งทีมราคาเดียว ${fmtPrice('inhouse-a')} เฉลี่ย ฿${perHead.toLocaleString('en-US')} ต่อคน สำหรับทีม 20 คน`}>
-            <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ค่าจัดอบรม</p>
-            <p class="mt-2 font-display text-5xl font-bold tabular-nums text-coral">{fmtPrice('inhouse-a')}</p>
-            <p class="mt-1 text-sm text-warm-ink/70">จัดทั้งทีม ราคาเดียว · 1 วัน on-site</p>
-            <div class="mt-5 border-t border-[#c9c2b2] pt-5">
-              <p class="text-sm font-semibold text-warm-ink/70">เฉลี่ยต่อคน (ทีม 20 คน)</p>
-              <p class="font-display text-3xl font-bold tabular-nums text-navy">฿{perHead.toLocaleString('en-US')}</p>
-              <p class="mt-2 text-sm leading-relaxed text-warm-ink/70">ส่งทีมไปเรียนคอร์ส public ตกหลักหมื่นต่อคน — ส่งไป 3 คนก็เท่าจัดทั้งทีมแล้วครับ</p>
-            </div>
-            <a href="#hotel-ai-form" data-primary-cta="booking" class="btn mt-6 min-h-11 w-full border-0 bg-coral text-base text-white hover:bg-[#c43245]" aria-label="จองคิวคุยฟรี 15–20 นาที">จองคิวคุยฟรี 15–20 นาที</a>
-            <p class="mt-3 text-center text-sm text-warm-ink/60">คุยก่อน ไม่มีข้อผูกมัด</p>
-          </aside>
-        </div>
-      </div>
-    </section>
-
-    {/* The one place on the page that isn't selling. */}
-    <section class="relative overflow-hidden border-y border-[#c9c2b2] bg-[#04283f] px-6 py-16 text-ivory md:py-24">
-      <div class="palm palm-left" set:html={palmSvg} />
-      <div class="relative mx-auto max-w-5xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#7dd3e8]">ข้อความจากผม</p>
-        <div class="mt-6 grid items-center gap-6 sm:grid-cols-[minmax(0,10rem)_1fr] sm:gap-7 md:grid-cols-[minmax(0,13rem)_1fr] md:gap-10 lg:grid-cols-[minmax(0,17rem)_1fr] lg:gap-12">
-          <figure class="mx-auto w-full max-w-[13rem] sm:mx-0 sm:max-w-none">
-            <img src="/car-dealer-material/pun-ceo-portrait-message.jpg" alt="ปัน ณัฐพัชร์ มองตรงมาที่ผู้อ่าน" width="800" height="1200" loading="lazy" decoding="async" class="aspect-[3/4] w-full rounded-2xl border border-white/15 object-cover object-top" />
-            <figcaption class="mt-3 text-center text-xs font-semibold uppercase tracking-[0.16em] text-ivory/60 sm:text-left">ปัน ณัฐพัชร์ · ผู้สอน</figcaption>
-          </figure>
-
-          <blockquote class="font-display text-xl font-semibold leading-relaxed sm:text-[1.35rem] md:text-2xl lg:text-3xl">
-            <p>การต้อนรับแขกด้วยใจ ยังไงคนก็ชนะ AI ครับ</p>
-            <p class="mt-4 md:mt-5">ผมไม่ได้จะบอกว่าเอา AI มาใช้แล้วห้องจะเต็มเอง โรงแรมบางที่ที่ผมไปคุย ผมบอกตรงๆ ว่า<span class="text-coral">ยังไม่ต้องรีบ</span> — กลับไปทำให้เรตกับโปรฯ อยู่ที่เดียวกันก่อน เพราะถ้าข้อมูลยังกระจายอยู่ในหัวคนแต่ละกะ เอา AI มาใช้ตอนนี้ก็ได้แค่ของเล่น</p>
-            <p class="mt-4 md:mt-5"><span class="text-coral">AI เอาไว้ทำงานซ้ำๆ</span> ให้คนของคุณมีเวลาไปดูแลแขกให้มีความสุขครับ</p>
-          </blockquote>
-        </div>
-      </div>
-    </section>
+  <div id="hotel-ai-page" class="lp-v2">
+    <AdsContentV2 {...content} />
 
     <section id="hotel-ai-form" class="scroll-mt-20 px-6 py-16 md:py-24">
       <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-start">

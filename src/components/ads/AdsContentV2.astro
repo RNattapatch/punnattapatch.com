@@ -1,0 +1,457 @@
+---
+/**
+ * Shared content shell for the three ads landing pages (daruma / dealer / hotel).
+ *
+ * Built 2026-08-02 to replace the per-page markup that had drifted apart. The
+ * order is proof-first: an ad click already carries intent, so the first job is
+ * "is this credible and is it for me", not "do you have a problem".
+ *
+ * Each page still owns its own form, tracking script and CRM contract — this
+ * component renders everything above the form only.
+ */
+interface Photo { src: string; alt: string; width?: number; height?: number }
+interface AgendaRow { time: string; until?: string; heading: string; body: string; output?: string; final?: boolean }
+
+interface Props {
+  pageId: string;
+  formAnchor: string;
+  lineUrl: string;
+  capacity: string;
+  capacityLeft: string;
+  eyebrow: string;
+  headlineLead: string;
+  /** Phrase that must never break mid-way, e.g. "คืนเวลาเซลล์". */
+  headlineNowrap?: string;
+  headlineAccent: string;
+  productName: string;
+  productTagline: string;
+  lede: string;
+  badges: string[];
+  ctaLabel: string;
+  ctaNote: string;
+  heroPhotos: { main: Photo; left: Photo; right: Photo };
+  heroCaption: string;
+  clientLogos: Photo[];
+  proofHeadline: string;
+  proofBody: string;
+  perHeadNote: string;
+  calloutLead: string;
+  calloutAccent: string;
+  calloutBody: string;
+  pains: { icon: string; text: string }[];
+  painsClose: string;
+  whyTitle: string;
+  whyCols: { heading: string; body: string }[];
+  principleQuote: string;
+  principleBody: string;
+  agendaTitle: string;
+  agendaLead: string;
+  agenda: AgendaRow[];
+  nudgeAgenda: string;
+  menuTitle: string;
+  menuLead: string;
+  menu: { heading: string; body: string }[];
+  takeHomeTitle: string;
+  takeHomeFeature: { heading: string; body: string };
+  takeHome: { heading: string; body: string }[];
+  takeHomeNote: string;
+  fitTitle: string;
+  fitYes: string[];
+  fitNo: string;
+  nudgeFit: string;
+  classPhotos: Photo[];
+  reviews: Photo[];
+  instructorPhoto: Photo;
+  instructorParas: string[];
+  priceLabel: string;
+  priceAmount: string;
+  priceNote: string;
+  priceIncludes: string[];
+  priceTerms: string[];
+  priceReassure: string;
+  faqs: { q: string; a: string }[];
+  nudgeFaq: string;
+}
+
+const {
+  pageId, formAnchor, lineUrl, capacity, capacityLeft,
+  eyebrow, headlineLead, headlineNowrap, headlineAccent, productName, productTagline, lede, badges,
+  ctaLabel, ctaNote, heroPhotos, heroCaption, clientLogos,
+  proofHeadline, proofBody, perHeadNote,
+  calloutLead, calloutAccent, calloutBody, pains, painsClose,
+  whyTitle, whyCols, principleQuote, principleBody,
+  agendaTitle, agendaLead, agenda, nudgeAgenda,
+  menuTitle, menuLead, menu,
+  takeHomeTitle, takeHomeFeature, takeHome, takeHomeNote,
+  fitTitle, fitYes, fitNo, nudgeFit,
+  classPhotos, reviews, instructorPhoto, instructorParas,
+  priceLabel, priceAmount, priceNote, priceIncludes, priceTerms, priceReassure,
+  faqs, nudgeFaq,
+} = Astro.props as Props;
+
+const lineIcon = 'M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 8.9 8.2-.2.2-.4.5-.5.8-.2.5-.1.9.4 1 .4.1.8-.1 1.2-.3l3.3-2.1c4.6-.8 8.2-3.7 8.2-7.6Z';
+---
+
+{/* Capacity bar — ambient scarcity that stays true: Pun teaches every cohort himself. */}
+<div class="sticky top-0 z-30 bg-navy-deep text-ivory/90">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-2.5 text-sm">
+    <p class="truncate">
+      <span class="font-bold text-ivory">{capacity}</span>
+      <span class="text-ivory/80"> · {capacityLeft}</span>
+    </p>
+    <a href={formAnchor} class="btn btn-sm shrink-0 border-0 bg-coral px-4 text-white hover:bg-[#c43245]">{ctaLabel}</a>
+  </div>
+</div>
+
+{/* Hero. Benefit first, product name second — nobody arriving from an ad knows the name yet. */}
+<header class="border-b border-[#c9c2b2] bg-ivory px-5 py-12 md:py-16">
+  <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2">
+    <div>
+      <p class="text-sm font-bold uppercase tracking-[0.08em] text-coral">{eyebrow}</p>
+
+      <h1 class="mt-4 font-display text-[2rem] font-bold leading-[1.12] text-navy sm:text-5xl lg:text-[3.25rem]">
+        <span class="block">{headlineLead}{headlineNowrap && <> <span class="whitespace-nowrap">{headlineNowrap}</span></>}</span>
+        <span class="relative inline-block px-1 text-coral">{headlineAccent}
+          <svg class="pointer-events-none absolute -inset-x-2 -inset-y-1 h-[calc(100%+0.5rem)] w-[calc(100%+1rem)]" viewBox="0 0 200 70" preserveAspectRatio="none" fill="none" aria-hidden="true">
+            <path d="M28 12 C 88 -4, 196 4, 191 34 C 187 62, 62 72, 22 56 C -8 44, 20 18, 60 12" stroke="#072b4e" stroke-width="3.5" stroke-linecap="round" opacity="0.7" />
+          </svg>
+        </span>
+      </h1>
+
+      <p class="mt-6 border-l-4 border-coral pl-4">
+        <span class="font-display text-2xl font-bold text-navy sm:text-3xl">{productName}</span>
+        <span class="mt-1 block text-warm-ink/70">{productTagline}</span>
+      </p>
+
+      <p class="mt-5 max-w-xl text-lg leading-relaxed text-warm-ink/75">{lede}</p>
+
+      <ul class="mt-6 flex flex-wrap gap-2">
+        {badges.map((badge) => (
+          <li class="editorial-card px-3 py-2 text-sm font-semibold text-navy">{badge}</li>
+        ))}
+      </ul>
+
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <a href={formAnchor} data-primary-cta="booking" class="btn min-h-11 border-0 bg-coral px-7 text-base text-white hover:bg-[#c43245]">{ctaLabel}</a>
+        <a href={lineUrl} data-line-cta target="_blank" rel="noopener" class="line-button inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#06c755] px-5 py-3 font-semibold text-white transition-colors hover:bg-[#05b34c]">
+          <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" d={lineIcon} /></svg>
+          <span>ไม่แน่ใจ ไลน์คุยกันก่อนได้ครับ</span>
+        </a>
+      </div>
+      <p class="mt-3 text-sm text-warm-ink/60">{ctaNote}</p>
+    </div>
+
+    <div>
+      <figure class="relative">
+        <img src={heroPhotos.main.src} alt={heroPhotos.main.alt} width={heroPhotos.main.width} height={heroPhotos.main.height} class="aspect-[4/3] w-full rounded-xl border-4 border-white object-cover shadow-[5px_7px_0_rgba(30,27,22,0.09)]" loading="eager" fetchpriority="high" decoding="async" />
+        <figcaption class="absolute bottom-3 right-3 rounded-full bg-navy/90 px-3 py-1.5 text-xs font-bold text-ivory">{heroCaption}</figcaption>
+      </figure>
+      <div class="mt-3 grid grid-cols-2 gap-3">
+        <img src={heroPhotos.left.src} alt={heroPhotos.left.alt} width={heroPhotos.left.width} height={heroPhotos.left.height} class="aspect-[4/3] w-full rounded-lg border-4 border-white object-cover" loading="lazy" decoding="async" />
+        <img src={heroPhotos.right.src} alt={heroPhotos.right.alt} width={heroPhotos.right.width} height={heroPhotos.right.height} class="aspect-[4/3] w-full rounded-lg border-4 border-white object-cover" loading="lazy" decoding="async" />
+      </div>
+    </div>
+  </div>
+</header>
+
+{/* Logos before any argument: the people who never scroll far still need proof. */}
+<section class="border-b border-[#c9c2b2] bg-surface px-5 py-8">
+  <div class="mx-auto max-w-6xl">
+    <p class="text-center text-sm text-warm-ink/65">องค์กรที่เคยอบรม / ใช้บริการที่ปรึกษากับผม</p>
+    <ul class="mt-5 grid grid-cols-4 items-center gap-x-5 gap-y-4 md:grid-cols-7 lg:grid-cols-9">
+      {clientLogos.map((logo) => (
+        <li class="flex h-12 items-center justify-center">
+          <img src={logo.src} alt={logo.alt} width="160" height="160" loading="lazy" decoding="async" class="max-h-full max-w-full object-contain opacity-60 grayscale transition hover:opacity-100 hover:grayscale-0" />
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<section class="border-b border-[#c9c2b2] bg-surface px-5 py-8">
+  <div class="mx-auto grid max-w-6xl items-center gap-6 sm:grid-cols-3">
+    <div>
+      <p class="font-display text-2xl font-bold leading-tight text-navy">{proofHeadline}</p>
+      <p class="mt-1 text-sm text-warm-ink/65">{proofBody}</p>
+    </div>
+    <div>
+      <p class="font-display text-4xl font-bold tabular-nums text-navy">{priceAmount}</p>
+      <p class="mt-1 text-sm text-warm-ink/65">{perHeadNote}</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex -space-x-3">
+        {reviews.slice(0, 3).map((review) => (
+          <img src={review.src} alt="" width="96" height="96" loading="lazy" decoding="async" class="size-12 rounded-full border-2 border-white object-cover" />
+        ))}
+      </div>
+      <a href="#lp-reviews" class="text-sm font-semibold text-cyan underline">อ่านรีวิวจากผู้เรียนจริง</a>
+    </div>
+  </div>
+</section>
+
+{/* Identity callout: name the wound before naming the product. */}
+<section class="px-5 py-16 md:py-20">
+  <div class="mx-auto max-w-3xl text-center">
+    <h2 class="font-display text-3xl font-bold leading-tight text-navy md:text-4xl">
+      {calloutLead}<br class="hidden sm:block" />
+      <span class="text-coral">{calloutAccent}</span>
+    </h2>
+    <p class="mt-5 text-lg leading-relaxed text-warm-ink/75">{calloutBody}</p>
+  </div>
+
+  <ul class="mx-auto mt-10 max-w-3xl">
+    {pains.map((pain, i) => (
+      <li class:list={['flex gap-4 border-t border-[#c9c2b2] py-5', i === pains.length - 1 && 'border-b']}>
+        <span class="mt-1 size-2 shrink-0 rounded-full bg-coral" aria-hidden="true"></span>
+        <p class="leading-relaxed text-warm-ink/85">{pain.text}</p>
+      </li>
+    ))}
+  </ul>
+  <p class="mx-auto mt-6 max-w-3xl leading-relaxed text-warm-ink/70">{painsClose}</p>
+</section>
+
+{/* Why in-house — kills "we could just send one person to a public course". */}
+<section class="border-y border-[#c9c2b2] bg-sand px-5 py-16 md:py-20">
+  <div class="mx-auto max-w-6xl">
+    <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ทำไมต้องจัดในองค์กร</p>
+    <h2 class="mt-3 max-w-2xl font-display text-3xl font-bold leading-tight text-navy md:text-4xl">{whyTitle}</h2>
+
+    <div class="mt-10 grid gap-8 md:grid-cols-3">
+      {whyCols.map((col, i) => (
+        <div class:list={[i < whyCols.length - 1 && 'md:border-r md:border-[#c9c2b2] md:pr-8']}>
+          <h3 class="font-display text-xl font-bold text-navy">{col.heading}</h3>
+          <p class="mt-2 leading-relaxed text-warm-ink/75">{col.body}</p>
+        </div>
+      ))}
+    </div>
+
+    <blockquote class="editorial-card mt-12 max-w-2xl border-l-4 border-coral p-6">
+      <p class="font-display text-2xl font-bold leading-snug text-navy">{principleQuote}</p>
+      <p class="mt-3 leading-relaxed text-warm-ink/75">{principleBody}</p>
+    </blockquote>
+  </div>
+</section>
+
+{/* The day itself. Daruma circles fill as the day progresses; the last one gets its eyes. */}
+<section class="px-5 py-16 md:py-20">
+  <div class="mx-auto max-w-6xl">
+    <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">1 วันเต็ม เรียนอะไรบ้าง</p>
+    <h2 class="mt-3 max-w-2xl font-display text-3xl font-bold leading-tight text-navy md:text-4xl">{agendaTitle}</h2>
+    <p class="mt-3 max-w-2xl leading-relaxed text-warm-ink/70">{agendaLead}</p>
+
+    <ol class="mt-12 max-w-3xl">
+      {agenda.map((row, i) => (
+        <li class:list={['grid grid-cols-[auto_auto_1fr] items-start gap-5 border-t border-[#c9c2b2] py-7', i === agenda.length - 1 && 'border-b']}>
+          {row.final ? (
+            <svg class="mt-1 size-10" viewBox="0 0 40 40" aria-hidden="true">
+              <circle cx="20" cy="20" r="16" fill="#dd4155" />
+              <circle cx="14" cy="17" r="2.6" fill="#fff" /><circle cx="26" cy="17" r="2.6" fill="#fff" />
+              <circle cx="14" cy="17" r="1.2" fill="#00162f" /><circle cx="26" cy="17" r="1.2" fill="#00162f" />
+            </svg>
+          ) : (
+            <svg class="mt-1 size-10" viewBox="0 0 40 40" aria-hidden="true">
+              <circle cx="20" cy="20" r="16" fill="none" stroke="#dd4155" stroke-width="3" opacity="0.35" />
+              {i > 0 && <path d={['', 'M20 4 A16 16 0 0 1 36 20', 'M20 4 A16 16 0 1 1 4 20', 'M20 4 A16 16 0 1 1 6 28'][Math.min(i, 3)]} fill="none" stroke="#dd4155" stroke-width="3" />}
+            </svg>
+          )}
+          <span class="w-24 font-display text-xl font-bold tabular-nums text-navy">
+            {row.time}
+            {row.until && <span class="block text-xs font-normal text-warm-ink/60">{row.until}</span>}
+          </span>
+          <div>
+            <h3 class:list={['font-display text-xl font-bold', row.final ? 'text-coral' : 'text-navy']}>{row.heading}</h3>
+            <p class="mt-1 leading-relaxed text-warm-ink/75">{row.body}</p>
+            {row.output && <p class="mt-2 text-sm font-bold uppercase tracking-[0.08em] text-navy">Output → {row.output}</p>}
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <div class="line-nudge mt-10 max-w-3xl">
+      <p class="leading-relaxed text-warm-ink/85">{nudgeAgenda}</p>
+      <a href={lineUrl} data-line-cta target="_blank" rel="noopener" class="line-button inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#06c755] px-5 py-3 font-semibold text-white transition-colors hover:bg-[#05b34c]">
+        <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" d={lineIcon} /></svg>
+        <span>ไม่แน่ใจ ไลน์คุยกันก่อนได้ครับ</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+{/* Menu of specialist agents — lets every person in the room see their own job. */}
+<section class="border-y border-[#c9c2b2] bg-sand px-5 py-16 md:py-20">
+  <div class="mx-auto max-w-6xl">
+    <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">เลือกได้ตามหน้างาน</p>
+    <h2 class="mt-3 max-w-2xl font-display text-3xl font-bold leading-tight text-navy md:text-4xl">{menuTitle}</h2>
+    <p class="mt-3 max-w-2xl leading-relaxed text-warm-ink/70">{menuLead}</p>
+    <div class="mt-8 grid max-w-4xl gap-x-10 md:grid-cols-2">
+      {menu.map((item, i) => (
+        <div class:list={['border-t border-[#c9c2b2] py-4', i >= menu.length - (menu.length % 2 === 0 ? 2 : 1) && 'border-b']}>
+          <h3 class="font-display text-lg font-bold text-navy">{item.heading}</h3>
+          <p class="mt-1 text-sm leading-relaxed text-warm-ink/70">{item.body}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+{/* What stays behind after Pun leaves. */}
+<section class="bg-navy px-5 py-16 text-ivory md:py-20">
+  <div class="mx-auto max-w-6xl">
+    <p class="text-xs font-bold uppercase tracking-[0.18em] text-coral">สิ่งที่อยู่กับทีมคุณ หลังผมกลับ</p>
+    <h2 class="mt-3 font-display text-3xl font-bold leading-tight md:text-4xl">{takeHomeTitle}</h2>
+
+    <div class="mt-10 grid gap-x-8 gap-y-10 md:grid-cols-3">
+      <div class="border-l-4 border-coral pl-5 md:col-span-2">
+        <h3 class="font-display text-2xl font-bold">{takeHomeFeature.heading}</h3>
+        <p class="mt-2 max-w-lg leading-relaxed text-ivory/70">{takeHomeFeature.body}</p>
+      </div>
+      {takeHome.map((item) => (
+        <div class="border-l border-ivory/20 pl-5">
+          <h3 class="font-display text-lg font-bold">{item.heading}</h3>
+          <p class="mt-1.5 text-sm leading-relaxed text-ivory/70">{item.body}</p>
+        </div>
+      ))}
+    </div>
+    <p class="mt-10 max-w-2xl text-sm leading-relaxed text-ivory/60">{takeHomeNote}</p>
+  </div>
+</section>
+
+{/* Qualification, stated plainly. Saying who it is NOT for is what makes the rest believable. */}
+<section class="px-5 py-16 md:py-20">
+  <div class="mx-auto max-w-6xl">
+    <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">เหมาะกับใคร</p>
+    <h2 class="mt-3 max-w-2xl font-display text-3xl font-bold leading-tight text-navy md:text-4xl">{fitTitle}</h2>
+
+    <div class="mt-10 max-w-3xl">
+      {fitYes.map((item) => (
+        <div class="grid gap-2 border-t border-[#c9c2b2] py-5 sm:grid-cols-[8rem_1fr] sm:gap-6">
+          <p class="font-display font-bold text-coral">เหมาะมาก</p>
+          <p class="leading-relaxed text-navy">{item}</p>
+        </div>
+      ))}
+      <div class="editorial-card mt-2 grid gap-2 p-5 sm:grid-cols-[8rem_1fr] sm:gap-6">
+        <p class="font-display font-bold text-warm-ink/60">ยังไม่เหมาะ</p>
+        <p class="leading-relaxed text-warm-ink/70">{fitNo}</p>
+      </div>
+    </div>
+
+    <div class="line-nudge mt-8 max-w-3xl">
+      <p class="leading-relaxed text-warm-ink/85">{nudgeFit}</p>
+      <a href={lineUrl} data-line-cta target="_blank" rel="noopener" class="line-button inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#06c755] px-5 py-3 font-semibold text-white transition-colors hover:bg-[#05b34c]">
+        <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" d={lineIcon} /></svg>
+        <span>ไม่แน่ใจ ไลน์คุยกันก่อนได้ครับ</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="border-y border-[#c9c2b2] bg-surface px-5 py-16 md:py-20">
+  <div class="mx-auto max-w-6xl">
+    <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">บรรยากาศหน้างานจริง</p>
+    <h2 class="mt-3 font-display text-3xl font-bold leading-tight text-navy md:text-4xl">ห้องเรียนของเราหน้าตาแบบนี้ครับ</h2>
+    <div class="mt-8 grid grid-cols-2 gap-3 md:grid-cols-3">
+      {classPhotos.map((photo) => (
+        <img src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} loading="lazy" decoding="async" class="aspect-[4/3] w-full rounded-lg object-cover" />
+      ))}
+    </div>
+  </div>
+</section>
+
+<section id="lp-reviews" class="scroll-mt-20 px-5 py-16 md:py-20">
+  <div class="mx-auto max-w-6xl">
+    <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">เสียงจากคนที่จ่ายเงินจริง</p>
+    <h2 class="mt-3 font-display text-3xl font-bold leading-tight text-navy md:text-4xl">รีวิวตัวจริง แคปมาจากแชททั้งดุ้น</h2>
+    <p class="mt-3 max-w-2xl leading-relaxed text-warm-ink/70">ผมไม่ตัดต่อคำพูดครับ ขยายอ่านได้ทุกใบ</p>
+    <div class="mt-8 grid grid-cols-2 gap-3 md:grid-cols-3">
+      {reviews.map((review) => (
+        <img src={review.src} alt={review.alt} width={review.width} height={review.height} loading="lazy" decoding="async" class="w-full rounded-lg border border-[#c9c2b2]" />
+      ))}
+    </div>
+  </div>
+</section>
+
+{/* Bio arrives late on purpose: by now the reader has a reason to care who is teaching. */}
+<section class="border-y border-[#c9c2b2] bg-sand px-5 py-16 md:py-20">
+  <div class="mx-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[.35fr_.65fr]">
+    <img src={instructorPhoto.src} alt={instructorPhoto.alt} width={instructorPhoto.width} height={instructorPhoto.height} loading="lazy" decoding="async" class="aspect-[4/5] w-full max-w-xs rounded-xl object-cover object-top shadow-[5px_7px_0_rgba(30,27,22,0.09)]" />
+    <div>
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ใครสอน</p>
+      <h2 class="mt-3 font-display text-3xl font-bold text-navy md:text-4xl">ปัน ณัฐพัชร์</h2>
+      <p class="mt-1 text-warm-ink/65">ที่ปรึกษาการขาย B2B · @pun_nattapatch</p>
+      <div class="mt-6 max-w-2xl space-y-4">
+        {instructorParas.map((para, i) => (
+          <p class:list={['leading-relaxed', i === instructorParas.length - 1 ? 'text-warm-ink/65' : 'text-warm-ink/85']}>{para}</p>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-navy-deep px-5 py-16 text-ivory md:py-20">
+  <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2">
+    <div>
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-coral">การลงทุน</p>
+      <h2 class="mt-3 font-display text-3xl font-bold leading-tight md:text-4xl">ราคาเดียว ทั้งทีม ไม่คิดรายหัว</h2>
+      <ul class="mt-6 space-y-3 text-ivory/85">
+        {priceIncludes.map((item) => (
+          <li class="flex gap-3"><span class="mt-2 size-1.5 shrink-0 rounded-full bg-coral" aria-hidden="true"></span><span class="leading-relaxed">{item}</span></li>
+        ))}
+      </ul>
+      {priceTerms.map((term) => (
+        <p class="mt-5 max-w-md text-sm leading-relaxed text-ivory/60">{term}</p>
+      ))}
+    </div>
+
+    <div class="editorial-card p-7 md:p-9">
+      <p class="text-warm-ink/65">{priceLabel}</p>
+      <p class="mt-2 font-display text-5xl font-bold tabular-nums text-navy md:text-6xl">{priceAmount}</p>
+      <p class="mt-1 text-warm-ink/65">{priceNote}</p>
+      <div class="mt-6 space-y-3">
+        <a href={formAnchor} data-primary-cta="booking" class="btn min-h-11 w-full border-0 bg-coral text-base text-white hover:bg-[#c43245]">{ctaLabel}</a>
+        <a href={lineUrl} data-line-cta target="_blank" rel="noopener" class="line-button flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#06c755] px-4 py-3 font-semibold text-white transition-colors hover:bg-[#05b34c]">
+          <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" d={lineIcon} /></svg>
+          <span>ไม่แน่ใจ ไลน์คุยกันก่อนได้ครับ</span>
+        </a>
+      </div>
+      <p class="mt-4 text-center text-sm leading-relaxed text-warm-ink/65">{priceReassure}</p>
+    </div>
+  </div>
+</section>
+
+<section class="px-5 py-16 md:py-20">
+  <div class="mx-auto max-w-3xl">
+    <h2 class="font-display text-3xl font-bold leading-tight text-navy md:text-4xl">คำถามที่โดนถามบ่อย</h2>
+    <div class="mt-8 space-y-3">
+      {faqs.map((faq) => (
+        <details class="editorial-card group p-5" name={`${pageId}-faq`}>
+          <summary class="flex cursor-pointer items-start justify-between gap-4 font-display text-lg font-bold text-navy marker:content-none">
+            <span>{faq.q}</span>
+            <span class="mt-1 shrink-0 text-coral transition-transform group-open:rotate-45" aria-hidden="true">＋</span>
+          </summary>
+          <p class="mt-3 leading-relaxed text-warm-ink/75">{faq.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <div class="line-nudge mt-8">
+      <p class="leading-relaxed text-warm-ink/85">{nudgeFaq}</p>
+      <a href={lineUrl} data-line-cta target="_blank" rel="noopener" class="line-button inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#06c755] px-5 py-3 font-semibold text-white transition-colors hover:bg-[#05b34c]">
+        <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" d={lineIcon} /></svg>
+        <span>ไม่แน่ใจ ไลน์คุยกันก่อนได้ครับ</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  /* These pages carry the ad's visual promise, so headings use the grotesque the
+     campaign creative uses. The rest of the site keeps its Trirong serif. */
+  .lp-v2 .font-display { font-family: "Bai Jamjuree", "Sarabun", sans-serif; }
+  .line-nudge {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 1rem; padding: 1rem 1.25rem; border-radius: 1rem;
+    border: 1px solid color-mix(in srgb, #06c755 35%, transparent);
+    background: color-mix(in srgb, #06c755 7%, transparent);
+  }
+  details > summary::-webkit-details-marker { display: none; }
+</style>
