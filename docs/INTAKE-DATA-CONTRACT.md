@@ -58,6 +58,7 @@ Astro form (src/pages/**)  ──POST──▶  n8n "Intake Form v2 — Split Pa
 | `submittedAt` | `submittedAt` → `sentAt` | `submitted_at` | 📅 |
 | `utm_source/_medium/_campaign/_content/_term` | ทั้ง 5 | — (raw_payload) | 📊 Attribution |
 | `fbclid` / `ttclid` / `user_agent` / `referrer` | ✓ | — (raw_payload) | — (TikTok CAPI ใช้) |
+| `consent` (`on`/`true`/`yes`/`1` → เก็บเป็น `yes`) | `consent` | — (raw_payload) | — (หลักฐาน PDPA · เพิ่ม 2026-08-01) |
 | `teamSize` หรือ `team_size` | ทั้งคู่ | — (raw_payload) | 👤 Team |
 | `revenue`, `goal`, `timeline`, `budget` | ✓ | — (raw_payload) | ⏳ / 🎯 |
 | `message`, `brandWebsite` | ✓ | `crm_notes` (fallback) | 💼 Sponsor |
@@ -101,13 +102,29 @@ Astro form (src/pages/**)  ──POST──▶  n8n "Intake Form v2 — Split Pa
 
 | ฟอร์ม | source_page | สถานะ contract |
 |---|---|---|
-| `src/pages/ads/dealer-ai-sales.astro` | `ads/dealer-ai-sales` | ✅ alias ครบ + tier HOT/WARM (แก้ 27dd249) |
-| `src/pages/ads/daruma-consult.astro` | `ads/daruma-consult` | ✅ alias ครบ + tier จาก intent (แก้รอบนี้) |
+| `src/pages/ads/dealer-ai-sales.astro` | `ads/dealer-ai-sales` | ✅ alias ครบ · **2026-08-01: `_meta` + click IDs** + tier HOT/WARM (แก้ 27dd249) |
+| `src/pages/ads/daruma-consult.astro` | `ads/daruma-consult` | ✅ alias ครบ + tier จาก intent · **2026-08-01: แยก `contact` → `phone`+`line_id`, เพิ่ม phone validation, `_meta`, click IDs** |
 | `src/pages/booking.astro` | `website-booking` | ✅ alias company/problems (แก้รอบนี้) · ไม่มี intent → ไม่มี tier |
 | `src/pages/intake-form.astro` | `/intake-form` | ✅ ใช้ canonical key ตรงอยู่แล้ว (ฟอร์มแม่แบบ) |
 | `src/components/HomeIntakeForm.astro` | `homepage-inline` | ✅ alias ใน JS อยู่แล้ว (company/phone/line/problems/comment) |
 | `src/pages/sponsor.astro` | (จาก meta) | ✅ ใช้ yourName/brandName ซึ่ง Flatten/RPC มี fallback รองรับ |
 | `src/pages/bosi-dna-quiz.astro` | `bosi-quiz` | ✅ ส่ง company/comment ใน JS |
+
+## Audit 2026-08-01 — สิ่งที่แก้รอบนี้ (ads LP ทั้ง 3 หน้า)
+
+ตรวจ lead จริง 10 ราย (`source like 'ads-%'`) เทียบกับ 4 ชั้นของ pipeline · column หลักไม่มี null (ครบมาตั้งแต่ audit 07-26) แต่เจอ 5 จุดที่**ไม่เคยเก็บเลย**:
+
+| # | ปัญหา | หลักฐาน | แก้ที่ |
+|---|---|---|---|
+| 1 | daruma ไม่มีช่อง LINE · ช่อง `contact` รับทั้งเบอร์และ LINE → LINE ไปนั่งใน column `phone` | lead จริงมี `phone = 'ss_aor'` | แยกเป็น `phone` (required, validate) + `line_id` (optional) |
+| 2 | `fbclid`/`ttclid` ไม่เคยถูกส่ง — ฟอร์มประกาศ `UTM_KEYS` 5 ตัว ไม่มี click ID ทั้งที่ BaseLayout เก็บไว้ใน `pnAttribution` แล้ว | `fbclid_filled = false` ทุกราย | เพิ่ม `CLICK_ID_KEYS` + hidden input ทั้ง 3 หน้า |
+| 3 | `reference` ว่าง → node TikTok Events API ส่ง `event_id: ""` ทุกครั้ง = dedupe พัง · `user_agent` ว่างด้วย | `ref_filled = false` · `ua_filled = false` ทุกราย | ฟอร์มส่ง `_meta{reference,page,user_agent,referrer}` · `makeAdsReference()` รูปแบบเดียวกับ intake-form |
+| 4 | `consent` ไม่เคยถูกบันทึก — Flatten ไม่อ่าน key นี้ และ Supabase node ส่ง **output ของ Flatten** ไม่ใช่ body ดิบ จึงไม่ตกถึง raw_payload ด้วย | `consent_stored = false` ทุกราย | เพิ่ม `consent` ใน Flatten Body1 (normalize → `yes`) |
+| 5 | daruma ส่ง `submitted_at` (snake) แต่ Flatten อ่าน `submittedAt` (camel) → ตกไปใช้เวลาของ n8n | อ่านจาก jsCode | เปลี่ยนเป็น `submittedAt` ทั้ง 3 หน้า |
+
+**ยังไม่เก็บโดยตั้งใจ:** `email` · `position` (ไม่มีในฟอร์มไหนเลย — เพิ่ม friction ถ้าใส่)
+
+**Verified:** ยิง payload จริงเข้า `submit_lead` แล้วตรวจ row → `line_id` · `consent=yes` · `fbclid` · `ttclid` · `reference` · `user_agent` · `submitted_at` ลงครบ แล้วลบ test row ทิ้ง
 
 ## หมายเหตุระบบ (รู้ไว้)
 
