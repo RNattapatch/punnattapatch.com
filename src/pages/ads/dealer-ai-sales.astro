@@ -212,8 +212,8 @@ const content = {
                 </label>
               </div>
             </fieldset>
-            <label class="field-label">เบอร์โทรมือถือ<input name="phone" type="tel" required inputmode="tel" autocomplete="tel" pattern="[0-9()+\-\s]{9,15}" class="field" placeholder="เช่น 0812345678" aria-label="เบอร์โทรมือถือ" /></label>
-            <label class="field-label">LINE ID <span class="font-normal text-warm-ink/55">(ถ้ามี)</span><input name="line_id" autocomplete="off" class="field" placeholder="เช่น @yourshop หรือ ไอดีไลน์" aria-label="LINE ID" /></label>
+            <label class="field-label">เบอร์โทรมือถือ<input name="phone" type="tel" required inputmode="tel" autocomplete="tel" pattern={"[0-9\\(\\)\\+\\-\\s]{9,15}"} class="field" placeholder="เช่น 0812345678" aria-label="เบอร์โทรมือถือ" /></label>
+            <div class="grid gap-5 sm:grid-cols-2"> <label class="field-label">ตำแหน่งของคุณ<select name="position" required class="field" aria-label="ตำแหน่งของคุณ"><option value="">เลือกตำแหน่ง</option><option>CEO / เจ้าของกิจการ</option><option>Managing Director</option><option>Sales Director</option><option>Sales Manager</option><option>Marketing Manager</option><option>Operations Manager</option><option>อื่นๆ</option></select></label> <label class="field-label">LINE ID <span class="font-normal text-warm-ink/55">(ถ้ามี)</span><input name="line_id" autocomplete="off" class="field" placeholder="เช่น @yourshop หรือ ไอดีไลน์" aria-label="LINE ID" /></label> </div>
             <label class="field-label">โจทย์ทีมขายที่อยากแก้ <span class="font-normal text-warm-ink/55">(ถ้ามี)</span><textarea name="sales_issue" rows="4" class="field resize-y" aria-label="โจทย์ทีมขายที่อยากแก้"></textarea></label>
             <input id="utm_source" name="utm_source" type="hidden" />
             <input id="utm_medium" name="utm_medium" type="hidden" />
