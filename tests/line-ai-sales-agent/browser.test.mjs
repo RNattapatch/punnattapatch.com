@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
 const port = 4327;
-const baseUrl = `http://127.0.0.1:${port}/app/line-ai-sales-agent`;
+const baseUrl = `http://127.0.0.1:${port}/playbook/line-ai-sales-agent`;
 let devServer;
 
 function waitForServer(url, timeoutMs = 30000) {

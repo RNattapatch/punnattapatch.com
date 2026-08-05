@@ -6,7 +6,7 @@ import { playbook } from '../../src/data/line-ai-sales-agent/playbook.js';
 import { validatePlaybook } from '../../src/data/line-ai-sales-agent/schema.js';
 
 const worktree = fileURLToPath(new URL('../..', import.meta.url));
-const publicHtmlPath = `${worktree}/dist/app/line-ai-sales-agent.html`;
+const publicHtmlPath = `${worktree}/dist/playbook/line-ai-sales-agent.html`;
 
 test('public Playbook content and compiled HTML contain no prohibited public labels or secrets', async () => {
   const validation = validatePlaybook(playbook);

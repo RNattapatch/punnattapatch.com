@@ -60,6 +60,10 @@ export default defineConfig({
         } else if (p === '/agent-builder-kit/audit') {
           item.priority = 0.7;
           item.changefreq = 'monthly';
+        } else if (p.startsWith('/playbook/')) {
+          // Public step-by-step playbooks — evergreen reference, high intent.
+          item.priority = 0.8;
+          item.changefreq = 'monthly';
         } else if (p === '/insights' || p === '/faq' || p === '/about') {
           item.priority = 0.7;
           item.changefreq = 'weekly';

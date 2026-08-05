@@ -17,7 +17,16 @@ Stage 4 checks the Stage 3 interface against the Playbook acceptance criteria be
 | Content and secret scan | PASS | `quality.test.mjs` validates Playbook public strings and compiled HTML against prohibited course labels and secret-shaped patterns |
 | Responsive layout | PASS | Production preview screenshots reviewed at 390×844, 768×1024, and 1440×900; no horizontal overflow or broken responsive collapse |
 | Reduced motion | PASS | Compiled CSS contains the `prefers-reduced-motion` rule |
-| Public output | PASS | `pnpm build` completed with 76 static pages, including `/app/line-ai-sales-agent.html` |
+| Public output | PASS | `pnpm build` completed with 76 static pages, including `/playbook/line-ai-sales-agent.html` |
+
+> **Route moved 2026-08-06 (Stage 5).** The Playbook was authored under `src/pages/app/` (the private
+> app-hub convention) but it is a public, login-free page. On the app origin it would have been gated
+> by Cloudflare Access *and* silently stripped of its webfonts — `_headers.app` sets
+> `style-src 'self'` / `font-src 'self' data:`, which blocks `fonts.googleapis.com` and
+> `fonts.gstatic.com`, so Bai Jamjuree and Noto Sans Thai never loaded (verified live:
+> `document.fonts.size === 0`). It now lives at `src/pages/playbook/line-ai-sales-agent/index.astro`
+> → **`https://punnattapatch.com/playbook/line-ai-sales-agent`**, where the marketing CSP already
+> allows both font hosts and no Access gate exists.
 
 ## Browser paths covered
 
