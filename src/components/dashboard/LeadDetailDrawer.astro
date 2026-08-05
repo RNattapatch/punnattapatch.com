@@ -115,14 +115,13 @@ import InteractionLog from './InteractionLog.astro';
 
     <QuickActions />
 
+    <!-- โน้ตย้ายไปกล่อง QuickNotes (ใน QuickActions — เซฟได้โดยไม่ต้องเข้า edit mode) · เหลือ nickname ที่นี่ -->
     <section>
       <div class="flex items-center justify-between">
-        <label class="label-text text-xs opacity-70" for="lead-notes">โน้ต · ชื่อเล่น</label>
+        <label class="label-text text-xs opacity-70">ชื่อเล่น</label>
       </div>
       <input class="ed input input-bordered input-sm w-full mt-1" data-field="nickname" placeholder="ชื่อเล่น" autocomplete="off" />
       <p class="ro text-xs opacity-60 mt-1" data-ro="nickname_ro"></p>
-      <div class="ro text-sm whitespace-pre-wrap mt-1 min-h-5" data-ro="crm_notes">—</div>
-      <textarea id="lead-notes" class="ed textarea textarea-bordered textarea-sm w-full mt-1" data-field="crm_notes" rows="3" placeholder="จดอะไรก็ได้ — ชอบกาแฟ, ลูก 2 คน, สนใจ automation ทีมขาย..."></textarea>
     </section>
 
     <InteractionLog />
@@ -228,7 +227,6 @@ import InteractionLog from './InteractionLog.astro';
     setRo('net', netLine(amount, tax));
     setRo('next_action', String(lead.next_action || '—'));
     setRo('nickname_ro', lead.nickname ? `ชื่อเล่น: ${lead.nickname}` : '');
-    setRo('crm_notes', String(lead.crm_notes || '—'));
     const due = document.getElementById('lead-next-due') as HTMLElement;
     due.textContent = lead.next_action_due ? `· ครบ ${new Date(String(lead.next_action_due)).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' })}` : '';
 
@@ -238,7 +236,6 @@ import InteractionLog from './InteractionLog.astro';
     setEd('next_action', String(lead.next_action || ''));
     setEd('next_action_due', ymd(String(lead.next_action_due || '')));
     setEd('nickname', String(lead.nickname || ''));
-    setEd('crm_notes', String(lead.crm_notes || ''));
 
     const rp = (lead.raw_payload as Record<string, unknown>) || {};
     const detail = document.getElementById('lead-detail-body') as HTMLElement;

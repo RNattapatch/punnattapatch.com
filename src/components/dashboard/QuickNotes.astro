@@ -1,0 +1,75 @@
+---
+// QuickNotes — โน้ตที่พิมพ์แล้วเซฟได้ทันที ไม่ต้องเข้า edit mode ของ drawer
+// (แทน flow เดิมที่ crm_notes ซ่อนอยู่หลังปุ่ม ✏️ แก้ไข — ปันขอ 2026-08-05)
+---
+<section id="quick-notes" class="mb-3">
+  <div class="flex items-center justify-between mb-1">
+    <span class="text-xs opacity-60">📝 โน้ต</span>
+    <span id="qn-status" class="text-[10px] opacity-50" aria-live="polite"></span>
+  </div>
+  <textarea
+    id="qn-text"
+    rows="3"
+    class="textarea textarea-bordered textarea-sm w-full tap-44"
+    placeholder="จดอะไรก็ได้ — ชอบกาแฟ, ลูก 2 คน, สนใจ automation ทีมขาย..."
+    autocomplete="off"
+  ></textarea>
+  <button id="qn-save" class="btn btn-primary btn-sm w-full mt-1 tap-44" disabled>💾 บันทึกโน้ต</button>
+</section>
+
+<script>
+  import { subscribe, getState, patchLead } from '../../scripts/dashboard/store';
+
+  // Dirty-guard (สืบทอดจาก NotesPanel เดิม): บนมือถือ แตะที่อื่นเพื่อปิดคีย์บอร์ด = textarea blur
+  // แล้ว background refresh จะพยายามเขียนค่าจาก server ทับสิ่งที่พิมพ์ค้างไว้ — กันด้วย dirty ต่อ lead
+  let dirty = false;
+  let currentLeadId = '';
+  let saving = false;
+
+  const ta = document.getElementById('qn-text') as HTMLTextAreaElement | null;
+  const btn = document.getElementById('qn-save') as HTMLButtonElement | null;
+  const status = document.getElementById('qn-status') as HTMLElement | null;
+
+  function setDirty(on: boolean) {
+    dirty = on;
+    if (btn) btn.disabled = !on || saving;
+    if (status) status.textContent = on ? 'ยังไม่บันทึก' : '';
+  }
+
+  function apply() {
+    const lead = getState().selectedLead;
+    if (!ta || !lead) return;
+    const leadId = String(lead.lead_id || '');
+    const serverVal = (lead.crm_notes as string) || '';
+    if (leadId !== currentLeadId) {
+      // สลับไป lead อื่น — โชว์โน้ตของรายนั้นสดๆ ทิ้ง draft เดิม
+      currentLeadId = leadId;
+      ta.value = serverVal;
+      setDirty(false);
+      return;
+    }
+    if (ta.value === serverVal) { setDirty(false); return; } // save round-trip ยืนยันแล้ว
+    if (document.activeElement === ta) return; // กำลังพิมพ์ — ห้ามทับ
+    if (dirty) return; // มี draft ค้าง — ห้ามทับเด็ดขาด
+    ta.value = serverVal;
+  }
+
+  ta?.addEventListener('input', () => setDirty(true));
+
+  btn?.addEventListener('click', async () => {
+    if (!ta || !currentLeadId || saving) return;
+    saving = true;
+    if (btn) { btn.disabled = true; btn.textContent = 'กำลังบันทึก...'; }
+    try {
+      // patchLead จัดการ toast "บันทึกแล้ว" + merge state + refresh ให้เอง
+      await patchLead(currentLeadId, { crm_notes: ta.value });
+      setDirty(false);
+    } finally {
+      saving = false;
+      if (btn) { btn.textContent = '💾 บันทึกโน้ต'; btn.disabled = !dirty; }
+    }
+  });
+
+  apply();
+  subscribe(apply);
+</script>

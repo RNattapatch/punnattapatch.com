@@ -1,4 +1,5 @@
 ---
+import QuickNotes from './QuickNotes.astro';
 ---
 <div id="quick-actions" class="grid grid-cols-2 gap-2 mb-3">
   <a id="qa-call" class="btn btn-outline btn-sm tap-44" href="#" target="_self">โทร</a>
@@ -7,6 +8,8 @@
   <button id="qa-log" class="btn btn-outline btn-sm tap-44">บันทึก touch</button>
   <button id="qa-proposal" class="btn btn-outline btn-sm col-span-2 tap-44">สร้างงาน proposal (+1d)</button>
 </div>
+
+<QuickNotes />
 
 <div class="text-xs opacity-60 mb-1">ออกเอกสาร → ดาวน์โหลด PDF</div>
 <div id="doc-actions" class="grid grid-cols-3 gap-2">
