@@ -30,6 +30,8 @@ export const PRICES = {
   'daruma-transformation':   { amount: 198000, url: '/services#daruma-transformation',        note: 'Daruma Sales Transformation — 45 days' },
   'tiktok-workshop':         { amount: 49900, url: '/services/trust-content-tiktok-workshop', note: 'ราคาเปิดตัว' },
   'tiktok-workshop-regular': { amount: 59900, url: '/services/trust-content-tiktok-workshop', note: 'ราคาปกติ' },
+  'daruma-starter':          { amount: 69900, url: '/services#daruma-starter',                note: 'Daruma Starter 3 วัน (เทรน 1 + consult 2 + ดูแล 30 วัน) — outline PDF 2026-07-30' },
+  'ai-agent-ceo':            { amount: 35000, url: '/services#ai-agent-ceo',                  note: 'AI-Agent for CEO & Executive ฿35,000/วัน 1-10 ท่าน — outline PDF 2026-07-30' },
 };
 
 /**
