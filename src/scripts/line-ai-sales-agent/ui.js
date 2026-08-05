@@ -175,7 +175,7 @@ function renderTopbar(playbook, progress, route) {
   const phase = route.phaseId ? phaseById(playbook, route.phaseId) : null;
   return `<div class="app-topbar">
     <div class="breadcrumb"><span>PLAYBOOK</span><span class="breadcrumb-slash">/</span><strong>${escapeHtml(route.view === 'home' ? 'ภาพรวม' : route.view === 'progress' ? 'ความคืบหน้า' : route.view === 'troubleshooting' ? 'ศูนย์แก้ปัญหา' : phase?.label ?? '')}</strong></div>
-    <div class="topbar-actions"><span class="save-status" aria-live="polite">บันทึกในเครื่องอัตโนมัติ</span><button class="text-button" type="button" data-action="export-backup">สำรองข้อมูล</button><button class="text-button" type="button" data-action="import-backup">นำเข้าข้อมูล</button><input class="visually-hidden" id="backup-file-input" type="file" accept="application/json" /></div>
+    <div class="topbar-actions"><span class="save-status" aria-live="polite">บันทึกในเครื่องอัตโนมัติ</span><button class="text-button" type="button" data-action="export-backup">สำรองข้อมูล</button><button class="text-button" type="button" data-action="import-backup">นำเข้าข้อมูล</button><input class="visually-hidden" id="backup-file-input" type="file" accept="application/json" aria-label="เลือกไฟล์ backup JSON" /></div>
   </div>`;
 }
 
@@ -263,7 +263,7 @@ function renderPromptBlock(engine, playbook, step) {
   const prompt = prompts[0];
   const values = statePromptValues(engine, playbook, prompt);
   const composed = engine.composePrompt(prompt.id, values);
-  return `<section class="step-section prompt-section"><div class="section-heading compact-heading"><div><span class="eyebrow">PROMPT COMPOSER / ${escapeHtml(prompt.id)}</span><h2>${escapeHtml(prompt.title)}</h2></div><button type="button" class="mini-link" data-action="copy-prompt" data-prompt-id="${escapeHtml(prompt.id)}">คัดลอก prompt</button></div><p class="section-intro">แก้เฉพาะช่องที่เกี่ยวกับร้านคุณ แล้วคัดลอกไปใช้กับ Builder ได้ทันที <strong>ไม่ใส่ token หรือรหัสผ่าน</strong></p><div class="prompt-fields">${prompt.editableFields.map((field) => `<label class="field-label"><span>${escapeHtml(FIELD_LABELS[field] ?? field)}</span><input type="text" value="${escapeHtml(values[field])}" data-prompt-field="${escapeHtml(field)}" data-prompt-id="${escapeHtml(prompt.id)}" /></label>`).join('')}</div><div class="prompt-output"><div class="prompt-output-head"><span>PREVIEW</span><span class="prompt-safe">✓ ปลอดภัยต่อการแชร์</span></div><pre>${toText(composed.text)}</pre><button type="button" class="copy-corner" data-action="copy-prompt" data-prompt-id="${escapeHtml(prompt.id)}" aria-label="คัดลอก prompt">⧉</button></div><p class="safety-caption">${escapeHtml(prompt.safetyNote)}</p></section>`;
+  return `<section class="step-section prompt-section"><div class="section-heading compact-heading"><div><span class="eyebrow">PROMPT COMPOSER / ${escapeHtml(prompt.id)}</span><h2>${escapeHtml(prompt.title)}</h2></div><button type="button" class="mini-link" data-action="copy-prompt" data-prompt-id="${escapeHtml(prompt.id)}">คัดลอก prompt</button></div><p class="section-intro">แก้เฉพาะช่องที่เกี่ยวกับร้านคุณ แล้วคัดลอกไปใช้กับ Builder ได้ทันที <strong>ไม่ใส่ token หรือรหัสผ่าน</strong></p><div class="prompt-fields">${prompt.editableFields.map((field) => `<label class="field-label"><span>${escapeHtml(FIELD_LABELS[field] ?? field)}</span><input type="text" value="${escapeHtml(values[field])}" data-prompt-field="${escapeHtml(field)}" data-prompt-id="${escapeHtml(prompt.id)}" /></label>`).join('')}</div><div class="prompt-output" data-prompt-output-id="${escapeHtml(prompt.id)}"><div class="prompt-output-head"><span>PREVIEW</span><span class="prompt-safe">✓ ปลอดภัยต่อการแชร์</span></div><pre>${toText(composed.text)}</pre><button type="button" class="copy-corner" data-action="copy-prompt" data-prompt-id="${escapeHtml(prompt.id)}" aria-label="คัดลอก prompt">⧉</button></div><p class="safety-caption">${escapeHtml(prompt.safetyNote)}</p></section>`;
 }
 
 function renderCheckFixProof(step) {
@@ -477,6 +477,12 @@ export function mountPlaybook({ root, playbook, engine }) {
       searchQuery = target.value;
       const results = root.querySelector('#search-results');
       if (results) results.innerHTML = renderSearchResults(engine, searchQuery, searchFilters);
+    } else if (target instanceof HTMLInputElement && target.dataset.promptField) {
+      const prompt = playbook.prompts.find((item) => item.id === target.dataset.promptId);
+      if (!prompt) return;
+      const composed = engine.composePrompt(prompt.id, readPromptValues(root, prompt));
+      const output = root.querySelector(`[data-prompt-output-id="${CSS.escape(prompt.id)}"] pre`);
+      if (output) output.innerHTML = toText(composed.text);
     }
   });
 
@@ -490,7 +496,7 @@ export function mountPlaybook({ root, playbook, engine }) {
     if (results) results.innerHTML = renderSearchResults(engine, searchQuery, searchFilters);
   });
 
-  root.addEventListener('keydown', (event) => {
+  document.addEventListener('keydown', (event) => {
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
       event.preventDefault();
       root.querySelector('#playbook-search')?.focus();
