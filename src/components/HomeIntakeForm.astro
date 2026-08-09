@@ -7,14 +7,34 @@
  *   <HomeIntakeForm formId="home-intake-2" />  (can place 2+ instances)
  *
  * Submits to same pipeline as intake-form.astro (n8n → Supabase fallback)
- * Field subset: name, phone, line, company, serviceInterest, problems, consent
+ * Field subset: name, phone, line, company, position, budget, serviceInterest,
+ * problems, after_hours_ok, consent
  */
+import AfterHoursField from './AfterHoursField.astro';
 
 interface Props {
   formId: string;
 }
 
 const { formId } = Astro.props;
+
+const positionOptions = [
+  'CEO / เจ้าของกิจการ',
+  'Managing Director',
+  'Sales Director',
+  'Sales Manager',
+  'Marketing Manager',
+  'Operations Manager',
+  'อื่นๆ',
+];
+
+const budgetOptions = [
+  'ยังไม่ได้ตั้งงบ — อยากเห็นโจทย์ก่อน',
+  'ต่ำกว่า ฿50,000',
+  '฿50,000–฿100,000',
+  '฿100,000–฿300,000',
+  'มากกว่า ฿300,000',
+];
 
 const serviceOptions = [
   { value: 'training', label: 'Training (AI Workshop)' },
@@ -123,6 +143,39 @@ const painPointOptions = [
     </div>
   </div>
 
+  {/* Position + Budget row — บังคับกรอกทั้งคู่ (คัดคุณภาพ lead ก่อนคุณปันโทรกลับ) */}
+  <div class="grid gap-4 md:grid-cols-2">
+    <div class="form-control">
+      <label for={`${formId}-position`} class="label">
+        <span class="label-text font-medium text-navy">ตำแหน่ง *</span>
+      </label>
+      <select
+        id={`${formId}-position`}
+        name="position"
+        required
+        class="select select-bordered w-full text-sm"
+      >
+        <option value="">เลือก...</option>
+        {positionOptions.map((p) => <option value={p}>{p}</option>)}
+      </select>
+    </div>
+
+    <div class="form-control">
+      <label for={`${formId}-budget`} class="label">
+        <span class="label-text font-medium text-navy">งบที่พร้อมลงทุน *</span>
+      </label>
+      <select
+        id={`${formId}-budget`}
+        name="budget"
+        required
+        class="select select-bordered w-full text-sm"
+      >
+        <option value="">เลือกช่วงงบ</option>
+        {budgetOptions.map((b) => <option value={b}>{b}</option>)}
+      </select>
+    </div>
+  </div>
+
   {/* Problems (checkboxes) */}
   <div class="form-control">
     <label class="label">
@@ -156,6 +209,8 @@ const painPointOptions = [
       placeholder="ที่ปรึกษา AI อ่านเองแล้วตอบกลับ"
     ></textarea>
   </div>
+
+  <AfterHoursField variant="daisy" />
 
   {/* PDPA consent */}
   <label class="flex cursor-pointer items-start gap-3">
@@ -295,12 +350,13 @@ const painPointOptions = [
       consent: formData.get('consent') ? 'yes' : 'no',
       source: 'homepage-inline',
       source_page: 'homepage-inline',
+      position: formData.get('position') || '',
+      budget: formData.get('budget') || '',
+      after_hours_ok: formData.get('after_hours_ok') || '',
       email: '', // not collected in this form
-      position: '', // not collected in this form
       teamSize: '', // not collected in this form
       revenue: '', // not collected in this form
       timeline: '', // not collected in this form
-      budget: '', // not collected in this form
       ai_source_note: '', // not collected in this form
       _meta: {
         reference: makeReference(),
@@ -311,6 +367,11 @@ const painPointOptions = [
         form_id: formId,
       },
     };
+
+    // ⏰ พ่วงคำตอบนอกเวลาทำการเข้า comment — n8n Flatten Body1 ยังไม่รู้จัก key after_hours_ok
+    // (สคริปต์นี้ใช้ define:vars จึง import helper ไม่ได้ — ตรรกะเดียวกับ src/scripts/after-hours.ts)
+    const ahLabel = payload.after_hours_ok === 'yes' ? 'สะดวก' : payload.after_hours_ok === 'no' ? 'ไม่สะดวก' : '';
+    if (ahLabel) payload.comment = `⏰ ติดต่อกลับนอกเวลาทำการ: ${ahLabel}`;
 
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalLabel = submitBtn?.textContent || '';

@@ -173,7 +173,7 @@ const LEAD_COLS = new Set([
   'package', 'package_price', 'deal_value_thb', 'tax_mode', 'crm_notes', 'next_action', 'pain_points',
   'source', 'payment_status', 'manual_source', 'tax_id', 'address_line1', 'address_line2',
   'branch_type', 'branch_number', 'next_action_due', 'proposal_sent_at', 'walkthrough_at',
-  'last_touch_at', 'submitted_at',
+  'last_touch_at', 'submitted_at', 'after_hours_ok',
 ]);
 
 function cleanLeadPatch(fields: Record<string, unknown>): { patch: Record<string, unknown>; dropped: string[] } {

@@ -246,6 +246,13 @@ import InteractionLog from './InteractionLog.astro';
       detailRow('บริษัท', company, 'company_name'),
       detailRow('ประเภทธุรกิจ', String(lead.business_type || ''), 'business_type'),
       detailRow('โทร', String(lead.phone || ''), 'phone', 'tel'),
+      // ⏰ ตอบจากฟอร์ม/บอท LINE — ตัวชี้ว่าโทรกลับตอนเย็นหรือเสาร์-อาทิตย์ได้ไหม
+      detailRow(
+        'โทรนอกเวลาทำการ',
+        lead.after_hours_ok === true ? '✅ สะดวก (เย็น/เสาร์-อาทิตย์)'
+          : lead.after_hours_ok === false ? '⛔ ขอในเวลาทำการ'
+          : ''
+      ),
       detailRow('LINE', String(lead.line_id || ''), 'line_id'),
       detailRow('Email', String(lead.email || ''), 'email', 'email'),
       detailRow('ขนาดทีม', String(rp.team_size || rp.teamSize || '')),

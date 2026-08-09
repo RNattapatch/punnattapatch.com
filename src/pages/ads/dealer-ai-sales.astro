@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DarumaMark from '../../components/DarumaMark.astro';
 import AdsContentV2 from '../../components/ads/AdsContentV2.astro';
+import AfterHoursField from '../../components/AfterHoursField.astro';
 import { SITE } from '../../data/site';
 import { PRICES, fmtPrice } from '../../data/pricing.mjs';
 
@@ -200,7 +201,7 @@ const content = {
           <input name="honeypot-name" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true" />
           <div class="space-y-5">
             <label class="field-label">ชื่อของคุณ<input name="name" required autocomplete="name" class="field" aria-label="ชื่อของคุณ" /></label>
-            <label class="field-label">ดีลเลอร์ / โชว์รูมของคุณชื่ออะไรครับ<input name="business" required autocomplete="organization" class="field" aria-label="ดีลเลอร์ หรือ โชว์รูมของคุณชื่ออะไร" /></label>
+            <label class="field-label">ชื่อบริษัท / ดีลเลอร์ / โชว์รูม<input name="business" required autocomplete="organization" class="field" placeholder="เช่น บจก. สยามมอเตอร์ หรือ ชื่อโชว์รูม" aria-label="ชื่อบริษัท ดีลเลอร์ หรือ โชว์รูม" /></label>
             <fieldset class="field-label">
               <legend class="mb-2">อยากให้ผมติดต่อกลับแบบไหนครับ</legend>
               <div class="grid gap-3 sm:grid-cols-2">
@@ -216,6 +217,7 @@ const content = {
             </fieldset>
             <label class="field-label">เบอร์โทรมือถือ<input name="phone" type="tel" required inputmode="tel" autocomplete="tel" pattern={"[0-9\\(\\)\\+\\-\\s]{9,15}"} class="field" placeholder="เช่น 0812345678" aria-label="เบอร์โทรมือถือ" /></label>
             <div class="grid gap-5 sm:grid-cols-2"> <label class="field-label">ตำแหน่งของคุณ<select name="position" required class="field" aria-label="ตำแหน่งของคุณ"><option value="">เลือกตำแหน่ง</option><option>CEO / เจ้าของกิจการ</option><option>Managing Director</option><option>Sales Director</option><option>Sales Manager</option><option>Marketing Manager</option><option>Operations Manager</option><option>อื่นๆ</option></select></label> <label class="field-label">LINE ID <span class="font-normal text-warm-ink/55">(ถ้ามี)</span><input name="line_id" autocomplete="off" class="field" placeholder="เช่น @yourshop หรือ ไอดีไลน์" aria-label="LINE ID" /></label> </div>
+            <label class="field-label">งบที่พร้อมลงทุน<select name="budget" required class="field" aria-label="งบที่พร้อมลงทุน"><option value="">เลือกช่วงงบ</option><option>ยังไม่ได้ตั้งงบ — อยากเห็นโจทย์ก่อน</option><option>ต่ำกว่า ฿50,000</option><option>฿50,000–฿100,000</option><option>฿100,000–฿300,000</option><option>มากกว่า ฿300,000</option></select></label>
             <label class="field-label">โจทย์ทีมขายที่อยากแก้ <span class="font-normal text-warm-ink/55">(ถ้ามี)</span><textarea name="sales_issue" rows="4" class="field resize-y" aria-label="โจทย์ทีมขายที่อยากแก้"></textarea></label>
             <input id="utm_source" name="utm_source" type="hidden" />
             <input id="utm_medium" name="utm_medium" type="hidden" />
@@ -224,6 +226,7 @@ const content = {
             <input id="utm_term" name="utm_term" type="hidden" />
             <input id="fbclid" name="fbclid" type="hidden" />
             <input id="ttclid" name="ttclid" type="hidden" />
+            <AfterHoursField variant="warm" />
             <label class="flex cursor-pointer items-start gap-3 pt-1"><input name="consent" type="checkbox" required class="checkbox mt-0.5" aria-label="ยินยอมให้ติดต่อกลับตามนโยบายความเป็นส่วนตัว" /><span class="text-sm leading-relaxed text-warm-ink/75">ยินยอมให้ติดต่อกลับตาม <a href="/privacy" class="font-semibold text-cyan underline">นโยบายความเป็นส่วนตัว</a></span></label>
             <p id="dealer-ai-error" class="hidden rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error" role="alert" aria-live="polite"></p>
             <button id="dealer-ai-submit" type="submit" class="btn min-h-11 w-full border-0 bg-coral py-4 text-base text-white hover:bg-[#c43245]" aria-label="ส่งข้อมูล">ส่งข้อมูล</button>
@@ -274,6 +277,8 @@ const content = {
 </style>
 
 <script>
+  import { foldAfterHours } from '../../scripts/after-hours';
+
   type Attribution = Record<string, string | undefined>;
   type MetaWindow = Window & { fbq?: (...args: unknown[]) => void; ttq?: { track: (...args: unknown[]) => void }; pnAttribution?: Attribution };
 
@@ -373,6 +378,8 @@ const content = {
         referrer: document.referrer || '',
       },
     });
+    // ⏰ นอกเวลาทำการ — พ่วงเข้า comment ด้วย เพราะ n8n Flatten Body1 ยังไม่รู้จัก key นี้
+    foldAfterHours(payload as Record<string, unknown>);
 
     if (submit) { submit.disabled = true; submit.textContent = 'กำลังส่ง...'; }
     error?.classList.add('hidden');

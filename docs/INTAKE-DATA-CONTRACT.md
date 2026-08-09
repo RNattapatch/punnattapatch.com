@@ -59,12 +59,39 @@ Astro form (src/pages/**)  ──POST──▶  n8n "Intake Form v2 — Split Pa
 | `utm_source/_medium/_campaign/_content/_term` | ทั้ง 5 | — (raw_payload) | 📊 Attribution |
 | `fbclid` / `ttclid` / `user_agent` / `referrer` | ✓ | — (raw_payload) | — (TikTok CAPI ใช้) |
 | `consent` (`on`/`true`/`yes`/`1` → เก็บเป็น `yes`) | `consent` | — (raw_payload) | — (หลักฐาน PDPA · เพิ่ม 2026-08-01) |
+| `after_hours_ok` (`yes`/`no`) ⏰ **เพิ่ม 2026-08-09** | ⚠️ **Flatten Body1 ยังไม่อ่าน** — ต้องเพิ่มเอง | `after_hours_ok` (boolean · RPC แปลงให้) | ผ่าน 💭 `comment` (ฟอร์ม fold ให้) |
 | `teamSize` หรือ `team_size` | ทั้งคู่ | — (raw_payload) | 👤 Team |
 | `revenue`, `goal`, `timeline`, `budget` | ✓ | — (raw_payload) | ⏳ / 🎯 |
 | `message`, `brandWebsite` | ✓ | `crm_notes` (fallback) | 💼 Sponsor |
 | `bosi_archetype`, `quiz_score`, `score`, `aiSignalCount` | ✓ | — (raw_payload) | 🧬 |
 
 **Key ที่ n8n ไม่รู้จัก = หายจาก column/Telegram** (เหลือแค่ใน raw_payload ก็ต่อเมื่อ Flatten ใส่ — ซึ่งไม่ใส่) เช่นชื่อเฉพาะฟอร์ม: `business`, `issue`, `sales_issue`, `intent`, `lead_temp`, `line_id`(ในฐานะ form field ใช้ได้เพราะ fallback), `serviceInterest`
+
+## ⏰ after_hours_ok — ช่องบังคับกรอกทุกฟอร์ม (เพิ่ม 2026-08-09)
+
+**ทำไม:** คุณปันติดอบรม/ให้คำปรึกษาช่วงกลางวัน — ถ้ารู้ตั้งแต่ตอนกรอกฟอร์มว่าลูกค้ารับสายตอนเย็น
+หรือเสาร์-อาทิตย์ได้ จะโทรกลับได้ทันทีที่ว่าง แทนที่จะรอถึงวันทำการ (บอท LINE OA ถามคำถามนี้อยู่แล้ว
+→ ฟอร์มถามให้ตรงกัน ข้อมูลไปรวมที่ column เดียว)
+
+- UI: `src/components/AfterHoursField.astro` (radio 2 ตัว · required · `variant="daisy"` หรือ `"warm"`)
+- Helper: `src/scripts/after-hours.ts` → `foldAfterHours(payload)` เรียกก่อน POST ทุกฟอร์ม
+- ค่า: `"yes"` / `"no"` → RPC `submit_lead` แปลงเป็น boolean ลง column `leads.after_hours_ok`
+- บอท LINE OA เขียน column เดียวกัน (`mac-mini-ops/line-relay/crm-leads.mjs`)
+- Dashboard แสดงในการ์ดลูกค้า แถว "โทรนอกเวลาทำการ" (แก้ด้วยมือได้)
+
+### 🔧 ค้างอยู่ — ต้องแก้ใน n8n (ทำครั้งเดียว)
+node **Flatten Body1** อ่าน key แบบ fixed list → ตอนนี้ `after_hours_ok` ยังถูกทิ้งระหว่างทาง
+ทำให้ column เติมเฉพาะตอนฟอร์มวิ่งผ่าน **Supabase fallback** เท่านั้น (ทาง n8n ปกติยังไม่เติม)
+
+**ระหว่างที่ยังไม่แก้ ข้อมูลไม่หาย** — ทุกฟอร์ม fold คำตอบเข้า `comment` แล้ว
+(`⏰ ติดต่อกลับนอกเวลาทำการ: สะดวก — <comment เดิม>`) จึงขึ้นการ์ด Telegram + ลง `crm_notes` ครบ
+
+วิธีแก้ให้ครบวง:
+1. n8n → workflow "Intake Form v2 — Split Path" → node **Flatten Body1**
+2. เพิ่ม `after_hours_ok` ในลิสต์ key ที่อ่าน (วางข้าง `consent`)
+3. (optional) เพิ่มบรรทัดใน `telegram_message` เช่น `⏰ นอกเวลา: สะดวก/ไม่สะดวก`
+4. กด **Publish** — ถ้าไม่กด production ยังรัน version เดิม
+5. ทดสอบตาม Verification checklist แล้วเช็ค `select after_hours_ok from leads order by created_at desc limit 1;`
 
 ## กฎสำหรับฟอร์มใหม่ทุกหน้า (โดยเฉพาะ ads LP)
 
@@ -133,3 +160,17 @@ Astro form (src/pages/**)  ──POST──▶  n8n "Intake Form v2 — Split Pa
 - **In-app browser (TikTok/FB/IG) ถือ cache นาน** — หลัง deploy แก้ฟอร์ม ให้ทดสอบใน Safari/Chrome ปกติ หรือเติม `?v=N` · lead จริงที่คลิกจาก ads ครั้งแรกไม่มี cache เก่า ไม่กระทบ
 - RPC `submit_lead` เป็น SECURITY DEFINER — ฟอร์มไม่ต้องมีสิทธิ์ insert ตรง
 - Lead เดิม 3 รายจาก dealer (Belel/Tuangrat/วิว 25–26 Jul) เกิดก่อน fix → company/tier/ปัญหา null ถาวร แต่เบอร์+LINE ครบ
+
+## Audit 2026-08-09 — ช่องบังคับกรอก + after-hours
+
+| ฟอร์ม | `after_hours_ok` | ช่องบังคับกรอก (ชื่อ · เบอร์ · ตำแหน่ง · บริษัท · งบ) |
+|---|---|---|
+| `intake-form.astro` | ✅ | ครบ (เพิ่ม required ให้ `budget`) |
+| `HomeIntakeForm.astro` | ✅ | ครบ (เพิ่มช่อง `position` + `budget`) |
+| `ads/daruma-consult.astro` | ✅ | ครบอยู่แล้ว |
+| `ads/dealer-ai-sales.astro` | ✅ | ครบ (เพิ่ม `budget` · `business` = ชื่อบริษัท → alias `company`) |
+| `ads/hotel-resort-ai.astro` | ✅ | ครบ (เพิ่ม `budget` · `business` = ชื่อบริษัท → alias `company`) |
+| `booking.astro` | ✅ | ครบ (เพิ่ม `company` + `position`) |
+| `waitlist.astro` | ✅ | ไม่บังคับ `budget` — คอร์สราคาตายตัว ไม่มีช่องงบ |
+| `sponsor.astro` | ✅ | ไม่บังคับ `budget` — ฝั่งสปอนเซอร์เป็นคนจ่าย งบอยู่ในช่อง brief |
+| `bosi-dna-quiz.astro` | ❌ ข้าม | ไม่เก็บเบอร์/LINE เลย → ไม่มีช่องทางให้โทรกลับ · เป็นด่านก่อนเริ่มควิซ ไม่ใช่คำขอติดต่อ |

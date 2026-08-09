@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import AfterHoursField from '../components/AfterHoursField.astro';
 import { SITE } from '../data/site';
 
 // Public Training (incl. P1) ปิดชั่วคราว — กำลัง redesign public course structure.
@@ -417,6 +418,10 @@ const painPoints = [
           </fieldset>
         </section>
 
+        <section class="pt-2">
+          <AfterHoursField variant="daisy" />
+        </section>
+
         {/* Submit */}
         <div class="space-y-3 pt-2">
           <button
@@ -606,7 +611,12 @@ const painPoints = [
           what_to_learn: (fd.get('what_to_learn') || '').toString().trim(),
           after_course_apply: (fd.get('after_course_apply') || '').toString().trim(),
           future_class_notify: (fd.get('future_class_notify') || '').toString(),
+          after_hours_ok: (fd.get('after_hours_ok') || '').toString(),
         };
+
+        // ⏰ พ่วงเข้า comment — n8n Flatten Body1 ยังไม่รู้จัก key after_hours_ok
+        var ahLabel = payload.after_hours_ok === 'yes' ? 'สะดวก' : payload.after_hours_ok === 'no' ? 'ไม่สะดวก' : '';
+        if (ahLabel) payload.comment = '⏰ ติดต่อกลับนอกเวลาทำการ: ' + ahLabel;
 
         if (typeof window.plausible === 'function') {
           try { window.plausible('P1 Waitlist Signup', { props: { ref: ref, source: 'waitlist-page' } }); } catch (_) {}

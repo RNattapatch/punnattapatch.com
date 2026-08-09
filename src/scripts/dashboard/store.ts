@@ -539,8 +539,24 @@ function handleApiError(err: unknown, fallback: string): void {
     toast('เซสชันหมดอายุ ใส่ PIN อีกครั้ง', 'error');
     return;
   }
+  // แท็บที่เปิดค้างไว้ถือ lead ที่ถูกลบ/merge ไปแล้ว → Postgres ตีกลับด้วย FK violation (23503)
+  // ข้อความดิบอ่านไม่รู้เรื่อง ("violates foreign key constraint interactions_lead_id_fkey")
+  // และผู้ใช้ไม่รู้ว่าต้องรีเฟรช — แปลเป็นภาษาคน แล้วดึงข้อมูลใหม่ให้เลย
+  if (isStaleLeadError(e)) {
+    console.error('api_error (stale lead)', err);
+    toast('ลูกค้ารายนี้ถูกลบหรือรวมกับรายอื่นแล้ว — กำลังโหลดข้อมูลใหม่', 'error');
+    closeLead();
+    void refresh();
+    return;
+  }
   console.error('api_error', err);
   toast(`${fallback}: ${e?.message || ''}`.trim(), 'error');
+}
+
+/** FK violation ที่ชี้ไปตาราง leads = record ที่เปิดค้างอยู่หายไปแล้ว (ลบ/merge จากที่อื่น) */
+function isStaleLeadError(e: Error & { code?: string }): boolean {
+  const msg = `${e?.code || ''} ${e?.message || ''}`.toLowerCase();
+  return msg.includes('23503') || (msg.includes('foreign key') && msg.includes('lead_id'));
 }
 
 // ------- Init -------

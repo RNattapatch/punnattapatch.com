@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import AfterHoursField from '../components/AfterHoursField.astro';
 import { SITE } from '../data/site';
 
 /* ============================================================
@@ -141,6 +142,10 @@ const description =
           <label for="message">เล่ารายละเอียดคร่าวๆ <span class="req">*</span></label>
           <textarea id="message" name="message" rows="5" required placeholder="อยากร่วมงานแบบไหน · เป้าหมายของ campaign · timeline ที่ต้องการ · ช่องทางที่อยากใช้ · งบประมาณคร่าวๆ"></textarea>
           <p class="sponsor-hint">ใส่ได้ยาวเท่าที่ต้องการ · ยิ่งละเอียด ผมยิ่งเสนอ scope ได้ตรง</p>
+        </div>
+
+        <div class="sponsor-field">
+          <AfterHoursField variant="daisy" />
         </div>
 
         <button type="submit" class="sponsor-submit">
@@ -739,6 +744,8 @@ const description =
   </style>
 
   <script>
+    import { foldAfterHours } from '../scripts/after-hours';
+
     const WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
 
     const form = document.getElementById('sponsorForm') as HTMLFormElement | null;
@@ -789,6 +796,8 @@ const description =
       fd.forEach((value, key) => {
         payload[key] = value;
       });
+      // ⏰ นอกเวลาทำการ — พ่วงเข้า comment เพราะ n8n Flatten Body1 ยังไม่รู้จัก key นี้
+      foldAfterHours(payload);
 
       setLoading(true);
 

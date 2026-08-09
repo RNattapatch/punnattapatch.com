@@ -1,0 +1,116 @@
+---
+/**
+ * AfterHoursField — ช่องบังคับกรอกในทุกฟอร์มรับลูกค้า
+ *
+ * ทำไมต้องมี: คุณปันติดอบรม/ให้คำปรึกษาช่วงกลางวันเป็นส่วนใหญ่ — ถ้ารู้ตั้งแต่ตอนกรอกฟอร์ม
+ * ว่าลูกค้ารับสายตอนเย็น/เสาร์-อาทิตย์ได้ จะโทรกลับได้ทันทีที่ว่างแทนที่จะรอถึงวันทำการ
+ * (บอท LINE OA ถามคำถามนี้อยู่แล้ว → ฟอร์มต้องถามให้ตรงกัน ข้อมูลจะได้ไปรวมที่เดียว)
+ *
+ * ส่งค่าเป็น `after_hours_ok` = "yes" | "no" (required radio group — reportValidity() บล็อกให้เอง)
+ * ⚠️ ฟอร์มต้อง fold ค่านี้เข้า `comment` ก่อน POST ด้วย (ดู docs/INTAKE-DATA-CONTRACT.md)
+ *    เพราะ n8n node "Flatten Body1" อ่าน key แบบ fixed list — key ใหม่ที่ยังไม่เพิ่มจะถูกทิ้ง
+ *
+ * variant: 'daisy' = หน้าที่ใช้ DaisyUI (intake-form, หน้าแรก) · 'warm' = ads LP / booking (โทน ivory-navy)
+ */
+interface Props {
+  variant?: 'daisy' | 'warm';
+  /** ข้อความอธิบายเหตุผล — ปิดได้ในฟอร์มสั้นๆ */
+  hint?: boolean;
+}
+const { variant = 'daisy', hint = true } = Astro.props;
+---
+
+<fieldset class:list={['ah', variant]}>
+  <legend class="ah-legend">สะดวกให้ติดต่อกลับนอกเวลาทำการไหม <span aria-hidden="true">*</span></legend>
+  {hint && (
+    <p class="ah-hint">
+      ผมติดอบรม/ให้คำปรึกษาช่วงกลางวันเป็นส่วนใหญ่ — ถ้าเย็นหรือเสาร์-อาทิตย์รับสายได้ ผมจะโทรกลับได้เร็วขึ้นมากครับ
+    </p>
+  )}
+  <div class="ah-options">
+    <label class="ah-option">
+      <input type="radio" name="after_hours_ok" value="yes" required class="ah-radio" />
+      <span class="ah-text">
+        <span class="ah-title">สะดวกครับ</span>
+        <span class="ah-sub">เย็น หรือ เสาร์-อาทิตย์ ก็โทรได้</span>
+      </span>
+    </label>
+    <label class="ah-option">
+      <input type="radio" name="after_hours_ok" value="no" required class="ah-radio" />
+      <span class="ah-text">
+        <span class="ah-title">ขอในเวลาทำการ</span>
+        <span class="ah-sub">จันทร์-ศุกร์ 9:00-18:00</span>
+      </span>
+    </label>
+  </div>
+  <p class="ah-error" role="alert" hidden>กรุณาเลือก 1 ข้อ ก่อนกดส่งครับ</p>
+</fieldset>
+
+<script>
+  // ข้อความ validation ของเบราว์เซอร์เป็นอังกฤษ ("Please select one of these options")
+  // ฟอร์มทั้งเว็บเป็นภาษาไทย → เปลี่ยนเป็นไทย + โชว์ข้อความใต้ตัวเลือกด้วย (ไม่พึ่งสีอย่างเดียว)
+  // สคริปต์นี้ถูก hoist รวมครั้งเดียวต่อหน้า จึงกวาดทุก instance ในหน้าเดียวกันได้เลย
+  const MSG = 'กรุณาเลือกว่าสะดวกให้ติดต่อกลับนอกเวลาทำการหรือไม่';
+  document.querySelectorAll<HTMLFieldSetElement>('fieldset.ah').forEach((group) => {
+    const radios = group.querySelectorAll<HTMLInputElement>('input[name="after_hours_ok"]');
+    const err = group.querySelector<HTMLElement>('.ah-error');
+    const sync = () => {
+      const answered = [...radios].some((r) => r.checked);
+      radios.forEach((r) => r.setCustomValidity(answered ? '' : MSG));
+      if (err && answered) err.hidden = true;
+    };
+    radios.forEach((r) => {
+      r.addEventListener('change', sync);
+      r.addEventListener('invalid', () => { if (err) err.hidden = false; });
+    });
+    sync();
+  });
+</script>
+
+<style>
+  .ah { display: grid; gap: 0.75rem; }
+  .ah-legend { font-weight: 600; font-size: 0.95rem; }
+  .ah-hint { margin: 0; font-size: 0.8125rem; line-height: 1.6; opacity: 0.7; }
+  .ah-options { display: grid; gap: 0.75rem; }
+  @media (min-width: 640px) { .ah-options { grid-template-columns: 1fr 1fr; } }
+
+  /* ปุ่มเลือกเต็มการ์ด — tap target สูงกว่า 44px ตามเกณฑ์ touch */
+  .ah-option {
+    display: flex; align-items: flex-start; gap: 0.7rem;
+    min-height: 44px; padding: 0.85rem 1rem;
+    border: 1px solid var(--pun-border); border-radius: 0.75rem;
+    cursor: pointer; transition: border-color 150ms ease, background-color 150ms ease;
+  }
+  .ah-radio { margin-top: 0.15rem; width: 1.15rem; height: 1.15rem; accent-color: var(--pun-coral); flex: none; }
+  .ah-text { display: grid; gap: 0.15rem; }
+  .ah-title { font-weight: 600; font-size: 0.95rem; line-height: 1.3; }
+  .ah-sub { font-size: 0.8125rem; opacity: 0.65; line-height: 1.35; }
+
+  /* สถานะที่เลือกไว้ต้องเห็นชัดโดยไม่พึ่งสีอย่างเดียว — เส้นขอบหนาขึ้น + พื้นเปลี่ยน */
+  .ah-option:has(.ah-radio:checked) {
+    border-color: var(--pun-coral);
+    box-shadow: inset 0 0 0 1px var(--pun-coral);
+    background: color-mix(in oklch, var(--pun-coral) 7%, transparent);
+  }
+  .ah-option:has(.ah-radio:focus-visible) {
+    outline: 2px solid color-mix(in oklch, var(--pun-coral) 45%, transparent);
+    outline-offset: 2px;
+  }
+  /* เบราว์เซอร์ที่ยังไม่รองรับ :has() — อย่างน้อยต้องเห็น focus ring ของ radio เอง */
+  .ah-radio:focus-visible { outline: 2px solid var(--pun-coral); outline-offset: 2px; }
+
+  /* โทน ivory/navy ของ ads LP + booking */
+  .warm .ah-legend { color: var(--pun-navy); }
+  .warm .ah-hint { color: var(--pun-ink); }
+  .warm .ah-option { background: var(--pun-ivory); color: var(--pun-ink); }
+  .warm .ah-title { color: var(--pun-navy); }
+
+  /* โทน DaisyUI ของ intake-form + หน้าแรก */
+  .daisy .ah-option { background: var(--color-base-100, #fff); }
+
+  @media (prefers-reduced-motion: reduce) { .ah-option { transition: none; } }
+
+  /* ยังไม่ตอบแล้วกดส่ง — ขึ้นข้อความไทยใต้ตัวเลือก (ห้ามสื่อด้วยสีอย่างเดียว) */
+  .ah-error { margin: 0; font-size: 0.8125rem; font-weight: 600; color: var(--pun-coral); }
+  .ah-error[hidden] { display: none; }
+</style>

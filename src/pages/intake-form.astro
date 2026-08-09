@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import AfterHoursField from '../components/AfterHoursField.astro';
 import { SITE } from '../data/site';
 
 const title = 'ประเมินปัญหาทีมขาย';
@@ -424,13 +425,15 @@ const budgets = [
 
           <div class="form-control">
             <label for="budget" class="label">
-              <span class="label-text font-medium">Budget โดยประมาณ</span>
+              <span class="label-text font-medium">งบที่พร้อมลงทุน *</span>
             </label>
-            <select id="budget" name="budget" class="select select-bordered w-full">
-              <option value="">ยังไม่ระบุ</option>
+            <select id="budget" name="budget" required class="select select-bordered w-full">
+              <option value="">เลือกช่วงงบ</option>
               {budgets.map((b) => <option value={b}>{b}</option>)}
             </select>
           </div>
+
+          <AfterHoursField variant="daisy" />
         </fieldset>
 
         <!-- ===== AI source (attribution) ===== -->
@@ -571,6 +574,8 @@ const budgets = [
    *    and fire a Telegram alert to Pun. The reference token is reused so
    *    inbound LINE messages can be correlated to the form submission.
    */
+
+  import { foldAfterHours } from '../scripts/after-hours';
 
   interface IntakePayload {
     [key: string]: unknown;
@@ -837,6 +842,7 @@ const budgets = [
       }
     });
 
+    foldAfterHours(payload as Record<string, unknown>);
     journalPayload(payload);
 
     if (submitBtn) {
