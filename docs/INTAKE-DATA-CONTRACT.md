@@ -59,7 +59,7 @@ Astro form (src/pages/**)  ──POST──▶  n8n "Intake Form v2 — Split Pa
 | `utm_source/_medium/_campaign/_content/_term` | ทั้ง 5 | — (raw_payload) | 📊 Attribution |
 | `fbclid` / `ttclid` / `user_agent` / `referrer` | ✓ | — (raw_payload) | — (TikTok CAPI ใช้) |
 | `consent` (`on`/`true`/`yes`/`1` → เก็บเป็น `yes`) | `consent` | — (raw_payload) | — (หลักฐาน PDPA · เพิ่ม 2026-08-01) |
-| `after_hours_ok` (`yes`/`no`) ⏰ **เพิ่ม 2026-08-09** | ⚠️ **Flatten Body1 ยังไม่อ่าน** — ต้องเพิ่มเอง | `after_hours_ok` (boolean · RPC แปลงให้) | ผ่าน 💭 `comment` (ฟอร์ม fold ให้) |
+| `after_hours_ok` (`yes`/`no`) ⏰ **เพิ่ม 2026-08-09** | node **Add After-Hours** (ต่อจาก Flatten Body1) | `after_hours_ok` (boolean · RPC แปลงให้) | บรรทัด ⏰ ท้ายการ์ด + ผ่าน 💭 `comment` |
 | `teamSize` หรือ `team_size` | ทั้งคู่ | — (raw_payload) | 👤 Team |
 | `revenue`, `goal`, `timeline`, `budget` | ✓ | — (raw_payload) | ⏳ / 🎯 |
 | `message`, `brandWebsite` | ✓ | `crm_notes` (fallback) | 💼 Sponsor |
@@ -79,19 +79,21 @@ Astro form (src/pages/**)  ──POST──▶  n8n "Intake Form v2 — Split Pa
 - บอท LINE OA เขียน column เดียวกัน (`mac-mini-ops/line-relay/crm-leads.mjs`)
 - Dashboard แสดงในการ์ดลูกค้า แถว "โทรนอกเวลาทำการ" (แก้ด้วยมือได้)
 
-### 🔧 ค้างอยู่ — ต้องแก้ใน n8n (ทำครั้งเดียว)
-node **Flatten Body1** อ่าน key แบบ fixed list → ตอนนี้ `after_hours_ok` ยังถูกทิ้งระหว่างทาง
-ทำให้ column เติมเฉพาะตอนฟอร์มวิ่งผ่าน **Supabase fallback** เท่านั้น (ทาง n8n ปกติยังไม่เติม)
+### ✅ n8n — แก้แล้ว 2026-08-09 (workflow `ZIYQ0hTsy2TiqDxx`)
 
-**ระหว่างที่ยังไม่แก้ ข้อมูลไม่หาย** — ทุกฟอร์ม fold คำตอบเข้า `comment` แล้ว
-(`⏰ ติดต่อกลับนอกเวลาทำการ: สะดวก — <comment เดิม>`) จึงขึ้นการ์ด Telegram + ลง `crm_notes` ครบ
+node **Flatten Body1** ประกอบ object จาก key ที่ hardcode ไว้เท่านั้น → คีย์ใหม่หายทั้ง column และ raw_payload
+**ไม่ได้แก้โค้ด 200 บรรทัดของ Flatten** (เสี่ยงพัง pipeline ทั้งเส้น) แต่แทรก Code node
+**"Add After-Hours"** คั่นระหว่าง `Flatten Body1` → `IF: Thank-You DM?1` แทน · node นี้ดึงค่าจาก
+body ดิบของ webhook มาเติม `after_hours_ok` (yes/no/'') + ต่อบรรทัด ⏰ ท้าย `telegram_message`
 
-วิธีแก้ให้ครบวง:
-1. n8n → workflow "Intake Form v2 — Split Path" → node **Flatten Body1**
-2. เพิ่ม `after_hours_ok` ในลิสต์ key ที่อ่าน (วางข้าง `consent`)
-3. (optional) เพิ่มบรรทัดใน `telegram_message` เช่น `⏰ นอกเวลา: สะดวก/ไม่สะดวก`
-4. กด **Publish** — ถ้าไม่กด production ยังรัน version เดิม
-5. ทดสอบตาม Verification checklist แล้วเช็ค `select after_hours_ok from leads order by created_at desc limit 1;`
+> ⚠️ **บทเรียนที่จ่ายมาแล้ว (execution 996/997 ล้มทั้งคู่ ไม่มี lead ลง CRM):**
+> ครั้งแรกลองเขียนตรรกะนี้เป็น **expression** ใน Telegram/HTTP node → n8n ตีกลับ
+> `ExpressionExtensionError: invalid syntax` และ `JSON Body is not valid JSON`
+> **n8n expression `{{ }}` ไม่รองรับ IIFE · `const` · `??` · spread** — ตรรกะที่ซับซ้อนกว่า
+> ternary สั้นๆ ต้องอยู่ใน **Code node** เท่านั้น
+
+**ทดสอบ end-to-end หลัง publish แล้ว (2026-08-09):** yes→`true` · no→`false` · ไม่ส่งมา→`null`
+· การ์ด Telegram ขึ้นบรรทัด `⏰ นอกเวลาทำการ: สะดวก (เย็น/เสาร์-อาทิตย์โทรได้)` · ลบ ZZ TEST ออกครบแล้ว
 
 ## กฎสำหรับฟอร์มใหม่ทุกหน้า (โดยเฉพาะ ads LP)
 
