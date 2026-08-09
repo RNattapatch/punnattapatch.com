@@ -76,6 +76,6 @@ tags: [faq, hiring, sales-team, scaling, sme]
 ## Package ที่เกี่ยวข้อง
 
 - [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation): วางระบบขายทั้งบริษัท + CRM + KPI (ตัววัดผลงาน) ก่อนตัดสินใจเพิ่มคน
-- [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop): automate งาน admin ให้ทีมเดิมมี capacity เพิ่มใน 1 วัน
+- [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office): automate งาน admin ให้ทีมเดิมมี capacity เพิ่มใน 1 วัน
 
 อ่านต่อ: [ต้องวางระบบขายก่อนจ้างเซลล์ไหม](/faq#sales-system-before-hiring-sales-team) | [KPI dashboard ทีมขาย](/faq#sales-kpi-dashboard-google-sheets) | [คู่มือสร้างทีมขาย B2B](/insights/build-b2b-sales-team-sme-thailand)

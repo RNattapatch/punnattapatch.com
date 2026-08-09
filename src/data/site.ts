@@ -49,13 +49,16 @@ export const BRAND_COLORS = {
   cream: '#fdfaf4',
 } as const;
 
-// Public Catalog v2 lineup (approved 2026-07-22).
-// Public Course stays off-web until venue is confirmed.
+// Public Catalog v2.1 lineup (course names locked 2026-08-06).
+// Naming formula: คอร์สสด AI สำหรับ[แผนก] [ปี] · (English Brand Tag) + subtitle 3 outcomes.
+// Thai leads, English follows — SME owners search the department, not "AI Agent".
+// Mapping old → new: output/docs/course-name-mapping-2026-08.md (in the agent repo).
+// Public Course stays off-web — design still undecided as of 2026-08-06.
 export const SERVICES = [
   {
     id: 'inhouse-a',
-    title: 'Sales × AI Agent',
-    subtitle: 'In-house A · 1 วัน',
+    title: 'AI สำหรับทีมขาย 2026',
+    subtitle: 'เพิ่มยอด · ตามลูกค้าไม่หลุด · ลดงานเอกสารทีมขาย',
     hook: 'ให้ทั้งทีมเริ่มใช้ AI กับงานขายจริงของตัวเอง',
     priceThb: PRICES['inhouse-a'].amount,
     priceLabel: `${fmtPrice('inhouse-a')} / 1 วัน`,
@@ -68,6 +71,23 @@ export const SERVICES = [
       'มีแผนใช้ต่อวันจันทร์',
     ],
     slug: 'inhouse-a',
+  },
+  {
+    id: 'back-office',
+    title: 'AI สำหรับงานหลังบ้าน 2026',
+    subtitle: 'บัญชี · แอดมิน · จัดซื้อ · สต๊อก · ผลิต — ลดขั้นตอน ลดเอกสาร ลดงานซ้ำ',
+    hook: 'หลังบ้านช้า ทีมขายก็วิ่งไม่ออก',
+    priceThb: PRICES['ai-workshop-advance'].amount,
+    priceLabel: `${fmtPrice('ai-workshop-advance')} / 1 วัน`,
+    duration: '1 วัน',
+    format: 'In-house · ไม่เกิน 20 คน · เจ้าของ+ผู้จัดการ+พนักงานเรียนรวมห้องเดียวกัน',
+    audience: 'บริษัทที่งานหลังบ้านกินเวลาคนไปทั้งวัน — บัญชี แอดมิน จัดซื้อ สต๊อก ผลิต',
+    outcome: [
+      'ไล่หางานซ้ำที่กินเวลาจริงในบริษัท',
+      'สร้าง AI ผู้ช่วยของกระบวนการนั้นในห้อง',
+      'มีแผนใช้ต่อวันจันทร์',
+    ],
+    slug: 'back-office',
   },
   {
     id: 'inhouse-b',
@@ -105,18 +125,18 @@ export const SERVICES = [
   },
   {
     id: 'trust-content-tiktok-workshop',
-    title: 'AI Trust Content Cycle',
-    subtitle: '2 วัน + ดูแลต่อ 30 วัน',
+    title: 'AI สำหรับการตลาดและคอนเทนต์ 2026',
+    subtitle: 'วาง Funnel · ทำคอนเทนต์ · ยิงแอด — ให้ลูกค้าทักเข้ามาหาทีมขายเอง',
     hook: 'ให้ลูกค้าเชื่อใจจนทักเข้าทีมขายเอง',
     priceThb: PRICES['tiktok-workshop'].amount,
-    priceLabel: fmtPrice('tiktok-workshop'),
+    priceLabel: `${fmtPrice('tiktok-workshop')} / 2 วัน + ดูแลต่อ 30 วัน`,
     duration: '2 วัน + ดูแลต่อ 30 วัน',
     format: 'On-site + LINE support',
-    audience: 'อยากให้ลูกค้าเชื่อใจและทักมาผ่าน content (TikTok) ด้วยระบบที่ AI ช่วยหมุน',
+    audience: 'บริษัทที่อยากให้งานการตลาดทั้งเส้น — funnel คอนเทนต์ และแอด — เดินด้วยทีมตัวเอง',
     outcome: [
+      'วาง funnel ที่ลูกค้าเดินเข้ามาหาทีมขายเอง',
       'ระบบวงจรคอนเทนต์ 5 ขั้น + ถ่ายจริง 1 วัน',
-      'auto repurpose + DM automation',
-      '2 วัน + 30-day LINE support',
+      'ยิงแอดเป็น + auto repurpose · ประคอง 30 วันใน LINE',
     ],
     slug: 'trust-content-tiktok-workshop',
   },
@@ -179,10 +199,11 @@ export const MILESTONES = {
   },
 } as const;
 
+// Refreshed 2026-08-06 — was still quoting the retired Basic/Advance/Package A ladder.
 export const SERVICE_TIERS_SUMMARY = {
-  entry: 'AI Workshop (฿30k/วัน)',
-  growth: 'Workshop + Follow-up (฿50k)',
-  system: 'Package A (฿59,900 · Advance + Consult 2 วัน)',
+  entry: 'AI สำหรับทีมขาย (฿34,900 · 1 วัน)',
+  growth: 'AI สำหรับงานหลังบ้าน (฿39,900 · 1 วัน)',
+  system: 'AI สำหรับการตลาดและคอนเทนต์ (฿59,900 · 2 วัน + ดูแล 30 วัน)',
   training: 'Daruma Sales Office Bootcamp (฿59,900 · 2 วัน)',
 } as const;
 

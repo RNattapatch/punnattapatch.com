@@ -137,7 +137,7 @@ Total Year 1 ประมาณ ฿100,000-150,000 + tool cost ปกติจ�
 ## เริ่มต้นที่ปุ่มเดียว
 
 - [กรอกแบบประเมิน 3 นาที](/intake-form) — ผมอ่านเองและตอบกลับใน 2 วันทำการ
-- [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop) — เห็นวิธีทำงานจริง 1 วัน
+- [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office) — เห็นวิธีทำงานจริง 1 วัน
 - [BOSI DNA Quiz](/bosi-dna-quiz) — รู้ DNA ทีมก่อนเลือก wedge
 
 ## บทความถัดไป (ทยอยลง)

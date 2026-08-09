@@ -2,11 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import DarumaMark from '../components/DarumaMark.astro';
 import { SITE } from '../data/site';
-import { fmtPrice } from '../data/pricing.mjs';
+import { fmtPrice, CATALOG } from '../data/pricing.mjs';
 
 const title = 'บริการปั้นทีมขาย × AI Agent';
 const description = 'เริ่มจากงานขายจริงของทีมคุณ แล้วค่อยใช้ AI Agent ลดงานซ้ำและทำให้ทีมเดินต่อได้เอง';
 const darumaPhases = ['ดูข้อมูลจริงของทีม', 'จัดแนวเจ้าของและหัวหน้า', 'ฝึกทีม', 'ติดตั้งระบบจริง 1 ระบบ', 'ประคองใช้จริง 30 วัน', 'วัดผลก่อน-หลัง'];
+// การ์ด consult อ่านจาก SSOT ตรงๆ (src/data/pricing.mjs) — ชื่อ ราคา ระยะเวลา แก้ที่เดียว
+const consultOffers = ['daruma-starter', 'ai-agent-ceo'].map((key) => ({ key, ...CATALOG[key] }));
 const proofGallery = [
   { src: '/testimonial/2026-05/review-01.jpg', alt: 'รีวิวลูกค้า — ทีมงานร่วม Workshop AI กับอาจารย์ปั้น', width: 1000, height: 1000 },
   { src: '/testimonial/2026-05/review-02.jpg', alt: 'รีวิวลูกค้า — แชทขอบคุณหลังเวิร์กช็อป "ชีวิตเปลี่ยนใน 24 ชม."', width: 1000, height: 1000 },
@@ -35,7 +37,7 @@ const proofGallery = [
 >
   <section class="border-b border-[#c9c2b2] bg-ivory px-6 py-16 md:py-20">
     <div class="mx-auto max-w-6xl">
-      <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">Sales × AI Agent</p>
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">คอร์สสด AI สำหรับธุรกิจ 2026</p>
       <h1 class="mt-4 max-w-4xl font-display text-4xl font-bold leading-tight text-navy md:text-6xl">ทีมขายคุณเนี่ย ยังพึ่งคนเก่งอยู่คนเดียวรึเปล่าครับ</h1>
       <p class="mt-5 max-w-3xl text-lg leading-relaxed text-warm-ink/75">ผมเริ่มจากงานขายจริงของบริษัทคุณก่อนครับ แล้วค่อยใช้ AI Agent ลดงานซ้ำ คืนเวลาให้เซลล์อยู่หน้าลูกค้า และทำให้คนในทีมใช้ต่อได้จริง</p>
       <a href="/booking" class="btn mt-8 border-0 bg-coral text-white hover:bg-[#c43245]">จองคิวคุยฟรีกับผม</a>
@@ -50,11 +52,12 @@ const proofGallery = [
         <p class="mt-4 leading-relaxed text-warm-ink/75">ใครๆ ก็ลองใช้ AI ได้ครับ แต่ถ้าไม่ได้เริ่มจากข้อมูล ลูกค้า และวิธีขายของบริษัทคุณ ของที่สร้างก็จะจบอยู่ในห้องอบรม</p>
       </div>
 
-      <div class="mt-10 grid gap-6 md:grid-cols-2">
+      <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <article id="inhouse-a" class="flex flex-col rounded-2xl border border-[#c9c2b2] bg-surface p-7 md:p-9">
-          <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">In-house A · 1 วัน</p>
-          <h3 class="mt-3 font-display text-3xl font-bold text-navy">Sales × AI Agent</h3>
-          <p class="mt-3 text-lg font-semibold text-navy">ให้ทั้งทีมเริ่มใช้ AI กับงานขายจริงของตัวเอง</p>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">In-house · 1 วัน</p>
+          <h3 class="mt-3 font-display text-3xl font-bold text-navy">AI สำหรับทีมขาย 2026</h3>
+          <p class="mt-1 text-sm text-warm-ink/60">Sales × AI Agent</p>
+          <p class="mt-3 text-lg font-semibold text-navy">เพิ่มยอด · ตามลูกค้าไม่หลุด · ลดงานเอกสารทีมขาย</p>
           <p class="mt-5 font-display text-4xl font-bold tabular-nums text-coral">{fmtPrice('inhouse-a')}</p>
           <p class="mt-5 leading-relaxed text-warm-ink/75">เริ่มจากเช็กระบบขาย 6 ด้านของบริษัทคุณ แล้วเขียน Context Pack จากข้อมูลจริง ก่อนสร้าง AI ผู้ช่วยงานขาย 1 use case ไปใช้ต่อวันจันทร์</p>
           <ul class="mt-6 space-y-3 text-sm leading-relaxed text-warm-ink/80">
@@ -63,6 +66,21 @@ const proofGallery = [
             <li><strong class="text-navy">รูปแบบ:</strong> 1 วัน · ที่บริษัทคุณ · ไม่เกิน 20 คน</li>
           </ul>
           <a href="/booking?path=inhouse-a" class="btn mt-8 w-full border-navy bg-transparent text-navy hover:bg-navy hover:text-white">จองคิวคุยฟรี</a>
+        </article>
+
+        <article id="back-office" class="flex flex-col rounded-2xl border border-[#c9c2b2] bg-surface p-7 md:p-9">
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">In-house · 1 วัน</p>
+          <h3 class="mt-3 font-display text-3xl font-bold text-navy">AI สำหรับงานหลังบ้าน 2026</h3>
+          <p class="mt-1 text-sm text-warm-ink/60">Back Office × AI Agent</p>
+          <p class="mt-3 text-lg font-semibold text-navy">บัญชี · แอดมิน · จัดซื้อ · สต๊อก · ผลิต — ลดขั้นตอน ลดเอกสาร ลดงานซ้ำ</p>
+          <p class="mt-5 font-display text-4xl font-bold tabular-nums text-coral">{fmtPrice('ai-workshop-advance')}</p>
+          <p class="mt-5 leading-relaxed text-warm-ink/75">หลังบ้านช้า ทีมขายก็วิ่งไม่ออกครับ — ใบเสนอราคาออกช้า เช็กสต๊อกไม่ได้ วางบิลค้าง เราเริ่มจากไล่หางานซ้ำที่กินเวลาทีมมากที่สุดก่อน แล้วสร้าง “พนักงาน AI” ที่รู้จักข้อมูลบริษัทคุณจริงๆ ไม่ใช่แชทบอทตอบทั่วไป</p>
+          <ul class="mt-6 space-y-3 text-sm leading-relaxed text-warm-ink/80">
+            <li><strong class="text-navy">เหมาะกับ:</strong> บริษัทที่งานหลังบ้านกินเวลาคนไปทั้งวัน — บัญชี แอดมิน จัดซื้อ สต๊อก ผลิต · เจ้าของ ผู้จัดการ และพนักงานเรียนรวมห้องเดียวกัน</li>
+            <li><strong class="text-navy">ได้กลับไป:</strong> พนักงาน AI ตัวแรกที่รันจริงกับข้อมูลบริษัทคุณ</li>
+            <li><strong class="text-navy">รูปแบบ:</strong> 1 วัน · ที่บริษัทคุณ · ไม่เกิน 20 คน (เกินกว่านี้คุยกันได้)</li>
+          </ul>
+          <a href="/booking?path=back-office" class="btn mt-8 w-full border-navy bg-transparent text-navy hover:bg-navy hover:text-white">จองคิวคุยฟรี</a>
         </article>
 
         <article id="inhouse-b" class="relative flex flex-col rounded-2xl border-2 border-coral bg-surface p-7 md:p-9">
@@ -103,6 +121,37 @@ const proofGallery = [
     </div>
   </section>
 
+  <!-- ===== Consult — จับมือทำ ไม่ใช่แค่สอน (การ์ดอ่านจาก SSOT) ===== -->
+  <section class="px-6 py-16 md:py-24">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ที่ปรึกษา · จับมือทำถึงหน้างาน</p>
+      <h2 class="mt-3 font-display text-3xl font-bold text-navy md:text-4xl">อบรมอย่างเดียวไม่พอ อยากให้มีคนอยู่ต่อจนระบบเดินได้</h2>
+      <p class="mt-4 max-w-3xl leading-relaxed text-warm-ink/75">สองแบบนี้คือตอนที่ผมไม่ได้มาแค่สอนแล้วกลับครับ — ผมอยู่ต่อจนของที่สร้างในห้องอบรมกลายเป็นระบบที่ทีมใช้จริงทุกวัน</p>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        {consultOffers.map((offer) => (
+          <article id={offer.key} class="flex flex-col rounded-2xl border border-[#c9c2b2] bg-surface p-7 md:p-9">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">{offer.duration}</p>
+            <h3 class="mt-3 font-display text-3xl font-bold text-navy">{offer.name}</h3>
+            {offer.nameEn && <p class="mt-1 text-sm text-warm-ink/60">{offer.nameEn}</p>}
+            <p class="mt-3 text-lg font-semibold text-navy">{offer.headline}</p>
+            <p class="mt-5 font-display text-4xl font-bold tabular-nums text-coral">{fmtPrice(offer.key)}</p>
+            <ul class="mt-6 space-y-3 text-sm leading-relaxed text-warm-ink/80">
+              <li><strong class="text-navy">เหมาะกับ:</strong> {offer.audience}</li>
+              <li><strong class="text-navy">รูปแบบ:</strong> In-house ที่บริษัทคุณ · ผมลงไปทำกับทีมเอง</li>
+            </ul>
+            <div class="mt-8 flex flex-col gap-3">
+              <a href={`/booking?path=${offer.key}`} class="btn w-full border-navy bg-transparent text-navy hover:bg-navy hover:text-white">จองคิวคุยฟรี</a>
+              {offer.outlineUrl && (
+                <a href={offer.outlineUrl} target="_blank" rel="noopener" class="text-center text-sm font-semibold text-cyan underline">ดูรายละเอียดหลักสูตร (PDF)</a>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <section id="daruma-transformation" class="border-y border-[#c9c2b2] bg-[#00162f] px-6 py-16 text-[#f4f1ea] md:py-24">
     <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[auto_1fr]">
       <DarumaMark class="size-20" />
@@ -123,9 +172,11 @@ const proofGallery = [
   <section id="trust-content" class="px-6 py-16 md:py-24">
     <div class="mx-auto max-w-6xl rounded-2xl border border-[#c9c2b2] bg-surface p-7 md:flex md:items-center md:justify-between md:gap-10 md:p-10">
       <div>
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">Trust Content · 2 วัน</p>
-        <h2 class="mt-3 font-display text-3xl font-bold text-navy">AI Trust Content Cycle</h2>
-        <p class="mt-3 max-w-2xl leading-relaxed text-warm-ink/75">อยากให้ลูกค้าเชื่อใจจนทักเข้าทีมขายเองใช่มั้ยครับ เราวางวงจรคอนเทนต์ที่ AI ช่วยหมุนให้ต่อเนื่อง แต่เสียงและประสบการณ์ยังเป็นของคุณ</p>
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">In-house · 2 วัน + ดูแลต่อ 30 วัน</p>
+        <h2 class="mt-3 font-display text-3xl font-bold text-navy">AI สำหรับการตลาดและคอนเทนต์ 2026</h2>
+        <p class="mt-1 text-sm text-warm-ink/60">Content × Ads × AI</p>
+        <p class="mt-3 text-lg font-semibold text-navy">วาง Funnel · ทำคอนเทนต์ · ยิงแอด — ให้ลูกค้าทักเข้ามาหาทีมขายเอง</p>
+        <p class="mt-3 max-w-2xl leading-relaxed text-warm-ink/75">อยากให้ลูกค้าเชื่อใจจนทักเข้าทีมขายเองใช่มั้ยครับ เราวางทั้งเส้นให้เลย — funnel คอนเทนต์ และแอด — เป็นวงจรที่ AI ช่วยหมุนให้ต่อเนื่อง แต่เสียงและประสบการณ์ยังเป็นของคุณ</p>
       </div>
       <div class="mt-6 shrink-0 md:mt-0 md:text-right">
         <p class="font-display text-4xl font-bold tabular-nums text-coral">{fmtPrice('tiktok-workshop')}</p>

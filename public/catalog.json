@@ -1,0 +1,134 @@
+{
+  "$schema_version": 1,
+  "source_of_truth": "punnattapatch.com/src/data/pricing.mjs",
+  "currency": "THB",
+  "rules": {
+    "quote_policy": "บอกตัวเลขได้เฉพาะรายการที่ bot_may_quote = true เท่านั้น · นอกนั้นตอบว่า \"ขึ้นกับ scope งาน เดี๋ยวคุณปันประเมินให้\" แล้ว escalate",
+    "discount_policy": "ห้ามลดราคา ห้ามต่อรองแทนคุณปันทุกกรณี",
+    "terms_disclosure": "ห้ามยกเงื่อนไขการเงิน/ค่าเดินทางมาบอกก่อนลูกค้าถาม — ตอบเมื่อลูกค้าถามเอง หรือเมื่อคุยถึงขั้นจองคิว/ออกใบเสนอราคาแล้ว"
+  },
+  "terms": {
+    "payment": {
+      "label": "การชำระเงิน",
+      "value": "ชำระ 100% ก่อนเริ่มงานทุกกรณี",
+      "detail": "สำหรับงานอบรม ชำระก่อนวันอบรมอย่างน้อย 7 วัน เพื่อยืนยันสิทธิ์และล็อกคิววันนั้นไว้ให้"
+    },
+    "travel": {
+      "label": "ค่าเดินทาง",
+      "value": "เดินทางฟรีในระยะที่กำหนด",
+      "detail": "เกินระยะฟรี คิดค่าเดินทางกิโลเมตรละ 7 บาท (แจ้งตัวเลขให้ทราบก่อนยืนยันงานเสมอ)"
+    },
+    "format": {
+      "label": "รูปแบบ",
+      "value": "In-house on-site เท่านั้น — คุณปันเดินทางไปที่บริษัทคุณ",
+      "detail": "ไม่มีคอร์สออนไลน์ · ราคาเดียวทั้งทีม (คอร์ส 1 วัน รับไม่เกิน 20 คน เกินกว่านี้คุยกันได้)"
+    }
+  },
+  "packages": [
+    {
+      "key": "inhouse-a",
+      "name": "AI สำหรับทีมขาย 2026",
+      "name_en": "Sales × AI Agent",
+      "kind": "inhouse",
+      "duration": "1 วัน",
+      "headline": "เพิ่มยอด · ตามลูกค้าไม่หลุด · ลดงานเอกสารทีมขาย",
+      "audience": "บริษัทที่มีทีมขาย 5-20 คน · งานตามลูกค้า/ใบเสนอราคา/รายงานกินเวลาเซลล์",
+      "amount_thb": 34900,
+      "price_label": "฿34,900",
+      "url": "https://punnattapatch.com/services#inhouse-a",
+      "outline_url": null,
+      "status": "live",
+      "bot_may_quote": true
+    },
+    {
+      "key": "ai-workshop-advance",
+      "name": "AI สำหรับงานหลังบ้าน 2026",
+      "name_en": "Back Office × AI Agent",
+      "kind": "inhouse",
+      "duration": "1 วัน",
+      "headline": "บัญชี · แอดมิน · จัดซื้อ · สต๊อก · ผลิต — ลดขั้นตอน ลดเอกสาร ลดงานซ้ำ",
+      "audience": "บริษัทที่งานหลังบ้านกินเวลาคนไปทั้งวัน",
+      "amount_thb": 34900,
+      "price_label": "฿34,900",
+      "url": "https://punnattapatch.com/services#back-office",
+      "outline_url": null,
+      "status": "live",
+      "bot_may_quote": true
+    },
+    {
+      "key": "tiktok-workshop",
+      "name": "AI สำหรับการตลาดและคอนเทนต์ 2026",
+      "name_en": "Marketing & Content × AI Agent",
+      "kind": "content",
+      "duration": "2 วัน + ดูแลต่อ 30 วัน",
+      "headline": "วาง Funnel · ทำคอนเทนต์ · ยิงแอด — ให้ลูกค้าทักเข้ามาหาทีมขายเอง",
+      "audience": "บริษัทที่อยากให้งานการตลาดทั้งเส้นเดินด้วยทีมตัวเอง",
+      "amount_thb": 59900,
+      "price_label": "฿59,900",
+      "url": "https://punnattapatch.com/services/trust-content-tiktok-workshop",
+      "outline_url": null,
+      "status": "live",
+      "bot_may_quote": true
+    },
+    {
+      "key": "inhouse-b",
+      "name": "Daruma Sales Office Bootcamp",
+      "name_en": null,
+      "kind": "inhouse",
+      "duration": "2 วัน",
+      "headline": "ยกทีมขายทั้งทีมพร้อมกัน — จากคนเก่งคนเดียวเป็นระบบที่ทุกคนใช้ได้",
+      "audience": "ทีมขายที่พึ่งคนเก่งคนเดียว อยากให้ทั้งทีมทำงานด้วยมาตรฐานเดียวกัน",
+      "amount_thb": 59900,
+      "price_label": "฿59,900",
+      "url": "https://punnattapatch.com/services#inhouse-b",
+      "outline_url": null,
+      "status": "live",
+      "bot_may_quote": true
+    },
+    {
+      "key": "daruma-starter",
+      "name": "Daruma Starter",
+      "name_en": null,
+      "kind": "consult",
+      "duration": "3 วัน (อบรม 1 + จับมือทำ 2) + ดูแลต่อ 30 วัน",
+      "headline": "อบรมแล้วไม่ปล่อยให้ทำเอง — คุณปันอยู่ต่อจับมือทีมสร้างระบบจนใช้งานได้จริง",
+      "audience": "บริษัทที่กลัวว่าอบรมจบแล้วทีมไม่มีเวลาไปทำต่อ",
+      "amount_thb": 69900,
+      "price_label": "฿69,900",
+      "url": "https://punnattapatch.com/services#daruma-starter",
+      "outline_url": "https://pub.srv1840715.hstgr.cloud/course/outline-daruma-starter.pdf",
+      "status": "live",
+      "bot_may_quote": true
+    },
+    {
+      "key": "ai-agent-ceo",
+      "name": "AI-Agent for CEO & Executive",
+      "name_en": null,
+      "kind": "consult",
+      "duration": "1 วันเต็ม (฿35,000/วัน)",
+      "headline": "คู่คิด AI ส่วนตัวของเจ้าของ — รับโจทย์ธุรกิจแล้วแปลงเป็นทางออกที่ทำได้จริง",
+      "audience": "CEO/เจ้าของ 1-10 ท่าน ที่อยากใช้ AI ให้ถูกทางแต่ไม่มีเวลาเรียนเอง",
+      "amount_thb": 35000,
+      "price_label": "฿35,000",
+      "url": "https://punnattapatch.com/services#ai-agent-ceo",
+      "outline_url": "https://pub.srv1840715.hstgr.cloud/course/outline-ai-agent-ceo.pdf",
+      "status": "live",
+      "bot_may_quote": true
+    },
+    {
+      "key": "daruma-transformation",
+      "name": "Daruma Sales Transformation",
+      "name_en": null,
+      "kind": "flagship",
+      "duration": "45 วัน",
+      "headline": "รื้อระบบขายทั้งเส้น — KPI · Commission · SOP · AI workflow พร้อมโค้ชทีม",
+      "audience": "เจ้าของที่อยากถอดตัวออกจากงานขายประจำภายในไตรมาสนี้",
+      "amount_thb": 198000,
+      "price_label": "฿198,000",
+      "url": "https://punnattapatch.com/services#daruma-transformation",
+      "outline_url": null,
+      "status": "live",
+      "bot_may_quote": true
+    }
+  ]
+}

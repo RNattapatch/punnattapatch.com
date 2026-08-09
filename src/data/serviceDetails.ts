@@ -222,7 +222,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       ],
     },
     priceHeadline: `${fmtPrice('ai-workshop-basic')} / 1 วัน`,
-    priceCompare: `Basic Foundation AI ${fmtPrice('ai-workshop-basic')} · Advance AI & Business Automation ${fmtPrice('ai-workshop-advance')} · Package A (Advance + Consult 2 วัน) ${fmtPrice('package-a')}`,
+    priceCompare: `AI สำหรับทีมขาย ${fmtPrice('inhouse-a')} · AI สำหรับงานหลังบ้าน ${fmtPrice('ai-workshop-advance')} · Daruma Sales Office Bootcamp 2 วัน ${fmtPrice('inhouse-b')}`,
     priceNote: 'จัดแบบ private on-site ผมเดินทางไปที่บริษัทของคุณ · ยืนยันวันอบรมได้ภายใน 30 วันหลังจอง · ชำระ 100% ก่อนเริ่มงาน',
     inclusions: [
       'Workshop 1 วัน 6-7 ชม. · On-site เท่านั้น (In-house)',
@@ -462,10 +462,6 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       {
         q: 'ต้องมีอุปกรณ์อะไรไหม',
         a: 'มือถือเครื่องเดียวพอ ไม่ต้องลงทุนไมโครโฟน หรือกล้อง DSLR · Workshop นี้ทำเพื่อให้คุณถ่ายต่อเองไหว ไม่ใช่ทำให้ต้องจ้างคนมาถ่ายต่อ',
-      },
-      {
-        q: 'ราคาเปิดตัว ฿49,900 ต่างจากราคาปกติยังไง',
-        a: 'ราคาปกติ ฿59,900 · ช่วงเปิดตัวลดให้เหลือ ฿49,900 · ดูสถานะราคาได้ที่หน้านี้',
       },
     ],
   },

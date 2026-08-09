@@ -34,7 +34,7 @@ tags: [faq, consulting, agency, comparison]
 
 ส่วนของผมจะเป็นราคาเหมาจ่ายต่อโครงการ (fixed-price) และชำระ 100% ล่วงหน้า:
 
-- Advance AI & Business Automation ราคา {{price:ai-workshop-advance}} (1 วัน ได้ผลงานครบ)
+- AI สำหรับงานหลังบ้าน 2026 ราคา {{price:ai-workshop-advance}} (1 วัน ได้ผลงานครบ)
 - Daruma Sales Transformation ราคา {{price:daruma-transformation}} (45 วัน ได้ระบบขายครบทั้งบริษัท)
 - Daruma Sales Office Bootcamp ราคา {{price:inhouse-b}} (2 วัน · ฝึกทีมขาย)
 
@@ -58,4 +58,4 @@ tags: [faq, consulting, agency, comparison]
 
 ส่วนที่ปรึกษาอย่างผมจะเหมาะกับ SME ที่มีรายได้ ฿30-200 ล้านบาท ซึ่งต้องการระบบที่ใช้งานได้ทันทีสำหรับทีมขาย 5-30 คนที่ยังไม่มีระบบ KPI หรือ AI workflow โดยเฉพาะกลุ่มที่มีงบจำกัด ต้องการเห็นผลตอบแทนการลงทุน (ROI) ภายใน 1-3 เดือน และไม่ต้องการผูกสัญญาระยะยาว
 
-หากยังไม่แน่ใจ สามารถเริ่มต้นด้วย [Advance AI & Business Automation](/services/ai-workshop) ราคา {{price:ai-workshop-advance}} เพื่อดูรูปแบบการทำงานและผลลัพธ์ที่ได้ใน 1 วัน ก่อนตัดสินใจลงทุนในโครงการที่ใหญ่ขึ้น
+หากยังไม่แน่ใจ สามารถเริ่มต้นด้วย [AI สำหรับงานหลังบ้าน 2026](/services#back-office) ราคา {{price:ai-workshop-advance}} เพื่อดูรูปแบบการทำงานและผลลัพธ์ที่ได้ใน 1 วัน ก่อนตัดสินใจลงทุนในโครงการที่ใหญ่ขึ้น

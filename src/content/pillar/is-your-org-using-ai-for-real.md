@@ -119,7 +119,7 @@ readingTimeMinutes: 9
 
 ## เริ่ม audit องค์กรคุณ
 
--   [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop) — 1 วัน audit + สร้าง Agent ตัวแรก
+-   [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office) — 1 วัน audit + สร้าง Agent ตัวแรก
 -   [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — สร้างระบบการขายอัตโนมัติเต็มรูปแบบทั้งบริษัท
 -   [BOSI DNA Quiz](/bosi-dna-quiz) — รู้ DNA ทีมก่อนเลือก path
 

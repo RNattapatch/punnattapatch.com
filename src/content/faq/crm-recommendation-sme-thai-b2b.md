@@ -81,7 +81,7 @@ Google Sheets + Apps Script + n8n ทำฟีเจอร์สำคัญท�
 
 Package ที่ช่วย setup:
 
-- [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop) — setup CRM บน Sheets + 1 automation ในวันเดียว
+- [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office) — setup CRM บน Sheets + 1 automation ในวันเดียว
 - [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — CRM + KPI (ตัววัดผลงาน) + Commission (ค่าคอมมิชชั่น) + n8n workflow (ขั้นตอนการทำงานอัตโนมัติ) ครบทั้งระบบ
 
 อ่านต่อ: [KPI dashboard บน Google Sheets](/faq) | [AI Agent vs chatbot](/faq)

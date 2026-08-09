@@ -28,7 +28,7 @@ tags: [faq, payment, pricing]
 
 ## ไม่ต้องกลัวตัดสินใจก้อนใหญ่
 
-คุณสามารถเริ่มต้นจากการลงทุนที่ไม่สูงมากก่อนได้ครับ ลองเริ่มจาก [Advance AI & Business Automation](/services/ai-workshop) ในราคา {{price:ai-workshop-advance}} ซึ่งใช้เวลาเพียง 1 วันก็สามารถเห็นผลลัพธ์เบื้องต้นได้ทันที
+คุณสามารถเริ่มต้นจากการลงทุนที่ไม่สูงมากก่อนได้ครับ ลองเริ่มจาก [AI สำหรับงานหลังบ้าน 2026](/services#back-office) ในราคา {{price:ai-workshop-advance}} ซึ่งใช้เวลาเพียง 1 วันก็สามารถเห็นผลลัพธ์เบื้องต้นได้ทันที
 
 หากผลลัพธ์เป็นที่น่าพอใจ ค่อยตัดสินใจทำ [Package A {{price:package-a}}](/services#package-a) หรือถ้าอยากวางระบบขายทั้งบริษัท [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) ในภายหลัง ไม่จำเป็นต้องลงเงินกับแพ็กเกจใหญ่ตั้งแต่แรก
 

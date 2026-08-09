@@ -2,7 +2,7 @@
 title: "ที่ปรึกษาการขาย B2B ในกรุงเทพราคาเท่าไหร่"
 description: "ที่ปรึกษาการขาย B2B สำหรับ SME ในกรุงเทพราคาเริ่มต้น ฿29,900 ต่อ workshop 1 วัน ไปจนถึง ฿198,000 ต่อ project วางระบบขายทั้งบริษัท — ผมคิดเป็น fixed-price ไม่ใช่รายชั่วโมง"
 question: "ที่ปรึกษาการขาย B2B ในกรุงเทพราคาเท่าไหร่"
-answerSummary: "ผมคิดราคา fixed-price per project เริ่มต้น ฿29,900 สำหรับ Advance AI & Business Automation 1 วัน ไปจนถึง ฿198,000 สำหรับ Daruma Sales Transformation วางระบบขาย 45 วัน ไม่มี hourly rate ไม่มี monthly retainer บังคับ ราคาเต็มในใบเสนอราคา ไม่มีค่าแอบแฝง"
+answerSummary: "ผมคิดราคา fixed-price per project เริ่มต้น ฿29,900 สำหรับ AI สำหรับงานหลังบ้าน 2026 1 วัน ไปจนถึง ฿198,000 สำหรับ Daruma Sales Transformation วางระบบขาย 45 วัน ไม่มี hourly rate ไม่มี monthly retainer บังคับ ราคาเต็มในใบเสนอราคา ไม่มีค่าแอบแฝง"
 lang: th
 published: 2026-04-18
 draft: false
@@ -15,11 +15,11 @@ tags: [faq, pricing, bangkok, consulting]
 
 | Package | ราคา | ระยะเวลา |
 |---|---|---|
-| Advance AI & Business Automation | {{price:ai-workshop-advance}} | 1 วัน |
+| AI สำหรับงานหลังบ้าน 2026 | {{price:ai-workshop-advance}} | 1 วัน |
 | Package A (Advance + Consult 2 วัน) | {{price:package-a}} | 1 วัน + 2 วัน |
 | Daruma Sales Office Bootcamp | {{price:inhouse-b}} | 2 วัน |
 | Daruma Sales Transformation | {{price:daruma-transformation}} | 45 วัน |
-| AI Trust Content Cycle System | {{price:tiktok-workshop}} | 1 วัน (5 ธุรกิจแรก) |
+| AI สำหรับการตลาดและคอนเทนต์ 2026 | {{price:tiktok-workshop}} | 1 วัน (5 ธุรกิจแรก) |
 
 ราคาในใบเสนอราคาคือราคาสุทธิ ไม่มีค่าใช้จ่ายแอบแฝง ส่วนค่าเดินทางสำหรับงาน on-site ต่างจังหวัดจะคิดแยกและแจ้งให้ทราบล่วงหน้า
 

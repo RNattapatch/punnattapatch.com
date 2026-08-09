@@ -79,7 +79,7 @@ heroImage: "/og-image.jpg"
 
 ## อยากเริ่มก่อนจ้าง project ใหญ่?
 
-- [Advance AI & Business Automation 1 วัน {{price:ai-workshop-advance}}](/services/ai-workshop) — เห็นวิธีทำงานจริง + ได้ AI workflow (ขั้นตอนการทำงานด้วย AI) ใช้ทันที
+- [AI สำหรับงานหลังบ้าน 2026 1 วัน {{price:ai-workshop-advance}}](/services#back-office) — เห็นวิธีทำงานจริง + ได้ AI workflow (ขั้นตอนการทำงานด้วย AI) ใช้ทันที
 - [BOSI DNA Quiz](/bosi-dna-quiz) — รู้ DNA ทีมขายฟรีใน 5-10 นาทีก่อนวางระบบ
 - [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — สำหรับทีมที่พร้อมวางระบบขายครบทั้งบริษัท
 

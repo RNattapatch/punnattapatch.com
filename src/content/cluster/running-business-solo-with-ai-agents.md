@@ -98,7 +98,7 @@ readingTimeMinutes: 7
 
 หากคุณต้องการเห็นการทำงานจริง หรือต้องการให้ผมเข้าไปช่วยวางระบบ AI Agent ลักษณะนี้ที่บริษัทของคุณ
 
-- ผมมีบริการ [AI Day Workshop (ราคา 30,000 บาท)](/services/ai-workshop) หรือ In-house Advance AI & Business Automation ที่ผมจะเข้าไปตั้งค่าระบบให้ที่บริษัทของคุณเป็นเวลา 1 วันเต็ม
+- ผมมีบริการ [อบรม AI ในองค์กร 1 วัน ({{price:ai-workshop-advance}})](/services#back-office) — AI สำหรับงานหลังบ้าน 2026 ที่ผมจะเข้าไปตั้งค่าระบบให้ที่บริษัทของคุณเป็นเวลา 1 วันเต็ม
 - สำหรับผู้ที่ต้องการศึกษาด้วยตัวเอง สามารถอ่าน [คู่มือ Agentic AI สำหรับ SME ไทย](/insights/agentic-ai-sme-thailand-start) เพื่อเริ่มต้นได้
 - หากต้องการเรียนรู้รายละเอียดการนำไปใช้จริง สามารถอ่านบทความ [6 บทเรียนใช้ AI Agent ทำธุรกิจแทนพนักงาน](/insights/lessons-using-ai-agent-business) ต่อได้เลย
 - หรือหากยังสงสัยว่า AI Agent ต่างจาก Chatbot อย่างไร สามารถอ่านคำอธิบายได้ที่ [AI Agent vs Chatbot ต่างกันยังไง](/faq#ai-agent-vs-chatbot-difference)

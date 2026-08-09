@@ -1,6 +1,6 @@
 {
   "name": "punnattapatch-com",
-  "description": "Authority site for Pun Nattapatch — B2B Sales Consultant & Agentic AI Transformation",
+  "description": "Authority site for Pun Nattapatch \u2014 B2B Sales Consultant & Agentic AI Transformation",
   "type": "module",
   "version": "1.0.0",
   "private": true,
@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "node scripts/gen-catalog.mjs && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },

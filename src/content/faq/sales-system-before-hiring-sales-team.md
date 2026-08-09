@@ -110,6 +110,6 @@ tags: [faq, sales-system, hiring, sme, playbook]
 ## Package ที่เกี่ยวข้อง
 
 - [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — วางครบทั้ง 3 ชิ้น + onboarding plan + training
-- [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop) — 1 วันได้ ICP + objection script + pipeline template
+- [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office) — 1 วันได้ ICP + objection script + pipeline template
 
 อ่านต่อ: [ควรทำ research ก่อนจ้างเซลล์ไหม](/faq#research-market-before-hiring-sales) | [เพิ่มพนักงานขายแล้วยอดจะเพิ่มไหม](/faq#add-sales-staff-revenue-not-increase) | [คู่มือสร้างทีมขาย B2B](/insights/build-b2b-sales-team-sme-thailand)
