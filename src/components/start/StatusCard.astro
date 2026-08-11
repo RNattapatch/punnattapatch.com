@@ -44,9 +44,8 @@ const nextSteps = [
           hidden
           class="status-card rounded-2xl border border-[#c9c2b2] bg-surface p-6 shadow-[4px_6px_0_rgba(30,27,22,0.08)] md:p-8"
         >
-          <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">สถานะงานของคุณ</p>
 
-          <h1 class="mt-3 font-display text-2xl font-bold leading-tight text-navy md:text-3xl">
+          <h1 class="font-display text-2xl font-bold leading-tight text-navy md:text-3xl">
             ได้รับข้อมูลของคุณแล้วครับ
           </h1>
 
@@ -64,6 +63,14 @@ const nextSteps = [
               ทักมาใน LINE พร้อมรหัสนี้ แล้วผมจะรู้ทันทีว่าคุณคือใคร
             </p>
           </div>
+
+          {/* คำเชิญเลื่อนอ่าน — ต้องอยู่ "เหนือแนวพับ" ของมือถือ (ปันเทสต์เองแล้วเจอว่าเดิมมองไม่เห็น
+              ถ้าไม่เลื่อน · ย้ายขึ้นมาไว้ใต้ Reference 2026-08-12)
+              ตำแหน่งนี้ถูกต้องตามลำดับด้วย: ยืนยัน → รหัสอ้างอิง(ของที่ต้องใช้) → ค่อยชวนอ่านต่อ */}
+          <p class="mt-5 rounded-xl border border-[#c9c2b2] bg-sand px-5 py-3.5 text-sm leading-relaxed text-warm-ink">
+            ⏳ ถ้ามีเวลาอีก 2 นาที เลื่อนลงอ่านต่อครับ จะได้รู้จักกันก่อนคุยจริง
+            แล้วคอลแรกของเราจะสั้นลงครึ่งหนึ่ง
+          </p>
 
           <ol class="tracker" aria-label="สถานะงานของคุณ">
             <li class="tracker-step" data-state="done">
@@ -119,14 +126,6 @@ const nextSteps = [
           >
             เบราว์เซอร์นี้ไม่ให้คัดลอกอัตโนมัติ — ผมเลือกรหัสไว้ให้แล้ว แตะค้างที่รหัสด้านบนแล้วกด
             Copy ได้เลยครับ
-          </p>
-
-          {/* กล่องนี้อยู่ *เหนือ* รายการขั้นตอน (ย้ายขึ้น 2026-08-12 · ปันสั่ง) —
-              ตอนอยู่ล่างสุดมันทำหน้าที่แค่ปิดท้าย คนที่เลิกอ่านกลางทางไม่มีวันเห็น
-              พออยู่บนมันกลายเป็นคำเชิญให้เลื่อนต่อ ซึ่งคือหน้าที่จริงของมัน */}
-          <p class="mt-8 rounded-xl border border-[#c9c2b2] bg-sand px-5 py-4 text-sm leading-relaxed text-warm-ink">
-            ⏳ ถ้ามีเวลาอีก 2 นาที เลื่อนลงอ่านต่อครับ จะได้รู้จักกันก่อนคุยจริง
-            แล้วคอลแรกของเราจะสั้นลงครึ่งหนึ่ง
           </p>
 
           <div class="mt-6 border-t border-[#c9c2b2] pt-6">
