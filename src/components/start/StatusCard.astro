@@ -1,0 +1,419 @@
+---
+/**
+ * StatusCard — fold แรกของ Page 0 ("หน้านี้คือระบบตัวอย่างชิ้นแรก")
+ *
+ * การ์ดสถานะงานสไตล์ติดตามพัสดุ: ติ๊กเฉพาะขั้นที่เป็นจริง ห้าม animation หลอก
+ *
+ *   variant="thankyou"  ต้องมี ?ref= ใน URL — ถ้าไม่มี render การ์ด "ยังไม่พบแบบประเมิน"
+ *                       (ห้าม render ติ๊กครบแบบโกหก)
+ *   variant="start"     หน้า public ที่ไม่มี ref — hero เวอร์ชันแนะนำหน้า ไม่มี tracker
+ *
+ * ความจริงที่ตัวติ๊กอ้างอิงได้:
+ *   1. มาถึง /thank-you?ref= ได้ = intake-form ยิงสำเร็จแล้วจริง (n8n primary หรือ
+ *      Supabase fallback) — ถ้า fail ทั้งคู่ ฟอร์มจะไม่ redirect มาหน้านี้เลย
+ *   2. Reference คือรหัสจริงที่ฟอร์มออกให้ (ตัวเวลาถอดจากรหัสได้ ไม่ได้เดา)
+ *   3. ช่องทางที่งานวิ่งไป — อ่านจาก localStorage journal ที่ intake-form เขียนไว้
+ *      (`pn_intake_journal` → `_meta.webhook_status`) ถ้าไม่มีหลักฐาน ใช้คำกลางที่
+ *      จริงทั้งสองเส้นทาง
+ */
+import { SITE } from '../../data/site';
+
+interface Props {
+  variant: 'thankyou' | 'start';
+}
+
+const { variant } = Astro.props;
+
+const nextSteps = [
+  'ผมอ่านแบบประเมินของคุณเอง ไม่ใช่ทีมงาน ไม่ใช่ AI ตอบแทน',
+  'ตอบกลับภายใน 2 วันทำการ (ช่วงกลางวันผมมักติดหน้างานลูกค้า อาจได้ตอบช่วงเย็นครับ)',
+  'คอลแรกประมาณ 10-15 นาที <strong class="font-semibold text-navy">ผมถามมากกว่าพูด</strong> เพราะต้องเข้าใจธุรกิจคุณก่อนถึงจะรู้ว่าช่วยได้จริงไหม',
+  '<strong class="font-semibold text-navy">ผมจะไม่ขายอะไรในคอลแรก</strong> ถ้าคุยแล้วไม่ตรง ผมบอกตรงๆ และแนะนำทางที่เหมาะกว่าให้',
+];
+---
+
+{
+  variant === 'thankyou' && (
+    <section id="page0-fold" class="px-margin-page pb-10 pt-8 md:pb-14 md:pt-12">
+      <div class="mx-auto max-w-2xl">
+        {/* ── สถานะยืนยันได้ (มี ref) ─────────────────────────────────────── */}
+        <article
+          id="status-verified"
+          hidden
+          class="status-card rounded-2xl border border-[#c9c2b2] bg-surface p-6 shadow-[4px_6px_0_rgba(30,27,22,0.08)] md:p-8"
+        >
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">สถานะงานของคุณ</p>
+
+          <h1 class="mt-3 font-display text-2xl font-bold leading-tight text-navy md:text-3xl">
+            ได้รับข้อมูลของคุณแล้วครับ
+          </h1>
+
+          <div class="mt-6 rounded-xl border border-[#c9c2b2] bg-ivory px-5 py-4">
+            <p class="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-warm-ink/65">
+              Reference
+            </p>
+            <p
+              id="ref-display"
+              class="mt-1 font-mono text-xl font-bold tracking-tight text-navy tabular-nums md:text-2xl"
+            >
+              &mdash;
+            </p>
+            <p class="mt-2 text-sm leading-relaxed text-warm-ink/75">
+              ทักมาใน LINE พร้อมรหัสนี้ แล้วผมจะรู้ทันทีว่าคุณคือใคร
+            </p>
+          </div>
+
+          <ol class="tracker" aria-label="สถานะงานของคุณ">
+            <li class="tracker-step" data-state="done">
+              <span class="tracker-mark" aria-hidden="true">✓</span>
+              <span class="tracker-body">
+                <span class="tracker-label">ได้รับแบบประเมินของคุณแล้ว</span>
+                <span id="tracker-time" class="tracker-meta tabular-nums" hidden />
+              </span>
+            </li>
+            <li class="tracker-step" data-state="done">
+              <span class="tracker-mark" aria-hidden="true">✓</span>
+              <span class="tracker-body">
+                <span class="tracker-label">ออก Reference ให้คุณแล้ว</span>
+                <span id="tracker-ref-echo" class="tracker-meta font-mono tabular-nums" hidden />
+              </span>
+            </li>
+            <li class="tracker-step" data-state="done">
+              <span class="tracker-mark" aria-hidden="true">✓</span>
+              <span class="tracker-body">
+                <span id="tracker-route" class="tracker-label">ส่งต่อเข้าคิวงานของผมแล้ว</span>
+              </span>
+            </li>
+            <li class="tracker-step" data-state="waiting">
+              <span class="tracker-mark tracker-mark-open" aria-hidden="true" />
+              <span class="tracker-body">
+                <span class="tracker-label">รอคุณทักใน LINE</span>
+                <span class="tracker-meta">ขั้นนี้อยู่ที่คุณครับ</span>
+              </span>
+            </li>
+          </ol>
+
+          <div class="mt-7 flex flex-wrap gap-3">
+            <a
+              href={SITE.social.line}
+              rel="noopener"
+              target="_blank"
+              class="press-btn btn gap-2 border-none font-bold text-white shadow-none hover:opacity-90"
+              style="background: #06C755;"
+            >
+              <img src="/line-logo.png" alt="" class="h-5 w-5 shrink-0" aria-hidden="true" />
+              ทักใน LINE →
+            </a>
+            <button id="copy-ref" type="button" class="press-btn btn btn-outline border-navy text-navy">
+              คัดลอก Reference
+            </button>
+          </div>
+
+          <p
+            id="copy-fallback"
+            role="status"
+            hidden
+            class="mt-3 rounded-lg border border-coral/40 bg-coral/10 px-4 py-3 text-sm leading-relaxed text-warm-ink"
+          >
+            เบราว์เซอร์นี้ไม่ให้คัดลอกอัตโนมัติ — ผมเลือกรหัสไว้ให้แล้ว แตะค้างที่รหัสด้านบนแล้วกด
+            Copy ได้เลยครับ
+          </p>
+
+          <div class="mt-8 border-t border-[#c9c2b2] pt-6">
+            <p class="font-display text-lg font-bold text-navy">สิ่งที่จะเกิดขึ้นต่อจากนี้:</p>
+            <ol class="mt-4 space-y-3">
+              {nextSteps.map((step, i) => (
+                <li class="flex gap-3 text-[0.95rem] leading-relaxed text-warm-ink/80">
+                  <span class="mt-px shrink-0 font-mono text-sm font-bold text-coral tabular-nums">
+                    {i + 1}.
+                  </span>
+                  <span set:html={step} />
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <p class="mt-7 rounded-xl bg-sand px-5 py-4 text-sm italic leading-relaxed text-warm-ink/75">
+            ⏳ ถ้ามีเวลาอีก 3 นาที เลื่อนลงอ่านต่อครับ จะได้รู้จักกันก่อนคุยจริง
+            แล้วคอลแรกของเราจะสั้นลงครึ่งหนึ่ง
+          </p>
+        </article>
+
+        {/* ── ไม่มี ref → ห้ามติ๊กอะไรทั้งนั้น ────────────────────────────── */}
+        <article
+          id="status-missing"
+          hidden
+          class="rounded-2xl border border-[#c9c2b2] bg-surface p-6 shadow-[4px_6px_0_rgba(30,27,22,0.08)] md:p-8"
+        >
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-coral">สถานะงานของคุณ</p>
+          <h1 class="mt-3 font-display text-2xl font-bold leading-tight text-navy md:text-3xl">
+            ยังไม่พบแบบประเมินของคุณ
+          </h1>
+          <p class="mt-4 leading-relaxed text-warm-ink/80">
+            หน้านี้จะแสดงสถานะงานได้ก็ต่อเมื่อมาจากการกรอกแบบประเมินครับ
+            ตอนนี้ผมยังไม่เห็นรหัสอ้างอิงของคุณ แปลว่ายังไม่มีข้อมูลเข้ามาถึงผม
+          </p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a href="/intake-form" class="press-btn btn border-0 bg-coral font-bold text-white hover:bg-[#c43245]">
+              กรอกแบบประเมิน →
+            </a>
+            <a
+              href={SITE.social.line}
+              rel="noopener"
+              target="_blank"
+              class="press-btn btn btn-outline border-navy text-navy"
+            >
+              ทักถามผมใน LINE
+            </a>
+          </div>
+          <p class="mt-5 text-sm leading-relaxed text-warm-ink/70">
+            ถ้าเพิ่งกรอกไปแล้วแต่หน้านี้ยังไม่ขึ้นรหัส ทักรหัสที่คุณได้มาใน LINE ได้เลยครับ
+            ผมตามให้เอง
+          </p>
+        </article>
+
+        <noscript>
+          <article class="rounded-2xl border border-[#c9c2b2] bg-surface p-6 md:p-8">
+            <h1 class="font-display text-2xl font-bold leading-tight text-navy md:text-3xl">
+              ได้รับข้อมูลของคุณแล้วครับ
+            </h1>
+            <p class="mt-4 leading-relaxed text-warm-ink/80">
+              เบราว์เซอร์นี้ปิดสคริปต์ไว้ ผมเลยแสดงรหัสอ้างอิงให้อัตโนมัติไม่ได้ครับ
+              รหัสอยู่ในแถบที่อยู่เว็บด้านบน (หลังคำว่า ref=) ทักมาใน LINE พร้อมรหัสนั้นได้เลย
+            </p>
+            <a
+              href={SITE.social.line}
+              rel="noopener"
+              target="_blank"
+              class="btn mt-6 gap-2 border-none font-bold text-white"
+              style="background: #06C755;"
+            >
+              ทักใน LINE →
+            </a>
+          </article>
+        </noscript>
+      </div>
+    </section>
+  )
+}
+
+{
+  variant === 'start' && (
+    <section id="page0-fold" class="px-margin-page pb-10 pt-8 md:pb-14 md:pt-12">
+      <div class="mx-auto max-w-2xl">
+        <article class="rounded-2xl border border-[#c9c2b2] bg-surface p-6 shadow-[4px_6px_0_rgba(30,27,22,0.08)] md:p-8">
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">
+            ก่อนเราจะคุยกันจริง
+          </p>
+          <h1 class="mt-3 font-display text-2xl font-bold leading-tight text-navy md:text-4xl">
+            3 นาทีเพื่อรู้จักกันก่อน
+          </h1>
+          <p class="mt-4 text-lg leading-relaxed text-warm-ink/80">
+            หน้านี้เล่าว่าผมทำอะไร ทำงานยังไง คิดเงินเท่าไหร่ และไม่เหมาะกับใคร
+            อ่านจบแล้วคอลแรกของเราจะสั้นลงครึ่งหนึ่ง
+          </p>
+          <div class="mt-7 flex flex-wrap gap-3">
+            <a
+              href={SITE.social.line}
+              rel="noopener"
+              target="_blank"
+              class="press-btn btn gap-2 border-none font-bold text-white shadow-none hover:opacity-90"
+              style="background: #06C755;"
+            >
+              <img src="/line-logo.png" alt="" class="h-5 w-5 shrink-0" aria-hidden="true" />
+              ทักใน LINE →
+            </a>
+            <a href="/intake-form" class="press-btn btn btn-outline border-navy text-navy">
+              กรอกแบบประเมิน
+            </a>
+          </div>
+          <p class="mt-6 border-t border-[#c9c2b2] pt-5 text-sm leading-relaxed text-warm-ink/70">
+            ตอบภายใน 2 วันทำการ · ไม่มี mass email · ข้อมูลไม่ส่งต่อบุคคลที่สาม
+          </p>
+        </article>
+      </div>
+    </section>
+  )
+}
+
+{
+  variant === 'thankyou' && (
+    <script is:inline>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var ref = (params.get('ref') || '').trim();
+
+        var verified = document.getElementById('status-verified');
+        var missing = document.getElementById('status-missing');
+
+        if (!ref) {
+          if (missing) missing.hidden = false;
+          return;
+        }
+        if (verified) verified.hidden = false;
+
+        var refNode = document.getElementById('ref-display');
+        if (refNode) refNode.textContent = ref;
+
+        var echo = document.getElementById('tracker-ref-echo');
+        if (echo) {
+          echo.textContent = ref;
+          echo.hidden = false;
+        }
+
+        // เวลาจริงถอดจากตัวรหัสเอง (PN-YYYYMMDDHHMM-XXXX · stamp เป็น UTC)
+        var stamp = ref.match(/^PN-(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})-/);
+        if (stamp) {
+          var at = new Date(
+            Date.UTC(+stamp[1], +stamp[2] - 1, +stamp[3], +stamp[4], +stamp[5])
+          );
+          if (!isNaN(at.getTime())) {
+            var timeNode = document.getElementById('tracker-time');
+            if (timeNode) {
+              timeNode.textContent =
+                at.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.';
+              timeNode.hidden = false;
+            }
+          }
+        }
+
+        // ช่องทางที่งานวิ่งไป — ติ๊กตามหลักฐานที่มีจริงเท่านั้น
+        try {
+          var raw = localStorage.getItem('pn_intake_journal');
+          if (raw) {
+            var journal = JSON.parse(raw) || [];
+            for (var i = 0; i < journal.length; i++) {
+              var meta = journal[i] && journal[i]._meta;
+              if (!meta || meta.reference !== ref) continue;
+              var routeNode = document.getElementById('tracker-route');
+              if (routeNode && meta.webhook_status === 'sent-primary') {
+                routeNode.textContent = 'แจ้งเตือนเด้งเข้ามือถือผมแล้ว';
+              } else if (routeNode && meta.webhook_status === 'sent-fallback') {
+                routeNode.textContent = 'เก็บเข้าระบบสำรองแล้ว ผมเห็นในกระดานงานของผม';
+              }
+              break;
+            }
+          }
+        } catch (e) {
+          /* localStorage ถูกบล็อก — คงคำกลางที่จริงทั้งสองเส้นทางไว้ */
+        }
+
+        var copyBtn = document.getElementById('copy-ref');
+        var fallback = document.getElementById('copy-fallback');
+        if (copyBtn) {
+          copyBtn.addEventListener('click', async function () {
+            var original = copyBtn.textContent;
+            try {
+              await navigator.clipboard.writeText(ref);
+              if (fallback) fallback.hidden = true;
+              copyBtn.textContent = 'คัดลอกแล้ว ✓';
+              setTimeout(function () {
+                copyBtn.textContent = original;
+              }, 2000);
+            } catch (e) {
+              // clipboard ถูกบล็อก → เลือกข้อความให้ + ข้อความค้างไว้ ไม่หายเอง
+              try {
+                var range = document.createRange();
+                range.selectNodeContents(refNode);
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+              } catch (e2) {
+                /* selection API ไม่พร้อม — ข้อความอธิบายยังอยู่ */
+              }
+              if (fallback) {
+                fallback.hidden = false;
+                fallback.scrollIntoView({ block: 'nearest' });
+              }
+            }
+          });
+        }
+      })();
+    </script>
+  )
+}
+
+<style>
+  /* Tracker — timeline แนวตั้ง ink-on-paper · ไม่มี glow ไม่มี progress bar ปลอม */
+  /* margin/padding ตั้งที่นี่ ไม่ใช่ utility — scoped style ของ Astro
+     specificity สูงกว่า class ของ Tailwind จะทับ mt-* ทิ้งเสมอ */
+  .tracker {
+    list-style: none;
+    margin: 1.75rem 0 0;
+    padding: 0;
+  }
+  .tracker-step {
+    position: relative;
+    display: flex;
+    gap: 0.85rem;
+    padding-bottom: 1.15rem;
+  }
+  .tracker-step:last-child {
+    padding-bottom: 0;
+  }
+  .tracker-step::before {
+    content: '';
+    position: absolute;
+    left: 0.68rem;
+    top: 1.5rem;
+    bottom: 0.15rem;
+    width: 1px;
+    background: #c9c2b2;
+  }
+  .tracker-step:last-child::before {
+    display: none;
+  }
+  .tracker-mark {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 9999px;
+    background: var(--color-success);
+    color: #f4f1ea;
+    font-size: 0.8rem;
+    line-height: 1;
+  }
+  .tracker-mark-open {
+    background: transparent;
+    border: 2px dashed #77746e;
+  }
+  .tracker-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding-top: 0.05rem;
+  }
+  .tracker-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1e1b16;
+  }
+  .tracker-step[data-state='waiting'] .tracker-label {
+    color: #6c6963;
+  }
+  .tracker-meta {
+    font-size: 0.8rem;
+    color: #6c6963;
+  }
+
+  /* ขั้นสุดท้ายหายใจช้าๆ — เปิดเฉพาะเครื่องที่ไม่ได้ขอลด motion */
+  @media (prefers-reduced-motion: no-preference) {
+    .tracker-mark-open {
+      animation: tracker-breathe 2.6s ease-in-out infinite;
+    }
+  }
+  @keyframes tracker-breathe {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.45;
+    }
+  }
+</style>

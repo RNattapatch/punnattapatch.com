@@ -1,0 +1,58 @@
+---
+/**
+ * ส่วน 3 — Why · "เช้าวันจันทร์ของคุณตอนนี้ เป็นแบบไหนครับ"
+ *
+ * เดิม/ใหม่ = 2 ก้อนกระดาษวางซ้อนเหลื่อม แยกด้วยน้ำหนัก ink ไม่ใช่สีใหม่
+ * bullets เป็น list ธรรมดา ไม่มี icon — นี่คือเรื่องเล่า ไม่ใช่ feature grid
+ */
+const outcomes = [
+  'งานเอกสาร งานสรุป งานตามจิก ที่เคยกินวันละหลายชั่วโมง โยนให้ระบบทำ เอาเวลากลับคืนมา',
+  'เซลล์ได้กลับไปอยู่หน้าลูกค้า เพราะงานรายงานมีระบบทำแทนแล้ว',
+  'ข้อมูลลูกค้าอยู่กับบริษัท ต่อให้ใครลาออก ข้อมูลก็ยังอยู่ครบ',
+  'เจ้าของถอดตัวออกจากงานจุกจิกได้ เรื่องซ้ำๆ ปล่อยให้ระบบจัดการแทน',
+  'เริ่มจากของที่ทีมคุณใช้อยู่แล้ว ยังไม่ต้องควักเงินหลักล้านซื้อระบบใหญ่',
+];
+---
+
+<section class="border-y border-[#c9c2b2] bg-sand px-margin-page py-14 md:py-20">
+  <div class="mx-auto max-w-2xl">
+    <h2 class="font-display text-2xl font-bold leading-tight text-navy md:text-3xl">
+      เช้าวันจันทร์ของคุณตอนนี้ เป็นแบบไหนครับ
+    </h2>
+
+    <div class="relative mt-8">
+      <article class="rounded-2xl border border-[#c9c2b2] bg-surface/70 px-6 py-5">
+        <p class="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-warm-ink/65">เดิม</p>
+        <p class="mt-2 leading-relaxed text-warm-ink/70">
+          เปิดไลน์มาไล่ถามเซลล์ทีละคน “ลูกค้ารายนั้นถึงไหนแล้ว” กว่าจะได้คำตอบครบก็บ่าย
+        </p>
+      </article>
+
+      <article
+        class="relative -mt-2 ml-4 rounded-2xl border border-warm-ink bg-surface px-6 py-5 shadow-[4px_6px_0_rgba(30,27,22,0.09)] md:ml-8"
+      >
+        <p class="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-coral">ใหม่</p>
+        <p class="mt-2 leading-relaxed text-warm-ink">
+          สรุปยอด ลูกค้าที่ค้างตาม และใบเสนอราคาที่ยังไม่ปิด
+          <strong class="font-bold text-navy">วางรอคุณอยู่แล้วตั้งแต่ก่อนกาแฟหมดแก้ว</strong>
+        </p>
+      </article>
+    </div>
+
+    <p class="mt-10 font-display text-lg font-bold text-navy">
+      นี่คือสิ่งที่ผมพาเจ้าของธุรกิจไปให้ถึง:
+    </p>
+    <ul class="mt-4 space-y-3 border-l border-[#c9c2b2] pl-5">
+      {
+        outcomes.map((line) => (
+          <li class="text-[0.98rem] leading-relaxed text-warm-ink/85">{line}</li>
+        ))
+      }
+    </ul>
+
+    <p class="mt-9 border-t border-[#c9c2b2] pt-6 text-[1.02rem] leading-[1.8] text-warm-ink/85">
+      ผมไม่ได้เอา AI มาแทนพนักงานนะครับ ผมเอา AI มาทำให้คนของคุณมีเวลาไปทำงานที่สร้างยอด<br />
+      งานซ้ำๆ จำเจ โยนให้ AI
+    </p>
+  </div>
+</section>

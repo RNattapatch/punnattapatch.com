@@ -1,0 +1,80 @@
+---
+/**
+ * ส่วน 10 — ปิดหน้า · การ์ดย่อของ fold แรก
+ * ขั้นที่ 4 ของ tracker ("รอคุณทักใน LINE") กลับมาทวงตัวเองตรงนี้
+ */
+import { SITE } from '../../data/site';
+
+interface Props {
+  variant: 'thankyou' | 'start';
+}
+
+const { variant } = Astro.props;
+---
+
+<section class="px-margin-page py-14 md:py-20">
+  <div class="mx-auto max-w-2xl">
+    <article class="rounded-2xl border border-warm-ink bg-surface p-6 shadow-[4px_6px_0_rgba(30,27,22,0.09)] md:p-8">
+      <p class="flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.18em] text-warm-ink/65">
+        <span class="inline-block size-2.5 rounded-full border border-dashed border-warm-ink/60" aria-hidden="true"></span>
+        ขั้นสุดท้าย · รอคุณทักใน LINE
+      </p>
+
+      <h2 class="mt-4 font-display text-2xl font-bold leading-snug text-navy md:text-3xl">
+        อ่านมาถึงตรงนี้ แปลว่าเราน่าจะคุยกันรู้เรื่องครับ
+      </h2>
+
+      {
+        variant === 'thankyou' ? (
+          <p class="mt-5 text-[1.05rem] leading-[1.8] text-warm-ink/85">
+            ทักมาใน LINE พร้อม Reference
+            <code
+              id="closing-ref"
+              class="mx-1 rounded-md bg-sand px-2 py-0.5 font-mono text-[0.95rem] font-bold text-navy tabular-nums"
+            >
+              &mdash;
+            </code>
+            บอกมาสั้นๆ ด้วยว่า
+            <strong class="font-bold text-navy">ตอนนี้อะไรกินเวลาคุณมากที่สุด</strong>
+            แล้วคอลแรกของเราจะตรงจุดตั้งแต่นาทีแรก
+          </p>
+        ) : (
+          <p class="mt-5 text-[1.05rem] leading-[1.8] text-warm-ink/85">
+            ทักมาใน LINE บอกมาสั้นๆ ด้วยว่า
+            <strong class="font-bold text-navy">ตอนนี้อะไรกินเวลาคุณมากที่สุด</strong>
+            แล้วคอลแรกของเราจะตรงจุดตั้งแต่นาทีแรก
+          </p>
+        )
+      }
+
+      <a
+        href={SITE.social.line}
+        rel="noopener"
+        target="_blank"
+        class="press-btn btn btn-lg mt-7 gap-2 border-none font-bold text-white shadow-none hover:opacity-90"
+        style="background: #06C755;"
+      >
+        <img src="/line-logo.png" alt="" class="h-6 w-6 shrink-0" aria-hidden="true" />
+        ทักใน LINE →
+      </a>
+
+      <p class="mt-6 border-t border-[#c9c2b2] pt-5 text-sm leading-relaxed text-warm-ink/70">
+        ตอบภายใน 2 วันทำการ · ไม่มี mass email · ข้อมูลไม่ส่งต่อบุคคลที่สาม
+      </p>
+    </article>
+  </div>
+</section>
+
+{
+  variant === 'thankyou' && (
+    <script is:inline>
+      (function () {
+        var ref = (new URLSearchParams(window.location.search).get('ref') || '').trim();
+        var node = document.getElementById('closing-ref');
+        if (!node) return;
+        if (ref) node.textContent = ref;
+        else node.remove();
+      })();
+    </script>
+  )
+}

@@ -256,6 +256,16 @@ html { scroll-behavior: smooth; }
   body { background-size: 24px 24px; }
 }
 
+/* Press feedback — บน touch ไม่มี hover ปุ่มต้องตอบตอน "กดลง" ไม่ใช่ตอนปล่อย
+   ใช้ property `scale` แยก จะไม่ทับ `translate: 0 .5px` ที่ DaisyUI ตั้งไว้บน .btn */
+.press-btn {
+  touch-action: manipulation;
+  transition-property: color, background-color, border-color, box-shadow, opacity, scale;
+  transition-duration: 120ms;
+  transition-timing-function: ease-out;
+}
+.press-btn:active:not(:disabled) { scale: 0.97; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -263,6 +273,9 @@ html { scroll-behavior: smooth; }
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  /* ตัด "การเคลื่อนที่" ไม่ใช่ตัด "feedback" — เปิดคืนเฉพาะของที่ผู้ใช้กด/โฟกัส */
+  .press-btn { transition-duration: 120ms !important; }
+  .press-btn:active:not(:disabled) { scale: 0.97; }
 }
 
 /* =============================================================================

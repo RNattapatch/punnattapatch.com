@@ -1,0 +1,36 @@
+---
+/**
+ * ส่วน 2-10 ของ Page 0 — ชุดเดียวกันทั้ง /start และ /thank-you
+ * ต่างกันแค่ ClosingCard ที่โชว์ Reference เฉพาะตอนมาจากฟอร์ม
+ */
+import IntroLetter from './IntroLetter.astro';
+import WhySection from './WhySection.astro';
+import ServiceShelves from './ServiceShelves.astro';
+import HowTimeline from './HowTimeline.astro';
+import CaseLogos from './CaseLogos.astro';
+import NotForYou from './NotForYou.astro';
+import PricingStart from './PricingStart.astro';
+import FaqStart from './FaqStart.astro';
+import ClosingCard from './ClosingCard.astro';
+import StickyLineBar from './StickyLineBar.astro';
+import StartPixelEvents from './StartPixelEvents.astro';
+
+interface Props {
+  variant: 'thankyou' | 'start';
+}
+
+const { variant } = Astro.props;
+---
+
+<IntroLetter />
+<WhySection />
+<ServiceShelves />
+<HowTimeline />
+<CaseLogos />
+<NotForYou />
+<PricingStart />
+<FaqStart />
+<ClosingCard variant={variant} />
+
+<StickyLineBar />
+<StartPixelEvents />

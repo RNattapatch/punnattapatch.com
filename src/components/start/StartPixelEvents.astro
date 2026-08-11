@@ -1,0 +1,71 @@
+---
+/**
+ * Meta Pixel custom events ของ Page 0 — fire-once ต่อ session
+ *
+ *   ViewStartIntro  เลื่อนถึงส่วนแนะนำตัว (ส่วน 2)
+ *   ViewPricing     เลื่อนถึงส่วนงบประมาณ (ส่วน 8)
+ *   OpenFaq         กางคำถามข้อไหนก็ได้ (ส่วน 9)
+ *
+ * ⚠️ ห้ามส่ง Reference เข้า event params — ref คือรหัสที่ผูกกับตัวบุคคล
+ *    (CompleteRegistration เดิมของ /thank-you ไม่ถูกแตะ อยู่ใน thank-you.astro)
+ */
+---
+
+<script is:inline>
+  (function () {
+    var SEEN_KEY = 'pn_page0_events';
+
+    function seen() {
+      try {
+        return JSON.parse(sessionStorage.getItem(SEEN_KEY) || '{}') || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function fire(name) {
+      var log = seen();
+      if (log[name]) return;
+      log[name] = 1;
+      try {
+        sessionStorage.setItem(SEEN_KEY, JSON.stringify(log));
+      } catch (e) {
+        /* storage ถูกบล็อก — ยอมให้ยิงซ้ำได้ ดีกว่าไม่ยิงเลย */
+      }
+      if (typeof window.fbq === 'function') window.fbq('trackCustom', name);
+    }
+
+    function watch(id, eventName) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      if (!('IntersectionObserver' in window)) return;
+      var io = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            fire(eventName);
+            io.disconnect();
+          });
+        },
+        // threshold 0 + rootMargin: ส่วนพวกนี้สูงกว่าจอมือถือ ถ้าใช้ threshold 0.25
+        // จะไม่มีวันเห็น 25% พร้อมกัน แล้ว event ไม่ยิงเลย
+        { threshold: 0, rootMargin: '0px 0px -20% 0px' }
+      );
+      io.observe(el);
+    }
+
+    watch('start-intro', 'ViewStartIntro');
+    watch('start-pricing', 'ViewPricing');
+
+    var faq = document.getElementById('start-faq');
+    if (faq) {
+      faq.addEventListener(
+        'toggle',
+        function (e) {
+          if (e.target instanceof HTMLDetailsElement && e.target.open) fire('OpenFaq');
+        },
+        true
+      );
+    }
+  })();
+</script>

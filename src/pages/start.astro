@@ -1,0 +1,24 @@
+---
+/**
+ * /start — "หน้าแนะนำตัว" เวอร์ชัน public (index ได้)
+ *
+ * เนื้อหาชุดเดียวกับที่ต่อท้าย /thank-you แต่ไม่มีอะไรอ้าง Reference
+ * เพราะคนเข้าหน้านี้อาจยังไม่เคยกรอกฟอร์ม (ลิงก์ที่ lead ส่งต่อให้หุ้นส่วน)
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StatusCard from '../components/start/StatusCard.astro';
+import StartSections from '../components/start/StartSections.astro';
+
+const title = 'ทำความรู้จักก่อนคุยกัน';
+const description =
+  'ผมทำอะไร ทำงานยังไง คิดเงินเท่าไหร่ และไม่เหมาะกับใคร — อ่าน 3 นาทีก่อนคุยกันจริง แล้วคอลแรกของเราจะสั้นลงครึ่งหนึ่ง';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  schema={{ types: ['WebPage', 'Person'], title, description }}
+>
+  <StatusCard variant="start" />
+  <StartSections variant="start" />
+</BaseLayout>

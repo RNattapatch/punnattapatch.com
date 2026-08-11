@@ -1,6 +1,16 @@
 ---
+/**
+ * /thank-you — ปลายท่อของ /intake-form (noindex)
+ *
+ * 2026-08-09 — ต่อท้ายด้วย Page 0 (ส่วน 2-10 ชุดเดียวกับ /start)
+ *   · ref / ปุ่มคัดลอก / ปุ่ม LINE เดิม ย้ายเข้าไปอยู่ในการ์ดสถานะ (StatusCard)
+ *   · conversion events เดิม (Plausible Lead Success · Meta Lead ·
+ *     TikTok CompleteRegistration) คงพฤติกรรมเดิมทุกอย่าง อยู่ในสคริปต์ท้ายไฟล์
+ *   · noindex คงเดิม
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE } from '../data/site';
+import StatusCard from '../components/start/StatusCard.astro';
+import StartSections from '../components/start/StartSections.astro';
 
 const title = 'ขอบคุณที่กรอกแบบประเมิน';
 const description =
@@ -8,115 +18,13 @@ const description =
 ---
 
 <BaseLayout title={title} description={description} noindex={true}>
-  <section class="px-4 py-24">
-    <div class="mx-auto max-w-xl text-center">
-      <div
-        class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-success text-5xl text-success-content"
-        aria-hidden="true"
-      >
-        ✓
-      </div>
-
-      <h1 class="mt-6 font-display text-3xl font-bold text-base-content md:text-4xl">
-        บันทึกแบบประเมินเรียบร้อย
-      </h1>
-
-      <p class="mt-5 text-lg leading-relaxed text-base-content/80">
-        ขั้นตอนสุดท้าย — <strong class="text-secondary">ทักหาผมใน LINE</strong>
-        พร้อมแนบ Reference ด้านล่าง
-      </p>
-
-      <div class="mt-8">
-        <span class="text-xs uppercase tracking-widest text-base-content/50">Reference</span>
-        <div class="mt-2">
-          <code
-            id="ref-display"
-            class="inline-block rounded-lg bg-base-200 px-6 py-3 font-mono text-xl font-bold text-base-content"
-          >—</code>
-        </div>
-      </div>
-
-      <div class="mt-8 flex flex-wrap justify-center gap-3">
-        <a
-          href={SITE.social.line}
-          rel="noopener"
-          target="_blank"
-          class="btn btn-lg gap-2 border-none font-bold text-white shadow-lg hover:opacity-90 active:opacity-80"
-          style="background: #06C755;"
-        >
-          <img src="/line-logo.png" alt="" class="h-6 w-6 shrink-0" aria-hidden="true" />
-          ทักใน LINE OA →
-        </a>
-        <button id="copy-ref" type="button" class="btn btn-lg btn-outline">
-          คัดลอก Reference
-        </button>
-      </div>
-
-      <div class="mt-10 rounded-2xl border border-secondary/30 bg-secondary/5 p-6 text-left">
-        <p class="flex items-center gap-2 font-display text-base font-bold text-base-content">
-          <span aria-hidden="true">🤝</span> ทุกข้อความ ผมตอบเองครับ
-        </p>
-        <p class="mt-3 text-sm leading-relaxed text-base-content/75">
-          ผมอ่านและตอบกลับลูกค้าทุกท่านด้วยตัวเอง ไม่ได้ใช้ AI ตอบแทน<br />
-          ช่วงกลางวันผมมักจะติดอบรมและให้คำปรึกษาหน้างาน อาจจะตอบกลับช่วงหลังเลิกงาน ขอบคุณที่เข้าใจและรอสักนิดนะครับ รับรองว่าทุกเคสได้คุยกับผมแน่นอนครับ
-        </p>
-      </div>
-
-      <p class="mt-8 text-sm text-base-content/70">
-        ตอบกลับภายใน 2 วันทำการ · ไม่มี mass email · ข้อมูลไม่ส่งต่อบุคคลที่สาม
-      </p>
-
-      <div class="mt-12 rounded-xl border border-base-content/10 bg-base-100 p-6 text-left">
-        <p class="mb-3 font-display text-lg font-bold">ระหว่างรอผมตอบกลับ</p>
-        <ul class="space-y-2 text-sm text-base-content/80">
-          <li>
-            📺 ดู case studies จริงจาก SME ไทย —
-            <a href="/case-studies" class="link link-secondary">/case-studies</a>
-          </li>
-          <li>
-            📚 อ่านบทเรียนสร้างทีมขาย ฿0 → ฿100M —
-            <a href="/insights" class="link link-secondary">/insights</a>
-          </li>
-          <li>
-            📱 ดู content ใหม่ —
-            <a
-              href={SITE.social.tiktok}
-              target="_blank"
-              rel="noopener"
-              class="link link-secondary"
-            >
-              TikTok @pun_nattapatch
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </section>
+  <StatusCard variant="thankyou" />
+  <StartSections variant="thankyou" />
 
   <script is:inline>
     (function () {
       const params = new URLSearchParams(window.location.search);
       const ref = params.get('ref') || '—';
-
-      const refNode = document.getElementById('ref-display');
-      if (refNode) refNode.textContent = ref;
-
-      const copyBtn = document.getElementById('copy-ref');
-      if (copyBtn) {
-        copyBtn.addEventListener('click', async () => {
-          if (ref === '—') return;
-          try {
-            await navigator.clipboard.writeText(ref);
-            const orig = copyBtn.textContent;
-            copyBtn.textContent = 'คัดลอกแล้ว ✓';
-            setTimeout(() => {
-              copyBtn.textContent = orig;
-            }, 2000);
-          } catch {
-            /* clipboard blocked — user can still highlight + copy */
-          }
-        });
-      }
 
       // Collect attribution from URL for conversion event payloads
       const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];

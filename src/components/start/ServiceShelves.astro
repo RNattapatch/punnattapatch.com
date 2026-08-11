@@ -1,0 +1,125 @@
+---
+/**
+ * ส่วน 4 — What · "แล้วผมทำอะไรบ้าง" (จุดเดียวของหน้าที่ตอบคำถามนี้)
+ *
+ * subtitle ของแต่ละคอร์สยึดตาม SSOT (course-name-mapping) — ห้ามแต่งใหม่
+ * ยกเว้นคอร์ส 1 ที่ใช้ "เพิ่มประสิทธิภาพการขาย" แทน "เพิ่มยอด" ตาม claim layer ของ LP
+ *
+ * ปุ่มแชร์ชี้ไป /start เสมอ (public) — ห้ามแชร์ URL ของ /thank-you ที่มี ref ติดไป
+ */
+import { SITE } from '../../data/site';
+
+const shelves = [
+  {
+    icon: '🧑‍💼',
+    dept: 'ทีมขาย',
+    name: 'คอร์สสด AI สำหรับทีมขาย 2026',
+    subtitle: 'เพิ่มประสิทธิภาพการขาย · ตามลูกค้าไม่หลุด · ลดงานเอกสารทีมขาย',
+  },
+  {
+    icon: '🗂️',
+    dept: 'งานหลังบ้าน',
+    name: 'คอร์สสด AI สำหรับงานหลังบ้าน 2026',
+    subtitle: 'บัญชี · แอดมิน · จัดซื้อ · สต๊อก — ลดขั้นตอน ลดเอกสาร ลดงานซ้ำ',
+  },
+  {
+    icon: '📣',
+    dept: 'การตลาด',
+    name: 'คอร์สสด AI สำหรับการตลาดและคอนเทนต์ 2026',
+    subtitle: 'วาง Funnel · ทำคอนเทนต์ · ยิงแอด — ให้ลูกค้าทักเข้ามาหาทีมขายเอง',
+  },
+];
+
+const shareUrl = `${SITE.url}/start`;
+---
+
+<section class="px-margin-page py-14 md:py-20">
+  <div class="mx-auto max-w-2xl">
+    <h2 class="font-display text-2xl font-bold leading-tight text-navy md:text-3xl">
+      ผมเป็นที่ปรึกษาด้านการปั้นทีมขาย และ AI Agent
+    </h2>
+    <p class="mt-4 text-[1.05rem] leading-[1.8] text-warm-ink/85">
+      พูดง่ายๆ: ผมช่วยเจ้าของ SME วาง “ระบบขายที่เดินได้เอง” แล้วติด AI เข้าไปทำงานซ้ำๆ แทนคน
+    </p>
+    <p class="mt-5 text-[1.05rem] leading-[1.8] text-warm-ink/85">
+      AI ที่ว่า ให้นึกถึง
+      <strong class="font-bold text-navy">น้องฝึกงานที่รู้ทุกอย่างบนโลก แต่ยังไม่รู้จักบริษัทคุณ</strong>
+      งานของผมคือสอนน้องคนนี้ให้รู้จักลูกค้าคุณ สินค้าคุณ วิธีทำงานของทีมคุณ จนใช้งานได้จริง
+    </p>
+
+    <p class="mt-8 font-display text-lg font-bold text-navy">งานหลักมี 3 อย่าง แบ่งตามแผนก:</p>
+
+    <div class="mt-5 space-y-4">
+      {
+        shelves.map((s) => (
+          <article class="rounded-2xl border border-[#c9c2b2] bg-surface p-6">
+            <p class="flex items-center gap-2 font-display text-lg font-bold text-navy">
+              <span aria-hidden="true">{s.icon}</span>
+              <span>{s.dept}</span>
+              <span class="text-warm-ink/35" aria-hidden="true">
+                ·
+              </span>
+              <span class="text-base font-semibold text-warm-ink">{s.name}</span>
+            </p>
+            <p class="mt-3 text-[0.95rem] leading-relaxed text-warm-ink/75">{s.subtitle}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="mt-7 text-[1.02rem] leading-[1.8] text-warm-ink/85">
+      ทุกงานเป็น <strong class="font-bold text-navy">in-house ที่บริษัทคุณ</strong> ผมเดินทางไปเอง
+      จับมือทำกับทีมจริง ไม่มีคอร์สออนไลน์
+    </p>
+
+    <div class="mt-8 rounded-2xl border border-[#c9c2b2] bg-sand p-6">
+      <p class="text-[0.98rem] italic leading-relaxed text-warm-ink/85">
+        💬 ถ้ามีหุ้นส่วนหรือผู้จัดการฝ่ายขายที่ต้องตัดสินใจด้วยกัน ส่งหน้านี้ให้เขาอ่านได้เลยครับ
+        จะได้เห็นภาพเดียวกันก่อนเราคุย
+      </p>
+      <div class="mt-5 flex flex-wrap items-center gap-3">
+        <button
+          id="share-page"
+          type="button"
+          class="press-btn btn btn-sm btn-outline border-navy text-navy"
+          data-share-url={shareUrl}
+        >
+          ส่งหน้านี้ให้เพื่อนร่วมงาน
+        </button>
+        <p id="share-status" role="status" class="text-sm text-warm-ink/70"></p>
+      </div>
+      <p id="share-fallback" hidden class="mt-3 break-all font-mono text-sm text-warm-ink/75">
+        {shareUrl}
+      </p>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (function () {
+    var btn = document.getElementById('share-page');
+    if (!btn) return;
+    var url = btn.getAttribute('data-share-url') || '';
+    var status = document.getElementById('share-status');
+    var fallback = document.getElementById('share-fallback');
+
+    btn.addEventListener('click', async function () {
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: 'ปัน ณัฐพัชร์ — ทำความรู้จักก่อนคุยกัน', url: url });
+          return;
+        } catch (e) {
+          /* ผู้ใช้ยกเลิก หรือ share ไม่ผ่าน → ตกไปที่คัดลอกลิงก์ */
+        }
+      }
+      try {
+        await navigator.clipboard.writeText(url);
+        if (status) status.textContent = 'คัดลอกลิงก์แล้ว ✓';
+      } catch (e) {
+        // คัดลอกไม่ได้ → โชว์ลิงก์เต็มค้างไว้ ไม่หายเอง
+        if (fallback) fallback.hidden = false;
+        if (status) status.textContent = 'คัดลอกอัตโนมัติไม่ได้ — ลิงก์อยู่ด้านล่างครับ';
+      }
+    });
+  })();
+</script>

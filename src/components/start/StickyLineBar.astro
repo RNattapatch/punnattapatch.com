@@ -1,0 +1,76 @@
+---
+/**
+ * แถบปุ่ม LINE ติดขอบล่าง — โผล่หลังเลื่อนผ่าน fold แรก ซ่อนตอนการ์ดสถานะยังเห็นอยู่
+ * (ปุ่มในการ์ดทำหน้าที่แทนอยู่แล้ว แถบซ้ำตอนนั้น = รบกวนเปล่าๆ)
+ */
+import { SITE } from '../../data/site';
+---
+
+<div id="sticky-line-bar" class="sticky-line-bar" data-visible="false">
+  <a
+    href={SITE.social.line}
+    rel="noopener"
+    target="_blank"
+    class="press-btn btn w-full gap-2 border-none font-bold text-white shadow-none hover:opacity-90"
+    style="background: #06C755;"
+  >
+    <img src="/line-logo.png" alt="" class="h-5 w-5 shrink-0" aria-hidden="true" />
+    ทักใน LINE →
+  </a>
+</div>
+
+<script is:inline>
+  (function () {
+    var bar = document.getElementById('sticky-line-bar');
+    var fold = document.getElementById('page0-fold');
+    if (!bar || !fold) return;
+
+    if (!('IntersectionObserver' in window)) {
+      bar.setAttribute('data-visible', 'true');
+      return;
+    }
+
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          bar.setAttribute('data-visible', entry.isIntersecting ? 'false' : 'true');
+        });
+      },
+      { threshold: 0 }
+    );
+    io.observe(fold);
+  })();
+</script>
+
+<style>
+  .sticky-line-bar {
+    position: fixed;
+    z-index: 30;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.6rem max(1rem, env(safe-area-inset-left)) calc(0.6rem + env(safe-area-inset-bottom))
+      max(1rem, env(safe-area-inset-right));
+    background: rgba(244, 241, 234, 0.97);
+    border-top: 1px solid #c9c2b2;
+    transform: translateY(110%);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      transform 220ms ease-out,
+      opacity 180ms ease-out;
+  }
+  .sticky-line-bar[data-visible='true'] {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  @media (min-width: 768px) {
+    .sticky-line-bar > a {
+      max-width: 28rem;
+      margin-inline: auto;
+    }
+  }
+  /* prefers-reduced-motion: global.css บีบ transition-duration เหลือ ~0
+     แถบจึงโผล่/หายทันทีโดยไม่มีการเดินทาง — ไม่ต้อง override เพิ่ม */
+</style>

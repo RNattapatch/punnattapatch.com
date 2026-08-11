@@ -1,0 +1,117 @@
+---
+/**
+ * ส่วน 6 — เคสจริง + logo strip
+ *
+ * ปันเคาะ 2026-08-09: ไม่เอ่ยชื่อบริษัทในเคส — เล่าเป็นประเภทธุรกิจ
+ * แล้วใช้ logo strip ชุดเดียวกับหน้าแรก/testimonial เป็นหลักฐานแทน
+ * (logo เหล่านี้ขึ้นเว็บอยู่แล้ว ไม่ต้องขออนุญาตใหม่)
+ *
+ * การ์ดละไม่เกิน 4 บรรทัด · ไม่เคลมยอด เน้นเวลา/ความหลุด
+ */
+const cases = [
+  {
+    kind: 'ตัวแทนจำหน่ายรถโฟล์คลิฟท์',
+    before: 'ระบบงานงอกขึ้นมาหลายตัว กระจัดกระจายคนละที่',
+    after: 'รวมเหลือระบบเดียวที่ทีมใช้จริง และมี LINE bot รับลูกค้า',
+  },
+  {
+    kind: 'ค้าวัสดุก่อสร้าง 2 สาขา',
+    before: 'งานเอกสารและการตามงานวิ่งข้ามสองสาขา',
+    after: 'ระบบกลางที่เจ้าของเห็นทุกอย่างจากที่เดียว',
+  },
+  {
+    kind: 'ธุรกิจของผมเอง',
+    before: 'ใบเสนอราคาและใบแจ้งหนี้ ทำมือทุกใบ',
+    after: 'สั่งงานผ่านแชท แล้วเอกสารวิ่งเข้า LINE เอง',
+  },
+];
+
+const clientLogos = [
+  { src: '/logos/clients/futureskill.png', alt: 'FutureSkill' },
+  { src: '/logos/clients/hfc-healthfoods.png', alt: 'HFC HealthFoods Corporation' },
+  { src: '/logos/clients/home-plus.png', alt: 'ฮ.โฮมพลัส' },
+  { src: '/logos/clients/ving.png', alt: 'V!NG' },
+  { src: '/logos/clients/farevefarm.jpg', alt: 'Farevefarm' },
+  { src: '/logos/clients/farmsuk.jpg', alt: 'ฟาร์มสุข farmsuk' },
+  { src: '/logos/clients/business-boy.jpg', alt: 'เด็กประกอบการ The Business Boy' },
+  { src: '/logos/clients/gpx.jpg', alt: 'GPX' },
+  { src: '/logos/clients/aes.jpg', alt: 'AES' },
+  { src: '/logos/clients/royal-enfield.jpg', alt: 'Royal Enfield' },
+  { src: '/logos/clients/zontes.png', alt: 'Zontes' },
+  { src: '/logos/clients/nissan.png', alt: 'Nissan' },
+  { src: '/logos/clients/lambretta.png', alt: 'Lambretta' },
+  { src: '/logos/clients/nsscrap.avif', alt: 'NSSCRAP' },
+  { src: '/logos/clients/scenery-farm.jpeg', alt: 'Scenery' },
+  { src: '/logos/clients/ud-clinic.jpg', alt: 'UD Clinic' },
+];
+// หมายเหตุ: `singha-park-chiang-rai.png` มีอยู่ใน public/logos/clients แต่ไม่ได้ใช้
+// ที่นี่ — ไฟล์นั้น render ออกมาเป็นช่องว่างในเบราว์เซอร์ (โหลดสำเร็จ 2133×2133
+// แต่ไม่มีอะไรขึ้น) และหน้าแรกก็ไม่ได้ใช้เช่นกัน · ชุดนี้ = ชุดเดียวกับ index.astro
+---
+
+<section class="border-y border-[#c9c2b2] bg-sand px-margin-page py-14 md:py-20">
+  <div class="mx-auto max-w-2xl">
+    <h2 class="font-display text-2xl font-bold leading-tight text-navy md:text-3xl">
+      ของที่ทำไปแล้ว หน้าตาประมาณนี้
+    </h2>
+
+    <div class="mt-7 space-y-4">
+      {
+        cases.map((c) => (
+          <article class="rounded-2xl border border-[#c9c2b2] bg-surface p-6">
+            <p class="font-display text-lg font-bold text-navy">{c.kind}</p>
+            <dl class="mt-3 space-y-2 text-[0.95rem] leading-relaxed">
+              <div class="flex gap-2">
+                <dt class="shrink-0 font-mono text-[0.7rem] uppercase tracking-[0.15em] text-warm-ink/65 pt-1">
+                  ก่อน
+                </dt>
+                <dd class="text-warm-ink/65">{c.before}</dd>
+              </div>
+              <div class="flex gap-2">
+                <dt class="shrink-0 font-mono text-[0.7rem] uppercase tracking-[0.15em] text-coral pt-1">
+                  หลัง
+                </dt>
+                <dd class="text-warm-ink">{c.after}</dd>
+              </div>
+            </dl>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="mt-9 border-t border-[#c9c2b2] pt-7">
+      <p class="text-xs font-bold uppercase tracking-[0.16em] text-warm-ink/65">
+        องค์กรที่ผมดูแล
+      </p>
+      <!-- โลโก้ลูกค้าขึ้นสีเต็มเสมอ — ห้าม grayscale/จางแล้วค่อยเป็นสีตอน hover
+           (กฎถาวร ปันเคาะ 2026-08-09 · ดู design-system.md) -->
+      <!-- flex-wrap ไม่ใช่ grid — 16 โลโก้หาร 3/4/5 ไม่ลงตัว แถวสุดท้ายจะได้จัดกลาง
+           ไม่ค้างชิดซ้ายเป็นเศษ · พื้นกล่องขาวเพื่อให้โลโก้ที่มีพื้นขาวติดมาในไฟล์
+           กลืนไปกับกล่อง ไม่เห็นเป็นสี่เหลี่ยมซ้อนสี่เหลี่ยม -->
+      <ul
+        class="mt-4 flex flex-wrap justify-center gap-2.5 sm:gap-3"
+        aria-label="องค์กรที่ไว้ใจให้ปันดูแล"
+      >
+        {
+          clientLogos.map((logo) => (
+            <li class="flex h-24 w-[calc(33.333%-0.7rem)] items-center justify-center rounded-xl border border-[#c9c2b2] bg-white p-3 sm:h-28 sm:w-[calc(25%-0.75rem)] md:w-[calc(20%-0.8rem)] md:p-4">
+              <img
+                src={logo.src}
+                alt={logo.alt}
+                width="160"
+                height="160"
+                loading="lazy"
+                decoding="async"
+                class="max-h-full max-w-full object-contain"
+              />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <p class="mt-8 text-[1.02rem] italic leading-[1.8] text-warm-ink/85">
+      อยากเห็นของจริงมากกว่านี้ ในคอลผมเปิดหน้าจอให้ดูระบบที่ผมใช้เองได้เลยครับ
+    </p>
+  </div>
+</section>

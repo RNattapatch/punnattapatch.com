@@ -1,0 +1,103 @@
+---
+/**
+ * ส่วน 5 — How · "ผมทำงานยังไง"
+ *
+ * ใช้ timeline แนวตั้งภาษาเดียวกับการ์ดสถานะใน fold แรกโดยตั้งใจ:
+ * "ระบบที่คุณเพิ่งเห็นทำงาน กับวิธีทำงานของผม หน้าตาเดียวกัน"
+ */
+const steps = [
+  {
+    head: 'ลงไปดูหน้างานจริงก่อน',
+    body: 'ระบบที่ออกแบบจากห้องประชุม กับระบบที่ออกแบบจากหน้าสนามจริง ต่างกันเยอะมาก ผมต้องเห็นว่าทีมคุณทำงานกันยังไงจริงๆ ก่อน',
+  },
+  {
+    head: 'ออกแบบเฉพาะธุรกิจคุณ',
+    body: 'ไม่มี template สำเร็จรูป เพราะปัญหาของธุรกิจซื้อมา-ขายไป กับธุรกิจผลิต ไม่เหมือนกัน',
+  },
+  {
+    head: 'จับมือทำจนทีมใช้เองเป็น',
+    body: 'ผมไม่ได้มาสอนแล้วหาย เป้าหมายคือวันที่ผมไม่อยู่ ระบบยังเดิน',
+  },
+];
+---
+
+<section class="px-margin-page py-14 md:py-20">
+  <div class="mx-auto max-w-2xl">
+    <h2 class="font-display text-2xl font-bold leading-snug text-navy md:text-3xl">
+      ใครๆ ก็สั่ง AI สร้างระบบได้ครับ — แต่ถ้าไม่เข้าใจธุรกิจ ไม่เข้าใจหน้างานจริง
+      ปัญหาจะตามมาทีหลัง
+    </h2>
+
+    <p class="mt-6 font-display text-lg font-bold text-navy">ผมถึงทำงาน 3 ขั้นเสมอ:</p>
+
+    <ol class="how-rail">
+      {
+        steps.map((s, i) => (
+          <li class="how-step">
+            <span class="how-mark tabular-nums" aria-hidden="true">
+              {i + 1}
+            </span>
+            <div>
+              <p class="font-display text-lg font-bold text-navy">{s.head}</p>
+              <p class="mt-1.5 text-[0.98rem] leading-relaxed text-warm-ink/80">{s.body}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p class="mt-9 rounded-2xl border border-[#c9c2b2] bg-sand px-6 py-5 text-[1.02rem] leading-[1.8] text-warm-ink/85">
+      และบางเรื่องผมจะบอกตรงๆ ว่า <strong class="font-bold text-navy">ไม่ควรใช้ AI</strong>
+      เพราะบางงานให้คนทำดีกว่า ที่ปรึกษาที่ขายฝันว่า AI ทำได้ทุกอย่าง ระวังไว้ก่อนครับ
+    </p>
+  </div>
+</section>
+
+<style>
+  /* rail เดียวกับ .tracker ใน StatusCard — จงใจให้เป็นภาษาเดียวกัน */
+  /* margin ตั้งที่นี่ ไม่ใช่ utility — scoped style ทับ mt-* ของ Tailwind */
+  .how-rail {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+  }
+  .how-step {
+    position: relative;
+    display: flex;
+    gap: 0.85rem;
+    padding-bottom: 1.6rem;
+  }
+  .how-step:last-child {
+    padding-bottom: 0;
+  }
+  .how-step::before {
+    content: '';
+    position: absolute;
+    left: 0.68rem;
+    top: 1.6rem;
+    bottom: 0.2rem;
+    width: 1px;
+    background: #c9c2b2;
+  }
+  .how-step:last-child::before {
+    display: none;
+  }
+  .how-mark {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 9999px;
+    border: 1px solid #1e1b16;
+    background: #fcf9f2;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #1e1b16;
+  }
+</style>

@@ -1,0 +1,47 @@
+---
+/**
+ * ส่วน 8 — งบประมาณ (ราคาเริ่มต้น 2 แบบ · ไม่โชว์เพดาน)
+ *
+ * ตัวเลขมาจาก pricing.mjs (SSOT) เท่านั้น — ห้าม hardcode
+ *   อบรมเริ่มต้น    → key `inhouse-a`
+ *   ที่ปรึกษาเริ่มต้น → key `ai-agent-ceo`
+ */
+import { fmtPrice } from '../../data/pricing.mjs';
+
+const tiers = [
+  { label: 'อบรม', detail: 'คอร์สสดที่บริษัทคุณ ทั้งทีม', price: fmtPrice('inhouse-a') },
+  { label: 'ที่ปรึกษา', detail: 'consult วางระบบกับผมโดยตรง', price: fmtPrice('ai-agent-ceo') },
+];
+---
+
+<section id="start-pricing" class="px-margin-page py-14 md:py-20">
+  <div class="mx-auto max-w-2xl">
+    <h2 class="font-display text-2xl font-bold leading-tight text-navy md:text-3xl">
+      งานของผมมี 2 แบบครับ
+    </h2>
+
+    <dl class="mt-7 divide-y divide-[#c9c2b2] rounded-2xl border border-[#c9c2b2] bg-surface">
+      {
+        tiers.map((t) => (
+          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-6 py-5">
+            <dt>
+              <span class="font-display text-lg font-bold text-navy">{t.label}</span>
+              <span class="ml-2 text-sm text-warm-ink/70">({t.detail})</span>
+            </dt>
+            <dd class="font-display text-lg font-bold text-navy tabular-nums">
+              <span class="mr-1 text-sm font-semibold text-warm-ink/70">เริ่มต้น</span>
+              {t.price}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <p class="mt-7 text-[1.02rem] leading-[1.8] text-warm-ink/85">
+      ตัวเลขที่เหมาะกับคุณ ขึ้นกับหน้างานจริง ผมถึงต้องคุยก่อนเสนอราคา ไม่ใช่เสนอราคาก่อนคุย
+    </p>
+    <p class="mt-4 text-[1.02rem] leading-[1.8] text-warm-ink/85">
+      ทุกงานชำระเต็มก่อนเริ่ม เพราะผมรับงานจำกัดต่อเดือน คิวที่จองคือคิวที่ผมกันเวลาไว้ให้คุณจริงๆ
+    </p>
+  </div>
+</section>

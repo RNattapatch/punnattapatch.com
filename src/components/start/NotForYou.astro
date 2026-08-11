@@ -1,0 +1,83 @@
+---
+/**
+ * ส่วน 7 — "ผมไม่เหมาะกับใคร" · จุดเดียวของหน้าที่กลับ contrast
+ * พื้น ink ตัวอักษร ivory — Unexpected ต้องรู้สึกได้ด้วยตา ไม่ใช่แค่เนื้อหา
+ *
+ * แยกเป็นข้อ ๆ มีเลขกำกับ (ปันสั่ง 2026-08-09) — วรรคแรกของแต่ละข้อหนา
+ * เพื่อให้คนที่อ่านเฉพาะตัวหนา (scroll-off) ยังเก็บใจความครบ
+ * ⚠️ ตัวอักษรทุกคำ verbatim ตาม copy plan — ตัวหนาคือการจัดน้ำหนัก ไม่ใช่การแก้คำ
+ */
+const notFor = [
+  {
+    lead: 'คุณอยากได้ทางลัดที่ไม่ต้องลงแรง',
+    rest: 'เพราะระบบที่ดีต้องการเจ้าของที่ลงมาเข้าใจมันด้วย อย่างน้อยช่วงแรก',
+  },
+  {
+    lead: 'คุณอยากได้แค่เครื่องมือตัวใหม่',
+    rest: 'ถ้าระบบขายข้างหลังยังไม่มี ติด AI ไปก็เหมือนติดเครื่องยนต์แรงๆ ให้รถที่ไม่มีพวงมาลัย',
+  },
+  {
+    lead: 'คุณต้องการอบรมพนักงานหลักร้อยคนแบบองค์กรใหญ่',
+    rest: 'ผมทำงานลึกกับ SME ทีมขาย 5–20 คน องค์กรใหญ่มีคนที่เหมาะกว่าผม',
+  },
+];
+---
+
+<section class="bg-warm-ink px-margin-page py-16 text-ivory md:py-24">
+  <div class="mx-auto max-w-2xl">
+    <p class="font-mono text-[0.7rem] font-bold uppercase tracking-[0.22em] text-coral-soft">
+      อ่านก่อนตัดสินใจ
+    </p>
+
+    <h2 class="mt-4 font-display text-[1.75rem] font-bold leading-[1.25] text-ivory md:text-[2.6rem]">
+      บอกตรงๆ ก่อนเสียเวลากันทั้งคู่<br class="hidden sm:block" />
+      <span class="not-for-mark">ผมไม่เหมาะกับคุณ ถ้า:</span>
+    </h2>
+
+    <ol class="mt-9 space-y-4">
+      {
+        notFor.map((item, i) => (
+          <li class="rounded-2xl border border-ivory/15 bg-ivory/[0.055] p-5 md:p-6">
+            <div class="flex gap-4">
+              <span
+                class="shrink-0 font-mono text-sm font-bold text-coral-soft tabular-nums"
+                aria-hidden="true"
+              >
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <p class="text-[1.02rem] leading-[1.75] text-ivory/80">
+                <strong class="font-bold text-ivory">{item.lead}</strong>{' '}
+                {item.rest}
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p class="mt-10 border-t border-ivory/20 pt-7 text-[1.08rem] font-medium leading-[1.75] text-ivory">
+      แต่ถ้าคุณเป็นเจ้าของที่อยากได้ระบบที่ตัวเองเข้าใจ และทีมใช้ต่อเองเป็น
+      เราน่าจะคุยกันถูกคอครับ
+    </p>
+  </div>
+</section>
+
+<style>
+  /* ขีดใต้ลายมือสีคอรัลบนพื้น ink — ยืม .hand-underline ของเว็บมาปรับให้อ่านออกบนพื้นเข้ม */
+  .not-for-mark {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+  }
+  .not-for-mark::after {
+    content: '';
+    position: absolute;
+    left: -1%;
+    bottom: 0.08em;
+    width: 102%;
+    height: 0.14em;
+    border-radius: 4px;
+    background-color: #fe596b;
+    transform: rotate(-1.2deg);
+  }
+</style>
