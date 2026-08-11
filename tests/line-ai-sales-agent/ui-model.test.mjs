@@ -35,7 +35,7 @@ test('step lookup and resume labels expose actionable status', () => {
   const engine = createPlaybookEngine({ playbook, storage: new TestStorage() });
   const progress = engine.getProgress();
   const step = getStepByLocation(progress, 'sell', 'S4');
-  assert.equal(step.title, 'ตั้งเพดานส่วนลดและข้อเสนอทางเลือก');
+  assert.equal(step.title, 'ตั้งเพดานส่วนลดและทางออกเมื่อลดไม่ได้');
   assert.equal(getResumeLabel({ phaseId: 'prepare', stepId: 'P0', reason: 'required-step' }, playbook), 'เริ่มขั้นแรก');
   assert.equal(getResumeLabel({ phaseId: 'prepare', stepId: 'P0', reason: 'blocked' }, playbook), 'แก้จุดติดก่อน');
 });

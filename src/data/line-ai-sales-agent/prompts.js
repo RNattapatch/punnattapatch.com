@@ -1,11 +1,166 @@
+const SAFETY_NOTE = 'ห้ามใส่กุญแจ รหัสผ่าน หรือข้อมูลลับในข้อความคำสั่งนี้ วางค่าเมื่อระบบถามในหน้าต่าง Builder เท่านั้น (Do not include a secret or any account credential in this prompt.)';
+
 export const prompts = [
-  { id: 'MP-01', title: 'จัดข้อมูลร้านให้ AI อ่าน', stepIds: ['P9'], editableFields: ['shopName', 'businessType', 'catalogSource'], template: 'ช่วยจัดข้อมูลของ {{shopName}} ให้เป็นหัวข้อสินค้า ราคา เงื่อนไข และคำถามที่ต้องส่งต่อ โดยห้ามเติมข้อมูลที่ไม่มีใน {{catalogSource}}', safetyNote: 'Do not include a secret or any account credential in this prompt.' },
-  { id: 'MP-02', title: 'ทดสอบข้อความแรก', stepIds: ['P8'], editableFields: ['shopName', 'testMessage', 'expectedReply'], template: 'ออกแบบการทดสอบข้อความแรกของ {{shopName}}: ส่ง {{testMessage}} และตรวจว่าคำตอบสอดคล้องกับ {{expectedReply}} พร้อมจุดตรวจ log', safetyNote: 'Do not include a secret or any account credential in this prompt.' },
-  { id: 'MP-03', title: 'ตั้ง Sales Agent หลัก', stepIds: ['B2', 'B3', 'B4', 'B5'], editableFields: ['shopName', 'businessType', 'knowledgeLocation', 'handoffRule'], template: 'คุณคือ Sales Agent ของ {{shopName}} ธุรกิจ {{businessType}} ใช้ข้อมูลจาก {{knowledgeLocation}} เท่านั้น ถ้าไม่มั่นใจให้ทำตาม {{handoffRule}}', safetyNote: 'Do not include a secret or any account credential in this prompt.' },
-  { id: 'MP-04', title: 'ตอบแชต LINE อย่างเป็นธรรมชาติ', stepIds: ['S1', 'S3'], editableFields: ['shopName', 'tone', 'qualificationQuestions'], template: 'ตอบแชต LINE ของ {{shopName}} ด้วยน้ำเสียง {{tone}} เริ่มจากเข้าใจความต้องการ แล้วใช้คำถาม {{qualificationQuestions}} ก่อนแนะนำทางเลือก', safetyNote: 'Do not include a secret or any account credential in this prompt.' },
-  { id: 'MP-05', title: 'คุมส่วนลดและส่งต่อคน', stepIds: ['S2', 'S4', 'S5', 'S6'], editableFields: ['discountCeiling', 'allowedGift', 'appointmentPolicy', 'handoffRule'], template: 'ห้ามเสนอส่วนลดเกิน {{discountCeiling}} หากลูกค้ายังลังเลให้เสนอ {{allowedGift}} ตามเงื่อนไข ใช้ {{appointmentPolicy}} สำหรับการนัด และส่งต่อเมื่อเข้า {{handoffRule}}', safetyNote: 'Do not include a secret or any account credential in this prompt.' },
-  { id: 'MP-06', title: 'สร้าง Product Card และ Quote Draft', stepIds: ['A1', 'A2'], editableFields: ['shopName', 'productName', 'quoteFields'], template: 'สร้าง Product Card และ quote draft ของ {{productName}} สำหรับ {{shopName}} โดย quote ต้องมี {{quoteFields}} และติดป้ายว่ารอตรวจทุกครั้ง', safetyNote: 'Do not include a secret or any account credential in this prompt.' },
-  { id: 'MP-07', title: 'จัดการ Payment Request และหลักฐาน', stepIds: ['A3', 'A4'], editableFields: ['paymentPolicy', 'reviewOwner', 'evidenceRule'], template: 'สร้างข้อความ payment request ตาม {{paymentPolicy}} ส่งให้ {{reviewOwner}} ตรวจหลักฐานตาม {{evidenceRule}} และห้ามยืนยันการชำระแทนคน', safetyNote: 'Do not include a secret or any account credential in this prompt.' },
-  { id: 'MP-08', title: 'เฝ้าระวังและรายงานประจำวัน', stepIds: ['A5', 'A6', 'A7', 'A8'], editableFields: ['reportTime', 'alertOwner', 'memoryRetention', 'quotaThreshold'], template: 'ทุกวันเวลา {{reportTime}} สรุปความผิดปกติให้ {{alertOwner}} ดูแล memory ตาม {{memoryRetention}} และแจ้งเตือนเมื่อการใช้งานถึง {{quotaThreshold}}', safetyNote: 'Do not include a secret or any account credential in this prompt.' },
-  { id: 'DEBUG-01', title: 'Debug ระบบแบบมีหลักฐาน', stepIds: ['P8', 'B7', 'S1', 'A5'], editableFields: ['phase', 'step', 'symptom', 'expectedResult'], template: 'วิเคราะห์ปัญหาใน phase {{phase}} step {{step}}: อาการ {{symptom}} ผลที่คาด {{expectedResult}} ให้ตอบเป็นลำดับตรวจ สาเหตุที่เป็นไปได้ และหลักฐานที่ต้องเก็บ', safetyNote: 'Do not include a secret or any account credential in this prompt.' },
+  {
+    id: 'MP-01',
+    title: 'แปลงไฟล์สินค้าเดิมให้เป็นสมองร้าน 3 ไฟล์',
+    stepIds: ['P9'],
+    editableFields: ['shopName', 'catalogSource', 'tone', 'discountCeiling', 'allowedGift', 'escalationAmount', 'paymentPolicy', 'depositRate', 'currentPromotion'],
+    template: `ช่วยแปลงข้อมูลร้านของผมเป็น "สมองร้าน" 3 ไฟล์ ห้ามเติมข้อมูลที่ไม่มีในไฟล์ต้นทาง
+
+ข้อมูลร้าน:
+- ชื่อร้าน: {{shopName}}
+- ไฟล์สินค้า: {{catalogSource}} (วางไว้ในโฟลเดอร์นี้แล้ว)
+- น้ำเสียงแอดมิน: {{tone}}
+- เพดานส่วนลด: ลดได้เองสูงสุด {{discountCeiling}} · เกินกว่านั้นเสนอ {{allowedGift}} · ยอดเกิน {{escalationAmount}} ให้ส่งต่อเจ้าของร้าน
+- ช่องทางชำระ: {{paymentPolicy}} · มัดจำ {{depositRate}}
+
+ให้ทำ:
+1) อ่านไฟล์สินค้า แล้วสร้าง products.md: สินค้าทุกตัว ราคาเป็นตัวเลขชัดเจน ออปชั่นและหมายเหตุครบ
+2) สร้าง context.md: ตัวตนร้าน น้ำเสียง และกติกาการขาย/ต่อรอง/ส่งต่อคน ตามข้อมูลข้างบน
+   เพิ่มกติกาเรื่องรูปด้วย: ห้ามบอกลูกค้าว่า "สร้างรูปภาพไม่ได้" หรืออ้างว่าเป็น AI เด็ดขาด (รูปเป็นหน้าที่ของระบบร้าน) · ถ้ารุ่นไหนยังไม่มีรูป ให้บอกว่ายังไม่มีในระบบ แล้วแจ้งแอดมินส่งให้
+3) สร้าง promotions.md: {{currentPromotion}}
+4) สรุปว่าแปลงได้กี่สินค้า ราคาแต่ละตัวเท่าไหร่ ถ้าข้อมูลไหนไม่แน่ใจให้ถามผม ห้ามเดา`,
+    safetyNote: SAFETY_NOTE,
+  },
+  {
+    id: 'MP-02',
+    title: 'เชื่อม Builder กับ LINE แล้วส่งข้อความแรก',
+    stepIds: ['P8'],
+    editableFields: ['shopName', 'testMessage', 'expectedReply'],
+    template: `ช่วยเชื่อม Builder เครื่องนี้กับ LINE OA ของร้าน {{shopName}} ผ่านเครื่องมือทางการของ LINE แล้วส่งข้อความแรกให้ผม
+
+- กุญแจของ OA: ผมจะวางค่าให้เมื่อคุณถามเท่านั้น อย่าให้ผมพิมพ์ทิ้งไว้ในแชท
+- ผู้รับ: LINE ของผมเอง (ผมแอด OA ร้านเป็นเพื่อนแล้ว)
+- ข้อความที่จะส่ง: {{testMessage}}
+- ผลที่ควรได้: {{expectedReply}}
+
+กติกา: เครื่องมือส่งข้อความนี้อยู่กับคุณ (Builder) เท่านั้น ห้ามนำไปติดตั้งให้บอทหน้าร้าน (Worker) เด็ดขาด
+เสร็จแล้วบอกผลว่าส่งสำเร็จหรือไม่ พร้อมวิธีเช็กโควตาข้อความคงเหลือ`,
+    safetyNote: SAFETY_NOTE,
+  },
+  {
+    id: 'MP-03',
+    title: 'ตั้ง Worker บนเครื่องเช่าให้เป็นพนักงานร้าน',
+    stepIds: ['B1', 'B2', 'B3', 'B4', 'B5'],
+    editableFields: ['shopName', 'businessType', 'knowledgeLocation'],
+    template: `เชื่อมเข้าเครื่องเช่าของร้าน {{shopName}} แล้วตั้ง Worker ให้เป็นพนักงานร้าน
+
+- ที่อยู่เครื่อง: [ใส่ที่อยู่เครื่องของคุณตอนสั่งงาน] · ผมมีรหัสเข้าเครื่องพร้อมแล้ว
+- ธุรกิจของร้าน: {{businessType}}
+- โมเดล: ใช้ผ่านบัญชีกลางของผม ผมจะวางค่าให้เมื่อคุณถาม เลือกโมเดลเร็ว-ประหยัดที่เหมาะกับงานแชตขาย
+- บุคลิกร้าน: อ่านจากไฟล์สมองร้านที่ {{knowledgeLocation}} เท่านั้น ห้ามแต่งบุคลิกเอง
+- ปิดเครื่องมือทุกอย่างที่เกินหน้าที่การตอบแชตลูกค้า (บอทหน้าร้านห้ามมีเครื่องมือส่งข้อความหว่านหรือแก้ไฟล์)
+- ตั้งตัวซิงค์: ดึงข้อมูลจากสมองร้านทุก 5 นาที ถ้าเนื้อหาเปลี่ยนให้ระบบโหลดใหม่เอง
+
+ทำทีละขั้น บอกก่อนว่าแต่ละขั้นทำอะไร เสร็จแล้วบอกวิธีทดสอบว่า Worker รู้จักร้านแล้ว`,
+    safetyNote: SAFETY_NOTE,
+  },
+  {
+    id: 'MP-04',
+    title: 'เปิดประตู LINE ให้ Worker รับ-ตอบลูกค้าจริง',
+    stepIds: ['S1'],
+    editableFields: ['shopName'],
+    template: `เปิดประตู LINE ให้ Worker ของร้าน {{shopName}} รับและตอบข้อความลูกค้าจริง
+
+- กุญแจ 2 ดอกของ OA ร้านผม: ผมจะวางค่าให้เมื่อคุณถามเท่านั้น
+- ตั้งจุดรับข้อความ (webhook) บนเครื่อง Worker แล้วบอก URL ที่ผมต้องเอาไปกรอกใน LINE Developers Console
+- ตรวจลายเซ็นทุกข้อความ ข้อความปลอมต้องถูกปฏิเสธ
+- ถ้าโควตาการตอบกลับในเทิร์นนั้นหมดอายุ ให้มีเส้นสำรองส่งอีกแบบอัตโนมัติ
+- ตั้ง "ห้องบ้าน" ของระบบเป็นแชตเจ้าของและบันทึกเป็นค่าคงที่ของเครื่อง แล้วสร้างบริการใหม่ให้โหลดค่า หากไม่ตั้ง ลูกค้าใหม่จะเจอข้อความระบบภาษาอังกฤษถามหาห้องบ้านตอนทักครั้งแรก
+
+เสร็จแล้วสรุป: URL ที่ผมต้องกรอก + จุดที่ผมต้องกดเองในหน้าห้องเครื่องและหน้าร้าน + วิธีทดสอบจากมือถือ`,
+    safetyNote: SAFETY_NOTE,
+  },
+  {
+    id: 'MP-05',
+    title: 'ตั้งรหัสอ้างสิทธิ์เจ้าของ',
+    stepIds: ['S2'],
+    editableFields: ['shopName', 'alertOwner'],
+    template: `ตั้งระบบ "รหัสอ้างสิทธิ์เจ้าของ" ให้ร้าน {{shopName}}
+
+- รหัสลับ: [ตั้งวลีที่เดายาก เช่น #เถ้าแก่ชื่อร้าน + เลข 4 หลัก แล้วพิมพ์ตอนสั่งงาน]
+- เมื่อมีคนพิมพ์รหัสนี้ในแชต LINE ของร้าน ให้ระบบผูกคนนั้นเป็นเจ้าของ และเก็บรหัสผู้ใช้ให้เอง
+- ทุกการแจ้งเตือนและรายงาน ส่งหา {{alertOwner}} ที่ผูกไว้เท่านั้น
+- ถ้ามีการอ้างสิทธิ์ซ้ำจากคนใหม่ ให้แจ้งเจ้าของเดิมก่อน ห้ามสลับให้อัตโนมัติ
+
+เสร็จแล้วบอกวิธีเปลี่ยนรหัสกรณีรหัสหลุด และวิธีตรวจว่าตอนนี้ผูกใครอยู่`,
+    safetyNote: SAFETY_NOTE,
+  },
+  {
+    id: 'MP-06',
+    title: 'สร้างการ์ดสินค้าและใบเสนอราคาแบบการ์ด',
+    stepIds: ['A1', 'A2'],
+    editableFields: ['shopName', 'productName', 'cardButtonLabel', 'quoteFields', 'depositRate'],
+    template: `สร้างชุดการ์ดสินค้าให้ร้าน {{shopName}} จากไฟล์สินค้าในสมองร้าน
+
+- การ์ดแต่ละใบ: รูปสินค้า + ชื่อ + ราคา + ปุ่ม {{cardButtonLabel}}
+- เริ่มจากสินค้าที่ขายบ่อยที่สุดก่อน: {{productName}}
+- รูปต้องเป็นลิงก์ถาวรเท่านั้น ห้ามใช้ที่เก็บชั่วคราว ไม่งั้นการ์ดจะกลายเป็นกรอบเปล่า
+- เก็บการ์ดไว้ในสมองร้านพร้อมคำที่ลูกค้าใช้เรียกสินค้าแต่ละตัว
+- ตั้ง "ยามการ์ด": ตรวจทุก 1 นาที ถ้าลูกค้าถามถึงสินค้าไหน ให้ส่งการ์ดใบนั้น และกันส่งซ้ำในวันเดียวกัน
+- คำขอดูรูปที่ไม่มีชื่อรุ่น เช่น "มีรูปไหม" หรือ "ขอดูรูปหน่อย" ต้องส่งการ์ดด้วย ให้ย้อนดูว่าแชตกำลังคุยรุ่นไหนอยู่ และนับคำตอบของบอทด้วย เพราะบอทมักเอ่ยชื่อรุ่นก่อน
+- เพิ่มใบเสนอราคาแบบการ์ด: {{quoteFields}} และมัดจำ {{depositRate}}
+
+ส่งการ์ดตัวอย่าง 1 ใบเข้า LINE ผมก่อน ให้ผมดูบนมือถือแล้วค่อยทำครบชุด`,
+    safetyNote: SAFETY_NOTE,
+  },
+  {
+    id: 'MP-07',
+    title: 'สร้างการ์ดชำระเงินที่ยอดมาจากใบเสนอราคา',
+    stepIds: ['A3', 'A4'],
+    editableFields: ['shopName', 'paymentPolicy', 'reviewOwner', 'evidenceRule'],
+    template: `สร้างการ์ดชำระเงินให้ร้าน {{shopName}}
+
+- ช่องทางรับเงิน: {{paymentPolicy}} ผมจะพิมพ์เลขบัญชีให้ตอนคุณถาม อย่าให้ผมวางไว้ในเอกสาร
+- การ์ดมี: แถวแยกตามช่องทาง + ปุ่มคัดลอกเลขบัญชี (กดแล้วเลขเข้าคลิปบอร์ด) + ปุ่มขอรหัสรับเงิน
+- เมื่อลูกค้ากดขอรหัสรับเงิน: สร้างรหัสรับเงินมาตรฐาน ฝังยอดจากใบเสนอราคาล่าสุดของลูกค้าคนนั้น แล้วส่งภายในราว 1 นาที
+- กติกาเหล็ก: ยอดบนรหัสรับเงินต้องมาจากใบเสนอราคาที่ตรวจแล้วเท่านั้น ห้ามรับตัวเลขลอย ๆ จากบทสนทนา
+- ต้องสร้างรูปรหัสรับเงินบนเครื่องเราเอง อย่าใช้บริการภายนอกที่รับประกันไม่ได้
+- เมื่อลูกค้าส่งสลิป: ตอบรับสุภาพโดยไม่อ้างว่าอ่านยอดได้ → เก็บรูปบนเครื่องเรา ห้ามอัปขึ้นที่เก็บสาธารณะ → แจ้ง {{reviewOwner}} ให้ยืนยันยอดเอง ตาม {{evidenceRule}} และต้องแนบไฟล์รูปสลิปจริงไปด้วย ไม่ใช่ส่งแค่ชื่อไฟล์
+
+ทดสอบ: สร้างรหัสรับเงินด้วยยอดสมมุติ แล้วให้ผมสแกนด้วยแอปธนาคารเพื่อดูว่าชื่อบัญชีและยอดขึ้นถูก โดยไม่กดจ่าย`,
+    safetyNote: SAFETY_NOTE,
+  },
+  {
+    id: 'MP-08',
+    title: 'วางระบบยาม 3 ส่วน: รายงานเย็น แจ้งด่วน และรับสลิป',
+    stepIds: ['A5', 'A6', 'A7', 'A8'],
+    editableFields: ['reportTime', 'alertOwner', 'memoryRetention', 'quotaThreshold', 'handoffRule'],
+    template: `วางระบบยามให้ร้านผม 3 ส่วน ทั้งหมดเป็นสคริปต์ชั้นระบบ ไม่พึ่งความจำของ AI
+
+1) รายงานเย็น: ทุกวันเวลา {{reportTime}} ตามเวลาไทย (เครื่องใช้เวลาสากล แปลงให้ถูก) สรุปเข้า LINE ของ {{alertOwner}}:
+   ลูกค้าใหม่กี่ราย · เคสต้องตามด่วน · คำถามยอดฮิต · คำถามที่บอทตอบไม่ได้
+2) ยามแจ้งด่วน: ตรวจทุก 2 นาที เจอเคสตาม {{handoffRule}} ให้แจ้ง {{alertOwner}} ทันที พร้อมสรุปสั้น ๆ และกันแจ้งซ้ำเคสเดิม
+   แจ้งเตือนอีกกรณี: เมื่อการใช้งานถึง {{quotaThreshold}}
+3) รับสลิป: ลูกค้าส่งรูป → ตอบรับสุภาพโดยไม่อ้างว่าอ่านยอดได้ → เก็บรูปบนเครื่องเรา (ห้ามอัปขึ้นที่เก็บสาธารณะ) → แจ้งเจ้าของยืนยันยอดเอง โดยแนบไฟล์รูปสลิปจริงไปด้วย
+   และตั้งอายุการเก็บข้อมูลลูกค้าตาม {{memoryRetention}}
+
+รูปแบบข้อความถึงเจ้าของต้องอ่านบนมือถือแล้วรู้เรื่องใน 3 วินาที:
+- ไม่มีหัวและท้ายของระบบงานตามเวลาครอบ ถ้าระบบใส่มาให้ ปิดที่ไฟล์ตั้งค่าครั้งเดียว
+- เวลาเป็นเวลาไทย · ไม่โชว์รหัสลูกค้ายาว ๆ (ย่อ 4 ตัวท้ายพอ) · ไม่มีข้อความภายในของระบบหลุดมา
+- ปิดท้ายด้วยสิ่งที่เจ้าของต้องทำต่อ 1 บรรทัด
+
+ข้อควรระวังที่ต้องจัดการให้: งานตามเวลาบนระบบไม่ส่งต่อรหัสลับให้สคริปต์อัตโนมัติ
+ให้เก็บกุญแจในไฟล์ที่ปลอดภัยบนเครื่องแล้วให้สคริปต์อ่านจากไฟล์ และเมื่อสร้างงานเสร็จให้ตรวจซ้ำว่างานยังอยู่จริง`,
+    safetyNote: SAFETY_NOTE,
+  },
+  {
+    id: 'DEBUG-01',
+    title: 'ติดเกิน 15 นาที ใช้ชุดนี้',
+    stepIds: ['P8', 'B7', 'S1', 'A5'],
+    editableFields: ['phase', 'step', 'symptom', 'expectedResult'],
+    template: `ผมกำลังวางระบบ AI ตอบแชตของร้านตัวเอง ตอนนี้ทำถึงช่วง {{phase}} ขั้น {{step}}
+
+สิ่งที่ผมเห็นตอนนี้คือ: {{symptom}}
+สิ่งที่ควรจะเกิดคือ: {{expectedResult}}
+
+ช่วยผมแบบนี้:
+1) บอกก่อนว่าน่าจะเกิดจากอะไร เรียงจากสาเหตุที่น่าจะเป็นที่สุด
+2) พาผมเช็กทีละขั้น ขั้นละ 1 อย่าง แล้วรอผลจากผมก่อนไปขั้นถัดไป
+3) เจอสาเหตุแล้วให้แก้ พร้อมบอกสั้น ๆ ว่าแก้อะไร และป้องกันไม่ให้เกิดซ้ำยังไง
+
+ห้ามให้ผมรันอะไรที่ลบข้อมูลหรือเปลี่ยนกุญแจ โดยไม่บอกเหตุผลก่อน`,
+    safetyNote: SAFETY_NOTE,
+  },
 ];

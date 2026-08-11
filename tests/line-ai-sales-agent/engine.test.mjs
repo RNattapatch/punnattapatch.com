@@ -85,7 +85,7 @@ test('searches Thai and English content and applies phase, status, and type filt
   assert.ok(negotiationResults.items.some((item) => item.stepId === 'S4'));
   assert.ok(negotiationResults.items.every((item) => item.phaseId === 'sell'));
 
-  const promptResults = engine.search('Product Card', { type: 'prompt' });
+  const promptResults = engine.search('การ์ดสินค้า', { type: 'prompt' });
   assert.ok(promptResults.items.some((item) => item.stepId === 'A1'));
   assert.ok(promptResults.items.every((item) => item.type === 'prompt'));
 });
@@ -93,17 +93,22 @@ test('searches Thai and English content and applies phase, status, and type filt
 test('composes an editable prompt and redacts secret-shaped values', () => {
   const engine = createEngine();
 
-  const safe = engine.composePrompt('MP-05', {
+  const safe = engine.composePrompt('MP-01', {
+    shopName: 'บ้านโซฟา',
+    catalogSource: 'products.xlsx',
+    tone: 'สุภาพ เป็นกันเอง',
     discountCeiling: 'ลดได้สูงสุด 5%',
     allowedGift: 'ชุดหมอนอิง',
-    appointmentPolicy: 'เก็บวันเวลาแล้วรอเจ้าหน้าที่ยืนยัน',
-    handoffRule: 'ยอดเกิน 50,000 บาท',
+    escalationAmount: '50,000 บาท',
+    paymentPolicy: 'โอนบัญชี',
+    depositRate: '50%',
+    currentPromotion: 'ยังไม่มี ให้ทำโครงว่างไว้',
   });
   assert.match(safe.text, /ลดได้สูงสุด 5%/);
   assert.doesNotMatch(safe.text, /\{\{.*?\}\}/);
   assert.deepEqual(safe.redactedFields, []);
 
-  const unsafe = engine.composePrompt('MP-05', {
+  const unsafe = engine.composePrompt('MP-01', {
     discountCeiling: 'sk-live-not-for-public',
     allowedGift: 'ของแถม',
   });

@@ -60,10 +60,12 @@ export function searchPlaybook(playbook, state, query = '', filters = {}) {
       if (!matchesType(fields, filters.type)) continue;
       const matchedFields = fields.filter(([, values]) => !normalizedQuery || normalize(asText(values)).includes(normalizedQuery));
       if (normalizedQuery && matchedFields.length === 0) continue;
+      // With a type filter on, only keep steps whose match is in that kind of content —
+      // otherwise a step that merely owns a prompt would surface under a prompt-only search.
+      const typeFilter = filters.type && filters.type !== 'all' ? filters.type : '';
+      if (typeFilter && normalizedQuery && !matchedFields.some(([fieldType]) => fieldType === typeFilter)) continue;
 
-      const matched = (filters.type && filters.type !== 'all'
-        ? matchedFields.find(([fieldType]) => fieldType === filters.type)
-        : matchedFields[0]) ?? fields[0];
+      const matched = (typeFilter ? matchedFields.find(([fieldType]) => fieldType === typeFilter) : matchedFields[0]) ?? fields[0];
       items.push({
         stepId: step.id,
         phaseId: phase.id,

@@ -310,6 +310,40 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
   .step-nav { border-top: 1px solid var(--app-border); margin-top: 1.5rem; padding-top: 1.1rem; }
   .step-nav > span { color: var(--app-muted); font-family: var(--pb-body); font-size: 0.72rem; }
 
+  .before-panel { background: var(--app-surface); border: 1px solid var(--app-border); border-left: 3px solid var(--phase-color); margin: 1.4rem 0 0; padding: 0.95rem 1.1rem; }
+  .before-panel p { color: #514d46; font-size: 0.85rem; line-height: 1.7; margin: 0.35rem 0 0; }
+
+  .shot-grid { display: grid; gap: 1.1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 1.1rem; }
+  .shot { background: var(--app-surface); border: 1px solid var(--app-border); margin: 0; padding: 0.6rem; }
+  .shot img { display: block; height: auto; max-height: 26rem; object-fit: contain; object-position: top; width: 100%; }
+  .shot figcaption { color: var(--app-muted); font-size: 0.74rem; line-height: 1.55; padding: 0.6rem 0.2rem 0.1rem; }
+  .before-after { display: grid; gap: 0.7rem; grid-template-columns: 1fr 1fr; margin: 1rem 0; }
+  .before-after .shot img { max-height: 15rem; }
+  .before-after .is-before { border-color: #d5a2a9; }
+  .before-after .is-after { border-color: #9ec4ad; }
+
+  .table-scroll { margin-top: 1rem; overflow-x: auto; }
+  .data-table { border-collapse: collapse; font-size: 0.82rem; min-width: 32rem; width: 100%; }
+  .data-table th, .data-table td { border-bottom: 1px solid var(--app-border); padding: 0.6rem 0.7rem; text-align: left; vertical-align: top; }
+  .data-table thead th { color: var(--app-muted); font-family: var(--pb-body); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .data-table tbody th { color: var(--app-ink); font-weight: 500; }
+  .data-table tr.is-total th, .data-table tr.is-total td { background: var(--app-sand); font-weight: 700; }
+  .data-table .blank-cell { color: #a49c8d; font-size: 0.74rem; }
+  .table-footer { color: var(--app-muted); font-size: 0.78rem; line-height: 1.6; margin: 0.8rem 0 0; }
+  .table-title { color: var(--app-navy); font-family: var(--pb-display); font-size: 1rem; margin: 1.6rem 0 0; }
+  .rule-steps { color: #514d46; font-size: 0.8rem; line-height: 1.7; margin: 0.9rem 0 0; padding-left: 1.2rem; }
+  .rule-steps li + li { margin-top: 0.35rem; }
+
+  .script-grid { display: grid; gap: 0.8rem; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 1rem; }
+  .script-card { background: var(--app-surface); border: 1px solid var(--app-border); padding: 1rem; }
+  .script-card h3 { color: var(--app-navy); font-family: var(--pb-display); font-size: 0.98rem; margin: 0 0 0.6rem; }
+  .script-card ol { color: var(--app-ink); font-size: 0.79rem; line-height: 1.65; margin: 0; padding-left: 1.1rem; }
+  .script-card ol li + li { margin-top: 0.35rem; }
+  .script-pass { color: var(--app-muted); font-size: 0.74rem; line-height: 1.6; margin: 0.8rem 0 0; }
+  .script-pass strong { color: var(--app-coral); }
+  .trouble-fix { color: #514d46; font-size: 0.78rem; line-height: 1.65; margin: 0.9rem 0 0; }
+  .trouble-fix strong { color: var(--app-navy); }
+
   .page-heading { border-bottom: 1px solid var(--app-border); padding-bottom: 1.5rem; }
   .page-heading h1 { color: var(--app-navy); font-family: var(--pb-display); font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: -0.01em; line-height: 1.1; margin: 0.7rem 0 0.8rem; }
   .page-heading p { color: var(--app-muted); font-size: 0.95rem; margin: 0; max-width: 38rem; }
@@ -398,7 +432,10 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
     .why-panel p { font-size: 1.05rem; }
     .check-copy { gap: 0.45rem; grid-template-columns: 1.25rem minmax(0, 1fr); }
     .check-copy em { grid-column: 2; justify-self: start; }
-    .shop-fields .field-grid, .field-grid, .prompt-fields, .three-column-panels, .troubleshooting-grid { grid-template-columns: 1fr; }
+    .shop-fields .field-grid, .field-grid, .prompt-fields, .three-column-panels, .troubleshooting-grid, .shot-grid, .script-grid { grid-template-columns: 1fr; }
+    .shot img { max-height: 22rem; }
+    .before-after { grid-template-columns: 1fr; }
+    .data-table { min-width: 26rem; }
     .micro-panel { min-height: auto; }
     .milestone-panel { align-items: start; flex-direction: column; }
     .milestone-action { text-align: left; }

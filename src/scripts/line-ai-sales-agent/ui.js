@@ -7,6 +7,7 @@ import {
   getStatusLabel,
   getStepByLocation,
 } from './ui-model.js';
+import { getShot } from '../../data/line-ai-sales-agent/shots.js';
 
 const PHASE_ACCENTS = {
   prepare: { color: '#24749a', soft: '#e1eff3', number: '01' },
@@ -41,6 +42,10 @@ const FIELD_LABELS = {
   step: 'step ที่กำลังตรวจ',
   symptom: 'อาการที่พบ',
   expectedResult: 'ผลที่คาดหวัง',
+  depositRate: 'มัดจำ',
+  escalationAmount: 'ยอดที่ต้องส่งต่อเจ้าของ',
+  currentPromotion: 'โปรโมชันปัจจุบัน',
+  cardButtonLabel: 'ข้อความบนปุ่มการ์ด',
 };
 
 const DEFAULT_FIELD_VALUES = {
@@ -266,8 +271,49 @@ function renderPromptBlock(engine, playbook, step) {
   return `<section class="step-section prompt-section"><div class="section-heading compact-heading"><div><span class="eyebrow">PROMPT COMPOSER / ${escapeHtml(prompt.id)}</span><h2>${escapeHtml(prompt.title)}</h2></div><button type="button" class="mini-link" data-action="copy-prompt" data-prompt-id="${escapeHtml(prompt.id)}">คัดลอก prompt</button></div><p class="section-intro">แก้เฉพาะช่องที่เกี่ยวกับร้านคุณ แล้วคัดลอกไปใช้กับ Builder ได้ทันที <strong>ไม่ใส่ token หรือรหัสผ่าน</strong></p><div class="prompt-fields">${prompt.editableFields.map((field) => `<label class="field-label"><span>${escapeHtml(FIELD_LABELS[field] ?? field)}</span><input type="text" value="${escapeHtml(values[field])}" data-prompt-field="${escapeHtml(field)}" data-prompt-id="${escapeHtml(prompt.id)}" /></label>`).join('')}</div><div class="prompt-output" data-prompt-output-id="${escapeHtml(prompt.id)}"><div class="prompt-output-head"><span>PREVIEW</span><span class="prompt-safe">✓ ปลอดภัยต่อการแชร์</span></div><pre>${toText(composed.text)}</pre><button type="button" class="copy-corner" data-action="copy-prompt" data-prompt-id="${escapeHtml(prompt.id)}" aria-label="คัดลอก prompt">⧉</button></div><p class="safety-caption">${escapeHtml(prompt.safetyNote)}</p></section>`;
 }
 
+function fixParts(fix) {
+  if (typeof fix === 'string') return { summary: fix, detail: 'แก้ข้อนี้ก่อน แล้วกลับมาทดสอบซ้ำด้วยหลักฐานเดิม' };
+  return { summary: fix.symptom, detail: fix.fix };
+}
+
 function renderCheckFixProof(step) {
-  return `<section class="step-section check-section"><div class="three-column-panels"><article class="micro-panel check-panel"><span class="panel-index">CHECK</span><h3>รู้ได้อย่างไรว่าผ่าน</h3><p>${toText(step.check)}</p></article><article class="micro-panel fix-panel"><span class="panel-index">FIX</span><h3>ถ้ายังไม่ผ่าน</h3><div class="fix-list">${step.fixes.map((fix, index) => `<details><summary><span>${String(index + 1).padStart(2, '0')}</span>${escapeHtml(fix)}</summary><p>แก้ข้อนี้ก่อน แล้วกลับมาทดสอบซ้ำด้วยหลักฐานเดิม</p></details>`).join('')}</div></article><article class="micro-panel proof-panel"><span class="panel-index">PROOF</span><h3>หลักฐานที่ควรเก็บ</h3><p>${toText(step.proof)}</p><span class="proof-stamp">เก็บไว้ในโฟลเดอร์ร้าน</span></article></div></section>`;
+  return `<section class="step-section check-section"><div class="three-column-panels"><article class="micro-panel check-panel"><span class="panel-index">CHECK</span><h3>รู้ได้อย่างไรว่าผ่าน</h3><p>${toText(step.check)}</p></article><article class="micro-panel fix-panel"><span class="panel-index">FIX</span><h3>ถ้ายังไม่ผ่าน</h3><div class="fix-list">${step.fixes.map((fix, index) => { const parts = fixParts(fix); return `<details><summary><span>${String(index + 1).padStart(2, '0')}</span>${escapeHtml(parts.summary)}</summary><p>${toText(parts.detail)}</p></details>`; }).join('')}</div></article><article class="micro-panel proof-panel"><span class="panel-index">PROOF</span><h3>หลักฐานที่ควรเก็บ</h3><p>${toText(step.proof)}</p><span class="proof-stamp">เก็บไว้ในโฟลเดอร์ร้าน</span></article></div></section>`;
+}
+
+function renderFigure(shot, extraClass = '') {
+  const image = getShot(shot?.id);
+  if (!image) return '';
+  return `<figure class="shot${extraClass ? ` ${extraClass}` : ''}"><img src="${escapeHtml(image.src)}" width="${escapeHtml(image.width)}" height="${escapeHtml(image.height)}" loading="lazy" decoding="async" alt="${escapeHtml(shot.alt ?? '')}" />${shot.caption ? `<figcaption>${escapeHtml(shot.caption)}</figcaption>` : ''}</figure>`;
+}
+
+function renderScreenshots(step) {
+  const shots = (step.screenshots ?? []).map((shot) => renderFigure(shot)).filter(Boolean);
+  if (!shots.length) return '';
+  return `<section class="step-section shots-section"><div class="section-heading compact-heading"><div><span class="eyebrow">หน้าจอจริง</span><h2>หน้าตาตอนทำถูก</h2></div><span class="section-note">ภาพจากร้านสาธิต · ค่าที่เป็นความลับถูกปิดไว้แล้ว</span></div><div class="shot-grid">${shots.join('')}</div></section>`;
+}
+
+function renderBeforeYouStart(step) {
+  if (!step.beforeYouStart) return '';
+  return `<aside class="before-panel"><span class="eyebrow">ก่อนเริ่มขั้นนี้</span><p>${toText(step.beforeYouStart)}</p></aside>`;
+}
+
+function renderCostTable(step) {
+  const table = step.costTable;
+  if (!table) return '';
+  return `<section class="step-section table-section"><div class="section-heading compact-heading"><div><span class="eyebrow">ตัวเลขอ้างอิง</span><h2>${escapeHtml(table.title)}</h2></div></div><p class="section-intro">${escapeHtml(table.note)}</p><div class="table-scroll"><table class="data-table"><thead><tr><th scope="col">รายการ</th><th scope="col">ตัวเลขอ้างอิง</th><th scope="col">ร้านของฉัน</th></tr></thead><tbody>${table.rows.map((row) => `<tr${row.emphasis ? ' class="is-total"' : ''}><th scope="row">${escapeHtml(row.item)}</th><td>${escapeHtml(row.reference)}</td><td class="blank-cell">กรอกเอง</td></tr>`).join('')}</tbody></table></div><p class="table-footer">${escapeHtml(table.footer)}</p></section>`;
+}
+
+function renderQuotaGuide(step) {
+  const guide = step.quotaGuide;
+  if (!guide) return '';
+  return `<section class="step-section table-section"><div class="section-heading compact-heading"><div><span class="eyebrow">โควตาข้อความ</span><h2>${escapeHtml(guide.title)}</h2></div></div><div class="table-scroll"><table class="data-table"><thead><tr>${guide.columns.map((column) => `<th scope="col">${escapeHtml(column)}</th>`).join('')}</tr></thead><tbody>${guide.rows.map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div><p class="table-footer">${escapeHtml(guide.note)}</p><ol class="rule-steps">${guide.upgradeRules.map((rule) => `<li>${escapeHtml(rule)}</li>`).join('')}</ol></section>`;
+}
+
+function renderTestScripts(step) {
+  const block = step.testScripts;
+  if (!block) return '';
+  const table = block.negotiationTable;
+  return `<section class="step-section script-section"><div class="section-heading compact-heading"><div><span class="eyebrow">บททดสอบ</span><h2>${escapeHtml(block.title)}</h2></div></div><p class="section-intro">${escapeHtml(block.note)}</p><div class="script-grid">${block.scripts.map((script) => `<article class="script-card"><h3>${escapeHtml(script.title)}</h3><ol>${script.lines.map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ol><p class="script-pass"><strong>ผ่านเมื่อ:</strong> ${escapeHtml(script.pass)}</p></article>`).join('')}</div>${table ? `<h3 class="table-title">${escapeHtml(table.title)}</h3><div class="table-scroll"><table class="data-table"><thead><tr><th scope="col">ลูกค้าขอ</th><th scope="col">เพดานร้านคุณ</th><th scope="col">บอทควรทำ</th></tr></thead><tbody>${table.rows.map((row) => `<tr><th scope="row">${escapeHtml(row.ask)}</th><td>${escapeHtml(row.ceiling)}</td><td>${escapeHtml(row.action)}</td></tr>`).join('')}</tbody></table></div>` : ''}</section>`;
 }
 
 function renderDependencyWarning(step, progress) {
@@ -287,9 +333,14 @@ function renderStep(playbook, progress, engine, route) {
     <section class="step-hero"><div class="step-overline"><span class="step-number">${escapeHtml(step.id)}</span><span class="step-phase">${escapeHtml(phase.label)} / ${escapeHtml(String(stepIndex(progress, step.id) + 1).padStart(2, '0'))}</span>${renderStatusPill(step.status)}<button type="button" class="block-button ${step.blocked ? 'is-blocked' : ''}" data-action="toggle-blocked" data-step-id="${escapeHtml(step.id)}">${step.blocked ? 'ปลดจุดติด' : 'ติดจุดนี้'}</button></div><h1>${escapeHtml(step.title)}</h1><div class="step-meta"><span>ผลลัพธ์ของขั้นนี้</span><strong>${escapeHtml(step.proof)}</strong></div></section>
     ${renderDependencyWarning(step, progress)}
     <section class="why-panel"><span class="eyebrow">WHY THIS STEP</span><p>${toText(step.why)}</p><div class="dependency-line">${step.dependsOn?.length ? `ต่อจาก <strong>${escapeHtml(step.dependsOn.join(' · '))}</strong>` : 'จุดเริ่มต้นของระบบ'}<span>•</span>${escapeHtml(formatCount(step.completion.required, 'งานจำเป็น'))}</div></section>
+    ${renderBeforeYouStart(step)}
     ${renderChecklist(step, state)}
+    ${renderScreenshots(step)}
     ${step.id === 'P0' ? renderProfileFields(engine, playbook) : ''}
+    ${renderCostTable(step)}
     ${renderPromptBlock(engine, playbook, step)}
+    ${renderTestScripts(step)}
+    ${renderQuotaGuide(step)}
     ${renderCheckFixProof(step)}
     <section class="milestone-panel"><div><span class="eyebrow">PHASE MILESTONE / ${escapeHtml(phase.label)}</span><h2>${escapeHtml(phase.milestone.title)}</h2><p>${escapeHtml(phase.milestone.proof)}</p></div><div class="milestone-action">${progress.phases.find((item) => item.id === phase.id)?.milestone.confirmed ? '<span class="confirmed-mark">✓ ยืนยันแล้ว</span>' : `<button type="button" class="primary-button compact" data-action="confirm-milestone" data-phase-id="${escapeHtml(phase.id)}" ${progress.phases.find((item) => item.id === phase.id)?.milestone.ready ? '' : 'disabled'}>${progress.phases.find((item) => item.id === phase.id)?.milestone.ready ? 'ยืนยันหมุดหมาย' : 'ทำ checklist ให้ครบก่อน'} <span>→</span></button>`}</div></section>
     <nav class="step-nav" aria-label="นำทางระหว่างขั้น"><button type="button" class="secondary-button" data-route="step" data-phase-id="${escapeHtml(previous?.phaseId ?? '')}" data-step-id="${escapeHtml(previous?.stepId ?? '')}" ${previous ? '' : 'disabled'}>← ก่อนหน้า</button><span>${escapeHtml(step.id)} / ${escapeHtml(String(progress.steps.length).padStart(2, '0'))}</span><button type="button" class="primary-button compact" data-route="step" data-phase-id="${escapeHtml(next?.phaseId ?? '')}" data-step-id="${escapeHtml(next?.stepId ?? '')}" ${next ? '' : 'disabled'}>${next ? 'ขั้นถัดไป →' : 'จบ Playbook'}</button></nav>
@@ -301,7 +352,7 @@ function renderProgressView(playbook, progress) {
 }
 
 function renderTroubleshooting(playbook, progress) {
-  return `<div class="view troubleshooting-view"><section class="page-heading"><span class="eyebrow">TROUBLESHOOTING DESK</span><h1>ติดตรงไหน ให้เริ่มจากหลักฐาน</h1><p>เลือกอาการที่ใกล้ที่สุด แล้วตรวจทีละข้อก่อนแก้ prompt หรือเปลี่ยนเครื่องมือ</p></section><div class="troubleshooting-grid">${playbook.troubleshooting.map((item) => { const linked = item.stepIds.map((stepId) => progress.steps.find((step) => step.id === stepId)).filter(Boolean); const target = linked[0]; return `<article class="trouble-card"><div class="trouble-card-top"><span class="trouble-id">${escapeHtml(item.id)}</span><span class="trouble-step">${escapeHtml(item.stepIds.join(' · '))}</span></div><h2>${escapeHtml(item.symptom)}</h2><div class="trouble-checks"><span class="eyebrow">CHECK FIRST</span><ul>${item.checks.map((check) => `<li>${escapeHtml(check)}</li>`).join('')}</ul></div><p class="debug-context"><strong>หลักฐานที่ต้องหา:</strong> ${escapeHtml(item.debugPromptContext)}</p><div class="trouble-actions"><button type="button" class="secondary-button compact" data-route="step" data-phase-id="${escapeHtml(target?.phaseId ?? '')}" data-step-id="${escapeHtml(target?.id ?? '')}">ไปที่ ${escapeHtml(target?.id ?? 'step')} →</button><button type="button" class="mini-link" data-action="debug-prompt" data-symptom="${escapeHtml(item.symptom)}" data-step="${escapeHtml(item.stepIds[0])}">เปิด debug prompt</button></div></article>`; }).join('')}</div></div>`;
+  return `<div class="view troubleshooting-view"><section class="page-heading"><span class="eyebrow">TROUBLESHOOTING DESK</span><h1>ติดตรงไหน ให้เริ่มจากหลักฐาน</h1><p>เลือกอาการที่ใกล้ที่สุด แล้วตรวจทีละข้อก่อนแก้ prompt หรือเปลี่ยนเครื่องมือ</p></section><div class="troubleshooting-grid">${playbook.troubleshooting.map((item) => { const linked = item.stepIds.map((stepId) => progress.steps.find((step) => step.id === stepId)).filter(Boolean); const target = linked[0]; return `<article class="trouble-card"><div class="trouble-card-top"><span class="trouble-id">${escapeHtml(item.id)}</span><span class="trouble-step">${escapeHtml(item.stepIds.join(' · '))}</span></div><h2>${escapeHtml(item.symptom)}</h2><div class="trouble-checks"><span class="eyebrow">CHECK FIRST</span><ul>${item.checks.map((check) => `<li>${escapeHtml(check)}</li>`).join('')}</ul></div>${item.fix ? `<p class="trouble-fix"><strong>ทางแก้:</strong> ${escapeHtml(item.fix)}</p>` : ''}${item.beforeAfter ? `<div class="before-after">${renderFigure(item.beforeAfter.before, 'is-before')}${renderFigure(item.beforeAfter.after, 'is-after')}</div>` : ''}<p class="debug-context"><strong>หลักฐานที่ต้องหา:</strong> ${escapeHtml(item.debugPromptContext)}</p><div class="trouble-actions"><button type="button" class="secondary-button compact" data-route="step" data-phase-id="${escapeHtml(target?.phaseId ?? '')}" data-step-id="${escapeHtml(target?.id ?? '')}">ไปที่ ${escapeHtml(target?.id ?? 'step')} →</button><button type="button" class="mini-link" data-action="debug-prompt" data-symptom="${escapeHtml(item.symptom)}" data-step="${escapeHtml(item.stepIds[0])}">เปิด debug prompt</button></div></article>`; }).join('')}</div></div>`;
 }
 
 function renderMobileBottom(playbook, progress, route) {

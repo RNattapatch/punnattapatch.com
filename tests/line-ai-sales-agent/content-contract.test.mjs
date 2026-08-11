@@ -64,7 +64,7 @@ test('defines eight safe master prompts and one debug prompt for real steps', ()
 
 test('links every global symptom to real learner steps', () => {
   const stepIds = new Set(playbook.phases.flatMap((phase) => phase.steps.map((step) => step.id)));
-  assert.equal(playbook.troubleshooting.length, 11);
+  assert.equal(playbook.troubleshooting.length, 20);
   for (const item of playbook.troubleshooting) {
     assert.ok(item.symptom);
     assert.ok(item.stepIds.length > 0);
