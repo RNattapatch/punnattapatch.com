@@ -116,6 +116,21 @@
       "bot_may_quote": true
     },
     {
+      "key": "consult-daily",
+      "name": "ที่ปรึกษา — เรตรายวัน",
+      "name_en": "Consulting — Day Rate",
+      "kind": "consult",
+      "duration": "1 วัน",
+      "headline": "นั่งวางระบบกับคุณปันโดยตรง 1 วันเต็ม — ได้ทางออกที่ลงมือทำต่อได้ทันที",
+      "audience": "เจ้าของที่มีโจทย์ชัดแล้ว อยากได้ทางออกเร็วโดยไม่ต้องจ้างเป็นโปรเจกต์",
+      "amount_thb": 34900,
+      "price_label": "฿34,900",
+      "url": "https://punnattapatch.com/services#ai-agent-ceo",
+      "outline_url": null,
+      "status": "live",
+      "bot_may_quote": true
+    },
+    {
       "key": "daruma-transformation",
       "name": "Daruma Sales Transformation",
       "name_en": null,

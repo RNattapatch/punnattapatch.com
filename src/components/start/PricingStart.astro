@@ -4,13 +4,14 @@
  *
  * ตัวเลขมาจาก pricing.mjs (SSOT) เท่านั้น — ห้าม hardcode
  *   อบรมเริ่มต้น    → key `inhouse-a`
- *   ที่ปรึกษาเริ่มต้น → key `ai-agent-ceo`
+ *   ที่ปรึกษาเริ่มต้น → key `consult-daily`  (เรตรายวัน ไม่ใช่ราคาของสินค้าตัวใดตัวหนึ่ง —
+ *                      เดิมยืม `ai-agent-ceo` มาแสดง ซึ่งผูกหน้านี้ไว้กับสินค้าเฉพาะตัวโดยไม่ตั้งใจ)
  */
 import { fmtPrice } from '../../data/pricing.mjs';
 
 const tiers = [
   { label: 'อบรม', detail: 'คอร์สสดที่บริษัทคุณ ทั้งทีม', price: fmtPrice('inhouse-a') },
-  { label: 'ที่ปรึกษา', detail: 'consult วางระบบกับผมโดยตรง', price: fmtPrice('ai-agent-ceo') },
+  { label: 'ที่ปรึกษา', detail: 'consult วางระบบกับผมโดยตรง', price: fmtPrice('consult-daily') },
 ];
 ---
 
