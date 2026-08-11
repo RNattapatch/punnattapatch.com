@@ -12,6 +12,8 @@ export const SITE = {
     'ผมไม่ได้สอนวิธีใช้ AI — แต่เข้าไปติดตั้ง AI Agent ในบริษัทคุณโดยตรง จนทีมคุณใช้งานได้จริงตั้งแต่วันแรก',
   locale: 'th_TH',
   twitter: '@punnattapatch',
+  // Public contact address — used on /privacy for PDPA + Meta data-deletion requests.
+  email: 'r.nattapatch@gmail.com',
   author: {
     name: 'Pun Nattapatch',
     nameTh: 'ปัน ณัฐพัชร์',
