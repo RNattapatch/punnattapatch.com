@@ -2,11 +2,19 @@
 /**
  * แถบปุ่ม LINE ติดขอบล่าง — โผล่หลังเลื่อนผ่าน fold แรก ซ่อนตอนการ์ดสถานะยังเห็นอยู่
  * (ปุ่มในการ์ดทำหน้าที่แทนอยู่แล้ว แถบซ้ำตอนนั้น = รบกวนเปล่าๆ)
+ *
+ * แถบนี้ **คือขั้นที่ 4 ของ tracker ที่ยังค้าง** ไม่ใช่ปุ่มลอยที่ไม่เกี่ยวกัน —
+ * ใช้วงกลมประดวงเดียวกับ `.tracker-mark-open` ใน StatusCard เพื่อให้ตาโยงกลับไปที่การ์ดข้างบน
+ * ทั้งหน้าจึงเป็น "งานหนึ่งชิ้นที่ยังไม่จบ" ตั้งแต่ต้นจนท้าย (Zeigarnik) ไม่ใช่แค่ตกแต่ง fold
  */
 import { SITE } from '../../data/site';
 ---
 
 <div id="sticky-line-bar" class="sticky-line-bar" data-visible="false">
+  <p class="sticky-step">
+    <span class="sticky-mark" aria-hidden="true"></span>
+    ขั้นที่ 4 · รอคุณทักใน LINE
+  </p>
   <a
     href={SITE.social.line}
     rel="noopener"
@@ -65,6 +73,28 @@ import { SITE } from '../../data/site';
     opacity: 1;
     pointer-events: auto;
   }
+  /* ป้ายขั้นที่ 4 — เล็กและเงียบ ไม่แย่งปุ่ม แต่พอให้ตาโยงกลับไปที่ tracker ข้างบน */
+  .sticky-step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    margin: 0 0 0.45rem;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #6c6963;
+  }
+  /* วงกลมประดวงเดียวกับ .tracker-mark-open ใน StatusCard — ตั้งใจให้เป็นภาษาเดียวกัน */
+  .sticky-mark {
+    width: 0.7rem;
+    height: 0.7rem;
+    flex: 0 0 auto;
+    border-radius: 9999px;
+    border: 2px dashed #77746e;
+  }
+
   @media (min-width: 768px) {
     .sticky-line-bar > a {
       max-width: 28rem;

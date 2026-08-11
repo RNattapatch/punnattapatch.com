@@ -1,7 +1,16 @@
 ---
 /**
  * ส่วน 10 — ปิดหน้า · การ์ดย่อของ fold แรก
- * ขั้นที่ 4 ของ tracker ("รอคุณทักใน LINE") กลับมาทวงตัวเองตรงนี้
+ *
+ * เดิมบอกสถานะด้วย eyebrow บรรทัดเดียว ("ขั้นสุดท้าย · รอคุณทักใน LINE") ซึ่งพูดถูก
+ * แต่ตาไม่ได้โยงกลับไปที่ tracker ข้างบนเลย — คนอ่านเลยรู้สึกว่าไอเดีย "งานที่ยังไม่จบ"
+ * มีแค่ท่อนเปิด
+ *
+ * ตอนนี้เอา rail ตัวย่อกลับมา (3 ติ๊ก + 1 ค้าง) → ทั้งหน้าปิดด้วยภาพเดียวกับที่เปิด
+ * label สั้นกว่า StatusCard โดยตั้งใจ เพราะนี่คือ "สรุป" ไม่ใช่การเล่าซ้ำ
+ *
+ * ⚠️ ขั้นที่ 3 ใช้คำกลาง "เข้าคิวงานของผมแล้ว" เสมอ — การ์ดนี้ไม่ได้อ่าน
+ *    `pn_intake_journal` เหมือน StatusCard และ **ห้ามเดาแทน** (ติ๊กได้เฉพาะขั้นที่จริง)
  */
 import { SITE } from '../../data/site';
 
@@ -10,17 +19,62 @@ interface Props {
 }
 
 const { variant } = Astro.props;
+
+const recap = [
+  { state: 'done', label: 'ได้รับแบบประเมินของคุณแล้ว' },
+  { state: 'done', label: 'ออก Reference ให้คุณแล้ว' },
+  { state: 'done', label: 'เข้าคิวงานของผมแล้ว' },
+  { state: 'waiting', label: 'รอคุณทักใน LINE' },
+];
 ---
 
 <section class="px-margin-page py-14 md:py-20">
   <div class="mx-auto max-w-2xl">
     <article class="rounded-2xl border border-warm-ink bg-surface p-6 shadow-[4px_6px_0_rgba(30,27,22,0.09)] md:p-8">
-      <p class="flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.18em] text-warm-ink/65">
-        <span class="inline-block size-2.5 rounded-full border border-dashed border-warm-ink/60" aria-hidden="true"></span>
-        ขั้นสุดท้าย · รอคุณทักใน LINE
-      </p>
+      {
+        /* rail ย่อโชว์เฉพาะคนที่ส่งฟอร์มมาจริง — บน /start ยังไม่มีใครส่งอะไร
+           การติ๊ก "ได้รับแบบประเมินแล้ว" ตรงนั้นจะเป็นการโกหก */
+        variant === 'thankyou' ? (
+          <>
+            {/* ⚠️ ซ่อนไว้ก่อนเสมอ แล้วให้สคริปต์ท้ายไฟล์เปิดเฉพาะตอนมี ?ref= จริง
+                ถ้า render ทิ้งไว้เลย หน้าเดียวกันจะขัดกันเอง: fold บอก "ยังไม่พบแบบประเมิน"
+                แต่การ์ดล่างติ๊ก "ได้รับแบบประเมินแล้ว" — ผิดกฎ "ติ๊กได้เฉพาะขั้นที่จริง" */}
+            <ol id="closing-recap" class="recap" aria-label="สรุปสถานะงานของคุณ" hidden>
+              {recap.map((s) => (
+                <li class="recap-step" data-state={s.state}>
+                  <span
+                    class={s.state === 'done' ? 'recap-mark' : 'recap-mark recap-mark-open'}
+                    aria-hidden="true"
+                  >
+                    {s.state === 'done' ? '✓' : ''}
+                  </span>
+                  <span class="recap-label">{s.label}</span>
+                </li>
+              ))}
+            </ol>
+            <p
+              id="closing-eyebrow"
+              class="flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.18em] text-warm-ink/65"
+            >
+              <span
+                class="inline-block size-2.5 rounded-full border border-dashed border-warm-ink/60"
+                aria-hidden="true"
+              />
+              ขั้นต่อไป · ทักผมใน LINE
+            </p>
+          </>
+        ) : (
+          <p class="flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.18em] text-warm-ink/65">
+            <span
+              class="inline-block size-2.5 rounded-full border border-dashed border-warm-ink/60"
+              aria-hidden="true"
+            />
+            ขั้นต่อไป · ทักผมใน LINE
+          </p>
+        )
+      }
 
-      <h2 class="mt-4 font-display text-2xl font-bold leading-snug text-navy md:text-3xl">
+      <h2 class="mt-5 font-display text-2xl font-bold leading-snug text-navy md:text-3xl">
         อ่านมาถึงตรงนี้ แปลว่าเราน่าจะคุยกันรู้เรื่องครับ
       </h2>
 
@@ -65,15 +119,85 @@ const { variant } = Astro.props;
   </div>
 </section>
 
+<style>
+  /* rail เดียวกับ .tracker (StatusCard) และ .how-rail (HowTimeline) — จงใจให้เป็นภาษาเดียวกัน
+     ย่อลง: ไม่มีบรรทัดเวลา ตัวหนังสือเล็กกว่า เพราะเป็น "สรุป" ไม่ใช่การเล่าซ้ำ */
+  .recap {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .recap-step {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding-bottom: 0.7rem;
+  }
+  .recap-step:last-child {
+    padding-bottom: 0;
+  }
+  .recap-step::before {
+    content: '';
+    position: absolute;
+    left: 0.53rem;
+    top: 1.15rem;
+    bottom: -0.05rem;
+    width: 1px;
+    background: #c9c2b2;
+  }
+  .recap-step:last-child::before {
+    display: none;
+  }
+  .recap-mark {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 9999px;
+    background: var(--color-success);
+    color: #f4f1ea;
+    font-size: 0.62rem;
+    line-height: 1;
+  }
+  .recap-mark-open {
+    background: transparent;
+    border: 2px dashed #77746e;
+  }
+  .recap-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6c6963;
+  }
+  .recap-step[data-state='waiting'] .recap-label {
+    color: #1e1b16;
+  }
+</style>
+
 {
   variant === 'thankyou' && (
     <script is:inline>
       (function () {
         var ref = (new URLSearchParams(window.location.search).get('ref') || '').trim();
+
         var node = document.getElementById('closing-ref');
-        if (!node) return;
-        if (ref) node.textContent = ref;
-        else node.remove();
+        if (node) {
+          if (ref) node.textContent = ref;
+          else node.remove();
+        }
+
+        // มี ref = มีงานจริงในระบบ → โชว์ rail สรุป · ไม่มี ref = โชว์แค่ eyebrow กลางๆ
+        // (ต้องตรงกับการ์ดสถานะบน fold เสมอ ห้ามให้หน้าเดียวกันพูดคนละเรื่อง)
+        var recap = document.getElementById('closing-recap');
+        var eyebrow = document.getElementById('closing-eyebrow');
+        if (ref && recap && eyebrow) {
+          recap.hidden = false;
+          eyebrow.remove();
+        }
       })();
     </script>
   )

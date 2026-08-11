@@ -21,12 +21,23 @@ const steps = [
 ];
 ---
 
-<section class="px-margin-page py-14 md:py-20">
+<!-- border-t: ส่วนก่อนหน้า (ServiceShelves) เป็น ivory เหมือนกัน ถ้าไม่คั่นจะกลืนเป็นก้อนเดียว -->
+<section class="border-t border-[#c9c2b2] px-margin-page py-14 md:py-20">
   <div class="mx-auto max-w-2xl">
-    <h2 class="font-display text-2xl font-bold leading-snug text-navy md:text-3xl">
-      ใครๆ ก็สั่ง AI สร้างระบบได้ครับ — แต่ถ้าไม่เข้าใจธุรกิจ ไม่เข้าใจหน้างานจริง
-      ปัญหาจะตามมาทีหลัง
+    <!-- เดิมยัดทั้งประโยค 20 คำไว้ใน h2 เดียว → ก้อนตันเมื่อเป็นภาษาไทยที่ text-3xl
+         แยกเป็น eyebrow / h2 / lead โดย **ไม่เปลี่ยนคำสักคำ** — แค่จัดน้ำหนักใหม่
+         (โครง "ใครๆ ก็ X ได้ — แต่ถ้าไม่ Y" คือสำนวนปัน การหักมุมยิ่งชัดขึ้นเมื่อแยกบรรทัด) -->
+    <p class="font-mono text-[0.7rem] font-bold uppercase tracking-[0.22em] text-warm-ink/55">
+      วิธีทำงานของผม
+    </p>
+
+    <h2 class="mt-3 font-display text-2xl font-bold leading-tight text-navy md:text-3xl">
+      ใครๆ ก็สั่ง AI สร้างระบบได้ครับ
     </h2>
+
+    <p class="mt-3 text-[1.08rem] font-medium leading-[1.75] text-warm-ink">
+      แต่ถ้าไม่เข้าใจธุรกิจ ไม่เข้าใจหน้างานจริง ปัญหาจะตามมาทีหลัง
+    </p>
 
     <p class="mt-6 font-display text-lg font-bold text-navy">ผมถึงทำงาน 3 ขั้นเสมอ:</p>
 
