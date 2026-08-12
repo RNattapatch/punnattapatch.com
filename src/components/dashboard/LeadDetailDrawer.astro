@@ -137,6 +137,7 @@ import InteractionLog from './InteractionLog.astro';
 
 <script>
   import { subscribe, getState, closeLead, patchLead, setLeadStatus, toast } from '../../scripts/dashboard/store';
+  import { markName, AFTER_HOURS_MARK, OFFICE_HOURS_MARK } from '../../scripts/after-hours';
 
   const REASON_KEYS = ['freebie_seeker', 'scam', 'cheap_client', 'mismatch', 'price_too_high', 'no_budget', 'wrong_timing', 'competitor', 'other'];
   const OUTCOMES = ['won', 'repeat', 'retainer', 'lost', 'unqualified'];
@@ -203,8 +204,9 @@ import InteractionLog from './InteractionLog.astro';
 
     const name = String(lead.nickname || lead.full_name || '—');
     const company = String(lead.company_name || '');
+    // avatar ใช้ชื่อดิบ — ถ้าใส่ธง 🌒 ไปด้วย ตัวอักษรแรกจะกลายเป็นพระจันทร์
     (document.getElementById('lead-avatar') as HTMLElement).textContent = (name[0] || '—').toUpperCase();
-    (document.getElementById('lead-drawer-name') as HTMLElement).textContent = name;
+    (document.getElementById('lead-drawer-name') as HTMLElement).textContent = markName(name, lead.after_hours_ok);
     (document.getElementById('lead-drawer-sub') as HTMLElement).textContent = [company, String(lead.business_type || '')].filter(Boolean).join(' · ');
 
     const pc = Number(lead.purchase_count) || 0;
@@ -249,8 +251,8 @@ import InteractionLog from './InteractionLog.astro';
       // ⏰ ตอบจากฟอร์ม/บอท LINE — ตัวชี้ว่าโทรกลับตอนเย็นหรือเสาร์-อาทิตย์ได้ไหม
       detailRow(
         'โทรนอกเวลาทำการ',
-        lead.after_hours_ok === true ? '✅ สะดวก (เย็น/เสาร์-อาทิตย์)'
-          : lead.after_hours_ok === false ? '⛔ ขอในเวลาทำการ'
+        lead.after_hours_ok === true ? `${AFTER_HOURS_MARK} สะดวก (เย็น/เสาร์-อาทิตย์)`
+          : lead.after_hours_ok === false ? `${OFFICE_HOURS_MARK} ขอเฉพาะในเวลาทำการ`
           : ''
       ),
       detailRow('LINE', String(lead.line_id || ''), 'line_id'),

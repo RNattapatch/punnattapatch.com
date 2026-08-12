@@ -28,6 +28,7 @@ import LeadCard from './LeadCard.astro';
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="hot">🔥 Hot</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="warm">🌤 Warm</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="cold">❄️ Cold</button>
+    <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="after_hours">🌒 โทรนอกเวลาได้</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="in_progress">In Progress</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="proposal_sent">Proposal Sent</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="walkthrough_done">Walkthrough Done</button>
@@ -53,6 +54,7 @@ import LeadCard from './LeadCard.astro';
 <script>
   import { subscribe, getState, openLead, setFilter, setSort, setSearch, visibleLeads, loadMore, on } from '../../scripts/dashboard/store';
   import type { LeadUi } from '../../scripts/dashboard/adapter';
+  import { markName } from '../../scripts/after-hours';
 
   function ageDays(iso?: string): string {
     if (!iso) return '';
@@ -104,7 +106,7 @@ import LeadCard from './LeadCard.astro';
   function fillCard(node: HTMLElement, lead: LeadUi) {
     node.setAttribute('data-lead-id', String(lead.lead_id || ''));
     setField(node, 'temp', tempEmoji(lead.temperature));
-    setField(node, 'name', (lead.nickname || lead.full_name || '—').toString());
+    setField(node, 'name', markName((lead.nickname || lead.full_name || '—').toString(), lead.after_hours_ok));
     setField(node, 'company', (lead.company_name || '').toString());
     const due = lead.next_action_due ? `ครบ ${new Date(lead.next_action_due).toLocaleDateString('th-TH')}` : '';
     const next = (lead.next_action || '').toString();

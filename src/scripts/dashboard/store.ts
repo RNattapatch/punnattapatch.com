@@ -42,7 +42,8 @@ type FilterChip =
   | 'manual'
   | 'hot'
   | 'warm'
-  | 'cold';
+  | 'cold'
+  | 'after_hours';
 
 type SortMode = 'submitted_desc' | 'next_due_asc' | 'amount_desc';
 
@@ -498,6 +499,11 @@ export function visibleLeads(): LeadUi[] {
       break;
     case 'cold':
       rows = rows.filter((r) => r.temperature === 'cold');
+      break;
+    // 🌒 คนที่ตอบว่ารับสายนอกเวลาทำการได้ — ใช้ตอนว่างช่วงเย็น/เสาร์-อาทิตย์
+    // เทียบ true ตรงๆ: false = ขอในเวลาทำการ, null = ไม่ได้ถาม (ทั้งคู่ไม่ควรโทรตอนดึก)
+    case 'after_hours':
+      rows = rows.filter((r) => r.after_hours_ok === true);
       break;
   }
   switch (state.sort) {

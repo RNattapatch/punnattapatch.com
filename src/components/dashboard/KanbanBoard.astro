@@ -15,6 +15,7 @@
 <script>
   import { subscribe, getState, openLead } from '../../scripts/dashboard/store';
   import type { LeadUi } from '../../scripts/dashboard/adapter';
+  import { markName } from '../../scripts/after-hours';
 
   const STAGES: { key: string; label: string; color: string }[] = [
     { key: 'new',         label: 'New Lead',      color: 'var(--color-pun-cyan)' },
@@ -64,7 +65,7 @@
     topRow.className = 'flex justify-between items-start mb-1 gap-1';
     const name = document.createElement('span');
     name.className = 'text-sm font-semibold leading-tight line-clamp-1';
-    name.textContent = (lead.nickname || lead.full_name || '—').toString();
+    name.textContent = markName((lead.nickname || lead.full_name || '—').toString(), lead.after_hours_ok);
     const temp = document.createElement('span');
     temp.className = 'shrink-0 text-sm';
     temp.textContent = tempDot(lead);

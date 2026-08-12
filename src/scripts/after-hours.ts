@@ -27,3 +27,25 @@ export function foldAfterHours(payload: Record<string, unknown>): void {
   const current = typeof payload.comment === 'string' ? payload.comment.trim() : '';
   payload.comment = current ? `${line} — ${current}` : line;
 }
+
+// ── ฝั่งอ่าน (CRM dashboard) ──────────────────────────────────────────────
+// ภาษาภาพเดียวกันทั้ง Telegram alert และ dashboard — กวาดตาทีเดียวรู้ว่าโทรตอนไหนได้
+//   🌒 = สะดวกนอกเวลาทำการ (เย็น / เสาร์-อาทิตย์)
+//   🌤️ = ขอเฉพาะในเวลาทำการ
+// (การ์ด Telegram ประกอบใน n8n workflow "Intake Form v2 — Split Path" node "Add After-Hours")
+export const AFTER_HOURS_MARK = '🌒';
+export const OFFICE_HOURS_MARK = '🌤️';
+
+/**
+ * ธงหน้าชื่อลูกค้าใน CRM — คืน 🌒 เฉพาะตอน column `after_hours_ok` เป็น true จริงๆ
+ * (false = ขอในเวลาทำการ, null = ไม่ได้ถาม → ไม่ติดธง จะได้ไม่รกทั้งลิสต์)
+ */
+export function afterHoursMark(value: unknown): string {
+  return value === true ? AFTER_HOURS_MARK : '';
+}
+
+/** ต่อ 🌒 หน้าชื่อ — ใช้ทุกจุดที่ dashboard แสดงชื่อลูกค้า (list · kanban · today · drawer) */
+export function markName(name: string, value: unknown): string {
+  const mark = afterHoursMark(value);
+  return mark ? `${mark} ${name}` : name;
+}
