@@ -96,9 +96,32 @@ const description =
             <input
               id="intro-company"
               type="text"
+              autocomplete="organization"
               class="input input-bordered w-full"
             />
           </div>
+        </div>
+
+        {/* ช่องติดต่อ — optional โดยตั้งใจ: quiz คือ lead magnet ถ้าบังคับกรอกคนจะเลิกทำ
+            แต่ถ้าไม่มีช่องนี้เลย lead ที่เข้า CRM จะติดต่อกลับไม่ได้สักราย */}
+        <div class="form-control">
+          <label for="intro-contact" class="label">
+            <span class="label-text font-medium">
+              เบอร์โทร หรือ LINE ID (optional)
+              <span class="ml-1 font-normal text-base-content/55">— ใส่ไว้ถ้าอยากให้ผมส่งผลวิเคราะห์เพิ่มให้</span>
+            </span>
+          </label>
+          <input
+            id="intro-contact"
+            type="text"
+            autocomplete="tel"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false"
+            enterkeyhint="done"
+            class="input input-bordered w-full"
+            placeholder="เช่น 0812345678 หรือ @yourline"
+          />
         </div>
 
         <button
@@ -352,6 +375,7 @@ const description =
     name: string;
     role: string;
     company: string;
+    contact: string;
     timestamp: string;
     dominant?: DnaLetter;
     scores?: Record<DnaLetter, number>;
@@ -389,6 +413,7 @@ const description =
       name: nameEl.value.trim(),
       role: (document.getElementById('intro-role') as HTMLInputElement | null)?.value.trim() ?? '',
       company: (document.getElementById('intro-company') as HTMLInputElement | null)?.value.trim() ?? '',
+      contact: (document.getElementById('intro-contact') as HTMLInputElement | null)?.value.trim() ?? '',
       timestamp: new Date().toISOString(),
     };
     showSection('sec-quiz');
@@ -553,6 +578,16 @@ const description =
       name: userData.name,
       position: userData.role,
       company: userData.company,
+      // ช่องเดียวรับได้ทั้งเบอร์และ LINE ID — แยกให้ตรง column ก่อนส่ง
+      // (ปล่อยว่างได้ quiz เป็น lead magnet ไม่บังคับกรอก)
+      ...(() => {
+        const c = (userData.contact || '').trim();
+        const digits = c.replace(/[\s()-]/g, '');
+        const isPhone = /^(?:\+?66|0)\d{8,9}$/.test(digits);
+        return { phone: isPhone ? digits : '', line: isPhone ? '' : c };
+      })(),
+      // quiz = lead magnet ไม่ใช่คนที่ขอคุย — ติด COLD ไว้ไม่ให้ปนกับ pipeline จริง
+      tier: 'COLD',
       message: `BOSI DNA = ${dominant} (${DNA_PROFILES[dominant].name}). Scores B:${scores.B} O:${scores.O} S:${scores.S} I:${scores.I}`,
       comment: `Answers: ${answersEncoded}`,
       bosi_dominant: dominant,

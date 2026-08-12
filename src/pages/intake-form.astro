@@ -232,6 +232,9 @@ const budgets = [
               name="name"
               type="text"
               required
+              autocomplete="name"
+              autocapitalize="words"
+              enterkeyhint="next"
               class="input input-bordered w-full"
               placeholder="สมชาย ใจดี"
             />
@@ -247,6 +250,11 @@ const budgets = [
                 name="email"
                 type="email"
                 required
+                autocomplete="email"
+                inputmode="email"
+                autocapitalize="off"
+                spellcheck="false"
+                enterkeyhint="next"
                 class="input input-bordered w-full"
                 placeholder="you@company.co.th"
               />
@@ -262,6 +270,8 @@ const budgets = [
                 type="tel"
                 required
                 autocomplete="tel"
+                inputmode="tel"
+                enterkeyhint="next"
                 class="input input-bordered w-full"
                 placeholder="812345678"
               />
@@ -279,6 +289,11 @@ const budgets = [
               id="line"
               name="line"
               type="text"
+              autocomplete="off"
+              autocapitalize="off"
+              autocorrect="off"
+              spellcheck="false"
+              enterkeyhint="next"
               class="input input-bordered w-full"
               placeholder="@punnattapatch หรือ LINE ID"
             />
@@ -294,6 +309,8 @@ const budgets = [
                 name="company"
                 type="text"
                 required
+                autocomplete="organization"
+                enterkeyhint="next"
                 class="input input-bordered w-full"
               />
             </div>

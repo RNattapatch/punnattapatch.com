@@ -790,6 +790,10 @@ const description =
       const fd = new FormData(form);
       const payload: Record<string, unknown> = {
         source: 'sponsor-form',
+        // ไม่ส่ง key นี้ = Flatten Body1 default เป็น '/intake-form' → งานสปอนเซอร์
+        // ขึ้น Telegram ว่า "INTAKE FORM" และ attribution ผิด (ยืนยันจาก production 2026-08-09)
+        // ค่า 'sponsor' ตรงกับ key ที่มีอยู่แล้วใน formMap
+        source_page: 'sponsor',
         submittedAt: new Date().toISOString(),
         pageUrl: window.location.href,
       };

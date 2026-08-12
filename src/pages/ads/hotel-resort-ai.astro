@@ -383,6 +383,9 @@ const content = {
       // Compatibility aliases so the shared intake-form-v2 flow + submit_lead RPC
       // map these into CRM columns (it reads company/tier/problems/comment, not the raw dealer field names).
       company: payload.business || '',                        // -> company_name
+      // LP นี้เจาะ vertical เดียว — industry รู้จากหน้าเลย ไม่ต้องถามเพิ่ม
+      // (ห้าม map จาก business เพราะช่องนั้นคือ "ชื่อบริษัท" จะซ้ำกับ company_name)
+      industry: 'โรงแรม / รีสอร์ท',                             // -> business_type
       tier: payload.intent === 'booking' ? 'HOT' : 'WARM',    // -> temperature (hot/warm)
       problems: (payload.sales_issue as string) || '',        // -> pain_points
       comment: [intentLabel, payload.sales_issue].filter(Boolean).join(' — '), // -> crm_notes + Telegram alert

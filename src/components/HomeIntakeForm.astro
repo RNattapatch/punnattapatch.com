@@ -72,6 +72,9 @@ const painPointOptions = [
         name="name"
         type="text"
         required
+        autocomplete="name"
+        autocapitalize="words"
+        enterkeyhint="next"
         class="input input-bordered w-full text-sm"
         placeholder="สมชาย ใจดี"
       />
@@ -86,6 +89,9 @@ const painPointOptions = [
         name="phone"
         type="tel"
         required
+        autocomplete="tel"
+        inputmode="tel"
+        enterkeyhint="next"
         class="input input-bordered w-full text-sm"
         placeholder="0812345678"
       />
@@ -104,6 +110,11 @@ const painPointOptions = [
       id={`${formId}-line`}
       name="line"
       type="text"
+      autocomplete="off"
+      autocapitalize="off"
+      autocorrect="off"
+      spellcheck="false"
+      enterkeyhint="next"
       class="input input-bordered w-full text-sm"
       placeholder="@punnattapatch หรือ LINE ID"
     />
@@ -120,6 +131,8 @@ const painPointOptions = [
         name="company"
         type="text"
         required
+        autocomplete="organization"
+        enterkeyhint="next"
         class="input input-bordered w-full text-sm"
         placeholder="บริษัท..."
       />
@@ -389,15 +402,30 @@ const painPointOptions = [
     }
 
     if (status === 'failed') {
-      // Show inline error + keep form visible
+      // Show inline error + keep form visible.
+      // ห้ามตั้งเวลาให้หายเอง — ถ้าผู้ใช้เลื่อนจอไปแล้วข้อความหาย เขาจะเข้าใจว่าส่งสำเร็จ
+      // ทั้งที่ lead ไม่เคยถึงเรา (เคสนี้เงียบสนิท ไม่มีใครรู้ทั้งสองฝั่ง)
+      const prevError = form.parentNode?.querySelector('[data-intake-error]');
+      if (prevError) prevError.remove();
+
       const errorMsg = document.createElement('div');
+      errorMsg.setAttribute('data-intake-error', formId);
+      errorMsg.setAttribute('role', 'alert');
       errorMsg.className = 'mt-4 rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error';
       errorMsg.innerHTML = `
-        <strong>⚠️ ขัดข้องชั่วคราว</strong><br/>
-        ข้อมูลของคุณถูกเก็บในเครื่องนี้ · กรุณาทักใน LINE OA (<a href="https://lin.ee/ioSnSUG" target="_blank" class="underline">line.me/pun</a>) แล้วบอกปัญหา
+        <strong>⚠️ ส่งไม่สำเร็จ — ข้อมูลยังไม่ถึงผม</strong><br/>
+        <span class="block mt-1">กรุณาทักใน LINE OA (<a href="https://lin.ee/ioSnSUG" target="_blank" rel="noopener noreferrer" class="underline">line.me/pun</a>) แล้วบอกปัญหา · Reference: <code>${payload._meta.reference}</code></span>
+        <button type="button" data-intake-retry class="mt-3 rounded-lg border border-error px-3 py-1.5 text-xs font-semibold">ลองส่งใหม่</button>
       `;
       form.after(errorMsg);
-      setTimeout(() => errorMsg.remove(), 8000);
+      errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      const retryBtn = errorMsg.querySelector('[data-intake-retry]');
+      retryBtn?.addEventListener('click', () => {
+        errorMsg.remove();
+        form.requestSubmit();
+      });
+      retryBtn?.focus();
       return;
     }
 

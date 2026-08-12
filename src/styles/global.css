@@ -167,7 +167,21 @@ body::before {
 
 .font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.01em;
+}
+
+/* Tracking + leading ต้องผูกกับขนาด ไม่ใช่ค่าเดียวทั้งเว็บ (apple-design §15).
+   หมายเหตุภาษาไทย: กฎ Apple เขียนบนฐานอักษรละติน — ไทยบีบแรงไม่ได้เพราะสระบน/ล่าง
+   และวรรณยุกต์จะชนกัน ค่าที่ใช้จึงเบามาก ตัวที่ให้ผลจริงคือ line-height */
+h1.font-display { letter-spacing: -0.006em; line-height: 1.1; }
+h2.font-display { letter-spacing: -0.004em; line-height: 1.22; }
+h3.font-display { letter-spacing: -0.002em; }
+/* p / span / div ที่ใช้ .font-display มีทั้งใหญ่และเล็กปนกัน — ปล่อย 0 ปลอดภัยกว่าเดา */
+
+/* ตัวเลข/ละตินบีบได้เต็ม + tabular กัน layout shift ตอนค่าอัปเดต */
+.stat-num,
+.tabular-num {
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
 }
 
 /* =============================================================================
@@ -256,13 +270,39 @@ html { scroll-behavior: smooth; }
   body { background-size: 24px 24px; }
 }
 
+/* Press feedback ให้ปุ่ม DaisyUI ทั้งเว็บ (apple-design §1 — ตอบตอนกดลง ไม่ใช่ตอนปล่อย).
+   DaisyUI .btn:active ใช้ `translate: 0 .5px` + ทำสีเข้ม ซึ่งเบามากบน touch
+   ใช้ property `scale` แยก จึงไม่ทับ translate ของ DaisyUI และไม่ต้อง override transform */
+.btn {
+  transition-property: color, background-color, border-color, box-shadow, scale;
+  transition-duration: 0.12s;
+}
+.btn:active:not(.btn-active):not(:disabled) { scale: 0.97; }
+
 @media (prefers-reduced-motion: reduce) {
+  /* Reduced motion = ตัด "การเคลื่อนที่" ไม่ใช่ตัด "feedback" (apple-design §14).
+     ของเดิม nuke transition ทุก element ทำให้ปุ่มตายสนิท — ผู้ใช้ 35+ ซึ่งเป็น
+     ICP หลักของช่องนี้เปิดสวิตช์นี้กันเยอะ แล้วเจอเว็บที่กดแล้วไม่มีอะไรตอบ
+
+     กลยุทธ์: คง nuke เป็น default (ปลอดภัยไว้ก่อน) แล้ว "เปิดคืน" เฉพาะ
+     องค์ประกอบที่ผู้ใช้กด/โฟกัสเท่านั้น — สั้น ไม่มี overshoot ไม่มีการเดินทางไกล */
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+
+  .cta-btn,
+  .btn,
+  .input, .select, .textarea,
+  [type='submit'], [type='button'] {
+    transition-duration: 100ms !important;
+  }
+
+  /* ตัด hover-lift (เดินทางในพื้นที่) แต่เก็บ press ไว้ (บอกว่ากดติดแล้ว) */
+  .cta-btn:hover { transform: none; }
+  .cta-btn:active { transform: scale(0.96); }
 }
 
 /* =============================================================================

@@ -27,11 +27,14 @@ const { href, label, variant = 'primary', size = 'md', external = false } = Astr
     text-decoration: none;
     border-radius: var(--pun-radius-btn);
     cursor: pointer;
-    transition: opacity 0.15s ease, background 0.15s ease, transform 0.15s ease;
+    /* transform เร็วกว่า (100ms) เพราะเป็น press feedback — ต้องทันนิ้ว */
+    transition: transform 100ms ease-out, opacity 0.15s ease, background 0.15s ease;
     white-space: nowrap;
+    touch-action: manipulation; /* ตัด 300ms tap delay บน iOS */
   }
   .cta-btn:hover { transform: translateY(-1px); }
-  .cta-btn:active { transform: translateY(0); }
+  /* press state จริง — บน touch ไม่มี hover ปุ่มจึงต้องตอบตรงนี้ */
+  .cta-btn:active { transform: scale(0.96); }
 
   .s-md { padding: 0.625rem 1.5rem;  font-size: 0.95rem; }
   .s-lg { padding: 0.875rem 2.25rem; font-size: 1.05rem; }
