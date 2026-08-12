@@ -134,13 +134,24 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
       <div class="modal-box max-w-3xl">
         <h3 class="font-display font-bold" id="wr-studio-title">Script Studio</h3>
         <p class="text-xs opacity-60 mt-1" id="wr-studio-path"></p>
-        <textarea id="wr-studio-body" class="textarea textarea-bordered mt-3 w-full min-h-72 font-mono text-sm" placeholder="# Hook&#10;&#10;# Script&#10;&#10;# Caption&#10;&#10;# First Comment" aria-label="Script markdown body"></textarea>
+        <textarea id="wr-studio-body" class="textarea textarea-bordered mt-3 w-full min-h-72 font-mono text-sm" placeholder="# Hook (0-2 วิ)&#10;# Setup (2-10 วิ)&#10;# Body + ↻ Rehook&#10;# Payoff&#10;# CTA&#10;# 🔤 Hook Text · # 📝 Caption" aria-label="Script markdown body"></textarea>
+        <details class="mt-2 rounded-lg bg-base-200 px-3 py-2 text-xs leading-relaxed">
+          <summary class="cursor-pointer font-semibold opacity-70">✅ Checklist ก่อนอัด (reel-hook-formulas Part 13.4)</summary>
+          <ul class="mt-1 list-disc space-y-0.5 pl-4 opacity-80">
+            <li><b>Setup</b> สัญญาว่าจะได้เห็นอะไร — ห้าม "เล่าให้ฟัง" (ใช้ "พาไปดู") · ห้ามอวดสถานะตัวเอง</li>
+            <li><b>Body</b> เลือก 1 สไตล์จาก 8 และตอบได้ว่า "คนดูจะ<b>เห็น</b>อะไร" · Body ≠ Payoff</li>
+            <li><b>↻ Rehook</b> ทุกจุดเปลี่ยนข้อ · ~1 ครั้ง/15-20 วิ · คลิป &gt;45 วิ ≥2 จุด · ห้าม "ไม่ใช่ X แต่ Y"</li>
+            <li>Rehook เปิดประเด็นอะไร <b>Payoff ต้องตอบประเด็นนั้น</b></li>
+            <li><b>🔤 Hook Text</b> กฎ 5x5 teaser ไม่ซ้ำเสียงพูด · คลิปลิสต์ต้องมี <b>🔢 Step N/M</b> เลขตรงที่พูด</li>
+          </ul>
+        </details>
         <p class="mt-2 text-xs opacity-60">💡 ร่างเก็บใน database (💾) · ไฟล์ .md จริงใน repo = content truth เหมือนเดิม — Download แล้ววางตาม path ข้างบน</p>
 
         <!-- AI improve (2026-08-13): งานวิ่งผ่าน wr_jobs → Codex CLI บน Mac mini · ร่างเดิมไม่โดนทับ -->
         <div class="mt-3 flex flex-wrap items-center gap-2">
           <button id="wr-studio-ai" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-navy);">✨ ให้ AI เกลา</button>
           <button id="wr-studio-save-draft" class="btn btn-sm btn-ghost tap-44">💾 บันทึกร่าง</button>
+          <button id="wr-studio-template" class="btn btn-sm btn-ghost tap-44">📐 วางโครง</button>
           <span id="wr-studio-ai-status" class="text-xs opacity-70" role="status" aria-live="polite"></span>
         </div>
         <section id="wr-studio-ai-pane" class="mt-3 hidden">
@@ -559,6 +570,40 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
     }
 
     // ---------- Script Studio ----------
+    // โครงบทตาม reel-hook-formulas.md Part 13 (Clip Architecture · Setup + ↻Rehook · 2026-08-09)
+    // + ชั้นคำ Part 9 (🔤 Hook Text · 📝 Caption) + 🔢 Counter (Part 12 · เฉพาะคลิปลิสต์)
+    const SCRIPT_TEMPLATE = [
+      '# Hook (0-2 วิ — front-load payload)',
+      '',
+      '',
+      '# Setup (2-10 วิ — สัญญาว่าจะได้เห็นอะไร · "พาไปดู" ห้าม "เล่าให้ฟัง")',
+      '',
+      '',
+      '# Body (เลือก 1 สไตล์: demo จอจริง / ลิสต์+PiP / reveal เบลอ / rapid-fire / split-screen / ไวท์บอร์ด / สแต็กฉาก / before-after)',
+      '',
+      '',
+      '↻ Rehook: (วางทุกรอยต่อ · ~1 ครั้ง/15-20 วิ · เช่น "แล้วมันพังตรงไหนรู้มั้ย?" / "ทีนี้ของจริงอยู่ตรงนี้ครับ")',
+      '',
+      '',
+      '# Payoff (ตอบประเด็นที่ Rehook เปิดไว้ — ห้ามซ้ำ Body)',
+      '',
+      '',
+      '# CTA',
+      '',
+      '',
+      '# 🔤 Hook Text (กฎ 5x5 — teaser ไม่ซ้ำเสียงพูด)',
+      '',
+      '',
+      '# 🔢 Chapter Counter (เฉพาะคลิปลิสต์ — Step N/M · เลข M ต้องตรงที่พูดใน hook)',
+      '',
+      '',
+      '# 📝 Caption (ประโยคแรก = hook + keyword · ปิดด้วย CTA)',
+      '',
+      '',
+      '# 💬 First Comment (optional — คีย์เวิร์ด DM / ลิงก์)',
+      '',
+    ].join('\n');
+
     function openStudio(variantId: string) {
       const v = variants.find((x) => x.variant_id === variantId);
       const idea = ideas.find((i) => i.content_id === v?.content_id);
@@ -566,8 +611,8 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
       studioVariantId = variantId;
       $('wr-studio-title').textContent = `${v.variant_id} · ${idea.title}`;
       $('wr-studio-path').textContent = v.markdown_path ?? '';
-      // ร่างจาก DB ต่อ variant — เปิดจากมือถือ/เครื่องไหนก็เจอร่างเดิม
-      ($('wr-studio-body') as HTMLTextAreaElement).value = v.script_draft ?? '';
+      // ร่างจาก DB ต่อ variant — เปิดจากมือถือ/เครื่องไหนก็เจอร่างเดิม · ร่างใหม่เริ่มจากโครง Part 13
+      ($('wr-studio-body') as HTMLTextAreaElement).value = v.script_draft ?? SCRIPT_TEMPLATE;
       showAiResult(v.ai_result, v.ai_result_at);
       $('wr-studio-ai-status').textContent = '';
       ($('wr-studio') as HTMLDialogElement).showModal();
@@ -772,6 +817,12 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
       $('wr-studio-copy').addEventListener('click', () => { const f = studioFile(); if (f) void copyText(f.md).then(() => toast('คัดลอกทั้งไฟล์แล้ว')); });
       $('wr-studio-dl').addEventListener('click', () => { const f = studioFile(); if (f) { downloadText(f.name, f.md); toast(`ดาวน์โหลด ${f.name}`); } });
       $('wr-studio-save-draft').addEventListener('click', () => void saveDraft());
+      $('wr-studio-template').addEventListener('click', () => {
+        const body = $('wr-studio-body') as HTMLTextAreaElement;
+        if (body.value.trim() && body.value !== SCRIPT_TEMPLATE && !confirm('ทับเนื้อหาในช่องร่างด้วยโครงเปล่า?')) return;
+        body.value = SCRIPT_TEMPLATE;
+        toast('วางโครง Hook→Setup→Body→Rehook→Payoff→CTA แล้ว 📐');
+      });
       $('wr-studio-ai').addEventListener('click', () => void runImprove());
       $('wr-studio-ai-copy').addEventListener('click', () => { void copyText(($('wr-studio-ai-body') as HTMLTextAreaElement).value).then(() => toast('คัดลอกผล AI แล้ว')); });
       $('wr-studio-ai-use').addEventListener('click', () => {
