@@ -31,8 +31,9 @@ const issues = [
         <input name="honeypot-name" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true" />
         <div class="flex items-start justify-between gap-5"><div><h2 class="font-display text-2xl font-bold text-navy">เล่าโจทย์ของคุณสั้นๆ</h2><p class="mt-1 text-sm text-warm-ink/65">กรอกไม่ถึง 2 นาที แล้วผมจะอ่านข้อมูลเพื่อเตรียมคุยให้ตรงเรื่อง</p></div><DarumaMark class="size-12 shrink-0" /></div>
         <div class="mt-8 space-y-5">
-          <div class="grid gap-5 sm:grid-cols-2"><label class="field-label">ชื่อของคุณ<input name="name" required autocomplete="name" class="field" /></label><label class="field-label">ช่องทางติดต่อกลับ<input name="contact" required autocomplete="tel" placeholder="เบอร์โทร หรือ LINE ID" class="field" /></label></div>
-          <div class="grid gap-5 sm:grid-cols-2"><label class="field-label">ชื่อบริษัท<input name="company" required autocomplete="organization" placeholder="เช่น บจก. สยามเครื่องจักรกล" class="field" /></label><label class="field-label">ตำแหน่งของคุณ<select name="position" required class="field"><option value="">เลือกตำแหน่ง</option><option>CEO / เจ้าของกิจการ</option><option>Managing Director</option><option>Sales Director</option><option>Sales Manager</option><option>Marketing Manager</option><option>Operations Manager</option><option>อื่นๆ</option></select></label></div>
+          <div class="grid gap-5 sm:grid-cols-2"><label class="field-label">ชื่อของคุณ<input name="name" required autocomplete="name" autocapitalize="words" enterkeyhint="next" class="field" /></label><label class="field-label">เบอร์โทรติดต่อกลับ<input name="phone" required type="tel" inputmode="tel" autocomplete="tel" pattern="(\+66|0)[0-9\s\-]{8,12}" title="กรอกเบอร์โทร เช่น 0812345678" enterkeyhint="next" placeholder="เช่น 0812345678" class="field" /></label></div>
+          <label class="field-label">LINE ID <span class="font-normal opacity-60">(ถ้าสะดวกให้ทักไลน์)</span><input name="line" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next" placeholder="เช่น @yourline (ไม่บังคับ)" class="field" /></label>
+          <div class="grid gap-5 sm:grid-cols-2"><label class="field-label">ชื่อบริษัท<input name="company" required autocomplete="organization" enterkeyhint="next" placeholder="เช่น บจก. สยามเครื่องจักรกล" class="field" /></label><label class="field-label">ตำแหน่งของคุณ<select name="position" required class="field"><option value="">เลือกตำแหน่ง</option><option>CEO / เจ้าของกิจการ</option><option>Managing Director</option><option>Sales Director</option><option>Sales Manager</option><option>Marketing Manager</option><option>Operations Manager</option><option>อื่นๆ</option></select></label></div>
           <label class="field-label">ธุรกิจของคุณทำเกี่ยวกับอะไร<input name="business" required placeholder="เช่น ขายเครื่องจักร B2B, ตัวแทนจำหน่ายอะไหล่" class="field" /></label>
           <div class="grid gap-5 sm:grid-cols-2"><label class="field-label">ทีมขายกี่คน<select name="team_size" required class="field"><option value="">เลือกขนาดทีม</option><option value="0">ยังไม่มีทีมขาย</option><option value="1-4">1–4 คน</option><option value="5-10">5–10 คน</option><option value="11-20">11–20 คน</option><option value="20+">มากกว่า 20 คน</option></select></label><label class="field-label">งบที่พร้อมลงทุน<select name="budget" required class="field"><option value="">เลือกช่วงงบ</option><option>ยังไม่ได้ตั้งงบ — อยากเห็นโจทย์ก่อน</option><option>ต่ำกว่า ฿50,000</option><option>฿50,000–฿100,000</option><option>฿100,000–฿300,000</option><option>มากกว่า ฿300,000</option></select></label></div>
           <label class="field-label">ตอนนี้เรื่องไหนติดสุด<select name="issue" required class="field"><option value="">เลือกเรื่องที่ตรงที่สุด</option>{issues.map((issue) => <option value={issue}>{issue}</option>)}</select></label>
@@ -67,18 +68,78 @@ const issues = [
   const recommendation = document.getElementById('booking-recommendation');
   const WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
 
+  // Fallback เมื่อ n8n ล่ม → เขียน lead เข้า Supabase ตรงผ่าน RPC submit_lead
+  // (SECURITY DEFINER, anon-callable) — datastore เดียวกับที่ dashboard อ่าน
+  // anon key เป็น public by design · แบบเดียวกับ intake-form.astro
+  const SUPABASE_FALLBACK_RPC = 'https://yykocvhorgcgzaluuldn.supabase.co/rest/v1/rpc/submit_lead';
+  const SUPABASE_ANON_KEY =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5a29jdmhvcmdjZ3phbHV1bGRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjYwNTYsImV4cCI6MjA5NTgwMjA1Nn0.04ya1crnMRK6SgLfwhhxIp14DQ1n_ZkY5Fj-urTsv1E';
+
+  function makeReference(): string {
+    const stamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 12);
+    return `PN-${stamp}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+  }
+
+  /**
+   * ⚠️ Fallback ข้าม node "Flatten Body1" + "Normalize Aliases" ของ n8n ไปเลย
+   * แปลว่า **ไม่มีใครแปลง alias ให้** — payload ที่ยิงเข้า RPC ตรงๆ ต้อง canonical ครบเอง
+   * ไม่งั้น lead จะลงตาราง leads แบบไม่มีเบอร์ = ติดต่อกลับไม่ได้
+   * (ดู docs/INTAKE-DATA-CONTRACT.md ตารางแม่)
+   */
+  function toCanonical(payload: Record<string, unknown>, reference: string) {
+    return {
+      ...payload,
+      // canonical คือ submittedAt (camelCase) ไม่ใช่ submitted_at
+      submittedAt: payload.submitted_at ?? new Date().toISOString(),
+      comment: [payload.comment, payload.business ? `ธุรกิจ: ${payload.business}` : '']
+        .filter(Boolean)
+        .join(' · '),
+      reference,
+      fallback_reason: 'n8n-unreachable',
+    };
+  }
+
+  async function postSupabaseLead(payload: Record<string, unknown>, reference: string, timeoutMs: number): Promise<boolean> {
+    const ctrl = new AbortController();
+    const kill = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+      const res = await fetch(SUPABASE_FALLBACK_RPC, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ payload: toCanonical(payload, reference) }),
+        signal: ctrl.signal,
+        keepalive: true,
+      });
+      clearTimeout(kill);
+      return res.ok;
+    } catch (err) {
+      clearTimeout(kill);
+      console.error('[booking] supabase fallback failed', err);
+      return false;
+    }
+  }
+
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!form.reportValidity()) return;
     if ((new FormData(form).get('honeypot-name') as string)?.trim()) return;
     const data = new FormData(form);
     const payload = Object.fromEntries(data.entries());
+    // เบอร์เก็บเป็นตัวเลขล้วน (คง +66 ไว้) — เว้นวรรค/ขีดที่คนพิมพ์มาไม่ต้องไปถึง CRM
+    payload.phone = String(payload.phone || '').replace(/[\s()-]/g, '');
     Object.assign(payload, {
       // Canonical aliases — shared intake flow reads company/problems (see docs/INTAKE-DATA-CONTRACT.md)
       company: ((payload.company as string) || '').trim() || (payload.business as string) || '',
       industry: payload.business || '',
       problems: (payload.issue as string) || '',
       source: 'website-booking', source_page: 'website-booking', booking_type: 'daruma-qualification',
+      // canonical คือ submittedAt (camelCase) — Flatten Body1 อ่าน submittedAt → sentAt เท่านั้น
+      // คง submitted_at ไว้ด้วยเพื่อ backward-compat กับอะไรก็ตามที่อ่าน key เดิมอยู่
+      submittedAt: new Date().toISOString(),
       submitted_at: new Date().toISOString(), path: window.location.pathname,
       recommended_path: 'free-consultation',
     });
@@ -86,17 +147,43 @@ const issues = [
     foldAfterHours(payload as Record<string, unknown>);
     if (submit) { submit.disabled = true; submit.textContent = 'กำลังส่ง...'; }
     if (error) error.classList.add('hidden');
+
+    // ── ชั้น 1: n8n (primary) — payload ตรงนี้ห้ามแตะ Flatten Body1 อ่านจาก key พวกนี้
+    let status: 'sent-primary' | 'sent-fallback' | 'failed' = 'failed';
     try {
       const response = await fetch(WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), keepalive: true });
-      if (!response.ok) throw new Error('submission failed');
-      form.classList.add('hidden');
-      if (recommendation) recommendation.textContent = 'ผมจะอ่านโจทย์ของคุณก่อน แล้วคุยกันตรงๆ ว่าทีมควรเริ่มจาก In-house, โปรแกรมเต็ม หรือยังมีอะไรที่กลับไปทำเองได้ครับ';
-      success?.classList.remove('hidden');
-      success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.('Booking Submit', { props: { source: 'website-booking' } });
-    } catch {
-      if (error) { error.textContent = 'ระบบรับข้อมูลขัดข้องชั่วคราว กรุณาทัก LINE OA เพื่อส่งโจทย์ให้ผมโดยตรง'; error.classList.remove('hidden'); }
-      if (submit) { submit.disabled = false; submit.textContent = 'ส่งข้อมูล — ผมติดต่อกลับภายใน 1 วันทำการ'; }
+      if (response.ok) status = 'sent-primary';
+    } catch (err) {
+      console.error('[booking] n8n post failed', err);
     }
+
+    // ── ชั้น 2: Supabase RPC ตรง — ใช้เมื่อ n8n ไม่ตอบเท่านั้น
+    const reference = makeReference();
+    if (status === 'failed') {
+      if (await postSupabaseLead(payload as Record<string, unknown>, reference, 8000)) status = 'sent-fallback';
+    }
+
+    if (status === 'failed') {
+      if (error) {
+        error.innerHTML = 'ระบบรับข้อมูลขัดข้องชั่วคราว — <strong>ข้อมูลยังไม่ถึงผม</strong> กรุณาทัก LINE OA เพื่อส่งโจทย์ให้ผมโดยตรง (ข้อมูลที่กรอกไว้ยังอยู่ กดส่งซ้ำได้)';
+        error.classList.remove('hidden');
+        error.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      if (submit) { submit.disabled = false; submit.textContent = 'ส่งข้อมูล — ผมติดต่อกลับภายใน 1 วันทำการ'; }
+      return;
+    }
+
+    form.classList.add('hidden');
+    if (recommendation) recommendation.textContent = 'ผมจะอ่านโจทย์ของคุณก่อน แล้วคุยกันตรงๆ ว่าทีมควรเริ่มจาก In-house, โปรแกรมเต็ม หรือยังมีอะไรที่กลับไปทำเองได้ครับ';
+    success?.classList.remove('hidden');
+    // เข้าทาง fallback = Telegram ไม่เด้ง ผมอาจเห็นช้า → ให้ reference ไว้อ้างอิงตอนทัก LINE
+    if (status === 'sent-fallback' && success) {
+      const note = document.createElement('p');
+      note.className = 'mt-3 text-sm';
+      note.innerHTML = `บันทึกข้อมูลไว้แล้วครับ · Reference: <code>${reference}</code><br/>ถ้าอยากให้ผมตอบเร็วขึ้น ทัก LINE OA พร้อมส่งรหัสนี้มาได้เลย`;
+      success.appendChild(note);
+    }
+    success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.('Booking Submit', { props: { source: 'website-booking', status } });
   });
 </script>

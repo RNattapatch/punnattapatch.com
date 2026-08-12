@@ -59,7 +59,7 @@ Astro form (src/pages/**)  ──POST──▶  n8n "Intake Form v2 — Split Pa
 | `utm_source/_medium/_campaign/_content/_term` | ทั้ง 5 | — (raw_payload) | 📊 Attribution |
 | `fbclid` / `ttclid` / `user_agent` / `referrer` | ✓ | — (raw_payload) | — (TikTok CAPI ใช้) |
 | `consent` (`on`/`true`/`yes`/`1` → เก็บเป็น `yes`) | `consent` | — (raw_payload) | — (หลักฐาน PDPA · เพิ่ม 2026-08-01) |
-| `after_hours_ok` (`yes`/`no`) ⏰ **เพิ่ม 2026-08-09** | node **Add After-Hours** (ต่อจาก Flatten Body1) | `after_hours_ok` (boolean · RPC แปลงให้) | บรรทัด ⏰ ท้ายการ์ด + ผ่าน 💭 `comment` |
+| `after_hours_ok` (`yes`/`no`) 🌒 **เพิ่ม 2026-08-09 · จัดหน้าใหม่ 2026-08-11** | node **Add After-Hours** (ต่อจาก Flatten Body1) | `after_hours_ok` (boolean · RPC แปลงให้) | ธง 🌒/🌤️ หน้าบรรทัดแรก + บล็อก "เวลาที่โทรได้" |
 | `teamSize` หรือ `team_size` | ทั้งคู่ | — (raw_payload) | 👤 Team |
 | `revenue`, `goal`, `timeline`, `budget` | ✓ | — (raw_payload) | ⏳ / 🎯 |
 | `message`, `brandWebsite` | ✓ | `crm_notes` (fallback) | 💼 Sponsor |
@@ -78,6 +78,23 @@ Astro form (src/pages/**)  ──POST──▶  n8n "Intake Form v2 — Split Pa
 - ค่า: `"yes"` / `"no"` → RPC `submit_lead` แปลงเป็น boolean ลง column `leads.after_hours_ok`
 - บอท LINE OA เขียน column เดียวกัน (`mac-mini-ops/line-relay/crm-leads.mjs`)
 - Dashboard แสดงในการ์ดลูกค้า แถว "โทรนอกเวลาทำการ" (แก้ด้วยมือได้)
+
+### 🌒 ภาษาภาพเดียวกันทั้ง Telegram + CRM (2026-08-11)
+
+เดิมข้อมูลนี้โผล่ **2 ที่ในการ์ดเดียว** — ทั้งในบรรทัด 💭 `comment` (จาก `foldAfterHours`) และบรรทัด ⏰
+ห้อยท้ายสุดหลัง Attribution — อ่านยาก ต้องไล่หา แก้เป็น:
+
+| | 🌒 สะดวกนอกเวลา | 🌤️ ขอเฉพาะในเวลาทำการ |
+|---|---|---|
+| Telegram — บรรทัดแรก | `🌒 🏝 [ADS · ...] — ชื่อ` | `🌤️ 🏝 [ADS · ...] — ชื่อ` |
+| Telegram — บล็อก (เหนือ 📞 ช่องทางติดต่อ) | `═══ 🌒 เวลาที่โทรได้ ═══` | `═══ 🌤️ เวลาที่โทรได้ ═══` |
+| CRM — หน้าชื่อลูกค้า (list · kanban · today · drawer) | `🌒 ชื่อ` | ไม่ติดธง (กันรกทั้งลิสต์) |
+
+- ธงบรรทัดแรก = เห็นตั้งแต่ notification preview ยังไม่ต้องเปิดแชท
+- node **Add After-Hours** ตัดข้อความที่ `foldAfterHours` พ่วงไว้ในบรรทัด 💭 ออกจาก *การ์ด* เท่านั้น —
+  `comment` ตัวเต็มยังวิ่งเข้า `crm_notes` เหมือนเดิม (ถ้าตัดแล้วหัวข้อ 🎯 ปัญหาที่เจอ ไม่เหลือเนื้อ จะยุบหัวข้อทิ้ง)
+- อีโมจิเป็นค่าคงที่ใน `src/scripts/after-hours.ts` (`AFTER_HOURS_MARK` / `OFFICE_HOURS_MARK`) —
+  เปลี่ยนที่นั่นที่เดียวสำหรับฝั่งเว็บ แล้วแก้ให้ตรงกันใน node `Add After-Hours`
 
 ### ✅ n8n — แก้แล้ว 2026-08-09 (workflow `ZIYQ0hTsy2TiqDxx`)
 
@@ -127,17 +144,39 @@ body ดิบของ webhook มาเติม `after_hours_ok` (yes/no/'') 
 3. เช็ค Telegram: เห็น 👤 บริษัท · 🔥/🌟 tier · 🎯 ปัญหา · 📞 ครบ
 4. ลบ test row: `delete from leads where full_name like 'ZZ TEST%';`
 
-## สถานะฟอร์มปัจจุบัน (audit 2026-07-26)
+## ✅ node "Validate Booking1" — เขียนใหม่ + เปิดใช้จริงแล้ว (2026-08-12)
+
+ประวัติ: ตัวเก่าเช็ค `source_page === '/booking'` แต่ฟอร์มส่ง `'website-booking'` → gate ถูกข้าม
+ทุก lead มาตลอด (พบ 2026-08-09) และ rules เก่าอิงฟอร์มที่ไม่มีอยู่แล้ว (revenue/timeline/comment≥30)
+
+ตัวใหม่ (deploy + ทดสอบ production 2026-08-12 · execution 1083 reject ขยะสำเร็จ ไม่มี lead/alert เกิด):
+- match `website-booking` / `booking` / `booking-astro` (strip slash ก่อนเทียบ)
+- **เช็คแข็งเฉพาะกันบอท**: `name` ≥2 · เบอร์โทรไทยจริง (มือถือ 10 หลัก/ออฟฟิศ 9 หลัก กันเลขซ้ำ) ·
+  `company`หรือ`business` ≥2 · `consent` — reject = lead หายเงียบ จึงไม่เช็คเกินจำเป็น
+- เบอร์เช็คเฉพาะ payload ที่มี key `phone` — หน้าเก่าค้าง cache ที่ส่ง `contact` ช่องเดียว ผ่านแบบเดิม
+- `line` optional ไม่เช็ค
+
+## 📞 ฟอร์ม /booking แยกช่องเบอร์/LINE แล้ว (2026-08-12)
+
+เดิมช่อง `contact` ช่องเดียวรับ "เบอร์โทร หรือ LINE ID" → LINE ID ไหลลง column `phone`
+(Flatten อ่าน `b.phone || b.yourPhone || b.contact` และ RPC ก็ fallback แบบเดียวกัน)
+ทำให้ 4/11 lead ของ booking กดโทรจากการ์ด CRM ไม่ได้ (`phone = 'Ro6er'`, `'Tipnatee'`, ...)
+
+ตอนนี้: `phone` (required · `type="tel"` + pattern + normalize เป็นตัวเลขล้วนก่อน POST) +
+`line` (optional) — เหมือน intake-form และ ads LP ทุกหน้า · เทสต์คุมไว้ใน `tests/lead-forms.test.mjs`
+
+## สถานะฟอร์มปัจจุบัน (audit 2026-07-26 · อัปเดต 2026-08-09 หลัง E2E ยิง production ครบ 7 ฟอร์ม)
 
 | ฟอร์ม | source_page | สถานะ contract |
 |---|---|---|
-| `src/pages/ads/dealer-ai-sales.astro` | `ads/dealer-ai-sales` | ✅ alias ครบ · **2026-08-01: `_meta` + click IDs** + tier HOT/WARM (แก้ 27dd249) |
+| `src/pages/ads/dealer-ai-sales.astro` | `ads/dealer-ai-sales` | ✅ alias ครบ · **2026-08-01: `_meta` + click IDs** + tier HOT/WARM (แก้ 27dd249) · **2026-08-09: เพิ่ม `industry` คงที่ (LP เจาะ vertical เดียว)** |
 | `src/pages/ads/daruma-consult.astro` | `ads/daruma-consult` | ✅ alias ครบ + tier จาก intent · **2026-08-01: แยก `contact` → `phone`+`line_id`, เพิ่ม phone validation, `_meta`, click IDs** |
-| `src/pages/booking.astro` | `website-booking` | ✅ alias company/problems (แก้รอบนี้) · ไม่มี intent → ไม่มี tier |
+| `src/pages/booking.astro` | `website-booking` | ✅ alias company/problems · ไม่มี intent → ไม่มี tier · **2026-08-09: เพิ่ม `submittedAt` + Supabase fallback + form_tag alias ใน n8n** |
 | `src/pages/intake-form.astro` | `/intake-form` | ✅ ใช้ canonical key ตรงอยู่แล้ว (ฟอร์มแม่แบบ) |
 | `src/components/HomeIntakeForm.astro` | `homepage-inline` | ✅ alias ใน JS อยู่แล้ว (company/phone/line/problems/comment) |
-| `src/pages/sponsor.astro` | (จาก meta) | ✅ ใช้ yourName/brandName ซึ่ง Flatten/RPC มี fallback รองรับ |
-| `src/pages/bosi-dna-quiz.astro` | `bosi-quiz` | ✅ ส่ง company/comment ใน JS |
+| `src/pages/sponsor.astro` | `sponsor` | ✅ ใช้ yourName/brandName ซึ่ง Flatten/RPC มี fallback · **2026-08-09: เพิ่ม `source_page: 'sponsor'` — เดิมไม่ส่งเลย ทำให้ตกเป็น `/intake-form` และขึ้น Telegram ว่า INTAKE FORM** |
+| `src/pages/bosi-dna-quiz.astro` | `bosi-quiz` | ✅ ส่ง company/comment ใน JS · **2026-08-09: เพิ่มช่องติดต่อ (optional) → phone/line + `tier: COLD`** — เดิมสร้าง lead ที่ติดต่อกลับไม่ได้เลย |
+| `src/pages/ads/hotel-resort-ai.astro` | `ads/hotel-resort-ai` | ✅ alias ครบ + tier · **2026-08-09: เพิ่ม `industry` คงที่ (LP เจาะ vertical เดียว)** |
 
 ## Audit 2026-08-01 — สิ่งที่แก้รอบนี้ (ads LP ทั้ง 3 หน้า)
 
@@ -157,7 +196,7 @@ body ดิบของ webhook มาเติม `after_hours_ok` (yes/no/'') 
 
 ## หมายเหตุระบบ (รู้ไว้)
 
-- **Validate Booking1** gate เข้มเฉพาะ `source_page === '/booking'` (เป๊ะๆ มี slash) — หน้า booking จริงส่ง `website-booking` จึง**ไม่ผ่าน gate นี้** (by design ปัจจุบัน; ถ้าจะเปิด gate ให้แก้เงื่อนไขใน n8n)
+- **Validate Booking1** เปิดใช้จริงแล้ว 2026-08-12 (ดู section ด้านบน) — gate เบา: name/เบอร์จริง/company/consent เท่านั้น
 - **Telegram บรรทัด tier** จะโชว์ `Score ?/15` เสมอเมื่อมี tier (template เดิมของ quiz) — cosmetic, ไม่พัง · แก้ได้ต้องเขียนทับ jsCode ของ Flatten Body1 ทั้งก้อน (ยังไม่ทำ เพราะ blast radius กว้างกว่าประโยชน์)
 - **In-app browser (TikTok/FB/IG) ถือ cache นาน** — หลัง deploy แก้ฟอร์ม ให้ทดสอบใน Safari/Chrome ปกติ หรือเติม `?v=N` · lead จริงที่คลิกจาก ads ครั้งแรกไม่มี cache เก่า ไม่กระทบ
 - RPC `submit_lead` เป็น SECURITY DEFINER — ฟอร์มไม่ต้องมีสิทธิ์ insert ตรง
