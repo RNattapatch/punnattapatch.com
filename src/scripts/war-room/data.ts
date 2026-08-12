@@ -45,6 +45,10 @@ export interface Variant {
   cta_keyword: string | null;
   status_changed_at: string;
   created_at: string;
+  // Script Studio (2026-08-13): ร่างของปันกับผล AI อยู่คนละคอลัมน์ — ร่างเดิมไม่โดนทับ
+  script_draft: string | null;
+  ai_result: string | null;
+  ai_result_at: string | null;
 }
 
 export interface Publication {
@@ -203,6 +207,47 @@ export async function addSnapshot(publication_id: string, metrics: SnapshotInput
   );
   const { error } = await supabase.from('analytics_snapshots').insert({ publication_id, source: 'manual', ...clean });
   fail(error);
+}
+
+// ---------- wr_jobs (Mac mini job queue — 2026-08-13) ----------
+// หน้าเว็บ HTTPS เรียก mini ตรงๆ ไม่ได้ (mixed content) → insert job ที่นี่
+// worker บน mini (launchd com.pun.wrjobs-worker) poll ทุก 12s แล้วเขียนผลกลับ
+
+export type JobType = 'render_card' | 'ai_improve' | 'publish';
+export interface WrJob {
+  id: string;
+  job_type: JobType;
+  payload: Record<string, unknown>;
+  status: 'queued' | 'running' | 'done' | 'error';
+  result: Record<string, unknown> | null;
+  error: string | null;
+  created_at: string;
+}
+
+export async function enqueueJob(job_type: JobType, payload: Record<string, unknown>): Promise<string> {
+  const { data, error } = await supabase.from('wr_jobs').insert({ job_type, payload }).select('id').single();
+  fail(error);
+  return (data as { id: string }).id;
+}
+
+/** Poll จน job จบ — done คืน row, error/timeout โยน Error (timeout ไม่ยกเลิกงานฝั่ง mini) */
+export async function waitJob(
+  id: string,
+  opts: { timeoutMs?: number; intervalMs?: number; onTick?: (elapsedS: number) => void } = {}
+): Promise<WrJob> {
+  const { timeoutMs = 6 * 60_000, intervalMs = 5_000, onTick } = opts;
+  const t0 = Date.now();
+  for (;;) {
+    await new Promise((r) => setTimeout(r, intervalMs));
+    const { data, error } = await supabase.from('wr_jobs').select('*').eq('id', id).single();
+    fail(error);
+    const job = data as WrJob;
+    if (job.status === 'done') return job;
+    if (job.status === 'error') throw new Error(job.error ?? 'job ล้มเหลว');
+    const elapsed = Math.round((Date.now() - t0) / 1000);
+    onTick?.(elapsed);
+    if (Date.now() - t0 > timeoutMs) throw new Error('รอนานเกินไป — งานยังวิ่งอยู่ฝั่ง Mac mini ลองรีเฟรชดูทีหลัง');
+  }
 }
 
 // ---------- Markdown builder (Save .md = download/copy — repo file is content truth) ----------

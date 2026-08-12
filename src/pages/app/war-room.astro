@@ -27,6 +27,7 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
             <button id="wr-view-board" role="tab" aria-selected="true" class="join-item btn btn-sm rounded-full border-0 text-white tap-44" style="background-color:var(--color-brand-navy);">🗂 Board</button>
             <button id="wr-view-list" role="tab" aria-selected="false" class="join-item btn btn-sm rounded-full border-0 btn-ghost tap-44">📋 List</button>
           </div>
+          <a href="/app/news-desk" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า News Desk">📰<span class="hidden sm:inline"> News Desk</span></a>
           <a href="/app/dashboard" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า CRM">📊<span class="hidden sm:inline"> CRM</span></a>
           <button id="wr-logout" class="btn btn-sm btn-ghost tap-44" aria-label="ออกจากระบบ">ออก</button>
         </div>
@@ -134,7 +135,26 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
         <h3 class="font-display font-bold" id="wr-studio-title">Script Studio</h3>
         <p class="text-xs opacity-60 mt-1" id="wr-studio-path"></p>
         <textarea id="wr-studio-body" class="textarea textarea-bordered mt-3 w-full min-h-72 font-mono text-sm" placeholder="# Hook&#10;&#10;# Script&#10;&#10;# Caption&#10;&#10;# First Comment" aria-label="Script markdown body"></textarea>
-        <p class="mt-2 text-xs opacity-60">💡 เนื้อ script อยู่ในไฟล์ repo ไม่อยู่ใน database — Download แล้ววางตาม path ข้างบน (Mac mini API จะ automate ใน Phase 3)</p>
+        <p class="mt-2 text-xs opacity-60">💡 ร่างเก็บใน database (💾) · ไฟล์ .md จริงใน repo = content truth เหมือนเดิม — Download แล้ววางตาม path ข้างบน</p>
+
+        <!-- AI improve (2026-08-13): งานวิ่งผ่าน wr_jobs → Codex CLI บน Mac mini · ร่างเดิมไม่โดนทับ -->
+        <div class="mt-3 flex flex-wrap items-center gap-2">
+          <button id="wr-studio-ai" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-navy);">✨ ให้ AI เกลา</button>
+          <button id="wr-studio-save-draft" class="btn btn-sm btn-ghost tap-44">💾 บันทึกร่าง</button>
+          <span id="wr-studio-ai-status" class="text-xs opacity-70" role="status" aria-live="polite"></span>
+        </div>
+        <section id="wr-studio-ai-pane" class="mt-3 hidden">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h4 class="font-display text-sm font-bold">🤖 ผลจาก AI <span id="wr-studio-ai-at" class="text-xs font-normal opacity-50"></span></h4>
+            <div class="flex gap-1">
+              <button id="wr-studio-ai-copy" class="btn btn-xs tap-44">คัดลอกผล</button>
+              <button id="wr-studio-ai-use" class="btn btn-xs tap-44">⬆️ ใช้แทนร่าง</button>
+            </div>
+          </div>
+          <textarea id="wr-studio-ai-body" readonly class="textarea textarea-bordered mt-2 w-full min-h-72 bg-base-200 font-mono text-sm" aria-label="ผล script จาก AI"></textarea>
+          <p class="mt-1 text-xs opacity-60">เกลาตาม reel-hook-formulas + เสียงปัน + กฎ ai-language-check — ร่างของปันยังอยู่ช่องบนเสมอ</p>
+        </section>
+
         <div class="modal-action flex-wrap gap-2">
           <button id="wr-studio-copy-body" class="btn btn-sm tap-44">คัดลอกเนื้อหา</button>
           <button id="wr-studio-copy" class="btn btn-sm tap-44">คัดลอกทั้งไฟล์ (.md)</button>
@@ -183,6 +203,7 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
       listIdeas, listVariants, listPublications, snapshotPubIds, findSimilar,
       createIdea, updateIdea, createVariant, updateVariant, addPublication,
       setDecision, addSnapshot, buildVariantMarkdown, downloadText, copyText,
+      enqueueJob, waitJob,
       type Idea, type Variant, type Publication, type FormatCode,
       type IdeaStatus, type VariantStatus, type DecisionLabel,
     } from '../../scripts/war-room/data';
@@ -545,7 +566,63 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
       studioVariantId = variantId;
       $('wr-studio-title').textContent = `${v.variant_id} · ${idea.title}`;
       $('wr-studio-path').textContent = v.markdown_path ?? '';
+      // ร่างจาก DB ต่อ variant — เปิดจากมือถือ/เครื่องไหนก็เจอร่างเดิม
+      ($('wr-studio-body') as HTMLTextAreaElement).value = v.script_draft ?? '';
+      showAiResult(v.ai_result, v.ai_result_at);
+      $('wr-studio-ai-status').textContent = '';
       ($('wr-studio') as HTMLDialogElement).showModal();
+    }
+
+    function showAiResult(text: string | null, at: string | null) {
+      const pane = $('wr-studio-ai-pane');
+      if (!text) { pane.classList.add('hidden'); return; }
+      pane.classList.remove('hidden');
+      ($('wr-studio-ai-body') as HTMLTextAreaElement).value = text;
+      $('wr-studio-ai-at').textContent = at ? new Date(at).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }) : '';
+    }
+
+    async function saveDraft(silent = false): Promise<boolean> {
+      if (!studioVariantId) return false;
+      const script = ($('wr-studio-body') as HTMLTextAreaElement).value;
+      try {
+        await updateVariant(studioVariantId, { script_draft: script });
+        const v = variants.find((x) => x.variant_id === studioVariantId);
+        if (v) v.script_draft = script;
+        if (!silent) toast('บันทึกร่างแล้ว 💾');
+        return true;
+      } catch (e) { oops(e); return false; }
+    }
+
+    async function runImprove() {
+      const vid = studioVariantId;
+      if (!vid) return;
+      const script = ($('wr-studio-body') as HTMLTextAreaElement).value.trim();
+      if (!script) { toast('พิมพ์ script ก่อนครับ', 'error'); return; }
+      const btn = $('wr-studio-ai') as HTMLButtonElement;
+      const status = $('wr-studio-ai-status');
+      btn.disabled = true;
+      btn.classList.add('loading');
+      status.textContent = 'ส่งเข้าคิว Mac mini…';
+      try {
+        if (!(await saveDraft(true))) return; // ร่างต้องถึง DB ก่อน — กันหายถ้าปิดหน้าระหว่างรอ
+        const jobId = await enqueueJob('ai_improve', { variant_id: vid, script });
+        const job = await waitJob(jobId, {
+          timeoutMs: 9 * 60_000,
+          onTick: (s) => { status.textContent = `กำลังเกลา… ${s} วิ (Codex อ่าน framework + voice ก่อน ปกติ 2-5 นาที)`; },
+        });
+        const improved = String((job.result as { improved?: string })?.improved ?? '');
+        showAiResult(improved, new Date().toISOString());
+        const v = variants.find((x) => x.variant_id === vid);
+        if (v) { v.ai_result = improved; v.ai_result_at = new Date().toISOString(); }
+        status.textContent = '';
+        toast('AI เกลาเสร็จแล้ว ✨');
+      } catch (e) {
+        status.textContent = '';
+        oops(e);
+      } finally {
+        btn.disabled = false;
+        btn.classList.remove('loading');
+      }
     }
     function studioFile(): { name: string; md: string } | null {
       const v = variants.find((x) => x.variant_id === studioVariantId);
@@ -694,6 +771,15 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
       $('wr-studio-copy-body').addEventListener('click', () => { void copyText(($('wr-studio-body') as HTMLTextAreaElement).value).then(() => toast('คัดลอกเนื้อหาแล้ว')); });
       $('wr-studio-copy').addEventListener('click', () => { const f = studioFile(); if (f) void copyText(f.md).then(() => toast('คัดลอกทั้งไฟล์แล้ว')); });
       $('wr-studio-dl').addEventListener('click', () => { const f = studioFile(); if (f) { downloadText(f.name, f.md); toast(`ดาวน์โหลด ${f.name}`); } });
+      $('wr-studio-save-draft').addEventListener('click', () => void saveDraft());
+      $('wr-studio-ai').addEventListener('click', () => void runImprove());
+      $('wr-studio-ai-copy').addEventListener('click', () => { void copyText(($('wr-studio-ai-body') as HTMLTextAreaElement).value).then(() => toast('คัดลอกผล AI แล้ว')); });
+      $('wr-studio-ai-use').addEventListener('click', () => {
+        const improved = ($('wr-studio-ai-body') as HTMLTextAreaElement).value;
+        if (!improved) return;
+        ($('wr-studio-body') as HTMLTextAreaElement).value = improved;
+        toast('วางผล AI ในช่องร่างแล้ว — กด 💾 ถ้าจะเก็บทับร่างเดิม');
+      });
 
       // Snapshot save
       $('wr-snap-save').addEventListener('click', () => void (async () => {

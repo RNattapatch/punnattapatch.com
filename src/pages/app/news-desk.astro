@@ -1,0 +1,376 @@
+---
+// News Desk — ระบบข่าว → โพสต์ Facebook (merge จาก http://100.64.172.7:8790 · 2026-08-13)
+// อยู่ใน app hub เดียวกับ War Room: Cloudflare Access + Google→Supabase + RLS owner_all
+// งานฝั่งเครื่อง (เรนเดอร์การ์ด / ยิง n8n) เดินผ่านคิว wr_jobs → worker บน Mac mini
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
+---
+<DashboardLayout title="News Desk — Pun">
+  <script is:inline async src="https://accounts.google.com/gsi/client"></script>
+  <WarRoomGate />
+
+  <!-- id ต้องเป็น war-room-app — WarRoomGate reveal ตัวนี้ -->
+  <div id="war-room-app" class="hidden min-h-dvh bg-base-100">
+    <header class="sticky top-0 z-30 border-b border-base-300 bg-base-100/90 backdrop-blur">
+      <div class="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-2.5">
+        <div class="flex min-w-0 items-center gap-3">
+          <span class="grid size-9 shrink-0 place-items-center rounded-xl text-white" style="background-color:var(--color-brand-navy);" aria-hidden="true">📰</span>
+          <div class="min-w-0">
+            <h1 class="font-display text-lg font-bold leading-tight truncate">News Desk</h1>
+            <p class="text-xs opacity-60">ข่าว → โพสต์ Facebook</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="nd-refresh" class="btn btn-sm btn-ghost tap-44" aria-label="รีเฟรช">⟳</button>
+          <a href="/app/war-room" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า War Room">🎬<span class="hidden sm:inline"> War Room</span></a>
+          <button id="nd-logout" class="btn btn-sm btn-ghost tap-44" aria-label="ออกจากระบบ">ออก</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-3xl px-4 pb-24 pt-4">
+      <div role="tablist" class="tabs tabs-box mb-4 grid grid-cols-3 bg-base-200">
+        <a role="tab" class="tab tab-active" data-tab="candidates">📋 รอเลือก <span class="badge badge-warning badge-sm ml-1" id="nd-badge">0</span></a>
+        <a role="tab" class="tab" data-tab="sources">📡 แหล่งข่าว</a>
+        <a role="tab" class="tab" data-tab="log">🗒 ประวัติโพสต์</a>
+      </div>
+
+      <section id="nd-pane-candidates"><div id="nd-candidates" class="space-y-3"></div></section>
+
+      <section id="nd-pane-sources" class="hidden">
+        <div class="card mb-4 border border-base-300 bg-base-200">
+          <div class="card-body gap-2 p-4">
+            <h3 class="font-display font-semibold">เพิ่มแหล่งข่าว</h3>
+            <input id="nd-src-url" type="url" placeholder="URL (เว็บข่าว หรือ RSS feed)" class="input input-bordered w-full" aria-label="URL แหล่งข่าว" />
+            <input id="nd-src-topic" type="text" placeholder="หัวข้อ เช่น เศรษฐกิจ SME / AI / ฝ่ายขาย" class="input input-bordered w-full" aria-label="หัวข้อ" />
+            <input id="nd-src-tags" type="text" placeholder="tags คั่นด้วย , เช่น thai,macro,export" class="input input-bordered w-full" aria-label="แท็ก" />
+            <div class="flex items-center gap-2">
+              <select id="nd-src-type" class="select select-bordered flex-1" aria-label="ชนิดแหล่งข่าว">
+                <option value="scrape">หน้าเว็บทั่วไป (scrape)</option>
+                <option value="rss">RSS feed</option>
+              </select>
+              <button id="nd-src-add" class="btn text-white tap-44" style="background-color:var(--color-brand-coral);">+ เพิ่ม</button>
+            </div>
+          </div>
+        </div>
+        <div id="nd-sources" class="space-y-2"></div>
+      </section>
+
+      <section id="nd-pane-log" class="hidden"><div id="nd-log" class="space-y-2"></div></section>
+    </main>
+
+    <!-- Candidate detail -->
+    <dialog id="nd-modal" class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box max-w-3xl" id="nd-modal-body"></div>
+      <form method="dialog" class="modal-backdrop"><button aria-label="ปิด">close</button></form>
+    </dialog>
+
+    <div class="toast toast-end z-50">
+      <div id="nd-toast" class="alert hidden text-sm shadow-lg"></div>
+    </div>
+  </div>
+
+  <style>
+    .nd-hook.selected { outline: 2px solid var(--color-brand-coral); background: color-mix(in oklab, var(--color-brand-coral) 8%, transparent); }
+    .nd-img.selected { outline: 3px solid var(--color-brand-coral); }
+  </style>
+
+  <script>
+    import { enqueueJob, waitJob } from '../../scripts/war-room/data';
+    import {
+      listCandidates, listSources, listLog, patchCandidate, addSource, toggleSource, slugFor,
+      type Candidate, type Source, type PostLog,
+    } from '../../scripts/war-room/news';
+    import { supabase, getSupabaseSession } from '../../scripts/dashboard/supabase';
+
+    let candidates: Candidate[] = [];
+    let sources: Source[] = [];
+    let logs: PostLog[] = [];
+    let currentId: string | null = null;
+
+    const $ = (id: string) => document.getElementById(id)!;
+    const esc = (s: unknown) =>
+      String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+    const fmtDate = (d: string | null) => (d ? new Date(d).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }) : '');
+
+    function toast(msg: string, kind: 'success' | 'error' = 'success') {
+      const el = $('nd-toast');
+      el.className = `alert text-sm shadow-lg ${kind === 'error' ? 'alert-error' : 'alert-success'}`;
+      el.textContent = msg;
+      window.clearTimeout((window as any).__ndToast);
+      (window as any).__ndToast = window.setTimeout(() => el.classList.add('hidden'), 3200);
+    }
+    const oops = (e: unknown) => toast((e as Error).message || 'ผิดพลาด ลองใหม่', 'error');
+
+    async function refresh() {
+      [candidates, sources, logs] = await Promise.all([listCandidates(), listSources(), listLog()]);
+      renderCandidates(); renderSources(); renderLog();
+    }
+
+    // ---------- tabs ----------
+    function showTab(name: string) {
+      for (const t of ['candidates', 'sources', 'log']) {
+        $(`nd-pane-${t}`).classList.toggle('hidden', t !== name);
+        document.querySelector(`[data-tab="${t}"]`)!.classList.toggle('tab-active', t === name);
+      }
+    }
+
+    // ---------- candidates ----------
+    function renderCandidates() {
+      const pending = candidates.filter((c) => c.status === 'pending_review');
+      $('nd-badge').textContent = String(pending.length);
+      const list = $('nd-candidates');
+      if (!candidates.length) {
+        list.innerHTML = `<div class="card border border-base-300 bg-base-200"><div class="card-body items-center text-center opacity-60">
+          <p>ยังไม่มีข่าวรอเลือก — สมองบน Mac mini หาข่าวใหม่ทุกเช้า 07:10</p></div></div>`;
+        return;
+      }
+      list.innerHTML = candidates.map((c) => {
+        const title = c.ca_news_items?.title ?? '(no title)';
+        const scheduled = c.status === 'scheduled' ? `<span class="badge badge-info badge-sm">⏰ ${fmtDate(c.scheduled_at)}</span>` : '';
+        const noImg = !(c.images ?? []).length ? '<span class="badge badge-ghost badge-sm">ไม่มีรูป</span>' : '';
+        return `<div class="card cursor-pointer border border-base-300 bg-base-100 shadow-sm transition hover:border-[color:var(--color-brand-coral)] hover:shadow-md" data-open="${esc(c.id)}">
+          <div class="card-body p-4">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="badge badge-warning badge-sm">${c.status === 'pending_review' ? 'รอเลือก' : 'ตั้งเวลาแล้ว'}</span>
+              ${scheduled} ${noImg}
+              <span class="ml-auto text-xs opacity-50">${fmtDate(c.created_at)}</span>
+            </div>
+            <h3 class="font-display font-semibold leading-snug">${esc(title)}</h3>
+            <p class="line-clamp-2 text-sm opacity-70">${esc((c.edited_article_md ?? c.article_md).slice(0, 160))}…</p>
+          </div></div>`;
+      }).join('');
+    }
+
+    function openDetail(id: string) {
+      const c = candidates.find((x) => x.id === id);
+      if (!c) return;
+      currentId = id;
+      const news = c.ca_news_items ?? { title: '', url: '#', summary: '' };
+      const hooks = c.hooks ?? [];
+      const images = c.images ?? [];
+      $('nd-modal-body').innerHTML = `
+        <div class="flex items-start justify-between gap-2">
+          <h3 class="font-display text-lg font-bold leading-snug">${esc(news.title)}</h3>
+          <form method="dialog"><button class="btn btn-circle btn-ghost btn-sm tap-44" aria-label="ปิด">✕</button></form>
+        </div>
+        <a href="${esc(news.url ?? '#')}" target="_blank" rel="noopener" class="link link-primary text-sm">อ่านข่าวต้นทาง ↗</a>
+
+        <h4 class="font-display mb-1 mt-4 font-semibold">1) เลือก Hook (ย่อหน้าแรกของโพสต์)</h4>
+        <div class="max-h-64 space-y-1 overflow-y-auto pr-1" id="nd-hooks">
+          ${hooks.map((h, hi) => `
+            <div class="nd-hook cursor-pointer rounded-lg bg-base-200 p-2 text-sm ${c.selected_hook === hi ? 'selected' : ''}" data-hi="${hi}">
+              <span class="badge badge-neutral badge-xs mr-1 align-middle">${esc(h.style ?? h.id ?? '')}</span>${esc(h.text)}
+            </div>`).join('') || '<p class="text-sm opacity-60">ไม่มี hooks</p>'}
+        </div>
+
+        <h4 class="font-display mb-1 mt-4 font-semibold">2) การ์ดภาพ — ข้อความบนการ์ด + ซีน</h4>
+        <p class="mb-2 text-xs opacity-60">กฎ Glance: ข้อความบนการ์ดต้อง<b>ไม่ใช่</b> hook ใน caption — 5-10 คำ อ่านออกใน 2 วิ ·
+          <code>[[คำ]]</code> = เน้นสี coral · <code>|</code> = ขึ้นบรรทัดใหม่</p>
+        <input id="nd-glance" type="text" maxlength="120" class="input input-bordered w-full text-sm" value="${esc(c.glance_line ?? '')}" aria-label="ข้อความบนการ์ด" placeholder="เศรษฐกิจโต | แต่[[ยอดคุณยังนิ่ง]]" />
+        <textarea id="nd-scene" rows="3" maxlength="1200" class="textarea textarea-bordered mt-2 w-full text-sm leading-relaxed" aria-label="scene prompt" placeholder="scene prompt (อังกฤษ) — ซีนโต๊ะ/สนามของคนดู">${esc(c.scene_prompt ?? '')}</textarea>
+        <div class="mt-2 flex items-center gap-2">
+          <button class="btn btn-outline btn-secondary btn-sm tap-44" id="nd-rerender">🎨 สร้างการ์ดใหม่</button>
+          <span class="text-xs opacity-60" id="nd-rerender-status" role="status" aria-live="polite">${c.scene_field ? 'สนาม: ' + esc(c.scene_field) : ''}</span>
+        </div>
+        <div class="mt-3 grid grid-cols-3 gap-2" id="nd-imgs">
+          ${images.map((im, ii) => `
+            <img src="${esc(im.url)}" data-ii="${ii}" class="nd-img aspect-square cursor-pointer rounded-lg object-cover ${c.selected_image === ii ? 'selected' : ''}" alt="การ์ดภาพ ${esc(im.style ?? '')}" loading="lazy" />`).join('') ||
+            '<p class="col-span-3 text-sm opacity-60">ไม่มีภาพ — โพสต์ FB แบบไม่มีรูปได้ หรือกด "สร้างการ์ดใหม่"</p>'}
+        </div>
+
+        <h4 class="font-display mb-1 mt-4 font-semibold">3) บทความ (แก้ได้เลย)</h4>
+        <textarea id="nd-article" class="textarea textarea-bordered h-48 w-full text-sm leading-relaxed" aria-label="บทความ">${esc(c.edited_article_md ?? c.article_md)}</textarea>
+
+        <h4 class="font-display mb-1 mt-4 font-semibold">4) คอมเมนต์ใต้โพสต์ (${(c.comment_thread ?? []).length} รายการ)</h4>
+        <p class="mb-2 text-xs opacity-60">caption ลงแค่ hook + "ผมสรุปไว้ใน comment" — เนื้อหาเต็มลงเป็นคอมเมนต์ตามลำดับนี้</p>
+        <div class="space-y-2" id="nd-thread">
+          ${(c.comment_thread ?? []).map((cm, ci) => `
+            <div>
+              <span class="badge badge-neutral badge-xs mb-1">${ci + 1}. ${esc(cm.role ?? '')}</span>
+              <textarea class="nd-thread-item textarea textarea-bordered w-full text-sm leading-relaxed" rows="3" data-role="${esc(cm.role ?? '')}" aria-label="คอมเมนต์ ${ci + 1}">${esc(cm.text ?? '')}</textarea>
+            </div>`).join('') || '<p class="text-sm opacity-60">ไม่มีคอมเมนต์ (บทความเต็มจะลงใน caption แทน)</p>'}
+        </div>
+
+        <label class="mt-3 flex cursor-not-allowed items-center gap-3 rounded-lg bg-base-200 p-2 opacity-50">
+          <input type="checkbox" class="toggle toggle-secondary" disabled aria-label="ลง Instagram" />
+          <span class="label-text">ลง Instagram ด้วย <span class="badge badge-ghost badge-xs ml-1">Phase ถัดไป</span></span>
+        </label>
+
+        <div class="mt-3 flex items-center gap-2">
+          <input type="datetime-local" id="nd-sched" class="input input-bordered input-sm flex-1" aria-label="เวลาโพสต์"
+            value="${c.scheduled_at ? new Date(new Date(c.scheduled_at).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}" />
+          <button class="btn btn-info btn-sm tap-44" id="nd-schedule">⏰ ตั้งเวลา</button>
+        </div>
+        <div class="modal-action mt-3 flex gap-2">
+          <button class="btn btn-outline btn-error btn-sm tap-44" id="nd-reject">🗑 ไม่เอา</button>
+          <button class="btn flex-1 text-white tap-44" style="background-color:var(--color-brand-coral);" id="nd-post">🚀 โพสต์เลย</button>
+        </div>`;
+      wireDetail(c);
+      ($('nd-modal') as HTMLDialogElement).showModal();
+    }
+
+    function wireDetail(c: Candidate) {
+      $('nd-hooks').addEventListener('click', (e) => {
+        const el = (e.target as HTMLElement).closest('.nd-hook') as HTMLElement | null;
+        if (!el) return;
+        c.selected_hook = Number(el.dataset.hi);
+        document.querySelectorAll('#nd-hooks .nd-hook').forEach((x) => x.classList.toggle('selected', x === el));
+      });
+      $('nd-imgs').addEventListener('click', (e) => {
+        const el = (e.target as HTMLElement).closest('.nd-img') as HTMLElement | null;
+        if (!el) return;
+        c.selected_image = Number(el.dataset.ii);
+        document.querySelectorAll('#nd-imgs .nd-img').forEach((x) => x.classList.toggle('selected', x === el));
+      });
+      $('nd-rerender').addEventListener('click', () => void rerenderCard(c));
+      $('nd-schedule').addEventListener('click', () => void act(c, 'schedule'));
+      $('nd-reject').addEventListener('click', () => void act(c, 'reject'));
+      $('nd-post').addEventListener('click', () => void act(c, 'post'));
+    }
+
+    // การ์ดใหม่ = job บน mini (kie.ai + Playwright อยู่ที่นั่น) — รอผลในหน้าเลย
+    async function rerenderCard(c: Candidate) {
+      const glance = ($('nd-glance') as HTMLInputElement).value.trim();
+      const scene = ($('nd-scene') as HTMLTextAreaElement).value.trim();
+      if (!glance) return toast('ใส่ข้อความบนการ์ดก่อนครับ', 'error');
+      if (!scene) return toast('ใส่ scene prompt ก่อนครับ', 'error');
+      const btn = $('nd-rerender') as HTMLButtonElement;
+      const status = $('nd-rerender-status');
+      btn.disabled = true; btn.classList.add('loading');
+      try {
+        const jobId = await enqueueJob('render_card', { candidate_id: c.id, slug: slugFor(c), glance_line: glance, scene_prompt: scene });
+        const job = await waitJob(jobId, {
+          timeoutMs: 8 * 60_000,
+          onTick: (s) => { status.textContent = `กำลังเจนภาพบน Mac mini… ${s} วิ (ปกติ 1-3 นาที)`; },
+        });
+        const images = ((job.result as { images?: { style?: string; url: string }[] })?.images) ?? [];
+        c.images = images; c.glance_line = glance; c.scene_prompt = scene; c.selected_image = 0;
+        $('nd-imgs').innerHTML = images.map((im, ii) => `
+          <img src="${esc(im.url)}" data-ii="${ii}" class="nd-img aspect-square cursor-pointer rounded-lg object-cover ${ii === 0 ? 'selected' : ''}" alt="การ์ดภาพ ${esc(im.style ?? '')}" loading="lazy" />`).join('');
+        status.textContent = 'การ์ดใหม่พร้อมแล้ว';
+        toast('สร้างการ์ดใหม่แล้ว 🎨');
+      } catch (e) { status.textContent = ''; oops(e); }
+      finally { btn.disabled = false; btn.classList.remove('loading'); }
+    }
+
+    async function act(c: Candidate, kind: 'schedule' | 'reject' | 'post') {
+      if (kind === 'reject') {
+        if (!confirm('ไม่เอาข่าวนี้ใช่ไหม?')) return;
+        try {
+          await patchCandidate(c.id, { status: 'rejected' });
+          ($('nd-modal') as HTMLDialogElement).close();
+          toast('ตัดออกแล้ว');
+          await refresh();
+        } catch (e) { oops(e); }
+        return;
+      }
+      if (c.selected_hook == null) return toast('เลือก hook ก่อนครับ', 'error');
+      if ((c.images ?? []).length && c.selected_image == null) return toast('เลือกภาพก่อนครับ', 'error');
+      const base = {
+        selected_hook: c.selected_hook,
+        selected_image: c.selected_image,
+        post_to_ig: false, // เฟสนี้ FB ล้วน
+        glance_line: ($('nd-glance') as HTMLInputElement).value.trim() || null,
+        scene_prompt: ($('nd-scene') as HTMLTextAreaElement).value.trim() || null,
+        edited_article_md: ($('nd-article') as HTMLTextAreaElement).value,
+        comment_thread: [...document.querySelectorAll('.nd-thread-item')]
+          .map((el) => ({ role: (el as HTMLTextAreaElement).dataset.role, text: (el as HTMLTextAreaElement).value }))
+          .filter((cm) => cm.text.trim()),
+      };
+      try {
+        if (kind === 'schedule') {
+          const t = ($('nd-sched') as HTMLInputElement).value;
+          if (!t) return toast('เลือกเวลาก่อนครับ', 'error');
+          if (new Date(t) <= new Date()) return toast('เวลาต้องอยู่ในอนาคตครับ', 'error');
+          await patchCandidate(c.id, { ...base, status: 'scheduled', scheduled_at: new Date(t).toISOString() } as Partial<Candidate>);
+          toast(`ตั้งเวลาแล้ว — ${fmtDate(new Date(t).toISOString())}`);
+        } else {
+          // โพสต์เลย: approve แล้วให้ worker ยิง n8n ฝั่ง server — ถ้าพัง worker เด้งการ์ดกลับ pending_review เอง
+          const btn = $('nd-post') as HTMLButtonElement;
+          btn.disabled = true; btn.classList.add('loading');
+          try {
+            await patchCandidate(c.id, { ...base, status: 'approved', scheduled_at: null } as Partial<Candidate>);
+            const jobId = await enqueueJob('publish', { candidate_id: c.id });
+            await waitJob(jobId, { timeoutMs: 2 * 60_000 });
+            toast('ส่งโพสต์แล้ว 🚀 รอ Telegram ยืนยัน');
+          } finally { btn.disabled = false; btn.classList.remove('loading'); }
+        }
+        ($('nd-modal') as HTMLDialogElement).close();
+        await refresh();
+      } catch (e) { oops(e); void refresh(); }
+    }
+
+    // ---------- sources ----------
+    function renderSources() {
+      $('nd-sources').innerHTML = sources.map((s) => `
+        <div class="card border border-base-300 bg-base-100 shadow-sm"><div class="card-body flex-row items-center gap-3 p-3">
+          <input type="checkbox" class="toggle toggle-success toggle-sm" ${s.active ? 'checked' : ''} data-src="${esc(s.id)}" aria-label="เปิด/ปิด ${esc(s.topic)}" />
+          <div class="min-w-0 flex-1">
+            <p class="truncate text-sm font-medium">${esc(s.topic)} <span class="badge badge-ghost badge-xs">${esc(s.type)}</span></p>
+            <p class="truncate text-xs opacity-60">${esc(s.url)}</p>
+            <div class="mt-1">${(s.tags ?? []).map((t) => `<span class="badge badge-outline badge-xs mr-1">${esc(t)}</span>`).join('')}</div>
+          </div>
+        </div></div>`).join('') ||
+        '<p class="py-6 text-center opacity-60">ยังไม่มีแหล่งข่าว — เพิ่มด้านบนได้เลย</p>';
+    }
+
+    // ---------- log ----------
+    function renderLog() {
+      $('nd-log').innerHTML = logs.map((l) => {
+        const art = l.ca_candidates ? (l.ca_candidates.edited_article_md ?? l.ca_candidates.article_md ?? '') : '';
+        return `<div class="card border border-base-300 bg-base-100 shadow-sm"><div class="card-body p-3">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="badge badge-sm ${l.platform === 'facebook' ? 'badge-primary' : 'badge-secondary'}">${l.platform === 'facebook' ? '📘 FB' : '📸 IG'}</span>
+            ${l.error ? '<span class="badge badge-error badge-sm">ล้มเหลว</span>' : '<span class="badge badge-success badge-sm">สำเร็จ</span>'}
+            <span class="ml-auto text-xs opacity-50">${fmtDate(l.posted_at)}</span>
+          </div>
+          <p class="mt-1 line-clamp-1 text-sm opacity-80">${esc(art.slice(0, 100))}</p>
+          ${l.permalink ? `<a href="${esc(l.permalink)}" target="_blank" rel="noopener" class="link link-primary text-xs">เปิดโพสต์ ↗</a>` : ''}
+          ${l.error ? `<p class="mt-1 text-xs text-error">${esc(l.error.slice(0, 200))}</p>` : ''}
+        </div></div>`;
+      }).join('') || '<p class="py-6 text-center opacity-60">ยังไม่มีประวัติโพสต์</p>';
+    }
+
+    // ---------- wire + boot ----------
+    function wire() {
+      document.querySelectorAll('[data-tab]').forEach((t) =>
+        t.addEventListener('click', () => showTab((t as HTMLElement).dataset.tab!)));
+      $('nd-refresh').addEventListener('click', () => void refresh().then(() => toast('รีเฟรชแล้ว')).catch(oops));
+      $('nd-logout').addEventListener('click', () => { void supabase.auth.signOut().then(() => location.reload()); });
+      $('nd-candidates').addEventListener('click', (e) => {
+        const el = (e.target as HTMLElement).closest('[data-open]') as HTMLElement | null;
+        if (el) openDetail(el.dataset.open!);
+      });
+      $('nd-src-add').addEventListener('click', () => void (async () => {
+        const url = ($('nd-src-url') as HTMLInputElement).value.trim();
+        const topic = ($('nd-src-topic') as HTMLInputElement).value.trim();
+        const tags = ($('nd-src-tags') as HTMLInputElement).value.split(',').map((t) => t.trim()).filter(Boolean);
+        const type = ($('nd-src-type') as HTMLSelectElement).value;
+        if (!url || !topic) return toast('ใส่ URL กับหัวข้อก่อนครับ', 'error');
+        try {
+          await addSource({ url, topic, tags, type });
+          ['nd-src-url', 'nd-src-topic', 'nd-src-tags'].forEach((id) => (($(id) as HTMLInputElement).value = ''));
+          toast('เพิ่มแหล่งข่าวแล้ว');
+          await refresh();
+        } catch (e) { oops(e); }
+      })());
+      $('nd-sources').addEventListener('change', (e) => void (async () => {
+        const el = e.target as HTMLInputElement;
+        if (!el.dataset.src) return;
+        try { await toggleSource(el.dataset.src, el.checked); } catch (err) { oops(err); }
+      })());
+    }
+
+    let booted = false;
+    async function boot() {
+      if (booted) return;
+      booted = true;
+      wire();
+      if (location.hash === '#sources') showTab('sources');
+      try { await refresh(); } catch (e) { oops(e); }
+    }
+    document.addEventListener('war-room:authed', () => void boot());
+    void (async () => { if (await getSupabaseSession()) void boot(); })();
+  </script>
+</DashboardLayout>
