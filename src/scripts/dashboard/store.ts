@@ -12,6 +12,7 @@ import {
   addLeadSmart as addLead,
   addInteractionSmart as addInteraction,
   getLeadsPageSmart as getLeadsPage,
+  getLeadsInRangeSmart as getLeadsInRange,
   getExpensesSmart as getExpenses,
   addExpenseSmart as apiAddExpense,
   deleteExpenseSmart as apiDeleteExpense,
@@ -26,6 +27,9 @@ import type {
 } from './api';
 import type { LeadUi } from './adapter';
 import { pickTemplate } from './templates';
+import { rangeBounds, RANGE_LABELS, type RangeKey } from './date-range';
+
+export type { RangeKey };
 
 type FilterChip =
   | 'all'
@@ -47,6 +51,14 @@ type FilterChip =
 
 type SortMode = 'submitted_desc' | 'next_due_asc' | 'amount_desc';
 
+export type RangeSummary = {
+  label: string;
+  count: number;      // lead ที่เข้ามาในช่วงนี้
+  won: number;        // ปิดได้ (won/repeat/retainer)
+  lost: number;
+  valueThb: number;   // ยอดรวมของดีลที่ปิดได้ในช่วง (หัก wht 3% ตามที่ตั้งไว้ที่ lead)
+};
+
 type State = {
   authed: boolean;
   loading: boolean;
@@ -58,6 +70,14 @@ type State = {
   filter: FilterChip;
   sort: SortMode;
   search: string;
+  // ── ช่วงเวลา ──
+  // rangeLeads = ผลจากฐานข้อมูลของทั้งช่วง (ไม่แบ่งหน้า) · null = ยังไม่ได้เลือกช่วง (ดูแบบเดิม)
+  // แยกจาก state.leads เพื่อไม่ให้ทับรายการที่ผู้ใช้กด "โหลดเพิ่ม" มาแล้ว
+  range: RangeKey;
+  rangeFrom: string | null;   // ISO — ต้นช่วง (รวม)
+  rangeTo: string | null;     // ISO — ท้ายช่วง (ไม่รวม)
+  rangeLeads: LeadUi[] | null;
+  rangeLoading: boolean;
   selectedLeadId: string | null;
   selectedLead: LeadUi | null;
   interactions: Interaction[];
@@ -78,6 +98,11 @@ const state: State = {
   filter: 'all',
   sort: 'submitted_desc',
   search: '',
+  range: 'all',
+  rangeFrom: null,
+  rangeTo: null,
+  rangeLeads: null,
+  rangeLoading: false,
   selectedLeadId: null,
   selectedLead: null,
   interactions: [],
@@ -144,6 +169,10 @@ export function logout(): void {
   state.expenses = [];
   state.expenseSummary = null;
   state.expensesLoaded = false;
+  state.range = 'all';
+  state.rangeFrom = null;
+  state.rangeTo = null;
+  state.rangeLeads = null;
   notify();
   emit('auth:logged_out');
 }
@@ -171,6 +200,11 @@ export async function refresh(): Promise<void> {
       state.leads = [...data.leads, ...extra.leads];
     } else {
       state.leads = data.leads;
+    }
+    // เลือกช่วงเวลาค้างไว้ → ดึงช่วงนั้นใหม่ด้วย ไม่งั้นกดรีเฟรชแล้วรายการค้างของเก่า
+    if (state.rangeFrom && state.rangeTo) {
+      const res = await getLeadsInRange(state.rangeFrom, state.rangeTo);
+      state.rangeLeads = res.leads;
     }
   } catch (err) {
     handleApiError(err, 'โหลดข้อมูลไม่สำเร็จ');
@@ -226,6 +260,14 @@ function mergeIntoLeadList(lead: LeadUi): void {
   const tIdx = state.today.findIndex((l) => l.lead_id === lead.lead_id);
   if (tIdx >= 0) {
     state.today = [...state.today.slice(0, tIdx), lead, ...state.today.slice(tIdx + 1)];
+  }
+  // รายการของช่วงเวลาเป็นคนละชุดกับ state.leads — ถ้าไม่อัปเดตด้วย
+  // แก้สถานะจากในช่วงเวลาแล้วการ์ดจะเด้งกลับค่าเดิมทันทีที่ re-render
+  if (state.rangeLeads) {
+    const rIdx = state.rangeLeads.findIndex((l) => l.lead_id === lead.lead_id);
+    if (rIdx >= 0) {
+      state.rangeLeads = [...state.rangeLeads.slice(0, rIdx), lead, ...state.rangeLeads.slice(rIdx + 1)];
+    }
   }
 }
 
@@ -446,8 +488,57 @@ export function setSearch(q: string): void {
   notify();
 }
 
+// ------- ช่วงเวลา (ถามฐานข้อมูลเสมอ — ดูเหตุผลที่ getLeadsInRangeSmart) -------
+// ตรรกะขอบเขตวันอยู่ใน date-range.ts (ฟังก์ชันบริสุทธิ์ + มีเทสต์)
+
+export async function setRange(key: RangeKey, customFrom?: string, customTo?: string): Promise<void> {
+  const bounds = rangeBounds(key, customFrom, customTo);
+  state.range = key;
+  if (!bounds) {
+    // 'all' หรือ custom ที่ยังกรอกไม่ครบ → กลับไปดูแบบแบ่งหน้าเหมือนเดิม
+    state.rangeFrom = null;
+    state.rangeTo = null;
+    state.rangeLeads = null;
+    notify();
+    return;
+  }
+  state.rangeFrom = bounds.from.toISOString();
+  state.rangeTo = bounds.to.toISOString();
+  state.rangeLoading = true;
+  notify();
+  try {
+    const res = await getLeadsInRange(state.rangeFrom, state.rangeTo);
+    state.rangeLeads = res.leads;
+  } catch (err) {
+    state.rangeLeads = null;
+    handleApiError(err, 'ดึง lead ตามช่วงเวลาไม่สำเร็จ');
+  } finally {
+    state.rangeLoading = false;
+    notify();
+  }
+}
+
+/** สรุปตัวเลขของช่วงที่เลือก — null เมื่อยังไม่ได้เลือกช่วง */
+export function rangeSummary(): RangeSummary | null {
+  if (!state.rangeLeads || !state.rangeFrom || !state.rangeTo) return null;
+  const rows = state.rangeLeads;
+  const isWon = (r: LeadUi) => ['won', 'repeat', 'retainer'].includes(String(r.deal_outcome || ''));
+  const fmtD = (iso: string) => new Date(iso).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' });
+  // ท้ายช่วงเป็นแบบไม่รวม — ถอยหนึ่งวันตอนแสดงผล ไม่งั้น "เดือนนี้" จะอ่านว่าเลยไปวันที่ 1 เดือนหน้า
+  const lastDay = new Date(new Date(state.rangeTo).getTime() - 864e5).toISOString();
+  return {
+    label: `${RANGE_LABELS[state.range]} · ${fmtD(state.rangeFrom)} – ${fmtD(lastDay)}`,
+    count: rows.length,
+    won: rows.filter(isWon).length,
+    lost: rows.filter((r) => r.deal_outcome === 'lost').length,
+    valueThb: rows.filter(isWon).reduce(
+      (sum, r) => sum + (Number(r.package_price) || 0) * (r.tax_mode === 'wht_3' ? 0.97 : 1), 0),
+  };
+}
+
 export function visibleLeads(): LeadUi[] {
-  let rows = state.leads.slice();
+  // เลือกช่วงเวลาอยู่ → ใช้ผลจากฐานข้อมูลทั้งช่วง ไม่ใช่ 30 แถวที่โหลดมา
+  let rows = (state.rangeLeads ?? state.leads).slice();
   if (state.search.trim()) {
     const q = state.search.trim().toLowerCase();
     rows = rows.filter((r) => {

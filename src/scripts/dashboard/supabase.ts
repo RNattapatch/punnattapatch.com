@@ -288,6 +288,32 @@ export async function getLeadsPageSmart(
   return { leads: (data || []).map(rowToLeadUi), total: count ?? (data ? data.length : 0), offset };
 }
 
+/**
+ * ดึง lead ทั้งช่วงเวลาในทีเดียว (ไม่แบ่งหน้า) — ใช้กับตัวกรอง "ช่วงเวลา" บนหน้า Leads
+ *
+ * ทำไมไม่กรองฝั่ง client เหมือน chip อื่น: หน้า Leads โหลดมาแค่ 30 แถวแรก
+ * ถ้ากรอง "เดือนนี้" จากของที่โหลดมา จะได้ 30 ทั้งที่จริงมี 70 — ตัวเลขผิดแบบเงียบ
+ * ช่วงเวลาจึงต้องถามฐานข้อมูลเสมอ
+ *
+ * ขอบเขตวันคำนวณจากเวลาเครื่องผู้ใช้ (ฝั่ง caller) — คุณปันอยู่ไทย จึงตรงกับ Asia/Bangkok
+ * ที่ใช้ใน get_dashboard_data · เปิดจาก timezone อื่นตัวเลขจะเหลื่อมได้
+ */
+export async function getLeadsInRangeSmart(
+  fromIso: string,
+  toIso: string
+): Promise<{ leads: LeadUi[]; total: number }> {
+  const session = await getSupabaseSession();
+  if (!session) throw Object.assign(new Error('ยังไม่ได้เข้าสู่ระบบ'), { code: 'invalid_token' });
+  const { data, error, count } = await supabase
+    .from('leads')
+    .select('*', { count: 'exact' })
+    .gte('submitted_at', fromIso)
+    .lt('submitted_at', toIso)
+    .order('submitted_at', { ascending: false, nullsFirst: false });
+  if (error) throw new Error(error.message);
+  return { leads: (data || []).map(rowToLeadUi), total: count ?? (data ? data.length : 0) };
+}
+
 // ── Expenses — Supabase-native CRUD (table public.expenses, RLS owner_all) ──
 function computeExpenseSummary(rows: ExpenseRow[]): ExpenseSummary {
   const now = new Date();

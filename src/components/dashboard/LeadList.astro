@@ -22,6 +22,31 @@ import LeadCard from './LeadCard.astro';
     </select>
   </div>
 
+  <!-- ช่วงเวลา — อิงวันที่ lead เข้ามา (submitted_at) · ถามฐานข้อมูลทั้งช่วง ไม่ใช่กรองจาก 30 แถวที่โหลดมา -->
+  <div class="flex flex-wrap items-center gap-2 mb-3">
+    <select id="lead-range" class="select select-bordered select-sm tap-44" aria-label="ช่วงเวลาที่ดู">
+      <option value="all">📅 ทุกช่วงเวลา</option>
+      <option value="today">วันนี้</option>
+      <option value="week">สัปดาห์นี้</option>
+      <option value="month">เดือนนี้</option>
+      <option value="quarter">ไตรมาสนี้</option>
+      <option value="year">ปีนี้</option>
+      <option value="custom">กำหนดเอง…</option>
+    </select>
+    <div id="lead-range-custom" class="hidden flex-wrap items-center gap-1">
+      <input id="lead-range-from" type="date" class="input input-bordered input-sm tap-44" aria-label="ตั้งแต่วันที่" />
+      <span class="text-xs opacity-60">ถึง</span>
+      <input id="lead-range-to" type="date" class="input input-bordered input-sm tap-44" aria-label="ถึงวันที่" />
+      <button id="lead-range-apply" class="btn btn-sm tap-44" style="background-color:var(--color-brand-navy);color:white;">ดู</button>
+    </div>
+  </div>
+
+  <!-- สรุปของช่วงที่เลือก — มีรายการอย่างเดียวไม่พอ ต้องบอกได้ว่าช่วงนี้ได้อะไรบ้าง -->
+  <div id="lead-range-summary" class="hidden mb-3 rounded-2xl border border-base-300 bg-base-200 px-4 py-3" role="status" aria-live="polite">
+    <p id="lead-range-label" class="text-xs opacity-60"></p>
+    <div id="lead-range-stats" class="mt-1 flex flex-wrap gap-x-5 gap-y-1 text-sm"></div>
+  </div>
+
   <div id="lead-filters" class="flex flex-wrap gap-2 mb-3 text-xs">
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="all">All</button>
     <button class="filter-chip btn btn-xs btn-outline tap-44" data-chip="today">Today</button>
@@ -52,7 +77,8 @@ import LeadCard from './LeadCard.astro';
 <LeadCard variant="list" />
 
 <script>
-  import { subscribe, getState, openLead, setFilter, setSort, setSearch, visibleLeads, loadMore, on } from '../../scripts/dashboard/store';
+  import { subscribe, getState, openLead, setFilter, setSort, setSearch, setRange, rangeSummary, visibleLeads, loadMore, on } from '../../scripts/dashboard/store';
+  import type { RangeKey } from '../../scripts/dashboard/store';
   import type { LeadUi } from '../../scripts/dashboard/adapter';
   import { markName } from '../../scripts/after-hours';
 
@@ -129,6 +155,36 @@ import LeadCard from './LeadCard.astro';
     }
   }
 
+  function renderRangeSummary() {
+    const box = document.getElementById('lead-range-summary');
+    const label = document.getElementById('lead-range-label');
+    const stats = document.getElementById('lead-range-stats');
+    if (!box || !label || !stats) return;
+    const sum = rangeSummary();
+    if (!sum) { box.classList.add('hidden'); return; }
+    box.classList.remove('hidden');
+    label.textContent = sum.label;
+    clearChildren(stats);
+    const cells: Array<[string, string]> = [
+      ['lead เข้ามา', String(sum.count)],
+      ['ปิดได้', String(sum.won)],
+      ['ไม่ได้', String(sum.lost)],
+      ['ยอดที่ปิดได้', fmtTHB(sum.valueThb)],
+    ];
+    for (const [k, v] of cells) {
+      const wrap = document.createElement('span');
+      wrap.className = 'flex items-baseline gap-1.5';
+      const key = document.createElement('span');
+      key.className = 'text-xs opacity-60';
+      key.textContent = k;
+      const val = document.createElement('span');
+      val.className = 'font-display font-bold tabular-nums';
+      val.textContent = v;
+      wrap.append(key, val);
+      stats.appendChild(wrap);
+    }
+  }
+
   function render() {
     const s = getState();
     const list = document.getElementById('lead-list');
@@ -139,7 +195,11 @@ import LeadCard from './LeadCard.astro';
     if (!list || !empty || !total || !tpl || !more) return;
 
     const rows = visibleLeads();
-    total.textContent = `${rows.length} / ${s.total}`;
+    // เลือกช่วงเวลาแล้ว ตัวหารต้องเป็น "จำนวนในช่วงนั้น" ไม่ใช่ยอด lead ทั้งฐาน
+    // ไม่งั้นจะอ่านว่า "3 / 156" ทั้งที่เดือนนี้มีแค่ 3
+    const denom = s.rangeLeads ? s.rangeLeads.length : s.total;
+    total.textContent = s.rangeLoading ? 'กำลังโหลด…' : `${rows.length} / ${denom}`;
+    renderRangeSummary();
     clearChildren(list as HTMLElement);
 
     if (!rows.length) {
@@ -155,7 +215,8 @@ import LeadCard from './LeadCard.astro';
         list.appendChild(frag);
       }
     }
-    more.classList.toggle('hidden', s.leads.length >= s.total);
+    // ช่วงเวลาโหลดมาทั้งช่วงในทีเดียวอยู่แล้ว — ปุ่ม "โหลดเพิ่ม" ไม่มีความหมายและจะทำให้เข้าใจผิดว่ายังมีอีก
+    more.classList.toggle('hidden', !!s.rangeLeads || s.leads.length >= s.total);
 
     document.querySelectorAll<HTMLButtonElement>('.filter-chip').forEach((b) => {
       const active = b.getAttribute('data-chip') === s.filter;
@@ -182,4 +243,30 @@ import LeadCard from './LeadCard.astro';
     setSort((e.target as HTMLSelectElement).value as never);
   });
   document.getElementById('lead-load-more')?.addEventListener('click', () => void loadMore());
+
+  // ---- ช่วงเวลา ----
+  const rangeSel = document.getElementById('lead-range') as HTMLSelectElement | null;
+  const customBox = document.getElementById('lead-range-custom');
+  const fromEl = document.getElementById('lead-range-from') as HTMLInputElement | null;
+  const toEl = document.getElementById('lead-range-to') as HTMLInputElement | null;
+
+  rangeSel?.addEventListener('change', () => {
+    const key = rangeSel.value as RangeKey;
+    customBox?.classList.toggle('hidden', key !== 'custom');
+    customBox?.classList.toggle('flex', key === 'custom');
+    if (key === 'custom') {
+      // ตั้งค่าเริ่มต้นให้เป็นเดือนนี้ จะได้ไม่ต้องพิมพ์เองทั้งสองช่อง
+      const now = new Date();
+      const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      if (fromEl && !fromEl.value) fromEl.value = iso(new Date(now.getFullYear(), now.getMonth(), 1));
+      if (toEl && !toEl.value) toEl.value = iso(now);
+      return;   // รอกดปุ่ม "ดู" — ไม่ยิง query ระหว่างที่ยังเลือกวันไม่เสร็จ
+    }
+    void setRange(key);
+  });
+
+  document.getElementById('lead-range-apply')?.addEventListener('click', () => {
+    if (!fromEl?.value || !toEl?.value) return;
+    void setRange('custom', fromEl.value, toEl.value);
+  });
 </script>
