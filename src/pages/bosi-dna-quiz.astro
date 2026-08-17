@@ -381,7 +381,11 @@ const description =
     scores?: Record<DnaLetter, number>;
   } = { name: '', role: '', company: '', timestamp: '' };
 
-  const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
+  // quiz = ของฟรี ไม่ใช่ lead → ยิงเข้าท่อ Audience Center ไม่ใช่ท่อ CRM/Telegram
+  // เปลี่ยน 2026-08-17 จาก /intake-form-v2 (ท่อเดียวกับ booking) ซึ่งทำให้คนมาเล่นสนุก
+  // ไปเด้ง Telegram, ปน public.leads และยิง CompleteRegistration ปลอมเข้า TikTok
+  // spec: docs/superpowers/specs/2026-08-17-audience-center-design.md
+  const N8N_WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/free-material';
 
   function showSection(id: string): void {
     document.querySelectorAll('.quiz-section').forEach((s) => s.classList.add('hidden'));
@@ -573,33 +577,32 @@ const description =
       .map((ci, qi) => (ci === null ? '' : QUESTIONS[qi].choices[ci].key))
       .join(',');
     const payload = {
+      // lead_kind บอกปลายทางเองว่านี่คือของฟรี — ไม่ต้องให้ n8n เดาจากชื่อ page
+      // (ตาข่ายรับหน้าเก่าที่ค้าง Cloudflare cache ยังดูจาก source_page อยู่)
+      lead_kind: 'audience',
+      asset_slug: 'bosi-quiz',
       source_page: 'bosi-quiz',
-      booking_type: 'quiz-completion',
       name: userData.name,
       position: userData.role,
       company: userData.company,
-      // ช่องเดียวรับได้ทั้งเบอร์และ LINE ID — แยกให้ตรง column ก่อนส่ง
+      // ช่องเดียวรับได้ทั้งเบอร์และ LINE ID — ปลายทางแยกให้เอง
       // (ปล่อยว่างได้ quiz เป็น lead magnet ไม่บังคับกรอก)
-      ...(() => {
-        const c = (userData.contact || '').trim();
-        const digits = c.replace(/[\s()-]/g, '');
-        const isPhone = /^(?:\+?66|0)\d{8,9}$/.test(digits);
-        return { phone: isPhone ? digits : '', line: isPhone ? '' : c };
-      })(),
-      // quiz = lead magnet ไม่ใช่คนที่ขอคุย — ติด COLD ไว้ไม่ให้ปนกับ pipeline จริง
-      tier: 'COLD',
-      message: `BOSI DNA = ${dominant} (${DNA_PROFILES[dominant].name}). Scores B:${scores.B} O:${scores.O} S:${scores.S} I:${scores.I}`,
-      comment: `Answers: ${answersEncoded}`,
-      bosi_dominant: dominant,
-      bosi_score_B: scores.B,
-      bosi_score_O: scores.O,
-      bosi_score_S: scores.S,
-      bosi_score_I: scores.I,
+      contact: (userData.contact || '').trim(),
+      // ผลลัพธ์ไปเป็นก้อนเดียว — ของเดิมส่งเป็น bosi_dominant/bosi_score_* แยกช่อง
+      // แล้ว n8n อ่านไม่เจอ (มันหา key ชื่อ bosi_archetype) ค่าเลยหล่นหายทุกแถวตั้งแต่ ก.ค.
+      asset_result: {
+        dominant,
+        scores: { B: scores.B, O: scores.O, S: scores.S, I: scores.I },
+        answers: answersEncoded,
+      },
       _meta: {
         reference: `BOSI-${dominant}-${Date.now()}`,
         submitted_at: new Date().toISOString(),
-        user_agent: navigator.userAgent,
         path: window.location.pathname,
+        referrer: document.referrer || '',
+        utm_source: new URLSearchParams(location.search).get('utm_source') || '',
+        utm_medium: new URLSearchParams(location.search).get('utm_medium') || '',
+        utm_campaign: new URLSearchParams(location.search).get('utm_campaign') || '',
       },
     };
     try {

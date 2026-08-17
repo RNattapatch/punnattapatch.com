@@ -1,0 +1,453 @@
+---
+// Audience Center — คนที่ "หยิบของฟรี" (BOSI quiz + free material ชิ้นถัดๆ ไป)
+//
+// ทำไมต้องแยกหน้า: ของฟรีไม่ใช่ lead — เอามารวมกับ CRM แล้วมันกลบคนที่ยกมือขอคุยจริง
+// (13 ส.ค. 69 มี 14 คนเล่น quiz ในวันเดียว ดัน lead จริงตกหน้าแรกทั้งหมด)
+// หน้านี้ตอบคำถามเดียว: "ในกองคนหาของฟรี มีใครที่ควรทักจริงๆ บ้าง"
+//
+// Spec: claude-code repo → docs/superpowers/specs/2026-08-17-audience-center-design.md
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
+---
+<DashboardLayout title="Audience Center — Pun">
+  <script is:inline async src="https://accounts.google.com/gsi/client"></script>
+  <WarRoomGate appId="audience-app" title="Audience Center" icon="🧲" event="audience:authed" />
+
+  <div id="audience-app" class="hidden min-h-dvh bg-base-100">
+    <header class="sticky top-0 z-30 border-b border-base-300 bg-base-100/90 backdrop-blur">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5">
+        <div class="flex min-w-0 items-center gap-3">
+          <span class="grid size-9 shrink-0 place-items-center rounded-xl text-white" style="background-color:var(--color-brand-coral);" aria-hidden="true">🧲</span>
+          <div class="min-w-0">
+            <h1 class="font-display text-lg font-bold leading-tight truncate">Audience Center</h1>
+            <p class="text-xs opacity-60">คนที่หยิบของฟรี — ยังไม่ใช่ lead</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <a href="/app/dashboard" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า CRM">📊<span class="hidden sm:inline"> CRM</span></a>
+          <a href="/app/war-room" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า Marketing War Room">🎬<span class="hidden sm:inline"> War Room</span></a>
+          <button id="au-logout" class="btn btn-sm btn-ghost tap-44" aria-label="ออกจากระบบ">ออก</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="mx-auto max-w-7xl space-y-4 px-4 py-4">
+
+      <!-- KPI — วัดว่าของฟรี "ทำงาน" ไหม ไม่ใช่แค่มีคนเล่นเยอะ -->
+      <section aria-label="ภาพรวมของฟรี" class="-mx-4 overflow-x-auto px-4">
+        <div id="au-kpi" class="flex min-w-max gap-2 sm:grid sm:min-w-0 sm:grid-cols-4"></div>
+      </section>
+
+      <!-- 🔥 แถบเตือน: มีคนที่ควรทักแต่ยังไม่ได้ทัก -->
+      <div id="au-alert" class="hidden rounded-2xl px-4 py-2.5 text-sm text-white" style="background-color:var(--color-brand-coral);" role="status"></div>
+
+      <!-- Filter -->
+      <section aria-label="ตัวกรอง" class="flex flex-wrap items-center gap-2">
+        <div id="au-filter-asset" class="flex flex-wrap gap-1" role="group" aria-label="กรองตามของฟรี"></div>
+        <div class="flex flex-wrap gap-1" role="group" aria-label="กรองตามความร้อน">
+          <button class="btn btn-xs btn-active tap-44" data-heat="all">ทั้งหมด</button>
+          <button class="btn btn-xs tap-44" data-heat="hot">🔥 ควรทัก</button>
+          <button class="btn btn-xs tap-44" data-heat="warm">🌱 เพาะไว้</button>
+          <button class="btn btn-xs tap-44" data-heat="cold">👀 นับเป็นยอด</button>
+        </div>
+        <div class="flex flex-wrap gap-1" role="group" aria-label="กรองตามสถานะ">
+          <button class="btn btn-xs btn-active tap-44" data-status="all">ทุกสถานะ</button>
+          <button class="btn btn-xs tap-44" data-status="new">ยังไม่แตะ</button>
+          <button class="btn btn-xs tap-44" data-status="promoted">ย้ายเป็น lead แล้ว</button>
+          <button class="btn btn-xs tap-44" data-status="contact">มีช่องทางติดต่อ</button>
+        </div>
+        <label class="ml-auto flex items-center gap-2 rounded-full border border-base-300 bg-base-200 px-3">
+          <span aria-hidden="true" class="opacity-50">🔍</span>
+          <input id="au-search" class="input input-ghost w-40 border-0 px-0 focus:outline-none" placeholder="ค้นหาชื่อ/บริษัท…" aria-label="ค้นหา" autocomplete="off" />
+        </label>
+      </section>
+
+      <!-- ตารางคน -->
+      <section class="card border border-base-300 bg-base-200">
+        <div class="card-body gap-3 p-0">
+          <div class="overflow-x-auto">
+            <table class="table table-sm">
+              <caption class="sr-only">รายชื่อคนที่หยิบของฟรี เรียงตามคะแนนความสนใจ</caption>
+              <thead>
+                <tr>
+                  <th scope="col">ชื่อ / บริษัท</th>
+                  <th scope="col">หยิบอะไร</th>
+                  <th scope="col">ผล</th>
+                  <th scope="col">ติดต่อ</th>
+                  <th scope="col">heat</th>
+                  <th scope="col">ล่าสุด</th>
+                  <th scope="col"><span class="sr-only">การกระทำ</span></th>
+                </tr>
+              </thead>
+              <tbody id="au-rows"></tbody>
+            </table>
+          </div>
+          <p id="au-count" class="px-4 pb-3 text-xs opacity-60"></p>
+        </div>
+      </section>
+
+      <!-- 🏢 บริษัทที่มีคนหยิบหลายคน — สัญญาณ B2B ที่ Lead Center ให้ไม่ได้ -->
+      <section id="au-companies-wrap" class="hidden card border border-base-300 bg-base-200">
+        <div class="card-body gap-3 p-4">
+          <div>
+            <h2 class="font-display font-bold">🏢 บริษัทที่มีคนหยิบหลายคน</h2>
+            <p class="text-xs opacity-60">ทั้งออฟฟิศส่งต่อกันเล่น = บริษัทนั้นกำลังสนใจ — มองทีละคนจะไม่เห็น</p>
+          </div>
+          <div id="au-companies" class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3"></div>
+        </div>
+      </section>
+
+      <!-- 📦 Asset Scoreboard — ของฟรีชิ้นไหนคุ้ม -->
+      <section class="card border border-base-300 bg-base-200">
+        <div class="card-body gap-3 p-4">
+          <div>
+            <h2 class="font-display font-bold">📦 ของฟรีแต่ละชิ้นทำงานแค่ไหน</h2>
+            <p class="text-xs opacity-60">ตัวตัดสินว่าควรแจกอะไรต่อ = % ที่ทิ้ง contact และ % ที่กลายเป็น lead ไม่ใช่ยอดหยิบ</p>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th scope="col">ของฟรี</th>
+                  <th scope="col" class="text-right">หยิบ</th>
+                  <th scope="col" class="text-right">คน</th>
+                  <th scope="col" class="text-right">ทิ้ง contact</th>
+                  <th scope="col" class="text-right">→ lead</th>
+                  <th scope="col">ช่วงเวลา</th>
+                </tr>
+              </thead>
+              <tbody id="au-assets"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Drawer รายละเอียด -->
+    <div id="au-drawer" class="fixed inset-0 z-40 hidden" role="dialog" aria-modal="true" aria-label="รายละเอียดคนที่หยิบของฟรี">
+      <div id="au-scrim" class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-200"></div>
+      <aside id="au-panel" class="absolute right-0 top-0 flex h-full w-full max-w-md translate-x-full flex-col bg-base-100 shadow-2xl transition-transform duration-200 will-change-transform">
+        <div class="flex items-center justify-between border-b border-base-300 px-4 py-2.5">
+          <span class="font-display text-sm font-bold opacity-70">รายละเอียด</span>
+          <button id="au-close" class="btn btn-sm btn-circle btn-ghost tap-44" aria-label="ปิดแผง">✕</button>
+        </div>
+        <div id="au-detail" class="flex-1 overflow-y-auto p-4"></div>
+      </aside>
+    </div>
+
+    <div class="toast toast-end z-50">
+      <div id="au-toast" class="alert hidden text-sm shadow-lg"></div>
+    </div>
+  </div>
+
+  <script>
+    import {
+      listAudience, listClaims, listAssetStats, listCompanies, updatePerson, promote,
+      summarize, assetLabel, explainHeat, DNA_NAMES,
+      type AudiencePerson, type AudienceClaim, type AssetStat, type CompanyCluster,
+    } from '../../scripts/audience/data';
+    import { supabase, getSupabaseSession } from '../../scripts/dashboard/supabase';
+
+    let people: AudiencePerson[] = [];
+    let assets: AssetStat[] = [];
+    let companies: CompanyCluster[] = [];
+    let claims: AudienceClaim[] = [];
+    let selected: string | null = null;
+    let fAsset = 'all', fHeat = 'all', fStatus = 'all', search = '';
+
+    const $ = (id: string) => document.getElementById(id)!;
+    const esc = (s: unknown) =>
+      String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+    const thDate = (iso: string | null) =>
+      iso ? new Date(iso).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }) : '—';
+    const pct = (n: number, d: number) => (d ? Math.round((n / d) * 100) : 0);
+
+    function toast(msg: string, kind: 'success' | 'error' = 'success') {
+      const el = $('au-toast');
+      el.className = `alert text-sm shadow-lg ${kind === 'error' ? 'alert-error' : 'alert-success'}`;
+      el.textContent = msg;
+      window.clearTimeout((window as any).__auToast);
+      (window as any).__auToast = window.setTimeout(() => el.classList.add('hidden'), 2400);
+    }
+    const oops = (e: unknown) => toast((e as Error).message || 'ผิดพลาด ลองใหม่', 'error');
+
+    const hasContact = (p: AudiencePerson) => !!(p.phone || p.email || p.line_id);
+    const contactText = (p: AudiencePerson) => p.phone || p.email || p.line_id || '';
+    const contactIcon = (p: AudiencePerson) => (p.phone ? '📞' : p.email ? '✉️' : p.line_id ? '💬' : '—');
+    const BAND_ICON: Record<string, string> = { hot: '🔥', warm: '🌱', cold: '👀' };
+
+    // ---------- KPI ----------
+    function kpiCard(icon: string, value: string, label: string, sub: string, hot = false) {
+      return `<article class="min-w-[150px] flex-1 rounded-2xl border ${hot ? 'border-2' : 'border-base-300'} bg-base-200 p-3" ${hot ? 'style="border-color:var(--color-brand-coral);"' : ''}>
+        <div class="flex items-center justify-between">
+          <span aria-hidden="true">${icon}</span>
+          <span class="font-display text-2xl font-bold tabular-nums">${esc(value)}</span>
+        </div>
+        <p class="mt-1 text-sm font-semibold">${esc(label)}</p>
+        <p class="text-xs opacity-60">${esc(sub)}</p>
+      </article>`;
+    }
+
+    function renderKpi() {
+      const s = summarize(people);
+      $('au-kpi').innerHTML =
+        kpiCard('🧲', String(s.weekClaims), 'หยิบใน 7 วัน', `${s.weekPeople} คน`) +
+        kpiCard('📇', `${s.contactRate}%`, 'ทิ้ง contact ไว้', `จากทั้งหมด ${s.total} คน`) +
+        kpiCard('🔥', String(s.hotUntouched), 'ควรทัก ยังไม่แตะ', 'heat ≥ 7', s.hotUntouched > 0) +
+        kpiCard('➡️', `${s.promoteRate}%`, 'กลายเป็น lead', 'ตัวชี้วัดจริงของ lead magnet');
+
+      const alertEl = $('au-alert');
+      const hot = people.filter((p) => p.heat_band === 'hot' && p.status === 'new' && !p.promoted_lead_id);
+      if (hot.length) {
+        alertEl.classList.remove('hidden');
+        alertEl.innerHTML = `🔥 มี <strong>${hot.length} คน</strong> ที่เข้าเกณฑ์ควรทักแล้วยังไม่ได้แตะ — ` +
+          hot.slice(0, 3).map((p) => `<strong>${esc(p.full_name ?? '?')}</strong>${p.company_name ? ` (${esc(p.company_name)})` : ''}`).join(' · ');
+      } else alertEl.classList.add('hidden');
+    }
+
+    // ---------- ตัวกรองของฟรี (สร้างจากข้อมูลจริง เพิ่มชิ้นใหม่แล้วขึ้นเอง) ----------
+    function renderAssetFilter() {
+      const btn = (v: string, label: string) =>
+        `<button class="btn btn-xs tap-44 ${fAsset === v ? 'btn-active' : ''}" data-asset="${esc(v)}">${esc(label)}</button>`;
+      $('au-filter-asset').innerHTML = btn('all', 'ของฟรีทุกชิ้น') + assets.map((a) => btn(a.asset_slug, assetLabel(a.asset_slug))).join('');
+    }
+
+    // ---------- ตาราง ----------
+    function visible(): AudiencePerson[] {
+      const q = search.trim().toLowerCase();
+      return people.filter((p) => {
+        if (fHeat !== 'all' && p.heat_band !== fHeat) return false;
+        if (fStatus === 'new' && (p.status !== 'new' || p.promoted_lead_id)) return false;
+        if (fStatus === 'promoted' && !p.promoted_lead_id) return false;
+        if (fStatus === 'contact' && !hasContact(p)) return false;
+        if (fAsset !== 'all' && !(p.assets_list ?? '').split(', ').includes(fAsset)) return false;
+        if (q && !`${p.full_name ?? ''} ${p.company_name ?? ''} ${p.position ?? ''} ${contactText(p)}`.toLowerCase().includes(q)) return false;
+        return true;
+      });
+    }
+
+    function renderRows() {
+      const rows = visible();
+      $('au-rows').innerHTML = rows.length
+        ? rows.map((p) => {
+            const dna = p.last_result?.dominant;
+            const multi = p.claim_count > 1 ? ` <span class="opacity-60">×${p.claim_count}</span>` : '';
+            return `<tr class="hover cursor-pointer" data-id="${esc(p.id)}">
+              <td class="max-w-[220px]">
+                <p class="truncate font-medium">${esc(p.full_name ?? '(ไม่ระบุชื่อ)')}</p>
+                <p class="truncate text-xs opacity-60">${esc(p.company_name ?? '—')}${p.position ? ` · ${esc(p.position)}` : ''}</p>
+              </td>
+              <td class="whitespace-nowrap text-xs">${esc(assetLabel(p.last_asset ?? '?'))}${multi}</td>
+              <td>${dna ? `<span class="badge badge-sm" style="background-color:var(--color-brand-navy);color:white;" title="${esc(DNA_NAMES[dna] ?? '')}">${esc(dna)}</span>` : '<span class="opacity-30">—</span>'}</td>
+              <td class="max-w-[150px]"><span class="truncate text-xs" title="${esc(contactText(p))}">${contactIcon(p)} ${esc(contactText(p) || '')}</span></td>
+              <td class="whitespace-nowrap tabular-nums" title="${esc(explainHeat(p.heat_breakdown))}">${BAND_ICON[p.heat_band]} ${p.heat}</td>
+              <td class="whitespace-nowrap text-xs opacity-60">${esc(thDate(p.last_claim_at))}</td>
+              <td class="text-right">${
+                p.promoted_lead_id
+                  ? '<span class="badge badge-sm badge-success">→ lead แล้ว</span>'
+                  : `<button class="btn btn-xs tap-44" data-promote="${esc(p.id)}">→ Lead</button>`
+              }</td>
+            </tr>`;
+          }).join('')
+        : '<tr><td colspan="7" class="py-8 text-center text-sm opacity-50">ไม่มีใครตรงตัวกรองนี้</td></tr>';
+      $('au-count').textContent = `แสดง ${rows.length} จาก ${people.length} คน`;
+    }
+
+    // ---------- บริษัท ----------
+    function renderCompanies() {
+      $('au-companies-wrap').classList.toggle('hidden', companies.length === 0);
+      $('au-companies').innerHTML = companies.map((c) => `
+        <article class="rounded-xl border ${c.hot_people ? 'border-2' : 'border-base-300'} bg-base-100 p-3" ${c.hot_people ? 'style="border-color:var(--color-brand-coral);"' : ''}>
+          <p class="truncate font-semibold">${esc(c.company_name)}</p>
+          <p class="mt-1 text-sm"><span class="font-display text-xl font-bold tabular-nums">${c.people}</span> คน · ${c.claims} ครั้ง</p>
+          <p class="mt-1 text-xs opacity-70">คนที่ร้อนสุด: ${esc(c.top_person ?? '—')} (${BAND_ICON[c.top_heat >= 7 ? 'hot' : c.top_heat >= 4 ? 'warm' : 'cold']} ${c.top_heat})</p>
+          <p class="text-xs opacity-50">ล่าสุด ${esc(thDate(c.last_claim_at))}</p>
+        </article>`).join('');
+    }
+
+    // ---------- asset scoreboard ----------
+    function renderAssets() {
+      $('au-assets').innerHTML = assets.length
+        ? assets.map((a) => `<tr>
+            <td class="whitespace-nowrap">${esc(assetLabel(a.asset_slug))}</td>
+            <td class="text-right tabular-nums">${a.claims}</td>
+            <td class="text-right tabular-nums">${a.people}</td>
+            <td class="text-right tabular-nums">${a.with_contact} <span class="opacity-50">(${pct(a.with_contact, a.people)}%)</span></td>
+            <td class="text-right tabular-nums">${a.promoted} <span class="opacity-50">(${pct(a.promoted, a.people)}%)</span></td>
+            <td class="whitespace-nowrap text-xs opacity-60">${esc(thDate(a.first_claim_at))} – ${esc(thDate(a.last_claim_at))}</td>
+          </tr>`).join('')
+        : '<tr><td colspan="6" class="py-6 text-center text-sm opacity-50">ยังไม่มีข้อมูล</td></tr>';
+    }
+
+    // ---------- drawer ----------
+    async function openDrawer(id: string) {
+      selected = id;
+      claims = [];
+      renderDetail();
+      $('au-drawer').classList.remove('hidden');
+      requestAnimationFrame(() => {
+        $('au-scrim').classList.remove('opacity-0');
+        $('au-panel').classList.remove('translate-x-full');
+      });
+      try { claims = await listClaims(id); renderDetail(); } catch (e) { oops(e); }
+    }
+    function closeDrawer() {
+      $('au-scrim').classList.add('opacity-0');
+      $('au-panel').classList.add('translate-x-full');
+      window.setTimeout(() => $('au-drawer').classList.add('hidden'), 200);
+    }
+
+    function renderDetail() {
+      const p = people.find((x) => x.id === selected);
+      const body = $('au-detail');
+      if (!p) { body.innerHTML = '<p class="py-10 text-center text-sm opacity-50">เลือกคนจากตาราง</p>'; return; }
+
+      const timeline = claims.length
+        ? claims.map((c) => {
+            const dna = c.asset_result?.dominant;
+            const sc = c.asset_result?.scores;
+            return `<li class="rounded-xl border border-base-300 bg-base-100 p-3">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-sm font-semibold">${esc(assetLabel(c.asset_slug))}</span>
+                <span class="text-xs opacity-60">${esc(new Date(c.claimed_at).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }))}</span>
+              </div>
+              ${dna ? `<p class="mt-1 text-sm">DNA: <strong>${esc(dna)}</strong> ${esc(DNA_NAMES[dna] ?? '')}${sc ? ` <span class="opacity-60">(B:${sc.B ?? 0} O:${sc.O ?? 0} S:${sc.S ?? 0} I:${sc.I ?? 0})</span>` : ''}</p>` : ''}
+              ${c.asset_result?.answers ? `<p class="mt-1 break-all font-mono text-[11px] opacity-50">${esc(c.asset_result.answers)}</p>` : ''}
+              ${c.own_words ? `<p class="mt-1 rounded-lg bg-base-200 px-2 py-1 text-sm">💭 ${esc(c.own_words)}</p>` : ''}
+              ${c.utm ? `<p class="mt-1 text-xs opacity-50">${esc(Object.entries(c.utm).map(([k, v]) => `${k}=${v}`).join(' · '))}</p>` : ''}
+            </li>`;
+          }).join('')
+        : '<li class="py-4 text-center text-sm opacity-50">กำลังโหลด…</li>';
+
+      body.innerHTML = `
+        <h2 class="font-display text-lg font-bold leading-snug">${esc(p.full_name ?? '(ไม่ระบุชื่อ)')}</h2>
+        <p class="text-sm opacity-70">${esc(p.company_name ?? '—')}${p.position ? ` · ${esc(p.position)}` : ''}</p>
+        <p class="mt-1 text-sm">${contactIcon(p)} ${esc(contactText(p) || 'ไม่ได้ให้ช่องทางติดต่อ')}</p>
+
+        <div class="mt-3 rounded-xl border border-base-300 p-3">
+          <p class="text-sm font-semibold">${BAND_ICON[p.heat_band]} heat ${p.heat}/14</p>
+          <p class="mt-1 text-xs opacity-70">${esc(explainHeat(p.heat_breakdown))}</p>
+        </div>
+
+        <div class="mt-3 grid grid-cols-2 gap-2">
+          <label class="form-control">
+            <span class="label-text text-xs opacity-60">สถานะ</span>
+            <select data-action="status" class="select select-bordered select-sm" aria-label="สถานะ" ${p.promoted_lead_id ? 'disabled' : ''}>
+              ${['new', 'nurturing', 'ignored'].map((s) => `<option value="${s}" ${p.status === s ? 'selected' : ''}>${{ new: 'ยังไม่แตะ', nurturing: 'กำลังเพาะ', ignored: 'ไม่สนใจ' }[s]}</option>`).join('')}
+              ${p.promoted_lead_id ? '<option value="promoted" selected>ย้ายเป็น lead แล้ว</option>' : ''}
+            </select>
+          </label>
+          <div class="flex flex-col justify-end">
+            ${p.promoted_lead_id
+              ? `<a href="/app/dashboard" class="btn btn-sm btn-success tap-44">เปิดใน CRM →</a>`
+              : `<button data-action="promote" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);">→ ย้ายเข้า Lead Center</button>`}
+          </div>
+        </div>
+        ${p.promoted_lead_id ? `<p class="mt-1 text-xs opacity-60">ย้ายเมื่อ ${esc(thDate(p.promoted_at))}${p.promote_reason ? ` — ${esc(p.promote_reason)}` : ''}</p>` : ''}
+
+        <label class="form-control mt-3">
+          <span class="label-text text-xs opacity-60">โน้ตส่วนตัว (ติดไปกับ lead ตอนย้าย)</span>
+          <textarea data-action="note" class="textarea textarea-bordered textarea-sm" rows="2" aria-label="โน้ต">${esc(p.owner_note ?? '')}</textarea>
+        </label>
+
+        <h3 class="mt-4 font-display text-sm font-bold">ประวัติการหยิบ (${p.claim_count} ครั้ง)</h3>
+        <ul class="mt-2 space-y-2">${timeline}</ul>`;
+    }
+
+    // ---------- refresh ----------
+    async function refresh() {
+      [people, assets, companies] = await Promise.all([listAudience(), listAssetStats(), listCompanies()]);
+      renderKpi(); renderAssetFilter(); renderRows(); renderCompanies(); renderAssets();
+      if (selected) renderDetail();
+    }
+
+    async function doPromote(id: string, reason: string) {
+      try {
+        await promote(id, reason);
+        toast('ย้ายเข้า Lead Center แล้ว — ไปต่อที่หน้า CRM ได้เลย');
+        await refresh();
+      } catch (e) { oops(e); }
+    }
+
+    // ---------- events ----------
+    function wire() {
+      $('au-logout').addEventListener('click', () => { void supabase.auth.signOut().then(() => location.reload()); });
+      $('au-search').addEventListener('input', (e) => { search = (e.target as HTMLInputElement).value; renderRows(); });
+
+      $('au-filter-asset').addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest('button[data-asset]') as HTMLButtonElement | null;
+        if (!b) return;
+        fAsset = b.dataset.asset!;
+        renderAssetFilter(); renderRows();
+      });
+
+      document.querySelectorAll<HTMLButtonElement>('[data-heat]').forEach((b) => {
+        b.addEventListener('click', () => {
+          fHeat = b.dataset.heat!;
+          document.querySelectorAll('[data-heat]').forEach((x) => x.classList.toggle('btn-active', x === b));
+          renderRows();
+        });
+      });
+      document.querySelectorAll<HTMLButtonElement>('[data-status]').forEach((b) => {
+        b.addEventListener('click', () => {
+          fStatus = b.dataset.status!;
+          document.querySelectorAll('[data-status]').forEach((x) => x.classList.toggle('btn-active', x === b));
+          renderRows();
+        });
+      });
+
+      $('au-rows').addEventListener('click', (e) => void (async () => {
+        const promoteBtn = (e.target as HTMLElement).closest('button[data-promote]') as HTMLButtonElement | null;
+        if (promoteBtn) {
+          e.stopPropagation();
+          const p = people.find((x) => x.id === promoteBtn.dataset.promote);
+          const reason = window.prompt(`ย้าย "${p?.full_name ?? ''}" เข้า Lead Center\nเหตุผล (ไม่ใส่ก็ได้ — จะติดไปใน CRM notes):`, '');
+          if (reason === null) return;          // กด cancel
+          await doPromote(promoteBtn.dataset.promote!, reason.trim());
+          return;
+        }
+        const tr = (e.target as HTMLElement).closest('tr[data-id]') as HTMLElement | null;
+        if (tr) void openDrawer(tr.dataset.id!);
+      })());
+
+      $('au-close').addEventListener('click', closeDrawer);
+      $('au-scrim').addEventListener('click', closeDrawer);
+      document.addEventListener('keydown', (e) => {
+        if ((e as KeyboardEvent).key === 'Escape' && !$('au-drawer').classList.contains('hidden')) closeDrawer();
+      });
+
+      $('au-detail').addEventListener('click', (e) => void (async () => {
+        const el = (e.target as HTMLElement).closest('[data-action="promote"]');
+        if (!el || !selected) return;
+        const p = people.find((x) => x.id === selected);
+        const reason = window.prompt(`ย้าย "${p?.full_name ?? ''}" เข้า Lead Center\nเหตุผล (ไม่ใส่ก็ได้):`, '');
+        if (reason === null) return;
+        await doPromote(selected, reason.trim());
+      })());
+
+      $('au-detail').addEventListener('change', (e) => void (async () => {
+        const el = e.target as HTMLElement;
+        if (!selected) return;
+        try {
+          if (el.dataset.action === 'status') {
+            await updatePerson(selected, { status: (el as HTMLSelectElement).value as AudiencePerson['status'] });
+          } else if (el.dataset.action === 'note') {
+            await updatePerson(selected, { owner_note: (el as HTMLTextAreaElement).value.trim() || null as unknown as string });
+          } else return;
+          toast('บันทึกแล้ว');
+          await refresh();
+        } catch (err) { oops(err); }
+      })());
+    }
+
+    let booted = false;
+    async function boot() {
+      if (booted) return;
+      booted = true;
+      wire();
+      try { await refresh(); } catch (e) { oops(e); }
+    }
+    document.addEventListener('audience:authed', () => void boot());
+    void (async () => { if (await getSupabaseSession()) void boot(); })();
+  </script>
+</DashboardLayout>

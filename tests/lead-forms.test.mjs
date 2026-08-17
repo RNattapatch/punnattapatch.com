@@ -14,6 +14,7 @@ import { chromium, devices } from 'playwright';
 
 const BASE = process.env.BASE || 'http://localhost:4325';
 const N8N = '**/webhook/intake-form-v2';
+const FREE_MATERIAL = '**/webhook/free-material';   // ท่อของฟรี → Audience Center (ไม่ใช่ lead)
 const SUPABASE = '**/rest/v1/rpc/submit_lead';
 
 let pass = 0, fail = 0;
@@ -283,18 +284,24 @@ for (const [label, phoneValue, lineValue, expectPhone, expectLine] of [
   }
 }
 
-// ══════ bosi quiz — lead ต้องติดต่อกลับได้ ══════
-for (const [label, contact, expectPhone, expectLine] of [
-  ['เบอร์',    '0812345678', '0812345678', ''],
-  ['LINE',     '@punline',   '',           '@punline'],
-  ['เว้นว่าง', '',           '',           ''],
+// ══════ bosi quiz — ของฟรี ต้องไม่แตะท่อ lead ══════
+// เปลี่ยน 2026-08-17: quiz ย้ายไป /webhook/free-material (Audience Center)
+// assertion ที่สำคัญที่สุดคือ "ห้ามยิงเข้า intake-form-v2" — ถ้ากลับไปยิงเมื่อไหร่
+// Telegram จะเด้งทุกครั้งที่มีคนเล่น, leads จะปนอีก และ TikTok จะได้ conversion ปลอม
+// spec: docs/superpowers/specs/2026-08-17-audience-center-design.md
+for (const [label, contact] of [
+  ['เบอร์',    '0812345678'],
+  ['LINE',     '@punline'],
+  ['เว้นว่าง', ''],
 ]) {
-  console.log(`\n[7] /bosi-dna-quiz — ช่องติดต่อ optional (${label})`);
+  console.log(`\n[7] /bosi-dna-quiz — ของฟรีเข้า Audience Center (${label})`);
   const ctx = await browser.newContext();
   await sealContext(ctx);
   const page = await ctx.newPage();
   let sent = null;
-  await page.route(N8N, async (r) => { sent = JSON.parse(r.request().postData() || '{}'); await r.fulfill({ status: 200, body: '{"ok":true}' }); });
+  let hitLeadPipe = false;
+  await page.route(FREE_MATERIAL, async (r) => { sent = JSON.parse(r.request().postData() || '{}'); await r.fulfill({ status: 200, body: '{"ok":true}' }); });
+  await page.route(N8N, async (r) => { hitLeadPipe = true; await r.fulfill({ status: 200, body: '{"ok":true}' }); });
 
   await page.goto(`${BASE}/bosi-dna-quiz`, { waitUntil: 'domcontentloaded' });
   await page.fill('#intro-name', 'ทดสอบ ระบบ');
@@ -307,11 +314,16 @@ for (const [label, contact, expectPhone, expectLine] of [
   await page.click('#btn-submit');
   for (let i = 0; i < 12 && sent === null; i++) await page.waitForTimeout(400);
 
-  check(sent !== null, 'quiz ยิง payload');
-  check(sent?.phone === expectPhone, `phone = "${sent?.phone}" (ต้อง "${expectPhone}")`);
-  check(sent?.line === expectLine, `line = "${sent?.line}" (ต้อง "${expectLine}")`);
-  check(sent?.tier === 'COLD', `tier = COLD (quiz = lead magnet ไม่ใช่คนขอคุย) ได้ "${sent?.tier}"`);
-  check(sent?.source_page === 'bosi-quiz', 'source_page = bosi-quiz (n8n มี alias รองรับแล้ว)');
+  check(sent !== null, 'quiz ยิง payload เข้า /webhook/free-material');
+  check(hitLeadPipe === false, 'ไม่แตะ /webhook/intake-form-v2 (ท่อ lead + Telegram + TikTok)');
+  check(sent?.lead_kind === 'audience', `lead_kind = audience ได้ "${sent?.lead_kind}"`);
+  check(sent?.asset_slug === 'bosi-quiz', `asset_slug = bosi-quiz ได้ "${sent?.asset_slug}"`);
+  check(sent?.contact === contact, `contact ส่งดิบไปให้ปลายทางแยกเอง = "${sent?.contact}" (ต้อง "${contact}")`);
+  // ผล BOSI ต้องไปถึงปลายทางเป็นก้อน — ของเดิมส่งแยก key แล้ว n8n อ่านไม่เจอ ค่าหายทุกแถว
+  check('BOSI'.includes(sent?.asset_result?.dominant ?? ''), `asset_result.dominant = "${sent?.asset_result?.dominant}"`);
+  const sc = sent?.asset_result?.scores;
+  check(sc && (sc.B + sc.O + sc.S + sc.I) === 10, `asset_result.scores รวมได้ 10 ข้อ ได้ ${sc ? sc.B + sc.O + sc.S + sc.I : '?'}`);
+  check((sent?.asset_result?.answers || '').split(',').length === 10, 'asset_result.answers ครบ 10 ข้อ');
   await ctx.close();
 }
 
