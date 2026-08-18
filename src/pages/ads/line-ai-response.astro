@@ -1,0 +1,439 @@
+---
+/**
+ * Ads LP — "ยิงแอดแพง แต่ตอบแชทไม่ทัน" (Template v2 · pain ครั้งเดียว · proof ขึ้นเร็ว)
+ * Copy: inbox/codex-drafts/lp-line-ai-response-copy.md (FINAL · ปันเคาะ 2026-08-18) ใน repo agent
+ * โครง: strategy/plan-ads-lp-narrative-and-deal-journey-2026-08-17.md §3.1
+ * Form contract: docs/INTAKE-DATA-CONTRACT.md — clone จาก daruma-consult.astro
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DarumaMark from '../../components/DarumaMark.astro';
+import AfterHoursField from '../../components/AfterHoursField.astro';
+import { SITE } from '../../data/site';
+
+const title = 'AI Agent ตอบแชทแทนทีม ตลอด 24 ชั่วโมง';
+const description =
+  'ยิงแอดได้ลูกค้าทักจริง แต่ทีมตอบไม่ทัน — วางบอตใน LINE OA ของคุณเอง ตอบทุกแชทใน 1 นาที คัดรายที่พร้อมซื้อให้เซลล์ คุยฟรี 15-20 นาที';
+const canonical = `${SITE.url}/ads/line-ai-response`;
+const lineUrl = SITE.social.line;
+
+// Qualification options mirrored from /booking so ads leads populate the same CRM columns
+const issues = [
+  'ลูกค้าทักจากแอดแล้วทีมตอบไม่ทัน แชทค้าง',
+  'ข้อมูลลูกค้ากระจาย อยู่ในไลน์กับหัวคน',
+  'เซลล์หมดเวลาไปกับงานเอกสารและงานซ้ำ',
+  'ยอดขึ้นๆ ลงๆ เดาไม่ได้ว่าเดือนหน้าจะเป็นยังไง',
+  'ทีมพึ่งคนเก่งคนเดียว คนอื่นตามไม่ทัน',
+  'ลงทุนเรียนหรือซื้อเครื่องมือมาแล้ว แต่ทีมไม่ได้ใช้จริง',
+];
+
+// Receipts — ภาพจริงจาก LINE OA ของปัน (censor ข้อมูลลูกค้าแล้ว) · img: null = โชว์การ์ดข้อความไปก่อน
+const receipts: { img: string | null; alt: string; caption: string }[] = [
+  {
+    img: null,
+    alt: 'บอตตอบคำถามลูกค้าใน LINE',
+    caption: 'บอตตอบคำถามลูกค้าใน LINE จากข้อมูลสินค้าและเงื่อนไขของธุรกิจ',
+  },
+  {
+    img: null,
+    alt: 'รายชื่อที่บอตคัดให้เซลล์',
+    caption: 'รายชื่อที่บอตคัดให้เซลล์ พร้อมเรื่องที่ลูกค้าสนใจและงานถัดไป',
+  },
+  {
+    img: null,
+    alt: 'สรุปเช้าใน LINE',
+    caption: 'สรุปเช้าใน LINE ว่าวันนี้ทีมควรตามใครต่อ',
+  },
+];
+
+const ownerQuestions = [
+  'ตอนแอดมินติดเคสหนึ่ง ใครรับลูกค้ารายถัดไป?',
+  'ถ้าลูกค้าถามคำเดิมนอกเวลางาน เขาต้องรอถึงเช้าหรือเปล่า?',
+  'รายที่พร้อมซื้อ ถูกส่งต่อถึงเซลล์พร้อมข้อมูลครบไหม?',
+  'เจ้าของต้องเปิดอ่านทีละห้องแชทเพื่อรู้ว่างานไปถึงไหนแล้วหรือยัง?',
+  'ถ้าคนเก่งลาหยุดหนึ่งวัน การตอบลูกค้ายังเดินต่อได้ไหม?',
+];
+
+const mainCards = [
+  {
+    head: 'บอตใน LINE OA ที่ต่อสมอง AI',
+    lines: ['ใช้ AI ตัวเดียวกับ ChatGPT ที่คุณเคยลอง', 'ตอบทุกแชทใน 1 นาที ตลอด 24 ชั่วโมง', 'โดยอิงข้อมูลที่บริษัทอนุมัติไว้'],
+  },
+  {
+    head: 'ระบบส่งรายที่พร้อมซื้อให้เซลล์ตาม',
+    lines: ['เก็บเรื่องที่ลูกค้าสนใจ', 'บอกสถานะการคุย', 'และส่งงานถัดไปให้คนรับผิดชอบ'],
+  },
+  {
+    head: 'สรุปเช้าสำหรับเจ้าของและหัวหน้าทีม',
+    lines: ['เห็นจาก LINE ว่ามีใครควรคุยต่อ', 'ลดเวลาที่ต้องเปิดไล่อ่านทีละห้อง', 'เซลล์ได้เวลาคืนไปอยู่หน้าลูกค้า'],
+  },
+];
+
+const morePains = [
+  {
+    pain: 'ข้อมูลกระจัดกระจาย บัญชีอยู่ระบบนึง งานขายที่นึง HR ที่นึง',
+    fix: 'จะดีกว่าไหม ถ้าให้ AI Agent สร้างระบบที่รวมศูนย์ทุกอย่างไว้ที่เดียว?',
+  },
+  {
+    pain: 'คนเก่งออกเมื่อไหร่ งานเข้าทันที',
+    fix: 'จะดีกว่าไหม ถ้ามีระบบ AI Agent ที่เก็บ Know How ไว้ให้ธุรกิจคุณทั้งหมด?',
+  },
+  {
+    pain: 'เสียเวลาทำเอกสารซ้ำๆ ทั้งวัน',
+    fix: 'จะดีกว่าไหม ถ้าให้ AI Agent ออกเอกสารแล้วส่งเข้า LINE ให้เอง ไม่ต้องมีใครนั่งพิมพ์?',
+  },
+  {
+    pain: 'กลุ่มไลน์เยอะ รวมข้อมูลไม่ได้',
+    fix: 'สร้าง LINE AI Agent ดึงข้อมูลมาเก็บให้ทันที ไม่ต้องเสียเวลาคน',
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  ogImage={`${SITE.url}/og-image.jpg`}
+  noindex
+  robots="noindex,follow"
+  schema={{ types: ['WebPage'], title, description }}
+>
+  <div id="line-ai-response-page">
+    <!-- 1 HERO — pain-mirror 1 บรรทัด + ภาพหลังใช้ -->
+    <section class="border-b border-[#c9c2b2] bg-ivory px-6 py-16 md:py-20">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">สำหรับธุรกิจที่ยิงแอดอยู่แล้ว</p>
+        <h1 class="mt-4 font-display text-3xl font-bold leading-tight text-navy md:text-5xl">
+          เสียเงินยิง Ads แพงๆ<br />แต่แอดมินลืมตอบ เลยขาดทุน
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-warm-ink/80">
+          ลองเอา AI Agent Chatbot ตอบแชทตลอด 24 ชั่วโมง
+          คัดรายที่พร้อมซื้อไว้ให้เซลล์ก่อนเริ่มวัน ไปใช้แทนไหม?
+        </p>
+        <a href="#line-ai-form" class="btn mt-8 border-0 bg-coral px-8 py-4 text-base text-white hover:bg-[#c43245]">
+          ให้ผมดูระบบตอบแชทของคุณ — คุยฟรี 15–20 นาที
+        </a>
+      </div>
+    </section>
+
+    <!-- 2 RECEIPTS — ของจริงก่อน pitch -->
+    <section class="px-6 py-14 md:py-16">
+      <div class="mx-auto max-w-5xl">
+        <h2 class="text-center font-display text-2xl font-bold text-navy md:text-3xl">ของจริงที่ผมใช้รับลูกค้าตัวเองอยู่ตอนนี้</h2>
+        <div class="mt-8 grid gap-5 md:grid-cols-3">
+          {receipts.map((r) => (
+            <figure class="editorial-card overflow-hidden">
+              {r.img ? (
+                <img src={r.img} alt={r.alt} loading="lazy" class="w-full object-cover" />
+              ) : (
+                <div class="flex aspect-[4/5] items-center justify-center bg-navy/5 p-6 text-center text-sm text-warm-ink/50" aria-hidden="true">
+                  ภาพหน้าจอจริงจากระบบ<br />(กำลังอัปเดต)
+                </div>
+              )}
+              <figcaption class="p-4 text-sm leading-relaxed text-warm-ink/80">{r.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 ปันคือใคร -->
+    <section class="border-y border-[#c9c2b2] bg-surface px-6 py-14 md:py-16">
+      <div class="mx-auto grid max-w-4xl items-center gap-8 md:grid-cols-[170px_1fr]">
+        <img src="/lp/inhouse/pun-portrait.jpg" alt="ปัน ณัฐพัชร์" width="1066" height="1600" loading="lazy" class="mx-auto w-36 rounded-2xl object-cover md:w-full" />
+        <div>
+          <h2 class="font-display text-2xl font-bold text-navy md:text-3xl">ผมเป็นนักปั้นทีมขาย ที่ใช้ AI Agent เป็นนิดหน่อย</h2>
+          <ul class="mt-5 space-y-2 leading-relaxed text-warm-ink/85">
+            <li>ปั้นทีมขายจากศูนย์จนถึง 100 ล้าน</li>
+            <li>ผ่านการสัมภาษณ์เซลล์มากกว่า 1,000 คน</li>
+            <li>และให้บริการคนเดียว ไม่มีพนักงานสักคน — มี AI Agent ทำงานให้ตลอด 24 ชั่วโมง</li>
+          </ul>
+          <p class="mt-5"><a href="/start" class="font-semibold text-cyan underline">รู้จักผมใน 3 นาที →</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 คำถามที่เจ้าของกำลังถามตัวเอง (pain รอบเดียว) -->
+    <section class="px-6 py-14 md:py-16">
+      <div class="mx-auto max-w-3xl">
+        <h2 class="font-display text-2xl font-bold text-navy md:text-3xl">คำถามที่เจ้าของหลายคนกำลังถามตัวเอง</h2>
+        <ul class="mt-6 space-y-4">
+          {ownerQuestions.map((q) => (
+            <li class="rounded-2xl border border-[#c9c2b2] bg-surface p-4 leading-relaxed text-warm-ink/85">{q}</li>
+          ))}
+        </ul>
+        <p class="mt-7 leading-relaxed text-warm-ink/85">
+          เรื่องนี้ไม่ได้แปลว่าทีมคุณทำงานไม่ดีครับ
+          แปลว่างานบางส่วนยังผูกอยู่กับเวลาและความจำของคน
+        </p>
+        <p class="mt-3 font-semibold text-navy">ผมเข้าไปแก้ให้เป็นขั้นตอนแบบนี้</p>
+      </div>
+    </section>
+
+    <!-- 5 HOW 3 ขั้น -->
+    <section class="border-y border-[#c9c2b2] bg-surface px-6 py-14 md:py-16">
+      <div class="mx-auto max-w-3xl">
+        <ol class="space-y-7">
+          <li class="flex gap-4">
+            <span class="font-display text-4xl font-bold text-coral">1</span>
+            <div class="pt-1">
+              <p class="font-display text-xl font-bold text-navy">เข้าไปดูงานจริง</p>
+              <p class="mt-2 leading-relaxed text-warm-ink/85">ผมดูว่าลูกค้าถามอะไรซ้ำ ข้อมูลไหนบอตตอบได้ และเรื่องไหนต้องส่งให้คนตัดสินใจ</p>
+              <p class="mt-2 leading-relaxed text-warm-ink/85">ผมไม่เริ่มจากการเลือก AI ครับ เริ่มจากงานที่ทีมทำอยู่ทุกวันก่อน</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <span class="font-display text-4xl font-bold text-coral">2</span>
+            <div class="pt-1">
+              <p class="font-display text-xl font-bold text-navy">วางระบบให้รู้จักธุรกิจคุณ</p>
+              <p class="mt-2 rounded-xl bg-sand p-4 leading-relaxed text-warm-ink/85">
+                AI เก่งเหมือนน้องฝึกงานที่รู้ทุกอย่างบนโลกใบนี้ แต่เขาไม่รู้จักบริษัทของคุณ
+                ไม่รู้ว่าลูกค้าของคุณหน้าตาเป็นยังไง รสนิยมแบบไหน และไม่รู้ว่าองค์กรของคุณทำงานกันยังไง —
+                Context นี้แหละคือตัวกำหนดความฉลาดของ AI
+              </p>
+              <p class="mt-2 leading-relaxed text-warm-ink/85">ผมจึงใส่ข้อมูลสินค้า ราคา เงื่อนไข และวิธีส่งต่องานของบริษัทคุณให้บอตเรียนรู้</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <span class="font-display text-4xl font-bold text-coral">3</span>
+            <div class="pt-1">
+              <p class="font-display text-xl font-bold text-navy">จับมือทีมทำจนใช้เอง</p>
+              <p class="mt-2 leading-relaxed text-warm-ink/85">ทีมทดลองกับคำถามจริง แก้คำตอบที่ยังไม่เข้าที่ และกำหนดให้เรื่องสำคัญมีคนตรวจก่อนส่ง</p>
+              <p class="mt-2 leading-relaxed text-warm-ink/85">วันส่งมอบ ทีมต้องใช้ต่อได้โดยไม่รอผมกดให้</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 6 TOOLS + OUTCOME -->
+    <section class="px-6 py-14 md:py-16">
+      <div class="mx-auto max-w-5xl">
+        <div class="grid gap-5 md:grid-cols-3">
+          {mainCards.map((c) => (
+            <div class="editorial-card p-6">
+              <p class="font-display text-lg font-bold text-navy">{c.head}</p>
+              <div class="mt-3 space-y-1.5">
+                {c.lines.map((l) => (
+                  <p class="text-sm leading-relaxed text-warm-ink/80">{l}</p>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="mt-14">
+          <h2 class="font-display text-2xl font-bold text-navy md:text-3xl">ไม่ได้ติดแค่เรื่องตอบแชท? ปัญหาพวกนี้ผมก็วางระบบให้ได้</h2>
+          <div class="mt-6 grid gap-5 md:grid-cols-2">
+            {morePains.map((p) => (
+              <div class="rounded-2xl border border-[#c9c2b2] bg-surface p-5">
+                <p class="font-semibold leading-relaxed text-navy">{p.pain}</p>
+                <p class="mt-2 leading-relaxed text-warm-ink/80">{p.fix}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 HUMANE + คัดคน -->
+    <section class="border-y border-[#c9c2b2] bg-navy px-6 py-14 text-white md:py-16">
+      <div class="mx-auto max-w-3xl">
+        <p class="text-lg leading-relaxed">
+          ผมไม่ได้เอา AI มาแทนพนักงาน — ผมเอา AI มาทำให้คนมีเวลาทำงานที่มีคุณค่า
+          สร้างผลประกอบการ · งานซ้ำๆจำเจ โยนให้ AI
+        </p>
+        <p class="mt-6 leading-relaxed text-white/85">
+          บางเรื่องไม่ควรให้ AI ตอบเองครับ
+          ถ้าเป็นราคาเฉพาะดีล เงื่อนไขสัญญา หรือคำสัญญากับลูกค้า ผมจะวางให้คนตรวจ
+        </p>
+        <p class="mt-8 font-display text-xl font-bold">ผมไม่เหมาะกับคุณถ้า...</p>
+        <ul class="mt-4 space-y-3 leading-relaxed text-white/85">
+          <li>ต้องการเปิดบอตแล้วปล่อยให้ตอบทุกเรื่องโดยไม่มีเจ้าของข้อมูล</li>
+          <li>ต้องการให้ผมรับประกันยอดขายแทนการลงมือของทีม</li>
+        </ul>
+        <p class="mt-6 leading-relaxed text-white/85">
+          ผมรับงานนี้เมื่อทีมยอมเปิดข้อมูลที่จำเป็น มีคนรับผิดชอบระบบ และพร้อมทดลองกับเคสจริง
+        </p>
+        <p class="mt-6 text-sm leading-relaxed text-white/60">
+          การคุยครั้งนี้ไม่การันตียอดขาย ผมช่วยชี้ว่าควรซ่อมตรงไหนก่อน ที่เหลืออยู่ที่ทีมลงมือ
+        </p>
+      </div>
+    </section>
+
+    <!-- 8 FORM (ONE CTA) -->
+    <section id="line-ai-form" class="scroll-mt-20 px-6 py-16 md:py-24">
+      <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">คุยฟรี 15–20 นาที</p>
+          <h2 class="mt-3 font-display text-3xl font-bold leading-tight text-navy md:text-5xl">เล่าให้ผมฟังสั้นๆ ว่าตอนนี้ทีมรับลูกค้าจากแอดอย่างไร</h2>
+          <p class="mt-5 leading-relaxed text-warm-ink/75">ผมจะดูให้ก่อนว่าควรเริ่มจากบอต การส่งต่อให้เซลล์ หรือการจัดข้อมูลหลังบ้าน</p>
+        </div>
+
+        <form id="line-ai-booking-form" class="editorial-card p-6 md:p-9" novalidate>
+          <input name="honeypot-name" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true" />
+          <div class="space-y-5">
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="field-label">ชื่อของคุณ<input name="name" required autocomplete="name" enterkeyhint="next" class="field" aria-label="ชื่อของคุณ" /></label>
+              <label class="field-label">เบอร์โทรมือถือ<input name="phone" type="tel" required inputmode="tel" autocomplete="tel" pattern={"[0-9\\(\\)\\+\\-\\s]{9,15}"} enterkeyhint="next" class="field" placeholder="เช่น 0812345678" aria-label="เบอร์โทรมือถือ" /></label>
+            </div>
+            <label class="field-label">LINE ID <span class="font-normal text-warm-ink/55">(ถ้าสะดวกให้ทักไลน์)</span><input name="line_id" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next" class="field" placeholder="เช่น @yourshop หรือ ไอดีไลน์" aria-label="LINE ID" /></label>
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="field-label">ชื่อบริษัท<input name="company" required autocomplete="organization" enterkeyhint="next" placeholder="เช่น บจก. สยามเครื่องจักรกล" class="field" aria-label="ชื่อบริษัท" /></label>
+              <label class="field-label">ธุรกิจของคุณทำเกี่ยวกับอะไร<input name="business" required placeholder="เช่น ดีลเลอร์รถ, ขายเครื่องจักร, คลินิก" class="field" aria-label="ธุรกิจของคุณทำเกี่ยวกับอะไร" /></label>
+            </div>
+            <label class="field-label">ตอนนี้เรื่องไหนติดสุด<select name="issue" required class="field" aria-label="ตอนนี้เรื่องไหนติดสุด"><option value="">เลือกเรื่องที่ตรงที่สุด</option>{issues.map((issue) => <option value={issue}>{issue}</option>)}</select></label>
+            <input id="utm_source" name="utm_source" type="hidden" />
+            <input id="utm_medium" name="utm_medium" type="hidden" />
+            <input id="utm_campaign" name="utm_campaign" type="hidden" />
+            <input id="utm_content" name="utm_content" type="hidden" />
+            <input id="utm_term" name="utm_term" type="hidden" />
+            <input id="fbclid" name="fbclid" type="hidden" />
+            <input id="ttclid" name="ttclid" type="hidden" />
+            <AfterHoursField variant="warm" />
+            <label class="flex cursor-pointer items-start gap-3 pt-1"><input name="consent" type="checkbox" required class="checkbox mt-0.5" aria-label="ยินยอมให้ติดต่อกลับตามนโยบายความเป็นส่วนตัว" /><span class="text-sm leading-relaxed text-warm-ink/75">ยินยอมให้ติดต่อกลับตาม <a href="/privacy" class="font-semibold text-cyan underline">นโยบายความเป็นส่วนตัว</a></span></label>
+            <p id="line-ai-error" class="hidden rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error" role="alert" aria-live="polite"></p>
+            <button id="line-ai-submit" type="submit" class="btn min-h-11 w-full border-0 bg-coral py-4 text-base text-white hover:bg-[#c43245]" aria-label="ส่งข้อมูลให้ผมดู">ส่งข้อมูลให้ผมดู</button>
+            <p class="text-center text-xs text-warm-ink/60">ใช้เวลาประมาณ 3 นาที · ผมอ่านข้อมูลเองก่อนนัดคุยฟรี 15–20 นาที</p>
+          </div>
+        </form>
+
+        <div id="line-ai-success" class="editorial-card hidden p-8 text-center lg:col-start-2" role="status" aria-live="polite">
+          <DarumaMark class="mx-auto h-auto w-20" />
+          <h2 class="mt-5 font-display text-3xl font-bold text-navy">รับข้อมูลแล้วครับ</h2>
+          <p class="mt-3 leading-relaxed text-warm-ink/75">ผมจะอ่านสิ่งที่คุณส่งมาก่อนติดต่อกลับ ถ้าโจทย์นี้เหมาะกับสิ่งที่ผมทำ เรานัดคุยกัน 15–20 นาทีได้เลย</p>
+          <p class="mt-5 border-t border-[#c9c2b2] pt-4 text-sm leading-relaxed text-warm-ink/75">ระหว่างรอ รู้จักวิธีคิดและงานของผมใน 3 นาที<br /><a href="/start" class="font-semibold text-cyan underline">รู้จักผมใน 3 นาที →</a></p>
+        </div>
+      </div>
+
+      <div class="mx-auto mt-12 max-w-6xl border-t border-[#c9c2b2] pt-10">
+        <p class="text-center text-lg font-semibold text-navy">สะดวกแชทมากกว่า? ทัก LINE มาได้เลยครับ</p>
+        <div class="mx-auto mt-5 flex max-w-sm justify-center">
+          <a href={lineUrl} data-line-contact target="_blank" rel="noopener" class="flex w-full min-h-11 items-center justify-center gap-2 rounded-xl bg-[#06c755] px-4 py-3 text-center font-semibold text-white transition-colors hover:bg-[#05b34c]" aria-label="แอดไลน์คุยกับปันก่อน">
+            <img src="/line-logo.png" alt="" class="h-6 w-6 shrink-0" aria-hidden="true" />
+            <span>แอดไลน์คุยกับปันก่อน</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  /* ONE CTA rule — ซ่อนปุ่ม CTA ของ nav บนหน้า ads (pattern เดียวกับ daruma-consult) */
+  :global(body:has(#line-ai-response-page) .nav-cta),
+  :global(body:has(#line-ai-response-page) .menu-mobile li.mt-2) { display: none; }
+  .field-label { display: grid; gap: .45rem; color: var(--pun-navy); font-size: .95rem; font-weight: 600; }
+  .field { width: 100%; border: 1px solid var(--pun-border); border-radius: .75rem; background: var(--pun-ivory); color: var(--pun-ink); padding: .75rem 1rem; min-height: 44px; }
+  .field:focus { border-color: var(--pun-coral); outline: 2px solid color-mix(in oklch, var(--pun-coral) 25%, transparent); outline-offset: 2px; }
+</style>
+
+<script>
+  import { foldAfterHours } from '../../scripts/after-hours';
+
+  type Attribution = Record<string, string | undefined>;
+  type MetaWindow = Window & { fbq?: (...args: unknown[]) => void; pnAttribution?: Attribution };
+
+  const pageWindow = window as MetaWindow;
+  const form = document.getElementById('line-ai-booking-form') as HTMLFormElement | null;
+  const formSection = document.getElementById('line-ai-form');
+  const success = document.getElementById('line-ai-success');
+  const error = document.getElementById('line-ai-error');
+  const submit = document.getElementById('line-ai-submit') as HTMLButtonElement | null;
+  const WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
+
+  // Reference token — event_id for Meta/TikTok server-side dedupe (same shape as intake-form)
+  function makeAdsReference(): string {
+    const stamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 12);
+    const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+    return `PN-${stamp}-${rand}`;
+  }
+
+  const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+  const CLICK_ID_KEYS = ['fbclid', 'ttclid'];
+
+  function populateAttribution() {
+    const query = new URLSearchParams(window.location.search);
+    const stored = pageWindow.pnAttribution || {};
+    [...UTM_KEYS, ...CLICK_ID_KEYS].forEach((key) => {
+      const input = document.getElementById(key) as HTMLInputElement | null;
+      if (input) input.value = query.get(key) || stored[key] || '';
+    });
+  }
+
+  populateAttribution();
+
+  if (formSection && 'IntersectionObserver' in window) {
+    let fired = false;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting) && !fired) {
+        fired = true;
+        if (typeof pageWindow.fbq === 'function') fbq('track', 'ViewContent', { content_name: 'line_ai_response_form' });
+        observer.disconnect();
+      }
+    }, { threshold: 0.4 });
+    observer.observe(formSection);
+  }
+
+  document.querySelectorAll('[data-line-contact]').forEach((lineButton) => {
+    lineButton.addEventListener('click', () => {
+      if (typeof pageWindow.fbq === 'function') fbq('track', 'Contact', { content_name: 'line_add_line_ai_response' });
+    });
+  });
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    if ((new FormData(form).get('honeypot-name') as string)?.trim()) return;
+
+    // Contract rule 5 — validate the phone client-side (keep junk out of the CRM phone column)
+    const phoneRaw = String(new FormData(form).get('phone') || '').replace(/[\s()\-]/g, '');
+    if (!/^(?:\+?66|0)\d{8,9}$/.test(phoneRaw)) {
+      if (error) { error.textContent = 'กรุณากรอกเบอร์โทรมือถือจริง เช่น 0812345678 ครับ'; error.classList.remove('hidden'); }
+      (form.querySelector('[name="phone"]') as HTMLInputElement | null)?.focus();
+      return;
+    }
+
+    const payload = Object.fromEntries(new FormData(form).entries());
+    Object.assign(payload, {
+      phone: phoneRaw,
+      // Canonical aliases per docs/INTAKE-DATA-CONTRACT.md
+      company: ((payload.company as string) || '').trim() || (payload.business as string) || '',
+      industry: payload.business || '',
+      tier: 'WARM',
+      problems: (payload.issue as string) || '',
+      comment: ['LP ตอบแชทไม่ทัน', payload.issue].filter(Boolean).join(' — '),
+      source: 'ads-line-ai-response',
+      source_page: 'ads/line-ai-response',
+      booking_type: 'line-ai-response',
+      submittedAt: new Date().toISOString(),
+      _meta: {
+        reference: makeAdsReference(),
+        page: window.location.pathname,
+        user_agent: navigator.userAgent,
+        referrer: document.referrer || '',
+      },
+    });
+    foldAfterHours(payload as Record<string, unknown>);
+
+    if (submit) { submit.disabled = true; submit.textContent = 'กำลังส่ง...'; }
+    error?.classList.add('hidden');
+
+    try {
+      const response = await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true,
+      });
+      if (!response.ok) throw new Error('submission failed');
+      if (typeof pageWindow.fbq === 'function') fbq('track', 'Lead', { content_name: 'line_ai_response_booking' });
+      (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.('Booking Submit', { props: { source: 'ads-line-ai-response' } });
+      form.classList.add('hidden');
+      success?.classList.remove('hidden');
+      success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch {
+      if (error) { error.textContent = 'ระบบรับข้อมูลขัดข้องชั่วคราว กรุณาลองใหม่ หรือแอด LINE เพื่อส่งโจทย์ให้ผม'; error.classList.remove('hidden'); }
+      if (submit) { submit.disabled = false; submit.textContent = 'ส่งข้อมูลให้ผมดู'; }
+    }
+  });
+</script>
