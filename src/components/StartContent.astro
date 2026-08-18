@@ -1,0 +1,339 @@
+---
+/**
+ * StartContent — "หน้าแนะนำตัว" (Page 0) sections 2–10
+ * Copy source: claude-code repo strategy/page0-start-copy-plan-2026-08-09.md (draft v1.1 · gate-checked)
+ * Used by /start (permanent, indexable) and /thank-you (appended below confirmation).
+ * เฟส 0 = text ล้วน · เฟส 2 ค่อยแทนส่วนแนะนำตัว + FAQ ด้วยวิดีโอ
+ */
+import { SITE } from '../data/site';
+import { fmtPrice } from '../data/pricing.mjs';
+
+interface Props {
+  /** 'thankyou' ปรับประโยคปิดให้อ้าง Reference ที่โชว์ด้านบนของหน้า */
+  context?: 'start' | 'thankyou';
+}
+const { context = 'start' } = Astro.props;
+
+const courses = [
+  {
+    dept: 'ทีมขาย',
+    name: 'AI สำหรับทีมขาย 2026',
+    sub: 'เพิ่มประสิทธิภาพการขาย · ตามลูกค้าไม่หลุด · ลดงานเอกสารทีมขาย',
+  },
+  {
+    dept: 'งานหลังบ้าน',
+    name: 'AI สำหรับงานหลังบ้าน 2026',
+    sub: 'บัญชี · แอดมิน · จัดซื้อ · สต๊อก — ลดขั้นตอน ลดเอกสาร ลดงานซ้ำ',
+  },
+  {
+    dept: 'การตลาด',
+    name: 'AI สำหรับการตลาดและคอนเทนต์ 2026',
+    sub: 'วาง Funnel · ทำคอนเทนต์ · ยิงแอด — ให้ลูกค้าทักเข้ามาหาทีมขายเอง',
+  },
+];
+
+const cases = [
+  {
+    biz: 'ตัวแทนจำหน่ายรถ forklift',
+    before: 'ก่อน: ระบบงานงอกกระจัดกระจาย ทีมสลับหน้าจอไปมาจนไม่มีใครอยากใช้',
+    after: 'หลัง: รวมเหลือระบบเดียวที่ทีมใช้จริง พร้อมบอตไลน์รับลูกค้าแทนแอดมิน',
+  },
+  {
+    biz: 'ค้าวัสดุก่อสร้าง 2 สาขา',
+    before: 'ก่อน: งานเอกสารและการตามงานข้ามสาขา ต้องโทรถามกันทั้งวัน',
+    after: 'หลัง: ระบบกลางที่เจ้าของเห็นทุกอย่างจากที่เดียว ไม่ต้องไล่ทวงทีละคน',
+  },
+  {
+    biz: 'ธุรกิจของผมเอง',
+    before: 'ก่อน: ใบเสนอราคาและใบแจ้งหนี้ทำมือทีละใบ',
+    after: 'หลัง: สั่งงานผ่านแชท แล้วเอกสารวิ่งเข้า LINE เอง ในคอลผมเปิดหน้าจอให้ดูได้เลย',
+  },
+];
+
+const clientLogos = [
+  { src: '/logos/clients/futureskill.png', alt: 'FutureSkill' },
+  { src: '/logos/clients/nissan.png', alt: 'Nissan' },
+  { src: '/logos/clients/royal-enfield.jpg', alt: 'Royal Enfield' },
+  { src: '/logos/clients/gpx.jpg', alt: 'GPX' },
+  { src: '/logos/clients/lambretta.png', alt: 'Lambretta' },
+  { src: '/logos/clients/zontes.png', alt: 'Zontes' },
+  { src: '/logos/clients/hfc-healthfoods.png', alt: 'HFC HealthFoods Corporation' },
+  { src: '/logos/clients/home-plus.png', alt: 'ฮ.โฮมพลัส' },
+  { src: '/logos/clients/ving.png', alt: 'V!NG' },
+  { src: '/logos/clients/scenery-farm.jpeg', alt: 'The Scenery สวนผึ้ง' },
+  { src: '/logos/clients/ud-clinic.jpg', alt: 'UD Clinic' },
+];
+
+const faqs = [
+  {
+    q: 'ทีมผมไม่มีใครเก่งคอมเลย เริ่มได้ไหม?',
+    a: 'ได้ครับ ลูกค้าผมส่วนใหญ่เริ่มจากศูนย์ ผมออกแบบให้คนที่ใช้แค่ไลน์กับ Excel ใช้เป็น ถ้าทีมคุณส่งไลน์เป็น ก็เริ่มได้',
+  },
+  {
+    q: 'ต้องซื้อโปรแกรมแพงๆ เพิ่มไหม?',
+    a: 'เกือบทั้งหมดเริ่มจากของที่คุณใช้อยู่แล้ว ค่าใช้จ่ายเครื่องมือส่วนใหญ่อยู่แค่หลักร้อยถึงหลักพันต่อเดือน ผมจะบอกตัวเลขจริงก่อนเริ่มเสมอ',
+  },
+  {
+    q: 'ทำแล้วทีมจะใช้ต่อจริงไหม หรือเห่อสองเดือนแล้วเลิก?',
+    a: 'นี่คือเหตุผลที่ผมจับมือทำ ไม่ใช่สอนแล้วหาย ระบบที่ทีมไม่ใช้ = ผมยังทำงานไม่จบ',
+  },
+  {
+    q: 'ข้อมูลบริษัทผมปลอดภัยแค่ไหน?',
+    a: 'ผมออกแบบให้ข้อมูลทั้งหมดอยู่ในบัญชีของบริษัทคุณเองตั้งแต่วันแรก วันที่จบงาน ทุกอย่างเป็นของคุณ 100%',
+  },
+  {
+    q: 'ต่างจากคอร์สสอน AI ทั่วไปยังไง?',
+    a: 'คอร์สทั่วไปสอนใช้เครื่องมือ ส่วนผมทำระบบของธุรกิจคุณ ถึงต้องไปหน้างานจริง ไม่มีสอนออนไลน์',
+  },
+  {
+    q: 'ถ้ายังไม่พร้อมลงทุน คุยก่อนได้ไหม?',
+    a: 'ได้ครับ คอลแรกไม่มีค่าใช้จ่ายและผมไม่ขาย อย่างน้อยคุณจะได้ภาพว่าธุรกิจคุณติดตรงไหน เอาไปทำต่อเองก็ยังได้',
+  },
+];
+
+const closingLine =
+  context === 'thankyou'
+    ? 'ทักมาใน LINE พร้อม Reference ด้านบน บอกมาสั้นๆ ด้วยว่า'
+    : 'ทักมาใน LINE บอกมาสั้นๆ ว่า';
+---
+
+<div class="start-content text-left">
+  <!-- ส่วน 2 — แนะนำตัว -->
+  <section id="intro" class="px-6 py-14 md:py-16">
+    <div class="mx-auto grid max-w-4xl items-start gap-8 md:grid-cols-[200px_1fr]">
+      <img
+        src="/lp/inhouse/pun-portrait.jpg"
+        alt="ปัน ณัฐพัชร์"
+        width="1066"
+        height="1600"
+        loading="lazy"
+        class="mx-auto w-40 rounded-2xl object-cover md:w-full"
+      />
+      <div>
+        <h2 class="font-display text-3xl font-bold text-navy">สวัสดีครับ ผมปันครับ</h2>
+        <p class="mt-4 leading-relaxed text-warm-ink/85">ก่อนจะบอกว่าผมทำอะไร ขอเล่าสิ่งที่ผมเจอมาก่อน</p>
+        <p class="mt-4 leading-relaxed text-warm-ink/85">
+          ผมเป็นเจ้าของธุรกิจ B2B ครับ เคยปั้นทีมขายจากศูนย์จนถึงร้อยล้าน
+          สัมภาษณ์เซลล์มามากกว่า 1,000 คน เจอครบ ทั้งเซลล์เก่งที่ลาออกแล้วยอดหายไปด้วย
+          ทั้งข้อมูลลูกค้าที่อยู่ในไลน์ส่วนตัวของพนักงานที่ไม่อยู่แล้ว
+        </p>
+        <p class="mt-4 leading-relaxed text-warm-ink/85">
+          ทุกวันนี้ผมใช้ AI ทำงานแทนตัวเองทุกวัน ไม่ใช่ในฐานะคนสอน แต่ในฐานะเจ้าของที่ต้องการเวลาคืน
+          แล้วเอาสิ่งที่ใช้จริงกับธุรกิจตัวเอง ไปจับมือทำกับเจ้าของ SME ทีละราย
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ส่วน 3 — ธุรกิจคุณจะเป็นแบบไหน (Why) -->
+  <section id="why" class="border-y border-[#c9c2b2] bg-surface px-6 py-14 md:py-16">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="font-display text-3xl font-bold text-navy">เช้าวันจันทร์ของคุณตอนนี้ เป็นแบบไหนครับ</h2>
+      <div class="mt-6 space-y-3">
+        <p class="rounded-xl border border-[#c9c2b2] bg-ivory p-4 leading-relaxed text-warm-ink/80">
+          <strong class="text-navy">เดิม:</strong> เปิดไลน์มาไล่ถามเซลล์ทีละคน "ลูกค้ารายนั้นถึงไหนแล้ว" กว่าจะได้คำตอบครบก็บ่าย
+        </p>
+        <p class="rounded-xl border-l-4 border-coral bg-ivory p-4 leading-relaxed text-warm-ink/85">
+          <strong class="text-navy">ใหม่:</strong> สรุปยอด ลูกค้าที่ค้างตาม และใบเสนอราคาที่ยังไม่ปิด
+          <strong class="text-coral">วางรอคุณอยู่แล้วตั้งแต่ก่อนกาแฟหมดแก้ว</strong>
+        </p>
+      </div>
+      <p class="mt-8 font-semibold text-navy">นี่คือสิ่งที่ผมพาเจ้าของธุรกิจไปให้ถึง:</p>
+      <ul class="mt-4 space-y-3 leading-relaxed text-warm-ink/85">
+        <li>งานเอกสาร งานสรุป งานตามจิก ที่เคยกินวันละหลายชั่วโมง โยนให้ระบบทำ เอาเวลากลับคืนมา</li>
+        <li>เซลล์ได้กลับไปอยู่หน้าลูกค้า เพราะงานรายงานมีระบบทำแทนแล้ว</li>
+        <li>ข้อมูลลูกค้าอยู่กับบริษัท ต่อให้ใครลาออก ข้อมูลก็ยังอยู่ครบ</li>
+        <li>เจ้าของถอดตัวออกจากงานจุกจิกได้ เรื่องซ้ำๆ ปล่อยให้ระบบจัดการแทน</li>
+        <li>เริ่มจากของที่ทีมคุณใช้อยู่แล้ว ยังไม่ต้องควักเงินหลักล้านซื้อระบบใหญ่</li>
+      </ul>
+      <p class="mt-8 rounded-2xl border-l-4 border-cyan bg-sand p-5 leading-relaxed text-warm-ink/85">
+        ผมไม่ได้เอา AI มาแทนพนักงานนะครับ ผมเอา AI มาทำให้คนของคุณมีเวลาไปทำงานที่สร้างยอด
+        งานซ้ำๆ จำเจ โยนให้ AI
+      </p>
+    </div>
+  </section>
+
+  <!-- ส่วน 4 — แล้วผมทำอะไรบ้าง (What) -->
+  <section id="what" class="px-6 py-14 md:py-16">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="font-display text-3xl font-bold text-navy">ผมเป็นที่ปรึกษาด้านการปั้นทีมขาย และ AI Agent</h2>
+      <p class="mt-4 leading-relaxed text-warm-ink/85">
+        พูดง่ายๆ: ผมช่วยเจ้าของ SME วาง "ระบบขายที่เดินได้เอง" แล้วติด AI เข้าไปทำงานซ้ำๆ แทนคน
+      </p>
+      <p class="mt-4 leading-relaxed text-warm-ink/85">
+        AI ที่ว่า ให้นึกถึง <strong class="text-navy">น้องฝึกงานที่รู้ทุกอย่างบนโลก แต่ยังไม่รู้จักบริษัทคุณ</strong>
+        งานของผมคือสอนน้องคนนี้ให้รู้จักลูกค้าคุณ สินค้าคุณ วิธีทำงานของทีมคุณ จนใช้งานได้จริง
+      </p>
+      <p class="mt-8 font-semibold text-navy">งานหลักมี 3 อย่าง แบ่งตามแผนก:</p>
+      <div class="mt-4 space-y-4">
+        {courses.map((c) => (
+          <div class="rounded-2xl border border-[#c9c2b2] bg-surface p-5">
+            <p class="text-xs font-bold uppercase tracking-[0.15em] text-cyan">{c.dept}</p>
+            <p class="mt-1 font-display text-xl font-bold text-navy">{c.name}</p>
+            <p class="mt-1 text-sm leading-relaxed text-warm-ink/75">{c.sub}</p>
+          </div>
+        ))}
+      </div>
+      <p class="mt-6 leading-relaxed text-warm-ink/85">
+        ทุกงานเป็น <strong class="text-navy">in-house ที่บริษัทคุณ</strong> ผมเดินทางไปเอง จับมือทำกับทีมจริง ไม่มีคอร์สออนไลน์
+      </p>
+      <p class="mt-6 rounded-xl bg-sand p-4 text-sm leading-relaxed text-warm-ink/80">
+        💬 ถ้ามีหุ้นส่วนหรือผู้จัดการฝ่ายขายที่ต้องตัดสินใจด้วยกัน ส่งหน้านี้ให้เขาอ่านได้เลยครับ
+        จะได้เห็นภาพเดียวกันก่อนเราคุย
+      </p>
+    </div>
+  </section>
+
+  <!-- ส่วน 5 — ผมทำงานยังไง (How) -->
+  <section id="how" class="border-y border-[#c9c2b2] bg-surface px-6 py-14 md:py-16">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="font-display text-2xl font-bold leading-snug text-navy md:text-3xl">
+        ใครๆ ก็สั่ง AI สร้างระบบได้ครับ — แต่ถ้าไม่เข้าใจธุรกิจ ไม่เข้าใจหน้างานจริง ปัญหาจะตามมาทีหลัง
+      </h2>
+      <p class="mt-4 leading-relaxed text-warm-ink/85">ผมถึงทำงาน 3 ขั้นเสมอ:</p>
+      <ol class="mt-5 space-y-5">
+        <li class="flex gap-4">
+          <span class="font-display text-4xl font-bold text-coral">1</span>
+          <p class="pt-1 leading-relaxed text-warm-ink/85">
+            <strong class="text-navy">ลงไปดูหน้างานจริงก่อน</strong> ระบบที่ออกแบบจากห้องประชุม
+            กับระบบที่ออกแบบจากหน้าสนามจริง ต่างกันเยอะมาก ผมต้องเห็นว่าทีมคุณทำงานกันยังไงจริงๆ ก่อน
+          </p>
+        </li>
+        <li class="flex gap-4">
+          <span class="font-display text-4xl font-bold text-coral">2</span>
+          <p class="pt-1 leading-relaxed text-warm-ink/85">
+            <strong class="text-navy">ออกแบบเฉพาะธุรกิจคุณ</strong> ไม่มี template สำเร็จรูป
+            เพราะปัญหาของธุรกิจซื้อมา-ขายไป กับธุรกิจผลิต ไม่เหมือนกัน
+          </p>
+        </li>
+        <li class="flex gap-4">
+          <span class="font-display text-4xl font-bold text-coral">3</span>
+          <p class="pt-1 leading-relaxed text-warm-ink/85">
+            <strong class="text-navy">จับมือทำจนทีมใช้เองเป็น</strong> ผมไม่ได้มาสอนแล้วหาย
+            เป้าหมายคือวันที่ผมไม่อยู่ ระบบยังเดิน
+          </p>
+        </li>
+      </ol>
+      <p class="mt-8 leading-relaxed text-warm-ink/85">
+        และบางเรื่องผมจะบอกตรงๆ ว่า <strong class="text-navy">ไม่ควรใช้ AI</strong> เพราะบางงานให้คนทำดีกว่า
+        ที่ปรึกษาที่ขายฝันว่า AI ทำได้ทุกอย่าง ระวังไว้ก่อนครับ
+      </p>
+    </div>
+  </section>
+
+  <!-- ส่วน 6 — เคสจริง -->
+  <section id="cases" class="px-6 py-14 md:py-16">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="font-display text-3xl font-bold text-navy">ของจริงที่ทำไปแล้ว</h2>
+      <div class="mt-6 space-y-4">
+        {cases.map((c) => (
+          <div class="rounded-2xl border border-[#c9c2b2] bg-surface p-5">
+            <p class="font-display text-lg font-bold text-navy">{c.biz}</p>
+            <p class="mt-2 text-sm leading-relaxed text-warm-ink/70">{c.before}</p>
+            <p class="mt-1 text-sm leading-relaxed text-warm-ink/85">{c.after}</p>
+          </div>
+        ))}
+      </div>
+      <div class="mt-10">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-warm-ink/50">องค์กรที่ไว้ใจให้ผมดูแล</p>
+        <div class="mt-4 flex flex-wrap items-center gap-x-7 gap-y-4">
+          {clientLogos.map((logo) => (
+            <img src={logo.src} alt={logo.alt} loading="lazy" class="h-9 w-auto rounded object-contain opacity-80" />
+          ))}
+        </div>
+      </div>
+      <p class="mt-8 leading-relaxed text-warm-ink/80">
+        อยากเห็นของจริงมากกว่านี้ ในคอลผมเปิดหน้าจอให้ดูระบบที่ผมใช้เองได้เลยครับ
+      </p>
+    </div>
+  </section>
+
+  <!-- ส่วน 7 — ผมไม่เหมาะกับใคร -->
+  <section id="fit" class="border-y border-[#c9c2b2] bg-navy px-6 py-14 text-white md:py-16">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="font-display text-3xl font-bold">บอกตรงๆ ก่อนเสียเวลากันทั้งคู่ ผมไม่เหมาะกับคุณ ถ้า:</h2>
+      <ul class="mt-6 space-y-4 leading-relaxed text-white/85">
+        <li>
+          คุณอยากได้ทางลัดที่ไม่ต้องลงแรง เพราะระบบที่ดีต้องการเจ้าของที่ลงมาเข้าใจมันด้วย อย่างน้อยช่วงแรก
+        </li>
+        <li>
+          คุณอยากได้แค่เครื่องมือตัวใหม่ ถ้าระบบขายข้างหลังยังไม่มี ติด AI ไปก็เหมือนติดเครื่องยนต์แรงๆ
+          ให้รถที่ไม่มีพวงมาลัย
+        </li>
+        <li>
+          คุณต้องการอบรมพนักงานหลักร้อยคนแบบองค์กรใหญ่ ผมทำงานลึกกับ SME ทีมขาย 5–20 คน
+          องค์กรใหญ่มีคนที่เหมาะกว่าผม
+        </li>
+      </ul>
+      <p class="mt-8 leading-relaxed text-white">
+        แต่ถ้าคุณเป็นเจ้าของที่อยากได้ระบบที่ตัวเองเข้าใจ และทีมใช้ต่อเองเป็น เราน่าจะคุยกันถูกคอครับ
+      </p>
+    </div>
+  </section>
+
+  <!-- ส่วน 8 — งบประมาณ -->
+  <section id="budget" class="px-6 py-14 md:py-16">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="font-display text-3xl font-bold text-navy">งานของผมมี 2 แบบครับ</h2>
+      <div class="mt-6 grid gap-4 sm:grid-cols-2">
+        <div class="rounded-2xl border border-[#c9c2b2] bg-surface p-5">
+          <p class="font-display text-xl font-bold text-navy">อบรม</p>
+          <p class="mt-1 text-sm text-warm-ink/70">คอร์สสดที่บริษัทคุณ ทั้งทีม</p>
+          <p class="mt-3 text-lg font-bold text-coral">เริ่มต้น {fmtPrice('inhouse-a')}</p>
+        </div>
+        <div class="rounded-2xl border border-[#c9c2b2] bg-surface p-5">
+          <p class="font-display text-xl font-bold text-navy">ที่ปรึกษา</p>
+          <p class="mt-1 text-sm text-warm-ink/70">consult วางระบบกับผมโดยตรง</p>
+          <p class="mt-3 text-lg font-bold text-coral">เริ่มต้น {fmtPrice('ai-agent-ceo')}</p>
+        </div>
+      </div>
+      <p class="mt-6 leading-relaxed text-warm-ink/85">
+        ตัวเลขที่เหมาะกับคุณ ขึ้นกับหน้างานจริง ผมถึงต้องคุยก่อนเสนอราคา ไม่ใช่เสนอราคาก่อนคุย
+      </p>
+      <p class="mt-3 leading-relaxed text-warm-ink/85">
+        ทุกงานชำระเต็มก่อนเริ่ม เพราะผมรับงานจำกัดต่อเดือน คิวที่จองคือคิวที่ผมกันเวลาไว้ให้คุณจริงๆ
+      </p>
+    </div>
+  </section>
+
+  <!-- ส่วน 9 — คำถามที่เจอบ่อย -->
+  <section id="faq" class="border-t border-[#c9c2b2] bg-surface px-6 py-14 md:py-16">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="font-display text-3xl font-bold text-navy">คำถามที่เจอบ่อยในคอลแรก</h2>
+      <div class="mt-6 space-y-3">
+        {faqs.map((f) => (
+          <details class="group rounded-2xl border border-[#c9c2b2] bg-ivory p-5">
+            <summary class="cursor-pointer list-none font-semibold leading-relaxed text-navy marker:content-none">
+              {f.q}
+            </summary>
+            <p class="mt-3 leading-relaxed text-warm-ink/85">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ส่วน 10 — ขั้นถัดไป -->
+  <section id="next" class="border-t border-[#c9c2b2] bg-ivory px-6 py-16 md:py-20">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2 class="font-display text-3xl font-bold text-navy">อ่านมาถึงตรงนี้ แปลว่าเราน่าจะคุยกันรู้เรื่องครับ</h2>
+      <p class="mt-5 leading-relaxed text-warm-ink/85">
+        {closingLine} <strong class="text-navy">ตอนนี้อะไรกินเวลาคุณมากที่สุด</strong>
+        แล้วคอลแรกของเราจะตรงจุดตั้งแต่นาทีแรก
+      </p>
+      <a
+        href={SITE.social.line}
+        target="_blank"
+        rel="noopener"
+        class="btn btn-lg mt-8 gap-2 border-none font-bold text-white shadow-lg hover:opacity-90 active:opacity-80"
+        style="background: #06C755;"
+      >
+        <img src="/line-logo.png" alt="" class="h-6 w-6 shrink-0" aria-hidden="true" />
+        ทักใน LINE →
+      </a>
+      <p class="mt-6 text-sm text-warm-ink/60">
+        ตอบภายใน 2 วันทำการ · ไม่มี mass email · ข้อมูลไม่ส่งต่อบุคคลที่สาม
+      </p>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StartContent from '../components/StartContent.astro';
+import { SITE } from '../data/site';
+
+const title = 'รู้จักผมใน 3 นาที ก่อนเราคุยกัน';
+const description =
+  'หน้าแนะนำตัวของปัน ณัฐพัชร์ ที่ปรึกษาด้านการปั้นทีมขาย และ AI Agent — อ่าน 3 นาที รู้ว่าผมช่วยธุรกิจคุณได้จริงไหม ทำงานยังไง เหมาะกับใคร';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  schema={{
+    types: ['WebPage', 'BreadcrumbList'],
+    title,
+    description,
+    breadcrumbs: [
+      { name: 'หน้าแรก', url: SITE.url },
+      { name: 'รู้จักผมก่อนคุย', url: `${SITE.url}/start` },
+    ],
+  }}
+>
+  <section class="border-b border-[#c9c2b2] bg-ivory px-6 py-16 text-center md:py-20">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">รู้จักผมก่อนคุยจริง</p>
+      <h1 class="mt-3 font-display text-4xl font-bold leading-tight text-navy md:text-5xl">
+        3 นาทีต่อจากนี้ คุณจะรู้ว่าผมช่วยธุรกิจคุณได้จริงไหม
+      </h1>
+      <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-warm-ink/75">
+        หน้านี้ทำหน้าที่แทนการแนะนำตัว 15 นาทีแรกของทุกคอล
+        อ่านจบแล้วคอลแรกของเราจะสั้นลงครึ่งหนึ่ง และตรงจุดตั้งแต่นาทีแรก
+      </p>
+    </div>
+  </section>
+
+  <StartContent context="start" />
+</BaseLayout>
