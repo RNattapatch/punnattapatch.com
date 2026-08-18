@@ -29,18 +29,18 @@ const issues = [
 // Receipts — ภาพจริงจาก LINE OA ของปัน (censor ข้อมูลลูกค้าแล้ว) · img: null = โชว์การ์ดข้อความไปก่อน
 const receipts: { img: string | null; alt: string; caption: string }[] = [
   {
-    img: null,
-    alt: 'บอตตอบคำถามลูกค้าใน LINE',
+    img: '/lp/line-ai-response/receipt-1.webp',
+    alt: 'บอตตอบคำถามลูกค้าใน LINE แจ้งราคาและเงื่อนไข พร้อมขอเบอร์ติดต่อกลับ (ปิดข้อมูลลูกค้า)',
     caption: 'บอตตอบคำถามลูกค้าใน LINE จากข้อมูลสินค้าและเงื่อนไขของธุรกิจ',
   },
   {
-    img: null,
-    alt: 'รายชื่อที่บอตคัดให้เซลล์',
+    img: '/lp/line-ai-response/receipt-2.webp',
+    alt: 'การ์ดสรุปบทสนทนาที่บอตคัดส่งให้ทีม พร้อมนัดคุยและงานถัดไป (ปิดข้อมูลลูกค้า)',
     caption: 'รายชื่อที่บอตคัดให้เซลล์ พร้อมเรื่องที่ลูกค้าสนใจและงานถัดไป',
   },
   {
-    img: null,
-    alt: 'สรุปเช้าใน LINE',
+    img: '/lp/line-ai-response/receipt-3.webp',
+    alt: 'สรุปเช้าอัตโนมัติบอกว่าวันนี้ควรทักใครต่อ (ปิดข้อมูลลูกค้า)',
     caption: 'สรุปเช้าใน LINE ว่าวันนี้ทีมควรตามใครต่อ',
   },
 ];
@@ -149,6 +149,20 @@ const morePains = [
           </ul>
           <p class="mt-5"><a href="/start" class="font-semibold text-cyan underline">รู้จักผมใน 3 นาที →</a></p>
         </div>
+      </div>
+      <div class="mx-auto mt-8 grid max-w-4xl grid-cols-3 gap-3">
+        <figure>
+          <img src="/lp/story-isuzu-mux.jpg" alt="ปันสมัยเป็น Sale Engineer ยืนคู่รถ Isuzu MU-X ในงานแสดงรถ" loading="lazy" class="aspect-[4/3] w-full rounded-xl object-cover" />
+          <figcaption class="mt-1.5 text-xs text-warm-ink/60">จุดเริ่มต้น: Sale Engineer ค่ายรถญี่ปุ่น</figcaption>
+        </figure>
+        <figure>
+          <img src="/lp/inhouse/office-session.jpg" alt="ปันทำ session วางระบบ AI กับทีมลูกค้าในห้องประชุม" loading="lazy" class="aspect-[4/3] w-full rounded-xl object-cover" />
+          <figcaption class="mt-1.5 text-xs text-warm-ink/60">เข้าไปทำงานกับทีมลูกค้าถึงหน้างาน</figcaption>
+        </figure>
+        <figure>
+          <img src="/lp/inhouse/class-full.jpg" alt="คลาสอบรม in-house เต็มห้อง" loading="lazy" class="aspect-[4/3] w-full rounded-xl object-cover" />
+          <figcaption class="mt-1.5 text-xs text-warm-ink/60">คลาสอบรม in-house</figcaption>
+        </figure>
       </div>
     </section>
 
