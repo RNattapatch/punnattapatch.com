@@ -223,6 +223,7 @@ message_deliveries      messaging_policy_enforcement</code></pre>
         <li>เข้า <strong>business.facebook.com</strong> เลือกหรือสร้าง Business portfolio ของธุรกิจคุณ</li>
         <li><strong>Business settings → Business info</strong> กรอกให้ครบ: ชื่อตามกฎหมาย · ที่อยู่ · เบอร์โทร · เว็บไซต์</li>
         <li><strong>Business settings → Accounts → Apps</strong> กด Add แล้วเลือก App ที่สร้างไว้ในขั้นที่ 1 <span class="text-mute">(ข้อนี้คนลืมบ่อย และเป็นเงื่อนไขบังคับ)</span></li>
+        <li><strong>Business settings → Accounts → Pages</strong> กด Add แล้วเลือกเพจของคุณ <span class="text-mute">(ถ้าเพิ่มไม่ได้ ขึ้น error หรือหาเพจไม่เจอ อ่าน<a href="#troubleshoot" class="underline decoration-accent">ส่วนที่ 2</a>)</span></li>
         <li><strong>Security Centre</strong> เริ่ม Business verification แล้วอัปโหลดเอกสาร</li>
       </ol>
       <p class="mt-5 mb-3 font-semibold">เอกสารที่ Facebook รับ — ต้องขึ้นชื่อธุรกิจ ไม่ใช่ชื่อบุคคล</p>
@@ -253,10 +254,71 @@ message_deliveries      messaging_policy_enforcement</code></pre>
     </article>
   </section>
 
+  <!-- PART 2 · Troubleshoot -->
+  <section class="mb-16" aria-labelledby="troubleshoot">
+    <div class="border-t-4 border-ink pt-5 mb-8">
+      <p class="mono-label text-accent">ส่วนที่ 2</p>
+      <h2 id="troubleshoot" class="font-display text-2xl md:text-4xl font-bold mt-2">เพิ่มเพจเข้า portfolio ไม่ได้ ทำยังไง</h2>
+      <p class="text-mute mt-3 max-w-2xl">ปัญหาที่เจอบ่อยที่สุดในขั้นที่ 7 โดยเฉพาะเพจที่เพิ่งเปิดใหม่ ข้ามหัวข้อนี้ไปได้ถ้าคุณเพิ่มเพจสำเร็จแล้ว</p>
+    </div>
+
+    <div class="callout p-5 mb-8">
+      <p class="font-semibold mb-1">หลักที่ต้องเข้าใจก่อน: เพจหนึ่งอยู่ได้แค่ portfolio เดียว</p>
+      <p>ถ้าเพจถูกผูกไว้ที่ไหนแล้ว การกด Add จะไม่มีทางสำเร็จ ต่อให้กดกี่ครั้งก็ตาม ต้องปลดจากที่เดิมก่อน หรือใช้วิธีขอสิทธิ์แทนการยึดเป็นเจ้าของ</p>
+    </div>
+
+    <h3 class="font-display text-xl font-bold mb-4">สาเหตุที่เป็นไปได้ เรียงจากที่เจอบ่อยสุด</h3>
+    <div class="overflow-x-auto mb-8">
+      <table class="grid-table w-full">
+        <thead><tr><th style="width:2.5rem">#</th><th>สาเหตุ</th><th>เกิดขึ้นได้ยังไง</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><strong>เพจไปอยู่ portfolio อื่นแล้วโดยไม่รู้ตัว</strong></td><td>ถ้าตอนสร้างเพจคุณล็อกอินอยู่ใน Business Suite ของบัญชีธุรกิจเก่า หรือของเอเจนซี่ที่เคยจ้าง เพจจะไปอยู่ที่นั่นตั้งแต่วินาทีแรกที่สร้าง</td></tr>
+          <tr><td>2</td><td><strong>สิทธิ์ที่มีไม่ใช่สิทธิ์ควบคุมเต็ม</strong></td><td>เพจยุคใหม่แยก Facebook access (ควบคุมเต็ม) ออกจาก Task access (ทำงานได้บางอย่าง) ถ้ามีแค่แบบหลัง จะเพิ่มเข้า portfolio ไม่ได้ แม้หน้าจอจะขึ้นว่าเป็นแอดมิน</td></tr>
+          <tr><td>3</td><td><strong>เพจเพิ่งสร้าง ยังใหม่เกินไป</strong></td><td>Facebook ระบุเรื่องนี้ไว้เป็นสาเหตุข้อแรกในเอกสารทางการ เพจที่เพิ่งเปิดมีช่วงเวลาที่ยังผูกเข้า portfolio ไม่ได้</td></tr>
+          <tr><td>4</td><td><strong>Portfolio ยังไม่ผ่านการยืนยันธุรกิจ</strong></td><td>บัญชีธุรกิจที่ยังไม่ยืนยันมีเพดานจำนวนสินทรัพย์ที่ถือได้ ชนเพดานเมื่อไหร่ก็เพิ่มอะไรไม่ได้อีก</td></tr>
+          <tr><td>5</td><td><strong>Portfolio โดนจำกัดสิทธิ์อยู่</strong></td><td>ถ้าบัญชีธุรกิจโดนระงับเรื่องนโยบาย จะเพิ่มสินทรัพย์ใหม่ไม่ได้เลยจนกว่าจะเคลียร์</td></tr>
+          <tr><td>6</td><td><strong>ยังไม่ได้เปิด 2FA หรือไม่ได้เป็นแอดมินทั้งสองฝั่ง</strong></td><td>ต้องเป็นแอดมินทั้งของเพจและของบัญชีธุรกิจ ด้วยโปรไฟล์ Facebook เดียวกัน และเปิดยืนยันตัวตนสองชั้นไว้</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="font-display text-xl font-bold mb-3">เช็คก่อนว่าติดข้อไหน ใช้เวลา 3 นาที</h3>
+    <ol class="list-decimal ml-5 space-y-2 marker:text-accent marker:font-semibold mb-8">
+      <li>เข้าเพจของคุณ ไปที่ <strong>Settings → Page access</strong></li>
+      <li>มองหาหัวข้อที่พูดถึง <strong>Business portfolios</strong> หรือผู้ที่ควบคุมเพจผ่านบัญชีธุรกิจ
+        <ul class="list-disc ml-5 mt-2 space-y-1 marker:text-mute">
+          <li><strong>ถ้ามีชื่อบัญชีธุรกิจอื่นโผล่มา</strong> แปลว่าเจอต้นเหตุแล้ว ตรงกับสาเหตุข้อ 1</li>
+          <li><strong>ถ้าว่างเปล่า</strong> ปัญหาน่าจะอยู่ที่สิทธิ์หรือความใหม่ของเพจ คือข้อ 2 หรือ 3</li>
+        </ul>
+      </li>
+      <li>ดูช่อง <strong>People with Facebook access</strong> ว่าชื่อคุณอยู่ในกลุ่มควบคุมเต็ม หรือแค่ Task access</li>
+    </ol>
+
+    <h3 class="font-display text-xl font-bold mb-4">ทางแก้ตามสาเหตุ</h3>
+    <div class="overflow-x-auto mb-8">
+      <table class="grid-table w-full">
+        <thead><tr><th>ติดข้อไหน</th><th>ทำยังไง</th></tr></thead>
+        <tbody>
+          <tr><td>เพจอยู่บัญชีธุรกิจเก่า ที่คุณยังเข้าถึงได้</td><td>เข้าบัญชีเก่า ไปที่ <strong>Business settings → Pages</strong> กด Remove เพจออก แล้วค่อยกลับมา Add ที่บัญชีใหม่</td></tr>
+          <tr><td>เพจอยู่บัญชีธุรกิจที่เข้าไม่ได้แล้ว</td><td>ใช้ปุ่ม <strong>Request access</strong> แทนการ Add เจ้าของเดิมจะได้รับคำขอให้กดอนุมัติ ถ้าติดต่อไม่ได้จริง ๆ ต้องเปิดเรื่องกับ Meta Business Support</td></tr>
+          <tr><td>สิทธิ์ไม่พอ</td><td>ให้คนที่เป็นเจ้าของเพจเลื่อนสิทธิ์คุณเป็น <strong>Facebook access — full control</strong> แล้วรอสักครู่ให้ระบบอัปเดตก่อนลองใหม่</td></tr>
+          <tr><td>เพจใหม่เกินไป</td><td>รอแล้วลองใหม่ ระหว่างนี้ทำอย่างอื่นไปก่อนได้ เช่นกรอกข้อมูลธุรกิจให้ครบ</td></tr>
+          <tr><td>ยังไม่ยืนยันธุรกิจ</td><td>เริ่มยื่นยืนยันธุรกิจได้เลย ยังไงก็ต้องทำอยู่แล้วตามขั้นที่ 7</td></tr>
+          <tr><td>บัญชีธุรกิจโดนจำกัดสิทธิ์</td><td>เข้า <strong>Account Quality</strong> ดูว่าโดนเรื่องอะไร แล้วกดขอให้ตรวจสอบใหม่ ปกติรู้ผลค่อนข้างเร็ว</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout p-5">
+      <p class="font-semibold mb-1">เพจควรอยู่ในบัญชีธุรกิจของคุณเอง</p>
+      <p>เวลาจ้างทีมงานหรือเอเจนซี่ อย่าให้เขาดึงเพจไปไว้ในบัญชีธุรกิจของเขา ให้เขาเข้ามาเป็น <strong>Partner</strong> แทนครับ เพราะเพจคือสินทรัพย์ของคุณ และการย้ายกรรมสิทธิ์กลับทำได้ยาก ส่วนสิทธิ์แบบ Partner ถอนได้ทั้งสองฝ่าย จบงานกันแล้วก็แยกกันสะอาด</p>
+    </div>
+  </section>
+
   <!-- PART 2 · Master Prompt -->
   <section class="mb-16" aria-labelledby="part2">
     <div class="border-t-4 border-ink pt-5 mb-8">
-      <p class="mono-label text-accent">ส่วนที่ 2</p>
+      <p class="mono-label text-accent">ส่วนที่ 3</p>
       <h2 id="part2" class="font-display text-2xl md:text-4xl font-bold mt-2">คำสั่งสำหรับทีมเทคนิค</h2>
       <p class="text-mute mt-3 max-w-2xl">ส่วนนี้ข้ามไปได้เลยครับ ไม่ต้องอ่านก็ไม่เป็นไร แค่ส่งต่อให้คนที่ดูแลระบบของคุณ หรือเอาไปวางในผู้ช่วย AI เขียนโค้ด (Claude Code / Codex) แล้วมันจะสร้างหน้านโยบายความเป็นส่วนตัวกับตัวรับข้อความให้ทั้งชุด</p>
     </div>
@@ -285,7 +347,7 @@ message_deliveries      messaging_policy_enforcement</code></pre>
   <!-- ข้อจำกัด -->
   <section class="mb-16" aria-labelledby="limits">
     <div class="border-t-4 border-ink pt-5 mb-8">
-      <p class="mono-label text-accent">ส่วนที่ 3</p>
+      <p class="mono-label text-accent">ส่วนที่ 4</p>
       <h2 id="limits" class="font-display text-2xl md:text-4xl font-bold mt-2">ข้อจำกัดที่ต้องรู้ก่อนคาดหวัง</h2>
       <p class="text-mute mt-3 max-w-2xl">เรื่องพวกนี้เป็นกติกาที่ Facebook ตั้งเอง แก้ด้วยเทคนิคไม่ได้ครับ รู้ไว้ก่อนวางแผนการตลาดจะได้ไม่ผิดหวัง</p>
     </div>
@@ -306,7 +368,7 @@ message_deliveries      messaging_policy_enforcement</code></pre>
   <!-- ทางเลือก -->
   <section class="mb-16" aria-labelledby="alt">
     <div class="border-t-4 border-ink pt-5 mb-8">
-      <p class="mono-label text-accent">ส่วนที่ 4</p>
+      <p class="mono-label text-accent">ส่วนที่ 5</p>
       <h2 id="alt" class="font-display text-2xl md:text-4xl font-bold mt-2">ถ้ายังไม่พร้อมเรื่องเอกสาร</h2>
     </div>
     <div class="grid md:grid-cols-2 gap-6">
