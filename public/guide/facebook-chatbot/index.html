@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>คู่มือเปิดบอทตอบแชทเพจ Facebook</title>
+  <meta name="description" content="ขั้นตอนตั้งค่า Facebook สำหรับเปิดบอท AI ตอบแชทในเพจ — สำหรับเจ้าของธุรกิจที่ยังไม่มีโดเมนเว็บไซต์">
+  <meta property="og:title" content="คู่มือเปิดบอทตอบแชทเพจ Facebook">
+  <meta property="og:description" content="ทำตามทีละขั้น 30 นาที บอทตอบแชทได้จริง — ไม่ต้องมีโดเมนเว็บไซต์">
+  <meta property="og:type" content="article">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --font-display: "Prompt", sans-serif;
+      --font-body: "Sarabun", sans-serif;
+      --font-mono: "IBM Plex Mono", monospace;
+      --color-ink: #14161a;
+      --color-paper: #ffffff;
+      --color-rule: #d8d8d4;
+      --color-accent: #dd4155;
+      --color-navy: #072b4e;
+      --color-mute: #6b7280;
+      --color-wash: #f4f4f1;
+    }
+    .mono-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .rule-t { border-top: 1px solid var(--color-rule); }
+    .step-head { border-top: 2px solid var(--color-ink); }
+    table { border-collapse: collapse; }
+    .grid-table th { text-align: left; font-family: var(--font-mono); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--color-mute); font-weight: 500; padding: .6rem .8rem; border-bottom: 1px solid var(--color-ink); }
+    .grid-table td { padding: .7rem .8rem; border-bottom: 1px solid var(--color-rule); vertical-align: top; }
+    code { font-family: var(--font-mono); font-size: .85em; background: var(--color-wash); padding: .1em .35em; }
+    .callout { border-left: 3px solid var(--color-accent); background: var(--color-wash); }
+    .callout-warn { border-left: 3px solid #b45309; background: #fdf6ec; }
+  </style>
+</head>
+<body class="font-body bg-paper text-ink">
+
+<header class="bg-navy text-white">
+  <div class="max-w-4xl mx-auto px-6 md:px-8 py-14 md:py-20">
+    <p class="mono-label text-accent mb-6">สำหรับเจ้าของธุรกิจ · ปรับปรุง 19 ส.ค. 2569</p>
+    <h1 class="font-display text-3xl md:text-5xl font-bold leading-tight">เปิดบอทตอบแชท<br>ในเพจ Facebook ของคุณ</h1>
+    <p class="mt-6 text-lg text-white/75 max-w-2xl">ทำตามทีละขั้นในหน้านี้ ใช้เวลาราว 30–40 นาที บอทก็เริ่มตอบแชทให้คุณได้แล้ว ไม่ต้องมีเว็บไซต์เป็นของตัวเองก็ทำได้ครับ</p>
+    <p class="mt-8 mono-label text-white/50">ปัน ณัฐพัชร์ · @pun_nattapatch</p>
+  </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-6 md:px-8 py-12 md:py-16">
+
+  <!-- ภาพรวมเวลา -->
+  <section class="mb-16" aria-labelledby="overview">
+    <p class="mono-label text-mute mb-3">อ่านก่อน 1 นาที</p>
+    <h2 id="overview" class="font-display text-2xl md:text-3xl font-bold mb-6">งานนี้มี 3 ช่วง รู้ไว้ก่อนจะได้วางแผนถูก</h2>
+    <div class="space-y-0">
+      <div class="step-head pt-4 pb-5 grid md:grid-cols-[9rem_1fr] gap-2 md:gap-6">
+        <div class="mono-label text-accent pt-1">ขั้น 1–6</div>
+        <div>
+          <p class="font-display font-semibold text-lg">30–40 นาที · บอทเริ่มตอบได้</p>
+          <p class="text-mute">ช่วงนี้บอทตอบเฉพาะคุณกับคนในทีมที่เพิ่มชื่อไว้ ทำได้เลยวันนี้ ไม่ต้องรอใครอนุมัติ</p>
+        </div>
+      </div>
+      <div class="rule-t pt-4 pb-5 grid md:grid-cols-[9rem_1fr] gap-2 md:gap-6">
+        <div class="mono-label text-mute pt-1">ขั้น 7</div>
+        <div>
+          <p class="font-display font-semibold text-lg">สัปดาห์–เดือน · ยืนยันตัวตนธุรกิจ</p>
+          <p class="text-mute">ใช้เอกสารที่ขึ้นชื่อธุรกิจ ยื่นให้เร็วที่สุดเลยครับ เพราะช่วงนี้รอนานกว่าเพื่อน</p>
+        </div>
+      </div>
+      <div class="rule-t pt-4 pb-5 grid md:grid-cols-[9rem_1fr] gap-2 md:gap-6">
+        <div class="mono-label text-mute pt-1">ขั้น 8</div>
+        <div>
+          <p class="font-display font-semibold text-lg">ไม่กี่วัน–2 สัปดาห์ · ลูกค้าจริงทักได้ทุกคน</p>
+          <p class="text-mute">ยื่นขออนุมัติกับ Facebook ทำได้หลังผ่านช่วงที่แล้ว</p>
+        </div>
+      </div>
+    </div>
+    <div class="callout p-5 mt-8">
+      <p><strong>ถ้าธุรกิจยังไม่จดทะเบียน</strong> ขั้นที่ 7 จะไปต่อไม่ได้ แต่ยังมีทางเริ่มใช้งานได้วันนี้อยู่ครับ เลื่อนไปอ่านหัวข้อสุดท้ายก่อนตัดสินใจ</p>
+    </div>
+  </section>
+
+  <!-- ต้องมีก่อนเริ่ม -->
+  <section class="mb-16" aria-labelledby="prep">
+    <p class="mono-label text-mute mb-3">เตรียมของ</p>
+    <h2 id="prep" class="font-display text-2xl md:text-3xl font-bold mb-4">ขอ 4 อย่างนี้จากทีมงานก่อน</h2>
+    <p class="text-mute mb-6">หน้าเว็บนโยบายความเป็นส่วนตัว เซิร์ฟเวอร์ และตัวรับข้อความ ทีมงานทำให้เรียบร้อยแล้ว คุณแค่เอา 4 อย่างนี้ไปกรอกตามช่องที่บอก</p>
+    <div class="overflow-x-auto">
+      <table class="grid-table w-full">
+        <thead><tr><th>สิ่งที่ต้องมี</th><th>หน้าตาประมาณนี้</th></tr></thead>
+        <tbody>
+          <tr><td>ลิงก์หน้านโยบายความเป็นส่วนตัว</td><td><code>https://legal.srv1234567.hstgr.cloud/privacy</code></td></tr>
+          <tr><td>ลิงก์หน้าขอลบข้อมูล</td><td><code>https://legal.srv1234567.hstgr.cloud/data-deletion</code></td></tr>
+          <tr><td>ลิงก์รับข้อความ (Callback URL)</td><td><code>https://bot.srv1234567.hstgr.cloud/webhook</code></td></tr>
+          <tr><td>รหัสยืนยัน (Verify Token)</td><td>ข้อความยาว ๆ ที่ทีมงานตั้งให้</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-sm text-mute mt-3">เลข <code>srv1234567</code> เป็นแค่ตัวอย่างนะครับ ของจริงจะเป็นเลขเครื่องของคุณเอง</p>
+  </section>
+
+  <!-- PART 1 -->
+  <section class="mb-16" aria-labelledby="part1">
+    <div class="border-t-4 border-ink pt-5 mb-10">
+      <p class="mono-label text-accent">ส่วนที่ 1</p>
+      <h2 id="part1" class="font-display text-2xl md:text-4xl font-bold mt-2">ขั้นตอนที่คุณกดเอง</h2>
+      <p class="text-mute mt-3 max-w-2xl">ส่วนนี้เป็นเรื่องบัญชีและสิทธิ์ของธุรกิจคุณโดยตรง คนอื่นกดแทนไม่ได้ และไม่ควรให้ใครกดแทนด้วยครับ</p>
+    </div>
+
+    <!-- step 1 -->
+    <article class="step-head pt-5 pb-10">
+      <p class="mono-label text-mute">ขั้นที่ 1</p>
+      <h3 class="font-display text-xl md:text-2xl font-bold mt-1 mb-4">สร้าง App ใน Meta for Developers</h3>
+      <ol class="list-decimal ml-5 space-y-2 marker:text-accent marker:font-semibold">
+        <li>เข้า <strong>developers.facebook.com</strong> ล็อกอินด้วยบัญชี Facebook ที่เป็นแอดมินของเพจ</li>
+        <li>มุมขวาบน <strong>My Apps</strong> → <strong>Create App</strong></li>
+        <li>ตั้งชื่อที่จำง่าย เช่น <code>ร้าน[ชื่อคุณ] Chat Bot</code></li>
+        <li>ใส่อีเมลติดต่อ — <strong>ใช้อีเมลที่คุณเปิดอ่านจริง</strong> เพราะ Facebook ส่งเรื่องสำคัญมาทางนี้</li>
+        <li>เลือกวัตถุประสงค์ที่เกี่ยวกับ <strong>Messenger / จัดการข้อความในเพจ</strong></li>
+        <li>สร้างเสร็จแล้วจด <strong>App ID</strong> ไว้ (ตัวเลขยาว ๆ ด้านบนของหน้า)</li>
+      </ol>
+    </article>
+
+    <!-- step 2 -->
+    <article class="rule-t pt-5 pb-10">
+      <p class="mono-label text-mute">ขั้นที่ 2</p>
+      <h3 class="font-display text-xl md:text-2xl font-bold mt-1 mb-4">ใส่ลิงก์นโยบายความเป็นส่วนตัว</h3>
+      <p class="mb-3">ไปที่ <strong>App settings → Basic</strong> แล้วกรอก 4 ช่องนี้</p>
+      <ul class="space-y-2 ml-5 list-disc marker:text-accent">
+        <li><strong>Privacy Policy URL</strong> — วางลิงก์หน้านโยบายที่ทีมงานทำให้</li>
+        <li><strong>User Data Deletion</strong> — เลือก <em>Data Deletion Instructions URL</em> แล้ววางลิงก์หน้าขอลบข้อมูล</li>
+        <li><strong>App Domains</strong> — ใส่ชื่อโดเมนของเซิร์ฟเวอร์ (ส่วนที่ลงท้าย <code>.hstgr.cloud</code>)</li>
+        <li><strong>Category</strong> — เลือกให้ตรงกับธุรกิจ แล้วกด Save changes</li>
+      </ul>
+      <div class="callout-warn p-5 mt-5">
+        <p class="font-semibold mb-1">ข้อนี้พลาดกันบ่อยที่สุด</p>
+        <p>เจ้าหน้าที่ของ Facebook กดลิงก์นี้เข้าไปอ่านเองจริง ๆ ครับ ถ้าเปิดไม่ได้ ต้องล็อกอินก่อน หรือเจอหน้าว่างเปล่า <strong>เขาปฏิเสธคำขอทั้งชุด</strong> ไม่ใช่แค่ข้อนี้ข้อเดียว วิธีเช็คง่ายที่สุดคือเปิดลิงก์จากมือถือที่ปิด WiFi และไม่ได้ล็อกอิน Facebook ดูสักครั้ง</p>
+      </div>
+    </article>
+
+    <!-- step 3 -->
+    <article class="rule-t pt-5 pb-10">
+      <p class="mono-label text-mute">ขั้นที่ 3</p>
+      <h3 class="font-display text-xl md:text-2xl font-bold mt-1 mb-4">ยืนยันอีเมลติดต่อ</h3>
+      <p>อยู่ในหน้า Basic เดียวกันครับ ดูช่อง <strong>Contact Email</strong> ถ้ายังไม่มีเครื่องหมายยืนยัน ให้กดส่งอีเมลยืนยันแล้วไปกดลิงก์ในกล่องจดหมาย ปล่อยข้อนี้ค้างไว้เดี๋ยวไปติดขั้นถัดไป</p>
+    </article>
+
+    <!-- step 4 -->
+    <article class="rule-t pt-5 pb-10">
+      <p class="mono-label text-mute">ขั้นที่ 4</p>
+      <h3 class="font-display text-xl md:text-2xl font-bold mt-1 mb-4">เพิ่มสิทธิ์ที่ต้องใช้</h3>
+      <p class="mb-4">ไปที่ <strong>App Review → Permissions and features</strong> แล้วกด <strong>Add</strong> ทีละตัว</p>
+      <div class="overflow-x-auto">
+        <table class="grid-table w-full">
+          <thead><tr><th>สิทธิ์</th><th>ใช้ทำอะไร</th></tr></thead>
+          <tbody>
+            <tr><td><code>pages_messaging</code></td><td>ตัวหลัก — ให้บอทรับและตอบข้อความในเพจ</td></tr>
+            <tr><td><code>pages_manage_metadata</code></td><td>ตั้งค่าให้เพจส่งข้อความเข้าระบบเราได้</td></tr>
+            <tr><td><code>pages_show_list</code></td><td>ให้ระบบเห็นรายชื่อเพจของคุณตอนเชื่อม</td></tr>
+            <tr><td><code>pages_utility_messaging</code></td><td>ส่งข้อความยืนยันนัดหรือสถานะออเดอร์ นอกเวลา 24 ชม.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout-warn p-5 mt-5">
+        <p class="font-semibold mb-1">สิทธิ์ที่ห้ามกดเพิ่มเด็ดขาด</p>
+        <p><code>marketing_messages_messenger</code> กับ <code>paid_marketing_messages</code> สองตัวนี้ Facebook ยกเลิกบริการไปแล้วตั้งแต่ ก.พ. 2569 แต่ปุ่มยังค้างอยู่ในหน้า กดไปก็ใช้ไม่ได้ แถมทำให้เรื่องยุ่งตอนยื่นขออนุมัติ</p>
+      </div>
+    </article>
+
+    <!-- step 5 -->
+    <article class="rule-t pt-5 pb-10">
+      <p class="mono-label text-mute">ขั้นที่ 5</p>
+      <h3 class="font-display text-xl md:text-2xl font-bold mt-1 mb-4">เชื่อมเพจเข้ากับ App</h3>
+      <ol class="list-decimal ml-5 space-y-2 marker:text-accent marker:font-semibold">
+        <li>เมนูซ้าย → <strong>Messenger → API Settings</strong></li>
+        <li>หัวข้อ <strong>Access Tokens</strong> กด <strong>Add or Remove Pages</strong></li>
+        <li>เลือกเพจของคุณ แล้วอนุญาตสิทธิ์ทั้งหมดที่ระบบขอ</li>
+        <li>กลับมาหน้าเดิม จะเห็นชื่อเพจพร้อมปุ่ม <strong>Generate Token</strong></li>
+        <li>กด Generate แล้ว<strong>คัดลอกรหัสส่งให้ทีมงาน</strong></li>
+      </ol>
+      <div class="callout p-5 mt-5">
+        <p class="font-semibold mb-1">รหัสนี้คือกุญแจบ้าน</p>
+        <p>ใครได้รหัสนี้ไป ส่งข้อความหาลูกค้าทุกคนในนามเพจคุณได้ทันที ส่งทางช่องทางส่วนตัวเท่านั้นนะครับ อย่าโพสต์ อย่าส่งในกลุ่ม และถ้าสงสัยเมื่อไหร่ว่าหลุด ให้กลับมาหน้านี้กด Generate ใหม่ รหัสเก่าจะใช้ไม่ได้ทันที</p>
+      </div>
+    </article>
+
+    <!-- step 6 -->
+    <article class="rule-t pt-5 pb-10">
+      <p class="mono-label text-mute">ขั้นที่ 6</p>
+      <h3 class="font-display text-xl md:text-2xl font-bold mt-1 mb-4">ต่อท่อรับข้อความ (Webhooks)</h3>
+      <ol class="list-decimal ml-5 space-y-2 marker:text-accent marker:font-semibold">
+        <li>ในหน้า <strong>Messenger → API Settings</strong> เลื่อนหาหัวข้อ <strong>Webhooks</strong> → กด <strong>Add Callback URL</strong></li>
+        <li>กรอก <strong>Callback URL</strong> และ <strong>Verify Token</strong> ที่ทีมงานให้ — ต้องตรงกันเป๊ะทุกตัวอักษร</li>
+        <li>กด <strong>Verify and save</strong> ถ้าขึ้นเขียวแปลว่าต่อติดแล้ว <span class="text-mute">(ถ้าไม่ผ่าน แจ้งทีมงาน อย่าเดาแก้เอง)</span></li>
+        <li>กด <strong>Add Subscriptions</strong> ข้างชื่อเพจ แล้วติ๊ก 8 รายการนี้</li>
+      </ol>
+      <pre class="bg-wash p-4 mt-4 text-sm overflow-x-auto"><code>messages                messaging_postbacks
+messaging_optins        messaging_referrals
+messaging_handovers     message_reads
+message_deliveries      messaging_policy_enforcement</code></pre>
+      <p class="mt-3 text-mute">ตัวสุดท้าย <code>messaging_policy_enforcement</code> สำคัญกว่าที่หลายคนคิดครับ มันคือตัวที่ Facebook ใช้เตือนเราเวลาส่งข้อความผิดกติกา ถ้าไม่ติ๊กไว้ วันหนึ่งโดนลงโทษขึ้นมาจะไม่รู้เลยว่าเพราะอะไร</p>
+      <p class="mt-4">จากนั้นไปที่ <strong>App roles → Roles</strong> เพิ่มตัวคุณเองและคนในทีมที่จะช่วยทดสอบเป็น <strong>Tester</strong></p>
+      <div class="callout p-5 mt-5">
+        <p class="font-semibold mb-1">ถึงตรงนี้บอทตอบได้แล้ว</p>
+        <p>ลองทักเพจดูได้เลยครับ แต่บอทจะตอบเฉพาะบัญชีที่มีชื่ออยู่ใน App roles ส่วนคนนอกทักมายังเงียบอยู่ ถ้าอยากให้ลูกค้าจริงทักได้ ต้องทำขั้น 7 กับ 8 ต่อ</p>
+      </div>
+    </article>
+
+    <!-- step 7 -->
+    <article class="rule-t pt-5 pb-10">
+      <p class="mono-label text-mute">ขั้นที่ 7</p>
+      <h3 class="font-display text-xl md:text-2xl font-bold mt-1 mb-4">ยืนยันตัวตนธุรกิจ</h3>
+      <p class="mb-4">ขั้นนี้รอนานที่สุดในทั้งหมด <strong>ยื่นทันทีเลยครับ</strong> แล้วปล่อยให้มันเดินไปเงียบ ๆ ระหว่างที่เราใช้งานทดสอบกันไปด้วย</p>
+      <ol class="list-decimal ml-5 space-y-2 marker:text-accent marker:font-semibold">
+        <li>เข้า <strong>business.facebook.com</strong> เลือกหรือสร้าง Business portfolio ของธุรกิจคุณ</li>
+        <li><strong>Business settings → Business info</strong> กรอกให้ครบ: ชื่อตามกฎหมาย · ที่อยู่ · เบอร์โทร · เว็บไซต์</li>
+        <li><strong>Business settings → Accounts → Apps</strong> กด Add แล้วเลือก App ที่สร้างไว้ในขั้นที่ 1 <span class="text-mute">(ข้อนี้คนลืมบ่อย และเป็นเงื่อนไขบังคับ)</span></li>
+        <li><strong>Security Centre</strong> เริ่ม Business verification แล้วอัปโหลดเอกสาร</li>
+      </ol>
+      <p class="mt-5 mb-3 font-semibold">เอกสารที่ Facebook รับ — ต้องขึ้นชื่อธุรกิจ ไม่ใช่ชื่อบุคคล</p>
+      <ul class="ml-5 list-disc space-y-1 marker:text-accent">
+        <li>หนังสือรับรองบริษัท หรือใบทะเบียนพาณิชย์</li>
+        <li>เอกสารภาษีของกิจการ เช่น ภ.พ.20</li>
+        <li>สเตทเมนต์บัญชีธนาคารในนามธุรกิจ</li>
+        <li class="text-mute">ใบแจ้งค่าน้ำค่าไฟใช้ยืนยันได้แค่ที่อยู่กับเบอร์ ยืนยันชื่อธุรกิจไม่ได้</li>
+      </ul>
+      <div class="callout-warn p-5 mt-5">
+        <p class="font-semibold mb-1">จุดที่ร้านเล็กมักติด</p>
+        <p>ร้านที่ยังไม่จดทะเบียนพาณิชย์ และรับเงินเข้าบัญชีส่วนตัว <strong>จะยืนยันไม่ผ่านครับ</strong> เพราะเอกสารทุกใบขึ้นชื่อบุคคล ไม่ใช่ชื่อร้าน ต่อให้คุณเป็นเจ้าของคนเดียวก็ตาม ทางแก้คือไปจดทะเบียนพาณิชย์ที่สำนักงานเขตหรือเทศบาล หรือเปิดบัญชีธนาคารในนามร้านก่อน</p>
+      </div>
+    </article>
+
+    <!-- step 8 -->
+    <article class="rule-t pt-5 pb-10">
+      <p class="mono-label text-mute">ขั้นที่ 8</p>
+      <h3 class="font-display text-xl md:text-2xl font-bold mt-1 mb-4">ยื่นขออนุมัติ (App Review)</h3>
+      <p class="mb-4 text-mute">ทำได้หลังยืนยันธุรกิจผ่านแล้วเท่านั้น</p>
+      <ol class="list-decimal ml-5 space-y-2 marker:text-accent marker:font-semibold">
+        <li><strong>App Review → Permissions and features</strong> กด <strong>Request advanced access</strong> ที่ <code>pages_messaging</code></li>
+        <li>เขียนอธิบายว่าใช้ทำอะไร เขียนตรง ๆ เช่น <em>"ตอบคำถามลูกค้าเรื่องสินค้าและราคาในเพจของร้านโดยอัตโนมัติ"</em></li>
+        <li><strong>อัดวิดีโอหน้าจอ</strong> ให้เห็นครบตั้งแต่เปิดเพจ ทักข้อความ จนบอทตอบกลับ</li>
+        <li>ส่งแล้วรอผล ปกติไม่กี่วันถึงสองสัปดาห์</li>
+      </ol>
+      <p class="mt-4 text-mute">ตอนยื่น ระบบต้องเปิดใช้งานได้จริง และเจ้าหน้าที่ต้องกดทดสอบตามได้ ถ้าเข้าไม่ได้หรือขึ้น error จะถูกปฏิเสธทั้งชุด นัดกับทีมงานให้ระบบพร้อมก่อนกดส่งนะครับ</p>
+    </article>
+  </section>
+
+  <!-- PART 2 · Master Prompt -->
+  <section class="mb-16" aria-labelledby="part2">
+    <div class="border-t-4 border-ink pt-5 mb-8">
+      <p class="mono-label text-accent">ส่วนที่ 2</p>
+      <h2 id="part2" class="font-display text-2xl md:text-4xl font-bold mt-2">คำสั่งสำหรับทีมเทคนิค</h2>
+      <p class="text-mute mt-3 max-w-2xl">ส่วนนี้ข้ามไปได้เลยครับ ไม่ต้องอ่านก็ไม่เป็นไร แค่ส่งต่อให้คนที่ดูแลระบบของคุณ หรือเอาไปวางในผู้ช่วย AI เขียนโค้ด (Claude Code / Codex) แล้วมันจะสร้างหน้านโยบายความเป็นส่วนตัวกับตัวรับข้อความให้ทั้งชุด</p>
+    </div>
+    <div class="grid-table mb-6 overflow-x-auto">
+      <table class="grid-table w-full">
+        <thead><tr><th>ต้องเติมก่อนใช้</th><th>หาจากไหน</th></tr></thead>
+        <tbody>
+          <tr><td><code>[VPS_HOST]</code></td><td>ชื่อเครื่องจาก Hostinger เช่น <code>srv1234567.hstgr.cloud</code></td></tr>
+          <tr><td><code>[SHOP_NAME]</code> · <code>[FB_PAGE_NAME]</code></td><td>ชื่อร้านและชื่อเพจตามที่ใช้จริง</td></tr>
+          <tr><td><code>[APP_SECRET]</code></td><td>App Dashboard → Settings → Basic</td></tr>
+          <tr><td><code>[PAGE_ACCESS_TOKEN]</code></td><td>ได้จากขั้นที่ 5</td></tr>
+          <tr><td><code>[VERIFY_TOKEN]</code></td><td>ตั้งเอง แล้วใช้ค่าเดียวกันตอนกรอกในขั้นที่ 6</td></tr>
+          <tr><td><code>[OPENROUTER_API_KEY]</code></td><td>openrouter.ai → Keys</td></tr>
+          <tr><td><code>[OWNER_CONTACT]</code></td><td>อีเมลหรือเบอร์ที่มีคนรับเรื่องข้อมูลส่วนบุคคลจริง</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="flex justify-end mb-2">
+      <button id="copyBtn" class="btn bg-accent text-white border-0 rounded-none" aria-label="คัดลอกคำสั่งทั้งหมด">
+        <i data-lucide="copy" class="w-4 h-4"></i> คัดลอกคำสั่งทั้งหมด
+      </button>
+    </div>
+    <pre id="promptView" class="bg-navy text-emerald-100/90 p-5 text-xs md:text-sm leading-relaxed overflow-x-auto max-h-[65vh] overflow-y-auto" tabindex="0" aria-label="เนื้อหาคำสั่งสำหรับทีมเทคนิค"></pre>
+  </section>
+
+  <!-- ข้อจำกัด -->
+  <section class="mb-16" aria-labelledby="limits">
+    <div class="border-t-4 border-ink pt-5 mb-8">
+      <p class="mono-label text-accent">ส่วนที่ 3</p>
+      <h2 id="limits" class="font-display text-2xl md:text-4xl font-bold mt-2">ข้อจำกัดที่ต้องรู้ก่อนคาดหวัง</h2>
+      <p class="text-mute mt-3 max-w-2xl">เรื่องพวกนี้เป็นกติกาที่ Facebook ตั้งเอง แก้ด้วยเทคนิคไม่ได้ครับ รู้ไว้ก่อนวางแผนการตลาดจะได้ไม่ผิดหวัง</p>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="grid-table w-full">
+        <thead><tr><th>สถานการณ์</th><th>ทำได้ไหม</th></tr></thead>
+        <tbody>
+          <tr><td>ลูกค้าทักมา แล้วตอบภายใน 24 ชม.</td><td class="text-green-700 font-semibold">ได้ ตอบได้เต็มที่ ไม่มีค่าใช้จ่าย</td></tr>
+          <tr><td>เกิน 24 ชม. แล้วอยากตามลูกค้าต่อ</td><td class="text-accent font-semibold">บอทยิงไม่ได้ ต้องคนจริงพิมพ์เอง</td></tr>
+          <tr><td>ส่งโปรโมชั่นหาคนที่เคยทัก (broadcast)</td><td class="text-accent font-semibold">ไม่มีให้ใช้แล้ว ยกเลิกตั้งแต่ ก.พ. 2569</td></tr>
+          <tr><td>อยากดึงลูกค้าเก่ากลับมา</td><td class="font-semibold">ต้องซื้อโฆษณา Click-to-Messenger</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-5">พูดง่าย ๆ คือถ้าคุณหวังใช้ Messenger ส่งโปรโมชั่นหาลูกค้าเก่า ช่องทางนี้ทำให้ไม่ได้ครับ ต้องมีงบโฆษณาเป็นต้นทุนประจำ ต่างจาก LINE ที่ส่งข้อความหาคนที่เพิ่มเพื่อนไว้ได้ฟรีตามโควตาแต่ละเดือน</p>
+  </section>
+
+  <!-- ทางเลือก -->
+  <section class="mb-16" aria-labelledby="alt">
+    <div class="border-t-4 border-ink pt-5 mb-8">
+      <p class="mono-label text-accent">ส่วนที่ 4</p>
+      <h2 id="alt" class="font-display text-2xl md:text-4xl font-bold mt-2">ถ้ายังไม่พร้อมเรื่องเอกสาร</h2>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="border border-rule p-6">
+        <p class="mono-label text-mute mb-2">ทางที่ 1</p>
+        <h3 class="font-display text-xl font-bold mb-3">ใช้แบบผู้ทดสอบไปก่อน</h3>
+        <p>ทำแค่ขั้นที่ 1–6 แล้วเพิ่มคนในทีมเป็น Tester บอทจะตอบได้จริงเต็มความสามารถ ใช้ทดสอบ ใช้ฝึกทีม หรือเปิดให้ลูกค้าดูตอนคุยงานก็ได้ ติดแค่คนนอกยังทักไม่ได้ ระหว่างนั้นค่อย ๆ จัดการเรื่องจดทะเบียนกับบัญชีธุรกิจไป</p>
+        <p class="mt-3 mono-label text-accent">เริ่มได้วันนี้ ไม่มีค่าใช้จ่ายเพิ่ม</p>
+      </div>
+      <div class="border border-rule p-6">
+        <p class="mono-label text-mute mb-2">ทางที่ 2</p>
+        <h3 class="font-display text-xl font-bold mb-3">เริ่มที่ LINE ก่อน</h3>
+        <p>LINE Official Account ไม่ต้องยื่นขออนุมัติ ไม่ต้องยืนยันธุรกิจ ไม่ต้องมีเอกสารบริษัทสักใบ แถมส่งข้อความหาคนที่เพิ่มเพื่อนไว้ได้ฟรี 300 ข้อความต่อเดือน เปิดใช้งานจริงได้ในวันเดียว</p>
+        <p class="mt-3 mono-label text-accent">เหมาะกับร้านที่ยังไม่จดทะเบียน</p>
+      </div>
+    </div>
+    <p class="mt-6">ที่ผมแนะนำคือให้ระบบเริ่มทำเงินก่อนด้วย LINE แล้วค่อยเพิ่ม Messenger ตอนธุรกิจโตจนมีเอกสารครบครับ</p>
+  </section>
+
+  <footer class="rule-t pt-8 pb-16">
+    <p class="font-display font-semibold text-lg">ติดตรงไหนถ่ายหน้าจอส่งมาถามได้เลยครับ</p>
+    <p class="text-mute mt-1">โดยเฉพาะขั้นที่ 6 กับ 7 ที่คนติดบ่อยที่สุด</p>
+    <p class="mono-label text-mute mt-6">ปัน ณัฐพัชร์ · @pun_nattapatch</p>
+  </footer>
+</main>
+
+<script type="text/plain" id="promptSource">คุณคือวิศวกรติดตั้งระบบให้ร้าน "[SHOP_NAME]" ทำงานเป็นด่าน (Phase 0–5)
+จบแต่ละด่านให้สรุปสั้นๆ ว่าทำอะไรไป ตรวจอะไรผ่านแล้ว แล้วหยุดรอผมยืนยันก่อนไปต่อ
+
+ข้อมูลระบบ:
+- VPS: [VPS_HOST] (Hostinger KVM1 · Ubuntu 24.04 · มี Docker + traefik อยู่แล้ว)
+- เพจ Facebook: [FB_PAGE_NAME]
+- APP_SECRET: [APP_SECRET]
+- PAGE_ACCESS_TOKEN: [PAGE_ACCESS_TOKEN]
+- VERIFY_TOKEN: [VERIFY_TOKEN]
+- OPENROUTER_API_KEY: [OPENROUTER_API_KEY]
+- ผู้รับเรื่องข้อมูลส่วนบุคคล: [OWNER_CONTACT]
+
+═══════════════════════════════════════════
+กติกาเหล็ก — บังคับทุกด่าน
+═══════════════════════════════════════════
+
+1. ห้ามพังเงียบ — ทุกจุดที่ fail ต้อง log ว่าพังเพราะอะไร ห้าม catch เปล่า
+2. ความลับไม่ลง git — .env อยู่ใน .gitignore ตั้งแต่ commit แรก
+   ห้ามเขียน APP_SECRET / PAGE_ACCESS_TOKEN ลงไฟล์ที่ commit หรือลงหน้าเว็บ
+3. หน้า privacy ต้องเปิดได้แบบไม่ต้อง login และไม่มี redirect แปลกๆ
+   (reviewer ของ Meta จะกดเข้าไปดูเอง เปิดไม่ได้ = ตกทั้ง submission)
+4. ห้ามแต่งข้อเท็จจริงเกี่ยวกับธุรกิจลูกค้าลงหน้า privacy — ข้อไหนไม่รู้ ให้ถามผม
+   เอกสารนี้มีผลทางกฎหมาย เขียนเกินจริงคือสร้างภาระให้ลูกค้า
+5. ทดสอบผ่าน URL สาธารณะจริงเสมอ — เปิดจากเครื่องตัวเอง/curl localhost ไม่นับ
+6. ก่อนตั้งเวลาใดๆ จำไว้ว่า VPS เป็น UTC (ช้ากว่าไทย 7 ชม.)
+
+═══════════════════════════════════════════
+Phase 0 — ตรวจความพร้อมเครื่อง
+═══════════════════════════════════════════
+
+- ssh เข้า [VPS_HOST] ตรวจ: Docker + Docker Compose ทำงาน · traefik container รันอยู่
+  · พอร์ต 80/443 ถูก traefik ถืออยู่
+- ตรวจว่า wildcard DNS ใช้ได้จริง: dig +short test123.[VPS_HOST] ต้องได้ IP เดียวกับ [VPS_HOST]
+  ถ้าไม่ได้ → หยุด แจ้งผม (แปลว่าเครื่องนี้ไม่มี wildcard ต้องหาทางอื่น)
+- เช็คว่ามี container ชื่อซ้ำ/พอร์ตชนกับที่จะสร้างไหม
+- รายงานผลเป็นตารางก่อนสร้างอะไร
+
+═══════════════════════════════════════════
+Phase 1 — เก็บ context ธุรกิจ (ห้ามข้าม ห้ามเดา)
+═══════════════════════════════════════════
+
+ถามผมทีละข้อ รอคำตอบให้ครบก่อนเขียนหน้า privacy:
+
+1. ชื่อธุรกิจที่ใช้ตามกฎหมาย + ชื่อร้านที่ลูกค้ารู้จัก (อาจไม่เหมือนกัน)
+2. จดทะเบียนพาณิชย์/บริษัทหรือยัง ถ้าจดแล้วเลขทะเบียนอะไร (ใส่ในเอกสารได้ ทำให้ดูน่าเชื่อถือ)
+3. ที่อยู่ร้าน (ใส่แค่ระดับที่ลูกค้ายอมเปิดเผย เช่น เขต/จังหวัด ก็พอ)
+4. ช่องทางติดต่อเรื่องข้อมูลส่วนบุคคล — อีเมลหรือเบอร์ที่มีคนตอบจริง
+5. บอทจะเก็บอะไรจากลูกค้าบ้าง (default: ชื่อโปรไฟล์ Facebook, PSID, ข้อความแชท,
+   และเบอร์โทร/ที่อยู่เฉพาะตอนลูกค้าพิมพ์มาเอง) — ยืนยันกับผมว่าตรงไหมหรือมีมากกว่านี้
+6. เก็บข้อมูลไว้นานแค่ไหน (แนะนำ 12 เดือนนับจากการติดต่อครั้งสุดท้าย)
+7. ส่งข้อมูลออกนอกร้านไหม — ระบบนี้ส่งข้อความไปให้ผู้ให้บริการ AI ประมวลผล (OpenRouter)
+   ต้องเขียนบอกในเอกสาร ห้ามปิดบัง
+8. มีสินค้า/บริการสำหรับเด็กต่ำกว่า 20 ปีไหม (มีผลกับข้อความเรื่องความยินยอมของผู้เยาว์)
+
+═══════════════════════════════════════════
+Phase 2 — เขียนหน้า Privacy + หน้าขอลบข้อมูล
+═══════════════════════════════════════════
+
+สร้าง 2 หน้า HTML static (ไม่ต้องมี JS ไม่ต้องมี framework):
+
+**หน้า 1: /privacy** — ต้องมีหัวข้อครบตามนี้ (PDPA ไทย + สิ่งที่ Meta ตรวจ)
+  1. ผู้ควบคุมข้อมูลคือใคร (ชื่อธุรกิจ + ที่อยู่ + ช่องทางติดต่อจาก Phase 1)
+  2. เก็บข้อมูลอะไรบ้าง — ระบุให้ตรงกับที่ระบบเก็บจริง ห้ามเขียนกว้างเกินจริง
+  3. เก็บไปทำอะไร (ตอบแชท · ให้ข้อมูลสินค้า · ติดต่อกลับเรื่องคำสั่งซื้อ)
+  4. ฐานทางกฎหมายที่ใช้ (ปกติคือ "ความจำเป็นเพื่อปฏิบัติตามสัญญา" + "ความยินยอม")
+  5. แชร์ให้ใครบ้าง — ต้องระบุ Meta Platforms และผู้ให้บริการ AI ที่ใช้ประมวลผลข้อความ
+  6. เก็บนานแค่ไหน + ลบเมื่อไหร่
+  7. สิทธิของเจ้าของข้อมูลตาม PDPA: ขอดู · ขอสำเนา · ขอแก้ · ขอลบ · ขอถอนความยินยอม
+     · ขอให้ระงับใช้ · ร้องเรียนต่อสำนักงานคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล
+  8. วิธีขอลบข้อมูล — ลิงก์ไปหน้า /data-deletion
+  9. วันที่มีผลบังคับใช้ + วันที่แก้ไขล่าสุด
+  ภาษา: ไทยเป็นหลัก · เขียนให้คนทั่วไปอ่านรู้เรื่อง ไม่ต้องภาษากฎหมายจัด
+
+**หน้า 2: /data-deletion** — Meta บังคับต้องมี (Data Deletion Instructions URL)
+  บอกเป็นขั้นตอนว่าลูกค้าจะขอลบข้อมูลยังไง: ทักเข้าเพจแล้วพิมพ์ "ขอลบข้อมูล"
+  หรือส่งอีเมลมาที่ [OWNER_CONTACT] · ระบุว่าจะดำเนินการภายในกี่วัน (แนะนำ 30 วัน)
+  · ระบุว่าจะลบอะไรบ้าง
+
+หน้าตา: HTML เดียวจบต่อหน้า · อ่านบนมือถือได้ · ไม่ต้องสวย แต่ต้องอ่านง่าย
+ใส่ชื่อร้านกับวันที่ให้ชัด · ห้ามใส่ tracking/analytics ใดๆ ในสองหน้านี้
+
+═══════════════════════════════════════════
+Phase 3 — เอาขึ้น VPS ให้ได้ HTTPS จริง
+═══════════════════════════════════════════
+
+ใช้ pattern เดียวกับที่เครื่องนี้เสิร์ฟไฟล์อยู่แล้ว (nginx + traefik):
+
+- สร้างโฟลเดอร์ /opt/legal บนเครื่อง วางไฟล์ HTML ทั้งสองหน้า
+- สร้าง docker compose service: image nginx:alpine · mount /opt/legal เป็น web root
+  · restart: unless-stopped · ไม่ต้อง publish port ออกเน็ต (ให้ traefik จัดการ)
+- ใส่ traefik labels: enable=true · entrypoints=websecure
+  · rule=Host(`legal.[VPS_HOST]`) · tls.certresolver=letsencrypt · service port 80
+- ตั้ง nginx ให้ /privacy กับ /data-deletion เปิดได้โดยไม่ต้องมี .html ต่อท้าย
+- ปิด directory listing (ไม่ให้ใครไล่ดูไฟล์ในโฟลเดอร์ได้)
+
+ตรวจให้ผ่านก่อนไปต่อ — รายงานเป็นตาราง:
+  a) curl -I https://legal.[VPS_HOST]/privacy → ต้องได้ 200 และใบรับรองถูกต้อง
+  b) curl -I https://legal.[VPS_HOST]/data-deletion → 200
+  c) เปิดจากเน็ตมือถือที่ไม่ได้ล็อกอินอะไรเลย → เห็นเนื้อหาจริง
+  d) http:// ต้อง redirect เป็น https อัตโนมัติ
+  ⚠️ ใบรับรอง Let's Encrypt ใช้เวลาออกไม่กี่วินาที ถ้ายังไม่ได้ให้รอแล้วลองใหม่
+  ห้ามสรุปว่าพังก่อนพิสูจน์ว่าคำสั่งตรวจถูกต้อง
+
+═══════════════════════════════════════════
+Phase 4 — Webhook endpoint สำหรับ Messenger
+═══════════════════════════════════════════
+
+สร้าง Node.js (ESM) service เล็กๆ — dependencies: express เท่านั้น (crypto ใช้ของ Node)
+
+**4.1 GET /webhook — handshake (Meta เรียกตอนกด Verify ในคอนโซล)**
+  รับ query: hub.mode · hub.verify_token · hub.challenge
+  ถ้า hub.mode === "subscribe" และ hub.verify_token ตรงกับ [VERIFY_TOKEN]
+  → ตอบ 200 พร้อม body เป็นค่า hub.challenge เปล่าๆ (plain text ห้ามหุ้ม JSON)
+  ไม่ตรง → 403
+
+**4.2 POST /webhook — รับ event**
+  - ตรวจลายเซ็น header X-Hub-Signature-256 = "sha256=" + HMAC-SHA256(APP_SECRET, rawBody)
+    เป็น **hex** (⚠️ ต่างจาก LINE ที่เป็น base64) · ต้องใช้ raw body ก่อน parse JSON
+    เทียบด้วย crypto.timingSafeEqual ไม่ใช่ === · ไม่ตรง → 401 แล้วจบ
+  - **ตอบ 200 ทันที** แล้วค่อยประมวลผลต่อแบบ async (Meta retry ถ้าช้าเกิน ~20 วินาที
+    ลูกค้าจะได้คำตอบซ้ำ)
+  - วน entry[].messaging[] — สนใจเฉพาะ event ที่มี message.text
+    · event ที่เป็นรูป → ตอบรับว่าได้รับแล้ว + แจ้งเจ้าของ (มักเป็นสลิปโอนเงิน)
+    · echo (ข้อความที่เพจส่งเอง) ต้องข้าม ไม่งั้นบอทคุยกับตัวเอง
+
+**4.3 ส่งข้อความกลับ**
+  POST https://graph.facebook.com/v26.0/me/messages?access_token=[PAGE_ACCESS_TOKEN]
+  body: {recipient:{id:<PSID>}, messaging_type:"RESPONSE", message:{text:"..."}}
+  - ก่อนตอบ ยิง sender_action:"typing_on" ให้ลูกค้าเห็นว่ากำลังพิมพ์
+  - PSID เป็นรหัสราย "เพจ" ไม่ใช่รายคน — คนเดียวกันคนละเพจได้คนละรหัส
+    ห้าม copy PSID ข้ามระบบ
+
+**4.4 หน้าต่าง 24 ชั่วโมง (กติกาที่ผิดแล้วโดนระงับ)**
+  เก็บ last_inbound_at ต่อ PSID ลงไฟล์ใน volume
+  - ภายใน 24 ชม. นับจากที่ลูกค้าทักล่าสุด → ตอบได้ปกติ
+  - เกิน 24 ชม. → **ห้ามยิงข้อความอัตโนมัติ** ให้ log แล้วแจ้งเจ้าของว่าต้องตอบเอง
+  - error code 10 (นอกหน้าต่าง) และ 100 (tag ที่เลิกใช้แล้ว) ต้อง log ให้ชัด + แจ้งเตือน
+    ห้ามกลืนเงียบ
+  ⚠️ Messenger ไม่มี broadcast แบบ LINE — ห้ามเขียนฟีเจอร์ยิงข้อความหาคนเก่า
+
+**4.5 สมองตอบคำถาม**
+  ต่อ OpenRouter (โมเดล openai/gpt-5.6-luna) · timeout 12 วินาที · max_tokens อย่างน้อย 1000
+  - เรื่องที่ต้องส่งต่อคนทันทีให้โค้ดตัดสิน ไม่ถาม LLM: ร้องเรียน/คืนเงิน/ของเสีย/เคลม
+  - กรองคำตอบก่อนส่ง: ห้ามหลุด path, URL, ศัพท์เทคนิค, ห้ามแต่งราคา
+  - ถูกถามว่าเป็นบอทไหม → ตอบตรงว่าเป็นผู้ช่วย AI ของร้าน ห้ามแอบอ้างเป็นเจ้าของ
+
+**4.6 Deploy**
+  compose service ใหม่ + traefik labels: Host(`bot.[VPS_HOST]`) → พอร์ตของ service
+  · mount โฟลเดอร์ data เป็น volume (เก็บ last_inbound_at ให้รอด recreate)
+  · log ออก stdout เท่านั้น ห้ามเขียนลงไฟล์ในโวลุ่ม (docker logs จะตาบอด)
+
+═══════════════════════════════════════════
+Phase 5 — ทดสอบ + ส่งมอบ
+═══════════════════════════════════════════
+
+ทดสอบตามลำดับ รายงานผ่าน/ไม่ผ่านเป็นตาราง:
+ 1. GET https://bot.[VPS_HOST]/webhook?hub.mode=subscribe&hub.verify_token=[VERIFY_TOKEN]&hub.challenge=test123
+    → ต้องได้ 200 body = test123 เป๊ะ
+ 2. ยิงด้วย verify_token ผิด → ต้องได้ 403
+ 3. POST /webhook ไม่มีลายเซ็น → ต้องได้ 401
+ 4. POST /webhook พร้อมลายเซ็นที่คำนวณถูก → 200 (คำนวณ HMAC เองเพื่อทดสอบ)
+ 5. https://legal.[VPS_HOST]/privacy และ /data-deletion → 200 ทั้งคู่จากเน็ตภายนอก
+ 6. หลังผมกด Verify and save ในคอนโซลแล้ว → ทักเพจจากบัญชีที่มี role
+    ต้องได้คำตอบจริงภายใน 10 วินาที
+ 7. ทักซ้ำ 3 ข้อความรัวๆ → ต้องไม่ตอบซ้ำซ้อนกันเอง
+
+จากนั้นเขียน README ภาษาไทยให้เจ้าของร้าน: URL ทั้งหมดที่ได้ · วิธีดูว่าบอทยังทำงาน
+· วิธีแก้ข้อความในหน้า privacy · อาการพังที่พบบ่อย 5 แบบ · ค่าใช้จ่ายที่ต้องต่ออายุ
+
+สรุปให้ผมท้ายสุดเป็นตาราง: URL หน้า privacy · URL หน้า data deletion · Callback URL
+· Verify Token — เพื่อเอาไปกรอกในคอนโซล Meta</script>
+<script>
+  const src = document.getElementById("promptSource").textContent.trim();
+  document.getElementById("promptView").textContent = src;
+  const btn = document.getElementById("copyBtn");
+  btn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(src);
+      btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> คัดลอกแล้ว';
+    } catch {
+      const r = document.createRange();
+      r.selectNodeContents(document.getElementById("promptView"));
+      const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      btn.innerHTML = '<i data-lucide="mouse-pointer-click" class="w-4 h-4"></i> เลือกไว้แล้ว กด Ctrl/Cmd+C';
+    }
+    lucide.createIcons();
+    setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i> คัดลอกคำสั่งทั้งหมด'; lucide.createIcons(); }, 2500);
+  });
+  lucide.createIcons();
+</script>
+</body>
+</html>
