@@ -66,7 +66,7 @@ const issues = [
   const error = document.getElementById('booking-error');
   const submit = document.getElementById('booking-submit') as HTMLButtonElement | null;
   const recommendation = document.getElementById('booking-recommendation');
-  const WEBHOOK = 'https://rnat.app.n8n.cloud/webhook/intake-form-v2';
+  const WEBHOOK = 'https://form-hook.punnattapatch.com/webhook/intake-form-v2';
 
   // Fallback เมื่อ n8n ล่ม → เขียน lead เข้า Supabase ตรงผ่าน RPC submit_lead
   // (SECURITY DEFINER, anon-callable) — datastore เดียวกับที่ dashboard อ่าน
