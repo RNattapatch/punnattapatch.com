@@ -964,6 +964,35 @@ const faqs = [
             console.error('[kit-form] webhook error', e);
           }
 
+          // form-hook (มินิ) ไม่ตอบ → ชั้น 2: เขียน Supabase ตรงผ่าน submit_lead
+          // (สำเนาย่อของ src/scripts/lead-fallback.ts — script นี้เป็น is:inline
+          // จึง import module ไม่ได้ · fallback_reason เป็นสวิตช์ของ DB trigger
+          // ที่ส่งการ์ด Telegram ผ่าน guardian — ห้ามเปลี่ยนค่า)
+          if (!webhookOk) {
+            try {
+              const ctrl2 = new AbortController();
+              const t2 = setTimeout(() => ctrl2.abort(), 8000);
+              const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5a29jdmhvcmdjZ3phbHV1bGRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjYwNTYsImV4cCI6MjA5NTgwMjA1Nn0.04ya1crnMRK6SgLfwhhxIp14DQ1n_ZkY5Fj-urTsv1E';
+              const fbRes = await fetch('https://yykocvhorgcgzaluuldn.supabase.co/rest/v1/rpc/submit_lead', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', apikey: ANON_KEY, Authorization: 'Bearer ' + ANON_KEY },
+                body: JSON.stringify({ payload: Object.assign({}, payload, {
+                  source_page: '/agent-builder-kit',
+                  form_tag: 'kit-leads-v1',
+                  submittedAt: new Date().toISOString(),
+                  reference: ref,
+                  fallback_reason: 'form-hook-unreachable',
+                }) }),
+                signal: ctrl2.signal,
+                keepalive: true,
+              });
+              clearTimeout(t2);
+              webhookOk = fbRes.ok;
+            } catch (e) {
+              console.error('[kit-form] supabase fallback error', e);
+            }
+          }
+
           // Redirect regardless of webhook (download is the contract; lead capture is best-effort)
           const interests = [];
           if (fd.get('interest_inhouse')) interests.push('inhouse');

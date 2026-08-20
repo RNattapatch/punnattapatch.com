@@ -745,6 +745,7 @@ const description =
 
   <script>
     import { foldAfterHours } from '../scripts/after-hours';
+    import { submitLeadFallback, makeReference } from '../scripts/lead-fallback';
 
     const WEBHOOK = 'https://form-hook.punnattapatch.com/webhook/intake-form-v2';
 
@@ -825,7 +826,16 @@ const description =
         reveal_();
       } catch (err) {
         console.error('Sponsor form submit failed:', err);
-        showError();
+        // form-hook (มินิ) ไม่ตอบ → ชั้น 2: เขียน Supabase ตรง — การ์ดแจ้งเตือนมาจาก DB trigger → guardian
+        if (await submitLeadFallback(payload as Record<string, unknown>, makeReference('SP'))) {
+          (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.(
+            'Sponsor Submit',
+            { props: { brand: String(payload.brandName ?? 'unknown'), status: 'sent-fallback' } }
+          );
+          reveal_();
+        } else {
+          showError();
+        }
       } finally {
         setLoading(false);
       }

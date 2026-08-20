@@ -343,6 +343,7 @@ const morePains = [
 
 <script>
   import { foldAfterHours } from '../../scripts/after-hours';
+  import { submitLeadFallback, makeReference } from '../../scripts/lead-fallback';
 
   type Attribution = Record<string, string | undefined>;
   type MetaWindow = Window & { fbq?: (...args: unknown[]) => void; pnAttribution?: Attribution };
@@ -446,7 +447,16 @@ const morePains = [
       success?.classList.remove('hidden');
       success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } catch {
-      if (error) { error.textContent = 'ระบบรับข้อมูลขัดข้องชั่วคราว กรุณาลองใหม่ หรือแอด LINE เพื่อส่งโจทย์ให้ผม'; error.classList.remove('hidden'); }
+      // form-hook (มินิ) ไม่ตอบ → ชั้น 2: เขียน Supabase ตรง — การ์ดแจ้งเตือนมาจาก DB trigger → guardian
+      if (await submitLeadFallback(payload as Record<string, unknown>, makeReference())) {
+        if (typeof pageWindow.fbq === 'function') fbq('track', 'Lead', { content_name: 'line_ai_response_booking' });
+        (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.('Booking Submit', { props: { source: 'ads-line-ai-response', status: 'sent-fallback' } });
+        form.classList.add('hidden');
+        success?.classList.remove('hidden');
+        success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      if (error) { error.textContent = 'ระบบรับข้อมูลขัดข้องชั่วคราว — ข้อมูลยังไม่ถึงผม กรุณาลองใหม่ หรือแอด LINE เพื่อส่งโจทย์ให้ผม'; error.classList.remove('hidden'); }
       if (submit) { submit.disabled = false; submit.textContent = 'ส่งข้อมูลให้ผมดู'; }
     }
   });

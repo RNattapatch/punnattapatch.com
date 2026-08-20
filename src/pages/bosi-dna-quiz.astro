@@ -353,6 +353,8 @@ const description =
   window.__BOSI_DATA__ = JSON.parse(QUIZ_DATA_JSON);
 </script>
 <script>
+  import { submitAudienceFallback } from '../scripts/lead-fallback';
+
   type DnaLetter = 'B' | 'O' | 'S' | 'I';
   interface QuizChoice { key: string; text: string; }
   interface QuizQuestion { num: number; text: string; choices: QuizChoice[]; }
@@ -608,7 +610,7 @@ const description =
     try {
       const ctrl = new AbortController();
       const kill = setTimeout(() => ctrl.abort(), 10_000);
-      await fetch(N8N_WEBHOOK, {
+      const res = await fetch(N8N_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -616,8 +618,11 @@ const description =
         keepalive: true,
       });
       clearTimeout(kill);
+      if (!res.ok) throw new Error(`webhook ${res.status}`);
     } catch (err) {
       console.error('[bosi-quiz] webhook error', err);
+      // form-hook (มินิ) ไม่ตอบ → เขียนตรงเข้า submit_audience (ยังคงเป็น audience ไม่ปน leads)
+      await submitAudienceFallback(payload as unknown as Record<string, unknown>);
     }
     try {
       localStorage.setItem('pn_bosi_last_result', JSON.stringify(payload));
