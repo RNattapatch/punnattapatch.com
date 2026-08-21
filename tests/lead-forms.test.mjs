@@ -40,7 +40,8 @@ async function sealContext(ctx) {
 /** เติม required ทุกช่องแบบไม่ต้องรู้จักฟอร์มล่วงหน้า — ฟอร์มเพิ่มช่องใหม่แล้วเทสต์ยังรอด */
 async function fillAllRequired(page, formSel, values = {}) {
   for (const [name, v] of Object.entries(values)) {
-    await page.fill(`${formSel} [name="${name}"]`, v).catch(() => {});
+    // timeout สั้น — field ที่ไม่มีในฟอร์มนั้น (เช่น company บน /ads/*) ต้องไม่รอ default 30s
+    await page.fill(`${formSel} [name="${name}"]`, v, { timeout: 1000 }).catch(() => {});
   }
   const handles = await page.locator(`${formSel} [required]`).all();
   for (const h of handles) {
