@@ -127,6 +127,21 @@ export const CATALOG = {
     status: 'live',
     botQuote: true,
   },
+  'system-health-check': {
+    // 2026-08-18: ดีลเปิดประตูใหม่ — stress test (จำลองข้อมูล 7 ปีข้างหน้าแล้ววัดจริง) + secure-app audit
+    // สำหรับระบบที่ลูกค้า vibe-code เองหรือจ้างทำมา · harness: mac-mini-ops/services/stress-test (repo หลัก)
+    // ⚠️ ราคา 19,900 คือ RECOMMENDATION ยังไม่ได้เคาะ — เปลี่ยน status เป็น 'live' เมื่อคุณปันยืนยันตัวเลข
+    amount: 19900,
+    url: '/services#system-health-check',
+    name: 'System Health Check — ตรวจสุขภาพระบบก่อนใช้จริง',
+    kind: 'consult',
+    duration: '3-5 วันทำการ (ตรวจ + รายงาน 2 ชั้น + walkthrough ผล 1 ครั้ง)',
+    headline: 'ระบบที่สั่ง AI สร้างใช้ได้วันนี้ — แต่จะรอดไหมเมื่อข้อมูลโตถึงปีที่ 7? ตรวจด้วยการยัดข้อมูลอนาคตเข้าไปวัดจริง พร้อมตรวจความปลอดภัย',
+    audience: 'เจ้าของที่มีระบบ AI-built อยู่แล้ว แต่ไม่แน่ใจว่าปลอดภัยและรับข้อมูลโตไหว ก่อนให้ทีมใช้จริง',
+    status: 'internal',
+    botQuote: false,
+    note: 'ค่าตรวจเครดิตเข้าดีลแก้ระบบต่อได้ · รายงานตัวอย่าง: clients/_internal/stress-test-dogfood (repo หลัก)',
+  },
 
   // ── key อ้างอิง/ราคาเปรียบเทียบ — ไม่ใช่สินค้าที่ขายตรง ───────────────────
   'inhouse-b-list': {
