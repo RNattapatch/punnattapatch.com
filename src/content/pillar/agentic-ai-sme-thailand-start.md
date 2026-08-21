@@ -112,7 +112,7 @@ Agent จะทำงานได้ดีหรือไม่ ขึ้นอ�
 
 ### Week 2 — Build + Test
 
-- เลือก stack: สำหรับ SME ไทยที่เพิ่งเริ่ม ผมแนะนำ Google Sheets + n8n + AI API (Claude หรือ OpenAI compatible)
+- เลือก stack: สำหรับ SME ไทยที่เพิ่งเริ่ม ผมแนะนำ Google Sheets + ตัวเชื่อมงานอัตโนมัติ + AI API (Claude หรือ OpenAI compatible)
 - สร้าง workflow 1 ตัวเพื่อทำงานที่เลือกไว้แบบอัตโนมัติ
 - Test กับ data จริง 1 สัปดาห์ เจอปัญหาก็แก้ไปเรื่อยๆ
 
@@ -139,7 +139,7 @@ SME ไทยมักอยากเริ่มจาก "Agent ขายข�
 ก่อนเริ่มใช้ Agent ให้วัดเวลาก่อน 1 สัปดาห์ว่าวิธีเดิมใช้เวลานานแค่ไหน พอ deploy แล้วก็วัดอีก 1 สัปดาห์ แล้วเอามาเทียบกัน
 
 **4. Lock-in (ผูกติดกับ vendor) กับ vendor ที่ export (ส่งออกข้อมูล) data ไม่ได้**
-ควรเลือกใช้ stack ที่เราเป็นเจ้าของ data เอง (เช่น Sheets, n8n ที่ self-host ได้) อย่าใช้ proprietary SaaS ที่เอาข้อมูลออกมายาก
+ควรเลือกใช้ stack ที่เราเป็นเจ้าของ data เอง (เช่น Sheets หรือเครื่องมือที่ self-host ได้) อย่าใช้ proprietary SaaS ที่เอาข้อมูลออกมายาก
 
 ## Case Study — ลูกค้าที่เริ่ม Agent ตัวแรกจริง
 

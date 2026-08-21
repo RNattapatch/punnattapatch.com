@@ -5,7 +5,7 @@ lang: th
 published: 2026-04-18
 draft: false
 pillar: ai-transformation
-tags: [ai, transformation, sales, sme, agentic-ai, n8n, claude-code]
+tags: [ai, transformation, sales, sme, agentic-ai, automation, claude-code]
 heroImage: "/og-image.jpg"
 ---
 
@@ -86,7 +86,7 @@ Stack (ชุดเครื่องมือ) ที่ใช้บ่อย�
 
 - Google Sheets (data layer ที่คน non-tech ใช้เป็น)
 - Apps Script (สำหรับ logic ง่ายๆ และตั้งเวลาทำงาน)
-- n8n (สำหรับ workflow (ขั้นตอนการทำงาน) ที่ซับซ้อนกว่า)
+- ตัวเชื่อมงานอัตโนมัติ (สำหรับ workflow (ขั้นตอนการทำงาน) ที่ซับซ้อนกว่า — ผมใช้ n8n)
 - Claude API หรือ OpenRouter (สำหรับ AI calls ที่ราคาโปร่งใส ไม่ vendor lock-in (ผูกติดกับ vendor))
 - LINE Messaging API (interface ที่ลูกค้าใช้อยู่แล้ว)
 

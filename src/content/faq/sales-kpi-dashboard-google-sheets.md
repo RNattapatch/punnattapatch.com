@@ -13,7 +13,7 @@ tags: [faq, kpi, dashboard, google-sheets, apps-script]
 
 ## สิ่งที่ Sheets + Apps Script ทำได้
 
-- ตั้ง trigger (ตัวสั่งให้ทำงานอัตโนมัติ) ดึงข้อมูลจาก CRM, n8n webhook (ช่องทางรับส่งข้อมูลอัตโนมัติ) หรือ form input ได้เกือบ real-time (แบบทันที) รีเฟรชทุก 15 นาที
+- ตั้ง trigger (ตัวสั่งให้ทำงานอัตโนมัติ) ดึงข้อมูลจาก CRM, webhook (ช่องทางรับส่งข้อมูลอัตโนมัติ) หรือ form input ได้เกือบ real-time (แบบทันที) รีเฟรชทุก 15 นาที
 - สร้างกราฟและแผนภูมิได้หลากหลายด้วย native chart ของ Sheets (bar, line, sparkline) เพียงพอสำหรับ 95% ของ use case ทั่วไป
 - เจาะดูข้อมูลเชิงลึกด้วย filter ตามพนักงานขาย, เดือน หรือประเภทสินค้า
 - ส่งการแจ้งเตือนอัตโนมัติผ่าน LINE Messaging API ด้วย Apps Script เมื่อ pipeline (รายการดีลที่กำลังคุยอยู่) ต่ำกว่าเป้า
@@ -47,7 +47,7 @@ Sheet 2: Dashboard (สร้างขึ้นอัตโนมัติ)
 
 - Google Sheets มีข้อจำกัด 10 ล้าน cell ต่อ sheet เพียงพอสำหรับ SME ทั่วไป 5-10 ปี
 - หากสูตรซับซ้อนเกินไปอาจทำให้ sheet ช้า แก้ได้ด้วย Apps Script เข้ามา pre-process (ประมวลผลล่วงหน้า)
-- ไม่รองรับ real-time streaming (ส่งข้อมูลแบบทันที) โดยตรง (รีเฟรชเร็วสุดทุก 15 นาที) ถ้าต้องการ real-time ใช้ n8n + webhook ได้
+- ไม่รองรับ real-time streaming (ส่งข้อมูลแบบทันที) โดยตรง (รีเฟรชเร็วสุดทุก 15 นาที) ถ้าต้องการ real-time ใช้ webhook ได้
 
 ## Package ที่เกี่ยวข้อง
 

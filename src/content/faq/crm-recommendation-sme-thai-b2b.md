@@ -2,7 +2,7 @@
 title: "CRM ที่แนะนำสำหรับ SME ไทย B2B ทีมขาย 5-20 คนคืออะไร"
 description: "SME ไทย B2B ทีม 5-20 คน Google Sheets + Apps Script คือ CRM ที่ผมแนะนำ 80% ของเคส ถูกกว่า enterprise CRM หลายเท่า + ทีม maintain เองได้"
 question: "CRM ที่แนะนำสำหรับ SME ไทย B2B ทีมขาย 5-20 คนคืออะไร"
-answerSummary: "80% ของลูกค้าผมใช้ Google Sheets + Apps Script + n8n = CRM เบ็ดเสร็จในราคา ฿0-3,000 ต่อเดือน ถูกกว่า enterprise CRM SaaS หลายเท่า ทีม non-tech maintain ได้ export (ส่งออกข้อมูล) ได้ทุกเมื่อ ไม่มี vendor lock-in (การผูกติดกับผู้ให้บริการรายเดียว) เหมาะกับ SME ที่รายได้ ฿30-200M"
+answerSummary: "80% ของลูกค้าผมใช้ Google Sheets + Apps Script = CRM เบ็ดเสร็จในราคา ฿0-3,000 ต่อเดือน ถูกกว่า enterprise CRM SaaS หลายเท่า ทีม non-tech maintain ได้ export (ส่งออกข้อมูล) ได้ทุกเมื่อ ไม่มี vendor lock-in (การผูกติดกับผู้ให้บริการรายเดียว) เหมาะกับ SME ที่รายได้ ฿30-200M"
 lang: th
 published: 2026-04-18
 draft: false
@@ -13,13 +13,13 @@ CRM ที่ SME ไทย B2B ส่วนใหญ่เลือกผิด
 
 ## CRM ที่ผมแนะนำสำหรับ SME ไทย
 
-**สำหรับ 80% ของเคส: Google Sheets + Apps Script + n8n**
+**สำหรับ 80% ของเคส: Google Sheets + Apps Script + ตัวเชื่อมงานอัตโนมัติ**
 
 - ค่าใช้จ่าย ฿0-3,000/เดือน ใช้ Google Workspace ที่บริษัทมีอยู่แล้ว
 - ทีมดูแลและปรับปรุงระบบต่อเองได้โดยไม่ต้องมีผู้เชี่ยวชาญด้านเทคนิค
 - ปรับแต่งได้เต็มที่ตาม sales process (กระบวนการขาย) ของบริษัท
 - Export ข้อมูลได้ตลอดเวลา ไม่มี vendor lock-in
-- เชื่อมต่อกับ LINE, email และ website form ได้ผ่าน n8n (เครื่องมือเชื่อมต่อระบบอัตโนมัติ)
+- เชื่อมต่อกับ LINE, email และ website form ได้ด้วยตัวเชื่อมงานอัตโนมัติ (ผมใช้ n8n)
 
 **สำหรับ 15% (ทีม 20+ คน มี dedicated sales ops): Enterprise CRM SaaS tier กลาง**
 
@@ -36,14 +36,14 @@ CRM ที่ SME ไทย B2B ส่วนใหญ่เลือกผิด
 
 ## ทำไม Google Sheets ถึงถูกมองข้าม
 
-Google Sheets + Apps Script + n8n ทำฟีเจอร์สำคัญที่ SME ต้องใช้ได้เกือบทั้งหมด:
+Google Sheets + Apps Script + ตัวเชื่อมงานอัตโนมัติ ทำฟีเจอร์สำคัญที่ SME ต้องใช้ได้เกือบทั้งหมด:
 
 - ติดตาม Pipeline (รายการดีลที่กำลังคุยอยู่) ด้วยการแบ่ง stage (ขั้นตอน) ใน Sheet + conditional formatting (การตั้งค่าสีตามเงื่อนไข) + trigger (ตัวกระตุ้น) แจ้งเตือน
-- คัดกรอง Lead (รายชื่อลูกค้าที่สนใจ) ด้วย n8n ดึงข้อมูลจากฟอร์ม ให้คะแนน (scoring) แล้วส่งต่อให้ sales rep (พนักงานขาย) ที่เหมาะสม
+- คัดกรอง Lead (รายชื่อลูกค้าที่สนใจ) ดึงข้อมูลจากฟอร์มอัตโนมัติ ให้คะแนน (scoring) แล้วส่งต่อให้ sales rep (พนักงานขาย) ที่เหมาะสม
 - ส่ง Email sequence อัตโนมัติด้วย Apps Script + GmailApp ตามเงื่อนไข
 - แจ้งเตือนดีลผ่าน LINE Messaging API ก่อนโอกาสหายไป
 - สร้างรายงาน dashboard (หน้าจอสรุปข้อมูล) ด้วย chart ของ Sheets + Apps Script aggregation (การรวบรวมข้อมูล)
-- Integration (การเชื่อมต่อ) กับบริการภายนอกกว่า 400+ รายการผ่าน n8n (เช่น LINE, Gmail, Slack, Shopify)
+- เชื่อมต่อกับบริการที่ธุรกิจใช้อยู่แล้วได้ (LINE, Gmail, Slack, Shopify และอื่นๆ)
 
 **สิ่งที่ Sheets ทำไม่ได้ดี:**
 
@@ -60,7 +60,7 @@ Google Sheets + Apps Script + n8n ทำฟีเจอร์สำคัญท�
 
 - CRM บน Google Sheets แบ่ง 4 ชีต (leads, pipeline, closed deals, activity log (บันทึกกิจกรรม))
 - Apps Script ส่งรายงานสรุปรายสัปดาห์เข้า LINE หัวหน้าอัตโนมัติ
-- n8n รับ form submission (ข้อมูลที่ส่งมาจากฟอร์ม) จากเว็บไซต์ แล้วส่งต่อไปยัง sales rep ที่เชี่ยวชาญ product line (สายผลิตภัณฑ์) นั้น
+- ฟอร์มบนเว็บไซต์ส่งข้อมูลเข้าระบบเอง แล้วส่งต่อไปยัง sales rep ที่เชี่ยวชาญ product line (สายผลิตภัณฑ์) นั้น
 - ค่าใช้จ่ายรวม ฿700/เดือน (n8n cloud) + Google Workspace ที่มีอยู่แล้ว
 - ถ้าเคยจ่าย enterprise CRM tier กลาง จะประหยัดได้ ฿14,000+/เดือน
 
@@ -77,11 +77,11 @@ Google Sheets + Apps Script + n8n ทำฟีเจอร์สำคัญท�
 - ต้องการ feature ขั้นสูง เช่น predictive lead scoring (ระบบประเมินโอกาสลูกค้าด้วย AI) หรือ AI-powered forecast (ระบบพยากรณ์ยอดขายด้วย AI) ที่ built-in (มีมาให้ในตัว)
 - มี Enterprise deal cycle (วงจรการขายลูกค้ารายใหญ่) ที่ยาว 6-12 เดือน และมี stakeholder (ผู้มีส่วนตัดสินใจ) 10+ คนต่อดีล
 
-**ถ้ายังไม่เข้าเงื่อนไข 4 ข้อนี้ → Sheets + Apps Script + n8n คือ CRM ที่เหมาะที่สุด**
+**ถ้ายังไม่เข้าเงื่อนไข 4 ข้อนี้ → Sheets + Apps Script คือ CRM ที่เหมาะที่สุด**
 
 Package ที่ช่วย setup:
 
 - [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office) — setup CRM บน Sheets + 1 automation ในวันเดียว
-- [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — CRM + KPI (ตัววัดผลงาน) + Commission (ค่าคอมมิชชั่น) + n8n workflow (ขั้นตอนการทำงานอัตโนมัติ) ครบทั้งระบบ
+- [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — CRM + KPI (ตัววัดผลงาน) + Commission (ค่าคอมมิชชั่น) + ระบบอัตโนมัติ ครบทั้งระบบ
 
 อ่านต่อ: [KPI dashboard บน Google Sheets](/faq) | [AI Agent vs chatbot](/faq)

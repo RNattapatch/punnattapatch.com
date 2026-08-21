@@ -41,7 +41,7 @@ tags: [faq, hiring, sales-team, scaling, sme]
 ลูกค้าของผมเฉลี่ยทีมขายใช้เวลา 35-45% ไปกับงาน admin (งานธุรการ) (update sheet, ทำรายงาน, forward message) ถ้า automate (ทำงานอัตโนมัติ) ได้ดีๆ ทีมเดิมมี capacity เพิ่ม 25-40% โดยไม่ต้องจ้างคน
 
 เครื่องมือที่ใช้จริง
-- n8n: auto-sync order → sheet, แจ้งเตือน deal stale 7 วัน
+- ระบบอัตโนมัติ: auto-sync order → sheet, แจ้งเตือน deal stale 7 วัน
 - Apps Script: auto-fill proposal template จาก CRM
 - Claude API: summarize conversation log, draft follow-up
 

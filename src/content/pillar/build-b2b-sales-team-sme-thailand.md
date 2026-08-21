@@ -112,7 +112,7 @@ KPI dashboard (หน้าจอสรุปข้อมูล) พื้นฐ
 | เครื่องมือ | ใช้ทำอะไร | ค่าใช้จ่าย |
 |---|---|---|
 | Google Sheets + Apps Script | CRM, KPI dashboard, pipeline tracking | ฟรี (มีอยู่แล้วใน Workspace) |
-| n8n | Auto-sync order → sheet, แจ้งเตือน deal stale 7 วัน | ฿0-฿30/เดือน (self-host) |
+| ตัวเชื่อมงานอัตโนมัติ | Auto-sync order → sheet, แจ้งเตือน deal stale 7 วัน | ฿0-฿30/เดือน (self-host) |
 | Claude + API | วิเคราะห์ conversation log, draft follow-up | ฿1,500-฿3,000/เดือน ต่อทีม |
 | Line Official + webhook | รับ lead → log เข้า sheet อัตโนมัติ | ฟรี-฿1,500/เดือน |
 
