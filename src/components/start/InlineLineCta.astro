@@ -1,0 +1,45 @@
+---
+/**
+ * CTA รอง — แทรกกลางหน้าเพื่อรับคนที่พร้อมทักตั้งแต่ยังอ่านไม่จบ
+ * (ปันสั่ง 2026-08-12 · 4 จุด: ก่อน Why · ใต้ What · ใต้เคส · ใต้ราคา)
+ *
+ * ทำไมต้องเป็น component เดียว ไม่ใช่ก๊อปปุ่มไปวาง 4 ที่:
+ *   ถ้าปุ่มกลางหน้าหน้าตาเท่าปุ่มหลัก (fold / การ์ดปิด / sticky) หน้าจะกลายเป็นกำแพงปุ่มเขียว
+ *   ตัวนี้เลยคุมโทนไว้ชั้นเดียว — กล่อง sand เงียบๆ + ปุ่มขนาดปกติ (ไม่ใช่ btn-lg ไม่ full-width)
+ *   ลำดับความสำคัญจึงยังเป็น: fold > การ์ดปิด > sticky > ตัวนี้
+ *
+ * พื้นกล่องใช้ `bg-surface` ไม่ใช่ `bg-sand` — เพราะ 2 ใน 4 จุดที่วาง (Why · เคส) เป็น section
+ * พื้น sand อยู่แล้ว กล่อง sand บนพื้น sand จะกลืนหายไปเลย · surface สว่างกว่าทั้ง sand และ ivory
+ *
+ * ปุ่มยังเป็นเขียว LINE เพราะเป็นสัญญาณแบรนด์ที่คนไทยจำได้ทันที
+ * บังคับ h-11 (44px) เพราะ `btn` ของ DaisyUI สูง 40px ซึ่งต่ำกว่าเกณฑ์แตะขั้นต่ำของ Apple HIG
+ * (ปุ่มอื่นในเว็บก็ 40px เหมือนกัน — เป็นของเดิมทั้งไซต์ ไม่ได้แก้ในรอบนี้ ดูหมายเหตุท้าย commit)
+ */
+import { SITE } from '../../data/site';
+
+interface Props {
+  /** ประโยคนำหน้าปุ่ม — เขียนให้ตรงกับบริบทตรงจุดที่วาง ไม่ใช้ประโยคเดียวซ้ำ 4 รอบ */
+  text: string;
+  /** ข้อความบนปุ่ม (ค่าเริ่มต้นพอสำหรับเกือบทุกจุด) */
+  label?: string;
+}
+
+const { text, label = 'ทักใน LINE →' } = Astro.props;
+---
+
+<div
+  class="flex flex-col gap-3 rounded-2xl border border-[#c9c2b2] bg-surface px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:px-6"
+>
+  <p class="text-[0.98rem] leading-relaxed text-warm-ink/85">{text}</p>
+
+  <a
+    href={SITE.social.line}
+    rel="noopener"
+    target="_blank"
+    class="press-btn btn h-11 min-h-11 shrink-0 gap-2 border-none font-bold text-white shadow-none hover:opacity-90"
+    style="background: #06C755;"
+  >
+    <img src="/line-logo.png" alt="" class="h-5 w-5 shrink-0" aria-hidden="true" />
+    {label}
+  </a>
+</div>

@@ -28,6 +28,7 @@ const cases = [
   },
 ];
 
+import InlineLineCta from './InlineLineCta.astro';
 ---
 
 <section class="border-y border-[#c9c2b2] bg-sand px-margin-page py-14 md:py-20">
@@ -63,5 +64,9 @@ const cases = [
     <p class="mt-8 text-[1.02rem] italic leading-[1.8] text-warm-ink/85">
       อยากเห็นของจริงมากกว่านี้ ในคอลผมเปิดหน้าจอให้ดูระบบที่ผมใช้เองได้เลยครับ
     </p>
+
+    <div class="mt-6">
+      <InlineLineCta text="ทักมาใน LINE แล้วนัดเวลากันได้เลยครับ" label="นัดเวลาใน LINE →" />
+    </div>
   </div>
 </section>

@@ -12,13 +12,16 @@ const outcomes = [
   'เจ้าของถอดตัวออกจากงานจุกจิกได้ เรื่องซ้ำๆ ปล่อยให้ระบบจัดการแทน',
   'เริ่มจากของที่ทีมคุณใช้อยู่แล้ว ยังไม่ต้องควักเงินหลักล้านซื้อระบบใหญ่',
 ];
+import InlineLineCta from './InlineLineCta.astro';
 ---
 
 <!-- ส่วนนี้คือหัวใจของหน้า (Why) — จงใจให้หนาและหัวใหญ่กว่าส่วนอื่น
      จังหวะแนวตั้งที่เท่ากันหมดทุกส่วนคือรูปทรง "หน้าที่ generate มา" -->
 <section class="border-y border-[#c9c2b2] bg-sand px-margin-page py-20 md:py-28">
   <div class="mx-auto max-w-2xl">
-    <h2 class="font-display text-[1.75rem] font-bold leading-[1.25] text-navy md:text-[2.4rem]">
+    <InlineLineCta text="ถ้าอยากเล่าปัญหาให้ผมฟังเลย ไม่ต้องอ่านจนจบก็ได้ครับ" />
+
+    <h2 class="mt-9 font-display text-[1.75rem] font-bold leading-[1.25] text-navy md:text-[2.4rem]">
       เช้าวันจันทร์ของคุณตอนนี้ เป็นแบบไหนครับ
     </h2>
 

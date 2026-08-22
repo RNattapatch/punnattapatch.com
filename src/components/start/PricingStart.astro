@@ -20,6 +20,7 @@
  *    (เช็คที่ `samePrice` ข้างล่าง) — ไม่ต้องมาแก้ layout ตามทีหลัง
  */
 import { fmtPrice, PRICES } from '../../data/pricing.mjs';
+import InlineLineCta from './InlineLineCta.astro';
 
 const TRAINING = 'inhouse-a';
 const CONSULT = 'consult-daily';
@@ -51,6 +52,10 @@ const doors = [
     <h2 class="mt-3 font-display text-2xl font-bold leading-tight text-navy md:text-3xl">
       งานของผมมี 2 แบบครับ
     </h2>
+
+    <div class="mt-6">
+      <InlineLineCta text="ถ้าไม่แน่ใจว่าควรเริ่มแบบไหนก่อน ทักมาคุยกับผมก่อนได้ครับ" />
+    </div>
 
     {
       samePrice && (

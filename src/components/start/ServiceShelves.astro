@@ -8,6 +8,7 @@
  * ปุ่มแชร์ชี้ไป /start เสมอ (public) — ห้ามแชร์ URL ของ /thank-you ที่มี ref ติดไป
  */
 import { SITE } from '../../data/site';
+import InlineLineCta from './InlineLineCta.astro';
 
 const shelves = [
   {
@@ -38,6 +39,11 @@ const shareUrl = `${SITE.url}/start`;
     <h2 class="font-display text-2xl font-bold leading-tight text-navy md:text-3xl">
       ผมเป็นที่ปรึกษาด้านการปั้นทีมขาย และ AI Agent
     </h2>
+
+    <InlineLineCta
+      text="ไม่แน่ใจว่างานของคุณเข้าข่ายแบบไหน ทักมาถามผมตรงๆ ได้เลยครับ"
+      label="ถามผมใน LINE →"
+    />
     <p class="mt-4 text-[1.05rem] leading-[1.8] text-warm-ink/85">
       พูดง่ายๆ: ผมช่วยเจ้าของ SME วาง “ระบบขายที่เดินได้เอง” แล้วติด AI เข้าไปทำงานซ้ำๆ แทนคน
     </p>
