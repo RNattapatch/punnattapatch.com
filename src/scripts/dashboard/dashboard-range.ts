@@ -5,7 +5,7 @@
 // array. This mirrors the production `get_dashboard_data` KPI contract without
 // adding a second, drifting dashboard query.
 
-import type { ExpenseRow, ExpenseSummary, Kpis } from './api';
+import type { ExpenseRow, ExpenseSummary, Kpis, PurchaseUi } from './api';
 import type { LeadUi } from './adapter';
 
 const CLOSED = new Set(['won', 'repeat', 'retainer']);
@@ -15,11 +15,6 @@ const TODAY_COMPLETE = new Set(['won', 'repeat', 'retainer', 'lost']);
 function monthKey(value: string | undefined, fallback: Date): string {
   const date = value ? new Date(value) : fallback;
   return `${date.getFullYear()}-${date.getMonth()}`;
-}
-
-function netAmount(lead: LeadUi): number {
-  const amount = Number(lead.package_price) || 0;
-  return lead.tax_mode === 'wht_3' ? amount * 0.97 : amount;
 }
 
 function startOfTomorrow(now: Date): number {
@@ -39,19 +34,30 @@ function localYmd(value: Date): string {
   return `${y}-${m}-${d}`;
 }
 
-export function buildRangeDashboard(leads: LeadUi[], now: Date = new Date()): { leads: LeadUi[]; today: LeadUi[]; kpis: Kpis } {
+export function buildRangeDashboard(
+  leads: LeadUi[],
+  purchases: PurchaseUi[] = [],
+  now: Date = new Date(),
+  from?: Date,
+  to?: Date,
+): { leads: LeadUi[]; today: LeadUi[]; kpis: Kpis } {
   const currentMonth = monthKey(undefined, now);
   const previousMonth = `${now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear()}-${now.getMonth() === 0 ? 11 : now.getMonth() - 1}`;
   const outcomes = (lead: LeadUi) => String(lead.deal_outcome || 'in_progress');
   const inProgress = leads.filter((lead) => !COMPLETE.has(outcomes(lead))).length;
   const won = leads.filter((lead) => CLOSED.has(outcomes(lead)));
   const lost = leads.filter((lead) => outcomes(lead) === 'lost').length;
-  const salesThisMonth = won
-    .filter((lead) => monthKey(lead.last_touch_at, now) === currentMonth)
-    .reduce((total, lead) => total + netAmount(lead), 0);
-  const salesPrevMonth = won
-    .filter((lead) => monthKey(lead.last_touch_at, now) === previousMonth)
-    .reduce((total, lead) => total + netAmount(lead), 0);
+  const rangePurchases = purchases.filter((purchase) => {
+    const time = new Date(purchase.purchased_at).getTime();
+    return Number.isFinite(time) && (!from || time >= from.getTime()) && (!to || time < to.getTime());
+  });
+  const purchaseNet = (purchase: PurchaseUi) => Number(purchase.net_amount_thb) || 0;
+  const salesThisMonth = rangePurchases
+    .filter((purchase) => monthKey(purchase.purchased_at, now) === currentMonth)
+    .reduce((total, purchase) => total + purchaseNet(purchase), 0);
+  const salesPrevMonth = rangePurchases
+    .filter((purchase) => monthKey(purchase.purchased_at, now) === previousMonth)
+    .reduce((total, purchase) => total + purchaseNet(purchase), 0);
   const industry = new Map<string, number>();
   for (const lead of leads) {
     const label = String(lead.business_type || '').trim();
@@ -63,7 +69,7 @@ export function buildRangeDashboard(leads: LeadUi[], now: Date = new Date()): { 
     leads,
     today: leads.filter((lead) => isDueToday(lead, now)),
     kpis: {
-      sales_total: won.reduce((total, lead) => total + netAmount(lead), 0),
+      sales_total: rangePurchases.reduce((total, purchase) => total + purchaseNet(purchase), 0),
       sales_this_month: salesThisMonth,
       sales_prev_month: salesPrevMonth,
       sales_delta_pct: salesPrevMonth > 0
