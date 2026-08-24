@@ -39,6 +39,11 @@ import InteractionLog from './InteractionLog.astro';
     <div class="flex flex-wrap items-center gap-2" id="lead-badges"></div>
 
     <section>
+      <h3 class="text-xs uppercase tracking-wider opacity-70 mb-2">Documents & payments</h3>
+      <div id="lead-document-history" class="grid gap-2"></div>
+    </section>
+
+    <section>
       <button id="detail-toggle" type="button" class="btn btn-sm btn-ghost btn-block justify-between tap-44" aria-expanded="false" aria-controls="lead-detail-body">
         <span class="text-xs opacity-80">📋 รายละเอียดที่ลูกค้ากรอก / ข้อมูลเชิงลึก</span>
         <span id="detail-chevron" aria-hidden="true">▾</span>
@@ -136,7 +141,7 @@ import InteractionLog from './InteractionLog.astro';
 </aside>
 
 <script>
-  import { subscribe, getState, closeLead, patchLead, setLeadStatus, toast } from '../../scripts/dashboard/store';
+  import { subscribe, getState, closeLead, emit, patchLead, setLeadStatus, toast } from '../../scripts/dashboard/store';
   import { markName, AFTER_HOURS_MARK, OFFICE_HOURS_MARK } from '../../scripts/after-hours';
 
   const REASON_KEYS = ['freebie_seeker', 'scam', 'cheap_client', 'mismatch', 'price_too_high', 'no_budget', 'wrong_timing', 'competitor', 'other'];
@@ -191,6 +196,34 @@ import InteractionLog from './InteractionLog.astro';
     return `<div class="flex items-start justify-between gap-3 py-1.5 border-b border-base-300/60 last:border-0">
       <span class="text-xs opacity-55 shrink-0">${esc(label)}</span>
       <span class="ro text-sm text-right break-words">${v ? esc(v) : '—'}</span>${ed}</div>`;
+  }
+
+  function renderDocuments() {
+    const target = document.getElementById('lead-document-history');
+    if (!target) return;
+    const { documents, purchases } = getState();
+    if (!documents.length) {
+      target.innerHTML = '<p class="text-sm opacity-60">ยังไม่มีเอกสารจาก Doc-Bot</p>';
+      return;
+    }
+    target.innerHTML = documents.map((document) => {
+      const paid = purchases
+        .filter((purchase) => purchase.document_id === document.id)
+        .reduce((sum, purchase) => sum + (Number(purchase.amount_thb) || 0), 0);
+      const state = document.status === 'paid' ? 'ชำระครบแล้ว' : document.status === 'partial' ? `รับแล้ว ฿${fmt0(paid)}` : 'รอรับเงิน';
+      const canRecord = (document.doc_type === 'qo' || document.doc_type === 'invoice') && !['void', 'paid'].includes(document.status);
+      const pdf = document.pdf_url
+        ? `<a class="link link-primary text-xs" href="${esc(document.pdf_url)}" target="_blank" rel="noopener">เปิด PDF</a>`
+        : '';
+      const action = canRecord
+        ? `<button class="btn btn-xs btn-primary" data-record-document="${esc(document.id)}">บันทึกรับเงิน</button>`
+        : '';
+      return `<article class="rounded-box border border-base-300 bg-base-200/50 px-3 py-2">
+        <div class="flex items-center justify-between gap-2"><strong class="text-sm">${esc(document.doc_number)}</strong><span class="badge badge-sm">${esc(document.doc_type)}</span></div>
+        <p class="text-xs opacity-70 mt-1">฿${fmt0(Number(document.grand_total) || 0)} · ${esc(state)}</p>
+        <div class="flex items-center gap-3 mt-2">${pdf}${action}</div>
+      </article>`;
+    }).join('');
   }
 
   function render() {
@@ -272,6 +305,7 @@ import InteractionLog from './InteractionLog.astro';
       detailRow('lead_id', id),
     ].filter(Boolean).join('');
     detail.innerHTML = rows;
+    renderDocuments();
     syncEditClass();
   }
 
@@ -316,6 +350,13 @@ import InteractionLog from './InteractionLog.astro';
   subscribe(render);
 
   document.getElementById('drawer-close')?.addEventListener('click', () => closeLead());
+  document.getElementById('lead-document-history')?.addEventListener('click', (event) => {
+    const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-record-document]');
+    const id = button?.dataset.recordDocument;
+    if (!id) return;
+    const document = getState().documents.find((row) => row.id === id);
+    if (document) emit('modal:record-document-payment', { document });
+  });
   document.getElementById('drawer-edit')?.addEventListener('click', () => {
     setEditing(drawer()?.getAttribute('data-editing') !== 'true');
   });

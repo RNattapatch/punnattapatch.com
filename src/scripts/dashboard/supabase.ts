@@ -7,8 +7,9 @@
 // edits silently revert (no live sync). One datastore = no divergence.
 
 import { createClient, type Session } from '@supabase/supabase-js';
-import type { DashboardData, Interaction, ExpenseRow, ExpenseSummary, ExpensesData } from './api';
+import type { DashboardData, DocumentUi, Interaction, ExpenseRow, ExpenseSummary, ExpensesData, PurchaseUi } from './api';
 import type { LeadUi } from './adapter';
+import { buildPaymentPayload, type PaymentInput } from './payment-contract';
 
 export const SUPABASE_URL = 'https://yykocvhorgcgzaluuldn.supabase.co';
 
@@ -236,20 +237,37 @@ export async function addLeadSmart(fields: Partial<LeadUi>): Promise<{ lead: Lea
   return { lead: rowToLeadUi(data) };
 }
 
-export async function getLeadSmart(lead_id: string): Promise<{ lead: LeadUi; interactions: Interaction[] }> {
+export async function getLeadSmart(lead_id: string): Promise<{ lead: LeadUi; interactions: Interaction[]; documents: DocumentUi[]; purchases: PurchaseUi[] }> {
   const session = await getSupabaseSession();
   if (!session) throw Object.assign(new Error('ยังไม่ได้เข้าสู่ระบบ'), { code: 'invalid_token' });
-  const [leadRes, ixRes] = await Promise.all([
+  const [leadRes, ixRes, docRes, purchaseRes] = await Promise.all([
     supabase.from('leads').select('*').eq('id', lead_id).single(),
     supabase.from('interactions').select('*').eq('lead_id', lead_id).order('occurred_at', { ascending: false }),
+    supabase.from('documents').select('*,document_line_items(*)').eq('lead_id', lead_id).order('issued_at', { ascending: false }),
+    supabase.from('purchases').select('*').eq('lead_id', lead_id).order('purchased_at', { ascending: false }),
   ]);
   if (leadRes.error) throw new Error(leadRes.error.message);
+  if (docRes.error) throw new Error(docRes.error.message);
+  if (purchaseRes.error) throw new Error(purchaseRes.error.message);
   const interactions = (ixRes.data || []).map(mapInteraction);
   // Keep raw_payload on the detail object so the drawer can render the full
   // form submission (brand website, brief, utm, etc.). The list rows (RPC) omit it.
   const lead = rowToLeadUi(leadRes.data);
   (lead as Record<string, unknown>).raw_payload = (leadRes.data as Record<string, unknown>)?.raw_payload ?? null;
-  return { lead, interactions };
+  return {
+    lead,
+    interactions,
+    documents: (docRes.data || []) as DocumentUi[],
+    purchases: (purchaseRes.data || []) as PurchaseUi[],
+  };
+}
+
+export async function recordDocumentPaymentSmart(input: PaymentInput): Promise<{ document_status: string }> {
+  const session = await getSupabaseSession();
+  if (!session) throw Object.assign(new Error('ยังไม่ได้เข้าสู่ระบบ'), { code: 'invalid_token' });
+  const { data, error } = await supabase.rpc('record_document_payment', buildPaymentPayload(input));
+  if (error) throw new Error(error.message);
+  return data as { document_status: string };
 }
 
 export async function addInteractionSmart(
@@ -312,6 +330,19 @@ export async function getLeadsInRangeSmart(
     .order('submitted_at', { ascending: false, nullsFirst: false });
   if (error) throw new Error(error.message);
   return { leads: (data || []).map(rowToLeadUi), total: count ?? (data ? data.length : 0) };
+}
+
+export async function getPurchasesInRangeSmart(fromIso: string, toIso: string): Promise<PurchaseUi[]> {
+  const session = await getSupabaseSession();
+  if (!session) throw Object.assign(new Error('ยังไม่ได้เข้าสู่ระบบ'), { code: 'invalid_token' });
+  const { data, error } = await supabase
+    .from('purchases')
+    .select('*')
+    .gte('purchased_at', fromIso)
+    .lt('purchased_at', toIso)
+    .order('purchased_at', { ascending: false });
+  if (error) throw new Error(error.message);
+  return (data || []) as PurchaseUi[];
 }
 
 // ── Expenses — Supabase-native CRUD (table public.expenses, RLS owner_all) ──
