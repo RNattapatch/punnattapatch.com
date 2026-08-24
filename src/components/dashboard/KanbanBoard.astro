@@ -13,7 +13,7 @@
 </section>
 
 <script>
-  import { subscribe, getState, openLead } from '../../scripts/dashboard/store';
+  import { subscribe, dashboardLeads, openLead } from '../../scripts/dashboard/store';
   import type { LeadUi } from '../../scripts/dashboard/adapter';
   import { markName } from '../../scripts/after-hours';
 
@@ -94,7 +94,7 @@
   function render() {
     const board = document.getElementById('kanban-board');
     if (!board) return;
-    const { leads } = getState();
+    const leads = dashboardLeads();
 
     const groups: Record<string, LeadUi[]> = {};
     const totals: Record<string, number> = {};

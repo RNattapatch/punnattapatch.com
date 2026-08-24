@@ -9,13 +9,13 @@
 </div>
 
 <script>
-  import { subscribe, getState } from '../../scripts/dashboard/store';
+  import { subscribe, dashboardKpis } from '../../scripts/dashboard/store';
   import { waitForApex, baseOptions, PALETTE_ARRAY, themeColors } from '../../scripts/dashboard/charts';
 
   let chart: any = null;
 
   function dataFromState() {
-    const top = getState().kpis?.top_industry || [];
+    const top = dashboardKpis()?.top_industry || [];
     const slice = top.slice(0, 7);
     return {
       cats: slice.map((t) => t.label || '—'),

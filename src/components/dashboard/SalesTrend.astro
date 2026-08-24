@@ -9,18 +9,18 @@
 </div>
 
 <script>
-  import { subscribe, getState } from '../../scripts/dashboard/store';
+  import { subscribe, dashboardKpis } from '../../scripts/dashboard/store';
   import { waitForApex, baseOptions, PALETTE, themeColors } from '../../scripts/dashboard/charts';
 
   let chart: any = null;
 
   function dataFromState() {
-    const k = getState().kpis;
+    const k = dashboardKpis();
     return [k?.sales_prev_month || 0, k?.sales_this_month || 0];
   }
 
   function updateDelta() {
-    const k = getState().kpis;
+    const k = dashboardKpis();
     const el = document.getElementById('sales-delta');
     if (!el || !k) return;
     const pct = Math.round((k.sales_delta_pct || 0) * 1000) / 10;

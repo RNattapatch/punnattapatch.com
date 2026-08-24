@@ -5,35 +5,35 @@
   <section class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
     <div class="relative overflow-hidden rounded-xl border border-base-300 bg-base-200 px-3 py-3 pl-4">
       <div class="absolute inset-y-0 left-0 w-1" style="background-color:var(--color-pun-coral)"></div>
-      <div class="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">เดือนนี้</div>
+      <div id="exp-this-label" class="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">เดือนนี้</div>
       <div id="exp-this-month" class="text-2xl font-display font-semibold leading-none tabular-nums" style="color:var(--color-pun-coral)">—</div>
     </div>
     <div class="relative overflow-hidden rounded-xl border border-base-300 bg-base-200 px-3 py-3 pl-4">
       <div class="absolute inset-y-0 left-0 w-1 bg-base-content" style="opacity:0.3"></div>
-      <div class="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">เดือนก่อน</div>
+      <div id="exp-prev-label" class="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">เดือนก่อน</div>
       <div id="exp-prev-month" class="text-2xl font-display font-semibold leading-none tabular-nums opacity-50">—</div>
     </div>
     <div class="relative overflow-hidden rounded-xl border border-base-300 bg-base-200 px-3 py-3 pl-4">
       <div class="absolute inset-y-0 left-0 w-1" style="background-color:var(--color-pun-violet)"></div>
-      <div class="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">รวมทั้งหมด</div>
+      <div id="exp-total-label" class="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">รวมทั้งหมด</div>
       <div id="exp-total" class="text-2xl font-display font-semibold leading-none tabular-nums" style="color:var(--color-pun-violet)">—</div>
     </div>
     <div class="relative overflow-hidden rounded-xl border border-base-300 bg-base-200 px-3 py-3 pl-4">
       <div class="absolute inset-y-0 left-0 w-1" style="background-color:var(--color-pun-cyan)"></div>
-      <div class="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">รายการเดือนนี้</div>
+      <div id="exp-count-label" class="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">รายการเดือนนี้</div>
       <div id="exp-count-month" class="text-2xl font-display font-semibold leading-none tabular-nums" style="color:var(--color-pun-cyan)">—</div>
     </div>
   </section>
 
   <!-- Category breakdown -->
   <section class="rounded-xl border border-base-300 bg-base-200 p-4 mb-4">
-    <div class="text-xs font-semibold uppercase tracking-wider opacity-60 mb-3">แบ่งตามประเภท (เดือนนี้)</div>
+    <div id="exp-category-label" class="text-xs font-semibold uppercase tracking-wider opacity-60 mb-3">แบ่งตามประเภท (เดือนนี้)</div>
     <div id="exp-cat-bars" class="space-y-3"></div>
   </section>
 
   <!-- Expense list -->
   <section>
-    <div class="text-xs font-semibold uppercase tracking-wider opacity-60 mb-2">รายการทั้งหมด</div>
+    <div id="exp-list-label" class="text-xs font-semibold uppercase tracking-wider opacity-60 mb-2">รายการทั้งหมด</div>
     <div id="exp-loading" class="text-center py-8 opacity-40 text-sm">กำลังโหลด...</div>
     <div id="exp-empty" class="hidden text-center py-8 opacity-40 text-sm">ยังไม่มีค่าใช้จ่ายที่บันทึก</div>
     <div id="exp-list" class="space-y-2 pb-4"></div>
@@ -41,7 +41,7 @@
 </div>
 
 <script>
-  import { getState, subscribe, removeExpense, emit } from '../../scripts/dashboard/store';
+  import { getState, subscribe, dashboardExpenseSummary, dashboardExpenses, dashboardRangeLabel, hasDashboardRange, removeExpense, emit } from '../../scripts/dashboard/store';
   import type { ExpenseRow } from '../../scripts/dashboard/api';
 
   const CAT_LABEL: Record<string, string> = {
@@ -164,7 +164,11 @@
   }
 
   function render() {
-    const { expenses, expenseSummary, expensesLoaded } = getState();
+    const { expensesLoaded } = getState();
+    const expenses = dashboardExpenses();
+    const expenseSummary = dashboardExpenseSummary();
+    const ranged = hasDashboardRange();
+    const rangeLabel = dashboardRangeLabel();
     const loadingEl = document.getElementById('exp-loading');
     const emptyEl = document.getElementById('exp-empty');
     const listEl = document.getElementById('exp-list');
@@ -179,12 +183,18 @@
 
     const sum = expenseSummary;
     if (sum) {
+      setText('exp-this-label', ranged ? 'ช่วงเลือก' : 'เดือนนี้');
+      setText('exp-prev-label', ranged ? 'ก่อนช่วง' : 'เดือนก่อน');
+      setText('exp-total-label', ranged ? 'รวมช่วงเลือก' : 'รวมทั้งหมด');
+      setText('exp-count-label', ranged ? 'รายการช่วงเลือก' : 'รายการเดือนนี้');
+      setText('exp-category-label', ranged ? `แบ่งตามประเภท (${rangeLabel})` : 'แบ่งตามประเภท (เดือนนี้)');
+      setText('exp-list-label', ranged ? 'รายการช่วงเลือก' : 'รายการทั้งหมด');
       setText('exp-this-month', fmtTHB(sum.this_month_thb));
-      setText('exp-prev-month', fmtTHB(sum.prev_month_thb));
+      setText('exp-prev-month', ranged ? '—' : fmtTHB(sum.prev_month_thb));
       setText('exp-total', fmtTHB(sum.total_thb));
 
       const ym = currentYm();
-      const countMonth = expenses.filter((e) => {
+      const countMonth = ranged ? expenses.length : expenses.filter((e) => {
         const d = e.date ? new Date(e.date) : null;
         return d ? d.getFullYear() * 100 + (d.getMonth() + 1) === ym : false;
       }).length;

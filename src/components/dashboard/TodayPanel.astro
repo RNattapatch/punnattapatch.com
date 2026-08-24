@@ -13,7 +13,7 @@ import LeadCard from './LeadCard.astro';
 <LeadCard variant="today" />
 
 <script>
-  import { subscribe, getState, openLead } from '../../scripts/dashboard/store';
+  import { subscribe, dashboardToday, openLead } from '../../scripts/dashboard/store';
   import type { LeadUi } from '../../scripts/dashboard/adapter';
   import { markName } from '../../scripts/after-hours';
 
@@ -71,7 +71,7 @@ import LeadCard from './LeadCard.astro';
     const count = document.getElementById('today-count');
     const tpl = document.getElementById('lead-card-tpl-today') as HTMLTemplateElement | null;
     if (!list || !empty || !count || !tpl) return;
-    const today = getState().today;
+    const today = dashboardToday();
     count.textContent = String(today.length);
     clearChildren(list as HTMLElement);
     if (!today.length) {

@@ -9,13 +9,13 @@
 </div>
 
 <script>
-  import { subscribe, getState } from '../../scripts/dashboard/store';
+  import { subscribe, dashboardLeads } from '../../scripts/dashboard/store';
   import { waitForApex, baseOptions, PALETTE, themeColors } from '../../scripts/dashboard/charts';
 
   let chart: any = null;
 
   function dataFromState() {
-    const leads = getState().leads || [];
+    const leads = dashboardLeads();
     const tally: Record<string, number> = {};
     for (const l of leads) {
       const src = (l.manual_source as string) || (l.source as string) || 'intake-form';

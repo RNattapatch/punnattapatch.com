@@ -108,11 +108,12 @@ import Toast from '../../components/dashboard/Toast.astro';
   <Toast />
 
   <script>
-    import { initDashboard, subscribe, getState } from '../../scripts/dashboard/store';
+    import { initDashboard, subscribe, dashboardKpis, dashboardToday } from '../../scripts/dashboard/store';
     initDashboard();
 
     function renderHeroFocus() {
-      const { today, kpis } = getState();
+      const today = dashboardToday();
+      const kpis = dashboardKpis();
       const focus = document.getElementById('hero-focus');
       if (!focus) return;
       if (!kpis) { focus.textContent = '—'; return; }

@@ -28,6 +28,7 @@ import type {
 import type { LeadUi } from './adapter';
 import { pickTemplate } from './templates';
 import { rangeBounds, RANGE_LABELS, type RangeKey } from './date-range';
+import { buildRangeDashboard, expensesInRange, summarizeExpensesInRange } from './dashboard-range';
 
 export type { RangeKey };
 
@@ -77,6 +78,7 @@ type State = {
   rangeFrom: string | null;   // ISO — ต้นช่วง (รวม)
   rangeTo: string | null;     // ISO — ท้ายช่วง (ไม่รวม)
   rangeLeads: LeadUi[] | null;
+  rangeExpenseSummary: ExpenseSummary | null;
   rangeLoading: boolean;
   selectedLeadId: string | null;
   selectedLead: LeadUi | null;
@@ -102,6 +104,7 @@ const state: State = {
   rangeFrom: null,
   rangeTo: null,
   rangeLeads: null,
+  rangeExpenseSummary: null,
   rangeLoading: false,
   selectedLeadId: null,
   selectedLead: null,
@@ -128,6 +131,36 @@ function notify(): void {
 
 export function getState(): Readonly<State> {
   return state;
+}
+
+/** Shared dashboard lens: use the complete selected cohort, not the first 30 leads. */
+export function dashboardLeads(): LeadUi[] {
+  return state.rangeLeads ?? state.leads;
+}
+
+export function dashboardKpis(): Kpis | null {
+  return state.rangeLeads ? buildRangeDashboard(state.rangeLeads).kpis : state.kpis;
+}
+
+export function dashboardToday(): LeadUi[] {
+  return state.rangeLeads ? buildRangeDashboard(state.rangeLeads).today : state.today;
+}
+
+export function dashboardExpenseSummary(): ExpenseSummary | null {
+  return state.rangeExpenseSummary ?? state.expenseSummary;
+}
+
+export function dashboardExpenses(): ExpenseRow[] {
+  if (!state.rangeFrom || !state.rangeTo) return state.expenses;
+  return expensesInRange(state.expenses, new Date(state.rangeFrom), new Date(state.rangeTo));
+}
+
+export function hasDashboardRange(): boolean {
+  return state.rangeLeads !== null;
+}
+
+export function dashboardRangeLabel(): string {
+  return hasDashboardRange() ? RANGE_LABELS[state.range] : 'ทั้งหมด';
 }
 
 const bus = new EventTarget();
@@ -173,6 +206,7 @@ export function logout(): void {
   state.rangeFrom = null;
   state.rangeTo = null;
   state.rangeLeads = null;
+  state.rangeExpenseSummary = null;
   notify();
   emit('auth:logged_out');
 }
@@ -203,8 +237,16 @@ export async function refresh(): Promise<void> {
     }
     // เลือกช่วงเวลาค้างไว้ → ดึงช่วงนั้นใหม่ด้วย ไม่งั้นกดรีเฟรชแล้วรายการค้างของเก่า
     if (state.rangeFrom && state.rangeTo) {
-      const res = await getLeadsInRange(state.rangeFrom, state.rangeTo);
-      state.rangeLeads = res.leads;
+      const [leadResult, expenseResult] = await Promise.all([
+        getLeadsInRange(state.rangeFrom, state.rangeTo),
+        getExpenses(),
+      ]);
+      state.rangeLeads = leadResult.leads;
+      state.expenses = expenseResult.rows;
+      state.expensesLoaded = true;
+      state.rangeExpenseSummary = summarizeExpensesInRange(
+        expenseResult.rows, new Date(state.rangeFrom), new Date(state.rangeTo)
+      );
     }
   } catch (err) {
     handleApiError(err, 'โหลดข้อมูลไม่สำเร็จ');
@@ -423,6 +465,11 @@ export async function loadExpenses(): Promise<void> {
     const data = await getExpenses();
     state.expenses = data.rows;
     state.expenseSummary = data.summary;
+    if (state.rangeFrom && state.rangeTo) {
+      state.rangeExpenseSummary = summarizeExpensesInRange(
+        data.rows, new Date(state.rangeFrom), new Date(state.rangeTo)
+      );
+    }
     state.expensesLoaded = true;
     notify();
   } catch (err) {
@@ -499,6 +546,7 @@ export async function setRange(key: RangeKey, customFrom?: string, customTo?: st
     state.rangeFrom = null;
     state.rangeTo = null;
     state.rangeLeads = null;
+    state.rangeExpenseSummary = null;
     notify();
     return;
   }
@@ -507,8 +555,16 @@ export async function setRange(key: RangeKey, customFrom?: string, customTo?: st
   state.rangeLoading = true;
   notify();
   try {
-    const res = await getLeadsInRange(state.rangeFrom, state.rangeTo);
-    state.rangeLeads = res.leads;
+    const [leadResult, expenseResult] = await Promise.all([
+      getLeadsInRange(state.rangeFrom, state.rangeTo),
+      getExpenses(),
+    ]);
+    state.rangeLeads = leadResult.leads;
+    state.expenses = expenseResult.rows;
+    state.expensesLoaded = true;
+    state.rangeExpenseSummary = summarizeExpensesInRange(
+      expenseResult.rows, new Date(state.rangeFrom), new Date(state.rangeTo)
+    );
   } catch (err) {
     state.rangeLeads = null;
     handleApiError(err, 'ดึง lead ตามช่วงเวลาไม่สำเร็จ');
