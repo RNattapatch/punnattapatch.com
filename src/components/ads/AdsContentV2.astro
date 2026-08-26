@@ -212,6 +212,10 @@ const lineIcon = 'M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 8
   <p class="mx-auto mt-6 max-w-3xl leading-relaxed text-warm-ink/70">{painsClose}</p>
 </section>
 
+{/* Optional proof slot — หลักฐาน "ระบบเดียว" ที่ตรงกับสัญญาในแอดของหน้านั้น วางต่อจากบล็อกความเจ็บพอดี
+    หน้าไหนไม่ส่ง slot มาก็ไม่มีอะไรเปลี่ยน (hotel-resort / line-ai-response ยังเหมือนเดิม) */}
+<slot name="proof" />
+
 {/* Why in-house — kills "we could just send one person to a public course". */}
 <section class="border-y border-[#c9c2b2] bg-sand px-5 py-16 md:py-20">
   <div class="mx-auto max-w-6xl">

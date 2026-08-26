@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import DarumaMark from '../components/DarumaMark.astro';
 import AfterHoursField from '../components/AfterHoursField.astro';
+import ProofRail from '../components/proof/ProofRail.astro';
 import { SITE } from '../data/site';
 
 const title = 'จองคิวคุยปั้นทีมขาย';
@@ -40,13 +41,15 @@ const issues = [
           <AfterHoursField variant="warm" />
           <label class="flex cursor-pointer items-start gap-3 pt-1"><input name="consent" type="checkbox" required class="checkbox mt-0.5" /><span class="text-sm leading-relaxed text-warm-ink/75">ยินยอมให้ติดต่อกลับตาม <a href="/privacy" class="font-semibold text-cyan underline">นโยบายความเป็นส่วนตัว</a></span></label>
           <p id="booking-error" class="hidden rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error" role="alert"></p>
+          <!-- ตั้งความคาดหวังก่อนกดส่ง — ลดแรงต้านของคนที่กลัวโดนยัดขาย -->
+          <p class="text-center text-sm leading-relaxed text-warm-ink/65">15–20 นาที · ไม่มีการขายในสาย · ถ้าธุรกิจคุณยังไม่ถึงเวลาใช้ AI ผมจะบอกตรง ๆ</p>
           <button id="booking-submit" type="submit" class="btn w-full border-0 bg-coral py-4 text-base text-white hover:bg-[#c43245]">ส่งข้อมูล — ผมติดต่อกลับภายใน 1 วันทำการ</button>
           <div class="flex items-center gap-3 text-sm text-warm-ink/60"><span class="h-px flex-1 bg-[#c9c2b2]"></span>หรือสะดวกแชทมากกว่า<span class="h-px flex-1 bg-[#c9c2b2]"></span></div>
           <a href={SITE.social.line} target="_blank" rel="noopener" class="btn w-full border-navy bg-transparent text-navy hover:bg-navy hover:text-white">ทัก LINE ได้เลย</a>
         </div>
       </form>
 
-      <aside class="lg:col-span-5"><h2 class="font-display text-3xl font-bold text-navy">หลังจากกดส่ง เกิดอะไรต่อ</h2><ol class="mt-6 space-y-4">{['ผมทักกลับเพื่อนัดเวลา ภายใน 1 วันทำการ', 'คุยโจทย์ของคุณ 15–20 นาที ผมฟังมากกว่าพูด', 'ได้คำแนะนำเส้นทางที่คุ้มสุด — เริ่มเล็กก็ได้ ยังไม่เริ่มก็ได้'].map((item, index) => <li class="flex gap-4 rounded-2xl border border-[#c9c2b2] bg-surface p-5"><span class="font-display text-4xl font-bold text-coral">{index + 1}</span><p class="pt-1 leading-relaxed text-warm-ink/75">{item}</p></li>)}</ol><p class="mt-6 rounded-2xl border-l-4 border-cyan bg-sand p-5 text-sm leading-relaxed text-warm-ink/80"><strong class="text-navy">คุยก่อนได้ ไม่โดนขาย</strong><br />ถ้าโจทย์ของคุณแก้ได้ด้วยตัวเอง ผมจะบอกวิธีให้กลับไปทำต่อได้เลย ไม่ต้องเสียเงินกับผม</p></aside>
+      <aside class="lg:col-span-5"><h2 class="font-display text-3xl font-bold text-navy">หลังจากกดส่ง เกิดอะไรต่อ</h2><ol class="mt-6 space-y-4">{['ผมทักกลับเพื่อนัดเวลา ภายใน 1 วันทำการ', 'คุยโจทย์ของคุณ 15–20 นาที ผมฟังมากกว่าพูด', 'ได้คำแนะนำเส้นทางที่คุ้มสุด — เริ่มเล็กก็ได้ ยังไม่เริ่มก็ได้'].map((item, index) => <li class="flex gap-4 rounded-2xl border border-[#c9c2b2] bg-surface p-5"><span class="font-display text-4xl font-bold text-coral">{index + 1}</span><p class="pt-1 leading-relaxed text-warm-ink/75">{item}</p></li>)}</ol><p class="mt-6 rounded-2xl border-l-4 border-cyan bg-sand p-5 text-sm leading-relaxed text-warm-ink/80"><strong class="text-navy">คุยก่อนได้ ไม่โดนขาย</strong><br />ถ้าโจทย์ของคุณแก้ได้ด้วยตัวเอง ผมจะบอกวิธีให้กลับไปทำต่อได้เลย ไม่ต้องเสียเงินกับผม</p><ProofRail class="mt-6" /></aside>
     </div>
     <div id="booking-success" class="mx-auto mt-10 hidden max-w-2xl rounded-2xl border border-coral/40 bg-surface p-8 text-center"><DarumaMark class="mx-auto size-16" /><h2 class="mt-5 font-display text-3xl font-bold text-navy">รับเรื่องแล้ว ขอบคุณครับ</h2><p id="booking-recommendation" class="mt-3 leading-relaxed text-warm-ink/75"></p><a href={SITE.social.line} target="_blank" rel="noopener" class="btn mt-6 border-0 bg-[#06C755] text-white hover:bg-[#05a945]">ทัก LINE OA ต่อ</a><p class="mt-6 border-t border-[#c9c2b2] pt-5 text-sm leading-relaxed text-warm-ink/75">ระหว่างรอผมติดต่อกลับ อ่านหน้านี้ 3 นาทีครับ จะได้รู้จักกันก่อนคุยจริง แล้วคอลแรกของเราจะสั้นลงครึ่งหนึ่ง<br /><a href="/start" class="font-semibold text-cyan underline">รู้จักผมใน 3 นาที →</a></p></div>
   </section>

@@ -12,6 +12,7 @@
 - [Intake Form](https://punnattapatch.com/intake-form): แบบประเมินปัญหาทีมขาย 3 นาที
 - [Booking](https://punnattapatch.com/booking): จอง package + preferred date + contact ครบที่เดียว
 - [Case Studies](https://punnattapatch.com/case-studies): 3 anonymized cases พร้อม real numbers + methodology
+- [Proof — ระบบที่ปันใช้เองทุกวัน](https://punnattapatch.com/proof): ห้าระบบ AI Agent ที่ปันสร้างเองและใช้จริงในธุรกิจตัวเอง — แดชบอร์ดรวมข้อมูล · บอทออกใบเสนอราคาผ่านแชท · AI Agent รับลูกค้าบน LINE · โรงงานคอนเทนต์ · เรดาร์ส่องตลาดตอนตีสาม พร้อมหลักคิดข้างหลังแต่ละตัว (screenshot จริง เบลอข้อมูลลูกค้า)
 
 ## Services & Pricing (v4 — 2026-08-06 · supersedes all earlier price lists)
 
