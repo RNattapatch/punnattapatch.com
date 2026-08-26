@@ -1,0 +1,75 @@
+---
+---
+<dialog id="record-document-payment-modal" class="modal">
+  <div class="modal-box max-w-lg bg-base-200 border border-base-300">
+    <h3 class="font-display text-lg">บันทึกรับเงิน</h3>
+    <p id="rdp-document-label" class="text-xs opacity-70 mt-1">—</p>
+    <p id="rdp-original-total" class="text-xs opacity-70 mt-1"></p>
+    <form id="record-document-payment-form" class="grid gap-3 mt-4">
+      <input name="document_id" type="hidden" />
+      <label class="form-control"><span class="label-text text-xs opacity-70">รายละเอียดบริการที่ปิดจริง</span><textarea name="package" class="textarea textarea-bordered min-h-24" required></textarea></label>
+      <label class="form-control"><span class="label-text text-xs opacity-70">ยอดขายจริง (บาท)</span><input name="amount_thb" type="number" min="0" inputmode="numeric" class="input input-bordered" required /></label>
+      <label class="form-control"><span class="label-text text-xs opacity-70">ภาษี</span><select name="tax_mode" class="select select-bordered"><option value="cash">เงินสด / ไม่หัก</option><option value="wht_3">หัก ณ ที่จ่าย 3%</option><option value="vat_7">VAT 7%</option></select></label>
+      <label class="form-control"><span class="label-text text-xs opacity-70">วันที่รับเงิน</span><input name="purchased_at" type="datetime-local" class="input input-bordered" required /></label>
+      <label class="label cursor-pointer justify-start gap-3"><input name="mark_paid" type="checkbox" class="checkbox checkbox-sm" checked /><span class="label-text">รับครบแล้ว — ปิดยอดเอกสารนี้</span></label>
+      <label class="form-control"><span class="label-text text-xs opacity-70">หมายเหตุ</span><input name="note" class="input input-bordered" placeholder="เช่น ลดราคา / เพิ่ม workshop" /></label>
+      <div class="modal-action"><button type="button" id="rdp-cancel" class="btn btn-ghost">ยกเลิก</button><button type="submit" id="rdp-submit" class="btn btn-primary">บันทึกยอดขาย</button></div>
+    </form>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>
+
+<script>
+  import { on, recordDocumentPaymentFor, toast } from '../../scripts/dashboard/store';
+  import { documentDefaultPackage } from '../../scripts/dashboard/payment-contract';
+  import type { DocumentUi } from '../../scripts/dashboard/api';
+
+  const dialog = document.getElementById('record-document-payment-modal') as HTMLDialogElement | null;
+  const form = document.getElementById('record-document-payment-form') as HTMLFormElement | null;
+  const fmt = (value: number) => new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(value);
+  const localNow = () => {
+    const d = new Date();
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 16);
+  };
+
+  on('modal:record-document-payment', (event) => {
+    const document = (event.detail as { document?: DocumentUi })?.document;
+    if (!document || !form || !dialog) return;
+    form.reset();
+    (form.elements.namedItem('document_id') as HTMLInputElement).value = document.id;
+    (form.elements.namedItem('package') as HTMLTextAreaElement).value = documentDefaultPackage(document.document_line_items || []);
+    (form.elements.namedItem('amount_thb') as HTMLInputElement).value = String(document.grand_total || '');
+    (form.elements.namedItem('tax_mode') as HTMLSelectElement).value = document.tax_mode || 'cash';
+    (form.elements.namedItem('purchased_at') as HTMLInputElement).value = localNow();
+    const label = document.getElementById('rdp-document-label');
+    const total = document.getElementById('rdp-original-total');
+    if (label) label.textContent = `${document.doc_number} · ${document.doc_type.toUpperCase()}`;
+    if (total) total.textContent = `ยอดในเอกสาร ฿${fmt(Number(document.grand_total) || 0)} — แก้ยอดขายจริงได้`;
+    dialog.showModal();
+  });
+
+  document.getElementById('rdp-cancel')?.addEventListener('click', () => dialog?.close());
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const fd = new FormData(form);
+    const receivedAt = String(fd.get('purchased_at') || '');
+    const submit = document.getElementById('rdp-submit') as HTMLButtonElement | null;
+    if (!receivedAt) { toast('เลือกวันที่รับเงินก่อน', 'error'); return; }
+    if (submit) { submit.disabled = true; submit.textContent = 'กำลังบันทึก...'; }
+    try {
+      const saved = await recordDocumentPaymentFor({
+        document_id: String(fd.get('document_id') || ''),
+        package: String(fd.get('package') || ''),
+        amount_thb: Number(fd.get('amount_thb') || 0),
+        tax_mode: String(fd.get('tax_mode') || 'cash') as 'cash' | 'wht_3' | 'vat_7',
+        purchased_at: new Date(receivedAt).toISOString(),
+        note: String(fd.get('note') || ''),
+        mark_paid: fd.get('mark_paid') === 'on',
+      });
+      if (saved) dialog?.close();
+    } finally {
+      if (submit) { submit.disabled = false; submit.textContent = 'บันทึกยอดขาย'; }
+    }
+  });
+</script>

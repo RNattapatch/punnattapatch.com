@@ -16,6 +16,39 @@ export type Interaction = {
   by: string;
 };
 
+export type DocumentLineItem = {
+  id?: string;
+  seq: number;
+  description: string;
+  quantity: number;
+  unit?: string | null;
+  unit_price: number;
+  amount: number;
+};
+
+export type DocumentUi = {
+  id: string;
+  doc_number: string;
+  doc_type: 'qo' | 'invoice' | 'receipt';
+  grand_total: number;
+  tax_mode: 'cash' | 'wht_3' | 'vat_7' | null;
+  status: 'draft' | 'issued' | 'sent' | 'partial' | 'paid' | 'void';
+  issued_at: string;
+  pdf_url?: string | null;
+  document_line_items: DocumentLineItem[];
+};
+
+export type PurchaseUi = {
+  id: string;
+  document_id: string | null;
+  package: string | null;
+  amount_thb: number;
+  net_amount_thb: number | null;
+  tax_mode: 'cash' | 'wht_3' | 'vat_7' | null;
+  note: string | null;
+  purchased_at: string;
+};
+
 export type Kpis = {
   sales_total: number;
   sales_this_month: number;

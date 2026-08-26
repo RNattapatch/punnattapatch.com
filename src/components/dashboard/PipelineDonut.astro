@@ -9,13 +9,13 @@
 </div>
 
 <script>
-  import { subscribe, getState } from '../../scripts/dashboard/store';
+  import { subscribe, dashboardKpis } from '../../scripts/dashboard/store';
   import { waitForApex, baseOptions, PALETTE, themeColors } from '../../scripts/dashboard/charts';
 
   let chart: any = null;
 
   function dataFromState() {
-    const k = getState().kpis;
+    const k = dashboardKpis();
     const p = k?.pipeline || { in_progress: 0, proposal_sent: 0, walkthrough_done: 0, won: 0 };
     return [p.in_progress, p.proposal_sent, p.walkthrough_done, p.won];
   }

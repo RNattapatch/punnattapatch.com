@@ -13,6 +13,8 @@ import {
   addInteractionSmart as addInteraction,
   getLeadsPageSmart as getLeadsPage,
   getLeadsInRangeSmart as getLeadsInRange,
+  getPurchasesInRangeSmart as getPurchasesInRange,
+  recordDocumentPaymentSmart,
   getExpensesSmart as getExpenses,
   addExpenseSmart as apiAddExpense,
   deleteExpenseSmart as apiDeleteExpense,
@@ -24,10 +26,14 @@ import type {
   Kpis,
   ExpenseRow,
   ExpenseSummary,
+  DocumentUi,
+  PurchaseUi,
 } from './api';
 import type { LeadUi } from './adapter';
 import { pickTemplate } from './templates';
 import { rangeBounds, RANGE_LABELS, type RangeKey } from './date-range';
+import { buildRangeDashboard, expensesInRange, summarizeExpensesInRange } from './dashboard-range';
+import { validatePaymentInput, type PaymentInput } from './payment-contract';
 
 export type { RangeKey };
 
@@ -77,10 +83,14 @@ type State = {
   rangeFrom: string | null;   // ISO — ต้นช่วง (รวม)
   rangeTo: string | null;     // ISO — ท้ายช่วง (ไม่รวม)
   rangeLeads: LeadUi[] | null;
+  rangePurchases: PurchaseUi[] | null;
+  rangeExpenseSummary: ExpenseSummary | null;
   rangeLoading: boolean;
   selectedLeadId: string | null;
   selectedLead: LeadUi | null;
   interactions: Interaction[];
+  documents: DocumentUi[];
+  purchases: PurchaseUi[];
   activeTab: 'leads' | 'expenses' | 'war-room';
   expenses: ExpenseRow[];
   expenseSummary: ExpenseSummary | null;
@@ -102,10 +112,14 @@ const state: State = {
   rangeFrom: null,
   rangeTo: null,
   rangeLeads: null,
+  rangePurchases: null,
+  rangeExpenseSummary: null,
   rangeLoading: false,
   selectedLeadId: null,
   selectedLead: null,
   interactions: [],
+  documents: [],
+  purchases: [],
   activeTab: 'leads',
   expenses: [],
   expenseSummary: null,
@@ -128,6 +142,36 @@ function notify(): void {
 
 export function getState(): Readonly<State> {
   return state;
+}
+
+/** Shared dashboard lens: use the complete selected cohort, not the first 30 leads. */
+export function dashboardLeads(): LeadUi[] {
+  return state.rangeLeads ?? state.leads;
+}
+
+export function dashboardKpis(): Kpis | null {
+  return state.rangeLeads ? buildRangeDashboard(state.rangeLeads, state.rangePurchases || [], new Date(), state.rangeFrom ? new Date(state.rangeFrom) : undefined, state.rangeTo ? new Date(state.rangeTo) : undefined).kpis : state.kpis;
+}
+
+export function dashboardToday(): LeadUi[] {
+  return state.rangeLeads ? buildRangeDashboard(state.rangeLeads, state.rangePurchases || [], new Date(), state.rangeFrom ? new Date(state.rangeFrom) : undefined, state.rangeTo ? new Date(state.rangeTo) : undefined).today : state.today;
+}
+
+export function dashboardExpenseSummary(): ExpenseSummary | null {
+  return state.rangeExpenseSummary ?? state.expenseSummary;
+}
+
+export function dashboardExpenses(): ExpenseRow[] {
+  if (!state.rangeFrom || !state.rangeTo) return state.expenses;
+  return expensesInRange(state.expenses, new Date(state.rangeFrom), new Date(state.rangeTo));
+}
+
+export function hasDashboardRange(): boolean {
+  return state.rangeLeads !== null;
+}
+
+export function dashboardRangeLabel(): string {
+  return hasDashboardRange() ? RANGE_LABELS[state.range] : 'ทั้งหมด';
 }
 
 const bus = new EventTarget();
@@ -165,6 +209,8 @@ export function logout(): void {
   state.selectedLeadId = null;
   state.selectedLead = null;
   state.interactions = [];
+  state.documents = [];
+  state.purchases = [];
   state.activeTab = 'leads';
   state.expenses = [];
   state.expenseSummary = null;
@@ -173,6 +219,8 @@ export function logout(): void {
   state.rangeFrom = null;
   state.rangeTo = null;
   state.rangeLeads = null;
+  state.rangePurchases = null;
+  state.rangeExpenseSummary = null;
   notify();
   emit('auth:logged_out');
 }
@@ -203,8 +251,18 @@ export async function refresh(): Promise<void> {
     }
     // เลือกช่วงเวลาค้างไว้ → ดึงช่วงนั้นใหม่ด้วย ไม่งั้นกดรีเฟรชแล้วรายการค้างของเก่า
     if (state.rangeFrom && state.rangeTo) {
-      const res = await getLeadsInRange(state.rangeFrom, state.rangeTo);
-      state.rangeLeads = res.leads;
+      const [leadResult, purchaseResult, expenseResult] = await Promise.all([
+        getLeadsInRange(state.rangeFrom, state.rangeTo),
+        getPurchasesInRange(state.rangeFrom, state.rangeTo),
+        getExpenses(),
+      ]);
+      state.rangeLeads = leadResult.leads;
+      state.rangePurchases = purchaseResult;
+      state.expenses = expenseResult.rows;
+      state.expensesLoaded = true;
+      state.rangeExpenseSummary = summarizeExpensesInRange(
+        expenseResult.rows, new Date(state.rangeFrom), new Date(state.rangeTo)
+      );
     }
   } catch (err) {
     handleApiError(err, 'โหลดข้อมูลไม่สำเร็จ');
@@ -230,12 +288,16 @@ export async function openLead(leadId: string): Promise<void> {
   state.selectedLeadId = leadId;
   state.selectedLead = state.leads.find((l) => l.lead_id === leadId) || null;
   state.interactions = [];
+  state.documents = [];
+  state.purchases = [];
   notify();
   emit('drawer:open', { leadId });
   try {
     const data = await getLead(leadId);
     state.selectedLead = data.lead;
     state.interactions = data.interactions;
+    state.documents = data.documents;
+    state.purchases = data.purchases;
     mergeIntoLeadList(data.lead);
     notify();
   } catch (err) {
@@ -247,8 +309,28 @@ export function closeLead(): void {
   state.selectedLeadId = null;
   state.selectedLead = null;
   state.interactions = [];
+  state.documents = [];
+  state.purchases = [];
   notify();
   emit('drawer:close');
+}
+
+export async function recordDocumentPaymentFor(input: PaymentInput): Promise<boolean> {
+  const error = validatePaymentInput(input);
+  if (error) {
+    toast({ package_required: 'ใส่รายละเอียดบริการก่อน', amount_required: 'ใส่ยอดรับจริงก่อน', received_at_required: 'เลือกวันที่รับเงินก่อน', tax_mode_invalid: 'เลือกรูปแบบภาษีให้ถูกต้อง' }[error], 'error');
+    return false;
+  }
+  try {
+    const result = await recordDocumentPaymentSmart(input);
+    toast(result.document_status === 'paid' ? 'บันทึกยอดขายและปิดยอดแล้ว' : 'บันทึกรับเงินบางส่วนแล้ว');
+    await openLead(input.document_id ? String(state.selectedLeadId || '') : '');
+    void refresh();
+    return true;
+  } catch (err) {
+    handleApiError(err, 'บันทึกยอดขายไม่สำเร็จ');
+    return false;
+  }
 }
 
 function mergeIntoLeadList(lead: LeadUi): void {
@@ -423,6 +505,11 @@ export async function loadExpenses(): Promise<void> {
     const data = await getExpenses();
     state.expenses = data.rows;
     state.expenseSummary = data.summary;
+    if (state.rangeFrom && state.rangeTo) {
+      state.rangeExpenseSummary = summarizeExpensesInRange(
+        data.rows, new Date(state.rangeFrom), new Date(state.rangeTo)
+      );
+    }
     state.expensesLoaded = true;
     notify();
   } catch (err) {
@@ -499,6 +586,8 @@ export async function setRange(key: RangeKey, customFrom?: string, customTo?: st
     state.rangeFrom = null;
     state.rangeTo = null;
     state.rangeLeads = null;
+    state.rangePurchases = null;
+    state.rangeExpenseSummary = null;
     notify();
     return;
   }
@@ -507,10 +596,21 @@ export async function setRange(key: RangeKey, customFrom?: string, customTo?: st
   state.rangeLoading = true;
   notify();
   try {
-    const res = await getLeadsInRange(state.rangeFrom, state.rangeTo);
-    state.rangeLeads = res.leads;
+    const [leadResult, purchaseResult, expenseResult] = await Promise.all([
+      getLeadsInRange(state.rangeFrom, state.rangeTo),
+      getPurchasesInRange(state.rangeFrom, state.rangeTo),
+      getExpenses(),
+    ]);
+    state.rangeLeads = leadResult.leads;
+    state.rangePurchases = purchaseResult;
+    state.expenses = expenseResult.rows;
+    state.expensesLoaded = true;
+    state.rangeExpenseSummary = summarizeExpensesInRange(
+      expenseResult.rows, new Date(state.rangeFrom), new Date(state.rangeTo)
+    );
   } catch (err) {
     state.rangeLeads = null;
+    state.rangePurchases = null;
     handleApiError(err, 'ดึง lead ตามช่วงเวลาไม่สำเร็จ');
   } finally {
     state.rangeLoading = false;
@@ -531,8 +631,7 @@ export function rangeSummary(): RangeSummary | null {
     count: rows.length,
     won: rows.filter(isWon).length,
     lost: rows.filter((r) => r.deal_outcome === 'lost').length,
-    valueThb: rows.filter(isWon).reduce(
-      (sum, r) => sum + (Number(r.package_price) || 0) * (r.tax_mode === 'wht_3' ? 0.97 : 1), 0),
+    valueThb: (state.rangePurchases || []).reduce((sum, purchase) => sum + (Number(purchase.net_amount_thb) || 0), 0),
   };
 }
 

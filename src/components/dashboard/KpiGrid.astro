@@ -14,7 +14,7 @@ import KpiCard from './KpiCard.astro';
 </section>
 
 <script>
-  import { subscribe, getState } from '../../scripts/dashboard/store';
+  import { subscribe, dashboardExpenseSummary, dashboardKpis, dashboardRangeLabel, hasDashboardRange } from '../../scripts/dashboard/store';
 
   function fmtTHB(n: number): string {
     if (!n) return '฿0';
@@ -33,10 +33,18 @@ import KpiCard from './KpiCard.astro';
   }
 
   function render() {
-    const { kpis, expenseSummary } = getState();
+    const kpis = dashboardKpis();
+    const expenseSummary = dashboardExpenseSummary();
     if (!kpis) return;
+    const ranged = hasDashboardRange();
+    const rangeLabel = dashboardRangeLabel();
+    setText('kpi-sales-total-label', ranged ? 'ยอดขายช่วงเลือก' : 'ยอดขายรวม');
+    setText('kpi-sales-month-label', ranged ? 'ยอดปิดเดือนนี้' : 'ยอดเดือนนี้');
+    setText('kpi-leads-label', ranged ? 'Leads ช่วงเลือก' : 'Leads ทั้งหมด');
+    setText('kpi-expense-month-label', ranged ? 'ค่าใช้จ่ายช่วงเลือก' : 'ค่าใช้จ่ายเดือนนี้');
+    setText('kpi-net-revenue-label', ranged ? 'กำไรสุทธิช่วงเลือก' : 'Net Revenue เดือนนี้');
     setText('kpi-sales-total', fmtTHB(kpis.sales_total));
-    setText('kpi-sales-total-sub', `ก่อนหน้า ${fmtTHB(kpis.sales_prev_month)}`);
+    setText('kpi-sales-total-sub', ranged ? `${rangeLabel} · lead received date` : `ก่อนหน้า ${fmtTHB(kpis.sales_prev_month)}`);
 
     setText('kpi-sales-month', fmtTHB(kpis.sales_this_month));
     setText('kpi-sales-month-sub', `เทียบเดือนก่อน ${fmtTHB(kpis.sales_prev_month)}`);
@@ -49,7 +57,7 @@ import KpiCard from './KpiCard.astro';
     }
 
     setText('kpi-leads', String(kpis.leads_total));
-    setText('kpi-leads-sub', `เดือนนี้ +${kpis.leads_this_month}`);
+    setText('kpi-leads-sub', ranged ? `${rangeLabel} · ${kpis.leads_total} leads` : `เดือนนี้ +${kpis.leads_this_month}`);
 
     setText('kpi-pipeline', String(kpis.pipeline.in_progress));
     setText('kpi-pipeline-sub', `prop ${kpis.pipeline.proposal_sent} · walk ${kpis.pipeline.walkthrough_done}`);
