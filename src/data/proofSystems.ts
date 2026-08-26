@@ -19,8 +19,13 @@ export interface ProofImage {
   height: number;
   /** กรอบที่ห่อภาพ — browser = แถบ URL ด้านบน · phone = จอมือถือ · plain = ภาพเปล่า */
   frame: 'browser' | 'phone' | 'plain';
-  /** ข้อความในแถบ URL (เฉพาะ frame browser) */
-  url?: string;
+  /**
+   * ป้ายในแถบบนของกรอบเบราว์เซอร์ (เฉพาะ frame browser)
+   * ⛔️ ห้ามใส่ URL หรือชื่อโฮสต์จริงเด็ดขาด — หน้านี้เป็นหน้าสาธารณะ
+   *    การประกาศที่อยู่ของระบบหลังบ้านคือการแจกเป้าให้คนสแกนฟรี ๆ
+   *    ใส่เป็นคำอธิบายว่าเป็นระบบอะไรพอ
+   */
+  frameLabel?: string;
   /** มี @700 คู่ไว้ทำ srcset ไหม (ภาพแนวตั้งกว้างไม่ถึง 900 ไม่มี) */
   hasSmall?: boolean;
 }
@@ -82,7 +87,7 @@ export const PROOF_SYSTEMS: ProofSystem[] = [
         width: 1400,
         height: 692,
         frame: 'browser',
-        url: 'app.punnattapatch.com/dashboard',
+        frameLabel: 'แดชบอร์ดภายใน · ไม่เปิดสาธารณะ',
         hasSmall: true,
       },
       {
@@ -91,7 +96,7 @@ export const PROOF_SYSTEMS: ProofSystem[] = [
         width: 1400,
         height: 640,
         frame: 'browser',
-        url: 'app.punnattapatch.com/dashboard',
+        frameLabel: 'แดชบอร์ดภายใน · ไม่เปิดสาธารณะ',
         hasSmall: true,
       },
       {
@@ -100,7 +105,7 @@ export const PROOF_SYSTEMS: ProofSystem[] = [
         width: 1400,
         height: 692,
         frame: 'browser',
-        url: 'app.punnattapatch.com/dashboard',
+        frameLabel: 'แดชบอร์ดภายใน · ไม่เปิดสาธารณะ',
         hasSmall: true,
       },
     ],
@@ -205,7 +210,7 @@ export const PROOF_SYSTEMS: ProofSystem[] = [
         width: 1400,
         height: 692,
         frame: 'browser',
-        url: 'app.punnattapatch.com/news-desk',
+        frameLabel: 'ระบบคอนเทนต์ภายใน · ไม่เปิดสาธารณะ',
         hasSmall: true,
       },
       {
@@ -214,7 +219,7 @@ export const PROOF_SYSTEMS: ProofSystem[] = [
         width: 1400,
         height: 692,
         frame: 'browser',
-        url: 'app.punnattapatch.com/news-desk',
+        frameLabel: 'ระบบคอนเทนต์ภายใน · ไม่เปิดสาธารณะ',
         hasSmall: true,
       },
     ],

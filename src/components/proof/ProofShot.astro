@@ -3,8 +3,9 @@
  * ProofShot.astro — ห่อ screenshot ของระบบจริงด้วยกรอบกระดาษของเว็บ
  *
  * ต้นฉบับติด browser chrome + bookmarks ส่วนตัวมาด้วย เลยครอปทิ้งตั้งแต่ตอน
- * prep-proof-images.mjs แล้ววาดแถบ URL กลับด้วย CSS แทน — สะอาดกว่าและยังบอกได้ว่า
- * ภาพมาจากหน้าไหนจริง ๆ
+ * prep-proof-images.mjs แล้ววาดแถบด้านบนกลับด้วย CSS แทน
+ *
+ * ⛔️ แถบนั้นเป็น "ป้ายบอกว่าระบบอะไร" ไม่ใช่ช่อง URL — ห้ามใส่โฮสต์เนมจริงของระบบหลังบ้าน
  */
 import type { ProofImage } from '../../data/proofSystems';
 
@@ -31,7 +32,7 @@ const small = image.hasSmall ? image.src.replace(/\.jpg$/, '@700.jpg') : null;
       <span class="size-2 rounded-full bg-[#c9c2b2]"></span>
       <span class="size-2 rounded-full bg-[#c9c2b2]"></span>
       <span class="mx-auto max-w-[70%] truncate rounded-md bg-ivory px-3 py-0.5 text-[11px] text-muted">
-        {image.url}
+        {image.frameLabel}
       </span>
     </div>
   )}
