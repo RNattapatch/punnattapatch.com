@@ -1,0 +1,39 @@
+---
+/**
+ * LineCta.astro — ปุ่มทัก LINE OA สีเขียวพร้อมโลโก้
+ *
+ * ใช้สีแบรนด์ LINE (#06c755) ไม่ใช่ coral — ปุ่มนี้บอกช่องทาง ไม่ได้แข่งกับ CTA หลัก
+ * path ของโลโก้ชุดเดียวกับที่หน้า ads ใช้อยู่ (AdsContentV2)
+ */
+import { SITE } from '../../data/site';
+
+interface Props {
+  /** ข้อความชวนเหนือปุ่ม — ไม่ใส่ = มีแต่ปุ่ม */
+  lead?: string;
+  label?: string;
+  class?: string;
+}
+
+const { lead, label = 'ทัก LINE OA มาคุยกับผม', class: klass = '' } = Astro.props;
+const lineIcon =
+  'M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 8.9 8.2-.2.2-.4.5-.5.8-.2.5-.1.9.4 1 .4.1.8-.1 1.2-.3l3.3-2.1c4.6-.8 8.2-3.7 8.2-7.6Z';
+---
+
+<div class:list={[klass]}>
+  {lead && <p class="leading-relaxed text-warm-ink/80">{lead}</p>}
+  <a
+    href={SITE.social.line}
+    target="_blank"
+    rel="noopener"
+    data-line-cta
+    class:list={[
+      'inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#06c755] px-5 py-3 font-semibold text-white transition hover:bg-[#05b34c] active:scale-[0.98]',
+      lead && 'mt-3',
+    ]}
+  >
+    <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path fill="currentColor" d={lineIcon} />
+    </svg>
+    <span>{label}</span>
+  </a>
+</div>

@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DarumaMark from '../../components/DarumaMark.astro';
 import AdsContentV2 from '../../components/ads/AdsContentV2.astro';
+import ProofAdsBlock from '../../components/proof/ProofAdsBlock.astro';
 import AfterHoursField from '../../components/AfterHoursField.astro';
 import { SITE } from '../../data/site';
 import { PRICES, fmtPrice } from '../../data/pricing.mjs';
@@ -200,7 +201,16 @@ const content = {
       The conversion events below still fire from this page. */}
 
   <div id="daruma-consult-page" class="lp-v2">
-    <AdsContentV2 {...content} />
+    <AdsContentV2 {...content}>
+      <ProofAdsBlock
+        slot="proof"
+        systemId="command-center"
+        formAnchor="#daruma-consult-form"
+        lead="สมองที่สองของธุรกิจ"
+        body="ลีดทุกใบ ดีลทุกสเตจ ค่าใช้จ่ายทุกบาท อยู่ในหน้าเดียว เปิดจากมือถือได้ทุกที่ อัปเดตเองทุกนาที — ผมใช้หน้านี้ตอบคำถามว่าเดือนนี้ยอดจะเข้าเท่าไหร่ ทุกวัน"
+        ctaLabel={content.ctaLabel}
+      />
+    </AdsContentV2>
 
     <section id="daruma-consult-form" class="scroll-mt-20 px-6 py-16 md:py-24">
       <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
@@ -273,6 +283,10 @@ const content = {
         </div>
       </div>
     </section>
+
+    <div id="daruma-consult-sticky" class="fixed inset-x-0 bottom-0 z-50 border-t border-[#c9c2b2] bg-ivory/95 p-3 shadow-[0_-3px_12px_rgba(30,27,22,0.10)] backdrop-blur md:hidden" hidden>
+      <a href="#daruma-consult-form" class="flex min-h-11 w-full items-center justify-center rounded-xl bg-coral px-6 py-3.5 font-semibold text-white transition active:scale-[0.98]">{content.ctaLabel}</a>
+    </div>
   </div>
 
 </BaseLayout>
@@ -450,4 +464,22 @@ const content = {
     }
   });
 
+</script>
+
+<style>
+  /* เผื่อที่ให้ปุ่มค้างล่างจอ ไม่ให้ทับปุ่มส่งฟอร์ม/ฟุตเตอร์บนมือถือ */
+  @media (max-width: 767px) { :global(body) { padding-bottom: 5.5rem; } }
+</style>
+
+<script is:inline data-sticky-cta>
+  (() => {
+    const bar = document.getElementById('daruma-consult-sticky');
+    const form = document.getElementById('daruma-consult-form');
+    if (!bar || !form || !('IntersectionObserver' in window)) return;
+    let formVisible = false;
+    const sync = () => { bar.hidden = formVisible || window.scrollY < 600; };
+    new IntersectionObserver(([entry]) => { formVisible = entry.isIntersecting; sync(); }, { threshold: 0 }).observe(form);
+    window.addEventListener('scroll', sync, { passive: true });
+    sync();
+  })();
 </script>

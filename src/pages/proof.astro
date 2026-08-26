@@ -1,0 +1,52 @@
+---
+/**
+ * /proof — ศูนย์กลางของ "ระบบที่ผมใช้เองอยู่ทุกวัน"
+ *
+ * ทำไมต้องมีหน้าแยกทั้งที่หน้าแรกก็มี section เดียวกันอยู่แล้ว:
+ *  1. หน้า booking / ท้ายบทความ / (บางที) ads ต้องลิงก์มาที่เดียว ไม่ใช่ก๊อป section ไปแปะซ้ำ
+ *  2. เป็นหน้าที่ตอบคำถาม "AI Agent ทำอะไรได้บ้างในธุรกิจไทย" ให้ AI search หยิบไปตอบได้
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProofSystems from '../components/proof/ProofSystems.astro';
+import ProofStats from '../components/proof/ProofStats.astro';
+import { SITE } from '../data/site';
+import { PROOF_AS_OF } from '../data/proofSystems';
+
+const title = 'ระบบ AI Agent ที่ผมใช้เองอยู่ทุกวัน';
+const description =
+  'ห้าระบบที่ผมสร้างเองและใช้จริงในธุรกิจตัวเองทุกวัน — แดชบอร์ดรวมข้อมูล บอทออกใบเสนอราคา AI Agent บน LINE โรงงานคอนเทนต์ และเรดาร์ส่องตลาด พร้อมหลักคิดข้างหลังแต่ละตัว';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  schema={{
+    types: ['WebPage', 'BreadcrumbList'],
+    title,
+    description,
+    breadcrumbs: [
+      { name: 'หน้าแรก', url: SITE.url },
+      { name: 'ระบบที่ผมใช้เอง', url: `${SITE.url}/proof` },
+    ],
+  }}
+>
+  <!-- ไม่ใส่ bg บน section นี้: .hand-underline วาดด้วย ::after ที่ z-index:-1
+       ถ้า section มีพื้นหลังของตัวเอง เส้นใต้จะไปอยู่หลังพื้นแล้วหายไปเลย -->
+  <section class="border-b border-[#c9c2b2] px-margin-page py-16 md:py-20">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-coral">หลักฐาน ไม่ใช่คำโฆษณา</p>
+      <h1 class="mt-4 max-w-4xl font-display text-4xl font-bold leading-tight text-navy md:text-6xl">
+        ผมไม่ได้มาขายโปรแกรม<br />ผมมาขาย<span class="hand-underline">วิธีสร้างมันขึ้นมา</span>
+      </h1>
+      <p class="mt-6 max-w-3xl text-lg leading-relaxed text-warm-ink/75">
+        ทุกภาพในหน้านี้คือระบบที่ผมสร้างเอง ใช้เองในธุรกิจตัวเอง ทุกวัน — ไม่มีขาย ไม่มี license
+        ไม่มีลิงก์ให้กดซื้อ ผมเอามาให้ดูเพราะอยากให้คุณเห็นว่า "ระบบบริหารการขายด้วย AI Agent"
+        หน้าตาจริง ๆ มันเป็นยังไง และเห็นว่าทุกตัว<strong class="font-semibold text-navy">เริ่มจากการวางหลักคิดก่อน
+        แล้วเครื่องมือค่อยตามมาทีหลัง</strong>
+      </p>
+      <ProofStats class="mt-10 max-w-4xl" />
+    </div>
+  </section>
+
+  <ProofSystems showHeader={false} showStats={false} />
+</BaseLayout>

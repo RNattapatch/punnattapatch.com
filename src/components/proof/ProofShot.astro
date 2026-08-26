@@ -1,0 +1,49 @@
+---
+/**
+ * ProofShot.astro — ห่อ screenshot ของระบบจริงด้วยกรอบกระดาษของเว็บ
+ *
+ * ต้นฉบับติด browser chrome + bookmarks ส่วนตัวมาด้วย เลยครอปทิ้งตั้งแต่ตอน
+ * prep-proof-images.mjs แล้ววาดแถบ URL กลับด้วย CSS แทน — สะอาดกว่าและยังบอกได้ว่า
+ * ภาพมาจากหน้าไหนจริง ๆ
+ */
+import type { ProofImage } from '../../data/proofSystems';
+
+interface Props {
+  image: ProofImage;
+  /** ความกว้างที่ภาพนี้จะแสดงจริง — ใช้บอก browser ว่าจะหยิบไฟล์ไหนใน srcset */
+  sizes?: string;
+  class?: string;
+}
+
+const { image, sizes = '(min-width: 820px) 50vw, 100vw', class: klass = '' } = Astro.props;
+const small = image.hasSmall ? image.src.replace(/\.jpg$/, '@700.jpg') : null;
+---
+
+<figure
+  class:list={[
+    'overflow-hidden rounded-2xl border border-[#c9c2b2] bg-surface paper-shadow',
+    klass,
+  ]}
+>
+  {image.frame === 'browser' && (
+    <div class="flex items-center gap-1.5 border-b border-[#c9c2b2] bg-sand px-3 py-2" aria-hidden="true">
+      <span class="size-2 rounded-full bg-[#c9c2b2]"></span>
+      <span class="size-2 rounded-full bg-[#c9c2b2]"></span>
+      <span class="size-2 rounded-full bg-[#c9c2b2]"></span>
+      <span class="mx-auto max-w-[70%] truncate rounded-md bg-ivory px-3 py-0.5 text-[11px] text-muted">
+        {image.url}
+      </span>
+    </div>
+  )}
+  <img
+    src={image.src}
+    srcset={small ? `${small} 700w, ${image.src} ${image.width}w` : undefined}
+    sizes={small ? sizes : undefined}
+    alt={image.alt}
+    width={image.width}
+    height={image.height}
+    loading="lazy"
+    decoding="async"
+    class="w-full"
+  />
+</figure>

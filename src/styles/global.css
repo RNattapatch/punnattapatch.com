@@ -193,7 +193,9 @@ h3.font-display { letter-spacing: -0.002em; }
 .muted-border { border: 1px solid #C9C2B2; }
 
 /* Hand-drawn coral underline for hero / key phrases */
-.hand-underline { position: relative; display: inline-block; }
+/* isolation: isolate สร้าง stacking context ให้ตัวเอง — จำเป็น เพราะ ::after ใช้ z-index:-1
+   ถ้าไม่มี เส้นใต้จะไปอยู่หลังพื้นหลังของ body/section แล้วหายไปทั้งเว็บ (bug เดิม) */
+.hand-underline { position: relative; display: inline-block; isolation: isolate; }
 .hand-underline::after {
   content: '';
   position: absolute;

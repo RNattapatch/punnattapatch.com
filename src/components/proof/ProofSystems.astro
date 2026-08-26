@@ -1,0 +1,135 @@
+---
+/**
+ * ProofSystems.astro — section "ระบบที่ผมใช้เองอยู่ทุกวัน"
+ *
+ * แทนบล็อกข้อความล้วนเดิมบนหน้าแรก และเป็นเนื้อของหน้า /proof ด้วย (ก้อนเดียวกัน
+ * แก้ทีเดียวเปลี่ยนทั้งสองที่)
+ *
+ * แกน: ไม่ได้ขายโปรแกรม ขายลำดับการคิดที่ทำให้โปรแกรมพวกนี้เกิดขึ้น
+ * ทุกการ์ดจึงจบด้วยหลักคิด ไม่ใช่ฟีเจอร์ และบล็อกก่อน CTA พูดตรง ๆ ว่าก๊อปไปใช้เฉย ๆ ไม่เวิร์ก
+ */
+import { PROOF_SYSTEMS, PROOF_THINKING_STEPS } from '../../data/proofSystems';
+import ProofCard from './ProofCard.astro';
+import ProofStats from './ProofStats.astro';
+import LineCta from './LineCta.astro';
+
+interface Props {
+  /** true = มี <h2> หัวเรื่องของตัวเอง (หน้าแรก) · false = หน้า /proof ใช้ <h1> ของหน้าแทน */
+  showHeader?: boolean;
+  showStats?: boolean;
+  /**
+   * โชว์กี่ระบบ — default ครบทุกใบ
+   * ถ้าจำกัด จะมีกล่องสรุประบบที่เหลือ + ลิงก์ไป /proof ต่อท้ายให้เอง
+   */
+  limit?: number;
+  headingLevel?: 'h2' | 'h3';
+}
+
+const {
+  showHeader = true,
+  showStats = true,
+  limit = PROOF_SYSTEMS.length,
+  headingLevel = 'h2',
+} = Astro.props;
+
+const Heading = headingLevel;
+const shown = PROOF_SYSTEMS.slice(0, limit);
+const remaining = PROOF_SYSTEMS.length - shown.length;
+---
+
+<section id="proof-systems" class="scroll-mt-20 px-margin-page py-16 md:py-24">
+  <div class="mx-auto max-w-6xl">
+    {showHeader && (
+      <header class="max-w-3xl">
+        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-coral">
+          หลักฐาน ไม่ใช่คำโฆษณา
+        </p>
+        <Heading class="mt-4 font-display text-3xl font-bold leading-tight text-navy md:text-5xl">
+          ผมไม่ได้มาขายโปรแกรม<br />ผมมาขาย<span class="hand-underline">วิธีสร้างมันขึ้นมา</span>
+        </Heading>
+        <p class="mt-6 text-lg leading-relaxed text-warm-ink/75">
+          ทุกภาพข้างล่างนี้คือระบบที่ผมสร้างเอง ใช้เองในธุรกิจตัวเอง ทุกวัน — ไม่มีขาย ไม่มี license ไม่มีลิงก์ให้กดซื้อ
+        </p>
+        <p class="mt-3 leading-relaxed text-warm-ink/70">
+          ผมเอามาให้ดูเพราะอยากให้คุณเห็นว่า "ระบบบริหารการขายด้วย AI Agent" หน้าตาจริง ๆ มันเป็นยังไง
+          และเห็นว่าทุกตัว<strong class="font-semibold text-navy">เริ่มจากการวางหลักคิดก่อน แล้วเครื่องมือค่อยตามมาทีหลัง</strong>
+        </p>
+      </header>
+    )}
+
+    {showStats && <ProofStats class="mt-10" />}
+
+    <div class="mt-14 flex flex-col gap-14 md:gap-20">
+      {shown.map((system, index) => (
+        <ProofCard system={system} index={index} />
+      ))}
+    </div>
+
+    {remaining > 0 && (
+      <div class="mt-12 rounded-2xl border border-[#c9c2b2] bg-sand p-6 text-center md:p-8">
+        <p class="font-display text-xl font-bold text-navy">
+          ยังมีอีก {remaining} ระบบที่ผมใช้เองอยู่ทุกวัน
+        </p>
+        <p class="mt-2 leading-relaxed text-warm-ink/70">
+          {PROOF_SYSTEMS.slice(limit).map((s) => s.title).join(' · ')}
+        </p>
+        <a
+          href="/proof"
+          class="mt-5 inline-flex min-h-11 items-center justify-center rounded-xl border border-navy px-6 py-3 font-semibold text-navy transition hover:bg-navy hover:text-ivory active:scale-[0.98]"
+        >
+          ดูทั้งห้าระบบพร้อมภาพจริง
+        </a>
+      </div>
+    )}
+
+    <!-- บล็อกกันเข้าใจผิด — ของที่ทำซ้ำได้คือลำดับการคิด ไม่ใช่หน้าจอ -->
+    <div class="mt-16 rounded-2xl bg-navy p-7 text-ivory/85 md:mt-24 md:p-12">
+      <h3 class="max-w-2xl font-display text-2xl font-bold leading-snug text-ivory md:text-3xl">
+        อ่านมาถึงตรงนี้ ถ้าคุณกำลังคิดว่า "อยากได้ระบบพวกนี้" — ผมอยากให้คุณคิดใหม่
+      </h3>
+      <p class="mt-5 max-w-3xl leading-relaxed">
+        ระบบพวกนี้ก๊อปไปวางในธุรกิจคุณตรง ๆ แล้วไม่เวิร์ก เพราะมันถูกออกแบบจากบริบทของผม สินค้าของผม
+        และวิธีที่ลูกค้าผมตัดสินใจ
+      </p>
+      <p class="mt-3 max-w-3xl leading-relaxed">
+        สิ่งที่ทำซ้ำได้จริงไม่ใช่หน้าจอ แต่คือ<strong class="font-semibold text-ivory">ลำดับการคิด</strong>ที่ทำให้หน้าจอพวกนี้เกิดขึ้น
+      </p>
+
+      <ol class="mt-7 flex max-w-3xl flex-col gap-3">
+        {PROOF_THINKING_STEPS.map((step, index) => (
+          <li class="flex gap-4">
+            <span
+              class="mt-0.5 grid size-7 shrink-0 place-items-center rounded-full border border-ivory/30 text-xs font-semibold text-ivory"
+              aria-hidden="true"
+            >
+              {index + 1}
+            </span>
+            <p class="leading-relaxed">
+              <strong class="font-semibold text-ivory">{step.lead}</strong> {step.tail}
+            </p>
+          </li>
+        ))}
+      </ol>
+
+      <p class="mt-8 border-t border-ivory/15 pt-6 font-display text-xl font-bold text-ivory md:text-2xl">
+        นี่คือสิ่งที่ผมขาย — ไม่ใช่โปรแกรม
+      </p>
+    </div>
+
+    <div class="mx-auto mt-14 max-w-2xl text-center">
+      <h3 class="font-display text-2xl font-bold text-navy md:text-3xl">
+        ถ้าอยากรู้ว่าธุรกิจคุณควรเริ่มจากตรงไหน
+      </h3>
+      <p class="mt-4 leading-relaxed text-warm-ink/75">
+        คุยกัน 15–20 นาที ผมจะบอกตรง ๆ ว่าธุรกิจคุณควรเริ่มที่งานไหน และงานไหนที่ยังไม่ควรแตะ AI ตอนนี้
+        ถ้าคุยแล้วผมคิดว่ายังไม่ถึงเวลา ผมจะบอกคุณแบบนั้น
+      </p>
+      <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+        <a href="/booking" class="btn border-0 bg-coral text-white hover:bg-[#c43245]">จองคิวคุยกับผม</a>
+        <LineCta label="ทัก LINE ถามก่อนก็ได้" />
+      </div>
+      <p class="mt-4 text-sm text-muted">15–20 นาที · ไม่มีการขายในสาย · ถ้ายังไม่เหมาะ ผมจะบอก</p>
+    </div>
+  </div>
+</section>
+

@@ -4,6 +4,7 @@ import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleHero from '../../components/ArticleHero.astro';
 import Prose from '../../components/Prose.astro';
+import ProofRail from '../../components/proof/ProofRail.astro';
 import { SITE } from '../../data/site';
 import { estimateReadingTimeMinutes } from '../../lib/reading-time';
 
@@ -113,6 +114,9 @@ const ogImage = (data as { heroImage?: string }).heroImage ?? `${SITE.url}/og-im
         <Prose>
           <Content />
         </Prose>
+
+        <!-- ระบบจริงท้ายบทความ — แยกปันออกจากคนที่แปลบทความฝรั่งมาโพสต์ -->
+        <ProofRail variant="article" />
 
         <!-- Author + signature -->
         <footer class="mt-16 rounded-2xl border border-base-content/10 bg-base-200/30 p-6">
