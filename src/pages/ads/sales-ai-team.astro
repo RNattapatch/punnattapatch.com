@@ -1,0 +1,454 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DarumaMark from '../../components/DarumaMark.astro';
+import AdsContentV2 from '../../components/ads/AdsContentV2.astro';
+import ProofAdsBlock from '../../components/proof/ProofAdsBlock.astro';
+import AfterHoursField from '../../components/AfterHoursField.astro';
+import { SITE } from '../../data/site';
+import { PRICES, fmtPrice } from '../../data/pricing.mjs';
+
+const title = 'คอร์สเพิ่มยอดขายด้วย AI สำหรับทีมขาย';
+const description = 'ตั้งแต่หา Lead ทำ Content ติดตามลูกค้า ไปจนถึงเปลี่ยนโอกาสให้เป็นยอดขาย อบรม In-house 1 วันเต็มที่ออฟฟิศคุณ ทีมขาย 5–20 คน คุยฟรี 15–20 นาที';
+const canonical = `${SITE.url}/ads/sales-ai-team`;
+const lineUrl = 'https://line.me/R/ti/p/@011xgvap';
+const PRICE_1DAY = fmtPrice('inhouse-a');
+const perHead = Math.round(PRICES['inhouse-a'].amount / 20);
+
+const content = {
+  pageId: 'sales-ai',
+  formAnchor: '#dealer-ai-form',
+  lineUrl,
+  capacity: 'ผมสอนเองทุกรุ่น รับสูงสุดเดือนละ 10 บริษัท',
+  capacityLeft: 'คิวว่างเดือนไหน ทักถามทาง LINE ได้เลยครับ',
+
+  eyebrow: 'คอร์สอบรม In-house · ทีมขาย B2B 5–20 คน · 1 วันเต็ม · จัดที่ออฟฟิศคุณ',
+  headlineLead: 'คอร์สเพิ่มยอดขาย',
+  headlineNowrap: 'ด้วย AI',
+  headlineAccent: 'สำหรับทีมขาย',
+  productName: 'ตั้งแต่หา Lead ทำ Content ติดตามลูกค้า ไปจนถึงเปลี่ยนโอกาสให้เป็นยอดขาย',
+  productTagline: 'In-house 1 วันเต็มที่ออฟฟิศคุณ · ทีมขาย 5–20 คน · ราคาเดียวทั้งทีม',
+  lede: 'ทีมไม่ได้กลับพร้อมแค่สไลด์ครับ ทุกคนออกจากห้องพร้อมชิ้นงานของตัวเอง ตั้งแต่ชุด Content หาลูกค้า ข้อความติดตามตาม Stage ไปจนถึงตารางที่หัวหน้าเปิดดูได้ทุกเช้า ทำจากสินค้าและลูกค้าจริงของบริษัทคุณ',
+  badges: ['ทีมขาย 5–20 คน', 'จัดที่ออฟฟิศคุณ 1 วันเต็ม', `ราคาเดียวทั้งทีม ${PRICE_1DAY}`],
+  ctaLabel: 'คุยเรื่องทีมของคุณ ฟรี 15 นาที',
+  ctaNote: 'คุยเพื่อเช็กความเหมาะสมก่อนครับ ถ้าทีมยังไม่พร้อม ผมบอกตรงๆ',
+
+  heroPhotos: {
+    main: { src: '/lp/inhouse/hero-pointing.jpg', alt: 'ปันยืนชี้อธิบายบนจอหน้าห้อง ขณะทีมขายลงมือทำบนเครื่องตัวเองในคลาสจริง', width: 1600, height: 1200 },
+    left: { src: '/testimonial/2026-07/onsite-nissan-pun.jpg', alt: 'ปัน ณัฐพัชร์ ที่งาน Nissan Sales Manager Seminar 2026', width: 1100, height: 1466 },
+    right: { src: '/lp/inhouse/team-selfie.jpg', alt: 'ปันถ่ายรูปกับทีมผู้เรียนเต็มห้องหลังจบคลาส', width: 1200, height: 1600 },
+  },
+  heroCaption: 'ภาพจากคลาสจริง · ผู้เรียนลงมือบนเครื่องตัวเอง',
+
+  clientLogos: [
+    { src: '/logos/clients/nissan.png', alt: 'Nissan' },
+    { src: '/logos/clients/royal-enfield.jpg', alt: 'Royal Enfield' },
+    { src: '/logos/clients/gpx.jpg', alt: 'GPX' },
+    { src: '/logos/clients/lambretta.png', alt: 'Lambretta' },
+    { src: '/logos/clients/zontes.png', alt: 'Zontes' },
+    { src: '/logos/clients/futureskill.png', alt: 'FutureSkill' },
+    { src: '/logos/clients/hfc-healthfoods.png', alt: 'HFC HealthFoods Corporation' },
+    { src: '/logos/clients/home-plus.png', alt: 'ฮ.โฮมพลัส' },
+    { src: '/logos/clients/ving.png', alt: 'V!NG' },
+    { src: '/logos/clients/nsscrap.avif', alt: 'NSSCRAP' },
+    { src: '/logos/clients/ud-clinic.jpg', alt: 'UD Clinic' },
+  ],
+
+  proofHeadline: 'องค์กรหลายวงการไว้วางใจ',
+  proofBody: 'เคยขึ้นเวที Nissan Sales Manager Seminar 2026 และอบรมให้ทั้งสายยานยนต์ อาหาร ค้าปลีก และบริการ',
+  perHeadNote: `มากัน 20 คน เฉลี่ยคนละ ${perHead.toLocaleString('th-TH')} บาท ถูกกว่าส่งเซลล์ไปเรียนข้างนอก 1 ที่นั่ง`,
+
+  calloutLead: 'เดือนที่แล้วมีลูกค้าทักเข้ามากี่รายครับ',
+  calloutAccent: 'แล้วปิดได้กี่ราย?',
+  calloutBody: 'คำตอบที่ผมได้ยินบ่อยที่สุดคือ "ก็ตอบไปหมดนะ แต่ส่วนใหญ่เงียบหายไปเอง" ยอดที่รั่วของทีมขายไม่ได้หายตอนปิดการขายครับ มันหายตอนไม่มีใครตามต่อต่างหาก',
+  pains: [
+    { icon: 'user-x', text: 'ลูกค้าทักมาถามรายละเอียด คุยไปสองสามประโยคแล้วเงียบ ไม่มีใครรู้ว่าใครต้องตามต่อ รู้อีกทีคือเขาซื้อจากเจ้าอื่นไปแล้ว' },
+    { icon: 'file', text: 'เซลล์ขายเก่งแต่ทำโพสต์แนะนำสินค้าไม่เป็น เพจกับ LINE เลยเงียบ ทั้งที่ของดีอยู่ในมือ' },
+    { icon: 'brain', text: 'ข้อมูลสินค้า ราคา และเงื่อนไข อยู่ในหัวเซลล์เก่งคนเดียว เขาลาทีทั้งทีมสะดุด' },
+    { icon: 'moon', text: 'ลูกค้าทักตอนสามทุ่ม กว่าจะมีคนตอบก็สายวันรุ่งขึ้น คิวหายไปเงียบๆ แบบไม่มีใครผิด' },
+    { icon: 'wallet', text: 'ยอดแต่ละเดือนเดาไม่ได้ ไม่รู้ว่ามีดีลค้างกี่ราย ใครใกล้ปิด ใครเงียบไปแล้ว หัวหน้าเห็นอีกทีตอนสรุปเดือน' },
+  ],
+  painsClose: 'ถ้าอ่านแล้วนึกหน้าทีมออกทีละข้อ ผมเข้าใจครับ เซลล์ไม่ได้ขี้เกียจ แต่คนคนเดียวต้องหาลูกค้าใหม่ ตามลูกค้าเก่า และทำเอกสารไปพร้อมกัน โดยไม่มีระบบช่วยสักชั้น',
+
+  whyTitle: 'ทำไมผมถึงยกคลาสไปที่ออฟฟิศคุณ แทนที่จะให้เซลล์ไปเรียนข้างนอก',
+  whyCols: [
+    { heading: 'สอนด้วยสินค้าและลูกค้าของคุณเอง', body: 'ตัวอย่างในคลาสคือสินค้าที่คุณขายจริง ราคาจริง เงื่อนไขจริง ชิ้นงานที่ทำเสร็จจึงใช้กับลูกค้าได้ทันที ไม่ต้องกลับมานั่งแปลงเอง' },
+    { heading: 'ทั้งทีมขยับพร้อมกัน', body: 'ส่งเซลล์ไปเรียนคนเดียว กลับมาเปลี่ยนทีมไม่ได้ครับ แต่ถ้าทั้งทีมเห็นของจริงพร้อมกันในวันเดียว วันจันทร์ถัดไปทุกคนหาลูกค้าและตามลูกค้าด้วยวิธีเดียวกัน' },
+    { heading: 'ออฟฟิศไม่ต้องหยุด', body: 'ไม่ต้องพาทีมเดินทาง ใครติดลูกค้าโทรเข้ามาก็ออกไปรับได้แล้วกลับเข้าห้อง และราคาเดียวทั้งทีม ถูกกว่าซื้อคอร์สรายหัวหลายเท่า' },
+  ],
+  principleQuote: '"AI เหมือนน้องฝึกงานที่รู้ทุกอย่างบนโลก แต่ยังไม่รู้จักบริษัทคุณ"',
+  principleBody: 'คลาสจึงเริ่มจากสินค้า ราคา ลูกค้า และกติกาการขายของบริษัทคุณเอง ไม่ใช่เริ่มจากท่องจำ prompt แล้ว AI ค่อยเข้ามาช่วยทำ Content ร่างข้อความติดตาม และสรุปงาน ภายใต้กติกาที่ทีมตกลงกันแล้ว',
+
+  agendaTitle: 'หนึ่งวันเดินจาก "หา Lead" ไปจนถึง "ยอดขาย" ทุกช่วงมีชิ้นงานออก',
+  agendaLead: 'วงกลมข้างเวลาคือดารุมะของทีมคุณครับ เราแต้มตาให้มันช่วงท้ายวัน เมื่อเส้นทางจากหาลูกค้าถึงปิดการขายมีเจ้าของงานครบทุกจุด',
+  agenda: [
+    { time: '09:00', until: '–10:30', heading: 'ขายอะไร ให้ใคร เพราะอะไร', body: 'ไล่เส้นทางลูกค้าจริงตั้งแต่รู้จักจนถึงวันจ่ายเงิน แล้วเลือกสินค้าและกลุ่มลูกค้าที่คุ้มที่สุดที่จะเริ่มก่อน แปลงจุดขายให้เชื่อมกับสิ่งที่ลูกค้าเจ็บจริง ไม่ใช่ท่องสเปคให้ฟัง', output: 'Sales Journey + FFAB Sheet' },
+    { time: '10:45', until: '–12:00', heading: 'หา Lead ด้วย Content จากของจริง', body: 'ทำโพสต์และข้อความแนะนำสินค้าจากข้อมูลจริงด้วย AI ทั้งภาพและแคปชัน ธุรกิจที่วิ่งหาลูกค้าเองก็ทำชุดข้อความ Prospecting แทน เซลล์ที่ไม่เคยทำสื่อเลยก็มีชิ้นงานของตัวเอง', output: 'ชุด Content / Prospecting kit' },
+    { time: '13:00', until: '–14:45', heading: 'สมองบริษัท + AI ช่วยคัดกรองและติดตาม', body: 'รวมสินค้า ราคา เงื่อนไข และกติกาการขายเป็นไฟล์กลางของบริษัท วางคำถามคัดกรองว่าใครใกล้ซื้อ แล้วให้ AI ช่วยร่างข้อความติดตามตาม Stage โดยเซลล์ตรวจก่อนส่งทุกครั้ง', output: 'company-context.md + Follow-up sequence' },
+    { time: '15:00', until: '–16:25', heading: 'เปลี่ยนโอกาสเป็นยอดขาย แล้วแต้มตาดารุมะ', body: 'ซ้อมพาแชตไปสู่นัดหมายหรือใบเสนอราคา กำหนดกติกาส่งต่อให้ทุกดีลมีเจ้าของ ตกลงตัวเลขชุดเดียวที่หัวหน้าดูทุกเช้า แล้วล็อกงานแรกกับคนรับผิดชอบลงแผน 14 วัน', output: 'Tracking sheet + Action plan 14 วัน', final: true },
+  ],
+  nudgeAgenda: 'อ่านตารางแล้วยังนึกไม่ออกว่าทีมคุณจะทำอะไรช่วงบ่าย? ทักมาถามได้ครับ ผมเล่าให้ฟังทีละช่วง',
+
+  menuTitle: 'เซลล์แต่ละคนออกจากคลาสพร้อมชิ้นงานตามหน้าที่ของตัวเอง',
+  menuLead: 'ชิ้นงานเดียวที่ทำจบจริง ชนะเครื่องมือสิบอย่างที่ไม่มีใครใช้ต่อครับ และหัวหน้าตรวจได้ว่าชิ้นไหนเป็นของใคร',
+  menu: [
+    { heading: 'ชุดโพสต์แนะนำสินค้าจากของจริง', body: 'ภาพและแคปชันทำจากสินค้าและงานจริงของบริษัท ไม่ใช่ภาพสต็อก' },
+    { heading: 'ตัวตามลูกค้าที่เงียบไป', body: 'ข้อความติดตามตามสถานการณ์จริง อิงสิ่งที่ลูกค้าสนใจ ไม่ใช่ทวงซ้ำคำเดิม' },
+    { heading: 'เลขาสรุปและร่างตอบแชต', body: 'จับประเด็นจากแชตลูกค้าแล้วเตรียมร่างให้เซลล์ตรวจ ก่อนส่งกลับ' },
+    { heading: 'ตัวช่วยร่างใบเสนอราคา', body: 'ร่างจากราคาและเงื่อนไขจริงของบริษัท แล้วให้คนตรวจก่อนส่งลูกค้าทุกครั้ง' },
+    { heading: 'พี่เลี้ยงฝึกตอบข้อโต้แย้ง', body: 'จำลองคำถามยากจากลูกค้าจริงให้เซลล์ใหม่ซ้อม ไม่ใช่ให้ AI ตอบแทนหน้าลูกค้า' },
+  ],
+
+  takeHomeTitle: 'จบวันแล้ว ทีมไม่ได้ถือ "ความรู้" กลับไปอย่างเดียว',
+  takeHomeFeature: { heading: 'Sales Journey Map 1 เส้น', body: 'เส้นทางลูกค้าตั้งแต่รู้จักจนถึงวันจ่ายเงิน พร้อม Stage เจ้าของงาน และจุดที่หัวหน้าต้องเห็น กรอกด้วยข้อมูลจริงของบริษัทคุณ เสร็จในห้อง' },
+  takeHome: [
+    { heading: 'ชุด Content / Prospecting kit', body: 'โพสต์และข้อความหาลูกค้าจากสินค้าจริง พร้อมใช้ต่อทันที' },
+    { heading: 'company-context.md ของบริษัท', body: 'ไฟล์กลางที่รวมสินค้า ราคา เงื่อนไข และกติกาการขาย' },
+    { heading: 'Follow-up sequence ตาม Stage', body: 'ข้อความติดตามแต่ละจังหวะ พร้อมกติกาว่าเรื่องไหนต้องมีคนตรวจก่อนส่ง' },
+    { heading: 'Tracking sheet ของหัวหน้า', body: 'ตัวเลขชุดเดียวที่เปิดดูได้ทุกเช้า รู้ว่าดีลไหนค้างอยู่กับใคร' },
+    { heading: 'Action plan 14 วัน', body: 'งานแรก วันเวลา และคนรับผิดชอบ กันโรค "อบรมเสร็จแล้วเงียบ"' },
+  ],
+  takeHomeNote: 'พร้อมติดตามผ่าน LINE 7 วันหลังเรียน ผมไม่รับประกันยอดขายนะครับ ผลขึ้นกับข้อมูลและวินัยของทีม แต่ของที่ต้องใช้ต่อ ผมวางให้ครบก่อนจบวัน',
+
+  fitTitle: 'คอร์สนี้เจาะจงกับบริษัทที่มีทีมขายจริง และอยากเปลี่ยน "ของที่เรียน" ให้เป็น "ของที่ใช้"',
+  fitYes: [
+    'เจ้าของธุรกิจที่มีทีมขาย 5 คนขึ้นไป และไม่อยากเป็นคอขวตของทุกดีล',
+    'ผู้จัดการฝ่ายขายที่อยากได้วิธีทำงานชุดเดียวกันทั้งทีม และรายงานที่เชื่อถือได้',
+    'ทายาทที่เข้ามารับช่วงกิจการ และต้องเอาแผนกับของจริงกลับไปคุยกับที่บ้านให้ผ่าน',
+  ],
+  fitNo: 'ธุรกิจที่ยังไม่มีทีมขาย · อยากได้คอร์ส prompt กว้างๆ · อยากได้ระบบอัตโนมัติเต็มบริษัทในวันเดียว · ยังไม่มีข้อมูลสินค้าและราคาให้ใช้ในคลาส',
+  nudgeFit: 'อ่านแล้วยังไม่ชัดว่าบริษัทคุณเข้าข่ายไหม? เล่าให้ผมฟังสั้นๆ ในไลน์ ผมบอกตรงๆ ว่าเหมาะหรือยังไม่เหมาะ',
+
+  classPhotos: [
+    { src: '/lp/inhouse/class-full.jpg', alt: 'บรรยากาศคลาสเต็มห้อง ผู้เรียนลงมือทำบนเครื่องตัวเอง', width: 1600, height: 1200 },
+    { src: '/lp/inhouse/office-session.jpg', alt: 'ปันสอนทีมที่ออฟฟิศลูกค้า', width: 1600, height: 1200 },
+    { src: '/lp/inhouse/onsite-cafe.jpg', alt: 'คลาสสอนสดนอกสถานที่', width: 1600, height: 1200 },
+    { src: '/lp/inhouse/team-group.jpg', alt: 'ถ่ายรูปรวมทีมผู้เรียนหลังจบคลาส', width: 1600, height: 1200 },
+  ],
+
+  reviews: [
+    { src: '/testimonial/2026-07/review-09.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 1410, height: 1410 },
+    { src: '/testimonial/2026-07/review-10.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 736, height: 736 },
+    { src: '/testimonial/2026-07/review-11.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 914, height: 914 },
+    { src: '/testimonial/2026-05/review-02.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 1000, height: 1000 },
+    { src: '/testimonial/2026-05/review-04.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 1000, height: 1000 },
+    { src: '/testimonial/2026-05/review-05.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 1000, height: 1000 },
+  ],
+
+  instructorPhoto: { src: '/lp/inhouse/pun-portrait.jpg', alt: 'ปัน ณัฐพัชร์ ผู้สอนคอร์สเพิ่มยอดขายด้วย AI สำหรับทีมขาย', width: 1066, height: 1600 },
+  instructorParas: [
+    'ผมเริ่มจากการเป็นเซลล์ครับ เคยวิ่งหาลูกค้าเอง เคยโดนเทตอนใกล้ปิด เคยนั่งทำใบเสนอราคาถึงเที่ยงคืน เพราะงั้นเวลาสอน ผมรู้ว่างานไหน "พูดง่ายแต่ทำจริงเหนื่อย"',
+    'ทุกระบบ AI ที่สอนในคลาส ผมสร้างใช้เองในธุรกิจตัวเองก่อนทั้งหมด ตั้งแต่ทำคอนเทนต์ ตามลูกค้า ทำเอกสารขาย ไปจนถึงหลังบ้านของเพจที่คุณกำลังอ่านอยู่นี่แหละครับ',
+    'หน้าที่ของผมในวันอบรมคือเดินดูหน้าจอทีละคน ช่วยจัด context และถามคำถามให้ชิ้นงานของเซลล์แต่ละคนผูกกับงานขายจริง ผมอยู่ในห้องเพื่อพาทีมทำ ไม่ได้อยู่บนเวทีเพื่อเล่าเรื่องตัวเอง',
+    'ผมไม่ใช่คนที่เก่ง AI ที่สุดในประเทศหรอกครับ แต่ผมน่าจะเป็นคนที่นั่งอยู่ตรงกลางระหว่าง "ทีมขายจริง" กับ "ของพวกนี้" มานานพอที่จะแปลให้สองฝั่งเข้าใจกันได้',
+  ],
+
+  priceLabel: 'คอร์สเพิ่มยอดขายด้วย AI สำหรับทีมขาย · In-house 1 วัน',
+  priceAmount: PRICE_1DAY,
+  priceNote: `มากัน 20 คน เฉลี่ยคนละ ${perHead.toLocaleString('th-TH')} บาท ถูกกว่าส่งเซลล์ไปเรียนข้างนอก 1 ที่นั่ง`,
+  priceIncludes: [
+    'อบรม on-site ที่ออฟฟิศคุณ 1 วันเต็ม (ทีมขาย 5–20 คน)',
+    'Sales Journey Map + ชุด Content/Prospecting kit ทำจากของจริง เสร็จในวันนั้น',
+    'สมองบริษัท: company-context.md + FFAB Sheet + prompt งานขาย 23+ ตัว',
+    'Follow-up sequence ตาม Stage + กติกาว่าเรื่องไหนต้องมีคนตรวจก่อนส่ง',
+    'Tracking sheet ของหัวหน้า + Action plan 14 วัน พร้อมชื่อคนรับผิดชอบ',
+    'ติดตามผ่าน LINE 7 วันหลังเรียน · ใบกำกับภาษีนามบริษัท ฝ่ายบัญชีเบิกได้',
+  ],
+  priceTerms: [
+    'เงื่อนไขเดียวที่ผมขอ: ชำระเต็มจำนวนก่อนวันอบรมครับ เพื่อให้ทั้งสองฝั่งจริงจังกับวันนั้นเท่ากัน · on-site กรุงเทพฯ และปริมณฑล ไม่คิดค่าเดินทาง',
+    'อยากให้ผมอยู่ยาวกว่า 7 วัน มีแพ็กเกจ "พาลงมือทำ" ต่อยอดหลังคอร์ส ถามรายละเอียดได้ในคิวคุยฟรี',
+  ],
+  priceReassure: 'ยังไม่ต้องเชื่อผมครับ ให้ผมดูขั้นตอนขายของทีมคุณก่อน แล้วค่อยตัดสินใจว่าคุ้มไหม',
+
+  faqs: [
+    { q: 'เซลล์ผมไม่เก่งเทคโนโลยีเลย เรียนไหวไหม', a: 'ไหวครับ ไม่ต้องเขียนโค้ด สั่งงานเป็นภาษาไทยได้ และเราเริ่มจาก template ไม่ใช่หน้าจอว่างๆ ทุกขั้นตอนทำตามพร้อมกันทีละคลิก ใครหลุดผมเดินไปนั่งข้างๆ จนตามทัน คนที่พิมพ์ช้าที่สุดในห้องคือ KPI ของผม' },
+    { q: 'ธุรกิจผมขายแบบ B2B วิ่งหาลูกค้าเอง ไม่ได้ขายผ่านเพจ ใช้ได้ไหม', a: 'ได้ครับ ช่วงหา Lead เราปรับตามธุรกิจ ใครขายผ่านออนไลน์ทำชุด Content ใครวิ่งหาลูกค้าทำชุดข้อความ Prospecting กับสคริปต์เปิดการคุยแทน ส่วนการคัดกรอง ติดตาม และส่งต่อ ใช้โครงเดียวกันทุกธุรกิจครับ' },
+    { q: 'ต้องเตรียมอะไรก่อนวันอบรม', a: 'เตรียมข้อมูลสินค้า ราคา เงื่อนไข และตัวอย่างแชตหรือบทสนทนาลูกค้าจริง ตาม Pre-work Checklist ที่ผมส่งให้หลังยืนยันวัน แล้วให้ IT เช็คการเข้าถึงเครือข่ายก่อน เพื่อให้เวลาในห้องหมดไปกับการลงมือทำ' },
+    { q: 'ข้อมูลบริษัทที่ใช้ในคลาส ปลอดภัยไหม', a: 'ในคลาสมี Data Rules ชัดเจนครับ ข้อมูลส่วนตัวลูกค้า ต้นทุน และสัญญาที่บริษัทไม่อนุญาต ต้องตัดออกหรือทำให้ไม่ระบุตัวตนก่อนใช้ และกติกานี้เป็นหนึ่งในของที่ทีมได้กลับไปใช้ต่อด้วย' },
+    { q: 'AI จะมาแทนเซลล์ของผมหรือเปล่า', a: 'ไม่ครับ และผมพูดเรื่องนี้ตรงๆ ในคลาสด้วย ตอนปิดจริงลูกค้าอยากคุยกับคน AI มีหน้าที่ช่วยทำสื่อ ร่าง เตรียม และซ้อม ส่วนราคาและเงื่อนไขต้องมีคนตรวจและอนุมัติทุกครั้ง AI รับงานครับ ไม่ได้รับตำแหน่งใคร' },
+    { q: 'มีเวอร์ชันที่เจาะธุรกิจของผมโดยเฉพาะไหม', a: 'มีครับ ตอนนี้มี Dealer Edition สำหรับดีลเลอร์รถใหม่ เป็นคอร์ส 2 วันที่เพิ่มภาคทำสื่อจากรถจริงและยิง Ads เข้าไป ส่วนวงการอื่น ผมปรับตัวอย่างและแบบฝึกหัดตามหน้างานให้อยู่แล้วทุกรุ่น เล่าธุรกิจคุณมาในไลน์ได้เลย' },
+    { q: 'จ่ายเงินยังไง มีเอกสารให้ฝ่ายบัญชีไหม', a: 'ชำระเต็มจำนวนก่อนวันอบรม ออกใบกำกับภาษีในนามบริษัทให้ครบครับ ใบเสนอราคาสำหรับขออนุมัติภายในก็ทำให้ได้ บอกผมในคิวคุยฟรีได้เลย' },
+  ],
+  nudgeFaq: 'คำถามของคุณไม่อยู่ในลิสต์นี้ใช่ไหมครับ? ถามผมตรงๆ ในไลน์ได้เลย ไม่ต้องกรอกฟอร์ม',
+};
+
+
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  ogImage={`${SITE.url}/og-image.jpg`}
+  noindex
+  robots="noindex,follow"
+  schema={{ types: ['WebPage'], title, description }}
+>
+  <link
+    slot="head"
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&display=swap"
+  />
+
+  <div id="dealer-ai-page" class="lp-v2">
+    <AdsContentV2 {...content}>
+      <ProofAdsBlock
+        slot="proof"
+        systemId="line-agent"
+        formAnchor="#dealer-ai-form"
+        lead="แอดมินที่ไม่เคยหลับ"
+        body="ลูกค้าทักเข้าไลน์ตอนสี่ทุ่ม Agent ตอบให้ทันที เก็บชื่อ สิ่งที่สนใจ เบอร์ และช่วงเวลาสะดวก แล้วส่งต่อให้เซลล์โทรกลับตอนเช้า — ผมใช้ตัวนี้ในธุรกิจตัวเองอยู่ทุกวัน"
+        ctaLabel={content.ctaLabel}
+      />
+    </AdsContentV2>
+
+    <section id="dealer-ai-form" class="scroll-mt-20 px-6 py-16 md:py-24">
+      <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">จองคิวคุยฟรี</p>
+          <h2 class="mt-3 font-display text-3xl font-bold leading-tight text-navy md:text-5xl">เล่าโจทย์ทีมขายที่ดีลเลอร์ให้ผมฟัง</h2>
+          <p class="mt-5 leading-relaxed text-warm-ink/75">กรอกข้อมูลสั้นๆ ไว้ครับ เดี๋ยวผมทักกลับทาง LINE หรือโทรศัพท์ แล้วคุยกัน 15–20 นาที ว่าดีลเลอร์คุณควรเริ่มวางระบบ AI ตรงไหนก่อน</p>
+        </div>
+
+        <form id="dealer-ai-booking-form" class="editorial-card p-6 md:p-9" novalidate>
+          <input name="honeypot-name" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true" />
+          <div class="space-y-5">
+            <label class="field-label">ชื่อของคุณ<input name="name" required autocomplete="name" class="field" aria-label="ชื่อของคุณ" /></label>
+            <label class="field-label">ชื่อบริษัท / ดีลเลอร์ / โชว์รูม<input name="business" required autocomplete="organization" class="field" placeholder="เช่น บจก. สยามมอเตอร์ หรือ ชื่อโชว์รูม" aria-label="ชื่อบริษัท ดีลเลอร์ หรือ โชว์รูม" /></label>
+            <fieldset class="field-label">
+              <legend class="mb-2">อยากให้ผมติดต่อกลับแบบไหนครับ</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="intent-option flex cursor-pointer items-start gap-3 rounded-xl border border-[#c9c2b2] bg-ivory p-4">
+                  <input type="radio" name="intent" value="chat" required class="mt-1 accent-coral" aria-label="คุยเบื้องต้นก่อน" />
+                  <span><span class="block font-semibold text-navy">คุยเบื้องต้นก่อน</span><span class="mt-0.5 block text-sm font-normal text-warm-ink/70">อยากสอบถามรายละเอียดก่อน</span></span>
+                </label>
+                <label class="intent-option flex cursor-pointer items-start gap-3 rounded-xl border border-[#c9c2b2] bg-ivory p-4">
+                  <input type="radio" name="intent" value="booking" required class="mt-1 accent-coral" aria-label="ขอนัดจองคิวเลย" />
+                  <span><span class="block font-semibold text-navy">ขอนัดจองคิวเลย</span><span class="mt-0.5 block text-sm font-normal text-warm-ink/70">พร้อมนัดคุยจริงจัง</span></span>
+                </label>
+              </div>
+            </fieldset>
+            <label class="field-label">เบอร์โทรมือถือ<input name="phone" type="tel" required inputmode="tel" autocomplete="tel" pattern={"[0-9\\(\\)\\+\\-\\s]{9,15}"} class="field" placeholder="เช่น 0812345678" aria-label="เบอร์โทรมือถือ" /></label>
+            <div class="grid gap-5 sm:grid-cols-2"> <label class="field-label">ตำแหน่งของคุณ<select name="position" required class="field" aria-label="ตำแหน่งของคุณ"><option value="">เลือกตำแหน่ง</option><option>CEO / เจ้าของกิจการ</option><option>Managing Director</option><option>Sales Director</option><option>Sales Manager</option><option>Marketing Manager</option><option>Operations Manager</option><option>อื่นๆ</option></select></label> <label class="field-label">LINE ID <span class="font-normal text-warm-ink/55">(ถ้ามี)</span><input name="line_id" autocomplete="off" class="field" placeholder="เช่น @yourshop หรือ ไอดีไลน์" aria-label="LINE ID" /></label> </div>
+            <label class="field-label">งบที่พร้อมลงทุน<select name="budget" required class="field" aria-label="งบที่พร้อมลงทุน"><option value="">เลือกช่วงงบ</option><option>ยังไม่ได้ตั้งงบ — อยากเห็นโจทย์ก่อน</option><option>ต่ำกว่า ฿50,000</option><option>฿50,000–฿100,000</option><option>฿100,000–฿300,000</option><option>มากกว่า ฿300,000</option></select></label>
+            <label class="field-label">โจทย์ทีมขายที่อยากแก้ <span class="font-normal text-warm-ink/55">(ถ้ามี)</span><textarea name="sales_issue" rows="4" class="field resize-y" aria-label="โจทย์ทีมขายที่อยากแก้"></textarea></label>
+            <input id="utm_source" name="utm_source" type="hidden" />
+            <input id="utm_medium" name="utm_medium" type="hidden" />
+            <input id="utm_campaign" name="utm_campaign" type="hidden" />
+            <input id="utm_content" name="utm_content" type="hidden" />
+            <input id="utm_term" name="utm_term" type="hidden" />
+            <input id="fbclid" name="fbclid" type="hidden" />
+            <input id="ttclid" name="ttclid" type="hidden" />
+            <AfterHoursField variant="warm" />
+            <label class="flex cursor-pointer items-start gap-3 pt-1"><input name="consent" type="checkbox" required class="checkbox mt-0.5" aria-label="ยินยอมให้ติดต่อกลับตามนโยบายความเป็นส่วนตัว" /><span class="text-sm leading-relaxed text-warm-ink/75">ยินยอมให้ติดต่อกลับตาม <a href="/privacy" class="font-semibold text-cyan underline">นโยบายความเป็นส่วนตัว</a></span></label>
+            <p id="dealer-ai-error" class="hidden rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error" role="alert" aria-live="polite"></p>
+            <button id="dealer-ai-submit" type="submit" class="btn min-h-11 w-full border-0 bg-coral py-4 text-base text-white hover:bg-[#c43245]" aria-label="ส่งข้อมูล">ส่งข้อมูล</button>
+          </div>
+        </form>
+
+        <div id="dealer-ai-success" class="editorial-card hidden p-8 text-center lg:col-start-2" role="status" aria-live="polite">
+          <DarumaMark class="mx-auto h-auto w-20" />
+          <h2 class="mt-5 font-display text-3xl font-bold text-navy">รับข้อมูลแล้วครับ</h2>
+          <p class="mt-3 leading-relaxed text-warm-ink/75">ผมจะอ่านโจทย์ก่อนครับ แล้วทักกลับทาง LINE หรือโทรศัพท์ คุยกันฟรี 15–20 นาที</p>
+          <p class="mt-5 border-t border-[#c9c2b2] pt-4 text-sm leading-relaxed text-warm-ink/75">ระหว่างรอผมติดต่อกลับ อ่านหน้านี้ 3 นาทีครับ จะได้รู้จักกันก่อนคุยจริง<br /><a href="/start" class="font-semibold text-cyan underline">รู้จักผมใน 3 นาที →</a></p>
+        </div>
+      </div>
+
+      <div class="mx-auto mt-12 max-w-6xl border-t border-[#c9c2b2] pt-10">
+        <p class="text-center text-lg font-semibold text-navy">ยังไม่อยากกรอกฟอร์ม? ทักไลน์มาถามผมสั้นๆ ก่อนก็ได้ครับ</p>
+        <div class="mx-auto mt-5 flex max-w-2xl justify-center">
+          <a href={lineUrl} data-line-dealer target="_blank" rel="noopener" class="line-button flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#06c755] px-4 py-3 text-center font-semibold text-white transition-colors hover:bg-[#05b34c]" aria-label="ทัก LINE ถามว่าโชว์รูมผมเอา AI ไปใช้ได้ไหม">
+            <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" d="M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 8.9 8.2-.2.2-.4.5-.5.8-.2.5-.1.9.4 1 .4.1.8-.1 1.2-.3l3.3-2.1c4.6-.8 8.2-3.7 8.2-7.6Z"/></svg>
+            <span>ทัก LINE ถามว่าโชว์รูมผมเอา AI ไปใช้ได้ไหม</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div id="dealer-ai-sticky" class="fixed inset-x-0 bottom-0 z-50 border-t border-[#c9c2b2] bg-ivory/95 p-3 shadow-[0_-3px_12px_rgba(30,27,22,0.10)] backdrop-blur md:hidden" hidden>
+      <a href="#dealer-ai-form" class="flex min-h-11 w-full items-center justify-center rounded-xl bg-coral px-6 py-3.5 font-semibold text-white transition active:scale-[0.98]">{content.ctaLabel}</a>
+    </div>
+  </div>
+
+</BaseLayout>
+
+<style>
+  /* Tyre silhouette layer — dealer page only. Low enough that it reads as
+     texture on the navy, never as an illustration competing with the copy. */
+  .tyre { position: absolute; pointer-events: none; width: 26rem; color: #7dd3e8; opacity: .07; }
+  .tyre :global(svg) { width: 100%; height: auto; display: block; }
+  .tyre-right { right: -9rem; bottom: -8rem; }
+  .tyre-left { left: -9rem; top: -7rem; }
+  @media (max-width: 767px) { .tyre { width: 17rem; } }
+
+  .field-label { display: grid; gap: .45rem; color: var(--pun-navy); font-size: .95rem; font-weight: 600; }
+  .intent-option { transition: border-color .15s, background .15s, box-shadow .15s; }
+  .intent-option:has(input:checked) { border-color: var(--pun-coral); background: color-mix(in oklch, var(--pun-coral) 7%, transparent); box-shadow: inset 0 0 0 1px var(--pun-coral); }
+  .field { width: 100%; border: 1px solid var(--pun-border); border-radius: .75rem; background: var(--pun-ivory); color: var(--pun-ink); padding: .75rem 1rem; min-height: 44px; }
+  .field:focus { border-color: var(--pun-coral); outline: 2px solid color-mix(in oklch, var(--pun-coral) 25%, transparent); outline-offset: 2px; }
+  .line-button { min-height: 44px; }
+  :global(body:has(#dealer-ai-page) .nav-cta),
+  :global(body:has(#dealer-ai-page) .menu-mobile li.mt-2) { display: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .line-button { transition: none; }
+  }
+</style>
+
+<script>
+  import { foldAfterHours } from '../../scripts/after-hours';
+  import { submitLeadFallback, makeReference } from '../../scripts/lead-fallback';
+
+  type Attribution = Record<string, string | undefined>;
+  type MetaWindow = Window & { fbq?: (...args: unknown[]) => void; ttq?: { track: (...args: unknown[]) => void }; pnAttribution?: Attribution };
+
+  const pageWindow = window as MetaWindow;
+  const form = document.getElementById('dealer-ai-booking-form') as HTMLFormElement | null;
+  const formSection = document.getElementById('dealer-ai-form');
+  const success = document.getElementById('dealer-ai-success');
+  const error = document.getElementById('dealer-ai-error');
+  const submit = document.getElementById('dealer-ai-submit') as HTMLButtonElement | null;
+  const WEBHOOK = 'https://form-hook.punnattapatch.com/webhook/intake-form-v2';
+
+  /**
+   * Reference token, same shape as intake-form.astro's makeReference().
+   * Added 2026-08-01: the ads landing pages never sent one, so `reference`
+   * arrived empty at n8n — which meant the TikTok Events API node posted
+   * event_id: "" on every ads lead and could not dedupe against the browser
+   * pixel. It is also the event_id Meta CAPI will need.
+   */
+  function makeAdsReference(): string {
+    const stamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 12);
+    const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+    return `PN-${stamp}-${rand}`;
+  }
+
+  const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+  // Click IDs are the strongest match signal for Meta/TikTok server-side events.
+  // BaseLayout already stashes them in pnAttribution (14-day TTL); before
+  // 2026-08-01 the ads forms simply never read them back out, so every ads lead
+  // reached the CRM with fbclid/ttclid empty.
+  const CLICK_ID_KEYS = ['fbclid', 'ttclid'];
+
+  function populateAttribution() {
+    const query = new URLSearchParams(window.location.search);
+    const stored = pageWindow.pnAttribution || {};
+    [...UTM_KEYS, ...CLICK_ID_KEYS].forEach((key) => {
+      const input = document.getElementById(key) as HTMLInputElement | null;
+      if (input) input.value = query.get(key) || stored[key] || '';
+    });
+  }
+
+  populateAttribution();
+
+  if (formSection && 'IntersectionObserver' in window) {
+    let fired = false;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting) && !fired) {
+        fired = true;
+        if (typeof pageWindow.fbq === 'function') fbq('track', 'ViewContent', { content_name: 'dealer_ai_form' });
+        observer.disconnect();
+      }
+    }, { threshold: 0.4 });
+    observer.observe(formSection);
+  }
+
+  document.querySelectorAll('[data-line-dealer]').forEach((lineButton) => {
+    lineButton.addEventListener('click', () => {
+      if (typeof pageWindow.fbq === 'function') fbq('track', 'Contact', { content_name: 'line_add_dealer' });
+      if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('Contact', { content_name: 'line_add_dealer' });
+    });
+  });
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    if ((new FormData(form).get('honeypot-name') as string)?.trim()) return;
+
+    const phoneRaw = String(new FormData(form).get('phone') || '').replace(/[\s()\-]/g, '');
+    if (!/^(?:\+?66|0)\d{8,9}$/.test(phoneRaw)) {
+      if (error) { error.textContent = 'กรุณากรอกเบอร์โทรมือถือจริง เช่น 0812345678 ครับ'; error.classList.remove('hidden'); }
+      (form.querySelector('[name="phone"]') as HTMLInputElement | null)?.focus();
+      return;
+    }
+
+    const payload = Object.fromEntries(new FormData(form).entries());
+    const intentLabel = payload.intent === 'booking' ? 'ขอนัดจองคิว' : 'คุยเบื้องต้นก่อน';
+    Object.assign(payload, {
+      phone: phoneRaw,
+      lead_temp: payload.intent === 'booking' ? 'hot' : 'warm',
+      // Compatibility aliases so the shared intake-form-v2 flow + submit_lead RPC
+      // map these into CRM columns (it reads company/tier/problems/comment, not the raw dealer field names).
+      company: payload.business || '',                        // -> company_name
+      // LP นี้เจาะ vertical เดียว — industry รู้จากหน้าเลย ไม่ต้องถามเพิ่ม
+      // (ห้าม map จาก business เพราะช่องนั้นคือ "ชื่อบริษัท" จะซ้ำกับ company_name)
+      industry: '',                                            // หน้ากลาง ไม่ผูกวงการ -> business_type ว่างไว้ให้ทีมกรอกตอน qualify
+      tier: payload.intent === 'booking' ? 'HOT' : 'WARM',    // -> temperature (hot/warm)
+      problems: (payload.sales_issue as string) || '',        // -> pain_points
+      comment: [intentLabel, payload.sales_issue].filter(Boolean).join(' — '), // -> crm_notes + Telegram alert
+      source: 'ads-sales-ai-team',
+      source_page: 'ads/sales-ai-team',
+      booking_type: 'sales-ai-team',
+      // Flatten Body1 reads `submittedAt` (camelCase) — the snake_case key used
+      // here until 2026-08-01 never matched, so n8n silently fell back to its
+      // own execution time.
+      submittedAt: new Date().toISOString(),
+      // Flatten Body1 sources reference/user_agent/referrer from `_meta` only.
+      _meta: {
+        reference: makeAdsReference(),
+        page: window.location.pathname,
+        user_agent: navigator.userAgent,
+        referrer: document.referrer || '',
+      },
+    });
+    // ⏰ นอกเวลาทำการ — พ่วงเข้า comment ด้วย เพราะ n8n Flatten Body1 ยังไม่รู้จัก key นี้
+    foldAfterHours(payload as Record<string, unknown>);
+
+    if (submit) { submit.disabled = true; submit.textContent = 'กำลังส่ง...'; }
+    error?.classList.add('hidden');
+
+    try {
+      const response = await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true,
+      });
+      if (!response.ok) throw new Error('submission failed');
+      if (typeof pageWindow.fbq === 'function') fbq('track', 'Lead', { content_name: 'dealer_ai_booking', lead_temp: payload.lead_temp });
+      if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('SubmitForm', { content_name: 'dealer_ai_booking', lead_temp: payload.lead_temp });
+      form.classList.add('hidden');
+      success?.classList.remove('hidden');
+      success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch {
+      // form-hook (มินิ) ไม่ตอบ → ชั้น 2: เขียน Supabase ตรง — การ์ดแจ้งเตือนมาจาก DB trigger → guardian
+      if (await submitLeadFallback(payload as Record<string, unknown>, makeReference())) {
+        if (typeof pageWindow.fbq === 'function') fbq('track', 'Lead', { content_name: 'dealer_ai_booking', lead_temp: payload.lead_temp });
+        if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('SubmitForm', { content_name: 'dealer_ai_booking', lead_temp: payload.lead_temp });
+        form.classList.add('hidden');
+        success?.classList.remove('hidden');
+        success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      if (error) { error.textContent = 'ระบบรับข้อมูลขัดข้องชั่วคราว — ข้อมูลยังไม่ถึงผม กรุณาลองใหม่ หรือแอด LINE เพื่อส่งโจทย์ให้ผม'; error.classList.remove('hidden'); }
+      if (submit) { submit.disabled = false; submit.textContent = 'ส่งข้อมูล'; }
+    }
+  });
+
+</script>
+
+<style>
+  /* เผื่อที่ให้ปุ่มค้างล่างจอ ไม่ให้ทับปุ่มส่งฟอร์ม/ฟุตเตอร์บนมือถือ */
+  @media (max-width: 767px) { :global(body) { padding-bottom: 5.5rem; } }
+</style>
+
+<script is:inline data-sticky-cta>
+  (() => {
+    const bar = document.getElementById('dealer-ai-sticky');
+    const form = document.getElementById('dealer-ai-form');
+    if (!bar || !form || !('IntersectionObserver' in window)) return;
+    let formVisible = false;
+    const sync = () => { bar.hidden = formVisible || window.scrollY < 600; };
+    new IntersectionObserver(([entry]) => { formVisible = entry.isIntersecting; sync(); }, { threshold: 0 }).observe(form);
+    window.addEventListener('scroll', sync, { passive: true });
+    sync();
+  })();
+</script>

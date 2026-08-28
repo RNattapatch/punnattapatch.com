@@ -1,3 +1,12 @@
 /services/ai-workshop /ai-workshop-advance 301
 # waitlist P1 ปิดชั่วคราว (2026-08-12) — workflow n8n ปิดไปแล้ว + คอร์ส pause · 302 เผื่อเปิดกลับ
 /waitlist /booking 302
+# lp-line-ads: static LP เก่าโชว์ ฿39,900 (ราคาตาย) + index,follow — ลบทิ้ง 2026-08-28 (catalog-revision-plan Phase 0)
+/ads/lp-line-ads/* /services 301
+# ads LP รุ่นเก่า (positioning "ลดงานซ้ำ คืนเวลาเซลล์") → รุ่นใหม่ H1 = ชื่อคอร์ส (catalog-revision-plan §3.7 · 2026-08-28)
+# CF Pages ส่ง query string (utm) ต่อให้อัตโนมัติ
+/ads/daruma-consult /ads/sales-ai-team 301
+/ads/dealer-ai-sales /ads/dealer-online-sales 301
+# นอกแผน: hotel = Wave 2 ยังไม่เปิด · line-ai-response = Implementation product ที่ master strategy ไม่มี
+/ads/hotel-resort-ai /services 301
+/ads/line-ai-response /services 301

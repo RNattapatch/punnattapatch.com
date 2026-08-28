@@ -252,12 +252,17 @@ for (const [label, phoneValue, lineValue, expectPhone, expectLine] of [
     { slug: 'sponsor', path: '/sponsor', form: '#sponsorForm', submit: 'button[type="submit"]',
       expect: { source_page: 'sponsor' },
       why: 'ไม่ส่ง source_page → Flatten default /intake-form → งานสปอนเซอร์ขึ้นว่า INTAKE FORM' },
-    { slug: 'ads-dealer', path: '/ads/dealer-ai-sales', form: '#dealer-ai-booking-form', submit: '#dealer-ai-submit',
-      expect: { industry: 'ดีลเลอร์รถ / โชว์รูม' },
+    // 2026-08-28 catalog revision: หน้า ads เก่า (dealer-ai-sales / hotel-resort-ai) ถูก redirect ทิ้ง
+    // ชั้นวางใหม่ = sales-ai-team (core 1 วัน) / sales-online-team (generic 2 วัน) / dealer-online-sales (Dealer Edition)
+    { slug: 'ads-dealer', path: '/ads/dealer-online-sales', form: '#dealer-ai-booking-form', submit: '#dealer-ai-submit',
+      expect: { industry: 'ดีลเลอร์รถ / โชว์รูม', source: 'ads-dealer-online-sales' },
       why: 'ไม่ส่ง industry → business_type ว่างใน CRM' },
-    { slug: 'ads-hotel', path: '/ads/hotel-resort-ai', form: '#hotel-ai-booking-form', submit: '#hotel-ai-submit',
-      expect: { industry: 'โรงแรม / รีสอร์ท' },
-      why: 'เหมือน dealer' },
+    { slug: 'ads-core-1day', path: '/ads/sales-ai-team', form: '#dealer-ai-booking-form', submit: '#dealer-ai-submit',
+      expect: { source: 'ads-sales-ai-team' },
+      why: 'source ต้องระบุหน้า ไม่งั้นวัด vertical/angle ไม่ได้' },
+    { slug: 'ads-generic-2day', path: '/ads/sales-online-team', form: '#dealer-ai-booking-form', submit: '#dealer-ai-submit',
+      expect: { source: 'ads-sales-online-team' },
+      why: 'หน้ากลางไม่ผูกวงการ — industry ว่างโดยตั้งใจ แต่ source ต้องครบ' },
   ];
 
   for (const c of CASES) {

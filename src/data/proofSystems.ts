@@ -251,8 +251,8 @@ export const PROOF_RAIL_IMAGES: ProofImage[] = [
 
 /** ระบบที่หน้า ads แต่ละหน้าหยิบไปโชว์เดี่ยว ๆ — เลือกให้ตรงกับสัญญาในโฆษณา */
 export const ADS_PROOF_PICK: Record<string, string> = {
-  'dealer-ai-sales': 'line-agent',
-  'daruma-consult': 'command-center',
+  'dealer-online-sales': 'line-agent',
+  'sales-ai-team': 'command-center',
 };
 
 export function getProofSystem(id: string): ProofSystem | undefined {

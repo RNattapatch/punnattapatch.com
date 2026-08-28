@@ -4,7 +4,9 @@ import { readFile } from 'node:fs/promises';
 // เดิม hardcode ราคาไว้ที่นี่ → พอปันปรับราคาที่ SSOT แล้ว guard พังทันที (เจอ 2026-08-09:
 // tiktok-workshop 49,900 → 59,900 ทำให้สคริปต์ throw ทั้งที่ของถูกต้อง) · guard ควรตรวจว่า
 // "key ที่หน้าเว็บต้องใช้ยังอยู่ครบและ format ถูก" ไม่ใช่ล็อกตัวเลขซ้ำกับ SSOT อีกชุด
-const requiredKeys = ['inhouse-a', 'inhouse-b-list', 'inhouse-b', 'daruma-transformation', 'tiktok-workshop'];
+// 2026-08-28 catalog revision: Training grid = inhouse-a / ai-workshop-advance / tiktok-workshop
+// Services grid = sales-team-structure / daruma-starter / ai-agent-ceo (render จาก SSOT)
+const requiredKeys = ['inhouse-a', 'ai-workshop-advance', 'tiktok-workshop', 'tiktok-workshop-regular', 'sales-team-structure', 'daruma-starter', 'ai-agent-ceo'];
 
 for (const key of requiredKeys) {
   const amount = PRICES[key]?.amount;
@@ -13,8 +15,16 @@ for (const key of requiredKeys) {
 }
 
 const services = await readFile(new URL('../src/pages/services.astro', import.meta.url), 'utf8');
-for (const token of ['inhouse-a', 'inhouse-b-list', 'inhouse-b', 'daruma-transformation', 'tiktok-workshop']) {
+for (const token of ['inhouse-a', 'ai-workshop-advance', 'tiktok-workshop', 'tiktok-workshop-regular']) {
   if (!services.includes(`fmtPrice('${token}')`)) throw new Error(`missing ${token} token`);
+}
+// การ์ด Services grid render จาก SSOT ผ่าน serviceOffers — เช็คว่า key ครบ
+for (const key of ['sales-team-structure', 'daruma-starter', 'ai-agent-ceo']) {
+  if (!services.includes(`'${key}'`)) throw new Error(`services grid missing key ${key}`);
+}
+// ของที่ถอดจากหน้าร้านแล้ว (2026-08-28) ห้ามโผล่กลับ
+for (const retired of ["fmtPrice('inhouse-b')", "fmtPrice('daruma-transformation')", 'Daruma Sales Office Bootcamp']) {
+  if (services.includes(retired)) throw new Error(`retired offer "${retired}" is back on /services`);
 }
 if (services.includes('Public Course') || services.includes('Daruma Score &amp; Transformation Roadmap')) {
   throw new Error('retired public offer remains');
@@ -68,7 +78,7 @@ if (!rendered) {
 }
 
 const serviceRedirects = await readFile(new URL('../src/pages/services/[slug].astro', import.meta.url), 'utf8');
-if (!serviceRedirects.includes("'package-a': '/services#inhouse-b'")) {
+if (!serviceRedirects.includes("'package-a': '/services'")) {
   throw new Error('Package A redirect missing');
 }
 
