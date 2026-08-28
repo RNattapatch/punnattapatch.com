@@ -13,7 +13,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PRICES } from '../src/data/pricing.mjs';
+import { PRICES, PRICE_AMOUNTS } from '../src/data/pricing.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT = join(ROOT, 'src', 'content');
@@ -60,12 +60,52 @@ for (const file of walk(CONTENT)) {
   });
 }
 
-if (findings) {
-  console.log(
-    `\n⚠️  ${findings} hardcoded package price(s) เจอในบทความ — ควรเปลี่ยนเป็น {{price:<key>}} token`
-  );
+// ── public/ scan — จับ "ราคาตาย" ใน static files ──────────────────────────
+// ไฟล์ใต้ public/ ใช้ token ไม่ได้ (ไม่ผ่าน remark) — ราคาที่ตรง catalog ปัจจุบัน
+// ถือว่าตั้งใจ (llms.txt ฯลฯ) แต่ราคา ฿X,XXX ที่ "ไม่มีใน catalog เลย" = ราคาตาย
+// ที่หลุด sync (เคสจริง: lp-line-ads โชว์ ฿39,900 หลังราคาเปลี่ยนเป็น 34,900)
+const PUBLIC_DIR = join(ROOT, 'public');
+const validPriceSet = new Set(PRICE_AMOUNTS.map((n) => '฿' + n.toLocaleString('en-US')));
+const anyPriceRe = /฿\d{1,3}(?:,\d{3})+/g;
+const publicExts = ['.html', '.txt', '.xml', '.md'];
+let staleFindings = 0;
+
+function walkPublic(dir, acc = []) {
+  for (const e of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, e.name);
+    if (e.isDirectory()) walkPublic(p, acc);
+    else if (publicExts.some((ext) => e.name.endsWith(ext))) acc.push(p);
+  }
+  return acc;
+}
+
+for (const file of walkPublic(PUBLIC_DIR)) {
+  const lines = readFileSync(file, 'utf8').split('\n');
+  lines.forEach((line, i) => {
+    if (nonPackagePriceContext.test(line)) return;
+    if (exemptionMarker.test(line)) return;
+    for (const m of line.match(anyPriceRe) ?? []) {
+      // ต่ำกว่า ฿10,000 = ตัวเลขตัวอย่าง (งบ/subscription) ไม่ใช่ magnitude ของแพ็กเกจ
+      if (Number(m.slice(1).replaceAll(',', '')) < 10000) continue;
+      if (!validPriceSet.has(m)) {
+        staleFindings++;
+        console.log(`  ${relative(ROOT, file)}:${i + 1}  →  ${m} (ไม่มีใน catalog — ราคาตาย?)`);
+      }
+    }
+  });
+}
+
+if (findings || staleFindings) {
+  if (findings)
+    console.log(
+      `\n⚠️  ${findings} hardcoded package price(s) เจอในบทความ — ควรเปลี่ยนเป็น {{price:<key>}} token`
+    );
+  if (staleFindings)
+    console.log(
+      `\n⚠️  ${staleFindings} ราคาใน public/ ที่ไม่ตรง catalog — อัปเดตให้ตรง หรือแปะ <!-- price:historical --> ถ้าตั้งใจ`
+    );
   console.log(`   valid keys: ${Object.keys(PRICES).join(', ')}`);
   process.exit(1);
 } else {
-  console.log('✅ ไม่มีราคาแพ็กเกจ hardcode ในบทความ (ทุกราคาผ่าน token)');
+  console.log('✅ ไม่มีราคาแพ็กเกจ hardcode ในบทความ + public/ ตรง catalog ครบ');
 }
