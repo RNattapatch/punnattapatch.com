@@ -24,13 +24,18 @@ const ONLY = onlyArg > -1 ? process.argv[onlyArg + 1] : null;
 
 /** เบอร์ทดสอบต่างกันต่อฟอร์ม → ไล่ได้ว่า row ไหนมาจากฟอร์มไหน + ไม่ชนเบอร์คนจริง */
 const FORMS = [
-  { slug: 'booking',        path: '/booking',              form: '#booking-form',                submit: '#booking-submit',        phoneField: 'contact', phone: '0812340001', success: '#booking-success' },
+  { slug: 'booking',        path: '/booking',              form: '#booking-form',                submit: '#booking-submit',        phoneField: 'phone',   phone: '0812340001', success: '#booking-success' },  // 2026-08-28: ฟอร์มเปลี่ยน contact → phone (server gate เช็ค pattern เบอร์)
   { slug: 'intake',         path: '/intake-form',          form: '#intake-form',                 submit: 'button[type="submit"]',  phoneField: 'phone',   phone: '0812340002', success: null },
   { slug: 'sponsor',        path: '/sponsor',              form: '#sponsorForm',                 submit: 'button[type="submit"]',  phoneField: 'yourPhone', phone: '0812340003', success: null },
-  { slug: 'ads-dealer',     path: '/ads/dealer-ai-sales',  form: '#dealer-ai-booking-form',      submit: '#dealer-ai-submit',      phoneField: 'phone',   phone: '0812340004', success: null },
-  { slug: 'ads-daruma',     path: '/ads/daruma-consult',   form: '#daruma-consult-booking-form', submit: '#daruma-consult-submit', phoneField: 'phone',   phone: '0812340005', success: null },
-  { slug: 'ads-hotel',      path: '/ads/hotel-resort-ai',  form: '#hotel-ai-booking-form',       submit: '#hotel-ai-submit',       phoneField: 'phone',   phone: '0812340006', success: null },
-  { slug: 'bosi-quiz',      path: '/bosi-dna-quiz',        form: null,                           submit: null,                     phoneField: null,      phone: null,         success: null, quiz: true },
+  // 2026-08-28: ชั้นวาง ads ใหม่ (catalog revision) — ใส่ utm เต็มเพื่อพิสูจน์ trigger vertical/ad_angle ใน leads ด้วย
+  { slug: 'ads-dealer',     path: '/ads/dealer-online-sales?utm_source=meta&utm_medium=paid_social&utm_campaign=sales_ai_dealer_202609&utm_content=revenue_leak_video_01&utm_term=dealer_principal',
+    form: '#dealer-ai-booking-form', submit: '#dealer-ai-submit', phoneField: 'phone', phone: '0812340004', success: null },
+  { slug: 'ads-core-1day',  path: '/ads/sales-ai-team?utm_source=meta&utm_medium=paid_social&utm_campaign=sales_ai_generic_202609&utm_content=skill_amplifier_video_01',
+    form: '#dealer-ai-booking-form', submit: '#dealer-ai-submit', phoneField: 'phone', phone: '0812340005', success: null },
+  { slug: 'ads-2day',       path: '/ads/sales-online-team?utm_source=meta&utm_medium=paid_social&utm_campaign=sales_ai_online_202609&utm_content=manager_pain_video_01',
+    form: '#dealer-ai-booking-form', submit: '#dealer-ai-submit', phoneField: 'phone', phone: '0812340006', success: null },
+  { slug: 'ebook',          path: '/ebook-sales-interview', form: '#ebook-form', submit: '#ebook-form button[type="submit"]', phoneField: 'contact', phone: '0812340007', success: null, hook: 'free-material' },
+  { slug: 'bosi-quiz',      path: '/bosi-dna-quiz',        form: null,                           submit: null,                     phoneField: null,      phone: null,         success: null, quiz: true, hook: 'free-material' },
 ];
 
 const results = [];
@@ -59,8 +64,9 @@ for (const f of FORMS) {
   const page = await ctx.newPage();
 
   // ดูว่า webhook ตอบอะไร (ไม่ block — ปล่อยวิ่งไป production จริง)
+  const hookMatch = f.hook ?? 'intake-form-v2';
   page.on('response', (r) => {
-    if (r.url().includes('intake-form-v2')) rec.webhookStatus = r.status();
+    if (r.url().includes(hookMatch)) rec.webhookStatus = r.status();
   });
   page.on('pageerror', (e) => { rec.note += `pageerror: ${e.message.slice(0, 80)}; `; });
 
