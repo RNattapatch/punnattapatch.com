@@ -1,0 +1,839 @@
+---
+/**
+ * Lead magnet LP — E-Book "หยุดหาเซลล์ผิดคน" (67 คำถามสัมภาษณ์เซลล์)
+ *
+ * ปลายทางของโฆษณา Meta → อ่าน → กรอกฟอร์ม → /ebook-sales-interview/thank-you
+ *
+ * โครง funnel ยกมาจาก teardown 16 บล็อก (wiki/pages/teardown-lp-benzarnun-90day-opb-2026-08-24.md)
+ * แปลงจาก "หน้าขายคอร์ส" เป็น "หน้าแจกของฟรี" — ราคาที่คนต้องจ่ายคือ *ข้อมูลติดต่อ*
+ * จึงวางฟอร์มไว้ท้ายสุดหลัง FAQ เหมือนที่เขาวางราคาไว้บล็อกสุดท้าย และโปรย CTA ทั้งหน้าไปที่ #form
+ *
+ * ⚠️ ของฟรี = audience ไม่ใช่ lead — ยิงเข้า /webhook/free-material พร้อม lead_kind:'audience'
+ * ห้ามยิงเข้าท่อ intake/CRM (memory: audience-center-free-material)
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../data/site';
+import LineAskCta from '../../components/LineAskCta.astro';
+
+const title = 'หยุดหาเซลล์ผิดคน — E-Book 67 คำถามสัมภาษณ์เซลล์ (ฟรี)';
+const description =
+  'จ้างเซลล์ผิดหนึ่งคน ราคาที่จ่ายจริงไม่ใช่เงินเดือน — E-Book ฟรี รวม 67 คำถามสัมภาษณ์เซลล์ที่ผมใช้จริง พร้อมเหตุผลว่าแต่ละข้อกำลังวัดอะไร โดยปัน ณัฐพัชร์';
+const COVER = '/images/ebook-cover-page.jpg';
+/** ภาพหน้าจริงในเล่ม — เรนเดอร์จากตัวไฟล์ e-book ด้วย scripts/shoot-ebook.mjs */
+const PAGES = [
+  {
+    src: '/images/ebook-page-toc.jpg',
+    alt: 'หน้าสารบัญของอีบุ๊ก แสดง 4 หมวดคำถามพร้อมช่วงเลขข้อ',
+    cap: 'สารบัญ — 4 หมวด แบ่งตามสิ่งที่ต้องการวัด',
+  },
+  {
+    src: '/images/ebook-page-questions.jpg',
+    alt: 'หน้าคำถามในอีบุ๊ก แต่ละข้อมีคำถามและบล็อกอธิบายว่าทำไมต้องถาม',
+    cap: 'หน้าคำถามจริง — ทุกข้อมีบล็อก “ทำไมต้องถาม” กำกับ',
+  },
+];
+
+/** ตัวอย่างคำถามจริงจากในเล่ม — ให้คนได้ "ชิม" ก่อนกรอกฟอร์ม */
+const samples = [
+  {
+    no: '07',
+    q: 'เคยทำงานที่ไหนมาบ้าง และถ้าขออนุญาตติดต่อที่เก่าสะดวกไหม',
+    why: 'วัดความมั่นใจและความซื่อสัตย์ในการให้ข้อมูล บางคนที่ไม่ยอมให้ติดต่อบริษัทเก่า อาจมีประวัติไม่ดีติดตัวมา เป็นสัญญาณอันตราย',
+  },
+  {
+    no: '17',
+    q: 'เล่าเรื่องตอนที่โกรธที่สุดจนฟิวส์ขาดให้ฟังหน่อย เกิดขึ้นได้ยังไง แล้วจัดการยังไง',
+    why: 'วัดการควบคุมอารมณ์ EQ และสติ เพราะเซลล์เปรียบเหมือนหน้าตาและ Branding ของบริษัท ถ้าเขาคุมสติไม่อยู่ ไประเบิดอารมณ์ใส่ลูกค้า แบรนด์คุณพังพินาศได้เลย',
+  },
+  {
+    no: '47',
+    q: 'ขายของให้ดูหน่อย (ไม่เอาขายปากกา เพราะคนถามเยอะแล้ว)',
+    why: 'ดูของจริงว่าเขาขายเป็นไหม ไม่ใช่ท่องมาว่าเคยขายอะไร',
+  },
+];
+
+const chapters = [
+  {
+    n: '01',
+    name: 'วัดกันเลยว่าจะรุ่งหรือร่วง',
+    range: 'ข้อ 1–17',
+    detail: 'แรงขับ · ความอดทน · ความเสี่ยงที่จะลาออกเร็ว · ประวัติที่เรซูเม่ไม่เขียน',
+  },
+  {
+    n: '02',
+    name: 'เจาะลึกตัวตนและวิธีคิด',
+    range: 'ข้อ 18–37',
+    detail: 'วิธีแก้ปัญหา · การตัดสินใจ · ความรับผิดชอบต่อผลลัพธ์ · เข้ากับวัฒนธรรมทีมได้ไหม',
+  },
+  {
+    n: '03',
+    name: 'วัดสัญชาตญาณเซลล์',
+    range: 'ข้อ 38–57',
+    detail: 'หาลูกค้าใหม่เป็นไหม · ตัวเลขจริงที่เคยทำ · ปิดดีลด้วยอะไร · เจอราคาแพงกว่าคู่แข่งแล้วพูดยังไง',
+  },
+  {
+    n: '04',
+    name: 'Feature Ready — หาคนให้ทันโลก',
+    range: 'ข้อ 58–67',
+    detail: 'เรียนรู้ของใหม่เป็นไหม · ใช้ AI ช่วยงานเป็นหรือกลัว · รับมือความเปลี่ยนแปลงยังไง',
+  },
+];
+
+const faqs = [
+  {
+    q: 'ฟรีจริงไหม มีอะไรแอบขายทีหลังหรือเปล่า',
+    a: 'ฟรีจริง ไม่มีค่าใช้จ่าย ไม่ต้องใส่บัตร กรอกเสร็จกดอ่านได้ทันทีในหน้าถัดไป ถ้าอ่านแล้วอยากให้ผมช่วยวางระบบทีมขายต่อ คุณเป็นคนทักมาเอง ผมไม่โทรตื๊อ',
+  },
+  {
+    q: 'ทำไมต้องกรอกข้อมูลด้วย ในเมื่อของฟรี',
+    a: 'เพราะผมอยากรู้ว่าคนอ่านเป็นใคร ทำธุรกิจแบบไหน จะได้เอาไปปรับเนื้อหาเล่มต่อไปให้ตรงขึ้น และถ้าคุณเขียนปัญหาที่เจอมาด้วย ผมอ่านทุกข้อความจริงๆ',
+  },
+  {
+    q: 'ข้อมูลที่กรอกเอาไปทำอะไร',
+    a: `เก็บไว้ในระบบของผมเองเพื่อส่งเนื้อหาที่เกี่ยวข้องและติดต่อกลับถ้าคุณขอ ไม่ขายต่อ ไม่ส่งให้บุคคลที่สาม แจ้งลบได้ตลอดเวลา รายละเอียดอยู่ในหน้า Privacy`,
+  },
+  {
+    q: 'ผมไม่ได้จ้างเซลล์ ใช้กับตำแหน่งอื่นได้ไหม',
+    a: 'ได้ประมาณครึ่งเล่ม หมวดวัดใจกับหมวดวิธีคิดใช้กับทุกตำแหน่งได้เลย ส่วนหมวดสัญชาตญาณเซลล์ออกแบบมาสำหรับคนที่ต้องหาลูกค้าและปิดดีลโดยเฉพาะ',
+  },
+  {
+    q: 'ต้องถามครบทั้ง 67 ข้อไหม',
+    a: 'ไม่ต้อง และไม่ควร เลือกเฉพาะข้อที่ตรงกับตำแหน่งและความเสี่ยงที่คุณอยากตรวจ ประมาณ 12–15 ข้อต่อการสัมภาษณ์หนึ่งครั้งกำลังดี ที่เหลือเก็บไว้ถามรอบสอง',
+  },
+  {
+    q: 'อ่านจบแล้วอยากให้ช่วยวางระบบทีมขายต่อ ทำยังไง',
+    a: 'ทักมาใน LINE บอกสถานการณ์ทีมคุณสั้นๆ ผมจะบอกตรงๆ ว่าควรเริ่มจากอะไร และเหมาะกับบริการตัวไหน หรือถ้าอยากดูเองก่อนก็เปิดหน้าบริการได้เลย',
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  ogImage={`${SITE.url}${COVER}`}
+  schema={{
+    types: ['WebPage', 'FAQPage', 'BreadcrumbList'],
+    title,
+    description,
+    breadcrumbs: [
+      { name: 'หน้าแรก', url: SITE.url },
+      { name: 'E-Book หยุดหาเซลล์ผิดคน', url: `${SITE.url}/ebook-sales-interview` },
+    ],
+    faq: faqs.map((f) => ({ question: f.q, answer: f.a })),
+  }}
+>
+  {/* ══ 1 · HERO — ขายผลลัพธ์ปลายทาง ไม่ขายชื่อสินค้า ══ */}
+  <section class="border-b border-base-content/10 px-4 pb-14 pt-10 md:pt-16 lg:px-8">
+    <div class="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-[1.05fr_.95fr]">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest text-secondary">
+          E-Book ฟรี · 67 คำถามสัมภาษณ์เซลล์
+        </p>
+        <h1 class="mt-4 font-display text-4xl font-black leading-[1.12] tracking-tight text-balance md:text-5xl">
+          จ้างเซลล์ผิดหนึ่งคน<br />
+          <span class="text-secondary">ราคาที่จ่ายจริง ไม่ใช่เงินเดือน</span>
+        </h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-base-content/80">
+          เสียเวลาสอนงานใหม่ เสียโอกาสการขายทั้งไตรมาส เสียลูกค้าที่เขาดูแลอยู่
+          และเสียแรงของคนที่เหลือในทีม
+        </p>
+        <p class="mt-4 max-w-xl text-lg leading-relaxed text-base-content/80">
+          เล่มนี้คือ <strong class="font-bold">คำถาม 67 ข้อที่ผมใช้จริงในห้องสัมภาษณ์</strong>
+          พร้อมเหตุผลกำกับทุกข้อว่ากำลังวัดอะไร และควรฟังอะไรจากคำตอบ
+        </p>
+
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <a
+            href="#form"
+            class="btn btn-lg border-none bg-secondary text-secondary-content hover:bg-secondary/90"
+          >
+            รับ E-Book ฟรี
+          </a>
+          <p class="text-sm text-base-content/60">
+            ไม่มีค่าใช้จ่าย · กรอก 30 วินาที · อ่านออนไลน์หรือโหลด PDF 17 หน้า
+          </p>
+        </div>
+
+        <LineAskCta
+          class="mt-6 border-t border-base-content/10 pt-6"
+          label="หรือทักไลน์ถามผมก่อน"
+          note="อยากรู้ว่าผมช่วยธุรกิจคุณได้ไหม ถามมาได้เลย ผมตอบเอง"
+        />
+      </div>
+
+      {/* ปกจริงจากในเล่ม (เรนเดอร์ด้วย scripts/shoot-ebook.mjs) — บนมือถือให้พาดหัวมาก่อนปก */}
+      <figure>
+        <img
+          src={COVER}
+          alt="ปกอีบุ๊ก หยุดหาเซลล์ผิดคน — ผู้จัดการคุกเข่าส่องเรซูเม่ด้วยแว่นขยาย แล้วเห็นตัวจริงของผู้สมัครในเลนส์"
+          width="1000"
+          height="1414"
+          class="mx-auto w-full max-w-sm rounded-sm shadow-2xl ring-1 ring-base-content/10"
+          fetchpriority="high"
+        />
+      </figure>
+    </div>
+  </section>
+
+  {/* ══ 2 · PHILOSOPHY / ANTI-PROMISE — คัดคนออกก่อนขาย ══ */}
+  <section class="px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">อ่านก่อนกรอก</p>
+      <h2 class="mt-3 font-display text-3xl font-black leading-tight md:text-4xl">
+        เล่มนี้ไม่ใช่สูตรลับที่ทำให้คุณอ่านคนออกใน 5 นาที
+      </h2>
+      <div class="mt-6 space-y-4 text-lg leading-[1.9] text-base-content/85">
+        <p>
+          ถ้าคุณกำลังหาเทคนิคจับโกหก หรือแบบทดสอบที่ให้คะแนนแล้วบอกได้ว่าคนนี้ใช่หรือไม่ใช่
+          ผมบอกตรงนี้เลยว่าเล่มนี้ไม่มีให้
+        </p>
+        <p>
+          เพราะการสัมภาษณ์ไม่ใช่ข้อสอบ ไม่มีคำถามข้อไหนรับประกันได้ว่าคุณจะไม่จ้างคนผิด
+          สิ่งที่คำถามที่ดีทำได้จริงคือ
+          <strong class="font-bold text-base-content">
+            ทำให้คุณเห็นข้อมูลที่เรซูเม่ไม่เคยบอก
+          </strong>
+          แล้วตัดสินใจด้วยหลักฐาน ไม่ใช่ด้วยความรู้สึกว่า “คุยแล้วถูกคอ”
+        </p>
+      </div>
+      <blockquote
+        class="mt-8 rounded-2xl border-l-4 border-secondary bg-base-200/40 p-6 font-display text-lg italic leading-relaxed"
+      >
+        คำตอบที่น่าเชื่อถือ ไม่ใช่คำตอบที่สวยที่สุด
+        แต่เป็นคำตอบที่มีหลักฐานจากพฤติกรรมจริงรองรับ
+      </blockquote>
+    </div>
+  </section>
+
+  {/* ══ 3 · ปัญหา + ตั้งชื่อศัตรู ══ */}
+  <section class="bg-base-200/40 px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">ศัตรูตัวจริง</p>
+      <h2 class="mt-3 font-display text-3xl font-black leading-tight md:text-4xl">
+        คนที่ตอบคำถามเก่งที่สุด<br class="hidden sm:block" />
+        ไม่ใช่คนที่ขายเก่งที่สุดเสมอไป
+      </h2>
+      <p class="mt-6 text-lg leading-[1.9] text-base-content/85">
+        บางคนเตรียมคำตอบมาดี พูดคล่อง สร้างความประทับใจได้ตั้งแต่นาทีแรก
+        แต่พอเริ่มงานจริงกลับรับแรงกดดันไม่ได้ ไม่กล้าโทรหาลูกค้าใหม่ หรือทำงานกับทีมไม่เป็น
+      </p>
+      <p class="mt-4 text-lg leading-[1.9] text-base-content/85">
+        ขณะเดียวกัน คนที่ดูธรรมดาในวันสัมภาษณ์
+        กลับกลายเป็นคนที่มีวินัยที่สุดในทีมเมื่อผ่านไปหกเดือน
+      </p>
+
+      <div class="mt-10">
+        <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+          อาการที่เจ้าของมักเป็น
+        </p>
+        <ul class="mt-4 space-y-3">
+          {
+            [
+              'สัมภาษณ์ด้วยความรู้สึก — รับเพราะคุยถูกคอ ไม่ใช่เพราะเห็นหลักฐาน',
+              'ถามครบทุกข้อในใบ แต่จบแล้วยังตอบไม่ได้ว่าเขาทำงานยังไง',
+              'ตัดสินจากเรซูเม่สวย ทั้งที่เรซูเม่คือเอกสารที่ผู้สมัครเขียนเอง',
+              'รู้ว่าเลือกผิดตอนเดือนที่สาม ซึ่งสายเกินกว่าจะย้อนกลับ',
+            ].map((item) => (
+              <li class="flex gap-3 rounded-xl border border-base-content/10 bg-base-100 p-4">
+                <span class="shrink-0 font-display font-black text-secondary" aria-hidden="true">
+                  ✕
+                </span>
+                <span class="leading-relaxed text-base-content/85">{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="mt-10 rounded-2xl border border-base-content/10 bg-base-100 p-6">
+        <p class="font-display text-lg font-bold">ต้นทุนจริงของการจ้างผิดหนึ่งคน</p>
+        <p class="mt-3 leading-relaxed text-base-content/80">
+          ไม่ได้จบที่เงินเดือนที่จ่ายไป แต่รวมเวลาสอนงานที่หายไปทั้งก้อน
+          โอกาสการขายในพื้นที่ที่เขารับผิดชอบ ความเชื่อมั่นของลูกค้าที่เขาไปเจอ
+          และพลังของคนที่เหลือในทีมที่ต้องรับงานแทน
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 4 · CTA #2 ══ */}
+  <section class="px-4 py-12 lg:px-8">
+    <div class="mx-auto max-w-3xl text-center">
+      <a
+        href="#form"
+        class="btn btn-lg border-none bg-secondary text-secondary-content hover:bg-secondary/90"
+      >
+        ขอ 67 คำถามไปใช้ในรอบสัมภาษณ์หน้า
+      </a>
+      <LineAskCta class="mt-6 items-center" />
+    </div>
+  </section>
+
+  {/* ══ 5 · MECHANISM — ตั้งชื่อ "ของที่ขาด" ══ */}
+  <section class="px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+        สิ่งที่ขาดจริงๆ
+      </p>
+      <h2 class="mt-3 font-display text-3xl font-black leading-tight md:text-4xl">
+        คุณไม่ได้ขาดคนเก่ง คุณขาดคำถามที่ทำให้คนเก่งเผยตัว
+      </h2>
+      <p class="mt-6 text-lg leading-[1.9] text-base-content/85">
+        ใครๆ ก็หาชุดคำถามสัมภาษณ์จาก Google ได้ในสามวินาที —
+        <strong class="font-bold text-base-content">
+          แต่ถ้าไม่รู้ว่าแต่ละข้อกำลังวัดอะไร
+        </strong>
+        คุณจะได้แค่บทสนทนาที่สุภาพ ไม่ใช่ข้อมูลที่เอาไปตัดสินใจได้
+      </p>
+
+      <div class="mt-8 grid gap-4 sm:grid-cols-2">
+        <div class="rounded-2xl border border-base-content/10 bg-base-200/40 p-6">
+          <p class="font-display font-bold">ชั้นที่คนส่วนใหญ่มี</p>
+          <p class="mt-2 leading-relaxed text-base-content/80">
+            รายการคำถาม — ถามครบ จดครบ จบห้อง
+          </p>
+        </div>
+        <div class="rounded-2xl border-2 border-secondary bg-base-100 p-6">
+          <p class="font-display font-bold text-secondary">ชั้นที่ทำให้ตัดสินใจถูก</p>
+          <p class="mt-2 leading-relaxed text-base-content/80">
+            รู้ว่าแต่ละข้อวัดอะไร และต้องฟังอะไรที่อยู่ “หลังคำตอบ”
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 6 · CATEGORY REFRAME + ตัวอย่างจริง ══ */}
+  <section class="bg-base-200/40 px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">
+        เล่มนี้คืออะไรกันแน่
+      </p>
+      <h2 class="mt-3 font-display text-3xl font-black leading-tight md:text-4xl">
+        ไม่ใช่ลิสต์คำถาม — เป็นเครื่องมือฟังคำตอบ
+      </h2>
+      <p class="mt-6 text-lg leading-[1.9] text-base-content/85">
+        ทุกข้อในเล่มมีคำอธิบายกำกับว่า <strong class="font-bold">“ทำไมต้องถาม”</strong>
+        เพราะคำถามที่ไม่รู้ว่าวัดอะไร ก็แค่คำถามที่ทำให้ห้องสัมภาษณ์ยาวขึ้น
+      </p>
+
+      <p class="mt-10 text-xs font-bold uppercase tracking-widest text-base-content/60">
+        ตัวอย่างจากในเล่ม
+      </p>
+      <div class="mt-4 space-y-4">
+        {
+          samples.map((s) => (
+            <article class="rounded-2xl border border-base-content/10 bg-base-100 p-6">
+              <div class="grid grid-cols-[2.5rem_1fr] gap-x-4 gap-y-3">
+                <p class="font-display text-xl font-black tabular-nums text-secondary">{s.no}</p>
+                <h3 class="font-display text-lg font-bold leading-snug">{s.q}</h3>
+                <div class="col-start-2 border-l-2 border-secondary/40 pl-4">
+                  <p class="text-[0.7rem] font-bold uppercase tracking-widest text-secondary/80">
+                    ทำไมต้องถาม
+                  </p>
+                  <p class="mt-1 leading-relaxed text-base-content/75">{s.why}</p>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+      <p class="mt-4 text-sm text-base-content/60">อีก 64 ข้ออยู่ในเล่ม</p>
+    </div>
+  </section>
+
+  {/* ══ 6b · TEASER — เปิดหน้าจริงในเล่มให้ดู ══ */}
+  <section class="px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-4xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">ข้างในเล่ม</p>
+      <h2 class="mt-3 font-display text-3xl font-black leading-tight md:text-4xl">
+        หน้าตาเป็นแบบนี้ 17 หน้า อ่านจบในหนึ่งกาแฟ
+      </h2>
+      <p class="mt-4 max-w-2xl leading-relaxed text-base-content/75">
+        ไม่ใช่ไฟล์ตารางที่ก๊อปมาจากที่อื่น จัดหน้ามาให้อ่านบนมือถือได้จริง
+        และสั่งพิมพ์ A4 ถือเข้าห้องสัมภาษณ์ได้เลย
+      </p>
+
+      <div class="mt-8 grid gap-8 sm:grid-cols-2">
+        {
+          PAGES.map((pg) => (
+            <figure>
+              <img
+                src={pg.src}
+                alt={pg.alt}
+                width="1000"
+                height="1414"
+                loading="lazy"
+                class="w-full rounded-sm shadow-xl ring-1 ring-base-content/10"
+              />
+              <figcaption class="mt-3 text-sm text-base-content/60">{pg.cap}</figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 7 · ในเล่มมีอะไร ══ */}
+  <section class="px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">สารบัญ</p>
+      <h2 class="mt-3 font-display text-3xl font-black leading-tight md:text-4xl">
+        4 หมวด 67 คำถาม เรียงตามลำดับที่ควรถามจริง
+      </h2>
+      <ol class="mt-8 border-t border-base-content/10">
+        {
+          chapters.map((c) => (
+            <li class="grid grid-cols-[2.5rem_1fr] gap-4 border-b border-base-content/10 py-5">
+              <span class="font-display text-lg font-black tabular-nums text-secondary">{c.n}</span>
+              <div>
+                <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                  <h3 class="font-display text-lg font-bold">{c.name}</h3>
+                  <span class="text-sm tabular-nums text-base-content/50">{c.range}</span>
+                </div>
+                <p class="mt-1 leading-relaxed text-base-content/75">{c.detail}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+      <a
+        href="#form"
+        class="mt-6 inline-flex items-center gap-2 font-display font-bold text-secondary hover:underline"
+      >
+        ขอทั้ง 4 หมวดไปอ่าน <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  {/* ══ 8 · ใช้ยังไงให้ได้ผล ══ */}
+  <section class="bg-base-200/40 px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">วิธีใช้</p>
+      <h2 class="mt-3 font-display text-3xl font-black leading-tight md:text-4xl">
+        3 ขั้น ใช้ได้ตั้งแต่รอบสัมภาษณ์พรุ่งนี้
+      </h2>
+      <div class="mt-8 space-y-4">
+        {
+          [
+            {
+              n: '1',
+              t: 'เลือกข้อที่ตรงกับความเสี่ยง',
+              d: 'ไม่ต้องถามครบ 67 ข้อ เลือกเฉพาะข้อที่ตรงกับตำแหน่งและสิ่งที่คุณกลัวที่สุดว่าจะพลาด',
+            },
+            {
+              n: '2',
+              t: 'ถามต่อให้ลึกด้วยตัวอย่างจริง',
+              d: 'ทุกคำตอบให้ถามต่อสามคำถามเดิมเสมอ — เกิดอะไรขึ้น · คุณตัดสินใจยังไง · ผลลัพธ์คืออะไร',
+            },
+            {
+              n: '3',
+              t: 'ฟังหลักฐาน ไม่ใช่ฟังความลื่น',
+              d: 'ดูว่าเขายกตัวอย่างจากของจริงไหม รับผิดชอบผลลัพธ์ไหม และอธิบายบทบาทตัวเองได้ชัดแค่ไหน',
+            },
+          ].map((s) => (
+            <div class="flex gap-4 rounded-2xl border border-base-content/10 bg-base-100 p-6">
+              <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-secondary font-display font-black text-secondary-content">
+                {s.n}
+              </span>
+              <div>
+                <p class="font-display text-lg font-bold">{s.t}</p>
+                <p class="mt-1 leading-relaxed text-base-content/80">{s.d}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 9 · CTA #3 ══ */}
+  <section class="px-4 py-12 lg:px-8">
+    <div class="mx-auto max-w-3xl text-center">
+      <a
+        href="#form"
+        class="btn btn-lg border-none bg-secondary text-secondary-content hover:bg-secondary/90"
+      >
+        ดาวน์โหลด E-Book ฟรี
+      </a>
+      <LineAskCta class="mt-6 items-center" />
+    </div>
+  </section>
+
+  {/* ══ 10 · เหมาะกับใคร / ไม่เหมาะกับใคร ══ */}
+  <section class="px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-4xl">
+      <h2 class="font-display text-3xl font-black leading-tight md:text-4xl">
+        เล่มนี้เหมาะกับใคร
+      </h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-2">
+        <div class="rounded-2xl border-2 border-secondary/30 bg-base-100 p-6">
+          <p class="font-display text-lg font-bold text-secondary">เหมาะ</p>
+          <ul class="mt-4 space-y-3">
+            {
+              [
+                'เจ้าของธุรกิจที่ยังต้องนั่งสัมภาษณ์เซลล์เอง',
+                'หัวหน้าทีมขายที่ต้องขยายทีมปีนี้',
+                'HR ที่ต้องคัดเซลล์ แต่ไม่ได้มาจากสายขาย',
+                'คนที่เพิ่งเจ็บจากการจ้างผิด และไม่อยากพลาดซ้ำ',
+              ].map((i) => (
+                <li class="flex gap-3 leading-relaxed text-base-content/85">
+                  <span class="shrink-0 font-black text-secondary" aria-hidden="true">
+                    ✓
+                  </span>
+                  {i}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="rounded-2xl border border-base-content/10 bg-base-200/40 p-6">
+          <p class="font-display text-lg font-bold text-base-content/70">ไม่เหมาะ</p>
+          <ul class="mt-4 space-y-3">
+            {
+              [
+                'อยากได้แบบทดสอบที่ให้คะแนนแล้วฟันธงแทนคุณ',
+                'อยากได้เทคนิคจับโกหกในสามนาที',
+                'ไม่มีเวลาสัมภาษณ์เกิน 15 นาทีต่อคน',
+                'อยากได้คนถูกที่สุด มากกว่าคนที่ใช่ที่สุด',
+              ].map((i) => (
+                <li class="flex gap-3 leading-relaxed text-base-content/70">
+                  <span class="shrink-0 font-black text-base-content/40" aria-hidden="true">
+                    ✕
+                  </span>
+                  {i}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+      <div class="mt-8 text-center">
+        <a
+          href="#form"
+          class="inline-flex items-center gap-2 font-display font-bold text-secondary hover:underline"
+        >
+          ถ้าอยู่ฝั่งซ้าย กดรับเล่มได้เลย <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 11 · AUTHORITY — ทำไมต้องผม + กล่องแนะนำตัว ══ */}
+  <section class="bg-base-200/40 px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-base-content/60">คนเขียน</p>
+      <h2 class="mt-3 font-display text-3xl font-black leading-tight md:text-4xl">
+        เล่มนี้ไม่ได้มาจากตำรา HR<br class="hidden sm:block" />
+        มาจากห้องสัมภาษณ์ที่ผมนั่งอยู่จริง
+      </h2>
+      <div class="mt-6 space-y-4 text-lg leading-[1.9] text-base-content/85">
+        <p>
+          ผมโตมาจากงานขายตรงๆ ห้าปีในสนาม ยอดขายแตะร้อยล้าน
+          แล้วค่อยขยับมาเป็นคนวางระบบและปั้นทีมขายให้ธุรกิจอื่น
+        </p>
+        <p>
+          ระหว่างทางผมได้คุยและสัมภาษณ์ผู้สมัครมากกว่า
+          <strong class="font-bold text-base-content"> 1,000 คน </strong>
+          เห็นทั้งคนที่ดูดีในวันสัมภาษณ์แล้วไปต่อไม่ได้ และคนที่ไม่หวือหวาในวันแรก
+          แต่กลายเป็นกำลังหลักของทีม ผมเป็นคนเทรนเขาเอง และเป็นคนที่ต้องให้เขาออกเองด้วย
+        </p>
+        <p>
+          และผมเคยพลาดจนขึ้นศาลแรงงานมาแล้ว —
+          <strong class="font-bold text-base-content">
+            ในฐานะฝั่งที่ทำผิดเอง ไม่ใช่ฝั่งที่ชนะ
+          </strong>
+          คำถามหลายข้อในเล่มนี้จึงมีอยู่เพราะผมเคยไม่ถาม แล้วต้องจ่ายค่าเรียนไปแล้ว
+        </p>
+        <p>
+          ทุกวันนี้ผมเป็นผู้สอนของ FutureSkill และทำงานกับองค์กรมากกว่า 20 แห่ง
+          ในเรื่องการวางระบบขาย ปั้นทีม และเอา AI Agent เข้าไปช่วยงานจริง
+          เล่มนี้คือส่วนที่ผมกลั่นออกมาจากงานคน ซึ่งเป็นด่านแรกสุดของทุกทีมขาย
+        </p>
+      </div>
+
+      {/* กล่องแนะนำตัว */}
+      <div class="mt-10 rounded-2xl border-l-4 border-secondary bg-base-100 p-6 md:p-8">
+        <p class="font-display text-xl font-black">ปัน ณัฐพัชร์ | วางระบบและพัฒนาทีมขาย</p>
+        <p class="mt-3 text-lg leading-[1.9] text-base-content/85">
+          ช่วยเจ้าของธุรกิจออกแบบทีมขาย ตั้งแต่คัดคน หัวหน้า KPI ค่าคอม และกระบวนการขาย
+          ไปจนถึง Data และ AI ที่ทำให้ทีมเดินงานต่อได้โดยไม่ต้องให้เจ้าของคุมทุกดีล
+        </p>
+      </div>
+
+      <LineAskCta variant="card" class="mt-8" />
+    </div>
+  </section>
+
+  {/* ══ 12 · FAQ — ล้าง objection ให้จบก่อนขอข้อมูล ══ */}
+  <section class="px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="font-display text-3xl font-black leading-tight md:text-4xl">คำถามที่มักถูกถาม</h2>
+      <div class="mt-8 space-y-3">
+        {
+          faqs.map((f, i) => (
+            <details class="group rounded-2xl border border-base-content/10 bg-base-100 p-5" open={i === 0}>
+              <summary class="cursor-pointer list-none font-display text-lg font-bold marker:content-none">
+                <span class="flex items-start justify-between gap-4">
+                  {f.q}
+                  <span
+                    class="mt-1 shrink-0 text-secondary transition-transform duration-200 group-open:rotate-45"
+                    aria-hidden="true"
+                  >
+                    +
+                  </span>
+                </span>
+              </summary>
+              <p class="mt-3 leading-[1.9] text-base-content/80">
+                {f.q.includes('ข้อมูลที่กรอก') ? (
+                  <Fragment>
+                    {f.a} (<a class="link text-secondary" href="/privacy">/privacy</a>)
+                  </Fragment>
+                ) : (
+                  f.a
+                )}
+              </p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 13 · FORM — บล็อกสุดท้ายเหมือนที่หน้าขายวางราคาไว้ท้ายสุด ══ */}
+  <section id="form" class="scroll-mt-8 bg-base-200/40 px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">ขั้นตอนสุดท้าย</p>
+      <h2 class="mt-3 font-display text-3xl font-black leading-tight md:text-4xl">
+        กรอกเพื่อเปิดอ่านทั้งเล่ม
+      </h2>
+      <p class="mt-4 leading-relaxed text-base-content/75">
+        กดส่งแล้วเปิดอ่านได้ทันทีในหน้าถัดไป ไม่ต้องรออีเมล
+      </p>
+
+      <form id="ebook-form" class="mt-8 space-y-5" novalidate>
+        <div>
+          <label class="block text-sm font-bold" for="eb-name">
+            ชื่อ-นามสกุล <span class="text-secondary">*</span>
+          </label>
+          <input
+            id="eb-name"
+            name="name"
+            type="text"
+            required
+            autocomplete="name"
+            enterkeyhint="next"
+            class="input mt-2 w-full border-base-content/20 bg-base-100"
+            placeholder="ชื่อที่ให้ผมเรียก"
+          />
+          <p id="eb-name-err" class="mt-1 hidden text-sm text-secondary">กรอกชื่อด้วยครับ</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold" for="eb-contact">
+            LINE ID / เบอร์ / อีเมล <span class="text-secondary">*</span>
+          </label>
+          <input
+            id="eb-contact"
+            name="contact"
+            type="text"
+            required
+            enterkeyhint="next"
+            class="input mt-2 w-full border-base-content/20 bg-base-100"
+            placeholder="ช่องทางที่สะดวกให้ติดต่อกลับ"
+          />
+          <p id="eb-contact-err" class="mt-1 hidden text-sm text-secondary">
+            ใส่ช่องทางติดต่ออย่างน้อยหนึ่งอย่างครับ
+          </p>
+        </div>
+
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label class="block text-sm font-bold" for="eb-company">ชื่อบริษัท</label>
+            <input
+              id="eb-company"
+              name="company"
+              type="text"
+              autocomplete="organization"
+              class="input mt-2 w-full border-base-content/20 bg-base-100"
+              placeholder="ไม่บังคับ"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-bold" for="eb-position">ตำแหน่ง</label>
+            <input
+              id="eb-position"
+              name="position"
+              type="text"
+              autocomplete="organization-title"
+              class="input mt-2 w-full border-base-content/20 bg-base-100"
+              placeholder="ไม่บังคับ"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold" for="eb-problem">
+            ตอนนี้เจอปัญหาอะไรกับทีมขาย
+          </label>
+          <textarea
+            id="eb-problem"
+            name="problem"
+            rows="3"
+            class="textarea mt-2 w-full border-base-content/20 bg-base-100"
+            placeholder="ไม่บังคับ — แต่ถ้าเขียนมา ผมอ่านเองทุกข้อความ"></textarea>
+        </div>
+
+        <button
+          type="submit"
+          id="eb-submit"
+          class="btn btn-lg w-full border-none bg-secondary text-secondary-content hover:bg-secondary/90"
+        >
+          เปิดอ่าน E-Book
+        </button>
+
+        <p class="text-center text-sm text-base-content/60">
+          ฟรี ไม่มีค่าใช้จ่าย · ข้อมูลใช้ติดต่อกลับเท่านั้น ไม่ขายต่อ ·
+          <a class="link" href="/privacy">นโยบายความเป็นส่วนตัว</a>
+        </p>
+      </form>
+
+      <div class="mt-8 flex items-center gap-4 text-sm text-base-content/45">
+        <span class="h-px flex-1 bg-base-content/15"></span>ยังไม่อยากกรอก<span
+          class="h-px flex-1 bg-base-content/15"></span>
+      </div>
+      <LineAskCta
+        class="mt-6 items-center"
+        label="ทักไลน์มาคุยกับผมเลย"
+        note="ถามได้ว่าเคสธุรกิจคุณควรเริ่มจากอะไร ผมตอบเอง"
+      />
+    </div>
+  </section>
+
+  {/* แถบ CTA ติดล่างบนมือถือ — ซ่อนเมื่อฟอร์มอยู่ในจอแล้ว */}
+  <div
+    id="sticky-cta"
+    class="fixed inset-x-0 bottom-0 z-30 border-t border-base-content/10 bg-base-100/95 px-4 py-3 backdrop-blur transition-transform duration-200 md:hidden"
+    style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom))"
+  >
+    <a
+      href="#form"
+      class="btn w-full border-none bg-secondary text-secondary-content hover:bg-secondary/90"
+    >
+      รับ E-Book ฟรี
+    </a>
+  </div>
+</BaseLayout>
+
+<script>
+  import { submitAudienceFallback } from '../../scripts/lead-fallback';
+
+  // ของฟรี → ท่อ Audience Center (ไม่ใช่ท่อ CRM/Telegram ของ lead จริง)
+  // spec: claude-code repo → docs/superpowers/specs/2026-08-17-audience-center-design.md
+  const WEBHOOK = 'https://form-hook.punnattapatch.com/webhook/free-material';
+  const ASSET_SLUG = 'ebook-sales-interview';
+
+  const form = document.getElementById('ebook-form') as HTMLFormElement | null;
+  const submitBtn = document.getElementById('eb-submit') as HTMLButtonElement | null;
+
+  function fieldError(id: string, errId: string, bad: boolean): void {
+    const input = document.getElementById(id);
+    const err = document.getElementById(errId);
+    if (!input || !err) return;
+    err.classList.toggle('hidden', !bad);
+    input.setAttribute('aria-invalid', bad ? 'true' : 'false');
+    if (bad) input.setAttribute('aria-describedby', errId);
+    else input.removeAttribute('aria-describedby');
+  }
+
+  // error ไม่หายเอง แต่ต้องหายทันทีที่คนแก้ — ไม่ปล่อยให้ค้างจนคนงงว่าแก้แล้วยังผิดอยู่ไหม
+  for (const [id, errId] of [
+    ['eb-name', 'eb-name-err'],
+    ['eb-contact', 'eb-contact-err'],
+  ]) {
+    document.getElementById(id)?.addEventListener('input', (ev) => {
+      if ((ev.target as HTMLInputElement).value.trim()) fieldError(id, errId, false);
+    });
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const val = (id: string): string =>
+      ((document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | null)?.value ?? '').trim();
+
+    const name = val('eb-name');
+    const contact = val('eb-contact');
+    fieldError('eb-name', 'eb-name-err', !name);
+    fieldError('eb-contact', 'eb-contact-err', !contact);
+    if (!name) return document.getElementById('eb-name')?.focus();
+    if (!contact) return document.getElementById('eb-contact')?.focus();
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังเปิดเล่ม…';
+    }
+
+    const params = new URLSearchParams(location.search);
+    const reference = `EBK-${Date.now()}`;
+    const payload = {
+      lead_kind: 'audience',
+      asset_slug: ASSET_SLUG,
+      source_page: 'ebook-sales-interview',
+      name,
+      contact,
+      company: val('eb-company'),
+      position: val('eb-position'),
+      own_words: val('eb-problem'),
+      _meta: {
+        reference,
+        submitted_at: new Date().toISOString(),
+        path: window.location.pathname,
+        referrer: document.referrer || '',
+        utm_source: params.get('utm_source') || '',
+        utm_medium: params.get('utm_medium') || '',
+        utm_campaign: params.get('utm_campaign') || '',
+        utm_content: params.get('utm_content') || '',
+        fbclid: params.get('fbclid') || '',
+      },
+    };
+
+    try {
+      const ctrl = new AbortController();
+      const kill = setTimeout(() => ctrl.abort(), 10_000);
+      const res = await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: ctrl.signal,
+        keepalive: true,
+      });
+      clearTimeout(kill);
+      if (!res.ok) throw new Error(`webhook ${res.status}`);
+    } catch (err) {
+      console.error('[ebook-form] webhook error', err);
+      // form-hook (มินิ) ไม่ตอบ → เขียนตรงเข้า submit_audience ยังคงเป็น audience ไม่ปน leads
+      await submitAudienceFallback(payload as unknown as Record<string, unknown>);
+    }
+
+    // ของฟรีไม่ยิง Lead — Lead สงวนไว้ให้คน "ยกมือขอคุย" เท่านั้น
+    // ใช้ custom event เพื่อให้ Meta optimise แคมเปญ lead magnet ได้โดยไม่ปน dataset ของดีลจริง
+    if (typeof (window as unknown as { fbq?: unknown }).fbq === 'function') {
+      (window as unknown as { fbq: (...a: unknown[]) => void }).fbq('trackCustom', 'FreeEbookDownload', {
+        content_name: 'ebook-sales-interview',
+      });
+    }
+
+    // ดาวน์โหลดคือสัญญาที่ให้ไว้ — ต้องได้ของแม้ webhook ล่ม
+    location.href = `/ebook-sales-interview/thank-you?ref=${encodeURIComponent(reference)}`;
+  });
+
+  // แถบ CTA ล่าง: ซ่อนตอนฟอร์มโผล่ในจอ จะได้ไม่บังปุ่มส่งจริง
+  const bar = document.getElementById('sticky-cta');
+  const formSection = document.getElementById('form');
+  if (bar && formSection && 'IntersectionObserver' in window) {
+    new IntersectionObserver(
+      ([entry]) => bar.classList.toggle('translate-y-full', entry.isIntersecting),
+      { threshold: 0.1 }
+    ).observe(formSection);
+  }
+</script>

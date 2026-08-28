@@ -82,6 +82,7 @@ export interface CompanyCluster {
 /** ป้ายชื่อของฟรี — เพิ่มชิ้นใหม่ที่นี่ให้หน้าจออ่านออก (slug มาจาก n8n FREE_ASSETS) */
 export const ASSET_LABELS: Record<string, string> = {
   'bosi-quiz': '🧬 BOSI Quiz',
+  'ebook-sales-interview': '📕 E-Book 67 คำถามสัมภาษณ์เซลล์',
 };
 export const assetLabel = (slug: string): string => ASSET_LABELS[slug] ?? `📦 ${slug}`;
 
