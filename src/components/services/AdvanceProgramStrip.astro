@@ -15,7 +15,7 @@ const code = offer.code.toLowerCase();
 
 <article id={`offer-${code}`} data-offer-code={offer.code} data-offer-kind={offer.kind} class="overflow-hidden rounded-[1.5rem] border border-navy/20 bg-surface md:grid md:grid-cols-[.7fr_1.3fr]">
   <figure class="aspect-video bg-navy md:aspect-auto">
-    <Image src={image} alt={offer.imageAlt} width={1600} height={900} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+    <Image src={image} alt={offer.imageAlt} width={1600} height={900} loading="lazy" decoding="async" class="h-full w-full object-contain" />
   </figure>
   <div class="p-5 sm:p-8">
     <p class="text-xs font-bold uppercase tracking-[0.18em] text-coral">{offer.formatLabel}</p>

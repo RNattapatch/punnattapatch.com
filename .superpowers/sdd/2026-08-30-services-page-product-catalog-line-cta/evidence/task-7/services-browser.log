@@ -1,0 +1,14 @@
+✔ visibility matrix renders one global control only on public marketing pages (6143.91075ms)
+✔ floating control is safe-area aware, keyboard accessible, and exposes its local QR (2716.512834ms)
+✔ one click derives Contact props once per provider and provider failures do not block later providers or navigation (1185.943625ms)
+✔ services catalog has healthy card images and no horizontal overflow at release viewports (2646.772625ms)
+✔ keyboard order follows page hierarchy and reduced motion has no perpetual animation (576.755334ms)
+✔ chooser and legacy hashes resolve to every canonical offer target (567.2345ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14141.220709

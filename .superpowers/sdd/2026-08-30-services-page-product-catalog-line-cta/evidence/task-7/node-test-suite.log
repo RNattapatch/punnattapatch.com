@@ -1,0 +1,256 @@
+✔ retired Daruma consult landing permanently redirects to its compliant replacement (5.1045ms)
+
+[1] Payment payload preserves the owner-confirmed sale
+  ✅ maps editable payment fields to the database RPC contract
+
+[2] Payment state reflects cumulative actual receipts
+  ✅ keeps a partly paid document open
+  ✅ closes a fully paid document
+  ✅ closes a discounted sale when the owner confirms payment is complete
+  ✅ keeps an installment open when the owner marks it as partial
+
+[3] Document defaults preserve every quoted line item
+  ✅ sorts quoted items by sequence before pre-filling the editable sale
+
+[4] Invalid payments are rejected before any database call
+  ✅ rejects an empty package
+  ✅ rejects a zero amount
+  ✅ rejects a missing received date
+  ✅ accepts a complete payment
+
+────────────────────────────────────────────────
+ผ่าน 10 · ไม่ผ่าน 0
+
+✔ tests/crm-document-sales-ledger.test.mjs (100.544084ms)
+
+[1] Selected lead range drives every lead-derived dashboard value
+  ✅ keeps the exact full lead result set for kanban/source charts
+  ✅ lead total equals selected range only
+  ✅ pipeline excludes completed outcomes from the selected range
+  ✅ proposal count follows proposal_sent_at in selected leads
+  ✅ walkthrough count comes from selected leads
+  ✅ won count comes from selected leads
+  ✅ sales comes from in-range recorded payments, not the lead quote value
+  ✅ industry chart is derived from selected leads
+  ✅ Today is constrained to the selected range too
+
+[2] Expenses use the same calendar bounds when a range is active
+  ✅ expense total excludes records outside the selected range
+  ✅ period expense value matches the selected range total
+  ✅ expense category cards use selected rows only
+
+────────────────────────────────────────────────
+ผ่าน 12 · ไม่ผ่าน 0
+
+✔ tests/dashboard-range.test.mjs (118.437833ms)
+
+[1] ช่วงพื้นฐาน (ตรึงวันพุธ 12 ส.ค. 2026)
+  ✅ today = 2026-08-12 → 2026-08-13
+  ✅ week เริ่มวันจันทร์ = 2026-08-10 → 2026-08-17
+  ✅ month = 2026-08-01 → 2026-09-01
+  ✅ quarter (Q3) = 2026-07-01 → 2026-10-01
+  ✅ year = 2026-01-01 → 2027-01-01
+  ✅ all = null (ไม่กรอง)
+
+[2] วันจันทร์และวันอาทิตย์ — จุดที่สูตรสัปดาห์พังบ่อยสุด
+  ✅ จันทร์: 2026-08-10 → 2026-08-17
+  ✅ อาทิตย์ยังอยู่สัปดาห์เดิม: 2026-08-10 → 2026-08-17
+
+[3] ขอบไตรมาส/ปี
+  ✅ Q1 วันแรก: 2026-01-01 → 2026-04-01
+  ✅ Q1 วันสุดท้าย: 2026-01-01 → 2026-04-01
+  ✅ Q2 วันแรก: 2026-04-01 → 2026-07-01
+  ✅ Q4 ข้ามปี: 2026-10-01 → 2027-01-01
+  ✅ ธ.ค. ต่อไปปีหน้าถูกต้อง
+
+[4] กำหนดเอง — "ถึงวันที่ X" ต้องได้ทั้งวันนั้น
+  ✅ 1–17 ส.ค. ครอบทั้งวันที่ 17: 2026-08-01 → 2026-08-18
+  ✅ วันเดียวยังได้ 1 วันเต็ม: 2026-08-05 → 2026-08-06
+  ✅ เลือกกลับหัวแล้วสลับให้: 2026-08-01 → 2026-08-18
+  ✅ กรอกไม่ครบ = null (ไม่ยิง query)
+  ✅ วันที่พัง = null
+
+[5] lead จริงต้องตกอยู่ในช่วงที่ถูก
+  ✅ lead เข้ามา 23:50 ยังนับเป็นวันนี้
+  ✅ lead เข้ามา 00:05 ของวันถัดไป ไม่นับเป็นวันนี้
+
+────────────────────────────────────────────────
+ผ่าน 20 · ไม่ผ่าน 0
+
+✔ tests/date-range.test.mjs (97.674209ms)
+
+[1] /booking — ส่งสำเร็จ · payload ครบ
+  ✅ กรอก required ครบทุกช่อง
+  ✅ ยิงไป n8n webhook
+  ✅ payload มี key "name"
+  ✅ payload มี key "phone"
+  ✅ payload มี key "line"
+  ✅ payload มี key "company"
+  ✅ payload มี key "industry"
+  ✅ payload มี key "problems"
+  ✅ payload มี key "source"
+  ✅ payload มี key "source_page"
+  ✅ payload มี key "booking_type"
+  ✅ payload มี key "submitted_at"
+  ✅ payload มี key "path"
+  ✅ payload มี key "recommended_path"
+  ✅ payload มี key "consent"
+  ✅ ค่าไทยไม่เพี้ยน (UTF-8)
+  ✅ ⭐ เบอร์ normalize เป็นตัวเลขล้วน (ได้ "0812345678")
+  ✅ LINE ID ติดไปด้วย
+  ✅ company ส่งค่าที่กรอก ไม่ใช่ fallback business
+  ✅ industry alias ผูกกับ business
+  ✅ source tag ถูก
+  ✅ honeypot ว่าง (ไม่ใช่บอท)
+  ✅ ขึ้น success panel
+  ✅ ซ่อนฟอร์มหลังส่งสำเร็จ
+
+[2] /booking — ล่มทั้ง n8n และ Supabase → error ต้องอยู่ถาวร + ฟอร์มไม่หาย
+  ✅ ขึ้น error
+  ✅ ฟอร์มยังอยู่ ข้อมูลที่กรอกไม่หาย
+  ✅ ค่าที่กรอกยังอยู่ครบ กดส่งซ้ำได้เลย
+  ✅ ปุ่มกลับมากดได้
+  ✅ ⭐ ผ่าน 9 วิ error ยังอยู่ (ไม่หายเอง)
+
+[2b] /booking — n8n ล่ม → Supabase fallback (เบอร์อย่างเดียว)
+  ✅ fallback ยิงไป Supabase RPC submit_lead
+  ✅ ห่อด้วย { payload: … }
+  ✅ ส่ง apikey + Bearer
+  ✅ ⭐ phone = "0812345678" (คาดหวัง "0812345678")
+  ✅ ⭐ line = "" (คาดหวัง "")
+  ✅ company canonical
+  ✅ industry canonical
+  ✅ problems canonical (ไม่ว่าง)
+  ✅ submittedAt (camelCase) — key ที่ RPC อ่านจริง
+  ✅ มี reference (PN-202608292036-I7EO)
+  ✅ ติดธงว่ามาจาก fallback (ไล่ย้อนได้ว่า n8n ล่มตอนไหน)
+  ✅ consent ติดมาด้วย (หลักฐาน PDPA)
+  ✅ ผู้ใช้เห็นว่าสำเร็จ (lead ถูกเก็บแล้วจริง)
+  ✅ โชว์ reference ให้ผู้ใช้เก็บ
+
+[2b] /booking — n8n ล่ม → Supabase fallback (เบอร์ + LINE)
+  ✅ fallback ยิงไป Supabase RPC submit_lead
+  ✅ ห่อด้วย { payload: … }
+  ✅ ส่ง apikey + Bearer
+  ✅ ⭐ phone = "0812345678" (คาดหวัง "0812345678")
+  ✅ ⭐ line = "@punnattapatch" (คาดหวัง "@punnattapatch")
+  ✅ company canonical
+  ✅ industry canonical
+  ✅ problems canonical (ไม่ว่าง)
+  ✅ submittedAt (camelCase) — key ที่ RPC อ่านจริง
+  ✅ มี reference (PN-202608292036-A871)
+  ✅ ติดธงว่ามาจาก fallback (ไล่ย้อนได้ว่า n8n ล่มตอนไหน)
+  ✅ consent ติดมาด้วย (หลักฐาน PDPA)
+  ✅ ผู้ใช้เห็นว่าสำเร็จ (lead ถูกเก็บแล้วจริง)
+  ✅ โชว์ reference ให้ผู้ใช้เก็บ
+
+[3] /intake-form — n8n ล่ม → Supabase fallback รับช่วง
+  ✅ กรอก required ครบทุกช่อง
+  ✅ fallback ยิงไป Supabase RPC submit_lead
+  ✅ ห่อด้วย { payload: … } ตามที่ RPC ต้องการ
+  ✅ ส่ง apikey header
+  ✅ ส่ง Bearer token
+  ✅ ข้อมูลใน fallback ครบ
+
+[4] iOS keyboard hints + press feedback (iPhone 15 Pro)
+  ✅ booking: name → autocomplete=name
+  ✅ booking: name → enterkeyhint=next
+  ✅ booking: company → organization
+  ✅ booking: phone → inputmode=tel (แป้นตัวเลข)
+  ✅ booking: phone บังคับกรอก
+  ✅ booking: LINE ID → ปิด autocorrect (ไม่โดนแก้คำ)
+  ✅ booking: LINE ID ไม่บังคับ
+  ✅ intake: phone → inputmode=tel
+  ✅ intake: email → inputmode=email
+  ✅ intake: company → organization
+  ✅ intake: LINE ID → ปิด autocorrect
+  ✅ ปุ่ม transition ครอบ scale/transform (color, background-color, border-color, box-shadow, scale)
+  ✅ touch-action: manipulation
+
+[5] Reduce Motion เปิด → feedback ต้องไม่ตาย
+  ✅ browser รายงานว่า reduced-motion เปิดอยู่จริง
+  ✅ ปุ่มยังมี transition 0.1s (ไม่ใช่ 0.01ms แบบเดิม)
+
+[6] canonical keys — กัน lead ตกหล่นจาก formMap / business_type
+  ✅ sponsor: ยิง payload
+  ✅ sponsor: source_page = "sponsor" (ต้อง "sponsor") — ไม่ส่ง source_page → Flatten default /intake-form → งานสปอนเซอร์ขึ้นว่า INTAKE FORM
+  ✅ ads-dealer: ยิง payload
+  ✅ ads-dealer: industry = "ดีลเลอร์รถ / โชว์รูม" (ต้อง "ดีลเลอร์รถ / โชว์รูม") — ไม่ส่ง industry → business_type ว่างใน CRM
+  ✅ ads-dealer: source = "ads-dealer-online-sales" (ต้อง "ads-dealer-online-sales") — ไม่ส่ง industry → business_type ว่างใน CRM
+  ✅ ads-core-1day: ยิง payload
+  ✅ ads-core-1day: source = "ads-sales-ai-team" (ต้อง "ads-sales-ai-team") — source ต้องระบุหน้า ไม่งั้นวัด vertical/angle ไม่ได้
+  ✅ ads-generic-2day: ยิง payload
+  ✅ ads-generic-2day: source = "ads-sales-online-team" (ต้อง "ads-sales-online-team") — หน้ากลางไม่ผูกวงการ — industry ว่างโดยตั้งใจ แต่ source ต้องครบ
+
+[7] /bosi-dna-quiz — ของฟรีเข้า Audience Center (เบอร์)
+  ✅ quiz ยิง payload เข้า /webhook/free-material
+  ✅ ไม่แตะ /webhook/intake-form-v2 (ท่อ lead + Telegram + TikTok)
+  ✅ lead_kind = audience ได้ "audience"
+  ✅ asset_slug = bosi-quiz ได้ "bosi-quiz"
+  ✅ contact ส่งดิบไปให้ปลายทางแยกเอง = "0812345678" (ต้อง "0812345678")
+  ✅ asset_result.dominant = "O"
+  ✅ asset_result.scores รวมได้ 10 ข้อ ได้ 10
+  ✅ asset_result.answers ครบ 10 ข้อ
+
+[7] /bosi-dna-quiz — ของฟรีเข้า Audience Center (LINE)
+  ✅ quiz ยิง payload เข้า /webhook/free-material
+  ✅ ไม่แตะ /webhook/intake-form-v2 (ท่อ lead + Telegram + TikTok)
+  ✅ lead_kind = audience ได้ "audience"
+  ✅ asset_slug = bosi-quiz ได้ "bosi-quiz"
+  ✅ contact ส่งดิบไปให้ปลายทางแยกเอง = "@punline" (ต้อง "@punline")
+  ✅ asset_result.dominant = "O"
+  ✅ asset_result.scores รวมได้ 10 ข้อ ได้ 10
+  ✅ asset_result.answers ครบ 10 ข้อ
+
+[7] /bosi-dna-quiz — ของฟรีเข้า Audience Center (เว้นว่าง)
+  ✅ quiz ยิง payload เข้า /webhook/free-material
+  ✅ ไม่แตะ /webhook/intake-form-v2 (ท่อ lead + Telegram + TikTok)
+  ✅ lead_kind = audience ได้ "audience"
+  ✅ asset_slug = bosi-quiz ได้ "bosi-quiz"
+  ✅ contact ส่งดิบไปให้ปลายทางแยกเอง = "" (ต้อง "")
+  ✅ asset_result.dominant = "O"
+  ✅ asset_result.scores รวมได้ 10 ข้อ ได้ 10
+  ✅ asset_result.answers ครบ 10 ข้อ
+
+────────────────────────────────────────────────────────
+  ✅ ทุก lead endpoint ถูก mock ครบ ไม่มีเคสหลุด
+ผ่าน 112 · ไม่ผ่าน 0
+
+✔ tests/lead-forms.test.mjs (52331.850334ms)
+✔ covers the critical Playbook browser paths without console errors (9847.103125ms)
+✔ defines the four-phase LINE AI Sales Agent journey with one example business (36.306458ms)
+✔ maps the complete 32-step journey to observable operating milestones (0.747083ms)
+✔ covers all setup companion sources and only points dependencies backward (0.202708ms)
+✔ defines eight safe master prompts and one debug prompt for real steps (1.010667ms)
+✔ links every global symptom to real learner steps (0.284291ms)
+✔ starts with an empty local state and persists checklist progress across reloads (49.35775ms)
+✔ derives step and phase readiness without auto-confirming a milestone (20.205625ms)
+✔ resume logic prioritizes the current blocked step, then incomplete work, then milestones (18.062292ms)
+✔ searches Thai and English content and applies phase, status, and type filters (20.723791ms)
+✔ composes an editable prompt and redacts secret-shaped values (18.828042ms)
+✔ refuses secret profile fields and prefixes formula-shaped CSV cells (20.806708ms)
+✔ exports a safe progress summary, CSV, and previewable JSON backup (31.248125ms)
+✔ imports a validated backup and reset clears all local state (18.044958ms)
+✔ migrates old local data while dropping unknown and secret-shaped profile fields (18.17025ms)
+✔ public Playbook content and compiled HTML contain no prohibited public labels or secrets (34.255458ms)
+✔ rejects a required step with no observable proof (0.974833ms)
+✔ rejects duplicate step IDs and a missing dependency (1.557959ms)
+✔ rejects prohibited public course language and secret-shaped strings (0.2315ms)
+✔ rejects Thai course language and standalone episode labels (0.219542ms)
+✔ rejects a phase without an operating milestone or learner steps (0.131166ms)
+✔ rejects forward dependencies and references from prompts or troubleshooting (0.414417ms)
+✔ initial route starts at the resume location and falls back to home (28.861084ms)
+✔ step navigation follows playbook order across phase boundaries (0.197375ms)
+✔ step lookup and resume labels expose actionable status (19.096666ms)
+✔ services catalog gives Training and Consulting equal first-screen routes (3.657666ms)
+✔ each course card states the artifact the team takes back (2.531333ms)
+✔ global floating LINE contact follows the public and transaction visibility contract (4.727083ms)
+✔ site identity leads with sales systems instead of AI transformation (1.155166ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 52343.491584

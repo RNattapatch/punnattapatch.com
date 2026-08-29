@@ -216,3 +216,136 @@ test('one click derives Contact props once per provider and provider failures do
   await popup.close();
   await page.close();
 });
+
+test('services catalog has healthy card images and no horizontal overflow at release viewports', async () => {
+  const page = await browser.newPage();
+  page.setDefaultTimeout(5_000);
+  const consoleErrors = [];
+  const failedImages = [];
+  page.on('console', (message) => {
+    if (message.type() === 'error') consoleErrors.push(message.text());
+  });
+  page.on('response', (response) => {
+    if (response.request().resourceType() === 'image' && response.status() >= 400) {
+      failedImages.push(`${response.status()} ${response.url()}`);
+    }
+  });
+
+  for (const viewport of [
+    { width: 1440, height: 900 },
+    { width: 768, height: 1024 },
+    { width: 390, height: 844 },
+    { width: 320, height: 700 },
+  ]) {
+    await page.setViewportSize(viewport);
+    const response = await page.goto(`${baseURL}/services`);
+    assert.equal(response?.status(), 200);
+    const overflow = await page.evaluate(() => ({
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    }));
+    assert.ok(overflow.scrollWidth <= overflow.clientWidth, `${viewport.width}px viewport must not overflow horizontally`);
+
+    const cards = page.locator('[data-offer-code]');
+    assert.equal(await cards.count(), 6, 'all six catalog roles must render once');
+    assert.equal(await cards.first().getAttribute('data-offer-code'), 'T2', 'T2 must remain the first catalog card');
+    const images = cards.locator('figure > img');
+    assert.equal(await images.count(), 6, 'every catalog role must render one thumbnail');
+    for (let index = 0; index < await images.count(); index += 1) {
+      const image = images.nth(index);
+      await image.scrollIntoViewIfNeeded();
+      await page.waitForFunction((element) => element.complete && element.naturalWidth > 0, await image.elementHandle());
+    }
+    const imageMetrics = await images.evaluateAll((elements) => elements.map((image) => {
+      const rect = image.getBoundingClientRect();
+      return {
+        complete: image.complete,
+        naturalWidth: image.naturalWidth,
+        naturalHeight: image.naturalHeight,
+        renderedWidth: rect.width,
+        renderedHeight: rect.height,
+        objectFit: getComputedStyle(image).objectFit,
+      };
+    }));
+    for (const image of imageMetrics) {
+      assert.equal(image.complete, true, `${viewport.width}px catalog image must finish loading`);
+      assert.equal(image.naturalWidth, 1600, 'catalog source must retain its approved width');
+      assert.equal(image.naturalHeight, 900, 'catalog source must retain its approved height');
+      assert.ok(image.renderedWidth > 0 && image.renderedHeight > 0, `${viewport.width}px catalog image must be visible at card size`);
+      assert.ok(
+        image.objectFit === 'contain' || Math.abs(image.renderedWidth / image.renderedHeight - 16 / 9) < 0.02,
+        `${viewport.width}px catalog image must preserve 16:9 or use object-contain without crop`,
+      );
+    }
+  }
+
+  assert.deepEqual(failedImages, [], 'catalog image requests must not fail');
+  assert.deepEqual(consoleErrors, [], 'services page must not log console errors');
+  await page.close();
+});
+
+test('keyboard order follows page hierarchy and reduced motion has no perpetual animation', async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  page.setDefaultTimeout(5_000);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto(`${baseURL}/services`);
+  assert.equal(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches), true);
+
+  const perpetualAnimations = await page.evaluate(() => document.getAnimations()
+    .filter((animation) => animation.playState === 'running' && animation.effect?.getTiming().iterations === Infinity)
+    .map((animation) => animation.animationName));
+  assert.deepEqual(perpetualAnimations, [], 'reduced-motion users must not receive perpetual animation');
+
+  const focusOrder = await page.evaluate(() => {
+    const selectors = 'a[href], button:not([disabled]), summary, input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    const elements = [...document.querySelectorAll(selectors)].filter((element) => {
+      const style = getComputedStyle(element);
+      return style.visibility !== 'hidden' && style.display !== 'none';
+    });
+    const classify = (element) => {
+      if (element.matches('[data-floating-line]')) return 'floating';
+      if (element.closest('#services-final-cta')) return 'final';
+      if (element.closest('#faq')) return 'faq';
+      if (element.closest('#offer-chooser')) return 'chooser';
+      if (element.closest('[data-offer-code]')) return 'cards';
+      if (element.closest('#services-hero')) return 'hero';
+      if (element.closest('nav')) return 'nav';
+      return null;
+    };
+    return elements.map(classify).filter(Boolean);
+  });
+  const firstIndex = (section) => focusOrder.indexOf(section);
+  const expectedOrder = ['nav', 'hero', 'cards', 'chooser', 'faq', 'final', 'floating'];
+  for (const section of expectedOrder) assert.notEqual(firstIndex(section), -1, `${section} must contain a keyboard stop`);
+  for (let index = 1; index < expectedOrder.length; index += 1) {
+    assert.ok(firstIndex(expectedOrder[index - 1]) < firstIndex(expectedOrder[index]), `${expectedOrder[index - 1]} must precede ${expectedOrder[index]} in keyboard order`);
+  }
+
+  await page.close();
+});
+
+test('chooser and legacy hashes resolve to every canonical offer target', async () => {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  page.setDefaultTimeout(5_000);
+  await page.goto(`${baseURL}/services`);
+
+  const chooserTargets = await page.locator('#offer-chooser a[href^="#offer-"]').evaluateAll((links) => links.map((link) => link.getAttribute('href')));
+  assert.deepEqual(chooserTargets, ['#offer-t1', '#offer-t2', '#offer-t3', '#offer-c1', '#offer-i1', '#offer-a1']);
+
+  for (const target of [
+    'sales-team-structure',
+    'ai-agent-ceo',
+    'offer-t1',
+    'offer-t2',
+    'offer-t3',
+    'offer-c1',
+    'offer-i1',
+    'offer-a1',
+  ]) {
+    await page.evaluate((hash) => { window.location.hash = hash; }, target);
+    await page.waitForFunction((hash) => window.location.hash === `#${hash}`, target);
+    assert.equal(await page.locator(`#${target}`).count(), 1, `#${target} must resolve uniquely`);
+  }
+
+  await page.close();
+});

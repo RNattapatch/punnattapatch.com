@@ -1,0 +1,2 @@
+$ node scripts/verify-services-vnext.mjs -- --dist dist
+services vnext data contract passed

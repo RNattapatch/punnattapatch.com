@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
 import { CATALOG, fmtPrice } from '../src/data/pricing.mjs';
@@ -10,20 +11,23 @@ const offersPath = `${root}/src/data/service-offers.ts`;
 const offerAssetsPath = `${root}/src/data/service-offer-assets.ts`;
 const sitePath = `${root}/src/data/site.ts`;
 const verifierPath = fileURLToPath(import.meta.url);
-const componentPreviewPath = `${root}/dist/services-components-preview.html`;
-const servicesPagePath = `${root}/dist/services.html`;
-const redirectsOutputPath = `${root}/dist/_redirects`;
-const sitemapOutputPath = `${root}/dist/sitemap-0.xml`;
+const distOptionIndex = process.argv.indexOf('--dist');
+const distArgument = distOptionIndex === -1 ? null : process.argv[distOptionIndex + 1];
+assert.ok(distOptionIndex === -1 || (distArgument && !distArgument.startsWith('--')), '--dist requires a directory argument');
+const distPath = distArgument ? resolve(root, distArgument) : `${root}/dist`;
+const servicesPagePath = `${distPath}/services.html`;
+const redirectsOutputPath = `${distPath}/_redirects`;
+const sitemapOutputPath = `${distPath}/sitemap-0.xml`;
 
 const servicesCanonical = 'https://punnattapatch.com/services';
 const servicesTitle = 'คอร์สสำหรับทีมขาย และบริการวางระบบฝ่ายขาย | ปัน ณัฐพัชร์';
 const servicesDescription = 'Training, Consulting และ Implementation สำหรับทีมขายที่ต้องการเพิ่มยอด วาง Funnel, Follow-up, Report และ Dashboard โดยใช้ AI เป็นตัวช่วยในงานที่เหมาะสม';
 
 function builtPagePath(route) {
-  return route === '/' ? `${root}/dist/index.html` : `${root}/dist/${route.replace(/^\//, '')}.html`;
+  return route === '/' ? `${distPath}/index.html` : `${distPath}/${route.replace(/^\//, '')}.html`;
 }
 
-function builtHtmlPaths(directory = `${root}/dist`) {
+function builtHtmlPaths(directory = distPath) {
   return readdirSync(directory, { withFileTypes: true })
     .flatMap((entry) => entry.isDirectory() ? builtHtmlPaths(`${directory}/${entry.name}`) : [`${directory}/${entry.name}`]);
 }
@@ -40,7 +44,7 @@ function assertPublicBuildContentIntegrity() {
   const violations = [];
 
   for (const { path, html } of builtPublicHtmlPages()) {
-    const publicPath = path.replace(`${root}/dist/`, '');
+    const publicPath = path.replace(`${distPath}/`, '');
     if (/Package A/i.test(html)) violations.push(`${publicPath}: Package A`);
     if (/Paid[ -]Audit/i.test(html)) violations.push(`${publicPath}: Paid Audit`);
     if (html.includes(retiredPrice)) violations.push(`${publicPath}: retired package price`);
@@ -74,7 +78,6 @@ function assertFloatingLineBuildOutput() {
     '/ebook-sales-interview',
     '/agent-builder-kit/thank-you',
     '/playbook/line-ai-sales-agent',
-    '/services-components-preview',
     '/app/dashboard',
     '/ads/dealer-online-sales',
   ];
@@ -162,43 +165,6 @@ function resolveUrl(url) {
 function canonicalDestination(url) {
   const resolved = new URL(resolveUrl(url));
   return `${resolved.origin}${resolved.pathname}`;
-}
-
-function assertComponentBuildOutput() {
-  assert.ok(existsSync(componentPreviewPath), 'component preview build output does not exist; run pnpm build after adding the services component preview');
-
-  const html = readFileSync(componentPreviewPath, 'utf8');
-  assert.equal((html.match(/<main\b[^>]*\bid="main"/g) ?? []).length, 1, 'the component preview must preserve BaseLayout\'s single main landmark');
-  const expectedOffers = [
-    ['T1', 'training'],
-    ['T2', 'training'],
-    ['T3', 'training'],
-    ['C1', 'consulting'],
-    ['I1', 'implementation'],
-    ['A1', 'upgrade'],
-  ];
-
-  for (const [code, kind] of expectedOffers) {
-    assert.match(html, new RegExp(`id="offer-${code.toLowerCase()}"`), `${code} must have a unique offer anchor`);
-    assert.match(html, new RegExp(`data-offer-code="${code}"`), `${code} must expose its offer code`);
-    assert.match(html, new RegExp(`data-offer-kind="${kind}"`), `${code} must expose its offer kind`);
-  }
-
-  assert.equal((html.match(/id="offer-(?:t1|t2|t3|c1|i1|a1)"/g) ?? []).length, 6, 'the component preview must contain exactly six unique offer anchors');
-  assert.match(html, /data-contact-cta/, 'the component preview must expose a LINE contact CTA');
-  const expectedContactCtas = [
-    ['training_card_t1', 'T1'],
-    ['training_card_t2', 'T2'],
-    ['training_card_t3', 'T3'],
-    ['consulting_card_c1', 'C1'],
-    ['implementation_card_i1', 'I1'],
-    ['upgrade_strip_a1', 'A1'],
-    ['services_final_cta', 'none'],
-  ];
-  for (const [location, code] of expectedContactCtas) {
-    assert.match(html, new RegExp(`data-cta-location="${location}"`), `${location} must retain CTA location metadata`);
-    assert.match(html, new RegExp(`data-product-code="${code}"`), `${location} must retain product metadata`);
-  }
 }
 
 function assertServicesPageBuildOutput() {
@@ -501,8 +467,7 @@ if (!process.argv.includes('--data-only')) {
   );
 }
 
-if (process.argv.includes('--build-output')) {
-  assertComponentBuildOutput();
+if (process.argv.includes('--build-output') || distArgument) {
   assertServicesPageBuildOutput();
   assertServicesSeoBuildOutput();
   assertPublicBuildContentIntegrity();

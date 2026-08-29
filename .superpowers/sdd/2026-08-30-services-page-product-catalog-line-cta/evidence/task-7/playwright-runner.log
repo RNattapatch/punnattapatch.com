@@ -1,0 +1,7 @@
+Error: No tests found.
+Make sure that arguments are regular expressions matching test files.
+You may need to escape symbols like "$" or "*" and quote the arguments.
+
+✖ visibility matrix renders one global control only on public marketing pages (331.905583ms)
+✖ floating control is safe-area aware, keyboard accessible, and exposes its local QR (1.077625ms)
+✖ one click derives Contact props once per provider and provider failures do not block later providers or navigation (0.45325ms)
