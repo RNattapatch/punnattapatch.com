@@ -89,7 +89,7 @@ export const SERVICE_OFFERS: readonly ServiceOffer[] = [
     thumbnailFile: 'c1-daily-sales-consulting.png',
     imageAlt: 'บริการวางระบบฝ่ายขายแบบรายวัน',
     detailHref: null,
-    primaryCtaLabel: 'คุยกับปันใน LINE',
+    primaryCtaLabel: 'เล่าโจทย์ให้ผมฟัง',
     primaryCtaKind: 'line',
   },
   {
@@ -105,7 +105,7 @@ export const SERVICE_OFFERS: readonly ServiceOffer[] = [
     thumbnailFile: 'i1-automated-sales-dashboard.png',
     imageAlt: 'บริการสร้าง Sales Dashboard และ Report อัตโนมัติ',
     detailHref: null,
-    primaryCtaLabel: 'คุยกับปันใน LINE',
+    primaryCtaLabel: 'ขอประเมิน Scope',
     primaryCtaKind: 'line',
   },
   {

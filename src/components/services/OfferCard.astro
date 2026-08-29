@@ -24,10 +24,13 @@ const primaryIsLine = offer.primaryCtaKind === 'line';
   data-offer-code={offer.code}
   data-offer-kind={offer.kind}
   class:list={[
-    'group flex min-w-0 flex-col overflow-hidden rounded-[1.5rem] border bg-surface shadow-[0_18px_40px_-28px_rgba(7,43,78,.35)]',
+    'group relative flex min-w-0 flex-col overflow-hidden rounded-[1.5rem] border bg-surface shadow-[0_18px_40px_-28px_rgba(7,43,78,.35)]',
     isFeatured ? 'border-coral/50 ring-1 ring-coral/20 lg:col-span-2 lg:grid lg:grid-cols-[1.05fr_.95fr]' : 'border-sand-deep',
   ]}
 >
+  {offer.code === 'C1' && <span id="sales-team-structure" class="absolute left-0 top-0 scroll-mt-24" aria-hidden="true"></span>}
+  {offer.code === 'C1' && <span id="ai-agent-ceo" class="absolute left-0 top-0 scroll-mt-24" aria-hidden="true"></span>}
+
   <figure class:list={['relative aspect-video overflow-hidden bg-navy', isFeatured && 'lg:aspect-auto lg:min-h-full']}>
     <Image
       src={image}

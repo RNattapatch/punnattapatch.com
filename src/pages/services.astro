@@ -101,6 +101,13 @@ const faqs = [
         <p class="mt-6 max-w-3xl text-lg leading-8 text-[#625C53]">
           เลือกจากงานที่อยากให้ทีมทำได้จริง ไม่ต้องเริ่มจากชื่อเครื่องมือ ผมช่วยได้ตั้งแต่พัฒนาทักษะเซลล์ วาง Funnel ไปจนถึงสร้าง Report และ Dashboard ให้ใช้งานจริง
         </p>
+        <div class="mt-8 max-w-3xl rounded-2xl border border-navy/15 bg-sand/70 p-4 sm:flex sm:items-center sm:justify-between sm:gap-5">
+          <p class="font-display font-bold leading-7 text-navy">ฝึกทีมให้ทำเป็น หรือให้ผมเข้าไปวางระบบให้</p>
+          <div class="mt-3 flex flex-col gap-2 sm:mt-0 sm:flex-row sm:flex-wrap">
+            <a href="#core-training" class="inline-flex min-h-12 items-center justify-center rounded-full border border-navy px-4 text-sm font-bold text-navy transition-colors hover:bg-navy hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy">ดูคอร์สสำหรับทีมขาย</a>
+            <a href="#system-services" class="inline-flex min-h-12 items-center justify-center rounded-full border border-navy px-4 text-sm font-bold text-navy transition-colors hover:bg-navy hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy">ดูบริการวางระบบฝ่ายขาย</a>
+          </div>
+        </div>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <a href="#training-catalog" class="inline-flex min-h-12 items-center justify-center rounded-full border border-coral bg-coral px-6 font-bold text-white transition-colors hover:border-navy hover:bg-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral">
             ดูคอร์สและบริการ ↓
@@ -134,11 +141,12 @@ const faqs = [
       </div>
     </section>
 
-    <section id="training-catalog" class="scroll-mt-20">
+    <section id="training-catalog" class="relative scroll-mt-20">
+      <span id="core-training" class="absolute left-0 top-0 scroll-mt-24" aria-hidden="true"></span>
       <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
         <div class="max-w-3xl">
           <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">Training catalog</p>
-          <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">คอร์สสำหรับทีมขาย</h2>
+          <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">คอร์สสำหรับทีมขายที่เปิดสอนตอนนี้</h2>
           <p class="mt-4 leading-7 text-[#625C53]">เลือกจากสิ่งที่ทีมต้องทำให้ดีขึ้น ตั้งแต่คุยและตามดีล ไปจนถึงเปลี่ยน Lead เป็นยอดขายและทำ Report ที่หัวหน้าใช้ตัดสินใจได้</p>
         </div>
 
@@ -147,6 +155,7 @@ const faqs = [
             <span id="trust-content" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
             <OfferCard offer={getOffer('T2')} image={OFFER_ASSET_BY_CODE.T2} featured priceLabel={priceFor('T2')} eagerImage />
           </div>
+          <p data-take-home-for="T2" class="mt-3 rounded-2xl border border-navy/10 bg-surface px-5 py-3 text-sm leading-6 text-[#625C53]"><strong class="text-navy">สิ่งที่ทีมจะได้กลับไป:</strong> Funnel map + Campaign kit + Chat script + Tracking sheet</p>
           <aside data-proof-for="T2" class="mt-4 rounded-2xl border border-coral/20 bg-coral/[0.055] px-5 py-4 text-sm leading-6 text-[#625C53]">
             <strong class="text-navy">ภาพรถคือ Dealer proof จากงานยานยนต์จริง</strong> แต่เครื่องยนต์ของคอร์สคือการพา Content และ Ads ไปสู่ Lead นัดหมาย และยอดขาย จึงใช้ได้กับ Clinic, Hotel, B2B และธุรกิจอื่นที่รับ Lead เช่นกัน
           </aside>
@@ -156,28 +165,29 @@ const faqs = [
           <div class="relative min-w-0">
             <span id="inhouse-a" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
             <OfferCard offer={getOffer('T1')} image={OFFER_ASSET_BY_CODE.T1} priceLabel={priceFor('T1')} />
+            <p data-take-home-for="T1" class="mt-3 rounded-2xl border border-navy/10 bg-surface px-5 py-3 text-sm leading-6 text-[#625C53]"><strong class="text-navy">สิ่งที่ทีมจะได้กลับไป:</strong> Sales Context Pack + ชุดคำถามขาย + Follow-up sequence + Tracking sheet</p>
           </div>
           <div class="relative min-w-0">
             <span id="sales-report" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
             <OfferCard offer={getOffer('T3')} image={OFFER_ASSET_BY_CODE.T3} priceLabel={priceFor('T3')} />
+            <p data-take-home-for="T3" class="mt-3 rounded-2xl border border-navy/10 bg-surface px-5 py-3 text-sm leading-6 text-[#625C53]"><strong class="text-navy">สิ่งที่ทีมจะได้กลับไป:</strong> Stage dictionary + Daily report template + Manager intervention rule + Dashboard wireframe</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="consulting-implementation" class="scroll-mt-20 border-y border-sand-deep bg-sand">
+    <section id="consulting-implementation" class="relative scroll-mt-20 border-y border-sand-deep bg-sand">
+      <span id="system-services" class="absolute left-0 top-0 scroll-mt-24" aria-hidden="true"></span>
       <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
         <div class="max-w-3xl">
           <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">Consulting & Implementation</p>
-          <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">ถ้าทีมต้องการคนช่วยคิด หรือสร้างระบบให้เสร็จ</h2>
+          <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">ถ้าอบรมอย่างเดียวยังไม่พอ ผมเข้าไปวางระบบกับทีมให้</h2>
           <p class="mt-4 leading-7 text-[#625C53]">C1 ใช้เมื่อมีโจทย์สำคัญหนึ่งเรื่องที่ต้องออกแบบทางออก ส่วน I1 ใช้เมื่อทีมต้องการ Production System สำหรับ Dashboard และ Report</p>
         </div>
 
         <div class="mt-10 grid min-w-0 gap-6 lg:grid-cols-2">
           <div class="relative min-w-0">
             <OfferCard offer={getOffer('C1')} image={OFFER_ASSET_BY_CODE.C1} priceLabel={priceFor('C1')} />
-            <span id="sales-team-structure" class="absolute left-0 top-0 scroll-mt-24" aria-hidden="true"></span>
-            <span id="ai-agent-ceo" class="absolute left-0 top-0 scroll-mt-24" aria-hidden="true"></span>
           </div>
           <div class="relative min-w-0">
             <span id="daruma-starter" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
@@ -193,17 +203,19 @@ const faqs = [
       </div>
     </div>
 
-    <div id="offer-chooser" class="scroll-mt-20 border-y border-sand-deep bg-surface">
+    <div id="offer-chooser" class="relative scroll-mt-20 border-y border-sand-deep bg-surface">
+      <span id="course-selector" class="absolute left-0 top-0 scroll-mt-24" aria-hidden="true"></span>
       <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10">
         <OfferChooser />
       </div>
     </div>
 
-    <section id="organisation-proof" class="scroll-mt-20 bg-ivory">
+    <section id="organisation-proof" class="relative scroll-mt-20 bg-ivory">
+      <span id="trusted-by" class="absolute left-0 top-0 scroll-mt-24" aria-hidden="true"></span>
       <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
         <div class="max-w-3xl">
           <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">Proof from real work</p>
-          <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">งานจริงที่รองรับเรื่อง Sales, Funnel, Report และการทำงานของทีม</h2>
+          <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">องค์กรที่เคยเชิญไปสอนและวางระบบ</h2>
           <p class="mt-4 leading-7 text-[#625C53]">หลักฐานชุดนี้มาจากเวทีผู้จัดการฝ่ายขาย คลาส In-house และระบบ Dashboard ที่สร้างเพื่อให้ทีมเห็นและตามงานได้จริง</p>
         </div>
 
@@ -239,7 +251,7 @@ const faqs = [
     <section id="faq" class="scroll-mt-20 border-y border-sand-deep bg-sand">
       <div class="mx-auto max-w-[900px] px-5 py-16 sm:px-8 sm:py-20">
         <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">Before you choose</p>
-        <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">คำถามก่อนเลือกคอร์สและบริการ</h2>
+        <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">คำถามที่ถามบ่อยก่อนเลือกคอร์สหรือบริการ</h2>
         <div class="mt-8 space-y-3">
           {faqs.map((faq, index) => (
             <details data-service-faq class="group overflow-hidden rounded-2xl border border-sand-deep bg-surface" open={index === 0}>
@@ -255,7 +267,7 @@ const faqs = [
       <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10">
         <LineDecisionCTA
           location="services_final_cta"
-          headline="ยังไม่แน่ใจว่าโจทย์ของทีมควรเริ่มตรงไหน"
+          headline="ยังไม่แน่ใจว่าควรเริ่มจากคอร์สหรือวางระบบ?"
           copy="เล่าอาการที่เกิดในทีม จำนวนคน และผลลัพธ์ที่อยากได้ทาง LINE ผมช่วยแยกให้ว่าเรื่องนี้ควรเริ่มจาก Training, Consulting หรือ Implementation"
           lineLabel="ให้ผมช่วยเลือกทาง LINE"
           desktopQr={LINE_QR_IMAGE}

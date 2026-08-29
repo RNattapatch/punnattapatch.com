@@ -169,11 +169,44 @@ function assertServicesPageBuildOutput() {
   assert.match(html, /ดูคอร์สและบริการ ↓/, 'services hero must link to the offer catalog');
   assert.match(html, /ให้ผมช่วยเลือกทาง LINE/, 'services hero must offer LINE decision help');
 
+  for (const heading of [
+    'คอร์สสำหรับทีมขายที่เปิดสอนตอนนี้',
+    'ถ้าอบรมอย่างเดียวยังไม่พอ ผมเข้าไปวางระบบกับทีมให้',
+    'องค์กรที่เคยเชิญไปสอนและวางระบบ',
+    'คำถามที่ถามบ่อยก่อนเลือกคอร์สหรือบริการ',
+    'ยังไม่แน่ใจว่าควรเริ่มจากคอร์สหรือวางระบบ?',
+  ]) {
+    assert.ok(html.includes(heading), `services page must use exact required heading: ${heading}`);
+  }
+
+  const compatibilityPlacements = [
+    ['core-training', 'training-catalog', 'consulting-implementation'],
+    ['system-services', 'consulting-implementation', 'advance-program'],
+    ['course-selector', 'offer-chooser', 'organisation-proof'],
+    ['trusted-by', 'organisation-proof', 'faq'],
+  ];
+  for (const [anchor, sectionStart, sectionEnd] of compatibilityPlacements) {
+    const anchorIndex = html.indexOf(`id="${anchor}"`);
+    assert.ok(
+      anchorIndex > html.indexOf(`id="${sectionStart}"`) && anchorIndex < html.indexOf(`id="${sectionEnd}"`),
+      `#${anchor} must remain available inside its replacement section`,
+    );
+  }
+
   const c1Index = html.indexOf('id="offer-c1"');
+  const c1ArticleEnd = html.indexOf('</article>', c1Index);
   const i1Index = html.indexOf('id="offer-i1"');
   for (const legacyAnchor of ['sales-team-structure', 'ai-agent-ceo']) {
     const legacyIndex = html.indexOf(`id="${legacyAnchor}"`);
-    assert.ok(legacyIndex > c1Index && legacyIndex < i1Index, `#${legacyAnchor} must resolve inside the C1 card`);
+    assert.ok(legacyIndex > c1Index && legacyIndex < c1ArticleEnd, `#${legacyAnchor} must be a descendant of the C1 article`);
+  }
+
+  for (const code of ['C1', 'I1']) {
+    const cardStart = html.indexOf(`data-offer-code="${code}"`);
+    const cardEnd = html.indexOf('</article>', cardStart);
+    const cardHtml = html.slice(cardStart, cardEnd);
+    assert.match(cardHtml, /(เล่าโจทย์ให้ผมฟัง|ขอประเมิน Scope)/, `${code} must use an approved exact LINE label`);
+    assert.doesNotMatch(cardHtml, /คุยกับปันใน LINE/, `${code} must not use the retired LINE label`);
   }
 
   assert.equal((html.match(/<details\b[^>]*data-service-faq/g) ?? []).length, 10, 'services page must render ten FAQ answers');
