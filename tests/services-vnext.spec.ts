@@ -1,10 +1,9 @@
-import test, { after, before } from 'node:test';
+import { test } from '@playwright/test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chromium } from 'playwright';
 
 const root = join(fileURLToPath(new URL('.', import.meta.url)), '..');
 const dist = join(root, 'dist');
@@ -18,7 +17,6 @@ const contentTypes = {
 };
 
 let server;
-let browser;
 let baseURL;
 
 async function resolveDistFile(pathname) {
@@ -37,7 +35,7 @@ async function resolveDistFile(pathname) {
   return null;
 }
 
-before(async () => {
+test.beforeAll(async () => {
   server = createServer(async (request, response) => {
     const pathname = new URL(request.url ?? '/', 'http://127.0.0.1').pathname;
     const file = await resolveDistFile(pathname);
@@ -52,15 +50,13 @@ before(async () => {
   const address = server.address();
   assert.ok(address && typeof address === 'object');
   baseURL = `http://127.0.0.1:${address.port}`;
-  browser = await chromium.launch({ headless: true });
 });
 
-after(async () => {
-  await browser?.close();
+test.afterAll(async () => {
   await new Promise((resolve, reject) => server?.close((error) => error ? reject(error) : resolve()));
 });
 
-test('visibility matrix renders one global control only on public marketing pages', async () => {
+test('visibility matrix renders one global control only on public marketing pages', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   page.setDefaultTimeout(5_000);
   const matrix = [
@@ -96,7 +92,7 @@ test('visibility matrix renders one global control only on public marketing page
   await page.close();
 });
 
-test('floating control is safe-area aware, keyboard accessible, and exposes its local QR', async () => {
+test('floating control is safe-area aware, keyboard accessible, and exposes its local QR', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   page.setDefaultTimeout(5_000);
   await page.goto(`${baseURL}/services`);
@@ -175,7 +171,7 @@ test('floating control is safe-area aware, keyboard accessible, and exposes its 
   await page.close();
 });
 
-test('one click derives Contact props once per provider and provider failures do not block later providers or navigation', async () => {
+test('one click derives Contact props once per provider and provider failures do not block later providers or navigation', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   page.setDefaultTimeout(5_000);
   await page.goto(`${baseURL}/services`);
@@ -217,7 +213,7 @@ test('one click derives Contact props once per provider and provider failures do
   await page.close();
 });
 
-test('services catalog has healthy card images and no horizontal overflow at release viewports', async () => {
+test('services catalog has healthy card images and no horizontal overflow at release viewports', async ({ browser }) => {
   const page = await browser.newPage();
   page.setDefaultTimeout(5_000);
   const consoleErrors = [];
@@ -284,7 +280,7 @@ test('services catalog has healthy card images and no horizontal overflow at rel
   await page.close();
 });
 
-test('keyboard order follows page hierarchy and reduced motion has no perpetual animation', async () => {
+test('keyboard order follows page hierarchy and reduced motion has no perpetual animation', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   page.setDefaultTimeout(5_000);
   await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -324,7 +320,7 @@ test('keyboard order follows page hierarchy and reduced motion has no perpetual 
   await page.close();
 });
 
-test('chooser and legacy hashes resolve to every canonical offer target', async () => {
+test('chooser and legacy hashes resolve to every canonical offer target', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   page.setDefaultTimeout(5_000);
   await page.goto(`${baseURL}/services`);

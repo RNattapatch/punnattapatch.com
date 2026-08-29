@@ -1,4 +1,4 @@
-✔ retired Daruma consult landing permanently redirects to its compliant replacement (5.1045ms)
+✔ retired Daruma consult landing permanently redirects to its compliant replacement (5.53125ms)
 
 [1] Payment payload preserves the owner-confirmed sale
   ✅ maps editable payment fields to the database RPC contract
@@ -21,7 +21,7 @@
 ────────────────────────────────────────────────
 ผ่าน 10 · ไม่ผ่าน 0
 
-✔ tests/crm-document-sales-ledger.test.mjs (100.544084ms)
+✔ tests/crm-document-sales-ledger.test.mjs (101.917583ms)
 
 [1] Selected lead range drives every lead-derived dashboard value
   ✅ keeps the exact full lead result set for kanban/source charts
@@ -42,7 +42,7 @@
 ────────────────────────────────────────────────
 ผ่าน 12 · ไม่ผ่าน 0
 
-✔ tests/dashboard-range.test.mjs (118.437833ms)
+✔ tests/dashboard-range.test.mjs (130.955125ms)
 
 [1] ช่วงพื้นฐาน (ตรึงวันพุธ 12 ส.ค. 2026)
   ✅ today = 2026-08-12 → 2026-08-13
@@ -77,7 +77,7 @@
 ────────────────────────────────────────────────
 ผ่าน 20 · ไม่ผ่าน 0
 
-✔ tests/date-range.test.mjs (97.674209ms)
+✔ tests/date-range.test.mjs (118.751875ms)
 
 [1] /booking — ส่งสำเร็จ · payload ครบ
   ✅ กรอก required ครบทุกช่อง
@@ -122,7 +122,7 @@
   ✅ industry canonical
   ✅ problems canonical (ไม่ว่าง)
   ✅ submittedAt (camelCase) — key ที่ RPC อ่านจริง
-  ✅ มี reference (PN-202608292036-I7EO)
+  ✅ มี reference (PN-202608292051-DJL2)
   ✅ ติดธงว่ามาจาก fallback (ไล่ย้อนได้ว่า n8n ล่มตอนไหน)
   ✅ consent ติดมาด้วย (หลักฐาน PDPA)
   ✅ ผู้ใช้เห็นว่าสำเร็จ (lead ถูกเก็บแล้วจริง)
@@ -138,7 +138,7 @@
   ✅ industry canonical
   ✅ problems canonical (ไม่ว่าง)
   ✅ submittedAt (camelCase) — key ที่ RPC อ่านจริง
-  ✅ มี reference (PN-202608292036-A871)
+  ✅ มี reference (PN-202608292051-DOYL)
   ✅ ติดธงว่ามาจาก fallback (ไล่ย้อนได้ว่า n8n ล่มตอนไหน)
   ✅ consent ติดมาด้วย (หลักฐาน PDPA)
   ✅ ผู้ใช้เห็นว่าสำเร็จ (lead ถูกเก็บแล้วจริง)
@@ -216,36 +216,36 @@
   ✅ ทุก lead endpoint ถูก mock ครบ ไม่มีเคสหลุด
 ผ่าน 112 · ไม่ผ่าน 0
 
-✔ tests/lead-forms.test.mjs (52331.850334ms)
-✔ covers the critical Playbook browser paths without console errors (9847.103125ms)
-✔ defines the four-phase LINE AI Sales Agent journey with one example business (36.306458ms)
-✔ maps the complete 32-step journey to observable operating milestones (0.747083ms)
-✔ covers all setup companion sources and only points dependencies backward (0.202708ms)
-✔ defines eight safe master prompts and one debug prompt for real steps (1.010667ms)
-✔ links every global symptom to real learner steps (0.284291ms)
-✔ starts with an empty local state and persists checklist progress across reloads (49.35775ms)
-✔ derives step and phase readiness without auto-confirming a milestone (20.205625ms)
-✔ resume logic prioritizes the current blocked step, then incomplete work, then milestones (18.062292ms)
-✔ searches Thai and English content and applies phase, status, and type filters (20.723791ms)
-✔ composes an editable prompt and redacts secret-shaped values (18.828042ms)
-✔ refuses secret profile fields and prefixes formula-shaped CSV cells (20.806708ms)
-✔ exports a safe progress summary, CSV, and previewable JSON backup (31.248125ms)
-✔ imports a validated backup and reset clears all local state (18.044958ms)
-✔ migrates old local data while dropping unknown and secret-shaped profile fields (18.17025ms)
-✔ public Playbook content and compiled HTML contain no prohibited public labels or secrets (34.255458ms)
-✔ rejects a required step with no observable proof (0.974833ms)
-✔ rejects duplicate step IDs and a missing dependency (1.557959ms)
-✔ rejects prohibited public course language and secret-shaped strings (0.2315ms)
-✔ rejects Thai course language and standalone episode labels (0.219542ms)
-✔ rejects a phase without an operating milestone or learner steps (0.131166ms)
-✔ rejects forward dependencies and references from prompts or troubleshooting (0.414417ms)
-✔ initial route starts at the resume location and falls back to home (28.861084ms)
-✔ step navigation follows playbook order across phase boundaries (0.197375ms)
-✔ step lookup and resume labels expose actionable status (19.096666ms)
-✔ services catalog gives Training and Consulting equal first-screen routes (3.657666ms)
-✔ each course card states the artifact the team takes back (2.531333ms)
-✔ global floating LINE contact follows the public and transaction visibility contract (4.727083ms)
-✔ site identity leads with sales systems instead of AI transformation (1.155166ms)
+✔ tests/lead-forms.test.mjs (52768.532166ms)
+✔ covers the critical Playbook browser paths without console errors (8928.912458ms)
+✔ defines the four-phase LINE AI Sales Agent journey with one example business (34.512666ms)
+✔ maps the complete 32-step journey to observable operating milestones (0.208083ms)
+✔ covers all setup companion sources and only points dependencies backward (0.138833ms)
+✔ defines eight safe master prompts and one debug prompt for real steps (0.24375ms)
+✔ links every global symptom to real learner steps (0.105625ms)
+✔ starts with an empty local state and persists checklist progress across reloads (56.046959ms)
+✔ derives step and phase readiness without auto-confirming a milestone (21.546042ms)
+✔ resume logic prioritizes the current blocked step, then incomplete work, then milestones (18.629625ms)
+✔ searches Thai and English content and applies phase, status, and type filters (19.603625ms)
+✔ composes an editable prompt and redacts secret-shaped values (17.986292ms)
+✔ refuses secret profile fields and prefixes formula-shaped CSV cells (17.789333ms)
+✔ exports a safe progress summary, CSV, and previewable JSON backup (30.089459ms)
+✔ imports a validated backup and reset clears all local state (17.517333ms)
+✔ migrates old local data while dropping unknown and secret-shaped profile fields (17.4535ms)
+✔ public Playbook content and compiled HTML contain no prohibited public labels or secrets (31.209959ms)
+✔ rejects a required step with no observable proof (0.975833ms)
+✔ rejects duplicate step IDs and a missing dependency (1.027375ms)
+✔ rejects prohibited public course language and secret-shaped strings (0.212333ms)
+✔ rejects Thai course language and standalone episode labels (0.215459ms)
+✔ rejects a phase without an operating milestone or learner steps (0.124333ms)
+✔ rejects forward dependencies and references from prompts or troubleshooting (0.955208ms)
+✔ initial route starts at the resume location and falls back to home (27.1765ms)
+✔ step navigation follows playbook order across phase boundaries (0.198ms)
+✔ step lookup and resume labels expose actionable status (19.431375ms)
+✔ services catalog gives Training and Consulting equal first-screen routes (4.413667ms)
+✔ each course card states the artifact the team takes back (2.124875ms)
+✔ global floating LINE contact follows the public and transaction visibility contract (3.731458ms)
+✔ site identity leads with sales systems instead of AI transformation (3.627375ms)
 ℹ tests 34
 ℹ suites 0
 ℹ pass 34
@@ -253,4 +253,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 52343.491584
+ℹ duration_ms 52780.500042

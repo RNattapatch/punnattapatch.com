@@ -1,122 +1,125 @@
 $ node scripts/gen-catalog.mjs && astro build
 [gen-catalog] ไม่มีอะไรเปลี่ยน (5 แพ็กเกจ)
 [astro] `markdown.remarkPlugins`, `markdown.rehypePlugins`, and `markdown.remarkRehype` are deprecated. Pass them to `unified({...})` from `@astrojs/markdown-remark` directly instead.
-03:35:29 [content] Syncing content
-03:35:29 [WARN] [glob-loader] No files found matching "**/*.md" in directory "src/content/framework"
-03:35:29 [content] Synced content
-03:35:29 [types] Generated 312ms
-03:35:29 [build] output: "static"
-03:35:29 [build] mode: "static"
-03:35:29 [build] directory: /Users/r_nat/Documents/punnattapatch.com/.worktrees/services-page-vnext/dist/
-03:35:29 [build] Collecting build info...
-03:35:29 [build] ✓ Completed in 342ms.
-03:35:29 [build] Building static entrypoints...
-/*! 🌼 daisyUI 5.7.22 */
-03:35:31 [WARN] [vite]
+03:51:12 [vite] Re-optimizing dependencies because lockfile has changed
+03:51:12 [content] Syncing content
+03:51:12 [content] Astro version changed
+03:51:12 [content] Clearing content store
+03:51:12 [WARN] [glob-loader] No files found matching "**/*.md" in directory "src/content/framework"
+03:51:13 [content] Synced content
+03:51:13 [types] Generated 926ms
+03:51:13 [build] output: "static"
+03:51:13 [build] mode: "static"
+03:51:13 [build] directory: /Users/r_nat/Documents/punnattapatch.com/.worktrees/services-page-vnext/dist/
+03:51:13 [build] Collecting build info...
+03:51:13 [build] ✓ Completed in 952ms.
+03:51:13 [build] Building static entrypoints...
+/*! 🌼 daisyUI 5.5.23 */
+03:51:14 [WARN] [vite]
 %23n referenced in %23n didn't resolve at build time, it will remain unchanged to be resolved at runtime
-03:35:31 [vite] ✓ built in 1.80s
-03:35:32 [vite] ✓ built in 766ms
-03:35:32 [build] Rearranging server assets...
+03:51:14 [vite] ✓ built in 1.67s
+03:51:15 [vite] ✓ built in 700ms
+03:51:15 [build] Rearranging server assets...
 
  generating static routes
-03:35:32   ├─ /404.html (+9ms)
-03:35:32   ├─ /about.html (+3ms)
-03:35:32   ├─ /ads/dealer-online-sales.html (+5ms)
-03:35:32   ├─ /ads/sales-ai-team.html (+3ms)
-03:35:32   ├─ /ads/sales-online-team.html (+3ms)
-03:35:32   ├─ /advance-ai.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/audit.html (+2ms)
-03:35:32   ├─ /agent-builder-kit/manual/part-1.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/manual/part-2.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/manual/part-3.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/manual/part-4.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p1-01-install-claude-code.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p1-02-claude-md-interview.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p1-03-audit-claude-md.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p1-04-multi-project-claude-md.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p2-01-sale-agent-owner.html (+0ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p2-02-content-agent.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p2-03-personal-secretary.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p2-04-crm-bot-sheets.html (+0ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p2-05-proposal-writer-brand-voice.html (+0ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p2-06-custom-department-head.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p2-07-orchestrator-router.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p2-08-agent-handoff.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p3-01-daily-briefing.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p3-02-agent-direct-task.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p3-03-weekly-content-plan-meeting.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p3-04-lead-qualification-pipeline.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p3-05-multi-agent-strategic-planning.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p4-01-monthly-agent-audit.html (+1ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p4-02-automation-gate-n8n.html (+0ms)
-03:35:32   ├─ /agent-builder-kit/prompts/p4-03-mcp-integration.html (+0ms)
-03:35:32   ├─ /agent-builder-kit/thank-you.html (+2ms)
-03:35:32   ├─ /agent-builder-kit.html (+3ms)
-03:35:32   ├─ /ai-workshop-advance.html (+1ms)
-03:35:32   ├─ /app/audience.html (+2ms)
-03:35:32   ├─ /app/dashboard.html (+3ms)
-03:35:32   ├─ /app/news-desk.html (+1ms)
-03:35:32   ├─ /app/war-room.html (+1ms)
-03:35:32   ├─ /booking.html (+2ms)
-03:35:32   ├─ /bosi-dna-quiz.html (+2ms)
-03:35:32   ├─ /case-studies/forklift-distributor-5-person-team.html (+1ms)
-03:35:32   ├─ /case-studies/manufacturing-b2b-12-person-team.html (+1ms)
-03:35:32   ├─ /case-studies/real-estate-developer-sales-team-restructure.html (+1ms)
-03:35:32   ├─ /case-studies.html (+1ms)
-03:35:32   ├─ /daruma.html (+1ms)
-03:35:32   ├─ /ebook-sales-interview/thank-you.html (+1ms)
-03:35:32   ├─ /ebook-sales-interview.html (+2ms)
-03:35:32   ├─ /faq.html (+3ms)
-03:35:32   ├─ /inhouse.html (+1ms)
-03:35:32   ├─ /insights.html (+3ms)
-03:35:32   ├─ /insights/agentic-ai-sme-thailand-start.html (+2ms)
-03:35:32   ├─ /insights/ai-transformation-sales.html (+2ms)
-03:35:32   ├─ /insights/build-b2b-sales-team-sme-thailand.html (+2ms)
-03:35:32   ├─ /insights/is-your-org-using-ai-for-real.html (+1ms)
-03:35:32   ├─ /insights/personal-branding-b2b-business-owner.html (+4ms)
-03:35:32   ├─ /insights/sales-consulting-guide-2026.html (+1ms)
-03:35:32   ├─ /insights/4-wheels-of-business-framework.html (+2ms)
-03:35:32   ├─ /insights/ai-content-creation-b2b-authenticity.html (+1ms)
-03:35:32   ├─ /insights/lessons-using-ai-agent-business.html (+1ms)
-03:35:32   ├─ /insights/lookrak-kills-sme-teams.html (+1ms)
-03:35:32   ├─ /insights/mere-exposure-effect-b2b-sales.html (+1ms)
-03:35:32   ├─ /insights/running-business-solo-with-ai-agents.html (+1ms)
-03:35:32   ├─ /insights/tiktok-organic-growth-business-owner.html (+1ms)
-03:35:32   ├─ /insights/why-ai-adoption-fails-sme.html (+1ms)
-03:35:32   ├─ /intake-form.html (+2ms)
-03:35:32   ├─ /nissan.html (+2ms)
-03:35:32   ├─ /playbook/line-ai-sales-agent.html (+1ms)
-03:35:32   ├─ /privacy.html (+1ms)
-03:35:32   ├─ /proof.html (+2ms)
-03:35:32   ├─ /sale-ai.html (+1ms)
-03:35:32   ├─ /services/ai-workshop-followup.html (+0ms)
-03:35:32   ├─ /services/ai-workshop.html (+0ms)
-03:35:32   ├─ /services/ai-workshop-advance.html (+0ms)
-03:35:32   ├─ /services/paid-audit.html (+0ms)
-03:35:32   ├─ /services/package-a.html (+0ms)
-03:35:32   ├─ /services/sales-system-sprint.html (+0ms)
-03:35:32   ├─ /services/sale-training-bundle.html (+0ms)
-03:35:32   ├─ /services/trust-content-tiktok-workshop.html (+0ms)
-03:35:32   ├─ /services.html (+3ms)
-03:35:32   ├─ /sponsor.html (+1ms)
-03:35:32   ├─ /start.html (+2ms)
-03:35:32   ├─ /thank-you.html (+1ms)
-03:35:32   ├─ /training.html (+1ms)
-03:35:32   ├─ /index.html (+3ms)
-03:35:32 ✓ Completed in 181ms.
+03:51:15   ├─ /404.html (+9ms)
+03:51:15   ├─ /about.html (+4ms)
+03:51:15   ├─ /ads/dealer-online-sales.html (+6ms)
+03:51:15   ├─ /ads/sales-ai-team.html (+3ms)
+03:51:15   ├─ /ads/sales-online-team.html (+3ms)
+03:51:15   ├─ /advance-ai.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/audit.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/manual/part-1.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/manual/part-2.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/manual/part-3.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/manual/part-4.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p1-01-install-claude-code.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p1-02-claude-md-interview.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p1-03-audit-claude-md.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p1-04-multi-project-claude-md.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p2-01-sale-agent-owner.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p2-02-content-agent.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p2-03-personal-secretary.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p2-04-crm-bot-sheets.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p2-05-proposal-writer-brand-voice.html (+0ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p2-06-custom-department-head.html (+0ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p2-07-orchestrator-router.html (+0ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p2-08-agent-handoff.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p3-01-daily-briefing.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p3-02-agent-direct-task.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p3-03-weekly-content-plan-meeting.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p3-04-lead-qualification-pipeline.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p3-05-multi-agent-strategic-planning.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p4-01-monthly-agent-audit.html (+0ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p4-02-automation-gate-n8n.html (+1ms)
+03:51:15   ├─ /agent-builder-kit/prompts/p4-03-mcp-integration.html (+0ms)
+03:51:15   ├─ /agent-builder-kit/thank-you.html (+1ms)
+03:51:15   ├─ /agent-builder-kit.html (+3ms)
+03:51:15   ├─ /ai-workshop-advance.html (+1ms)
+03:51:15   ├─ /app/audience.html (+1ms)
+03:51:15   ├─ /app/dashboard.html (+3ms)
+03:51:15   ├─ /app/news-desk.html (+1ms)
+03:51:15   ├─ /app/war-room.html (+1ms)
+03:51:15   ├─ /booking.html (+2ms)
+03:51:15   ├─ /bosi-dna-quiz.html (+2ms)
+03:51:15   ├─ /case-studies/forklift-distributor-5-person-team.html (+1ms)
+03:51:15   ├─ /case-studies/manufacturing-b2b-12-person-team.html (+1ms)
+03:51:15   ├─ /case-studies/real-estate-developer-sales-team-restructure.html (+1ms)
+03:51:15   ├─ /case-studies.html (+1ms)
+03:51:15   ├─ /daruma.html (+1ms)
+03:51:15   ├─ /ebook-sales-interview/thank-you.html (+1ms)
+03:51:15   ├─ /ebook-sales-interview.html (+2ms)
+03:51:15   ├─ /faq.html (+3ms)
+03:51:15   ├─ /inhouse.html (+1ms)
+03:51:15   ├─ /insights.html (+3ms)
+03:51:15   ├─ /insights/agentic-ai-sme-thailand-start.html (+2ms)
+03:51:15   ├─ /insights/ai-transformation-sales.html (+1ms)
+03:51:15   ├─ /insights/build-b2b-sales-team-sme-thailand.html (+1ms)
+03:51:15   ├─ /insights/is-your-org-using-ai-for-real.html (+1ms)
+03:51:15   ├─ /insights/personal-branding-b2b-business-owner.html (+1ms)
+03:51:15   ├─ /insights/sales-consulting-guide-2026.html (+1ms)
+03:51:15   ├─ /insights/4-wheels-of-business-framework.html (+1ms)
+03:51:15   ├─ /insights/ai-content-creation-b2b-authenticity.html (+1ms)
+03:51:15   ├─ /insights/lessons-using-ai-agent-business.html (+1ms)
+03:51:15   ├─ /insights/lookrak-kills-sme-teams.html (+1ms)
+03:51:15   ├─ /insights/mere-exposure-effect-b2b-sales.html (+1ms)
+03:51:15   ├─ /insights/running-business-solo-with-ai-agents.html (+1ms)
+03:51:15   ├─ /insights/tiktok-organic-growth-business-owner.html (+1ms)
+03:51:15   ├─ /insights/why-ai-adoption-fails-sme.html (+1ms)
+03:51:15   ├─ /intake-form.html (+2ms)
+03:51:15   ├─ /nissan.html (+1ms)
+03:51:15   ├─ /playbook/line-ai-sales-agent.html (+1ms)
+03:51:15   ├─ /privacy.html (+1ms)
+03:51:15   ├─ /proof.html (+2ms)
+03:51:15   ├─ /sale-ai.html (+1ms)
+03:51:15   ├─ /services/ai-workshop-followup.html (+0ms)
+03:51:15   ├─ /services/ai-workshop.html (+0ms)
+03:51:15   ├─ /services/ai-workshop-advance.html (+0ms)
+03:51:15   ├─ /services/paid-audit.html (+0ms)
+03:51:15   ├─ /services/package-a.html (+0ms)
+03:51:15   ├─ /services/sales-system-sprint.html (+0ms)
+03:51:15   ├─ /services/sale-training-bundle.html (+0ms)
+03:51:15   ├─ /services/trust-content-tiktok-workshop.html (+0ms)
+03:51:15   ├─ /services.html (+3ms)
+03:51:15   ├─ /sponsor.html (+1ms)
+03:51:15   ├─ /start.html (+2ms)
+03:51:15   ├─ /thank-you.html (+1ms)
+03:51:15   ├─ /training.html (+1ms)
+03:51:15   ├─ /index.html (+3ms)
+03:51:15 ✓ Completed in 171ms.
 
  generating optimized images
-03:35:32   ▶ /_astro/line-qr.CrpI8hEW_Z6bxtq.webp (reused cache entry) (+1ms) (1/8)
-03:35:32   ▶ /_astro/t1-sales-skill-ai.BW6-yvz2_Z1vpLGN.webp (reused cache entry) (+2ms) (2/8)
-03:35:32   ▶ /_astro/t2-online-to-offline-ai.B1_TACrV_Z138INT.webp (reused cache entry) (+2ms) (3/8)
-03:35:32   ▶ /_astro/t3-sales-back-office-ai.B3iQMCqp_xxYRq.webp (reused cache entry) (+2ms) (4/8)
-03:35:32   ▶ /_astro/c1-daily-sales-consulting.24c4VQtV_Z1VsyFk.webp (reused cache entry) (+2ms) (5/8)
-03:35:32   ▶ /_astro/i1-automated-sales-dashboard.DfYBX8fU_qDzLB.webp (reused cache entry) (+2ms) (6/8)
-03:35:32   ▶ /_astro/pun-ceo-1.CIxXzp5r_Z7C7Ub.webp (reused cache entry) (+2ms) (7/8)
-03:35:32   ▶ /_astro/a1-sales-mastery-with-ai.CDYhV7-4_ZlnDlI.webp (reused cache entry) (+3ms) (8/8)
-03:35:32 ✓ Completed in 3ms.
+03:51:15   ▶ /_astro/line-qr.CrpI8hEW_Z6bxtq.webp (reused cache entry) (+1ms) (1/8)
+03:51:15   ▶ /_astro/t3-sales-back-office-ai.B3iQMCqp_xxYRq.webp (reused cache entry) (+2ms) (2/8)
+03:51:15   ▶ /_astro/t1-sales-skill-ai.BW6-yvz2_Z1vpLGN.webp (reused cache entry) (+2ms) (3/8)
+03:51:15   ▶ /_astro/t2-online-to-offline-ai.B1_TACrV_Z138INT.webp (reused cache entry) (+2ms) (4/8)
+03:51:15   ▶ /_astro/c1-daily-sales-consulting.24c4VQtV_Z1VsyFk.webp (reused cache entry) (+2ms) (5/8)
+03:51:15   ▶ /_astro/i1-automated-sales-dashboard.DfYBX8fU_qDzLB.webp (reused cache entry) (+3ms) (6/8)
+03:51:15   ▶ /_astro/pun-ceo-1.CIxXzp5r_Z7C7Ub.webp (reused cache entry) (+3ms) (7/8)
+03:51:15   ▶ /_astro/a1-sales-mastery-with-ai.CDYhV7-4_ZlnDlI.webp (reused cache entry) (+4ms) (8/8)
+03:51:15 ✓ Completed in 4ms.
 
-03:35:32 [build] ✓ Completed in 2.79s.
-03:35:32 [@astrojs/sitemap] `sitemap-index.xml` created at `dist`
-03:35:32 [build] 83 page(s) built in 3.19s
-03:35:32 [build] Complete!
+03:51:15 [build] ✓ Completed in 2.58s.
+03:51:15 [@astrojs/sitemap] `sitemap-index.xml` created at `dist`
+03:51:15 [build] 83 page(s) built in 3.60s
+03:51:15 [build] Complete!

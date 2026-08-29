@@ -1,7 +1,13 @@
-Error: No tests found.
-Make sure that arguments are regular expressions matching test files.
-You may need to escape symbols like "$" or "*" and quote the arguments.
 
-✖ visibility matrix renders one global control only on public marketing pages (331.905583ms)
-✖ floating control is safe-area aware, keyboard accessible, and exposes its local QR (1.077625ms)
-✖ one click derives Contact props once per provider and provider failures do not block later providers or navigation (0.45325ms)
+Running 6 tests using 1 worker
+
+(node:71321) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/services-vnext.spec.ts:59:1 › visibility matrix renders one global control only on public marketing pages (5.8s)
+  ✓  2 tests/services-vnext.spec.ts:95:1 › floating control is safe-area aware, keyboard accessible, and exposes its local QR (2.5s)
+  ✓  3 tests/services-vnext.spec.ts:174:1 › one click derives Contact props once per provider and provider failures do not block later providers or navigation (926ms)
+  ✓  4 tests/services-vnext.spec.ts:216:1 › services catalog has healthy card images and no horizontal overflow at release viewports (2.2s)
+  ✓  5 tests/services-vnext.spec.ts:283:1 › keyboard order follows page hierarchy and reduced motion has no perpetual animation (421ms)
+  ✓  6 tests/services-vnext.spec.ts:323:1 › chooser and legacy hashes resolve to every canonical offer target (477ms)
+
+  6 passed (13.0s)

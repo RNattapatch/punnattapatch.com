@@ -1,0 +1,21 @@
+[web-dev-screenshot] capturing desktop (1440×900)...
+  ✓ /Users/r_nat/Documents/claude-code-pun-nattapatch/output/images/qa/screenshot-desktop-1788036877692.png
+[web-dev-screenshot] capturing tablet (768×1024)...
+  ✓ /Users/r_nat/Documents/claude-code-pun-nattapatch/output/images/qa/screenshot-tablet-1788036877692.png
+[web-dev-screenshot] capturing mobile (390×844)...
+  ✓ /Users/r_nat/Documents/claude-code-pun-nattapatch/output/images/qa/screenshot-mobile-1788036877692.png
+
+── Screenshots ready for visual review ──
+desktop  → /Users/r_nat/Documents/claude-code-pun-nattapatch/output/images/qa/screenshot-desktop-1788036877692.png
+tablet   → /Users/r_nat/Documents/claude-code-pun-nattapatch/output/images/qa/screenshot-tablet-1788036877692.png
+mobile   → /Users/r_nat/Documents/claude-code-pun-nattapatch/output/images/qa/screenshot-mobile-1788036877692.png
+
+── Visual QA Checklist (Claude reads each screenshot) ──
+[ ] Font: Sukhumvit Set loaded and visible
+[ ] Colors: Navy #072b4e header + Coral #dd4155 accent
+[ ] DaisyUI components rendering correctly
+[ ] Mobile layout not broken (no overflow, text readable)
+[ ] No lorem ipsum or placeholder text visible
+[ ] Buttons and form elements look correct
+
+Run /web-dev-qa to have Claude evaluate these screenshots automatically.
