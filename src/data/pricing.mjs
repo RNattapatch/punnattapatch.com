@@ -78,6 +78,19 @@ export const CATALOG = {
   },
 
   // ── บริการวางระบบฝ่ายขาย (Services grid) ─────────────────────────────────
+  'daily-sales-consulting': {
+    amount: 34900,
+    url: '/services',
+    name: 'บริการวางระบบฝ่ายขายแบบรายวัน',
+    nameEn: 'Daily Sales Consulting',
+    kind: 'consult',
+    duration: '1 วัน · 1 primary outcome',
+    headline: 'ช่วยคิดและออกแบบทางออกหนึ่งเรื่องสำคัญ เพื่อให้ทีมเดินต่อได้หลังจบวัน',
+    audience: 'Owner หรือ Sales Leader ที่ต้องการแก้โจทย์ขายหนึ่งเรื่องให้ชัดก่อนลงทุนทำระบบเต็มรูปแบบ',
+    status: 'live',
+    botQuote: true,
+    note: 'Canonical public C1 key (2026-08-30): เลือกหนึ่งหัวข้อ — Online-to-Sales Full Journey · team/KPI/commission · Sales Control/Report/Dashboard Design · AI workflow หรือ AI agent prototype. ราคา 1 วันตามที่อนุมัติแล้ว.',
+  },
   'sales-team-structure': {
     // 2026-08-28: key ใหม่ตาม catalog-revision-plan — เติม Consulting product 1 ที่แผนขาด (master §8.4)
     amount: 34900,
@@ -88,9 +101,9 @@ export const CATALOG = {
     duration: '1 วัน',
     headline: 'ออกแบบโครงทีม KPI tree และโมเดลค่าคอมที่ผลักพฤติกรรมถูกทาง — จบในห้องพร้อม Interview scorecard',
     audience: 'Owner ที่กำลังตั้งทีมใหม่ · เพิ่มเซลล์แล้วผลงานไม่โต · Turnover สูงหรือยังไม่มี Manager ที่เหมาะ',
-    status: 'live',
-    botQuote: true,
-    note: '1-day boundary ล็อกแล้ว: โครงทีม + KPI tree + Commission model draft + Recruitment/Interview scorecard ในห้อง — ไม่รวม implementation ต่อเนื่อง (กัน scope พองตาม master §2)',
+    status: 'internal',
+    botQuote: false,
+    note: 'Legacy compatibility key retained after daily-sales-consulting became canonical C1 (2026-08-30). Internal only; do not promote publicly.',
   },
   'daruma-starter': {
     amount: 69900,
@@ -116,9 +129,9 @@ export const CATALOG = {
     duration: '1 วันเต็ม',
     headline: 'เลือก workflow จริง 1 เส้น → วาง AI Agent + จุดตรวจโดยคน + แผน handover ให้ทีมรันต่อ',
     audience: 'เจ้าของ/CEO ที่อยากได้ AI Agent ทำงานจริงในธุรกิจ ไม่ใช่แค่เรียนวิธีใช้ tool',
-    status: 'live',
-    botQuote: true,
-    note: 'in-house private · outline PDF เดิม (outline-ai-agent-ceo.pdf) เป็น positioning เก่า "คู่คิด AI" — ห้ามส่งจนอัดใหม่ให้ตรง scope Implementation',
+    status: 'internal',
+    botQuote: false,
+    note: 'Legacy compatibility key retained after daily-sales-consulting became canonical C1 (2026-08-30). Internal only; do not promote publicly.',
   },
   'daruma-transformation': {
     amount: 198000,
