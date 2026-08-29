@@ -28,6 +28,7 @@
  * @property {string} [audience]    เหมาะกับใคร
  * @property {'live'|'sunset'|'internal'} status  live = ขายอยู่ · sunset = เลิกขาย · internal = key อ้างอิงเฉยๆ
  * @property {boolean} botQuote     บอท LINE บอกตัวเลขนี้กับลูกค้าได้ไหม (false = escalate ให้คุณปัน)
+ * @property {string} [image]       thumbnail 16:9 (path ใต้ public/) — ใช้บนเว็บ + การ์ด Flex ของบอท LINE
  * @property {string} [outlineUrl]  PDF outline ที่บอทส่งให้ลูกค้าได้
  * @property {string} [note]        หมายเหตุภายใน (ไม่ render ให้ลูกค้าเห็น)
  */
@@ -40,57 +41,63 @@ export const CATALOG = {
   'inhouse-a': {
     amount: 34900,
     url: '/services#inhouse-a',
-    name: 'คอร์สเพิ่มยอดขายด้วย AI สำหรับทีมขาย',
-    nameEn: 'Sales × AI Agent',
+    name: 'คอร์สอบรมทักษะการขาย + Follow-up + AI สำหรับทีมขาย',
+    nameEn: 'Sales Skills + Follow-up × AI',
     kind: 'inhouse',
     duration: '1 วัน',
-    headline: 'เพิ่มยอด · ตามลูกค้าไม่หลุด · ลดงานเอกสารทีมขาย',
-    audience: 'บริษัทที่มีทีมขาย 5-20 คน · งานตามลูกค้า/ใบเสนอราคา/รายงานกินเวลาเซลล์',
+    headline: 'คุยเป็น · ตามดีลเป็น · ปิดดีลดีขึ้น — เตรียมข้อมูลลูกค้า ตั้งคำถาม รับข้อโต้แย้ง Follow-up โดยมี AI ช่วยเตรียมงานและซ้อม',
+    audience: 'บริษัทที่มีทีมขาย 5-20 คน · เซลล์คุยแล้วดีลหลุด ตามลูกค้าไม่เป็นระบบ',
     status: 'live',
     botQuote: true,
-    note: 'คอร์ส 1 · ราคาเดียวทั้งทีมไม่เกิน 20 คน · ชื่อเดิม "AI สำหรับทีมขาย 2026" — rename 2026-08-28 (Sales-first Simple Glance · catalog-revision-plan)',
+    image: '/services/thumbs/t1-sales-skill-ai.jpg',
+    note: 'T1 · ราคาเดียวทั้งทีมไม่เกิน 20 คน · rename 2026-08-30 เป็นชื่อ skill-first (Product SSOT 2026-08-30 — AI เป็นตัวช่วย ไม่ใช่ชื่อนำ) · ชื่อเดิม "คอร์สเพิ่มยอดขายด้วย AI สำหรับทีมขาย" (2026-08-28) และ "AI สำหรับทีมขาย 2026" · AI เป็นผู้ช่วยเซลล์ ไม่ใช่ตัวขายแทนมนุษย์',
   },
   'ai-workshop-advance': {
     amount: 34900,
     url: '/services#sales-report',
-    name: 'คอร์สอบรม Report ทีมขาย + Dashboard + AI',
-    nameEn: 'Sales Report & Dashboard × AI',
+    name: 'คอร์สอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI',
+    nameEn: 'Sales Back Office: Report + Dashboard × AI',
     kind: 'inhouse',
     duration: '1 วัน',
-    headline: 'ทีมรายงานภาษาเดียวกัน — ผู้จัดการเห็นดีลค้าง งานที่ต้องตาม และจุดที่ต้องเข้าไปช่วย',
+    headline: 'ทีมรายงานภาษาเดียวกัน — ผู้จัดการเห็นดีลค้าง งานที่ต้องตาม และจุดที่ต้องเข้าไปช่วย โดยไม่ต้องไล่ถามทีละคน',
     audience: 'Owner · Sales Manager · Branch Manager · Sales Admin · Back Office ที่รวมรายงานด้วยมือ',
     status: 'live',
     botQuote: true,
-    note: 'คอร์ส 2 · repurpose 2026-08-28 จาก "AI สำหรับงานหลังบ้าน 2026" → Training 2 ตาม master strategy §8.3 (Sales stage dictionary · Daily report template · Manager intervention rules · Dashboard wireframe) · Workshop ทำ Prototype + Operating rule — งานติดตั้งจริง = daruma-starter',
+    image: '/services/thumbs/t3-sales-back-office-ai.jpg',
+    note: 'T3 · rename 2026-08-30 (Product SSOT — ชื่อบอก job "วางระบบหลังบ้านฝ่ายขาย") · ชื่อก่อนหน้า "คอร์สอบรม Report ทีมขาย + Dashboard + AI" (2026-08-28) · เดิม "AI สำหรับงานหลังบ้าน 2026" · Workshop ทำ Prototype + Operating rule — **T3 คือเรียนวิธีวาง · งานลงมือสร้างระบบ production = daruma-starter (I1)**',
   },
   'tiktok-workshop': {
     amount: 54900,
     url: '/services/trust-content-tiktok-workshop',
     name: 'คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI',
-    nameEn: 'Online-to-Sales × Content + Ads + AI',
+    nameEn: 'Online-to-Offline × Content + Ads + AI',
     kind: 'content',
     duration: '2 วัน + ดูแลต่อ 30 วัน',
-    headline: 'ช่วยทีมขายเปลี่ยนคนดูออนไลน์ให้เป็นแชต นัดหมาย และยอดขาย',
+    headline: 'ช่วยทีมเปลี่ยนคนเห็น Content/Ads ให้เป็นแชต นัดหมาย เข้าพบ และยอดขายจริง — วัดผลจาก Appointment/ยอดขาย ไม่ใช่ยอดวิว',
     audience: 'บริษัทที่ทำ Content/Ads หรือรับ Lead ออนไลน์อยู่แล้ว แต่ยอดไม่ตามมา',
     status: 'live',
     botQuote: true,
-    note: 'คอร์ส 3 · Production key ของ Core 2 วัน — Dealer/vertical edition ทุกตัวใช้ key นี้ ไม่เพิ่ม SKU (BHSV กฎ 4) · rename + ลด 59,900 → 54,900 (ปันเคาะ 2026-08-28: 1 วัน = 34,900 · 2 วัน = 54,900) · ชื่อเดิม "AI สำหรับการตลาดและคอนเทนต์ 2026"',
+    image: '/services/thumbs/t2-online-to-offline-ai.jpg',
+    note: 'T2 · HERO PRODUCT · Production key ของ Core 2 วัน — vertical edition ทุกตัว (Dealer=Online-to-Showroom · Clinic=Appointment · Hotel=Booking · Factory=Meeting/Quotation) ใช้ key นี้ ไม่เพิ่ม SKU (BHSV กฎ 4) · journey: Content → Ads → Lead/Chat → Qualification → Appointment → Follow-up → Close · rename + ลด 59,900 → 54,900 (ปันเคาะ 2026-08-28)',
   },
 
   // ── บริการวางระบบฝ่ายขาย (Services grid) ─────────────────────────────────
   'sales-team-structure': {
-    // 2026-08-28: key ใหม่ตาม catalog-revision-plan — เติม Consulting product 1 ที่แผนขาด (master §8.4)
+    // 2026-08-30: repurpose key เป็น C1 — Consulting การ์ดเดียวต่อสาธารณะ (Product SSOT 2026-08-30)
+    // ยุบ "วางโครงสร้างทีมขาย + KPI + ค่าคอม" (ชื่อเดิมของ key นี้) + "ai-agent-ceo" เข้าเป็น
+    // Primary Outcome track ของบริการรายวันตัวเดียว — ลูกค้าเลือก 1 เรื่อง/วัน ไม่ต้องซื้อ consult หลายใบ
     amount: 34900,
     url: '/services#sales-team-structure',
-    name: 'บริการวางโครงสร้างทีมขาย + KPI + ค่าคอม',
-    nameEn: 'Sales Team Structure Day',
+    name: 'บริการวางระบบฝ่ายขายแบบรายวัน',
+    nameEn: 'Daily Sales System Consulting',
     kind: 'consult',
-    duration: '1 วัน',
-    headline: 'ออกแบบโครงทีม KPI tree และโมเดลค่าคอมที่ผลักพฤติกรรมถูกทาง — จบในห้องพร้อม Interview scorecard',
-    audience: 'Owner ที่กำลังตั้งทีมใหม่ · เพิ่มเซลล์แล้วผลงานไม่โต · Turnover สูงหรือยังไม่มี Manager ที่เหมาะ',
+    duration: '1 วัน / 1 เรื่องหลัก',
+    headline: 'เลือก 1 ปัญหาขายที่สำคัญที่สุด แล้ววางทางออกให้จบภายใน 1 วัน — Online-to-Sales Journey · โครงทีม+KPI+ค่าคอม · ออกแบบ Report/Dashboard · AI Workflow prototype',
+    audience: 'Owner/CEO ที่รู้ว่าระบบขายติด อยากได้คนเข้าไปช่วยคิดและออกแบบทางออกเรื่องที่สำคัญที่สุดก่อน',
     status: 'live',
     botQuote: true,
-    note: '1-day boundary ล็อกแล้ว: โครงทีม + KPI tree + Commission model draft + Recruitment/Interview scorecard ในห้อง — ไม่รวม implementation ต่อเนื่อง (กัน scope พองตาม master §2)',
+    image: '/services/thumbs/c1-daily-sales-consulting.jpg',
+    note: 'C1 · scope 1 วัน = 1 Customer Journey · 1 ทีม/BU · 1 Primary Outcome + output ที่ตกลงชัด · 4 track: (1) Online-to-Sales Full Journey (2) โครงทีม+KPI+Commission (3) Sales Control/Report/Dashboard design (4) AI Workflow/Agent prototype — track 4 = prototype ไม่ใช่ระบบ production (นั่นคือ daruma-starter/custom build) · หลายปัญหา = ประเมินจำนวนวันรวมใน proposal เดียว ไม่ให้ลูกค้าซื้อ consult หลายรอบ · ไม่แน่ใจเริ่มเรื่องไหน → ทัก LINE ให้ทีมช่วยเลือก',
   },
   'daruma-starter': {
     amount: 69900,
@@ -103,22 +110,23 @@ export const CATALOG = {
     audience: 'Owner/Manager ที่รวม Excel เอง · ข้อมูลกระจายอยู่กับเซลล์แต่ละคน · อยากส่งรายงานต่อทุกวันอัตโนมัติ',
     status: 'live',
     botQuote: true,
-    note: 'rename 2026-08-28 จาก "Daruma Starter" · scope ตาม master §8.5: Master deal register + Daily report + Stale lead/Follow-up list + Excel export + UAT + Training · outline PDF เดิม (outline-daruma-starter.pdf) scope เก่า — ห้ามส่งจนอัดใหม่',
+    image: '/services/thumbs/i1-automated-sales-dashboard.jpg',
+    note: 'I1 · rename 2026-08-28 จาก "Daruma Starter" · scope ตาม master §8.5: Master deal register + Daily report + Stale lead/Follow-up list + Excel export + UAT + Training · **I1 คือทีมปันลงมือสร้างระบบ production ให้ · T3 (ai-workshop-advance) คือฝึกทีมลูกค้าเรียนวิธีวางเอง** · outline PDF เดิม (outline-daruma-starter.pdf) scope เก่า — ห้ามส่งจนอัดใหม่',
   },
   'ai-agent-ceo': {
-    // 2026-08-09: ปันสั่งให้ราคาเริ่มต้น consult เท่ากับ training (ตัดราคาออกจากการตัดสินใจ)
-    // 2026-08-28: reposition จาก "คู่คิด AI" → Implementation AI Agent ในธุรกิจ (คุณปันเคาะ · catalog-revision-plan §1.4)
+    // 2026-08-30: ยุบเข้า C1 track 4 (Product SSOT) — scope "วาง AI Agent 1 workflow ใน 1 วัน"
+    // กลายเป็น Primary Outcome ที่ 4 ของ sales-team-structure (บริการวางระบบฝ่ายขายแบบรายวัน)
     amount: 34900,
-    url: '/services#ai-agent-ceo',
+    url: '/services#sales-team-structure',
     name: 'บริการวาง AI Agent ใช้จริงในธุรกิจ — สำหรับเจ้าของ/CEO',
     nameEn: 'AI Agent Implementation Day',
     kind: 'consult',
     duration: '1 วันเต็ม',
     headline: 'เลือก workflow จริง 1 เส้น → วาง AI Agent + จุดตรวจโดยคน + แผน handover ให้ทีมรันต่อ',
     audience: 'เจ้าของ/CEO ที่อยากได้ AI Agent ทำงานจริงในธุรกิจ ไม่ใช่แค่เรียนวิธีใช้ tool',
-    status: 'live',
-    botQuote: true,
-    note: 'in-house private · outline PDF เดิม (outline-ai-agent-ceo.pdf) เป็น positioning เก่า "คู่คิด AI" — ห้ามส่งจนอัดใหม่ให้ตรง scope Implementation',
+    status: 'internal',
+    botQuote: false,
+    note: 'HIDDEN 2026-08-30: ยุบเข้า C1 (sales-team-structure) เป็น Primary Outcome track 4 — key เก็บไว้เพราะดีลเก่า/บทความ/ลิงก์บอทอ้างถึง · ลูกค้าที่ถามชื่อนี้ = C1 track AI Workflow prototype ราคาเดียวกัน · outline PDF เดิมยังห้ามส่ง (positioning เก่า "คู่คิด AI")',
   },
   'daruma-transformation': {
     amount: 198000,

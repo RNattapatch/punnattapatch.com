@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../data/site';
-import { fmtPrice } from '../data/pricing.mjs';
+import { fmtPrice, CATALOG } from '../data/pricing.mjs';
 
 const title = 'เกี่ยวกับปัน ณัฐพัชร์';
 const description =
@@ -134,7 +134,7 @@ const faqItems = [
   {
     question: 'เริ่มเล็กได้ไหม',
     answer:
-      `ได้ — เริ่มจากคอร์สเพิ่มยอดขายด้วย AI สำหรับทีมขาย 1 วัน ${fmtPrice('inhouse-a')} เห็นผลจริงก่อนค่อยลงทุนต่อ · ไม่มีสัญญาผูกมัดยาว`,
+      `ได้ — เริ่มจาก${CATALOG['inhouse-a'].name} 1 วัน ${fmtPrice('inhouse-a')} เห็นผลจริงก่อนค่อยลงทุนต่อ · ไม่มีสัญญาผูกมัดยาว`,
   },
   {
     question: 'ทำในต่างจังหวัดได้ไหม',

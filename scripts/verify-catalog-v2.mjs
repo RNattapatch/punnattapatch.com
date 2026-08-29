@@ -4,9 +4,9 @@ import { readFile } from 'node:fs/promises';
 // เดิม hardcode ราคาไว้ที่นี่ → พอปันปรับราคาที่ SSOT แล้ว guard พังทันที (เจอ 2026-08-09:
 // tiktok-workshop 49,900 → 59,900 ทำให้สคริปต์ throw ทั้งที่ของถูกต้อง) · guard ควรตรวจว่า
 // "key ที่หน้าเว็บต้องใช้ยังอยู่ครบและ format ถูก" ไม่ใช่ล็อกตัวเลขซ้ำกับ SSOT อีกชุด
-// 2026-08-28 catalog revision: Training grid = inhouse-a / ai-workshop-advance / tiktok-workshop
-// Services grid = sales-team-structure / daruma-starter / ai-agent-ceo (render จาก SSOT)
-const requiredKeys = ['inhouse-a', 'ai-workshop-advance', 'tiktok-workshop', 'tiktok-workshop-regular', 'sales-team-structure', 'daruma-starter', 'ai-agent-ceo'];
+// 2026-08-30 Product SSOT: Training grid = inhouse-a(T1) / ai-workshop-advance(T3) / tiktok-workshop(T2)
+// Services grid = sales-team-structure(C1 · repurposed) / daruma-starter(I1) — ai-agent-ceo ยุบเข้า C1 (internal)
+const requiredKeys = ['inhouse-a', 'ai-workshop-advance', 'tiktok-workshop', 'tiktok-workshop-regular', 'sales-team-structure', 'daruma-starter'];
 
 for (const key of requiredKeys) {
   const amount = PRICES[key]?.amount;
@@ -19,11 +19,13 @@ for (const token of ['inhouse-a', 'ai-workshop-advance', 'tiktok-workshop', 'tik
   if (!services.includes(`fmtPrice('${token}')`)) throw new Error(`missing ${token} token`);
 }
 // การ์ด Services grid render จาก SSOT ผ่าน serviceOffers — เช็คว่า key ครบ
-for (const key of ['sales-team-structure', 'daruma-starter', 'ai-agent-ceo']) {
+for (const key of ['sales-team-structure', 'daruma-starter']) {
   if (!services.includes(`'${key}'`)) throw new Error(`services grid missing key ${key}`);
 }
+// anchor เดิมของ ai-agent-ceo ต้องยังอยู่ (ลิงก์บอท/บทความเก่าชี้มา) แต่ห้ามมีการ์ดราคาแยก
+if (!services.includes('id="ai-agent-ceo"')) throw new Error('legacy anchor #ai-agent-ceo missing (old bot links break)');
 // ของที่ถอดจากหน้าร้านแล้ว (2026-08-28) ห้ามโผล่กลับ
-for (const retired of ["fmtPrice('inhouse-b')", "fmtPrice('daruma-transformation')", 'Daruma Sales Office Bootcamp']) {
+for (const retired of ["fmtPrice('inhouse-b')", "fmtPrice('daruma-transformation')", "fmtPrice('ai-agent-ceo')", 'Daruma Sales Office Bootcamp']) {
   if (services.includes(retired)) throw new Error(`retired offer "${retired}" is back on /services`);
 }
 if (services.includes('Public Course') || services.includes('Daruma Score &amp; Transformation Roadmap')) {

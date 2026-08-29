@@ -10,17 +10,20 @@ const lineUrl = SITE.social.line;
 // เพิ่มจาก mockup: ราคาจาก SSOT บนทุกการ์ด (มติ "เปิดหัวเคลียร์ + ใส่ราคา") + Services grid (master §14) + proof gallery
 // การ์ดบริการอ่านจาก SSOT ตรงๆ — ชื่อ ราคา ระยะเวลา headline แก้ที่ pricing.mjs ที่เดียว
 const serviceCardDetails = {
+  // C1 — Consulting การ์ดเดียวต่อสาธารณะ (Product SSOT 2026-08-30)
+  // ยุบ "โครงสร้างทีมขาย+KPI+ค่าคอม" และ "AI Agent Implementation Day" เข้าเป็น track ของบริการรายวัน
   'sales-team-structure': {
     image: '/services/onsite/onsite-01.jpg',
     alt: 'ปันทำงานกับทีมผู้บริหารและทีมขายในบริษัทลูกค้า',
-    eyebrow: 'จัดคน · จัดเป้า · จัดแรงจูงใจ',
-    outcome: 'จัดโครงทีม เป้าหมาย และแรงจูงใจให้ไปทางเดียวกัน เพื่อให้บริษัทเพิ่มคนได้โดยไม่ดันยอดด้วยส่วนลดหรือจ่ายค่าคอมจนกำไรหาย',
+    eyebrow: 'เลือก 1 ปัญหาขาย · วางทางออกจบใน 1 วัน',
+    outcome: 'เลือกปัญหาขายที่สำคัญที่สุด 1 เรื่อง แล้วผมเข้าไปช่วยคิด ออกแบบ และล็อกทางออกกับทีมของคุณให้จบในวันเดียว พร้อม Output ที่ตกลงกันชัดเจนก่อนเริ่ม',
     bullets: [
-      'โครงทีม บทบาท และจำนวนคนที่เหมาะกับพื้นที่หรือลูกค้า',
-      'KPI tree กับโมเดลค่าคอมที่คำนวณต้นทุนได้',
-      'Interview scorecard และแผน Onboarding เซลล์ใหม่',
+      'Online-to-Sales Full Journey — เส้นทางลูกค้าตั้งแต่ Lead ถึงปิดการขาย',
+      'โครงสร้างทีมขาย + KPI + โมเดลค่าคอม พร้อม Interview scorecard',
+      'ออกแบบ Sales Control + Report + Dashboard ให้ทีมเก็บถูกตั้งแต่ต้นทาง',
+      'AI Workflow / AI Agent Prototype กับงานจริง 1 เส้น พร้อมแผน Handover',
     ],
-    deliverables: 'Sales org chart + KPI/Commission model + Recruitment kit',
+    deliverables: '1 วัน = 1 เรื่องหลัก · 1 ทีม · Output ตกลงชัดก่อนเริ่ม — หลายเรื่องประเมินจำนวนวันรวมใน Proposal เดียว',
   },
   'daruma-starter': {
     image: '/proof/02-command-charts.jpg',
@@ -34,20 +37,8 @@ const serviceCardDetails = {
     ],
     deliverables: 'ระบบ Report ที่ทดสอบกับข้อมูลจริง + คู่มือ + Training ทีม',
   },
-  'ai-agent-ceo': {
-    image: '/proof/08-line-agent-a.jpg',
-    alt: 'ตัวอย่าง AI Agent ใน LINE ที่เชื่อมกับงานขายจริง',
-    eyebrow: 'หนึ่ง Workflow · มีคนตรวจ · ส่งต่อให้ทีมรันได้',
-    outcome: 'เลือกงานซ้ำหนึ่งเส้นที่กินเวลาทีม แล้ววาง AI Agent พร้อมข้อมูลที่ต้องใช้ จุดตรวจโดยคน และวิธีส่งต่องานให้ทีมรันต่อ',
-    bullets: [
-      'ล็อก Workflow, Input, Output และคนรับผิดชอบ',
-      'ทำ Agent ต้นแบบกับข้อมูลที่อนุญาตให้ใช้',
-      'กำหนด Acceptance test และแผน Handover',
-    ],
-    deliverables: 'Workflow map + Agent prototype + Acceptance checklist + Handover plan',
-  },
 } as const;
-const serviceOffers = (['sales-team-structure', 'daruma-starter', 'ai-agent-ceo'] as const).map((key) => ({
+const serviceOffers = (['sales-team-structure', 'daruma-starter'] as const).map((key) => ({
   key,
   ...CATALOG[key],
   ...serviceCardDetails[key],
@@ -150,7 +141,7 @@ const faqs = [
         </figure>
         <div class="flex h-full flex-col p-6 sm:p-8">
           <p class="text-xs font-bold uppercase tracking-[0.18em] text-coral">ตามลูกค้าไม่หลุด · คุยตรงประเด็น · ลดงานเตรียมขาย</p>
-          <h3 class="mt-1 font-display text-[1.65rem] font-bold leading-[1.28] tracking-[-0.025em] text-navy">คอร์สเพิ่มยอดขายด้วย AI สำหรับทีมขาย</h3>
+          <h3 class="mt-1 font-display text-[1.65rem] font-bold leading-[1.28] tracking-[-0.025em] text-navy">{CATALOG['inhouse-a'].name}</h3>
           <p class="mt-2 leading-7 text-[#625C53]">ให้เซลล์ใช้ข้อมูลลูกค้าและสินค้าที่บริษัทมีอยู่ เตรียมตัวก่อนคุย ถามให้เจอความต้องการ และตามดีลต่อด้วยข้อความที่ตรงกับสถานการณ์ โดยใช้ AI ช่วยงานเตรียมและร่างงาน ส่วนคนยังเป็นผู้ตัดสินใจและปิดการขาย</p>
           <ul class="mt-4 space-y-3 text-sm leading-6 text-[#4F4A43]">
             <li class="flex gap-3"><span class="mt-0.5 font-bold text-coral">✓</span><span>เตรียมข้อมูลลูกค้า ประเด็นคุย และชุดคำถามก่อนเข้าพบ</span></li>
@@ -185,7 +176,7 @@ const faqs = [
         </figure>
         <div class="flex h-full flex-col p-6 sm:p-8">
           <p class="text-xs font-bold uppercase tracking-[0.18em] text-coral">เลิกไล่ Report · เห็นดีลค้าง · เข้าไปช่วยได้ทัน</p>
-          <h3 class="mt-1 font-display text-[1.65rem] font-bold leading-[1.28] tracking-[-0.025em] text-navy">คอร์สอบรม Report ทีมขาย + Dashboard + AI</h3>
+          <h3 class="mt-1 font-display text-[1.65rem] font-bold leading-[1.28] tracking-[-0.025em] text-navy">{CATALOG['ai-workshop-advance'].name}</h3>
           <p class="mt-2 leading-7 text-[#625C53]">ทำให้ทีมใช้ชื่อ Stage และข้อมูลชุดเดียวกัน หัวหน้าเปิดดูแล้วรู้ว่าดีลไหนค้าง ใครต้องทำอะไรต่อ และเรื่องไหนควรเข้าไปช่วยก่อนถึงวันสรุปยอด</p>
           <ul class="mt-4 space-y-3 text-sm leading-6 text-[#4F4A43]">
             <li class="flex gap-3"><span class="mt-0.5 font-bold text-coral">✓</span><span>ล็อก Sales stage, เจ้าของ Lead และข้อมูลที่ต้องกรอก</span></li>
@@ -276,11 +267,13 @@ const faqs = [
           <p class="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-coral">Consulting · ผมเข้าไปทำกับทีมคุณเอง</p>
           <h2 class="font-display text-2xl font-bold tracking-[-0.025em] text-navy sm:text-3xl">บริการวางระบบฝ่ายขาย</h2>
         </div>
-        <span class="hidden font-display text-sm font-semibold text-muted sm:block">03 บริการ</span>
+        <span class="hidden font-display text-sm font-semibold text-muted sm:block">02 บริการ</span>
       </div>
-      <p class="max-w-3xl leading-7 text-[#625C53]">ถ้าทีมไม่ได้ขาดความรู้ แต่ขาดคนเข้าไปจัดข้อมูล ล็อกกติกา และทำระบบให้เดิน เลือกบริการกลุ่มนี้ครับ ผมลงมือทำกับข้อมูลและคนของบริษัทจนส่งมอบให้ทีมใช้ต่อได้</p>
+      <p class="max-w-3xl leading-7 text-[#625C53]">ถ้าทีมไม่ได้ขาดความรู้ แต่ขาดคนเข้าไปจัดข้อมูล ล็อกกติกา และทำระบบให้เดิน เลือกบริการกลุ่มนี้ครับ ผมลงมือทำกับข้อมูลและคนของบริษัทจนส่งมอบให้ทีมใช้ต่อได้ — คอร์สอบรมคือทีมคุณเรียนวิธีทำ ส่วนหมวดนี้คือผมเข้าไปทำกับทีมคุณจนได้ของจริง</p>
 
-      <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <!-- anchor เดิมของบริการ AI Agent (ยุบเข้า C1 track 4 · 2026-08-30) — ลิงก์เก่าจากบอท/บทความยังชี้มาที่นี่ -->
+      <span id="ai-agent-ceo" class="sr-only" aria-hidden="true"></span>
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
         {serviceOffers.map((offer) => (
           <article id={offer.key} class="group flex scroll-mt-6 flex-col overflow-hidden rounded-[1.6rem] border border-sand-deep bg-surface shadow-[0_18px_40px_-28px_rgba(7,43,78,.35)]">
             <figure class="relative aspect-[16/9] overflow-hidden bg-navy">
@@ -314,6 +307,13 @@ const faqs = [
             </div>
           </article>
         ))}
+      </div>
+
+      <!-- A1 — Advance Program (upsell · ไม่มีราคาสาธารณะ · Product SSOT 2026-08-30) -->
+      <div id="advance-program" class="mt-6 scroll-mt-6 rounded-2xl border border-navy/15 bg-surface px-6 py-6 shadow-[0_18px_40px_-28px_rgba(7,43,78,.2)] sm:px-7">
+        <p class="text-xs font-bold uppercase tracking-[0.16em] text-coral">Advance Program · Sales Mastery with AI</p>
+        <h3 class="mt-2 font-display text-xl font-bold leading-snug text-navy sm:text-2xl">โปรแกรมยกระดับทักษะและระบบทีมขายด้วย AI — เรียนแล้วมีคนพาทำ จนใช้จริง</h3>
+        <p class="mt-3 max-w-3xl leading-7 text-[#625C53]">สำหรับทีมที่เรียนคอร์สหลักแล้วอยากไปให้ถึง "ใช้จริง" — ต่อด้วย Guided Implementation Workshop อีก 2 วัน เลือก 1 Workflow หรือ 1 ระบบหลัก ทำกับข้อมูลและบัญชีจริงของบริษัท มี UAT และส่งมอบให้คนในทีมรันต่อ ราคาประเมินตามคอร์สหลักและ Scope — คุยกันหลังจบคลาสหรือทัก LINE ได้เลยครับ</p>
       </div>
 
       <div class="mt-6 rounded-2xl border border-dashed border-sand-deep px-6 py-5">
@@ -402,7 +402,7 @@ const faqs = [
           </div>
           <div class="border-l-2 border-coral pl-4">
             <p class="text-xs text-ivory/55">เลือกคอร์สนี้</p>
-            <p class="mt-1 font-semibold text-ivory">คอร์สเพิ่มยอดขายด้วย AI สำหรับทีมขาย</p>
+            <p class="mt-1 font-semibold text-ivory">{CATALOG['inhouse-a'].name}</p>
           </div>
           <span aria-hidden="true" class="text-2xl text-[#FF8594] transition-transform group-hover:translate-x-1">→</span>
         </a>
@@ -414,7 +414,7 @@ const faqs = [
           </div>
           <div class="border-l-2 border-coral pl-4">
             <p class="text-xs text-ivory/55">เลือกคอร์สนี้</p>
-            <p class="mt-1 font-semibold text-ivory">คอร์สอบรม Report ทีมขาย + Dashboard + AI</p>
+            <p class="mt-1 font-semibold text-ivory">{CATALOG['ai-workshop-advance'].name}</p>
           </div>
           <span aria-hidden="true" class="text-2xl text-[#FF8594] transition-transform group-hover:translate-x-1">→</span>
         </a>
@@ -426,7 +426,7 @@ const faqs = [
           </div>
           <div class="border-l-2 border-coral pl-4">
             <p class="text-xs text-ivory/55">เลือกคอร์สนี้</p>
-            <p class="mt-1 font-semibold text-ivory">คอร์สเพิ่มยอดขายรถจากออนไลน์ด้วย Content + Ads + AI</p>
+            <p class="mt-1 font-semibold text-ivory">{CATALOG['tiktok-workshop'].name} <span class="text-ivory/60">(Dealer Edition)</span></p>
           </div>
           <span aria-hidden="true" class="text-2xl text-[#FF8594] transition-transform group-hover:translate-x-1">→</span>
         </a>
@@ -438,7 +438,7 @@ const faqs = [
           </div>
           <div class="border-l-2 border-coral pl-4">
             <p class="text-xs text-ivory/55">ดูหมวดนี้</p>
-            <p class="mt-1 font-semibold text-ivory">บริการวางระบบฝ่ายขาย — โครงทีม · Dashboard · AI Agent</p>
+            <p class="mt-1 font-semibold text-ivory">บริการวางระบบฝ่ายขาย — รายวัน 1 เรื่อง · Dashboard/Report Build</p>
           </div>
           <span aria-hidden="true" class="text-2xl text-[#FF8594] transition-transform group-hover:translate-x-1">→</span>
         </a>

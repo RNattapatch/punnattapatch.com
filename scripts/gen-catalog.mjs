@@ -27,6 +27,8 @@ const packages = Object.entries(CATALOG)
     amount_thb: e.amount,
     price_label: fmtPrice(key),
     url: e.url.startsWith('http') ? e.url : SITE + e.url,
+    // thumbnail 16:9 — บอท LINE ใช้เป็น hero ของการ์ด Flex · null = การ์ดไม่มีรูป
+    image_url: e.image ? SITE + e.image : null,
     outline_url: e.outlineUrl ?? null,
     status: e.status,
     // บอทบอกตัวเลขนี้กับลูกค้าได้ไหม — ถ้า false ต้อง escalate ให้คุณปันประเมิน scope เอง

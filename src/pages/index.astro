@@ -6,7 +6,7 @@ import Manifesto from '../components/Manifesto.astro';
 import ProofSystems from '../components/proof/ProofSystems.astro';
 import ProofStats from '../components/proof/ProofStats.astro';
 import { SITE } from '../data/site';
-import { fmtPrice } from '../data/pricing.mjs';
+import { fmtPrice, CATALOG } from '../data/pricing.mjs';
 import ceoPhoto from '../assets/pun-ceo-1.jpg';
 
 const title = 'ปั้นทีมขายให้เป็นระบบ × AI Agent และ Claude Code';
@@ -197,21 +197,21 @@ const testimonials = [
         <article class="rounded-2xl border border-[#c9c2b2] bg-surface p-7">
           <h3 class="font-display text-2xl font-bold text-navy">ฝึกทีมให้ใช้เป็น</h3>
           <p class="mt-2 text-sm text-warm-ink/65">คอร์สสด 1 วันที่ออฟฟิศคุณ · ราคาเดียวทั้งทีมไม่เกิน 20 คน</p>
-          <p class="mt-6 font-semibold text-navy">AI สำหรับทีมขาย 2026 · 1 วัน</p>
-          <p class="mt-1 text-sm text-warm-ink/70">เพิ่มยอด · ตามลูกค้าไม่หลุด · ลดงานเอกสารทีมขาย</p>
+          <p class="mt-6 font-semibold text-navy">{CATALOG['inhouse-a'].name} · 1 วัน</p>
+          <p class="mt-1 text-sm text-warm-ink/70">คุยเป็น · ตามดีลเป็น · ปิดดีลดีขึ้น — AI ช่วยเตรียมงานและซ้อม</p>
           <p class="mt-2 font-display text-3xl font-bold tabular-nums text-coral">{fmtPrice('inhouse-a')}</p>
-          <p class="mt-6 font-semibold text-navy">AI สำหรับงานหลังบ้าน 2026 · 1 วัน</p>
-          <p class="mt-1 text-sm text-warm-ink/70">บัญชี · แอดมิน · จัดซื้อ · สต๊อก · ผลิต — ลดขั้นตอน ลดเอกสาร</p>
+          <p class="mt-6 font-semibold text-navy">{CATALOG['ai-workshop-advance'].name} · 1 วัน</p>
+          <p class="mt-1 text-sm text-warm-ink/70">ทีมรายงานภาษาเดียวกัน — ผู้จัดการเห็นดีลค้างโดยไม่ต้องไล่ถาม</p>
           <p class="mt-2 font-display text-3xl font-bold tabular-nums text-coral">{fmtPrice('ai-workshop-advance')}</p>
           <a href="/services#inhouse-a" class="btn mt-7 w-full border-0 bg-coral text-white hover:bg-[#c43245]">ดูรายละเอียด</a>
         </article>
         <article class="rounded-2xl border border-[#c9c2b2] bg-surface p-7">
-          <h3 class="font-display text-2xl font-bold text-navy">คู่คิดของเจ้าของ</h3>
-          <p class="mt-2 text-sm text-warm-ink/65">ที่ปรึกษาแบบตัวต่อตัว · คิดเป็นรายวันเหมือนกัน</p>
-          <p class="mt-6 font-semibold text-navy">AI-Agent for CEO &amp; Executive · 1 วันเต็ม</p>
-          <p class="mt-1 text-sm text-warm-ink/70">รับโจทย์ธุรกิจของคุณ แล้วแปลงเป็นทางออกที่ทำได้จริง — สำหรับเจ้าของที่อยากใช้ AI ให้ถูกทาง แต่ไม่มีเวลาเรียนเอง</p>
-          <p class="mt-2 font-display text-3xl font-bold tabular-nums text-coral">{fmtPrice('ai-agent-ceo')}</p>
-          <a href="/services#ai-agent-ceo" class="btn mt-7 w-full border-navy bg-transparent text-navy hover:bg-navy hover:text-white">ดูรายละเอียด</a>
+          <h3 class="font-display text-2xl font-bold text-navy">ให้ผมเข้าไปวางระบบให้</h3>
+          <p class="mt-2 text-sm text-warm-ink/65">ที่ปรึกษาถึงที่บริษัท · คิดเป็นรายวันเหมือนกัน</p>
+          <p class="mt-6 font-semibold text-navy">{CATALOG['sales-team-structure'].name} · 1 วัน</p>
+          <p class="mt-1 text-sm text-warm-ink/70">เลือก 1 ปัญหาขายที่สำคัญที่สุด — Journey ออนไลน์ถึงปิดการขาย · โครงทีม+KPI+ค่าคอม · ออกแบบ Report/Dashboard · AI Workflow ต้นแบบ — วางทางออกให้จบใน 1 วัน</p>
+          <p class="mt-2 font-display text-3xl font-bold tabular-nums text-coral">{fmtPrice('sales-team-structure')}</p>
+          <a href="/services#sales-team-structure" class="btn mt-7 w-full border-navy bg-transparent text-navy hover:bg-navy hover:text-white">ดูรายละเอียด</a>
         </article>
       </div>
       <p class="mt-6 rounded-2xl border border-[#c9c2b2] bg-surface p-5 text-warm-ink/80">ถ้าโจทย์ไม่ได้อยู่ที่งานชิ้นเดียว แต่ต้องแก้ทั้งระบบ — มีแบบยกทีมหลายวันและแบบวางระบบ 45 วันด้วยครับ <a href="/services" class="font-semibold text-navy underline decoration-coral/50 decoration-2 underline-offset-4 hover:decoration-coral">ดูที่หน้าบริการ →</a></p>
