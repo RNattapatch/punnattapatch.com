@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
@@ -6,6 +7,8 @@ import { CATALOG } from '../src/data/pricing.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const offersPath = `${root}/src/data/service-offers.ts`;
+const offerAssetsPath = `${root}/src/data/service-offer-assets.ts`;
+const sitePath = `${root}/src/data/site.ts`;
 const verifierPath = fileURLToPath(import.meta.url);
 
 function loadOffers() {
@@ -23,6 +26,61 @@ function loadOffers() {
   const context = {};
   vm.runInNewContext(source, context, { filename: offersPath });
   return context.__offers;
+}
+
+function assertOfferAssetContract(offers) {
+  assert.ok(existsSync(offerAssetsPath), 'src/data/service-offer-assets.ts does not exist');
+
+  const source = readFileSync(offerAssetsPath, 'utf8');
+  assert.match(source, /import type \{ ImageMetadata \} from 'astro';/, 'asset module must use Astro ImageMetadata');
+  assert.match(source, /export const OFFER_ASSET_BY_CODE: Readonly<Record<OfferCode, ImageMetadata>>/, 'asset module must export a typed offer image map');
+  assert.match(source, /export const LINE_QR_IMAGE: ImageMetadata/, 'asset module must export the typed LINE QR image');
+
+  for (const offer of offers) {
+    const filename = offer.thumbnailFile;
+    const importMatch = source.match(new RegExp(`import\\s+(\\w+)\\s+from\\s+'\\.\\./assets/services/product-thumbnails/${filename}';`));
+    assert.ok(importMatch, `${offer.code} must import ${filename} through Astro`);
+    assert.match(source, new RegExp(`${offer.code}:\\s*${importMatch[1]}`), `${offer.code} must map to ${filename}`);
+    assert.ok(existsSync(`${root}/src/assets/services/product-thumbnails/${filename}`), `${filename} is missing from Astro assets`);
+  }
+
+  assert.match(source, /import\s+lineQr\s+from\s+'\.\.\/assets\/services\/line-qr\.png';/, 'LINE QR must import through Astro');
+  assert.ok(existsSync(`${root}/src/assets/services/line-qr.png`), 'LINE QR is missing from Astro assets');
+}
+
+function loadSiteLineUrl() {
+  const siteSource = readFileSync(sitePath, 'utf8');
+  const match = siteSource.match(/line:\s*'(https:\/\/[^']+)'/);
+  assert.ok(match, 'SITE.social.line must be configured');
+  return match[1];
+}
+
+function decodeLineQrPayload() {
+  const swiftSource = `
+import Foundation
+import Vision
+let imageURL = URL(fileURLWithPath: CommandLine.arguments[1])
+let request = VNDetectBarcodesRequest { request, error in
+  if let error { fputs("\\(error)\\n", stderr); exit(1) }
+  let payloads = (request.results as? [VNBarcodeObservation])?.compactMap(\\.payloadStringValue) ?? []
+  guard let payload = payloads.first else { fputs("LINE QR did not decode\\n", stderr); exit(1) }
+  print(payload)
+}
+let handler = VNImageRequestHandler(url: imageURL)
+do { try handler.perform([request]) } catch { fputs("\\(error)\\n", stderr); exit(1) }
+`;
+  return execFileSync('swift', ['-', `${root}/src/assets/services/line-qr.png`], {
+    encoding: 'utf8', input: swiftSource,
+  }).trim();
+}
+
+function resolveUrl(url) {
+  return execFileSync('curl', ['-sSL', '-o', '/dev/null', '-w', '%{url_effective}', url], { encoding: 'utf8' }).trim();
+}
+
+function canonicalDestination(url) {
+  const resolved = new URL(resolveUrl(url));
+  return `${resolved.origin}${resolved.pathname}`;
 }
 
 const expected = {
@@ -59,6 +117,7 @@ const expected = {
 };
 
 const { SERVICE_OFFERS, OFFER_BY_CODE } = loadOffers();
+assertOfferAssetContract(SERVICE_OFFERS);
 assert.doesNotMatch(
   readFileSync(verifierPath, 'utf8'),
   /\b\d{4,6}\b/,
@@ -109,6 +168,21 @@ if (!process.argv.includes('--data-only')) {
     assert.equal(CATALOG[key].status, 'internal', `${key} must not be publicly promoted`);
     assert.equal(CATALOG[key].botQuote, false, `${key} must not be quoted by the bot`);
   }
+
+  const sharp = (await import('sharp')).default;
+  for (const offer of SERVICE_OFFERS) {
+    const metadata = await sharp(`${root}/src/assets/services/product-thumbnails/${offer.thumbnailFile}`).metadata();
+    assert.equal(metadata.width, 16 * 100, `${offer.thumbnailFile} must be 1600px wide`);
+    assert.equal(metadata.height, 900, `${offer.thumbnailFile} must be 900px tall`);
+  }
+  const qrMetadata = await sharp(`${root}/src/assets/services/line-qr.png`).metadata();
+  assert.ok(qrMetadata.width && qrMetadata.width > 0, 'LINE QR width must be nonzero');
+  assert.ok(qrMetadata.height && qrMetadata.height > 0, 'LINE QR height must be nonzero');
+  assert.equal(
+    canonicalDestination(decodeLineQrPayload()),
+    canonicalDestination(loadSiteLineUrl()),
+    'LINE QR and SITE.social.line must resolve to the same canonical destination',
+  );
 }
 
 console.log('services vnext data contract passed');
