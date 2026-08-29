@@ -1,0 +1,51 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { SITE } from '../../data/site';
+
+interface Props {
+  location: string;
+  productCode?: string;
+  headline: string;
+  copy: string;
+  lineLabel?: string;
+  desktopQr?: ImageMetadata;
+}
+
+const {
+  location,
+  productCode = 'none',
+  headline,
+  copy,
+  lineLabel = 'ให้ผมช่วยเลือกทาง LINE',
+  desktopQr,
+} = Astro.props;
+---
+
+<section aria-labelledby={`${location}-heading`} class="rounded-[1.75rem] bg-navy px-5 py-9 text-white sm:px-9 sm:py-11">
+  <div class="flex flex-col gap-7 md:flex-row md:items-center md:justify-between">
+    <div class="max-w-2xl">
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#77e692]">LINE decision assist</p>
+      <h2 id={`${location}-heading`} class="mt-3 font-display text-3xl font-bold leading-tight sm:text-4xl">{headline}</h2>
+      <p class="mt-4 leading-7 text-white/80">{copy}</p>
+      <a
+        href={SITE.social.line}
+        target="_blank"
+        rel="noopener"
+        data-contact-cta
+        data-cta-location={location}
+        data-product-code={productCode}
+        data-cta-label={lineLabel}
+        class="mt-6 inline-flex min-h-12 items-center justify-center rounded-full border border-[#06C755] bg-[#06C755] px-5 font-bold text-white transition-colors hover:border-[#05A548] hover:bg-[#05A548] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+      >
+        {lineLabel}<span aria-hidden="true" class="ml-2">→</span>
+      </a>
+    </div>
+    {desktopQr && (
+      <figure class="hidden w-44 shrink-0 rounded-2xl bg-surface p-3 text-center text-navy md:block">
+        <Image src={desktopQr} alt="QR code สำหรับเพิ่มเพื่อน LINE ของปัน ณัฐพัชร์" width={180} height={180} loading="lazy" class="mx-auto size-36 rounded-lg" />
+        <figcaption class="mt-2 text-xs font-semibold">สแกนด้วยมือถือ</figcaption>
+      </figure>
+    )}
+  </div>
+</section>

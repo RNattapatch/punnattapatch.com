@@ -1,0 +1,38 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { SITE } from '../../data/site';
+import type { ServiceOffer } from '../../data/service-offers';
+
+interface Props {
+  offer: ServiceOffer;
+  image: ImageMetadata;
+}
+
+const { offer, image } = Astro.props;
+const code = offer.code.toLowerCase();
+---
+
+<article id={`offer-${code}`} data-offer-code={offer.code} data-offer-kind={offer.kind} class="overflow-hidden rounded-[1.5rem] border border-navy/20 bg-surface md:grid md:grid-cols-[.7fr_1.3fr]">
+  <figure class="aspect-video bg-navy md:aspect-auto">
+    <Image src={image} alt={offer.imageAlt} width={1600} height={900} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+  </figure>
+  <div class="p-5 sm:p-8">
+    <p class="text-xs font-bold uppercase tracking-[0.18em] text-coral">{offer.formatLabel}</p>
+    <h2 class="mt-2 font-display text-2xl font-bold leading-tight text-navy sm:text-3xl">{offer.publicName}</h2>
+    <p class="mt-3 text-xl font-bold leading-8 text-navy">เรียนแล้วมีคนพาทำ จนใช้จริง</p>
+    <p class="mt-3 max-w-2xl leading-7 text-[#625C53]">{offer.description}</p>
+    <a
+      href={SITE.social.line}
+      target="_blank"
+      rel="noopener"
+      data-contact-cta
+      data-cta-location="upgrade_strip_a1"
+      data-product-code={offer.code}
+      data-cta-label="เล่าโจทย์ให้ผมฟัง"
+      class="mt-6 inline-flex min-h-12 items-center justify-center rounded-full border border-[#06C755] bg-[#06C755] px-5 font-bold text-white transition-colors hover:border-[#05A548] hover:bg-[#05A548] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#06C755]"
+    >
+      เล่าโจทย์ให้ผมฟัง<span aria-hidden="true" class="ml-2">→</span>
+    </a>
+  </div>
+</article>

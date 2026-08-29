@@ -10,6 +10,7 @@ const offersPath = `${root}/src/data/service-offers.ts`;
 const offerAssetsPath = `${root}/src/data/service-offer-assets.ts`;
 const sitePath = `${root}/src/data/site.ts`;
 const verifierPath = fileURLToPath(import.meta.url);
+const componentPreviewPath = `${root}/dist/services-components-preview.html`;
 
 function loadOffers() {
   assert.ok(existsSync(offersPath), 'src/data/service-offers.ts does not exist');
@@ -81,6 +82,42 @@ function resolveUrl(url) {
 function canonicalDestination(url) {
   const resolved = new URL(resolveUrl(url));
   return `${resolved.origin}${resolved.pathname}`;
+}
+
+function assertComponentBuildOutput() {
+  assert.ok(existsSync(componentPreviewPath), 'component preview build output does not exist; run pnpm build after adding the services component preview');
+
+  const html = readFileSync(componentPreviewPath, 'utf8');
+  const expectedOffers = [
+    ['T1', 'training'],
+    ['T2', 'training'],
+    ['T3', 'training'],
+    ['C1', 'consulting'],
+    ['I1', 'implementation'],
+    ['A1', 'upgrade'],
+  ];
+
+  for (const [code, kind] of expectedOffers) {
+    assert.match(html, new RegExp(`id="offer-${code.toLowerCase()}"`), `${code} must have a unique offer anchor`);
+    assert.match(html, new RegExp(`data-offer-code="${code}"`), `${code} must expose its offer code`);
+    assert.match(html, new RegExp(`data-offer-kind="${kind}"`), `${code} must expose its offer kind`);
+  }
+
+  assert.equal((html.match(/id="offer-(?:t1|t2|t3|c1|i1|a1)"/g) ?? []).length, 6, 'the component preview must contain exactly six unique offer anchors');
+  assert.match(html, /data-contact-cta/, 'the component preview must expose a LINE contact CTA');
+  const expectedContactCtas = [
+    ['training_card_t1', 'T1'],
+    ['training_card_t2', 'T2'],
+    ['training_card_t3', 'T3'],
+    ['consulting_card_c1', 'C1'],
+    ['implementation_card_i1', 'I1'],
+    ['upgrade_strip_a1', 'A1'],
+    ['services_final_cta', 'none'],
+  ];
+  for (const [location, code] of expectedContactCtas) {
+    assert.match(html, new RegExp(`data-cta-location="${location}"`), `${location} must retain CTA location metadata`);
+    assert.match(html, new RegExp(`data-product-code="${code}"`), `${location} must retain product metadata`);
+  }
 }
 
 const expected = {
@@ -183,6 +220,10 @@ if (!process.argv.includes('--data-only')) {
     canonicalDestination(loadSiteLineUrl()),
     'LINE QR and SITE.social.line must resolve to the same canonical destination',
   );
+}
+
+if (process.argv.includes('--build-output')) {
+  assertComponentBuildOutput();
 }
 
 console.log('services vnext data contract passed');

@@ -1,0 +1,29 @@
+---
+const choices = [
+  { symptom: 'เซลล์คุยกับลูกค้าไม่เป็น ตามดีลหลุด', code: 'T1', label: 'เริ่มที่คอร์สทักษะการขาย + Follow-up' },
+  { symptom: 'มีคนดูหรือ Lead แต่ไม่กลายเป็นนัดหมาย', code: 'T2', label: 'เริ่มที่คอร์ส Online-to-Offline' },
+  { symptom: 'หัวหน้าต้องไล่ Report และรวม Excel', code: 'T3', label: 'เริ่มที่คอร์ส Report + Dashboard' },
+  { symptom: 'มีปัญหาระบบหนึ่งเรื่องและต้องการที่ปรึกษา', code: 'C1', label: 'เริ่มที่บริการวางระบบฝ่ายขายรายวัน' },
+  { symptom: 'ต้องการ Dashboard/Report ใช้งานจริง', code: 'I1', label: 'เริ่มที่บริการทำ Dashboard + Report' },
+  { symptom: 'เรียนแล้วต้องการคนพาทำต่อ', code: 'A1', label: 'เริ่มที่ Advance Program' },
+] as const;
+---
+
+<section aria-labelledby="offer-chooser-heading" class="rounded-[1.5rem] border border-sand-deep bg-sand p-5 sm:p-8">
+  <p class="text-xs font-bold uppercase tracking-[0.18em] text-coral">Decision helper</p>
+  <h2 id="offer-chooser-heading" class="mt-2 font-display text-2xl font-bold text-navy sm:text-3xl">เลือกจากอาการที่เกิดในทีม</h2>
+  <p class="mt-3 max-w-2xl leading-7 text-[#625C53]">เริ่มจากสิ่งที่ทีมต้องทำให้ได้จริง แล้วเลือกบริการที่เหมาะกับจุดนั้น</p>
+  <ol class="mt-6 grid gap-3 md:grid-cols-2">
+    {choices.map((choice, index) => (
+      <li>
+        <a
+          href={`#offer-${choice.code.toLowerCase()}`}
+          class="flex min-h-12 h-full items-center gap-3 rounded-2xl border border-navy/15 bg-surface px-4 py-3 text-left transition-colors hover:border-coral/60 hover:bg-coral/[0.04] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
+        >
+          <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-navy text-xs font-bold text-white">{index + 1}</span>
+          <span class="min-w-0"><span class="block font-semibold leading-5 text-navy">{choice.symptom}</span><span class="mt-1 block text-sm text-coral">{choice.label} →</span></span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</section>
