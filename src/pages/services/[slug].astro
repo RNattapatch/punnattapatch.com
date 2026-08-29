@@ -2,9 +2,10 @@
 const legacyRedirects = {
   'ai-workshop': '/services#inhouse-a',
   'ai-workshop-advance': '/services#sales-report',
-  'package-a': '/services',
-  'sales-system-sprint': '/services#package-a',
-  'sale-training-bundle': '/services',
+  'paid-audit': '/services#offer-c1',
+  'package-a': '/services#offer-c1',
+  'sales-system-sprint': '/services#offer-c1',
+  'sale-training-bundle': '/services#offer-t1',
   'trust-content-tiktok-workshop': '/services#trust-content',
 } as const;
 
@@ -12,6 +13,7 @@ export function getStaticPaths() {
   return [
     'ai-workshop',
     'ai-workshop-advance',
+    'paid-audit',
     'package-a',
     'sales-system-sprint',
     'sale-training-bundle',

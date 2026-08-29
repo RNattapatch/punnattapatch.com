@@ -25,6 +25,7 @@
  */
 
 import { SITE, SERVICES, cleanUrl } from '../data/site';
+import type { ServiceOffer } from '../data/service-offers';
 
 type SchemaType =
   | 'Person'
@@ -32,6 +33,7 @@ type SchemaType =
   | 'ProfilePage'
   | 'Service'
   | 'ServiceList'
+  | 'ItemList'
   | 'FAQPage'
   | 'Article'
   | 'BreadcrumbList'
@@ -75,6 +77,8 @@ interface Props {
   };
   /** For ServiceList */
   services?: typeof SERVICES;
+  /** For the services product catalog */
+  catalog?: readonly ServiceOffer[];
   /** For Event/Course (training pages) */
   training?: TrainingEvent;
 }
@@ -89,6 +93,7 @@ const {
   breadcrumbs,
   article,
   services = SERVICES,
+  catalog,
   training,
 } = Astro.props;
 
@@ -235,6 +240,67 @@ function buildFAQPage() {
   };
 }
 
+function buildCatalog() {
+  if (!catalog) return [];
+
+  const itemListElement = catalog.map((offer, index) => {
+    const itemUrl = `${url}#offer-${offer.code.toLowerCase()}`;
+    return {
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@id': itemUrl,
+        name: offer.publicName,
+        url: itemUrl,
+      },
+    };
+  });
+
+  const typedItems = catalog.flatMap((offer) => {
+    const itemUrl = `${url}#offer-${offer.code.toLowerCase()}`;
+    const common = {
+      '@id': itemUrl,
+      name: offer.publicName,
+      description: offer.description,
+      url: itemUrl,
+      provider: { '@id': PERSON_ID },
+      inLanguage: 'th-TH',
+    };
+
+    if (offer.kind === 'training') {
+      return [{
+        '@type': 'Course',
+        ...common,
+        courseCode: offer.code,
+      }];
+    }
+
+    if (offer.kind === 'consulting' || offer.kind === 'implementation') {
+      return [{
+        '@type': 'Service',
+        ...common,
+        serviceType: offer.kind === 'consulting' ? 'Sales Consulting' : 'Sales System Implementation',
+        category: 'Sales Enablement',
+        areaServed: { '@type': 'Country', name: 'Thailand' },
+      }];
+    }
+
+    return [];
+  });
+
+  return [
+    {
+      '@type': 'ItemList',
+      '@id': `${url}#catalog`,
+      name: 'คอร์สและบริการสำหรับทีมขาย',
+      numberOfItems: itemListElement.length,
+      itemListOrder: 'https://schema.org/ItemListOrderAscending',
+      itemListElement,
+    },
+    ...typedItems,
+  ];
+}
+
 function buildArticle() {
   if (!article) return null;
   return {
@@ -378,6 +444,10 @@ function buildGraph(): unknown[] {
       case 'ServiceList': {
         const serviceItems = buildServiceList();
         graph.push(...serviceItems);
+        break;
+      }
+      case 'ItemList': {
+        graph.push(...buildCatalog());
         break;
       }
       case 'FAQPage': {

@@ -12,6 +12,12 @@ const sitePath = `${root}/src/data/site.ts`;
 const verifierPath = fileURLToPath(import.meta.url);
 const componentPreviewPath = `${root}/dist/services-components-preview.html`;
 const servicesPagePath = `${root}/dist/services.html`;
+const redirectsOutputPath = `${root}/dist/_redirects`;
+const sitemapOutputPath = `${root}/dist/sitemap-0.xml`;
+
+const servicesCanonical = 'https://punnattapatch.com/services';
+const servicesTitle = 'คอร์สสำหรับทีมขาย และบริการวางระบบฝ่ายขาย | ปัน ณัฐพัชร์';
+const servicesDescription = 'Training, Consulting และ Implementation สำหรับทีมขายที่ต้องการเพิ่มยอด วาง Funnel, Follow-up, Report และ Dashboard โดยใช้ AI เป็นตัวช่วยในงานที่เหมาะสม';
 
 function builtPagePath(route) {
   return route === '/' ? `${root}/dist/index.html` : `${root}/dist/${route.replace(/^\//, '')}.html`;
@@ -248,11 +254,15 @@ function assertServicesPageBuildOutput() {
     assert.doesNotMatch(cardHtml, /คุยกับปันใน LINE/, `${code} must not use the retired LINE label`);
   }
 
-  assert.equal((html.match(/<details\b[^>]*data-service-faq/g) ?? []).length, 10, 'services page must render ten FAQ answers');
+  const visibleFaqCount = (html.match(/<details\b[^>]*data-service-faq/g) ?? []).length;
+  assert.equal(visibleFaqCount, 10, 'services page must render ten FAQ answers');
   const jsonLdBlocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((match) => JSON.parse(match[1]));
-  const faqSchema = jsonLdBlocks.flatMap((block) => block['@graph'] ?? [block]).find((node) => node['@type'] === 'FAQPage');
+  const schemaNodes = jsonLdBlocks.flatMap((block) => block['@graph'] ?? [block]);
+  const faqSchemas = schemaNodes.filter((node) => node['@type'] === 'FAQPage');
+  assert.equal(faqSchemas.length, 1, 'services page must emit exactly one FAQPage schema');
+  const [faqSchema] = faqSchemas;
   assert.ok(faqSchema, 'services page must expose FAQPage schema');
-  assert.equal(faqSchema.mainEntity.length, 10, 'visible FAQ and FAQ schema must contain the same ten answers');
+  assert.equal(faqSchema.mainEntity.length, visibleFaqCount, 'visible FAQ and FAQ schema question counts must agree');
   for (const item of faqSchema.mainEntity) {
     assert.ok(html.includes(item.name), `visible FAQ must include schema question: ${item.name}`);
     assert.ok(html.includes(item.acceptedAnswer.text), `visible FAQ must include schema answer for: ${item.name}`);
@@ -262,6 +272,97 @@ function assertServicesPageBuildOutput() {
   assert.match(html, /data-service-testimonial[\s\S]*เซลล์เลิกใช้ส่วนลดปิดดีล เปลี่ยนมาคุยเรื่องคุณค่าที่ลูกค้าได้/, 'organisation proof must visibly retain the relevant published sales testimonial');
   assert.match(html, /href="\/case-studies\/forklift-distributor-5-person-team"/, 'the sales testimonial must link to its published case study');
   assert.doesNotMatch(html, /Paid Audit/i, 'Paid Audit must not return to the public services funnel');
+}
+
+function assertServicesSeoBuildOutput() {
+  assert.ok(existsSync(servicesPagePath), 'services page build output does not exist; run pnpm build');
+
+  const html = readFileSync(servicesPagePath, 'utf8');
+  assert.match(html, new RegExp(`<title>${servicesTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</title>`), 'services title must match the approved title exactly once');
+  assert.doesNotMatch(html, new RegExp(`${servicesTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} · ปัน ณัฐพัชร์`), 'services title must not duplicate the site name');
+  assert.match(html, new RegExp(`<meta name="description" content="${servicesDescription.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`), 'meta description must lead with the approved Training, Consulting and Implementation intent');
+  assert.match(html, new RegExp(`<link rel="canonical" href="${servicesCanonical}"`), 'services canonical must use the clean production URL');
+  assert.match(html, new RegExp(`<meta property="og:title" content="${servicesTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`), 'Open Graph title must match the catalog title');
+  assert.match(html, new RegExp(`<meta property="og:description" content="${servicesDescription.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`), 'Open Graph description must match the catalog description');
+  assert.match(html, /<meta property="og:image" content="https:\/\/punnattapatch\.com\/_astro\/t2-online-to-offline-ai\.[^"]+\.png"/, 'Open Graph image must use the catalog hero product artwork');
+
+  const jsonLdBlocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((match) => JSON.parse(match[1]));
+  const schemaNodes = jsonLdBlocks.flatMap((block) => block['@graph'] ?? [block]);
+  const nodesOfType = (type) => schemaNodes.filter((node) => node['@type'] === type);
+
+  assert.equal(nodesOfType('WebPage').length, 1, 'services page must emit one WebPage schema');
+  assert.equal(nodesOfType('ItemList').length, 1, 'services page must emit one ItemList schema');
+  assert.equal(nodesOfType('Course').length, 3, 'only T1–T3 may emit Course schema');
+  assert.equal(nodesOfType('Service').length, 2, 'only C1 and I1 may emit Service schema');
+  assert.equal(nodesOfType('BreadcrumbList').length, 1, 'services page must emit one BreadcrumbList schema');
+  assert.equal(nodesOfType('FAQPage').length, 1, 'services page must not duplicate FAQPage schema');
+  assert.equal(nodesOfType('Product').length, 0, 'services schema must not expose stale Product pricing');
+
+  const webPage = nodesOfType('WebPage')[0];
+  assert.equal(webPage.url, servicesCanonical, 'WebPage schema URL must match canonical');
+  assert.equal(webPage.name, servicesTitle, 'WebPage schema name must match page title');
+  assert.equal(webPage.description, servicesDescription, 'WebPage schema description must match page metadata');
+
+  const expectedSchemaOffers = [
+    ['T1', 'Course'],
+    ['T2', 'Course'],
+    ['T3', 'Course'],
+    ['C1', 'Service'],
+    ['I1', 'Service'],
+  ];
+  for (const [code, type] of expectedSchemaOffers) {
+    const offer = OFFER_BY_CODE[code];
+    const node = schemaNodes.find((candidate) => candidate['@id'] === `${servicesCanonical}#offer-${code.toLowerCase()}`);
+    assert.ok(node, `${code} schema node must use its visible offer anchor`);
+    assert.equal(node['@type'], type, `${code} schema type must match the product role`);
+    assert.equal(node.name, offer.publicName, `${code} schema name must match the visible catalog`);
+    assert.equal(node.description, offer.description, `${code} schema description must match the visible catalog`);
+    assert.deepEqual(node.provider, { '@id': 'https://punnattapatch.com/#person' }, `${code} schema must identify its provider`);
+  }
+
+  const itemList = nodesOfType('ItemList')[0];
+  assert.equal(itemList.numberOfItems, 6, 'ItemList must represent all six visible catalog roles');
+  assert.deepEqual(itemList.itemListElement.map((item) => item.position), [1, 2, 3, 4, 5, 6], 'ItemList positions must be complete and ordered');
+  assert.deepEqual(itemList.itemListElement.map((item) => item.item.url), [
+    `${servicesCanonical}#offer-t2`,
+    `${servicesCanonical}#offer-t1`,
+    `${servicesCanonical}#offer-t3`,
+    `${servicesCanonical}#offer-c1`,
+    `${servicesCanonical}#offer-i1`,
+    `${servicesCanonical}#offer-a1`,
+  ], 'ItemList order must match the visible services catalog');
+
+  assert.doesNotMatch(html, /Package A|Paid[ -]Audit|AI Transformation/i, 'retired public positioning must not appear in services output');
+  assert.ok(!html.includes(fmtPrice('package-a')), 'the retired Package A price must not appear in metadata, schema or hidden output');
+
+  for (const anchor of ['inhouse-a', 'inhouse-b', 'back-office', 'package-a', 'daruma-transformation']) {
+    assert.equal((html.match(new RegExp(`id="${anchor}"`, 'g')) ?? []).length, 1, `legacy #${anchor} entry point must remain compatible`);
+  }
+
+  assert.ok(existsSync(redirectsOutputPath), 'deploy redirect output must exist');
+  const redirects = readFileSync(redirectsOutputPath, 'utf8');
+  const legacyRedirects = [
+    ['/services/ai-workshop', '/services#inhouse-a'],
+    ['/services/ai-workshop-followup', '/services#inhouse-a'],
+    ['/services/ai-workshop-advance', '/services#sales-report'],
+    ['/services/paid-audit', '/services#offer-c1'],
+    ['/services/package-a', '/services#offer-c1'],
+    ['/services/sales-system-sprint', '/services#offer-c1'],
+    ['/services/sale-training-bundle', '/services#offer-t1'],
+    ['/services/trust-content-tiktok-workshop', '/services#trust-content'],
+  ];
+  for (const [from, to] of legacyRedirects) {
+    assert.match(redirects, new RegExp(`^${from.replaceAll('/', '\\/')}\\s+${to.replaceAll('/', '\\/')}\\s+301$`, 'm'), `${from} must permanently redirect to ${to}`);
+    const fallbackRedirectHtml = readFileSync(builtPagePath(from), 'utf8');
+    assert.match(fallbackRedirectHtml, new RegExp(`http-equiv="refresh" content="0;url=${to.replaceAll('/', '\\/')}"`), `${from} static fallback must redirect to ${to}`);
+  }
+
+  assert.ok(existsSync(sitemapOutputPath), 'sitemap build output must exist');
+  const sitemap = readFileSync(sitemapOutputPath, 'utf8');
+  assert.equal((sitemap.match(new RegExp(`<loc>${servicesCanonical}</loc>`, 'g')) ?? []).length, 1, 'sitemap must include the canonical services URL exactly once');
+  for (const [from] of legacyRedirects) {
+    assert.ok(!sitemap.includes(`<loc>https://punnattapatch.com${from}</loc>`), `${from} redirect must not be indexed in the sitemap`);
+  }
 }
 
 const expected = {
@@ -369,6 +470,7 @@ if (!process.argv.includes('--data-only')) {
 if (process.argv.includes('--build-output')) {
   assertComponentBuildOutput();
   assertServicesPageBuildOutput();
+  assertServicesSeoBuildOutput();
   assertFloatingLineBuildOutput();
 }
 

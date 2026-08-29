@@ -35,7 +35,7 @@ const {
   showFloatingLine = true,
 } = Astro.props;
 
-const fullTitle = title === SITE.titleDefault ? title : `${title} · ${SITE.nameTh}`;
+const fullTitle = title === SITE.titleDefault || title.includes(SITE.nameTh) ? title : `${title} · ${SITE.nameTh}`;
 const path = Astro.url.pathname.replace(/(?:index)?\.html$/, '').replace(/\/$/, '') || '/';
 const floatingLineExcludedPaths = ['/booking', '/thank-you', '/intake-form'];
 const isFloatingLineExcluded = floatingLineExcludedPaths.some(

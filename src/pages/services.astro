@@ -9,8 +9,9 @@ import { fmtPrice } from '../data/pricing.mjs';
 import { SERVICE_OFFERS, type OfferCode } from '../data/service-offers';
 import { LINE_QR_IMAGE, OFFER_ASSET_BY_CODE } from '../data/service-offer-assets';
 
-const title = 'คอร์สและบริการสำหรับทีมขาย ที่อยากเพิ่มยอดและทำงานเป็นระบบ';
-const description = 'เลือกคอร์สและบริการจากงานที่ทีมขายต้องทำได้จริง ตั้งแต่ทักษะการขาย การเปลี่ยน Lead เป็นยอดขาย ไปจนถึง Report, Dashboard และระบบฝ่ายขายที่ใช้งานจริง';
+const title = 'คอร์สสำหรับทีมขาย และบริการวางระบบฝ่ายขาย | ปัน ณัฐพัชร์';
+const description = 'Training, Consulting และ Implementation สำหรับทีมขายที่ต้องการเพิ่มยอด วาง Funnel, Follow-up, Report และ Dashboard โดยใช้ AI เป็นตัวช่วยในงานที่เหมาะสม';
+const canonical = `${SITE.url}/services`;
 
 const offerByCode = Object.fromEntries(SERVICE_OFFERS.map((offer) => [offer.code, offer]));
 const getOffer = (code: OfferCode) => {
@@ -22,6 +23,7 @@ const priceFor = (code: OfferCode) => {
   const pricingKey = getOffer(code).pricingKey;
   return pricingKey ? fmtPrice(pricingKey) : undefined;
 };
+const catalogOffers = (['T2', 'T1', 'T3', 'C1', 'I1', 'A1'] as const).map(getOffer);
 
 const trustLogos = [
   { src: '/services/nissan.png', alt: 'Nissan' },
@@ -79,10 +81,14 @@ const faqs = [
 <BaseLayout
   title={title}
   description={description}
+  canonical={canonical}
+  ogImage={`${SITE.url}${OFFER_ASSET_BY_CODE.T2.src}`}
   schema={{
-    types: ['WebPage', 'Person', 'FAQPage', 'BreadcrumbList'],
+    types: ['WebPage', 'ItemList', 'FAQPage', 'BreadcrumbList'],
     title,
     description,
+    url: canonical,
+    catalog: catalogOffers,
     faq: faqs.map((faq) => ({ question: faq.q, answer: faq.a })),
     breadcrumbs: [
       { name: 'หน้าแรก', url: SITE.url },
@@ -164,11 +170,13 @@ const faqs = [
         <div class="mt-6 grid min-w-0 gap-6 lg:grid-cols-2">
           <div class="relative min-w-0">
             <span id="inhouse-a" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
+            <span id="inhouse-b" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
             <OfferCard offer={getOffer('T1')} image={OFFER_ASSET_BY_CODE.T1} priceLabel={priceFor('T1')} />
             <p data-take-home-for="T1" class="mt-3 rounded-2xl border border-navy/10 bg-surface px-5 py-3 text-sm leading-6 text-[#625C53]"><strong class="text-navy">สิ่งที่ทีมจะได้กลับไป:</strong> Sales Context Pack + ชุดคำถามขาย + Follow-up sequence + Tracking sheet</p>
           </div>
           <div class="relative min-w-0">
             <span id="sales-report" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
+            <span id="back-office" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
             <OfferCard offer={getOffer('T3')} image={OFFER_ASSET_BY_CODE.T3} priceLabel={priceFor('T3')} />
             <p data-take-home-for="T3" class="mt-3 rounded-2xl border border-navy/10 bg-surface px-5 py-3 text-sm leading-6 text-[#625C53]"><strong class="text-navy">สิ่งที่ทีมจะได้กลับไป:</strong> Stage dictionary + Daily report template + Manager intervention rule + Dashboard wireframe</p>
           </div>
@@ -187,6 +195,7 @@ const faqs = [
 
         <div class="mt-10 grid min-w-0 gap-6 lg:grid-cols-2">
           <div class="relative min-w-0">
+            <span id="package-a" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
             <OfferCard offer={getOffer('C1')} image={OFFER_ASSET_BY_CODE.C1} priceLabel={priceFor('C1')} />
           </div>
           <div class="relative min-w-0">
@@ -199,7 +208,10 @@ const faqs = [
 
     <div id="advance-program" class="scroll-mt-20 bg-ivory">
       <div class="mx-auto max-w-[1180px] px-5 py-12 sm:px-8 sm:py-16 lg:px-10">
-        <AdvanceProgramStrip offer={getOffer('A1')} image={OFFER_ASSET_BY_CODE.A1} />
+        <div class="relative">
+          <span id="daruma-transformation" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
+          <AdvanceProgramStrip offer={getOffer('A1')} image={OFFER_ASSET_BY_CODE.A1} />
+        </div>
       </div>
     </div>
 
