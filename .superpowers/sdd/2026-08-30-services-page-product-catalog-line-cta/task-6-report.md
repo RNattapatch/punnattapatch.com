@@ -223,3 +223,37 @@ The final combined gate also passed both services suites (`7/7`) and `git diff -
   "violations": []
 }
 ```
+
+## Fix round 3 — ban generic AI Agent Transformation copy
+
+### Root cause and TDD RED
+
+The full-document integrity guard covered `Agentic AI Transformation` and selected `AI Transformation สำหรับ...` forms, but not the distinct phrase `AI Agent Transformation`. About used that omitted phrase in both its shared description and its visible hero line, so the description also propagated into metadata and ProfilePage schema without failing the guard.
+
+The verifier pattern was first extended with the exact `AI Agent Transformation` phrase. Against unchanged fresh output, the focused verifier failed for the intended public page:
+
+```text
+AssertionError [ERR_ASSERTION]: public build must not render retired package positioning:
+about.html: generic AI Transformation positioning
+```
+
+### Outcome-first migration and GREEN
+
+- The About description now leads with `ที่ปรึกษาวางระบบและพัฒนาทีมขาย B2B สำหรับ SME` and names concrete KPI, commission, Funnel, Report, Dashboard and AI-workflow outcomes.
+- The visible About hero line now uses the same sales-system positioning and concrete deliverables instead of a generic transformation label.
+- The public-output guard scans full HTML for `AI Agent Transformation` alongside the previously retired forms, protecting metadata, schema and body copy with one contract.
+
+After the source migration, a fresh build produced 84 pages and `pnpm verify:services -- --build-output` passed. The final combined gate passed both services suites (`7/7`) and `git diff --check`.
+
+An independent recursive output scan using the expanded exact phrase reported:
+
+```json
+{
+  "allHtml": 90,
+  "publicHtml": 59,
+  "excludedRedirectOrNoindex": 31,
+  "violations": []
+}
+```
+
+A separate exact search found no `AI Agent Transformation` occurrence in any built HTML file.
