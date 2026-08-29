@@ -45,8 +45,7 @@ function assertPublicBuildContentIntegrity() {
     if (/Paid[ -]Audit/i.test(html)) violations.push(`${publicPath}: Paid Audit`);
     if (html.includes(retiredPrice)) violations.push(`${publicPath}: retired package price`);
 
-    const head = html.match(/<head>([\s\S]*?)<\/head>/i)?.[1] ?? '';
-    if (/Agentic AI Transformation|AI Transformation สำหรับ(?:ธุรกิจ|SME|ทีมขาย)/i.test(head)) {
+    if (/Agentic AI Transformation|AI Transformation สำหรับ(?:ธุรกิจ|SME|ทีมขาย)/i.test(html)) {
       violations.push(`${publicPath}: generic AI Transformation positioning`);
     }
   }

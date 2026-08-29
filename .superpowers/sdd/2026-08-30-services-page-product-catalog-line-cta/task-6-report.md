@@ -181,3 +181,45 @@ An independent recursive scan of fresh output reported:
   "violations": []
 }
 ```
+
+## Fix round 2 — body-wide generic-positioning guard
+
+### Root cause and TDD RED
+
+The full-public-build guard from round 1 checked generic `AI Transformation` positioning only inside each document head. Two indexable pages still rendered that positioning in their bodies: the About expertise list and the published Agent Builder Kit manual.
+
+The guard was first changed to scan the complete HTML document. Before production copy was edited, the focused verifier failed with exactly the intended two violations:
+
+```text
+public build must not render retired package positioning:
+about.html: generic AI Transformation positioning
+agent-builder-kit/manual/part-1.html: generic AI Transformation positioning
+```
+
+### Source migration and GREEN
+
+- About now names the discipline `Sales System Implementation with AI` and describes concrete Report, Dashboard and connected-workflow outcomes that teams can operate themselves.
+- The manual now contrasts chat-only AI use with turning repetitive sales work into a shared workflow, removing the generic transformation claim while preserving the paragraph's warning and teaching intent.
+- The integrity guard scans the full body and head of every public built HTML page. Its retired-price assertion still resolves the value from the pricing SSOT rather than hardcoding an amount.
+
+After the source migration, a fresh full build and focused verifier passed:
+
+```text
+$ pnpm build
+[build] 84 page(s) built
+[build] Complete!
+
+$ pnpm verify:services -- --build-output
+services vnext data contract passed
+```
+
+The final combined gate also passed both services suites (`7/7`) and `git diff --check`. An independent recursive output scan corroborated the guard across the complete HTML rather than the head alone:
+
+```json
+{
+  "allHtml": 90,
+  "publicHtml": 59,
+  "excludedRedirectOrNoindex": 31,
+  "violations": []
+}
+```
