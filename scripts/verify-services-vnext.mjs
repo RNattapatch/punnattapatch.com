@@ -88,6 +88,7 @@ function assertComponentBuildOutput() {
   assert.ok(existsSync(componentPreviewPath), 'component preview build output does not exist; run pnpm build after adding the services component preview');
 
   const html = readFileSync(componentPreviewPath, 'utf8');
+  assert.equal((html.match(/<main\b[^>]*\bid="main"/g) ?? []).length, 1, 'the component preview must preserve BaseLayout\'s single main landmark');
   const expectedOffers = [
     ['T1', 'training'],
     ['T2', 'training'],

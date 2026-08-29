@@ -61,3 +61,29 @@ $ git diff --check
 ```
 
 The build emitted pre-existing warnings about deprecated Astro markdown plugin configuration, an empty framework content glob, and unresolved `%23n`; the component sources introduce no new warnings.
+
+## Fix round 1 — preview landmark contract
+
+`BaseLayout.astro` already owns the sole `<main id="main">`. The temporary preview route had added a second nested landmark, so the build-output verifier was extended before the fix and failed as expected:
+
+```text
+AssertionError [ERR_ASSERTION]: the component preview must preserve BaseLayout's single main landmark
+2 !== 1
+```
+
+The preview now yields its sibling sections directly to `BaseLayout`; it does not render another `<main>`. Fresh verification after the change:
+
+```text
+$ pnpm build
+[build] 83 page(s) built
+[build] Complete!
+
+$ pnpm verify:services -- --build-output
+services vnext data contract passed
+
+$ node landmark-check
+{"mainIdCount":1,"mainCount":1}
+
+$ git diff --check
+(no output)
+```
