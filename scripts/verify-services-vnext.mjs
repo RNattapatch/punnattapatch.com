@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
 import { CATALOG, fmtPrice } from '../src/data/pricing.mjs';
@@ -21,6 +21,41 @@ const servicesDescription = 'Training, Consulting และ Implementation ส�
 
 function builtPagePath(route) {
   return route === '/' ? `${root}/dist/index.html` : `${root}/dist/${route.replace(/^\//, '')}.html`;
+}
+
+function builtHtmlPaths(directory = `${root}/dist`) {
+  return readdirSync(directory, { withFileTypes: true })
+    .flatMap((entry) => entry.isDirectory() ? builtHtmlPaths(`${directory}/${entry.name}`) : [`${directory}/${entry.name}`]);
+}
+
+function builtPublicHtmlPages() {
+  return builtHtmlPaths()
+    .filter((path) => path.endsWith('.html'))
+    .map((path) => ({ path, html: readFileSync(path, 'utf8') }))
+    .filter(({ html }) => !/http-equiv="refresh"/i.test(html) && !/<meta name="robots" content="[^"]*noindex/i.test(html));
+}
+
+function assertPublicBuildContentIntegrity() {
+  const retiredPrice = fmtPrice('package-a');
+  const violations = [];
+
+  for (const { path, html } of builtPublicHtmlPages()) {
+    const publicPath = path.replace(`${root}/dist/`, '');
+    if (/Package A/i.test(html)) violations.push(`${publicPath}: Package A`);
+    if (/Paid[ -]Audit/i.test(html)) violations.push(`${publicPath}: Paid Audit`);
+    if (html.includes(retiredPrice)) violations.push(`${publicPath}: retired package price`);
+
+    const head = html.match(/<head>([\s\S]*?)<\/head>/i)?.[1] ?? '';
+    if (/Agentic AI Transformation|AI Transformation สำหรับ(?:ธุรกิจ|SME|ทีมขาย)/i.test(head)) {
+      violations.push(`${publicPath}: generic AI Transformation positioning`);
+    }
+  }
+
+  assert.deepEqual(
+    violations,
+    [],
+    `public build must not render retired package positioning:\n${violations.join('\n')}`,
+  );
 }
 
 function assertFloatingLineBuildOutput() {
@@ -471,6 +506,7 @@ if (process.argv.includes('--build-output')) {
   assertComponentBuildOutput();
   assertServicesPageBuildOutput();
   assertServicesSeoBuildOutput();
+  assertPublicBuildContentIntegrity();
   assertFloatingLineBuildOutput();
 }
 

@@ -120,3 +120,64 @@ $ git diff --check
 ```
 
 The independent evidence parser reported one parsed JSON-LD block, the schema inventory above, FAQ parity `10 = 10`, canonical sitemap count `1`, zero retired-term/price hits, and all eight permanent redirects. The build retains the repository's pre-existing warnings about deprecated Astro markdown configuration, the empty `src/content/framework` glob, and unresolved `%23n`; Phase 6 adds no new build warning.
+
+## Fix round 1 — full-public-build stale-output guard
+
+### Root cause
+
+The initial Phase 6 guard inspected only `dist/services.html`. Published FAQ, insight and case-study content still rendered sunset `package-a` and `inhouse-b` references. Both internal keys resolve to the same retired public price, so a services-only scan could pass while other indexable pages still promoted the old ladder. Generic `Agentic AI Transformation` positioning also entered many page heads through the shared Person schema, while the FAQ supplied the phrase directly in its meta description.
+
+The integrity boundary is now every built HTML document except explicit redirect fallbacks and pages whose robots metadata is `noindex`. This covers 59 public documents in the current build and excludes 31 redirect/noindex artifacts.
+
+### TDD RED
+
+The full-build guard was added before content edits. After correcting a test-helper recursion error, the focused verifier failed with the intended evidence:
+
+```text
+AssertionError [ERR_ASSERTION]: public build must not render retired package positioning:
+about.html: generic AI Transformation positioning
+case-studies/manufacturing-b2b-12-person-team.html: retired package price
+case-studies/real-estate-developer-sales-team-restructure.html: retired package price
+faq.html: Package A
+faq.html: retired package price
+faq.html: generic AI Transformation positioning
+index.html: generic AI Transformation positioning
+insights/agentic-ai-sme-thailand-start.html: Package A
+insights/agentic-ai-sme-thailand-start.html: retired package price
+insights/lookrak-kills-sme-teams.html: retired package price
+...shared-schema positioning hits on the remaining public insight pages
+```
+
+The verifier collects all violations before failing, so one stale page cannot hide later violations. It resolves the retired price through `fmtPrice('package-a')`; no price amount is duplicated in the test.
+
+### Source migration
+
+- Published Package A continuation CTAs now point to A1 when the promise is guided adoption, or C1 when the promise is one-day consulting.
+- Published sunset Bootcamp references now point to T1 and resolve its current price through `{{price:inhouse-a}}`.
+- Implementation budget examples now use I1 through `{{price:daruma-starter}}`.
+- FAQ comparison/pricing copy now uses `{{price:daily-sales-consulting}}`, current T1/T3 entries, or scope-based wording.
+- The shared Person schema now uses `Sales System Implementation with AI`; FAQ metadata leads with B2B sales-team development, systems and AI-assisted sales work.
+- The internal pricing keys remain untouched. The remaining Package A source references are non-public: one draft article and the unused `FaqWork.astro` component. The compatibility route and internal pricing SSOT also remain intact.
+
+### GREEN and independent evidence
+
+```text
+$ pnpm build
+[build] 84 page(s) built
+[build] Complete!
+
+$ pnpm verify:services -- --build-output
+services vnext data contract passed
+```
+
+An independent recursive scan of fresh output reported:
+
+```json
+{
+  "allHtml": 90,
+  "publicHtml": 59,
+  "excludedRedirectOrNoindex": 31,
+  "retiredPriceResolvedFromSsot": "฿59,900",
+  "violations": []
+}
+```

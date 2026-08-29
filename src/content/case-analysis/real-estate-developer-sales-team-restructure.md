@@ -150,5 +150,5 @@ Team bonus = top performer ยอมช่วย junior เพราะมัน
 ## อยากได้ผลลัพธ์แบบนี้ไหม?
 
 - [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — Workflow (ขั้นตอนการทำงาน) วางระบบขายทั้งบริษัทแบบเดียวกับลูกค้ารายนี้
-- [Daruma Sales Office Bootcamp {{price:inhouse-b}}](/services#inhouse-b) — ถ้าต้องการฝึกทีมก่อน redesign commission
+- [คอร์สอบรมทักษะการขาย + Follow-up + AI {{price:inhouse-a}}](/services#offer-t1) — ถ้าต้องการฝึกทีมก่อน redesign commission
 - [กรอกฟอร์ม 3 นาที](/intake-form) — ผมอ่านแล้วบอกว่าเคสคุณควรเริ่มที่ตัวเลขเท่าไหร่

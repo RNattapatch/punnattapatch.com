@@ -42,4 +42,4 @@ AI workshop 1 วันของผมไม่ต้องเตรียมอ
 - ผลลัพธ์ที่วัดผลได้แบบ Before/After ภายในวันเดียว (เช่น การทำรีพอร์ตจาก 3 ชั่วโมง เหลือ 15 นาที)
 - การฝึกอบรมสำหรับ Team Lead เพื่อให้ดูแลระบบต่อเองได้
 
-Workshop ราคา [{{price:ai-workshop-advance}} ต่อ 1 วัน](/services/ai-workshop) หรือแพ็กเกจ bundle (แพ็คเกจรวม) [Package A {{price:package-a}}](/services#package-a) เพื่อให้ทีมปรับตัวใช้งานเป็นนิสัย
+Workshop ราคา [{{price:ai-workshop-advance}} ต่อ 1 วัน](/services#back-office) หากต้องการให้ทีมมีคนพาทำต่อจนใช้จริง ให้ดู [Advance Program: Sales Mastery with AI](/services#offer-a1)

@@ -27,7 +27,7 @@ Wedge ที่ SME ไทยเลือกแล้วคืนทุนเร
 
 **1. Automate sales report → ประหยัด 5-10 ชม./สัปดาห์ ต่อ sales rep**
 - 10 sales rep × 6 ชม. × ฿500/ชม. = ฿30,000/สัปดาห์ หรือ ฿120,000/เดือน
-- คืนทุน wedge {{price:package-a}} ได้ใน 3 สัปดาห์แรก
+- คืนทุนงาน Implementation {{price:daruma-starter}} ได้เมื่อประหยัดเวลาตามสมมติฐานนี้ต่อเนื่องประมาณ 3 สัปดาห์
 
 **2. Proposal/quote automation → ปิดดีลเร็วขึ้น 30-40%**
 - ถ้า pipeline (รายการดีลที่กำลังคุยอยู่) คือ ฿5M/เดือน และ cycle time ลดลง 2 วัน จะทำให้ pipeline velocity เพิ่มขึ้น 15%
@@ -58,7 +58,7 @@ Wedge ที่ SME ไทยเลือกแล้วคืนทุนเร
 **Option A: Scale (ขยายให้ใหญ่ขึ้น) ต่อเอง (฿20,000/ปี)**
 ทีมของคุณสามารถดูแลและขยายผลระบบต่อได้เองโดยใช้เครื่องมือชุดเดิม
 
-**Option B: เพิ่ม wedge ใหม่ ({{price:package-a}}/wedge)**
+**Option B: เพิ่มงาน Implementation ใหม่ (เริ่มประเมินจาก {{price:daruma-starter}} ตาม scope)**
 ลงทุนทำ wedge build อีก 1 รอบเพื่อสร้างเครื่องมือใหม่ เช่น หากปีแรกทำ report automation ปีที่สองอาจทำ proposal automation
 
 **Option C: Monthly advisory (฿20,000-30,000/เดือน)**
