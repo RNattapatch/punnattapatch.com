@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
-import { CATALOG } from '../src/data/pricing.mjs';
+import { CATALOG, fmtPrice } from '../src/data/pricing.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const offersPath = `${root}/src/data/service-offers.ts`;
@@ -11,6 +11,7 @@ const offerAssetsPath = `${root}/src/data/service-offer-assets.ts`;
 const sitePath = `${root}/src/data/site.ts`;
 const verifierPath = fileURLToPath(import.meta.url);
 const componentPreviewPath = `${root}/dist/services-components-preview.html`;
+const servicesPagePath = `${root}/dist/services.html`;
 
 function loadOffers() {
   assert.ok(existsSync(offersPath), 'src/data/service-offers.ts does not exist');
@@ -121,6 +122,76 @@ function assertComponentBuildOutput() {
   }
 }
 
+function assertServicesPageBuildOutput() {
+  assert.ok(existsSync(servicesPagePath), 'services page build output does not exist; run pnpm build');
+
+  const html = readFileSync(servicesPagePath, 'utf8');
+  const sectionIds = [
+    'services-hero',
+    'services-proof-strip',
+    'training-catalog',
+    'consulting-implementation',
+    'advance-program',
+    'offer-chooser',
+    'organisation-proof',
+    'faq',
+    'services-final-cta',
+  ];
+
+  let previousSectionIndex = -1;
+  for (const id of sectionIds) {
+    const sectionIndex = html.indexOf(`id="${id}"`);
+    assert.ok(sectionIndex > previousSectionIndex, `#${id} must exist in the required section order`);
+    previousSectionIndex = sectionIndex;
+  }
+
+  const expectedOfferOrder = ['T2', 'T1', 'T3', 'C1', 'I1', 'A1'];
+  const renderedOfferOrder = [...html.matchAll(/data-offer-code="(T1|T2|T3|C1|I1|A1)"/g)].map((match) => match[1]);
+  assert.deepEqual(renderedOfferOrder, expectedOfferOrder, 'services page must render each public offer once in the required order');
+
+  for (const [index, code] of expectedOfferOrder.entries()) {
+    const offer = OFFER_BY_CODE[code];
+    const cardStart = html.indexOf(`data-offer-code="${code}"`);
+    const nextCode = expectedOfferOrder[index + 1];
+    const cardEnd = nextCode ? html.indexOf(`data-offer-code="${nextCode}"`) : html.indexOf('id="offer-chooser"');
+    const cardHtml = html.slice(cardStart, cardEnd);
+    if (offer.pricingKey) {
+      assert.ok(CATALOG[offer.pricingKey], `${code} pricing key must exist in CATALOG`);
+      assert.ok(cardHtml.includes(fmtPrice(offer.pricingKey)), `${code} must render the caller-resolved CATALOG price`);
+    } else {
+      assert.doesNotMatch(cardHtml, /฿[\d,]+/, `${code} must not render a public price`);
+    }
+  }
+
+  assert.match(html, /SALES TRAINING · CONSULTING · IMPLEMENTATION/, 'services hero eyebrow must match the approved copy');
+  assert.match(html, /คอร์สและบริการสำหรับทีมขาย ที่อยากเพิ่มยอดและทำงานเป็นระบบ/, 'services hero heading must match the approved copy');
+  assert.match(html, /เลือกจากงานที่อยากให้ทีมทำได้จริง ไม่ต้องเริ่มจากชื่อเครื่องมือ ผมช่วยได้ตั้งแต่พัฒนาทักษะเซลล์ วาง Funnel ไปจนถึงสร้าง Report และ Dashboard ให้ใช้งานจริง/, 'services hero support copy must match the approved copy');
+  assert.match(html, /ดูคอร์สและบริการ ↓/, 'services hero must link to the offer catalog');
+  assert.match(html, /ให้ผมช่วยเลือกทาง LINE/, 'services hero must offer LINE decision help');
+
+  const c1Index = html.indexOf('id="offer-c1"');
+  const i1Index = html.indexOf('id="offer-i1"');
+  for (const legacyAnchor of ['sales-team-structure', 'ai-agent-ceo']) {
+    const legacyIndex = html.indexOf(`id="${legacyAnchor}"`);
+    assert.ok(legacyIndex > c1Index && legacyIndex < i1Index, `#${legacyAnchor} must resolve inside the C1 card`);
+  }
+
+  assert.equal((html.match(/<details\b[^>]*data-service-faq/g) ?? []).length, 10, 'services page must render ten FAQ answers');
+  const jsonLdBlocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((match) => JSON.parse(match[1]));
+  const faqSchema = jsonLdBlocks.flatMap((block) => block['@graph'] ?? [block]).find((node) => node['@type'] === 'FAQPage');
+  assert.ok(faqSchema, 'services page must expose FAQPage schema');
+  assert.equal(faqSchema.mainEntity.length, 10, 'visible FAQ and FAQ schema must contain the same ten answers');
+  for (const item of faqSchema.mainEntity) {
+    assert.ok(html.includes(item.name), `visible FAQ must include schema question: ${item.name}`);
+    assert.ok(html.includes(item.acceptedAnswer.text), `visible FAQ must include schema answer for: ${item.name}`);
+  }
+
+  assert.match(html, /Clinic, Hotel, B2B/, 'T2 must explicitly support lead-based businesses beyond Dealer');
+  assert.match(html, /data-service-testimonial[\s\S]*เซลล์เลิกใช้ส่วนลดปิดดีล เปลี่ยนมาคุยเรื่องคุณค่าที่ลูกค้าได้/, 'organisation proof must visibly retain the relevant published sales testimonial');
+  assert.match(html, /href="\/case-studies\/forklift-distributor-5-person-team"/, 'the sales testimonial must link to its published case study');
+  assert.doesNotMatch(html, /Paid Audit/i, 'Paid Audit must not return to the public services funnel');
+}
+
 const expected = {
   T1: {
     publicName: 'คอร์สอบรมทักษะการขาย + Follow-up + AI สำหรับทีมขาย',
@@ -225,6 +296,7 @@ if (!process.argv.includes('--data-only')) {
 
 if (process.argv.includes('--build-output')) {
   assertComponentBuildOutput();
+  assertServicesPageBuildOutput();
 }
 
 console.log('services vnext data contract passed');

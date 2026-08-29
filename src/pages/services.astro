@@ -1,57 +1,28 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import OfferCard from '../components/services/OfferCard.astro';
+import OfferChooser from '../components/services/OfferChooser.astro';
+import AdvanceProgramStrip from '../components/services/AdvanceProgramStrip.astro';
+import LineDecisionCTA from '../components/services/LineDecisionCTA.astro';
 import { SITE } from '../data/site';
-import { fmtPrice, CATALOG } from '../data/pricing.mjs';
+import { fmtPrice } from '../data/pricing.mjs';
+import { SERVICE_OFFERS, type OfferCode } from '../data/service-offers';
+import { LINE_QR_IMAGE, OFFER_ASSET_BY_CODE } from '../data/service-offer-assets';
 
-const title = 'คอร์สสำหรับทีมขาย และบริการวางระบบฝ่ายขาย';
-const description = 'รวมคอร์สอบรมทีมขายที่เปิดสอนตอนนี้ และบริการวางระบบฝ่ายขาย — เอาเรื่องยอดขาย ระบบ และงานของคนในทีมขึ้นก่อน แล้วใช้ AI เข้ามาช่วยให้ทำงานเร็วขึ้น';
-const lineUrl = SITE.social.line;
-// Design: port จาก output/web-app/mockup-course-catalog-2026-08-28.html (Codex · คุณปันเคาะ 2026-08-28)
-// เพิ่มจาก mockup: ราคาจาก SSOT บนทุกการ์ด (มติ "เปิดหัวเคลียร์ + ใส่ราคา") + Services grid (master §14) + proof gallery
-// การ์ดบริการอ่านจาก SSOT ตรงๆ — ชื่อ ราคา ระยะเวลา headline แก้ที่ pricing.mjs ที่เดียว
-const serviceCardDetails = {
-  'sales-team-structure': {
-    image: '/services/onsite/onsite-01.jpg',
-    alt: 'ปันทำงานกับทีมผู้บริหารและทีมขายในบริษัทลูกค้า',
-    eyebrow: 'จัดคน · จัดเป้า · จัดแรงจูงใจ',
-    outcome: 'จัดโครงทีม เป้าหมาย และแรงจูงใจให้ไปทางเดียวกัน เพื่อให้บริษัทเพิ่มคนได้โดยไม่ดันยอดด้วยส่วนลดหรือจ่ายค่าคอมจนกำไรหาย',
-    bullets: [
-      'โครงทีม บทบาท และจำนวนคนที่เหมาะกับพื้นที่หรือลูกค้า',
-      'KPI tree กับโมเดลค่าคอมที่คำนวณต้นทุนได้',
-      'Interview scorecard และแผน Onboarding เซลล์ใหม่',
-    ],
-    deliverables: 'Sales org chart + KPI/Commission model + Recruitment kit',
-  },
-  'daruma-starter': {
-    image: '/proof/02-command-charts.jpg',
-    alt: 'Sales Dashboard แสดง Pipeline รายงาน และงานที่ต้องติดตาม',
-    eyebrow: 'เห็นดีลค้าง · ตามงานได้ · ส่งต่อ Excel ได้',
-    outcome: 'เปลี่ยนข้อมูลที่กระจายอยู่ในแชตและ Excel ให้เป็นรายงานประจำวัน รายการดีลที่ต้องตาม และไฟล์ที่ผู้จัดการเปิดใช้ต่อได้ โดยไม่ต้องรวบรวมเองทุกเย็น',
-    bullets: [
-      'Master deal register ที่เห็น Owner, Stage และ Next action',
-      'Daily report, Stale lead list และ Excel export',
-      'UAT, สอนทีมใช้ และดูแลหลังเปิดระบบ 30 วัน',
-    ],
-    deliverables: 'ระบบ Report ที่ทดสอบกับข้อมูลจริง + คู่มือ + Training ทีม',
-  },
-  'ai-agent-ceo': {
-    image: '/proof/08-line-agent-a.jpg',
-    alt: 'ตัวอย่าง AI Agent ใน LINE ที่เชื่อมกับงานขายจริง',
-    eyebrow: 'หนึ่ง Workflow · มีคนตรวจ · ส่งต่อให้ทีมรันได้',
-    outcome: 'เลือกงานซ้ำหนึ่งเส้นที่กินเวลาทีม แล้ววาง AI Agent พร้อมข้อมูลที่ต้องใช้ จุดตรวจโดยคน และวิธีส่งต่องานให้ทีมรันต่อ',
-    bullets: [
-      'ล็อก Workflow, Input, Output และคนรับผิดชอบ',
-      'ทำ Agent ต้นแบบกับข้อมูลที่อนุญาตให้ใช้',
-      'กำหนด Acceptance test และแผน Handover',
-    ],
-    deliverables: 'Workflow map + Agent prototype + Acceptance checklist + Handover plan',
-  },
-} as const;
-const serviceOffers = (['sales-team-structure', 'daruma-starter', 'ai-agent-ceo'] as const).map((key) => ({
-  key,
-  ...CATALOG[key],
-  ...serviceCardDetails[key],
-}));
+const title = 'คอร์สและบริการสำหรับทีมขาย ที่อยากเพิ่มยอดและทำงานเป็นระบบ';
+const description = 'เลือกคอร์สและบริการจากงานที่ทีมขายต้องทำได้จริง ตั้งแต่ทักษะการขาย การเปลี่ยน Lead เป็นยอดขาย ไปจนถึง Report, Dashboard และระบบฝ่ายขายที่ใช้งานจริง';
+
+const offerByCode = Object.fromEntries(SERVICE_OFFERS.map((offer) => [offer.code, offer]));
+const getOffer = (code: OfferCode) => {
+  const offer = offerByCode[code];
+  if (!offer) throw new Error(`Missing service offer: ${code}`);
+  return offer;
+};
+const priceFor = (code: OfferCode) => {
+  const pricingKey = getOffer(code).pricingKey;
+  return pricingKey ? fmtPrice(pricingKey) : undefined;
+};
+
 const trustLogos = [
   { src: '/services/nissan.png', alt: 'Nissan' },
   { src: '/services/royal-enfield.jpg', alt: 'Royal Enfield' },
@@ -60,430 +31,236 @@ const trustLogos = [
   { src: '/services/zontes.png', alt: 'Zontes' },
   { src: '/services/futureskill.png', alt: 'FutureSkill' },
 ];
-const proofGallery = [
-  { src: '/testimonial/2026-05/review-01.jpg', alt: 'รีวิวลูกค้า — ทีมงานร่วม Workshop AI กับอาจารย์ปั้น', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-05/review-02.jpg', alt: 'รีวิวลูกค้า — แชทขอบคุณหลังเวิร์กช็อป "ชีวิตเปลี่ยนใน 24 ชม."', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-05/review-03.jpg', alt: 'รีวิวลูกค้า — บรรยากาศห้องอบรม AI เต็มห้อง', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-05/review-04.jpg', alt: 'รีวิวลูกค้า — แชทผู้เข้าอบรมหลังจบคลาส', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-05/review-05.jpg', alt: 'รีวิวลูกค้า — แชท "อาจารย์ปั้นสอนถูกใจทีมงาน Ai ทั้งบริษัท"', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-05/review-06.jpg', alt: 'รีวิวลูกค้า — ทีมงานถ่ายภาพร่วมกันที่ออฟฟิศ', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-05/review-07.jpg', alt: 'รีวิวลูกค้า — ทีมงานสังสรรค์หลังเวิร์กช็อป', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-05/review-08.jpg', alt: 'รีวิวลูกค้า — โพสต์รีวิว "องค์กรที่เรียนรู้เร็วที่สุด"', width: 1000, height: 1000 },
-  { src: '/testimonial/2026-07/review-09.jpg', alt: 'รีวิวลูกค้า — แชทลูกศิษย์เล่าว่านอนน้อยเพราะติดใช้ AI ทำเว็บจ้างหลายแสนจบในคืนเดียว', width: 1410, height: 1410 },
-  { src: '/testimonial/2026-07/review-10.jpg', alt: 'รีวิวลูกค้า — โพสต์แนะนำต่อว่า "ใครสนใจเรียน AI แนะนำน้องปันครับ เก่งมากๆ"', width: 736, height: 736 },
-  { src: '/testimonial/2026-07/review-11.jpg', alt: 'รีวิวลูกค้า — แชทลูกค้าต่อยอดโปรเจกต์เลขา AI "สนุกดีครับ"', width: 914, height: 914 },
-  { src: '/testimonial/2026-07/review-12.jpg', alt: 'รีวิวลูกค้า — งาน Nissan Sales Manager Seminar 2026 "One Team Energy Goal"', width: 1000, height: 1000 },
-];
+
 const faqs = [
-  { q: 'ต้องมีพื้นฐาน AI ไหม', a: 'เรียนได้ครับ เริ่มจากงานขายหรือรายงานที่ทีมทำอยู่แล้ว ผู้เรียนไม่ต้องเขียนโค้ด แต่ควรใช้คอมพิวเตอร์และไฟล์งานพื้นฐานได้' },
-  { q: 'ต้องใช้ ChatGPT, Claude หรือ Gemini ตัวไหน', a: 'ใช้เครื่องมือที่องค์กรมีอยู่ก่อนครับ ผมเช็กบัญชีและข้อจำกัดก่อนวันสอน แล้วปรับแบบฝึกหัดให้ทีมไม่ต้องซื้อทุกแพลตฟอร์มพร้อมกัน' },
-  { q: 'ควรส่งใครมาเรียน และรับกี่คน', a: 'เหมาะกับทีมขาย หัวหน้าทีม และคนหลังบ้านที่รับส่งข้อมูลระหว่างกัน ขนาดที่ทำ Workshop ได้ทั่วถึงคือ 5–20 คนต่อรุ่น' },
-  { q: 'ต้องเตรียมอะไรสำหรับวันอบรม', a: 'ผู้เรียนเตรียม Notebook และบัญชี AI ที่ใช้อยู่ บริษัทเตรียมตัวอย่างสินค้า ขั้นตอนขาย ข้อความ Follow-up หรือ Report ที่อยากแก้ โดยลบข้อมูลลูกค้าที่เป็นความลับก่อนนำเข้าห้อง' },
-  { q: 'อบรมแล้วจะได้ระบบ Automation ที่พร้อมใช้ทันทีไหม', a: 'ในคลาสทีมจะได้ Workflow, Template และ Prototype ที่ทำกับโจทย์จริง ส่วนระบบที่เชื่อมฐานข้อมูล สิทธิ์ผู้ใช้ หรือทำงานอัตโนมัติระยะยาว เป็นงานวางระบบแยก — ดูหมวด "บริการวางระบบฝ่ายขาย" ด้านบน' },
-  { q: 'จัดอบรมที่บริษัทหรือออนไลน์', a: 'คอร์สในหน้านี้ออกแบบเป็น In-house ที่บริษัทเป็นหลัก เพราะต้องใช้ตัวอย่างงานของทีมจริง สถานที่ รูปแบบ และวันอบรมจะยืนยันพร้อม Scope ก่อนออกใบเสนอราคา' },
-  { q: 'ขอใบเสนอราคาและจองวันอย่างไร', a: 'ทัก LINE พร้อมบอกประเภทธุรกิจ จำนวนผู้เรียน และผลลัพธ์ที่อยากได้ ผมช่วยเลือกคอร์สให้ฟรี เมื่อ Scope และวันตรงกันจะส่งใบเสนอราคาและใบแจ้งหนี้ โดยชำระ 100% ก่อนเริ่มงาน' },
-];
+  {
+    q: 'ทีมต้องมีพื้นฐาน AI ก่อนเข้าอบรมไหม',
+    a: 'ไม่จำเป็นครับ เราเริ่มจากงานขายหรือรายงานที่ทีมทำอยู่แล้ว ผู้เรียนไม่ต้องเขียนโค้ด แต่ควรใช้คอมพิวเตอร์และไฟล์งานพื้นฐานได้ ส่วน AI จะถูกใช้เป็นตัวช่วยในจุดที่เหมาะกับงานจริง',
+  },
+  {
+    q: 'คอร์ส T1, T2 และ T3 ต่างกันอย่างไร',
+    a: 'T1 เน้นบทสนทนาการขายและ Follow-up, T2 เน้นเส้นทางจาก Content และ Ads ไปสู่ Lead นัดหมายและยอดขาย, ส่วน T3 เน้น Report, Dashboard และข้อมูลที่ช่วยให้หัวหน้าเห็นดีลค้าง เลือกจากงานที่ทีมต้องทำให้ดีขึ้นก่อนครับ',
+  },
+  {
+    q: 'Training, Consulting และ Implementation ต่างกันอย่างไร',
+    a: 'Training พัฒนาความสามารถของทีมผ่าน Workshop, C1 Consulting ช่วยคิดและออกแบบทางออกหนึ่งเรื่องต่อวัน, ส่วน I1 Implementation คือทีมผมลงมือสร้าง Sales Dashboard และ Report ให้พร้อมใช้กับงานจริง',
+  },
+  {
+    q: 'ควรมีใครเข้าร่วม และรับผู้เรียนกี่คน',
+    a: 'เหมาะกับทีมขาย หัวหน้าทีม และคนหลังบ้านที่ส่งต่อข้อมูลระหว่างกัน รุ่น In-house ที่ทำ Workshop ได้ทั่วถึงมักอยู่ที่ 5–20 คน หากมากกว่านี้ผมจะช่วยออกแบบรูปแบบการเรียนให้เหมาะกับผลลัพธ์ที่ต้องการ',
+  },
+  {
+    q: 'ต้องเตรียมอะไรให้พร้อมก่อนวันทำงาน',
+    a: 'เตรียม Notebook บัญชีเครื่องมือที่องค์กรอนุญาต และตัวอย่างงานจริง เช่น สินค้า ขั้นตอนขาย ข้อความ Follow-up หรือ Report ที่อยากแก้ โดยลบข้อมูลลูกค้าที่เป็นความลับก่อนนำมาใช้',
+  },
+  {
+    q: 'อบรมแล้วจะได้ Automation ที่พร้อมใช้ทันทีหรือไม่',
+    a: 'ในคลาสทีมจะได้ Workflow, Template หรือ Prototype ตามขอบเขตคอร์ส ระบบที่เชื่อมฐานข้อมูล มีสิทธิ์ผู้ใช้ และต้องทำงานอัตโนมัติอย่างเสถียรในระยะยาวเป็นงาน Implementation แยก เพื่อให้มีการทดสอบและส่งมอบที่ชัดเจน',
+  },
+  {
+    q: 'ถ้าข้อมูลอยู่หลายระบบ สามารถเชื่อมทั้งหมดได้ไหม',
+    a: 'ทำได้เมื่อระบบต้นทางมีวิธีเชื่อมต่อและองค์กรอนุญาต แต่ต้องประเมินทีละระบบ ทั้งคุณภาพข้อมูล สิทธิ์เข้าถึง API และเจ้าของข้อมูล งานหลายระบบจึงต้องสรุป Scope ก่อน ไม่รวมทุกอย่างไว้ในหนึ่งวันโดยอัตโนมัติ',
+  },
+  {
+    q: 'ขอ Outline หรือใบเสนอราคาได้อย่างไร',
+    a: 'ทัก LINE พร้อมบอกประเภทธุรกิจ จำนวนผู้เรียน ปัญหาที่อยากแก้ และช่วงวันที่สะดวก ผมจะช่วยเทียบโจทย์กับคอร์สหรือบริการ แล้วส่ง Outline และใบเสนอราคาตาม Scope ที่ตกลงกัน',
+  },
+  {
+    q: 'จองวันอบรมหรือวัน Consulting อย่างไร',
+    a: 'หลังยืนยัน Scope และวันที่ว่าง ผมจะออกเอกสารให้ตรวจสอบ การจองสมบูรณ์เมื่อดำเนินการตามเงื่อนไขในใบเสนอราคาเรียบร้อย จึงควรเผื่อเวลาสำหรับเตรียมข้อมูลและผู้เข้าร่วมก่อนวันจริง',
+  },
+  {
+    q: 'ยังไม่แน่ใจว่าควรเลือก T1, T2, T3, C1 หรือ I1 ทำอย่างไร',
+    a: 'เริ่มจากเล่าอาการที่เกิดในทีมทาง LINE ได้เลยครับ ผมจะช่วยแยกว่าเป็นช่องว่างด้านทักษะ การออกแบบวิธีทำงาน หรือการสร้างระบบ แล้วแนะนำทางเลือกที่เล็กพอจะเริ่มและตรงกับผลลัพธ์ที่สุด',
+  },
+] as const;
 ---
 
 <BaseLayout
   title={title}
   description={description}
   schema={{
-    types: ['WebPage', 'Person', 'BreadcrumbList'],
+    types: ['WebPage', 'Person', 'FAQPage', 'BreadcrumbList'],
     title,
     description,
-    breadcrumbs: [{ name: 'หน้าแรก', url: SITE.url }, { name: 'บริการ', url: `${SITE.url}/services` }],
+    faq: faqs.map((faq) => ({ question: faq.q, answer: faq.a })),
+    breadcrumbs: [
+      { name: 'หน้าแรก', url: SITE.url },
+      { name: 'คอร์สและบริการ', url: `${SITE.url}/services` },
+    ],
   }}
 >
-  <!-- ===== Hero ===== -->
-  <section class="relative overflow-hidden border-b border-sand-deep bg-surface">
-    <div aria-hidden="true" class="absolute -right-24 -top-28 hidden h-[390px] w-[180px] rotate-[31deg] rounded-[90px] border-[28px] border-navy/5 lg:block">
-      <div class="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-navy/10"></div>
-    </div>
-    <div class="mx-auto max-w-[1180px] px-5 pb-16 pt-16 sm:px-8 sm:pb-20 sm:pt-20 lg:px-10 lg:pb-24 lg:pt-24">
-      <div class="max-w-4xl">
-        <p class="mb-5 font-display text-xs font-bold uppercase tracking-[0.24em] text-coral">Training · Consulting</p>
-        <h1 class="font-display text-[2.35rem] font-bold leading-[1.13] tracking-[-0.035em] text-navy sm:text-5xl lg:text-[3.75rem]">
-          ฝึกทีมให้ทำเป็น<br class="hidden sm:block" />
-          <span class="relative inline-block text-coral">
-            หรือให้ผมเข้าไปวางระบบให้
-            <svg aria-hidden="true" class="absolute -bottom-2 left-0 h-3 w-full" viewBox="0 0 420 18" preserveAspectRatio="none">
-              <path d="M4 12C93 3 177 16 258 8C323 2 369 8 416 5" fill="none" stroke="#DD4155" stroke-linecap="round" stroke-width="5" />
-            </svg>
-          </span>
+  <div class="min-w-0 overflow-x-clip bg-ivory">
+    <section id="services-hero" class="relative overflow-hidden border-b border-sand-deep bg-surface">
+      <div class="pointer-events-none absolute inset-y-0 right-0 hidden w-[42%] bg-[radial-gradient(circle_at_center,rgba(221,65,85,.13),transparent_66%)] lg:block"></div>
+      <div class="relative mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">SALES TRAINING · CONSULTING · IMPLEMENTATION</p>
+        <h1 class="mt-4 max-w-4xl font-display text-[2.45rem] font-bold leading-[1.16] tracking-[-0.04em] text-navy sm:text-5xl lg:text-[3.55rem]">
+          คอร์สและบริการสำหรับทีมขาย ที่อยากเพิ่มยอดและทำงานเป็นระบบ
         </h1>
-        <p class="mt-8 max-w-2xl text-base leading-8 text-[#625C53] sm:text-lg">
-          เลือกจากงานที่ติดอยู่ตอนนี้ ทั้งการตามลูกค้า รายงานทีมขาย โครงทีม KPI ค่าคอม และงานซ้ำที่ควรให้ AI ช่วย
+        <p class="mt-6 max-w-3xl text-lg leading-8 text-[#625C53]">
+          เลือกจากงานที่อยากให้ทีมทำได้จริง ไม่ต้องเริ่มจากชื่อเครื่องมือ ผมช่วยได้ตั้งแต่พัฒนาทักษะเซลล์ วาง Funnel ไปจนถึงสร้าง Report และ Dashboard ให้ใช้งานจริง
         </p>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <a href="#core-training" class="btn min-h-12 rounded-full border-coral bg-coral px-6 font-display font-bold text-white shadow-none hover:border-navy hover:bg-navy">
-            ดูคอร์สสำหรับทีมขาย <span aria-hidden="true">↓</span>
+          <a href="#training-catalog" class="inline-flex min-h-12 items-center justify-center rounded-full border border-coral bg-coral px-6 font-bold text-white transition-colors hover:border-navy hover:bg-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral">
+            ดูคอร์สและบริการ ↓
           </a>
-          <a href="#system-services" class="btn min-h-12 rounded-full border-navy bg-transparent px-6 font-display font-bold text-navy shadow-none hover:border-navy hover:bg-navy hover:text-white">
-            ดูบริการวางระบบฝ่ายขาย <span aria-hidden="true">↓</span>
+          <a
+            href={SITE.social.line}
+            target="_blank"
+            rel="noopener"
+            data-contact-cta
+            data-cta-location="services_hero"
+            data-product-code="none"
+            data-cta-label="ให้ผมช่วยเลือกทาง LINE"
+            class="inline-flex min-h-12 items-center justify-center rounded-full border border-[#06C755] bg-[#06C755] px-6 font-bold text-white transition-colors hover:border-[#05A548] hover:bg-[#05A548] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#06C755]"
+          >
+            ให้ผมช่วยเลือกทาง LINE
           </a>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===== Core training (2 คอร์สหลัก) ===== -->
-  <section id="core-training" class="mx-auto max-w-[1180px] scroll-mt-6 px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
-    <div class="mb-8 flex items-end justify-between gap-6 border-b border-navy/15 pb-5 sm:mb-10">
-      <div>
-        <p class="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-coral">Core training</p>
-        <h2 class="font-display text-2xl font-bold tracking-[-0.025em] text-navy sm:text-3xl">คอร์สหลักสำหรับทุกธุรกิจ</h2>
-      </div>
-      <span class="hidden font-display text-sm font-semibold text-muted sm:block">02 คอร์ส</span>
-    </div>
-
-    <div class="grid gap-6 lg:grid-cols-2 lg:gap-8">
-      <article id="inhouse-a" class="group scroll-mt-6 overflow-hidden rounded-[1.6rem] border border-sand-deep bg-surface shadow-[0_18px_40px_-28px_rgba(7,43,78,.35)] transition-transform duration-300 hover:-translate-y-1">
-        <figure class="relative aspect-[16/9] overflow-hidden bg-navy">
-          <img src="/lp/inhouse/hero-pointing.jpg" alt="ปันกำลังสอนทีมงานในคลาสจริง โดยผู้เรียนลงมือทำบนคอมพิวเตอร์ของตัวเอง" width="1280" height="720" loading="eager" class="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.025]" />
-          <div class="absolute inset-0 bg-gradient-to-t from-navy/75 via-transparent to-transparent"></div>
-          <div class="absolute left-5 top-5 rounded-full border border-white/35 bg-navy/85 px-4 py-2 text-xs font-semibold text-white backdrop-blur-sm">In-house · 1 วัน · ทีมขาย 5–20 คน</div>
-          <div class="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4 text-white">
-            <span class="text-xs font-medium tracking-wide">SALES × AI</span>
-            <span class="text-xs text-white/75">สำหรับ B2B และ B2C</span>
-          </div>
-        </figure>
-        <div class="flex h-full flex-col p-6 sm:p-8">
-          <p class="text-xs font-bold uppercase tracking-[0.18em] text-coral">ตามลูกค้าไม่หลุด · คุยตรงประเด็น · ลดงานเตรียมขาย</p>
-          <h3 class="mt-1 font-display text-[1.65rem] font-bold leading-[1.28] tracking-[-0.025em] text-navy">คอร์สเพิ่มยอดขายด้วย AI สำหรับทีมขาย</h3>
-          <p class="mt-2 leading-7 text-[#625C53]">ให้เซลล์ใช้ข้อมูลลูกค้าและสินค้าที่บริษัทมีอยู่ เตรียมตัวก่อนคุย ถามให้เจอความต้องการ และตามดีลต่อด้วยข้อความที่ตรงกับสถานการณ์ โดยใช้ AI ช่วยงานเตรียมและร่างงาน ส่วนคนยังเป็นผู้ตัดสินใจและปิดการขาย</p>
-          <ul class="mt-4 space-y-3 text-sm leading-6 text-[#4F4A43]">
-            <li class="flex gap-3"><span class="mt-0.5 font-bold text-coral">✓</span><span>เตรียมข้อมูลลูกค้า ประเด็นคุย และชุดคำถามก่อนเข้าพบ</span></li>
-            <li class="flex gap-3"><span class="mt-0.5 font-bold text-coral">✓</span><span>ฝึกรับมือข้อโต้แย้งและเขียน Follow-up ตาม Stage ของดีล</span></li>
-            <li class="flex gap-3"><span class="mt-0.5 font-bold text-coral">✓</span><span>ล็อก Owner, Next action และแผนตามลูกค้า 14 วัน</span></li>
-          </ul>
-          <div class="mt-6 rounded-2xl border border-coral/20 bg-coral/[0.055] p-4">
-            <p class="text-xs font-bold uppercase tracking-[0.14em] text-coral">สิ่งที่ทีมจะได้กลับไป</p>
-            <p class="mt-2 text-sm font-semibold leading-6 text-navy">Sales Context Pack + ชุดคำถามขาย + Follow-up sequence + Tracking sheet</p>
-          </div>
-          <div class="mt-6 flex flex-col gap-4 border-t border-sand-deep pt-5 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p class="text-xs text-muted">ราคาเดียวทั้งทีม ไม่เกิน 20 คน</p>
-              <p class="font-display text-3xl font-bold tabular-nums text-coral">{fmtPrice('inhouse-a')}</p>
+    <section id="services-proof-strip" aria-labelledby="proof-strip-heading" class="border-b border-sand-deep bg-sand">
+      <div class="mx-auto max-w-[1180px] px-5 py-8 sm:px-8 lg:px-10">
+        <h2 id="proof-strip-heading" class="text-center text-sm font-semibold text-navy">องค์กรที่เคยเชิญไปสอน อบรม และทำงานกับทีม</h2>
+        <div class="mt-5 grid grid-cols-3 gap-3 sm:grid-cols-6">
+          {trustLogos.map((logo) => (
+            <div class="flex min-h-20 min-w-0 items-center justify-center rounded-xl border border-navy/10 bg-surface p-3">
+              <img src={logo.src} alt={logo.alt} width="160" height="96" loading="lazy" decoding="async" class="max-h-12 max-w-full object-contain" />
             </div>
-            <a data-line-cta href={lineUrl} class="btn min-h-11 rounded-full border-[#06C755] bg-[#06C755] px-5 font-display text-sm font-bold text-white shadow-none hover:border-[#05A548] hover:bg-[#05A548]" target="_blank" rel="noopener">
-              ทัก LINE ขอรายละเอียดคอร์ส <span aria-hidden="true">→</span>
-            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="training-catalog" class="scroll-mt-20">
+      <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
+        <div class="max-w-3xl">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">Training catalog</p>
+          <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">คอร์สสำหรับทีมขาย</h2>
+          <p class="mt-4 leading-7 text-[#625C53]">เลือกจากสิ่งที่ทีมต้องทำให้ดีขึ้น ตั้งแต่คุยและตามดีล ไปจนถึงเปลี่ยน Lead เป็นยอดขายและทำ Report ที่หัวหน้าใช้ตัดสินใจได้</p>
+        </div>
+
+        <div class="mt-10">
+          <div class="relative">
+            <span id="trust-content" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
+            <OfferCard offer={getOffer('T2')} image={OFFER_ASSET_BY_CODE.T2} featured priceLabel={priceFor('T2')} eagerImage />
+          </div>
+          <aside data-proof-for="T2" class="mt-4 rounded-2xl border border-coral/20 bg-coral/[0.055] px-5 py-4 text-sm leading-6 text-[#625C53]">
+            <strong class="text-navy">ภาพรถคือ Dealer proof จากงานยานยนต์จริง</strong> แต่เครื่องยนต์ของคอร์สคือการพา Content และ Ads ไปสู่ Lead นัดหมาย และยอดขาย จึงใช้ได้กับ Clinic, Hotel, B2B และธุรกิจอื่นที่รับ Lead เช่นกัน
+          </aside>
+        </div>
+
+        <div class="mt-6 grid min-w-0 gap-6 lg:grid-cols-2">
+          <div class="relative min-w-0">
+            <span id="inhouse-a" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
+            <OfferCard offer={getOffer('T1')} image={OFFER_ASSET_BY_CODE.T1} priceLabel={priceFor('T1')} />
+          </div>
+          <div class="relative min-w-0">
+            <span id="sales-report" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
+            <OfferCard offer={getOffer('T3')} image={OFFER_ASSET_BY_CODE.T3} priceLabel={priceFor('T3')} />
           </div>
         </div>
-      </article>
+      </div>
+    </section>
 
-      <article id="sales-report" class="group scroll-mt-6 overflow-hidden rounded-[1.6rem] border border-sand-deep bg-surface shadow-[0_18px_40px_-28px_rgba(7,43,78,.35)] transition-transform duration-300 hover:-translate-y-1">
-        <figure class="relative aspect-[16/9] overflow-hidden bg-navy-deep">
-          <img src="/proof/02-command-charts.jpg" alt="หน้าจอ Dashboard สำหรับติดตามข้อมูลและการทำงานของทีมขาย" width="1280" height="720" loading="eager" class="h-full w-full object-cover object-center opacity-90 transition-transform duration-500 group-hover:scale-[1.025]" />
-          <div class="absolute inset-0 bg-gradient-to-t from-navy-deep/90 via-navy/20 to-transparent"></div>
-          <div class="absolute left-5 top-5 rounded-full border border-white/35 bg-navy/85 px-4 py-2 text-xs font-semibold text-white backdrop-blur-sm">In-house · 1 วัน · หัวหน้าทีมขาย + Back Office</div>
-          <div class="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4 text-white">
-            <span class="text-xs font-medium tracking-wide">SALES OPERATION</span>
-            <span class="text-xs text-white/75">Report · Dashboard · AI</span>
+    <section id="consulting-implementation" class="scroll-mt-20 border-y border-sand-deep bg-sand">
+      <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
+        <div class="max-w-3xl">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">Consulting & Implementation</p>
+          <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">ถ้าทีมต้องการคนช่วยคิด หรือสร้างระบบให้เสร็จ</h2>
+          <p class="mt-4 leading-7 text-[#625C53]">C1 ใช้เมื่อมีโจทย์สำคัญหนึ่งเรื่องที่ต้องออกแบบทางออก ส่วน I1 ใช้เมื่อทีมต้องการ Production System สำหรับ Dashboard และ Report</p>
+        </div>
+
+        <div class="mt-10 grid min-w-0 gap-6 lg:grid-cols-2">
+          <div class="relative min-w-0">
+            <OfferCard offer={getOffer('C1')} image={OFFER_ASSET_BY_CODE.C1} priceLabel={priceFor('C1')} />
+            <span id="sales-team-structure" class="absolute left-0 top-0 scroll-mt-24" aria-hidden="true"></span>
+            <span id="ai-agent-ceo" class="absolute left-0 top-0 scroll-mt-24" aria-hidden="true"></span>
           </div>
-        </figure>
-        <div class="flex h-full flex-col p-6 sm:p-8">
-          <p class="text-xs font-bold uppercase tracking-[0.18em] text-coral">เลิกไล่ Report · เห็นดีลค้าง · เข้าไปช่วยได้ทัน</p>
-          <h3 class="mt-1 font-display text-[1.65rem] font-bold leading-[1.28] tracking-[-0.025em] text-navy">คอร์สอบรม Report ทีมขาย + Dashboard + AI</h3>
-          <p class="mt-2 leading-7 text-[#625C53]">ทำให้ทีมใช้ชื่อ Stage และข้อมูลชุดเดียวกัน หัวหน้าเปิดดูแล้วรู้ว่าดีลไหนค้าง ใครต้องทำอะไรต่อ และเรื่องไหนควรเข้าไปช่วยก่อนถึงวันสรุปยอด</p>
-          <ul class="mt-4 space-y-3 text-sm leading-6 text-[#4F4A43]">
-            <li class="flex gap-3"><span class="mt-0.5 font-bold text-coral">✓</span><span>ล็อก Sales stage, เจ้าของ Lead และข้อมูลที่ต้องกรอก</span></li>
-            <li class="flex gap-3"><span class="mt-0.5 font-bold text-coral">✓</span><span>ออกแบบ Daily report กับรายการดีลที่ขาด Next action</span></li>
-            <li class="flex gap-3"><span class="mt-0.5 font-bold text-coral">✓</span><span>ทำ Dashboard ต้นแบบและใช้ AI ช่วยสรุปประเด็นให้ Manager</span></li>
-          </ul>
-          <div class="mt-6 rounded-2xl border border-coral/20 bg-coral/[0.055] p-4">
-            <p class="text-xs font-bold uppercase tracking-[0.14em] text-coral">สิ่งที่ทีมจะได้กลับไป</p>
-            <p class="mt-2 text-sm font-semibold leading-6 text-navy">Stage dictionary + Daily report template + Manager intervention rule + Dashboard wireframe</p>
-            <p class="mt-2 text-xs leading-5 text-[#625C53]">คลาสนี้ทำต้นแบบและกติกาการใช้ งานเชื่อมข้อมูลอัตโนมัติเป็นบริการติดตั้งแยก</p>
-          </div>
-          <div class="mt-6 flex flex-col gap-4 border-t border-sand-deep pt-5 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p class="text-xs text-muted">ราคาเดียวทั้งทีม ไม่เกิน 20 คน</p>
-              <p class="font-display text-3xl font-bold tabular-nums text-coral">{fmtPrice('ai-workshop-advance')}</p>
-            </div>
-            <a data-line-cta href={lineUrl} class="btn min-h-11 rounded-full border-[#06C755] bg-[#06C755] px-5 font-display text-sm font-bold text-white shadow-none hover:border-[#05A548] hover:bg-[#05A548]" target="_blank" rel="noopener">
-              ทัก LINE ขอรายละเอียดคอร์ส <span aria-hidden="true">→</span>
-            </a>
+          <div class="relative min-w-0">
+            <span id="daruma-starter" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
+            <OfferCard offer={getOffer('I1')} image={OFFER_ASSET_BY_CODE.I1} priceLabel={priceFor('I1')} />
           </div>
         </div>
-      </article>
-    </div>
-  </section>
+      </div>
+    </section>
 
-  <!-- ===== Industry Edition — คอร์ส 2 วัน (Dealer) ===== -->
-  <section class="border-y border-sand-deep bg-sand">
-    <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
-      <div class="mb-8 flex items-end justify-between gap-6 border-b border-navy/15 pb-5 sm:mb-10">
-        <div>
-          <p class="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-coral">Industry Edition · คอร์ส 2 วัน</p>
-          <h2 class="font-display text-2xl font-bold tracking-[-0.025em] text-navy sm:text-3xl">เนื้อหาเดิม ปรับ Journey ให้ตรงธุรกิจ</h2>
+    <div id="advance-program" class="scroll-mt-20 bg-ivory">
+      <div class="mx-auto max-w-[1180px] px-5 py-12 sm:px-8 sm:py-16 lg:px-10">
+        <AdvanceProgramStrip offer={getOffer('A1')} image={OFFER_ASSET_BY_CODE.A1} />
+      </div>
+    </div>
+
+    <div id="offer-chooser" class="scroll-mt-20 border-y border-sand-deep bg-surface">
+      <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10">
+        <OfferChooser />
+      </div>
+    </div>
+
+    <section id="organisation-proof" class="scroll-mt-20 bg-ivory">
+      <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
+        <div class="max-w-3xl">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">Proof from real work</p>
+          <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">งานจริงที่รองรับเรื่อง Sales, Funnel, Report และการทำงานของทีม</h2>
+          <p class="mt-4 leading-7 text-[#625C53]">หลักฐานชุดนี้มาจากเวทีผู้จัดการฝ่ายขาย คลาส In-house และระบบ Dashboard ที่สร้างเพื่อให้ทีมเห็นและตามงานได้จริง</p>
         </div>
-        <span class="hidden font-display text-sm font-semibold text-muted sm:block">Dealer Edition</span>
-      </div>
 
-      <article id="trust-content" class="group grid scroll-mt-6 overflow-hidden rounded-[1.75rem] border border-navy/15 bg-surface shadow-[0_24px_70px_-42px_rgba(7,43,78,.45)] lg:grid-cols-[0.9fr_1.1fr]">
-        <figure class="relative min-h-[300px] overflow-hidden bg-navy sm:min-h-[390px] lg:min-h-[520px]">
-          <img src="/testimonial/2026-07/onsite-nissan-pun.jpg" alt="ปัน ณัฐพัชร์ บนเวที Nissan Sales Manager Seminar 2026" class="absolute inset-0 h-full w-full object-cover object-[50%_32%] transition-transform duration-500 group-hover:scale-[1.025]" />
-          <div class="absolute inset-0 bg-gradient-to-t from-navy-deep/95 via-navy/15 to-transparent"></div>
-          <div class="absolute bottom-6 left-6 right-6 flex items-end justify-between gap-4 text-white sm:bottom-8 sm:left-8 sm:right-8">
-            <div>
-              <p class="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-[#FF8594]">Automotive proof</p>
-              <p class="text-sm font-semibold">จากประสบการณ์สอนและทำงานกับธุรกิจยานยนต์จริง</p>
-            </div>
-          </div>
-        </figure>
-
-        <div class="flex flex-col p-6 sm:p-10 lg:p-12">
-          <div class="flex flex-wrap gap-2">
-            <span class="rounded-full bg-coral/10 px-4 py-2 text-xs font-bold text-coral">Dealer edition · 2 วัน + ดูแลต่อ 30 วัน</span>
-            <span class="rounded-full bg-navy/10 px-4 py-2 text-xs font-semibold text-navy">ทีมขาย 5–20 คน</span>
-          </div>
-          <p class="mt-7 text-xs font-bold uppercase tracking-[0.18em] text-coral">Online → Showroom → Booking</p>
-          <h3 class="mt-2 font-display text-[2rem] font-bold leading-[1.2] tracking-[-0.035em] text-navy sm:text-[2.55rem]">คอร์สเพิ่มยอดขายรถจากออนไลน์ด้วย Content + Ads + AI</h3>
-          <p class="mt-5 text-lg font-semibold leading-8 text-navy">ช่วยทีมขายเปลี่ยนคนดูออนไลน์ให้เป็นนัดหมาย ทดลองขับ และยอดจอง</p>
-          <ul class="mt-6 space-y-3 text-sm leading-6 text-[#4F4A43] sm:text-base">
-            <li class="flex gap-3"><span class="mt-0.5 font-bold text-coral">✓</span><span>ทำภาพและคลิปจากรถจริงในโชว์รูม พร้อมใช้ทำตลาด</span></li>
-            <li class="flex gap-3"><span class="mt-0.5 font-bold text-coral">✓</span><span>วาง Ads จุดรับ Lead และเจ้าของงานตั้งแต่ข้อความแรก</span></li>
-            <li class="flex gap-3"><span class="mt-0.5 font-bold text-coral">✓</span><span>ฝึก Follow-up จากแชตไปสู่นัดทดลองขับและยอดจอง</span></li>
-          </ul>
-          <div class="mt-6 rounded-2xl border border-coral/20 bg-coral/[0.055] p-4">
-            <p class="text-xs font-bold uppercase tracking-[0.14em] text-coral">สิ่งที่ทีมจะได้กลับไป</p>
-            <p class="mt-2 text-sm font-semibold leading-6 text-navy">Funnel map + Campaign kit + Chat script + Tracking sheet + แผน Content 14 วัน</p>
-          </div>
-          <div class="mt-auto pt-8">
-            <div class="flex items-end gap-3">
-              <p class="font-display text-lg tabular-nums text-warm-ink/50 line-through">{fmtPrice('tiktok-workshop-regular')}</p>
-              <p class="font-display text-4xl font-bold tabular-nums text-coral">{fmtPrice('tiktok-workshop')}</p>
-            </div>
-            <div class="mt-5 flex flex-wrap items-center gap-4">
-              <a href="/ads/dealer-online-sales" class="btn h-[3.25rem] min-h-[3.25rem] rounded-full border-coral bg-coral px-7 font-display text-sm font-bold text-white shadow-none hover:border-navy hover:bg-navy focus-visible:outline-coral">
-                ดูรายละเอียด Dealer Edition <span aria-hidden="true">→</span>
-              </a>
-            </div>
-            <p class="mt-4 text-sm text-muted">ธุรกิจอื่นที่รับ Lead ออนไลน์ก็เรียนคอร์ส 2 วันนี้ได้ — <a href="/ads/sales-online-team" class="font-semibold text-navy underline decoration-navy/30 underline-offset-4 hover:text-coral">ดูรุ่นกลางสำหรับทุกธุรกิจ</a> ราคาเดียวกัน</p>
-          </div>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <!-- ===== บริการวางระบบฝ่ายขาย (SSOT-driven) ===== -->
-  <section id="system-services" class="scroll-mt-6 bg-ivory">
-    <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
-      <div class="mb-8 flex items-end justify-between gap-6 border-b border-navy/15 pb-5 sm:mb-10">
-        <div>
-          <p class="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-coral">Consulting · ผมเข้าไปทำกับทีมคุณเอง</p>
-          <h2 class="font-display text-2xl font-bold tracking-[-0.025em] text-navy sm:text-3xl">บริการวางระบบฝ่ายขาย</h2>
-        </div>
-        <span class="hidden font-display text-sm font-semibold text-muted sm:block">03 บริการ</span>
-      </div>
-      <p class="max-w-3xl leading-7 text-[#625C53]">ถ้าทีมไม่ได้ขาดความรู้ แต่ขาดคนเข้าไปจัดข้อมูล ล็อกกติกา และทำระบบให้เดิน เลือกบริการกลุ่มนี้ครับ ผมลงมือทำกับข้อมูลและคนของบริษัทจนส่งมอบให้ทีมใช้ต่อได้</p>
-
-      <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {serviceOffers.map((offer) => (
-          <article id={offer.key} class="group flex scroll-mt-6 flex-col overflow-hidden rounded-[1.6rem] border border-sand-deep bg-surface shadow-[0_18px_40px_-28px_rgba(7,43,78,.35)]">
-            <figure class="relative aspect-[16/9] overflow-hidden bg-navy">
-              <img src={offer.image} alt={offer.alt} loading="lazy" decoding="async" class="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.025]" />
-              <div class="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-transparent"></div>
-              <span class="absolute bottom-4 left-4 rounded-full border border-white/30 bg-navy/85 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">{offer.duration}</span>
-            </figure>
-            <div class="flex h-full flex-col p-6 sm:p-7">
-              <p class="text-xs font-bold uppercase tracking-[0.16em] text-coral">{offer.eyebrow}</p>
-              <h3 class="mt-2 font-display text-xl font-bold leading-[1.3] tracking-[-0.02em] text-navy sm:text-2xl">{offer.name}</h3>
-              <p class="mt-3 leading-7 text-[#625C53]">{offer.outcome}</p>
-              <p class="mt-4 rounded-xl bg-sand px-4 py-3 text-xs leading-5 text-[#625C53]"><strong class="text-navy">เหมาะกับ:</strong> {offer.audience}</p>
-              <ul class="mt-5 space-y-3 text-sm leading-6 text-[#4F4A43]">
-                {offer.bullets.map((bullet) => (
-                  <li class="flex gap-3"><span class="mt-0.5 font-bold text-coral">✓</span><span>{bullet}</span></li>
-                ))}
-              </ul>
-              <div class="mt-6 rounded-2xl border border-coral/20 bg-coral/[0.055] p-4">
-                <p class="text-xs font-bold uppercase tracking-[0.14em] text-coral">ส่งมอบ</p>
-                <p class="mt-2 text-sm font-semibold leading-6 text-navy">{offer.deliverables}</p>
-              </div>
-              <div class="mt-auto flex flex-col gap-4 border-t border-sand-deep pt-5 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <p class="text-xs text-muted">ราคาแพ็กเกจตาม Scope นี้</p>
-                  <p class="font-display text-3xl font-bold tabular-nums text-coral">{fmtPrice(offer.key)}</p>
-                </div>
-                <a data-line-cta href={lineUrl} class="btn min-h-11 rounded-full border-[#06C755] bg-[#06C755] px-5 font-display text-sm font-bold text-white shadow-none hover:border-[#05A548] hover:bg-[#05A548]" target="_blank" rel="noopener">
-                  ทัก LINE ขอ Scope <span aria-hidden="true">→</span>
-                </a>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
-
-      <div class="mt-6 rounded-2xl border border-dashed border-sand-deep px-6 py-5">
-        <p class="leading-7 text-[#625C53]"><strong class="text-navy">หลังระบบเดินแล้ว</strong> มีบริการดูแลระบบและที่ปรึกษาบริหารทีมขายรายเดือน เสนอหลังงานแรกเมื่อเห็นข้อมูลและภาระดูแลจริงครับ</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Trusted by ===== -->
-  <section id="trusted-by" class="scroll-mt-6 border-b border-sand-deep bg-surface">
-    <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
-      <div class="max-w-3xl">
-        <p class="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-coral">Trusted by organizations</p>
-        <h2 class="font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">องค์กรที่เคยเชิญไปสอนและอบรมทีม</h2>
-        <p class="mt-4 max-w-2xl leading-7 text-[#625C53]">ตั้งแต่เวที Nissan Sales Manager Seminar 2026 ไปจนถึงคลาส In-house ที่พนักงานลงมือทำกับข้อมูลและงานของบริษัทตัวเอง</p>
-      </div>
-
-      <div class="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        {trustLogos.map((logo) => (
-          <div class="flex aspect-[5/3] items-center justify-center rounded-2xl border border-sand-deep bg-ivory p-4">
-            <img src={logo.src} alt={logo.alt} loading="lazy" decoding="async" class="max-h-full max-w-full object-contain" />
-          </div>
-        ))}
-      </div>
-
-      <div class="mt-10 grid gap-5 lg:grid-cols-[1.15fr_.85fr]">
-        <figure class="group relative min-h-[360px] overflow-hidden rounded-[1.75rem] bg-navy shadow-[0_18px_40px_-28px_rgba(7,43,78,.35)] sm:min-h-[460px]">
-          <img src="/testimonial/2026-07/onsite-nissan-pun.jpg" alt="ปัน ณัฐพัชร์ ในงาน Nissan Sales Manager Seminar 2026" class="absolute inset-0 h-full w-full object-cover object-[50%_32%] transition-transform duration-500 group-hover:scale-[1.02]" loading="lazy" decoding="async" />
-          <div class="absolute inset-0 bg-gradient-to-t from-navy-deep via-navy/10 to-transparent"></div>
-          <figcaption class="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
-            <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#FF8594]">Nissan Sales Manager Seminar 2026</p>
-            <p class="mt-2 max-w-lg font-display text-xl font-bold leading-snug sm:text-2xl">เวทีผู้จัดการฝ่ายขายรถยนต์ ไม่ใช่คลาสสอนกดเครื่องมืออย่างเดียว</p>
-          </figcaption>
-        </figure>
-
-        <figure class="group relative min-h-[360px] overflow-hidden rounded-[1.75rem] bg-navy shadow-[0_18px_40px_-28px_rgba(7,43,78,.35)] sm:min-h-[460px]">
-          <img src="/services/team-group.jpg" alt="ปันถ่ายภาพร่วมกับทีมผู้เรียนหลังจบคลาส In-house" class="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]" loading="lazy" decoding="async" />
-          <div class="absolute inset-0 bg-gradient-to-t from-navy-deep via-navy/10 to-transparent"></div>
-          <figcaption class="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
-            <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#FF8594]">In-house workshop</p>
-            <p class="mt-2 font-display text-xl font-bold leading-snug sm:text-2xl">ทั้งทีมเรียนพร้อมกัน และกลับไปใช้วิธีเดียวกัน</p>
-          </figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== รีวิวจากงานจริง ===== -->
-  <section class="border-b border-sand-deep bg-sand px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
-    <div class="mx-auto max-w-[1180px]">
-      <div class="max-w-3xl">
-        <p class="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-coral">หลักฐานจากงานจริง</p>
-        <h2 class="font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">รีวิวและบรรยากาศจากงานที่เกิดขึ้นจริง</h2>
-        <p class="mt-4 leading-7 text-[#625C53]">ก่อนเลือกวันให้ทีม ผมอยากให้เห็นทั้งรูปกิจกรรมและแชทที่ลูกค้าส่งมาหลังจบงานครับ</p>
-      </div>
-      <div class="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-        {proofGallery.slice(0, 6).map((proof, index) => (
-          <figure class:list={[
-            'rounded-2xl border border-sand-deep bg-surface p-2 shadow-[3px_5px_0_rgba(30,27,22,0.07)]',
-            index % 2 === 0 ? 'rotate-[0.4deg]' : '-rotate-[0.4deg]',
-          ]}>
-            <img src={proof.src} alt={proof.alt} width={proof.width} height={proof.height} loading="lazy" decoding="async" class="aspect-square w-full rounded-xl object-cover" />
+        <div class="mt-10 grid min-w-0 gap-5 lg:grid-cols-3">
+          <figure data-proof-for="T2" class="min-w-0 overflow-hidden rounded-[1.5rem] border border-sand-deep bg-surface">
+            <img src="/testimonial/2026-07/onsite-nissan-pun.jpg" alt="ปัน ณัฐพัชร์ บนเวที Nissan Sales Manager Seminar 2026" width="1200" height="900" loading="lazy" decoding="async" class="aspect-[4/3] w-full object-cover object-[50%_32%]" />
+            <figcaption class="p-5"><strong class="text-navy">Dealer / T2</strong><p class="mt-2 text-sm leading-6 text-[#625C53]">ประสบการณ์บนเวที Nissan Sales Manager Seminar 2026 รองรับบริบทการเปลี่ยน Lead ออนไลน์ไปสู่การขายของ Dealer</p></figcaption>
           </figure>
-        ))}
+          <figure data-proof-for="T1" class="min-w-0 overflow-hidden rounded-[1.5rem] border border-sand-deep bg-surface">
+            <img src="/services/team-group.jpg" alt="ปันถ่ายภาพร่วมกับทีมผู้เรียนหลังจบคลาส In-house" width="1200" height="900" loading="lazy" decoding="async" class="aspect-[4/3] w-full object-cover" />
+            <figcaption class="p-5"><strong class="text-navy">In-house / T1</strong><p class="mt-2 text-sm leading-6 text-[#625C53]">ทีมเรียนและลงมือพร้อมกัน เพื่อให้กลับไปใช้บทสนทนาและวิธี Follow-up ชุดเดียวกัน</p></figcaption>
+          </figure>
+          <figure data-proof-for="T3 I1" class="min-w-0 overflow-hidden rounded-[1.5rem] border border-sand-deep bg-surface">
+            <img src="/proof/02-command-charts.jpg" alt="หน้าจอ Dashboard สำหรับติดตาม Pipeline รายงาน และงานที่ต้องติดตาม" width="1280" height="720" loading="lazy" decoding="async" class="aspect-[4/3] w-full object-cover" />
+            <figcaption class="p-5"><strong class="text-navy">Report & Dashboard / T3 + I1</strong><p class="mt-2 text-sm leading-6 text-[#625C53]">ตัวอย่างระบบที่ทำให้ข้อมูล Pipeline กลายเป็นภาพรวมและรายการงานที่ทีมต้องติดตาม</p></figcaption>
+          </figure>
+        </div>
+
+        <blockquote data-service-testimonial class="mt-6 rounded-[1.5rem] border border-navy/15 bg-surface px-6 py-7 sm:px-8">
+          <p class="font-display text-xl font-bold leading-9 text-navy">“เซลล์เลิกใช้ส่วนลดปิดดีล เปลี่ยนมาคุยเรื่องคุณค่าที่ลูกค้าได้ ส่วนงาน report ที่เคยทำมือ ตอนนี้ AI ทำให้ พนักงานเลยมีเวลาคิดวิธีใหม่ๆ ให้ลูกค้ามากขึ้น”</p>
+          <footer class="mt-4 text-sm leading-6 text-[#625C53]">
+            เจ้าของธุรกิจ B2B Manufacturing / Distribution (สงวนชื่อบริษัทตามคำขอ)
+            <a href="/case-studies/forklift-distributor-5-person-team" class="ml-1 font-semibold text-coral underline decoration-coral/40 underline-offset-4 hover:text-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral">อ่านเคสจริง →</a>
+          </footer>
+        </blockquote>
+
+        <div class="mt-8 text-center">
+          <a href="/proof" class="inline-flex min-h-12 items-center justify-center rounded-full border border-navy px-6 font-bold text-navy transition-colors hover:bg-navy hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy">ดูหลักฐานจากงานจริงทั้งหมด <span aria-hidden="true" class="ml-2">→</span></a>
+        </div>
       </div>
-      <div class="mt-8 text-center">
-        <a href="/proof" class="btn min-h-11 rounded-full border-navy bg-transparent px-6 font-display font-bold text-navy shadow-none hover:border-navy hover:bg-navy hover:text-white">ดูรีวิวและระบบจากงานจริงทั้งหมด <span aria-hidden="true">→</span></a>
+    </section>
+
+    <section id="faq" class="scroll-mt-20 border-y border-sand-deep bg-sand">
+      <div class="mx-auto max-w-[900px] px-5 py-16 sm:px-8 sm:py-20">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">Before you choose</p>
+        <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">คำถามก่อนเลือกคอร์สและบริการ</h2>
+        <div class="mt-8 space-y-3">
+          {faqs.map((faq, index) => (
+            <details data-service-faq class="group overflow-hidden rounded-2xl border border-sand-deep bg-surface" open={index === 0}>
+              <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 p-5 font-display text-lg font-bold text-navy after:text-2xl after:font-normal after:text-coral after:content-['+'] group-open:after:rotate-45 [&::-webkit-details-marker]:hidden">{faq.q}</summary>
+              <div class="border-t border-sand-deep px-5 pb-5 pt-4 leading-7 text-[#625C53]"><p>{faq.a}</p></div>
+            </details>
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===== เลือกคอร์สไหนดี ===== -->
-  <section id="course-selector" class="scroll-mt-6 bg-navy text-ivory">
-    <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
-      <div class="max-w-3xl">
-        <p class="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#FF8594]">Which course fits?</p>
-        <h2 class="font-display text-3xl font-bold leading-tight tracking-[-0.03em] sm:text-4xl">เลือกคอร์สไหนดี / คอร์สนี้เหมาะกับใคร</h2>
-        <p class="mt-4 leading-7 text-ivory/70">เริ่มจากอาการที่เกิดในทีม ไม่ต้องเริ่มจากคำว่า AI</p>
-      </div>
-
-      <div class="mt-9 divide-y divide-white/10 overflow-hidden rounded-[1.6rem] border border-white/15 bg-white/[0.04]">
-        <a href="#inhouse-a" class="group grid gap-4 p-6 transition-colors hover:bg-white/[0.07] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FF8594] sm:p-8 lg:grid-cols-[1.05fr_.9fr_auto] lg:items-center">
-          <div>
-            <p class="text-xs font-bold uppercase tracking-[0.16em] text-[#FF8594]">ทีมขายทั่วไป · B2B / B2C</p>
-            <h3 class="mt-2 font-display text-xl font-bold leading-snug sm:text-2xl">อยากให้เซลล์เตรียมงาน ตามลูกค้า และปิดดีลได้ดีขึ้น</h3>
-          </div>
-          <div class="border-l-2 border-coral pl-4">
-            <p class="text-xs text-ivory/55">เลือกคอร์สนี้</p>
-            <p class="mt-1 font-semibold text-ivory">คอร์สเพิ่มยอดขายด้วย AI สำหรับทีมขาย</p>
-          </div>
-          <span aria-hidden="true" class="text-2xl text-[#FF8594] transition-transform group-hover:translate-x-1">→</span>
-        </a>
-
-        <a href="#sales-report" class="group grid gap-4 p-6 transition-colors hover:bg-white/[0.07] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FF8594] sm:p-8 lg:grid-cols-[1.05fr_.9fr_auto] lg:items-center">
-          <div>
-            <p class="text-xs font-bold uppercase tracking-[0.16em] text-[#FF8594]">หัวหน้าทีมขาย · Sales Admin</p>
-            <h3 class="mt-2 font-display text-xl font-bold leading-snug sm:text-2xl">เบื่อไล่ Report และรวม Excel เองทุกวัน</h3>
-          </div>
-          <div class="border-l-2 border-coral pl-4">
-            <p class="text-xs text-ivory/55">เลือกคอร์สนี้</p>
-            <p class="mt-1 font-semibold text-ivory">คอร์สอบรม Report ทีมขาย + Dashboard + AI</p>
-          </div>
-          <span aria-hidden="true" class="text-2xl text-[#FF8594] transition-transform group-hover:translate-x-1">→</span>
-        </a>
-
-        <a href="#trust-content" class="group grid gap-4 p-6 transition-colors hover:bg-white/[0.07] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FF8594] sm:p-8 lg:grid-cols-[1.05fr_.9fr_auto] lg:items-center">
-          <div>
-            <p class="text-xs font-bold uppercase tracking-[0.16em] text-[#FF8594]">Dealer รถยนต์ · Online to showroom</p>
-            <h3 class="mt-2 font-display text-xl font-bold leading-snug sm:text-2xl">ขายรถและอยากเปลี่ยนคนดูออนไลน์เป็นยอดจอง</h3>
-          </div>
-          <div class="border-l-2 border-coral pl-4">
-            <p class="text-xs text-ivory/55">เลือกคอร์สนี้</p>
-            <p class="mt-1 font-semibold text-ivory">คอร์สเพิ่มยอดขายรถจากออนไลน์ด้วย Content + Ads + AI</p>
-          </div>
-          <span aria-hidden="true" class="text-2xl text-[#FF8594] transition-transform group-hover:translate-x-1">→</span>
-        </a>
-
-        <a href="#system-services" class="group grid gap-4 p-6 transition-colors hover:bg-white/[0.07] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FF8594] sm:p-8 lg:grid-cols-[1.05fr_.9fr_auto] lg:items-center">
-          <div>
-            <p class="text-xs font-bold uppercase tracking-[0.16em] text-[#FF8594]">Owner · ปัญหาเกินกว่าอบรม</p>
-            <h3 class="mt-2 font-display text-xl font-bold leading-snug sm:text-2xl">อยากได้คนเข้าไปวางระบบให้ใช้งานจริง ไม่ใช่แค่สอน</h3>
-          </div>
-          <div class="border-l-2 border-coral pl-4">
-            <p class="text-xs text-ivory/55">ดูหมวดนี้</p>
-            <p class="mt-1 font-semibold text-ivory">บริการวางระบบฝ่ายขาย — โครงทีม · Dashboard · AI Agent</p>
-          </div>
-          <span aria-hidden="true" class="text-2xl text-[#FF8594] transition-transform group-hover:translate-x-1">→</span>
-        </a>
+    <div id="services-final-cta" class="scroll-mt-20 bg-ivory">
+      <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10">
+        <LineDecisionCTA
+          location="services_final_cta"
+          headline="ยังไม่แน่ใจว่าโจทย์ของทีมควรเริ่มตรงไหน"
+          copy="เล่าอาการที่เกิดในทีม จำนวนคน และผลลัพธ์ที่อยากได้ทาง LINE ผมช่วยแยกให้ว่าเรื่องนี้ควรเริ่มจาก Training, Consulting หรือ Implementation"
+          lineLabel="ให้ผมช่วยเลือกทาง LINE"
+          desktopQr={LINE_QR_IMAGE}
+        />
       </div>
     </div>
-  </section>
-
-  <!-- ===== FAQ ===== -->
-  <section id="faq" class="scroll-mt-6 border-b border-sand-deep bg-ivory">
-    <div class="mx-auto grid max-w-[1180px] gap-10 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[.7fr_1.3fr] lg:px-10 lg:py-24">
-      <div>
-        <p class="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-coral">Frequently asked questions</p>
-        <h2 class="font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">คำถามที่ถามบ่อยก่อนเรียน</h2>
-        <p class="mt-4 max-w-md leading-7 text-[#625C53]">ตอบให้ชัดก่อนทัก จะได้รู้ว่าคลาสนี้แก้โจทย์ทีมคุณได้แค่ไหน และส่วนไหนเป็นงานวางระบบแยก</p>
-      </div>
-
-      <div class="space-y-3">
-        {faqs.map((faq, index) => (
-          <details class="group rounded-2xl border border-sand-deep bg-surface" open={index === 0}>
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 p-5 font-display text-lg font-bold text-navy after:text-2xl after:font-normal after:text-coral after:transition-transform after:content-['+'] group-open:after:rotate-45 [&::-webkit-details-marker]:hidden">{faq.q}</summary>
-            <div class="border-t border-sand-deep px-5 pb-5 pt-4 leading-7 text-[#625C53]"><p>{faq.a}</p></div>
-          </details>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Final LINE CTA ===== -->
-  <section class="bg-navy text-ivory">
-    <div class="mx-auto grid max-w-[1180px] items-center gap-8 px-5 py-14 sm:px-8 sm:py-16 lg:grid-cols-[1fr_auto] lg:px-10">
-      <div class="max-w-2xl">
-        <p class="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#FF8594]">Not sure where to start?</p>
-        <h2 class="font-display text-2xl font-bold leading-tight tracking-[-0.025em] sm:text-3xl">ยังไม่แน่ใจว่าคอร์สไหนเหมาะกับทีมคุณ</h2>
-        <p class="mt-3 leading-7 text-ivory/70">เล่าเป้าหมาย จำนวนคน และปัญหาที่ทีมเจออยู่ตอนนี้ ผมช่วยชี้ให้ตรงๆ ว่าควรเริ่มจากคอร์สไหน หรือยังไม่ควรอบรม</p>
-      </div>
-      <a data-line-cta href={lineUrl} class="group flex w-full items-center justify-between gap-5 rounded-[1.4rem] border border-[#06c755] bg-[#06c755] p-3 pl-5 text-white shadow-[0_20px_50px_-28px_rgba(6,199,85,.85)] transition-colors hover:border-[#05a548] hover:bg-[#05a548] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-navy sm:w-auto sm:min-w-[390px]" target="_blank" rel="noopener">
-        <span class="text-left">
-          <span class="block font-display text-lg font-bold">ทัก LINE ให้ช่วยเลือกคอร์ส</span>
-          <span class="mt-1 block text-xs text-white/80">มือถือแตะปุ่ม · คอมสแกน QR</span>
-        </span>
-        <span class="shrink-0 rounded-xl bg-white p-2 transition-transform group-hover:scale-[1.02]">
-          <img src="/images/line-qr.png" alt="QR Code สำหรับเพิ่ม LINE @011xgvap" width="88" height="88" loading="lazy" decoding="async" class="size-[72px] sm:size-[88px]" />
-          <span class="sr-only">สแกนเพื่อเพิ่ม LINE</span>
-        </span>
-      </a>
-    </div>
-  </section>
+  </div>
 </BaseLayout>
