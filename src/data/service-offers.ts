@@ -83,7 +83,7 @@ export const SERVICE_OFFERS: readonly ServiceOffer[] = [
     customerJob: 'ช่วยคิดและออกแบบทางออกหนึ่งเรื่อง',
     formatLabel: 'Consulting · 1 primary outcome/day',
     outcomeLabel: 'จบหนึ่งเรื่องสำคัญพร้อมทางออกที่ทีมเดินต่อได้',
-    description: 'ทำงานกับคุณหนึ่งวันเพื่อออกแบบผลลัพธ์หลักหนึ่งเรื่อง โดยเลือกได้จาก Online-to-Sales Full Journey, team/KPI/commission, Sales Control/Report/Dashboard Design หรือ AI workflow/AI agent prototype',
+    description: 'ทำงานกับคุณหนึ่งวันเพื่อออกแบบ 1 primary outcome ที่ทีมเดินต่อได้ โดยเลือกได้ 1 หัวข้อ: Online-to-Sales Full Journey; team/KPI/commission; Sales Control/Report/Dashboard Design; AI workflow or AI agent prototype',
     bullets: ['จัดลำดับปัญหาที่กระทบยอดขายก่อน', 'ออกแบบทางออกหนึ่งเรื่องให้ตัดสินใจและลงมือได้', 'สรุปสิ่งที่ทีมต้องทำต่อหลังจบวัน'],
     pricingKey: 'daily-sales-consulting',
     thumbnailFile: 'c1-daily-sales-consulting.png',

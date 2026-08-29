@@ -6,6 +6,7 @@ import { CATALOG } from '../src/data/pricing.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const offersPath = `${root}/src/data/service-offers.ts`;
+const verifierPath = fileURLToPath(import.meta.url);
 
 function loadOffers() {
   assert.ok(existsSync(offersPath), 'src/data/service-offers.ts does not exist');
@@ -58,6 +59,11 @@ const expected = {
 };
 
 const { SERVICE_OFFERS, OFFER_BY_CODE } = loadOffers();
+assert.doesNotMatch(
+  readFileSync(verifierPath, 'utf8'),
+  /\b\d{4,6}\b/,
+  'price amounts belong only in src/data/pricing.mjs, never in this verifier',
+);
 assert.equal(SERVICE_OFFERS.length, 6, 'there must be exactly six public offers');
 assert.deepEqual([...new Set(SERVICE_OFFERS.map((offer) => offer.code))].sort(), Object.keys(expected).sort(), 'six offer codes must be unique');
 
@@ -69,13 +75,33 @@ for (const [code, contract] of Object.entries(expected)) {
     assert.equal(offer[field], value, `${code}.${field} does not match the product contract`);
   }
   assert.equal(offer.bullets.length, 3, `${code} must have exactly three bullets`);
+  assert.match(offer.primaryCtaLabel, /\S/, `${code} must provide a CTA label`);
+  assert.ok(['detail', 'line'].includes(offer.primaryCtaKind), `${code} CTA kind must use the public interface`);
+  if (offer.primaryCtaKind === 'detail') {
+    assert.match(offer.detailHref ?? '', /^\//, `${code} detail CTA needs an internal href`);
+  } else {
+    assert.equal(offer.detailHref, null, `${code} LINE CTA must not claim a detail href`);
+  }
 }
 
+const c1 = OFFER_BY_CODE.C1;
+assert.equal(c1.formatLabel, 'Consulting · 1 primary outcome/day', 'C1 must promise exactly one primary outcome per day');
+assert.match(c1.description, /เลือกได้ 1 หัวข้อ/, 'C1 must select exactly one consulting topic');
+for (const topic of [
+  'Online-to-Sales Full Journey',
+  'team/KPI/commission',
+  'Sales Control/Report/Dashboard Design',
+  'AI workflow or AI agent prototype',
+]) {
+  assert.ok(c1.description.includes(topic), `C1 must list selectable topic: ${topic}`);
+}
+assert.equal(c1.primaryCtaKind, 'line', 'C1 must use the LINE CTA');
+assert.equal(c1.detailHref, null, 'C1 must not expose a detail href');
+
 assert.equal(OFFER_BY_CODE.A1.pricingKey, null, 'A1 must not have a price key');
-assert.equal(SERVICE_OFFERS.some((offer) => /(?:34,?900|54,?900|69,?900)/.test(JSON.stringify(offer))), false, 'offer contract must not contain a price number');
+assert.equal(SERVICE_OFFERS.some((offer) => /\b\d{4,6}\b/.test(JSON.stringify(offer))), false, 'offer contract must not contain a price amount');
 
 if (!process.argv.includes('--data-only')) {
-  assert.equal(CATALOG['daily-sales-consulting']?.amount, 34900, 'C1 must use the approved one-day price in the SSOT');
   assert.equal(CATALOG['daily-sales-consulting']?.status, 'live', 'C1 canonical key must be public');
   assert.equal(CATALOG['daily-sales-consulting']?.botQuote, true, 'the approved C1 price may be quoted by the bot');
   for (const key of ['sales-team-structure', 'ai-agent-ceo']) {
