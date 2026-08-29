@@ -42,20 +42,28 @@ test('each course card states the artifact the team takes back', async () => {
   assert.doesNotMatch(html, />วาง Funnel และวิธีใช้ AI ในงานขายที่ทีมทำอยู่จริง</);
 });
 
-test('floating LINE contact appears on marketing pages and stays out of conversion-specific routes', async () => {
-  const [services, booking, thankYou, ad] = await Promise.all([
+test('global floating LINE contact follows the public and transaction visibility contract', async () => {
+  const [home, services, booking, thankYou, intakeForm, ad] = await Promise.all([
+    builtPage('/'),
     builtPage('/services'),
     builtPage('/booking'),
     builtPage('/thank-you'),
+    builtPage('/intake-form'),
     builtPage('/ads/dealer-online-sales'),
   ]);
 
-  assert.match(services, /data-line-placement="floating"/);
-  assert.match(services, /href="https:\/\/lin\.ee\/ioSnSUG"/);
-  assert.match(services, /LINE Contact/);
-  assert.doesNotMatch(booking, /data-line-placement="floating"/);
-  assert.doesNotMatch(thankYou, /data-line-placement="floating"/);
-  assert.doesNotMatch(ad, /data-line-placement="floating"/);
+  for (const [name, html] of [['home', home], ['services', services]]) {
+    assert.equal((html.match(/<a\b[^>]*\bdata-floating-line(?:\s|>)/g) ?? []).length, 1, `${name} must render one floating LINE control`);
+    assert.match(html, /href="https:\/\/lin\.ee\/ioSnSUG"/);
+    assert.match(html, /data-cta-location="floating_line"/);
+    assert.match(html, /data-product-code="none"/);
+    assert.match(html, /data-cta-label="ทัก LINE · ให้ผมช่วยเลือก"/);
+  }
+
+  for (const [name, html] of [['booking', booking], ['thank-you', thankYou], ['intake form', intakeForm], ['ads LP', ad]]) {
+    assert.doesNotMatch(html, /<a\b[^>]*\bdata-floating-line(?:\s|>)/, `${name} must not render the global floating LINE control`);
+  }
+  assert.equal((ad.match(/id="dealer-ai-sticky"/g) ?? []).length, 1, 'ads LP must retain exactly one bottom sticky CTA');
 });
 
 test('site identity leads with sales systems instead of AI transformation', async () => {

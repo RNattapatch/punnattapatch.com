@@ -1,0 +1,155 @@
+---
+import { Image } from 'astro:assets';
+import { SITE } from '../data/site';
+import { LINE_QR_IMAGE } from '../data/service-offer-assets';
+
+const label = 'ทัก LINE · ให้ผมช่วยเลือก';
+---
+
+<div class="floating-line-root" data-floating-line-root>
+  <figure class="floating-line-qr" data-floating-line-qr>
+    <Image
+      src={LINE_QR_IMAGE}
+      alt="QR code สำหรับเพิ่มเพื่อน LINE ของปัน ณัฐพัชร์"
+      width={180}
+      height={180}
+      loading="lazy"
+      class="floating-line-qr-image"
+    />
+    <figcaption>สแกนเพื่อทัก LINE</figcaption>
+  </figure>
+
+  <a
+    href={SITE.social.line}
+    data-floating-line
+    data-contact-cta
+    data-cta-location="floating_line"
+    data-product-code="none"
+    data-cta-label={label}
+    target="_blank"
+    rel="noopener"
+    aria-label={label}
+    class="floating-line-link"
+  >
+    <svg aria-hidden="true" viewBox="0 0 24 24" class="floating-line-icon">
+      <path d="M20.7 11.08c0-4.05-4.06-7.34-9.05-7.34S2.6 7.03 2.6 11.08c0 3.63 3.22 6.67 7.58 7.25.3.06.7.2.8.46.1.24.07.63.03.88l-.13.83c-.04.24-.19.95.83.52 1.02-.43 5.48-3.23 7.48-5.53 1.38-1.52 1.51-3.09 1.51-4.41Z" />
+    </svg>
+    <span data-floating-line-label class="floating-line-label">{label}</span>
+  </a>
+</div>
+
+<style>
+  .floating-line-root {
+    position: fixed;
+    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    z-index: 60;
+  }
+
+  .floating-line-link {
+    display: inline-flex;
+    min-width: 48px;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    border: 1px solid #05a548;
+    border-radius: 9999px;
+    background: #06c755;
+    color: white;
+    box-shadow: 0 18px 45px -16px rgba(6, 199, 85, 0.85);
+    font-family: var(--font-body, "Sarabun", sans-serif);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.25rem;
+    text-decoration: none;
+    transition: transform 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+  }
+
+  .floating-line-link:hover {
+    background: #05a548;
+    box-shadow: 0 20px 50px -16px rgba(6, 199, 85, 0.95);
+    transform: translateY(-2px);
+  }
+
+  .floating-line-link:focus {
+    outline: 3px solid #072b4e;
+    outline-offset: 3px;
+  }
+
+  .floating-line-icon {
+    width: 24px;
+    height: 24px;
+    flex: none;
+    fill: currentColor;
+  }
+
+  .floating-line-label {
+    display: none;
+  }
+
+  .floating-line-qr {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 12px);
+    display: none;
+    width: 176px;
+    margin: 0;
+    padding: 12px;
+    border: 1px solid rgba(7, 43, 78, 0.18);
+    border-radius: 16px;
+    background: #fdfaf4;
+    box-shadow: 0 20px 45px -18px rgba(7, 43, 78, 0.45);
+    color: #072b4e;
+    opacity: 0;
+    pointer-events: none;
+    text-align: center;
+    transform: translateY(6px);
+    visibility: hidden;
+    transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
+  }
+
+  .floating-line-qr :global(.floating-line-qr-image) {
+    display: block;
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+  }
+
+  .floating-line-qr figcaption {
+    margin-top: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  @media (min-width: 640px) {
+    .floating-line-root {
+      right: 24px;
+      bottom: calc(24px + env(safe-area-inset-bottom));
+    }
+
+    .floating-line-link {
+      min-height: 52px;
+      padding: 0 20px;
+    }
+
+    .floating-line-label,
+    .floating-line-qr {
+      display: block;
+    }
+
+    .floating-line-root:hover .floating-line-qr,
+    .floating-line-root:focus-within .floating-line-qr {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .floating-line-link,
+    .floating-line-qr {
+      transition: none;
+    }
+  }
+</style>

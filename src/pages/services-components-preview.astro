@@ -12,7 +12,7 @@ const offerByCode = Object.fromEntries(SERVICE_OFFERS.map((offer) => [offer.code
 const paidCodes = ['T2', 'T1', 'T3', 'C1', 'I1'] as const;
 ---
 
-<BaseLayout title="Services component preview" noindex={true} showFloatingLine={false}>
+<BaseLayout title="Services component preview" noindex={true} hideFloatingLine={true}>
   <section class="border-b border-sand-deep bg-sand">
       <div class="mx-auto max-w-[1180px] px-5 py-12 sm:px-8 lg:px-10">
         <p class="text-xs font-bold uppercase tracking-[0.18em] text-coral">Temporary Phase 3 preview</p>

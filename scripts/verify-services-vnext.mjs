@@ -13,6 +13,45 @@ const verifierPath = fileURLToPath(import.meta.url);
 const componentPreviewPath = `${root}/dist/services-components-preview.html`;
 const servicesPagePath = `${root}/dist/services.html`;
 
+function builtPagePath(route) {
+  return route === '/' ? `${root}/dist/index.html` : `${root}/dist/${route.replace(/^\//, '')}.html`;
+}
+
+function assertFloatingLineBuildOutput() {
+  const visibleRoutes = ['/', '/services', '/training', '/case-studies/forklift-distributor-5-person-team', '/insights/ai-transformation-sales', '/faq'];
+  for (const route of visibleRoutes) {
+    const pagePath = builtPagePath(route);
+    assert.ok(existsSync(pagePath), `${route} build output does not exist`);
+    const html = readFileSync(pagePath, 'utf8');
+    assert.equal((html.match(/<a\b[^>]*\bdata-floating-line(?:\s|>)/g) ?? []).length, 1, `${route} must render exactly one floating LINE control`);
+  }
+
+  const hiddenRoutes = [
+    '/booking',
+    '/thank-you',
+    '/intake-form',
+    '/bosi-dna-quiz',
+    '/ebook-sales-interview',
+    '/agent-builder-kit/thank-you',
+    '/playbook/line-ai-sales-agent',
+    '/services-components-preview',
+    '/app/dashboard',
+    '/ads/dealer-online-sales',
+  ];
+  for (const route of hiddenRoutes) {
+    const html = readFileSync(builtPagePath(route), 'utf8');
+    assert.doesNotMatch(html, /<a\b[^>]*\bdata-floating-line(?:\s|>)/, `${route} must not render the floating LINE control`);
+  }
+
+  const servicesHtml = readFileSync(servicesPagePath, 'utf8');
+  assert.match(servicesHtml, /href="https:\/\/lin\.ee\/ioSnSUG"[^>]*data-contact-cta[^>]*data-cta-location="floating_line"[^>]*data-product-code="none"[^>]*data-cta-label="ทัก LINE · ให้ผมช่วยเลือก"[^>]*target="_blank"[^>]*rel="noopener"/);
+  assert.match(servicesHtml, /data-floating-line-qr/, 'floating control must include the local QR popover');
+  assert.doesNotMatch(servicesHtml.match(/<div[^>]*data-floating-line-root[\s\S]*?<\/div>/)?.[0] ?? '', /ตอบ(?:กลับ)?ใน\s*5\s*นาที/);
+
+  const adsHtml = readFileSync(builtPagePath('/ads/dealer-online-sales'), 'utf8');
+  assert.equal((adsHtml.match(/id="dealer-ai-sticky"/g) ?? []).length, 1, 'ads LP must retain exactly one bottom sticky CTA');
+}
+
 function loadOffers() {
   assert.ok(existsSync(offersPath), 'src/data/service-offers.ts does not exist');
 
@@ -330,6 +369,7 @@ if (!process.argv.includes('--data-only')) {
 if (process.argv.includes('--build-output')) {
   assertComponentBuildOutput();
   assertServicesPageBuildOutput();
+  assertFloatingLineBuildOutput();
 }
 
 console.log('services vnext data contract passed');
