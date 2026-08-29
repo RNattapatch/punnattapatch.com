@@ -1,0 +1,63 @@
+---
+import { SITE } from '../data/site';
+
+interface Props {
+  enabled?: boolean;
+}
+
+const { enabled = true } = Astro.props;
+const path = Astro.url.pathname;
+const excludedPrefixes = [
+  '/ads/',
+  '/app/',
+  '/dashboard',
+  '/booking',
+  '/thank-you',
+  '/agent-builder-kit',
+  '/intake-form',
+  '/bosi-dna-quiz',
+  '/ebook-sales-interview',
+  '/playbook/line-ai-sales-agent',
+];
+const shouldShow = enabled && !excludedPrefixes.some((prefix) => path === prefix || path.startsWith(prefix));
+---
+
+{shouldShow && (
+  <>
+    <a
+      href={SITE.social.line}
+      target="_blank"
+      rel="noopener"
+      data-line-placement="floating"
+      aria-label="ทัก LINE ให้ช่วยเลือกคอร์สหรือบริการ"
+      class="group fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-[60] inline-flex min-h-[52px] items-center gap-2 rounded-full border border-[#05A548] bg-[#06C755] px-4 py-3 font-body text-sm font-bold text-white shadow-[0_18px_45px_-16px_rgba(6,199,85,.85)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#05A548] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06C755] focus-visible:ring-offset-4 sm:bottom-6 sm:right-6 sm:px-5"
+    >
+      <svg aria-hidden="true" viewBox="0 0 24 24" class="size-5 shrink-0 fill-current">
+        <path d="M20.7 11.08c0-4.05-4.06-7.34-9.05-7.34S2.6 7.03 2.6 11.08c0 3.63 3.22 6.67 7.58 7.25.3.06.7.2.8.46.1.24.07.63.03.88l-.13.83c-.04.24-.19.95.83.52 1.02-.43 5.48-3.23 7.48-5.53 1.38-1.52 1.51-3.09 1.51-4.41Z" />
+      </svg>
+      <span class="sm:hidden">ทัก LINE</span>
+      <span class="hidden sm:inline">ทัก LINE · ช่วยเลือกคอร์สหรือบริการ</span>
+      <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
+    </a>
+
+    <script is:inline>
+      (function () {
+        const button = document.querySelector('[data-line-placement="floating"]');
+        if (!button) return;
+
+        button.addEventListener('click', function () {
+          const path = window.location.pathname;
+          if (typeof window.plausible === 'function') {
+            window.plausible('LINE Contact', { props: { placement: 'floating', path } });
+          }
+          if (typeof window.fbq === 'function') {
+            window.fbq('track', 'Contact', { content_name: 'floating_line', content_category: path });
+          }
+          if (window.ttq && typeof window.ttq.track === 'function') {
+            window.ttq.track('Contact', { content_name: 'floating_line', content_category: path });
+          }
+        });
+      })();
+    </script>
+  </>
+)}

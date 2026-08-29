@@ -5,6 +5,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Schema from '../components/Schema.astro';
 import MetaPixel from '../components/MetaPixel.astro';
+import FloatingLineCta from '../components/FloatingLineCta.astro';
 import type { ComponentProps } from 'astro/types';
 
 type SchemaProps = ComponentProps<typeof Schema>;
@@ -17,6 +18,7 @@ interface Props {
   noindex?: boolean;
   robots?: string;
   schema?: SchemaProps;
+  showFloatingLine?: boolean;
 }
 
 const {
@@ -27,6 +29,7 @@ const {
   noindex = false,
   robots,
   schema = { type: 'WebPage' as const },
+  showFloatingLine = true,
 } = Astro.props;
 
 const fullTitle = title === SITE.titleDefault ? title : `${title} · ${SITE.nameTh}`;
@@ -152,6 +155,7 @@ const fullTitle = title === SITE.titleDefault ? title : `${title} · ${SITE.name
     </main>
 
     <Footer />
+    <FloatingLineCta enabled={showFloatingLine} />
 
     <!--
       UTM + click-ID capture · runs on every page

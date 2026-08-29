@@ -7,9 +7,9 @@ export const SITE = {
   url: 'https://punnattapatch.com',
   name: 'Pun Nattapatch',
   nameTh: 'ปัน ณัฐพัชร์',
-  titleDefault: 'Pun Nattapatch | AI Transformation Consultant สำหรับธุรกิจ B2B',
+  titleDefault: 'Pun Nattapatch | ที่ปรึกษาวางระบบและพัฒนาทีมขาย B2B สำหรับ SME',
   description:
-    'ผมไม่ได้สอนวิธีใช้ AI — แต่เข้าไปติดตั้ง AI Agent ในบริษัทคุณโดยตรง จนทีมคุณใช้งานได้จริงตั้งแต่วันแรก',
+    'ช่วย SME วางโครงทีมขาย KPI ค่าคอม Funnel Report Dashboard และ AI workflow ให้คนในทีมทำงานด้วยระบบเดียวกัน',
   locale: 'th_TH',
   twitter: '@punnattapatch',
   // Public contact address — used on /privacy for PDPA + Meta data-deletion requests.
@@ -18,7 +18,7 @@ export const SITE = {
     name: 'Pun Nattapatch',
     nameTh: 'ปัน ณัฐพัชร์',
     handle: '@pun_nattapatch',
-    jobTitle: 'AI Agent Transformation Consultant for B2B Business',
+    jobTitle: 'ที่ปรึกษาวางระบบและพัฒนาทีมขาย B2B สำหรับ SME',
     city: 'Bangkok',
     country: 'TH',
   },
