@@ -31,9 +31,15 @@ const label = 'ทัก LINE · ให้ผมช่วยเลือก';
     aria-label={label}
     class="floating-line-link"
   >
-    <svg aria-hidden="true" viewBox="0 0 24 24" class="floating-line-icon">
-      <path d="M20.7 11.08c0-4.05-4.06-7.34-9.05-7.34S2.6 7.03 2.6 11.08c0 3.63 3.22 6.67 7.58 7.25.3.06.7.2.8.46.1.24.07.63.03.88l-.13.83c-.04.24-.19.95.83.52 1.02-.43 5.48-3.23 7.48-5.53 1.38-1.52 1.51-3.09 1.51-4.41Z" />
-    </svg>
+    <img
+      src="/line-logo.png"
+      alt=""
+      aria-hidden="true"
+      width="72"
+      height="72"
+      decoding="async"
+      class="floating-line-icon"
+    />
     <span data-floating-line-label class="floating-line-label">{label}</span>
   </a>
 </div>
@@ -48,8 +54,8 @@ const label = 'ทัก LINE · ให้ผมช่วยเลือก';
 
   .floating-line-link {
     display: inline-flex;
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 56px;
+    min-height: 56px;
     align-items: center;
     justify-content: center;
     gap: 0.55rem;
@@ -78,10 +84,12 @@ const label = 'ทัก LINE · ให้ผมช่วยเลือก';
   }
 
   .floating-line-icon {
-    width: 24px;
-    height: 24px;
+    width: 36px;
+    height: 36px;
     flex: none;
-    fill: currentColor;
+    /* The mark ships with LINE green (#06c755) baked in, so it sits flush on the pill
+       and only the white speech bubble reads. */
+    border-radius: 22%;
   }
 
   .floating-line-label {
@@ -129,8 +137,13 @@ const label = 'ทัก LINE · ให้ผมช่วยเลือก';
     }
 
     .floating-line-link {
-      min-height: 52px;
-      padding: 0 20px;
+      min-height: 56px;
+      padding: 0 22px 0 14px;
+    }
+
+    .floating-line-icon {
+      width: 32px;
+      height: 32px;
     }
 
     .floating-line-label,
