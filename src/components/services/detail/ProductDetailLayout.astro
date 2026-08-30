@@ -39,7 +39,7 @@ const finalLineCta = data.cta.locations?.final ?? { primary: data.cta.primary, p
 <div data-detail-block="pain"><PainChecklist items={data.pains} {...data.sections?.pain} /></div>
 <div data-detail-block="boundary"><OfferBoundary {...data.boundary} /></div>
 <div data-detail-block="reasons"><ReasonBlock items={data.reasons} analogy={data.analogy} {...data.sections?.reasons} /></div>
-<div data-detail-block="scope"><ScopeTimeline items={data.scope} chooser={data.symptomChooser} {...data.sections?.scope} /></div>
+<div data-detail-block="scope"><ScopeTimeline items={data.scope} chooser={data.symptomChooser} supportDuration={catalog.duration} {...data.sections?.scope} /></div>
 {afterScopeCta
   ? <DecisionCTA code={data.code} keyword={data.cta.keyword} cta={afterScopeCta} />
   : <section class="mx-auto max-w-6xl px-5 pb-14 sm:pb-20">{data.sections?.scope?.ctaHeading && <h2 class="mb-6 max-w-3xl font-display text-2xl font-bold text-navy sm:text-3xl">{data.sections.scope.ctaHeading}</h2>}<DetailLineCTA code={data.code} location="after_scope" keyword={data.cta.keyword} {...scopeLineCta} /></section>}

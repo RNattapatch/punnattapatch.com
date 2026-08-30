@@ -1,13 +1,14 @@
 ---
 import { Image } from 'astro:assets';
 import { OFFER_ASSET_BY_CODE } from '../../../data/service-offer-assets';
-import type { ProductDetailPageData } from '../../../data/product-details/types';
+import type { ProductDetailPageData, PublicProofImage } from '../../../data/product-details/types';
 import DetailLineCTA from './DetailLineCTA.astro';
 
 interface Props { data: ProductDetailPageData; name: string; duration: string; }
 const { data, name, duration } = Astro.props;
 const image = OFFER_ASSET_BY_CODE[data.code];
 const visual = data.hero.visual;
+const isPublicImage = (candidate: NonNullable<ProductDetailPageData['hero']['visual']>['image']): candidate is PublicProofImage => 'publicSrc' in candidate;
 ---
 
 <section class="bg-navy py-12 text-white sm:py-18">
@@ -43,7 +44,9 @@ const visual = data.hero.visual;
     </div>
     {visual ? (
       <figure data-hero-activity class="relative overflow-hidden rounded-3xl border border-white/15 bg-white/5 shadow-2xl">
-        <Image src={visual.image} alt={visual.alt} width={visual.image.width} height={visual.image.height} loading="eager" fetchpriority="high" class="aspect-[4/3] w-full object-cover" />
+        {isPublicImage(visual.image)
+          ? <img src={visual.image.publicSrc} alt={visual.alt} width={visual.image.width} height={visual.image.height} loading="eager" fetchpriority="high" class="aspect-[4/3] w-full object-cover" />
+          : <Image src={visual.image} alt={visual.alt} width={visual.image.width} height={visual.image.height} loading="eager" fetchpriority="high" class="aspect-[4/3] w-full object-cover" />}
         <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy via-navy/75 to-transparent px-5 pb-5 pt-16">
           <p class="text-xs font-bold uppercase tracking-[.18em] text-coral">{visual.label}</p>
           <figcaption class="mt-2 font-semibold leading-6 text-white">{visual.caption}</figcaption>

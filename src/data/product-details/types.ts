@@ -100,7 +100,7 @@ export interface ProductDetailPageData {
     microcopy?: string;
     steps?: HeroStep[];
     badges: string[];
-    visual?: { image: ImageMetadata; alt: string; label: string; caption: string };
+    visual?: { image: ImageMetadata | PublicProofImage; alt: string; label: string; caption: string };
   };
   authority: string[];
   proof: ProofItem[];
@@ -144,7 +144,7 @@ export interface ProductDetailPageData {
     proof?: { heading: string; intro?: string; secondaryHeading?: string };
     pain?: { heading: string; close?: string };
     reasons?: { heading: string };
-    scope?: { heading: string; intro?: string; ctaHeading?: string };
+    scope?: { heading: string; intro?: string; ctaHeading?: string; supportDurationLead?: string };
     takeHome?: { heading: string; close?: string };
     fit?: { heading: string };
     bio?: { heading: string; eyebrow?: string };

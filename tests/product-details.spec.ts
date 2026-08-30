@@ -404,3 +404,129 @@ test('C1 daily consulting is one service with four selectable primary-outcome tr
   assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “CONSULT” พร้อมอาการที่ทีมกำลังติด', { exact: true }).isVisible(), true, 'mobile C1 must show the tap instruction');
   await page.close();
 });
+
+test('I1 dashboard build presents bounded implementation evidence, handover, and LINE conversion', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const response = await page.goto(`${baseURL}/services/dashboard-build`);
+  const catalog = CATALOG['daruma-starter'];
+  assert.equal(response?.status(), 200, 'I1 route must render');
+  assert.equal(await page.locator('h1').count(), 1, 'I1 must contain exactly one H1');
+  assert.equal(await page.locator('h1').innerText(), catalog.name, 'I1 H1 must resolve from Catalog daruma-starter');
+  assert.equal(await page.getByText(catalog.duration, { exact: true }).count(), 1, 'I1 duration must resolve from Catalog');
+  assert.equal(await page.getByText(fmtPrice('daruma-starter'), { exact: true }).count(), 1, 'I1 price must resolve from Catalog');
+  const heroReceipt = page.locator('[data-hero-activity] img');
+  assert.equal(await heroReceipt.count(), 1, 'I1 Hero must lead with a real system receipt rather than a generic thumbnail');
+  assert.match(await heroReceipt.getAttribute('src') ?? '', /\/proof\/01-command-center\.jpg/, 'I1 Hero receipt must use the approved Command Center evidence');
+  assert.deepEqual(
+    await page.locator('[data-detail-block="scope"] [data-scope-item] > p:first-child').allTextContents(),
+    ['Map/Design', 'Build/Test', 'UAT/Train'],
+    'I1 must render the three approved implementation stages in order',
+  );
+  assert.match(await page.locator('[data-detail-block="scope"]').innerText(), new RegExp(catalog.duration.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), 'I1 scope must state the Catalog support duration');
+  const takeHome = page.locator('[data-detail-block="take-home"]');
+  assert.match(await takeHome.innerText(), /ระบบต้องระบุ Owner, Stage และ Next action ได้ แยกข้อมูลไม่ครบได้ Export ใช้ต่อได้ และย้อนกลับไปหา Source ได้ตามขอบเขตที่ตกลงกันครับ/, 'I1 acceptance criteria must sit beside take-home deliverables');
+  const boundary = page.locator('[data-detail-block="boundary"]');
+  const boundaryText = await boundary.innerText();
+  for (const phrase of ['การเชื่อมหลายระบบ', 'Custom AI Agent', 'Logic อนุมัติหลายชั้น', 'Migration ข้อมูลจำนวนมาก', 'Proposal']) {
+    assert.match(boundaryText, new RegExp(phrase), `I1 boundary must make ${phrase} Proposal scope`);
+  }
+  const afterScope = page.locator('[data-product-code="I1"][data-cta-location="after_scope"]').first();
+  assert.ok((await boundary.boundingBox())!.y < (await afterScope.boundingBox())!.y, 'I1 custom scope must appear before the post-scope conversion CTA');
+  assert.match(boundaryText, /T3.*เรียน.*Prototype/, 'I1 must explain that T3 teaches the client team to prototype');
+  assert.match(boundaryText, /I1.*Build.*UAT.*สอนทีมใช้/, 'I1 must explain that Pun’s team builds, runs UAT, and trains users');
+  assert.equal(await page.locator('a[href="/services/t3-sales-back-office"]').count(), 1, 'I1 must link to the canonical T3 route exactly once');
+
+  const approvedProof = [
+    ['i1-command-center', '/proof/01-command-center.jpg'],
+    ['i1-command-charts', '/proof/02-command-charts.jpg'],
+    ['i1-pipeline', '/proof/03-pipeline.jpg'],
+    ['i1-docbot-chat', '/proof/06-docbot-chat.jpg'],
+    ['i1-scenery-uat', '/testimonial/2026-07/scenery/scenery-screen.jpg'],
+  ];
+  assert.equal(await page.locator('[data-detail-block="proof"] [data-proof-id]').count(), approvedProof.length, 'I1 must use exactly the five approved redacted proof assets');
+  for (const [proofId, src] of approvedProof) {
+    const proof = page.locator(`[data-detail-block="proof"] [data-proof-id="${proofId}"]`);
+    assert.equal(await proof.count(), 1, `I1 must expose the stable ${proofId} proof receipt`);
+    const image = proof.locator('img');
+    await image.scrollIntoViewIfNeeded();
+    await image.evaluate(async (element: HTMLImageElement) => {
+      if (!element.complete) await new Promise<void>((resolve) => element.addEventListener('load', () => resolve(), { once: true }));
+      return element.naturalWidth;
+    });
+    assert.match(await image.getAttribute('src') ?? '', new RegExp(src.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${proofId} must use its approved public asset`);
+    assert.ok(await image.getAttribute('alt'), `${proofId} must have descriptive alt text`);
+    assert.ok(await image.getAttribute('width'), `${proofId} must declare width`);
+    assert.ok(await image.getAttribute('height'), `${proofId} must declare height`);
+    assert.ok(await image.evaluate((element: HTMLImageElement) => element.naturalWidth > 0), `${proofId} image must load`);
+  }
+  const proofText = await page.locator('[data-detail-block="proof"]').innerText();
+  assert.match(proofText, /ระบบจริง/, 'I1 proof wall must describe working systems');
+  assert.match(proofText, /ระบบจริง ไม่ใช่ภาพประกอบขายงาน/, 'I1 proof wall must distinguish real system evidence from decorative artwork');
+  assert.doesNotMatch(proofText, /mockup/i, 'I1 proof wall must not describe real evidence as mockups');
+
+  assert.equal(await page.locator('[data-product-faq-button]').count(), 8, 'I1 must publish the approved eight FAQs');
+  assert.equal(await page.locator('form').count(), 0, 'I1 detail page must not include a form');
+  assert.equal(await page.locator('[data-floating-line]').count(), 1, 'I1 must retain exactly one global Floating LINE CTA');
+  const ctas = page.locator('[data-product-code="I1"][data-contact-cta]');
+  assert.equal(await ctas.count(), 8, 'I1 must provide exactly four paired LINE CTA locations');
+  assert.deepEqual(await ctas.evaluateAll((actions) => actions.map((action) => [action.getAttribute('data-cta-location'), action.getAttribute('data-cta-label')])), [
+    ['hero', 'ทัก LINE ขอ Proposal'],
+    ['hero', 'ขอดูตัวอย่างระบบจริงทาง LINE'],
+    ['after_scope', 'ทัก LINE ส่งตัวอย่าง Report'],
+    ['after_scope', 'ขอดู Screenshot ระบบจริงเพิ่ม'],
+    ['after_investment', 'ทัก LINE ขอ Proposal'],
+    ['after_investment', 'ส่ง Report เดิมมาเช็ก Scope'],
+    ['final', 'ทัก LINE ประเมิน Starter Scope'],
+    ['final', 'ขอดูตัวอย่างระบบจริง'],
+  ], 'I1 CTA journey must preserve every approved paired action');
+  for (const action of await ctas.all()) {
+    assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'every I1 CTA must open SITE.social.line');
+    assert.equal(await action.getAttribute('data-cta-keyword'), 'DASHBOARD', 'every I1 CTA must carry the DASHBOARD keyword');
+  }
+
+  const html = await page.content();
+  assert.doesNotMatch(html, /outline-daruma-starter\.pdf|Rendering note|Asset notes|07-docbot-pdf|ที่นั่งเหลือ|Early Bird|unlimited changes|ไม่จำกัด.*แก้/i, 'I1 must not expose stale assets, authoring notes, false urgency, or unlimited changes');
+  const serviceSchema = schemas(html).find((item) => item['@type'] === 'Service');
+  assert.equal(serviceSchema?.name, catalog.name, 'I1 Service schema name must resolve from Catalog');
+  assert.equal(serviceSchema?.url, 'https://punnattapatch.com/services/dashboard-build', 'I1 Service schema must use the canonical route');
+  assert.equal(serviceSchema?.serviceType, 'Sales System Implementation', 'I1 Service schema must identify implementation work exactly');
+  const faqSchema = schemas(html).find((item) => item['@type'] === 'FAQPage');
+  assert.deepEqual(
+    faqSchema?.mainEntity.map((item: { name: string; acceptedAnswer: { text: string } }) => [item.name, item.acceptedAnswer.text]),
+    await page.locator('[data-product-faq-button]').evaluateAll((buttons) => buttons.map((button) => [button.querySelector('span')?.textContent?.trim(), document.getElementById(button.getAttribute('aria-controls') || '')?.textContent?.trim()])),
+    'I1 FAQPage schema must exactly match the eight visible FAQ questions and answers',
+  );
+  const breadcrumbSchema = schemas(html).find((item) => item['@type'] === 'BreadcrumbList');
+  assert.deepEqual(
+    breadcrumbSchema?.itemListElement.map((item: { name: string; item: string }) => [item.name, item.item]),
+    [['บริการ', 'https://punnattapatch.com/services'], [catalog.name, 'https://punnattapatch.com/services/dashboard-build']],
+    'I1 BreadcrumbList must contain the exact service and canonical-page items',
+  );
+  const finalQr = page.locator('[data-final-line-qr]');
+  await finalQr.scrollIntoViewIfNeeded();
+  assert.equal(await finalQr.isVisible(), true, 'desktop I1 final CTA must show the real LINE QR');
+  await page.waitForFunction(() => {
+    const image = document.querySelector<HTMLImageElement>('[data-final-line-qr] img');
+    return Boolean(image?.complete && image.naturalWidth > 0);
+  });
+
+  for (const viewport of [{ width: 1440, height: 900 }, { width: 768, height: 1024 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), viewport.width, `I1 must not overflow at ${viewport.width}px`);
+    for (const action of await ctas.all()) {
+      await action.scrollIntoViewIfNeeded();
+      const actionBox = await action.boundingBox();
+      const floatingBox = await page.locator('[data-floating-line]').boundingBox();
+      if (actionBox && floatingBox) {
+        const intersects = actionBox.x < floatingBox.x + floatingBox.width
+          && actionBox.x + actionBox.width > floatingBox.x
+          && actionBox.y < floatingBox.y + floatingBox.height
+          && actionBox.y + actionBox.height > floatingBox.y;
+        assert.equal(intersects, false, `floating LINE control must not obstruct I1 ${await action.getAttribute('data-cta-location')} CTA at ${viewport.width}px`);
+      }
+    }
+  }
+  assert.equal(await finalQr.isVisible(), false, 'mobile I1 must hide the desktop-only scan QR');
+  assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “DASHBOARD” พร้อมจำนวนทีม', { exact: true }).isVisible(), true, 'mobile I1 must show the tap instruction');
+  await page.close();
+});
