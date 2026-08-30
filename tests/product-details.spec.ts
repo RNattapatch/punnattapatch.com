@@ -141,7 +141,7 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   await page.close();
 });
 
-test('T1 Sales Skills page is a one-day Convert training with the real LINE E-Book flow and Course schemas', async ({ browser }) => {
+test('T1 detail page presents the approved sales psychology customer job and four-stage AI Coach curriculum', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const response = await page.goto(`${baseURL}/services/t1-sales-skills`);
   const catalog = CATALOG['inhouse-a'];
@@ -150,30 +150,53 @@ test('T1 Sales Skills page is a one-day Convert training with the real LINE E-Bo
   assert.equal(await page.locator('h1').innerText(), catalog.name, 'T1 H1 must resolve from Catalog inhouse-a');
   assert.equal(await page.getByText(catalog.duration, { exact: true }).count(), 1, 'T1 duration must resolve from Catalog');
   assert.equal(await page.getByText(fmtPrice('inhouse-a'), { exact: true }).count(), 1, 'T1 price must resolve from Catalog');
+  assert.equal(
+    await page.getByText('เข้าใจเหตุผลซื้อ ถามและต่อรองได้ดีขึ้น ซ้อมดีลกับ AI Agent และ Follow-up โดยไม่รีบลดราคา', { exact: true }).count(),
+    1,
+    'T1 Hero must state the approved customer job exactly',
+  );
   assert.deepEqual(
     await page.locator('[data-scope-item] > p:first-child').allTextContents(),
     [
-      'ช่วงที่ 1 · Journey / FFAB',
-      'ช่วงที่ 2 · Pre-call / Questions',
-      'ช่วงที่ 3 · Context / Follow-up',
-      'ช่วงที่ 4 · Objection / Practice',
+      'ช่วงที่ 1 · อ่านเหตุผลซื้อ 3 ชั้นให้ลึกกว่าสิ่งที่ลูกค้าพูด',
+      'ช่วงที่ 2 · ถาม ฟัง และสร้างความไว้วางใจ',
+      'ช่วงที่ 3 · ต่อรองโดยไม่รีบลดราคา',
+      'ช่วงที่ 4 · ฝึก AI Sales Coach จากเคสจริงของทีม',
     ],
     'T1 must render exactly the four approved curriculum stages in order',
   );
+  assert.deepEqual(
+    await page.locator('[data-scope-item] > p:last-child').allTextContents(),
+    [
+      'Output: Customer Decision Map ของลูกค้าหลัก',
+      'Output: Question & Trust Playbook ของทีม',
+      'Output: Negotiation & Objection Playbook',
+      'Output: Company Context + AI Sales Coach Agent + Role-play Scorecard + Follow-up Playbook + Monday Plan',
+    ],
+    'each T1 curriculum stage must publish its approved customer-facing output',
+  );
   const heroText = await page.locator('h1').locator('xpath=ancestor::section').innerText();
   assert.doesNotMatch(heroText, /\b(?:Content|Ads)\b/i, 'T1 Hero must not promise Content or Ads');
-  assert.match(heroText, /ส่งประเภทธุรกิจ จำนวนเซลล์ และปัญหาที่เจอบ่อย/, 'T1 Hero must keep its approved CTA microcopy');
+  assert.match(heroText, /ส่งประเภทธุรกิจ จำนวนเซลล์ และสถานการณ์ที่ทีมติดบ่อย/, 'T1 Hero must keep its approved CTA microcopy');
   const ebookCta = page.locator('[data-cta-location="hero"][data-cta-intent="lead_magnet"]');
   assert.equal(await ebookCta.count(), 1, 'T1 Hero must expose one lead-magnet CTA');
   assert.equal(await ebookCta.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'T1 E-Book CTA must use SITE.social.line');
-  assert.equal(await ebookCta.getAttribute('data-cta-keyword'), 'SALES SKILL', 'T1 E-Book CTA must carry the SALES SKILL keyword');
+  assert.equal(await ebookCta.getAttribute('data-cta-keyword'), 'SALES PSYCHOLOGY', 'T1 E-Book CTA must carry the SALES PSYCHOLOGY keyword');
   assert.match(await ebookCta.innerText(), /E-Book.*หยุดหาเซลล์ผิดคน/, 'T1 lead magnet must name the real E-Book');
   const t2Link = page.locator('a[href="/services/online-to-sales"]');
   assert.equal(await t2Link.count(), 1, 'T1 must offer one contextual canonical link to T2');
   assert.match(await t2Link.innerText(), /T2|ออนไลน์|Content/, 'T1 related link must explain the distinct T2 journey');
-  assert.equal(await page.getByText('ถ้าทีมคุณมีเคสที่อยากเอามาซ้อม บอกผมก่อนออกแบบคลาสได้ครับ', { exact: true }).count(), 1, 'T1 scope CTA must keep its approved workshop-case prompt');
+  assert.equal(await page.getByText('ถ้ามีดีลที่ทีมอยากซ้อม บอกผมก่อนออกแบบคลาสได้ครับ', { exact: true }).count(), 1, 'T1 scope CTA must keep its approved workshop-case prompt');
   assert.equal(await page.getByText('เฉลี่ย ฿1,745 ต่อคน เมื่อเข้าอบรม 20 คน', { exact: true }).count(), 1, 'T1 per-head price must derive from the Catalog investment');
-  assert.equal(await page.getByText('สแกน QR แล้วพิมพ์คำว่า “SALES SKILL” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T1 final CTA must keep the approved LINE keyword instruction');
+  assert.equal(await page.getByText('สแกน QR แล้วพิมพ์คำว่า “SALES PSYCHOLOGY” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T1 final CTA must keep the approved LINE keyword instruction');
+  const psychologyFaq = page.getByRole('button', { name: 'จิตวิทยาการขายในคอร์สหมายถึงการอ่านใจหรือควบคุมลูกค้าหรือเปล่า?' });
+  assert.equal(await psychologyFaq.count(), 1, 'T1 must publish an ethical psychology FAQ');
+  await psychologyFaq.click();
+  assert.match(await page.locator('#t1-faq-2').innerText(), /เคารพสิทธิ์ตัดสินใจของลูกค้า/, 'ethical psychology FAQ must reject manipulation');
+  const boundaryText = await page.locator('[data-detail-block="boundary"]').innerText();
+  assert.match(boundaryText, /Human Review/, 'AI Sales Coach must require human review');
+  assert.match(boundaryText, /การคุยกับลูกค้า.*อยู่กับเซลล์/, 'AI Sales Coach must not imply autonomous customer contact');
+  assert.match(boundaryText, /CRM หรือ Dashboard production แยกเป็นบริการ Implementation/, 'AI Sales Coach must not be represented as a production CRM or dashboard');
   assert.equal(await page.locator('[data-product-faq-button]').count(), 8, 'T1 must publish the approved eight FAQs');
   assert.equal(await page.locator('form').count(), 0, 'T1 detail page must not include a form');
   assert.equal(await page.locator('[data-floating-line]').count(), 1, 'T1 must retain exactly one global Floating LINE CTA');
@@ -182,6 +205,7 @@ test('T1 Sales Skills page is a one-day Convert training with the real LINE E-Bo
   assert.equal(courseSchema?.url, 'https://punnattapatch.com/services/t1-sales-skills', 'T1 Course schema must use the canonical route');
   assert.ok(schemas(html).some((item) => item['@type'] === 'FAQPage'), 'T1 must expose FAQPage schema');
   assert.ok(schemas(html).some((item) => item['@type'] === 'BreadcrumbList'), 'T1 must expose BreadcrumbList schema');
+  assert.doesNotMatch(html, /Journey\s*\/\s*FFAB|Pre-call\s*\/\s*Questions|Context\s*\/\s*Follow-up|Objection\s*\/\s*Practice/, 'T1 must not retain superseded Journey/FFAB curriculum labels');
   for (const viewport of [{ width: 1440, height: 900 }, { width: 768, height: 1024 }, { width: 390, height: 844 }]) {
     await page.setViewportSize(viewport);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), viewport.width, `T1 must not overflow at ${viewport.width}px`);
@@ -202,7 +226,7 @@ test('T1 remediation keeps evidence, location-specific LINE actions, and mobile 
     ['after_scope', 'ทัก LINE คุยเรื่องจัด In-house', 'inhouse_enquiry'],
     ['after_scope', 'รับ E-Book ก่อนตัดสินใจ', 'lead_magnet'],
     ['after_investment', 'ทัก LINE ขอใบเสนอราคา', 'quote'],
-    ['after_investment', 'ส่ง Pain ของทีมมาให้ช่วยเลือกคอร์ส', 'course_selection'],
+    ['after_investment', 'ส่งสถานการณ์ที่ทีมติดมาให้ช่วยดู', 'course_selection'],
     ['final', 'ทัก LINE วางคอร์สให้ทีม', 'course_planning'],
     ['final', 'รับ E-Book หยุดหาเซลล์ผิดคน', 'lead_magnet'],
   ] as const;
@@ -211,7 +235,13 @@ test('T1 remediation keeps evidence, location-specific LINE actions, and mobile 
     assert.equal(await action.count(), 1, `${location} must render the approved ${label} action`);
     assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', `${location} action must use SITE.social.line`);
     assert.equal(await action.getAttribute('data-cta-intent'), intent, `${location} action must retain its analytics intent`);
-    assert.equal(await action.getAttribute('data-cta-keyword'), 'SALES SKILL', `${location} action must retain the T1 keyword`);
+    assert.equal(await action.getAttribute('data-cta-keyword'), 'SALES PSYCHOLOGY', `${location} action must retain the T1 keyword`);
+  }
+  const allT1LineActions = page.locator('[data-product-code="T1"][data-contact-cta]');
+  assert.equal(await allT1LineActions.count(), 8, 'T1 must expose the complete four-pair LINE CTA journey');
+  for (const action of await allT1LineActions.all()) {
+    assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'every T1 CTA must open the real SITE.social.line destination');
+    assert.equal(await action.getAttribute('data-cta-keyword'), 'SALES PSYCHOLOGY', 'every T1 CTA must carry the approved lead-magnet keyword');
   }
 
   const finalQr = page.locator('[data-final-line-qr]');
@@ -219,12 +249,13 @@ test('T1 remediation keeps evidence, location-specific LINE actions, and mobile 
   assert.equal(await finalQr.isVisible(), true, 'desktop final QR must be visible when scan copy is visible');
 
   const mainText = await page.locator('#main').innerText();
-  assert.doesNotMatch(mainText, /ปั้นธุรกิจจากยอดติดลบสู่ยอดขายร้อยล้าน/, 'T1 must not publish the unsupported hundred-million authority claim');
+  assert.doesNotMatch(mainText, /(?:ยอดขายร้อยล้าน|40\s*(?:→|to)\s*100M)/i, 'T1 must not publish unsupported hundred-million authority claims');
+  assert.doesNotMatch(mainText, /Catalog/, 'T1 must not expose Catalog authoring placeholders to customers');
   assert.doesNotMatch(mainText, /(?:ตามที่ระบุใน Catalog|ตามเงื่อนไขใน Catalog)/, 'T1 must not expose internal Catalog placeholders to customers');
 
   await page.setViewportSize({ width: 390, height: 844 });
   assert.equal(await finalQr.isVisible(), false, 'mobile must not show a scan instruction without an inline QR');
-  assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “SALES SKILL” พร้อมจำนวนทีม', { exact: true }).isVisible(), true, 'mobile final CTA must give a tappable LINE instruction');
+  assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “SALES PSYCHOLOGY” พร้อมจำนวนทีม', { exact: true }).isVisible(), true, 'mobile final CTA must give a tappable LINE instruction');
   for (const action of await page.locator('[data-product-code="T1"][data-contact-cta]').all()) {
     await action.scrollIntoViewIfNeeded();
     await page.waitForTimeout(50);
