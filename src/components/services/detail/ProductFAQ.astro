@@ -1,0 +1,18 @@
+---
+import type { ProductFaqItem } from '../../../data/product-details/types';
+interface Props { code: string; items: ProductFaqItem[]; }
+const { code, items } = Astro.props;
+---
+<section aria-labelledby="faq-heading" class="bg-[#f4f1ea] py-14 sm:py-20"><div class="mx-auto max-w-4xl px-5"><h2 id="faq-heading" class="font-display text-3xl font-bold text-navy sm:text-4xl">คำถามก่อนตัดสินใจ</h2><div class="mt-7 divide-y divide-navy/10 rounded-3xl bg-white px-5">{items.map((item, index) => { const answerId = `${code.toLowerCase()}-faq-${index + 1}`; return <article><h3><button type="button" aria-expanded="false" aria-controls={answerId} data-product-faq-button class="flex w-full items-center justify-between gap-4 py-5 text-left font-bold text-navy"><span>{item.question}</span><span aria-hidden="true" data-product-faq-icon>+</span></button></h3><div id={answerId} hidden data-product-faq-answer class="pb-5 leading-7 text-navy/75">{item.answer}</div></article>; })}</div></div></section>
+
+<script>
+  document.querySelectorAll('[data-product-faq-button]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      const answer = document.getElementById(button.getAttribute('aria-controls') || '');
+      button.setAttribute('aria-expanded', String(!expanded));
+      answer?.toggleAttribute('hidden', expanded);
+      button.querySelector('[data-product-faq-icon]')?.replaceChildren(expanded ? '+' : '−');
+    });
+  });
+</script>

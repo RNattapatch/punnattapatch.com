@@ -56,7 +56,7 @@ export const SERVICE_OFFERS: readonly ServiceOffer[] = [
     pricingKey: 'tiktok-workshop',
     thumbnailFile: 't2-online-to-offline-ai.png',
     imageAlt: 'คอร์สเพิ่มยอดขายจากออนไลน์ไปสู่การนัดหมายและยอดขาย',
-    detailHref: '/services/trust-content-tiktok-workshop',
+    detailHref: '/services/online-to-sales',
     primaryCtaLabel: 'ดูรายละเอียดคอร์ส',
     primaryCtaKind: 'detail',
   },

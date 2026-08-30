@@ -68,7 +68,7 @@ export const CATALOG = {
   },
   'tiktok-workshop': {
     amount: 54900,
-    url: '/services/trust-content-tiktok-workshop',
+    url: '/services/online-to-sales',
     name: 'คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI',
     nameEn: 'Online-to-Offline × Content + Ads + AI',
     kind: 'content',

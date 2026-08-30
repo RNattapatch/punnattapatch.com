@@ -1,0 +1,5 @@
+---
+interface Props { items: string[]; heading?: string; copy?: string; }
+const { items, heading, copy } = Astro.props;
+---
+<section aria-labelledby="authority-heading" class="border-y border-navy/10 bg-[#f4f1ea] py-8"><div class="mx-auto max-w-6xl px-5"><h2 id="authority-heading" class={heading ? 'font-display text-2xl font-bold text-navy' : 'sr-only'}>{heading || 'Authority snapshot'}</h2><ul class:list={["grid gap-3 sm:grid-cols-3", heading && 'mt-5']}>{items.map((item) => <li class="rounded-2xl bg-white px-5 py-4 font-semibold text-navy shadow-sm">{item}</li>)}</ul>{copy && <p class="mt-6 max-w-4xl leading-7 text-navy/80">{copy}</p>}</div></section>

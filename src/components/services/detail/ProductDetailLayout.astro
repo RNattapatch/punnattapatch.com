@@ -1,0 +1,47 @@
+---
+import { resolveProductDetailCatalog } from '../../../data/product-details/catalog';
+import type { ProductDetailPageData } from '../../../data/product-details/types';
+import ProductHero from './ProductHero.astro';
+import AuthoritySnapshot from './AuthoritySnapshot.astro';
+import ProofWall from './ProofWall.astro';
+import PainChecklist from './PainChecklist.astro';
+import OfferBoundary from './OfferBoundary.astro';
+import ReasonBlock from './ReasonBlock.astro';
+import ScopeTimeline from './ScopeTimeline.astro';
+import TakeHomeStack from './TakeHomeStack.astro';
+import FitBlock from './FitBlock.astro';
+import InstructorBio from './InstructorBio.astro';
+import InvestmentBlock from './InvestmentBlock.astro';
+import ProductFAQ from './ProductFAQ.astro';
+import DetailLineCTA from './DetailLineCTA.astro';
+import ClientLogoWall from './ClientLogoWall.astro';
+import DecisionCTA from './DecisionCTA.astro';
+
+interface Props { data: ProductDetailPageData; }
+const { data } = Astro.props;
+const catalog = resolveProductDetailCatalog(data.pricingKey);
+const decisionCta = (location: 'after_proof' | 'after_scope' | 'after_fit') => data.decisionCtas?.find((cta) => cta.location === location);
+const afterProofCta = decisionCta('after_proof');
+const afterScopeCta = decisionCta('after_scope');
+const afterFitCta = decisionCta('after_fit');
+---
+
+<div data-detail-block="hero"><ProductHero data={data} name={catalog.name} duration={catalog.duration} /></div>
+<ClientLogoWall items={data.clientLogos} />
+<div data-detail-block="authority"><AuthoritySnapshot items={data.authority} {...data.sections?.authority} /></div>
+<div data-detail-block="proof"><ProofWall items={data.proof} testimonials={data.testimonials} {...data.sections?.proof} /></div>
+{afterProofCta && <DecisionCTA code={data.code} keyword={data.cta.keyword} cta={afterProofCta} />}
+<div data-detail-block="pain"><PainChecklist items={data.pains} {...data.sections?.pain} /></div>
+<div data-detail-block="boundary"><OfferBoundary {...data.boundary} /></div>
+<div data-detail-block="reasons"><ReasonBlock items={data.reasons} analogy={data.analogy} /></div>
+<div data-detail-block="scope"><ScopeTimeline items={data.scope} /></div>
+{afterScopeCta
+  ? <DecisionCTA code={data.code} keyword={data.cta.keyword} cta={afterScopeCta} />
+  : <section class="mx-auto max-w-6xl px-5 pb-14 sm:pb-20"><DetailLineCTA code={data.code} location="after_scope" {...data.cta} /></section>}
+<div data-detail-block="take-home"><TakeHomeStack items={data.takeHome} /></div>
+<div data-detail-block="fit"><FitBlock fit={data.fit} notFit={data.notFit} /></div>
+{afterFitCta && <DecisionCTA code={data.code} keyword={data.cta.keyword} cta={afterFitCta} />}
+<div data-detail-block="instructor"><InstructorBio paragraphs={data.bio} /></div>
+<div data-detail-block="investment"><InvestmentBlock name={catalog.name} price={catalog.price} regularPrice={catalog.regularPrice} {...data.investment} /></div>
+<div data-detail-block="faq"><ProductFAQ code={data.code} items={data.faq} /></div>
+<section data-detail-block="final-cta" class="bg-navy py-14 text-white sm:py-20"><div class="mx-auto max-w-6xl px-5"><h2 class="font-display text-3xl font-bold sm:text-4xl">อยากเช็กว่าหน้านี้เหมาะกับโจทย์ทีมคุณไหม?</h2><p class="mt-4 max-w-2xl leading-7 text-white/80">ทัก LINE พร้อม keyword {data.cta.keyword} แล้วเล่าโจทย์ที่ทีมกำลังติดอยู่ได้เลยครับ</p><div class="mt-7"><DetailLineCTA code={data.code} location="final" primary={data.cta.primary} secondary={data.cta.finalSecondary ?? data.cta.secondary} secondaryIntent={data.cta.finalSecondaryIntent ?? data.cta.secondaryIntent} keyword={data.cta.keyword} inverse /></div></div></section>

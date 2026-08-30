@@ -1,0 +1,5 @@
+---
+interface Props { items: Array<{ title: string; body: string }>; analogy: string; }
+const { items, analogy } = Astro.props;
+---
+<section aria-labelledby="reasons-heading" class="bg-navy py-14 text-white sm:py-20"><div class="mx-auto max-w-6xl px-5"><h2 id="reasons-heading" class="font-display text-3xl font-bold sm:text-4xl">ทำไมต้องทำในรูปแบบนี้</h2><div class="mt-8 grid gap-5 md:grid-cols-2">{items.map((item) => <article class="rounded-3xl border border-white/15 p-6"><h3 class="text-xl font-bold">{item.title}</h3><p class="mt-3 leading-7 text-white/80">{item.body}</p></article>)}</div><p class="mt-7 max-w-3xl border-t border-white/15 pt-6 text-lg leading-8 text-white/90">{analogy}</p></div></section>

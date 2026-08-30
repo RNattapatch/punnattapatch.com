@@ -1,0 +1,5 @@
+---
+interface Props { items: string[]; }
+const { items } = Astro.props;
+---
+<section aria-labelledby="take-home-heading" class="bg-[#f4f1ea] py-14 sm:py-20"><div class="mx-auto max-w-5xl px-5"><h2 id="take-home-heading" class="font-display text-3xl font-bold text-navy sm:text-4xl">สิ่งที่ทีมถือกลับไป</h2><div class="mt-7 grid gap-4 md:grid-cols-3">{items.map((item) => <p class="rounded-2xl bg-white p-5 font-semibold leading-7 text-navy shadow-sm">{item}</p>)}</div></div></section>

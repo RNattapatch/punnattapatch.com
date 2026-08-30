@@ -1,0 +1,113 @@
+import type { ImageMetadata } from 'astro';
+
+export type ProductDetailCode = 'T1' | 'T2' | 'T3' | 'C1' | 'I1';
+
+export interface ProductFaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface ProofItem {
+  kind: 'quote' | 'photo' | 'system' | 'demand';
+  quote?: string;
+  caption: string;
+  image: ImageMetadata;
+  alt: string;
+}
+
+export interface ClientLogo {
+  src: string;
+  alt: string;
+}
+
+export interface ProductTestimonial {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
+export interface HeroStep {
+  label: string;
+  title: string;
+  body: string;
+}
+
+export interface DecisionCtaAction {
+  kind: 'line' | 'download';
+  label: string;
+  intent: string;
+  href?: string;
+  available?: boolean;
+}
+
+export interface ProductDecisionCta {
+  location: 'after_proof' | 'after_scope' | 'after_fit';
+  eyebrow: string;
+  heading: string;
+  body: string;
+  variant: 'light' | 'sand' | 'navy';
+  actions: DecisionCtaAction[];
+}
+
+export interface ScopeItem {
+  label: string;
+  title: string;
+  learn?: string;
+  action: string;
+  output: string;
+}
+
+export interface ProductDetailPageData {
+  code: ProductDetailCode;
+  pricingKey: string;
+  route: string;
+  kind: 'course' | 'service';
+  hero: {
+    eyebrow: string;
+    customerJob: string;
+    supportingCopy: string[];
+    steps?: HeroStep[];
+    badges: string[];
+    visual?: { image: ImageMetadata; alt: string; label: string; caption: string };
+  };
+  authority: string[];
+  proof: ProofItem[];
+  clientLogos?: ClientLogo[];
+  testimonials?: ProductTestimonial[];
+  decisionCtas?: ProductDecisionCta[];
+  pains: string[];
+  boundary: { heading: string; body: string[] };
+  reasons: Array<{ title: string; body: string }>;
+  analogy: string;
+  scope: ScopeItem[];
+  takeHome: string[];
+  fit: string[];
+  notFit: string;
+  bio: string[];
+  investment: { included: string[]; terms: string; scarcity: string };
+  faq: ProductFaqItem[];
+  cta: {
+    primary: string;
+    secondary: string;
+    keyword: string;
+    secondaryIntent?: string;
+    heroSecondary?: string;
+    heroSecondaryIntent?: string;
+    finalSecondary?: string;
+    finalSecondaryIntent?: string;
+  };
+  seo: { title: string; description: string };
+  sections?: {
+    authority?: { heading: string; copy?: string };
+    proof?: { heading: string; intro?: string };
+    pain?: { heading: string; close?: string };
+    reasons?: { heading: string };
+    scope?: { heading: string; intro?: string };
+    takeHome?: { heading: string; close?: string };
+    fit?: { heading: string };
+    bio?: { heading: string };
+    investment?: { eyebrow: string };
+    final?: { heading: string; copy: string };
+  };
+}
