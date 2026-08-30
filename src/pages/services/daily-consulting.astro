@@ -9,6 +9,6 @@ const catalog = resolveProductDetailCatalog(C1_PRODUCT_DETAIL.pricingKey);
 const canonical = `${SITE.url}${C1_PRODUCT_DETAIL.route}`;
 ---
 
-<BaseLayout title={C1_PRODUCT_DETAIL.seo.title} description={C1_PRODUCT_DETAIL.seo.description} canonical={canonical} ogImage={`${SITE.url}${catalog.image}`} schema={{ types: ['WebPage', 'FAQPage', 'BreadcrumbList', 'ProductDetail'], title: C1_PRODUCT_DETAIL.seo.title, description: C1_PRODUCT_DETAIL.seo.description, url: canonical, faq: C1_PRODUCT_DETAIL.faq, breadcrumbs: [{ name: 'บริการ', url: `${SITE.url}/services` }, { name: catalog.name, url: canonical }], productDetail: { code: C1_PRODUCT_DETAIL.code, kind: C1_PRODUCT_DETAIL.kind, name: catalog.name, description: C1_PRODUCT_DETAIL.seo.description, url: canonical, duration: catalog.duration } }}>
+<BaseLayout title={C1_PRODUCT_DETAIL.seo.title} description={C1_PRODUCT_DETAIL.seo.description} canonical={canonical} ogImage={`${SITE.url}${catalog.image}`} schema={{ types: ['WebPage', 'FAQPage', 'BreadcrumbList', 'ProductDetail'], title: C1_PRODUCT_DETAIL.seo.title, description: C1_PRODUCT_DETAIL.seo.description, url: canonical, faq: C1_PRODUCT_DETAIL.faq, breadcrumbs: [{ name: 'บริการ', url: `${SITE.url}/services` }, { name: catalog.name, url: canonical }], productDetail: { code: C1_PRODUCT_DETAIL.code, kind: C1_PRODUCT_DETAIL.kind, serviceType: C1_PRODUCT_DETAIL.serviceType, name: catalog.name, description: C1_PRODUCT_DETAIL.seo.description, url: canonical, duration: catalog.duration } }}>
   <ProductDetailLayout data={C1_PRODUCT_DETAIL} />
 </BaseLayout>

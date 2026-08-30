@@ -323,26 +323,84 @@ test('C1 daily consulting is one service with four selectable primary-outcome tr
 
   assert.equal(await page.locator('[data-proof-id="c1-scenery-room"]').count(), 1, 'C1 must show inspectable Scenery work proof');
   assert.equal(await page.locator('[data-proof-id="c1-hfc-journey"]').count(), 1, 'C1 must show the approved HFC training-to-consult proof');
+  const systemReceipt = page.locator('[data-proof-id="c1-system-receipt"]');
+  assert.equal(await systemReceipt.count(), 1, 'C1 must show one approved redacted system receipt');
+  assert.equal(await systemReceipt.locator('figcaption').innerText(), 'ผมสร้างระบบใช้เองและทำงานกับของจริง จึงรู้ว่าข้อเสนอไหนทำได้ในวัน Consult และข้อเสนอไหนต้องมีขั้น Build, UAT และ Adoption แยก', 'C1 system receipt caption must state the bounded Build boundary');
   assert.equal(await page.getByText('“ปันคุยง่าย เข้าใจสิ่งที่ CEO ต้องการ และหาทางออกให้ได้”', { exact: true }).count(), 1, 'C1 must use the approved bounded client quote');
   assert.equal(await page.locator('[data-product-faq-button]').count(), 8, 'C1 must publish the approved eight FAQs');
   assert.equal(await page.locator('form').count(), 0, 'C1 detail page must not include a form');
   assert.equal(await page.locator('[data-floating-line]').count(), 1, 'C1 must retain exactly one global Floating LINE CTA');
   const ctas = page.locator('[data-product-code="C1"][data-contact-cta]');
-  assert.ok(await ctas.count() >= 8, 'C1 must provide a complete LINE CTA journey');
+  assert.equal(await ctas.count(), 8, 'C1 must provide exactly four paired LINE CTA locations');
+  assert.deepEqual(await ctas.evaluateAll((actions) => actions.map((action) => [action.getAttribute('data-cta-location'), action.getAttribute('data-cta-label')])), [
+    ['hero', 'ทัก LINE จองวัน Consult'],
+    ['hero', 'เล่าอาการให้ผมช่วยเลือก Track'],
+    ['after_scope', 'ทัก LINE ให้ผมช่วยเลือก'],
+    ['after_scope', 'ส่งรูป Report หรือเล่าอาการสั้นๆ'],
+    ['after_investment', 'ทัก LINE จองวัน Consult'],
+    ['after_investment', 'ให้ผมช่วยเลือก Track ฟรี'],
+    ['final', 'ทัก LINE คุยกับผม'],
+    ['final', 'ส่งอาการมาให้ช่วยเลือก Track'],
+  ], 'C1 CTA journey must preserve every approved paired action');
   for (const action of await ctas.all()) {
     assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'every C1 CTA must open SITE.social.line');
     assert.equal(await action.getAttribute('data-cta-keyword'), 'CONSULT', 'every C1 CTA must carry the CONSULT keyword');
   }
   const html = await page.content();
-  assert.doesNotMatch(html, /ยอดขายร้อยล้าน|ตามระยะเวลาจาก Catalog|Agentic AI Transformation/, 'C1 must not expose stale unsupported or generic public copy');
+  assert.doesNotMatch(html, /ยอดขายร้อยล้าน|ตามระยะเวลาจาก Catalog|Agentic AI Transformation|ไม่เติมตัวเลขผลลัพธ์|ไม่อ้างผลลัพธ์ทางการเงิน|Asset notes|Rendering note/, 'C1 must not expose stale, generic, or internal authoring-guard copy');
   const serviceSchema = schemas(html).find((item) => item['@type'] === 'Service');
   assert.equal(serviceSchema?.name, catalog.name, 'C1 Service schema name must resolve from Catalog');
   assert.equal(serviceSchema?.url, 'https://punnattapatch.com/services/daily-consulting', 'C1 Service schema must use canonical route');
-  assert.ok(schemas(html).some((item) => item['@type'] === 'FAQPage'), 'C1 must expose FAQPage schema');
-  assert.ok(schemas(html).some((item) => item['@type'] === 'BreadcrumbList'), 'C1 must expose BreadcrumbList schema');
+  assert.equal(serviceSchema?.serviceType, 'Sales Consulting', 'C1 Service schema must not claim implementation work');
+  const faqSchema = schemas(html).find((item) => item['@type'] === 'FAQPage');
+  assert.deepEqual(
+    faqSchema?.mainEntity.map((item: { name: string; acceptedAnswer: { text: string } }) => [item.name, item.acceptedAnswer.text]),
+    await page.locator('[data-product-faq-button]').evaluateAll((buttons) => buttons.map((button) => [button.querySelector('span')?.textContent?.trim(), document.getElementById(button.getAttribute('aria-controls') || '')?.textContent?.trim()])),
+    'C1 FAQPage schema must exactly match the eight visible FAQ questions and answers',
+  );
+  const breadcrumbSchema = schemas(html).find((item) => item['@type'] === 'BreadcrumbList');
+  assert.deepEqual(
+    breadcrumbSchema?.itemListElement.map((item: { name: string; item: string }) => [item.name, item.item]),
+    [['บริการ', 'https://punnattapatch.com/services'], [catalog.name, 'https://punnattapatch.com/services/daily-consulting']],
+    'C1 BreadcrumbList must contain the exact service and canonical-page items',
+  );
+  const finalQr = page.locator('[data-final-line-qr]');
+  await finalQr.scrollIntoViewIfNeeded();
+  assert.equal(await finalQr.isVisible(), true, 'desktop C1 final CTA must show the real LINE QR');
+  await page.waitForFunction(() => {
+    const image = document.querySelector<HTMLImageElement>('[data-final-line-qr] img');
+    return Boolean(image?.complete && image.naturalWidth > 0);
+  });
+  assert.ok(await finalQr.locator('img').evaluate((image: HTMLImageElement) => image.naturalWidth > 0), 'desktop C1 final QR must finish loading');
+  for (const image of await page.locator('[data-detail-block="proof"] img').all()) {
+    await image.scrollIntoViewIfNeeded();
+    await image.evaluate(async (element: HTMLImageElement) => {
+      if (element.complete) return element.naturalWidth;
+      await new Promise<void>((resolve) => element.addEventListener('load', () => resolve(), { once: true }));
+      return element.naturalWidth;
+    });
+    assert.ok(await image.getAttribute('alt'), 'every C1 proof image must have descriptive alt text');
+    assert.ok(await image.getAttribute('width'), 'every C1 proof image must declare width');
+    assert.ok(await image.getAttribute('height'), 'every C1 proof image must declare height');
+    assert.ok(await image.evaluate((element: HTMLImageElement) => element.naturalWidth > 0), 'every C1 proof image must load before acceptance');
+  }
   for (const viewport of [{ width: 1440, height: 900 }, { width: 768, height: 1024 }, { width: 390, height: 844 }]) {
     await page.setViewportSize(viewport);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), viewport.width, `C1 must not overflow at ${viewport.width}px`);
+    for (const action of await ctas.all()) {
+      await action.scrollIntoViewIfNeeded();
+      const actionBox = await action.boundingBox();
+      const floatingBox = await page.locator('[data-floating-line]').boundingBox();
+      if (actionBox && floatingBox) {
+        const intersects = actionBox.x < floatingBox.x + floatingBox.width
+          && actionBox.x + actionBox.width > floatingBox.x
+          && actionBox.y < floatingBox.y + floatingBox.height
+          && actionBox.y + actionBox.height > floatingBox.y;
+        assert.equal(intersects, false, `floating LINE control must not obstruct C1 ${await action.getAttribute('data-cta-location')} CTA at ${viewport.width}px`);
+      }
+    }
   }
+  assert.equal(await finalQr.isVisible(), false, 'mobile C1 must hide the desktop-only scan QR');
+  assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “CONSULT” พร้อมอาการที่ทีมกำลังติด', { exact: true }).isVisible(), true, 'mobile C1 must show the tap instruction');
   await page.close();
 });

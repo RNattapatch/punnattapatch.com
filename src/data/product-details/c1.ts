@@ -6,6 +6,7 @@ export const C1_PRODUCT_DETAIL: ProductDetailPageData = {
   pricingKey: 'daily-sales-consulting',
   route: '/services/daily-consulting',
   kind: 'service',
+  serviceType: 'Sales Consulting',
   hero: {
     eyebrow: 'DAILY SALES SYSTEM CONSULTING · C1',
     customerJob: 'เลือก 1 ปัญหาขายที่สำคัญที่สุด แล้ววางทางออกให้จบภายใน 1 วัน',
@@ -50,7 +51,14 @@ export const C1_PRODUCT_DETAIL: ProductDetailPageData = {
       quote: 'ปันคุยง่าย เข้าใจสิ่งที่ CEO ต้องการ และหาทางออกให้ได้',
       image: { publicSrc: '/testimonial/web/pun-consulting.jpg', width: 900, height: 1200 },
       alt: 'ปัน ณัฐพัชร์กำลังอธิบายงานให้ผู้เข้าร่วมในห้อง Consult',
-      caption: 'Feedback หลังตัดสินใจจ้าง Consult โดยไม่อ้างผลลัพธ์ทางการเงิน',
+      caption: 'Feedback จากลูกค้า หลังตัดสินใจจ้าง Consult',
+    },
+    {
+      id: 'c1-system-receipt',
+      kind: 'system',
+      image: { publicSrc: '/proof/01-command-center.jpg', width: 1400, height: 692 },
+      alt: 'หน้าจอ Personal Business Command Center ของปัน ณัฐพัชร์ โดยปิดข้อมูลที่ไม่เกี่ยวข้อง',
+      caption: 'ผมสร้างระบบใช้เองและทำงานกับของจริง จึงรู้ว่าข้อเสนอไหนทำได้ในวัน Consult และข้อเสนอไหนต้องมีขั้น Build, UAT และ Adoption แยก',
     },
   ],
   pains: [
@@ -165,7 +173,7 @@ export const C1_PRODUCT_DETAIL: ProductDetailPageData = {
   },
   sections: {
     authority: { heading: 'ผมคุยกับเจ้าของได้ เพราะเคยอยู่ทั้งฝั่งยอดขาย คน และระบบ', copy: 'บางปัญหาหน้าตาเหมือนเรื่องเซลล์ แต่ต้นเหตุอยู่ที่การแบ่งเขต เป้าหมาย หรือข้อมูลที่หัวหน้าเห็นช้า บางปัญหาดูเหมือนต้องซื้อ CRM แต่จริงๆ ทีมยังนิยาม Stage ไม่ตรงกัน ผมจึงเริ่มจาก Customer job และการตัดสินใจของธุรกิจ ไม่เริ่มจาก Tool ครับ' },
-    proof: { heading: 'งาน Consult ที่ดี ต้องทำให้คนในบริษัทเห็นทางเดินต่อ', intro: 'เลือกหลักฐานจากหน้างานจริง งานต่อยอด และ Feedback ที่ระบุได้ชัด โดยไม่เติมตัวเลขผลลัพธ์ที่ภาพหรือหลักฐานไม่รองรับ', secondaryHeading: 'Feedback และหลักฐานที่อธิบายการทำงานต่อ' },
+    proof: { heading: 'งาน Consult ที่ดี ต้องทำให้คนในบริษัทเห็นทางเดินต่อ', intro: 'ภาพหน้างานและระบบที่ใช้อยู่ช่วยให้เห็นว่าการตัดสินใจในห้อง Consult ถูกแปลงเป็นงานต่อของทีมอย่างไร', secondaryHeading: 'Feedback และหลักฐานที่อธิบายการทำงานต่อ' },
     pain: { heading: 'ถ้าเรื่องหนึ่งลากไปชนอีกสามเรื่อง แปลว่าคุณต้องการคนช่วยจัดลำดับครับ', close: 'คุณไม่จำเป็นต้องตั้งชื่อปัญหาให้ถูกก่อนทักมาครับ แค่เล่าอาการและสิ่งที่อยากเห็นหลังแก้ ผมจะช่วยแยกว่าโจทย์ไหนควรเป็น Primary Outcome ของวัน' },
     reasons: { heading: 'เพราะบางครั้งธุรกิจต้องการ “วันตัดสินใจ” มากกว่าโครงการยาว' },
     scope: { heading: 'เลือก 1 Primary Outcome', intro: 'ลองอ่านจากอาการก่อนครับ คุณไม่ต้องรู้ศัพท์ว่าเรื่องของตัวเองอยู่ Track ไหน', ctaHeading: 'อ่านแล้วยังไม่แน่ใจว่าอาการของคุณอยู่ Track ไหน?' },

@@ -61,6 +61,7 @@ interface TrainingEvent {
 interface ProductDetailSchema {
   code: ProductDetailCode;
   kind: 'course' | 'service';
+  serviceType?: 'Sales Consulting' | 'Sales System Implementation';
   name: string;
   description: string;
   url: string;
@@ -450,7 +451,7 @@ function buildProductDetail() {
   return {
     '@type': 'Service',
     ...common,
-    serviceType: 'Sales Consulting and Implementation',
+    serviceType: productDetail.serviceType ?? (productDetail.code === 'I1' ? 'Sales System Implementation' : 'Sales Consulting'),
     category: 'Sales Enablement',
     areaServed: { '@type': 'Country', name: 'Thailand' },
   };

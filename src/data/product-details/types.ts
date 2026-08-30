@@ -92,6 +92,7 @@ export interface ProductDetailPageData {
   pricingKey: string;
   route: string;
   kind: 'course' | 'service';
+  serviceType?: 'Sales Consulting' | 'Sales System Implementation';
   hero: {
     eyebrow: string;
     customerJob: string;
