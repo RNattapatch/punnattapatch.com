@@ -367,9 +367,9 @@ function assertServicesSeoBuildOutput() {
 
 const expected = {
   T1: {
-    publicName: 'คอร์สอบรมทักษะการขาย + Follow-up + AI สำหรับทีมขาย',
+    publicName: 'คอร์สจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B',
     kind: 'training', pricingKey: 'inhouse-a', thumbnailFile: 't1-sales-skill-ai.png',
-    imageAlt: 'คอร์สอบรมทักษะการขายและ Follow-up ด้วย AI สำหรับทีมขาย',
+    imageAlt: 'คอร์สจิตวิทยาการขายและ AI Agent สำหรับทีมขาย B2B',
   },
   T2: {
     publicName: 'คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI',

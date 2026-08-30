@@ -27,12 +27,12 @@
   "packages": [
     {
       "key": "inhouse-a",
-      "name": "คอร์สอบรมทักษะการขาย + Follow-up + AI สำหรับทีมขาย",
-      "name_en": "Sales Skills + Follow-up × AI",
+      "name": "คอร์สจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B",
+      "name_en": "B2B Sales Psychology + AI Agent",
       "kind": "inhouse",
       "duration": "1 วัน",
-      "headline": "คุยเป็น · ตามดีลเป็น · ปิดดีลดีขึ้น — เตรียมข้อมูลลูกค้า ตั้งคำถาม รับข้อโต้แย้ง Follow-up โดยมี AI ช่วยเตรียมงานและซ้อม",
-      "audience": "บริษัทที่มีทีมขาย 5-20 คน · เซลล์คุยแล้วดีลหลุด ตามลูกค้าไม่เป็นระบบ",
+      "headline": "เข้าใจเหตุผลซื้อ · ถามและต่อรองได้ดีขึ้น · ซ้อมดีลกับ AI Agent · Follow-up โดยไม่รีบลดราคา",
+      "audience": "บริษัท B2B ที่มีทีมขาย 5-20 คน · มี Lead แล้ว แต่เซลล์ยังติดตอนถาม ต่อรอง หรือ Follow-up",
       "amount_thb": 34900,
       "price_label": "฿34,900",
       "url": "https://punnattapatch.com/services#inhouse-a",
