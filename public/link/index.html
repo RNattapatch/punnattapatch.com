@@ -1,628 +1,365 @@
-<!DOCTYPE html>
-<html lang="th" data-theme="punpaper">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <title>ปัน ณัฐพัชร์ · @pun_nattapatch</title>
-  <meta name="description" content="ปั้นทีมขาย SME ด้วยระบบที่ทำซ้ำ วัดผล และ AI Agent ที่ใช้กับงานจริง · Bangkok">
+<!doctype html>
+<html lang="th" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#F4F1EA" />
+    <title>ปัน ณัฐพัชร์ · บริการ ติดต่อ และผลงาน</title>
+    <meta name="description" content="เลือกทางที่ต้องการ: สอบถามหรือจองคิว ดูบริการที่ปรึกษาหรือจัดอบรม หรือชวนปัน ณัฐพัชร์ไปร่วมงาน" />
+    <link rel="canonical" href="https://punnattapatch.com/link/" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content="ปัน ณัฐพัชร์ · บริการ ติดต่อ และผลงาน" />
+    <meta property="og:description" content="เลือกทางที่ต้องการ: สอบถามหรือจองคิว ดูบริการที่ปรึกษาหรือจัดอบรม หรือชวนไปร่วมงาน" />
+    <meta property="og:image" content="https://punnattapatch.com/og-image.jpg" />
+    <meta property="og:url" content="https://punnattapatch.com/link/" />
+    <meta property="og:locale" content="th_TH" />
+    <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="ปัน ณัฐพัชร์ — links">
-  <meta property="og:description" content="ปั้นทีมขาย × AI Agent · Daruma Framework · นัดคุย · บทเรียน 100M">
-  <meta property="og:image" content="https://punnattapatch.com/og-image.jpg">
-  <meta property="og:type" content="profile">
-  <meta property="og:url" content="https://link.punnattapatch.com">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="theme-color" content="#F4F1EA">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=Trirong:wght@500;600;700&display=swap" rel="stylesheet" />
+    <!-- DaisyUI must load before Tailwind Browser on this standalone route. -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-  <!-- Meta Pixel · dataset "Pun-Web" 890649354099149
-       Standalone page (not built through BaseLayout), so the pixel is inlined
-       here. Link-in-bio is ad-relevant traffic and was untracked until
-       2026-08-01. Mirrors src/components/MetaPixel.astro: skips localhost, no
-       consent gate (owner decision 2026-08-01 — disclosure lives in /privacy). -->
-  <script>
-    (function () {
-      var host = window.location.hostname;
-      if (!host || host === "localhost" || host === "127.0.0.1" || host.endsWith(".local")) return;
+    <!-- First-party Plausible proxy — same loader and endpoint as BaseLayout. -->
+    <script async src="https://pl.punnattapatch.com/js/pa-py-NKga-B2dlJColCdo-p.js"></script>
+    <script>
+      window.plausible = window.plausible || function () {
+        (window.plausible.q = window.plausible.q || []).push(arguments);
+      };
+      window.plausible.init = window.plausible.init || function (options) {
+        window.plausible.o = options || {};
+      };
+      window.plausible.init({ endpoint: 'https://pl.punnattapatch.com/api/event' });
+    </script>
 
-      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-      document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    <!-- Meta Pixel · dataset Pun-Web. Never emit development traffic. -->
+    <script>
+      (function () {
+        var host = window.location.hostname;
+        if (!host || host === 'localhost' || host === '127.0.0.1' || host === '[::1]' || host.endsWith('.local')) return;
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+        n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+        document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '890649354099149');
+        fbq('track', 'PageView');
+      })();
+    </script>
+    <noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=890649354099149&amp;ev=PageView&amp;noscript=1" /></noscript>
 
-      fbq('init', '890649354099149');
-      fbq('track', 'PageView');
-    })();
-  </script>
-  <noscript><img height="1" width="1" style="display:none" alt=""
-    src="https://www.facebook.com/tr?id=890649354099149&ev=PageView&noscript=1" /></noscript>
+    <style type="text/tailwindcss">
+      @theme {
+        --font-display: "Trirong", serif;
+        --font-body: "Sarabun", sans-serif;
+        --color-paper: #f4f1ea;
+        --color-sheet: #fcf9f2;
+        --color-sand: #ece6da;
+        --color-ink: #1e1b16;
+        --color-navy: #072b4e;
+        --color-coral: #dd4155;
+        --color-coral-dark: #c43245;
+        --color-line: #06c755;
+      }
+      @layer base {
+        html { background: #f4f1ea; }
+        body {
+          background-color: #f4f1ea;
+          background-image:
+            linear-gradient(rgba(30, 27, 22, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(30, 27, 22, 0.05) 1px, transparent 1px);
+          background-size: 28px 28px;
+        }
+        body::before {
+          content: "";
+          position: fixed;
+          inset: 0;
+          z-index: 50;
+          pointer-events: none;
+          opacity: 0.025;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+      }
+      @layer components {
+        .paper-route {
+          @apply relative flex min-h-[92px] touch-manipulation items-center gap-3.5 rounded-[15px] border border-[#bdb5a6] bg-sheet px-4 py-3.5 text-navy no-underline shadow-[3px_4px_0_rgba(30,27,22,0.08)] transition-[transform,box-shadow,background-color] duration-150 ease-out;
+        }
+        .paper-route:hover { @apply -translate-y-0.5 bg-[#fffdf8] shadow-[4px_6px_0_rgba(30,27,22,0.11)]; }
+        .paper-route:active { @apply translate-y-0.5 scale-[0.988] shadow-[1px_2px_0_rgba(30,27,22,0.10)]; }
+        .paper-route:focus-visible { @apply outline-2 outline-offset-4 outline-coral; }
+        .social-link {
+          @apply flex min-h-[72px] touch-manipulation flex-col items-center justify-center gap-1.5 rounded-[11px] border border-white/25 bg-white/[0.07] px-2 text-paper no-underline transition-[transform,background-color] duration-150 ease-out;
+        }
+        .social-link:hover { @apply -translate-y-0.5 bg-white/[0.13]; }
+        .social-link:active { @apply translate-y-0 scale-[0.975] bg-white/[0.17]; }
+        .social-link:focus-visible { @apply outline-2 outline-offset-3 outline-coral; }
+        .trust-marquee { @apply overflow-hidden; }
+        .trust-track { display: flex; width: max-content; transform: translate3d(0, 0, 0); will-change: transform; }
+        .logo-run { @apply flex shrink-0 gap-3 pr-3; }
+        .logo-tile { @apply grid h-[68px] w-[116px] shrink-0 place-items-center rounded-[11px] border border-[#c9c2b2] bg-white p-2.5 shadow-[2px_3px_0_rgba(30,27,22,0.07)]; }
+        .logo-tile img { display: block; width: 100%; height: 42px; object-fit: contain; filter: none; opacity: 1; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .paper-route, .social-link { transition: none !important; transform: none !important; }
+        .trust-marquee { overflow-x: auto; scroll-snap-type: x proximity; }
+        .trust-track { transform: none !important; }
+        .logo-tile { scroll-snap-align: start; }
+        .marquee-copy { display: none; }
+        [data-logo-toggle] { display: none; }
+      }
+    </style>
+  </head>
 
-  <!-- DaisyUI BEFORE Tailwind (load order matters) -->
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
-  <!-- Fonts: Trirong (display serif) + Sarabun (body) — matches main site -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Trirong:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Analytics -->
-  <script defer data-domain="link.punnattapatch.com" src="https://pl.punnattapatch.com/js/script.js"></script>
-
-  <style>
-    /* ============================================================
-       PUN LINK HUB · Warm Editorial / Notebook theme
-       ivory cream paper · notebook grid · navy + coral ink
-       paper-shadow cards · 0 KB JS · mobile-safe
-       (mirrors src/styles/global.css "punpaper" design language)
-       ============================================================ */
-    :root {
-      /* Editorial palette */
-      --ivory:      #F4F1EA;   /* page bg — ivory cream */
-      --surface:    #FCF9F2;   /* card surface */
-      --sand:       #ECE6DA;   /* hover / tonal */
-      --sand-deep:  #E2DBCB;
-      --ink:        #1E1B16;   /* warm ink — body text */
-      --navy:       #072B4E;   /* deep navy — authority / headings */
-      --navy-deep:  #00162F;
-      --coral:      #DD4155;   /* coral — CTA + accents */
-      --coral-dark: #C43245;
-      --muted:      #8A8175;   /* secondary text */
-      --border:     #C9C2B2;   /* hairline ink-on-paper */
-
-      /* Concentric radius system */
-      --r-outer: 16px;
-      --r-chip:  11px;
-
-      /* Paper shadow tokens (hard offset, no blur — editorial) */
-      --shadow:    3px 5px 0 rgba(30,27,22,0.07);
-      --shadow-hi: 5px 8px 0 rgba(30,27,22,0.11);
-    }
-
-    * { box-sizing: border-box; }
-
-    html, body {
-      color: var(--ink);
-      font-family: 'Sarabun', sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-    }
-
-    /* Notebook grid on ivory — echoes the main site + sales dashboard */
-    body {
-      min-height: 100dvh;
-      overflow-x: hidden;
-      position: relative;
-      background-color: var(--ivory);
-      background-image:
-        linear-gradient(rgba(30,27,22,0.055) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(30,27,22,0.055) 1px, transparent 1px);
-      background-size: 30px 30px;
-    }
-    /* Faint paper grain overlay (matches global.css) */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 100;
-      background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)" opacity="0.03"/%3E%3C/svg%3E');
-    }
-    /* Warm glow at top of page — subtle, on-paper */
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0 0 auto 0;
-      height: 40vh;
-      z-index: -1;
-      pointer-events: none;
-      background: radial-gradient(ellipse 80% 100% at 50% 0%, rgba(221,65,85,0.05), transparent 70%);
-    }
-
-    .font-display {
-      font-family: 'Trirong', serif;
-      letter-spacing: -0.01em;
-    }
-
-    /* ============================================================
-       AVATAR · paper frame + navy ink ring
-       ============================================================ */
-    .avatar-frame {
-      padding: 5px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 9999px;
-      box-shadow: var(--shadow);
-    }
-    .avatar-img {
-      width: 102px; height: 102px;
-      border-radius: 9999px;
-      object-fit: cover;
-      display: block;
-      border: 2px solid var(--navy);
-      background: var(--sand);
-    }
-    .daruma-mark {
-      width: 54px;
-      height: auto;
-      margin: -8px auto 2px;
-      filter: drop-shadow(2px 3px 0 rgba(30,27,22,0.09));
-    }
-
-    /* ============================================================
-       PULSING CORAL DOT · signature brand element (tuned for light)
-       ============================================================ */
-    .pulse-dot {
-      position: relative;
-      width: 8px; height: 8px;
-      display: inline-block;
-    }
-    .pulse-dot::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: var(--coral);
-      border-radius: 50%;
-      animation: coral-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
-    }
-    .pulse-dot::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: var(--coral);
-      border-radius: 50%;
-    }
-    @keyframes coral-ping {
-      0%   { transform: scale(1);   opacity: 0.55; }
-      75%, 100% { transform: scale(2.8); opacity: 0; }
-    }
-
-    /* AVAILABLE BADGE · coral on paper */
-    .available-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      border-radius: 9999px;
-      background: rgba(221,65,85,0.10);
-      border: 1px solid rgba(221,65,85,0.38);
-    }
-    .available-badge-text {
-      font-family: 'Sarabun', sans-serif;
-      font-weight: 600;
-      font-size: 12px;
-      color: var(--coral-dark);
-      letter-spacing: 0.02em;
-    }
-
-    .handle {
-      font-family: 'Sarabun', sans-serif;
-      font-weight: 500;
-      font-size: 14px;
-      color: var(--muted);
-      letter-spacing: 0.02em;
-    }
-
-    /* Hand-drawn coral underline (matches main-site .hand-underline) */
-    .hand-underline { position: relative; display: inline-block; }
-    .hand-underline::after {
-      content: '';
-      position: absolute;
-      width: 102%;
-      height: 7px;
-      bottom: 3px;
-      left: -1%;
-      background-color: var(--coral);
-      z-index: -1;
-      border-radius: 4px;
-      transform: rotate(-1.2deg);
-      opacity: 0.85;
-    }
-
-    /* ============================================================
-       LINK BUTTONS · editorial paper cards
-       ============================================================ */
-    .link-btn {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 13px 16px;
-      min-height: 64px;
-      width: 100%;
-      border-radius: var(--r-outer);
-      text-decoration: none;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      transition:
-        transform 180ms cubic-bezier(0.2, 0, 0.2, 1),
-        background 180ms ease,
-        box-shadow 180ms ease,
-        border-color 180ms ease;
-      will-change: transform;
-    }
-    .link-btn:hover {
-      transform: translateY(-2px);
-      background: var(--sand);
-      border-color: #b9b1a0;
-      box-shadow: var(--shadow-hi);
-    }
-    .link-btn:active {
-      transform: translateY(0);
-      box-shadow: 2px 3px 0 rgba(30,27,22,0.08);
-    }
-    .link-btn:focus-visible {
-      outline: 2px solid var(--coral);
-      outline-offset: 3px;
-    }
-
-    /* Navy-emphasis · 1-on-1 consult (top slot) */
-    .link-btn-navy {
-      border: 2px solid var(--navy);
-      background: var(--surface);
-    }
-    .link-btn-navy:hover {
-      background: rgba(7,43,78,0.05);
-      border-color: var(--navy-deep);
-    }
-    .link-btn-navy .btn-icon-wrap {
-      background: rgba(7,43,78,0.09);
-      border-color: rgba(7,43,78,0.22);
-    }
-    .link-btn-daruma {
-      border-color: rgba(221,65,85,0.58);
-      background: var(--surface);
-    }
-    .link-btn-daruma:hover {
-      background: rgba(221,65,85,0.06);
-      border-color: var(--coral);
-    }
-    .link-btn-daruma .btn-icon-wrap {
-      background: rgba(221,65,85,0.10);
-      border-color: rgba(221,65,85,0.34);
-    }
-
-    /* Coral PRIMARY · hero CTA (training & consulting) */
-    .link-btn-coral {
-      min-height: 70px;
-      background: var(--coral);
-      border: 1px solid var(--coral-dark);
-      box-shadow: 3px 5px 0 rgba(196,50,69,0.30);
-    }
-    .link-btn-coral:hover {
-      transform: translateY(-2px);
-      background: #e64a5d;
-      border-color: var(--coral-dark);
-      box-shadow: 5px 8px 0 rgba(196,50,69,0.34);
-    }
-    .link-btn-coral .btn-title { color: #fff; font-size: 16px; font-weight: 700; }
-    .link-btn-coral .btn-sub   { color: rgba(255,255,255,0.88); }
-    .link-btn-coral .btn-arrow { color: rgba(255,255,255,0.92); }
-    .link-btn-coral .btn-icon-wrap {
-      background: rgba(255,255,255,0.20);
-      border-color: rgba(255,255,255,0.40);
-    }
-
-    /* Floating speech-bubble tag (scrapbook sticker) on the hero card */
-    .card-bubble {
-      position: absolute;
-      top: -13px;
-      right: 14px;
-      z-index: 6;
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 11px;
-      border-radius: 9999px;
-      background: var(--surface);
-      border: 1px solid var(--coral);
-      color: var(--coral-dark);
-      font-family: 'Sarabun', sans-serif;
-      font-weight: 700;
-      font-size: 10.5px;
-      line-height: 1.2;
-      letter-spacing: 0.01em;
-      white-space: nowrap;
-      box-shadow: 2px 3px 0 rgba(196,50,69,0.20);
-      transform: rotate(-2deg);
-    }
-    .card-bubble::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      right: 20px;
-      width: 9px; height: 9px;
-      background: var(--surface);
-      border-right: 1px solid var(--coral);
-      border-bottom: 1px solid var(--coral);
-      transform: rotate(45deg);
-    }
-    /* Narrow phones: let the tag wrap to 2 lines instead of overflowing */
-    @media (max-width: 380px) {
-      .card-bubble { white-space: normal; max-width: 70%; border-radius: 12px; }
-      .card-bubble::after { bottom: -5px; }
-    }
-
-    /* Icon chip · concentric radius */
-    .btn-icon-wrap {
-      position: relative;
-      flex-shrink: 0;
-      width: 42px; height: 42px;
-      display: grid; place-items: center;
-      border-radius: var(--r-chip);
-      background: var(--sand);
-      border: 1px solid var(--border);
-    }
-
-    .btn-title {
-      font-family: 'Sarabun', sans-serif;
-      font-weight: 700;
-      font-size: 15px;
-      line-height: 1.25;
-      color: var(--navy);
-      letter-spacing: 0.005em;
-    }
-    .btn-sub {
-      font-family: 'Sarabun', sans-serif;
-      font-size: 11.5px;
-      color: var(--muted);
-      margin-top: 3px;
-      line-height: 1.45;
-      font-weight: 400;
-    }
-    .btn-arrow {
-      color: var(--muted);
-      transition: color 200ms, transform 200ms;
-    }
-    .link-btn:hover .btn-arrow { color: var(--navy); transform: translate(2px,-2px); }
-
-    /* ============================================================
-       SOCIAL ICONS · mini paper chips
-       ============================================================ */
-    .social-icon {
-      position: relative;
-      width: 44px; height: 44px;
-      display: grid; place-items: center;
-      border-radius: 13px;
-      color: var(--navy);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      box-shadow: 2px 3px 0 rgba(30,27,22,0.06);
-      transition: color 180ms, border-color 180ms, transform 180ms, background 180ms, box-shadow 180ms;
-    }
-    .social-icon:hover {
-      color: var(--coral);
-      border-color: #b9b1a0;
-      background: var(--sand);
-      transform: translateY(-2px);
-      box-shadow: 3px 5px 0 rgba(30,27,22,0.09);
-    }
-    .social-icon:focus-visible {
-      outline: 2px solid var(--coral);
-      outline-offset: 3px;
-    }
-
-    /* Micro-proof */
-    .micro-proof {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.03em;
-      color: var(--muted);
-    }
-
-    /* ============================================================
-       MOBILE
-       ============================================================ */
-    @media (max-width: 640px) {
-      body { background-size: 24px 24px; }
-    }
-    @media (max-width: 480px) {
-      .avatar-img { width: 90px; height: 90px; }
-    }
-
-    /* Respect motion preference */
-    @media (prefers-reduced-motion: reduce) {
-      .pulse-dot::before { animation: none; opacity: 0; }
-      .link-btn, .social-icon, .btn-arrow { transition: none; }
-      .link-btn:hover, .social-icon:hover { transform: none; }
-    }
-  </style>
-</head>
-<body>
-
-  <main class="min-h-dvh flex items-start justify-center px-5 pt-12 pb-12">
-    <div class="w-full max-w-[480px]">
-
-      <!-- Identity block -->
+  <body class="min-h-dvh overflow-x-hidden font-body text-ink antialiased">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-coral focus:px-4 focus:py-2 focus:text-white">ข้ามไปยังเนื้อหาหลัก</a>
+    <main id="main" class="mx-auto flex min-h-dvh w-full max-w-[560px] flex-col px-5 pb-[max(24px,env(safe-area-inset-bottom))] pt-[max(22px,env(safe-area-inset-top))] sm:px-8 sm:pt-9">
       <header class="flex flex-col items-center text-center">
-        <div class="avatar-frame mb-4">
-          <img src="/pun-avatar.jpg" alt="ปัน ณัฐพัชร์" class="avatar-img" width="102" height="102" loading="eager" decoding="async" />
+        <div class="relative">
+          <div class="rounded-full border border-[#bdb5a6] bg-sheet p-1 shadow-[2px_3px_0_rgba(30,27,22,0.10)]">
+            <img src="/pun-avatar.jpg" alt="ปัน ณัฐพัชร์" width="640" height="640" loading="eager" decoding="async" class="size-[102px] rounded-full border-2 border-navy object-cover sm:size-[108px]" />
+          </div>
+          <span class="absolute -bottom-1 right-0 grid h-7 min-w-8 rotate-[-6deg] place-items-center border border-coral-dark bg-coral-dark px-1.5 text-[10px] font-bold text-white shadow-[1px_2px_0_rgba(196,50,69,0.22)]" aria-hidden="true">PUN</span>
         </div>
-        <svg class="daruma-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" role="img" aria-label="โลโก้ดารุมะแมว — ตาซ้ายแต้มแล้ว ตาขวายังว่าง">
-          <title>Daruma Cat — Daruma Framework mark</title>
-          <path d="M44 62 L30 10 L80 32 Z" fill="#dd4155"/><path d="M156 62 L170 10 L120 32 Z" fill="#dd4155"/>
-          <path d="M49 55 L40 25 L69 38 Z" fill="#c43245"/><path d="M151 55 L160 25 L131 38 Z" fill="#c43245"/>
-          <path d="M100 12c42 0 74 34 78 82 3 36-6 72-24 94-14 17-33 24-54 24s-40-7-54-24C28 166 21 130 22 94 26 46 58 12 100 12Z" fill="#dd4155"/>
-          <path d="M31 172c15 24 40 34 69 34s54-10 69-34c-7 19-17 31-29 37-15 7-65 7-80 0-12-6-22-18-29-37Z" fill="#c43245"/>
-          <ellipse cx="100" cy="86" rx="52" ry="46" fill="#f4f1ea"/>
-          <path d="M64 55c7-8 22-9 30-3" fill="none" stroke="#1e1b16" stroke-width="4" stroke-linecap="round"/><path d="M106 52c8-6 23-5 30 3" fill="none" stroke="#1e1b16" stroke-width="4" stroke-linecap="round"/>
-          <circle cx="80" cy="76" r="13" fill="#ffffff" stroke="#1e1b16" stroke-width="3"/><circle cx="80" cy="76" r="5.5" fill="#1e1b16"/><circle cx="120" cy="76" r="13" fill="#ffffff" stroke="#1e1b16" stroke-width="3"/>
-          <path d="M94.5 90.5h11L100 97z" fill="#1e1b16"/><path d="M100 97v3.5M100 100.5c0 4.5-4.5 6.5-7.5 3.8M100 100.5c0 4.5 4.5 6.5 7.5 3.8" fill="none" stroke="#1e1b16" stroke-width="3" stroke-linecap="round"/>
-          <path d="M46 88 L26 81M45 96 L24 96M46 104 L27 110" stroke="#f4f1ea" stroke-width="3" stroke-linecap="round" opacity=".92"/><path d="M154 88 L174 81M155 96 L176 96M154 104 L173 110" stroke="#f4f1ea" stroke-width="3" stroke-linecap="round" opacity=".92"/>
-          <path d="M58 186c12 8 26 12 42 12s30-4 42-12" fill="none" stroke="#072b4e" stroke-width="6" stroke-linecap="round"/>
-        </svg>
-
-        <h1 class="font-display font-bold text-[30px] leading-[1.1]" style="color: var(--navy);">ปัน ณัฐพัชร์</h1>
-        <p class="handle mt-1">@pun_nattapatch</p>
-
-        <div class="available-badge mt-4" role="status" aria-label="Available for consult">
-          <span class="pulse-dot" aria-hidden="true"></span>
-          <span class="available-badge-text">Available for consult</span>
-        </div>
-
-        <h2 class="font-display font-semibold mt-5 text-[22px] leading-[1.25] max-w-[340px] px-2" style="color: var(--navy);">
-          ที่ปรึกษาการปั้นทีมขาย × AI Agent
-        </h2>
-        <p class="mt-3 text-[14px] leading-[1.6] max-w-[340px] px-2" style="color: var(--ink); font-weight: 400;">
-          ผมช่วยวางระบบ ให้เจ้าของธุรกิจและฝ่ายขาย เลิกขายแบบพึ่งดวง ด้วยระบบการขาย D.A.R.U.M.A. Framework ที่จับต้องได้ และ AI Agent ที่ลดงานกับเพิ่มยอดขายได้จริง
-        </p>
+        <p class="mt-3 font-display text-[29px] font-bold leading-tight tracking-[-0.02em] text-navy sm:text-[32px]">ปัน ณัฐพัชร์</p>
+        <p class="mt-1 text-[13px] font-medium text-[#756e64]">@pun_nattapatch</p>
+        <p class="mt-2 text-[15px] font-semibold leading-snug text-[#36322d] sm:text-[16px]">ที่ปรึกษาการปั้นทีมขาย × AI Agent</p>
       </header>
 
-      <!-- 5 destination buttons -->
-      <nav class="mt-7" aria-label="Primary links">
-        <ul class="space-y-3 list-none p-0 m-0">
+      <section class="relative mt-5 border-l-2 border-coral/75 pl-4 sm:mt-7 sm:pl-5">
+        <span class="mb-1.5 block text-[10px] font-bold uppercase tracking-[0.13em] text-coral-dark">LINK INDEX / 01</span>
+        <h1 aria-label="วันนี้คุณมาหาผมเรื่องไหนครับ?" class="font-display text-[27px] font-bold leading-[1.28] tracking-[-0.02em] text-navy sm:text-[34px]">วันนี้คุณมาหาผม<br class="sm:hidden" />เรื่องไหนครับ?</h1>
+        <span class="mt-1.5 block h-[5px] w-[124px] rotate-[-1deg] rounded-full bg-coral/80" aria-hidden="true"></span>
+      </section>
 
-          <!-- #1 1-on-1 consult · navy emphasis -->
+      <nav class="mt-5" aria-label="เส้นทางหลัก">
+        <ol class="m-0 list-none space-y-3 p-0">
           <li>
-            <a href="https://punnattapatch.com/intake-form?source=linkhub"
-               class="link-btn link-btn-navy"
-               data-track="intake">
-              <span class="btn-icon-wrap" aria-hidden="true">
-                <i data-lucide="calendar-check" class="w-[18px] h-[18px]" style="color: var(--navy);"></i>
-              </span>
-              <span class="flex-1 text-left min-w-0">
-                <span class="block btn-title">นัดคุยตัวต่อตัวกับผม</span>
-                <span class="block btn-sub">คุยโจทย์ทีมขายของคุณก่อน ว่าควรเริ่มแก้ตรงไหน</span>
-              </span>
-              <i data-lucide="arrow-up-right" class="w-[18px] h-[18px] btn-arrow flex-shrink-0" aria-hidden="true"></i>
+            <a href="https://lin.ee/ioSnSUG" target="_blank" rel="noopener me" data-primary-route data-link-event="line" data-link-target="line" data-link-platform="line" class="group relative flex min-h-[100px] touch-manipulation items-center gap-3.5 rounded-[15px] border border-[#001f3d] bg-navy px-4 py-3.5 text-paper no-underline shadow-[4px_5px_0_rgba(221,65,85,0.28)] transition-[transform,box-shadow,background-color] duration-150 ease-out hover:-translate-y-0.5 hover:bg-[#0b355b] hover:shadow-[5px_7px_0_rgba(221,65,85,0.32)] active:translate-y-0.5 active:scale-[0.988] active:shadow-[1px_2px_0_rgba(221,65,85,0.25)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-coral">
+              <span class="grid size-11 shrink-0 place-items-center rounded-[11px] bg-line text-[11px] font-extrabold text-[#052c18]" aria-hidden="true">LINE</span>
+              <span class="min-w-0 flex-1"><span class="block text-[18px] font-bold leading-tight sm:text-[19px]">สอบถามหรือจองคิว</span><span class="mt-1.5 block text-[12.5px] leading-[1.45] text-paper/72">ทัก LINE เล่าโจทย์คร่าวๆ ได้เลย</span></span>
+              <svg viewBox="0 0 24 24" class="size-5 shrink-0 text-paper/85" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+              <span class="absolute -left-2.5 -top-2 rotate-[-5deg] border border-coral-dark bg-coral-dark px-2 py-0.5 text-[9px] font-bold tracking-[0.08em] text-white shadow-[1px_2px_0_rgba(30,27,22,0.12)]">01 · ทางลัด</span>
             </a>
           </li>
-
-          <!-- #2 Daruma Framework -->
           <li>
-            <a href="https://punnattapatch.com/daruma"
-               class="link-btn link-btn-daruma"
-               data-track="daruma">
-              <span class="btn-icon-wrap" aria-hidden="true">
-                <i data-lucide="circle-dot" class="w-[18px] h-[18px]" style="color: var(--coral);"></i>
-              </span>
-              <span class="flex-1 text-left min-w-0">
-                <span class="block btn-title">รู้จัก Daruma Framework</span>
-                <span class="block btn-sub">เลิกขายแบบพึ่งดวง — ระบบปั้นทีมขาย × AI Agent ที่ผมใช้กับลูกค้าจริง</span>
-              </span>
-              <i data-lucide="arrow-up-right" class="w-[18px] h-[18px] btn-arrow flex-shrink-0" aria-hidden="true"></i>
+            <a href="https://punnattapatch.com/services" data-primary-route data-link-event="services" data-link-target="services" data-link-platform="services" class="paper-route group">
+              <span class="grid size-11 shrink-0 place-items-center rounded-[11px] border border-navy/20 bg-sand text-navy" aria-hidden="true"><svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+              <span class="min-w-0 flex-1"><span class="block text-[16px] font-bold leading-[1.3] sm:text-[18px]">ดูบริการที่ปรึกษาหรือจัดอบรม ทั้งหมด</span><span class="mt-1.5 block text-[12.5px] leading-[1.45] text-[#6f685e]">เลือกจากโจทย์จริงของทีมและองค์กร</span></span>
+              <svg viewBox="0 0 24 24" class="size-5 shrink-0 text-navy/65" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+              <span class="absolute -left-2 top-3 font-display text-[11px] font-bold text-coral-dark" aria-hidden="true">02</span>
             </a>
           </li>
-
-          <!-- #3 In-house · AI สำหรับงานหลังบ้าน / ทีมขาย · coral PRIMARY hero -->
-          <li style="margin-top: 26px;">
-            <a href="https://punnattapatch.com/inhouse?utm_source=tiktok&utm_medium=bio&utm_campaign=ai-agent-viral"
-               class="link-btn link-btn-coral"
-               data-track="inhouse">
-              <span class="card-bubble">ปูพื้นฐานสร้าง AI Agent สำหรับองค์กร</span>
-              <span class="btn-icon-wrap" aria-hidden="true">
-                <i data-lucide="graduation-cap" class="w-5 h-5" style="color: #fff;"></i>
-              </span>
-              <span class="flex-1 text-left min-w-0">
-                <span class="block btn-title">จัดอบรม AI Agent ให้ทีมขายและทั้งองค์กร</span>
-                <span class="block btn-sub">ลดงานซ้ำ ให้ทีมมีเวลาอยู่กับลูกค้าและงานที่ต้องใช้คน</span>
-              </span>
-              <i data-lucide="arrow-up-right" class="w-[18px] h-[18px] btn-arrow flex-shrink-0" aria-hidden="true"></i>
-            </a>
-          </li>
-
-          <!-- #4 Services -->
           <li>
-            <a href="https://punnattapatch.com/services"
-               class="link-btn"
-               data-track="services">
-              <span class="btn-icon-wrap" aria-hidden="true">
-                <i data-lucide="layout-grid" class="w-[18px] h-[18px]" style="color: var(--navy);"></i>
-              </span>
-              <span class="flex-1 text-left min-w-0">
-                <span class="block btn-title">ดูบริการปั้นทีมขาย × AI Agent</span>
-                <span class="block btn-sub">เริ่มจากโจทย์จริงของทีม แล้วเลือกเส้นทางที่เหมาะ</span>
-              </span>
-              <i data-lucide="arrow-up-right" class="w-[18px] h-[18px] btn-arrow flex-shrink-0" aria-hidden="true"></i>
+            <a href="https://punnattapatch.com/sponsor" data-primary-route data-link-event="sponsor" data-link-target="sponsor" data-link-platform="sponsor" class="paper-route group">
+              <span class="grid size-11 shrink-0 place-items-center rounded-[11px] border border-coral/25 bg-coral/10 text-coral-dark" aria-hidden="true"><svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17 2 2a2.8 2.8 0 0 0 4-4l-3.1-3.1"/><path d="m13 7-2-2a2.8 2.8 0 0 0-4 4l3.1 3.1"/><path d="m8 12 4-4"/><path d="m16 12-4 4"/></svg></span>
+              <span class="min-w-0 flex-1"><span class="block text-[17px] font-bold leading-tight sm:text-[18px]">ชวนไปร่วมงาน</span><span class="mt-1.5 block text-[11.5px] font-medium leading-[1.45] text-[#6f685e]">Sponsor · Partnership · Speaker</span></span>
+              <svg viewBox="0 0 24 24" class="size-5 shrink-0 text-navy/65" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+              <span class="absolute -left-2 top-3 font-display text-[11px] font-bold text-coral-dark" aria-hidden="true">03</span>
             </a>
           </li>
-
-          <!-- #4 Insights -->
-          <li>
-            <a href="https://punnattapatch.com/insights"
-               class="link-btn"
-               data-track="insights">
-              <span class="btn-icon-wrap" aria-hidden="true">
-                <i data-lucide="book-open" class="w-[18px] h-[18px]" style="color: var(--coral);"></i>
-              </span>
-              <span class="flex-1 text-left min-w-0">
-                <span class="block btn-title">บทเรียน 100 ล้าน</span>
-                <span class="block btn-sub">ประสบการณ์จริงสร้างทีมขาย B2B จาก ฿0 → ฿100M+</span>
-              </span>
-              <i data-lucide="arrow-up-right" class="w-[18px] h-[18px] btn-arrow flex-shrink-0" aria-hidden="true"></i>
-            </a>
-          </li>
-
-          <!-- #5 Sponsored · links to /sponsor form -->
-          <li>
-            <a href="https://punnattapatch.com/sponsor"
-               class="link-btn"
-               data-track="sponsored">
-              <span class="btn-icon-wrap" aria-hidden="true">
-                <i data-lucide="handshake" class="w-[18px] h-[18px]" style="color: var(--muted);"></i>
-              </span>
-              <span class="flex-1 text-left min-w-0">
-                <span class="block btn-title">ติดต่องาน Sponsored / Brand Collab</span>
-                <span class="block btn-sub">สำหรับแบรนด์ที่อยากร่วมงาน · ผมตอบกลับภายใน 48 ชม.</span>
-              </span>
-              <i data-lucide="arrow-up-right" class="w-[18px] h-[18px] btn-arrow flex-shrink-0" aria-hidden="true"></i>
-            </a>
-          </li>
-
-        </ul>
+        </ol>
       </nav>
 
-      <!-- Social row -->
-      <div class="flex items-center justify-center gap-3 mt-8" role="group" aria-label="Social profiles">
-        <a href="https://www.tiktok.com/@pun_nattapatch" class="social-icon" aria-label="TikTok @pun_nattapatch" data-track="tiktok" rel="me">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false">
-            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-.88-.05A6.33 6.33 0 0 0 5.34 20.3a6.34 6.34 0 0 0 10.86-4.43V9.1a8.16 8.16 0 0 0 4.77 1.52V7.19a4.85 4.85 0 0 1-1.38-.5z"/>
-          </svg>
-        </a>
-        <a href="https://www.instagram.com/pun_nattapatch" class="social-icon" aria-label="Instagram @pun_nattapatch" data-track="instagram" rel="me">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-          </svg>
-        </a>
-        <a href="https://lin.ee/ioSnSUG" class="social-icon" aria-label="LINE Official Account" data-track="line" rel="me">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false">
-            <path d="M19.365 9.89c.43 0 .779.35.779.778a.78.78 0 0 1-.779.778h-2.166v1.389h2.166c.43 0 .779.35.779.778a.78.78 0 0 1-.779.779H16.42a.779.779 0 0 1-.775-.779V8.11c0-.428.348-.779.779-.779h2.945c.43 0 .779.35.779.779a.78.78 0 0 1-.779.778h-2.167v1.002h2.167zM14.781 13.614a.775.775 0 0 1-.533.737.79.79 0 0 1-.244.038.767.767 0 0 1-.63-.313l-3.016-4.105v3.643a.777.777 0 0 1-.778.777.78.78 0 0 1-.78-.777V8.111c0-.334.215-.628.531-.732.08-.025.164-.04.247-.04.244 0 .474.115.618.313l3.04 4.11V8.11c0-.428.347-.779.778-.779.43 0 .778.35.778.779v5.503h-.011zM7.701 14.392a.78.78 0 0 1-.778.777.78.78 0 0 1-.778-.777V8.111c0-.428.352-.779.778-.779.428 0 .778.351.778.779v6.281zM5.262 14.392H2.32a.783.783 0 0 1-.778-.779v-5.5c0-.43.352-.781.778-.781.43 0 .779.35.779.779v4.723h2.164c.43 0 .778.351.778.779 0 .426-.349.779-.778.779M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
-          </svg>
-        </a>
-      </div>
+      <section data-trust-section class="mt-6 rounded-[18px] border border-[#bdb5a6] bg-sheet p-4 shadow-[4px_5px_0_rgba(30,27,22,0.08)]" aria-labelledby="trust-heading">
+        <div class="flex items-end justify-between gap-3">
+          <div><span class="block text-[9.5px] font-bold uppercase tracking-[0.13em] text-coral-dark">TRUST / FROM THE FIELD</span><h2 id="trust-heading" class="mt-1 font-display text-[20px] font-bold leading-tight text-navy sm:text-[22px]">เคยทำงานร่วมกับทีมเหล่านี้</h2></div>
+          <span class="shrink-0 rotate-[2deg] border border-coral-dark bg-coral-dark px-2 py-1 text-[9px] font-bold text-white">ภาพจริง</span>
+        </div>
+        <div class="mt-3 grid h-[212px] grid-cols-[1.04fr_1fr] grid-rows-2 gap-2 overflow-hidden rounded-[13px] border border-[#c9c2b2] bg-sand p-2 sm:h-[250px]">
+          <figure class="row-span-2 overflow-hidden rounded-[9px] bg-[#dfe3ea]"><img data-trust-photo src="/link/ceo-photo-shoot-1-pun-nattapatch.webp" alt="ปัน ณัฐพัชร์" width="900" height="1350" loading="lazy" decoding="async" class="size-full object-cover object-[50%_24%]" /></figure>
+          <figure class="overflow-hidden rounded-[9px] bg-sand"><img data-trust-photo src="/testimonial/web/class-selfie.jpg" alt="ภาพกิจกรรมอบรมกับทีมลูกค้า" width="1080" height="1080" loading="lazy" decoding="async" class="size-full object-cover" /></figure>
+          <figure class="overflow-hidden rounded-[9px] bg-sand"><img data-trust-photo src="/lp/inhouse/hands-on.jpg" alt="ภาพกิจกรรมลงมือทำกับทีมลูกค้า" width="1600" height="1200" loading="lazy" decoding="async" class="size-full object-cover" /></figure>
+        </div>
+        <div class="mt-2.5 flex min-h-11 items-center justify-between gap-3">
+          <p class="text-[11.5px] leading-relaxed text-[#6f685e]">ภาพจากคลาสและการทำงานหน้างานจริง</p>
+          <button type="button" data-logo-toggle aria-controls="client-logo-carousel" aria-label="หยุดการเลื่อนโลโก้อัตโนมัติ" aria-pressed="false" class="min-h-11 shrink-0 touch-manipulation rounded-[9px] border border-[#bdb5a6] bg-paper px-3 text-[11px] font-semibold text-navy transition-colors duration-150 hover:bg-sand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral">หยุด</button>
+        </div>
 
-      <!-- Micro-proof footer -->
-      <footer class="mt-6 text-center">
-        <p class="micro-proof">
-          2.29M views · ฿100M+ มูลค่าธุรกิจลูกค้า · 10+ clients ต่อเนื่อง
-        </p>
-      </footer>
+        <div id="client-logo-carousel" data-logo-viewport class="trust-marquee mt-3" aria-label="รายชื่อลูกค้าบางส่วน">
+          <div class="trust-track" data-logo-track>
+            <div class="logo-run">
+              <div class="logo-tile"><img src="/logos/clients/futureskill.png" alt="FutureSkill" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/nissan.png" alt="Nissan" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/ving.png" alt="Ving" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/gpx.jpg" alt="GPX" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/zontes.png" alt="Zontes" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/lambretta.png" alt="Lambretta" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/royal-enfield.jpg" alt="Royal Enfield" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/scenery-farm.jpeg" alt="Scenery Farm" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/home-plus.png" alt="Home Plus" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/ud-clinic.jpg" alt="UD Clinic" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/nsscrap.avif" alt="NSS Scrap" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/farevefarm.jpg" alt="Fareve Farm" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/farmsuk.jpg" alt="FarmSuk" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/business-boy.jpg" alt="Business Boy" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/aes.jpg" alt="AES" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/hfc-healthfoods.png" alt="HFC Healthfoods" loading="lazy" decoding="async" /></div>
+            </div>
+            <div class="logo-run marquee-copy" aria-hidden="true">
+              <div class="logo-tile"><img src="/logos/clients/futureskill.png" alt="" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/nissan.png" alt="" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/ving.png" alt="" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/gpx.jpg" alt="" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/zontes.png" alt="" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/lambretta.png" alt="" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/royal-enfield.jpg" alt="" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/scenery-farm.jpeg" alt="" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/home-plus.png" alt="" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/ud-clinic.jpg" alt="" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/nsscrap.avif" alt="" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/farevefarm.jpg" alt="" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/farmsuk.jpg" alt="" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/business-boy.jpg" alt="" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/aes.jpg" alt="" loading="lazy" decoding="async" /></div>
+              <div class="logo-tile"><img src="/logos/clients/hfc-healthfoods.png" alt="" loading="lazy" decoding="async" /></div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-    </div>
-  </main>
+      <section data-social-section class="mt-5 rounded-[17px] border border-[#001f3d] bg-navy px-4 pb-4 pt-3.5 text-paper shadow-[4px_5px_0_rgba(221,65,85,0.24)]" aria-labelledby="social-heading">
+        <div class="mb-3 flex items-center gap-3"><span class="h-px w-7 bg-coral" aria-hidden="true"></span><h2 id="social-heading" class="font-display text-[16px] font-semibold leading-tight sm:text-[17px]">ติดตามผลงานต่างๆได้ทาง</h2></div>
+        <div class="grid grid-cols-3 gap-2.5" role="group" aria-label="Social profiles">
+          <a href="https://www.tiktok.com/@pun_nattapatch" target="_blank" rel="noopener me" data-social-link data-link-event="tiktok" data-link-target="social" data-link-platform="tiktok" class="social-link" aria-label="TikTok @pun_nattapatch"><svg viewBox="0 0 24 24" class="size-[21px]" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-.88-.05A6.33 6.33 0 0 0 5.34 20.3a6.34 6.34 0 0 0 10.86-4.43V9.1a8.16 8.16 0 0 0 4.77 1.52V7.19a4.85 4.85 0 0 1-1.38-.5z"/></svg><span class="text-[11.5px] font-semibold">TikTok</span></a>
+          <a href="https://www.instagram.com/pun_nattapatch" target="_blank" rel="noopener me" data-social-link data-link-event="instagram" data-link-target="social" data-link-platform="instagram" class="social-link" aria-label="Instagram @pun_nattapatch"><svg viewBox="0 0 24 24" class="size-[21px]" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg><span class="text-[11.5px] font-semibold">Instagram</span></a>
+          <a href="https://www.facebook.com/profile.php?id=61584893736763" target="_blank" rel="noopener me" data-social-link data-link-event="facebook" data-link-target="social" data-link-platform="facebook" class="social-link" aria-label="Facebook ปัน ณัฐพัชร์"><svg viewBox="0 0 24 24" class="size-[21px]" fill="currentColor" aria-hidden="true"><path d="M14 8.5V6.8c0-.8.5-1 1-1h2.5V2.1L14.1 2C10.7 2 9.5 4 9.5 6.4v2.1H7v4h2.5V22H14v-9.5h3.1l.5-4H14Z"/></svg><span class="text-[11.5px] font-semibold">Facebook</span></a>
+        </div>
+      </section>
+      <footer class="mt-auto pt-4 text-center"><p class="text-[9px] font-bold uppercase tracking-[0.16em] text-[#8a8175]">PUNNATTAPATCH.COM · BANGKOK</p></footer>
+    </main>
 
-  <script>
-    // Lucide icons
-    if (window.lucide) { lucide.createIcons(); }
-
-    // Plausible custom events per link
-    (function () {
-      var links = document.querySelectorAll('[data-track]');
-      links.forEach(function (el) {
-        el.addEventListener('click', function () {
-          var target = el.getAttribute('data-track');
-          if (window.plausible) {
-            window.plausible('Link Click', { props: { target: target } });
+    <script>
+      (function captureAttribution() {
+        const ATTR_KEY = 'pn_attribution';
+        const TTL_DAYS = 14;
+        const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+        const CLICK_ID_KEYS = ['fbclid', 'ttclid'];
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const now = Date.now();
+          let stored = null;
+          try {
+            const raw = localStorage.getItem(ATTR_KEY);
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              if (parsed && parsed.expires > now) stored = parsed;
+            }
+          } catch {}
+          const fromUrl = {};
+          [...UTM_KEYS, ...CLICK_ID_KEYS].forEach((key) => {
+            const value = params.get(key);
+            if (value) fromUrl[key] = value;
+          });
+          let attribution;
+          if (Object.keys(fromUrl).length > 0) {
+            attribution = {
+              ...fromUrl,
+              landing_page: window.location.pathname,
+              first_seen: (stored && stored.first_seen) || new Date().toISOString(),
+              last_seen: new Date().toISOString(),
+              expires: now + TTL_DAYS * 24 * 60 * 60 * 1000,
+            };
+            try { localStorage.setItem(ATTR_KEY, JSON.stringify(attribution)); } catch {}
+          } else {
+            attribution = stored || {};
           }
-        });
-      });
-    })();
+          window.pnAttribution = attribution;
+        } catch {}
+      })();
 
-  </script>
-</body>
+      (function trackRouteClicks() {
+        const eventNames = { line: 'link_line_click', services: 'link_services_click', sponsor: 'link_sponsor_click', tiktok: 'link_social_click', instagram: 'link_social_click', facebook: 'link_social_click' };
+        function sourceName() {
+          const current = new URLSearchParams(window.location.search).get('utm_source');
+          if (current) return current;
+          if (window.pnAttribution && window.pnAttribution.utm_source) return window.pnAttribution.utm_source;
+          try {
+            const host = new URL(document.referrer).hostname.toLowerCase();
+            if (host.includes('tiktok')) return 'tiktok';
+            if (host.includes('instagram')) return 'instagram';
+            if (host.includes('facebook') || host.includes('fb.com')) return 'facebook';
+          } catch {}
+          return 'direct';
+        }
+        document.addEventListener('click', function (event) {
+          const target = event.target;
+          if (!(target instanceof Element)) return;
+          const link = target.closest('[data-link-event]');
+          if (!link) return;
+          const key = link.dataset.linkEvent;
+          const props = { target: link.dataset.linkTarget, platform: link.dataset.linkPlatform, source: sourceName(), path: window.location.pathname };
+          try { window.plausible(eventNames[key], { props }); } catch {}
+          try { window.plausible('Link Click', { props }); } catch {}
+        });
+      })();
+
+      (function walkLogos() {
+        const LOGO_GAP = 12;
+        const ADVANCE_MS = 2800;
+        const TRANSITION_MS = 360;
+        const logoViewport = document.querySelector('[data-logo-viewport]');
+        const logoTrack = document.querySelector('[data-logo-track]');
+        const logoToggle = document.querySelector('[data-logo-toggle]');
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const originalLogos = logoTrack ? logoTrack.querySelectorAll('.logo-run:first-child .logo-tile') : [];
+        let logoIndex = 0;
+        let logoTimer = null;
+        let logoIntersecting = false;
+        let logoPaused = false;
+        function sizeLogoTiles() {
+          if (!logoViewport || !logoTrack) return;
+          const columns = window.innerWidth >= 430 ? 3 : 2;
+          const tileWidth = (logoViewport.clientWidth - LOGO_GAP * (columns - 1)) / columns;
+          logoTrack.querySelectorAll('.logo-tile').forEach((tile) => { tile.style.width = `${tileWidth}px`; });
+          logoIndex = 0;
+          logoTrack.style.transition = 'none';
+          logoTrack.style.transform = 'translate3d(0, 0, 0)';
+        }
+        function advanceLogos() {
+          if (!originalLogos.length || document.hidden || !logoIntersecting) return;
+          const step = originalLogos[0].getBoundingClientRect().width + LOGO_GAP;
+          logoIndex += 1;
+          logoTrack.style.transition = `transform ${TRANSITION_MS}ms cubic-bezier(0.2, 0.8, 0.2, 1)`;
+          logoTrack.style.transform = `translate3d(${-step * logoIndex}px, 0, 0)`;
+          if (logoIndex >= originalLogos.length) {
+            window.setTimeout(() => {
+              logoIndex = 0;
+              logoTrack.style.transition = 'none';
+              logoTrack.style.transform = 'translate3d(0, 0, 0)';
+            }, TRANSITION_MS + 20);
+          }
+        }
+        function startLogoWalk() {
+          if (!logoTimer && !logoPaused && !reduceMotion.matches && logoIntersecting && !document.hidden) logoTimer = window.setInterval(advanceLogos, ADVANCE_MS);
+        }
+        function stopLogoWalk() {
+          if (logoTimer) window.clearInterval(logoTimer);
+          logoTimer = null;
+        }
+        if (!logoViewport || !logoTrack) return;
+        sizeLogoTiles();
+        window.addEventListener('resize', sizeLogoTiles, { passive: true });
+        logoToggle?.addEventListener('click', () => {
+          logoPaused = !logoPaused;
+          logoToggle.setAttribute('aria-pressed', String(logoPaused));
+          logoToggle.textContent = logoPaused ? 'เล่นต่อ' : 'หยุด';
+          if (logoPaused) stopLogoWalk(); else startLogoWalk();
+        });
+        if (!reduceMotion.matches && 'IntersectionObserver' in window) {
+          const observer = new IntersectionObserver(([entry]) => {
+            logoIntersecting = entry.isIntersecting;
+            if (logoIntersecting) startLogoWalk(); else stopLogoWalk();
+          }, { threshold: 0.05 });
+          observer.observe(logoViewport);
+          document.addEventListener('visibilitychange', () => {
+            if (document.hidden) stopLogoWalk(); else if (logoIntersecting) startLogoWalk();
+          });
+        }
+      })();
+    </script>
+  </body>
 </html>
