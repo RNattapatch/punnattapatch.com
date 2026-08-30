@@ -19,7 +19,7 @@ export const I1_PRODUCT_DETAIL: ProductDetailPageData = {
       image: { publicSrc: '/proof/01-command-center.jpg', width: 1400, height: 692 },
       alt: 'หน้าจอ Command Center ที่ปิดข้อมูลส่วนบุคคล แสดงรายการที่ผู้จัดการต้องติดตาม',
       label: 'System receipt',
-      caption: 'Command Center ที่ใช้ดูงานที่ต้องตามและจุดที่ Manager ต้องเข้าไปช่วย',
+      caption: 'Command Center ที่ใช้ดูงานที่ต้องตามและจุดที่ Manager ต้องเข้าไปช่วย', fit: 'contain',
     },
   },
   authority: [
@@ -91,7 +91,7 @@ export const I1_PRODUCT_DETAIL: ProductDetailPageData = {
     'Manager intervention rules และ Operating rhythm',
     'UAT checklist, Test log และ Acceptance sign-off',
     'คู่มือผู้ใช้และคู่มือ Admin',
-    'Handover package และการดูแลหลังส่งมอบตาม Catalog',
+    'Handover package และการดูแลหลังส่งมอบในช่วง Support ที่ตกลง',
   ],
   fit: [
     'Owner หรือ Manager ที่รวม Report หรือ Excel เองทุกวันหรือทุกสัปดาห์',
@@ -109,10 +109,10 @@ export const I1_PRODUCT_DETAIL: ProductDetailPageData = {
   ],
   investment: {
     included: [
-      'Design, Build, UAT และ Training ตามระยะเวลาจาก Catalog',
+      'Design, Build, UAT และ Training ตาม Scope และช่วงเวลาที่ระบุใน Proposal',
       'Deliverables ภายใน Starter Scope ที่ระบุใน Proposal',
       'User/Admin guide และ Handover',
-      'ดูแล Issue ภายใน Scope ตามระยะเวลาที่ Catalog ระบุ',
+      'ดูแล Issue ภายใน Scope ในช่วง Support ที่ตกลง',
       'ใบเสนอราคาและใบกำกับภาษีสำหรับบริษัท',
     ],
     terms: 'ชำระค่าบริการ 100% ก่อนเริ่มงาน วันเริ่มและรอบ UAT จะล็อกหลังยืนยัน Scope, ผู้รับผิดชอบ และข้อมูลทดสอบ',
@@ -149,10 +149,10 @@ export const I1_PRODUCT_DETAIL: ProductDetailPageData = {
   },
   sections: {
     authority: { heading: 'ผมเอาระบบที่ใช้จริงมาให้ดู ก่อนพูดถึงสิ่งที่จะสร้าง', copy: 'Dashboard สวยไม่ได้แปลว่าบริหารทีมง่ายครับ ของที่ใช้จริงต้องย้อนกลับได้ว่าตัวเลขมาจากข้อมูลไหน แยกข้อมูลไม่ครบได้ และบอกคนดูว่าต้องทำอะไรต่อ ไม่งั้นมันเป็นเพียงจอรายงานอีกจอที่เปิดปลายเดือน' },
-    proof: { heading: 'หน้าจอด้านล่างคือระบบจริง ไม่ใช่ภาพประกอบขายงาน', intro: 'ทุกภาพใช้ชุดข้อมูลที่ปิดข้อมูลส่วนบุคคลแล้ว และคำอธิบายบอกเฉพาะสิ่งที่มองเห็นจากระบบ', secondaryHeading: 'Automation และ UAT ที่มีคนรับช่วงต่อ' },
+    proof: { heading: 'หน้าจอด้านล่างคือระบบจริง ไม่ใช่ภาพประกอบขายงาน', intro: 'ทุกภาพใช้ชุดข้อมูลที่ปิดข้อมูลส่วนบุคคลแล้ว และคำอธิบายบอกเฉพาะสิ่งที่มองเห็นจากระบบ', secondaryHeading: 'Automation และ UAT ที่มีคนรับช่วงต่อ', imageLoading: 'lazy' },
     pain: { heading: 'ระบบหลังบ้านกำลังทำให้ Manager กลายเป็นคนรวมข้อมูลอยู่หรือเปล่า', close: 'คนในทีมไม่ได้อยากกรอกข้อมูลไม่ครบครับ ส่วนใหญ่ฟอร์มยาวเกินไป นิยามไม่ตรงกัน หรือกรอกแล้วไม่เห็นว่าข้อมูลนั้นช่วยให้งานตัวเองง่ายขึ้นยังไง ระบบจึงต้องออกแบบทั้งจอและกติกาการใช้ไปพร้อมกัน' },
     reasons: { heading: 'ระบบถือว่าส่งมอบ เมื่อคนใช้ทำงานหลักผ่าน' },
-    scope: { heading: 'Starter flow: Map/Design → Build/Test → UAT/Train', intro: 'ขอบเขตสุดท้ายยึด Proposal ของบริษัทคุณ แต่ Starter flow ใช้สามช่วงนี้เป็นแกน', ctaHeading: 'อยากรู้ว่า Report ที่ใช้อยู่ตอนนี้แปลงเป็น Starter Scope ได้หรือยัง?', supportDurationLead: 'หลังส่งมอบ ทีมผมดูแล Issue และคำถามภายใน Scope ตามระยะเวลาจาก Catalog:' },
+    scope: { heading: 'Starter flow: Map/Design → Build/Test → UAT/Train', intro: 'ขอบเขตสุดท้ายยึด Proposal ของบริษัทคุณ แต่ Starter flow ใช้สามช่วงนี้เป็นแกน', ctaHeading: 'อยากรู้ว่า Report ที่ใช้อยู่ตอนนี้แปลงเป็น Starter Scope ได้หรือยัง?', supportDurationLead: 'หลังส่งมอบ ทีมผมดูแล Issue และคำถามภายใน Scope ตลอดช่วง support:' },
     takeHome: { heading: 'สิ่งที่บริษัทได้รับเมื่อผ่าน UAT', close: 'ระบบต้องระบุ Owner, Stage และ Next action ได้ แยกข้อมูลไม่ครบได้ Export ใช้ต่อได้ และย้อนกลับไปหา Source ได้ตามขอบเขตที่ตกลงกันครับ' },
     fit: { heading: 'เหมาะกับบริษัทที่มีงานจริงให้ระบบรับช่วง และมีคนเป็นเจ้าของข้อมูล' },
     bio: { eyebrow: 'System builder', heading: 'ผมสร้างจากมุมคนที่ต้องเปิดระบบใช้เองทุกวัน' },

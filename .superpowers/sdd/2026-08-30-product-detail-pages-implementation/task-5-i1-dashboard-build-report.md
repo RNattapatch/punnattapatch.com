@@ -61,6 +61,8 @@ The five assets were visually inspected in the contact sheet. Names, values, and
 - `src/components/services/detail/ProductHero.astro`
 - `src/components/services/detail/ProductDetailLayout.astro`
 - `src/components/services/detail/ScopeTimeline.astro`
+- `src/components/services/detail/DetailLineCTA.astro`
+- `src/components/services/detail/ProofWall.astro`
 - `tests/product-details.spec.ts`
 
 ## Verification
@@ -88,10 +90,10 @@ git diff --check
 Ran the AI-language structure measure on `src/data/product-details/i1.ts` after the final copy:
 
 - Concrete-detail density: `6.85` per 1,000 Thai characters (threshold `≥2.0`).
-- Empty 1,000-character window: `0` (the S3c warning does not apply).
+- Empty 1,000-character window: `0`; this is the S3c YELLOW condition under the current rule book. It does not create a structural RED because density is `6.85`, named tools/data references are present, and the empty window occurs in explanatory service copy rather than a fabricated claim.
 - Theme-closer (S1): `0`; embodied-emotion (S2): `0`.
 - Manual RED-family review found no repeated negative parallelism inside a unit, significance inflation, banned AI-language clusters, false urgency, generic transformation positioning, authoring placeholders, or unsupported commercial outcomes.
-- Manual structural review: S3a/S3b pass; S1, S4, S5, and S6 do not produce a structural RED for this declared 13-block service page. No YELLOW finding needs a copy change.
+- Manual structural review: S3a/S3b pass; S1, S4, S5, and S6 do not produce a structural RED for this declared 13-block service page. S3c is recorded as a deliberate YELLOW only.
 
 ## Visual QA artifacts
 
@@ -100,7 +102,15 @@ Ran the AI-language structure measure on `src/data/product-details/i1.ts` after 
 - `screenshots/i1-dashboard-build-mobile-full.png` — 390×14806
 - `screenshots/i1-proof-redaction-contact-sheet.png` — 1400×1320, the exact approved five assets
 
-Each page capture was made after fonts were ready and the proof section was walked to trigger lazy images. Visual inspection found no horizontal overflow or floating-CTA obstruction at 1440, 768, or 390 pixels; the browser contract separately checks these conditions for every in-flow I1 CTA.
+Each page capture was made after fonts were ready; the I1 proof section was walked so the five intentionally lazy-loaded proof assets could decode before capture. Visual inspection found no horizontal overflow or floating-CTA obstruction at 1440, 768, or 390 pixels; the browser contract separately checks these conditions for every in-flow I1 CTA.
+
+## Review round 1 remediation
+
+- Removed all four customer-visible `Catalog` references and renamed the rendered support-duration data attribute, while the duration continues to resolve from `daruma-starter` through the typed shared component.
+- Added a public text/HTML ban on `Catalog`; the browser contract now catches authoring vocabulary even when it appears in a rendered attribute.
+- Changed shared in-flow LINE CTA text to navy `#072B4E` on retained LINE green `#06C755`: default contrast is `6.36:1`, hover `#05ad49` is `4.83:1`, and the focus treatment uses the same navy outline. Browser assertions check default, hover, and focus contrast.
+- I1 Hero uses `object-contain` with its native ratio, so the approved Command Center receipt is not cropped. The Hero remains the sole eager/high-priority I1 proof.
+- Added I1-only proof loading policy: all five below-fold proof assets render with `loading="lazy"`; T2/C1 retain their previous loading behavior and are covered by the full regression suite.
 
 ## Scope preserved
 

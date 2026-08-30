@@ -42,6 +42,16 @@ function schemas(html: string) {
     .flatMap((match) => JSON.parse(match[1])['@graph'] ?? []);
 }
 
+function lineContrastRatio(foreground: string, background: string) {
+  const channels = (color: string) => (color.match(/\d+(?:\.\d+)?/g) ?? []).slice(0, 3).map(Number);
+  const luminance = (color: string) => channels(color)
+    .map((channel) => channel / 255)
+    .map((channel) => channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4)
+    .reduce((total, channel, index) => total + channel * [0.2126, 0.7152, 0.0722][index], 0);
+  const [lighter, darker] = [luminance(foreground), luminance(background)].sort((a, b) => b - a);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
 test('detail fixtures render all blocks with Catalog values, accessible FAQs, tracking CTAs, and typed schemas', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   const courseResponse = await page.goto(`${baseURL}/services/detail-fixture`);
@@ -106,7 +116,9 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   }
   for (const location of ['hero', 'final']) {
     const secondaryAction = page.locator(`[data-cta-location="${location}"][data-contact-cta]`).nth(1);
-    assert.equal(await secondaryAction.evaluate((element) => getComputedStyle(element).color), 'rgb(255, 255, 255)', `${location} secondary LINE CTA must remain legible on navy`);
+    const style = await secondaryAction.evaluate((element) => ({ color: getComputedStyle(element).color, background: getComputedStyle(element).backgroundColor }));
+    assert.equal(style.color, 'rgb(7, 43, 78)', `${location} secondary LINE CTA must use the AA-safe navy foreground`);
+    assert.ok(lineContrastRatio(style.color, style.background) >= 4.5, `${location} secondary LINE CTA must maintain AA text contrast`);
   }
   const lineActions = page.locator('[data-contact-cta]');
   for (const action of await lineActions.all()) assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'all detail actions must use SITE.social.line');
@@ -417,6 +429,7 @@ test('I1 dashboard build presents bounded implementation evidence, handover, and
   const heroReceipt = page.locator('[data-hero-activity] img');
   assert.equal(await heroReceipt.count(), 1, 'I1 Hero must lead with a real system receipt rather than a generic thumbnail');
   assert.match(await heroReceipt.getAttribute('src') ?? '', /\/proof\/01-command-center\.jpg/, 'I1 Hero receipt must use the approved Command Center evidence');
+  assert.equal(await heroReceipt.evaluate((image) => getComputedStyle(image).objectFit), 'contain', 'I1 Hero must show the complete system receipt without object-cover cropping');
   assert.deepEqual(
     await page.locator('[data-detail-block="scope"] [data-scope-item] > p:first-child').allTextContents(),
     ['Map/Design', 'Build/Test', 'UAT/Train'],
@@ -457,6 +470,7 @@ test('I1 dashboard build presents bounded implementation evidence, handover, and
     assert.ok(await image.getAttribute('alt'), `${proofId} must have descriptive alt text`);
     assert.ok(await image.getAttribute('width'), `${proofId} must declare width`);
     assert.ok(await image.getAttribute('height'), `${proofId} must declare height`);
+    assert.equal(await image.getAttribute('loading'), 'lazy', `${proofId} must defer below-fold proof loading; only the Hero receipt may be eager`);
     assert.ok(await image.evaluate((element: HTMLImageElement) => element.naturalWidth > 0), `${proofId} image must load`);
   }
   const proofText = await page.locator('[data-detail-block="proof"]').innerText();
@@ -482,10 +496,24 @@ test('I1 dashboard build presents bounded implementation evidence, handover, and
   for (const action of await ctas.all()) {
     assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'every I1 CTA must open SITE.social.line');
     assert.equal(await action.getAttribute('data-cta-keyword'), 'DASHBOARD', 'every I1 CTA must carry the DASHBOARD keyword');
+    const style = await action.evaluate((element) => ({ color: getComputedStyle(element).color, background: getComputedStyle(element).backgroundColor }));
+    assert.equal(style.color, 'rgb(7, 43, 78)', 'every in-flow LINE CTA must use the AA-safe navy foreground');
+    assert.equal(style.background, 'rgb(6, 199, 85)', 'every in-flow LINE CTA must retain LINE green');
+    assert.ok(lineContrastRatio(style.color, style.background) >= 4.5, 'every in-flow LINE CTA must pass AA contrast in its default state');
   }
+  await ctas.first().hover();
+  await page.waitForTimeout(250);
+  const hoverStyle = await ctas.first().evaluate((element) => ({ color: getComputedStyle(element).color, background: getComputedStyle(element).backgroundColor }));
+  assert.equal(hoverStyle.background, 'rgb(5, 173, 73)', 'LINE CTA hover state must retain the approved green family');
+  assert.ok(lineContrastRatio(hoverStyle.color, hoverStyle.background) >= 4.5, 'LINE CTA hover state must retain AA text contrast');
+  await ctas.first().focus();
+  const focusStyle = await ctas.first().evaluate((element) => ({ color: getComputedStyle(element).color, background: getComputedStyle(element).backgroundColor }));
+  assert.ok(lineContrastRatio(focusStyle.color, focusStyle.background) >= 4.5, 'LINE CTA focus state must retain AA text contrast');
 
   const html = await page.content();
-  assert.doesNotMatch(html, /outline-daruma-starter\.pdf|Rendering note|Asset notes|07-docbot-pdf|ที่นั่งเหลือ|Early Bird|unlimited changes|ไม่จำกัด.*แก้/i, 'I1 must not expose stale assets, authoring notes, false urgency, or unlimited changes');
+  const publicText = await page.locator('#main').innerText();
+  assert.doesNotMatch(publicText, /Catalog/i, 'I1 must not expose Catalog authoring placeholders in public text');
+  assert.doesNotMatch(html, /Catalog|outline-daruma-starter\.pdf|Rendering note|Asset notes|07-docbot-pdf|ที่นั่งเหลือ|Early Bird|unlimited changes|ไม่จำกัด.*แก้/i, 'I1 must not expose Catalog authoring notes, stale assets, false urgency, or unlimited changes');
   const serviceSchema = schemas(html).find((item) => item['@type'] === 'Service');
   assert.equal(serviceSchema?.name, catalog.name, 'I1 Service schema name must resolve from Catalog');
   assert.equal(serviceSchema?.url, 'https://punnattapatch.com/services/dashboard-build', 'I1 Service schema must use the canonical route');
