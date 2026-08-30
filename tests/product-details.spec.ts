@@ -335,18 +335,32 @@ test('C1 daily consulting is one service with four selectable primary-outcome tr
 
   assert.equal(await page.locator('[data-proof-id="c1-scenery-room"]').count(), 1, 'C1 must show inspectable Scenery work proof');
   assert.equal(await page.locator('[data-proof-id="c1-hfc-journey"]').count(), 1, 'C1 must show the approved HFC training-to-consult proof');
-  const systemReceipt = page.locator('[data-proof-id="c1-system-receipt"]');
-  assert.equal(await systemReceipt.count(), 1, 'C1 must show one approved redacted system receipt');
-  assert.equal(await systemReceipt.locator('figcaption').innerText(), 'ผมสร้างระบบใช้เองและทำงานกับของจริง จึงรู้ว่าข้อเสนอไหนทำได้ในวัน Consult และข้อเสนอไหนต้องมีขั้น Build, UAT และ Adoption แยก', 'C1 system receipt caption must state the bounded Build boundary');
+  assert.equal(await page.locator('[data-proof-id="c1-system-receipt"]').count(), 0, 'C1 must not repeat the Command Center as a small proof card');
+  const consultSystems = page.locator('[data-consult-proof-systems]');
+  assert.equal(await consultSystems.count(), 1, 'C1 must reuse the five-system proof experience in a consult-specific context');
+  assert.equal(await consultSystems.locator('[data-proof-system-card]').count(), 5, 'C1 must show all five systems that Pun uses in the business');
+  assert.equal(await consultSystems.locator('[data-consult-outcome]').count(), 5, 'C1 must make five owner-life outcomes glanceable before the full evidence');
+  assert.deepEqual(await consultSystems.locator('[data-consult-outcome]').evaluateAll((items) => items.map((item) => item.getAttribute('href'))), [
+    '#proof-system-command-center',
+    '#proof-system-doc-bot',
+    '#proof-system-night-scout',
+    '#proof-system-line-agent',
+    '#proof-system-news-desk',
+  ], 'each outcome preview must map directly to its full system receipt');
+  assert.match(await consultSystems.innerText(), /วัน Consult.*ไม่ได้สร้างทั้งห้าระบบ/, 'C1 must not imply that one consulting day includes five production builds');
+  assert.match(await consultSystems.innerText(), /เลือก.*จุดเริ่ม.*Blueprint/, 'C1 must connect the aspirational proof back to the consulting deliverable');
+  assert.equal(await consultSystems.locator('img').count(), 10, 'C1 must render every approved redacted receipt from the five-system SSOT');
+  assert.equal(await consultSystems.locator('img').evaluateAll((images) => images.every((image) => image.getAttribute('loading') === 'lazy')), true, 'the below-fold five-system proof must stay lazy-loaded');
   assert.equal(await page.getByText('“ปันคุยง่าย เข้าใจสิ่งที่ CEO ต้องการ และหาทางออกให้ได้”', { exact: true }).count(), 1, 'C1 must use the approved bounded client quote');
   assert.equal(await page.locator('[data-product-faq-button]').count(), 8, 'C1 must publish the approved eight FAQs');
   assert.equal(await page.locator('form').count(), 0, 'C1 detail page must not include a form');
   assert.equal(await page.locator('[data-floating-line]').count(), 1, 'C1 must retain exactly one global Floating LINE CTA');
   const ctas = page.locator('[data-product-code="C1"][data-contact-cta]');
-  assert.equal(await ctas.count(), 8, 'C1 must provide exactly four paired LINE CTA locations');
+  assert.equal(await ctas.count(), 9, 'C1 must provide four paired LINE CTA locations plus one system-proof fit CTA');
   assert.deepEqual(await ctas.evaluateAll((actions) => actions.map((action) => [action.getAttribute('data-cta-location'), action.getAttribute('data-cta-label')])), [
     ['hero', 'ทัก LINE จองวัน Consult'],
     ['hero', 'เล่าอาการให้ผมช่วยเลือก Track'],
+    ['after_systems', 'ทัก LINE ให้ผมช่วยเลือกจุดเริ่ม'],
     ['after_scope', 'ทัก LINE ให้ผมช่วยเลือก'],
     ['after_scope', 'ส่งรูป Report หรือเล่าอาการสั้นๆ'],
     ['after_investment', 'ทัก LINE จองวัน Consult'],
@@ -414,6 +428,82 @@ test('C1 daily consulting is one service with four selectable primary-outcome tr
   }
   assert.equal(await finalQr.isVisible(), false, 'mobile C1 must hide the desktop-only scan QR');
   assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “CONSULT” พร้อมอาการที่ทีมกำลังติด', { exact: true }).isVisible(), true, 'mobile C1 must show the tap instruction');
+  await page.close();
+});
+
+test('T3 teaches the team to design a sales back office prototype without promising an I1 production build', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const catalog = CATALOG['ai-workshop-advance'];
+  const response = await page.goto(`${baseURL}/services/t3-sales-back-office`);
+
+  assert.equal(response?.status(), 200, 'T3 canonical route must render');
+  assert.equal(await page.locator('h1').count(), 1, 'T3 must contain exactly one H1');
+  assert.equal(await page.locator('h1').innerText(), catalog.name, 'T3 H1 must resolve from the Catalog');
+  assert.equal(await page.getByText(catalog.duration, { exact: true }).count(), 1, 'T3 duration must resolve from the Catalog');
+  assert.equal(await page.getByText(fmtPrice('ai-workshop-advance'), { exact: true }).count(), 1, 'T3 price must resolve from the Catalog');
+
+  const scope = page.locator('[data-detail-block="scope"]');
+  const stages = scope.locator('[data-scope-item]');
+  assert.equal(await stages.count(), 4, 'T3 must render the four approved workshop stages');
+  assert.deepEqual(await stages.evaluateAll((items) => items.map((item) => item.getAttribute('data-scope-label'))), [
+    'ช่วงที่ 1 · สร้าง Sales Stage Dictionary',
+    'ช่วงที่ 2 · ออกแบบ Daily Report และ Follow-up List',
+    'ช่วงที่ 3 · ล็อกกติกา Manager และจังหวะ Review',
+    'ช่วงที่ 4 · ทำ Dashboard Prototype และ AI-assisted Summary',
+  ], 'T3 curriculum must preserve Stage → Report → Manager → Prototype order');
+  assert.match(await scope.innerText(), /T3 = ทีมคุณเรียนวิธีวางและทำ Prototype.*I1 = ทีมผม Build, UAT และสอนใช้จริง/s, 'T3/I1 distinction must sit next to the curriculum');
+  const investmentText = await page.locator('[data-detail-block="investment"]').innerText();
+  assert.match(investmentText, /T3 = ทีมคุณเรียนวิธีวางและทำ Prototype.*I1 = ทีมผม Build, UAT และสอนใช้จริง/s, 'T3/I1 distinction must repeat next to the price');
+  assert.equal(await page.locator('a[href="/services/dashboard-build"]').count(), 1, 'T3 must link to the live I1 production-build route');
+  assert.match(await page.locator('[data-detail-block="boundary"]').innerText(), /ทีมคุณเรียนวิธีวางและทำ Prototype เอง/, 'T3 boundary must promise learning and prototype work only');
+  assert.deepEqual(await stages.locator(':scope > p:last-child').allInnerTexts(), [
+    'Output: Sales stage dictionary + Required-field list',
+    'Output: Daily report template + Stale lead/Follow-up template',
+    'Output: Manager rules + Daily/weekly review rhythm',
+    'Output: Dashboard prototype + Workflow map + Human review checklist',
+  ], 'T3 curriculum outputs must stop at workshop templates and prototype');
+  assert.doesNotMatch(await page.locator('[data-detail-block="take-home"]').innerText(), /(?:UAT sign-off|Production handover|Working system)/, 'T3 take-home stack must not include I1 delivery artifacts');
+
+  assert.equal(await page.locator('[data-detail-block="proof"] img').count(), 5, 'T3 must show five approved report, dashboard, client, and adoption receipts');
+  assert.equal(await page.getByText('“อาจารย์ปันสอนถูกใจทีมงานมากครับ”', { exact: true }).count(), 1, 'T3 must retain the exact approved workshop receipt');
+  assert.equal(await page.locator('[data-product-faq-button]').count(), 8, 'T3 must publish the approved eight FAQs');
+  assert.equal(await page.locator('form').count(), 0, 'T3 detail page must not include a form');
+  assert.equal(await page.locator('[data-floating-line]').count(), 1, 'T3 must retain exactly one global Floating LINE CTA');
+  const ctas = page.locator('[data-product-code="T3"][data-contact-cta]');
+  assert.equal(await ctas.count(), 8, 'T3 must provide four paired LINE CTA locations');
+  assert.ok(await page.getByRole('link', { name: 'รับ Agent Builder Kit ทาง LINE', exact: true }).count() >= 1, 'T3 Agent Builder Kit CTA must use the real LINE flow');
+  for (const action of await ctas.all()) {
+    assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'every T3 CTA must open SITE.social.line');
+    assert.equal(await action.getAttribute('data-cta-keyword'), 'SALES REPORT', 'every T3 CTA must carry the SALES REPORT keyword');
+  }
+
+  const html = await page.content();
+  assert.doesNotMatch(html, /Rendering note|Asset notes|ตามระยะเวลาจาก Catalog|ตามเงื่อนไขใน Catalog/, 'T3 must not expose authoring labels or internal Catalog placeholders');
+  const courseSchema = schemas(html).find((item) => item['@type'] === 'Course');
+  assert.equal(courseSchema?.name, catalog.name, 'T3 Course schema name must resolve from Catalog');
+  assert.equal(courseSchema?.url, 'https://punnattapatch.com/services/t3-sales-back-office', 'T3 Course schema must use canonical route');
+  const faqSchema = schemas(html).find((item) => item['@type'] === 'FAQPage');
+  assert.deepEqual(
+    faqSchema?.mainEntity.map((item: { name: string; acceptedAnswer: { text: string } }) => [item.name, item.acceptedAnswer.text]),
+    await page.locator('[data-product-faq-button]').evaluateAll((buttons) => buttons.map((button) => [button.querySelector('span')?.textContent?.trim(), document.getElementById(button.getAttribute('aria-controls') || '')?.textContent?.trim()])),
+    'T3 FAQPage schema must exactly match the eight visible FAQ questions and answers',
+  );
+
+  for (const image of await page.locator('main img').all()) {
+    await image.scrollIntoViewIfNeeded();
+    await image.evaluate(async (element: HTMLImageElement) => {
+      if (element.complete) return element.naturalWidth;
+      return await new Promise<number>((resolve) => element.addEventListener('load', () => resolve(element.naturalWidth), { once: true }));
+    });
+    assert.ok(await image.evaluate((element: HTMLImageElement) => element.naturalWidth > 0), `T3 image must load: ${await image.getAttribute('src')}`);
+  }
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth === document.documentElement.clientWidth), true, 'desktop T3 must not overflow horizontally');
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.reload();
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth === document.documentElement.clientWidth), true, 'mobile T3 must not overflow horizontally');
+  assert.equal(await page.locator('[data-final-line-qr]').isVisible(), false, 'mobile T3 must not show a scan instruction without an inline QR');
+  assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “SALES REPORT” พร้อมจำนวนทีม', { exact: true }).isVisible(), true, 'mobile T3 final CTA must give a tappable LINE instruction');
   await page.close();
 });
 

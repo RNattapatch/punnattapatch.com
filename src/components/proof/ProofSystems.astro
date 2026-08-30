@@ -23,6 +23,7 @@ interface Props {
    */
   limit?: number;
   headingLevel?: 'h2' | 'h3';
+  context?: 'default' | 'consult';
 }
 
 const {
@@ -30,6 +31,7 @@ const {
   showStats = true,
   limit = PROOF_SYSTEMS.length,
   headingLevel = 'h2',
+  context = 'default',
 } = Astro.props;
 
 const Heading = headingLevel;
@@ -37,9 +39,16 @@ const shown = PROOF_SYSTEMS.slice(0, limit);
 const remaining = PROOF_SYSTEMS.length - shown.length;
 ---
 
-<section id="proof-systems" class="scroll-mt-20 px-margin-page py-16 md:py-24">
+<section
+  id="proof-systems"
+  data-consult-proof-systems={context === 'consult' ? '' : undefined}
+  class:list={[
+    'scroll-mt-20 px-margin-page py-16 md:py-24',
+    context === 'consult' && 'border-y border-[#c9c2b2] bg-sand/55',
+  ]}
+>
   <div class="mx-auto max-w-6xl">
-    {showHeader && (
+    {showHeader && context === 'default' && (
       <header class="max-w-3xl">
         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-coral">
           หลักฐาน ไม่ใช่คำโฆษณา
@@ -57,11 +66,54 @@ const remaining = PROOF_SYSTEMS.length - shown.length;
       </header>
     )}
 
+    {showHeader && context === 'consult' && (
+      <header>
+        <div class="max-w-3xl">
+          <p class="text-xs font-semibold uppercase tracking-[0.18em] text-coral">
+            ภาพปลายทางหลังวัน Consult
+          </p>
+          <Heading class="mt-4 font-display text-3xl font-bold leading-tight tracking-[-0.02em] text-navy md:text-5xl">
+            วันที่ระบบเข้าที่<br />คุณไม่ต้องเริ่มงานด้วย<span class="hand-underline">การไล่ถาม</span>
+          </Heading>
+          <p class="mt-6 text-lg leading-relaxed text-warm-ink/75">
+            ห้าระบบข้างล่างคือของที่ผมเปิดใช้จริงในธุรกิจตัวเอง ภาพเหล่านี้ไม่ได้มีไว้ให้เลือกซื้อเป็นเมนู
+            แต่อยากให้คุณเห็นว่าชีวิตเจ้าของเปลี่ยนตรงไหน เมื่อข้อมูล คน และกติกาเริ่มทำงานร่วมกัน
+          </p>
+          <p class="mt-3 leading-relaxed text-warm-ink/70">
+            ลองกวาดตาดูห้าช่วงเวลา แล้วเลือกว่าชีวิตแบบไหนควรเกิดก่อนในธุรกิจคุณ
+          </p>
+        </div>
+
+        <nav aria-label="ห้าผลลัพธ์หลังระบบเข้าที่" class="mt-9">
+          <ol class="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {shown.map((system, index) => (
+              <li>
+                <a
+                  href={`#proof-system-${system.id}`}
+                  data-consult-outcome
+                  class="group flex h-full min-h-36 flex-col rounded-2xl border border-[#c9c2b2] bg-surface p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-coral/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 active:scale-[0.98] motion-reduce:transform-none motion-reduce:transition-none"
+                >
+                  <span class="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.13em] text-coral">
+                    {system.consultMoment}
+                    <span aria-hidden="true" class="text-muted transition group-hover:translate-y-0.5 motion-reduce:transform-none">↓</span>
+                  </span>
+                  <span class="mt-4 text-[0.95rem] font-semibold leading-relaxed text-navy">
+                    {system.consultOutcome}
+                  </span>
+                  <span class="sr-only"> ดูระบบที่ {index + 1}: {system.title}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      </header>
+    )}
+
     {showStats && <ProofStats class="mt-10" />}
 
     <div class="mt-14 flex flex-col gap-14 md:gap-20">
       {shown.map((system, index) => (
-        <ProofCard system={system} index={index} />
+        <ProofCard system={system} index={index} context={context} />
       ))}
     </div>
 
@@ -85,15 +137,31 @@ const remaining = PROOF_SYSTEMS.length - shown.length;
     <!-- บล็อกกันเข้าใจผิด — ของที่ทำซ้ำได้คือลำดับการคิด ไม่ใช่หน้าจอ -->
     <div class="mt-16 rounded-2xl bg-navy p-7 text-ivory/85 md:mt-24 md:p-12">
       <h3 class="max-w-2xl font-display text-2xl font-bold leading-snug text-ivory md:text-3xl">
-        อ่านมาถึงตรงนี้ ถ้าคุณกำลังคิดว่า "อยากได้ระบบพวกนี้" — ผมอยากให้คุณคิดใหม่
+        {context === 'consult'
+          ? 'วัน Consult ไม่ได้สร้างทั้งห้าระบบให้เสร็จในวันเดียวครับ'
+          : 'อ่านมาถึงตรงนี้ ถ้าคุณกำลังคิดว่า "อยากได้ระบบพวกนี้" — ผมอยากให้คุณคิดใหม่'}
       </h3>
-      <p class="mt-5 max-w-3xl leading-relaxed">
-        ระบบพวกนี้ก๊อปไปวางในธุรกิจคุณตรง ๆ แล้วไม่เวิร์ก เพราะมันถูกออกแบบจากบริบทของผม สินค้าของผม
-        และวิธีที่ลูกค้าผมตัดสินใจ
-      </p>
-      <p class="mt-3 max-w-3xl leading-relaxed">
-        สิ่งที่ทำซ้ำได้จริงไม่ใช่หน้าจอ แต่คือ<strong class="font-semibold text-ivory">ลำดับการคิด</strong>ที่ทำให้หน้าจอพวกนี้เกิดขึ้น
-      </p>
+      {context === 'consult' ? (
+        <>
+          <p class="mt-5 max-w-3xl leading-relaxed">
+            วัน Consult ช่วยเลือกจุดเริ่มและทำ Blueprint ของ Primary Outcome เดียวให้ชัด เราจะระบุว่าข้อมูลมาจากไหน
+            ใครรับผิดชอบ จุดไหนให้ระบบช่วย และจุดไหนต้องให้คนกดยืนยัน
+          </p>
+          <p class="mt-3 max-w-3xl leading-relaxed">
+            ถ้าต้อง Build ต่อ คุณจะเห็น Scope ก่อนลงทุน และรู้ว่าทีมต้องรับช่วงอะไรหลังระบบเปิดใช้
+          </p>
+        </>
+      ) : (
+        <>
+          <p class="mt-5 max-w-3xl leading-relaxed">
+            ระบบพวกนี้ก๊อปไปวางในธุรกิจคุณตรง ๆ แล้วไม่เวิร์ก เพราะมันถูกออกแบบจากบริบทของผม สินค้าของผม
+            และวิธีที่ลูกค้าผมตัดสินใจ
+          </p>
+          <p class="mt-3 max-w-3xl leading-relaxed">
+            สิ่งที่ทำซ้ำได้จริงไม่ใช่หน้าจอ แต่คือ<strong class="font-semibold text-ivory">ลำดับการคิด</strong>ที่ทำให้หน้าจอพวกนี้เกิดขึ้น
+          </p>
+        </>
+      )}
 
       <ol class="mt-7 flex max-w-3xl flex-col gap-3">
         {PROOF_THINKING_STEPS.map((step, index) => (
@@ -112,24 +180,42 @@ const remaining = PROOF_SYSTEMS.length - shown.length;
       </ol>
 
       <p class="mt-8 border-t border-ivory/15 pt-6 font-display text-xl font-bold text-ivory md:text-2xl">
-        นี่คือสิ่งที่ผมขาย — ไม่ใช่โปรแกรม
+        {context === 'consult'
+          ? 'สิ่งที่คุณถือกลับคือจุดเริ่มที่ชัด และแผน 30 วันที่ทีมเดินต่อได้'
+          : 'นี่คือสิ่งที่ผมขาย — ไม่ใช่โปรแกรม'}
       </p>
     </div>
 
     <div class="mx-auto mt-14 max-w-2xl text-center">
       <h3 class="font-display text-2xl font-bold text-navy md:text-3xl">
-        ถ้าอยากรู้ว่าธุรกิจคุณควรเริ่มจากตรงไหน
+        {context === 'consult'
+          ? 'ชีวิตเจ้าของส่วนไหนที่คุณอยากเปลี่ยนก่อน?'
+          : 'ถ้าอยากรู้ว่าธุรกิจคุณควรเริ่มจากตรงไหน'}
       </h3>
       <p class="mt-4 leading-relaxed text-warm-ink/75">
-        คุยกัน 15–20 นาที ผมจะบอกตรง ๆ ว่าธุรกิจคุณควรเริ่มที่งานไหน และงานไหนที่ยังไม่ควรแตะ AI ตอนนี้
-        ถ้าคุยแล้วผมคิดว่ายังไม่ถึงเวลา ผมจะบอกคุณแบบนั้น
+        {context === 'consult'
+          ? 'เล่าอาการที่คุณต้องไล่ตามอยู่ตอนนี้ให้ผมฟัง ผมจะช่วยแยกว่าควรเริ่มจาก Funnel ทีมขาย Dashboard หรือ AI Workflow'
+          : 'คุยกัน 15–20 นาที ผมจะบอกตรง ๆ ว่าธุรกิจคุณควรเริ่มที่งานไหน และงานไหนที่ยังไม่ควรแตะ AI ตอนนี้ ถ้าคุยแล้วผมคิดว่ายังไม่ถึงเวลา ผมจะบอกคุณแบบนั้น'}
       </p>
-      <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
-        <a href="/booking" class="btn border-0 bg-coral text-white hover:bg-[#c43245]">จองคิวคุยกับผม</a>
-        <LineCta label="ทัก LINE ถามก่อนก็ได้" />
-      </div>
-      <p class="mt-4 text-sm text-muted">15–20 นาที · ไม่มีการขายในสาย · ถ้ายังไม่เหมาะ ผมจะบอก</p>
+      {context === 'consult' ? (
+        <div class="mt-7 flex justify-center">
+          <LineCta
+            label="ทัก LINE ให้ผมช่วยเลือกจุดเริ่ม"
+            productCode="C1"
+            location="after_systems"
+            intent="track_selection"
+            keyword="CONSULT"
+          />
+        </div>
+      ) : (
+        <>
+          <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+            <a href="/booking" class="btn border-0 bg-coral text-white hover:bg-[#c43245]">จองคิวคุยกับผม</a>
+            <LineCta label="ทัก LINE ถามก่อนก็ได้" />
+          </div>
+          <p class="mt-4 text-sm text-muted">15–20 นาที · ไม่มีการขายในสาย · ถ้ายังไม่เหมาะ ผมจะบอก</p>
+        </>
+      )}
     </div>
   </div>
 </section>
-

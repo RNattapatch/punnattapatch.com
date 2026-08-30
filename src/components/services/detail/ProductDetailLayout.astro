@@ -18,6 +18,7 @@ import ProductFAQ from './ProductFAQ.astro';
 import DetailLineCTA from './DetailLineCTA.astro';
 import ClientLogoWall from './ClientLogoWall.astro';
 import DecisionCTA from './DecisionCTA.astro';
+import ProofSystems from '../../proof/ProofSystems.astro';
 
 interface Props { data: ProductDetailPageData; }
 const { data } = Astro.props;
@@ -35,6 +36,7 @@ const finalLineCta = data.cta.locations?.final ?? { primary: data.cta.primary, p
 <ClientLogoWall items={data.clientLogos} />
 <div data-detail-block="authority"><AuthoritySnapshot items={data.authority} {...data.sections?.authority} /></div>
 <div data-detail-block="proof"><ProofWall items={data.proof} testimonials={data.testimonials} {...data.sections?.proof} /></div>
+{data.code === 'C1' && <div data-detail-block="consult-systems"><ProofSystems context="consult" /></div>}
 {afterProofCta && <DecisionCTA code={data.code} keyword={data.cta.keyword} cta={afterProofCta} />}
 <div data-detail-block="pain"><PainChecklist items={data.pains} {...data.sections?.pain} /></div>
 <div data-detail-block="boundary"><OfferBoundary {...data.boundary} /></div>

@@ -53,13 +53,6 @@ export const C1_PRODUCT_DETAIL: ProductDetailPageData = {
       alt: 'ปัน ณัฐพัชร์กำลังอธิบายงานให้ผู้เข้าร่วมในห้อง Consult',
       caption: 'Feedback จากลูกค้า หลังตัดสินใจจ้าง Consult',
     },
-    {
-      id: 'c1-system-receipt',
-      kind: 'system',
-      image: { publicSrc: '/proof/01-command-center.jpg', width: 1400, height: 692 },
-      alt: 'หน้าจอ Personal Business Command Center ของปัน ณัฐพัชร์ โดยปิดข้อมูลที่ไม่เกี่ยวข้อง',
-      caption: 'ผมสร้างระบบใช้เองและทำงานกับของจริง จึงรู้ว่าข้อเสนอไหนทำได้ในวัน Consult และข้อเสนอไหนต้องมีขั้น Build, UAT และ Adoption แยก',
-    },
   ],
   pains: [
     'เพิ่มเซลล์แล้วแต่ยอดไม่โต จนไม่แน่ใจว่าปัญหาอยู่ที่คน เป้า พื้นที่ หรือหัวหน้า',
