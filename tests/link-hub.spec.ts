@@ -240,9 +240,11 @@ test('logo walk advances exactly one complete card only while visible', async ({
   assert.ok(Math.abs((after - before) + card.width + 12) <= 1, `expected one-card move, got ${after - before}px`);
 
   const toggle = page.locator('[data-logo-toggle]');
+  await expect(toggle).toHaveAttribute('aria-label', 'หยุดการเลื่อนโลโก้อัตโนมัติ');
   await expect(toggle).toHaveAttribute('aria-pressed', 'false');
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+  await expect(toggle).toHaveAttribute('aria-label', 'หยุดการเลื่อนโลโก้อัตโนมัติ');
   await expect(toggle).toHaveText('เล่นต่อ');
   await page.waitForTimeout(500);
   const pausedAt = await transformX(page);
