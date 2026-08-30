@@ -106,7 +106,19 @@ const { variant = 'daisy', hint = true } = Astro.props;
   .warm .ah-title { color: var(--pun-navy); }
 
   /* โทน DaisyUI ของ intake-form + หน้าแรก */
-  .daisy .ah-option { background: var(--color-base-100, #fff); }
+  .daisy .ah-option {
+    background: var(--color-base-100, #fff);
+    color: var(--color-base-content, #1e1b16);
+  }
+  .daisy .ah-title { color: var(--color-base-content, #1e1b16); }
+  :global(html[data-theme="punpaper"]) .daisy .ah-title { color: var(--color-primary, #072b4e); }
+  .daisy .ah-sub { color: var(--color-base-content, #1e1b16); opacity: 0.78; }
+  .daisy .ah-option:has(.ah-radio:checked) {
+    border-width: 2px;
+    border-color: var(--pun-coral);
+    box-shadow: none;
+    background: color-mix(in srgb, var(--pun-coral) 7%, var(--color-base-100, #fff));
+  }
 
   @media (prefers-reduced-motion: reduce) { .ah-option { transition: none; } }
 
