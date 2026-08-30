@@ -27,6 +27,20 @@ function builtPagePath(route) {
   return route === '/' ? `${distPath}/index.html` : `${distPath}/${route.replace(/^\//, '')}.html`;
 }
 
+function builtPublicPathForRoute(route) {
+  const pathname = new URL(route, 'https://punnattapatch.com').pathname;
+  return `${pathname.replace(/^\/+/, '') || 'index'}.html`;
+}
+
+function catalogRetiredPriceExceptionPaths(catalog, retiredKey) {
+  const retiredAmount = catalog[retiredKey]?.amount;
+  return new Set(
+    Object.entries(catalog)
+      .filter(([key, entry]) => entry.status === 'live' && catalog[`${key}-regular`]?.amount === retiredAmount)
+      .map(([, entry]) => builtPublicPathForRoute(entry.url)),
+  );
+}
+
 function builtHtmlPaths(directory = distPath) {
   return readdirSync(directory, { withFileTypes: true })
     .flatMap((entry) => entry.isDirectory() ? builtHtmlPaths(`${directory}/${entry.name}`) : [`${directory}/${entry.name}`]);
@@ -41,13 +55,27 @@ function builtPublicHtmlPages() {
 
 function assertPublicBuildContentIntegrity() {
   const retiredPrice = fmtPrice('package-a');
+  const retiredPriceExceptionPaths = catalogRetiredPriceExceptionPaths(CATALOG, 'package-a');
   const violations = [];
+
+  const activeRegularPriceMatches = Object.entries(CATALOG).filter(
+    ([key, entry]) => entry.status === 'live' && CATALOG[`${key}-regular`]?.amount === CATALOG['package-a'].amount,
+  );
+  assert.ok(activeRegularPriceMatches.length > 0, 'Catalog must identify an active same-priced regular entry for the retired Package A amount');
+  assert.deepEqual(
+    retiredPriceExceptionPaths,
+    new Set(activeRegularPriceMatches.map(([, entry]) => builtPublicPathForRoute(entry.url))),
+    'price exceptions must contain only routes derived from active Catalog regular-price relationships',
+  );
+  assert.ok(!retiredPriceExceptionPaths.has(builtPublicPathForRoute('/services')), 'services catalog must remain protected from the retired Package A amount');
 
   for (const { path, html } of builtPublicHtmlPages()) {
     const publicPath = path.replace(`${distPath}/`, '');
     if (/Package A/i.test(html)) violations.push(`${publicPath}: Package A`);
     if (/Paid[ -]Audit/i.test(html)) violations.push(`${publicPath}: Paid Audit`);
-    if (html.includes(retiredPrice)) violations.push(`${publicPath}: retired package price`);
+    if (html.includes(retiredPrice) && !retiredPriceExceptionPaths.has(publicPath)) {
+      violations.push(`${publicPath}: retired package price`);
+    }
 
     if (/Agentic AI Transformation|AI Agent Transformation|AI Transformation สำหรับ(?:ธุรกิจ|SME|ทีมขาย)/i.test(html)) {
       violations.push(`${publicPath}: generic AI Transformation positioning`);
