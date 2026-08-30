@@ -115,5 +115,5 @@ Sales rep อาวุโสที่ closing rate (อัตราปิดก�
 ## Package ที่เกี่ยวข้อง
 
 - [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — วางระบบขายทั้งบริษัท ออกแบบ KPI + Commission structure ใหม่ + dashboard โปร่งใสทั้งทีม
-- [Daruma Sales Office Bootcamp {{price:inhouse-b}} / 2 วัน](/services#inhouse-b) — ฝึกทีมให้ทำงานแบบ merit-based
+- [คอร์สอบรมทักษะการขาย + Follow-up + AI {{price:inhouse-a}}](/services#offer-t1) — ฝึกทีมให้ทำงานแบบ merit-based
 - [กรอกฟอร์มประเมิน 3 นาที](/intake-form) — ผมอ่านแล้วจะบอกได้ว่าทีมคุณติดกับดัก "ลูกรัก" อยู่ในระดับไหน

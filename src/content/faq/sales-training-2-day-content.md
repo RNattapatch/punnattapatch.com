@@ -2,14 +2,14 @@
 title: "Sale Training 2 วัน สอนเนื้อหาอะไรบ้าง"
 description: "Daruma Sales Office Bootcamp 2 วัน ของผมเน้น Value-Based Selling (Day 1) + Consultative Closing (Day 2) ทีมกลับไปปิดด้วยคุณค่าไม่ใช่ส่วนลด มี role-play 3 รอบ + Post-training KPI tracking"
 question: "Sale Training 2 วัน สอนเนื้อหาอะไรบ้าง"
-answerSummary: "Day 1 Value-Based Selling: JTBD + Pain Discovery + Solution Mapping · Day 2 Consultative Closing: Functional/Emotional/Social decision + Handle objection ไม่ drop ราคา + Role-play 3 รอบ + Post-training KPI tracking 30 วัน ราคา ฿59,900 ≤20 คน"
+answerSummary: "ตัวอย่างโครงสร้าง 2 วัน: Day 1 Value-Based Selling — JTBD, Pain Discovery, Solution Mapping · Day 2 Consultative Closing — decision, objection handling, role-play และ Post-training KPI tracking"
 lang: th
 published: 2026-04-18
 draft: false
 tags: [faq, sales-training, curriculum, workshop]
 ---
 
-Daruma Sales Office Bootcamp 2 วันของผม [{{price:inhouse-b}}](/services#inhouse-b) เน้นเปลี่ยนทีมจาก "ขายของ" เป็น "ขายการแก้ปัญหา" โครงสร้าง 2 วันมีดังนี้
+ตัวอย่างโปรแกรม Sales Training 2 วันเน้นเปลี่ยนทีมจาก "ขายของ" เป็น "ขายการแก้ปัญหา" โดยมีโครงสร้างดังนี้
 
 ## Day 1 — Value-Based Selling
 
@@ -78,6 +78,6 @@ Daruma Sales Office Bootcamp 2 วันของผม [{{price:inhouse-b}}](/s
 - เจ้าของธุรกิจควรเข้าร่วมด้วยอย่างน้อยใน Day 1 Module 1 และ Day 2 Module 8
 - ต้องส่งเคสของลูกค้ารายจริงที่ปิดการขายไม่ได้ 5-10 เคสมาให้ผมก่อนวัน training 1 สัปดาห์ เพื่อใช้เตรียมเนื้อหาสำหรับ Role-play
 
-Package full details: [Daruma Sales Office Bootcamp {{price:inhouse-b}} / 2 วัน](/services#inhouse-b)
+หากต้องการหลักสูตรที่เปิดสอนอยู่ ดู [คอร์สอบรมทักษะการขาย + Follow-up + AI สำหรับทีมขาย {{price:inhouse-a}}](/services#offer-t1)
 
 อ่านต่อ: [Commission structure ทีม 10 คน](/faq) | [Workshop vs Consulting](/faq)

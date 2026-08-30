@@ -5,7 +5,8 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Schema from '../components/Schema.astro';
 import MetaPixel from '../components/MetaPixel.astro';
-import FloatingLineCta from '../components/FloatingLineCta.astro';
+import FloatingLineCTA from '../components/FloatingLineCTA.astro';
+import ContactTracking from '../components/ContactTracking.astro';
 import type { ComponentProps } from 'astro/types';
 
 type SchemaProps = ComponentProps<typeof Schema>;
@@ -18,6 +19,7 @@ interface Props {
   noindex?: boolean;
   robots?: string;
   schema?: SchemaProps;
+  hideFloatingLine?: boolean;
   showFloatingLine?: boolean;
 }
 
@@ -29,10 +31,17 @@ const {
   noindex = false,
   robots,
   schema = { type: 'WebPage' as const },
+  hideFloatingLine = false,
   showFloatingLine = true,
 } = Astro.props;
 
-const fullTitle = title === SITE.titleDefault ? title : `${title} · ${SITE.nameTh}`;
+const fullTitle = title === SITE.titleDefault || title.includes(SITE.nameTh) ? title : `${title} · ${SITE.nameTh}`;
+const path = Astro.url.pathname.replace(/(?:index)?\.html$/, '').replace(/\/$/, '') || '/';
+const floatingLineExcludedPaths = ['/booking', '/thank-you', '/intake-form'];
+const isFloatingLineExcluded = floatingLineExcludedPaths.some(
+  (excludedPath) => path === excludedPath || path.startsWith(`${excludedPath}/`),
+);
+const shouldShowFloatingLine = showFloatingLine && !hideFloatingLine && !isFloatingLineExcluded;
 ---
 
 <!doctype html>
@@ -155,7 +164,8 @@ const fullTitle = title === SITE.titleDefault ? title : `${title} · ${SITE.name
     </main>
 
     <Footer />
-    <FloatingLineCta enabled={showFloatingLine} />
+    {shouldShowFloatingLine && <FloatingLineCTA />}
+    <ContactTracking />
 
     <!--
       UTM + click-ID capture · runs on every page

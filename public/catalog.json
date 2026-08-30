@@ -74,7 +74,7 @@
       "bot_may_quote": true
     },
     {
-      "key": "sales-team-structure",
+      "key": "daily-sales-consulting",
       "name": "บริการวางระบบฝ่ายขายแบบรายวัน",
       "name_en": "Daily Sales System Consulting",
       "kind": "consult",
@@ -83,7 +83,7 @@
       "audience": "Owner/CEO ที่รู้ว่าระบบขายติด อยากได้คนเข้าไปช่วยคิดและออกแบบทางออกเรื่องที่สำคัญที่สุดก่อน",
       "amount_thb": 34900,
       "price_label": "฿34,900",
-      "url": "https://punnattapatch.com/services#sales-team-structure",
+      "url": "https://punnattapatch.com/services#offer-c1",
       "image_url": "https://punnattapatch.com/services/thumbs/c1-daily-sales-consulting.jpg",
       "outline_url": null,
       "status": "live",

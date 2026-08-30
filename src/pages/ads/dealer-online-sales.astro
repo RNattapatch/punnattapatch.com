@@ -10,7 +10,7 @@ import { PRICES, fmtPrice } from '../../data/pricing.mjs';
 const title = 'คอร์สเพิ่มยอดขายรถจากออนไลน์ด้วย Content + Ads + AI';
 const description = 'เพจมีคนทักแต่ไม่เป็นนัดทดลองขับ อบรม In-house 2 วันที่โชว์รูมของคุณ วันแรกทำสื่อจากรถจริง วันที่สองเปลี่ยน Lead ให้เป็นนัดหมายและยอดจอง คุยฟรี 15–20 นาที';
 const canonical = `${SITE.url}/ads/dealer-online-sales`;
-const lineUrl = 'https://line.me/R/ti/p/@011xgvap';
+const lineUrl = SITE.social.line;
 // ราคา 2 วันดึงจาก SSOT — key tiktok-workshop = Production key ของ Core 2 วัน (BHSV กฎ 4)
 const PRICE_2DAY = fmtPrice('tiktok-workshop');
 const perHead = Math.round(PRICES['tiktok-workshop'].amount / 20);
@@ -200,6 +200,7 @@ const content = {
   ogImage={`${SITE.url}/og-image.jpg`}
   noindex
   robots="noindex,follow"
+  hideFloatingLine={true}
   schema={{ types: ['WebPage'], title, description }}
 >
   <link

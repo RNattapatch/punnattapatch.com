@@ -1,0 +1,29 @@
+<script is:inline>
+  (() => {
+    if (window.__punContactTrackingBound) return;
+    window.__punContactTrackingBound = true;
+
+    document.addEventListener('click', (event) => {
+      if (!(event.target instanceof Element)) return;
+      const cta = event.target.closest('[data-contact-cta]');
+      if (!(cta instanceof HTMLAnchorElement)) return;
+
+      const props = {
+        cta_location: cta.dataset.ctaLocation || 'unknown',
+        page_path: window.location.pathname,
+        product_code: cta.dataset.productCode || 'none',
+        cta_label: cta.dataset.ctaLabel || cta.textContent?.trim() || 'Contact',
+      };
+
+      try {
+        window.plausible?.('Contact', { props });
+      } catch {}
+      try {
+        window.fbq?.('track', 'Contact', { content_name: props.cta_location, content_ids: [props.product_code] });
+      } catch {}
+      try {
+        window.ttq?.track?.('Contact', props);
+      } catch {}
+    });
+  })();
+</script>

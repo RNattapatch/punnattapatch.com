@@ -6,6 +6,17 @@ import sitemap from '@astrojs/sitemap';
 
 import remarkPrice from './plugins/remark-price.mjs';
 
+const legacyServicePaths = new Set([
+  '/services/ai-workshop',
+  '/services/ai-workshop-followup',
+  '/services/ai-workshop-advance',
+  '/services/paid-audit',
+  '/services/package-a',
+  '/services/sales-system-sprint',
+  '/services/sale-training-bundle',
+  '/services/trust-content-tiktok-workshop',
+]);
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://punnattapatch.com',
@@ -17,7 +28,7 @@ export default defineConfig({
     remarkPlugins: [remarkPrice],
   },
   redirects: {
-    '/services/ai-workshop-followup': '/services/ai-workshop',
+    '/services/ai-workshop-followup': '/services#inhouse-a',
   },
   vite: {
     plugins: [tailwindcss()],
@@ -26,6 +37,7 @@ export default defineConfig({
     sitemap({
       filter: (page) =>
         !page.includes('/_') &&
+        !legacyServicePaths.has(new URL(page).pathname) &&
         !page.endsWith('/thank-you') && // intake thank-you is noindex
         !page.endsWith('/agent-builder-kit/thank-you') && // Kit thank-you is noindex
         !page.includes('/agent-builder-kit/manual/') && // manual dark pages — distributed via email/PDF only

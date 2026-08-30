@@ -144,5 +144,5 @@ anonymized: true
 
 - [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — วางระบบขายทั้งบริษัทแบบเดียวกับเคสนี้ (เหมาะทีม 10-15 คน)
 - [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop) — Starting point ของลูกค้ารายนี้
-- [Daruma Sales Office Bootcamp {{price:inhouse-b}}](/services#inhouse-b) — Module ที่ 4 ของเคสนี้
+- [คอร์สอบรมทักษะการขาย + Follow-up + AI {{price:inhouse-a}}](/services#offer-t1) — สำหรับทีมที่ต้องการฝึกบทสนทนาและการตามดีลด้วยมาตรฐานเดียวกัน
 - [กรอกฟอร์ม 3 นาที](/intake-form) — ผมอ่านแล้วบอกว่าเคสคุณ match กับลูกค้ารายนี้แค่ไหน + ควร start ตรงไหน

@@ -36,7 +36,7 @@ tags: [faq, consulting, agency, comparison]
 
 - AI สำหรับงานหลังบ้าน 2026 ราคา {{price:ai-workshop-advance}} (1 วัน ได้ผลงานครบ)
 - Daruma Sales Transformation ราคา {{price:daruma-transformation}} (45 วัน ได้ระบบขายครบทั้งบริษัท)
-- Daruma Sales Office Bootcamp ราคา {{price:inhouse-b}} (2 วัน · ฝึกทีมขาย)
+- คอร์สอบรมทักษะการขาย + Follow-up + AI ราคา {{price:inhouse-a}} (1 วัน · ฝึกทีมขาย)
 
 ข้อดีของราคาแบบ fixed-price คือคุณทราบต้นทุนที่แน่นอนตั้งแต่แรก มีขอบเขตงานชัดเจน และไม่มีค่าใช้จ่ายแฝงตามมา
 

@@ -55,9 +55,9 @@ tags: [faq, ai-adoption, change-management, team]
 
 วิธีแก้คือเข้าไปพูดคุยแบบ 1:1 เพื่อรับฟังความกังวลของเขาก่อน ไม่ควรบังคับใช้กับทุกคน แต่ให้เวลา 6-8 เดือน แล้วเพื่อนร่วมทีมที่เห็นผลลัพธ์จากการใช้งานจริงจะช่วยเปลี่ยนใจพวกเขาเอง
 
-## Package ที่ช่วยเรื่องการบริหารการเปลี่ยนแปลง (Change Management)
+## บริการที่ช่วยเรื่องการบริหารการเปลี่ยนแปลง (Change Management)
 
-- **[Package A (Advance + Consult 2 วัน) {{price:package-a}}](/services#package-a)** — Workshop 1 วัน + Consult 2 วัน สำหรับช่วงเปลี่ยนผ่าน (transition) ที่มีแรงต้าน (resistance) สูง
+- **[Advance Program: Sales Mastery with AI](/services#offer-a1)** — เรียนและมีคนพาทีมทำต่อจนวิธีทำงานใหม่ถูกนำไปใช้จริง
 - **[Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation)** — รวมการบริหารการเปลี่ยนแปลง (change management) ในแพ็คเกจการส่งมอบระบบ (handover package)
 
 อ่านต่อ: [AI Agent ต่างจาก chatbot ยังไง](/faq) | [ไม่เก่ง tech ใช้ AI ได้ไหม](/faq)

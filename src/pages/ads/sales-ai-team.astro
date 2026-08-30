@@ -10,7 +10,7 @@ import { PRICES, fmtPrice } from '../../data/pricing.mjs';
 const title = 'คอร์สอบรมทักษะการขาย + Follow-up + AI สำหรับทีมขาย';
 const description = 'เตรียมข้อมูลลูกค้า ตั้งคำถาม รับข้อโต้แย้ง Follow-up จนปิดการขาย โดยใช้ AI ช่วยเตรียมงาน อบรม In-house 1 วันเต็มที่ออฟฟิศคุณ ทีมขาย 5–20 คน คุยฟรี 15–20 นาที';
 const canonical = `${SITE.url}/ads/sales-ai-team`;
-const lineUrl = 'https://line.me/R/ti/p/@011xgvap';
+const lineUrl = SITE.social.line;
 const PRICE_1DAY = fmtPrice('inhouse-a');
 const perHead = Math.round(PRICES['inhouse-a'].amount / 20);
 
@@ -195,6 +195,7 @@ const content = {
   ogImage={`${SITE.url}/og-image.jpg`}
   noindex
   robots="noindex,follow"
+  hideFloatingLine={true}
   schema={{ types: ['WebPage'], title, description }}
 >
   <link

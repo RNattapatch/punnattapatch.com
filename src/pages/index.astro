@@ -208,10 +208,10 @@ const testimonials = [
         <article class="rounded-2xl border border-[#c9c2b2] bg-surface p-7">
           <h3 class="font-display text-2xl font-bold text-navy">ให้ผมเข้าไปวางระบบให้</h3>
           <p class="mt-2 text-sm text-warm-ink/65">ที่ปรึกษาถึงที่บริษัท · คิดเป็นรายวันเหมือนกัน</p>
-          <p class="mt-6 font-semibold text-navy">{CATALOG['sales-team-structure'].name} · 1 วัน</p>
+          <p class="mt-6 font-semibold text-navy">{CATALOG['daily-sales-consulting'].name} · 1 วัน</p>
           <p class="mt-1 text-sm text-warm-ink/70">เลือก 1 ปัญหาขายที่สำคัญที่สุด — Journey ออนไลน์ถึงปิดการขาย · โครงทีม+KPI+ค่าคอม · ออกแบบ Report/Dashboard · AI Workflow ต้นแบบ — วางทางออกให้จบใน 1 วัน</p>
-          <p class="mt-2 font-display text-3xl font-bold tabular-nums text-coral">{fmtPrice('sales-team-structure')}</p>
-          <a href="/services#sales-team-structure" class="btn mt-7 w-full border-navy bg-transparent text-navy hover:bg-navy hover:text-white">ดูรายละเอียด</a>
+          <p class="mt-2 font-display text-3xl font-bold tabular-nums text-coral">{fmtPrice('daily-sales-consulting')}</p>
+          <a href="/services#offer-c1" class="btn mt-7 w-full border-navy bg-transparent text-navy hover:bg-navy hover:text-white">ดูรายละเอียด</a>
         </article>
       </div>
       <p class="mt-6 rounded-2xl border border-[#c9c2b2] bg-surface p-5 text-warm-ink/80">ถ้าโจทย์ไม่ได้อยู่ที่งานชิ้นเดียว แต่ต้องแก้ทั้งระบบ — มีแบบยกทีมหลายวันและแบบวางระบบ 45 วันด้วยครับ <a href="/services" class="font-semibold text-navy underline decoration-coral/50 decoration-2 underline-offset-4 hover:decoration-coral">ดูที่หน้าบริการ →</a></p>
@@ -222,20 +222,8 @@ const testimonials = [
 
   <section class="px-6 py-16 text-center md:py-24"><DarumaMark class="mx-auto h-auto w-24" /><h2 class="mx-auto mt-6 max-w-3xl font-display text-3xl font-bold leading-snug text-navy md:text-5xl">ยังไม่แน่ใจว่าทีมคุณควรเริ่มตรงไหน — จองคิวคุยกับผมก่อนครับ</h2><div class="mt-8 flex flex-wrap justify-center gap-3"><a href="/booking" class="btn border-0 bg-coral text-white hover:bg-[#c43245]">จองคิวคุยกับผม</a><a href={SITE.social.line} target="_blank" rel="noopener" class="btn border-navy bg-transparent text-navy hover:bg-navy hover:text-white">ทัก LINE</a></div></section>
 
-  <div id="homepage-sticky-booking" class="fixed inset-x-0 bottom-0 z-50 border-t border-[#c9c2b2] bg-ivory/95 p-3 shadow-[0_-3px_12px_rgba(30,27,22,0.10)] backdrop-blur md:hidden" hidden>
-    <a href="/booking" class="btn w-full border-0 bg-coral text-white hover:bg-[#c43245]">นัดคุยกับผม</a>
-  </div>
 </BaseLayout>
 
 <style>
   .homepage-proof-scroll { scrollbar-width: thin; }
-  @media (max-width: 767px) { :global(body) { padding-bottom: 5.5rem; } }
 </style>
-
-<script is:inline>
-  const hero = document.getElementById('homepage-hero');
-  const stickyBooking = document.getElementById('homepage-sticky-booking');
-  if (hero && stickyBooking && 'IntersectionObserver' in window) {
-    new IntersectionObserver(([entry]) => { stickyBooking.hidden = entry.isIntersecting; }, { threshold: 0.05 }).observe(hero);
-  }
-</script>

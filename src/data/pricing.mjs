@@ -82,12 +82,12 @@ export const CATALOG = {
   },
 
   // ── บริการวางระบบฝ่ายขาย (Services grid) ─────────────────────────────────
-  'sales-team-structure': {
-    // 2026-08-30: repurpose key เป็น C1 — Consulting การ์ดเดียวต่อสาธารณะ (Product SSOT 2026-08-30)
-    // ยุบ "วางโครงสร้างทีมขาย + KPI + ค่าคอม" (ชื่อเดิมของ key นี้) + "ai-agent-ceo" เข้าเป็น
-    // Primary Outcome track ของบริการรายวันตัวเดียว — ลูกค้าเลือก 1 เรื่อง/วัน ไม่ต้องซื้อ consult หลายใบ
+  'daily-sales-consulting': {
+    // 2026-08-30: C1 canonical key (แผน services-page-product-catalog-line-cta — supersedes การ repurpose
+    // key sales-team-structure ใน Product SSOT ฉบับเช้า) · ยุบ "วางโครงสร้างทีมขาย + KPI + ค่าคอม" +
+    // "ai-agent-ceo" เข้าเป็น Primary Outcome track ของบริการรายวันตัวเดียว
     amount: 34900,
-    url: '/services#sales-team-structure',
+    url: '/services#offer-c1',
     name: 'บริการวางระบบฝ่ายขายแบบรายวัน',
     nameEn: 'Daily Sales System Consulting',
     kind: 'consult',
@@ -98,6 +98,21 @@ export const CATALOG = {
     botQuote: true,
     image: '/services/thumbs/c1-daily-sales-consulting.jpg',
     note: 'C1 · scope 1 วัน = 1 Customer Journey · 1 ทีม/BU · 1 Primary Outcome + output ที่ตกลงชัด · 4 track: (1) Online-to-Sales Full Journey (2) โครงทีม+KPI+Commission (3) Sales Control/Report/Dashboard design (4) AI Workflow/Agent prototype — track 4 = prototype ไม่ใช่ระบบ production (นั่นคือ daruma-starter/custom build) · หลายปัญหา = ประเมินจำนวนวันรวมใน proposal เดียว ไม่ให้ลูกค้าซื้อ consult หลายรอบ · ไม่แน่ใจเริ่มเรื่องไหน → ทัก LINE ให้ทีมช่วยเลือก',
+  },
+  'sales-team-structure': {
+    // 2026-08-30 (บ่าย): ถอยเป็น legacy internal — scope กลายเป็น track 2 ของ daily-sales-consulting (C1)
+    // key เก็บไว้เพราะลิงก์บอท/เอกสาร/ดีลช่วง 28-30 ส.ค. อ้างถึง · anchor #sales-team-structure ยังอยู่ในการ์ด C1
+    amount: 34900,
+    url: '/services#sales-team-structure',
+    name: 'บริการวางโครงสร้างทีมขาย + KPI + ค่าคอม',
+    nameEn: 'Sales Team Structure Day',
+    kind: 'consult',
+    duration: '1 วัน',
+    headline: 'ออกแบบโครงทีม KPI tree และโมเดลค่าคอม — ปัจจุบันคือ Primary Outcome track 2 ของบริการวางระบบฝ่ายขายแบบรายวัน',
+    audience: 'Owner ที่กำลังตั้งทีมใหม่ · เพิ่มเซลล์แล้วผลงานไม่โต',
+    status: 'internal',
+    botQuote: false,
+    note: 'LEGACY 2026-08-30: ลูกค้าที่อ้างชื่อนี้ = C1 (daily-sales-consulting) track โครงทีม+KPI+ค่าคอม ราคาเดียวกัน — ห้ามเสนอเป็นการ์ด/ราคาแยก',
   },
   'daruma-starter': {
     amount: 69900,
@@ -114,10 +129,10 @@ export const CATALOG = {
     note: 'I1 · rename 2026-08-28 จาก "Daruma Starter" · scope ตาม master §8.5: Master deal register + Daily report + Stale lead/Follow-up list + Excel export + UAT + Training · **I1 คือทีมปันลงมือสร้างระบบ production ให้ · T3 (ai-workshop-advance) คือฝึกทีมลูกค้าเรียนวิธีวางเอง** · outline PDF เดิม (outline-daruma-starter.pdf) scope เก่า — ห้ามส่งจนอัดใหม่',
   },
   'ai-agent-ceo': {
-    // 2026-08-30: ยุบเข้า C1 track 4 (Product SSOT) — scope "วาง AI Agent 1 workflow ใน 1 วัน"
-    // กลายเป็น Primary Outcome ที่ 4 ของ sales-team-structure (บริการวางระบบฝ่ายขายแบบรายวัน)
+    // 2026-08-30: ยุบเข้า C1 track 4 — scope "วาง AI Agent 1 workflow ใน 1 วัน"
+    // กลายเป็น Primary Outcome ที่ 4 ของ daily-sales-consulting (บริการวางระบบฝ่ายขายแบบรายวัน)
     amount: 34900,
-    url: '/services#sales-team-structure',
+    url: '/services#ai-agent-ceo',
     name: 'บริการวาง AI Agent ใช้จริงในธุรกิจ — สำหรับเจ้าของ/CEO',
     nameEn: 'AI Agent Implementation Day',
     kind: 'consult',
@@ -126,7 +141,7 @@ export const CATALOG = {
     audience: 'เจ้าของ/CEO ที่อยากได้ AI Agent ทำงานจริงในธุรกิจ ไม่ใช่แค่เรียนวิธีใช้ tool',
     status: 'internal',
     botQuote: false,
-    note: 'HIDDEN 2026-08-30: ยุบเข้า C1 (sales-team-structure) เป็น Primary Outcome track 4 — key เก็บไว้เพราะดีลเก่า/บทความ/ลิงก์บอทอ้างถึง · ลูกค้าที่ถามชื่อนี้ = C1 track AI Workflow prototype ราคาเดียวกัน · outline PDF เดิมยังห้ามส่ง (positioning เก่า "คู่คิด AI")',
+    note: 'HIDDEN 2026-08-30: ยุบเข้า C1 (daily-sales-consulting) เป็น Primary Outcome track 4 — key เก็บไว้เพราะดีลเก่า/บทความ/ลิงก์บอทอ้างถึง · ลูกค้าที่ถามชื่อนี้ = C1 track AI Workflow prototype ราคาเดียวกัน · outline PDF เดิมยังห้ามส่ง (positioning เก่า "คู่คิด AI")',
   },
   'daruma-transformation': {
     amount: 198000,

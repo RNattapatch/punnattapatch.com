@@ -1,0 +1,259 @@
+# Phase 6 evidence — SEO, schema, redirects and content integrity
+
+## Metadata before and after
+
+| Field | Before | After |
+| --- | --- | --- |
+| `<title>` / OG title | `คอร์สและบริการสำหรับทีมขาย ที่อยากเพิ่มยอดและทำงานเป็นระบบ · ปัน ณัฐพัชร์` | `คอร์สสำหรับทีมขาย และบริการวางระบบฝ่ายขาย \| ปัน ณัฐพัชร์` |
+| Description / OG description | `เลือกคอร์สและบริการจากงานที่ทีมขายต้องทำได้จริง ตั้งแต่ทักษะการขาย การเปลี่ยน Lead เป็นยอดขาย ไปจนถึง Report, Dashboard และระบบฝ่ายขายที่ใช้งานจริง` | `Training, Consulting และ Implementation สำหรับทีมขายที่ต้องการเพิ่มยอด วาง Funnel, Follow-up, Report และ Dashboard โดยใช้ AI เป็นตัวช่วยในงานที่เหมาะสม` |
+| Canonical / OG URL | `https://punnattapatch.com/services` | unchanged and explicitly supplied as `https://punnattapatch.com/services` |
+| OG image | generic `/og-image.jpg` | absolute hashed T2 catalog artwork, `/_astro/t2-online-to-offline-ai.*.png` |
+
+The required title already contains `SITE.nameTh`. `BaseLayout` previously appended ` · ปัน ณัฐพัชร์` to every non-default title, so passing the required title would duplicate the brand. Per the Phase 6 ruling, the layout now skips its suffix only when the supplied title already contains `SITE.nameTh`; all other title behavior is unchanged. The built-output verifier asserts the exact title and rejects the duplicated form.
+
+The new description explicitly names Training, Consulting and Implementation, leads with sales outcomes and workflows, and positions AI as support. It contains no obsolete price.
+
+## Schema inventory
+
+The services page emits one JSON-LD block, parsed successfully as JSON. Its graph contains:
+
+| Schema type | Count | Catalog role |
+| --- | ---: | --- |
+| `WebSite` | 1 | Existing site identity node |
+| `WebPage` | 1 | Canonical services page metadata |
+| `ItemList` | 1 | All six visible roles in page order: T2, T1, T3, C1, I1, A1 |
+| `Course` | 3 | T1, T2 and T3 only; each has name, description, URL, provider and course code |
+| `Service` | 2 | C1 Consulting and I1 Implementation only; each has name, description, URL, provider, service type and area served |
+| `FAQPage` | 1 | Built from the same `faqs` array as the ten visible `<details>` entries |
+| `BreadcrumbList` | 1 | Home → Services |
+
+There is no `Product` schema and no offer/price object on this page. The verifier checks exact schema type counts, each T1–I1 node against the visible `SERVICE_OFFERS` contract, ItemList order, one FAQPage only, JSON parsing, and visible FAQ count = schema FAQ count (`10 = 10`).
+
+## Redirect and compatibility inventory
+
+Deploy output and Astro static fallback pages agree on these permanent destinations:
+
+| Legacy route | Permanent destination |
+| --- | --- |
+| `/services/ai-workshop` | `/services#inhouse-a` |
+| `/services/ai-workshop-followup` | `/services#inhouse-a` |
+| `/services/ai-workshop-advance` | `/services#sales-report` |
+| `/services/paid-audit` | `/services#offer-c1` |
+| `/services/package-a` | `/services#offer-c1` |
+| `/services/sales-system-sprint` | `/services#offer-c1` |
+| `/services/sale-training-bundle` | `/services#offer-t1` |
+| `/services/trust-content-tiktok-workshop` | `/services#trust-content` |
+
+`dist/_redirects` contains each entry with status `301`. Astro also builds a fallback redirect HTML file for every route with the same destination, so these entry points do not rely on a single hosting layer and do not become 404s.
+
+Legacy hash compatibility remains on the canonical page for `inhouse-a`, `inhouse-b`, `back-office`, `package-a`, and `daruma-transformation`, in addition to the previously retained `sales-report`, `trust-content`, `daruma-starter`, `sales-team-structure`, and `ai-agent-ceo` anchors. Paid Audit is handled as a route redirect instead of a canonical-page anchor so the retired name does not remain in page output.
+
+The sitemap includes `https://punnattapatch.com/services` exactly once and excludes all eight redirect-only legacy URLs.
+
+## Retired-term search
+
+An independent scan of fresh `dist/services.html` produced:
+
+```json
+{
+  "Package A": 0,
+  "Paid Audit": 0,
+  "AI Transformation": 0,
+  "retired Package A price": 0
+}
+```
+
+The retired price is resolved at verification time with `fmtPrice('package-a')`, so the verifier does not duplicate a price literal outside the pricing SSOT. The fresh value checked was `฿59,900`.
+
+## TDD evidence
+
+### RED 1 — metadata/schema contract
+
+The new built-output assertions were added before production edits.
+
+```text
+$ pnpm verify:services -- --build-output
+AssertionError [ERR_ASSERTION]: services title must match the approved title exactly once
+```
+
+The failure showed the old rendered title, proving the new metadata contract was absent.
+
+### GREEN 1
+
+After implementing exact metadata, catalog schema, redirects, anchors and sitemap filtering, the build completed. The verifier then exposed one overly strict test assumption: Astro preserves imported OG metadata as a hashed PNG rather than the card renderer's WebP output. The assertion was corrected to verify the T2 source identity and hashed PNG contract, not a codec that the page does not promise. The focused verifier passed.
+
+### RED 2 — static redirect fallback
+
+The verifier was extended to inspect every generated redirect page as well as `dist/_redirects`.
+
+```text
+AssertionError [ERR_ASSERTION]: /services/ai-workshop-followup static fallback must redirect to /services#inhouse-a
+```
+
+The old fallback still chained through `/services/ai-workshop`; route source and config were updated to the final destination.
+
+### RED 3 — retired Paid Audit positioning
+
+A strict retired-term assertion was added before replacing the compatibility anchor.
+
+```text
+AssertionError [ERR_ASSERTION]: retired public positioning must not appear in services output
+```
+
+The failure was caused by `id="paid-audit"`. It was replaced with the permanent `/services/paid-audit → /services#offer-c1` route and sitemap exclusion.
+
+## Fresh verification
+
+```text
+$ pnpm build
+[build] 84 page(s) built
+[build] Complete!
+
+$ pnpm verify:services -- --build-output
+services vnext data contract passed
+
+$ node --test tests/services-strategy.test.mjs tests/services-vnext.spec.ts
+tests 7 · pass 7 · fail 0
+
+$ git diff --check
+(no output)
+```
+
+The independent evidence parser reported one parsed JSON-LD block, the schema inventory above, FAQ parity `10 = 10`, canonical sitemap count `1`, zero retired-term/price hits, and all eight permanent redirects. The build retains the repository's pre-existing warnings about deprecated Astro markdown configuration, the empty `src/content/framework` glob, and unresolved `%23n`; Phase 6 adds no new build warning.
+
+## Fix round 1 — full-public-build stale-output guard
+
+### Root cause
+
+The initial Phase 6 guard inspected only `dist/services.html`. Published FAQ, insight and case-study content still rendered sunset `package-a` and `inhouse-b` references. Both internal keys resolve to the same retired public price, so a services-only scan could pass while other indexable pages still promoted the old ladder. Generic `Agentic AI Transformation` positioning also entered many page heads through the shared Person schema, while the FAQ supplied the phrase directly in its meta description.
+
+The integrity boundary is now every built HTML document except explicit redirect fallbacks and pages whose robots metadata is `noindex`. This covers 59 public documents in the current build and excludes 31 redirect/noindex artifacts.
+
+### TDD RED
+
+The full-build guard was added before content edits. After correcting a test-helper recursion error, the focused verifier failed with the intended evidence:
+
+```text
+AssertionError [ERR_ASSERTION]: public build must not render retired package positioning:
+about.html: generic AI Transformation positioning
+case-studies/manufacturing-b2b-12-person-team.html: retired package price
+case-studies/real-estate-developer-sales-team-restructure.html: retired package price
+faq.html: Package A
+faq.html: retired package price
+faq.html: generic AI Transformation positioning
+index.html: generic AI Transformation positioning
+insights/agentic-ai-sme-thailand-start.html: Package A
+insights/agentic-ai-sme-thailand-start.html: retired package price
+insights/lookrak-kills-sme-teams.html: retired package price
+...shared-schema positioning hits on the remaining public insight pages
+```
+
+The verifier collects all violations before failing, so one stale page cannot hide later violations. It resolves the retired price through `fmtPrice('package-a')`; no price amount is duplicated in the test.
+
+### Source migration
+
+- Published Package A continuation CTAs now point to A1 when the promise is guided adoption, or C1 when the promise is one-day consulting.
+- Published sunset Bootcamp references now point to T1 and resolve its current price through `{{price:inhouse-a}}`.
+- Implementation budget examples now use I1 through `{{price:daruma-starter}}`.
+- FAQ comparison/pricing copy now uses `{{price:daily-sales-consulting}}`, current T1/T3 entries, or scope-based wording.
+- The shared Person schema now uses `Sales System Implementation with AI`; FAQ metadata leads with B2B sales-team development, systems and AI-assisted sales work.
+- The internal pricing keys remain untouched. The remaining Package A source references are non-public: one draft article and the unused `FaqWork.astro` component. The compatibility route and internal pricing SSOT also remain intact.
+
+### GREEN and independent evidence
+
+```text
+$ pnpm build
+[build] 84 page(s) built
+[build] Complete!
+
+$ pnpm verify:services -- --build-output
+services vnext data contract passed
+```
+
+An independent recursive scan of fresh output reported:
+
+```json
+{
+  "allHtml": 90,
+  "publicHtml": 59,
+  "excludedRedirectOrNoindex": 31,
+  "retiredPriceResolvedFromSsot": "฿59,900",
+  "violations": []
+}
+```
+
+## Fix round 2 — body-wide generic-positioning guard
+
+### Root cause and TDD RED
+
+The full-public-build guard from round 1 checked generic `AI Transformation` positioning only inside each document head. Two indexable pages still rendered that positioning in their bodies: the About expertise list and the published Agent Builder Kit manual.
+
+The guard was first changed to scan the complete HTML document. Before production copy was edited, the focused verifier failed with exactly the intended two violations:
+
+```text
+public build must not render retired package positioning:
+about.html: generic AI Transformation positioning
+agent-builder-kit/manual/part-1.html: generic AI Transformation positioning
+```
+
+### Source migration and GREEN
+
+- About now names the discipline `Sales System Implementation with AI` and describes concrete Report, Dashboard and connected-workflow outcomes that teams can operate themselves.
+- The manual now contrasts chat-only AI use with turning repetitive sales work into a shared workflow, removing the generic transformation claim while preserving the paragraph's warning and teaching intent.
+- The integrity guard scans the full body and head of every public built HTML page. Its retired-price assertion still resolves the value from the pricing SSOT rather than hardcoding an amount.
+
+After the source migration, a fresh full build and focused verifier passed:
+
+```text
+$ pnpm build
+[build] 84 page(s) built
+[build] Complete!
+
+$ pnpm verify:services -- --build-output
+services vnext data contract passed
+```
+
+The final combined gate also passed both services suites (`7/7`) and `git diff --check`. An independent recursive output scan corroborated the guard across the complete HTML rather than the head alone:
+
+```json
+{
+  "allHtml": 90,
+  "publicHtml": 59,
+  "excludedRedirectOrNoindex": 31,
+  "violations": []
+}
+```
+
+## Fix round 3 — ban generic AI Agent Transformation copy
+
+### Root cause and TDD RED
+
+The full-document integrity guard covered `Agentic AI Transformation` and selected `AI Transformation สำหรับ...` forms, but not the distinct phrase `AI Agent Transformation`. About used that omitted phrase in both its shared description and its visible hero line, so the description also propagated into metadata and ProfilePage schema without failing the guard.
+
+The verifier pattern was first extended with the exact `AI Agent Transformation` phrase. Against unchanged fresh output, the focused verifier failed for the intended public page:
+
+```text
+AssertionError [ERR_ASSERTION]: public build must not render retired package positioning:
+about.html: generic AI Transformation positioning
+```
+
+### Outcome-first migration and GREEN
+
+- The About description now leads with `ที่ปรึกษาวางระบบและพัฒนาทีมขาย B2B สำหรับ SME` and names concrete KPI, commission, Funnel, Report, Dashboard and AI-workflow outcomes.
+- The visible About hero line now uses the same sales-system positioning and concrete deliverables instead of a generic transformation label.
+- The public-output guard scans full HTML for `AI Agent Transformation` alongside the previously retired forms, protecting metadata, schema and body copy with one contract.
+
+After the source migration, a fresh build produced 84 pages and `pnpm verify:services -- --build-output` passed. The final combined gate passed both services suites (`7/7`) and `git diff --check`.
+
+An independent recursive output scan using the expanded exact phrase reported:
+
+```json
+{
+  "allHtml": 90,
+  "publicHtml": 59,
+  "excludedRedirectOrNoindex": 31,
+  "violations": []
+}
+```
+
+A separate exact search found no `AI Agent Transformation` occurrence in any built HTML file.
