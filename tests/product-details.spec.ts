@@ -201,8 +201,12 @@ test('T1 detail page presents the approved sales psychology customer job and fou
   assert.equal(await page.locator('form').count(), 0, 'T1 detail page must not include a form');
   assert.equal(await page.locator('[data-floating-line]').count(), 1, 'T1 must retain exactly one global Floating LINE CTA');
   const html = await page.content();
+  assert.doesNotMatch(html, /Agentic AI Transformation/, 'T1 must keep its public category Sales-first rather than using retired generic AI Transformation positioning');
   const courseSchema = schemas(html).find((item) => item['@type'] === 'Course');
+  assert.equal(courseSchema?.name, catalog.name, 'T1 Course schema name must resolve from Catalog inhouse-a');
+  assert.equal(courseSchema?.courseCode, 'T1', 'T1 Course schema must identify the T1 product code');
   assert.equal(courseSchema?.url, 'https://punnattapatch.com/services/t1-sales-skills', 'T1 Course schema must use the canonical route');
+  assert.equal(courseSchema?.timeRequired, catalog.duration, 'T1 Course schema duration must resolve from Catalog inhouse-a');
   assert.ok(schemas(html).some((item) => item['@type'] === 'FAQPage'), 'T1 must expose FAQPage schema');
   assert.ok(schemas(html).some((item) => item['@type'] === 'BreadcrumbList'), 'T1 must expose BreadcrumbList schema');
   assert.doesNotMatch(html, /Journey\s*\/\s*FFAB|Pre-call\s*\/\s*Questions|Context\s*\/\s*Follow-up|Objection\s*\/\s*Practice/, 'T1 must not retain superseded Journey/FFAB curriculum labels');
