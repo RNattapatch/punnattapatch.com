@@ -349,7 +349,7 @@ function assertServicesSeoBuildOutput() {
     ['/services/package-a', '/services#offer-c1'],
     ['/services/sales-system-sprint', '/services#offer-c1'],
     ['/services/sale-training-bundle', '/services#offer-t1'],
-    ['/services/trust-content-tiktok-workshop', '/services#trust-content'],
+    ['/services/trust-content-tiktok-workshop', '/services/online-to-sales'],
   ];
   for (const [from, to] of legacyRedirects) {
     assert.match(redirects, new RegExp(`^${from.replaceAll('/', '\\/')}\\s+${to.replaceAll('/', '\\/')}\\s+301$`, 'm'), `${from} must permanently redirect to ${to}`);
