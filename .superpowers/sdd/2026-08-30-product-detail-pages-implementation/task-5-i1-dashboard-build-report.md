@@ -100,8 +100,8 @@ Ran the AI-language structure measure on `src/data/product-details/i1.ts` after 
 ## Visual QA artifacts
 
 - `screenshots/i1-dashboard-build-desktop-full.png` — 1440×9931
-- `screenshots/i1-dashboard-build-tablet-full.png` — 768×11698
-- `screenshots/i1-dashboard-build-mobile-full.png` — 390×14806
+- `screenshots/i1-dashboard-build-tablet-full.png` — 768×11282
+- `screenshots/i1-dashboard-build-mobile-full.png` — 390×14689
 - `screenshots/i1-proof-redaction-contact-sheet.png` — 1400×1320, the exact approved five assets
 
 Each page capture was made after fonts were ready; the I1 proof section was walked so the five intentionally lazy-loaded proof assets could decode before capture. Visual inspection found no horizontal overflow or floating-CTA obstruction at 1440, 768, or 390 pixels; the browser contract separately checks these conditions for every in-flow I1 CTA.
