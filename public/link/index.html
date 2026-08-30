@@ -109,6 +109,7 @@
         .trust-track { transform: none !important; }
         .logo-tile { scroll-snap-align: start; }
         .marquee-copy { display: none; }
+        [data-logo-toggle] { display: none; }
       }
     </style>
   </head>
@@ -173,9 +174,12 @@
           <figure class="overflow-hidden rounded-[9px] bg-sand"><img data-trust-photo src="/testimonial/web/class-selfie.jpg" alt="ภาพกิจกรรมอบรมกับทีมลูกค้า" width="1080" height="1080" loading="lazy" decoding="async" class="size-full object-cover" /></figure>
           <figure class="overflow-hidden rounded-[9px] bg-sand"><img data-trust-photo src="/lp/inhouse/hands-on.jpg" alt="ภาพกิจกรรมลงมือทำกับทีมลูกค้า" width="1600" height="1200" loading="lazy" decoding="async" class="size-full object-cover" /></figure>
         </div>
-        <p class="mt-2.5 text-[11.5px] leading-relaxed text-[#6f685e]">ภาพจากคลาสและการทำงานหน้างานจริง</p>
+        <div class="mt-2.5 flex min-h-11 items-center justify-between gap-3">
+          <p class="text-[11.5px] leading-relaxed text-[#6f685e]">ภาพจากคลาสและการทำงานหน้างานจริง</p>
+          <button type="button" data-logo-toggle aria-controls="client-logo-carousel" aria-pressed="false" class="min-h-11 shrink-0 touch-manipulation rounded-[9px] border border-[#bdb5a6] bg-paper px-3 text-[11px] font-semibold text-navy transition-colors duration-150 hover:bg-sand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral">หยุด</button>
+        </div>
 
-        <div data-logo-viewport class="trust-marquee mt-3" aria-label="รายชื่อลูกค้าบางส่วน">
+        <div id="client-logo-carousel" data-logo-viewport class="trust-marquee mt-3" aria-label="รายชื่อลูกค้าบางส่วน">
           <div class="trust-track" data-logo-track>
             <div class="logo-run">
               <div class="logo-tile"><img src="/logos/clients/futureskill.png" alt="FutureSkill" loading="lazy" decoding="async" /></div>
@@ -299,14 +303,16 @@
         const TRANSITION_MS = 360;
         const logoViewport = document.querySelector('[data-logo-viewport]');
         const logoTrack = document.querySelector('[data-logo-track]');
+        const logoToggle = document.querySelector('[data-logo-toggle]');
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         const originalLogos = logoTrack ? logoTrack.querySelectorAll('.logo-run:first-child .logo-tile') : [];
         let logoIndex = 0;
         let logoTimer = null;
         let logoIntersecting = false;
+        let logoPaused = false;
         function sizeLogoTiles() {
           if (!logoViewport || !logoTrack) return;
-          const columns = logoViewport.clientWidth >= 430 ? 3 : 2;
+          const columns = window.innerWidth >= 430 ? 3 : 2;
           const tileWidth = (logoViewport.clientWidth - LOGO_GAP * (columns - 1)) / columns;
           logoTrack.querySelectorAll('.logo-tile').forEach((tile) => { tile.style.width = `${tileWidth}px`; });
           logoIndex = 0;
@@ -328,7 +334,7 @@
           }
         }
         function startLogoWalk() {
-          if (!logoTimer && !reduceMotion.matches && logoIntersecting && !document.hidden) logoTimer = window.setInterval(advanceLogos, ADVANCE_MS);
+          if (!logoTimer && !logoPaused && !reduceMotion.matches && logoIntersecting && !document.hidden) logoTimer = window.setInterval(advanceLogos, ADVANCE_MS);
         }
         function stopLogoWalk() {
           if (logoTimer) window.clearInterval(logoTimer);
@@ -337,6 +343,12 @@
         if (!logoViewport || !logoTrack) return;
         sizeLogoTiles();
         window.addEventListener('resize', sizeLogoTiles, { passive: true });
+        logoToggle?.addEventListener('click', () => {
+          logoPaused = !logoPaused;
+          logoToggle.setAttribute('aria-pressed', String(logoPaused));
+          logoToggle.textContent = logoPaused ? 'เล่นต่อ' : 'หยุด';
+          if (logoPaused) stopLogoWalk(); else startLogoWalk();
+        });
         if (!reduceMotion.matches && 'IntersectionObserver' in window) {
           const observer = new IntersectionObserver(([entry]) => {
             logoIntersecting = entry.isIntersecting;

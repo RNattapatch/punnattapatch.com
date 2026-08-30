@@ -239,6 +239,21 @@ test('logo walk advances exactly one complete card only while visible', async ({
   const after = await transformX(page);
   assert.ok(Math.abs((after - before) + card.width + 12) <= 1, `expected one-card move, got ${after - before}px`);
 
+  const toggle = page.locator('[data-logo-toggle]');
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+  await expect(toggle).toHaveText('เล่นต่อ');
+  await page.waitForTimeout(500);
+  const pausedAt = await transformX(page);
+  await page.waitForTimeout(3250);
+  assert.equal(await transformX(page), pausedAt, 'pause control must stop automatic movement');
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  await expect(toggle).toHaveText('หยุด');
+  await page.waitForTimeout(3250);
+  assert.notEqual(await transformX(page), pausedAt, 'play control must resume automatic movement');
+
   const clipping = await page.locator('[data-logo-viewport]').evaluate((viewport) => {
     const bounds = viewport.getBoundingClientRect();
     return [...viewport.querySelectorAll('.logo-tile')]
@@ -249,6 +264,20 @@ test('logo walk advances exactly one complete card only while visible', async ({
   });
   assert.equal(clipping, 0, 'visible carousel cards must not clip at either edge');
   await page.close();
+
+  const boundary = await browser.newPage({ viewport: { width: 430, height: 900 } });
+  await preparePage(boundary);
+  await boundary.locator('[data-logo-viewport]').scrollIntoViewIfNeeded();
+  const boundaryLayout = await boundary.locator('[data-logo-viewport]').evaluate((viewport) => {
+    const bounds = viewport.getBoundingClientRect();
+    const cards = [...viewport.querySelectorAll('.logo-run:not(.marquee-copy) .logo-tile')].slice(0, 4).map((tile) => tile.getBoundingClientRect());
+    return {
+      fullyVisible: cards.filter((card) => card.left >= bounds.left - 1 && card.right <= bounds.right + 1).length,
+      fourthStartsAfterViewport: cards[3].left >= bounds.right - 1,
+    };
+  });
+  assert.deepEqual(boundaryLayout, { fullyVisible: 3, fourthStartsAfterViewport: true });
+  await boundary.close();
 
   const tablet = await browser.newPage({ viewport: { width: 768, height: 1024 } });
   await preparePage(tablet);
