@@ -6,6 +6,8 @@ Implemented the canonical I1 service detail page at `/services/dashboard-build` 
 
 Implementation commit: `7e4daeb feat(i1): add sales dashboard build detail page`
 
+Review-round-1 remediation commit: `19766da fix(i1): resolve detail page review findings`
+
 ## TDD evidence
 
 ### RED
