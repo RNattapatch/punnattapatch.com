@@ -4,6 +4,8 @@
 
 Implemented the canonical I1 service detail page at `/services/dashboard-build` for Catalog key `daruma-starter`. The page sells a bounded production implementation: Pun’s team Maps/Designs, Builds/Tests, runs UAT, and trains the customer team to take over.
 
+Implementation commit: `7e4daeb feat(i1): add sales dashboard build detail page`
+
 ## TDD evidence
 
 ### RED
