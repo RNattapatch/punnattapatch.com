@@ -124,7 +124,7 @@ test('content and destination contract exposes only the three approved routes', 
   const errors = await preparePage(page);
 
   await expect(page.getByText('ปัน ณัฐพัชร์', { exact: true })).toBeVisible();
-  await expect(page.getByText('@pun_nattapatch', { exact: true })).toBeVisible();
+  await expect(page.locator('header').getByText('@pun_nattapatch', { exact: true })).toBeVisible();
   await expect(page.getByText('ที่ปรึกษาการปั้นทีมขาย × AI Agent', { exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'วันนี้คุณมาหาผมเรื่องไหนครับ?' })).toBeVisible();
   await expect(page.locator('[data-primary-route]')).toHaveCount(3);
@@ -134,8 +134,9 @@ test('content and destination contract exposes only the three approved routes', 
   for (const copy of supportCopy) await expect(page.getByText(copy, { exact: true })).toBeVisible();
   await expect(page.locator('a[href*="/booking"], a[href*="/intake-form"]')).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'ติดตามผลงานต่างๆได้ทาง' })).toBeVisible();
+  const socialSection = page.locator('[data-social-section]');
   for (const [label, href] of socialLinks) {
-    await expect(page.getByRole('link', { name: new RegExp(label) })).toHaveAttribute('href', href);
+    await expect(socialSection.getByRole('link', { name: new RegExp(label) })).toHaveAttribute('href', href);
   }
   assert.deepEqual(errors.consoleErrors, []);
   assert.deepEqual(errors.pageErrors, []);
@@ -168,6 +169,116 @@ test('Trust uses real loaded media and 16 unclipped full-color logos in the appr
     assert.deepEqual(await logo.evaluate((image) => ({ filter: getComputedStyle(image).filter, opacity: getComputedStyle(image).opacity })), { filter: 'none', opacity: '1' });
   }
   assert.doesNotMatch((await page.content()).toLowerCase(), /singha/);
+  await page.close();
+});
+
+test('intro video facade stays lightweight and opens the exact TikTok player on demand', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  const tiktokRequests: string[] = [];
+  page.on('request', (request) => {
+    if (new URL(request.url()).hostname.endsWith('tiktok.com')) tiktokRequests.push(request.url());
+  });
+  await preparePage(page);
+
+  const videoSection = page.locator('[data-video-section]');
+  await expect(videoSection).toBeVisible();
+  assert.equal(await videoSection.evaluate((video) => {
+    const trust = document.querySelector('[data-trust-section]');
+    const social = document.querySelector('[data-social-section]');
+    return Boolean(
+      trust
+      && social
+      && (trust.compareDocumentPosition(video) & Node.DOCUMENT_POSITION_FOLLOWING)
+      && (video.compareDocumentPosition(social) & Node.DOCUMENT_POSITION_FOLLOWING)
+    );
+  }), true, 'video note must sit between Trust and Social');
+
+  await expect(page.locator('iframe[src*="tiktok.com/player/v1/"]')).toHaveCount(0);
+  assert.deepEqual(tiktokRequests, [], 'TikTok must receive no request before the visitor presses play');
+  const poster = videoSection.locator('img[data-video-poster]');
+  assert.equal(await poster.evaluate((image: HTMLImageElement) => (
+    image.complete && image.naturalWidth > 0 && new URL(image.src).origin === window.location.origin
+  )), true, 'poster must load locally before the third-party player');
+
+  const play = videoSection.locator('[data-video-play]');
+  const playBox = await play.boundingBox();
+  assert.ok(playBox && playBox.width >= 44 && playBox.height >= 44, 'video play target must be at least 44px');
+  const videoLayout = await play.evaluate((button) => {
+    const section = button.closest('[data-video-section]');
+    if (!section) return null;
+    const buttonBox = button.getBoundingClientRect();
+    const sectionBox = section.getBoundingClientRect();
+    return {
+      aspectRatio: buttonBox.width / buttonBox.height,
+      centerDelta: Math.abs(
+        (buttonBox.left + buttonBox.width / 2) - (sectionBox.left + sectionBox.width / 2),
+      ),
+    };
+  });
+  assert.ok(videoLayout, 'video layout must be measurable');
+  assert.ok(Math.abs(videoLayout.aspectRatio - (9 / 16)) <= 0.02, `video facade must be portrait 9:16, got ${videoLayout.aspectRatio}`);
+  assert.ok(videoLayout.centerDelta <= 1, `video facade must be horizontally centered, delta ${videoLayout.centerDelta}px`);
+  await expect(videoSection.getByRole('link', { name: /เปิดใน TikTok/ })).toHaveAttribute(
+    'href',
+    'https://www.tiktok.com/@pun_nattapatch/video/7680069615455636756',
+  );
+
+  await page.evaluate(() => {
+    window.__linkEvents = [];
+    window.plausible = (...args) => window.__linkEvents.push(args);
+  });
+  await play.click();
+
+  const dialog = page.locator('[data-video-dialog]');
+  await expect(dialog).toBeVisible();
+  const player = dialog.locator('iframe');
+  await expect(player).toHaveAttribute(
+    'src',
+    /^https:\/\/www\.tiktok\.com\/player\/v1\/7680069615455636756\?autoplay=1/,
+  );
+  await expect(player).toHaveAttribute('title', 'วิดีโอแนะนำตัวและบริการของปัน ณัฐพัชร์');
+  assert.ok(tiktokRequests.some((url) => url.startsWith('https://www.tiktok.com/player/v1/7680069615455636756')));
+  assert.deepEqual(await page.evaluate(() => window.__linkEvents), [
+    ['link_intro_video_play', { props: { target: 'intro-video', platform: 'tiktok', source: 'direct', path: '/link/' } }],
+    ['Link Click', { props: { target: 'intro-video', platform: 'tiktok', source: 'direct', path: '/link/' } }],
+  ]);
+
+  await dialog.locator('[data-video-close]').click();
+  await expect(dialog).not.toBeVisible();
+  await expect(dialog.locator('iframe')).toHaveCount(0);
+  await page.close();
+});
+
+test('TikTok-style facade uses honest familiar cues and enables official playback controls', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await preparePage(page);
+
+  const videoSection = page.locator('[data-video-section]');
+  const facade = videoSection.locator('[data-video-play]');
+  await expect(facade.getByText('@pun_nattapatch', { exact: true })).toBeVisible();
+  await expect(facade.getByText('ให้บริการอะไรบ้าง สรุปจบในคลิปเดียว', { exact: true })).toBeVisible();
+  await expect(facade.getByText('แตะเพื่อเล่น', { exact: true })).toBeVisible();
+  assert.equal(await facade.evaluate((button) => getComputedStyle(button).backgroundColor), 'rgb(0, 0, 0)');
+  await expect(videoSection.locator('button')).toHaveCount(1);
+
+  await facade.click();
+  const source = await page.locator('[data-video-dialog] iframe').getAttribute('src');
+  assert.ok(source);
+  const playerURL = new URL(source);
+  assert.deepEqual(Object.fromEntries([
+    'autoplay', 'controls', 'progress_bar', 'play_button', 'volume_control',
+    'fullscreen_button', 'description', 'music_info', 'rel',
+  ].map((key) => [key, playerURL.searchParams.get(key)])), {
+    autoplay: '1',
+    controls: '1',
+    progress_bar: '1',
+    play_button: '1',
+    volume_control: '1',
+    fullscreen_button: '1',
+    description: '1',
+    music_info: '0',
+    rel: '0',
+  });
   await page.close();
 });
 
@@ -235,7 +346,7 @@ test('logo walk advances exactly one complete card only while visible', async ({
   const card = await page.locator('.logo-run:not(.marquee-copy) .logo-tile').first().boundingBox();
   assert.ok(card);
   const before = await transformX(page);
-  await page.waitForTimeout(3250);
+  await page.waitForTimeout(3500);
   const after = await transformX(page);
   assert.ok(Math.abs((after - before) + card.width + 12) <= 1, `expected one-card move, got ${after - before}px`);
 
