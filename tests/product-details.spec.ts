@@ -275,3 +275,74 @@ test('T1 remediation keeps evidence, location-specific LINE actions, and mobile 
   }
   await page.close();
 });
+
+test('C1 daily consulting is one service with four selectable primary-outcome tracks', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const catalog = CATALOG['daily-sales-consulting'];
+  const response = await page.goto(`${baseURL}/services/daily-consulting`);
+
+  assert.equal(response?.status(), 200, 'C1 canonical route must render');
+  assert.equal(await page.locator('h1').count(), 1, 'C1 must contain exactly one H1');
+  assert.equal(await page.locator('h1').innerText(), catalog.name, 'C1 H1 must resolve from the Catalog');
+  assert.equal(await page.getByText(catalog.duration, { exact: true }).count(), 1, 'C1 duration must resolve from the Catalog');
+  assert.equal(await page.getByText(fmtPrice('daily-sales-consulting'), { exact: true }).count(), 1, 'C1 price must resolve from the Catalog');
+
+  const chooser = page.locator('[data-symptom-chooser]');
+  const chooserActions = chooser.locator('a[data-track-chooser]');
+  assert.equal(await chooserActions.count(), 4, 'C1 must offer one symptom-first chooser action per track');
+  const trackCards = page.locator('[data-scope-item][data-primary-outcome-track]');
+  assert.equal(await trackCards.count(), 4, 'C1 must render exactly four primary-outcome track cards');
+  const targets = await chooserActions.evaluateAll((actions) => actions.map((action) => action.getAttribute('href')));
+  assert.deepEqual(targets, ['#c1-track-funnel', '#c1-track-team', '#c1-track-dashboard', '#c1-track-ai'], 'C1 chooser targets must map to stable track ids');
+  await chooserActions.nth(3).click();
+  assert.equal(new URL(page.url()).hash, '#c1-track-ai', 'choosing a symptom must update the URL hash');
+  assert.equal(await page.evaluate(() => document.activeElement?.id), 'c1-track-ai', 'choosing a symptom must move focus to the chosen track');
+  await page.waitForFunction(() => {
+    const target = document.getElementById('c1-track-ai');
+    if (!target) return false;
+    const box = target.getBoundingClientRect();
+    return box.top < window.innerHeight && box.bottom > 0;
+  });
+  const selectedTrackBox = await page.locator('#c1-track-ai').boundingBox();
+  assert.ok(selectedTrackBox && selectedTrackBox.y < 900 && selectedTrackBox.y + selectedTrackBox.height > 0, 'chosen track must scroll into the viewport');
+
+  assert.equal(await page.locator('[data-detail-block="investment"]').count(), 1, 'C1 must have one investment block');
+  assert.equal(await trackCards.locator('[data-contact-cta], [data-track-price], [data-track-checkout]').count(), 0, 'individual C1 tracks must not sell separately');
+  const scopeText = await page.locator('[data-detail-block="scope"]').innerText();
+  assert.match(scopeText, /เลือก Track นี้เมื่อ/, 'service tracks must use symptom language, not course labels');
+  assert.match(scopeText, /ทำร่วมกัน/, 'service tracks must use consult action language');
+  assert.match(scopeText, /Output ของวัน/, 'service tracks must use day-output language');
+  const boundaryText = await page.locator('[data-detail-block="boundary"]').innerText();
+  assert.match(boundaryText, /หนึ่งวัน.*Primary Outcome/, 'C1 must state one consulting day has one primary outcome');
+  assert.match(boundaryText, /Proposal เดียว/, 'C1 must state connected problems become one proposal');
+  assert.match(boundaryText, /ไม่.*Audit|Audit.*ไม่/, 'C1 must make clear a paid Audit is not required');
+  const aiTrack = page.locator('#c1-track-ai');
+  assert.match(await aiTrack.innerText(), /Prototype/, 'AI track must stop at a prototype');
+  assert.match(await aiTrack.innerText(), /Human review/, 'AI track must retain a human-review boundary');
+  assert.equal(await page.locator('a[href="/services/dashboard-build"]').count(), 1, 'C1 must distinguish a planned production build service');
+
+  assert.equal(await page.locator('[data-proof-id="c1-scenery-room"]').count(), 1, 'C1 must show inspectable Scenery work proof');
+  assert.equal(await page.locator('[data-proof-id="c1-hfc-journey"]').count(), 1, 'C1 must show the approved HFC training-to-consult proof');
+  assert.equal(await page.getByText('“ปันคุยง่าย เข้าใจสิ่งที่ CEO ต้องการ และหาทางออกให้ได้”', { exact: true }).count(), 1, 'C1 must use the approved bounded client quote');
+  assert.equal(await page.locator('[data-product-faq-button]').count(), 8, 'C1 must publish the approved eight FAQs');
+  assert.equal(await page.locator('form').count(), 0, 'C1 detail page must not include a form');
+  assert.equal(await page.locator('[data-floating-line]').count(), 1, 'C1 must retain exactly one global Floating LINE CTA');
+  const ctas = page.locator('[data-product-code="C1"][data-contact-cta]');
+  assert.ok(await ctas.count() >= 8, 'C1 must provide a complete LINE CTA journey');
+  for (const action of await ctas.all()) {
+    assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'every C1 CTA must open SITE.social.line');
+    assert.equal(await action.getAttribute('data-cta-keyword'), 'CONSULT', 'every C1 CTA must carry the CONSULT keyword');
+  }
+  const html = await page.content();
+  assert.doesNotMatch(html, /ยอดขายร้อยล้าน|ตามระยะเวลาจาก Catalog|Agentic AI Transformation/, 'C1 must not expose stale unsupported or generic public copy');
+  const serviceSchema = schemas(html).find((item) => item['@type'] === 'Service');
+  assert.equal(serviceSchema?.name, catalog.name, 'C1 Service schema name must resolve from Catalog');
+  assert.equal(serviceSchema?.url, 'https://punnattapatch.com/services/daily-consulting', 'C1 Service schema must use canonical route');
+  assert.ok(schemas(html).some((item) => item['@type'] === 'FAQPage'), 'C1 must expose FAQPage schema');
+  assert.ok(schemas(html).some((item) => item['@type'] === 'BreadcrumbList'), 'C1 must expose BreadcrumbList schema');
+  for (const viewport of [{ width: 1440, height: 900 }, { width: 768, height: 1024 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), viewport.width, `C1 must not overflow at ${viewport.width}px`);
+  }
+  await page.close();
+});

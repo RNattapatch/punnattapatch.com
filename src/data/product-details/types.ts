@@ -12,8 +12,14 @@ export interface ProofItem {
   kind: 'quote' | 'photo' | 'system' | 'demand';
   quote?: string;
   caption: string;
-  image: ImageMetadata;
+  image: ImageMetadata | PublicProofImage;
   alt: string;
+}
+
+export interface PublicProofImage {
+  publicSrc: string;
+  width: number;
+  height: number;
 }
 
 export interface ClientLogo {
@@ -59,11 +65,26 @@ export interface ProductLineCta {
 }
 
 export interface ScopeItem {
+  id?: string;
   label: string;
   title: string;
   learn?: string;
   action: string;
   output: string;
+  learnLabel?: string;
+  actionLabel?: string;
+  outputLabel?: string;
+}
+
+export interface SymptomChooserAction {
+  label: string;
+  targetId: string;
+}
+
+export interface SymptomChooser {
+  heading: string;
+  intro?: string;
+  actions: SymptomChooserAction[];
 }
 
 export interface ProductDetailPageData {
@@ -90,6 +111,7 @@ export interface ProductDetailPageData {
   reasons: Array<{ title: string; body: string }>;
   analogy: string;
   scope: ScopeItem[];
+  symptomChooser?: SymptomChooser;
   takeHome: string[];
   fit: string[];
   notFit: string;
@@ -118,13 +140,13 @@ export interface ProductDetailPageData {
   seo: { title: string; description: string };
   sections?: {
     authority?: { heading: string; copy?: string };
-    proof?: { heading: string; intro?: string };
+    proof?: { heading: string; intro?: string; secondaryHeading?: string };
     pain?: { heading: string; close?: string };
     reasons?: { heading: string };
     scope?: { heading: string; intro?: string; ctaHeading?: string };
     takeHome?: { heading: string; close?: string };
     fit?: { heading: string };
-    bio?: { heading: string };
+    bio?: { heading: string; eyebrow?: string };
     investment?: { eyebrow: string };
     final?: { heading: string; copy: string };
   };
