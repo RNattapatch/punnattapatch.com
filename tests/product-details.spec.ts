@@ -188,3 +188,55 @@ test('T1 Sales Skills page is a one-day Convert training with the real LINE E-Bo
   }
   await page.close();
 });
+
+test('T1 remediation keeps evidence, location-specific LINE actions, and mobile CTA clearance faithful', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(`${baseURL}/services/t1-sales-skills`);
+
+  const hfcProof = page.locator('[data-proof-id="hfc-journey"]');
+  assert.equal(await hfcProof.count(), 1, 'T1 must retain one approved HFC training-to-consult proof');
+  assert.equal(await hfcProof.locator('figcaption').innerText(), 'เริ่มจากงาน Training แล้วต่อยอดเป็น Consult 3 วัน เพื่อจัด Company Knowledge, Dashboard และ Roadmap ของงานขายให้เข้ากับบริบทธุรกิจจริง', 'HFC journey proof caption must remain verbatim');
+  assert.doesNotMatch(await page.locator('[data-detail-block="proof"]').innerText(), /กลุ่มเล็ก/, 'T1 proof must not misrepresent a large workshop as a small group');
+
+  const expectedActions = [
+    ['after_scope', 'ทัก LINE คุยเรื่องจัด In-house', 'inhouse_enquiry'],
+    ['after_scope', 'รับ E-Book ก่อนตัดสินใจ', 'lead_magnet'],
+    ['after_investment', 'ทัก LINE ขอใบเสนอราคา', 'quote'],
+    ['after_investment', 'ส่ง Pain ของทีมมาให้ช่วยเลือกคอร์ส', 'course_selection'],
+    ['final', 'ทัก LINE วางคอร์สให้ทีม', 'course_planning'],
+    ['final', 'รับ E-Book หยุดหาเซลล์ผิดคน', 'lead_magnet'],
+  ] as const;
+  for (const [location, label, intent] of expectedActions) {
+    const action = page.locator(`[data-product-code="T1"][data-cta-location="${location}"][data-cta-label="${label}"]`);
+    assert.equal(await action.count(), 1, `${location} must render the approved ${label} action`);
+    assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', `${location} action must use SITE.social.line`);
+    assert.equal(await action.getAttribute('data-cta-intent'), intent, `${location} action must retain its analytics intent`);
+    assert.equal(await action.getAttribute('data-cta-keyword'), 'SALES SKILL', `${location} action must retain the T1 keyword`);
+  }
+
+  const finalQr = page.locator('[data-final-line-qr]');
+  assert.equal(await finalQr.count(), 1, 'desktop final CTA must contain a real LINE QR');
+  assert.equal(await finalQr.isVisible(), true, 'desktop final QR must be visible when scan copy is visible');
+
+  const mainText = await page.locator('#main').innerText();
+  assert.doesNotMatch(mainText, /ปั้นธุรกิจจากยอดติดลบสู่ยอดขายร้อยล้าน/, 'T1 must not publish the unsupported hundred-million authority claim');
+  assert.doesNotMatch(mainText, /(?:ตามที่ระบุใน Catalog|ตามเงื่อนไขใน Catalog)/, 'T1 must not expose internal Catalog placeholders to customers');
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  assert.equal(await finalQr.isVisible(), false, 'mobile must not show a scan instruction without an inline QR');
+  assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “SALES SKILL” พร้อมจำนวนทีม', { exact: true }).isVisible(), true, 'mobile final CTA must give a tappable LINE instruction');
+  for (const action of await page.locator('[data-product-code="T1"][data-contact-cta]').all()) {
+    await action.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(50);
+    const actionBox = await action.boundingBox();
+    const floatingBox = await page.locator('[data-floating-line]').boundingBox();
+    if (actionBox && floatingBox) {
+      const intersects = actionBox.x < floatingBox.x + floatingBox.width
+        && actionBox.x + actionBox.width > floatingBox.x
+        && actionBox.y < floatingBox.y + floatingBox.height
+        && actionBox.y + actionBox.height > floatingBox.y;
+      assert.equal(intersects, false, `floating LINE control must not obstruct ${await action.getAttribute('data-cta-location')} at 390px`);
+    }
+  }
+  await page.close();
+});

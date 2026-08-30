@@ -1,5 +1,7 @@
 ---
 import { resolveProductDetailCatalog } from '../../../data/product-details/catalog';
+import { Image } from 'astro:assets';
+import { LINE_QR_IMAGE } from '../../../data/service-offer-assets';
 import type { ProductDetailPageData } from '../../../data/product-details/types';
 import ProductHero from './ProductHero.astro';
 import AuthoritySnapshot from './AuthoritySnapshot.astro';
@@ -24,6 +26,9 @@ const decisionCta = (location: 'after_proof' | 'after_scope' | 'after_fit') => d
 const afterProofCta = decisionCta('after_proof');
 const afterScopeCta = decisionCta('after_scope');
 const afterFitCta = decisionCta('after_fit');
+const scopeLineCta = data.cta.locations?.afterScope ?? { primary: data.cta.primary, primaryIntent: 'quote', secondary: data.cta.secondary, secondaryIntent: data.cta.secondaryIntent ?? 'lead_magnet' };
+const investmentLineCta = data.cta.locations?.afterInvestment;
+const finalLineCta = data.cta.locations?.final ?? { primary: data.cta.primary, primaryIntent: 'quote', secondary: data.cta.finalSecondary ?? data.cta.secondary, secondaryIntent: data.cta.finalSecondaryIntent ?? data.cta.secondaryIntent ?? 'lead_magnet' };
 ---
 
 <div data-detail-block="hero"><ProductHero data={data} name={catalog.name} duration={catalog.duration} /></div>
@@ -37,11 +42,12 @@ const afterFitCta = decisionCta('after_fit');
 <div data-detail-block="scope"><ScopeTimeline items={data.scope} {...data.sections?.scope} /></div>
 {afterScopeCta
   ? <DecisionCTA code={data.code} keyword={data.cta.keyword} cta={afterScopeCta} />
-  : <section class="mx-auto max-w-6xl px-5 pb-14 sm:pb-20">{data.sections?.scope?.ctaHeading && <h2 class="mb-6 max-w-3xl font-display text-2xl font-bold text-navy sm:text-3xl">{data.sections.scope.ctaHeading}</h2>}<DetailLineCTA code={data.code} location="after_scope" {...data.cta} /></section>}
+  : <section class="mx-auto max-w-6xl px-5 pb-14 sm:pb-20">{data.sections?.scope?.ctaHeading && <h2 class="mb-6 max-w-3xl font-display text-2xl font-bold text-navy sm:text-3xl">{data.sections.scope.ctaHeading}</h2>}<DetailLineCTA code={data.code} location="after_scope" keyword={data.cta.keyword} {...scopeLineCta} /></section>}
 <div data-detail-block="take-home"><TakeHomeStack items={data.takeHome} {...data.sections?.takeHome} /></div>
 <div data-detail-block="fit"><FitBlock fit={data.fit} notFit={data.notFit} heading={data.sections?.fit?.heading} relatedOffer={data.relatedOffer} /></div>
 {afterFitCta && <DecisionCTA code={data.code} keyword={data.cta.keyword} cta={afterFitCta} />}
 <div data-detail-block="instructor"><InstructorBio paragraphs={data.bio} heading={data.sections?.bio?.heading} /></div>
 <div data-detail-block="investment"><InvestmentBlock name={catalog.name} price={catalog.price} amount={catalog.amount} regularPrice={catalog.regularPrice} eyebrow={data.sections?.investment?.eyebrow} {...data.investment} /></div>
+{investmentLineCta && <section data-detail-block="investment-cta" class="mx-auto max-w-5xl px-5 pb-14 sm:pb-20"><DetailLineCTA code={data.code} location="after_investment" keyword={data.cta.keyword} {...investmentLineCta} /></section>}
 <div data-detail-block="faq"><ProductFAQ code={data.code} items={data.faq} /></div>
-<section data-detail-block="final-cta" class="bg-navy py-14 text-white sm:py-20"><div class="mx-auto max-w-6xl px-5"><h2 class="font-display text-3xl font-bold sm:text-4xl">{data.sections?.final?.heading ?? 'อยากเช็กว่าหน้านี้เหมาะกับโจทย์ทีมคุณไหม?'}</h2><p class="mt-4 max-w-2xl leading-7 text-white/80">{data.sections?.final?.copy ?? `ทัก LINE พร้อม keyword ${data.cta.keyword} แล้วเล่าโจทย์ที่ทีมกำลังติดอยู่ได้เลยครับ`}</p><div class="mt-7"><DetailLineCTA code={data.code} location="final" primary={data.cta.primary} secondary={data.cta.finalSecondary ?? data.cta.secondary} secondaryIntent={data.cta.finalSecondaryIntent ?? data.cta.secondaryIntent} keyword={data.cta.keyword} inverse /></div>{data.cta.finalCaption && <p class="mt-4 text-sm leading-6 text-white/75">{data.cta.finalCaption}</p>}{data.cta.finalMicrocopy && <p class="mt-2 text-sm leading-6 text-white/75">{data.cta.finalMicrocopy}</p>}</div></section>
+<section data-detail-block="final-cta" class="bg-navy py-14 text-white sm:py-20"><div class="mx-auto max-w-6xl px-5"><h2 class="font-display text-3xl font-bold sm:text-4xl">{data.sections?.final?.heading ?? 'อยากเช็กว่าหน้านี้เหมาะกับโจทย์ทีมคุณไหม?'}</h2><p class="mt-4 max-w-2xl leading-7 text-white/80">{data.sections?.final?.copy ?? `ทัก LINE พร้อม keyword ${data.cta.keyword} แล้วเล่าโจทย์ที่ทีมกำลังติดอยู่ได้เลยครับ`}</p><div class="mt-7"><DetailLineCTA code={data.code} location="final" keyword={data.cta.keyword} {...finalLineCta} inverse /></div>{data.cta.finalCaption && <div class="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center"><figure data-final-line-qr class="hidden rounded-2xl bg-white p-2 sm:block"><Image src={LINE_QR_IMAGE} alt="QR code สำหรับเพิ่มเพื่อน LINE ของปัน ณัฐพัชร์" width={120} height={120} class="size-30" /></figure><p data-final-line-scan class="hidden text-sm leading-6 text-white/75 sm:block">{data.cta.finalCaption}</p><p data-final-line-mobile-instruction class="text-sm leading-6 text-white/75 sm:hidden">{data.cta.finalMobileInstruction ?? `ทัก LINE แล้วพิมพ์คำว่า “${data.cta.keyword}” พร้อมจำนวนทีม`}</p></div>}{data.cta.finalMicrocopy && <p class="mt-2 text-sm leading-6 text-white/75">{data.cta.finalMicrocopy}</p>}</div></section>

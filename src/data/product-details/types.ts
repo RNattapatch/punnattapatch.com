@@ -8,6 +8,7 @@ export interface ProductFaqItem {
 }
 
 export interface ProofItem {
+  id?: string;
   kind: 'quote' | 'photo' | 'system' | 'demand';
   quote?: string;
   caption: string;
@@ -48,6 +49,13 @@ export interface ProductDecisionCta {
   body: string;
   variant: 'light' | 'sand' | 'navy';
   actions: DecisionCtaAction[];
+}
+
+export interface ProductLineCta {
+  primary: string;
+  primaryIntent: string;
+  secondary: string;
+  secondaryIntent: string;
 }
 
 export interface ScopeItem {
@@ -100,6 +108,12 @@ export interface ProductDetailPageData {
     finalSecondaryIntent?: string;
     finalCaption?: string;
     finalMicrocopy?: string;
+    finalMobileInstruction?: string;
+    locations?: {
+      afterScope?: ProductLineCta;
+      afterInvestment?: ProductLineCta;
+      final?: ProductLineCta;
+    };
   };
   seo: { title: string; description: string };
   sections?: {

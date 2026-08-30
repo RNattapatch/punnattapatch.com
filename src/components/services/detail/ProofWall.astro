@@ -18,13 +18,13 @@ const chatItems = items.filter((item) => item.kind !== 'photo');
 
     {activityItems.length > 0 && (
       <div class="mt-8 grid gap-5 lg:grid-cols-[1.45fr_1fr]">
-        <figure data-proof-activity class="overflow-hidden rounded-3xl border border-navy/10 bg-white shadow-sm">
+        <figure data-proof-activity data-proof-id={activityItems[0].id} class="overflow-hidden rounded-3xl border border-navy/10 bg-white shadow-sm">
           <Image src={activityItems[0].image} alt={activityItems[0].alt} width={activityItems[0].image.width} height={activityItems[0].image.height} loading="eager" class="aspect-[4/3] w-full object-cover" />
           <figcaption class="p-5 leading-7 text-navy/80">{activityItems[0].caption}</figcaption>
         </figure>
         <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
           {activityItems.slice(1, 3).map((item) => (
-            <figure data-proof-activity class="overflow-hidden rounded-3xl border border-navy/10 bg-white shadow-sm">
+            <figure data-proof-activity data-proof-id={item.id} class="overflow-hidden rounded-3xl border border-navy/10 bg-white shadow-sm">
               <Image src={item.image} alt={item.alt} width={item.image.width} height={item.image.height} loading="eager" class="aspect-video w-full object-cover" />
               <figcaption class="p-5 leading-7 text-navy/80">{item.caption}</figcaption>
             </figure>
@@ -38,7 +38,7 @@ const chatItems = items.filter((item) => item.kind !== 'photo');
         <p class="text-sm font-bold text-navy">หลังคลาส ทีมส่งอะไรกลับมาบ้าง</p>
         <div class="mt-4 grid gap-5 md:grid-cols-3">
           {chatItems.map((item) => (
-            <figure data-proof-quote class="overflow-hidden rounded-3xl border border-navy/10 bg-white shadow-sm">
+            <figure data-proof-quote data-proof-id={item.id} class="overflow-hidden rounded-3xl border border-navy/10 bg-white shadow-sm">
               <div class="flex aspect-[16/7] items-center justify-center bg-navy/5 p-3 sm:p-4">
                 <Image src={item.image} alt={item.alt} width={item.image.width} height={item.image.height} class="h-full w-full object-contain" />
               </div>

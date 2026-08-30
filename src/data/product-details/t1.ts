@@ -1,7 +1,7 @@
 import t2NissanSeminar from '../../assets/services/proof/t2-nissan-seminar.jpg';
+import t1HfcTraining from '../../assets/services/proof/t1-hfc-training.jpg';
 import t2TrainingCompany from '../../assets/services/proof/t2-training-company.png';
 import t2TrainingContinue from '../../assets/services/proof/t2-training-continue.png';
-import t2WorkshopClassroom from '../../assets/services/proof/t2-workshop-classroom.jpg';
 import t2WorkshopCompany from '../../assets/services/proof/t2-workshop-company.jpg';
 import type { ProductDetailPageData } from './types';
 
@@ -22,13 +22,13 @@ export const T1_PRODUCT_DETAIL: ProductDetailPageData = {
   },
   authority: [
     'อดีต Sales Engineer และ Instructor ฝั่ง Dealer',
-    'ปั้นธุรกิจจากยอดติดลบสู่ยอดขายร้อยล้าน',
+    'ทำ Private In-house Training และ Consulting ด้วยตัวเอง',
     'คัดเรซูเม่ 1,000+ ใบ · สัมภาษณ์คนเข้าทีม 100+ คน',
     'อบรมและวางระบบร่วมกับ 18 องค์กร',
   ],
   proof: [
-    { kind: 'photo', caption: 'ภาพคลาส In-house ที่ทีมใช้เวลาร่วมกันกับโจทย์ของตัวเอง ไม่ได้นั่งฟังอย่างเดียว', image: t2WorkshopCompany, alt: 'ปัน ณัฐพัชร์ยืนกับทีมผู้เข้าร่วม In-house Workshop ในห้องอบรม' },
-    { kind: 'photo', caption: 'ภาพการทำ Workshop แบบกลุ่มเล็ก: หยิบโจทย์ของทีมขึ้นมาคุยและวางวิธีทำงานต่อร่วมกัน', image: t2WorkshopClassroom, alt: 'ผู้เข้าร่วม Workshop นั่งทำงานร่วมกันในห้องอบรม' },
+    { id: 'hfc-journey', kind: 'photo', caption: 'เริ่มจากงาน Training แล้วต่อยอดเป็น Consult 3 วัน เพื่อจัด Company Knowledge, Dashboard และ Roadmap ของงานขายให้เข้ากับบริบทธุรกิจจริง', image: t1HfcTraining, alt: 'ทีม HFC HealthFoods เข้าร่วม In-house Training' },
+    { kind: 'photo', caption: 'ผู้เข้าร่วมทำ Workshop ร่วมกันในห้องอบรม', image: t2WorkshopCompany, alt: 'ปัน ณัฐพัชร์ยืนกับทีมผู้เข้าร่วม In-house Workshop ในห้องอบรม' },
     { kind: 'photo', caption: 'ประสบการณ์สอน Dealer Sale ตั้งแต่ช่วงทำงาน Sales Engineer ทำให้เนื้อหารวมทั้งการเข้าใจสินค้า การถามลูกค้า และการสาธิตให้คนเห็นคุณค่าครับ', image: t2NissanSeminar, alt: 'ปัน ณัฐพัชร์สอนในกิจกรรม Nissan Sales Manager Seminar' },
     { kind: 'quote', quote: 'อาจารย์ปันสอนถูกใจทีมงานมากครับ', caption: 'ข้อความจากผู้เข้าร่วมหลังอบรมที่ปิดข้อมูลส่วนบุคคลแล้ว', image: t2TrainingCompany, alt: 'ข้อความรีวิวจากผู้บริหารที่ปิดข้อมูลส่วนบุคคลแล้ว' },
     { kind: 'quote', quote: 'ต่อยอด โปรเจ็คเลขาครับ สนุกดีครับ😂', caption: 'เวลา 20:27 ผู้เรียนส่งภาพระบบ Morning Brief ที่ทำต่อเองหลังคลาส โดยปิดข้อมูลส่วนบุคคลแล้ว', image: t2TrainingContinue, alt: 'ข้อความจากผู้เรียนหลังนำงานไปต่อยอด โดยปิดข้อมูลส่วนบุคคลแล้ว' },
@@ -61,7 +61,7 @@ export const T1_PRODUCT_DETAIL: ProductDetailPageData = {
     { label: 'ช่วงที่ 4 · Objection / Practice', title: 'รับข้อโต้แย้ง และซ้อมพาดีลไปขั้นต่อไป', learn: 'วิธีแยกว่าคำว่าแพง ขอคิดก่อน หรือยังไม่พร้อม ซ่อนคำถามอะไรอยู่ และเมื่อไรควรถามเพิ่ม ให้หลักฐาน หรือหยุดขาย', action: 'Role-play เคสจริง สลับบทลูกค้า เซลล์ และผู้สังเกต พร้อมใช้ AI เป็นคู่ซ้อมก่อนให้คนในทีม Feedback', output: 'Objection response guide + Human Review Checklist + Monday Plan รายคน' },
   ],
   takeHome: [
-    'Customer Journey และ FFAB Sheet ของสินค้าจริง', 'Pre-call planner สำหรับเตรียมก่อนโทรหรือเข้าพบ', 'Question bank ที่หัวหน้าใช้โค้ชต่อได้', 'Company Context ฉบับแรกของฝ่ายขาย', 'Specialist Agent/Prompt ช่วยงานขาย 1 ตัวต่อผู้เรียน', 'Follow-up playbook แยกตาม Stage และสถานการณ์', 'Objection response guide จากเคสในห้อง', 'Human Review Checklist และ Data Rules', 'Monday Plan รายคน พร้อมสิ่งที่จะทดลองใช้ในสัปดาห์ถัดไป', 'ไฟล์ทบทวนและการดูแลหลังเรียนตามที่ระบุใน Catalog',
+    'Customer Journey และ FFAB Sheet ของสินค้าจริง', 'Pre-call planner สำหรับเตรียมก่อนโทรหรือเข้าพบ', 'Question bank ที่หัวหน้าใช้โค้ชต่อได้', 'Company Context ฉบับแรกของฝ่ายขาย', 'Specialist Agent/Prompt ช่วยงานขาย 1 ตัวต่อผู้เรียน', 'Follow-up playbook แยกตาม Stage และสถานการณ์', 'Objection response guide จากเคสในห้อง', 'Human Review Checklist และ Data Rules', 'Monday Plan รายคน พร้อมสิ่งที่จะทดลองใช้ในสัปดาห์ถัดไป', 'ไฟล์ทบทวนและการดูแลหลังเรียนตามขอบเขตที่ตกลงก่อนเริ่มงาน',
   ],
   fit: [
     'ทีมขาย B2B หรือ B2C 5–20 คน ที่ต้องคุยกับลูกค้าก่อนตัดสินใจ',
@@ -78,7 +78,7 @@ export const T1_PRODUCT_DETAIL: ProductDetailPageData = {
     'หน้าเว็บคงบอกได้ไม่ครบว่าทีมคุณต้องแก้ตรงไหนครับ ส่งตัวอย่างดีลและอาการที่เจอมาได้ ผมช่วยเลือกน้ำหนักของ Workshop ให้ตรงกับทีม',
   ],
   investment: {
-    included: ['In-house Training ตามระยะเวลาจาก Catalog', 'ปรับ Workshop ให้เข้ากับสินค้า ลูกค้า และข้อโต้แย้งของบริษัท', 'Template และไฟล์ Take-home ตามรายการ', 'ไฟล์ทบทวน/การดูแลหลังเรียนตามเงื่อนไขใน Catalog', 'ใบเสนอราคาและใบกำกับภาษีสำหรับบริษัท'],
+    included: ['In-house Training ตลอด 1 วัน', 'ปรับ Workshop ให้เข้ากับสินค้า ลูกค้า และข้อโต้แย้งของบริษัท', 'Template และไฟล์ Take-home ตามรายการ', 'ไฟล์ทบทวน/การดูแลหลังเรียนตามขอบเขตที่ตกลงก่อนวันอบรม', 'ใบเสนอราคาและใบกำกับภาษีสำหรับบริษัท'],
     terms: 'ชำระค่าบริการ 100% ก่อนวันอบรมเพื่อยืนยันคิว ค่าเดินทางนอกพื้นที่มาตรฐานจะแจ้งก่อนล็อกวันครับ',
     scarcity: 'ผมสอนเองทุกบริษัทและรับงานรวมไม่เกินเดือนละ 10 บริษัท เพื่อให้มีเวลาอ่าน Pre-work และปรับเคสในห้องจริง',
     perHeadFor: 20,
@@ -91,7 +91,7 @@ export const T1_PRODUCT_DETAIL: ProductDetailPageData = {
     { question: 'ต้องให้ Sales Manager เข้าเรียนด้วยมั้ย?', answer: 'ควรมีอย่างน้อยหนึ่งคนครับ เพราะ Question bank, Stage และ Review Checklist จะมีค่ามากขึ้นเมื่อหัวหน้าเอาไปใช้โค้ชต่อหลังคลาส หากมีเฉพาะเซลล์ ทีมจะได้ทักษะรายคน แต่การติดตามการใช้ร่วมกันอาจช้าลง' },
     { question: 'สอนเรื่องปิดการขายแบบกดดันลูกค้าหรือเปล่า?', answer: 'แนวทางของผมเน้น Relationship Selling และการพาลูกค้าตัดสินใจจากข้อมูลที่ครบครับ เราฝึกถาม สรุป และรับข้อโต้แย้งให้ตรงประเด็น ไม่ใช้ Script บีบให้ลูกค้าตอบตกลงในห้อง' },
     { question: 'ต้องส่งข้อมูลลับของบริษัทให้หรือไม่?', answer: 'ใช้เฉพาะข้อมูลที่จำเป็นต่อ Workshop และบริษัทปิดตัวเลขหรือข้อมูลส่วนบุคคลได้ครับ เราจะทำ Data Rules ร่วมกันว่าข้อมูลอะไรใช้ได้ อะไรห้ามป้อนเข้า AI และงานใดต้องมีคนตรวจก่อนถึงลูกค้า' },
-    { question: 'หลังเรียนช่วยติดตามยังไง?', answer: 'การดูแลหลังเรียนเป็นไปตามเงื่อนไขใน Catalog เน้นตอบคำถามจากของที่ทำในห้องและเช็ก Monday Plan ไม่รวมการบริหารทีมแทน หรือสร้างระบบ production เพิ่มโดยอัตโนมัติ' },
+    { question: 'หลังเรียนช่วยติดตามยังไง?', answer: 'การดูแลหลังเรียนเน้นตอบคำถามจากของที่ทำในห้องและเช็ก Monday Plan ตามขอบเขตที่ตกลงก่อนวันอบรม ไม่รวมการบริหารทีมแทน หรือสร้างระบบ production เพิ่มโดยอัตโนมัติ' },
   ],
   cta: {
     primary: 'ทัก LINE ขอใบเสนอราคา',
@@ -99,8 +99,14 @@ export const T1_PRODUCT_DETAIL: ProductDetailPageData = {
     heroSecondary: 'รับ E-Book “หยุดหาเซลล์ผิดคน”',
     finalSecondary: 'รับ E-Book หยุดหาเซลล์ผิดคน',
     finalCaption: 'สแกน QR แล้วพิมพ์คำว่า “SALES SKILL” พร้อมจำนวนทีม',
+    finalMobileInstruction: 'ทัก LINE แล้วพิมพ์คำว่า “SALES SKILL” พร้อมจำนวนทีม',
     finalMicrocopy: 'คุยเพื่อเช็กโจทย์ก่อนครับ ถ้าปัญหาไม่ตรงกับคอร์สนี้ ผมจะบอกตามตรง',
     keyword: 'SALES SKILL',
+    locations: {
+      afterScope: { primary: 'ทัก LINE คุยเรื่องจัด In-house', primaryIntent: 'inhouse_enquiry', secondary: 'รับ E-Book ก่อนตัดสินใจ', secondaryIntent: 'lead_magnet' },
+      afterInvestment: { primary: 'ทัก LINE ขอใบเสนอราคา', primaryIntent: 'quote', secondary: 'ส่ง Pain ของทีมมาให้ช่วยเลือกคอร์ส', secondaryIntent: 'course_selection' },
+      final: { primary: 'ทัก LINE วางคอร์สให้ทีม', primaryIntent: 'course_planning', secondary: 'รับ E-Book หยุดหาเซลล์ผิดคน', secondaryIntent: 'lead_magnet' },
+    },
   },
   seo: { title: 'คอร์สอบรมทักษะการขาย + Follow-up + AI สำหรับทีมขาย', description: 'In-house Sales Skill Training 1 วัน สำหรับทีมที่ต้องการเตรียมเข้าพบ ถาม Follow-up และรับข้อโต้แย้งจากดีลจริง โดยมี AI ช่วยเตรียมและซ้อม' },
   sections: {
