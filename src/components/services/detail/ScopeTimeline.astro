@@ -1,6 +1,6 @@
 ---
 import type { ScopeItem } from '../../../data/product-details/types';
-interface Props { items: ScopeItem[]; }
-const { items } = Astro.props;
+interface Props { items: ScopeItem[]; heading?: string; intro?: string; }
+const { items, heading = 'สิ่งที่ทีมจะทำและถือกลับไป', intro } = Astro.props;
 ---
-<section aria-labelledby="scope-heading" class="py-14 sm:py-20"><div class="mx-auto max-w-6xl px-5"><p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Scope</p><h2 id="scope-heading" class="mt-3 font-display text-3xl font-bold text-navy sm:text-4xl">สิ่งที่ทีมจะทำและถือกลับไป</h2><ol class="mt-8 grid gap-5">{items.map((item) => <li class="grid gap-4 rounded-3xl border border-navy/10 p-6 md:grid-cols-[8rem_1fr_1fr]"><p class="font-bold text-coral">{item.label}</p><div><h3 class="font-bold text-navy">{item.title}</h3>{item.learn && <p class="mt-2 text-sm text-navy/70">เรียน: {item.learn}</p>}<p class="mt-2 leading-7 text-navy/80">ลงมือ: {item.action}</p></div><p class="rounded-2xl bg-[#f4f1ea] p-4 leading-7 text-navy">Output: {item.output}</p></li>)}</ol></div></section>
+<section aria-labelledby="scope-heading" class="py-14 sm:py-20"><div class="mx-auto max-w-6xl px-5"><p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Scope</p><h2 id="scope-heading" class="mt-3 font-display text-3xl font-bold text-navy sm:text-4xl">{heading}</h2>{intro && <p class="mt-4 max-w-3xl leading-7 text-navy/80">{intro}</p>}<ol class="mt-8 grid gap-5">{items.map((item) => <li data-scope-item class="grid gap-4 rounded-3xl border border-navy/10 p-6 md:grid-cols-[8rem_1fr_1fr]"><p class="font-bold text-coral">{item.label}</p><div><h3 class="font-bold text-navy">{item.title}</h3>{item.learn && <p class="mt-2 text-sm text-navy/70">เรียน: {item.learn}</p>}<p class="mt-2 leading-7 text-navy/80">ลงมือ: {item.action}</p></div><p class="rounded-2xl bg-[#f4f1ea] p-4 leading-7 text-navy">Output: {item.output}</p></li>)}</ol></div></section>

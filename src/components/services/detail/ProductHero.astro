@@ -39,6 +39,7 @@ const visual = data.hero.visual;
           inverse
         />
       </div>
+      {data.hero.microcopy && <p class="mt-4 max-w-2xl text-sm leading-6 text-white/70">{data.hero.microcopy}</p>}
     </div>
     {visual ? (
       <figure data-hero-activity class="relative overflow-hidden rounded-3xl border border-white/15 bg-white/5 shadow-2xl">

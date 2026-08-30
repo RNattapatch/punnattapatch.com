@@ -67,6 +67,7 @@ export interface ProductDetailPageData {
     eyebrow: string;
     customerJob: string;
     supportingCopy: string[];
+    microcopy?: string;
     steps?: HeroStep[];
     badges: string[];
     visual?: { image: ImageMetadata; alt: string; label: string; caption: string };
@@ -84,8 +85,9 @@ export interface ProductDetailPageData {
   takeHome: string[];
   fit: string[];
   notFit: string;
+  relatedOffer?: { href: string; label: string };
   bio: string[];
-  investment: { included: string[]; terms: string; scarcity: string };
+  investment: { included: string[]; terms: string; scarcity: string; perHeadFor?: number };
   faq: ProductFaqItem[];
   cta: {
     primary: string;
@@ -96,6 +98,8 @@ export interface ProductDetailPageData {
     heroSecondaryIntent?: string;
     finalSecondary?: string;
     finalSecondaryIntent?: string;
+    finalCaption?: string;
+    finalMicrocopy?: string;
   };
   seo: { title: string; description: string };
   sections?: {
@@ -103,7 +107,7 @@ export interface ProductDetailPageData {
     proof?: { heading: string; intro?: string };
     pain?: { heading: string; close?: string };
     reasons?: { heading: string };
-    scope?: { heading: string; intro?: string };
+    scope?: { heading: string; intro?: string; ctaHeading?: string };
     takeHome?: { heading: string; close?: string };
     fit?: { heading: string };
     bio?: { heading: string };

@@ -4,6 +4,7 @@ import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { CATALOG, fmtPrice } from '../src/data/pricing.mjs';
 
 const root = join(fileURLToPath(new URL('.', import.meta.url)), '..');
 const dist = join(root, 'dist');
@@ -137,5 +138,53 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   await page.locator('[data-mobile-nav] summary').click();
   const mobileMenu = await page.locator('[data-mobile-nav] ul').boundingBox();
   assert.ok(mobileMenu && mobileMenu.x >= 0 && mobileMenu.x + mobileMenu.width <= 320, 'open mobile menu must remain fully inside a 320px viewport');
+  await page.close();
+});
+
+test('T1 Sales Skills page is a one-day Convert training with the real LINE E-Book flow and Course schemas', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const response = await page.goto(`${baseURL}/services/t1-sales-skills`);
+  const catalog = CATALOG['inhouse-a'];
+  assert.equal(response?.status(), 200, 'T1 route must render');
+  assert.equal(await page.locator('h1').count(), 1, 'T1 must contain exactly one H1');
+  assert.equal(await page.locator('h1').innerText(), catalog.name, 'T1 H1 must resolve from Catalog inhouse-a');
+  assert.equal(await page.getByText(catalog.duration, { exact: true }).count(), 1, 'T1 duration must resolve from Catalog');
+  assert.equal(await page.getByText(fmtPrice('inhouse-a'), { exact: true }).count(), 1, 'T1 price must resolve from Catalog');
+  assert.deepEqual(
+    await page.locator('[data-scope-item] > p:first-child').allTextContents(),
+    [
+      'ช่วงที่ 1 · Journey / FFAB',
+      'ช่วงที่ 2 · Pre-call / Questions',
+      'ช่วงที่ 3 · Context / Follow-up',
+      'ช่วงที่ 4 · Objection / Practice',
+    ],
+    'T1 must render exactly the four approved curriculum stages in order',
+  );
+  const heroText = await page.locator('h1').locator('xpath=ancestor::section').innerText();
+  assert.doesNotMatch(heroText, /\b(?:Content|Ads)\b/i, 'T1 Hero must not promise Content or Ads');
+  assert.match(heroText, /ส่งประเภทธุรกิจ จำนวนเซลล์ และปัญหาที่เจอบ่อย/, 'T1 Hero must keep its approved CTA microcopy');
+  const ebookCta = page.locator('[data-cta-location="hero"][data-cta-intent="lead_magnet"]');
+  assert.equal(await ebookCta.count(), 1, 'T1 Hero must expose one lead-magnet CTA');
+  assert.equal(await ebookCta.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'T1 E-Book CTA must use SITE.social.line');
+  assert.equal(await ebookCta.getAttribute('data-cta-keyword'), 'SALES SKILL', 'T1 E-Book CTA must carry the SALES SKILL keyword');
+  assert.match(await ebookCta.innerText(), /E-Book.*หยุดหาเซลล์ผิดคน/, 'T1 lead magnet must name the real E-Book');
+  const t2Link = page.locator('a[href="/services/online-to-sales"]');
+  assert.equal(await t2Link.count(), 1, 'T1 must offer one contextual canonical link to T2');
+  assert.match(await t2Link.innerText(), /T2|ออนไลน์|Content/, 'T1 related link must explain the distinct T2 journey');
+  assert.equal(await page.getByText('ถ้าทีมคุณมีเคสที่อยากเอามาซ้อม บอกผมก่อนออกแบบคลาสได้ครับ', { exact: true }).count(), 1, 'T1 scope CTA must keep its approved workshop-case prompt');
+  assert.equal(await page.getByText('เฉลี่ย ฿1,745 ต่อคน เมื่อเข้าอบรม 20 คน', { exact: true }).count(), 1, 'T1 per-head price must derive from the Catalog investment');
+  assert.equal(await page.getByText('สแกน QR แล้วพิมพ์คำว่า “SALES SKILL” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T1 final CTA must keep the approved LINE keyword instruction');
+  assert.equal(await page.locator('[data-product-faq-button]').count(), 8, 'T1 must publish the approved eight FAQs');
+  assert.equal(await page.locator('form').count(), 0, 'T1 detail page must not include a form');
+  assert.equal(await page.locator('[data-floating-line]').count(), 1, 'T1 must retain exactly one global Floating LINE CTA');
+  const html = await page.content();
+  const courseSchema = schemas(html).find((item) => item['@type'] === 'Course');
+  assert.equal(courseSchema?.url, 'https://punnattapatch.com/services/t1-sales-skills', 'T1 Course schema must use the canonical route');
+  assert.ok(schemas(html).some((item) => item['@type'] === 'FAQPage'), 'T1 must expose FAQPage schema');
+  assert.ok(schemas(html).some((item) => item['@type'] === 'BreadcrumbList'), 'T1 must expose BreadcrumbList schema');
+  for (const viewport of [{ width: 1440, height: 900 }, { width: 768, height: 1024 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), viewport.width, `T1 must not overflow at ${viewport.width}px`);
+  }
   await page.close();
 });

@@ -8,6 +8,7 @@ export function resolveProductDetailCatalog(pricingKey: string) {
   const regularEntry = CATALOG[`${pricingKey}-regular`];
   return {
     entry,
+    amount: entry.amount,
     name: entry.name,
     duration: entry.duration,
     image: entry.image,
