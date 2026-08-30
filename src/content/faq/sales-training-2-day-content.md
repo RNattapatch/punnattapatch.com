@@ -78,6 +78,6 @@ tags: [faq, sales-training, curriculum, workshop]
 - เจ้าของธุรกิจควรเข้าร่วมด้วยอย่างน้อยใน Day 1 Module 1 และ Day 2 Module 8
 - ต้องส่งเคสของลูกค้ารายจริงที่ปิดการขายไม่ได้ 5-10 เคสมาให้ผมก่อนวัน training 1 สัปดาห์ เพื่อใช้เตรียมเนื้อหาสำหรับ Role-play
 
-หากต้องการหลักสูตรที่เปิดสอนอยู่ ดู [คอร์สอบรมทักษะการขาย + Follow-up + AI สำหรับทีมขาย {{price:inhouse-a}}](/services#offer-t1)
+หากต้องการหลักสูตรที่เปิดสอนอยู่ ดู [คอร์สจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B {{price:inhouse-a}}](/services#offer-t1)
 
 อ่านต่อ: [Commission structure ทีม 10 คน](/faq) | [Workshop vs Consulting](/faq)
