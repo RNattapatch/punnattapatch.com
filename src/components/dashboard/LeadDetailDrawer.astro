@@ -275,6 +275,17 @@ import InteractionLog from './InteractionLog.astro';
     const rp = (lead.raw_payload as Record<string, unknown>) || {};
     const detail = document.getElementById('lead-detail-body') as HTMLElement;
     const brandWeb = String(rp.brandWebsite || rp.brand_website || '');
+
+    // Attribution — utm อยู่ใน raw_payload มาตลอด แต่ get_dashboard_data เคยตัดทิ้ง
+    // ตอนนี้ RPC ส่งขึ้นมาเป็น field ระดับบนแล้ว · fallback ไป rp ไว้เผื่อ lead ที่มาจาก
+    // getLeadDetail (select *) ก่อน RPC จะรีเฟรช
+    const attr = (k: string) => String((lead[k] as string) || (rp[k] as string) || '').trim();
+    const utmCampaign = attr('utm_campaign');
+    const utmSource = attr('utm_source');
+    const utmContent = attr('utm_content');
+    const utmTerm = attr('utm_term');
+    const hasAttribution = !!(utmCampaign || utmSource || utmContent || utmTerm);
+    const creative = [utmContent, utmTerm].filter(Boolean).join(' · ');
     const rows = [
       detailRow('ชื่อจริง', String(lead.full_name || ''), 'full_name'),
       detailRow('ตำแหน่ง', String(lead.position || rp.role || ''), 'position'),
@@ -298,7 +309,9 @@ import InteractionLog from './InteractionLog.astro';
       detailRow('Walkthrough', dtLocal(String(lead.walkthrough_at || '')), 'walkthrough_at', 'datetime-local'),
       detailRow('Payment', String(lead.payment_status || '')),
       detailRow('Temperature', temp),
-      detailRow('ที่มา', [String(lead.source || ''), String(rp.source_page || '')].filter(Boolean).join(' · ')),
+      detailRow('ที่มา', [String(lead.source || ''), String(lead.source_page || rp.source_page || '')].filter(Boolean).join(' · ')),
+      hasAttribution ? detailRow('แคมเปญ', [utmSource, attr('utm_medium'), utmCampaign].filter(Boolean).join(' / ')) : '',
+      hasAttribution && creative ? detailRow('ครีเอทีฟ / Placement', creative) : '',
       detailRow('Score / Tier', [String(lead.score ?? ''), String(lead.tier || '')].filter(Boolean).join(' · ')),
       detailRow('วันที่เข้ามา', lead.submitted_at ? new Date(String(lead.submitted_at)).toLocaleDateString('th-TH') : ''),
       detailRow('Last touch', relAgo(String(lead.last_touch_at || ''))),
