@@ -30,6 +30,6 @@ tags: [faq, payment, pricing]
 
 คุณสามารถเริ่มต้นจากการลงทุนที่ไม่สูงมากก่อนได้ครับ ลองเริ่มจาก [AI สำหรับงานหลังบ้าน 2026](/services#back-office) ในราคา {{price:ai-workshop-advance}} ซึ่งใช้เวลาเพียง 1 วันก็สามารถเห็นผลลัพธ์เบื้องต้นได้ทันที
 
-หากผลลัพธ์เป็นที่น่าพอใจ ค่อยขยายเป็น [บริการวางระบบฝ่ายขายแบบรายวัน {{price:daily-sales-consulting}}](/services#offer-c1) หรือถ้าอยากวางระบบขายทั้งบริษัท [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) ในภายหลัง ไม่จำเป็นต้องลงเงินกับโปรเจกต์ใหญ่ตั้งแต่แรก
+หากผลลัพธ์เป็นที่น่าพอใจ ค่อยขยายเป็น [บริการวางระบบฝ่ายขายแบบรายวัน {{price:daily-sales-consulting}}](/services/daily-consulting) หรือถ้าอยากวางระบบขายทั้งบริษัท [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) ในภายหลัง ไม่จำเป็นต้องลงเงินกับโปรเจกต์ใหญ่ตั้งแต่แรก
 
 แต่ถ้าไม่เวิร์กก็สามารถหยุดได้แค่นั้น โดยไม่มีสัญญาผูกมัดระยะยาว

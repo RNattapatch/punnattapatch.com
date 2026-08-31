@@ -17,13 +17,13 @@
 ## Services & Pricing (v6 — 2026-08-30 · supersedes all earlier price lists)
 
 ### คอร์สอบรมสำหรับทีมขาย (In-house on-site เท่านั้น · ไม่มี online · ราคาเดียวทั้งทีมไม่เกิน 20 คน)
-- คอร์สจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B — ฿34,900 · 1 วัน · เข้าใจเหตุผลซื้อ 3 ชั้น ฝึกคำถามและการต่อรองโดยไม่รีบลดราคา แล้วสร้าง AI Sales Coach จาก Company Context เพื่อช่วยเตรียม ซ้อม และทบทวนดีล · https://punnattapatch.com/services#inhouse-a
-- คอร์สอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI — ฿34,900 · 1 วัน · ทีมรายงานภาษาเดียวกัน ผู้จัดการเห็นดีลค้างและงานที่ต้องตาม (เรียนวิธีวางระบบ — งานติดตั้งจริงคือบริการทำ Sales Dashboard) · https://punnattapatch.com/services#sales-report
-- คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI — ฿54,900 · 2 วัน + ดูแลต่อ 30 วัน · เปลี่ยนคนดูออนไลน์ให้เป็นแชต นัดหมาย และยอดขาย · มี Vertical Edition เช่น คอร์สเพิ่มยอดขายรถจากออนไลน์ (Dealer) ราคาเดียวกัน · https://punnattapatch.com/services/trust-content-tiktok-workshop
+- คอร์สจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B — ฿34,900 · 1 วัน · เข้าใจเหตุผลซื้อ 3 ชั้น ฝึกคำถามและการต่อรองโดยไม่รีบลดราคา แล้วสร้าง AI Sales Coach จาก Company Context เพื่อช่วยเตรียม ซ้อม และทบทวนดีล · https://punnattapatch.com/services/t1-sales-skills
+- คอร์สอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI — ฿34,900 · 1 วัน · ทีมรายงานภาษาเดียวกัน ผู้จัดการเห็นดีลค้างและงานที่ต้องตาม (เรียนวิธีวางระบบ — งานติดตั้งจริงคือบริการทำ Sales Dashboard) · https://punnattapatch.com/services/t3-sales-back-office
+- คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI — ฿54,900 · 2 วัน + ดูแลต่อ 30 วัน · เปลี่ยนคนดูออนไลน์ให้เป็นแชต นัดหมาย และยอดขาย · มี Vertical Edition เช่น คอร์สเพิ่มยอดขายรถจากออนไลน์ (Dealer) ราคาเดียวกัน · https://punnattapatch.com/services/online-to-sales
 
 ### บริการวางระบบฝ่ายขาย
-- บริการวางระบบฝ่ายขายแบบรายวัน — ฿34,900 · 1 วัน / 1 เรื่องหลัก · เลือก 1 ปัญหาขายแล้ววางทางออกให้จบใน 1 วัน (Online-to-Sales Journey · โครงทีม+KPI+ค่าคอม · ออกแบบ Report/Dashboard · AI Workflow prototype) — หลายเรื่องประเมินจำนวนวันรวมใน proposal เดียว · https://punnattapatch.com/services#offer-c1
-- บริการทำ Sales Dashboard + Report อัตโนมัติ — ฿69,900 · 3 วัน on-site + ดูแลต่อ 30 วัน · Deal register + Daily report + Follow-up list + Excel export + UAT (ทีมปันลงมือสร้างระบบจริงให้) · https://punnattapatch.com/services#daruma-starter
+- บริการวางระบบฝ่ายขายแบบรายวัน — ฿34,900 · 1 วัน / 1 เรื่องหลัก · เลือก 1 ปัญหาขายแล้ววางทางออกให้จบใน 1 วัน (Online-to-Sales Journey · โครงทีม+KPI+ค่าคอม · ออกแบบ Report/Dashboard · AI Workflow prototype) — หลายเรื่องประเมินจำนวนวันรวมใน proposal เดียว · https://punnattapatch.com/services/daily-consulting
+- บริการทำ Sales Dashboard + Report อัตโนมัติ — ฿69,900 · 3 วัน on-site + ดูแลต่อ 30 วัน · Deal register + Daily report + Follow-up list + Excel export + UAT (ทีมปันลงมือสร้างระบบจริงให้) · https://punnattapatch.com/services/dashboard-build
 - โปรแกรมยกระดับทักษะและระบบทีมขายด้วย AI (Advance Program: Sales Mastery with AI) — เรียนคอร์สหลักแล้วต่อ Guided Implementation 2 วันจนใช้จริง · เสนอผ่าน proposal (ไม่ quote ราคาหน้าเว็บ)
 
 ### Retainer / งานวางระบบใหญ่

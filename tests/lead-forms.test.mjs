@@ -88,8 +88,38 @@ async function fillAllRequired(page, formSel, values = {}) {
     check(sent.source === 'website-booking', 'source tag ถูก');
     check(!('honeypot-name' in sent) || !sent['honeypot-name'], 'honeypot ว่าง (ไม่ใช่บอท)');
   }
-  check(await page.locator('#booking-success').isVisible().catch(() => false), 'ขึ้น success panel');
+  await page.waitForURL(/\/thank-you/, { timeout: 5000 }).catch(() => {});
+  check(new URL(page.url()).pathname === '/thank-you', 'เด้งไป /thank-you (จุดเดียวที่ Lead pixel ยิง)');
   check(!(await page.locator('#booking-form').isVisible().catch(() => true)), 'ซ่อนฟอร์มหลังส่งสำเร็จ');
+  await ctx.close();
+}
+
+// ═════════════════════ /booking — รับ product attribution จากหน้า Product Detail ═════════════════════
+{
+  console.log('\n[1b] /booking — Product Detail ส่ง package + intent มาถึง lead payload');
+  const ctx = await browser.newContext();
+  await sealContext(ctx);
+  const page = await ctx.newPage();
+  let sent = null;
+  await page.route(N8N, async (r) => { sent = JSON.parse(r.request().postData() || '{}'); await r.fulfill({ status: 200, body: '{"ok":true}' }); });
+
+  await page.goto(`${BASE}/booking?package=T2&intent=quote`, { waitUntil: 'domcontentloaded' });
+  check(await page.locator('[data-booking-product-context]').isVisible(), 'เห็นบริบทบริการที่ส่งต่อมาจาก Product Detail');
+  check((await page.locator('[data-booking-product-name]').textContent() || '').includes('T2'), 'แสดงชื่อ T2 ให้ลูกค้ารู้ว่ากำลังส่งโจทย์เรื่องอะไร');
+  check(await page.locator('[name="package"]').inputValue() === 'T2 · คอร์สเพิ่มยอดขายจากออนไลน์', 'hidden package ใช้ canonical key และชื่อที่คนอ่านรู้เรื่อง');
+
+  await fillAllRequired(page, '#booking-form', {
+    name: 'ทดสอบ ระบบ', phone: '0812345678', company: 'บจก. ทดสอบ', business: 'ขายเครื่องจักร B2B',
+  });
+  await page.click('#booking-submit');
+  await page.waitForTimeout(1200);
+
+  check(sent?.package === 'T2 · คอร์สเพิ่มยอดขายจากออนไลน์', 'payload เก็บ package ของ Product ที่ลูกค้าสนใจ');
+  check((sent?.comment || '').includes('T2 · คอร์สเพิ่มยอดขายจากออนไลน์'), 'comment บอก Product ให้เห็นใน CRM/Telegram');
+  check((sent?.comment || '').includes('ขอแผนและใบเสนอราคา'), 'comment แปล intent เป็นภาษาที่คนขายอ่านรู้เรื่อง');
+  check(sent?.recommended_path === '/services/online-to-sales', 'recommended_path ย้อนกลับไปหน้า Product ต้นทางได้');
+  check(sent?.path === '/booking?package=T2&intent=quote', 'path เก็บ query attribution ครบ');
+  check(sent?.source === 'website-booking' && sent?.source_page === 'website-booking', 'ไม่เปลี่ยน canonical booking source ที่ production gate ใช้');
   await ctx.close();
 }
 
@@ -156,8 +186,48 @@ for (const [label, phoneValue, lineValue, expectPhone, expectLine] of [
     check(p.fallback_reason === 'n8n-unreachable', 'ติดธงว่ามาจาก fallback (ไล่ย้อนได้ว่า n8n ล่มตอนไหน)');
     check(p.consent === 'on' || p.consent === 'yes', 'consent ติดมาด้วย (หลักฐาน PDPA)');
   }
-  check(await page.locator('#booking-success').isVisible().catch(() => false), 'ผู้ใช้เห็นว่าสำเร็จ (lead ถูกเก็บแล้วจริง)');
-  check((await page.locator('#booking-success').textContent() || '').includes('PN-'), 'โชว์ reference ให้ผู้ใช้เก็บ');
+  // 2026-08-31: สำเร็จแล้วต้องเด้งไป /thank-you — Lead pixel ยิงที่หน้านั้นที่เดียว
+  // เดิมโชว์ success ในหน้าเดิม = Meta ไม่เคยเห็น conversion จาก /booking เลย
+  await page.waitForURL(/\/thank-you/, { timeout: 5000 }).catch(() => {});
+  const ty = new URL(page.url());
+  check(ty.pathname === '/thank-you', `เด้งไป /thank-you (ได้ "${ty.pathname}")`);
+  check(ty.searchParams.get('type') === 'booking', 'บอกปลายทางว่ามาจาก booking (ใช้สลับคำ + content_name ของ Lead)');
+  check(/^PN-\d{12}-[A-Z0-9]{4}$/.test(ty.searchParams.get('ref') || ''), `พก reference ไปโชว์ที่ /thank-you (${ty.searchParams.get('ref')})`);
+  await ctx.close();
+}
+
+// ═════════════ /booking — UTM ต้องไปถึง payload (เพิ่ม 2026-08-31 ก่อนเปิดแอด T2) ═════════════
+// ทำไมต้องมี: /booking ไม่เคยมี hidden input utm_* → FormData ไม่พา utm ไปด้วย →
+// pipeline.mjs อ่าน b.utm_campaign ได้ค่าว่าง = lead จากแอดเข้า CRM แบบไม่รู้ที่มา
+for (const [label, landing, hop] of [
+  ['utm ติดมากับ URL ของ /booking ตรงๆ', '/booking?package=T2&intent=quote&utm_source=facebook&utm_medium=paid&utm_campaign=cold_t2_content_capA&utm_content=feed&utm_term=c2-content&fbclid=TESTFBCLID123', null],
+  ['ลงที่หน้า Product ก่อน แล้วค่อยกด CTA มา /booking (เส้นทางจริงของแอด)', '/services/online-to-sales?utm_source=facebook&utm_medium=paid&utm_campaign=cold_t2_content_capA&utm_content=feed&utm_term=c2-content&fbclid=TESTFBCLID123', '/booking?package=T2&intent=quote'],
+]) {
+  console.log(`\n[1c] /booking — ${label}`);
+  const ctx = await browser.newContext();
+  await sealContext(ctx);
+  const page = await ctx.newPage();
+  let sent = null;
+  await page.route(N8N, async (r) => { sent = JSON.parse(r.request().postData() || '{}'); await r.fulfill({ status: 200, body: '{"ok":true}' }); });
+
+  await page.goto(`${BASE}${landing}`, { waitUntil: 'domcontentloaded' });
+  if (hop) await page.goto(`${BASE}${hop}`, { waitUntil: 'domcontentloaded' });
+  await fillAllRequired(page, '#booking-form', {
+    name: 'ทดสอบ ระบบ', phone: '0812345678', company: 'บจก. ทดสอบ', business: 'ขายเครื่องจักร B2B',
+  });
+  await page.click('#booking-submit');
+  await page.waitForTimeout(1200);
+
+  check(sent?.utm_source === 'facebook', `⭐ utm_source ถึง payload (ได้ "${sent?.utm_source}")`);
+  check(sent?.utm_medium === 'paid', 'utm_medium ถึง payload');
+  check(sent?.utm_campaign === 'cold_t2_content_capA', `⭐ utm_campaign ถึง payload — ตัวที่ใช้แยก A/B (ได้ "${sent?.utm_campaign}")`);
+  check(sent?.utm_content === 'feed', 'utm_content ถึง payload (placement)');
+  check(sent?.utm_term === 'c2-content', 'utm_term ถึง payload (ชื่อครีเอทีฟ)');
+  check(sent?.fbclid === 'TESTFBCLID123', 'fbclid ถึง payload (ไว้ match กับ Meta)');
+
+  await page.waitForURL(/\/thank-you/, { timeout: 5000 }).catch(() => {});
+  const ty = new URL(page.url());
+  check(ty.searchParams.get('utm_campaign') === 'cold_t2_content_capA', 'utm ส่งต่อไป /thank-you ให้ Lead event แนบไปด้วย');
   await ctx.close();
 }
 

@@ -1,0 +1,5 @@
+---
+interface Props { items: string[]; heading?: string; close?: string; }
+const { items, heading = 'ถ้าทีมติดอยู่ตรงนี้ หน้าเดียวอาจช่วยให้คุยกันชัดขึ้น', close } = Astro.props;
+---
+<section aria-labelledby="pain-heading" class="bg-[#f4f1ea] py-14 sm:py-20"><div class="mx-auto max-w-4xl px-5"><h2 id="pain-heading" class="font-display text-3xl font-bold text-navy sm:text-4xl">{heading}</h2><ul class="mt-7 space-y-4">{items.map((item) => <li class="flex gap-3 rounded-2xl bg-white p-5 leading-7 text-navy shadow-sm"><span aria-hidden="true" class="font-bold text-coral">✓</span>{item}</li>)}</ul>{close && <p class="mt-6 leading-7 text-navy/80">{close}</p>}</div></section>

@@ -40,7 +40,7 @@ export const CATALOG = {
   // จากการตัดสินใจ → ลูกค้าเลือกจาก "แผนกไหนติด" แทนการเทียบว่าอันไหนถูกกว่า
   'inhouse-a': {
     amount: 34900,
-    url: '/services#inhouse-a',
+    url: '/services/t1-sales-skills',
     name: 'คอร์สจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B',
     nameEn: 'B2B Sales Psychology + AI Agent',
     kind: 'inhouse',
@@ -54,7 +54,7 @@ export const CATALOG = {
   },
   'ai-workshop-advance': {
     amount: 34900,
-    url: '/services#sales-report',
+    url: '/services/t3-sales-back-office',
     name: 'คอร์สอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI',
     nameEn: 'Sales Back Office: Report + Dashboard × AI',
     kind: 'inhouse',
@@ -68,7 +68,7 @@ export const CATALOG = {
   },
   'tiktok-workshop': {
     amount: 54900,
-    url: '/services/trust-content-tiktok-workshop',
+    url: '/services/online-to-sales',
     name: 'คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI',
     nameEn: 'Online-to-Offline × Content + Ads + AI',
     kind: 'content',
@@ -87,7 +87,7 @@ export const CATALOG = {
     // key sales-team-structure ใน Product SSOT ฉบับเช้า) · ยุบ "วางโครงสร้างทีมขาย + KPI + ค่าคอม" +
     // "ai-agent-ceo" เข้าเป็น Primary Outcome track ของบริการรายวันตัวเดียว
     amount: 34900,
-    url: '/services#offer-c1',
+    url: '/services/daily-consulting',
     name: 'บริการวางระบบฝ่ายขายแบบรายวัน',
     nameEn: 'Daily Sales System Consulting',
     kind: 'consult',
@@ -116,7 +116,7 @@ export const CATALOG = {
   },
   'daruma-starter': {
     amount: 69900,
-    url: '/services#daruma-starter',
+    url: '/services/dashboard-build',
     name: 'บริการทำ Sales Dashboard + Report อัตโนมัติ',
     nameEn: 'Sales Dashboard & Report Build',
     kind: 'consult',

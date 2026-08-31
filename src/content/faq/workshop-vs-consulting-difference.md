@@ -57,7 +57,7 @@ Workshop เป็นแบบลงมือทำ จบใน 1 วัน ส
 ## Path ที่ผมแนะนำสำหรับ SME ส่วนใหญ่
 
 1. เริ่มจาก [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office) 1 วัน
-2. ถ้าอยากให้ระบบไม่ตายหลัง workshop → เริ่มจาก [บริการวางระบบฝ่ายขายแบบรายวัน {{price:daily-sales-consulting}}](/services#offer-c1) หรือถ้าอยากวางระบบขายทั้งบริษัท → [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation)
+2. ถ้าอยากให้ระบบไม่ตายหลัง workshop → เริ่มจาก [บริการวางระบบฝ่ายขายแบบรายวัน {{price:daily-sales-consulting}}](/services/daily-consulting) หรือถ้าอยากวางระบบขายทั้งบริษัท → [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation)
 3. ถ้าไม่เข้ากับที่ปรึกษา ก็ไม่ต้องเสียเงินก้อนใหญ่ ค่า workshop {{price:ai-workshop-advance}} คุ้มค่ากว่าการลงทุนในโปรเจกต์ ฿200,000 แล้วต้องยกเลิกกลางทาง
 
 ดูรายละเอียดเพิ่มเติมใน [Pillar: คู่มือเลือกที่ปรึกษาการขาย B2B 2026](/insights/sales-consulting-guide-2026)

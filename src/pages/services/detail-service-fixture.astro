@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductDetailLayout from '../../components/services/detail/ProductDetailLayout.astro';
+import { resolveProductDetailCatalog } from '../../data/product-details/catalog';
+import { PRODUCT_DETAIL_FIXTURE } from '../../data/product-details/fixture';
+
+const data = { ...PRODUCT_DETAIL_FIXTURE, code: 'C1' as const, pricingKey: 'daily-sales-consulting', route: '/services/detail-service-fixture', kind: 'service' as const, hero: { ...PRODUCT_DETAIL_FIXTURE.hero, customerJob: 'เลือกหนึ่งปัญหาขายแล้ววางทางออกให้ทีมเดินต่อได้' }, seo: { title: 'Service fixture · Product Detail', description: 'Private service fixture for product detail page quality assurance.' } };
+const canonical = 'https://punnattapatch.com/services/detail-service-fixture';
+const catalog = resolveProductDetailCatalog(data.pricingKey);
+---
+
+<BaseLayout title={data.seo.title} description={data.seo.description} canonical={canonical} noindex schema={{ types: ['WebPage', 'FAQPage', 'BreadcrumbList', 'ProductDetail'], title: data.seo.title, description: data.seo.description, url: canonical, faq: data.faq, breadcrumbs: [{ name: 'บริการ', url: 'https://punnattapatch.com/services' }, { name: 'Service fixture', url: canonical }], productDetail: { code: data.code, kind: data.kind, name: catalog.name, description: data.seo.description, url: canonical, duration: catalog.duration } }}>
+  <ProductDetailLayout data={data} />
+</BaseLayout>

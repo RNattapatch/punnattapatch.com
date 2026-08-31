@@ -5,8 +5,8 @@ import AfterHoursField from '../components/AfterHoursField.astro';
 import ProofRail from '../components/proof/ProofRail.astro';
 import { SITE } from '../data/site';
 
-const title = 'จองคิวคุยปั้นทีมขาย';
-const description = 'จองคิวคุย 15–20 นาที เพื่อดูว่าทีมขายของคุณควรเริ่มตรงไหนระหว่าง In-house, Flagship และระบบคอนเทนต์';
+const title = 'จองคิวรับบริการ';
+const description = 'เล่าโจทย์ของทีมสั้น ๆ แล้วรับคำแนะนำว่าควรเริ่มจากคอร์ส บริการวางระบบ หรือกลับไปแก้เองก่อน';
 const issues = [
   'ข้อมูลลูกค้ากระจาย อยู่ในไลน์กับหัวคน',
   'เซลล์หมดเวลาไปกับงานเอกสารและงานซ้ำ',
@@ -20,16 +20,33 @@ const issues = [
 <BaseLayout
   title={title}
   description={description}
-  schema={{ types: ['WebPage', 'BreadcrumbList'], title, description, breadcrumbs: [{ name: 'หน้าแรก', url: SITE.url }, { name: 'จองคิวคุย', url: `${SITE.url}/booking` }] }}
+  schema={{ types: ['WebPage', 'BreadcrumbList'], title, description, breadcrumbs: [{ name: 'หน้าแรก', url: SITE.url }, { name: 'จองคิวรับบริการ', url: `${SITE.url}/booking` }] }}
 >
   <section class="border-b border-[#c9c2b2] bg-ivory px-6 py-16 md:py-20">
-    <div class="mx-auto max-w-6xl"><p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ปรึกษาปั้นทีมขาย สำหรับเจ้าของ SME ไทย</p><h1 class="mt-3 font-display text-4xl font-bold text-navy md:text-6xl">จองคิวคุยกับผม</h1><p class="mt-5 max-w-3xl text-lg leading-relaxed text-warm-ink/75">เล่าโจทย์ให้ฟัง 15–20 นาที ไม่มีค่าใช้จ่ายและไม่มีการขายแบบกดดัน คุยจบผมจะบอกตรงๆ ว่าเส้นทางไหนคุ้มสุดสำหรับคุณ แม้คำตอบคือยังไม่ต้องจ้างผมก็ตาม</p></div>
+    <div class="mx-auto max-w-6xl"><p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">สำหรับเจ้าของ SME และหัวหน้าทีมขาย</p><h1 class="mt-3 max-w-4xl font-display text-4xl font-bold text-navy md:text-6xl">จองคิวรับบริการ</h1><p class="mt-5 max-w-3xl text-lg leading-relaxed text-warm-ink/75">กรอกข้อมูลไม่ถึง 2 นาที ผมจะอ่านก่อนติดต่อกลับ แล้วบอกตรง ๆ ว่าคอร์สหรือบริการไหนเหมาะกับโจทย์นี้ แม้คำตอบคือยังไม่ต้องจ้างผมครับ</p></div>
   </section>
 
   <section class="px-6 py-12 md:py-20">
     <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-12">
       <form id="booking-form" class="rounded-2xl border border-[#c9c2b2] bg-surface p-6 lg:col-span-7 md:p-9" novalidate>
         <input name="honeypot-name" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true" />
+        <input name="package" type="hidden" value="" />
+        <!--
+          Attribution passthrough — สคริปต์ใน BaseLayout เติมค่าให้ทาง id (utm ค้างใน
+          localStorage 14 วัน) ถ้าไม่มีช่องพวกนี้ FormData จะไม่พา utm ไปด้วย แล้ว
+          pipeline.mjs (b.utm_campaign) จะได้ค่าว่าง = lead เข้า CRM แบบไม่รู้ที่มา
+        -->
+        <input type="hidden" id="utm_source" name="utm_source" value="" />
+        <input type="hidden" id="utm_medium" name="utm_medium" value="" />
+        <input type="hidden" id="utm_campaign" name="utm_campaign" value="" />
+        <input type="hidden" id="utm_content" name="utm_content" value="" />
+        <input type="hidden" id="utm_term" name="utm_term" value="" />
+        <input type="hidden" id="fbclid" name="fbclid" value="" />
+        <input type="hidden" id="ttclid" name="ttclid" value="" />
+        <div data-booking-product-context hidden class="mb-6 rounded-2xl border border-coral/35 bg-coral/8 p-4 text-sm leading-6 text-warm-ink/80">
+          <p class="font-semibold text-coral">โจทย์ที่คุณกำลังส่ง</p>
+          <p class="mt-1">สนใจ <strong data-booking-product-name class="text-navy"></strong> — กรอกข้อมูลด้านล่างได้เลย ผมจะอ่านโดยยึดบริการนี้เป็นจุดตั้งต้นครับ</p>
+        </div>
         <div class="flex items-start justify-between gap-5"><div><h2 class="font-display text-2xl font-bold text-navy">เล่าโจทย์ของคุณสั้นๆ</h2><p class="mt-1 text-sm text-warm-ink/65">กรอกไม่ถึง 2 นาที แล้วผมจะอ่านข้อมูลเพื่อเตรียมคุยให้ตรงเรื่อง</p></div><DarumaMark class="size-12 shrink-0" /></div>
         <div class="mt-8 space-y-5">
           <div class="grid gap-5 sm:grid-cols-2"><label class="field-label">ชื่อของคุณ<input name="name" required autocomplete="name" autocapitalize="words" enterkeyhint="next" class="field" /></label><label class="field-label">เบอร์โทรติดต่อกลับ<input name="phone" required type="tel" inputmode="tel" autocomplete="tel" pattern="(\+66|0)[0-9\s\-]{8,12}" title="กรอกเบอร์โทร เช่น 0812345678" enterkeyhint="next" placeholder="เช่น 0812345678" class="field" /></label></div>
@@ -43,9 +60,9 @@ const issues = [
           <p id="booking-error" class="hidden rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error" role="alert"></p>
           <!-- ตั้งความคาดหวังก่อนกดส่ง — ลดแรงต้านของคนที่กลัวโดนยัดขาย -->
           <p class="text-center text-sm leading-relaxed text-warm-ink/65">15–20 นาที · ไม่มีการขายในสาย · ถ้าธุรกิจคุณยังไม่ถึงเวลาใช้ AI ผมจะบอกตรง ๆ</p>
-          <button id="booking-submit" type="submit" class="btn w-full border-0 bg-coral py-4 text-base text-white hover:bg-[#c43245]">ส่งข้อมูล — ผมติดต่อกลับภายใน 1 วันทำการ</button>
+          <button id="booking-submit" type="submit" class="btn w-full border-0 bg-[#c43245] py-4 text-base text-white hover:bg-[#ad293a] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral">ส่งข้อมูล — ผมติดต่อกลับภายใน 1 วันทำการ</button>
           <div class="flex items-center gap-3 text-sm text-warm-ink/60"><span class="h-px flex-1 bg-[#c9c2b2]"></span>หรือสะดวกแชทมากกว่า<span class="h-px flex-1 bg-[#c9c2b2]"></span></div>
-          <a href={SITE.social.line} target="_blank" rel="noopener" class="btn w-full border-navy bg-transparent text-navy hover:bg-navy hover:text-white">ทัก LINE ได้เลย</a>
+          <a href={SITE.social.line} target="_blank" rel="noopener" data-line-cta class="btn w-full border-0 bg-[#06C755] text-[#072B4E] hover:bg-[#05ad49]">ทัก LINE ได้เลย</a>
         </div>
       </form>
 
@@ -69,7 +86,45 @@ const issues = [
   const error = document.getElementById('booking-error');
   const submit = document.getElementById('booking-submit') as HTMLButtonElement | null;
   const recommendation = document.getElementById('booking-recommendation');
+  const productContextPanel = document.querySelector<HTMLElement>('[data-booking-product-context]');
+  const productContextName = document.querySelector<HTMLElement>('[data-booking-product-name]');
+  const packageInput = form?.elements.namedItem('package') as HTMLInputElement | null;
   const WEBHOOK = 'https://form-hook.punnattapatch.com/webhook/intake-form-v2';
+
+  const PRODUCT_CONTEXT = {
+    T1: { name: 'T1 · คอร์สจิตวิทยาการขาย + AI Agent', route: '/services/t1-sales-skills' },
+    T2: { name: 'T2 · คอร์สเพิ่มยอดขายจากออนไลน์', route: '/services/online-to-sales' },
+    T3: { name: 'T3 · คอร์สวางระบบหลังบ้านฝ่ายขาย', route: '/services/t3-sales-back-office' },
+    C1: { name: 'C1 · Daily Sales System Consulting', route: '/services/daily-consulting' },
+    I1: { name: 'I1 · Sales Dashboard + Report Automation', route: '/services/dashboard-build' },
+  } as const;
+  const INTENT_LABELS: Record<string, string> = {
+    quote: 'ขอแผนและใบเสนอราคา',
+    inhouse_enquiry: 'วางคลาสจากดีลจริง',
+    course_planning: 'เลือกทางเริ่มสำหรับทีม',
+    large_team: 'ออกแบบรูปแบบสำหรับทีมมากกว่า 20 คน',
+    workshop_quote: 'วาง Workshop จาก Report จริง',
+    track_selection: 'เลือก Track ที่ควรแก้ก่อน',
+    consult_booking: 'จัดลำดับปัญหาก่อนเริ่ม Consult',
+    consult_enquiry: 'จัดลำดับอาการของทีม',
+    scope_check: 'เช็ก Starter Scope จาก Report เดิม',
+    proposal_request: 'ขอ Proposal ที่ตรงกับหน้างาน',
+    starter_assessment: 'ประเมิน Starter Scope',
+  };
+  const params = new URLSearchParams(window.location.search);
+  const requestedProduct = (params.get('package') || '').toUpperCase();
+  const productContext = Object.prototype.hasOwnProperty.call(PRODUCT_CONTEXT, requestedProduct)
+    ? PRODUCT_CONTEXT[requestedProduct as keyof typeof PRODUCT_CONTEXT]
+    : null;
+  const productCode = productContext ? requestedProduct as keyof typeof PRODUCT_CONTEXT : null;
+  const requestedIntent = params.get('intent') || '';
+  const productIntent = Object.prototype.hasOwnProperty.call(INTENT_LABELS, requestedIntent) ? requestedIntent : '';
+
+  if (productContext && productCode) {
+    if (packageInput) packageInput.value = `${productCode} · ${productContext.name.replace(/^\w+\s*·\s*/, '')}`;
+    if (productContextName) productContextName.textContent = productContext.name;
+    if (productContextPanel) productContextPanel.hidden = false;
+  }
 
   // Fallback เมื่อ n8n ล่ม → เขียน lead เข้า Supabase ตรงผ่าน RPC submit_lead
   // (SECURITY DEFINER, anon-callable) — datastore เดียวกับที่ dashboard อ่าน
@@ -134,17 +189,23 @@ const issues = [
     const payload = Object.fromEntries(data.entries());
     // เบอร์เก็บเป็นตัวเลขล้วน (คง +66 ไว้) — เว้นวรรค/ขีดที่คนพิมพ์มาไม่ต้องไปถึง CRM
     payload.phone = String(payload.phone || '').replace(/[\s()-]/g, '');
+    const productNote = productContext && productCode
+      ? `สนใจ ${productContext.name}${productIntent ? ` · ${INTENT_LABELS[productIntent]}` : ''}`
+      : '';
     Object.assign(payload, {
       // Canonical aliases — shared intake flow reads company/problems (see docs/INTAKE-DATA-CONTRACT.md)
       company: ((payload.company as string) || '').trim() || (payload.business as string) || '',
       industry: payload.business || '',
       problems: (payload.issue as string) || '',
       source: 'website-booking', source_page: 'website-booking', booking_type: 'daruma-qualification',
+      package: packageInput?.value || '',
+      comment: productNote,
       // canonical คือ submittedAt (camelCase) — Flatten Body1 อ่าน submittedAt → sentAt เท่านั้น
       // คง submitted_at ไว้ด้วยเพื่อ backward-compat กับอะไรก็ตามที่อ่าน key เดิมอยู่
       submittedAt: new Date().toISOString(),
-      submitted_at: new Date().toISOString(), path: window.location.pathname,
-      recommended_path: 'free-consultation',
+      submitted_at: new Date().toISOString(), path: `${window.location.pathname}${window.location.search}`,
+      referrer: document.referrer,
+      recommended_path: productContext?.route || 'free-consultation',
     });
     // ⏰ นอกเวลาทำการ — พ่วงเข้า comment เพราะ n8n Flatten Body1 ยังไม่รู้จัก key นี้
     foldAfterHours(payload as Record<string, unknown>);
@@ -176,17 +237,38 @@ const issues = [
       return;
     }
 
-    form.classList.add('hidden');
-    if (recommendation) recommendation.textContent = 'ผมจะอ่านโจทย์ของคุณก่อน แล้วคุยกันตรงๆ ว่าทีมควรเริ่มจาก In-house, โปรแกรมเต็ม หรือยังมีอะไรที่กลับไปทำเองได้ครับ';
-    success?.classList.remove('hidden');
-    // เข้าทาง fallback = Telegram ไม่เด้ง ผมอาจเห็นช้า → ให้ reference ไว้อ้างอิงตอนทัก LINE
-    if (status === 'sent-fallback' && success) {
-      const note = document.createElement('p');
-      note.className = 'mt-3 text-sm';
-      note.innerHTML = `บันทึกข้อมูลไว้แล้วครับ · Reference: <code>${reference}</code><br/>ถ้าอยากให้ผมตอบเร็วขึ้น ทัก LINE OA พร้อมส่งรหัสนี้มาได้เลย`;
-      success.appendChild(note);
-    }
-    success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.('Booking Submit', { props: { source: 'website-booking', status } });
+
+    // แสดง success ในหน้าเดิม — ใช้เป็นตาข่ายเมื่อ redirect ด้านล่างไม่ทำงาน
+    const revealInlineSuccess = () => {
+      if (form.classList.contains('hidden')) return;
+      form.classList.add('hidden');
+      if (recommendation) recommendation.textContent = 'ผมจะอ่านโจทย์ของคุณก่อน แล้วคุยกันตรงๆ ว่าทีมควรเริ่มจาก In-house, โปรแกรมเต็ม หรือยังมีอะไรที่กลับไปทำเองได้ครับ';
+      success?.classList.remove('hidden');
+      // เข้าทาง fallback = Telegram ไม่เด้ง ผมอาจเห็นช้า → ให้ reference ไว้อ้างอิงตอนทัก LINE
+      if (status === 'sent-fallback' && success) {
+        const note = document.createElement('p');
+        note.className = 'mt-3 text-sm';
+        note.innerHTML = `บันทึกข้อมูลไว้แล้วครับ · Reference: <code>${reference}</code><br/>ถ้าอยากให้ผมตอบเร็วขึ้น ทัก LINE OA พร้อมส่งรหัสนี้มาได้เลย`;
+        success.appendChild(note);
+      }
+      success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
+    // ── ไป /thank-you เพื่อให้ Lead ยิงบน URL เดียวกับที่ Ads Manager ตั้งเป็น
+    // conversion goal (แบบเดียวกับ intake-form.astro) · พก ref + utm ไปด้วยเพื่อ match
+    // ⚠️ redirect เฉพาะตอนบันทึกสำเร็จเท่านั้น — status failed คืนค่าไปแล้วด้านบน
+    // ไม่งั้นจะยิง conversion ปลอมให้ pixel ทั้งที่ lead ไม่ถึงเรา
+    const thankYouUrl = new URL('/thank-you', window.location.origin);
+    thankYouUrl.searchParams.set('type', 'booking');
+    thankYouUrl.searchParams.set('ref', reference);
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'ttclid'].forEach((k) => {
+      const v = String(payload[k] ?? '');
+      if (v) thankYouUrl.searchParams.set(k, v);
+    });
+    window.location.href = thankYouUrl.toString();
+
+    // in-app browser (IG/LINE) บางตัวกลืน redirect — ยังอยู่หน้าเดิมหลัง 800ms ค่อยโชว์ในหน้า
+    setTimeout(revealInlineSuccess, 800);
   });
 </script>

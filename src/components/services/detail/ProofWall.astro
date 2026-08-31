@@ -1,0 +1,64 @@
+---
+import { Image } from 'astro:assets';
+import type { ProductTestimonial, ProofItem, PublicProofImage } from '../../../data/product-details/types';
+import TestimonialGallery from './TestimonialGallery.astro';
+
+interface Props { items: ProofItem[]; testimonials?: ProductTestimonial[]; heading?: string; intro?: string; secondaryHeading?: string; imageLoading?: 'lazy'; }
+
+const { items, testimonials, heading = 'ดูของจริงก่อน ว่าทีมจะเอาไปต่อยังไง', intro, secondaryHeading = 'หลังคลาส ทีมส่งอะไรกลับมาบ้าง', imageLoading } = Astro.props;
+const activityItems = items.filter((item) => item.kind === 'photo');
+const chatItems = items.filter((item) => item.kind !== 'photo');
+const proofImageLoading = imageLoading ?? 'lazy';
+const isPublicImage = (image: ProofItem['image']): image is PublicProofImage => 'publicSrc' in image;
+---
+
+<section aria-labelledby="proof-heading" class="py-14 sm:py-20">
+  <div class="mx-auto max-w-6xl px-5">
+    <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Proof first</p>
+    <h2 id="proof-heading" class="mt-3 font-display text-3xl font-bold text-navy sm:text-4xl">{heading}</h2>
+    {intro && <p class="mt-4 max-w-3xl leading-7 text-navy/80">{intro}</p>}
+
+    {activityItems.length > 0 && (
+      <div class="mt-8 grid gap-5 lg:grid-cols-[1.45fr_1fr]">
+        <figure data-proof-activity data-proof-id={activityItems[0].id} class="overflow-hidden rounded-3xl border border-navy/10 bg-white shadow-sm">
+          {isPublicImage(activityItems[0].image)
+            ? <img src={activityItems[0].image.publicSrc} alt={activityItems[0].alt} width={activityItems[0].image.width} height={activityItems[0].image.height} loading={proofImageLoading} class="aspect-[4/3] w-full object-cover" />
+            : <Image src={activityItems[0].image} alt={activityItems[0].alt} width={activityItems[0].image.width} height={activityItems[0].image.height} loading={proofImageLoading} class="aspect-[4/3] w-full object-cover" />}
+          <figcaption class="p-5 leading-7 text-navy/80">{activityItems[0].caption}</figcaption>
+        </figure>
+        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
+          {activityItems.slice(1, 3).map((item) => (
+            <figure data-proof-activity data-proof-id={item.id} class="overflow-hidden rounded-3xl border border-navy/10 bg-white shadow-sm">
+              {isPublicImage(item.image)
+                ? <img src={item.image.publicSrc} alt={item.alt} width={item.image.width} height={item.image.height} loading={proofImageLoading} class="aspect-video w-full object-cover" />
+                : <Image src={item.image} alt={item.alt} width={item.image.width} height={item.image.height} loading={proofImageLoading} class="aspect-video w-full object-cover" />}
+              <figcaption class="p-5 leading-7 text-navy/80">{item.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {chatItems.length > 0 && (
+      <div class="mt-10">
+        <p class="text-sm font-bold text-navy">{secondaryHeading}</p>
+        <div class="mt-4 grid gap-5 md:grid-cols-3">
+          {chatItems.map((item) => (
+            <figure data-proof-quote data-proof-id={item.id} class="overflow-hidden rounded-3xl border border-navy/10 bg-white shadow-sm">
+              <div class="flex aspect-[16/7] items-center justify-center bg-navy/5 p-3 sm:p-4">
+                {isPublicImage(item.image)
+                  ? <img src={item.image.publicSrc} alt={item.alt} width={item.image.width} height={item.image.height} loading={proofImageLoading} class="h-full w-full object-contain" />
+                  : <Image src={item.image} alt={item.alt} width={item.image.width} height={item.image.height} loading={proofImageLoading} class="h-full w-full object-contain" />}
+              </div>
+              <figcaption class="p-5 leading-7 text-navy/80">
+                {item.quote && <blockquote class="mb-3 font-semibold text-navy">“{item.quote}”</blockquote>}
+                {item.caption}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    )}
+    <TestimonialGallery items={testimonials} />
+  </div>
+</section>

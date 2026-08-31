@@ -175,7 +175,7 @@ Kit นี้เหมาะที่สุดสำหรับทีม 5-20 �
 5. **คุณเห็นศักยภาพ แต่ไม่มีเวลาลงมือทำเอง** — การจ้างผู้เชี่ยวชาญทำ workshop แบบเร่งรัด 1-2 วัน จะเป็นการใช้เงินซื้อเวลาที่คุ้มค่าที่สุด
 
 **ทางเลือกสำหรับก้าวต่อไป:**
-- **เจ้าของธุรกิจ (Owner path):** [In-house Workshop → punnattapatch.com/services/ai-workshop](https://punnattapatch.com/services/ai-workshop)
+- **เจ้าของธุรกิจ (Owner path):** [In-house Workshop → punnattapatch.com/services/t1-sales-skills](https://punnattapatch.com/services/t1-sales-skills)
 - **ผู้จัดการทีม (Manager path):** [Public Training: AI Agent 101 For Sale Team → punnattapatch.com/training/p1-ai-workshop-1-day](https://punnattapatch.com/training/p1-ai-workshop-1-day)
 
 ---
@@ -266,4 +266,4 @@ MCP คือกุญแจชุดนั้น แต่ละ "MCP server" =
 >
 > Workshop In-house — จบวัน ทีมคุณมี agent 1-2 ตัวที่ต่อ Gmail + Calendar + Drive ใช้งานจริง + Pun-tested gates กัน "หายนะ"
 >
-> [ดูรายละเอียด → punnattapatch.com/services/ai-workshop](https://punnattapatch.com/services/ai-workshop)
+> [ดูรายละเอียด → punnattapatch.com/services/t1-sales-skills](https://punnattapatch.com/services/t1-sales-skills)

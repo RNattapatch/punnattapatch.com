@@ -1,0 +1,48 @@
+---
+import type { ProductDetailChapter } from '../../../data/product-details/types';
+
+interface Props {
+  chapters: ProductDetailChapter[];
+}
+
+const { chapters } = Astro.props;
+---
+
+<nav data-chapter-map aria-label="แผนที่เนื้อหาหน้า Sales Back Office" class="border-y-2 border-navy bg-[#f3efe6] py-8 sm:py-10">
+  <div class="mx-auto max-w-6xl px-5">
+    <div class="mb-5 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
+      <div>
+        <p class="font-sans text-xs font-bold uppercase tracking-[0.2em] text-coral">อ่านหน้านี้ใน 10 วินาที</p>
+        <p class="mt-1 font-display text-2xl font-bold text-navy sm:text-3xl">เลือกดูจากคำถามที่คุณกำลังตัดสินใจ</p>
+      </div>
+      <p class="max-w-sm font-sans text-sm leading-6 text-navy/70">หลักฐาน → จุดติด → สิ่งที่ทำในห้อง → ความเหมาะสมและราคา</p>
+    </div>
+
+    <div data-chapter-grid class="grid grid-cols-2 gap-2.5 md:grid-cols-4 md:gap-3">
+      {chapters.map((chapter) => (
+        <a
+          data-chapter-link
+          data-chapter-number={chapter.number}
+          href={`#chapter-${chapter.id}`}
+          class="group flex min-h-[72px] items-center gap-2.5 border-2 border-navy bg-navy px-2.5 py-3 text-white shadow-[4px_4px_0_#dd4155] transition-[transform,box-shadow,background-color] duration-200 hover:-translate-y-0.5 hover:bg-[#0d3a63] hover:shadow-[6px_6px_0_#dd4155] active:translate-y-0 active:shadow-[2px_2px_0_#dd4155] sm:gap-3 sm:px-4"
+        >
+          <span aria-hidden="true" class="font-display text-[1.4rem] font-bold leading-none text-coral sm:text-3xl">{chapter.number}</span>
+          <span class="font-sans text-[0.8125rem] font-bold leading-4 sm:text-base sm:leading-5">{chapter.navLabel}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</nav>
+
+<style>
+  [data-chapter-link]:focus {
+    outline: 3px solid #dd4155;
+    outline-offset: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-chapter-link] {
+      transition: none;
+    }
+  }
+</style>

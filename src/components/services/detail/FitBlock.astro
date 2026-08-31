@@ -1,0 +1,5 @@
+---
+interface Props { fit: string[]; notFit: string; heading?: string; relatedOffer?: { href: string; label: string }; }
+const { fit, notFit, heading = 'เหมาะกับทีมแบบไหน', relatedOffer } = Astro.props;
+---
+<section aria-labelledby="fit-heading" class="py-14 sm:py-20"><div class="mx-auto grid max-w-6xl gap-6 px-5 md:grid-cols-2"><div><h2 id="fit-heading" class="font-display text-3xl font-bold text-navy">{heading}</h2><ul class="mt-5 space-y-3">{fit.map((item) => <li class="flex gap-3 leading-7 text-navy/80"><span class="font-bold text-coral">✓</span>{item}</li>)}</ul></div><aside class="rounded-3xl border border-navy/10 bg-[#f4f1ea] p-6"><h3 class="font-bold text-navy">อาจยังไม่เหมาะ ถ้า…</h3><p class="mt-3 leading-7 text-navy/80">{notFit}</p>{relatedOffer && <a href={relatedOffer.href} class="mt-4 inline-flex font-bold text-coral underline underline-offset-4">{relatedOffer.label}</a>}</aside></div></section>

@@ -16,7 +16,7 @@ workedExample:
   inputs: "./claude.md + รายการ task ที่อยากให้ secretary ทำ + working hours"
   output: "./agents/operations/personal-secretary.md (~130 บรรทัด) + daily routine 3 jobs (morning brief / lunch checkpoint / EOD wrap)"
   timeSaved: "จัดการเอง 30-45 นาที/วัน · secretary 10 นาที/วัน + ไม่พลาด follow-up"
-phaseCtaHref: "/services/ai-workshop"
+phaseCtaHref: "/services/t1-sales-skills"
 phaseCtaLabel: "ต้องการให้ปันมาติดตั้งให้ทั้งทีม? → ดู In-House Workshop"
 published: 2026-04-22
 ---

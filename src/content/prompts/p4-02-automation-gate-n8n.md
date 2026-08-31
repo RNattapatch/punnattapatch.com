@@ -16,7 +16,7 @@ workedExample:
   inputs: "list 5 heavy task + audit from P4-01 + n8n instance URL + sample data ของแต่ละ task"
   output: "./output/automation/gate-matrix-<YYYY-MM>.md — 5-row table × 4 criteria (frequency / time saved / risk / maintainability) + verdict (n8n / keep agent / hybrid) + สำหรับ task ที่ผ่าน gate: n8n workflow spec (trigger / nodes / credential / error handling)"
   timeSaved: "task repetitive ถ้ายังให้ agent ทำ = 10-15 นาที/ครั้ง · n8n = 0 นาที (scheduled) · scale linearly ตาม frequency"
-phaseCtaHref: "/services/ai-workshop"
+phaseCtaHref: "/services/t1-sales-skills"
 phaseCtaLabel: "ใช้ pattern นี้ใน workshop → ดู In-House Workshop"
 published: 2026-04-22
 ---

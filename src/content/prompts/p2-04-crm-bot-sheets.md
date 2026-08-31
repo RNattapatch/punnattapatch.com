@@ -16,7 +16,7 @@ workedExample:
   inputs: "./claude.md + Google Sheet ID + รายการ column ปัจจุบัน + skill-build-agent-team.md"
   output: "./agents/sales/crm-bot.md + ./agents/sales/crm-bot.config.json (เก็บ Sheet ID + column map) · เรียกผ่าน @crm-bot"
   timeSaved: "Update Sheet มือ + ค้น lead: 15-20 นาที/วัน · agent ทำให้ 2 นาที + ไม่พลาด field"
-phaseCtaHref: "/services/ai-workshop"
+phaseCtaHref: "/services/t1-sales-skills"
 phaseCtaLabel: "อยากเห็น pattern advanced กว่านี้? → ดู In-House Workshop"
 published: 2026-04-22
 ---

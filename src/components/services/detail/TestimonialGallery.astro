@@ -1,0 +1,22 @@
+---
+import type { ProductTestimonial } from '../../../data/product-details/types';
+
+interface Props { items?: ProductTestimonial[]; }
+
+const { items = [] } = Astro.props;
+---
+
+{items.length > 0 && (
+  <div class="mt-12">
+    <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">More proof</p>
+    <h3 class="mt-2 font-display text-2xl font-bold text-navy sm:text-3xl">เสียงและภาพจากคนที่เคยร่วมงาน</h3>
+    <p class="mt-3 max-w-3xl leading-7 text-navy/75">รวมภาพรีวิวและข้อความที่เผยแพร่บนเว็บไซต์แล้ว เพื่อให้ดูหลักฐานได้มากกว่าคำคมไม่กี่ใบ</p>
+    <div class="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+      {items.map((item) => (
+        <figure data-product-testimonial class="overflow-hidden rounded-2xl border border-navy/10 bg-white shadow-sm">
+          <img src={item.src} alt={item.alt} width={item.width} height={item.height} loading="lazy" decoding="async" class="aspect-square w-full object-cover" />
+        </figure>
+      ))}
+    </div>
+  </div>
+)}

@@ -1,0 +1,93 @@
+---
+import { SITE } from '../../../data/site';
+import type { ProductDetailCode, ProductDecisionCta } from '../../../data/product-details/types';
+
+interface Props {
+  code: ProductDetailCode;
+  keyword: string;
+  cta: ProductDecisionCta;
+}
+
+const { code, keyword, cta } = Astro.props;
+const headingId = `decision-cta-${cta.location}`;
+const isInverse = cta.variant === 'navy';
+const sectionClass = cta.variant === 'navy'
+  ? 'bg-navy text-white'
+  : cta.variant === 'sand'
+    ? 'bg-[#f4f1ea] text-navy'
+    : 'bg-white text-navy';
+const bookingHref = (intent: string) => `/booking?package=${encodeURIComponent(code)}&intent=${encodeURIComponent(intent)}`;
+---
+
+<section
+  data-decision-cta
+  data-cta-location={cta.location}
+  aria-labelledby={headingId}
+  class:list={['py-8 sm:py-10', sectionClass]}
+>
+  <div class="mx-auto max-w-6xl px-5">
+    <div class:list={[
+      'grid gap-6 rounded-[2rem] border p-6 shadow-sm sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center',
+      isInverse ? 'border-white/15 bg-white/[0.06]' : 'border-navy/10 bg-white',
+    ]}>
+      <div class="max-w-2xl">
+        <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">{cta.eyebrow}</p>
+        <h2 id={headingId} class="mt-3 text-balance font-display text-2xl font-bold sm:text-3xl">{cta.heading}</h2>
+        <p class:list={['mt-3 leading-7', isInverse ? 'text-white/75' : 'text-navy/70']}>{cta.body}</p>
+      </div>
+      <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:max-w-md lg:justify-end">
+        {cta.actions.map((action) => action.kind === 'booking' ? (
+          <a
+            href={bookingHref(action.intent)}
+            data-booking-cta
+            data-contact-cta
+            data-product-code={code}
+            data-cta-location={cta.location}
+            data-cta-intent={action.intent}
+            data-cta-label={action.label}
+            class="btn min-h-12 border-0 bg-[#c43245] px-6 text-white hover:bg-[#ad293a] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral"
+          >{action.label}</a>
+        ) : action.kind === 'line' ? (
+          <a
+            href={SITE.social.line}
+            target="_blank"
+            rel="noopener"
+            data-line-cta
+            data-contact-cta
+            data-product-code={code}
+            data-cta-location={cta.location}
+            data-cta-intent={action.intent}
+            data-cta-keyword={keyword}
+            data-cta-label={action.label}
+            class="btn min-h-12 border-0 bg-[#06C755] px-6 text-[#072B4E] hover:bg-[#05ad49]"
+          >{action.label}</a>
+        ) : action.available && action.href ? (
+          <a
+            href={action.href}
+            download
+            data-download-cta
+            data-product-code={code}
+            data-cta-location={cta.location}
+            data-cta-intent={action.intent}
+            class="btn min-h-12 border-0 bg-[#c43245] px-6 text-white hover:bg-[#ad293a] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral"
+          >{action.label}</a>
+        ) : (
+          <button
+            type="button"
+            disabled
+            aria-disabled="true"
+            data-download-cta
+            data-cta-availability="pending"
+            data-product-code={code}
+            data-cta-location={cta.location}
+            data-cta-intent={action.intent}
+            class:list={[
+              'btn min-h-12 cursor-not-allowed px-6 opacity-75',
+              isInverse ? 'border-white/30 bg-white/10 text-white' : 'border-navy/15 bg-navy/5 text-navy/65',
+            ]}
+          >{action.label}</button>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

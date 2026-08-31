@@ -1,11 +1,14 @@
-/services/ai-workshop /services#inhouse-a 301
-/services/ai-workshop-followup /services#inhouse-a 301
-/services/ai-workshop-advance /services#sales-report 301
-/services/paid-audit /services#offer-c1 301
-/services/package-a /services#offer-c1 301
-/services/sales-system-sprint /services#offer-c1 301
-/services/sale-training-bundle /services#offer-t1 301
-/services/trust-content-tiktok-workshop /services#trust-content 301
+/services/ai-workshop /services/t1-sales-skills 301
+/services/ai-workshop-followup /services/t1-sales-skills 301
+/services/ai-workshop-advance /services/t3-sales-back-office 301
+/services/paid-audit /services/daily-consulting 301
+/services/package-a /services/daily-consulting 301
+/services/sales-system-sprint /services/daily-consulting 301
+/services/sale-training-bundle /services/t1-sales-skills 301
+/services/trust-content-tiktok-workshop /services/online-to-sales 301
+/advance-ai /services/t3-sales-back-office 301
+/ai-workshop-advance /services/t3-sales-back-office 301
+/inhouse /services/t1-sales-skills 301
 # waitlist P1 ปิดชั่วคราว (2026-08-12) — workflow n8n ปิดไปแล้ว + คอร์ส pause · 302 เผื่อเปิดกลับ
 /waitlist /booking 302
 # lp-line-ads: static LP เก่าโชว์ ฿39,900 (ราคาตาย) + index,follow — ลบทิ้ง 2026-08-28 (catalog-revision-plan Phase 0)

@@ -16,7 +16,7 @@ workedExample:
   inputs: "Notion API credential + list 3 use case (อ่าน brief / update status / เขียน draft) + content agent ที่จะใช้ MCP"
   output: "./mcp/notion-config.md (config + credential placement) + updated ./agents/content/<agent>.md (เพิ่ม MCP section + safety rule) + smoke test prompt 3 ตัว"
   timeSaved: "copy-paste Notion ↔ Claude Code 5-10 นาที/task · MCP 0 นาที (direct) · ลด error จาก manual copy"
-phaseCtaHref: "/services/ai-workshop"
+phaseCtaHref: "/services/t1-sales-skills"
 phaseCtaLabel: "ใช้ pattern นี้ใน workshop → ดู In-House Workshop"
 published: 2026-04-22
 ---

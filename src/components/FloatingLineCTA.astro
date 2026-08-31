@@ -52,6 +52,10 @@ const label = 'ทัก LINE · ให้ผมช่วยเลือก';
     z-index: 60;
   }
 
+  .floating-line-root[data-inflow-cta-visible] {
+    display: none;
+  }
+
   .floating-line-link {
     display: inline-flex;
     min-width: 56px;
@@ -166,3 +170,23 @@ const label = 'ทัก LINE · ให้ผมช่วยเลือก';
     }
   }
 </style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-floating-line-root]');
+  const mobile = window.matchMedia('(max-width: 639px)');
+  const targets = [...document.querySelectorAll<HTMLElement>('[data-contact-cta][data-product-code]:not([data-product-code="none"])')];
+  const visible = new Set<HTMLElement>();
+  const update = () => root?.toggleAttribute('data-inflow-cta-visible', mobile.matches && visible.size > 0);
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      const target = entry.target as HTMLElement;
+      if (entry.isIntersecting) visible.add(target);
+      else visible.delete(target);
+    }
+    update();
+  }, { threshold: 0.1 });
+
+  targets.forEach((target) => observer.observe(target));
+  mobile.addEventListener('change', update);
+  update();
+</script>

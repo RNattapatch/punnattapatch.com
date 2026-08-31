@@ -16,7 +16,7 @@ workedExample:
   inputs: "./agents/orchestrator.md + 2 agent ที่ handoff บ่อย + sample task ที่ต้องส่งต่อ"
   output: "Handoff protocol .md + update 2 agent files + format ของ context bundle (JSON-like header) + handoff log"
   timeSaved: "ผ่าน orchestrator ทุกรอบ: +1 hop/round · direct handoff ลด round-trip 50% · งาน complex 5-step ลดเวลา 30%"
-phaseCtaHref: "/services/ai-workshop"
+phaseCtaHref: "/services/t1-sales-skills"
 phaseCtaLabel: "ใช้ pattern นี้ใน workshop → ดู In-House Workshop"
 published: 2026-04-22
 ---

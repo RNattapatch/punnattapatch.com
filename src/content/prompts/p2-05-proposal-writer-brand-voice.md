@@ -16,7 +16,7 @@ workedExample:
   inputs: "./claude.md + 3 proposal ฉบับ closed-won + format choice (docx)"
   output: "./agents/sales/proposal-writer.md + ./agents/sales/proposal-samples/ (3 ไฟล์ที่ paste มา) + voice-fingerprint extracted"
   timeSaved: "เขียน proposal เอง 4-8 ชม./ฉบับ · agent draft 30 นาที + edit 1 ชม."
-phaseCtaHref: "/services/ai-workshop"
+phaseCtaHref: "/services/t1-sales-skills"
 phaseCtaLabel: "อยากเห็น pattern advanced กว่านี้? → ดู In-House Workshop"
 published: 2026-04-22
 ---

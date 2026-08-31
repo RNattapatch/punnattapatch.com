@@ -16,7 +16,7 @@ workedExample:
   inputs: "./claude.md + skill-build-agent-team.md (มี OWNER template) + prompt ข้างล่าง"
   output: "ไฟล์ ./agents/sales/sale-team-leader.md (~150 บรรทัด) ที่ inherit context จาก claude.md + พร้อมเรียกผ่าน @sale-team-leader"
   timeSaved: "เขียน agent prompt เองจากศูนย์: 2-3 ชม. + ลองใช้แล้วแก้ · ใช้ prompt 8 นาทีได้ agent ที่ใช้ได้ทันที"
-phaseCtaHref: "/services/ai-workshop"
+phaseCtaHref: "/services/t1-sales-skills"
 phaseCtaLabel: "ต้องการให้ปันมาติดตั้งให้ทั้งทีม? → ดู In-House Workshop"
 published: 2026-04-22
 ---

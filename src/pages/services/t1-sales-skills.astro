@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductDetailLayout from '../../components/services/detail/ProductDetailLayout.astro';
+import { resolveProductDetailCatalog } from '../../data/product-details/catalog';
+import { T1_PRODUCT_DETAIL } from '../../data/product-details/t1';
+import { SITE } from '../../data/site';
+
+const catalog = resolveProductDetailCatalog(T1_PRODUCT_DETAIL.pricingKey);
+const canonical = `${SITE.url}${T1_PRODUCT_DETAIL.route}`;
+---
+
+<BaseLayout title={T1_PRODUCT_DETAIL.seo.title} description={T1_PRODUCT_DETAIL.seo.description} canonical={canonical} ogImage={`${SITE.url}${catalog.image}`} schema={{ types: ['WebPage', 'FAQPage', 'BreadcrumbList', 'ProductDetail'], title: T1_PRODUCT_DETAIL.seo.title, description: T1_PRODUCT_DETAIL.seo.description, url: canonical, faq: T1_PRODUCT_DETAIL.faq, breadcrumbs: [{ name: 'บริการ', url: `${SITE.url}/services` }, { name: catalog.name, url: canonical }], productDetail: { code: T1_PRODUCT_DETAIL.code, kind: T1_PRODUCT_DETAIL.kind, name: catalog.name, description: T1_PRODUCT_DETAIL.seo.description, url: canonical, duration: catalog.duration } }}>
+  <ProductDetailLayout data={T1_PRODUCT_DETAIL} />
+</BaseLayout>

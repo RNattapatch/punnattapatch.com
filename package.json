@@ -12,7 +12,8 @@
     "build": "node scripts/gen-catalog.mjs && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "verify:services": "node scripts/verify-services-vnext.mjs"
+    "verify:services": "node scripts/verify-services-vnext.mjs",
+    "verify:product-details": "node scripts/verify-product-details.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",

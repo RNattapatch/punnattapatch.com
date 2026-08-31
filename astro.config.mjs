@@ -15,6 +15,9 @@ const legacyServicePaths = new Set([
   '/services/sales-system-sprint',
   '/services/sale-training-bundle',
   '/services/trust-content-tiktok-workshop',
+  '/advance-ai',
+  '/ai-workshop-advance',
+  '/inhouse',
 ]);
 
 // https://astro.build/config
@@ -28,7 +31,7 @@ export default defineConfig({
     remarkPlugins: [remarkPrice],
   },
   redirects: {
-    '/services/ai-workshop-followup': '/services#inhouse-a',
+    '/services/ai-workshop-followup': '/services/t1-sales-skills',
   },
   vite: {
     plugins: [tailwindcss()],

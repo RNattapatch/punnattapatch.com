@@ -48,23 +48,28 @@
 1. **คอร์สจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B — ฿34,900 · 1 วัน**
    เข้าใจเหตุผลซื้อ 3 ชั้น ฝึก Socratic Questions, Diagnostic Listening, Pricing Psychology, BATNA และการต่อรองโดยไม่รีบลดราคา จากนั้นสร้าง AI Sales Coach จาก Company Context เพื่อเตรียม ซ้อม และทบทวนดีล — Agent ไม่ใช่ production bot และไม่คุยกับลูกค้าแทนมนุษย์
    เหมาะกับ: บริษัท B2B ที่มีทีมขาย 5-20 คน · มี Lead แล้ว แต่เซลล์ยังติดตอนถาม ต่อรอง หรือ Follow-up
+   รายละเอียด: https://punnattapatch.com/services/t1-sales-skills
 
 2. **คอร์สอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI — ฿34,900 · 1 วัน**
    ทีมรายงานด้วยภาษาชุดเดียวกัน — ผู้จัดการเห็นดีลค้าง งานที่ต้องตาม และจุดที่ต้องเข้าไปช่วย โดยไม่ต้องไล่ถามทีละคน
    เหมาะกับ: Owner · Sales Manager · Sales Admin · Back Office ที่รวมรายงานด้วยมือ (คอร์สนี้คือทีมเรียนวิธีวางระบบ — งานติดตั้งจริงคือข้อ 5)
+   รายละเอียด: https://punnattapatch.com/services/t3-sales-back-office
 
 3. **คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI — ฿54,900 · 2 วัน + ดูแลต่อ 30 วัน**
    ช่วยทีมขายเปลี่ยนคนดูออนไลน์ให้เป็นแชต นัดหมาย และยอดขาย
    มี Vertical Edition เช่น คอร์สเพิ่มยอดขายรถจากออนไลน์ด้วย Content + Ads + AI (Dealer) — ราคาเดียวกัน
+   รายละเอียด: https://punnattapatch.com/services/online-to-sales
 
 ### บริการวางระบบฝ่ายขาย
 
 4. **บริการวางระบบฝ่ายขายแบบรายวัน — ฿34,900 · 1 วัน / 1 เรื่องหลัก**
    เลือก 1 ปัญหาขายที่สำคัญที่สุด แล้ววางทางออกให้จบภายใน 1 วัน — เลือกได้ 4 เรื่อง: (1) Online-to-Sales Full Journey (2) โครงสร้างทีมขาย + KPI + ค่าคอม (3) ออกแบบ Sales Control + Report + Dashboard (4) AI Workflow / AI Agent prototype
    หลายปัญหา = ประเมินจำนวนวันรวมเสนอใน proposal เดียว · ไม่แน่ใจเริ่มเรื่องไหน ทัก LINE ให้ทีมช่วยเลือก
+   รายละเอียด: https://punnattapatch.com/services/daily-consulting
 
 5. **บริการทำ Sales Dashboard + Report อัตโนมัติ — ฿69,900 · 3 วัน on-site + ดูแลต่อ 30 วัน**
    Master deal register + Daily report + Stale lead/Follow-up list + Excel export + UAT + สอนทีมใช้
+   รายละเอียด: https://punnattapatch.com/services/dashboard-build
 
 6. **โปรแกรมยกระดับทักษะและระบบทีมขายด้วย AI (Advance Program: Sales Mastery with AI)**
    เรียนคอร์สหลักแล้วต่อ Guided Implementation Workshop 2 วัน — เลือก 1 workflow/ระบบหลัก ทำกับข้อมูลจริงของบริษัท มี UAT และส่งมอบให้ทีมรันต่อ · เสนอผ่าน proposal (ไม่ quote ราคาหน้าเว็บ)

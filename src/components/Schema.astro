@@ -26,6 +26,7 @@
 
 import { SITE, SERVICES, cleanUrl } from '../data/site';
 import type { ServiceOffer } from '../data/service-offers';
+import type { ProductDetailCode } from '../data/product-details/types';
 
 type SchemaType =
   | 'Person'
@@ -38,7 +39,8 @@ type SchemaType =
   | 'Article'
   | 'BreadcrumbList'
   | 'Event'
-  | 'Course';
+  | 'Course'
+  | 'ProductDetail';
 
 interface TrainingEvent {
   name: string;
@@ -54,6 +56,16 @@ interface TrainingEvent {
   locationAddress?: string;
   isVirtual?: boolean;
   audience?: string;
+}
+
+interface ProductDetailSchema {
+  code: ProductDetailCode;
+  kind: 'course' | 'service';
+  serviceType?: 'Sales Consulting' | 'Sales System Implementation';
+  name: string;
+  description: string;
+  url: string;
+  duration: string;
 }
 
 interface Props {
@@ -81,6 +93,8 @@ interface Props {
   catalog?: readonly ServiceOffer[];
   /** For Event/Course (training pages) */
   training?: TrainingEvent;
+  /** For individual Product & Service detail pages */
+  productDetail?: ProductDetailSchema;
 }
 
 const {
@@ -95,6 +109,7 @@ const {
   services = SERVICES,
   catalog,
   training,
+  productDetail,
 } = Astro.props;
 
 const PERSON_ID = `${SITE.url}/#person`;
@@ -244,7 +259,7 @@ function buildCatalog() {
   if (!catalog) return [];
 
   const itemListElement = catalog.map((offer, index) => {
-    const itemUrl = `${url}#offer-${offer.code.toLowerCase()}`;
+    const itemUrl = offer.detailHref ? `${SITE.url}${offer.detailHref}` : `${url}#offer-${offer.code.toLowerCase()}`;
     return {
       '@type': 'ListItem',
       position: index + 1,
@@ -257,7 +272,7 @@ function buildCatalog() {
   });
 
   const typedItems = catalog.flatMap((offer) => {
-    const itemUrl = `${url}#offer-${offer.code.toLowerCase()}`;
+    const itemUrl = offer.detailHref ? `${SITE.url}${offer.detailHref}` : `${url}#offer-${offer.code.toLowerCase()}`;
     const common = {
       '@id': itemUrl,
       name: offer.publicName,
@@ -413,6 +428,35 @@ function buildCourse() {
   };
 }
 
+function buildProductDetail() {
+  if (!productDetail) return null;
+  const common = {
+    '@id': `${productDetail.url}#${productDetail.kind}`,
+    name: productDetail.name,
+    description: productDetail.description,
+    url: productDetail.url,
+    provider: { '@id': PERSON_ID },
+    inLanguage: 'th-TH',
+  };
+
+  if (productDetail.kind === 'course') {
+    return {
+      '@type': 'Course',
+      ...common,
+      courseCode: productDetail.code,
+      timeRequired: productDetail.duration,
+    };
+  }
+
+  return {
+    '@type': 'Service',
+    ...common,
+    serviceType: productDetail.serviceType ?? (productDetail.code === 'I1' ? 'Sales System Implementation' : 'Sales Consulting'),
+    category: 'Sales Enablement',
+    areaServed: { '@type': 'Country', name: 'Thailand' },
+  };
+}
+
 function buildBreadcrumbs() {
   if (!breadcrumbs) return null;
   return {
@@ -473,6 +517,11 @@ function buildGraph(): unknown[] {
       case 'Course': {
         const course = buildCourse();
         if (course) graph.push(course);
+        break;
+      }
+      case 'ProductDetail': {
+        const detail = buildProductDetail();
+        if (detail) graph.push(detail);
         break;
       }
     }

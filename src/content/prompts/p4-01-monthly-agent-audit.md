@@ -16,7 +16,7 @@ workedExample:
   inputs: "list 6 agent + ./output/ ที่ agent generate ใน 30 วัน + claude.md baseline + 2-3 feedback ที่เคยให้ agent"
   output: "./output/audits/agent-audit-<YYYY-MM>.md — table 6 agent x 4 metric (usage count / output quality / drift signal / value delivered) + verdict (keep-as-is / tune / deprecate) + 3 specific improvement"
   timeSaved: "audit เอง 4-5 ชม. (อ่าน output + เปรียบเทียบ + judgment) · session 60 นาที + เอกสารพร้อม decision"
-phaseCtaHref: "/services/ai-workshop"
+phaseCtaHref: "/services/t1-sales-skills"
 phaseCtaLabel: "อยากเห็น pattern advanced กว่านี้? → ดู In-House Workshop"
 published: 2026-04-22
 ---

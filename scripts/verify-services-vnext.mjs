@@ -18,13 +18,36 @@ const distPath = distArgument ? resolve(root, distArgument) : `${root}/dist`;
 const servicesPagePath = `${distPath}/services.html`;
 const redirectsOutputPath = `${distPath}/_redirects`;
 const sitemapOutputPath = `${distPath}/sitemap-0.xml`;
+const llmsOutputPath = `${distPath}/llms.txt`;
+const llmsFullOutputPath = `${distPath}/llms-full.txt`;
 
 const servicesCanonical = 'https://punnattapatch.com/services';
 const servicesTitle = 'คอร์สสำหรับทีมขาย และบริการวางระบบฝ่ายขาย | ปัน ณัฐพัชร์';
 const servicesDescription = 'Training, Consulting และ Implementation สำหรับทีมขายที่ต้องการเพิ่มยอด วาง Funnel, Follow-up, Report และ Dashboard โดยใช้ AI เป็นตัวช่วยในงานที่เหมาะสม';
+const detailRouteByCode = {
+  T1: '/services/t1-sales-skills',
+  T2: '/services/online-to-sales',
+  T3: '/services/t3-sales-back-office',
+  C1: '/services/daily-consulting',
+  I1: '/services/dashboard-build',
+};
 
 function builtPagePath(route) {
   return route === '/' ? `${distPath}/index.html` : `${distPath}/${route.replace(/^\//, '')}.html`;
+}
+
+function builtPublicPathForRoute(route) {
+  const pathname = new URL(route, 'https://punnattapatch.com').pathname;
+  return `${pathname.replace(/^\/+/, '') || 'index'}.html`;
+}
+
+function catalogRetiredPriceExceptionPaths(catalog, retiredKey) {
+  const retiredAmount = catalog[retiredKey]?.amount;
+  return new Set(
+    Object.entries(catalog)
+      .filter(([key, entry]) => entry.status === 'live' && catalog[`${key}-regular`]?.amount === retiredAmount)
+      .map(([, entry]) => builtPublicPathForRoute(entry.url)),
+  );
 }
 
 function builtHtmlPaths(directory = distPath) {
@@ -41,13 +64,27 @@ function builtPublicHtmlPages() {
 
 function assertPublicBuildContentIntegrity() {
   const retiredPrice = fmtPrice('package-a');
+  const retiredPriceExceptionPaths = catalogRetiredPriceExceptionPaths(CATALOG, 'package-a');
   const violations = [];
+
+  const activeRegularPriceMatches = Object.entries(CATALOG).filter(
+    ([key, entry]) => entry.status === 'live' && CATALOG[`${key}-regular`]?.amount === CATALOG['package-a'].amount,
+  );
+  assert.ok(activeRegularPriceMatches.length > 0, 'Catalog must identify an active same-priced regular entry for the retired Package A amount');
+  assert.deepEqual(
+    retiredPriceExceptionPaths,
+    new Set(activeRegularPriceMatches.map(([, entry]) => builtPublicPathForRoute(entry.url))),
+    'price exceptions must contain only routes derived from active Catalog regular-price relationships',
+  );
+  assert.ok(!retiredPriceExceptionPaths.has(builtPublicPathForRoute('/services')), 'services catalog must remain protected from the retired Package A amount');
 
   for (const { path, html } of builtPublicHtmlPages()) {
     const publicPath = path.replace(`${distPath}/`, '');
     if (/Package A/i.test(html)) violations.push(`${publicPath}: Package A`);
     if (/Paid[ -]Audit/i.test(html)) violations.push(`${publicPath}: Paid Audit`);
-    if (html.includes(retiredPrice)) violations.push(`${publicPath}: retired package price`);
+    if (html.includes(retiredPrice) && !retiredPriceExceptionPaths.has(publicPath)) {
+      violations.push(`${publicPath}: retired package price`);
+    }
 
     if (/Agentic AI Transformation|AI Agent Transformation|AI Transformation สำหรับ(?:ธุรกิจ|SME|ทีมขาย)/i.test(html)) {
       violations.push(`${publicPath}: generic AI Transformation positioning`);
@@ -246,13 +283,17 @@ function assertServicesPageBuildOutput() {
     assert.ok(legacyIndex > c1Index && legacyIndex < c1ArticleEnd, `#${legacyAnchor} must be a descendant of the C1 article`);
   }
 
-  for (const code of ['C1', 'I1']) {
+  for (const code of Object.keys(detailRouteByCode)) {
     const cardStart = html.indexOf(`data-offer-code="${code}"`);
     const cardEnd = html.indexOf('</article>', cardStart);
     const cardHtml = html.slice(cardStart, cardEnd);
-    assert.match(cardHtml, /(เล่าโจทย์ให้ผมฟัง|ขอประเมิน Scope)/, `${code} must use an approved exact LINE label`);
-    assert.doesNotMatch(cardHtml, /คุยกับปันใน LINE/, `${code} must not use the retired LINE label`);
+    assert.match(cardHtml, /data-offer-detail-link/, `${code} must expose its primary detail navigation`);
+    assert.ok(cardHtml.includes(`href="${detailRouteByCode[code]}"`), `${code} detail navigation must use its canonical route`);
+    assert.match(cardHtml, /href="https:\/\/lin\.ee\/ioSnSUG"[^>]*data-contact-cta/, `${code} must retain a secondary LINE fit action`);
   }
+  const a1Start = html.indexOf('data-offer-code="A1"');
+  const a1Html = html.slice(a1Start, html.indexOf('</article>', a1Start));
+  assert.doesNotMatch(a1Html, /data-offer-detail-link/, 'A1 must remain proposal-only without a public detail route');
 
   const visibleFaqCount = (html.match(/<details\b[^>]*data-service-faq/g) ?? []).length;
   assert.equal(visibleFaqCount, 10, 'services page must render ten FAQ answers');
@@ -312,8 +353,8 @@ function assertServicesSeoBuildOutput() {
   ];
   for (const [code, type] of expectedSchemaOffers) {
     const offer = OFFER_BY_CODE[code];
-    const node = schemaNodes.find((candidate) => candidate['@id'] === `${servicesCanonical}#offer-${code.toLowerCase()}`);
-    assert.ok(node, `${code} schema node must use its visible offer anchor`);
+    const node = schemaNodes.find((candidate) => candidate['@id'] === `https://punnattapatch.com${detailRouteByCode[code]}`);
+    assert.ok(node, `${code} schema node must use its canonical detail URL`);
     assert.equal(node['@type'], type, `${code} schema type must match the product role`);
     assert.equal(node.name, offer.publicName, `${code} schema name must match the visible catalog`);
     assert.equal(node.description, offer.description, `${code} schema description must match the visible catalog`);
@@ -324,13 +365,13 @@ function assertServicesSeoBuildOutput() {
   assert.equal(itemList.numberOfItems, 6, 'ItemList must represent all six visible catalog roles');
   assert.deepEqual(itemList.itemListElement.map((item) => item.position), [1, 2, 3, 4, 5, 6], 'ItemList positions must be complete and ordered');
   assert.deepEqual(itemList.itemListElement.map((item) => item.item.url), [
-    `${servicesCanonical}#offer-t2`,
-    `${servicesCanonical}#offer-t1`,
-    `${servicesCanonical}#offer-t3`,
-    `${servicesCanonical}#offer-c1`,
-    `${servicesCanonical}#offer-i1`,
+    `https://punnattapatch.com${detailRouteByCode.T2}`,
+    `https://punnattapatch.com${detailRouteByCode.T1}`,
+    `https://punnattapatch.com${detailRouteByCode.T3}`,
+    `https://punnattapatch.com${detailRouteByCode.C1}`,
+    `https://punnattapatch.com${detailRouteByCode.I1}`,
     `${servicesCanonical}#offer-a1`,
-  ], 'ItemList order must match the visible services catalog');
+  ], 'ItemList must send the five public Products to canonical detail pages and keep A1 on the catalog');
 
   assert.doesNotMatch(html, /Package A|Paid[ -]Audit|AI Transformation/i, 'retired public positioning must not appear in services output');
   assert.ok(!html.includes(fmtPrice('package-a')), 'the retired Package A price must not appear in metadata, schema or hidden output');
@@ -342,14 +383,17 @@ function assertServicesSeoBuildOutput() {
   assert.ok(existsSync(redirectsOutputPath), 'deploy redirect output must exist');
   const redirects = readFileSync(redirectsOutputPath, 'utf8');
   const legacyRedirects = [
-    ['/services/ai-workshop', '/services#inhouse-a'],
-    ['/services/ai-workshop-followup', '/services#inhouse-a'],
-    ['/services/ai-workshop-advance', '/services#sales-report'],
-    ['/services/paid-audit', '/services#offer-c1'],
-    ['/services/package-a', '/services#offer-c1'],
-    ['/services/sales-system-sprint', '/services#offer-c1'],
-    ['/services/sale-training-bundle', '/services#offer-t1'],
-    ['/services/trust-content-tiktok-workshop', '/services#trust-content'],
+    ['/services/ai-workshop', detailRouteByCode.T1],
+    ['/services/ai-workshop-followup', detailRouteByCode.T1],
+    ['/services/ai-workshop-advance', detailRouteByCode.T3],
+    ['/services/paid-audit', detailRouteByCode.C1],
+    ['/services/package-a', detailRouteByCode.C1],
+    ['/services/sales-system-sprint', detailRouteByCode.C1],
+    ['/services/sale-training-bundle', detailRouteByCode.T1],
+    ['/services/trust-content-tiktok-workshop', '/services/online-to-sales'],
+    ['/advance-ai', detailRouteByCode.T3],
+    ['/ai-workshop-advance', detailRouteByCode.T3],
+    ['/inhouse', detailRouteByCode.T1],
   ];
   for (const [from, to] of legacyRedirects) {
     assert.match(redirects, new RegExp(`^${from.replaceAll('/', '\\/')}\\s+${to.replaceAll('/', '\\/')}\\s+301$`, 'm'), `${from} must permanently redirect to ${to}`);
@@ -360,8 +404,27 @@ function assertServicesSeoBuildOutput() {
   assert.ok(existsSync(sitemapOutputPath), 'sitemap build output must exist');
   const sitemap = readFileSync(sitemapOutputPath, 'utf8');
   assert.equal((sitemap.match(new RegExp(`<loc>${servicesCanonical}</loc>`, 'g')) ?? []).length, 1, 'sitemap must include the canonical services URL exactly once');
+  for (const route of Object.values(detailRouteByCode)) {
+    assert.equal((sitemap.match(new RegExp(`<loc>https://punnattapatch.com${route}</loc>`, 'g')) ?? []).length, 1, `${route} must appear in the sitemap exactly once`);
+  }
+  assert.doesNotMatch(sitemap, /<loc>https:\/\/punnattapatch\.com\/services\/(?:a1|i2|f1|r1)[^<]*<\/loc>/i, 'A1/I2/F1/R1 must not acquire accidental public detail routes');
   for (const [from] of legacyRedirects) {
     assert.ok(!sitemap.includes(`<loc>https://punnattapatch.com${from}</loc>`), `${from} redirect must not be indexed in the sitemap`);
+  }
+
+  for (const outputPath of [llmsOutputPath, llmsFullOutputPath]) {
+    assert.ok(existsSync(outputPath), `${outputPath.replace(`${distPath}/`, '')} must exist in the public build`);
+    const llms = readFileSync(outputPath, 'utf8');
+    for (const route of Object.values(detailRouteByCode)) {
+      assert.ok(llms.includes(`https://punnattapatch.com${route}`), `${outputPath.replace(`${distPath}/`, '')} must link to ${route}`);
+    }
+  }
+
+  for (const route of Object.values(detailRouteByCode)) {
+    const detailHtml = readFileSync(builtPagePath(route), 'utf8');
+    assert.match(detailHtml, /data-detail-chooser-link[^>]*href="\/services#offer-chooser"/, `${route} must link undecided visitors back to the chooser`);
+    assert.doesNotMatch(detailHtml, /href="#"/, `${route} must not contain a dead hash link`);
+    assert.doesNotMatch(detailHtml, /(?:href|src)="\/Users\//, `${route} must not expose a local absolute file path`);
   }
 }
 
@@ -370,31 +433,37 @@ const expected = {
     publicName: 'คอร์สจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B',
     kind: 'training', pricingKey: 'inhouse-a', thumbnailFile: 't1-sales-skill-ai.png',
     imageAlt: 'คอร์สจิตวิทยาการขายและ AI Agent สำหรับทีมขาย B2B',
+    detailHref: '/services/t1-sales-skills', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดคอร์ส',
   },
   T2: {
     publicName: 'คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI',
     kind: 'training', pricingKey: 'tiktok-workshop', thumbnailFile: 't2-online-to-offline-ai.png',
     imageAlt: 'คอร์สเพิ่มยอดขายจากออนไลน์ไปสู่การนัดหมายและยอดขาย',
+    detailHref: '/services/online-to-sales', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดคอร์ส',
   },
   T3: {
     publicName: 'คอร์สอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI',
     kind: 'training', pricingKey: 'ai-workshop-advance', thumbnailFile: 't3-sales-back-office-ai.png',
     imageAlt: 'คอร์สอบรมวางระบบ Report และ Dashboard สำหรับฝ่ายขาย',
+    detailHref: '/services/t3-sales-back-office', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดคอร์ส',
   },
   C1: {
     publicName: 'บริการวางระบบฝ่ายขายแบบรายวัน',
     kind: 'consulting', pricingKey: 'daily-sales-consulting', thumbnailFile: 'c1-daily-sales-consulting.png',
     imageAlt: 'บริการวางระบบฝ่ายขายแบบรายวัน',
+    detailHref: '/services/daily-consulting', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดบริการ',
   },
   I1: {
     publicName: 'บริการทำ Sales Dashboard + Report อัตโนมัติ',
     kind: 'implementation', pricingKey: 'daruma-starter', thumbnailFile: 'i1-automated-sales-dashboard.png',
     imageAlt: 'บริการสร้าง Sales Dashboard และ Report อัตโนมัติ',
+    detailHref: '/services/dashboard-build', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดบริการ',
   },
   A1: {
     publicName: 'Advance Program: Sales Mastery with AI',
     kind: 'upgrade', pricingKey: null, thumbnailFile: 'a1-sales-mastery-with-ai.png',
     imageAlt: 'Advance Program เรียนและจับมือวางระบบทีมขายจนใช้จริง',
+    detailHref: null, primaryCtaKind: 'line', primaryCtaLabel: 'คุยกับปันใน LINE',
   },
 };
 
@@ -436,8 +505,13 @@ for (const topic of [
 ]) {
   assert.ok(c1.description.includes(topic), `C1 must list selectable topic: ${topic}`);
 }
-assert.equal(c1.primaryCtaKind, 'line', 'C1 must use the LINE CTA');
-assert.equal(c1.detailHref, null, 'C1 must not expose a detail href');
+assert.equal(c1.primaryCtaKind, 'detail', 'C1 must lead to its published detail page');
+assert.equal(c1.detailHref, detailRouteByCode.C1, 'C1 must expose its canonical detail href');
+
+for (const [code, route] of Object.entries(detailRouteByCode)) {
+  const offer = OFFER_BY_CODE[code];
+  assert.equal(CATALOG[offer.pricingKey]?.url, route, `${code} Catalog URL metadata must match its canonical detail route`);
+}
 
 assert.equal(OFFER_BY_CODE.A1.pricingKey, null, 'A1 must not have a price key');
 assert.equal(SERVICE_OFFERS.some((offer) => /\b\d{4,6}\b/.test(JSON.stringify(offer))), false, 'offer contract must not contain a price amount');

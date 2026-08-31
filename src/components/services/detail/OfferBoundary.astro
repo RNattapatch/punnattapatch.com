@@ -1,0 +1,5 @@
+---
+interface Props { heading: string; body: string[]; }
+const { heading, body } = Astro.props;
+---
+<section aria-labelledby="boundary-heading" class="py-14 sm:py-20"><div class="mx-auto max-w-4xl border-l-4 border-coral px-5 sm:px-8"><h2 id="boundary-heading" class="font-display text-3xl font-bold text-navy">{heading}</h2>{body.map((paragraph) => <p class="mt-4 leading-7 text-navy/80">{paragraph}</p>)}</div></section>

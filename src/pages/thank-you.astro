@@ -18,7 +18,7 @@ const description =
         ✓
       </div>
 
-      <h1 class="mt-6 font-display text-3xl font-bold text-base-content md:text-4xl">
+      <h1 id="thankyou-heading" class="mt-6 font-display text-3xl font-bold text-base-content md:text-4xl">
         บันทึกแบบประเมินเรียบร้อย
       </h1>
 
@@ -58,7 +58,7 @@ const description =
           <span aria-hidden="true">🤝</span> สิ่งที่จะเกิดขึ้นต่อจากนี้
         </p>
         <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-base-content/80">
-          <li>ผมอ่านแบบประเมินของคุณเอง ไม่ใช่ทีมงาน ไม่ใช่ AI ตอบแทน</li>
+          <li id="thankyou-read-line">ผมอ่านแบบประเมินของคุณเอง ไม่ใช่ทีมงาน ไม่ใช่ AI ตอบแทน</li>
           <li>ตอบกลับภายใน 2 วันทำการ (ช่วงกลางวันผมมักติดหน้างานลูกค้า อาจได้ตอบช่วงเย็นครับ)</li>
           <li>
             คอลแรกประมาณ 10-15 นาที <strong>ผมถามมากกว่าพูด</strong>
@@ -91,6 +91,17 @@ const description =
 
       const refNode = document.getElementById('ref-display');
       if (refNode) refNode.textContent = ref;
+
+      // หน้านี้รับสองทาง — แบบประเมิน (/intake-form) กับจองคิว (/booking)
+      // สลับคำที่พูดถึง "แบบประเมิน" ให้ตรงกับสิ่งที่เขาเพิ่งกรอกจริง
+      const formType = params.get('type') === 'booking' ? 'booking' : 'intake_form';
+      if (formType === 'booking') {
+        const heading = document.getElementById('thankyou-heading');
+        if (heading) heading.textContent = 'รับเรื่องจองคิวแล้วครับ';
+        const readLine = document.getElementById('thankyou-read-line');
+        if (readLine) readLine.textContent = 'ผมอ่านโจทย์ของคุณเอง ไม่ใช่ทีมงาน ไม่ใช่ AI ตอบแทน';
+        document.title = 'ขอบคุณที่จองคิว · ปัน ณัฐพัชร์';
+      }
 
       const copyBtn = document.getElementById('copy-ref');
       if (copyBtn) {
@@ -134,7 +145,7 @@ const description =
         window.fbq(
           'track',
           'Lead',
-          { content_name: 'intake_form', currency: 'THB', value: 0 },
+          { content_name: formType, currency: 'THB', value: 0 },
           { eventID: ref }
         );
       }

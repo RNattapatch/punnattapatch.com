@@ -16,7 +16,7 @@ workedExample:
   inputs: "base claude.md (shared) + ข้อมูลเฉพาะ 4 client + decision: symlink หรือ override-file pattern"
   output: "โครงสร้าง 1 base claude.md (~/agent-base/claude.md) + 4 per-client override files + คำแนะนำว่าเมื่อไหร่ใช้ pattern ไหน"
   timeSaved: "เขียนซ้ำ 4 รอบ + ตามแก้ทุกรอบที่ base เปลี่ยน: หลัก ชม.ต่อสัปดาห์ · pattern นี้ตั้งครั้งเดียว 20 นาที"
-phaseCtaHref: "/services/ai-workshop"
+phaseCtaHref: "/services/t1-sales-skills"
 phaseCtaLabel: "ใช้ pattern นี้ใน workshop → ดู In-House Workshop"
 published: 2026-04-22
 ---

@@ -1,0 +1,5 @@
+---
+interface Props { paragraphs: string[]; heading?: string; eyebrow?: string; }
+const { paragraphs, heading = 'ปัน ณัฐพัชร์', eyebrow = 'Instructor' } = Astro.props;
+---
+<section aria-labelledby="bio-heading" class="bg-navy py-14 text-white sm:py-20"><div class="mx-auto max-w-4xl px-5"><p class="text-xs font-bold uppercase tracking-[.2em] text-coral">{eyebrow}</p><h2 id="bio-heading" class="mt-3 font-display text-3xl font-bold sm:text-4xl">{heading}</h2>{paragraphs.map((paragraph) => <p class="mt-5 leading-8 text-white/85">{paragraph}</p>)}</div></section>

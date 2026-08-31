@@ -31,3 +31,6 @@ dist-app
 
 # Local linked worktrees
 .worktrees/
+
+# QA screenshot artifacts (ไม่ใช่ source — 34MB ไม่ควรอยู่ใน history)
+output/

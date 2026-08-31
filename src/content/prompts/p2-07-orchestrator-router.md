@@ -16,7 +16,7 @@ workedExample:
   inputs: "./claude.md + ทุกไฟล์ใน ./agents/ + รายการ task ตัวอย่างที่เคยเรียกผิด"
   output: "./agents/orchestrator.md + routing table 12 patterns + fallback rule + escalation rule"
   timeSaved: "เรียกผิด + redo: 2-3 ครั้ง/วัน · orchestrator route ถูกครั้งแรก + ลด cognitive load"
-phaseCtaHref: "/services/ai-workshop"
+phaseCtaHref: "/services/t1-sales-skills"
 phaseCtaLabel: "ใช้ pattern นี้ใน workshop → ดู In-House Workshop"
 published: 2026-04-22
 ---
