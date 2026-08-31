@@ -129,7 +129,7 @@ export const I1_PRODUCT_DETAIL: ProductDetailPageData = {
     { question: 'หลัง 30 วันระบบยังใช้ได้อยู่มั้ย?', answer: 'ระบบและไฟล์ส่งมอบยังเป็นของบริษัทตามเงื่อนไขใน Proposal ครับ ช่วง Support มีไว้ช่วย Issue และ Adoption ภายใน Scope หากต้องการ Maintenance, Feature ใหม่ หรือดูแลรายเดือน จะประเมินหลังมี Runbook และเห็นปริมาณงานจริง' },
   ],
   cta: {
-    primary: 'ทัก LINE ขอ Proposal',
+    primary: 'จองคิวรับบริการ',
     secondary: 'ขอดูตัวอย่างระบบจริงทาง LINE',
     heroSecondary: 'ขอดูตัวอย่างระบบจริงทาง LINE',
     finalSecondary: 'ขอดูตัวอย่างระบบจริง',
@@ -138,9 +138,9 @@ export const I1_PRODUCT_DETAIL: ProductDetailPageData = {
     finalMicrocopy: 'ยังไม่ต้องส่งข้อมูลลูกค้าหรือไฟล์ลับในข้อความแรกครับ ภาพโครง Report ที่ปิดข้อมูลแล้วเพียงพอสำหรับคุยเบื้องต้น',
     keyword: 'DASHBOARD',
     locations: {
-      afterScope: { primary: 'ทัก LINE ส่งตัวอย่าง Report', primaryIntent: 'scope_check', secondary: 'ขอดู Screenshot ระบบจริงเพิ่ม', secondaryIntent: 'system_example' },
-      afterInvestment: { primary: 'ทัก LINE ขอ Proposal', primaryIntent: 'proposal_request', secondary: 'ส่ง Report เดิมมาเช็ก Scope', secondaryIntent: 'scope_check' },
-      final: { primary: 'ทัก LINE ประเมิน Starter Scope', primaryIntent: 'starter_assessment', secondary: 'ขอดูตัวอย่างระบบจริง', secondaryIntent: 'system_example' },
+      afterScope: { primary: 'จองคิวรับบริการ', primaryIntent: 'scope_check', secondary: 'ทัก LINE ขอดู Screenshot เพิ่ม', secondaryIntent: 'system_example' },
+      afterInvestment: { primary: 'จองคิวรับบริการ', primaryIntent: 'proposal_request', secondary: 'ทัก LINE ส่ง Report เดิมมาเช็ก', secondaryIntent: 'scope_check' },
+      final: { primary: 'จองคิวรับบริการ', primaryIntent: 'starter_assessment', secondary: 'ทัก LINE ขอดูระบบจริง', secondaryIntent: 'system_example' },
     },
   },
   seo: {

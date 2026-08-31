@@ -41,7 +41,7 @@ export interface HeroStep {
 }
 
 export interface DecisionCtaAction {
-  kind: 'line' | 'download';
+  kind: 'booking' | 'line' | 'download';
   label: string;
   intent: string;
   href?: string;

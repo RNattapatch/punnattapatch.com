@@ -14,9 +14,10 @@ interface Props {
 }
 
 const { code, location, primary, primaryIntent = 'quote', secondary, secondaryIntent = 'lead_magnet', keyword } = Astro.props;
+const bookingHref = `/booking?package=${encodeURIComponent(code)}&intent=${encodeURIComponent(primaryIntent)}`;
 ---
 
 <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-  <a href={SITE.social.line} target="_blank" rel="noopener" data-contact-cta data-product-code={code} data-cta-location={location} data-cta-intent={primaryIntent} data-cta-keyword={keyword} data-cta-label={primary} class="btn min-h-12 border-0 bg-[#06C755] px-6 text-[#072B4E] hover:bg-[#05ad49] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#072B4E]">{primary}</a>
-  <a href={SITE.social.line} target="_blank" rel="noopener" data-contact-cta data-product-code={code} data-cta-location={location} data-cta-intent={secondaryIntent} data-cta-keyword={keyword} data-cta-label={secondary} class="btn min-h-12 border-0 bg-[#06C755] px-6 text-[#072B4E] hover:bg-[#05ad49] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#072B4E]">{secondary}</a>
+  <a href={bookingHref} data-booking-cta data-contact-cta data-product-code={code} data-cta-location={location} data-cta-intent={primaryIntent} data-cta-label={primary} class="btn min-h-12 border-0 bg-[#c43245] px-6 text-white hover:bg-[#ad293a] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral">{primary}</a>
+  <a href={SITE.social.line} target="_blank" rel="noopener" data-line-cta data-contact-cta data-product-code={code} data-cta-location={location} data-cta-intent={secondaryIntent} data-cta-keyword={keyword} data-cta-label={secondary} class="btn min-h-12 border-0 bg-[#06C755] px-6 text-[#072B4E] hover:bg-[#05ad49] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#072B4E]">{secondary}</a>
 </div>

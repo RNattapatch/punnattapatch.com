@@ -100,7 +100,7 @@ export const T1_PRODUCT_DETAIL: ProductDetailPageData = {
     { question: 'หลังเรียนช่วยติดตามยังไง?', answer: 'การดูแลหลังเรียนเป็นไปตามขอบเขตที่ตกลงก่อนวันอบรม เน้นตอบคำถามจากสิ่งที่ทำในห้องและเช็ก Monday Plan ไม่รวมการบริหารทีมแทนหรือสร้าง Production System เพิ่มโดยอัตโนมัติ' },
   ],
   cta: {
-    primary: 'ทัก LINE ขอใบเสนอราคา',
+    primary: 'จองคิวรับบริการ',
     secondary: 'รับ E-Book “หยุดหาเซลล์ผิดคน”',
     heroSecondary: 'รับ E-Book “หยุดหาเซลล์ผิดคน”',
     finalSecondary: 'รับ E-Book หยุดหาเซลล์ผิดคน',
@@ -109,9 +109,9 @@ export const T1_PRODUCT_DETAIL: ProductDetailPageData = {
     finalMicrocopy: 'คุยเพื่อเช็กโจทย์ก่อนครับ ถ้าปัญหาไม่ตรงกับคอร์สนี้ ผมจะบอกตามตรง',
     keyword: 'SALES PSYCHOLOGY',
     locations: {
-      afterScope: { primary: 'ทัก LINE คุยเรื่องจัด In-house', primaryIntent: 'inhouse_enquiry', secondary: 'รับ E-Book ก่อนตัดสินใจ', secondaryIntent: 'lead_magnet' },
-      afterInvestment: { primary: 'ทัก LINE ขอใบเสนอราคา', primaryIntent: 'quote', secondary: 'ส่งสถานการณ์ที่ทีมติดมาให้ช่วยดู', secondaryIntent: 'course_selection' },
-      final: { primary: 'ทัก LINE วางคอร์สให้ทีม', primaryIntent: 'course_planning', secondary: 'รับ E-Book หยุดหาเซลล์ผิดคน', secondaryIntent: 'lead_magnet' },
+      afterScope: { primary: 'จองคิวรับบริการ', primaryIntent: 'inhouse_enquiry', secondary: 'รับ E-Book ก่อนตัดสินใจ', secondaryIntent: 'lead_magnet' },
+      afterInvestment: { primary: 'จองคิวรับบริการ', primaryIntent: 'quote', secondary: 'ทัก LINE เล่าสถานการณ์ที่ทีมติด', secondaryIntent: 'course_selection' },
+      final: { primary: 'จองคิวรับบริการ', primaryIntent: 'course_planning', secondary: 'รับ E-Book หยุดหาเซลล์ผิดคน', secondaryIntent: 'lead_magnet' },
     },
   },
   seo: {

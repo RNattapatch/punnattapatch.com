@@ -8,6 +8,7 @@ interface Props { items: ProofItem[]; testimonials?: ProductTestimonial[]; headi
 const { items, testimonials, heading = 'ดูของจริงก่อน ว่าทีมจะเอาไปต่อยังไง', intro, secondaryHeading = 'หลังคลาส ทีมส่งอะไรกลับมาบ้าง', imageLoading } = Astro.props;
 const activityItems = items.filter((item) => item.kind === 'photo');
 const chatItems = items.filter((item) => item.kind !== 'photo');
+const proofImageLoading = imageLoading ?? 'lazy';
 const isPublicImage = (image: ProofItem['image']): image is PublicProofImage => 'publicSrc' in image;
 ---
 
@@ -21,16 +22,16 @@ const isPublicImage = (image: ProofItem['image']): image is PublicProofImage => 
       <div class="mt-8 grid gap-5 lg:grid-cols-[1.45fr_1fr]">
         <figure data-proof-activity data-proof-id={activityItems[0].id} class="overflow-hidden rounded-3xl border border-navy/10 bg-white shadow-sm">
           {isPublicImage(activityItems[0].image)
-            ? <img src={activityItems[0].image.publicSrc} alt={activityItems[0].alt} width={activityItems[0].image.width} height={activityItems[0].image.height} loading={imageLoading ?? 'eager'} class="aspect-[4/3] w-full object-cover" />
-            : <Image src={activityItems[0].image} alt={activityItems[0].alt} width={activityItems[0].image.width} height={activityItems[0].image.height} loading={imageLoading ?? 'eager'} class="aspect-[4/3] w-full object-cover" />}
+            ? <img src={activityItems[0].image.publicSrc} alt={activityItems[0].alt} width={activityItems[0].image.width} height={activityItems[0].image.height} loading={proofImageLoading} class="aspect-[4/3] w-full object-cover" />
+            : <Image src={activityItems[0].image} alt={activityItems[0].alt} width={activityItems[0].image.width} height={activityItems[0].image.height} loading={proofImageLoading} class="aspect-[4/3] w-full object-cover" />}
           <figcaption class="p-5 leading-7 text-navy/80">{activityItems[0].caption}</figcaption>
         </figure>
         <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
           {activityItems.slice(1, 3).map((item) => (
             <figure data-proof-activity data-proof-id={item.id} class="overflow-hidden rounded-3xl border border-navy/10 bg-white shadow-sm">
               {isPublicImage(item.image)
-                ? <img src={item.image.publicSrc} alt={item.alt} width={item.image.width} height={item.image.height} loading={imageLoading ?? 'eager'} class="aspect-video w-full object-cover" />
-                : <Image src={item.image} alt={item.alt} width={item.image.width} height={item.image.height} loading={imageLoading ?? 'eager'} class="aspect-video w-full object-cover" />}
+                ? <img src={item.image.publicSrc} alt={item.alt} width={item.image.width} height={item.image.height} loading={proofImageLoading} class="aspect-video w-full object-cover" />
+                : <Image src={item.image} alt={item.alt} width={item.image.width} height={item.image.height} loading={proofImageLoading} class="aspect-video w-full object-cover" />}
               <figcaption class="p-5 leading-7 text-navy/80">{item.caption}</figcaption>
             </figure>
           ))}
@@ -46,8 +47,8 @@ const isPublicImage = (image: ProofItem['image']): image is PublicProofImage => 
             <figure data-proof-quote data-proof-id={item.id} class="overflow-hidden rounded-3xl border border-navy/10 bg-white shadow-sm">
               <div class="flex aspect-[16/7] items-center justify-center bg-navy/5 p-3 sm:p-4">
                 {isPublicImage(item.image)
-                  ? <img src={item.image.publicSrc} alt={item.alt} width={item.image.width} height={item.image.height} loading={imageLoading} class="h-full w-full object-contain" />
-                  : <Image src={item.image} alt={item.alt} width={item.image.width} height={item.image.height} loading={imageLoading} class="h-full w-full object-contain" />}
+                  ? <img src={item.image.publicSrc} alt={item.alt} width={item.image.width} height={item.image.height} loading={proofImageLoading} class="h-full w-full object-contain" />
+                  : <Image src={item.image} alt={item.alt} width={item.image.width} height={item.image.height} loading={proofImageLoading} class="h-full w-full object-contain" />}
               </div>
               <figcaption class="p-5 leading-7 text-navy/80">
                 {item.quote && <blockquote class="mb-3 font-semibold text-navy">“{item.quote}”</blockquote>}

@@ -16,6 +16,7 @@ const sectionClass = cta.variant === 'navy'
   : cta.variant === 'sand'
     ? 'bg-[#f4f1ea] text-navy'
     : 'bg-white text-navy';
+const bookingHref = (intent: string) => `/booking?package=${encodeURIComponent(code)}&intent=${encodeURIComponent(intent)}`;
 ---
 
 <section
@@ -35,18 +36,30 @@ const sectionClass = cta.variant === 'navy'
         <p class:list={['mt-3 leading-7', isInverse ? 'text-white/75' : 'text-navy/70']}>{cta.body}</p>
       </div>
       <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:max-w-md lg:justify-end">
-        {cta.actions.map((action) => action.kind === 'line' ? (
+        {cta.actions.map((action) => action.kind === 'booking' ? (
+          <a
+            href={bookingHref(action.intent)}
+            data-booking-cta
+            data-contact-cta
+            data-product-code={code}
+            data-cta-location={cta.location}
+            data-cta-intent={action.intent}
+            data-cta-label={action.label}
+            class="btn min-h-12 border-0 bg-[#c43245] px-6 text-white hover:bg-[#ad293a] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral"
+          >{action.label}</a>
+        ) : action.kind === 'line' ? (
           <a
             href={SITE.social.line}
             target="_blank"
             rel="noopener"
+            data-line-cta
             data-contact-cta
             data-product-code={code}
             data-cta-location={cta.location}
             data-cta-intent={action.intent}
             data-cta-keyword={keyword}
             data-cta-label={action.label}
-            class="btn min-h-12 border-0 bg-[#06C755] px-6 text-white hover:bg-[#05ad49]"
+            class="btn min-h-12 border-0 bg-[#06C755] px-6 text-[#072B4E] hover:bg-[#05ad49]"
           >{action.label}</a>
         ) : action.available && action.href ? (
           <a
@@ -56,7 +69,7 @@ const sectionClass = cta.variant === 'navy'
             data-product-code={code}
             data-cta-location={cta.location}
             data-cta-intent={action.intent}
-            class="btn min-h-12 border-0 bg-coral px-6 text-white hover:bg-[#c43245]"
+            class="btn min-h-12 border-0 bg-[#c43245] px-6 text-white hover:bg-[#ad293a] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral"
           >{action.label}</a>
         ) : (
           <button

@@ -107,7 +107,7 @@ export const T2_PRODUCT_DETAIL: ProductDetailPageData = {
       body: 'ทักมาคุยกับผมได้เลยครับ ผมจัดรูปแบบให้เหมาะกับจำนวนคนและหน้างานของบริษัทให้เอง',
       variant: 'navy',
       actions: [
-        { kind: 'line', label: 'คุยรูปแบบสำหรับทีมใหญ่', intent: 'large_team' },
+        { kind: 'booking', label: 'จองคิวรับบริการ', intent: 'large_team' },
         { kind: 'line', label: 'ทัก LINE', intent: 'general_question' },
       ],
     },
@@ -166,7 +166,7 @@ export const T2_PRODUCT_DETAIL: ProductDetailPageData = {
     { question: 'ต้องเตรียมอะไรล่วงหน้า?', answer: 'เตรียมสินค้า/บริการหลัก กลุ่มลูกค้า ภาพหรือคลิปจริง ตัวอย่าง Content/Ads เดิม ตัวอย่างแชตหรือ Lead ที่ปิดข้อมูลส่วนตัวแล้ว และรายชื่อผู้รับผิดชอบแต่ละช่วงครับ ทีมผมจะส่ง Pre-work checklist ให้ก่อนวันอบรม' },
   ],
   cta: {
-    primary: 'ขอรับใบเสนอราคา',
+    primary: 'จองคิวรับบริการ',
     secondary: 'ทัก LINE สอบถาม',
     secondaryIntent: 'general_question',
     heroSecondary: 'เช็กว่าธุรกิจคุณเหมาะกับคอร์สนี้ไหม',

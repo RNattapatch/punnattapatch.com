@@ -201,7 +201,7 @@ export const T3_PRODUCT_DETAIL: ProductDetailPageData = {
     { question: 'มี Certificate หรือไฟล์ทบทวนมั้ย?', answer: 'สิ่งที่รวมยึดตามรายการใน Catalog และใบเสนอราคาครับ หน้าเว็บจะไม่ตีมูลค่าของแถมหรือเพิ่มสิทธิ์ที่ไม่ได้อยู่ใน Scope หากบริษัทต้องใช้ Certificate ให้แจ้งก่อนออกเอกสาร' },
   ],
   cta: {
-    primary: 'ทัก LINE ขอใบเสนอราคา',
+    primary: 'จองคิวรับบริการ',
     secondary: 'รับ Agent Builder Kit ทาง LINE',
     secondaryIntent: 'lead_magnet',
     heroSecondary: 'รับ Agent Builder Kit ทาง LINE',
@@ -213,9 +213,9 @@ export const T3_PRODUCT_DETAIL: ProductDetailPageData = {
     finalMicrocopy: 'ไม่ต้องส่งฐานข้อมูลเต็มในแชตแรกครับ ตัวอย่างโครง Report ที่ปิดชื่อและตัวเลขลับแล้วพอสำหรับคุยเบื้องต้น',
     keyword: 'SALES REPORT',
     locations: {
-      afterScope: { primary: 'ทัก LINE จัด Workshop', primaryIntent: 'workshop_quote', secondary: 'รับ Agent Builder Kit ทาง LINE', secondaryIntent: 'lead_magnet' },
-      afterInvestment: { primary: 'ทัก LINE ขอใบเสนอราคา', primaryIntent: 'quote', secondary: 'ส่ง Report มาให้ช่วยดูคอร์ส', secondaryIntent: 'fit_check' },
-      final: { primary: 'ทัก LINE วาง Workshop', primaryIntent: 'workshop_quote', secondary: 'รับ Agent Builder Kit ทาง LINE', secondaryIntent: 'lead_magnet' },
+      afterScope: { primary: 'จองคิวรับบริการ', primaryIntent: 'workshop_quote', secondary: 'รับ Agent Builder Kit ทาง LINE', secondaryIntent: 'lead_magnet' },
+      afterInvestment: { primary: 'จองคิวรับบริการ', primaryIntent: 'quote', secondary: 'ทัก LINE ส่ง Report มาให้ช่วยดู', secondaryIntent: 'fit_check' },
+      final: { primary: 'จองคิวรับบริการ', primaryIntent: 'workshop_quote', secondary: 'รับ Agent Builder Kit ทาง LINE', secondaryIntent: 'lead_magnet' },
     },
   },
   seo: {

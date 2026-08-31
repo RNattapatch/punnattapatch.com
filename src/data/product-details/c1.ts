@@ -146,7 +146,7 @@ export const C1_PRODUCT_DETAIL: ProductDetailPageData = {
     { question: 'ชำระเงินและล็อกวันอย่างไร?', answer: 'ชำระค่าบริการ 100% ก่อนวัน Consult เพื่อยืนยันคิวครับ หากมีค่าเดินทางนอกพื้นที่มาตรฐาน จะแจ้งก่อนล็อกวัน' },
   ],
   cta: {
-    primary: 'ทัก LINE จองวัน Consult',
+    primary: 'จองคิวรับบริการ',
     secondary: 'ให้ผมช่วยเลือก Track ฟรี',
     heroSecondary: 'เล่าอาการให้ผมช่วยเลือก Track',
     finalSecondary: 'ส่งอาการมาให้ช่วยเลือก Track',
@@ -155,9 +155,9 @@ export const C1_PRODUCT_DETAIL: ProductDetailPageData = {
     finalMicrocopy: 'ยังไม่ต้องสรุปปัญหาให้สมบูรณ์ครับ เล่าอาการหน้างานที่เห็นอยู่ก่อนก็พอ',
     keyword: 'CONSULT',
     locations: {
-      afterScope: { primary: 'ทัก LINE ให้ผมช่วยเลือก', primaryIntent: 'track_selection', secondary: 'ส่งรูป Report หรือเล่าอาการสั้นๆ', secondaryIntent: 'symptom_share' },
-      afterInvestment: { primary: 'ทัก LINE จองวัน Consult', primaryIntent: 'consult_booking', secondary: 'ให้ผมช่วยเลือก Track ฟรี', secondaryIntent: 'track_selection' },
-      final: { primary: 'ทัก LINE คุยกับผม', primaryIntent: 'consult_enquiry', secondary: 'ส่งอาการมาให้ช่วยเลือก Track', secondaryIntent: 'symptom_share' },
+      afterScope: { primary: 'จองคิวรับบริการ', primaryIntent: 'track_selection', secondary: 'ทัก LINE ส่งรูป Report', secondaryIntent: 'symptom_share' },
+      afterInvestment: { primary: 'จองคิวรับบริการ', primaryIntent: 'consult_booking', secondary: 'ทัก LINE ให้ผมช่วยเลือก Track', secondaryIntent: 'track_selection' },
+      final: { primary: 'จองคิวรับบริการ', primaryIntent: 'consult_enquiry', secondary: 'ทัก LINE เล่าอาการสั้น ๆ', secondaryIntent: 'symptom_share' },
     },
   },
   seo: {

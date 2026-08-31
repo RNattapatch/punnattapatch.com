@@ -53,6 +53,6 @@ const visualClass = visual?.fit === 'contain' ? 'h-auto w-full bg-white object-c
           <figcaption class="mt-2 font-semibold leading-6 text-white">{visual.caption}</figcaption>
         </div>
       </figure>
-    ) : <Image src={image} alt={name} width={image.width} height={image.height} class="w-full rounded-3xl border border-white/15 shadow-2xl" />}
+    ) : <Image src={image} alt={name} width={image.width} height={image.height} loading="eager" fetchpriority="high" class="w-full rounded-3xl border border-white/15 shadow-2xl" />}
   </div>
 </section>
