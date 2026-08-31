@@ -364,7 +364,7 @@ const content = {
     const observer = new IntersectionObserver((entries) => {
       if (entries.some((entry) => entry.isIntersecting) && !fired) {
         fired = true;
-        if (typeof pageWindow.fbq === 'function') fbq('track', 'ViewContent', { content_name: 'dealer_ai_form' });
+        if (typeof pageWindow.fbq === 'function') fbq('track', 'ViewContent', { content_name: 't2_online_to_sales_form' });
         observer.disconnect();
       }
     }, { threshold: 0.4 });
@@ -373,8 +373,8 @@ const content = {
 
   document.querySelectorAll('[data-line-dealer]').forEach((lineButton) => {
     lineButton.addEventListener('click', () => {
-      if (typeof pageWindow.fbq === 'function') fbq('track', 'Contact', { content_name: 'line_add_dealer' });
-      if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('Contact', { content_name: 'line_add_dealer' });
+      if (typeof pageWindow.fbq === 'function') fbq('track', 'Contact', { content_name: 'line_add_t2_online' });
+      if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('Contact', { content_name: 'line_add_t2_online' });
     });
   });
 
@@ -433,16 +433,16 @@ const content = {
         keepalive: true,
       });
       if (!response.ok) throw new Error('submission failed');
-      if (typeof pageWindow.fbq === 'function') fbq('track', 'Lead', { content_name: 'dealer_ai_booking', lead_temp: payload.lead_temp });
-      if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('SubmitForm', { content_name: 'dealer_ai_booking', lead_temp: payload.lead_temp });
+      if (typeof pageWindow.fbq === 'function') fbq('track', 'Lead', { content_name: 't2_online_to_sales_booking', lead_temp: payload.lead_temp });
+      if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('SubmitForm', { content_name: 't2_online_to_sales_booking', lead_temp: payload.lead_temp });
       form.classList.add('hidden');
       success?.classList.remove('hidden');
       success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } catch {
       // form-hook (มินิ) ไม่ตอบ → ชั้น 2: เขียน Supabase ตรง — การ์ดแจ้งเตือนมาจาก DB trigger → guardian
       if (await submitLeadFallback(payload as Record<string, unknown>, makeReference())) {
-        if (typeof pageWindow.fbq === 'function') fbq('track', 'Lead', { content_name: 'dealer_ai_booking', lead_temp: payload.lead_temp });
-        if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('SubmitForm', { content_name: 'dealer_ai_booking', lead_temp: payload.lead_temp });
+        if (typeof pageWindow.fbq === 'function') fbq('track', 'Lead', { content_name: 't2_online_to_sales_booking', lead_temp: payload.lead_temp });
+        if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('SubmitForm', { content_name: 't2_online_to_sales_booking', lead_temp: payload.lead_temp });
         form.classList.add('hidden');
         success?.classList.remove('hidden');
         success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
