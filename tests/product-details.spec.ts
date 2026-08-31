@@ -442,6 +442,31 @@ test('T3 teaches the team to design a sales back office prototype without promis
   assert.equal(await page.getByText(catalog.duration, { exact: true }).count(), 1, 'T3 duration must resolve from the Catalog');
   assert.equal(await page.getByText(fmtPrice('ai-workshop-advance'), { exact: true }).count(), 1, 'T3 price must resolve from the Catalog');
 
+  const chapterMap = page.locator('[data-chapter-map]');
+  const chapterLinks = chapterMap.locator('[data-chapter-link]');
+  const chapterGates = page.locator('[data-product-chapter]');
+  assert.equal(await chapterMap.count(), 1, 'T3 must expose one chapter map immediately after the Hero');
+  assert.deepEqual(await chapterLinks.evaluateAll((links) => links.map((link) => ({
+    href: link.getAttribute('href'),
+    number: link.getAttribute('data-chapter-number'),
+    label: link.textContent?.replace(/\s+/g, ' ').trim(),
+  }))), [
+    { href: '#chapter-proof', number: '01', label: '01 ดูของจริง' },
+    { href: '#chapter-diagnose', number: '02', label: '02 หาจุดที่ทีมติด' },
+    { href: '#chapter-workshop', number: '03', label: '03 ลงมือในหนึ่งวัน' },
+    { href: '#chapter-decision', number: '04', label: '04 ตัดสินใจ' },
+  ], 'T3 chapter map must preview the four customer decisions in reading order');
+  assert.deepEqual(await chapterGates.evaluateAll((gates) => gates.map((gate) => ({
+    id: gate.id,
+    number: gate.getAttribute('data-chapter-number'),
+  }))), [
+    { id: 'chapter-proof', number: '01' },
+    { id: 'chapter-diagnose', number: '02' },
+    { id: 'chapter-workshop', number: '03' },
+    { id: 'chapter-decision', number: '04' },
+  ], 'T3 must render four unique chapter gates in the same order as the map');
+  assert.equal(await chapterMap.evaluate((map) => map.previousElementSibling?.getAttribute('data-detail-block')), 'hero', 'T3 chapter map must follow the Hero without an intervening long-form section');
+
   const scope = page.locator('[data-detail-block="scope"]');
   const stages = scope.locator('[data-scope-item]');
   assert.equal(await stages.count(), 4, 'T3 must render the four approved workshop stages');
@@ -502,6 +527,10 @@ test('T3 teaches the team to design a sales back office prototype without promis
   await page.setViewportSize({ width: 390, height: 844 });
   await page.reload();
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth === document.documentElement.clientWidth), true, 'mobile T3 must not overflow horizontally');
+  assert.equal(await chapterLinks.evaluateAll((links) => links.every((link) => link.getBoundingClientRect().height >= 44)), true, 'mobile T3 chapter map links must meet the 44px touch-target minimum');
+  assert.equal(await chapterMap.evaluate((map) => getComputedStyle(map.querySelector('[data-chapter-grid]')!).gridTemplateColumns.split(' ').length), 2, 'mobile T3 chapter map must use a glanceable 2-column grid');
+  await chapterLinks.first().focus();
+  assert.notEqual(await chapterLinks.first().evaluate((link) => getComputedStyle(link).outlineStyle), 'none', 'T3 chapter map links must expose a visible keyboard focus treatment');
   assert.equal(await page.locator('[data-final-line-qr]').isVisible(), false, 'mobile T3 must not show a scan instruction without an inline QR');
   assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “SALES REPORT” พร้อมจำนวนทีม', { exact: true }).isVisible(), true, 'mobile T3 final CTA must give a tappable LINE instruction');
   await page.close();

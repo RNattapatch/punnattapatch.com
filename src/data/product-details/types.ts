@@ -87,6 +87,15 @@ export interface SymptomChooser {
   actions: SymptomChooserAction[];
 }
 
+export interface ProductDetailChapter {
+  id: string;
+  number: string;
+  navLabel: string;
+  heading: string;
+  copy: string;
+  tone: 'ivory' | 'sand';
+}
+
 export interface ProductDetailPageData {
   code: ProductDetailCode;
   pricingKey: string;
@@ -106,6 +115,7 @@ export interface ProductDetailPageData {
   proof: ProofItem[];
   clientLogos?: ClientLogo[];
   testimonials?: ProductTestimonial[];
+  chapters?: ProductDetailChapter[];
   decisionCtas?: ProductDecisionCta[];
   pains: string[];
   boundary: { heading: string; body: string[] };
