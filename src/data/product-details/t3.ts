@@ -101,6 +101,19 @@ export const T3_PRODUCT_DETAIL: ProductDetailPageData = {
       caption: 'ข้อความจากผู้บริหารหลังทีมเข้า Workshop ร่วมกัน',
     },
   ],
+  decisionCtas: [
+    {
+      location: 'after_fit',
+      eyebrow: 'Course Outline',
+      heading: 'อยากส่งรายละเอียดให้ทีมดูก่อน?',
+      body: 'โหลด Course Outline ฉบับ PDF ไปเปิดกับทีมได้เลยครับ มีครบทั้งหัวข้อที่เรียนตลอดวัน สิ่งที่ทีมลงมือทำในห้อง และของที่ถือกลับไป',
+      variant: 'light',
+      actions: [
+        { kind: 'download', label: 'ดาวน์โหลด Course Outline (PDF)', intent: 'course_outline', available: true, href: '/services/outlines/t3-sales-back-office.pdf' },
+        { kind: 'line', label: 'ทัก LINE สอบถาม', intent: 'general_question' },
+      ],
+    },
+  ],
   pains: [
     '“ดีลนี้อยู่ขั้นไหนแล้ว” เพราะคำใน Report กว้างจนตีความได้หลายแบบ',
     '“ใครเป็นคนตามต่อ” เพราะ Lead ถูกส่งในกลุ่มแชตแต่ไม่มี Owner ชัด',

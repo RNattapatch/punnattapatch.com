@@ -50,6 +50,7 @@ export const CATALOG = {
     status: 'live',
     botQuote: true,
     image: '/services/thumbs/t1-sales-skill-ai.jpg',
+    outlineUrl: 'https://punnattapatch.com/services/outlines/t1-sales-psychology-ai-agent.pdf',
     note: 'T1 · ราคาเดียวทั้งทีมไม่เกิน 20 คน · reposition 2026-08-30 เป็น Sales Psychology + AI Agent · เข้าใจคนก่อน แล้วค่อยฝึก AI เป็น Sales Coach จาก Company Context · Agent ไม่ใช่ production bot และไม่คุยกับลูกค้าแทนมนุษย์',
   },
   'ai-workshop-advance': {
@@ -64,6 +65,7 @@ export const CATALOG = {
     status: 'live',
     botQuote: true,
     image: '/services/thumbs/t3-sales-back-office-ai.jpg',
+    outlineUrl: 'https://punnattapatch.com/services/outlines/t3-sales-back-office.pdf',
     note: 'T3 · rename 2026-08-30 (Product SSOT — ชื่อบอก job "วางระบบหลังบ้านฝ่ายขาย") · ชื่อก่อนหน้า "คอร์สอบรม Report ทีมขาย + Dashboard + AI" (2026-08-28) · เดิม "AI สำหรับงานหลังบ้าน 2026" · Workshop ทำ Prototype + Operating rule — **T3 คือเรียนวิธีวาง · งานลงมือสร้างระบบ production = daruma-starter (I1)**',
   },
   'tiktok-workshop': {
@@ -78,6 +80,7 @@ export const CATALOG = {
     status: 'live',
     botQuote: true,
     image: '/services/thumbs/t2-online-to-offline-ai.jpg',
+    outlineUrl: 'https://punnattapatch.com/services/outlines/t2-online-to-sales.pdf',
     note: 'T2 · HERO PRODUCT · Production key ของ Core 2 วัน — vertical edition ทุกตัว (Dealer=Online-to-Showroom · Clinic=Appointment · Hotel=Booking · Factory=Meeting/Quotation) ใช้ key นี้ ไม่เพิ่ม SKU (BHSV กฎ 4) · journey: Content → Ads → Lead/Chat → Qualification → Appointment → Follow-up → Close · rename + ลด 59,900 → 54,900 (ปันเคาะ 2026-08-28)',
   },
 

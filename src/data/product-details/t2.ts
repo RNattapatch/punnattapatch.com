@@ -93,10 +93,10 @@ export const T2_PRODUCT_DETAIL: ProductDetailPageData = {
       location: 'after_scope',
       eyebrow: 'Course Outline',
       heading: 'อยากเห็นรายละเอียดก่อนส่งให้ทีม?',
-      body: 'Course Outline ฉบับ PDF กำลังจัดทำครับ ระหว่างนี้ทักมาขอรายละเอียดหรือเล่าโจทย์ของทีมก่อนได้เลย',
+      body: 'โหลด Course Outline ฉบับ PDF ไปเปิดกับทีมได้เลยครับ มีครบทั้งหัวข้อทั้ง 2 วัน สิ่งที่ทีมลงมือทำในห้อง และของที่ถือกลับไป',
       variant: 'light',
       actions: [
-        { kind: 'download', label: 'Course Outline PDF กำลังจัดทำ', intent: 'course_outline', available: false },
+        { kind: 'download', label: 'ดาวน์โหลด Course Outline (PDF)', intent: 'course_outline', available: true, href: '/services/outlines/t2-online-to-sales.pdf' },
         { kind: 'line', label: 'ทัก LINE สอบถาม', intent: 'general_question' },
       ],
     },

@@ -32,6 +32,19 @@ export const T1_PRODUCT_DETAIL: ProductDetailPageData = {
     { kind: 'quote', quote: 'อาจารย์ปันสอนถูกใจทีมงานมากครับ', caption: 'ข้อความจากผู้เข้าร่วมหลังอบรมที่ปิดข้อมูลส่วนบุคคลแล้ว', image: t2TrainingCompany, alt: 'ข้อความรีวิวจากผู้บริหารที่ปิดข้อมูลส่วนบุคคลแล้ว' },
     { kind: 'quote', quote: 'ต่อยอด โปรเจ็คเลขาครับ สนุกดีครับ😂', caption: 'เวลา 20:27 ผู้เรียนส่งภาพระบบ Morning Brief ที่ทำต่อเองหลังคลาส โดยปิดข้อมูลส่วนบุคคลแล้ว', image: t2TrainingContinue, alt: 'ข้อความจากผู้เรียนหลังนำงานไปต่อยอด โดยปิดข้อมูลส่วนบุคคลแล้ว' },
   ],
+  decisionCtas: [
+    {
+      location: 'after_fit',
+      eyebrow: 'Course Outline',
+      heading: 'อยากส่งรายละเอียดให้ทีมดูก่อน?',
+      body: 'โหลด Course Outline ฉบับ PDF ไปเปิดกับทีมได้เลยครับ มีครบทั้งหัวข้อที่เรียนตลอดวัน สิ่งที่ทีมลงมือทำในห้อง และของที่ถือกลับไป',
+      variant: 'light',
+      actions: [
+        { kind: 'download', label: 'ดาวน์โหลด Course Outline (PDF)', intent: 'course_outline', available: true, href: '/services/outlines/t1-sales-psychology-ai-agent.pdf' },
+        { kind: 'line', label: 'ทัก LINE สอบถาม', intent: 'general_question' },
+      ],
+    },
+  ],
   pains: [
     'ลูกค้าบอกว่า “แพง” แล้วเซลล์รีบเสนอส่วนลด ก่อนรู้ว่าเขากำลังเทียบอะไร',
     'ถามเรื่องงบและระยะเวลาได้ แต่ยังไม่รู้เหตุผลส่วนตัวและความเสี่ยงที่ทำให้ลูกค้าลังเล',
