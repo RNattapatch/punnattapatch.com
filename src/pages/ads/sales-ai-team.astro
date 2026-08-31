@@ -347,17 +347,28 @@ const content = {
 
   if (formSection && 'IntersectionObserver' in window) {
     let fired = false;
+    // threshold 0.4 ใช้ไม่ได้: ฟอร์มสูง ~1,560px บนเดสก์ท็อป และ ~2,073px บนมือถือ
+    // → บนจอ 375x812 เห็นได้มากสุด 0.39 ของบล็อก ไม่มีทางแตะ 0.4 ViewContent เลยไม่เคยยิง
+    // บนมือถือซึ่งเป็นทราฟฟิกเกือบทั้งหมดของแอด · เปลี่ยนเป็นวัดจากตำแหน่งแทนสัดส่วน
+    // (ยิงเมื่อหัวฟอร์มเลื่อนขึ้นมาถึง 65% ของจอ) ไม่ผูกกับความสูงฟอร์มอีก
     const observer = new IntersectionObserver((entries) => {
       if (entries.some((entry) => entry.isIntersecting) && !fired) {
         fired = true;
         if (typeof pageWindow.fbq === 'function') fbq('track', 'ViewContent', { content_name: 't1_sales_skills_form' });
         observer.disconnect();
       }
-    }, { threshold: 0.4 });
+    }, { threshold: 0, rootMargin: '0px 0px -35% 0px' });
     observer.observe(formSection);
   }
 
-  document.querySelectorAll('[data-line-dealer]').forEach((lineButton) => {
+  // ทุกลิงก์ LINE บนหน้าต้องยิง Contact — ก่อน 2026-08-31 ผูกไว้กับ data-line-dealer
+  // จุดเดียว ทั้งที่หน้ามีปุ่ม LINE 7 จุด (sticky bar · ท้ายแต่ละ section · ฟุตเตอร์)
+  // ทำให้ Contact ที่เห็นใน Ads Manager เป็นแค่เศษเสี้ยวของคนที่ทัก LINE จริง
+  const lineTargets = new Set<Element>([
+    ...document.querySelectorAll('a[href*="lin.ee"], a[href*="line.me"]'),
+    ...document.querySelectorAll('[data-line-dealer]'),
+  ]);
+  lineTargets.forEach((lineButton) => {
     lineButton.addEventListener('click', () => {
       if (typeof pageWindow.fbq === 'function') fbq('track', 'Contact', { content_name: 'line_add_t1_sales' });
       if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('Contact', { content_name: 'line_add_t1_sales' });
