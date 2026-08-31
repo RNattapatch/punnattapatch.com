@@ -441,7 +441,7 @@ Claude จะอ่าน CLAUDE.md → อ่าน `agents/sales-outreach-agen
 >
 > Workshop In-house — ผม + ทีมคุณ build agent system สำหรับธุรกิจคุณโดยเฉพาะ จบวันมี 1-2 agent ใช้งานจริง + 30-day async LINE support
 >
-> [ดูรายละเอียด → punnattapatch.com/services/ai-workshop](https://punnattapatch.com/services/ai-workshop)
+> [ดูรายละเอียด → punnattapatch.com/services/t1-sales-skills](https://punnattapatch.com/services/t1-sales-skills)
 
 ---
 

@@ -104,7 +104,7 @@ AI สามารถลอกเลียนไอเดีย, หัวข้
 
 ### หากคุณต้องการสร้าง Personal Brand ที่แข็งแกร่งและน่าเชื่อถือ
 
-*   [**AI สำหรับการตลาดและคอนเทนต์ 2026** ราคา {{price:tiktok-workshop}}](/services/trust-content-tiktok-workshop): เวิร์กชอป 1 วันเต็มแบบ on-site ที่จะช่วยคุณถ่ายคลิปจริง 3 คลิป พร้อมวาง content calendar สำหรับ 30 วันข้างหน้า โดยเน้นที่การสร้างความจริงใจ (authenticity) ไม่ใช่คอนเทนต์จาก AI
+*   [**AI สำหรับการตลาดและคอนเทนต์ 2026** ราคา {{price:tiktok-workshop}}](/services/online-to-sales): เวิร์กชอป 1 วันเต็มแบบ on-site ที่จะช่วยคุณถ่ายคลิปจริง 3 คลิป พร้อมวาง content calendar สำหรับ 30 วันข้างหน้า โดยเน้นที่การสร้างความจริงใจ (authenticity) ไม่ใช่คอนเทนต์จาก AI
 *   อ่านต่อเรื่อง **Personal Branding**: [สร้างตัวตนให้โดดเด่นสำหรับเจ้าของธุรกิจ B2B](/insights/personal-branding-b2b-business-owner)
 *   อ่านเคส **TikTok**: [สร้าง Funnel ผู้ติดตาม 10,000 คนใน 24 วันบน TikTok](/insights/tiktok-organic-growth-business-owner)
-*   สนใจเรียนรู้การใช้ AI สำหรับงาน Business: [อบรม AI ในองค์กร 1 วัน](/services#inhouse-a)
+*   สนใจเรียนรู้การใช้ AI สำหรับงาน Business: [อบรม AI ในองค์กร 1 วัน](/services/t1-sales-skills)

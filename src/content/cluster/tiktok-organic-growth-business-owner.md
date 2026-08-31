@@ -178,12 +178,12 @@ B2B selling คือ trust economy. ลูกค้าเลือกคนท�
 
 ถ้าอยากได้ผลลัพธ์เหมือนช่องผม (funnel ที่ปิดดีล B2B ได้จริง) แบบไม่ต้องลองผิดลองถูก 4 เดือน
 
-**[AI สำหรับการตลาดและคอนเทนต์ 2026 {{price:tiktok-workshop}} →](/services/trust-content-tiktok-workshop)**
+**[AI สำหรับการตลาดและคอนเทนต์ 2026 {{price:tiktok-workshop}} →](/services/online-to-sales)**
 
 1 วัน in-house workshop ที่บริษัทคุณ ผมเข้าไปถ่ายทำจริง 3 คลิปกับทีมคุณ + ออกแบบ content calendar 30 วัน + ส่งมอบ `playbook (คู่มือการทำงาน)` ที่ทีมคุณ maintain ต่อได้เอง เน้น authenticity ไม่ใช่ AI-generated content
 
 ไม่มี retainer รายเดือน fixed-price ชำระล่วงหน้า 100% ส่งมอบภายใน 7 วัน
 
-[จองคิว Workshop →](/services/trust-content-tiktok-workshop) · [จองคิวคุย 30 นาทีฟรีก่อนตัดสินใจ →](/booking)
+[จองคิว Workshop →](/services/online-to-sales) · [จองคิวคุย 30 นาทีฟรีก่อนตัดสินใจ →](/booking)
 
 อ่านต่อ: [Personal Branding เจ้าของธุรกิจ B2B 2026](/insights/personal-branding-b2b-business-owner) | [คู่มือสร้างทีมขาย B2B สำหรับ SME ไทย](/insights/build-b2b-sales-team-sme-thailand) | [AI Agent vs Chatbot ต่างกันยังไง](/faq#ai-agent-vs-chatbot-difference)

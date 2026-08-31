@@ -16,7 +16,7 @@ workedExample:
   inputs: "5 setup files ใน project folder (ยังไม่มี claude.md) + prompt ข้างล่าง"
   output: "The Architect แนะนำตัว + ถาม 2-persona detection + รอคุณตอบ 1 หรือ 2 → route ไป skill-business-context"
   timeSaved: "ถ้าเริ่มเองโดยไม่มี Kit: 30 นาทีงงกับ Claude Code + 2 ชม.ลองผิดลองถูก · ใช้ prompt นี้ 3 นาทีเริ่มได้เลย"
-phaseCtaHref: "/services/ai-workshop"
+phaseCtaHref: "/services/t1-sales-skills"
 phaseCtaLabel: "ต้องการให้ปันมาติดตั้งให้ทั้งทีม? → ดู In-House Workshop"
 published: 2026-04-22
 ---

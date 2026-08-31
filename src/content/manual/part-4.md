@@ -102,7 +102,7 @@ https://punnattapatch.com/agent-builder-kit/prompts/<slug>
 
 ราคา ฿44,900 <!-- price:literal -->
 
-[ดูรายละเอียดและจอง In-house Workshop](https://punnattapatch.com/services/ai-workshop)
+[ดูรายละเอียดและจอง In-house Workshop](https://punnattapatch.com/services/t1-sales-skills)
 
 ---
 

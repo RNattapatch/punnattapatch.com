@@ -259,7 +259,7 @@ function buildCatalog() {
   if (!catalog) return [];
 
   const itemListElement = catalog.map((offer, index) => {
-    const itemUrl = `${url}#offer-${offer.code.toLowerCase()}`;
+    const itemUrl = offer.detailHref ? `${SITE.url}${offer.detailHref}` : `${url}#offer-${offer.code.toLowerCase()}`;
     return {
       '@type': 'ListItem',
       position: index + 1,
@@ -272,7 +272,7 @@ function buildCatalog() {
   });
 
   const typedItems = catalog.flatMap((offer) => {
-    const itemUrl = `${url}#offer-${offer.code.toLowerCase()}`;
+    const itemUrl = offer.detailHref ? `${SITE.url}${offer.detailHref}` : `${url}#offer-${offer.code.toLowerCase()}`;
     const common = {
       '@id': itemUrl,
       name: offer.publicName,

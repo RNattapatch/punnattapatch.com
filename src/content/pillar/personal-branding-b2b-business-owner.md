@@ -162,6 +162,6 @@ Total tool cost อยู่ในหลักพันบาท/เดือน
 
 ## อยากเริ่มก่อนจ้าง agency
 
-- [AI สำหรับการตลาดและคอนเทนต์ 2026 {{price:tiktok-workshop}}](/services/trust-content-tiktok-workshop): 1 วัน in-house workshop ถ่าย 3 คลิปเสร็จ + content calendar 30 วัน
+- [AI สำหรับการตลาดและคอนเทนต์ 2026 {{price:tiktok-workshop}}](/services/online-to-sales): 1 วัน in-house workshop ถ่าย 3 คลิปเสร็จ + content calendar 30 วัน
 - [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office): ใช้ AI ช่วย scale content production ให้ทีม
 - [จองคิวคุย 30 นาที](/booking): ดูว่า personal brand strategy ไหน match กับธุรกิจคุณ

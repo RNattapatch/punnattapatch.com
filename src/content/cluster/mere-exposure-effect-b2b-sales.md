@@ -122,6 +122,6 @@ Agency เขียนคอนเทนต์ให้ ได้แค่กา
 
 ## เริ่มสร้าง "ความคุ้นเคย" วันนี้
 
-- [AI สำหรับการตลาดและคอนเทนต์ 2026 {{price:tiktok-workshop}}](/services/trust-content-tiktok-workshop) — 1 วัน in-house workshop ถ่าย 3 คลิปเสร็จจริง + content calendar 30 วัน
+- [AI สำหรับการตลาดและคอนเทนต์ 2026 {{price:tiktok-workshop}}](/services/online-to-sales) — 1 วัน in-house workshop ถ่าย 3 คลิปเสร็จจริง + content calendar 30 วัน
 - [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office) — ใช้ AI ช่วย scale การผลิตคอนเทนต์
 - [กรอกฟอร์มประเมิน 3 นาที](/intake-form) — ผมอ่านแล้วจะบอกให้ว่าธุรกิจคุณควรเริ่มที่ช่องทางไหนก่อน

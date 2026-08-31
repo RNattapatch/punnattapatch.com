@@ -16,7 +16,7 @@ workedExample:
   inputs: "claude.md ปัจจุบัน (~120 บรรทัด) + skill-business-context.md (เป็น reference template)"
   output: "Audit report 5 หมวด: ครบ / ขาด / อ่อน / ขัดกัน / ซ้ำซ้อน · แต่ละ gap มี suggested fix + cite บรรทัด"
   timeSaved: "อ่านเองหา gap: 1-2 ชม. + ยังไม่แน่ใจว่าเช็คครบมั้ย · ใช้ prompt 10 นาที + ได้ report ที่อิง template มาตรฐาน"
-phaseCtaHref: "/services/ai-workshop"
+phaseCtaHref: "/services/t1-sales-skills"
 phaseCtaLabel: "อยากเห็น pattern advanced กว่านี้? → ดู In-House Workshop"
 published: 2026-04-22
 ---

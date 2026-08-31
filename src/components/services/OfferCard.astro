@@ -73,6 +73,7 @@ const primaryIsLine = offer.primaryCtaKind === 'line';
             href={SITE.social.line}
             target="_blank"
             rel="noopener"
+            data-offer-line-link
             data-contact-cta
             data-cta-location={cardLocation}
             data-product-code={offer.code}
@@ -83,10 +84,11 @@ const primaryIsLine = offer.primaryCtaKind === 'line';
           </a>
         ) : (
           <a
+            data-offer-detail-link
             href={offer.detailHref!}
             class="inline-flex min-h-12 items-center justify-center rounded-full border border-navy bg-navy px-5 font-bold text-white transition-colors hover:border-coral hover:bg-coral focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
           >
-            ดูรายละเอียดหลักสูตร<span aria-hidden="true" class="ml-2">→</span>
+            {offer.primaryCtaLabel}<span aria-hidden="true" class="ml-2">→</span>
           </a>
         )}
         {!primaryIsLine && (
@@ -94,11 +96,12 @@ const primaryIsLine = offer.primaryCtaKind === 'line';
             href={SITE.social.line}
             target="_blank"
             rel="noopener"
+            data-offer-line-link
             data-contact-cta
             data-cta-location={cardLocation}
             data-product-code={offer.code}
             data-cta-label="ให้ผมช่วยเลือกทาง LINE"
-            class="inline-flex min-h-12 items-center justify-center rounded-full px-2 font-semibold text-navy underline decoration-coral/60 underline-offset-4 hover:text-coral focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
+            class="inline-flex min-h-12 items-center justify-center rounded-full border border-[#06C755] bg-[#06C755] px-5 font-bold text-white transition-colors hover:border-[#05A548] hover:bg-[#05A548] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#06C755]"
           >
             ให้ผมช่วยเลือกทาง LINE
           </a>

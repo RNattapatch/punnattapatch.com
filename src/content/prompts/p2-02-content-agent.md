@@ -16,7 +16,7 @@ workedExample:
   inputs: "./claude.md + skill-build-agent-team.md + รายการ platform ที่ใช้ (เช่น FB + IG + LinkedIn)"
   output: "./agents/content/content-team-leader.md (~140 บรรทัด) ที่ถาม brief 5 ข้อก่อน draft + เขียนตาม Voice"
   timeSaved: "เขียน content เอง: 1-2 ชม.ต่อชิ้น · agent draft 10 นาที + edit อีก 5 นาที"
-phaseCtaHref: "/services/ai-workshop"
+phaseCtaHref: "/services/t1-sales-skills"
 phaseCtaLabel: "ต้องการให้ปันมาติดตั้งให้ทั้งทีม? → ดู In-House Workshop"
 published: 2026-04-22
 ---

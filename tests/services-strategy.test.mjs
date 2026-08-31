@@ -36,7 +36,7 @@ test('services catalog gives Training and Consulting equal first-screen routes',
 test('each course card states the artifact the team takes back', async () => {
   const html = await builtPage('/services');
 
-  assert.match(html, /Sales Context Pack/);
+  assert.match(html, /Customer Decision Map \+ Negotiation Playbook \+ AI Sales Coach \+ Role-play Scorecard/);
   assert.match(html, /Stage dictionary/);
   assert.match(html, /Funnel map \+ Campaign kit \+ Chat script/);
   assert.doesNotMatch(html, />วาง Funnel และวิธีใช้ AI ในงานขายที่ทีมทำอยู่จริง</);

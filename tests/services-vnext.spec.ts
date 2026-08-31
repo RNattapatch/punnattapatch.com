@@ -18,6 +18,7 @@ const contentTypes = {
 
 let server;
 let baseURL;
+let redirects;
 
 async function resolveDistFile(pathname) {
   const cleanPath = decodeURIComponent(pathname).replace(/^\/+/, '');
@@ -36,8 +37,23 @@ async function resolveDistFile(pathname) {
 }
 
 test.beforeAll(async () => {
+  redirects = new Map(
+    (await readFile(join(dist, '_redirects'), 'utf8'))
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith('#'))
+      .map((line) => {
+        const [from, to, status] = line.split(/\s+/);
+        return [from, { to, status: Number(status) }];
+      }),
+  );
   server = createServer(async (request, response) => {
     const pathname = new URL(request.url ?? '/', 'http://127.0.0.1').pathname;
+    const redirect = redirects.get(pathname);
+    if (redirect) {
+      response.writeHead(redirect.status, { location: redirect.to }).end();
+      return;
+    }
     const file = await resolveDistFile(pathname);
     if (!file) {
       response.writeHead(404).end('Not found');
@@ -278,6 +294,74 @@ test('services catalog has healthy card images and no horizontal overflow at rel
   assert.deepEqual(failedImages, [], 'catalog image requests must not fail');
   assert.deepEqual(consoleErrors, [], 'services page must not log console errors');
   await page.close();
+});
+
+test('five catalog cards open their canonical detail pages and preserve LINE decision help', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  page.setDefaultTimeout(5_000);
+  const details = [
+    ['T2', '/services/online-to-sales'],
+    ['T1', '/services/t1-sales-skills'],
+    ['T3', '/services/t3-sales-back-office'],
+    ['C1', '/services/daily-consulting'],
+    ['I1', '/services/dashboard-build'],
+  ];
+
+  await page.goto(`${baseURL}/services`);
+  assert.deepEqual(
+    await page.locator('[data-offer-detail-link]').evaluateAll((links) => links.map((link) => link.getAttribute('href'))),
+    details.map(([, route]) => route),
+    'the five public Product cards must expose one unique canonical detail link in visible order',
+  );
+
+  for (const [code, route] of details) {
+    const card = page.locator(`[data-offer-code="${code}"]`);
+    assert.equal(await card.locator('[data-offer-detail-link]').getAttribute('href'), route, `${code} card must link directly to its canonical detail page`);
+    const lineLink = card.locator('[data-offer-line-link]');
+    assert.equal(await lineLink.getAttribute('href'), 'https://lin.ee/ioSnSUG', `${code} card must retain LINE fit help beside the detail link`);
+    assert.equal(
+      await lineLink.evaluate((element) => getComputedStyle(element).backgroundColor),
+      'rgb(6, 199, 85)',
+      `${code} card LINE action must use the LINE green affordance`,
+    );
+
+    const response = await page.goto(`${baseURL}${route}`);
+    assert.equal(response?.status(), 200, `${code} canonical detail route must return 200`);
+    assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), `https://punnattapatch.com${route}`, `${code} canonical tag must match the card destination`);
+    assert.equal(await page.locator('[data-detail-chooser-link]').getAttribute('href'), '/services#offer-chooser', `${code} detail page must return undecided visitors to the services chooser`);
+    assert.ok(await page.locator(`[data-product-code="${code}"][data-contact-cta]`).count() > 0, `${code} detail page must retain a direct LINE path`);
+    await page.goto(`${baseURL}/services`);
+  }
+
+  const a1 = page.locator('[data-offer-code="A1"]');
+  assert.equal(await a1.locator('[data-offer-detail-link]').count(), 0, 'A1 must not expose a public detail route');
+  assert.equal(await a1.locator('[data-offer-line-link]').getAttribute('href'), 'https://lin.ee/ioSnSUG', 'A1 must remain a LINE-only proposal path');
+  await page.close();
+});
+
+test('legacy product URLs redirect one hop to a healthy canonical detail page', async () => {
+  const routeMatrix = [
+    ['/services/ai-workshop', '/services/t1-sales-skills', 'T1'],
+    ['/services/ai-workshop-followup', '/services/t1-sales-skills', 'T1'],
+    ['/services/sale-training-bundle', '/services/t1-sales-skills', 'T1'],
+    ['/inhouse', '/services/t1-sales-skills', 'T1'],
+    ['/services/trust-content-tiktok-workshop', '/services/online-to-sales', 'T2'],
+    ['/services/ai-workshop-advance', '/services/t3-sales-back-office', 'T3'],
+    ['/advance-ai', '/services/t3-sales-back-office', 'T3'],
+    ['/ai-workshop-advance', '/services/t3-sales-back-office', 'T3'],
+    ['/services/paid-audit', '/services/daily-consulting', 'C1'],
+    ['/services/package-a', '/services/daily-consulting', 'C1'],
+    ['/services/sales-system-sprint', '/services/daily-consulting', 'C1'],
+  ];
+
+  for (const [source, canonical, code] of routeMatrix) {
+    const redirectResponse = await fetch(`${baseURL}${source}`, { redirect: 'manual' });
+    assert.equal(redirectResponse.status, 301, `${source} must return a permanent redirect for ${code}`);
+    assert.equal(redirectResponse.headers.get('location'), canonical, `${source} must redirect directly to the ${code} canonical route`);
+    const finalResponse = await fetch(`${baseURL}${canonical}`, { redirect: 'manual' });
+    assert.equal(finalResponse.status, 200, `${code} canonical route must be healthy`);
+    assert.equal(finalResponse.headers.get('location'), null, `${code} canonical route must not redirect again`);
+  }
 });
 
 test('keyboard order follows page hierarchy and reduced motion has no perpetual animation', async ({ browser }) => {

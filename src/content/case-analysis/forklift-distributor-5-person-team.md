@@ -114,7 +114,7 @@ anonymized: true
 
 ## อยากได้ผลลัพธ์แบบนี้ไหม?
 
-- [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/ai-workshop) — 1 วัน build automation ตัวแรก
+- [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/t1-sales-skills) — 1 วัน build automation ตัวแรก
 - [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — วางระบบขายครบทั้งบริษัท (KPI + Commission + workflow)
 - [BOSI DNA Quiz](/bosi-dna-quiz) — รู้ DNA ทีมก่อนเริ่ม
 - [กรอกฟอร์ม 3 นาที](/intake-form) — ผมอ่านแล้วบอกว่าเคสคุณเหมือน/ต่างจากลูกค้ารายนี้ยังไง

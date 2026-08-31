@@ -16,7 +16,7 @@ workedExample:
   inputs: "./claude.md + ชื่อหมวด + 5 sample task + decision: standalone หรือ child ของ existing agent"
   output: "./agents/learning/knowledge-curator.md (~150 บรรทัด) + บันทึก rationale ว่าทำไม design แบบนี้"
   timeSaved: "ออกแบบเองโดยไม่มี framework: หลัก ชม. + agent ตอบไม่ตรง · meta-prompt 20 นาทีได้ structure ที่ทดสอบแล้ว"
-phaseCtaHref: "/services/ai-workshop"
+phaseCtaHref: "/services/t1-sales-skills"
 phaseCtaLabel: "อยากเห็น pattern advanced กว่านี้? → ดู In-House Workshop"
 published: 2026-04-22
 ---

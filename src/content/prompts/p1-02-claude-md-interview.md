@@ -16,7 +16,7 @@ workedExample:
   inputs: "USER_TYPE=OWNER ที่ประกาศไว้แล้ว + คำตอบจากปากผู้ใช้ใน 5 phase ของ skill-business-context"
   output: "ไฟล์ claude.md ใหม่ที่ project root · มี 8 sections (Identity / Business / Audience / Expertise / Goals / Voice / Constraints / File Routing)"
   timeSaved: "เขียนเองตามใจ: 3-4 ชม. + revise อีก 2-3 รอบ · ใช้ skill นี้ 25 นาทีจบ + ได้โครงที่ใช้ได้กับทุก agent"
-phaseCtaHref: "/services/ai-workshop"
+phaseCtaHref: "/services/t1-sales-skills"
 phaseCtaLabel: "ต้องการให้ปันมาติดตั้งให้ทั้งทีม? → ดู In-House Workshop"
 published: 2026-04-22
 ---
