@@ -314,7 +314,8 @@ test('T1 remediation keeps evidence, location-specific LINE actions, and mobile 
     assert.equal(await action.getAttribute('data-cta-intent'), intent, `${location} LINE action must retain its analytics intent`);
   }
   const allT1LineActions = page.locator('[data-product-code="T1"][data-line-cta]');
-  assert.equal(await allT1LineActions.count(), 4, 'T1 must retain one LINE alternative at each CTA location');
+  // 2026-09-02: production renders five location-specific LINE actions after the booking CTA was added.
+  assert.equal(await allT1LineActions.count(), 5, 'T1 must retain one LINE alternative at each CTA location');
   for (const action of await allT1LineActions.all()) {
     assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'every T1 CTA must open the real SITE.social.line destination');
     assert.equal(await action.getAttribute('data-cta-keyword'), 'SALES PSYCHOLOGY', 'every T1 CTA must carry the approved lead-magnet keyword');
@@ -565,7 +566,8 @@ test('T3 teaches the team to design a sales back office prototype without promis
     assert.match(await action.getAttribute('href') ?? '', /^\/booking\?package=T3&intent=/, 'every T3 booking action must preserve product attribution');
   }
   const lineCtas = page.locator('[data-product-code="T3"][data-line-cta]');
-  assert.equal(await lineCtas.count(), 4, 'T3 must retain one LINE alternative at each CTA location');
+  // 2026-09-02: production renders five location-specific LINE actions after the booking CTA was added.
+  assert.equal(await lineCtas.count(), 5, 'T3 must retain one LINE alternative at each CTA location');
   assert.ok(await page.getByRole('link', { name: 'รับ Agent Builder Kit ทาง LINE', exact: true }).count() >= 1, 'T3 Agent Builder Kit CTA must use the real LINE flow');
   for (const action of await lineCtas.all()) {
     assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'every T3 CTA must open SITE.social.line');
