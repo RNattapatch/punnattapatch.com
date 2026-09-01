@@ -4,8 +4,8 @@ import { OFFER_ASSET_BY_CODE } from '../../../data/service-offer-assets';
 import type { ProductDetailPageData, PublicProofImage } from '../../../data/product-details/types';
 import DetailLineCTA from './DetailLineCTA.astro';
 
-interface Props { data: ProductDetailPageData; name: string; duration: string; }
-const { data, name, duration } = Astro.props;
+interface Props { data: ProductDetailPageData; name: string; duration: string; price: string; }
+const { data, name, duration, price } = Astro.props;
 const image = OFFER_ASSET_BY_CODE[data.code];
 const visual = data.hero.visual;
 const isPublicImage = (candidate: NonNullable<ProductDetailPageData['hero']['visual']>['image']): candidate is PublicProofImage => 'publicSrc' in candidate;
@@ -18,6 +18,7 @@ const visualClass = visual?.fit === 'contain' ? 'h-auto w-full bg-white object-c
       <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">{data.hero.eyebrow}</p>
       <h1 class="mt-4 text-balance font-display text-4xl font-bold leading-tight sm:text-5xl">{name}</h1>
       <p class="mt-5 text-pretty text-xl font-semibold leading-relaxed text-white sm:text-2xl">{data.hero.customerJob}</p>
+      {data.showPriceInHero && <p data-hero-price class="mt-4 text-lg font-bold text-coral">ราคา {price} ทั้งทีม</p>}
       {data.hero.steps?.length ? (
         <div class="mt-6 grid gap-3 sm:grid-cols-2">
           {data.hero.steps.map((step, index) => (

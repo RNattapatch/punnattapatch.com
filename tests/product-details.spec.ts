@@ -85,6 +85,31 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   const response = await page.goto(`${baseURL}/services/online-to-sales`);
   assert.equal(response?.status(), 200, 'T2 route must render');
   assert.equal(await page.locator('h1').innerText(), 'คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI', 'T2 H1 must resolve from the Catalog');
+  assert.equal(
+    await page.getByText('เปลี่ยนคนเห็น Content/Ads ให้เป็นแชต นัดหมาย และการส่งต่อถึงทีมขายที่ชัดเจน', { exact: true }).count(),
+    1,
+    'T2 Hero must state the approved 5A customer job exactly',
+  );
+  assert.deepEqual(
+    await page.locator('[data-detail-block="pain"] li').evaluateAll((items) => items.map((item) => item.textContent?.replace(/^✓/, ''))),
+    [
+      'Message: Content/Ads บอกประโยชน์ไม่ชัด คนที่ทักมาไม่ตรงกับทีมที่อยากคุย',
+      'Inbox: มีคนทัก แต่ตอบช้า หรือไม่มีคนรับผิดชอบตั้งแต่ข้อความแรก',
+      'Qualification: ทีมถามไม่ครบ จึงไม่รู้ว่า Lead ไหนควรพาไปขั้นถัดไป',
+      'Handoff: Marketing ส่งต่อแล้ว Sales ไม่รู้บริบท หรือไม่มี Owner และ Next action',
+      'Follow-up: Lead ที่ยังไม่พร้อมซื้อเงียบหาย เพราะไม่มีจังหวะและเหตุผลให้ทักกลับ',
+    ],
+    'T2 must mirror the five approved Message-to-Follow-up leak points in order',
+  );
+  const t2Flow = await page.locator('[data-detail-block="scope"]').innerText();
+  assert.match(t2Flow, /ก่อน: Content\/Ads → แชต → ส่งต่อแบบเดาเอง → Lead เงียบ/, 'T2 must show the before flow');
+  assert.match(t2Flow, /หลัง: Offer\/Message → First response → Qualification → Handoff → Follow-up → Review/, 'T2 must show the agreed after flow');
+  const t2Boundary = await page.locator('[data-detail-block="boundary"]').innerText();
+  assert.match(t2Boundary, /ให้ทีมการตลาดและฝ่ายขายวาง Flow เดียวกัน/, 'T2 must publish the approved offer block');
+  assert.match(t2Boundary, /ไม่รับยิง Ads แทนบริษัท/, 'T2 must clearly reject an agency engagement');
+  assert.match(await page.locator('[data-detail-block="fit"]').innerText(), /ราคาเห็นก่อนทัก/, 'T2 decision section must state that pricing is visible before contact');
+  assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “ONLINE SALES” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T2 must state the live LINE keyword and team-size instruction');
+  assert.equal(await page.getByText('ของที่ทีมคุณได้รับกลับไปใช้ต่อ', { exact: true }).count(), 0, 'T2 bonus cards must remain hidden until the release gate opens');
   assert.equal(await page.locator('form').count(), 0, 'T2 detail page must not include a form');
   assert.equal(await page.locator('[data-hero-activity]').count(), 1, 'T2 Hero must lead with one real workshop activity photo');
   assert.equal(await page.locator('[data-hero-activity] img').getAttribute('loading'), 'eager', 'T2 Hero activity photo must be ready at first glance');

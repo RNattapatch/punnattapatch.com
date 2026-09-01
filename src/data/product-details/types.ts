@@ -96,11 +96,21 @@ export interface ProductDetailChapter {
   tone: 'ivory' | 'sand';
 }
 
+export interface ProductBonusCard {
+  number: string;
+  title: string;
+  user: string;
+  timing: string;
+  outcome: string;
+  format: string;
+}
+
 export interface ProductDetailPageData {
   code: ProductDetailCode;
   pricingKey: string;
   route: string;
   kind: 'course' | 'service';
+  showPriceInHero?: boolean;
   serviceType?: 'Sales Consulting' | 'Sales System Implementation';
   hero: {
     eyebrow: string;
@@ -124,6 +134,12 @@ export interface ProductDetailPageData {
   scope: ScopeItem[];
   symptomChooser?: SymptomChooser;
   takeHome: string[];
+  bonusCards?: {
+    enabled: boolean;
+    heading: string;
+    intro: string;
+    items: ProductBonusCard[];
+  };
   fit: string[];
   notFit: string;
   relatedOffer?: { href: string; label: string };
