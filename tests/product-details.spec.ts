@@ -282,6 +282,35 @@ test('T1 detail page presents the approved sales psychology customer job and fou
   await page.close();
 });
 
+test('T1 and T3 align their 5A offer copy, metadata, and disabled bonus release gate', async ({ browser }) => {
+  const cases = [
+    {
+      route: '/services/t1-sales-skills',
+      coreOffer: 'เอาดีลจริงของทีมมาสร้าง Playbook การคุย ต่อรอง และ Follow-up',
+      offerBlock: 'ให้ทีมขายเอาดีลจริงมาฝึกตั้งคำถาม รับมือข้อโต้แย้ง ต่อรองโดยไม่รีบลดราคา',
+      description: 'เข้าใจเหตุผลซื้อ ถามและต่อรองได้ดีขึ้น ซ้อมดีลกับ AI Agent และ Follow-up โดยไม่รีบลดราคา',
+    },
+    {
+      route: '/services/t3-sales-back-office',
+      coreOffer: 'เอารายงานที่ทีมใช้อยู่มาจัดเป็นภาษากลางและกติกาเดียวกัน',
+      offerBlock: 'ให้ทีมจัดคำเรียกสถานะดีลและรูปแบบ Report เป็นภาษากลาง',
+      description: 'ทีมรายงานภาษาเดียวกัน ผู้จัดการเห็นดีลค้าง งานที่ต้องตาม และจุดที่ต้องเข้าไปช่วย',
+    },
+  ] as const;
+
+  for (const item of cases) {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    const response = await page.goto(`${baseURL}${item.route}`);
+    assert.equal(response?.status(), 200, `${item.route} must render`);
+    assert.match(await page.locator('[data-detail-block="boundary"]').innerText(), new RegExp(item.coreOffer), `${item.route} must show the approved Core Offer`);
+    assert.match(await page.locator('[data-detail-block="take-home"]').innerText(), new RegExp(item.offerBlock), `${item.route} must show the approved Offer block`);
+    assert.equal(await page.locator('[data-detail-block="bonus"]').count(), 0, `${item.route} bonus cards must remain hidden until the release gate opens`);
+    assert.equal(await page.locator('meta[name="description"]').getAttribute('content'), item.description, `${item.route} metadata must match its approved customer job`);
+    assert.equal(await page.locator('meta[property="og:description"]').getAttribute('content'), item.description, `${item.route} OG description must match its metadata`);
+    await page.close();
+  }
+});
+
 test('T1 remediation keeps evidence, location-specific LINE actions, and mobile CTA clearance faithful', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(`${baseURL}/services/t1-sales-skills`);
