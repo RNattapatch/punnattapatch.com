@@ -159,6 +159,28 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   await page.close();
 });
 
+test('T4 detail page keeps the Workflow Pilot Day in a one-workflow safe-sandbox boundary', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const response = await page.goto(`${baseURL}/services/advance-ai-automation`);
+  const catalog = CATALOG['t4-ai-workflow-pilot-day'];
+  assert.equal(response?.status(), 200, 'T4 route must render');
+  assert.equal(await page.locator('h1').innerText(), catalog.name, 'T4 H1 must resolve from the approved Catalog key');
+  assert.equal(await page.getByText('ทดลองงานจริงก่อนลงทุนระบบจริง', { exact: true }).count(), 1, 'T4 must use the approved strapline');
+  assert.match(await page.locator('[data-hero-price]').innerText(), new RegExp(fmtPrice('t4-ai-workflow-pilot-day')), 'T4 Hero must use the Catalog price');
+  assert.equal(await page.getByText(fmtPrice('t4-ai-workflow-pilot-day'), { exact: true }).count(), 1, 'T4 Investment must use the Catalog price');
+  const t4Boundary = await page.locator('[data-detail-block="boundary"]').innerText();
+  assert.match(t4Boundary, /หนึ่ง Workflow/, 'T4 must keep the one-workflow scope boundary');
+  assert.match(t4Boundary, /Safe Sandbox/, 'T4 must state the sandbox boundary');
+  assert.match(t4Boundary, /Fit Gate ก่อนออกใบแจ้งหนี้/, 'T4 must place the fit gate before invoicing');
+  assert.doesNotMatch(t4Boundary, /Production-ready/, 'T4 must never call a sandbox production-ready');
+  const takeHome = await page.locator('[data-detail-block="take-home"]').innerText();
+  for (const artifact of ['Workflow Map', 'Safe Sandbox', 'Human–AI Responsibility Brief', 'Decision Memo']) assert.match(takeHome, new RegExp(artifact), `T4 must publish ${artifact}`);
+  assert.match(await page.locator('[data-detail-block="scope"]').innerText(), /งานซ้ำอะไร.*บ่อยแค่ไหน.*Process owner.*ข้อมูลเสี่ยง/s, 'T4 must surface the four fit questions');
+  assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “T4_LINE_KEYWORD” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T4 must retain its placeholder LINE keyword until the OA is wired');
+  assert.equal(await page.getByText('ของที่ทีมคุณได้รับกลับไปใช้ต่อ', { exact: true }).count(), 0, 'T4 bonus cards must remain hidden before their release gate');
+  await page.close();
+});
+
 test('T1 detail page presents the approved sales psychology customer job and four-stage AI Coach curriculum', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const response = await page.goto(`${baseURL}/services/t1-sales-skills`);

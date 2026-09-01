@@ -2,7 +2,7 @@ import { CATALOG, fmtPrice } from '../pricing.mjs';
 
 export function resolveProductDetailCatalog(pricingKey: string) {
   const entry = CATALOG[pricingKey];
-  if (!entry?.name || !entry?.duration || !entry.image || !Number.isFinite(entry.amount) || entry.amount <= 0) {
+  if (!entry?.name || !entry?.duration || !Number.isFinite(entry.amount) || entry.amount <= 0 || (entry.status === 'live' && !entry.image)) {
     throw new Error(`[product-details] invalid Catalog entry for ${pricingKey}`);
   }
   const regularEntry = CATALOG[`${pricingKey}-regular`];
