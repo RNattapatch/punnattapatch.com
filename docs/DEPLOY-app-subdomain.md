@@ -26,6 +26,7 @@ One repo, two Cloudflare Pages projects, each runs its own build + prune:
 - Private apps live in `src/pages/app/` → served ONLY on the app origin.
 - Marketing build deletes `dist/app`. App build assembles `dist-app` from an allowlist.
 - Add a future private app = drop a page in `src/pages/app/` — no infra change.
+- Renamed 2026-09-02: `/app/war-room` → `/app/content` (Content Center) · `/app/newsroom` → `/app/intel` (Intel Warroom). Old paths 301 via `_redirects` (see prune-for-app.mjs).
 
 ---
 

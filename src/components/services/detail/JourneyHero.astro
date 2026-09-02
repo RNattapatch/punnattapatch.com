@@ -1,0 +1,65 @@
+---
+import type { ProductDetailPageData, PublicProofImage } from '../../../data/product-details/types';
+import JourneyCTA from './JourneyCTA.astro';
+
+interface Props { data: ProductDetailPageData; name: string; price: string; duration: string; }
+const { data, name, price } = Astro.props;
+const visual = data.hero.visual;
+const visualImage = visual?.image;
+const src = visualImage && 'publicSrc' in visualImage ? visualImage.publicSrc : visualImage?.src;
+const width = visualImage && 'publicSrc' in visualImage ? (visualImage as PublicProofImage).width : visualImage?.width;
+const height = visualImage && 'publicSrc' in visualImage ? (visualImage as PublicProofImage).height : visualImage?.height;
+const capacityNote = '1 เดือนผมรับอบรมจำกัดแค่ 10 องค์กร สงวนสิทธิให้องค์กรที่ชำระค่าบริการและคิวก่อน';
+---
+
+<section data-t4-section="hero" data-detail-block="hero" class="relative isolate overflow-hidden bg-[#072b4e] text-white">
+  <div aria-hidden="true" class="absolute inset-0 -z-10 opacity-25 [background-image:linear-gradient(rgba(255,255,255,.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.08)_1px,transparent_1px)] [background-size:48px_48px]"></div>
+  <div aria-hidden="true" class="absolute -right-24 -top-32 -z-10 size-96 rounded-full bg-coral/20 blur-3xl"></div>
+  <div class="mx-auto grid max-w-7xl gap-7 px-5 py-7 sm:py-12 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:gap-12 lg:py-20">
+    <div class="min-w-0">
+      <p class="text-[11px] font-bold uppercase tracking-[.23em] text-coral sm:text-xs">{data.hero.eyebrow}</p>
+      <h1 class="mt-3 text-balance font-display text-[2.35rem] font-bold leading-[1.02] sm:mt-5 sm:text-5xl lg:text-[4.25rem]">{name}</h1>
+      <p class="mt-4 max-w-3xl text-balance text-xl font-bold leading-8 text-white sm:mt-6 sm:text-2xl sm:leading-9">{data.hero.customerJob}</p>
+      <p class="mt-2 text-[15px] font-semibold leading-6 text-white/75 sm:mt-3 sm:text-base">{data.hero.supportingCopy[0]}</p>
+      <div data-hero-price class="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1 sm:mt-6">
+        <span class="font-display text-4xl font-bold text-[#ff677a] sm:text-5xl">{price}</span>
+        <span class="text-sm font-semibold text-white/75">1 วัน · 1 Workflow</span>
+      </div>
+      <div class="mt-5 sm:mt-7">
+        <JourneyCTA
+          code={data.code}
+          location="hero"
+          keyword={data.cta.keyword}
+          primary="จองคิวรับบริการ"
+          primaryIntent="book_training"
+          secondary={data.cta.heroSecondary ?? data.cta.secondary}
+          secondaryIntent={data.cta.heroSecondaryIntent ?? data.cta.secondaryIntent}
+        />
+      </div>
+      <p class="mt-3 max-w-2xl text-xs leading-5 text-white/65 sm:text-sm sm:leading-6">{capacityNote}</p>
+      <div class="mt-6 hidden flex-wrap gap-2 sm:flex">
+        {data.hero.badges.map((badge) => <span class="rounded-full border border-white/25 px-3 py-1.5 text-sm font-semibold text-white/80">{badge}</span>)}
+      </div>
+    </div>
+
+    {visual && src && (
+      <figure data-hero-activity class="overflow-hidden rounded-[1.5rem] border border-white/15 bg-white/10 shadow-[0_24px_80px_rgba(0,0,0,.28)] sm:rounded-[2rem]">
+        <img src={src} alt={visual.alt} width={width} height={height} loading="eager" fetchpriority="high" decoding="async" class="aspect-[16/7] w-full object-cover object-[center_48%] sm:aspect-[4/3]" />
+        <figcaption class="flex items-center justify-between gap-3 bg-white px-4 py-3 text-xs leading-5 text-navy sm:px-5 sm:text-sm">
+          <span class="font-bold">{visual.label}</span>
+          <span class="hidden text-right text-navy/65 sm:block">{visual.caption}</span>
+        </figcaption>
+      </figure>
+    )}
+
+    <div class="hidden gap-3 sm:grid lg:col-span-2 lg:grid-cols-3">
+      {data.hero.steps?.map((step) => (
+        <article class="rounded-2xl border border-white/15 bg-white/[0.07] p-5 backdrop-blur-sm">
+          <p class="text-xs font-bold uppercase tracking-[.16em] text-[#ff677a]">{step.label}</p>
+          <h2 class="mt-2 font-bold text-white">{step.title}</h2>
+          <p class="mt-2 text-sm leading-6 text-white/65">{step.body}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

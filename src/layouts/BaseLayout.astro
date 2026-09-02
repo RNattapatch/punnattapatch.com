@@ -243,6 +243,10 @@ const shouldShowFloatingLine = showFloatingLine && !hideFloatingLine && !isFloat
           const contentType = match[1] === 'services' ? 'service' : 'training';
           const contentName = (document.title || '').replace(/\s·\s.*$/, '');
 
+          // Meta Pixel — ViewContent รายหน้า product (fbq queue ก่อนโหลดได้) · content_name ใช้ตั้ง Custom Conversion / Custom Audience รายคอร์ส
+          if (typeof window.fbq === 'function') {
+            window.fbq('track', 'ViewContent', { content_name: `${contentId.replace(/-/g, '_')}_page`, content_ids: [contentId], content_type: contentType, currency: 'THB', value: 0 });
+          }
           // ttq queues calls made before the script loads, so firing immediately is safe.
           if (window.ttq && typeof window.ttq.track === 'function') {
             window.ttq.track('ViewContent', {

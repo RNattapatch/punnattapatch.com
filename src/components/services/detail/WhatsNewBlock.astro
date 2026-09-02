@@ -1,0 +1,35 @@
+---
+import type { ProductWhatsNew } from '../../../data/product-details/types';
+interface Props { data: ProductWhatsNew; }
+const { data } = Astro.props;
+---
+
+<section data-t4-section="whats-new" aria-labelledby="t4-new-heading" class="bg-[#ece6da] py-14 sm:py-20">
+  <div class="mx-auto max-w-6xl px-5">
+    <div class="text-center">
+      <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">{data.eyebrow}</p>
+      <h2 id="t4-new-heading" class="mx-auto mt-3 max-w-3xl text-balance font-display text-3xl font-bold text-navy sm:text-5xl">{data.heading}</h2>
+      <p class="mx-auto mt-4 max-w-3xl leading-7 text-navy/70">{data.intro}</p>
+    </div>
+    <div class="mt-10 grid gap-5 md:grid-cols-2">
+      <div data-whats-new-column="fresh" class="rounded-[1.75rem] bg-navy p-7 text-white sm:p-9">
+        <div class="flex items-center justify-between"><span aria-hidden="true" class="font-display text-3xl font-bold text-[#65d7f2]">NEW</span><span class="rounded-full bg-white/10 px-3 py-1 text-xs font-bold">{data.fresh.badge}</span></div>
+        <h3 class="mt-5 font-display text-2xl font-bold sm:text-[1.65rem]">{data.fresh.heading}</h3>
+        <p class="mt-1 text-sm text-white/70">{data.fresh.sub}</p>
+        <ul class="mt-6 space-y-4">
+          {data.fresh.items.map((item) => <li class="flex gap-3"><span aria-hidden="true" class="mt-1 flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-[#65d7f2] text-[10px] font-bold text-[#65d7f2]">✓</span><div><p class="font-bold">{item.title}</p><p class="text-sm leading-6 text-white/75">{item.body}</p></div></li>)}
+        </ul>
+        <p class="mt-7 border-t border-white/10 pt-5 text-sm font-bold text-[#65d7f2]">→ {data.fresh.footer}</p>
+      </div>
+      <div data-whats-new-column="core" class="rounded-[1.75rem] border border-navy/15 bg-white p-7 sm:p-9">
+        <div class="flex items-center justify-between"><span aria-hidden="true" class="font-display text-3xl font-bold text-coral">CORE</span><span class="rounded-full bg-[#06c755]/15 px-3 py-1 text-xs font-bold text-[#05a648]">{data.core.badge}</span></div>
+        <h3 class="mt-5 font-display text-2xl font-bold text-navy sm:text-[1.65rem]">{data.core.heading}</h3>
+        <p class="mt-1 text-sm text-navy/60">{data.core.sub}</p>
+        <ul class="mt-6 space-y-4">
+          {data.core.items.map((item) => <li class="flex gap-3"><span aria-hidden="true" class="mt-1 flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-[#05a648] text-[10px] font-bold text-[#05a648]">✓</span><div><p class="font-bold text-navy">{item.title}</p><p class="text-sm leading-6 text-navy/70">{item.body}</p></div></li>)}
+        </ul>
+        <p class="mt-7 border-t border-navy/10 pt-5 text-sm font-bold text-navy">→ {data.core.footer}</p>
+      </div>
+    </div>
+  </div>
+</section>

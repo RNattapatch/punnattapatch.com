@@ -1,5 +1,6 @@
 ---
-// Marketing War Room — Phase 1 "War Room Lite" (Kanban revision)
+// Content Center (เดิม Marketing War Room · เปลี่ยนชื่อ+route 2026-09-02 — id/ตัวแปร wr-* คงเดิม)
+// Phase 1 "War Room Lite" (Kanban revision)
 // Spec: claude-code repo → output/docs/marketing-war-room-content-planning-system-v2-2026-07-10.md
 // State truth = Supabase (RLS is_owner) · Content truth = repo .md (Save = copy/download)
 // UI: Kanban pipeline board (default) + List capture view + slide-in detail drawer.
@@ -7,12 +8,12 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
 import AppNav from '../../components/app/AppNav.astro';
 ---
-<DashboardLayout title="Marketing War Room — Pun">
+<DashboardLayout title="Content Center — Pun">
   <script is:inline async src="https://accounts.google.com/gsi/client"></script>
-  <WarRoomGate />
+  <WarRoomGate title="Content Center" />
 
   <div id="war-room-app" class="hidden min-h-dvh bg-base-100">
-    <AppNav app="war-room" />
+    <AppNav app="content" />
 
     <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 pt-3">
       <p id="wr-date" class="text-sm opacity-60"></p>
