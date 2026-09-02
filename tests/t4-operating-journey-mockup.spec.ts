@@ -59,7 +59,7 @@ test('T4 mockup tells the operating journey in the approved order', async ({ pag
   assert.equal(await page.locator('[data-core-artifact]').count(), 4);
   assert.equal(await page.locator('[data-bonus-card]').count(), 5);
   assert.deepEqual(await page.locator('[data-journey-stage]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-journey-stage'))), [
-    'Pick', 'Map', 'Sandbox', 'Responsibility', 'Decide',
+    'Choose', 'Map', 'Build', 'Guardrail', 'Adopt',
   ]);
 });
 
@@ -84,12 +84,19 @@ test('T4 hero identifies the in-house course and one-day job at a glance', async
     assert.match(productDescriptionText, /เพิ่มยอด/i);
     assert.match(productDescriptionText, /องค์กร/i);
 
+    const salesThesis = await hero.locator('[data-sales-thesis]').innerText();
+    assert.match(salesThesis, /AI Agent/i);
+    assert.match(salesThesis, /ธุรกิจโต/i);
+    assert.match(salesThesis, /ไม่ต้องเพิ่มคน/i);
+    assert.match(salesThesis, /งานเอกสาร/i);
+
     const glanceText = await hero.locator('[data-hero-glance]').innerText();
     assert.match(glanceText, /In-house/i);
     assert.match(glanceText, /1 วัน/i);
     assert.match(glanceText, /1 Workflow/i);
-    assert.match(glanceText, /Safe Sandbox/i);
-    assert.match(glanceText, /หยุด|ปรับ|ทำระบบต่อ/i);
+    assert.match(glanceText, /Data Safety/i);
+    assert.match(glanceText, /Human Review/i);
+    assert.match(glanceText, /30 วัน/i);
 
     const headingBox = await heading.boundingBox();
     const productDescriptionBox = await productDescription.boundingBox();
@@ -99,6 +106,26 @@ test('T4 hero identifies the in-house course and one-day job at a glance', async
     assert.ok(glanceBox && glanceBox.y + glanceBox.height <= viewport.height, `${viewport.width}px must show the course facts in the first screen`);
     await page.close();
   }
+});
+
+test('T4 sells AI Agent adoption through the four approved business pressures', async ({ page }) => {
+  await page.goto(`${baseURL}/previews/t4-operating-journey-mockup.html`);
+  const cases = page.locator('[data-business-case]');
+  assert.equal(await cases.count(), 4);
+  const caseCopy = await cases.allInnerTexts();
+  assert.match(caseCopy[0], /โต.*ไม่ต้อง.*เพิ่มคน|เพิ่มคน.*ตาม/i);
+  assert.match(caseCopy[1], /ใช้ได้จริง|ปลอดภัย|ข้อมูล.*รั่ว/i);
+  assert.match(caseCopy[2], /ไม่รู้.*เริ่ม.*ตรงไหน|เริ่มจากงานไหน/i);
+  assert.match(caseCopy[3], /คนเก่ง.*งานเอกสาร|งานเอกสาร.*แทน/i);
+
+  const primaryHeadings = await page.locator('[data-section="hero"] h1, [data-section="offer"] h2').allInnerTexts();
+  assert.doesNotMatch(primaryHeadings.join(' '), /ลอง|ทดลอง|หยุด|Stop|Revise/i);
+
+  const coreCopy = (await page.locator('[data-core-artifact]').allInnerTexts()).join(' ');
+  assert.match(coreCopy, /AI Agent Working Prototype/i);
+  assert.match(coreCopy, /Data Safety/i);
+  assert.match(coreCopy, /Human Review/i);
+  assert.match(coreCopy, /30-Day Adoption Plan/i);
 });
 
 test('T4 proof restores real course activity and published AI workshop reviews', async ({ page }) => {
