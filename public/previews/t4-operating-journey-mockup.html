@@ -86,20 +86,29 @@
       background-size: 48px 48px;
       mask-image: linear-gradient(to right, black, transparent 68%);
     }
-    .hero-inner { position: relative; display: grid; min-height: 760px; grid-template-columns: 1.02fr .98fr; align-items: center; gap: 64px; padding-block: 76px; }
-    .hero h1 { max-width: 650px; margin-bottom: 24px; font-size: clamp(3.2rem, 5.8vw, 5.7rem); line-height: 1.03; letter-spacing: -.04em; }
-    .hero h1 strong { display: block; color: #65d7f2; font-weight: 700; }
-    .hero-course { max-width: 650px; margin-bottom: 14px; color: white; font-size: 19px; font-weight: 700; }
-    .hero-copy { max-width: 620px; margin-bottom: 28px; color: rgba(255, 255, 255, .74); font-size: 17px; }
-    .hero-path { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 28px; }
-    .hero-step { min-height: 112px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 18px; background: rgba(255, 255, 255, .055); padding: 16px; }
-    .hero-step span { display: block; margin-bottom: 5px; color: var(--coral); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
-    .hero-step b { display: block; font-size: 16px; line-height: 1.45; }
+    .hero-inner { position: relative; display: grid; min-height: 760px; grid-template-columns: 1.04fr .96fr; align-items: center; gap: 64px; padding-block: 68px; }
+    .hero h1 { max-width: 690px; margin-bottom: 20px; font-size: clamp(2.85rem, 4.8vw, 4.8rem); line-height: 1.08; letter-spacing: -.035em; }
+    .hero h1 em { display: block; color: #65d7f2; font-style: normal; font-weight: 700; }
+    .hero h1 span { display: block; margin-top: 8px; color: white; font-size: .62em; line-height: 1.25; letter-spacing: -.02em; }
+    .hero-glance { max-width: 660px; margin-bottom: 24px; }
+    .hero-glance > p { margin: 0 0 16px; color: rgba(255, 255, 255, .78); font-size: 17px; }
+    .hero-glance strong { color: white; }
+    .hero-facts { display: flex; flex-wrap: wrap; gap: 8px; }
+    .hero-facts span { border: 1px solid rgba(101, 215, 242, .48); border-radius: 999px; background: rgba(101, 215, 242, .08); padding: 7px 12px; color: #dffaff; font-size: 13px; font-weight: 700; }
     .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .hero-proof-line { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; max-width: 660px; margin-top: 26px; background: rgba(255, 255, 255, .16); }
+    .hero-proof-line div { background: rgba(0, 22, 47, .7); padding: 14px 12px; }
+    .hero-proof-line b { display: block; color: white; font-size: 14px; }
+    .hero-proof-line span { display: block; margin-top: 3px; color: rgba(255, 255, 255, .62); font-size: 11px; }
     .hero-visual { position: relative; margin: 0; }
-    .hero-photo-frame { position: relative; overflow: hidden; border: 1px solid rgba(255, 255, 255, .2); border-radius: 30px; background: #173957; box-shadow: 20px 24px 0 rgba(101, 215, 242, .11); }
-    .hero-photo-frame img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
-    .hero-caption { position: absolute; right: 18px; bottom: 18px; left: 18px; border-radius: 18px; background: rgba(0, 22, 47, .88); padding: 16px 18px; backdrop-filter: blur(8px); }
+    .hero-photo-frame { position: relative; overflow: hidden; border: 1px solid rgba(255, 255, 255, .2); border-radius: 30px; background: var(--ivory); box-shadow: 20px 24px 0 rgba(101, 215, 242, .11); }
+    .course-card-top { position: relative; min-height: 168px; background: var(--ivory); padding: 28px 30px 24px; color: var(--navy); }
+    .course-card-top::after { content: "T4"; position: absolute; right: 18px; bottom: -13px; color: rgba(7, 43, 78, .08); font-family: "Trirong", serif; font-size: 118px; font-weight: 700; line-height: 1; }
+    .course-card-top span { display: block; color: var(--coral); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .course-card-top strong { position: relative; z-index: 1; display: block; max-width: 460px; margin-top: 10px; font-family: "Trirong", serif; font-size: 26px; line-height: 1.35; }
+    .course-card-top p { position: relative; z-index: 1; margin: 8px 0 0; color: var(--muted); font-size: 14px; }
+    .hero-photo-frame img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+    .hero-caption { background: var(--navy); padding: 17px 20px 19px; }
     .hero-caption span { color: #65d7f2; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
     .hero-caption p { margin: 4px 0 0; color: white; font-weight: 600; line-height: 1.5; }
     .hero-stamp { position: absolute; top: -22px; right: -18px; display: grid; width: 96px; aspect-ratio: 1; place-items: center; border-radius: 50%; background: var(--coral); color: white; font-size: 13px; font-weight: 700; line-height: 1.3; text-align: center; transform: rotate(5deg); }
@@ -153,14 +162,24 @@
     .map-step b { display: block; margin-top: 3px; font-size: 14px; }
 
     .proof { background: var(--surface); padding-block: 104px; }
-    .proof-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 18px; margin-top: 44px; }
-    .proof-card { position: relative; overflow: hidden; border-radius: 26px; background: var(--navy); min-height: 310px; }
-    .proof-card:first-child { grid-row: span 2; min-height: 638px; }
+    .proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 260px; gap: 18px; margin-top: 44px; }
+    .proof-card { position: relative; overflow: hidden; border-radius: 26px; background: var(--navy); min-height: 260px; }
+    .proof-card:first-child { grid-column: span 2; grid-row: span 2; min-height: 538px; }
     .proof-card img { width: 100%; height: 100%; object-fit: cover; }
     .proof-card:first-child img { object-position: 52% center; }
     .proof-caption { position: absolute; inset: auto 0 0; background: linear-gradient(transparent, rgba(0, 22, 47, .96)); padding: 76px 24px 22px; color: white; }
     .proof-caption span { color: #65d7f2; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
     .proof-caption p { margin: 5px 0 0; max-width: 570px; color: white; font-weight: 600; }
+    .testimonial-wall { margin-top: 76px; border-top: 1px solid var(--line); padding-top: 48px; }
+    .testimonial-wall-head { display: grid; grid-template-columns: 1fr .72fr; gap: 40px; align-items: end; margin-bottom: 28px; }
+    .testimonial-wall h3 { max-width: 730px; margin: 0; color: var(--navy); font-family: "Trirong", serif; font-size: clamp(2rem, 3.8vw, 3.5rem); line-height: 1.22; }
+    .testimonial-wall-head p { margin: 0; color: var(--muted); }
+    .testimonial-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .testimonial-card { overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: white; box-shadow: 0 12px 30px rgba(7, 43, 78, .08); }
+    .testimonial-card a { display: block; }
+    .testimonial-card img { width: 100%; aspect-ratio: 1; object-fit: cover; transition: transform .2s ease; }
+    .testimonial-card a:hover img { transform: scale(1.02); }
+    .testimonial-card figcaption { padding: 11px 12px 13px; color: var(--navy); font-size: 12px; font-weight: 700; }
 
     .diagnosis { background: var(--sand); padding-block: 104px; }
     .diagnosis-grid { display: grid; grid-template-columns: .86fr 1.14fr; gap: 54px; align-items: start; }
@@ -245,16 +264,22 @@
       .offer-summary-actions { align-content: center; }
       .journey-map-grid, .curriculum-head { grid-template-columns: 1fr; }
       .artifact-row { grid-template-columns: repeat(2, 1fr); }
+      .testimonial-wall-head { grid-template-columns: 1fr; gap: 14px; }
+      .testimonial-grid { grid-template-columns: repeat(3, 1fr); }
     }
 
     @media (max-width: 700px) {
       .shell { width: min(100% - 32px, 1180px); }
       .mock-label { display: none; }
-      .hero-inner { min-height: auto; grid-template-columns: 1fr; gap: 46px; padding-block: 52px 62px; }
-      .hero h1 { font-size: clamp(2.8rem, 14vw, 4.2rem); }
+      .hero-inner { min-height: auto; grid-template-columns: 1fr; gap: 40px; padding-block: 42px 58px; }
+      .hero h1 { font-size: clamp(2.35rem, 11.5vw, 3.25rem); }
+      .hero-glance > p { font-size: 16px; }
+      .hero-proof-line { grid-template-columns: 1fr; }
       .hero-path, .core-grid, .bonus-grid, .proof-grid, .module-body, .fit-grid { grid-template-columns: 1fr; }
       .hero-step { min-height: auto; }
       .hero-photo-frame img { aspect-ratio: 4 / 3; }
+      .course-card-top { min-height: 150px; padding: 24px 22px 20px; }
+      .course-card-top strong { font-size: 23px; }
       .hero-stamp { top: -14px; right: -6px; width: 78px; font-size: 11px; }
       .offer, .proof, .diagnosis, .curriculum, .decision-pack, .fit, .investment, .final-cta { padding-block: 72px; }
       .offer-summary { display: block; }
@@ -265,8 +290,12 @@
       .map-steps { grid-template-columns: 1fr; }
       .map-step { display: grid; min-height: 52px; grid-template-columns: 42px 1fr; align-items: center; text-align: left; }
       .map-step:not(:last-child)::after { content: "↓"; top: auto; right: auto; bottom: -17px; left: 20px; }
-      .proof-card:first-child { grid-row: auto; min-height: 420px; }
+      .proof-grid { grid-auto-rows: auto; }
+      .proof-card:first-child { grid-column: auto; grid-row: auto; min-height: 420px; }
       .proof-card { min-height: 250px; }
+      .testimonial-wall { margin-top: 56px; padding-top: 36px; }
+      .testimonial-grid { display: grid; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: min(78vw, 310px); overflow-x: auto; padding: 2px 2px 16px; scroll-snap-type: x mandatory; scrollbar-width: thin; }
+      .testimonial-card { scroll-snap-align: start; }
       .pain-item { grid-template-columns: 46px 1fr; gap: 10px; }
       .curriculum-head { margin-bottom: 36px; }
       .modules::before { left: 51px; }
@@ -313,25 +342,32 @@
     <section data-section="hero" class="hero">
       <div class="shell hero-inner">
         <div>
-          <p class="eyebrow">In-house Workflow Pilot Day · T4</p>
-          <h1>ก่อนซื้อระบบ <strong>ลองกับงานจริงก่อน</strong></h1>
-          <p class="hero-course">คอร์ส Advance AI &amp; Business Automation</p>
-          <p class="hero-copy">เลือกงานซ้ำหนึ่งเรื่องของบริษัท แยกจุดที่ AI ช่วยกับจุดที่คนต้องตัดสิน แล้วให้ทีมลองรันใน Safe Sandbox ก่อนเลือกว่าจะหยุด ปรับ หรือทำระบบต่อ</p>
-          <div class="hero-path" aria-label="ผลลัพธ์หลักสามช่วง">
-            <div class="hero-step"><span>01 · Pick</span><b>เลือกงานที่มีเจ้าของและขอบเขตชัด</b></div>
-            <div class="hero-step"><span>02 · Test</span><b>ลองด้วยข้อมูลจำลองหรือข้อมูลที่ Mask</b></div>
-            <div class="hero-step"><span>03 · Decide</span><b>จบวันด้วยหลักฐานสำหรับตัดสินใจ</b></div>
+          <p class="eyebrow">In-house course · T4 · 1 day</p>
+          <h1>คอร์สอบรม <em>Advance AI &amp;<br>Business Automation</em><span>สำหรับทีมในองค์กร</span></h1>
+          <div data-hero-glance class="hero-glance">
+            <p>ทีมเลือกงานซ้ำจริงของบริษัท <strong>1 Workflow</strong> มาทำ Workflow Map และทดลองใน <strong>Safe Sandbox</strong> ภายใน <strong>1 วัน</strong> ก่อนลงข้อสรุปว่าจะหยุด ปรับ หรือทำระบบต่อ</p>
+            <div class="hero-facts" aria-label="ข้อมูลคอร์สที่ควรรู้ทันที">
+              <span>In-house ที่บริษัทคุณ</span>
+              <span>1 วัน · 1 Workflow</span>
+              <span>ลงมือทำเป็นทีม</span>
+            </div>
           </div>
           <div class="hero-actions">
             <a class="btn-main" href="#offer">ดูสิ่งที่รวมในหนึ่งวัน</a>
             <a class="btn-line" href="#curriculum">ดู Journey ที่ทีมลงมือทำ</a>
           </div>
+          <div class="hero-proof-line" aria-label="ประสบการณ์ของผู้สอน">
+            <div><b>18 องค์กร</b><span>ที่เคยอบรมและวางระบบร่วมกัน</span></div>
+            <div><b>มี Workflow ที่ใช้เอง</b><span>กับงานขายและงานที่ปรึกษา</span></div>
+            <div><b>สอนเองทุกบริษัท</b><span>ทีมเห็น Flow และลองกับมือ</span></div>
+          </div>
         </div>
         <figure class="hero-visual">
           <div class="hero-stamp">หนึ่งบริษัท<br>หนึ่ง Workflow</div>
           <div class="hero-photo-frame">
-            <img src="/lp/inhouse/office-session.jpg" width="1600" height="1200" alt="ทีมผู้เข้าร่วม Advance AI Workshop นั่งทำงานร่วมกันหน้าจอในห้องประชุม" fetchpriority="high">
-            <figcaption class="hero-caption"><span>กิจกรรมจริง · ทีมจริง</span><p>ไล่งานหนึ่งเรื่องบนหน้าจอร่วมกัน ก่อนเลือก Flow ที่จะทดลอง</p></figcaption>
+            <div class="course-card-top"><span>T4 · Advance AI &amp; Business Automation</span><strong>เลือก 1 งาน → ทดลอง → ตัดสินใจ</strong><p>Workshop สำหรับ Owner, Process owner และทีมที่ต้องใช้ Workflow นี้จริง</p></div>
+            <img src="/advance-ai-course/gallery1.JPG" width="1800" height="1350" alt="ปัน ณัฐพัชร์สอนคอร์ส Advance AI และ Business Automation ต่อหน้าผู้เข้าอบรมในห้องเรียน" fetchpriority="high">
+            <figcaption class="hero-caption"><span>ภาพคลาสจริง · ไม่ใช่ภาพ AI</span><p>เห็นหัวข้อคอร์ส เห็นผู้สอน และเห็นบรรยากาศการทำงานตั้งแต่จอแรก</p></figcaption>
           </div>
         </figure>
       </div>
@@ -386,24 +422,39 @@
       </div>
     </section>
 
+    <section data-section="proof" class="proof" aria-labelledby="proof-heading">
+      <div class="shell">
+        <p class="eyebrow">Proof · ภาพจากคลาสจริง</p>
+        <h2 id="proof-heading" class="section-title">เห็นคน เห็นห้อง<br>เห็นสิ่งที่ลงมือทำ</h2>
+        <p class="section-lead">ภาพทุกใบมาจากคลาสและกิจกรรมที่ปันสอนจริง ผู้เข้าอบรมใช้คอมพิวเตอร์ คุยงานของทีม และทดลองไปพร้อมกันในห้อง</p>
+        <div class="proof-grid">
+          <figure data-proof-activity class="proof-card"><img src="/advance-ai-course/gallery1.JPG" width="1800" height="1350" alt="ปัน ณัฐพัชร์สอน Advance AI และ Business Automation ในคลาสจริง" loading="lazy"><figcaption class="proof-caption"><span>01 · Course in the room</span><p>หัวข้อบนจอคือ Advance AI &amp; Business Automation และผู้เข้าอบรมอยู่พร้อมหน้ากันในห้อง</p></figcaption></figure>
+          <figure data-proof-activity class="proof-card"><img src="/advance-ai-course/gallery7.JPG" width="1479" height="1109" alt="ปันอธิบายเนื้อหา AI บนเวทีให้ผู้เข้าอบรมฟัง" loading="lazy"><figcaption class="proof-caption"><span>02 · Explain the work</span><p>อธิบายกรอบคิดให้ทีมเห็นภาพเดียวกันก่อนเริ่มลงมือ</p></figcaption></figure>
+          <figure data-proof-activity class="proof-card"><img src="/advance-ai-course/testimonial6.JPG" width="1800" height="1350" alt="ผู้เข้าอบรม AI จำนวนมากนั่งเรียนและทำกิจกรรมในห้อง" loading="lazy"><figcaption class="proof-caption"><span>03 · Work as a team</span><p>ทีมเรียนพร้อมกันเพื่อให้คนใช้และคนตรวจคุยเรื่องเดียวกัน</p></figcaption></figure>
+          <figure data-proof-activity class="proof-card"><img src="/advance-ai-course/testimonial7.JPG" width="1800" height="1350" alt="บรรยากาศคลาส AI ในองค์กรที่ผู้เข้าอบรมเปิดคอมพิวเตอร์ทำงาน" loading="lazy"><figcaption class="proof-caption"><span>04 · Hands on</span><p>ผู้เข้าอบรมเปิดเครื่องและทดลองระหว่างคลาส</p></figcaption></figure>
+          <figure data-proof-activity class="proof-card"><img src="/advance-ai-course/IMG_6453.JPG" width="1800" height="1350" alt="ปันถ่ายภาพร่วมกับผู้เข้าอบรมหลังจบกิจกรรม AI Workshop" loading="lazy"><figcaption class="proof-caption"><span>05 · Finish together</span><p>ทีมจบวันพร้อมผลงานและภาษากลางที่ใช้คุยกันต่อ</p></figcaption></figure>
+          <figure data-proof-activity class="proof-card"><img src="/lp/inhouse/hero-pointing.jpg" width="1600" height="1200" alt="ปันอธิบาย Workflow บนหน้าจอกับผู้เข้าร่วม Workshop ในห้องประชุม" loading="lazy"><figcaption class="proof-caption"><span>06 · Map together</span><p>Process owner กับคนลงมือช่วยกันไล่งานเดิมบนหน้าจอ</p></figcaption></figure>
+        </div>
+
+        <div class="testimonial-wall">
+          <p class="eyebrow">เสียงจากผู้เข้าอบรม AI กับปัน</p>
+          <div class="testimonial-wall-head"><h3>อ่านข้อความจริงจากคลาส AI ก่อนหน้า</h3><p>รีวิวชุดนี้เป็นเสียงจากผู้เข้าอบรม AI Workshop ที่ปันเคยสอน ใช้ประกอบการดูวิธีสอนและบรรยากาศของคลาส ไม่ได้อ้างว่าเป็นผู้ซื้อ T4</p></div>
+          <div class="testimonial-grid" aria-label="รีวิวจากผู้เข้าอบรม AI Workshop ก่อนหน้า">
+            <figure data-testimonial-source="ai-workshop" class="testimonial-card"><a href="/testimonial/2026-05/review-02.jpg" target="_blank" rel="noopener"><img src="/testimonial/2026-05/review-02.jpg" width="1000" height="1000" alt="ข้อความรีวิวจากผู้เข้าอบรมที่ขอบคุณสำหรับคลาส AI ที่สนุกและได้ความรู้" loading="lazy"></a><figcaption>AI Workshop · พฤษภาคม 2026</figcaption></figure>
+            <figure data-testimonial-source="ai-workshop" class="testimonial-card"><a href="/testimonial/2026-05/review-05.jpg" target="_blank" rel="noopener"><img src="/testimonial/2026-05/review-05.jpg" width="1000" height="1000" alt="ข้อความรีวิวจากองค์กรที่ทีมงานชอบการสอน AI ของปัน" loading="lazy"></a><figcaption>In-house AI · พฤษภาคม 2026</figcaption></figure>
+            <figure data-testimonial-source="ai-workshop" class="testimonial-card"><a href="/testimonial/2026-07/review-09.jpg" target="_blank" rel="noopener"><img src="/testimonial/2026-07/review-09.jpg" width="1410" height="1410" alt="ข้อความรีวิวผู้เข้าอบรมที่นำ AI ไปช่วยทำเว็บไซต์" loading="lazy"></a><figcaption>AI Workshop · กรกฎาคม 2026</figcaption></figure>
+            <figure data-testimonial-source="ai-workshop" class="testimonial-card"><a href="/testimonial/2026-07/review-10.jpg" target="_blank" rel="noopener"><img src="/testimonial/2026-07/review-10.jpg" width="736" height="736" alt="ข้อความแนะนำคลาส AI ของปันจากผู้เข้าอบรม" loading="lazy"></a><figcaption>AI Workshop · กรกฎาคม 2026</figcaption></figure>
+            <figure data-testimonial-source="ai-workshop" class="testimonial-card"><a href="/testimonial/2026-07/review-11.jpg" target="_blank" rel="noopener"><img src="/testimonial/2026-07/review-11.jpg" width="914" height="914" alt="ข้อความจากผู้เข้าอบรมที่ต่อยอดโปรเจกต์เลขานุการและ Morning Brief" loading="lazy"></a><figcaption>Project extension · กรกฎาคม 2026</figcaption></figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section data-section="journey-map" class="journey-map" aria-labelledby="journey-map-heading">
       <div class="shell journey-map-grid">
         <div><p class="eyebrow">One workflow · five decisions</p><h2 id="journey-map-heading">เส้นทางที่ทีมเดินด้วยกันในห้อง</h2></div>
         <div class="map-steps" aria-label="ภาพรวม Journey ห้าขั้น">
           <div class="map-step"><span>01</span><b>Pick</b></div><div class="map-step"><span>02</span><b>Map</b></div><div class="map-step"><span>03</span><b>Sandbox</b></div><div class="map-step"><span>04</span><b>Responsibility</b></div><div class="map-step"><span>05</span><b>Decide</b></div>
-        </div>
-      </div>
-    </section>
-
-    <section data-section="proof" class="proof" aria-labelledby="proof-heading">
-      <div class="shell">
-        <p class="eyebrow">Proof · ดูห้องทำงานจริงก่อน</p>
-        <h2 id="proof-heading" class="section-title">ไม่เริ่มจาก Demo สวย<br>เริ่มจากคนที่ต้องใช้มันจริง</h2>
-        <p class="section-lead">ภาพทุกใบมาจาก Workshop และกิจกรรมจริง ทีมอยู่กับโจทย์ หน้าจอ และคำถามเดียวกันก่อนตัดสินใจว่าจะให้ AI ช่วยงานตรงไหน</p>
-        <div class="proof-grid">
-          <figure class="proof-card"><img src="/lp/inhouse/hero-pointing.jpg" width="1600" height="1200" alt="ปัน ณัฐพัชร์อธิบายงานบนหน้าจอกับผู้เข้าร่วม Workshop ในห้องประชุม" loading="lazy"><figcaption class="proof-caption"><span>01 · Map together</span><p>ไล่งานเดิมต่อหน้าทีม เพื่อให้ Process owner กับคนลงมือเห็น Flow เดียวกัน</p></figcaption></figure>
-          <figure class="proof-card"><img src="/lp/inhouse/hands-on.jpg" width="1600" height="1200" alt="ผู้เข้าร่วม Workshop เปิดคอมพิวเตอร์และลงมือทดลองงานร่วมกันที่โต๊ะ" loading="lazy"><figcaption class="proof-caption"><span>02 · Run it</span><p>ทีมต้องลอง Input ถึง Output ด้วยตัวเอง ไม่ใช่ดูผู้สอนกดให้</p></figcaption></figure>
-          <figure class="proof-card"><img src="/lp/inhouse/class-full.jpg" width="1600" height="1200" alt="บรรยากาศผู้เข้าร่วม In-house Workshop เต็มห้องและทำกิจกรรมร่วมกัน" loading="lazy"><figcaption class="proof-caption"><span>03 · Decide together</span><p>คนใช้ คนตรวจ และ Owner อยู่ในบทสนทนาเดียวกันก่อนวาง Next step</p></figcaption></figure>
         </div>
       </div>
     </section>

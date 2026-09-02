@@ -54,7 +54,7 @@ test('T4 mockup tells the operating journey in the approved order', async ({ pag
   await page.goto(`${baseURL}/previews/t4-operating-journey-mockup.html`);
   assert.equal(await page.locator('[data-mockup="t4-operating-journey"]').count(), 1);
   assert.deepEqual(await page.locator('[data-section]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-section'))), [
-    'hero', 'offer', 'journey-map', 'proof', 'diagnosis', 'curriculum', 'decision-pack', 'fit', 'investment', 'final-cta',
+    'hero', 'offer', 'proof', 'journey-map', 'diagnosis', 'curriculum', 'decision-pack', 'fit', 'investment', 'final-cta',
   ]);
   assert.equal(await page.locator('[data-core-artifact]').count(), 4);
   assert.equal(await page.locator('[data-bonus-card]').count(), 5);
@@ -63,13 +63,57 @@ test('T4 mockup tells the operating journey in the approved order', async ({ pag
   ]);
 });
 
+test('T4 hero identifies the in-house course and one-day job at a glance', async ({ browser }) => {
+  for (const viewport of [
+    { width: 1440, height: 1000 },
+    { width: 390, height: 844 },
+  ]) {
+    const page = await browser.newPage({ viewport });
+    await page.goto(`${baseURL}/previews/t4-operating-journey-mockup.html`);
+    const hero = page.locator('[data-section="hero"]');
+    const heading = hero.getByRole('heading', { level: 1 });
+    const headingText = await heading.innerText();
+    assert.match(headingText, /คอร์สอบรม/i);
+    assert.match(headingText, /Advance AI\s*&\s*Business Automation/i);
+    assert.match(headingText, /ทีมในองค์กร/i);
+
+    const glanceText = await hero.locator('[data-hero-glance]').innerText();
+    assert.match(glanceText, /In-house/i);
+    assert.match(glanceText, /1 วัน/i);
+    assert.match(glanceText, /1 Workflow/i);
+    assert.match(glanceText, /Safe Sandbox/i);
+    assert.match(glanceText, /หยุด|ปรับ|ทำระบบต่อ/i);
+
+    const headingBox = await heading.boundingBox();
+    const glanceBox = await hero.locator('[data-hero-glance]').boundingBox();
+    assert.ok(headingBox && headingBox.y + headingBox.height <= viewport.height, `${viewport.width}px must show the course name in the first screen`);
+    assert.ok(glanceBox && glanceBox.y + glanceBox.height <= viewport.height, `${viewport.width}px must show the course facts in the first screen`);
+    await page.close();
+  }
+});
+
+test('T4 proof restores real course activity and published AI workshop reviews', async ({ page }) => {
+  await page.goto(`${baseURL}/previews/t4-operating-journey-mockup.html`);
+  const activityImages = page.locator('[data-proof-activity] img');
+  const testimonials = page.locator('[data-testimonial-source="ai-workshop"] img');
+  assert.ok(await activityImages.count() >= 6, 'proof must show at least six real course activity photographs');
+  assert.ok(await testimonials.count() >= 5, 'proof must show at least five published AI workshop reviews');
+
+  for (let index = 0; index < await activityImages.count(); index += 1) {
+    assert.match(await activityImages.nth(index).getAttribute('src') ?? '', /^\/(lp\/inhouse|advance-ai-course)\//);
+  }
+  for (let index = 0; index < await testimonials.count(); index += 1) {
+    assert.match(await testimonials.nth(index).getAttribute('src') ?? '', /^\/testimonial\/2026-/);
+  }
+});
+
 test('T4 mockup keeps real-photo and honest-offer boundaries', async ({ page }) => {
   await page.goto(`${baseURL}/previews/t4-operating-journey-mockup.html`);
   const images = page.locator('main img');
   assert.ok(await images.count() >= 4, 'mockup must use at least four real workshop photographs');
   for (let index = 0; index < await images.count(); index += 1) {
     const image = images.nth(index);
-    assert.match(await image.getAttribute('src') ?? '', /^\/lp\/inhouse\//);
+    assert.match(await image.getAttribute('src') ?? '', /^\/(lp\/inhouse|advance-ai-course|testimonial\/2026-[^/]+)\//);
     assert.ok(Number(await image.getAttribute('width')) > 0);
     assert.ok(Number(await image.getAttribute('height')) > 0);
     assert.ok((await image.getAttribute('alt') ?? '').trim().length > 8);
