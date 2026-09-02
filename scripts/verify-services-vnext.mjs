@@ -227,8 +227,8 @@ function assertServicesPageBuildOutput() {
     previousSectionIndex = sectionIndex;
   }
 
-  const expectedOfferOrder = ['T2', 'T1', 'T3', 'C1', 'I1', 'A1'];
-  const renderedOfferOrder = [...html.matchAll(/data-offer-code="(T1|T2|T3|C1|I1|A1)"/g)].map((match) => match[1]);
+  const expectedOfferOrder = ['T2', 'T1', 'T3', 'T4', 'C1', 'I1', 'A1'];
+  const renderedOfferOrder = [...html.matchAll(/data-offer-code="(T1|T2|T3|T4|C1|I1|A1)"/g)].map((match) => match[1]);
   assert.deepEqual(renderedOfferOrder, expectedOfferOrder, 'services page must render each public offer once in the required order');
 
   for (const [index, code] of expectedOfferOrder.entries()) {
@@ -348,6 +348,7 @@ function assertServicesSeoBuildOutput() {
     ['T1', 'Course'],
     ['T2', 'Course'],
     ['T3', 'Course'],
+    ['T4', 'Course'],
     ['C1', 'Service'],
     ['I1', 'Service'],
   ];
@@ -362,12 +363,13 @@ function assertServicesSeoBuildOutput() {
   }
 
   const itemList = nodesOfType('ItemList')[0];
-  assert.equal(itemList.numberOfItems, 6, 'ItemList must represent all six visible catalog roles');
-  assert.deepEqual(itemList.itemListElement.map((item) => item.position), [1, 2, 3, 4, 5, 6], 'ItemList positions must be complete and ordered');
+  assert.equal(itemList.numberOfItems, 7, 'ItemList must represent all seven visible catalog roles');
+  assert.deepEqual(itemList.itemListElement.map((item) => item.position), [1, 2, 3, 4, 5, 6, 7], 'ItemList positions must be complete and ordered');
   assert.deepEqual(itemList.itemListElement.map((item) => item.item.url), [
     `https://punnattapatch.com${detailRouteByCode.T2}`,
     `https://punnattapatch.com${detailRouteByCode.T1}`,
     `https://punnattapatch.com${detailRouteByCode.T3}`,
+    `https://punnattapatch.com${detailRouteByCode.T4}`,
     `https://punnattapatch.com${detailRouteByCode.C1}`,
     `https://punnattapatch.com${detailRouteByCode.I1}`,
     `${servicesCanonical}#offer-a1`,
@@ -459,6 +461,12 @@ const expected = {
     imageAlt: 'บริการสร้าง Sales Dashboard และ Report อัตโนมัติ',
     detailHref: '/services/dashboard-build', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดบริการ',
   },
+  T4: {
+    publicName: 'คอร์ส Advance AI & Business Automation',
+    kind: 'training', pricingKey: 't4-ai-workflow-pilot-day', thumbnailFile: 't4-ai-workflow-pilot.png',
+    imageAlt: 'ทีมไทยกำลังทดลอง AI Workflow จากงานจริงของบริษัท',
+    detailHref: '/services/advance-ai-automation', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดคอร์ส',
+  },
   A1: {
     publicName: 'Advance Program: Sales Mastery with AI',
     kind: 'upgrade', pricingKey: null, thumbnailFile: 'a1-sales-mastery-with-ai.png',
@@ -474,8 +482,8 @@ assert.doesNotMatch(
   /\b\d{4,6}\b/,
   'price amounts belong only in src/data/pricing.mjs, never in this verifier',
 );
-assert.equal(SERVICE_OFFERS.length, 6, 'there must be exactly six public offers');
-assert.deepEqual([...new Set(SERVICE_OFFERS.map((offer) => offer.code))].sort(), Object.keys(expected).sort(), 'six offer codes must be unique');
+assert.equal(SERVICE_OFFERS.length, 7, 'there must be exactly seven public offers');
+assert.deepEqual([...new Set(SERVICE_OFFERS.map((offer) => offer.code))].sort(), Object.keys(expected).sort(), 'seven offer codes must be unique');
 
 for (const [code, contract] of Object.entries(expected)) {
   const offer = OFFER_BY_CODE[code];

@@ -23,7 +23,7 @@ const priceFor = (code: OfferCode) => {
   const pricingKey = getOffer(code).pricingKey;
   return pricingKey ? fmtPrice(pricingKey) : undefined;
 };
-const catalogOffers = (['T2', 'T1', 'T3', 'C1', 'I1', 'A1'] as const).map(getOffer);
+const catalogOffers = (['T2', 'T1', 'T3', 'T4', 'C1', 'I1', 'A1'] as const).map(getOffer);
 
 const trustLogos = [
   { src: '/services/nissan.png', alt: 'Nissan' },

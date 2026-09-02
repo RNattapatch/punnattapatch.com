@@ -94,8 +94,9 @@ export const CATALOG = {
     duration: '1 วัน',
     headline: 'ทดลอง AI Workflow จากงานจริงของบริษัท ก่อนลงทุนทำระบบจริง',
     audience: 'บริษัทที่มีงานซ้ำชัด มี Process owner และยอมใช้ข้อมูลจำลอง/ข้อมูลที่ Mask แล้วใน Workshop',
-    status: 'internal',
+    status: 'live',
     botQuote: true,
+    image: '/services/thumbs/t4-ai-workflow-pilot.jpg',
     note: 'T4 · Workflow Pilot Day 1 บริษัท 1 วัน — เอางานซ้ำ 1 เรื่องมาแยกหน้าที่คน/AI แล้วสร้าง Safe Sandbox ให้ทีมลองรันเอง · Artifact 4 ชิ้น: Workflow Map + Safe Sandbox + Human–AI Responsibility Brief + Stop/Revise/Install Decision Memo · Sandbox ไม่ใช่ production (งาน build จริง = daruma-starter/custom) · SSOT: wiki strategy-t1-t4-5a-offer-bonus-system · เปิดขายแบบ Warm/Organic Harvest Test ก่อน Cold · สลับ status เป็น live เมื่อ LP ขึ้นจริง',
   },
 

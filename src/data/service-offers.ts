@@ -1,4 +1,4 @@
-export type OfferCode = 'T1' | 'T2' | 'T3' | 'C1' | 'I1' | 'A1';
+export type OfferCode = 'T1' | 'T2' | 'T3' | 'T4' | 'C1' | 'I1' | 'A1';
 
 export type OfferKind = 'training' | 'consulting' | 'implementation' | 'upgrade';
 
@@ -6,6 +6,7 @@ export type ThumbnailFilename =
   | 't1-sales-skill-ai.png'
   | 't2-online-to-offline-ai.png'
   | 't3-sales-back-office-ai.png'
+  | 't4-ai-workflow-pilot.png'
   | 'c1-daily-sales-consulting.png'
   | 'i1-automated-sales-dashboard.png'
   | 'a1-sales-mastery-with-ai.png';
@@ -73,6 +74,22 @@ export const SERVICE_OFFERS: readonly ServiceOffer[] = [
     thumbnailFile: 't3-sales-back-office-ai.png',
     imageAlt: 'คอร์สอบรมวางระบบ Report และ Dashboard สำหรับฝ่ายขาย',
     detailHref: '/services/t3-sales-back-office',
+    primaryCtaLabel: 'ดูรายละเอียดคอร์ส',
+    primaryCtaKind: 'detail',
+  },
+  {
+    code: 'T4',
+    kind: 'training',
+    publicName: 'คอร์ส Advance AI & Business Automation',
+    customerJob: 'ทดลอง AI Workflow ก่อนลงทุนทำระบบจริง',
+    formatLabel: 'Workshop · 1 day',
+    outcomeLabel: 'เลือกหนึ่งงานซ้ำ แล้วให้ทีมลอง AI Workflow แบบปลอดภัย',
+    description: 'เอางานซ้ำหนึ่งเรื่องมาแยกหน้าที่คนและ AI สร้าง Safe Sandbox ให้ทีมลองรันด้วยข้อมูล dummy หรือข้อมูลที่ mask แล้ว ก่อนตัดสินใจลงทุนทำระบบจริง',
+    bullets: ['เลือกหนึ่ง Workflow ที่มีเจ้าของชัด', 'แยกสิ่งที่ AI ช่วยได้และสิ่งที่คนต้องตัดสินใจ', 'รัน Safe Sandbox แล้วตัดสินใจ Stop, Revise หรือ Install'],
+    pricingKey: 't4-ai-workflow-pilot-day',
+    thumbnailFile: 't4-ai-workflow-pilot.png',
+    imageAlt: 'ทีมไทยกำลังทดลอง AI Workflow จากงานจริงของบริษัท',
+    detailHref: '/services/advance-ai-automation',
     primaryCtaLabel: 'ดูรายละเอียดคอร์ส',
     primaryCtaKind: 'detail',
   },
