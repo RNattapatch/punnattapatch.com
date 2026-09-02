@@ -184,29 +184,102 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   await page.close();
 });
 
-test('T4 detail page keeps the Workflow Pilot Day in a one-workflow safe-sandbox boundary', async ({ browser }) => {
+test('T4 Hero explains the product, price, next action, and real activity at first glance', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const response = await page.goto(`${baseURL}/services/advance-ai-automation`);
   const catalog = CATALOG['t4-ai-workflow-pilot-day'];
   assert.equal(response?.status(), 200, 'T4 route must render');
+  assert.equal(await page.locator('h1').count(), 1, 'T4 must contain exactly one H1');
   assert.equal(await page.locator('h1').innerText(), catalog.name, 'T4 H1 must resolve from the approved Catalog key');
-  assert.equal(await page.getByText('ทดลองงานจริงก่อนลงทุนระบบจริง', { exact: true }).count(), 1, 'T4 must use the approved strapline');
-  assert.match(await page.locator('[data-hero-price]').innerText(), new RegExp(fmtPrice('t4-ai-workflow-pilot-day')), 'T4 Hero must use the Catalog price');
-  assert.equal(await page.getByText(fmtPrice('t4-ai-workflow-pilot-day'), { exact: true }).count(), 1, 'T4 Investment must use the Catalog price');
-  const t4Boundary = await page.locator('[data-detail-block="boundary"]').innerText();
-  assert.match(t4Boundary, /หนึ่ง Workflow/, 'T4 must keep the one-workflow scope boundary');
-  assert.match(t4Boundary, /Safe Sandbox/, 'T4 must state the sandbox boundary');
-  assert.match(t4Boundary, /Fit Gate ก่อนออกใบแจ้งหนี้/, 'T4 must place the fit gate before invoicing');
-  assert.doesNotMatch(t4Boundary, /Production-ready/, 'T4 must never call a sandbox production-ready');
-  assert.equal(await page.locator('[data-chapter-map] [data-chapter-link]').count(), 4, 'T4 must give the reader the same four-part page map used by the other long-form offers');
-  const t4ProofPhotos = page.locator('[data-detail-block="proof"] [data-proof-activity]');
-  assert.equal(await t4ProofPhotos.count(), 3, 'T4 must present three real workshop activity photographs, not an invented scenario');
-  assert.match(await t4ProofPhotos.first().locator('img').getAttribute('src') ?? '', /\/lp\/inhouse\/hero-pointing\.jpg$/, 'T4 lead proof must use Pun facilitating a real activity');
-  const takeHome = await page.locator('[data-detail-block="take-home"]').innerText();
-  for (const artifact of ['Workflow Map', 'Safe Sandbox', 'Human–AI Responsibility Brief', 'Decision Memo']) assert.match(takeHome, new RegExp(artifact), `T4 must publish ${artifact}`);
-  assert.match(await page.locator('[data-detail-block="scope"]').innerText(), /งานซ้ำอะไร.*บ่อยแค่ไหน.*Process owner.*ข้อมูลเสี่ยง/s, 'T4 must surface the four fit questions');
-  assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “AI WORKFLOW” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T4 must state the live LINE keyword AI WORKFLOW (oa-freebies entry t4-ai-workflow)');
-  assert.equal(await page.getByText('ของที่ทีมคุณได้รับกลับไปใช้ต่อ', { exact: true }).count(), 0, 'T4 bonus cards must remain hidden before their release gate');
+  assert.equal(
+    await page.getByText('สอนทีมคุณให้ใช้ AI Agent ทำงานเอกสารจุกจิกแทนคนเก่ง', { exact: true }).count(),
+    1,
+    'T4 Hero must state the approved adoption outcome exactly',
+  );
+  assert.match(await page.locator('[data-hero-price]').innerText(), new RegExp(fmtPrice('t4-ai-workflow-pilot-day')), 'T4 Hero must render its Catalog price at build time');
+  assert.match(await page.locator('[data-hero-price]').innerText(), /1 วัน · 1 Workflow/, 'T4 Hero must expose the one-day, one-workflow boundary beside price');
+  assert.equal(await page.locator('[data-cta-location="hero"][data-booking-cta]').innerText(), 'จองคิวรับบริการ', 'T4 Hero must lead with the approved booking label');
+  assert.equal(await page.locator('[data-cta-location="hero"][data-line-cta]').count(), 1, 'T4 Hero must retain a direct LINE action');
+  assert.equal(
+    await page.getByText('1 เดือนผมรับอบรมจำกัดแค่ 10 องค์กร สงวนสิทธิให้องค์กรที่ชำระค่าบริการและคิวก่อน', { exact: true }).count(),
+    2,
+    'the approved capacity note must appear at the Hero and Investment decision points',
+  );
+  assert.match(await page.locator('[data-hero-activity] img').getAttribute('src') ?? '', /\/lp\/inhouse\/office-session\.jpg$/, 'T4 Hero must show the approved real office session');
+  assert.equal(await page.locator('[data-hero-activity] img').getAttribute('loading'), 'eager', 'T4 Hero activity must load eagerly');
+  assert.doesNotMatch(await page.content(), /fetch\([^)]*catalog\.json|src=["'][^"']*(?:generated|ai-gen)/i, 'T4 must not fetch price at runtime or use generated people imagery');
+
+  for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    for (const selector of ['h1', '[data-hero-price]', '[data-cta-location="hero"][data-line-cta]', '[data-hero-activity]']) {
+      const box = await page.locator(selector).boundingBox();
+      assert.ok(box && box.y >= 0 && box.y + Math.min(box.height, 72) <= viewport.height, `${selector} must be discoverable in the first ${viewport.width}px viewport`);
+    }
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), viewport.width, `T4 must not overflow at ${viewport.width}px`);
+  }
+  await page.close();
+});
+
+test('T4 renders the approved 12-section sales journey with real proof, visible bonuses, and no repeated imagery', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(`${baseURL}/services/advance-ai-automation`);
+  assert.deepEqual(
+    await page.locator('[data-t4-section]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-t4-section'))),
+    ['hero', 'offer', 'logos', 'proof', 'why-now', 'curriculum', 'take-home', 'fit', 'instructor', 'investment', 'faq', 'final'],
+    'T4 must preserve the approved decision journey in order',
+  );
+  assert.equal(await page.locator('[data-offer-core]').count(), 4, 'T4 Offer must expose four core deliverables');
+  assert.equal(await page.locator('[data-offer-bonus]').count(), 5, 'T4 Offer must expose all five approved bonuses');
+  assert.equal(await page.locator('[data-offer-bonus] a').count(), 0, 'pending bonus materials must not expose broken download links');
+  assert.equal(await page.locator('[data-client-logo]').count(), 16, 'T4 must show every approved client logo except Singha Park');
+  assert.equal(await page.locator('[data-client-logo] img').first().evaluate((image) => getComputedStyle(image).filter), 'none', 'T4 client logos must retain full colour');
+  assert.equal(await page.locator('[data-proof-activity]').count(), 8, 'T4 must lead proof with eight real activity photographs');
+  assert.equal(await page.locator('[data-proof-quote]').count(), 3, 'T4 must pull three customer quotes into readable proof cards');
+  assert.equal(await page.locator('[data-product-testimonial]').count(), 5, 'T4 must retain five original testimonial screenshots');
+  const proofSources = await page.locator('[data-proof-activity] img, [data-proof-quote] img, [data-product-testimonial] img').evaluateAll((images) => images.map((image) => image.getAttribute('src')));
+  assert.equal(new Set(proofSources).size, proofSources.length, 'T4 proof must not repeat the same photograph or screenshot');
+  assert.ok(await page.locator('main img:not([data-logo-image])').count() >= 12, 'T4 must use at least twelve non-logo proof and activity images');
+  for (const image of await page.locator('[data-proof-activity] img').all()) {
+    assert.equal(await image.getAttribute('loading'), 'lazy', 'below-the-fold proof must remain lazy-loaded');
+    assert.equal(await image.evaluate((element) => getComputedStyle(element).objectFit), 'cover', 'activity proof must use photographic cover treatment');
+  }
+  for (const caption of await page.locator('[data-proof-caption]').all()) {
+    const [captionBox, cardBox] = await Promise.all([caption.boundingBox(), caption.locator('xpath=..').boundingBox()]);
+    assert.ok(captionBox && cardBox && captionBox.height / cardBox.height <= 0.25, 'proof captions must occupy no more than 25% of their card');
+  }
+  await page.close();
+});
+
+test('T4 makes the adoption boundary, curriculum, decision CTAs, FAQ, and LINE path explicit', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(`${baseURL}/services/advance-ai-automation`);
+  assert.equal(await page.locator('[data-why-now-item]').count(), 4, 'T4 must answer the four approved adoption pressures');
+  assert.equal(await page.locator('[data-curriculum-step]').count(), 5, 'T4 curriculum must walk through five adoption steps');
+  assert.deepEqual(
+    await page.locator('[data-curriculum-step]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-step'))),
+    ['choose', 'map', 'build', 'guardrail', 'adopt'],
+    'T4 curriculum must follow Choose → Map → Build → Guardrail → Adopt',
+  );
+  const text = await page.locator('main').innerText();
+  for (const boundary of ['1 Workflow', 'AI Agent Working Prototype', 'Data Safety', 'Human Review', '30-Day Adoption Plan']) {
+    assert.match(text, new RegExp(boundary), `T4 must publish ${boundary}`);
+  }
+  assert.match(await page.locator('[data-t4-section="fit"]').innerText(), /ไม่ได้รับประกันว่าจะลดจำนวนคนได้ทันที/, 'T4 must reject an immediate headcount-reduction guarantee');
+  assert.match(text, /Production.*I1|I1.*Production/s, 'T4 must route live production integration to I1');
+  assert.deepEqual(
+    await page.locator('[data-decision-cta]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-cta-location'))),
+    ['after_proof', 'after_scope', 'after_fit'],
+    'T4 must restore the three contextual decision CTA zones',
+  );
+  assert.ok(await page.locator('[data-line-cta]').count() >= 7, 'T4 must keep a LINE action available at seven or more decision points');
+  for (const action of await page.locator('[data-line-cta]').all()) {
+    assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'every T4 LINE action must use SITE.social.line');
+    assert.equal(await action.evaluate((element) => getComputedStyle(element).backgroundColor), 'rgb(6, 199, 85)', 'every T4 LINE action must use LINE green');
+    assert.ok(await action.getAttribute('aria-label'), 'every T4 LINE action must have an accessible label');
+  }
+  assert.equal(await page.locator('[data-product-faq-button]').count(), 8, 'T4 must restore eight decision FAQs');
+  assert.equal(await page.locator('[data-cta-location="final"] img[alt*="QR"]').count(), 1, 'T4 final CTA must include the LINE QR code');
+  assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “AI WORKFLOW” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T4 must state the live LINE keyword');
   await page.close();
 });
 

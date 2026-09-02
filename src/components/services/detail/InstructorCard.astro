@@ -1,0 +1,38 @@
+---
+interface Props {
+  authority: string[];
+  paragraphs?: string[];
+  heading: string;
+  compact?: boolean;
+}
+const { authority, paragraphs = [], heading, compact = false } = Astro.props;
+---
+
+<section aria-labelledby={compact ? 't4-trust-heading' : 't4-instructor-heading'} class:list={[compact ? 'bg-white py-14 sm:py-20' : 'bg-navy py-14 text-white sm:py-20']}>
+  <div class:list={['mx-auto grid max-w-6xl gap-8 px-5 lg:grid-cols-[.62fr_1.38fr] lg:items-center', !compact && 'lg:grid-cols-[.8fr_1.2fr]']}>
+    {compact ? (
+      <figure class="relative mx-auto max-w-sm overflow-hidden rounded-[2rem] bg-[#f4f1ea] shadow-[0_24px_70px_rgba(7,43,78,.16)] lg:mx-0">
+        <img src="/lp/inhouse/pun-ceo-profile.jpg" alt="ปัน ณัฐพัชร์ ผู้สอน Advance AI & Business Automation" width="1200" height="1800" loading="lazy" decoding="async" class="aspect-[4/5] w-full object-cover object-top" />
+        <figcaption class="absolute inset-x-0 bottom-0 bg-white/95 px-5 py-4 text-navy backdrop-blur-sm">
+          <strong class="block text-lg">Pun Nattapatch</strong>
+          <span class="text-sm text-navy/65">Sales × AI Workflow Instructor</span>
+        </figcaption>
+      </figure>
+    ) : (
+      <div class="rounded-[2rem] border border-white/15 bg-white/[0.06] p-6">
+        <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">How I teach</p>
+        <p class="mt-4 font-display text-3xl font-bold leading-tight">งานจริงก่อน Tool<br />คนรับผิดชอบก่อน Automation</p>
+      </div>
+    )}
+
+    <div>
+      <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">{compact ? 'Instructor proof' : 'Instructor'}</p>
+      <h2 id={compact ? 't4-trust-heading' : 't4-instructor-heading'} class:list={['mt-3 text-balance font-display text-3xl font-bold sm:text-4xl', compact ? 'text-navy' : 'text-white']}>{heading}</h2>
+      {compact && <p class="mt-4 max-w-3xl leading-7 text-navy/70">ผมพาทีมเริ่มจากงานที่คนทำอยู่ เพื่อให้สิ่งที่สร้างในห้องมีเจ้าของ มีคนตรวจ และมีทางใช้ต่อหลังจบคลาส</p>}
+      <div class="mt-6 grid gap-3 sm:grid-cols-2">
+        {authority.map((item) => <p class:list={['rounded-2xl border p-4 font-semibold leading-6', compact ? 'border-navy/10 bg-[#fdfaf4] text-navy' : 'border-white/15 bg-white/[0.07] text-white']}>{item}</p>)}
+      </div>
+      {!compact && paragraphs.map((paragraph) => <p class="mt-5 leading-8 text-white/75">{paragraph}</p>)}
+    </div>
+  </div>
+</section>

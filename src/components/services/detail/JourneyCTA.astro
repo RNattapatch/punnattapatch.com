@@ -1,0 +1,80 @@
+---
+import { SITE } from '../../../data/site';
+import type { ProductDecisionCta, ProductDetailCode } from '../../../data/product-details/types';
+
+interface Props {
+  code: ProductDetailCode;
+  location: string;
+  keyword: string;
+  primary?: string;
+  primaryIntent?: string;
+  secondary?: string;
+  secondaryIntent?: string;
+  inverse?: boolean;
+  decision?: ProductDecisionCta;
+}
+
+const {
+  code,
+  location,
+  keyword,
+  primary,
+  primaryIntent = 'quote',
+  secondary,
+  secondaryIntent = 'workflow_fit',
+  inverse = false,
+  decision,
+} = Astro.props;
+const actions = decision?.actions ?? [
+  ...(primary ? [{ kind: 'booking' as const, label: primary, intent: primaryIntent }] : []),
+  ...(secondary ? [{ kind: 'line' as const, label: secondary, intent: secondaryIntent }] : []),
+];
+const bookingHref = (intent: string) => `/booking?package=${encodeURIComponent(code)}&intent=${encodeURIComponent(intent)}`;
+const isInverse = inverse || decision?.variant === 'navy';
+---
+
+<div
+  data-decision-cta={decision ? true : undefined}
+  data-cta-location={location}
+  class:list={[
+    decision && 'rounded-[2rem] border p-6 shadow-[0_20px_60px_rgba(7,43,78,.08)] sm:p-8 lg:grid lg:grid-cols-[1fr_auto] lg:items-center lg:gap-8',
+    decision?.variant === 'navy' ? 'border-white/15 bg-[#072b4e] text-white' : decision ? 'border-navy/10 bg-white text-navy' : '',
+  ]}
+>
+  {decision && (
+    <div class="max-w-2xl">
+      <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">{decision.eyebrow}</p>
+      <h2 class="mt-3 text-balance font-display text-2xl font-bold sm:text-3xl">{decision.heading}</h2>
+      <p class:list={['mt-3 leading-7', isInverse ? 'text-white/75' : 'text-navy/70']}>{decision.body}</p>
+    </div>
+  )}
+  <div class:list={['flex flex-col gap-3 sm:flex-row sm:flex-wrap', decision && 'mt-6 lg:mt-0 lg:justify-end']}>
+    {actions.map((action) => action.kind === 'booking' ? (
+      <a
+        href={bookingHref(action.intent)}
+        data-booking-cta
+        data-contact-cta
+        data-product-code={code}
+        data-cta-location={location}
+        data-cta-intent={action.intent}
+        data-cta-label={action.label}
+        class="btn min-h-12 w-full border-0 bg-[#c43245] px-6 text-white shadow-sm hover:bg-[#ad293a] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral sm:w-auto"
+      >{action.label}</a>
+    ) : action.kind === 'line' ? (
+      <a
+        href={SITE.social.line}
+        target="_blank"
+        rel="noopener"
+        aria-label={`${action.label} ผ่าน LINE`}
+        data-line-cta
+        data-contact-cta
+        data-product-code={code}
+        data-cta-location={location}
+        data-cta-intent={action.intent}
+        data-cta-keyword={keyword}
+        data-cta-label={action.label}
+        class="btn min-h-12 w-full border-0 bg-[#06C755] px-6 text-[#072B4E] shadow-sm hover:bg-[#05ad49] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white sm:w-auto"
+      >{action.label}</a>
+    ) : null)}
+  </div>
+</div>
