@@ -262,6 +262,9 @@ const issues = [
     const thankYouUrl = new URL('/thank-you', window.location.origin);
     thankYouUrl.searchParams.set('type', 'booking');
     thankYouUrl.searchParams.set('ref', reference);
+    // 2026-09-02: พก product code ไป /thank-you เพื่อให้ Lead pixel มี content_name รายคอร์ส
+    // (Custom Conversion แยก T1/T2/T3/T4 ได้ ตามกติกาใน agent/workstreams/ads-funnel-tracking.md)
+    if (productCode) thankYouUrl.searchParams.set('package', productCode);
     ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'ttclid'].forEach((k) => {
       const v = String(payload[k] ?? '');
       if (v) thankYouUrl.searchParams.set(k, v);

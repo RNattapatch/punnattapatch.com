@@ -220,12 +220,12 @@ test('T4 Hero explains the product, price, next action, and real activity at fir
   await page.close();
 });
 
-test('T4 renders the approved 12-section sales journey with real proof, visible bonuses, and no repeated imagery', async ({ browser }) => {
+test('T4 renders the approved 16-section sales journey with real proof, visible bonuses, and no repeated imagery', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(`${baseURL}/services/advance-ai-automation`);
   assert.deepEqual(
     await page.locator('[data-t4-section]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-t4-section'))),
-    ['hero', 'offer', 'logos', 'proof', 'why-now', 'curriculum', 'take-home', 'fit', 'instructor', 'investment', 'faq', 'final'],
+    ['hero', 'offer', 'logos', 'proof', 'why-now', 'spotlight', 'curriculum', 'whats-new', 'take-home', 'bonus', 'why-me', 'fit', 'instructor', 'investment', 'faq', 'final'],
     'T4 must preserve the approved decision journey in order',
   );
   assert.equal(await page.locator('[data-offer-core]').count(), 4, 'T4 Offer must expose four core deliverables');
@@ -278,6 +278,14 @@ test('T4 makes the adoption boundary, curriculum, decision CTAs, FAQ, and LINE p
     assert.ok(await action.getAttribute('aria-label'), 'every T4 LINE action must have an accessible label');
   }
   assert.equal(await page.locator('[data-product-faq-button]').count(), 8, 'T4 must restore eight decision FAQs');
+  assert.equal(await page.locator('[data-spotlight-module]').count(), 2, 'T4 must present the two approved Spotlight modules');
+  assert.deepEqual(await page.locator('[data-spotlight-module] h3').allTextContents(), ['AI Agent Mindset for Business Use', 'AI Data Engineering for Business Use'], 'Spotlight modules must use the approved titles');
+  assert.equal(await page.locator('[data-whats-new-column]').count(), 2, 'T4 must contrast what is new against the evergreen core');
+  assert.equal(await page.locator('[data-bonus-value-card]').count(), 5, 'T4 must show all five bonuses with values');
+  assert.equal(await page.locator('[data-bonus-total]').innerText(), '฿19,700', 'T4 bonus total must equal the approved sum');
+  assert.equal(await page.locator('[data-why-me-item]').count(), 6, 'T4 must answer why-learn-with-Pun with six points');
+  assert.equal(await page.locator('[data-instructor-angle]').count(), 4, 'T4 instructor profile must show four perspectives');
+  assert.ok((await page.locator('[data-instructor-credentials] li').count()) >= 6, 'T4 instructor profile must list credentials');
   assert.equal(await page.locator('[data-cta-location="final"] img[alt*="QR"]').count(), 1, 'T4 final CTA must include the LINE QR code');
   assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “AI WORKFLOW” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T4 must state the live LINE keyword');
   await page.close();

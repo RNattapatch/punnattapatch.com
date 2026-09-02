@@ -1,0 +1,40 @@
+---
+import type { ProductBonusValues } from '../../../data/product-details/types';
+interface Props { data: ProductBonusValues; price: string; }
+const { data, price } = Astro.props;
+const fmt = (n: number) => `฿${n.toLocaleString('en-US')}`;
+const total = data.items.reduce((sum, item) => sum + item.value, 0);
+---
+
+<section id="bonus" data-t4-section="bonus" aria-labelledby="t4-bonus-heading" class="bg-[#f4f1ea] py-14 sm:py-20">
+  <div class="mx-auto max-w-6xl px-5">
+    <div class="grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">{data.eyebrow}</p>
+        <h2 id="t4-bonus-heading" class="mt-3 max-w-3xl text-balance font-display text-3xl font-bold text-navy sm:text-5xl">{data.heading} <span class="text-coral">มูลค่ารวม <span data-bonus-total>{fmt(total)}</span></span></h2>
+        <p class="mt-4 max-w-3xl leading-7 text-navy/70">{data.intro}</p>
+      </div>
+      <div class="rounded-[1.75rem] bg-navy p-6 text-white md:min-w-[260px]">
+        <p class="text-xs font-bold uppercase tracking-[.16em] text-[#65d7f2]">Bonus รวม {data.items.length} ชิ้น</p>
+        <p class="mt-2 flex items-baseline gap-2"><s class="text-lg text-white/50">{fmt(total)}</s><span class="font-display text-4xl font-bold text-[#65d7f2]">ฟรี</span></p>
+        <p class="mt-1 text-sm text-white/70">เมื่อจองคอร์ส {price} ทั้งทีม</p>
+      </div>
+    </div>
+    <div class="mt-9 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {data.items.map((item) => (
+        <article data-bonus-value-card class="flex flex-col rounded-[1.5rem] border border-navy/10 bg-white p-6 sm:p-7">
+          <div class="flex items-center gap-3"><span aria-hidden="true" class="text-2xl">{item.icon}</span><span class="rounded-md bg-[#ece6da] px-2.5 py-1 text-xs font-bold uppercase tracking-[.12em] text-navy">Bonus {item.number}</span></div>
+          <h3 class="mt-4 font-display text-xl font-bold leading-snug text-navy sm:text-2xl">{item.title}</h3>
+          <ul class="mt-3 space-y-2 text-sm leading-6 text-navy/80">
+            {item.points.map((point) => <li class="flex gap-2"><span aria-hidden="true" class="mt-0.5 font-bold text-[#05a648]">✓</span><span>{point}</span></li>)}
+          </ul>
+          <div class="mt-auto flex items-center justify-between border-t border-navy/10 pt-4">
+            <p class="flex items-center gap-2"><s class="text-navy/50">{fmt(item.value)}</s><span class="rounded-md bg-[#06c755]/15 px-2.5 py-1 text-xs font-bold text-[#05a648]">ฟรี</span></p>
+            <p class="text-xs text-navy/60">มูลค่า <strong class="text-navy">{fmt(item.value)}</strong> · {item.basis}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+    <p class="mt-5 text-xs leading-5 text-navy/55">{data.footnote.replaceAll('{{price}}', price)}</p>
+  </div>
+</section>

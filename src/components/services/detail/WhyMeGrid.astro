@@ -1,0 +1,30 @@
+---
+import type { ProductWhyMe, ProductDetailCode } from '../../../data/product-details/types';
+import JourneyCTA from './JourneyCTA.astro';
+interface Props { data: ProductWhyMe; code: ProductDetailCode; keyword: string; price: string; amount?: number; bonusTotal?: number; }
+const { data, code, keyword, price, amount, bonusTotal } = Astro.props;
+const fmt = (n: number) => `฿${n.toLocaleString('en-US')}`;
+const perHead = amount ? fmt(Math.ceil(amount / 20 / 50) * 50) : '';
+const fill = (text: string) => text.replaceAll('{{price}}', price).replaceAll('{{perHead}}', perHead).replaceAll('{{bonusTotal}}', bonusTotal ? fmt(bonusTotal) : '');
+---
+
+<section data-t4-section="why-me" aria-labelledby="t4-whyme-heading" class="bg-white py-14 sm:py-20">
+  <div class="mx-auto max-w-6xl px-5">
+    <div class="text-center">
+      <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">{data.eyebrow}</p>
+      <h2 id="t4-whyme-heading" class="mx-auto mt-3 max-w-4xl text-balance font-display text-3xl font-bold text-navy sm:text-5xl">{data.heading}</h2>
+    </div>
+    <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {data.items.map((item) => (
+        <article data-why-me-item class="rounded-[1.5rem] border border-navy/10 bg-[#f4f1ea] p-6">
+          <span aria-hidden="true" class="text-3xl">{item.icon}</span>
+          <h3 class="mt-3 text-lg font-bold text-navy">{fill(item.title)}</h3>
+          <p class="mt-2 text-sm leading-6 text-navy/75">{fill(item.body)}</p>
+        </article>
+      ))}
+    </div>
+    <div class="mt-8 flex justify-center">
+      <JourneyCTA code={code} location="why_me" keyword={keyword} primary="จองคิวรับบริการ" primaryIntent="book_training" secondary={`ทัก LINE พิมพ์ “${keyword}”`} secondaryIntent="workflow_fit" />
+    </div>
+  </div>
+</section>
