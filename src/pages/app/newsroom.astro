@@ -1,0 +1,430 @@
+---
+// Newsroom — คลัง intel ที่ Scout บน Mac mini แกะไว้ (NEWSROOM-02)
+//
+// เดิมเป็นเว็บเดี่ยว 3 หน้า (pun-newsroom.pages.dev) ที่ล็อกอินด้วย password ของมันเอง
+// พอร์ตมาเป็นแอปใน app hub: หน้าเดียว 2 แท็บ (คลัง / สั่ง Scout) + โมดัลรายละเอียด
+// auth = Google FedCM → Supabase เดียวกับ war-room/news-desk/CRM (WarRoomGate)
+// ข้อมูล = newsroom_items / newsroom_jobs + bucket `newsroom` (RLS newsroom_is_owner)
+// Packet: claude-code repo → handoffs/active/NEWSROOM-02--port-into-app-hub.md
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
+---
+<DashboardLayout title="Newsroom — Pun">
+  <script is:inline async src="https://accounts.google.com/gsi/client"></script>
+  <WarRoomGate appId="newsroom-app" title="Newsroom" icon="🗂" event="newsroom:authed" />
+
+  <div id="newsroom-app" class="hidden min-h-dvh bg-base-100">
+    <header class="sticky top-0 z-30 border-b border-base-300 bg-base-100/90 backdrop-blur">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5">
+        <div class="flex min-w-0 items-center gap-3">
+          <span class="grid size-9 shrink-0 place-items-center rounded-xl text-white" style="background-color:var(--color-brand-navy);" aria-hidden="true">🗂</span>
+          <div class="min-w-0">
+            <h1 class="font-display text-lg font-bold leading-tight truncate">Newsroom</h1>
+            <p class="hidden text-xs opacity-60 sm:block">คลัง intel ที่ Scout แกะไว้</p>
+          </div>
+        </div>
+        <div class="flex shrink-0 items-center gap-1 sm:gap-2">
+          <button id="nr-refresh" class="btn btn-sm btn-ghost tap-44" aria-label="รีเฟรช">⟳</button>
+          <a href="/app/war-room" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า Marketing War Room">🎬<span class="hidden sm:inline"> War Room</span></a>
+          <a href="/app/news-desk" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า News Desk">📰<span class="hidden sm:inline"> News Desk</span></a>
+          <a href="/app/dashboard" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า CRM">📊<span class="hidden sm:inline"> CRM</span></a>
+          <button id="nr-logout" class="btn btn-sm btn-ghost tap-44" aria-label="ออกจากระบบ">ออก</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 pb-24 pt-4">
+      <div role="tablist" class="tabs tabs-box mb-4 grid grid-cols-2 bg-base-200">
+        <a role="tab" class="tab tab-active" data-tab="library">🗂 คลัง</a>
+        <a role="tab" class="tab" data-tab="submit">➕ สั่ง Scout <span class="badge badge-warning badge-sm ml-1 hidden" id="nr-queue-badge">0</span></a>
+      </div>
+
+      <!-- ============ LIBRARY ============ -->
+      <section id="nr-pane-library">
+        <div class="mb-3 flex flex-wrap gap-1" id="nr-platforms" role="group" aria-label="กรองตามแพลตฟอร์ม"></div>
+
+        <div class="mb-4 grid gap-2 md:grid-cols-[1fr_11rem_11rem]">
+          <label class="flex items-center gap-2 rounded-full border border-base-300 bg-base-200 px-3">
+            <span aria-hidden="true" class="opacity-50">🔍</span>
+            <input id="nr-search" class="input input-ghost flex-1 border-0 px-0 focus:outline-none" placeholder="ค้นชื่อ ช่อง หรือสรุป เช่น Ronny" aria-label="ค้นหาในคลัง" autocomplete="off" />
+          </label>
+          <select id="nr-kind" class="select select-bordered" aria-label="กรองตามชนิด">
+            <option value="">ทุกชนิด</option>
+            <option value="clip">คลิป</option>
+            <option value="page">เพจ</option>
+            <option value="ads">แอด</option>
+            <option value="web">เว็บ</option>
+            <option value="shot">ภาพ</option>
+            <option value="paste">ข้อความ</option>
+          </select>
+          <select id="nr-sort" class="select select-bordered" aria-label="เรียงลำดับ">
+            <option value="created_at">ใหม่สุด</option>
+            <option value="score">คะแนนสูงสุด</option>
+          </select>
+        </div>
+
+        <p id="nr-status" class="mb-3 text-sm opacity-60" aria-live="polite">กำลังโหลดคลัง…</p>
+        <div id="nr-cards" class="grid grid-cols-2 gap-3 md:grid-cols-4"></div>
+      </section>
+
+      <!-- ============ SUBMIT + QUEUE ============ -->
+      <section id="nr-pane-submit" class="hidden gap-4 md:grid-cols-[1fr_1.2fr]">
+        <div class="card border border-base-300 bg-base-200">
+          <div class="card-body gap-2 p-4">
+            <h2 class="font-display font-semibold">ส่งสิ่งที่อยากแกะ</h2>
+            <p class="text-xs opacity-60">ลิงก์คลิป / เพจ / แอด / เว็บ หรือวางข้อความก็ได้ — Scout บน Mac mini รับต่อเอง</p>
+            <label class="block">
+              <span class="mb-1 block text-sm opacity-70">ลิงก์หรือข้อความ</span>
+              <textarea id="nr-target" class="textarea textarea-bordered h-32 w-full" aria-label="ลิงก์หรือข้อความที่อยากให้แกะ" required></textarea>
+            </label>
+            <label class="block">
+              <span class="mb-1 block text-sm opacity-70">โน้ต (ถ้ามี)</span>
+              <input id="nr-note" class="input input-bordered w-full" placeholder="เช่น ดู hook 2 วิแรก" aria-label="โน้ต" />
+            </label>
+            <label class="block">
+              <span class="mb-1 block text-sm opacity-70">ชนิด</span>
+              <select id="nr-jobkind" class="select select-bordered w-full" aria-label="ชนิดงาน">
+                <option value="auto">ให้ Scout เดา</option>
+                <option value="web">เว็บ</option>
+                <option value="clip">คลิป</option>
+                <option value="page">เพจ</option>
+                <option value="ads">แอด</option>
+                <option value="paste">ข้อความ</option>
+              </select>
+            </label>
+            <button id="nr-submit" class="btn mt-1 w-full text-white tap-44" style="background-color:var(--color-brand-coral);">เข้าคิว Scout</button>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="mb-2 font-display font-semibold">คิวล่าสุด</h2>
+          <div class="overflow-x-auto rounded-2xl border border-base-300">
+            <table class="table">
+              <thead><tr><th>งาน</th><th>สถานะ</th><th></th></tr></thead>
+              <tbody id="nr-jobs"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Item detail -->
+    <dialog id="nr-modal" class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box max-w-4xl" id="nr-modal-body"></div>
+      <form method="dialog" class="modal-backdrop"><button aria-label="ปิด">close</button></form>
+    </dialog>
+
+    <div class="toast toast-end z-50">
+      <div id="nr-toast" class="alert hidden text-sm shadow-lg"></div>
+    </div>
+  </div>
+
+  <style>
+    /* รายงานของ Scout เป็น markdown — ไม่มี @tailwindcss/typography ในโปรเจกต์นี้
+       เลยจัดสไตล์เองแบบแคบๆ ใต้ .nr-report เท่านั้น */
+    .nr-report { line-height: 1.75; }
+    .nr-report h1, .nr-report h2, .nr-report h3 { font-weight: 700; margin: 1.25em 0 0.5em; line-height: 1.35; }
+    .nr-report h1 { font-size: 1.35rem; }
+    .nr-report h2 { font-size: 1.15rem; }
+    .nr-report h3 { font-size: 1rem; }
+    .nr-report p { margin: 0.75em 0; }
+    .nr-report ul, .nr-report ol { margin: 0.75em 0; padding-inline-start: 1.5em; }
+    .nr-report ul { list-style: disc; }
+    .nr-report ol { list-style: decimal; }
+    .nr-report li { margin: 0.25em 0; }
+    .nr-report blockquote { margin: 0.75em 0; padding-inline-start: 0.9em; border-inline-start: 3px solid var(--color-base-300); opacity: 0.85; }
+    .nr-report code { background: var(--color-base-200); border-radius: 0.35rem; padding: 0.1em 0.35em; font-size: 0.9em; }
+    .nr-report hr { margin: 1.25em 0; border-color: var(--color-base-300); }
+    .nr-report a { text-decoration: underline; }
+  </style>
+
+  <script>
+    import {
+      listItems, getItem, signedUrl, listJobs, createJob, retryJob,
+      PLATFORMS, PLATFORM_LABEL, KIND_LABEL,
+      type NewsroomItem, type NewsroomJob,
+    } from '../../scripts/newsroom/data';
+    import { supabase, getSupabaseSession } from '../../scripts/dashboard/supabase';
+
+    let platform = '';
+    let jobs: NewsroomJob[] = [];
+    let jobTimer = 0;
+
+    const $ = (id: string) => document.getElementById(id)!;
+    const esc = (s: unknown) =>
+      String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+    const fmtDate = (d: string | null) => (d ? new Date(d).toLocaleDateString('th-TH', { dateStyle: 'medium' }) : 'ไม่ระบุวันที่');
+
+    function toast(msg: string, kind: 'success' | 'error' = 'success') {
+      const el = $('nr-toast');
+      el.className = `alert text-sm shadow-lg ${kind === 'error' ? 'alert-error' : 'alert-success'}`;
+      el.textContent = msg;
+      window.clearTimeout((window as any).__nrToast);
+      (window as any).__nrToast = window.setTimeout(() => el.classList.add('hidden'), 3200);
+    }
+    const oops = (e: unknown) => toast((e as Error).message || 'ผิดพลาด ลองใหม่', 'error');
+
+    const PLATFORM_TONE: Record<string, string> = {
+      tiktok: 'badge-neutral', youtube: 'badge-error', instagram: 'badge-secondary',
+      facebook: 'badge-info', 'meta-ads': 'badge-primary', web: 'badge-ghost', upload: 'badge-success',
+    };
+    const badge = (p: string) => `<span class="badge badge-sm ${PLATFORM_TONE[p] ?? 'badge-ghost'}">${esc(PLATFORM_LABEL[p] ?? p)}</span>`;
+
+    // ---------- markdown ของรายงาน Scout ----------
+    // เขียนเองแทน marked+DOMPurify จาก CDN: escape ก่อนแปลงเสมอ → HTML ในรายงาน
+    // (เช่น caption ที่มี <script>) กลายเป็นข้อความ ไม่มีทางรันได้ · ลิงก์รับแค่ http(s)
+    function renderMarkdown(md: string): string {
+      const inline = (raw: string) =>
+        esc(raw)
+          .replace(/`([^`]+)`/g, (_m, c) => `<code>${c}</code>`)
+          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+          .replace(/(^|[^*])\*([^*]+)\*/g, '$1<em>$2</em>')
+          .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+      const out: string[] = [];
+      let list: 'ul' | 'ol' | null = null;
+      const closeList = () => { if (list) { out.push(`</${list}>`); list = null; } };
+      const openList = (kind: 'ul' | 'ol') => { if (list !== kind) { closeList(); out.push(`<${kind}>`); list = kind; } };
+
+      for (const line of String(md ?? '').replace(/\r\n?/g, '\n').split('\n')) {
+        const t = line.trim();
+        if (!t) { closeList(); continue; }
+        const heading = /^(#{1,3})\s+(.*)$/.exec(t);
+        const bullet = /^[-*]\s+(.*)$/.exec(t);
+        const ordered = /^\d+[.)]\s+(.*)$/.exec(t);
+        const quote = /^>\s?(.*)$/.exec(t);
+        if (heading) { closeList(); out.push(`<h${heading[1].length}>${inline(heading[2])}</h${heading[1].length}>`); }
+        else if (/^([-*_])\1{2,}$/.test(t)) { closeList(); out.push('<hr />'); }
+        else if (bullet) { openList('ul'); out.push(`<li>${inline(bullet[1])}</li>`); }
+        else if (ordered) { openList('ol'); out.push(`<li>${inline(ordered[1])}</li>`); }
+        else if (quote) { closeList(); out.push(`<blockquote>${inline(quote[1])}</blockquote>`); }
+        else { closeList(); out.push(`<p>${inline(t)}</p>`); }
+      }
+      closeList();
+      return out.join('');
+    }
+
+    // ---------- tabs ----------
+    function showTab(name: string) {
+      for (const t of ['library', 'submit']) {
+        $(`nr-pane-${t}`).classList.toggle('hidden', t !== name);
+        document.querySelector(`[data-tab="${t}"]`)!.classList.toggle('tab-active', t === name);
+      }
+      // pane submit เป็น grid — toggle 'hidden' ต้องไม่โดน class grid ทับ
+      $('nr-pane-submit').classList.toggle('grid', name === 'submit');
+    }
+
+    // ---------- library ----------
+    function renderChips() {
+      $('nr-platforms').innerHTML = ['', ...PLATFORMS]
+        .map((p) => `<button class="btn btn-xs tap-44 ${platform === p ? 'btn-active' : ''}" data-platform="${esc(p)}">${p ? esc(PLATFORM_LABEL[p]) : 'ทั้งหมด'}</button>`)
+        .join('');
+    }
+
+    async function loadLibrary() {
+      const status = $('nr-status');
+      status.textContent = 'กำลังโหลดคลัง…';
+      const items = await listItems({
+        platform,
+        kind: ($('nr-kind') as HTMLSelectElement).value,
+        search: ($('nr-search') as HTMLInputElement).value,
+        sort: ($('nr-sort') as HTMLSelectElement).value as 'created_at' | 'score',
+      });
+      const covers = await Promise.all(items.map((x) => signedUrl(x.cover_path).catch(() => null)));
+      status.textContent = `${items.length} รายการ`;
+      $('nr-cards').innerHTML = items.length
+        ? items.map((x, i) => card(x, covers[i])).join('')
+        : '<div class="col-span-full rounded-2xl border border-dashed border-base-300 p-8 text-center opacity-60">ไม่พบรายการ — ลองล้างตัวกรอง หรือสั่ง Scout ใหม่</div>';
+    }
+
+    function card(x: NewsroomItem, cover: string | null) {
+      const art = cover
+        ? `<img class="aspect-[9/16] w-full object-cover" src="${esc(cover)}" alt="ปก: ${esc(x.title || KIND_LABEL[x.kind] || x.kind)}" loading="lazy" />`
+        : `<div class="flex aspect-[9/16] items-end bg-base-200 p-3 text-xs opacity-60">[ ${esc(PLATFORM_LABEL[x.platform] ?? x.platform)} / ${esc(KIND_LABEL[x.kind] ?? x.kind)} ]</div>`;
+      return `<button type="button" class="overflow-hidden rounded-2xl border border-base-300 bg-base-100 text-left shadow-sm transition hover:border-[color:var(--color-brand-coral)] hover:shadow-md" data-open="${esc(x.id)}">
+        ${art}
+        <div class="space-y-2 p-3">
+          ${badge(x.platform)}
+          <h3 class="line-clamp-2 font-display text-sm font-semibold leading-snug">${esc(x.title || 'ยังไม่มีหัวข้อ')}</h3>
+          <div class="flex justify-between text-xs opacity-55">
+            <span>${esc(fmtDate(x.scraped_at || x.created_at))}</span>
+            ${x.score != null ? `<span class="tabular-nums">${esc(x.score)}/10</span>` : ''}
+          </div>
+        </div>
+      </button>`;
+    }
+
+    // ---------- item detail ----------
+    async function openItem(id: string) {
+      const modal = $('nr-modal') as HTMLDialogElement;
+      $('nr-modal-body').innerHTML = '<p class="py-10 text-center opacity-60">กำลังโหลด…</p>';
+      modal.showModal();
+      try {
+        const x = await getItem(id);
+        const cover = await signedUrl(x.cover_path);
+        const media = await Promise.all(
+          (x.media ?? []).map(async (m) => ({ type: m.type, url: await signedUrl(m.path).catch(() => null) }))
+        );
+        $('nr-modal-body').innerHTML = `
+          <form method="dialog"><button class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3" aria-label="ปิด">✕</button></form>
+          <div class="grid gap-5 md:grid-cols-[14rem_1fr]">
+            <div>${cover
+              ? `<img class="w-full rounded-xl border border-base-300" src="${esc(cover)}" alt="ปก: ${esc(x.title || x.kind)}" />`
+              : '<div class="flex aspect-[9/16] items-end rounded-xl bg-base-200 p-4 text-sm opacity-60">[ ไม่มีปก ]</div>'}</div>
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                ${badge(x.platform)}
+                <span class="badge badge-outline badge-sm">${esc(KIND_LABEL[x.kind] ?? x.kind)}</span>
+                ${x.channel ? `<span class="text-xs opacity-60">${esc(x.channel)}</span>` : ''}
+              </div>
+              <h2 class="mt-2 font-display text-xl font-bold leading-snug">${esc(x.title || 'ยังไม่มีหัวข้อ')}</h2>
+              <p class="mt-2 text-sm opacity-70">${esc(x.summary || 'ไม่มีสรุป')}</p>
+              <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs opacity-60">
+                <span>${esc(fmtDate(x.scraped_at || x.created_at))}</span>
+                ${x.views != null ? `<span class="tabular-nums">${esc(x.views.toLocaleString('th-TH'))} views</span>` : ''}
+                ${x.duration_s ? `<span class="tabular-nums">${esc(x.duration_s)} วิ</span>` : ''}
+                ${x.score != null ? `<span class="tabular-nums">คะแนน ${esc(x.score)}/10</span>` : ''}
+              </div>
+              ${x.verdict ? `<p class="mt-3 rounded-xl bg-base-200 p-3 text-sm">${esc(x.verdict)}</p>` : ''}
+              ${(x.tags ?? []).length ? `<div class="mt-3 flex flex-wrap gap-1">${(x.tags ?? []).map((t) => `<span class="badge badge-ghost badge-sm">${esc(t)}</span>`).join('')}</div>` : ''}
+              <div class="mt-4 flex flex-wrap gap-2">
+                ${x.source_url && /^https?:\/\//.test(x.source_url)
+                  ? `<a class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);" target="_blank" rel="noopener noreferrer" href="${esc(x.source_url)}">เปิดต้นฉบับ ↗</a>`
+                  : ''}
+                ${x.report_path ? `<button class="btn btn-sm btn-outline tap-44" data-copy="${esc(x.report_path)}">คัดลอก path รายงาน</button>` : ''}
+              </div>
+            </div>
+          </div>
+          ${media.filter((m) => m.url).length
+            ? `<section class="mt-6 space-y-3">${media.filter((m) => m.url).map((m) => `<figure>
+                <img class="w-full rounded-xl border border-base-300" src="${esc(m.url)}" alt="${esc(m.type)}" loading="lazy" />
+                <figcaption class="mt-1 text-xs opacity-50">${esc(m.type)}</figcaption>
+              </figure>`).join('')}</section>`
+            : ''}
+          ${x.report_md
+            ? `<article class="nr-report mt-6 border-t border-base-300 pt-5 text-sm">${renderMarkdown(x.report_md)}</article>`
+            : '<p class="mt-6 border-t border-base-300 pt-5 text-sm opacity-60">ยังไม่มีรายงาน</p>'}`;
+      } catch (e) {
+        $('nr-modal-body').innerHTML = `<p class="py-10 text-center text-error">${esc((e as Error).message)}</p>`;
+      }
+    }
+
+    // ---------- queue ----------
+    const JOB_TONE: Record<string, string> = {
+      queued: 'badge-warning', submitted: 'badge-info', running: 'badge-primary',
+      done: 'badge-success', failed: 'badge-error', preflight_failed: 'badge-error',
+    };
+
+    async function loadJobs() {
+      jobs = await listJobs();
+      const pending = jobs.filter((j) => ['queued', 'submitted', 'running'].includes(j.status)).length;
+      const b = $('nr-queue-badge');
+      b.textContent = String(pending);
+      b.classList.toggle('hidden', pending === 0);
+      $('nr-jobs').innerHTML = jobs.length
+        ? jobs.map((j) => `<tr>
+            <td>
+              <div class="max-w-64 truncate text-sm">${esc(j.target)}</div>
+              ${j.note ? `<p class="text-xs opacity-55">${esc(j.note)}</p>` : ''}
+              ${j.error ? `<p class="mt-1 whitespace-pre-wrap text-xs text-error">${esc(j.error.slice(0, 300))}</p>` : ''}
+            </td>
+            <td><span class="badge badge-sm ${JOB_TONE[j.status] ?? 'badge-ghost'}">${esc(j.status)}</span></td>
+            <td>${j.status === 'done' && j.item_id
+              ? `<button class="btn btn-ghost btn-xs" data-open="${esc(j.item_id)}">เปิด</button>`
+              : (j.status === 'failed' || j.status === 'preflight_failed')
+                ? `<button class="btn btn-outline btn-xs" data-retry="${esc(j.id)}">Retry</button>`
+                : ''}</td>
+          </tr>`).join('')
+        : '<tr><td colspan="3" class="py-6 text-center opacity-60">ยังไม่มีงานในคิว</td></tr>';
+    }
+
+    // poll คิวเฉพาะตอนแท็บถูกมองอยู่ — แท็บที่เปิดค้างไม่ต้องยิง Supabase ทุก 10 วิ
+    function syncPolling() {
+      const active = document.visibilityState === 'visible' && !$('nr-pane-submit').classList.contains('hidden');
+      if (active && !jobTimer) jobTimer = window.setInterval(() => void loadJobs().catch(() => {}), 10000);
+      if (!active && jobTimer) { window.clearInterval(jobTimer); jobTimer = 0; }
+    }
+
+    // ---------- wire + boot ----------
+    function wire() {
+      document.querySelectorAll('[data-tab]').forEach((t) =>
+        t.addEventListener('click', () => {
+          const name = (t as HTMLElement).dataset.tab!;
+          showTab(name);
+          syncPolling();
+          if (name === 'submit') void loadJobs().catch(oops);
+        }));
+
+      $('nr-refresh').addEventListener('click', () =>
+        void Promise.all([loadLibrary(), loadJobs()]).then(() => toast('รีเฟรชแล้ว')).catch(oops));
+      $('nr-logout').addEventListener('click', () => { void supabase.auth.signOut().then(() => location.reload()); });
+
+      $('nr-platforms').addEventListener('click', (e) => {
+        const el = (e.target as HTMLElement).closest('[data-platform]') as HTMLElement | null;
+        if (!el) return;
+        platform = el.dataset.platform!;
+        renderChips();
+        void loadLibrary().catch(oops);
+      });
+
+      let debounce = 0;
+      $('nr-search').addEventListener('input', () => {
+        window.clearTimeout(debounce);
+        debounce = window.setTimeout(() => void loadLibrary().catch(oops), 250);
+      });
+      ['nr-kind', 'nr-sort'].forEach((id) => $(id).addEventListener('change', () => void loadLibrary().catch(oops)));
+
+      // การ์ดในคลัง + ปุ่ม "เปิด" ในตารางคิว ใช้ data-open ตัวเดียวกัน
+      document.addEventListener('click', (e) => {
+        const open = (e.target as HTMLElement).closest('[data-open]') as HTMLElement | null;
+        if (open) { void openItem(open.dataset.open!); return; }
+        const retry = (e.target as HTMLElement).closest('[data-retry]') as HTMLElement | null;
+        if (retry) {
+          void retryJob(retry.dataset.retry!).then(() => { toast('โยนกลับเข้าคิวแล้ว'); return loadJobs(); }).catch(oops);
+          return;
+        }
+        const copy = (e.target as HTMLElement).closest('[data-copy]') as HTMLElement | null;
+        if (copy) {
+          void navigator.clipboard.writeText(copy.dataset.copy!).then(() => toast('คัดลอกแล้ว')).catch(() => toast('คัดลอกไม่สำเร็จ', 'error'));
+        }
+      });
+
+      $('nr-submit').addEventListener('click', () => void (async () => {
+        const target = ($('nr-target') as HTMLTextAreaElement).value.trim();
+        if (!target) return toast('ใส่ลิงก์หรือข้อความก่อนครับ', 'error');
+        const btn = $('nr-submit') as HTMLButtonElement;
+        btn.disabled = true;
+        try {
+          await createJob({
+            kind: ($('nr-jobkind') as HTMLSelectElement).value,
+            target,
+            note: ($('nr-note') as HTMLInputElement).value,
+          });
+          ($('nr-target') as HTMLTextAreaElement).value = '';
+          ($('nr-note') as HTMLInputElement).value = '';
+          toast('เข้าคิวแล้ว — Scout บนมินิรับต่อ');
+          await loadJobs();
+        } catch (e) { oops(e); } finally { btn.disabled = false; }
+      })());
+
+      document.addEventListener('visibilitychange', syncPolling);
+    }
+
+    let booted = false;
+    async function boot() {
+      if (booted) return;
+      booted = true;
+      wire();
+      renderChips();
+      if (location.hash === '#submit') showTab('submit');
+      syncPolling();
+      try {
+        await Promise.all([loadLibrary(), loadJobs()]);
+      } catch (e) { oops(e); }
+      const deep = new URLSearchParams(location.search).get('item');
+      if (deep) void openItem(deep);
+    }
+    document.addEventListener('newsroom:authed', () => void boot());
+    void (async () => { if (await getSupabaseSession()) void boot(); })();
+  </script>
+</DashboardLayout>
