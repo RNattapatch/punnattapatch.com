@@ -45,6 +45,7 @@ export interface NewsroomItem {
   tags: string[] | null;
   scraped_at: string | null;
   created_at: string;
+  target_id?: string | null;
 }
 
 export interface NewsroomJob {
@@ -58,6 +59,10 @@ export interface NewsroomJob {
   error: string | null;
   created_at: string;
   updated_at: string;
+  target_id?: string | null;
+  batch_id?: string | null;
+  lane?: string | null;
+  result?: unknown;
 }
 
 export interface ItemFilter {
@@ -70,6 +75,8 @@ export interface ItemFilter {
 
 // คอลัมน์ที่การ์ดในคลังใช้จริง — ไม่ดึง report_md (ยาว) มาทั้งกอง
 const CARD_COLUMNS = 'id,kind,platform,title,channel,score,cover_path,scraped_at,created_at,summary';
+// เส้นเวลาในแฟ้ม Intel Warroom ต้องการ verdict 1 บรรทัดด้วย
+export const CARD_COLUMNS_WITH_VERDICT = CARD_COLUMNS + ',verdict,target_id,source_url';
 
 export const PLATFORMS: Platform[] = ['tiktok', 'youtube', 'instagram', 'facebook', 'meta-ads', 'web', 'upload'];
 
