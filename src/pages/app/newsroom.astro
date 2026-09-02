@@ -20,10 +20,10 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
           <span class="grid size-9 shrink-0 place-items-center rounded-xl text-white" style="background-color:var(--color-brand-navy);" aria-hidden="true">🗂</span>
           <div class="min-w-0">
             <h1 class="font-display text-lg font-bold leading-tight truncate">Newsroom</h1>
-            <p class="text-xs opacity-60">คลัง intel ที่ Scout แกะไว้</p>
+            <p class="hidden text-xs opacity-60 sm:block">คลัง intel ที่ Scout แกะไว้</p>
           </div>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex shrink-0 items-center gap-1 sm:gap-2">
           <button id="nr-refresh" class="btn btn-sm btn-ghost tap-44" aria-label="รีเฟรช">⟳</button>
           <a href="/app/war-room" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า Marketing War Room">🎬<span class="hidden sm:inline"> War Room</span></a>
           <a href="/app/news-desk" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า News Desk">📰<span class="hidden sm:inline"> News Desk</span></a>
@@ -73,17 +73,17 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
           <div class="card-body gap-2 p-4">
             <h2 class="font-display font-semibold">ส่งสิ่งที่อยากแกะ</h2>
             <p class="text-xs opacity-60">ลิงก์คลิป / เพจ / แอด / เว็บ หรือวางข้อความก็ได้ — Scout บน Mac mini รับต่อเอง</p>
-            <label class="form-control">
-              <span class="label-text">ลิงก์หรือข้อความ</span>
-              <textarea id="nr-target" class="textarea textarea-bordered mt-1 h-32" aria-label="ลิงก์หรือข้อความที่อยากให้แกะ" required></textarea>
+            <label class="block">
+              <span class="mb-1 block text-sm opacity-70">ลิงก์หรือข้อความ</span>
+              <textarea id="nr-target" class="textarea textarea-bordered h-32 w-full" aria-label="ลิงก์หรือข้อความที่อยากให้แกะ" required></textarea>
             </label>
-            <label class="form-control">
-              <span class="label-text">โน้ต (ถ้ามี)</span>
-              <input id="nr-note" class="input input-bordered mt-1" placeholder="เช่น ดู hook 2 วิแรก" aria-label="โน้ต" />
+            <label class="block">
+              <span class="mb-1 block text-sm opacity-70">โน้ต (ถ้ามี)</span>
+              <input id="nr-note" class="input input-bordered w-full" placeholder="เช่น ดู hook 2 วิแรก" aria-label="โน้ต" />
             </label>
-            <label class="form-control">
-              <span class="label-text">ชนิด</span>
-              <select id="nr-jobkind" class="select select-bordered mt-1" aria-label="ชนิดงาน">
+            <label class="block">
+              <span class="mb-1 block text-sm opacity-70">ชนิด</span>
+              <select id="nr-jobkind" class="select select-bordered w-full" aria-label="ชนิดงาน">
                 <option value="auto">ให้ Scout เดา</option>
                 <option value="web">เว็บ</option>
                 <option value="clip">คลิป</option>

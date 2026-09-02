@@ -85,10 +85,12 @@ export const KIND_LABEL: Record<string, string> = {
 // ---------- Library ----------
 
 export async function listItems(filter: ItemFilter = {}): Promise<NewsroomItem[]> {
+  // nullsFirst:false — ครึ่งหนึ่งของคลังยังไม่มี score (Postgres เรียง DESC เอา NULL ขึ้นก่อน)
+  // ถ้าไม่สั่ง "คะแนนสูงสุด" จะได้การ์ดไร้คะแนนเต็มหน้าแรก
   let q = supabase
     .from('newsroom_items')
     .select(CARD_COLUMNS)
-    .order(filter.sort ?? 'created_at', { ascending: false })
+    .order(filter.sort ?? 'created_at', { ascending: false, nullsFirst: false })
     .limit(filter.limit ?? 60);
 
   if (filter.platform) q = q.eq('platform', filter.platform);
