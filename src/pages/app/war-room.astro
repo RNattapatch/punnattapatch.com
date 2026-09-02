@@ -5,35 +5,22 @@
 // UI: Kanban pipeline board (default) + List capture view + slide-in detail drawer.
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
+import AppNav from '../../components/app/AppNav.astro';
 ---
 <DashboardLayout title="Marketing War Room — Pun">
   <script is:inline async src="https://accounts.google.com/gsi/client"></script>
   <WarRoomGate />
 
   <div id="war-room-app" class="hidden min-h-dvh bg-base-100">
-    <!-- Header -->
-    <header class="sticky top-0 z-30 border-b border-base-300 bg-base-100/90 backdrop-blur">
-      <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5">
-        <div class="flex items-center gap-3 min-w-0">
-          <span class="grid size-9 shrink-0 place-items-center rounded-xl text-white" style="background-color:var(--color-brand-coral);" aria-hidden="true">🎬</span>
-          <div class="min-w-0">
-            <h1 class="font-display text-lg font-bold leading-tight truncate">Marketing War Room</h1>
-            <p id="wr-date" class="text-xs opacity-60"></p>
-          </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <!-- View toggle -->
-          <div role="tablist" aria-label="มุมมอง" class="join rounded-full border border-base-300 p-0.5">
-            <button id="wr-view-board" role="tab" aria-selected="true" class="join-item btn btn-sm rounded-full border-0 text-white tap-44" style="background-color:var(--color-brand-navy);">🗂 Board</button>
-            <button id="wr-view-list" role="tab" aria-selected="false" class="join-item btn btn-sm rounded-full border-0 btn-ghost tap-44">📋 List</button>
-          </div>
-          <a href="/app/newsroom" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า Newsroom">🗂<span class="hidden sm:inline"> Newsroom</span></a>
-          <a href="/app/news-desk" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า News Desk">📰<span class="hidden sm:inline"> News Desk</span></a>
-          <a href="/app/dashboard" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า CRM">📊<span class="hidden sm:inline"> CRM</span></a>
-          <button id="wr-logout" class="btn btn-sm btn-ghost tap-44" aria-label="ออกจากระบบ">ออก</button>
-        </div>
+    <AppNav app="war-room" />
+
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 pt-3">
+      <p id="wr-date" class="text-sm opacity-60"></p>
+      <div role="tablist" aria-label="มุมมอง" class="join rounded-full border border-base-300 p-0.5">
+        <button id="wr-view-board" role="tab" aria-selected="true" class="join-item btn btn-sm rounded-full border-0 text-white tap-44" style="background-color:var(--color-brand-navy);">🗂 Board</button>
+        <button id="wr-view-list" role="tab" aria-selected="false" class="join-item btn btn-sm rounded-full border-0 btn-ghost tap-44">📋 List</button>
       </div>
-    </header>
+    </div>
 
     <div class="mx-auto max-w-7xl px-4 py-4 space-y-4">
       <!-- Pipeline stat pills -->
@@ -707,7 +694,6 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
         renderList();
         openDrawer(b.dataset.id!);
       });
-      $('wr-logout').addEventListener('click', () => { void supabase.auth.signOut().then(() => location.reload()); });
 
       // Board interactions (click card → drawer; quick-produce)
       $('wr-board').addEventListener('click', (e) => void (async () => {

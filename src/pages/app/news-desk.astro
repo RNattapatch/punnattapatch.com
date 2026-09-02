@@ -4,6 +4,7 @@
 // งานฝั่งเครื่อง (เรนเดอร์การ์ด / ยิง n8n) เดินผ่านคิว wr_jobs → worker บน Mac mini
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
+import AppNav from '../../components/app/AppNav.astro';
 ---
 <DashboardLayout title="News Desk — Pun">
   <script is:inline async src="https://accounts.google.com/gsi/client"></script>
@@ -11,23 +12,9 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
 
   <!-- id ต้องเป็น war-room-app — WarRoomGate reveal ตัวนี้ -->
   <div id="war-room-app" class="hidden min-h-dvh bg-base-100">
-    <header class="sticky top-0 z-30 border-b border-base-300 bg-base-100/90 backdrop-blur">
-      <div class="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-2.5">
-        <div class="flex min-w-0 items-center gap-3">
-          <span class="grid size-9 shrink-0 place-items-center rounded-xl text-white" style="background-color:var(--color-brand-navy);" aria-hidden="true">📰</span>
-          <div class="min-w-0">
-            <h1 class="font-display text-lg font-bold leading-tight truncate">News Desk</h1>
-            <p class="text-xs opacity-60">ข่าว → โพสต์ Facebook</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <button id="nd-refresh" class="btn btn-sm btn-ghost tap-44" aria-label="รีเฟรช">⟳</button>
-          <a href="/app/newsroom" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า Newsroom">🗂<span class="hidden sm:inline"> Newsroom</span></a>
-          <a href="/app/war-room" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า War Room">🎬<span class="hidden sm:inline"> War Room</span></a>
-          <button id="nd-logout" class="btn btn-sm btn-ghost tap-44" aria-label="ออกจากระบบ">ออก</button>
-        </div>
-      </div>
-    </header>
+    <AppNav app="news-desk">
+      <button id="nd-refresh" class="btn btn-ghost btn-sm tap-44" aria-label="รีเฟรช">⟳</button>
+    </AppNav>
 
     <main class="mx-auto max-w-3xl px-4 pb-24 pt-4">
       <div role="tablist" class="tabs tabs-box mb-4 grid grid-cols-3 bg-base-200">
@@ -342,7 +329,6 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
       document.querySelectorAll('[data-tab]').forEach((t) =>
         t.addEventListener('click', () => showTab((t as HTMLElement).dataset.tab!)));
       $('nd-refresh').addEventListener('click', () => void refresh().then(() => toast('รีเฟรชแล้ว')).catch(oops));
-      $('nd-logout').addEventListener('click', () => { void supabase.auth.signOut().then(() => location.reload()); });
       $('nd-candidates').addEventListener('click', (e) => {
         const el = (e.target as HTMLElement).closest('[data-open]') as HTMLElement | null;
         if (el) openDetail(el.dataset.open!);

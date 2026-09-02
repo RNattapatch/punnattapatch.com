@@ -8,30 +8,16 @@
 // Packet: claude-code repo → handoffs/active/NEWSROOM-02--port-into-app-hub.md
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
+import AppNav from '../../components/app/AppNav.astro';
 ---
 <DashboardLayout title="Newsroom — Pun">
   <script is:inline async src="https://accounts.google.com/gsi/client"></script>
   <WarRoomGate appId="newsroom-app" title="Newsroom" icon="🗂" event="newsroom:authed" />
 
   <div id="newsroom-app" class="hidden min-h-dvh bg-base-100">
-    <header class="sticky top-0 z-30 border-b border-base-300 bg-base-100/90 backdrop-blur">
-      <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5">
-        <div class="flex min-w-0 items-center gap-3">
-          <span class="grid size-9 shrink-0 place-items-center rounded-xl text-white" style="background-color:var(--color-brand-navy);" aria-hidden="true">🗂</span>
-          <div class="min-w-0">
-            <h1 class="font-display text-lg font-bold leading-tight truncate">Newsroom</h1>
-            <p class="hidden text-xs opacity-60 sm:block">คลัง intel ที่ Scout แกะไว้</p>
-          </div>
-        </div>
-        <div class="flex shrink-0 items-center gap-1 sm:gap-2">
-          <button id="nr-refresh" class="btn btn-sm btn-ghost tap-44" aria-label="รีเฟรช">⟳</button>
-          <a href="/app/war-room" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า Marketing War Room">🎬<span class="hidden sm:inline"> War Room</span></a>
-          <a href="/app/news-desk" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า News Desk">📰<span class="hidden sm:inline"> News Desk</span></a>
-          <a href="/app/dashboard" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า CRM">📊<span class="hidden sm:inline"> CRM</span></a>
-          <button id="nr-logout" class="btn btn-sm btn-ghost tap-44" aria-label="ออกจากระบบ">ออก</button>
-        </div>
-      </div>
-    </header>
+    <AppNav app="newsroom">
+      <button id="nr-refresh" class="btn btn-ghost btn-sm tap-44" aria-label="รีเฟรช">⟳</button>
+    </AppNav>
 
     <main class="mx-auto max-w-7xl px-4 pb-24 pt-4">
       <div role="tablist" class="tabs tabs-box mb-4 grid grid-cols-2 bg-base-200">
@@ -140,7 +126,7 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
 
   <script>
     import {
-      listItems, getItem, signedUrl, listJobs, createJob, retryJob,
+      listItems, getItem, signedUrl, listJobs, createJob, retryJob, deleteItem, deleteJob,
       PLATFORMS, PLATFORM_LABEL, KIND_LABEL,
       type NewsroomItem, type NewsroomJob,
     } from '../../scripts/newsroom/data';
@@ -148,6 +134,7 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
 
     let platform = '';
     let jobs: NewsroomJob[] = [];
+    let openedItem: NewsroomItem | null = null;
     let jobTimer = 0;
 
     const $ = (id: string) => document.getElementById(id)!;
@@ -261,6 +248,7 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
       modal.showModal();
       try {
         const x = await getItem(id);
+        openedItem = x;
         const cover = await signedUrl(x.cover_path);
         const media = await Promise.all(
           (x.media ?? []).map(async (m) => ({ type: m.type, url: await signedUrl(m.path).catch(() => null) }))
@@ -292,6 +280,7 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
                   ? `<a class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);" target="_blank" rel="noopener noreferrer" href="${esc(x.source_url)}">เปิดต้นฉบับ ↗</a>`
                   : ''}
                 ${x.report_path ? `<button class="btn btn-sm btn-outline tap-44" data-copy="${esc(x.report_path)}">คัดลอก path รายงาน</button>` : ''}
+                <button class="btn btn-sm btn-ghost text-error tap-44" data-delete-item="${esc(x.id)}">ลบออกจากคลัง</button>
               </div>
             </div>
           </div>
@@ -329,11 +318,11 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
               ${j.error ? `<p class="mt-1 whitespace-pre-wrap text-xs text-error">${esc(j.error.slice(0, 300))}</p>` : ''}
             </td>
             <td><span class="badge badge-sm ${JOB_TONE[j.status] ?? 'badge-ghost'}">${esc(j.status)}</span></td>
-            <td>${j.status === 'done' && j.item_id
+            <td class="whitespace-nowrap">${j.status === 'done' && j.item_id
               ? `<button class="btn btn-ghost btn-xs" data-open="${esc(j.item_id)}">เปิด</button>`
               : (j.status === 'failed' || j.status === 'preflight_failed')
                 ? `<button class="btn btn-outline btn-xs" data-retry="${esc(j.id)}">Retry</button>`
-                : ''}</td>
+                : ''}<button class="btn btn-ghost btn-xs text-error" data-delete-job="${esc(j.id)}" aria-label="ลบงานนี้ออกจากคิว">ลบ</button></td>
           </tr>`).join('')
         : '<tr><td colspan="3" class="py-6 text-center opacity-60">ยังไม่มีงานในคิว</td></tr>';
     }
@@ -357,7 +346,6 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
 
       $('nr-refresh').addEventListener('click', () =>
         void Promise.all([loadLibrary(), loadJobs()]).then(() => toast('รีเฟรชแล้ว')).catch(oops));
-      $('nr-logout').addEventListener('click', () => { void supabase.auth.signOut().then(() => location.reload()); });
 
       $('nr-platforms').addEventListener('click', (e) => {
         const el = (e.target as HTMLElement).closest('[data-platform]') as HTMLElement | null;
@@ -386,6 +374,23 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
         const copy = (e.target as HTMLElement).closest('[data-copy]') as HTMLElement | null;
         if (copy) {
           void navigator.clipboard.writeText(copy.dataset.copy!).then(() => toast('คัดลอกแล้ว')).catch(() => toast('คัดลอกไม่สำเร็จ', 'error'));
+          return;
+        }
+        // ลบ = ถามครั้งเดียวด้วย confirm ของเบราว์เซอร์ — ของในคลังมีไม่กี่สิบชิ้น ไม่ต้องมี undo
+        const delItem = (e.target as HTMLElement).closest('[data-delete-item]') as HTMLElement | null;
+        if (delItem && openedItem && openedItem.id === delItem.dataset.deleteItem) {
+          if (!confirm(`ลบ "${openedItem.title || openedItem.kind}" ออกจากคลัง? ไฟล์ปก/ภาพจะถูกลบด้วย`)) return;
+          void deleteItem(openedItem).then(() => {
+            ($('nr-modal') as HTMLDialogElement).close();
+            toast('ลบออกจากคลังแล้ว');
+            return Promise.all([loadLibrary(), loadJobs()]);
+          }).catch(oops);
+          return;
+        }
+        const delJob = (e.target as HTMLElement).closest('[data-delete-job]') as HTMLElement | null;
+        if (delJob) {
+          if (!confirm('ลบงานนี้ออกจากคิว?')) return;
+          void deleteJob(delJob.dataset.deleteJob!).then(() => { toast('ลบออกจากคิวแล้ว'); return loadJobs(); }).catch(oops);
         }
       });
 

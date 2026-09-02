@@ -1,0 +1,130 @@
+---
+// AppNav — แถบบนร่วมของทุกแอปใน app.punnattapatch.com (2026-09-02)
+//
+// ก่อนหน้านี้แต่ละแอปเขียน header ของตัวเอง: CRM มีแถบซ้าย อีก 4 แอปมีแถบบนที่ลิงก์ไปหา
+// เพื่อนบ้าน "คนละชุด" ปุ่มออกใช้คนละคำ สลับธีมมีเฉพาะ CRM → คุณปันสลับห้องวันละหลายรอบ
+// แล้วต้องหาประตูใหม่ทุกห้อง
+//
+// ภาพที่ใช้: "แท็บคั่นหน้าสมุด" — ทั้ง 5 แอปเป็นแท็บเรียงลำดับเดิมเสมอบนขอบสมุดสีทราย
+// แท็บที่อยู่ถูกดึงขึ้นมาข้างหน้า (พื้นกระดาษเดียวกับหน้า ไม่มีเส้นล่าง) ที่เหลือจมลงพื้นทราย
+// มุมขวาเป็นมุมบัญชีที่เหมือนกันทุกหน้า (ธีม · ออกจากระบบ) · ปุ่มเฉพาะหน้าเสียบผ่าน slot
+//
+// props
+//   app            id ของแอปที่กำลังอยู่ (ทำแท็บนั้นเป็น active)
+//   menuToggleFor  id ของ checkbox drawer — ถ้ามี จะโชว์ปุ่ม hamburger บนจอเล็ก (CRM ใช้)
+// slot (default)   ปุ่มเฉพาะหน้า เช่น ⟳ · + Add Lead · Board/List
+type AppId = 'crm' | 'war-room' | 'news-desk' | 'newsroom' | 'audience';
+
+interface Props {
+  app: AppId;
+  menuToggleFor?: string;
+}
+const { app, menuToggleFor } = Astro.props;
+
+// ลำดับตายตัว — เรียงตามจังหวะงานของคุณปัน: ลูกค้าก่อน แล้วค่อยเนื้อหา แล้วค่อยวัตถุดิบ
+const APPS: { id: AppId; href: string; icon: string; label: string }[] = [
+  { id: 'crm', href: '/app/dashboard', icon: '📊', label: 'CRM' },
+  { id: 'war-room', href: '/app/war-room', icon: '🎬', label: 'War Room' },
+  { id: 'news-desk', href: '/app/news-desk', icon: '📰', label: 'News Desk' },
+  { id: 'newsroom', href: '/app/newsroom', icon: '🗂', label: 'Newsroom' },
+  { id: 'audience', href: '/app/audience', icon: '🧲', label: 'Audience' },
+];
+---
+<header class="app-nav sticky top-0 z-30 border-b border-base-300 bg-base-200">
+  <div class="mx-auto flex h-14 max-w-7xl items-stretch gap-2 px-3 sm:px-4">
+    {menuToggleFor && (
+      <label for={menuToggleFor} class="btn btn-ghost btn-square btn-sm my-auto lg:hidden tap-44" aria-label="เมนู">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </label>
+    )}
+
+    <a href="/app/dashboard" class="my-auto hidden shrink-0 items-center gap-2 sm:flex" aria-label="Pun Workspace">
+      <span class="grid size-8 place-items-center rounded-xl font-display text-sm font-bold text-white" style="background-color:var(--color-brand-navy);" aria-hidden="true">P</span>
+      <span class="hidden font-display text-sm font-semibold leading-none lg:block">Pun<span class="opacity-40"> · </span>Workspace</span>
+    </a>
+
+    <nav class="app-tabs -mb-px flex min-w-0 flex-1 items-end gap-0.5 overflow-x-auto" aria-label="แอป">
+      {APPS.map((a) => {
+        const active = a.id === app;
+        return (
+          <a
+            href={a.href}
+            class:list={['app-tab', { 'app-tab-active': active }]}
+            aria-current={active ? 'page' : undefined}
+            title={a.label}
+          >
+            <span aria-hidden="true">{a.icon}</span>
+            <span class:list={[{ 'hidden sm:inline': !active }]}>{a.label}</span>
+          </a>
+        );
+      })}
+    </nav>
+
+    <div class="my-auto flex shrink-0 items-center gap-1 sm:gap-2">
+      <slot />
+      <button id="app-theme" class="btn btn-ghost btn-sm hidden sm:inline-flex tap-44" aria-label="สลับธีม สว่าง/มืด">🌙</button>
+      <button id="app-logout" class="btn btn-ghost btn-sm tap-44" aria-label="ออกจากระบบ">ออก</button>
+    </div>
+  </div>
+</header>
+
+<style>
+  /* แท็บคั่นสมุด — สูงเต็มแถบ วางบนเส้นล่าง แท็บที่อยู่ทับเส้นด้วยพื้นกระดาษจนดูต่อเนื่องกับหน้า */
+  .app-tabs { scrollbar-width: none; }
+  .app-tabs::-webkit-scrollbar { display: none; }
+  .app-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0.45rem 0.8rem 0.55rem;
+    border: 1px solid transparent;
+    border-bottom: 0;
+    border-radius: 0.75rem 0.75rem 0 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    color: color-mix(in oklab, var(--color-base-content) 62%, transparent);
+    transition: color 120ms ease, background-color 120ms ease;
+  }
+  .app-tab:hover { color: var(--color-base-content); background: color-mix(in oklab, var(--color-base-100) 55%, transparent); }
+  .app-tab:focus-visible { outline: 2px solid var(--color-brand-coral); outline-offset: -2px; }
+  /* จอเล็ก: แท็บที่ไม่ได้อยู่เหลือแค่ไอคอน บีบช่องไฟให้เห็นครบ 5 ห้องก่อนต้องเลื่อน */
+  @media (max-width: 639px) {
+    .app-tab { padding-inline: 0.55rem; gap: 0.3rem; }
+  }
+  .app-tab-active,
+  .app-tab-active:hover {
+    color: var(--color-base-content);
+    background: var(--color-base-100);
+    border-color: var(--color-base-300);
+    font-weight: 600;
+    /* กดทับเส้นล่างของแถบ 1px ให้พื้นกระดาษไหลต่อลงหน้า */
+    box-shadow: 0 1px 0 0 var(--color-base-100);
+  }
+</style>
+
+<script>
+  import { supabase } from '../../scripts/dashboard/supabase';
+
+  // ออกจากระบบเหมือนกันทุกแอป: ล้าง session แล้วโหลดหน้าใหม่ → gate ของหน้านั้นขึ้นเอง
+  document.getElementById('app-logout')?.addEventListener('click', () => {
+    void supabase.auth.signOut().finally(() => location.reload());
+  });
+
+  // ธีมสว่าง/มืด — คีย์เดียวกับที่ DashboardLayout อ่านตอนโหลด จึงติดไปทุกแอป
+  const themeBtn = document.getElementById('app-theme');
+  const isDark = () => document.documentElement.getAttribute('data-theme') === 'pundark';
+  const syncIcon = () => { if (themeBtn) themeBtn.textContent = isDark() ? '☀️' : '🌙'; };
+  syncIcon();
+  themeBtn?.addEventListener('click', () => {
+    const next = isDark() ? 'punpaper' : 'pundark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('pun_dash_theme', next); } catch {}
+    syncIcon();
+    window.dispatchEvent(new Event('pun-theme-change')); // chart ใน CRM วาดใหม่ตามสี
+  });
+</script>

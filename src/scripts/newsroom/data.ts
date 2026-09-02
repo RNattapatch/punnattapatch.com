@@ -146,3 +146,22 @@ export async function retryJob(id: string): Promise<void> {
     .eq('id', id);
   fail(error);
 }
+
+// ---------- ลบ (NEWSROOM-03 · policy "pun deletes ..." + storage delete) ----------
+
+// ลบไฟล์ปก/ภาพก่อนแล้วค่อยลบแถว — ถ้าลบแถวก่อนแล้วไฟล์ค้าง จะไม่มีทางรู้ว่าไฟล์ไหนเป็นของใคร
+// คิวที่เคยผลิต item นี้ไม่พัง (FK on delete set null) แค่ปุ่ม "เปิด" ในคิวหายไป
+export async function deleteItem(item: Pick<NewsroomItem, 'id' | 'cover_path' | 'media'>): Promise<void> {
+  const paths = [item.cover_path, ...(item.media ?? []).map((m) => m.path)].filter((p): p is string => !!p);
+  if (paths.length) {
+    const { error } = await supabase.storage.from('newsroom').remove(paths);
+    fail(error);
+  }
+  const { error } = await supabase.from('newsroom_items').delete().eq('id', item.id);
+  fail(error);
+}
+
+export async function deleteJob(id: string): Promise<void> {
+  const { error } = await supabase.from('newsroom_jobs').delete().eq('id', id);
+  fail(error);
+}

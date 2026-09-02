@@ -8,30 +8,17 @@
 // Spec: claude-code repo → docs/superpowers/specs/2026-08-17-audience-center-design.md
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
+import AppNav from '../../components/app/AppNav.astro';
 ---
 <DashboardLayout title="Audience Center — Pun">
   <script is:inline async src="https://accounts.google.com/gsi/client"></script>
   <WarRoomGate appId="audience-app" title="Audience Center" icon="🧲" event="audience:authed" />
 
   <div id="audience-app" class="hidden min-h-dvh bg-base-100">
-    <header class="sticky top-0 z-30 border-b border-base-300 bg-base-100/90 backdrop-blur">
-      <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5">
-        <div class="flex min-w-0 items-center gap-3">
-          <span class="grid size-9 shrink-0 place-items-center rounded-xl text-white" style="background-color:var(--color-brand-coral);" aria-hidden="true">🧲</span>
-          <div class="min-w-0">
-            <h1 class="font-display text-lg font-bold leading-tight truncate">Audience Center</h1>
-            <p class="text-xs opacity-60">คนที่หยิบของฟรี — ยังไม่ใช่ lead</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <a href="/app/dashboard" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า CRM">📊<span class="hidden sm:inline"> CRM</span></a>
-          <a href="/app/war-room" class="btn btn-sm btn-ghost tap-44" aria-label="ไปหน้า Marketing War Room">🎬<span class="hidden sm:inline"> War Room</span></a>
-          <button id="au-logout" class="btn btn-sm btn-ghost tap-44" aria-label="ออกจากระบบ">ออก</button>
-        </div>
-      </div>
-    </header>
+    <AppNav app="audience" />
 
     <div class="mx-auto max-w-7xl space-y-4 px-4 py-4">
+      <p class="text-sm opacity-60">คนที่หยิบของฟรี — ยังไม่ใช่ lead · ในกองนี้มีใครที่ควรทักจริงบ้าง</p>
 
       <!-- KPI — วัดว่าของฟรี "ทำงาน" ไหม ไม่ใช่แค่มีคนเล่นเยอะ -->
       <section aria-label="ภาพรวมของฟรี" class="-mx-4 overflow-x-auto px-4">
@@ -371,7 +358,6 @@ import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
 
     // ---------- events ----------
     function wire() {
-      $('au-logout').addEventListener('click', () => { void supabase.auth.signOut().then(() => location.reload()); });
       $('au-search').addEventListener('input', (e) => { search = (e.target as HTMLInputElement).value; renderRows(); });
 
       $('au-filter-asset').addEventListener('click', (e) => {
