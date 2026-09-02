@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>T4 Operating Journey — HTML Mockup</title>
+  <meta name="description" content="T4 Operating Journey HTML mockup สำหรับตรวจทิศทางก่อนนำไปใช้จริง">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=Trirong:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/dist/full.css" rel="stylesheet" type="text/css">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    :root {
+      --navy: #072b4e;
+      --navy-deep: #00162f;
+      --coral: #dd4155;
+      --ivory: #f4f1ea;
+      --surface: #fffdf8;
+      --sand: #e8e0d2;
+      --mist: #eaf2f5;
+      --ink: #1e1b16;
+      --muted: #686158;
+      --line: rgba(7, 43, 78, .16);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--ivory);
+      color: var(--ink);
+      font-family: "Sarabun", sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2, .display { font-family: "Trirong", serif; }
+    img { display: block; max-width: 100%; }
+    a { text-underline-offset: 4px; }
+    a:focus-visible { outline: 3px solid #65d7f2; outline-offset: 4px; }
+
+    .shell { width: min(1180px, calc(100% - 40px)); margin-inline: auto; }
+    .eyebrow { margin-bottom: 14px; color: var(--coral); font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+    .section-title { max-width: 860px; margin-bottom: 18px; color: var(--navy); font-size: clamp(2rem, 4vw, 3.7rem); line-height: 1.15; letter-spacing: -.025em; }
+    .section-lead { max-width: 760px; margin-bottom: 0; color: var(--muted); font-size: 18px; }
+    .btn-main, .btn-line {
+      display: inline-flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 11px 22px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+    }
+    .btn-main { background: var(--coral); color: white; }
+    .btn-main:hover { background: #bf3044; }
+    .btn-line { border: 1px solid rgba(255, 255, 255, .32); color: white; }
+    .btn-line:hover { border-color: white; background: rgba(255, 255, 255, .08); }
+    .grid-field {
+      background-image:
+        linear-gradient(rgba(7, 43, 78, .055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(7, 43, 78, .055) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    .mock-nav { background: var(--surface); border-bottom: 1px solid var(--line); }
+    .mock-nav-inner { display: flex; min-height: 64px; align-items: center; justify-content: space-between; gap: 20px; }
+    .wordmark { display: inline-flex; min-height: 44px; align-items: center; color: var(--ink); font-family: "Trirong", serif; font-size: 19px; font-weight: 700; text-decoration: none; }
+    .wordmark span { color: var(--coral); }
+    .mock-label { border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; color: var(--navy); font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+
+    .hero { position: relative; overflow: hidden; background: var(--navy-deep); color: white; }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(101, 215, 242, .07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(101, 215, 242, .07) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to right, black, transparent 68%);
+    }
+    .hero-inner { position: relative; display: grid; min-height: 760px; grid-template-columns: 1.04fr .96fr; align-items: center; gap: 64px; padding-block: 68px; }
+    .hero h1 { max-width: 690px; margin-bottom: 20px; font-size: clamp(2.85rem, 4.8vw, 4.8rem); line-height: 1.08; letter-spacing: -.035em; }
+    .hero h1 em { display: block; color: #65d7f2; font-style: normal; font-weight: 700; }
+    .hero h1 span { display: block; margin-top: 8px; color: white; font-size: .62em; line-height: 1.25; letter-spacing: -.02em; }
+    .hero-product-description { max-width: 660px; margin: -2px 0 18px; border-left: 4px solid var(--coral); padding: 3px 0 3px 14px; color: white; font-size: 18px; font-weight: 700; line-height: 1.55; }
+    .hero-glance { max-width: 660px; margin-bottom: 24px; }
+    .hero-glance > p { margin: 0 0 16px; color: rgba(255, 255, 255, .78); font-size: 17px; }
+    .hero-glance strong { color: white; }
+    .hero-facts { display: flex; flex-wrap: wrap; gap: 8px; }
+    .hero-facts span { border: 1px solid rgba(101, 215, 242, .48); border-radius: 999px; background: rgba(101, 215, 242, .08); padding: 7px 12px; color: #dffaff; font-size: 13px; font-weight: 700; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .hero-proof-line { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; max-width: 660px; margin-top: 26px; background: rgba(255, 255, 255, .16); }
+    .hero-proof-line div { background: rgba(0, 22, 47, .7); padding: 14px 12px; }
+    .hero-proof-line b { display: block; color: white; font-size: 14px; }
+    .hero-proof-line span { display: block; margin-top: 3px; color: rgba(255, 255, 255, .62); font-size: 11px; }
+    .hero-visual { position: relative; margin: 0; }
+    .hero-photo-frame { position: relative; overflow: hidden; border: 1px solid rgba(255, 255, 255, .2); border-radius: 30px; background: var(--ivory); box-shadow: 20px 24px 0 rgba(101, 215, 242, .11); }
+    .course-card-top { position: relative; min-height: 168px; background: var(--ivory); padding: 28px 30px 24px; color: var(--navy); }
+    .course-card-top::after { content: "T4"; position: absolute; right: 18px; bottom: -13px; color: rgba(7, 43, 78, .08); font-family: "Trirong", serif; font-size: 118px; font-weight: 700; line-height: 1; }
+    .course-card-top span { display: block; color: var(--coral); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .course-card-top strong { position: relative; z-index: 1; display: block; max-width: 460px; margin-top: 10px; font-family: "Trirong", serif; font-size: 26px; line-height: 1.35; }
+    .course-card-top p { position: relative; z-index: 1; margin: 8px 0 0; color: var(--muted); font-size: 14px; }
+    .hero-photo-frame img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+    .hero-caption { background: var(--navy); padding: 17px 20px 19px; }
+    .hero-caption span { color: #65d7f2; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .hero-caption p { margin: 4px 0 0; color: white; font-weight: 600; line-height: 1.5; }
+    .hero-stamp { position: absolute; top: -22px; right: -18px; display: grid; width: 96px; aspect-ratio: 1; place-items: center; border-radius: 50%; background: var(--coral); color: white; font-size: 13px; font-weight: 700; line-height: 1.3; text-align: center; transform: rotate(5deg); }
+
+    .offer { background: var(--ivory); padding-block: 96px; }
+    .offer-grid { display: grid; grid-template-columns: minmax(280px, .78fr) minmax(0, 1.45fr); gap: 40px; align-items: start; }
+    .offer-summary { position: sticky; top: 24px; overflow: hidden; border-radius: 28px; background: var(--navy); color: white; box-shadow: 0 20px 50px rgba(7, 43, 78, .17); }
+    .offer-summary-top { padding: 32px; }
+    .offer-code { display: inline-flex; border-radius: 999px; background: #65d7f2; padding: 5px 11px; color: var(--navy-deep); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .offer-summary h2 { margin: 18px 0 14px; color: white; font-size: 32px; line-height: 1.25; }
+    .offer-summary p { color: rgba(255, 255, 255, .74); }
+    .price { margin: 26px 0 2px; color: #65d7f2; font-family: "Trirong", serif; font-size: 44px; font-weight: 700; line-height: 1.1; }
+    .price-note { font-size: 13px; }
+    .offer-meta { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: rgba(255, 255, 255, .16); }
+    .offer-meta div { min-height: 92px; background: rgba(0, 22, 47, .45); padding: 18px; }
+    .offer-meta span { display: block; color: rgba(255, 255, 255, .58); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .offer-meta b { display: block; margin-top: 4px; color: white; font-size: 15px; line-height: 1.45; }
+    .offer-summary-actions { display: grid; gap: 10px; padding: 24px 32px 32px; }
+    .offer-summary-actions .btn-main, .offer-summary-actions .btn-line { width: 100%; }
+    .offer-summary-actions small { color: rgba(255, 255, 255, .62); line-height: 1.5; }
+    .offer-content h2 { max-width: 720px; margin-bottom: 16px; color: var(--navy); font-size: clamp(2.3rem, 4.5vw, 4.3rem); line-height: 1.12; letter-spacing: -.03em; }
+    .offer-intro { max-width: 700px; color: var(--muted); font-size: 18px; }
+    .offer-rule { width: 88px; height: 8px; margin: 28px 0 38px; background: var(--coral); transform: rotate(-1deg); }
+    .group-label { display: flex; align-items: center; gap: 12px; margin: 0 0 18px; color: var(--navy); font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .group-label::after { content: ""; height: 1px; flex: 1; background: var(--line); }
+    .core-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 44px; }
+    .core-card { position: relative; min-height: 190px; overflow: hidden; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); padding: 24px; }
+    .core-card::after { content: attr(data-index); position: absolute; right: 12px; bottom: -28px; color: rgba(7, 43, 78, .055); font-family: "Trirong", serif; font-size: 104px; font-weight: 700; line-height: 1; }
+    .core-card span { color: var(--coral); font-size: 12px; font-weight: 700; letter-spacing: .12em; }
+    .core-card h3 { position: relative; z-index: 1; margin: 12px 0 8px; color: var(--navy); font-size: 20px; line-height: 1.4; }
+    .core-card p { position: relative; z-index: 1; margin-bottom: 0; color: var(--muted); font-size: 14px; }
+    .bonus-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .bonus-card { position: relative; overflow: hidden; border: 1px solid rgba(221, 65, 85, .26); border-radius: 22px; background: #fff8f4; padding: 24px; }
+    .bonus-card:first-child { grid-column: 1 / -1; display: grid; grid-template-columns: 100px 1fr; align-items: center; gap: 24px; background: var(--navy); color: white; }
+    .bonus-number { color: var(--coral); font-family: "Trirong", serif; font-size: 44px; font-weight: 700; line-height: 1; }
+    .bonus-card:first-child .bonus-number { color: #65d7f2; font-size: 72px; text-align: center; }
+    .bonus-card h3 { margin: 10px 0 8px; color: var(--navy); font-size: 19px; line-height: 1.4; }
+    .bonus-card:first-child h3 { color: white; font-size: 23px; }
+    .bonus-card p { margin: 0; color: var(--muted); font-size: 14px; }
+    .bonus-card:first-child p { color: rgba(255, 255, 255, .72); }
+    .bonus-use { display: block; margin-top: 14px; color: var(--coral); font-size: 12px; font-weight: 700; }
+    .bonus-card:first-child .bonus-use { color: #65d7f2; }
+
+    .instructor { position: relative; overflow: hidden; background: var(--sand); padding-block: 104px; }
+    .instructor::after { content: "PUN"; position: absolute; right: -28px; bottom: -72px; color: rgba(7, 43, 78, .035); font-family: "Trirong", serif; font-size: min(24vw, 330px); font-weight: 700; line-height: 1; pointer-events: none; }
+    .instructor-grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(300px, .72fr) minmax(0, 1.28fr); gap: 58px; align-items: stretch; }
+    .instructor-portrait { position: relative; overflow: hidden; min-height: 610px; border-radius: 30px; background: #c7ced8; box-shadow: 0 22px 50px rgba(7, 43, 78, .16); }
+    .instructor-portrait::before { content: ""; position: absolute; z-index: 1; inset: 0 0 auto; height: 8px; background: var(--coral); }
+    .instructor-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 34%; }
+    .instructor-nameplate { position: absolute; z-index: 2; inset: auto 0 0; background: linear-gradient(transparent, rgba(0, 22, 47, .97) 46%); padding: 94px 28px 26px; color: white; }
+    .instructor-nameplate strong { display: block; font-family: "Trirong", serif; font-size: 28px; line-height: 1.25; }
+    .instructor-nameplate span { display: block; margin-top: 4px; color: #65d7f2; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .instructor-copy { align-self: center; }
+    .instructor-copy h2 { max-width: 790px; margin-bottom: 22px; color: var(--navy); font-size: clamp(2.4rem, 4.7vw, 4.65rem); line-height: 1.16; letter-spacing: -.035em; }
+    .instructor-copy > p:not(.eyebrow) { max-width: 780px; color: var(--muted); font-size: 17px; line-height: 1.8; }
+    .authority-proofs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 34px; }
+    .authority-proof { min-height: 152px; border: 1px solid rgba(7, 43, 78, .15); border-radius: 20px; background: rgba(255, 253, 248, .78); padding: 22px 20px; }
+    .authority-proof span { display: block; margin-bottom: 18px; color: var(--coral); font-family: "Trirong", serif; font-size: 28px; font-weight: 700; line-height: 1; }
+    .authority-proof strong { color: var(--navy); font-size: 15px; line-height: 1.5; }
+
+    .client-logos { border-block: 1px solid var(--line); background: white; padding-block: 54px 60px; }
+    .client-logo-head { display: grid; grid-template-columns: 1fr .8fr; gap: 40px; align-items: end; }
+    .client-logo-head h2 { margin: 6px 0 0; color: var(--navy); font-size: 34px; line-height: 1.3; }
+    .client-logo-head p { margin: 0; color: var(--muted); font-size: 14px; }
+    .client-logo-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; margin-top: 28px; }
+    .client-logo { display: flex; aspect-ratio: 4 / 3; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(7, 43, 78, .11); border-radius: 16px; background: white; padding: 14px; }
+    .client-logo img { width: 100%; max-height: 100%; object-fit: contain; filter: none; opacity: 1; }
+
+    .journey-map { border-block: 1px solid rgba(255, 255, 255, .13); background: var(--navy); color: white; padding-block: 42px; }
+    .journey-map-grid { display: grid; grid-template-columns: .9fr 1.6fr; gap: 40px; align-items: center; }
+    .journey-map h2 { margin: 0; color: white; font-size: 30px; line-height: 1.3; }
+    .map-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .map-step { position: relative; min-height: 72px; border: 1px solid rgba(255, 255, 255, .18); padding: 13px 10px; text-align: center; }
+    .map-step:not(:last-child)::after { content: "→"; position: absolute; z-index: 2; top: 23px; right: -10px; color: #65d7f2; font-weight: 700; }
+    .map-step span { display: block; color: #65d7f2; font-size: 10px; font-weight: 700; letter-spacing: .12em; }
+    .map-step b { display: block; margin-top: 3px; font-size: 14px; }
+
+    .proof { background: var(--surface); padding-block: 104px; }
+    .proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 260px; gap: 18px; margin-top: 44px; }
+    .proof-card { position: relative; overflow: hidden; border-radius: 26px; background: var(--navy); min-height: 260px; }
+    .proof-card:first-child { grid-column: span 2; grid-row: span 2; min-height: 538px; }
+    .proof-card img { width: 100%; height: 100%; object-fit: cover; }
+    .proof-card:first-child img { object-position: 52% center; }
+    .proof-caption { position: absolute; inset: auto 0 0; background: linear-gradient(transparent, rgba(0, 22, 47, .96)); padding: 76px 24px 22px; color: white; }
+    .proof-caption span { color: #65d7f2; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .proof-caption p { margin: 5px 0 0; max-width: 570px; color: white; font-weight: 600; }
+    .testimonial-wall { margin-top: 76px; border-top: 1px solid var(--line); padding-top: 48px; }
+    .testimonial-wall-head { display: grid; grid-template-columns: 1fr .72fr; gap: 40px; align-items: end; margin-bottom: 28px; }
+    .testimonial-wall h3 { max-width: 730px; margin: 0; color: var(--navy); font-family: "Trirong", serif; font-size: clamp(2rem, 3.8vw, 3.5rem); line-height: 1.22; }
+    .testimonial-wall-head p { margin: 0; color: var(--muted); }
+    .testimonial-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .testimonial-card { overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: white; box-shadow: 0 12px 30px rgba(7, 43, 78, .08); }
+    .testimonial-card a { display: block; }
+    .testimonial-card img { width: 100%; aspect-ratio: 1; object-fit: cover; transition: transform .2s ease; }
+    .testimonial-card a:hover img { transform: scale(1.02); }
+    .testimonial-card figcaption { padding: 11px 12px 13px; color: var(--navy); font-size: 12px; font-weight: 700; }
+
+    .diagnosis { background: var(--sand); padding-block: 104px; }
+    .diagnosis-grid { display: grid; grid-template-columns: .86fr 1.14fr; gap: 54px; align-items: start; }
+    .diagnosis-quote { position: sticky; top: 24px; }
+    .diagnosis-quote strong { display: block; max-width: 470px; color: var(--navy); font-family: "Trirong", serif; font-size: clamp(2.2rem, 4vw, 4rem); line-height: 1.2; }
+    .diagnosis-quote strong span { color: var(--coral); }
+    .diagnosis-quote p { max-width: 480px; margin: 22px 0 0; color: var(--muted); }
+    .pain-list { display: grid; gap: 12px; }
+    .pain-item { display: grid; grid-template-columns: 62px 1fr; gap: 18px; border-bottom: 1px solid rgba(7, 43, 78, .18); padding: 22px 0 24px; }
+    .pain-item:first-child { border-top: 1px solid rgba(7, 43, 78, .18); }
+    .pain-item span { color: var(--coral); font-family: "Trirong", serif; font-size: 28px; font-weight: 700; }
+    .pain-item h3 { margin: 0 0 6px; color: var(--navy); font-size: 19px; }
+    .pain-item p { margin: 0; color: var(--muted); }
+    .boundary { margin-top: 34px; border-left: 8px solid var(--coral); background: var(--navy); padding: 28px; color: white; }
+    .boundary b { display: block; margin-bottom: 8px; font-size: 19px; }
+    .boundary p { margin: 0; color: rgba(255, 255, 255, .75); }
+
+    .curriculum { background-color: var(--mist); padding-block: 108px; }
+    .curriculum-head { display: grid; grid-template-columns: 1fr .55fr; gap: 40px; align-items: end; margin-bottom: 58px; }
+    .curriculum-head .section-title { margin-bottom: 0; }
+    .curriculum-aside { border-top: 4px solid var(--coral); padding-top: 14px; color: var(--navy); font-weight: 600; }
+    .modules { position: relative; display: grid; gap: 26px; list-style: none; margin: 0; padding: 0; }
+    .modules::before { content: ""; position: absolute; top: 60px; bottom: 60px; left: 72px; width: 2px; background: rgba(7, 43, 78, .13); }
+    .module { position: relative; display: grid; grid-template-columns: 120px 1fr; gap: 26px; border: 1px solid rgba(7, 43, 78, .14); border-radius: 28px; background: rgba(255, 253, 248, .9); padding: 30px; box-shadow: 0 14px 36px rgba(7, 43, 78, .07); }
+    .module:nth-child(even) { margin-left: 8%; }
+    .module-number { position: relative; z-index: 1; display: grid; width: 86px; height: 86px; place-items: center; border-radius: 50%; background: var(--navy); color: #65d7f2; font-family: "Trirong", serif; font-size: 34px; font-weight: 700; }
+    .module-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+    .module-label { color: var(--coral); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .module h3 { margin: 7px 0 0; color: var(--navy); font-family: "Trirong", serif; font-size: 28px; line-height: 1.3; }
+    .stage-en { border: 1px solid var(--line); border-radius: 999px; padding: 5px 10px; color: var(--navy); font-size: 11px; font-weight: 700; }
+    .module-body { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 22px; }
+    .module-note { border-top: 1px solid var(--line); padding-top: 13px; color: var(--muted); font-size: 14px; }
+    .module-note b { display: block; margin-bottom: 4px; color: var(--navy); }
+    .module-output { grid-column: 1 / -1; border-radius: 17px; background: var(--navy); padding: 16px 18px; color: white; }
+    .module-output span { display: block; margin-bottom: 3px; color: #65d7f2; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+
+    .decision-pack { background: var(--surface); padding-block: 104px; }
+    .artifact-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-top: 42px; border: 1px solid var(--navy); background: var(--navy); }
+    .artifact { min-height: 260px; background: var(--surface); padding: 24px; }
+    .artifact span { color: var(--coral); font-size: 12px; font-weight: 700; letter-spacing: .14em; }
+    .artifact h3 { margin: 42px 0 10px; color: var(--navy); font-family: "Trirong", serif; font-size: 22px; line-height: 1.35; }
+    .artifact p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .fit { background: var(--navy); color: white; padding-block: 96px; }
+    .fit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(255, 255, 255, .22); }
+    .fit-panel { background: var(--navy); padding: 38px; }
+    .fit-panel:last-child { background: #0c3559; }
+    .fit h2 { margin-bottom: 20px; color: white; font-size: 34px; line-height: 1.3; }
+    .fit-list { list-style: none; margin: 0; padding: 0; }
+    .fit-list li { position: relative; border-top: 1px solid rgba(255, 255, 255, .18); padding: 15px 0 15px 28px; color: rgba(255, 255, 255, .82); }
+    .fit-list li::before { content: "✓"; position: absolute; left: 0; color: #65d7f2; font-weight: 700; }
+    .fit-panel:last-child .fit-list li::before { content: "—"; color: var(--coral); }
+
+    .investment { background: var(--ivory); padding-block: 92px; }
+    .investment-card { display: grid; grid-template-columns: 1.15fr .85fr; overflow: hidden; border: 1px solid var(--navy); border-radius: 30px; background: var(--surface); }
+    .investment-copy { padding: 46px; }
+    .investment-copy h2 { margin-bottom: 16px; color: var(--navy); font-size: 40px; line-height: 1.25; }
+    .investment-copy p { color: var(--muted); }
+    .investment-price { display: grid; align-content: center; background: var(--navy); padding: 46px; color: white; }
+    .investment-price span { color: #65d7f2; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .investment-price strong { display: block; margin: 8px 0; color: white; font-family: "Trirong", serif; font-size: 52px; line-height: 1.1; }
+    .investment-price p { margin-bottom: 22px; color: rgba(255, 255, 255, .7); }
+
+    .final-cta { position: relative; overflow: hidden; background: var(--coral); padding-block: 92px; color: white; text-align: center; }
+    .final-cta::before { content: "T4"; position: absolute; top: 50%; left: 50%; color: rgba(255, 255, 255, .08); font-family: "Trirong", serif; font-size: min(42vw, 520px); font-weight: 700; line-height: .7; transform: translate(-50%, -50%); }
+    .final-inner { position: relative; }
+    .final-cta h2 { max-width: 900px; margin: 0 auto 18px; color: white; font-size: clamp(2.2rem, 5vw, 4.5rem); line-height: 1.16; }
+    .final-cta p { max-width: 680px; margin: 0 auto 28px; color: rgba(255, 255, 255, .86); font-size: 18px; }
+    .final-cta .btn-main { background: var(--navy-deep); }
+    .final-cta .btn-main:hover { background: var(--navy); }
+
+    footer { background: var(--navy-deep); padding-block: 22px; color: rgba(255, 255, 255, .62); font-size: 13px; text-align: center; }
+
+    @media (max-width: 980px) {
+      .hero-inner, .offer-grid, .instructor-grid, .diagnosis-grid, .investment-card { grid-template-columns: 1fr; }
+      .hero-inner { padding-block: 64px; }
+      .hero-photo-frame img { aspect-ratio: 16 / 10; }
+      .offer-summary, .diagnosis-quote { position: relative; top: auto; }
+      .offer-summary { display: grid; grid-template-columns: 1.2fr .8fr; }
+      .offer-summary-top { grid-row: span 2; }
+      .offer-meta { align-self: stretch; }
+      .offer-summary-actions { align-content: center; }
+      .journey-map-grid, .curriculum-head { grid-template-columns: 1fr; }
+      .instructor-portrait { min-height: 680px; }
+      .client-logo-grid { grid-template-columns: repeat(4, 1fr); }
+      .artifact-row { grid-template-columns: repeat(2, 1fr); }
+      .testimonial-wall-head { grid-template-columns: 1fr; gap: 14px; }
+      .testimonial-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 700px) {
+      .shell { width: min(100% - 32px, 1180px); }
+      .mock-label { display: none; }
+      .hero-inner { min-height: auto; grid-template-columns: 1fr; gap: 40px; padding-block: 42px 58px; }
+      .hero h1 { font-size: clamp(2.35rem, 11.5vw, 3.25rem); }
+      .hero-glance > p { font-size: 16px; }
+      .hero-proof-line { grid-template-columns: 1fr; }
+      .hero-path, .core-grid, .bonus-grid, .proof-grid, .module-body, .fit-grid { grid-template-columns: 1fr; }
+      .hero-step { min-height: auto; }
+      .hero-photo-frame img { aspect-ratio: 4 / 3; }
+      .course-card-top { min-height: 150px; padding: 24px 22px 20px; }
+      .course-card-top strong { font-size: 23px; }
+      .hero-stamp { top: -14px; right: -6px; width: 78px; font-size: 11px; }
+      .offer, .instructor, .proof, .diagnosis, .curriculum, .decision-pack, .fit, .investment, .final-cta { padding-block: 72px; }
+      .offer-summary { display: block; }
+      .offer-summary h2 { font-size: 28px; }
+      .price { font-size: 38px; }
+      .bonus-card:first-child { display: block; grid-column: auto; }
+      .bonus-card:first-child .bonus-number { margin-bottom: 18px; text-align: left; }
+      .instructor-grid { gap: 34px; }
+      .instructor-portrait { min-height: 520px; }
+      .instructor-copy h2 { font-size: clamp(2.2rem, 10vw, 3.25rem); }
+      .authority-proofs { grid-template-columns: 1fr; }
+      .authority-proof { min-height: auto; }
+      .client-logo-head { grid-template-columns: 1fr; gap: 12px; }
+      .client-logo-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .client-logo { padding: 9px; border-radius: 13px; }
+      .map-steps { grid-template-columns: 1fr; }
+      .map-step { display: grid; min-height: 52px; grid-template-columns: 42px 1fr; align-items: center; text-align: left; }
+      .map-step:not(:last-child)::after { content: "↓"; top: auto; right: auto; bottom: -17px; left: 20px; }
+      .proof-grid { grid-auto-rows: auto; }
+      .proof-card:first-child { grid-column: auto; grid-row: auto; min-height: 420px; }
+      .proof-card { min-height: 250px; }
+      .testimonial-wall { margin-top: 56px; padding-top: 36px; }
+      .testimonial-grid { display: grid; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: min(78vw, 310px); overflow-x: auto; padding: 2px 2px 16px; scroll-snap-type: x mandatory; scrollbar-width: thin; }
+      .testimonial-card { scroll-snap-align: start; }
+      .pain-item { grid-template-columns: 46px 1fr; gap: 10px; }
+      .curriculum-head { margin-bottom: 36px; }
+      .modules::before { left: 51px; }
+      .module, .module:nth-child(even) { grid-template-columns: 72px 1fr; gap: 12px; margin-left: 0; padding: 20px 16px; }
+      .module-number { width: 62px; height: 62px; font-size: 25px; }
+      .module-top { display: block; }
+      .module h3 { font-size: 21px; }
+      .stage-en { display: inline-flex; margin-top: 8px; }
+      .module-body { margin-top: 18px; }
+      .module-output { grid-column: auto; }
+      .artifact-row { grid-template-columns: 1fr; }
+      .artifact { min-height: 210px; }
+      .fit-panel, .investment-copy, .investment-price { padding: 28px 22px; }
+      .investment-copy h2 { font-size: 31px; }
+      .investment-price strong { font-size: 42px; }
+    }
+
+    @media (max-width: 360px) {
+      .shell { width: min(100% - 24px, 1180px); }
+      .hero h1 { font-size: 2.6rem; }
+      .hero-actions { display: grid; }
+      .hero-actions a { width: 100%; }
+      .offer-summary-top, .offer-summary-actions { padding-inline: 22px; }
+      .module { grid-template-columns: 1fr; }
+      .modules::before { display: none; }
+      .module-number { width: 56px; height: 56px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body data-mockup="t4-operating-journey">
+  <header class="mock-nav">
+    <div class="shell mock-nav-inner">
+      <a class="wordmark" href="#top">Pun <span>Nattapatch</span></a>
+      <span class="mock-label">HTML Mockup · T4</span>
+    </div>
+  </header>
+
+  <main id="top">
+    <section data-section="hero" class="hero">
+      <div class="shell hero-inner">
+        <div>
+          <p class="eyebrow">In-house course · T4 · 1 day</p>
+          <h1>คอร์สอบรม <em>Advance AI &amp;<br>Business Automation</em><span>สำหรับทีมในองค์กร</span></h1>
+          <p data-product-description class="hero-product-description">คอร์สอบรมการนำ AI Agent มาใช้ลดงาน เพิ่มยอดในองค์กร</p>
+          <div data-hero-glance class="hero-glance">
+            <p data-sales-thesis>สร้าง <strong>AI Agent</strong> ให้รับงานเอกสารจุกจิกแทนคนเก่ง เพื่อให้ <strong>ธุรกิจโตโดยไม่ต้องเพิ่มคน</strong> ตามทุกงานที่เพิ่มขึ้น</p>
+            <div class="hero-facts" aria-label="ข้อมูลคอร์สที่ควรรู้ทันที">
+              <span>In-house ที่บริษัทคุณ</span>
+              <span>1 วัน · 1 Workflow</span>
+              <span>Data Safety + Human Review</span>
+              <span>แผนนำไปใช้ต่อ 30 วัน</span>
+            </div>
+          </div>
+          <div class="hero-actions">
+            <a class="btn-main" href="#offer">ดู AI Agent ที่ทีมจะสร้าง</a>
+            <a class="btn-line" href="#curriculum">ดูวิธีเริ่มใช้ในองค์กร</a>
+          </div>
+          <div class="hero-proof-line" aria-label="ประสบการณ์ของผู้สอน">
+            <div><b>18 องค์กร</b><span>ที่เคยอบรมและวางระบบร่วมกัน</span></div>
+            <div><b>มี Workflow ที่ใช้เอง</b><span>กับงานขายและงานที่ปรึกษา</span></div>
+            <div><b>สอนเองทุกบริษัท</b><span>ทีมสร้าง Agent ไปพร้อมกัน</span></div>
+          </div>
+        </div>
+        <figure class="hero-visual">
+          <div class="hero-stamp">หนึ่งบริษัท<br>หนึ่ง Workflow</div>
+          <div class="hero-photo-frame">
+            <div class="course-card-top"><span>T4 · Advance AI &amp; Business Automation</span><strong>เลือกงาน → สร้าง Agent → วางคนตรวจ</strong><p>ทีมสร้าง Agent จาก Workflow จริง พร้อมกติกาข้อมูลและ Human Review</p></div>
+            <img src="/advance-ai-course/gallery1.JPG" width="1800" height="1350" alt="ปัน ณัฐพัชร์สอนคอร์ส Advance AI และ Business Automation ต่อหน้าผู้เข้าอบรมในห้องเรียน" fetchpriority="high">
+            <figcaption class="hero-caption"><span>ภาพคลาสจริง · ไม่ใช่ภาพ AI</span><p>เห็นหัวข้อคอร์ส เห็นผู้สอน และเห็นบรรยากาศการทำงานตั้งแต่จอแรก</p></figcaption>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <section id="offer" data-section="offer" class="offer grid-field" aria-labelledby="offer-heading">
+      <div class="shell offer-grid">
+        <aside class="offer-summary" aria-label="สรุปแพ็กเกจ T4">
+          <div class="offer-summary-top">
+            <span class="offer-code">T4 · AI Agent Adoption Day</span>
+            <h2>สร้าง AI Agent ตัวแรก ให้ทีมเดิมรับงานได้มากขึ้น</h2>
+            <p>เริ่มจากงานเอกสารหนึ่งเรื่องที่กินเวลาทีม สร้าง Working Prototype พร้อม Data Safety, Human Review และแผนนำไปใช้ต่อ 30 วัน</p>
+            <div data-catalog-price data-price-source="loading" class="price" aria-live="polite">กำลังอ่านราคา…</div>
+            <p class="price-note">ราคาสำหรับหนึ่งบริษัท · ตามขอบเขต Catalog</p>
+          </div>
+          <div class="offer-meta">
+            <div><span>เวลา</span><b>1 วัน</b></div>
+            <div><span>ขอบเขต</span><b>1 Workflow</b></div>
+            <div><span>สิ่งที่สร้าง</span><b>AI Agent Prototype</b></div>
+            <div><span>ทางต่อ</span><b>30-Day Adoption Plan</b></div>
+          </div>
+          <div class="offer-summary-actions">
+            <a class="btn-main" href="#final-cta">เริ่ม Fit Gate ก่อนออกใบแจ้งหนี้</a>
+            <a class="btn-line" href="#fit">เช็กก่อนว่าทีมเหมาะไหม</a>
+            <small>ชำระค่าบริการ 100% ก่อนวันอบรมเพื่อยืนยันคิว</small>
+          </div>
+        </aside>
+
+        <div class="offer-content">
+          <p class="eyebrow">Complete offer · สิ่งที่ทีมสร้างในหนึ่งวัน</p>
+          <h2 id="offer-heading">เปลี่ยนงานจุกจิกหนึ่งเรื่อง ให้เป็น AI Agent ตัวแรกของทีม</h2>
+          <p class="offer-intro">ทีมเอา Workflow ของบริษัทเข้าห้องเรียน แล้วสร้าง Working Prototype พร้อมกติกาข้อมูล จุด Human Review และแผนเริ่มใช้ต่อหลังคลาส</p>
+          <div class="offer-rule" aria-hidden="true"></div>
+
+          <p class="group-label">Core · ของหลักที่ทีมสร้างในห้อง</p>
+          <div class="core-grid">
+            <article data-core-artifact data-index="01" class="core-card"><span>CORE 01</span><h3>Workflow Map</h3><p>แยก Trigger, Input, Rule, Exception, Output และจุดที่คนยังต้องตัดสินในงานเดิม</p></article>
+            <article data-core-artifact data-index="02" class="core-card"><span>CORE 02</span><h3>AI Agent Working Prototype</h3><p>Agent ตัวแรกที่รับข้อมูล ทำงานตามกติกา และส่ง Output ให้ทีมตรวจในขอบเขตหนึ่ง Workflow</p></article>
+            <article data-core-artifact data-index="03" class="core-card"><span>CORE 03</span><h3>Data Safety + Human Review Rules</h3><p>ระบุว่าข้อมูลใดใช้ได้ จุดไหนต้อง Mask ใครเป็นคนตรวจ และงานใดห้ามให้ AI ตัดสินแทน</p></article>
+            <article data-core-artifact data-index="04" class="core-card"><span>CORE 04</span><h3>30-Day Adoption Plan</h3><p>กำหนด Owner เคสแรกที่ใช้ ตัวเลขที่ต้องเก็บ และวันทบทวนผลหลังคลาส</p></article>
+          </div>
+
+          <p class="group-label">Bonus · เครื่องมือใช้ต่อที่รวมอยู่ในแพ็กเกจ</p>
+          <div class="bonus-grid">
+            <article data-bonus-card class="bonus-card"><div class="bonus-number">01</div><div><h3>30 AI Workflow Ideas: ตัวอย่างงานซ้ำที่ AI อาจช่วยได้</h3><p>ช่วย Owner และ Champion หางานจาก Pain ของทีม โดยไม่เริ่มจากชื่อ Tool</p><span class="bonus-use">ใช้ก่อนเลือก Candidate · Google Sheet</span></div></article>
+            <article data-bonus-card class="bonus-card"><div class="bonus-number">02</div><h3>AI Data Safety Checklist: เช็กก่อนให้ AI แตะข้อมูล 30 จุด</h3><p>แยกข้อมูลที่ใช้ได้ ต้อง Mask ต้องขออนุมัติ หรือห้ามส่งออก</p><span class="bonus-use">ใช้ก่อนให้ Agent แตะข้อมูล · Google Sheet / PDF</span></article>
+            <article data-bonus-card class="bonus-card"><div class="bonus-number">03</div><h3>AI Build Brief: เขียนโจทย์ก่อนสร้างเพื่อไม่ให้ระบบบวม</h3><p>ล็อก Goal, User, Input, Rule, Exception, Output และ Acceptance ให้ทีมคุยเรื่องเดียวกัน</p><span class="bonus-use">ใช้ก่อนเริ่ม Build · Google Doc</span></article>
+            <article data-bonus-card class="bonus-card"><div class="bonus-number">04</div><h3>Workflow Example Library: ดู Pattern แล้วปรับตามบริบท</h3><p>ช่วยทีมเห็นรูปแบบงานที่ใกล้เคียง พร้อมจุดที่ไม่ควรลอกระบบคนอื่นทั้งก้อน</p><span class="bonus-use">ใช้ตอนหาแนวทาง · Google Doc / PDF</span></article>
+            <article data-bonus-card class="bonus-card"><div class="bonus-number">05</div><h3>30-Minute Adoption Review: เช็กว่า Agent ช่วยงานได้แค่ไหน</h3><p>ให้ Owner และ Manager ดูเคสที่ใช้จริง เวลาที่ลดได้ และจุดที่ทีมยังต้องแก้</p><span class="bonus-use">ใช้ภายใน 14 วัน · Google Sheet</span></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section data-section="instructor" class="instructor grid-field" aria-labelledby="instructor-heading">
+      <div class="shell instructor-grid">
+        <figure class="instructor-portrait">
+          <img data-instructor-profile src="/lp/inhouse/pun-ceo-profile.jpg" width="1200" height="1800" alt="ปัน ณัฐพัชร์ ผู้สอนคอร์ส Advance AI และ Business Automation" loading="lazy">
+          <figcaption class="instructor-nameplate"><strong>ปัน ณัฐพัชร์</strong><span>B2B Sales Consultant · Agentic AI Transformation</span></figcaption>
+        </figure>
+        <div class="instructor-copy">
+          <p class="eyebrow">Instructor · จากงานจริงสู่ห้องเรียน</p>
+          <h2 id="instructor-heading">สอนจากประสบการณ์ขาย โค้ชทีม และสร้าง AI Workflow ใช้งานจริง</h2>
+          <p>ผมเคยอยู่ทั้งฝั่งที่ต้องทำยอดเอง โค้ชทีมหน้างาน และกลับมาสร้าง AI Workflow ใช้กับงานขายและงานที่ปรึกษาของตัวเอง ในคลาสจึงพาทีมเลือกงาน วางกติกา และกำหนดคนตรวจจาก Workflow ของบริษัทครับ</p>
+          <div class="authority-proofs" aria-label="ประสบการณ์ของผู้สอน">
+            <article data-authority-proof class="authority-proof"><span>01</span><strong>อดีต Sales Engineer และ Instructor ฝั่ง Dealer</strong></article>
+            <article data-authority-proof class="authority-proof"><span>02</span><strong>คัดเรซูเม่ 1,000+ ใบ · สัมภาษณ์คนเข้าทีม 100+ คน</strong></article>
+            <article data-authority-proof class="authority-proof"><span>03</span><strong>อบรมและวางระบบร่วมกับ 18 องค์กร</strong></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section data-section="client-logos" class="client-logos" aria-labelledby="client-logo-heading">
+      <div class="shell">
+        <div class="client-logo-head">
+          <div><p class="eyebrow">Organisations · ประสบการณ์ที่ผ่านงานจริง</p><h2 id="client-logo-heading">องค์กรที่เคยร่วมงานกับปัน</h2></div>
+          <p>หลักฐานระดับองค์กรของงาน Training, Sales และ AI ที่ปันเคยทำร่วมด้วย ไม่ได้หมายความว่าแต่ละองค์กรเป็นผู้ซื้อคอร์สนี้</p>
+        </div>
+        <div class="client-logo-grid" aria-label="โลโก้องค์กรที่เคยร่วมงานกับปัน">
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/nissan.png" width="180" height="120" alt="Nissan" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/futureskill.png" width="180" height="120" alt="FutureSkill" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/ving.png" width="180" height="120" alt="V!NG" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/gpx.jpg" width="180" height="120" alt="GPX" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/royal-enfield.jpg" width="180" height="120" alt="Royal Enfield" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/zontes.png" width="180" height="120" alt="Zontes" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/lambretta.png" width="180" height="120" alt="Lambretta" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/hfc-healthfoods.png" width="180" height="120" alt="HFC HealthFoods Corporation" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/home-plus.png" width="180" height="120" alt="ฮ.โฮมพลัส" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/farevefarm.jpg" width="180" height="120" alt="Farevefarm" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/farmsuk.jpg" width="180" height="120" alt="ฟาร์มสุข farmsuk" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/business-boy.jpg" width="180" height="120" alt="เด็กประกอบการ The Business Boy" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/aes.jpg" width="180" height="120" alt="AES" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/nsscrap.avif" width="180" height="120" alt="NSSCRAP" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/scenery-farm.jpeg" width="180" height="120" alt="Scenery Farm" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/ud-clinic.jpg" width="180" height="120" alt="UD Clinic" loading="lazy"></figure>
+        </div>
+      </div>
+    </section>
+
+    <section data-section="proof" class="proof" aria-labelledby="proof-heading">
+      <div class="shell">
+        <p class="eyebrow">Proof · ภาพจากคลาสจริง</p>
+        <h2 id="proof-heading" class="section-title">เห็นคน เห็นห้อง<br>เห็นสิ่งที่ลงมือทำ</h2>
+        <p class="section-lead">ภาพทุกใบมาจากคลาสและกิจกรรมที่ปันสอนจริง ผู้เข้าอบรมใช้คอมพิวเตอร์ คุยงานของทีม และสร้างไปพร้อมกันในห้อง</p>
+        <div class="proof-grid">
+          <figure data-proof-activity class="proof-card"><img src="/advance-ai-course/gallery1.JPG" width="1800" height="1350" alt="ปัน ณัฐพัชร์สอน Advance AI และ Business Automation ในคลาสจริง" loading="lazy"><figcaption class="proof-caption"><span>01 · Course in the room</span><p>หัวข้อบนจอคือ Advance AI &amp; Business Automation และผู้เข้าอบรมอยู่พร้อมหน้ากันในห้อง</p></figcaption></figure>
+          <figure data-proof-activity class="proof-card"><img src="/advance-ai-course/IMG_5218.JPG" width="1800" height="1350" alt="ผู้เข้าอบรม Advance AI เปิดคอมพิวเตอร์และลงมือทำโจทย์ร่วมกัน" loading="lazy"><figcaption class="proof-caption"><span>02 · Work on screen</span><p>ผู้เข้าอบรมเปิดคอมพิวเตอร์และลงมือทำโจทย์เดียวกันระหว่างคลาส</p></figcaption></figure>
+          <figure data-proof-activity class="proof-card"><img src="/advance-ai-course/testimonial6.JPG" width="1800" height="1350" alt="ผู้เข้าอบรม AI จำนวนมากนั่งเรียนและทำกิจกรรมในห้อง" loading="lazy"><figcaption class="proof-caption"><span>03 · Work as a team</span><p>ทีมเรียนพร้อมกันเพื่อให้คนใช้และคนตรวจคุยเรื่องเดียวกัน</p></figcaption></figure>
+          <figure data-proof-activity class="proof-card"><img src="/lp/inhouse/hands-on.jpg" width="1600" height="1200" alt="ผู้เข้าอบรม In-house Workshop ช่วยกันวางงานบนหน้าจอในสถานที่ทำงานจริง" loading="lazy"><figcaption class="proof-caption"><span>04 · On-site workshop</span><p>ทีมช่วยกันวางงานบนหน้าจอในสถานที่ทำงานจริง</p></figcaption></figure>
+          <figure data-proof-activity class="proof-card"><img src="/advance-ai-course/IMG_6453.JPG" width="1800" height="1350" alt="ปันถ่ายภาพร่วมกับผู้เข้าอบรมหลังจบกิจกรรม AI Workshop" loading="lazy"><figcaption class="proof-caption"><span>05 · Finish together</span><p>ทีมจบวันพร้อมผลงานและภาษากลางที่ใช้คุยกันต่อ</p></figcaption></figure>
+          <figure data-proof-activity class="proof-card"><img src="/lp/inhouse/hero-pointing.jpg" width="1600" height="1200" alt="ปันอธิบาย Workflow บนหน้าจอกับผู้เข้าร่วม Workshop ในห้องประชุม" loading="lazy"><figcaption class="proof-caption"><span>06 · Map together</span><p>Process owner กับคนลงมือช่วยกันไล่งานเดิมบนหน้าจอ</p></figcaption></figure>
+        </div>
+
+        <div class="testimonial-wall">
+          <p class="eyebrow">เสียงจากผู้เข้าอบรม AI กับปัน</p>
+          <div class="testimonial-wall-head"><h3>อ่านข้อความจริงจากคลาส AI ก่อนหน้า</h3><p>รีวิวชุดนี้เป็นเสียงจากผู้เข้าอบรม AI Workshop ที่ปันเคยสอน ใช้ประกอบการดูวิธีสอนและบรรยากาศของคลาส ไม่ได้อ้างว่าเป็นผู้ซื้อ T4</p></div>
+          <div class="testimonial-grid" aria-label="รีวิวจากผู้เข้าอบรม AI Workshop ก่อนหน้า">
+            <figure data-testimonial-source="ai-workshop" class="testimonial-card"><a href="/testimonial/2026-05/review-02.jpg" target="_blank" rel="noopener"><img src="/testimonial/2026-05/review-02.jpg" width="1000" height="1000" alt="ข้อความรีวิวจากผู้เข้าอบรมที่ขอบคุณสำหรับคลาส AI ที่สนุกและได้ความรู้" loading="lazy"></a><figcaption>AI Workshop · พฤษภาคม 2026</figcaption></figure>
+            <figure data-testimonial-source="ai-workshop" class="testimonial-card"><a href="/testimonial/2026-05/review-05.jpg" target="_blank" rel="noopener"><img src="/testimonial/2026-05/review-05.jpg" width="1000" height="1000" alt="ข้อความรีวิวจากองค์กรที่ทีมงานชอบการสอน AI ของปัน" loading="lazy"></a><figcaption>In-house AI · พฤษภาคม 2026</figcaption></figure>
+            <figure data-testimonial-source="ai-workshop" class="testimonial-card"><a href="/testimonial/2026-07/review-09.jpg" target="_blank" rel="noopener"><img src="/testimonial/2026-07/review-09.jpg" width="1410" height="1410" alt="ข้อความรีวิวผู้เข้าอบรมที่นำ AI ไปช่วยทำเว็บไซต์" loading="lazy"></a><figcaption>AI Workshop · กรกฎาคม 2026</figcaption></figure>
+            <figure data-testimonial-source="ai-workshop" class="testimonial-card"><a href="/testimonial/2026-07/review-10.jpg" target="_blank" rel="noopener"><img src="/testimonial/2026-07/review-10.jpg" width="736" height="736" alt="ข้อความแนะนำคลาส AI ของปันจากผู้เข้าอบรม" loading="lazy"></a><figcaption>AI Workshop · กรกฎาคม 2026</figcaption></figure>
+            <figure data-testimonial-source="ai-workshop" class="testimonial-card"><a href="/testimonial/2026-07/review-11.jpg" target="_blank" rel="noopener"><img src="/testimonial/2026-07/review-11.jpg" width="914" height="914" alt="ข้อความจากผู้เข้าอบรมที่ต่อยอดโปรเจกต์เลขานุการและ Morning Brief" loading="lazy"></a><figcaption>Project extension · กรกฎาคม 2026</figcaption></figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section data-section="journey-map" class="journey-map" aria-labelledby="journey-map-heading">
+      <div class="shell journey-map-grid">
+        <div><p class="eyebrow">One workflow · one AI Agent</p><h2 id="journey-map-heading">จากงานที่กินเวลา ไปถึง Agent ตัวแรกของทีม</h2></div>
+        <div class="map-steps" aria-label="ภาพรวม Journey ห้าขั้น">
+          <div class="map-step"><span>01</span><b>Choose</b></div><div class="map-step"><span>02</span><b>Map</b></div><div class="map-step"><span>03</span><b>Build</b></div><div class="map-step"><span>04</span><b>Guardrail</b></div><div class="map-step"><span>05</span><b>Adopt</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section data-section="diagnosis" class="diagnosis" aria-labelledby="diagnosis-heading">
+      <div class="shell diagnosis-grid">
+        <div class="diagnosis-quote"><p class="eyebrow">Why now · งานโตเร็วกว่าคน</p><strong id="diagnosis-heading">ถ้าทุกยอดที่โต ต้องตามด้วยคนเพิ่ม ธุรกิจจะ <span>โตแพงขึ้น</span> เรื่อยๆ</strong><p>AI Agent ควรรับงานที่กินเวลาและมีกติกาชัด เพื่อให้คนเก่งกลับไปดูแลลูกค้า แก้ปัญหา และสร้างรายได้</p></div>
+        <div>
+          <div class="pain-list">
+            <article data-business-case="scale-without-headcount" class="pain-item"><span>01</span><div><h3>ธุรกิจโต โดยไม่ต้องเพิ่มคนตามทุกงาน</h3><p>ให้ AI Agent รับงานรวบรวมข้อมูล ทำเอกสาร และเตรียม Follow-up เพื่อให้ทีมเดิมรับลูกค้าและดูแลงานได้มากขึ้น</p></div></article>
+            <article data-business-case="safe-real-use" class="pain-item"><span>02</span><div><h3>ใครๆ ก็สร้างระบบด้วย AI ได้ แล้วจะใช้ได้จริงและปลอดภัยไหม</h3><p>Agent ต้องมีขอบเขตข้อมูล กติกา จุดหยุด และคนรับผิดชอบก่อนนำไปแตะงานของบริษัท</p></div></article>
+            <article data-business-case="where-to-start" class="pain-item"><span>03</span><div><h3>อยากใช้ AI Agent แต่ไม่รู้จะเริ่มจากงานไหน</h3><p>เริ่มจากงานที่เกิดซ้ำ ใช้เวลาคนเก่ง และมี Process owner อธิบายวิธีทำเดิมได้ครบ</p></div></article>
+            <article data-business-case="remove-admin" class="pain-item"><span>04</span><div><h3>คนเก่งเสียเวลากับงานเอกสารจุกจิก</h3><p>ย้ายงานจัดข้อมูล สรุปเอกสาร และเตรียมข้อความติดตามไปให้ AI Agent ช่วยทำ แล้วให้คนตรวจเฉพาะจุดสำคัญ</p></div></article>
+          </div>
+          <aside class="boundary"><b>ขอบเขตในห้อง: หนึ่งบริษัท · หนึ่งวัน · หนึ่ง Workflow · หนึ่ง Working Prototype</b><p>Workshop จบที่ Agent Prototype, Data Safety Rules และแผนนำไปใช้ต่อ 30 วัน งาน Production, Live integration, migration หรือ SLA แยก Scope ไปบริการ I1</p></aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="curriculum" data-section="curriculum" class="curriculum grid-field" aria-labelledby="curriculum-heading">
+      <div class="shell">
+        <div class="curriculum-head">
+          <div><p class="eyebrow">Curriculum · จากงานจุกจิกถึง Agent ตัวแรก</p><h2 id="curriculum-heading" class="section-title">ทีมสร้าง Agent จากงานของบริษัท พร้อมกติกาใช้ต่อ</h2></div>
+          <p class="curriculum-aside">ทีมเดินตาม Workflow หนึ่งเส้น ตั้งแต่เลือกงาน สร้าง Agent วาง Guardrail จนถึงแผนเริ่มใช้ 30 วัน</p>
+        </div>
+        <ol class="modules">
+          <li data-journey-stage="Choose" class="module"><div class="module-number">01</div><article><div class="module-top"><div><span class="module-label">Fit Gate</span><h3>เลือกงานที่ควรเอาออกจากมือคนก่อน</h3></div><span class="stage-en">Choose</span></div><div class="module-body"><p class="module-note"><b>เข้าใจอะไร</b>งานใดเกิดซ้ำ ใช้เวลากี่คน ใครเป็น Process owner และแตะข้อมูลอะไร</p><p class="module-note"><b>ลงมือทำ</b>เลือกงานเอกสารหนึ่งเรื่องที่มีกติกาและเจ้าของชัด</p><p class="module-output"><span>ได้อะไรกลับไป</span>AI Agent Use Case + ขอบเขตหนึ่ง Workflow</p></div></article></li>
+          <li data-journey-stage="Map" class="module"><div class="module-number">02</div><article><div class="module-top"><div><span class="module-label">ช่วงที่ 1</span><h3>เห็นงานเดิมก่อนให้ AI แตะงาน</h3></div><span class="stage-en">Map</span></div><div class="module-body"><p class="module-note"><b>เข้าใจอะไร</b>Trigger, Input, Rule, Exception, Output และขั้นที่คนต้องตัดสิน</p><p class="module-note"><b>ลงมือทำ</b>ทำ Workflow Map จากตัวอย่างงานที่ปิดข้อมูลสำคัญแล้ว</p><p class="module-output"><span>ได้อะไรกลับไป</span>Workflow Map ฉบับบริษัท</p></div></article></li>
+          <li data-journey-stage="Build" class="module"><div class="module-number">03</div><article><div class="module-top"><div><span class="module-label">ช่วงที่ 2</span><h3>สร้าง AI Agent จาก Workflow ของทีม</h3></div><span class="stage-en">Build</span></div><div class="module-body"><p class="module-note"><b>เข้าใจอะไร</b>Agent รับข้อมูลอะไร ใช้กติกาใด และต้องส่ง Output แบบไหนให้คนใช้ต่อ</p><p class="module-note"><b>ลงมือทำ</b>สร้าง Agent และรัน Workflow ด้วยข้อมูลจำลองหรือข้อมูลที่ Mask แล้ว</p><p class="module-output"><span>ได้อะไรกลับไป</span>AI Agent Working Prototype</p></div></article></li>
+          <li data-journey-stage="Guardrail" class="module"><div class="module-number">04</div><article><div class="module-top"><div><span class="module-label">ช่วงที่ 3</span><h3>วางกติกาข้อมูลและคนตรวจ</h3></div><span class="stage-en">Guardrail</span></div><div class="module-body"><p class="module-note"><b>เข้าใจอะไร</b>ข้อมูลใดใช้ได้ จุดไหนต้อง Mask งานใดต้องขออนุมัติ และใครรับผิดชอบ Output</p><p class="module-note"><b>ลงมือทำ</b>กำหนด Human Review และจุดหยุดจาก Agent ที่ทีมเพิ่งสร้าง</p><p class="module-output"><span>ได้อะไรกลับไป</span>Data Safety + Human Review Rules</p></div></article></li>
+          <li data-journey-stage="Adopt" class="module"><div class="module-number">05</div><article><div class="module-top"><div><span class="module-label">ช่วงที่ 4</span><h3>วางแผนเริ่มใช้กับทีมใน 30 วัน</h3></div><span class="stage-en">Adopt</span></div><div class="module-body"><p class="module-note"><b>เข้าใจอะไร</b>ใครเป็น Owner เคสใดใช้ก่อน ต้องเก็บตัวเลขอะไร และวันไหนกลับมาทบทวน</p><p class="module-note"><b>ลงมือทำ</b>เลือกเคสเริ่มต้น กำหนดผู้ตรวจ และนัด Adoption Review</p><p class="module-output"><span>ได้อะไรกลับไป</span>30-Day Adoption Plan + Success Measures</p></div></article></li>
+        </ol>
+      </div>
+    </section>
+
+    <section data-section="decision-pack" class="decision-pack" aria-labelledby="decision-pack-heading">
+      <div class="shell"><p class="eyebrow">Agent Adoption Pack · Core deliverables</p><h2 id="decision-pack-heading" class="section-title">จบคลาสแล้ว ทีมมี Agent<br>พร้อมของสี่ชิ้นสำหรับเริ่มใช้ต่อ</h2><div class="artifact-row"><article class="artifact"><span>01 · เลือกงานถูก</span><h3>Workflow Map</h3><p>ใช้ทวนว่า Flow เริ่มและจบที่ไหน พร้อม Rule และ Exception ที่ Agent ต้องรู้</p></article><article class="artifact"><span>02 · มี Agent ให้ทีมจับต้องได้</span><h3>Working Prototype</h3><p>ใช้กับข้อมูลจำลองหรือข้อมูลที่ Mask แล้ว เพื่อดู Input, Rule และ Output ก่อนขยับไป Production</p></article><article class="artifact"><span>03 · รู้ว่าใครต้องตรวจ</span><h3>Safety + Review Rules</h3><p>ล็อกข้อมูลที่ใช้ได้ Human Review, Owner และสิ่งที่ห้ามให้ AI ตัดสินแทน</p></article><article class="artifact"><span>04 · มีทางเริ่มใช้</span><h3>30-Day Adoption Plan</h3><p>ระบุเคสแรก เจ้าของงาน ตัวเลขที่เก็บ และวันกลับมาทบทวนผล</p></article></div></div>
+    </section>
+
+    <section id="fit" data-section="fit" class="fit" aria-labelledby="fit-heading">
+      <div class="shell fit-grid"><article class="fit-panel"><p class="eyebrow">Fit · เหมาะเมื่อ</p><h2 id="fit-heading">ทีมพร้อมเอางานซ้ำหนึ่งเรื่องออกจากมือคน</h2><ul class="fit-list"><li>มีงานเอกสาร จัดข้อมูล หรือ Follow-up ที่เกิดซ้ำ</li><li>มี Process owner อธิบาย Input, Rule และ Output ได้</li><li>พร้อมใช้ dummy data หรือข้อมูลที่ Mask แล้ว</li><li>Owner พร้อมดูแลแผนนำ Agent ไปใช้ต่อ 30 วัน</li></ul></article><article class="fit-panel"><p class="eyebrow">Not fit · ควรเริ่มทางอื่นเมื่อ</p><h2>โจทย์ยังใหญ่กว่าหนึ่ง Workflow หรือยังไม่มีเจ้าของงาน</h2><ul class="fit-list"><li>ยังเลือก Process สำคัญไม่ได้ — เริ่ม C1 เพื่อจัด Priority</li><li>ต้องเชื่อม Live data หรือระบบ Production — แยก Scope ไป I1</li><li>ต้องการหลาย Workflow, migration, integration หรือ SLA</li><li>คาดหวังให้ AI ตัดสินใจแทนคนหรือลด Headcount ทันที</li></ul></article></div>
+    </section>
+
+    <section data-section="investment" class="investment grid-field" aria-labelledby="investment-heading">
+      <div class="shell investment-card"><div class="investment-copy"><p class="eyebrow">Investment · ก่อนล็อกวัน</p><h2 id="investment-heading">ผ่าน Fit Gate ก่อนออกใบแจ้งหนี้</h2><p>ส่งงานที่อยากเอาออกจากมือคน ความถี่ Process owner และข้อมูลที่เกี่ยวข้องมาให้ดูก่อน เพื่อยืนยันว่าทีมสร้าง Agent Prototype ให้จบในหนึ่งวันได้</p><p><strong>เงื่อนไข:</strong> ชำระค่าบริการ 100% ก่อนวันอบรมเพื่อยืนยันคิว ค่าเดินทางนอกพื้นที่มาตรฐานจะแจ้งก่อนล็อกวัน</p></div><div class="investment-price"><span>ราคาปัจจุบันจาก Catalog</span><strong data-catalog-price data-price-source="loading" aria-live="polite">กำลังอ่านราคา…</strong><p>หนึ่งบริษัท · หนึ่งวัน · หนึ่ง Workflow · หนึ่ง Agent Prototype</p><a class="btn-main" href="#final-cta">เริ่มเช็ก Fit Gate</a></div></div>
+    </section>
+
+    <section id="final-cta" data-section="final-cta" class="final-cta" aria-labelledby="final-heading">
+      <div class="shell final-inner"><h2 id="final-heading">งานเอกสารอะไร ไม่ควรกินเวลาคนเก่งอีกแล้ว?</h2><p>ทัก LINE แล้วพิมพ์ “AI WORKFLOW” พร้อมจำนวนทีม บอกงานที่เกิดซ้ำ ความถี่ Process owner และข้อมูลที่เกี่ยวข้อง ผมจะเช็กให้ว่าเหมาะเอามาสร้าง Agent ในคลาสหรือไม่</p><a class="btn-main" href="https://lin.ee/ioSnSUG" target="_blank" rel="noopener noreferrer">ทัก LINE พร้อมคำว่า AI WORKFLOW</a></div>
+    </section>
+  </main>
+
+  <footer>HTML direction mockup · T4 Operating Journey · ไม่ใช่หน้า Production</footer>
+
+  <script>
+    const priceNodes = [...document.querySelectorAll('[data-catalog-price]')];
+    fetch('/catalog.json')
+      .then((response) => {
+        if (!response.ok) throw new Error(`Catalog request failed: ${response.status}`);
+        return response.json();
+      })
+      .then((catalog) => {
+        const offer = catalog.packages?.find((item) => item.key === 't4-ai-workflow-pilot-day');
+        if (!offer?.price_label) throw new Error('T4 Catalog package not found');
+        priceNodes.forEach((node) => {
+          node.textContent = offer.price_label;
+          node.dataset.priceSource = 'catalog';
+        });
+      })
+      .catch(() => {
+        priceNodes.forEach((node) => {
+          node.textContent = 'สอบถามราคาตามขอบเขต';
+          node.dataset.priceSource = 'fallback';
+        });
+      });
+  </script>
+</body>
+</html>

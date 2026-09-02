@@ -23,7 +23,7 @@ const priceFor = (code: OfferCode) => {
   const pricingKey = getOffer(code).pricingKey;
   return pricingKey ? fmtPrice(pricingKey) : undefined;
 };
-const catalogOffers = (['T2', 'T1', 'T3', 'C1', 'I1', 'A1'] as const).map(getOffer);
+const catalogOffers = (['T2', 'T1', 'T3', 'T4', 'C1', 'I1', 'A1'] as const).map(getOffer);
 
 const trustLogos = [
   { src: '/services/nissan.png', alt: 'Nissan' },
@@ -153,7 +153,7 @@ const faqs = [
         <div class="max-w-3xl">
           <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">Training catalog</p>
           <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">คอร์สสำหรับทีมขายที่เปิดสอนตอนนี้</h2>
-          <p class="mt-4 leading-7 text-[#625C53]">เลือกจากสิ่งที่ทีมต้องทำให้ดีขึ้น ตั้งแต่เข้าใจเหตุผลซื้อและต่อรอง ไปจนถึงเปลี่ยน Lead เป็นยอดขายและทำ Report ที่หัวหน้าใช้ตัดสินใจได้</p>
+          <p class="mt-4 leading-7 text-[#625C53]">เลือกจากสิ่งที่ทีมต้องทำให้ดีขึ้น ตั้งแต่เข้าใจเหตุผลซื้อ เปลี่ยน Lead เป็นยอดขาย ทำ Report ที่หัวหน้าใช้ตัดสินใจ ไปจนถึงทดลอง AI Workflow ก่อนลงทุนทำระบบจริง</p>
         </div>
 
         <div class="mt-10">
@@ -179,6 +179,14 @@ const faqs = [
             <span id="back-office" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
             <OfferCard offer={getOffer('T3')} image={OFFER_ASSET_BY_CODE.T3} priceLabel={priceFor('T3')} />
             <p data-take-home-for="T3" class="mt-3 rounded-2xl border border-navy/10 bg-surface px-5 py-3 text-sm leading-6 text-[#625C53]"><strong class="text-navy">สิ่งที่ทีมจะได้กลับไป:</strong> Stage dictionary + Daily report template + Manager intervention rule + Dashboard wireframe</p>
+          </div>
+        </div>
+
+        <div class="mt-6 min-w-0">
+          <div class="relative min-w-0">
+            <span id="ai-workflow-pilot" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
+            <OfferCard offer={getOffer('T4')} image={OFFER_ASSET_BY_CODE.T4} priceLabel={priceFor('T4')} />
+            <p data-take-home-for="T4" class="mt-3 rounded-2xl border border-navy/10 bg-surface px-5 py-3 text-sm leading-6 text-[#625C53]"><strong class="text-navy">สิ่งที่ทีมจะได้กลับไป:</strong> Workflow Map + Safe Sandbox + Human–AI Responsibility Brief + Decision Memo</p>
           </div>
         </div>
       </div>

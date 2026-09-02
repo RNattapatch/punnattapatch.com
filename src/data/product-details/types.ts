@@ -105,6 +105,75 @@ export interface ProductBonusCard {
   format: string;
 }
 
+export interface ProductSpotlightModule {
+  number: string;
+  tag: string;
+  title: string;
+  question: string;
+  points: string[];
+}
+
+export interface ProductSpotlight {
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  modules: ProductSpotlightModule[];
+  note?: string;
+}
+
+export interface ProductWhatsNewColumn {
+  badge: string;
+  heading: string;
+  sub: string;
+  items: Array<{ title: string; body: string }>;
+  footer: string;
+}
+
+export interface ProductWhatsNew {
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  fresh: ProductWhatsNewColumn;
+  core: ProductWhatsNewColumn;
+}
+
+export interface ProductBonusValueItem {
+  number: string;
+  icon: string;
+  title: string;
+  points: string[];
+  value: number;
+  basis: string;
+}
+
+export interface ProductBonusValues {
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  items: ProductBonusValueItem[];
+  footnote: string;
+}
+
+export interface ProductWhyMe {
+  eyebrow: string;
+  heading: string;
+  items: Array<{ icon: string; title: string; body: string }>;
+}
+
+export interface ProductInstructorProfile {
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  chips: string[];
+  name: string;
+  handle: string;
+  image: PublicProofImage;
+  imageAlt: string;
+  credentials: string[];
+  angles: Array<{ icon: string; title: string; body: string }>;
+  quote: string;
+}
+
 export interface ProductDetailPageData {
   code: ProductDetailCode;
   pricingKey: string;
@@ -140,6 +209,12 @@ export interface ProductDetailPageData {
     intro: string;
     items: ProductBonusCard[];
   };
+  /** T4 journey extras (approved 2026-09-02) — optional, other products ignore them */
+  spotlight?: ProductSpotlight;
+  whatsNew?: ProductWhatsNew;
+  bonusValues?: ProductBonusValues;
+  whyMe?: ProductWhyMe;
+  instructorProfile?: ProductInstructorProfile;
   fit: string[];
   notFit: string;
   relatedOffer?: { href: string; label: string };

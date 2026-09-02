@@ -95,6 +95,9 @@ const description =
       // หน้านี้รับสองทาง — แบบประเมิน (/intake-form) กับจองคิว (/booking)
       // สลับคำที่พูดถึง "แบบประเมิน" ให้ตรงกับสิ่งที่เขาเพิ่งกรอกจริง
       const formType = params.get('type') === 'booking' ? 'booking' : 'intake_form';
+      // 2026-09-02: content_name รายคอร์สเมื่อมาจากหน้า product (booking?package=T4 → thank-you?package=T4)
+      const packageCode = (params.get('package') || '').replace(/[^a-z0-9]/gi, '').toLowerCase();
+      const leadContentName = packageCode ? `${packageCode}_product_booking` : formType;
       if (formType === 'booking') {
         const heading = document.getElementById('thankyou-heading');
         if (heading) heading.textContent = 'รับเรื่องจองคิวแล้วครับ';
@@ -145,7 +148,7 @@ const description =
         window.fbq(
           'track',
           'Lead',
-          { content_name: formType, currency: 'THB', value: 0 },
+          { content_name: leadContentName, content_ids: packageCode ? [packageCode.toUpperCase()] : undefined, currency: 'THB', value: 0 },
           { eventID: ref }
         );
       }

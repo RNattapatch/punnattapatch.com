@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>T4 service thumbnail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@500;600;700;800;900&amp;display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.4.7/daisyui.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.14"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --font-display: "Sukhumvit Set", "Noto Sans Thai", sans-serif;
+      --font-body: "Sukhumvit Set", "Noto Sans Thai", sans-serif;
+      --color-pun-navy: #072b4e;
+      --color-pun-coral: #dd4155;
+      --color-pun-ivory: #f7f3ea;
+      --color-pun-cyan: #51c4df;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 1600px; height: 900px; margin: 0; overflow: hidden; }
+    body { font-family: var(--font-body); }
+    .artboard {
+      @apply relative h-[900px] w-[1600px] overflow-hidden bg-pun-navy text-pun-ivory;
+      isolation: isolate;
+    }
+    .photo {
+      @apply absolute right-0 top-0 h-full w-[900px] overflow-hidden;
+      clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%);
+    }
+    .photo img { @apply h-full w-full object-cover; object-position: 53% 61%; }
+    .photo::after {
+      content: "";
+      @apply absolute inset-0;
+      background: linear-gradient(90deg, rgba(7, 43, 78, .76) 0%, rgba(7, 43, 78, .08) 32%, rgba(7, 43, 78, .08) 100%);
+    }
+    .copy { @apply absolute left-[82px] top-[70px] z-10 w-[790px]; }
+    .eyebrow { @apply flex items-center gap-4 text-[25px] font-bold uppercase tracking-[.16em] text-pun-cyan; }
+    .eyebrow::before { content: ""; @apply block h-[10px] w-[46px] bg-pun-cyan; }
+    .hook { @apply mt-9 font-display text-[100px] font-bold leading-[.98] tracking-[-.055em]; }
+    .hook em { @apply not-italic text-pun-coral; }
+    .offer { @apply mt-8 max-w-[690px] text-[31px] font-bold leading-[1.3] text-[#dceaf0]; }
+    .mechanism { @apply mt-10 flex items-center gap-3 font-display text-[24px] font-bold; }
+    .mechanism span { @apply border-2 border-pun-cyan px-[17px] py-[10px] leading-none; }
+    .signature { @apply absolute bottom-[54px] left-[82px] z-10 flex items-center gap-3 text-[23px] font-bold tracking-[.03em]; }
+    .proof-chip { @apply absolute bottom-[42px] right-[42px] z-10 bg-pun-coral px-5 py-3 text-[22px] font-bold text-white shadow-[8px_8px_0_#072b4e]; }
+    .index { @apply absolute bottom-[-54px] left-[685px] z-0 font-display text-[250px] font-bold leading-none text-pun-cyan opacity-[.11]; }
+    .grid-mark {
+      @apply absolute inset-y-0 left-0 w-[760px] opacity-[.055];
+      background-image: linear-gradient(rgba(247,243,234,.8) 1px, transparent 1px), linear-gradient(90deg, rgba(247,243,234,.8) 1px, transparent 1px);
+      background-size: 42px 42px;
+    }
+  </style>
+</head>
+<body>
+  <main id="t4-thumbnail" class="artboard" data-source-kind="real-workshop-photo" data-title="คอร์ส Advance AI &amp; Business Automation">
+    <div class="grid-mark" aria-hidden="true"></div>
+    <div class="photo">
+      <img src="../public/lp/inhouse/office-session.jpg" alt="ทีมจริงใน Workshop Advance AI และ Business Automation" />
+    </div>
+    <div class="copy">
+      <p class="eyebrow">In-house Workshop · T4</p>
+      <h1 class="hook" data-fit>ก่อนซื้อระบบ<br /><em>ลองกับงานจริงก่อน</em></h1>
+      <p class="offer" data-fit>คอร์ส Advance AI &amp; Business Automation</p>
+      <div class="mechanism" data-fit><span>เลือก 1 งาน</span><b>→</b><span>ลองกับทีม</span><b>→</b><span>ค่อยตัดสินใจ</span></div>
+    </div>
+    <span class="index" aria-hidden="true">T4</span>
+    <p class="signature">Pun Nattapatch · Sales × System × AI</p>
+    <p class="proof-chip">ภาพ Workshop จริง</p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,62 @@
+---
+import type { ProductTestimonial, ProofItem, PublicProofImage } from '../../../data/product-details/types';
+
+interface Props { items: ProofItem[]; testimonials: ProductTestimonial[]; heading: string; intro: string; }
+const { items, testimonials, heading, intro } = Astro.props;
+const activities = items.filter((item) => item.kind === 'photo');
+const quotes = items.filter((item) => item.kind === 'quote');
+const imageInfo = (image: ProofItem['image']) => 'publicSrc' in image
+  ? { src: image.publicSrc, width: (image as PublicProofImage).width, height: (image as PublicProofImage).height }
+  : { src: image.src, width: image.width, height: image.height };
+---
+
+<section data-t4-section="proof" data-detail-block="proof" aria-labelledby="t4-proof-heading" class="bg-[#fdfaf4] py-14 sm:py-20">
+  <div class="mx-auto max-w-6xl px-5">
+    <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Proof first</p>
+    <h2 id="t4-proof-heading" class="mt-3 max-w-4xl text-balance font-display text-3xl font-bold text-navy sm:text-5xl">{heading}</h2>
+    <p class="mt-4 max-w-3xl leading-7 text-navy/70">{intro}</p>
+
+    <div class="mt-9 grid auto-rows-[16rem] gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {activities.map((item, index) => {
+        const image = imageInfo(item.image);
+        return (
+          <figure data-proof-activity class:list={['flex min-h-0 flex-col overflow-hidden rounded-[1.5rem] border border-navy/10 bg-white shadow-sm', index === 0 && 'sm:col-span-2 sm:row-span-2', index === 1 && 'lg:row-span-2']}>
+            <img src={image.src} alt={item.alt} width={image.width} height={image.height} loading="lazy" decoding="async" class="min-h-0 flex-1 w-full object-cover" />
+            <figcaption data-proof-caption class="shrink-0 bg-white px-4 py-3 text-sm leading-5 text-navy/70">{item.caption}</figcaption>
+          </figure>
+        );
+      })}
+    </div>
+
+    <div class="mt-12 grid gap-5 lg:grid-cols-3">
+      {quotes.map((item) => {
+        const image = imageInfo(item.image);
+        return (
+          <article data-proof-quote class="grid overflow-hidden rounded-[1.5rem] border border-navy/10 bg-white shadow-sm sm:grid-cols-[1fr_.72fr] lg:grid-cols-1">
+            <div class="p-6">
+              <p aria-hidden="true" class="font-display text-5xl leading-none text-coral">“</p>
+              <h3 class="-mt-3 text-balance font-display text-2xl font-bold leading-tight text-navy">{item.quote}</h3>
+              <p class="mt-4 text-sm leading-6 text-navy/65">{item.caption}</p>
+            </div>
+            <img src={image.src} alt={item.alt} width={image.width} height={image.height} loading="lazy" decoding="async" class="aspect-square h-full w-full bg-[#f4f1ea] object-contain p-3" />
+          </article>
+        );
+      })}
+    </div>
+
+    <div class="mt-12 flex items-end justify-between gap-5">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Original messages</p>
+        <h3 class="mt-2 font-display text-2xl font-bold text-navy sm:text-3xl">ข้อความและภาพที่ผู้เรียนส่งกลับมา</h3>
+      </div>
+      <p class="hidden max-w-sm text-right text-sm leading-6 text-navy/55 md:block">เก็บภาพต้นฉบับไว้ให้เปิดอ่านได้ ไม่ครอปข้อความสำคัญออก</p>
+    </div>
+    <div class="mt-6 grid grid-cols-2 gap-4 md:grid-cols-5">
+      {testimonials.map((item) => (
+        <figure data-product-testimonial class="overflow-hidden rounded-2xl border border-navy/10 bg-white p-2 shadow-sm">
+          <img src={item.src} alt={item.alt} width={item.width} height={item.height} loading="lazy" decoding="async" class="aspect-square w-full object-contain" />
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>

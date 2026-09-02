@@ -74,6 +74,22 @@
       "bot_may_quote": true
     },
     {
+      "key": "t4-ai-workflow-pilot-day",
+      "name": "คอร์ส Advance AI & Business Automation",
+      "name_en": "AI Workflow Pilot Day",
+      "kind": "inhouse",
+      "duration": "1 วัน",
+      "headline": "ทดลอง AI Workflow จากงานจริงของบริษัท ก่อนลงทุนทำระบบจริง",
+      "audience": "บริษัทที่มีงานซ้ำชัด มี Process owner และยอมใช้ข้อมูลจำลอง/ข้อมูลที่ Mask แล้วใน Workshop",
+      "amount_thb": 34900,
+      "price_label": "฿34,900",
+      "url": "https://punnattapatch.com/services/advance-ai-automation",
+      "image_url": "https://punnattapatch.com/services/thumbs/t4-ai-workflow-pilot.jpg",
+      "outline_url": null,
+      "status": "live",
+      "bot_may_quote": true
+    },
+    {
       "key": "daily-sales-consulting",
       "name": "บริการวางระบบฝ่ายขายแบบรายวัน",
       "name_en": "Daily Sales System Consulting",
