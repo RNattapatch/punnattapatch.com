@@ -153,6 +153,31 @@
     .bonus-use { display: block; margin-top: 14px; color: var(--coral); font-size: 12px; font-weight: 700; }
     .bonus-card:first-child .bonus-use { color: #65d7f2; }
 
+    .instructor { position: relative; overflow: hidden; background: var(--sand); padding-block: 104px; }
+    .instructor::after { content: "PUN"; position: absolute; right: -28px; bottom: -72px; color: rgba(7, 43, 78, .035); font-family: "Trirong", serif; font-size: min(24vw, 330px); font-weight: 700; line-height: 1; pointer-events: none; }
+    .instructor-grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(300px, .72fr) minmax(0, 1.28fr); gap: 58px; align-items: stretch; }
+    .instructor-portrait { position: relative; overflow: hidden; min-height: 610px; border-radius: 30px; background: #c7ced8; box-shadow: 0 22px 50px rgba(7, 43, 78, .16); }
+    .instructor-portrait::before { content: ""; position: absolute; z-index: 1; inset: 0 0 auto; height: 8px; background: var(--coral); }
+    .instructor-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 34%; }
+    .instructor-nameplate { position: absolute; z-index: 2; inset: auto 0 0; background: linear-gradient(transparent, rgba(0, 22, 47, .97) 46%); padding: 94px 28px 26px; color: white; }
+    .instructor-nameplate strong { display: block; font-family: "Trirong", serif; font-size: 28px; line-height: 1.25; }
+    .instructor-nameplate span { display: block; margin-top: 4px; color: #65d7f2; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .instructor-copy { align-self: center; }
+    .instructor-copy h2 { max-width: 790px; margin-bottom: 22px; color: var(--navy); font-size: clamp(2.4rem, 4.7vw, 4.65rem); line-height: 1.16; letter-spacing: -.035em; }
+    .instructor-copy > p:not(.eyebrow) { max-width: 780px; color: var(--muted); font-size: 17px; line-height: 1.8; }
+    .authority-proofs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 34px; }
+    .authority-proof { min-height: 152px; border: 1px solid rgba(7, 43, 78, .15); border-radius: 20px; background: rgba(255, 253, 248, .78); padding: 22px 20px; }
+    .authority-proof span { display: block; margin-bottom: 18px; color: var(--coral); font-family: "Trirong", serif; font-size: 28px; font-weight: 700; line-height: 1; }
+    .authority-proof strong { color: var(--navy); font-size: 15px; line-height: 1.5; }
+
+    .client-logos { border-block: 1px solid var(--line); background: white; padding-block: 54px 60px; }
+    .client-logo-head { display: grid; grid-template-columns: 1fr .8fr; gap: 40px; align-items: end; }
+    .client-logo-head h2 { margin: 6px 0 0; color: var(--navy); font-size: 34px; line-height: 1.3; }
+    .client-logo-head p { margin: 0; color: var(--muted); font-size: 14px; }
+    .client-logo-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; margin-top: 28px; }
+    .client-logo { display: flex; aspect-ratio: 4 / 3; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(7, 43, 78, .11); border-radius: 16px; background: white; padding: 14px; }
+    .client-logo img { width: 100%; max-height: 100%; object-fit: contain; filter: none; opacity: 1; }
+
     .journey-map { border-block: 1px solid rgba(255, 255, 255, .13); background: var(--navy); color: white; padding-block: 42px; }
     .journey-map-grid { display: grid; grid-template-columns: .9fr 1.6fr; gap: 40px; align-items: center; }
     .journey-map h2 { margin: 0; color: white; font-size: 30px; line-height: 1.3; }
@@ -255,7 +280,7 @@
     footer { background: var(--navy-deep); padding-block: 22px; color: rgba(255, 255, 255, .62); font-size: 13px; text-align: center; }
 
     @media (max-width: 980px) {
-      .hero-inner, .offer-grid, .diagnosis-grid, .investment-card { grid-template-columns: 1fr; }
+      .hero-inner, .offer-grid, .instructor-grid, .diagnosis-grid, .investment-card { grid-template-columns: 1fr; }
       .hero-inner { padding-block: 64px; }
       .hero-photo-frame img { aspect-ratio: 16 / 10; }
       .offer-summary, .diagnosis-quote { position: relative; top: auto; }
@@ -264,6 +289,8 @@
       .offer-meta { align-self: stretch; }
       .offer-summary-actions { align-content: center; }
       .journey-map-grid, .curriculum-head { grid-template-columns: 1fr; }
+      .instructor-portrait { min-height: 680px; }
+      .client-logo-grid { grid-template-columns: repeat(4, 1fr); }
       .artifact-row { grid-template-columns: repeat(2, 1fr); }
       .testimonial-wall-head { grid-template-columns: 1fr; gap: 14px; }
       .testimonial-grid { grid-template-columns: repeat(3, 1fr); }
@@ -282,12 +309,20 @@
       .course-card-top { min-height: 150px; padding: 24px 22px 20px; }
       .course-card-top strong { font-size: 23px; }
       .hero-stamp { top: -14px; right: -6px; width: 78px; font-size: 11px; }
-      .offer, .proof, .diagnosis, .curriculum, .decision-pack, .fit, .investment, .final-cta { padding-block: 72px; }
+      .offer, .instructor, .proof, .diagnosis, .curriculum, .decision-pack, .fit, .investment, .final-cta { padding-block: 72px; }
       .offer-summary { display: block; }
       .offer-summary h2 { font-size: 28px; }
       .price { font-size: 38px; }
       .bonus-card:first-child { display: block; grid-column: auto; }
       .bonus-card:first-child .bonus-number { margin-bottom: 18px; text-align: left; }
+      .instructor-grid { gap: 34px; }
+      .instructor-portrait { min-height: 520px; }
+      .instructor-copy h2 { font-size: clamp(2.2rem, 10vw, 3.25rem); }
+      .authority-proofs { grid-template-columns: 1fr; }
+      .authority-proof { min-height: auto; }
+      .client-logo-head { grid-template-columns: 1fr; gap: 12px; }
+      .client-logo-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .client-logo { padding: 9px; border-radius: 13px; }
       .map-steps { grid-template-columns: 1fr; }
       .map-step { display: grid; min-height: 52px; grid-template-columns: 42px 1fr; align-items: center; text-align: left; }
       .map-step:not(:last-child)::after { content: "↓"; top: auto; right: auto; bottom: -17px; left: 20px; }
@@ -421,6 +456,52 @@
             <article data-bonus-card class="bonus-card"><div class="bonus-number">04</div><h3>Workflow Example Library: ดู Pattern แล้วปรับตามบริบท</h3><p>ช่วยทีมเห็นรูปแบบงานที่ใกล้เคียง พร้อมจุดที่ไม่ควรลอกระบบคนอื่นทั้งก้อน</p><span class="bonus-use">ใช้ตอนหาแนวทาง · Google Doc / PDF</span></article>
             <article data-bonus-card class="bonus-card"><div class="bonus-number">05</div><h3>30-Minute Adoption Review: เช็กว่า Agent ช่วยงานได้แค่ไหน</h3><p>ให้ Owner และ Manager ดูเคสที่ใช้จริง เวลาที่ลดได้ และจุดที่ทีมยังต้องแก้</p><span class="bonus-use">ใช้ภายใน 14 วัน · Google Sheet</span></article>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section data-section="instructor" class="instructor grid-field" aria-labelledby="instructor-heading">
+      <div class="shell instructor-grid">
+        <figure class="instructor-portrait">
+          <img data-instructor-profile src="/lp/inhouse/pun-ceo-profile.jpg" width="1200" height="1800" alt="ปัน ณัฐพัชร์ ผู้สอนคอร์ส Advance AI และ Business Automation" loading="lazy">
+          <figcaption class="instructor-nameplate"><strong>ปัน ณัฐพัชร์</strong><span>B2B Sales Consultant · Agentic AI Transformation</span></figcaption>
+        </figure>
+        <div class="instructor-copy">
+          <p class="eyebrow">Instructor · จากงานจริงสู่ห้องเรียน</p>
+          <h2 id="instructor-heading">สอนจากประสบการณ์ขาย โค้ชทีม และสร้าง AI Workflow ใช้งานจริง</h2>
+          <p>ผมเคยอยู่ทั้งฝั่งที่ต้องทำยอดเอง โค้ชทีมหน้างาน และกลับมาสร้าง AI Workflow ใช้กับงานขายและงานที่ปรึกษาของตัวเอง ในคลาสจึงพาทีมเลือกงาน วางกติกา และกำหนดคนตรวจจาก Workflow ของบริษัทครับ</p>
+          <div class="authority-proofs" aria-label="ประสบการณ์ของผู้สอน">
+            <article data-authority-proof class="authority-proof"><span>01</span><strong>อดีต Sales Engineer และ Instructor ฝั่ง Dealer</strong></article>
+            <article data-authority-proof class="authority-proof"><span>02</span><strong>คัดเรซูเม่ 1,000+ ใบ · สัมภาษณ์คนเข้าทีม 100+ คน</strong></article>
+            <article data-authority-proof class="authority-proof"><span>03</span><strong>อบรมและวางระบบร่วมกับ 18 องค์กร</strong></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section data-section="client-logos" class="client-logos" aria-labelledby="client-logo-heading">
+      <div class="shell">
+        <div class="client-logo-head">
+          <div><p class="eyebrow">Organisations · ประสบการณ์ที่ผ่านงานจริง</p><h2 id="client-logo-heading">องค์กรที่เคยร่วมงานกับปัน</h2></div>
+          <p>หลักฐานระดับองค์กรของงาน Training, Sales และ AI ที่ปันเคยทำร่วมด้วย ไม่ได้หมายความว่าแต่ละองค์กรเป็นผู้ซื้อคอร์สนี้</p>
+        </div>
+        <div class="client-logo-grid" aria-label="โลโก้องค์กรที่เคยร่วมงานกับปัน">
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/nissan.png" width="180" height="120" alt="Nissan" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/futureskill.png" width="180" height="120" alt="FutureSkill" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/ving.png" width="180" height="120" alt="V!NG" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/gpx.jpg" width="180" height="120" alt="GPX" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/royal-enfield.jpg" width="180" height="120" alt="Royal Enfield" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/zontes.png" width="180" height="120" alt="Zontes" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/lambretta.png" width="180" height="120" alt="Lambretta" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/hfc-healthfoods.png" width="180" height="120" alt="HFC HealthFoods Corporation" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/home-plus.png" width="180" height="120" alt="ฮ.โฮมพลัส" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/farevefarm.jpg" width="180" height="120" alt="Farevefarm" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/farmsuk.jpg" width="180" height="120" alt="ฟาร์มสุข farmsuk" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/business-boy.jpg" width="180" height="120" alt="เด็กประกอบการ The Business Boy" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/aes.jpg" width="180" height="120" alt="AES" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/nsscrap.avif" width="180" height="120" alt="NSSCRAP" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/scenery-farm.jpeg" width="180" height="120" alt="Scenery Farm" loading="lazy"></figure>
+          <figure data-client-logo class="client-logo"><img src="/logos/clients/ud-clinic.jpg" width="180" height="120" alt="UD Clinic" loading="lazy"></figure>
         </div>
       </div>
     </section>

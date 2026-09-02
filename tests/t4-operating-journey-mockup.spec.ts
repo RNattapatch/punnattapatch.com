@@ -10,6 +10,7 @@ const dist = join(root, 'dist');
 const contentTypes = {
   '.css': 'text/css; charset=utf-8',
   '.html': 'text/html; charset=utf-8',
+  '.avif': 'image/avif',
   '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
   '.jpg': 'image/jpeg',
@@ -54,13 +55,42 @@ test('T4 mockup tells the operating journey in the approved order', async ({ pag
   await page.goto(`${baseURL}/previews/t4-operating-journey-mockup.html`);
   assert.equal(await page.locator('[data-mockup="t4-operating-journey"]').count(), 1);
   assert.deepEqual(await page.locator('[data-section]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-section'))), [
-    'hero', 'offer', 'proof', 'journey-map', 'diagnosis', 'curriculum', 'decision-pack', 'fit', 'investment', 'final-cta',
+    'hero', 'offer', 'instructor', 'client-logos', 'proof', 'journey-map', 'diagnosis', 'curriculum', 'decision-pack', 'fit', 'investment', 'final-cta',
   ]);
   assert.equal(await page.locator('[data-core-artifact]').count(), 4);
   assert.equal(await page.locator('[data-bonus-card]').count(), 5);
   assert.deepEqual(await page.locator('[data-journey-stage]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-journey-stage'))), [
     'Choose', 'Map', 'Build', 'Guardrail', 'Adopt',
   ]);
+});
+
+test('T4 places instructor experience and every approved client logo between Offer and Proof', async ({ page }) => {
+  await page.goto(`${baseURL}/previews/t4-operating-journey-mockup.html`);
+
+  const instructor = page.locator('[data-section="instructor"]');
+  assert.match(await instructor.getByRole('heading', { level: 2 }).innerText(), /สอนจากประสบการณ์ขาย.*โค้ชทีม.*สร้าง AI Workflow ใช้งานจริง/i);
+  const profile = instructor.locator('[data-instructor-profile]');
+  assert.equal(await profile.getAttribute('src'), '/lp/inhouse/pun-ceo-profile.jpg');
+  assert.match(await profile.getAttribute('alt') ?? '', /ปัน ณัฐพัชร์.*ผู้สอน/i);
+  assert.equal(await instructor.locator('[data-authority-proof]').count(), 3);
+  assert.match((await instructor.innerText()).replace(/\s+/g, ' '), /Sales Engineer.*1,000\+.*100\+.*18 องค์กร/i);
+  await profile.scrollIntoViewIfNeeded();
+  assert.ok(await profile.evaluate((image) => image.complete && image.naturalWidth > 0));
+
+  const logoWall = page.locator('[data-section="client-logos"]');
+  const logos = logoWall.locator('[data-client-logo] img');
+  assert.equal(await logos.count(), 16, 'logo wall must show all approved public client logos');
+  assert.deepEqual(await logos.evaluateAll((images) => images.slice(0, 7).map((image) => image.alt)), [
+    'Nissan', 'FutureSkill', 'V!NG', 'GPX', 'Royal Enfield', 'Zontes', 'Lambretta',
+  ]);
+  assert.match(await logoWall.innerText(), /ไม่ได้หมายความว่าแต่ละองค์กรเป็นผู้ซื้อคอร์สนี้/);
+  for (let index = 0; index < await logos.count(); index += 1) {
+    const logo = logos.nth(index);
+    await logo.scrollIntoViewIfNeeded();
+    assert.ok(await logo.evaluate((image) => image.complete && image.naturalWidth > 0));
+    assert.equal(await logo.evaluate((image) => getComputedStyle(image).filter), 'none');
+    assert.equal(await logo.evaluate((image) => getComputedStyle(image).opacity), '1');
+  }
 });
 
 test('T4 hero identifies the in-house course and one-day job at a glance', async ({ browser }) => {
@@ -149,10 +179,12 @@ test('T4 mockup keeps real-photo and honest-offer boundaries', async ({ page }) 
   assert.ok(await images.count() >= 4, 'mockup must use at least four real workshop photographs');
   for (let index = 0; index < await images.count(); index += 1) {
     const image = images.nth(index);
-    assert.match(await image.getAttribute('src') ?? '', /^\/(lp\/inhouse|advance-ai-course|testimonial\/2026-[^/]+)\//);
+    const source = await image.getAttribute('src') ?? '';
+    const alt = (await image.getAttribute('alt') ?? '').trim();
+    assert.match(source, /^\/(lp\/inhouse|advance-ai-course|testimonial\/2026-[^/]+|logos\/clients)\//);
     assert.ok(Number(await image.getAttribute('width')) > 0);
     assert.ok(Number(await image.getAttribute('height')) > 0);
-    assert.ok((await image.getAttribute('alt') ?? '').trim().length > 8);
+    assert.ok(source.startsWith('/logos/clients/') ? alt.length > 0 : alt.length > 8);
     await image.scrollIntoViewIfNeeded();
     assert.ok(await image.evaluate((element) => element.complete && element.naturalWidth > 0));
   }
