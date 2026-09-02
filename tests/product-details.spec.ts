@@ -201,7 +201,7 @@ test('T4 detail page keeps the Workflow Pilot Day in a one-workflow safe-sandbox
   const takeHome = await page.locator('[data-detail-block="take-home"]').innerText();
   for (const artifact of ['Workflow Map', 'Safe Sandbox', 'Human–AI Responsibility Brief', 'Decision Memo']) assert.match(takeHome, new RegExp(artifact), `T4 must publish ${artifact}`);
   assert.match(await page.locator('[data-detail-block="scope"]').innerText(), /งานซ้ำอะไร.*บ่อยแค่ไหน.*Process owner.*ข้อมูลเสี่ยง/s, 'T4 must surface the four fit questions');
-  assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “T4_LINE_KEYWORD” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T4 must retain its placeholder LINE keyword until the OA is wired');
+  assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “AI WORKFLOW” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T4 must state the live LINE keyword AI WORKFLOW (oa-freebies entry t4-ai-workflow)');
   assert.equal(await page.getByText('ของที่ทีมคุณได้รับกลับไปใช้ต่อ', { exact: true }).count(), 0, 'T4 bonus cards must remain hidden before their release gate');
   await page.close();
 });

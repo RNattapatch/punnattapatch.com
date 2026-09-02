@@ -1,7 +1,7 @@
 import t2WorkshopHandsOn from '../../assets/services/proof/t2-workshop-hands-on.jpg';
 import type { ProductDetailPageData } from './types';
 
-export const T4_LINE_KEYWORD = 'T4_LINE_KEYWORD';
+export const T4_LINE_KEYWORD = 'AI WORKFLOW';
 export const SHOW_T4_BONUS_CARDS = false;
 
 export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
@@ -120,8 +120,8 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
     heroSecondaryIntent: 'fit_check',
     finalSecondary: 'ทัก LINE พร้อมโจทย์ทีม',
     finalSecondaryIntent: 'fit_check',
-    finalCaption: 'สแกน QR แล้วพิมพ์คำว่า “T4_LINE_KEYWORD” พร้อมจำนวนทีม',
-    finalMobileInstruction: 'ทัก LINE แล้วพิมพ์คำว่า “T4_LINE_KEYWORD” พร้อมจำนวนทีม',
+    finalCaption: 'สแกน QR แล้วพิมพ์คำว่า “AI WORKFLOW” พร้อมจำนวนทีม',
+    finalMobileInstruction: 'ทัก LINE แล้วพิมพ์คำว่า “AI WORKFLOW” พร้อมจำนวนทีม',
     finalMicrocopy: 'บอกงานซ้ำ, ความถี่, Process owner และว่ามีข้อมูลเสี่ยงหรือไม่ เพื่อเช็ก Fit Gate ก่อนออกใบแจ้งหนี้',
     keyword: T4_LINE_KEYWORD,
   },
@@ -138,6 +138,6 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
     takeHome: { heading: 'Artifact 4 ชิ้นที่ใช้ตัดสินใจหลัง Workshop', close: 'ทั้งสี่ชิ้นเป็น Core deliverable ของ Pilot Day. ช่วงดูแลและ Scope ต่อจากนี้ยึดตามใบเสนอราคา ไม่รับปากว่า Sandbox จะกลายเป็นระบบใช้งานจริงทันที' },
     fit: { heading: 'เหมาะกับทีมที่อยากรู้ว่าควรเดินต่อกับ AI Workflow อย่างไร ก่อนซื้อหรือจ้าง Build' },
     investment: { eyebrow: 'ราคาเดียวสำหรับหนึ่งบริษัท · หนึ่ง Workflow' },
-    final: { heading: 'มีงานซ้ำที่ทีมอยากหยุดทำมือ แต่ยังไม่แน่ใจว่าควรให้ AI ช่วยตรงไหน?', copy: 'ทัก LINE แล้วพิมพ์ “T4_LINE_KEYWORD” พร้อมจำนวนทีม บอกงานซ้ำ ความถี่ Process owner และข้อมูลเสี่ยงที่เกี่ยวข้อง ผมจะช่วยเช็ก Fit Gate ก่อนออกใบแจ้งหนี้' },
+    final: { heading: 'มีงานซ้ำที่ทีมอยากหยุดทำมือ แต่ยังไม่แน่ใจว่าควรให้ AI ช่วยตรงไหน?', copy: 'ทัก LINE แล้วพิมพ์ “AI WORKFLOW” พร้อมจำนวนทีม บอกงานซ้ำ ความถี่ Process owner และข้อมูลเสี่ยงที่เกี่ยวข้อง ผมจะช่วยเช็ก Fit Gate ก่อนออกใบแจ้งหนี้' },
   },
 };
