@@ -1,0 +1,657 @@
+---
+// Intel Warroom — แฟ้มเป้าหมาย (คน/ช่อง/แบรนด์ที่คุณปันจับตา) + คลังรายงานของ Scout (2026-09-02)
+//
+// เดิมคือ Newsroom (คลังรายงาน) · คุณปันขอให้กลายเป็นห้องสืบ: รวม Competitor Watchlist เข้ามาเป็น roster ·
+// ปุ่ม "สืบตอนนี้" ยิงหลายเลนผ่านท่อ Scout บนมินิแล้วเห็นความคืบหน้าสด · "สืบคนใหม่" ไล่หาตัวตนข้ามแพลตฟอร์ม
+// auth = WarRoomGate (Google FedCM → Supabase) · ข้อมูล = intel_targets + newsroom_items/jobs (RLS newsroom_is_owner)
+// spec: claude-code repo → docs/superpowers/specs/2026-09-02-intel-warroom-design.md
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
+import AppNav from '../../components/app/AppNav.astro';
+---
+<DashboardLayout title="Intel Warroom — Pun">
+  <script is:inline async src="https://accounts.google.com/gsi/client"></script>
+  <WarRoomGate appId="intel-app" title="Intel Warroom" icon="🕵️" event="intel:authed" />
+
+  <div id="intel-app" class="hidden min-h-dvh bg-base-100">
+    <AppNav app="intel">
+      <button id="nr-refresh" class="btn btn-ghost btn-sm tap-44" aria-label="รีเฟรช">⟳</button>
+    </AppNav>
+
+    <main class="mx-auto max-w-7xl px-4 pb-24 pt-4">
+      <div class="mb-4 flex flex-wrap items-center gap-2">
+        <div role="tablist" class="tabs tabs-box grid grid-cols-3 bg-base-200">
+          <a role="tab" class="tab tab-active" data-tab="targets">🎯 เป้าหมาย <span class="badge badge-ghost badge-sm ml-1" id="it-count">0</span></a>
+          <a role="tab" class="tab" data-tab="library">🗂 คลัง</a>
+          <a role="tab" class="tab" data-tab="submit">⏳ คิว <span class="badge badge-warning badge-sm ml-1 hidden" id="nr-queue-badge">0</span></a>
+        </div>
+        <button id="it-discover-open" class="btn ml-auto text-white tap-44" style="background-color:var(--color-brand-coral);">🔎 สืบคนใหม่</button>
+      </div>
+
+      <!-- ============ เป้าหมาย ============ -->
+      <section id="nr-pane-targets">
+        <!-- สรุปก่อนรายละเอียด: สัปดาห์นี้ใครขยับ · trigger ไหนดัง · ใครเลยกำหนด -->
+        <div id="it-signals" class="mb-3 grid grid-cols-2 gap-2 md:grid-cols-4"></div>
+
+        <div id="it-wrap" class="grid gap-3 md:grid-cols-[380px_1fr] md:items-start">
+          <aside id="it-roster" class="rounded-2xl border border-base-300 bg-base-100">
+            <div class="flex flex-col gap-2 border-b border-base-300 p-3">
+              <label class="flex items-center gap-2 rounded-full border border-base-300 bg-base-200 px-3">
+                <span aria-hidden="true" class="opacity-50">🔍</span>
+                <input id="it-search" class="input input-ghost flex-1 border-0 px-0 focus:outline-none" placeholder="ชื่อ · @handle · เพจ · คำที่เขาขาย" aria-label="ค้นหาเป้าหมาย" autocomplete="off" />
+              </label>
+              <div class="flex flex-wrap gap-1" id="it-rolechips" role="group" aria-label="กรองตามบทบาท">
+                <button class="btn btn-xs btn-active tap-44" data-role="all">ทั้งหมด</button>
+                <button class="btn btn-xs tap-44" data-role="competitor">🎯 คู่แข่ง</button>
+                <button class="btn btn-xs tap-44" data-role="benchmark">📹 benchmark</button>
+                <button class="btn btn-xs tap-44" data-role="mentor">🧭 mentor</button>
+                <button class="btn btn-xs tap-44" data-role="fired">⚠️ trigger ดัง</button>
+                <button class="btn btn-xs tap-44" data-role="due">⏰ เลยกำหนด</button>
+              </div>
+            </div>
+            <div id="it-list" class="max-h-[70vh] overflow-y-auto"></div>
+          </aside>
+
+          <article id="it-file" class="hidden min-h-[480px] rounded-2xl border border-base-300 bg-base-100 md:block" aria-live="polite"></article>
+        </div>
+      </section>
+
+      <!-- ============ คลัง (เดิม Newsroom) ============ -->
+      <section id="nr-pane-library" class="hidden">
+        <div class="mb-3 flex flex-wrap gap-1" id="nr-platforms" role="group" aria-label="กรองตามแพลตฟอร์ม"></div>
+        <div class="mb-4 grid gap-2 md:grid-cols-[1fr_11rem_11rem_11rem]">
+          <label class="flex items-center gap-2 rounded-full border border-base-300 bg-base-200 px-3">
+            <span aria-hidden="true" class="opacity-50">🔍</span>
+            <input id="nr-search" class="input input-ghost flex-1 border-0 px-0 focus:outline-none" placeholder="ค้นชื่อ ช่อง หรือสรุป เช่น Ronny" aria-label="ค้นหาในคลัง" autocomplete="off" />
+          </label>
+          <select id="nr-target" class="select select-bordered" aria-label="กรองตามแฟ้ม"><option value="">ทุกแฟ้ม</option></select>
+          <select id="nr-kind" class="select select-bordered" aria-label="กรองตามชนิด">
+            <option value="">ทุกชนิด</option>
+            <option value="clip">คลิป</option>
+            <option value="page">เพจ</option>
+            <option value="ads">แอด</option>
+            <option value="web">เว็บ</option>
+            <option value="shot">ภาพ</option>
+            <option value="paste">ข้อความ</option>
+          </select>
+          <select id="nr-sort" class="select select-bordered" aria-label="เรียงลำดับ">
+            <option value="created_at">ใหม่สุด</option>
+            <option value="score">คะแนนสูงสุด</option>
+          </select>
+        </div>
+        <p id="nr-status" class="mb-3 text-sm opacity-60" aria-live="polite">กำลังโหลดคลัง…</p>
+        <div id="nr-cards" class="grid grid-cols-2 gap-3 md:grid-cols-4"></div>
+      </section>
+
+      <!-- ============ คิว ============ -->
+      <section id="nr-pane-submit" class="hidden gap-4 md:grid-cols-[1fr_1.2fr]">
+        <div class="card border border-base-300 bg-base-200">
+          <div class="card-body gap-2 p-4">
+            <h2 class="font-display font-semibold">ส่งสิ่งที่อยากแกะ (ไม่ผูกแฟ้ม)</h2>
+            <p class="text-xs opacity-60">ลิงก์คลิป / เพจ / แอด / เว็บ หรือวางข้อความ — ถ้าจะสืบคนใน watchlist ให้กด "สืบ" ที่แฟ้มแทน จะได้เกาะแฟ้มอัตโนมัติ</p>
+            <label class="block"><span class="mb-1 block text-sm opacity-70">ลิงก์หรือข้อความ</span><textarea id="nr-target-input" class="textarea textarea-bordered h-32 w-full" aria-label="ลิงก์หรือข้อความที่อยากให้แกะ" required></textarea></label>
+            <label class="block"><span class="mb-1 block text-sm opacity-70">โน้ต (ถ้ามี)</span><input id="nr-note" class="input input-bordered w-full" placeholder="เช่น ดู hook 2 วิแรก" aria-label="โน้ต" /></label>
+            <label class="block"><span class="mb-1 block text-sm opacity-70">ชนิด</span>
+              <select id="nr-jobkind" class="select select-bordered w-full" aria-label="ชนิดงาน">
+                <option value="auto">ให้ Scout เดา</option><option value="web">เว็บ</option><option value="clip">คลิป</option><option value="page">เพจ</option><option value="ads">แอด</option><option value="paste">ข้อความ</option>
+              </select></label>
+            <button id="nr-submit" class="btn mt-1 w-full text-white tap-44" style="background-color:var(--color-brand-coral);">เข้าคิว Scout</button>
+          </div>
+        </div>
+        <div>
+          <h2 class="mb-2 font-display font-semibold">คิวล่าสุด</h2>
+          <div class="overflow-x-auto rounded-2xl border border-base-300">
+            <table class="table"><thead><tr><th>งาน</th><th>แฟ้ม · เลน</th><th>สถานะ</th><th></th></tr></thead><tbody id="nr-jobs"></tbody></table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- รายงาน (โมดัลเดิมของ Newsroom) -->
+    <dialog id="nr-modal" class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box max-w-4xl" id="nr-modal-body"></div>
+      <form method="dialog" class="modal-backdrop"><button aria-label="ปิด">close</button></form>
+    </dialog>
+
+    <!-- แก้ไขแฟ้ม -->
+    <dialog id="it-edit" class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box max-w-2xl">
+        <h3 class="font-display text-lg font-bold" id="it-edit-title">แก้ไขแฟ้ม</h3>
+        <form id="it-edit-form" class="mt-3 grid gap-3">
+          <label class="block"><span class="mb-1 block text-sm opacity-70">ชื่อ</span><input name="name" class="input input-bordered w-full" required /></label>
+          <label class="block"><span class="mb-1 block text-sm opacity-70">ชื่อเรียกอื่น (คั่นด้วย ·)</span><input name="aliases" class="input input-bordered w-full" /></label>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <label class="block"><span class="mb-1 block text-sm opacity-70">ระดับภัย</span>
+              <select name="threat" class="select select-bordered w-full"><option value="red">🔴 หัวชนกัน</option><option value="orange">🟠 ใกล้ · สูง</option><option value="yellow">🟡 บางส่วน · เฝ้าดู</option><option value="green">🟢 ต่ำ</option><option value="na">⚪ บริบท</option></select></label>
+            <label class="block"><span class="mb-1 block text-sm opacity-70">สืบซ้ำทุก (วัน)</span><input name="cadence_days" type="number" min="1" class="input input-bordered w-full" /></label>
+          </div>
+          <fieldset class="flex flex-wrap gap-3 text-sm"><legend class="mb-1 text-sm opacity-70">บทบาท</legend>
+            <label class="flex items-center gap-1"><input type="checkbox" name="role" value="competitor" class="checkbox checkbox-sm" /> 🎯 คู่แข่งตลาด</label>
+            <label class="flex items-center gap-1"><input type="checkbox" name="role" value="benchmark" class="checkbox checkbox-sm" /> 📹 benchmark</label>
+            <label class="flex items-center gap-1"><input type="checkbox" name="role" value="mentor" class="checkbox checkbox-sm" /> 🧭 mentor</label>
+            <label class="flex items-center gap-1"><input type="checkbox" name="role" value="context" class="checkbox checkbox-sm" /> 👁 context</label>
+          </fieldset>
+          <label class="block"><span class="mb-1 block text-sm opacity-70">Handles — บรรทัดละ 1 · รูปแบบ <code>platform ref</code> (tiktok @x · youtube @x · instagram @x · facebook_page ชื่อเพจหรือ page_id · web https://… · line @x)</span><textarea name="handles" class="textarea textarea-bordered h-28 w-full font-mono text-sm"></textarea></label>
+          <label class="block"><span class="mb-1 block text-sm opacity-70">ขายอะไร + ราคา</span><textarea name="sells" class="textarea textarea-bordered w-full"></textarea></label>
+          <label class="block"><span class="mb-1 block text-sm opacity-70">ICP</span><input name="icp" class="input input-bordered w-full" /></label>
+          <label class="block"><span class="mb-1 block text-sm opacity-70">ทำไมต้องจับตา</span><textarea name="why_watch" class="textarea textarea-bordered h-24 w-full"></textarea></label>
+          <label class="block"><span class="mb-1 block text-sm opacity-70">Trigger — บรรทัดละ 1 · <code>ถ้าเขาทำ… | คำที่เช็ค, คั่นด้วยจุลภาค</code></span><textarea name="triggers" class="textarea textarea-bordered h-24 w-full font-mono text-sm"></textarea></label>
+          <div class="mt-1 flex flex-wrap justify-between gap-2">
+            <button type="button" id="it-edit-delete" class="btn btn-ghost btn-sm text-error tap-44">ลบแฟ้ม</button>
+            <div class="flex gap-2"><button type="button" class="btn btn-ghost tap-44" id="it-edit-cancel">ยกเลิก</button><button type="submit" class="btn text-white tap-44" style="background-color:var(--color-brand-navy);">บันทึก</button></div>
+          </div>
+        </form>
+      </div>
+      <form method="dialog" class="modal-backdrop"><button aria-label="ปิด">close</button></form>
+    </dialog>
+
+    <!-- สืบคนใหม่ -->
+    <dialog id="it-discover" class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box max-w-2xl">
+        <h3 class="font-display text-lg font-bold">สืบคนใหม่</h3>
+        <p class="mt-1 text-sm opacity-60">วางชื่อ · @handle · หรือลิงก์ — มินิไล่หาตัวตนข้ามแพลตฟอร์ม (TikTok/YouTube ตรง · เว็บผ่านท่อ daily-search · เพจ FB เสนอชื่อให้ยืนยันแล้วเลน ads ค้น Ad Library เอง) แล้วค่อยเลือกว่าจะเก็บอะไรเข้าแฟ้ม</p>
+        <div class="mt-3 flex gap-2">
+          <input id="it-dq" class="input input-bordered flex-1" placeholder="เช่น อ.เก่ง ขายเก่งศาสตร์ · @kaikengsart · https://…" aria-label="ชื่อหรือลิงก์" />
+          <button id="it-dgo" class="btn text-white tap-44" style="background-color:var(--color-brand-navy);">ค้นหาตัวตน</button>
+        </div>
+        <p id="it-dstat" class="mt-2 min-h-5 text-sm opacity-60" aria-live="polite"></p>
+        <div id="it-dfound" class="mt-2 grid gap-2"></div>
+        <div class="mt-3 flex justify-end gap-2">
+          <button class="btn btn-ghost tap-44" id="it-dclose">ปิด</button>
+          <button class="btn hidden text-white tap-44" style="background-color:var(--color-brand-coral);" id="it-dadd">เพิ่มเข้า watchlist + สืบรอบแรก</button>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop"><button aria-label="ปิด">close</button></form>
+    </dialog>
+
+    <div class="toast toast-end z-50"><div id="nr-toast" class="alert hidden text-sm shadow-lg"></div></div>
+  </div>
+
+  <style>
+    .nr-report { line-height: 1.75; }
+    .nr-report h1, .nr-report h2, .nr-report h3 { font-weight: 700; margin: 1.25em 0 0.5em; line-height: 1.35; }
+    .nr-report h1 { font-size: 1.35rem; } .nr-report h2 { font-size: 1.15rem; } .nr-report h3 { font-size: 1rem; }
+    .nr-report p { margin: 0.75em 0; }
+    .nr-report ul, .nr-report ol { margin: 0.75em 0; padding-inline-start: 1.5em; }
+    .nr-report ul { list-style: disc; } .nr-report ol { list-style: decimal; } .nr-report li { margin: 0.25em 0; }
+    .nr-report blockquote { margin: 0.75em 0; padding-inline-start: 0.9em; border-inline-start: 3px solid var(--color-base-300); opacity: 0.85; }
+    .nr-report code { background: var(--color-base-200); border-radius: 0.35rem; padding: 0.1em 0.35em; font-size: 0.9em; }
+    .nr-report hr { margin: 1.25em 0; border-color: var(--color-base-300); } .nr-report a { text-decoration: underline; }
+    /* แถบสีระดับภัย ซ้ายของแถวและหัวแฟ้ม */
+    .it-row { display: grid; grid-template-columns: 4px 1fr auto; gap: 10px; align-items: center; }
+    .it-stripe { align-self: stretch; border-radius: 2px; min-height: 36px; }
+    .th-red { background: #C43245; } .th-orange { background: #D97A1F; } .th-yellow { background: #C9A227; } .th-green { background: #2F7D5B; } .th-na { background: #9A9488; }
+    @media (max-width: 767px) {
+      #it-wrap.showfile #it-roster { display: none; }
+      #it-wrap.showfile #it-file { display: block; }
+    }
+  </style>
+
+  <script>
+    import { listItems, getItem, signedUrl, listJobs, createJob, retryJob, deleteItem, deleteJob, PLATFORMS, PLATFORM_LABEL as NR_PLATFORM, KIND_LABEL, type NewsroomItem, type NewsroomJob } from '../../scripts/newsroom/data';
+    import {
+      listTargets, updateTarget, createTarget, deleteTarget, listItemsForTarget, recentItems, lanesFor, scoutTarget, listBatch, subscribeBatch,
+      requestDiscovery, subscribeJob, daysSince, daysUntil, firedCount,
+      THREAT_LABEL, THREAT_ORDER, THREAT_COLOR, ROLE_LABEL, PLATFORM_LABEL, type IntelTarget, type Handle, type LanePick, type DiscoveryResult, type Threat, type Role,
+    } from '../../scripts/intel/data';
+    import { getSupabaseSession } from '../../scripts/dashboard/supabase';
+
+    // ---------- state ----------
+    let targets: IntelTarget[] = [];
+    let cur: string | null = null;
+    let roleFilter = 'all';
+    let q = '';
+    let platform = '';
+    let jobs: NewsroomJob[] = [];
+    let jobTimer = 0;
+    let openedItem: NewsroomItem | null = null;
+    let recent: Map<string, number> = new Map();
+    let unsubBatch: (() => void) | null = null;
+    let unsubDiscover: (() => void) | null = null;
+    let discovered: DiscoveryResult | null = null;
+
+    const $ = (id: string) => document.getElementById(id)!;
+    const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+    const fmtDate = (d: string | null) => (d ? new Date(d).toLocaleDateString('th-TH', { dateStyle: 'medium' }) : 'ไม่ระบุวันที่');
+    const badge = (p: string) => `<span class="badge badge-sm badge-ghost">${esc(NR_PLATFORM[p] ?? p)}</span>`;
+
+    function toast(msg: string, kind: 'success' | 'error' = 'success') {
+      const el = $('nr-toast');
+      el.className = `alert text-sm shadow-lg ${kind === 'error' ? 'alert-error' : 'alert-success'}`;
+      el.textContent = msg;
+      window.clearTimeout((window as any).__nrToast);
+      (window as any).__nrToast = window.setTimeout(() => el.classList.add('hidden'), 3200);
+    }
+    const oops = (e: unknown) => toast((e as Error).message || 'ผิดพลาด ลองใหม่', 'error');
+
+    // ---------- markdown ของรายงาน (escape ก่อนแปลงเสมอ · ลิงก์เฉพาะ http/https) ----------
+    function renderMarkdown(md: string): string {
+      const inline = (raw: string) => esc(raw)
+        .replace(/`([^`]+)`/g, (_m, c) => `<code>${c}</code>`)
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+        .replace(/(^|[^*])\*([^*]+)\*/g, '$1<em>$2</em>')
+        .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+      const out: string[] = []; let list: 'ul' | 'ol' | null = null;
+      const closeList = () => { if (list) { out.push(`</${list}>`); list = null; } };
+      const openList = (kind: 'ul' | 'ol') => { if (list !== kind) { closeList(); out.push(`<${kind}>`); list = kind; } };
+      for (const line of String(md ?? '').replace(/\r\n?/g, '\n').split('\n')) {
+        const t = line.trim();
+        if (!t) { closeList(); continue; }
+        const heading = /^(#{1,3})\s+(.*)$/.exec(t), bullet = /^[-*]\s+(.*)$/.exec(t), ordered = /^\d+[.)]\s+(.*)$/.exec(t), quote = /^>\s?(.*)$/.exec(t);
+        if (heading) { closeList(); out.push(`<h${heading[1].length}>${inline(heading[2])}</h${heading[1].length}>`); }
+        else if (/^([-*_])\1{2,}$/.test(t)) { closeList(); out.push('<hr />'); }
+        else if (bullet) { openList('ul'); out.push(`<li>${inline(bullet[1])}</li>`); }
+        else if (ordered) { openList('ol'); out.push(`<li>${inline(ordered[1])}</li>`); }
+        else if (quote) { closeList(); out.push(`<blockquote>${inline(quote[1])}</blockquote>`); }
+        else { closeList(); out.push(`<p>${inline(t)}</p>`); }
+      }
+      closeList(); return out.join('');
+    }
+
+    // ---------- tabs ----------
+    function showTab(name: string) {
+      for (const t of ['targets', 'library', 'submit']) {
+        $(`nr-pane-${t}`).classList.toggle('hidden', t !== name);
+        document.querySelector(`[data-tab="${t}"]`)!.classList.toggle('tab-active', t === name);
+      }
+      $('nr-pane-submit').classList.toggle('grid', name === 'submit');
+      syncPolling();
+      if (name === 'library') void loadLibrary().catch(oops);
+      if (name === 'submit') void loadJobs().catch(oops);
+    }
+
+    // ---------- เป้าหมาย: roster ----------
+    const seenTxt = (t: IntelTarget) => { const d = daysSince(t.last_scouted_at); return d === null ? 'ยังไม่เคยสืบ' : d === 0 ? 'สืบล่าสุด วันนี้' : `สืบล่าสุด ${d} วันก่อน`; };
+    const isDue = (t: IntelTarget) => { const d = daysUntil(t.next_scout_at); return d !== null && d < 0; };
+    const nextTxt = (t: IntelTarget) => { const d = daysUntil(t.next_scout_at); if (d === null) return ''; return d < 0 ? `<span class="text-error">เลยกำหนด ${-d} วัน</span>` : d === 0 ? 'ครบกำหนดวันนี้' : `ถัดไปอีก ${d} วัน`; };
+    const roleIcons = (t: IntelTarget) => (t.role ?? []).map((r) => (ROLE_LABEL[r as Role] ?? r).split(' ')[0]).join('');
+
+    function filtered(): IntelTarget[] {
+      const s = q.toLowerCase();
+      return targets.filter((t) => {
+        if (roleFilter === 'fired' && !firedCount(t)) return false;
+        if (roleFilter === 'due' && !isDue(t)) return false;
+        if (!['all', 'fired', 'due'].includes(roleFilter) && !(t.role ?? []).includes(roleFilter as Role)) return false;
+        if (!s) return true;
+        const hay = [t.name, ...(t.aliases ?? []), t.sells, t.icp, t.why_watch, ...(t.handles ?? []).map((h) => h.ref)].join(' ').toLowerCase();
+        return hay.includes(s);
+      });
+    }
+
+    function renderList() {
+      const list = $('it-list'); list.innerHTML = '';
+      const rows = filtered();
+      const groupLabel: Record<Threat, string> = { red: 'head-on', orange: 'close / high', yellow: 'partial / watch', green: 'low', na: 'benchmark / context' };
+      for (const th of THREAT_ORDER) {
+        const grp = rows.filter((t) => t.threat === th).sort((a, b) => (daysSince(b.last_scouted_at) ?? 9999) - (daysSince(a.last_scouted_at) ?? 9999));
+        if (!grp.length) continue;
+        list.insertAdjacentHTML('beforeend', `<div class="flex items-center gap-2 px-3 pb-1 pt-3 text-xs font-bold uppercase tracking-wide opacity-60"><i class="inline-block size-2.5 rounded-sm th-${th}"></i>${groupLabel[th]} <span class="tabular-nums">(${grp.length})</span></div>`);
+        for (const t of grp) {
+          const fired = firedCount(t);
+          list.insertAdjacentHTML('beforeend', `<div class="it-row cursor-pointer border-t border-base-300 px-3 py-2 hover:bg-base-200 ${t.id === cur ? 'bg-base-200' : ''}" data-id="${esc(t.id)}" tabindex="0" role="button">
+            <span class="it-stripe th-${th}"></span>
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-1.5 font-semibold leading-snug">${esc(t.name)}${fired ? `<span class="badge badge-warning badge-xs">⚠️ ${fired}</span>` : ''}${recent.get(t.id) ? '<span class="badge badge-info badge-xs">ใหม่</span>' : ''}</div>
+              <div class="flex flex-wrap gap-x-2 text-xs opacity-60"><span>${roleIcons(t)}</span><span class="tabular-nums">${seenTxt(t)}</span><span class="tabular-nums">${nextTxt(t)}</span></div>
+            </div>
+            <button class="btn btn-outline btn-xs tap-44" data-scout="${esc(t.id)}">สืบ</button>
+          </div>`);
+        }
+      }
+      if (!rows.length) list.innerHTML = '<p class="p-6 text-center text-sm opacity-60">ไม่พบเป้าหมาย — ลอง "สืบคนใหม่"</p>';
+      $('it-count').textContent = String(targets.length);
+    }
+
+    function renderSignals() {
+      const week = targets.filter((t) => recent.get(t.id)).length;
+      const fired = targets.reduce((n, t) => n + firedCount(t), 0);
+      const due = targets.filter(isDue).length;
+      const never = targets.filter((t) => !t.last_scouted_at).length;
+      const card = (v: string, l: string, warn = false) => `<div class="rounded-2xl border ${warn ? 'border-warning' : 'border-base-300'} bg-base-100 px-4 py-2.5"><div class="font-display text-2xl font-bold ${warn ? 'text-warning' : ''} tabular-nums">${v}</div><div class="text-xs opacity-60">${l}</div></div>`;
+      $('it-signals').innerHTML = card(String(week), 'เป้าหมายมีรายงานใหม่ 7 วันนี้') + card(String(fired), 'trigger ดัง — รอคุณปันดู', fired > 0) + card(String(due), 'เลยกำหนดสืบซ้ำ', due > 0) + card(String(never), 'ยังไม่เคยสืบเลย');
+    }
+
+    // ---------- แฟ้ม ----------
+    async function renderFile() {
+      const t = targets.find((x) => x.id === cur);
+      const file = $('it-file');
+      if (!t) { file.innerHTML = '<p class="p-8 text-center text-sm opacity-60">เลือกเป้าหมายทางซ้าย</p>'; return; }
+      const lanes = lanesFor(t);
+      const handleChip = (h: Handle) => {
+        const lane = lanesFor({ ...t, handles: [h] })[0];
+        const url = h.platform === 'tiktok' && h.ref.startsWith('@') ? `https://www.tiktok.com/${h.ref}` : h.platform === 'youtube' && h.ref.startsWith('@') ? `https://www.youtube.com/${h.ref}` : h.platform === 'instagram' && h.ref.startsWith('@') ? `https://www.instagram.com/${h.ref.slice(1)}/` : /^https?:\/\//.test(h.ref) ? h.ref : h.platform === 'web' ? `https://${h.ref}` : null;
+        const lock = h.platform === 'instagram';
+        const inner = `<small class="font-semibold opacity-60">${esc(PLATFORM_LABEL[h.platform] ?? h.platform)}</small> ${esc(h.ref)}${h.page_id && h.page_id !== h.ref ? `<small class="opacity-50">· page_id ${esc(h.page_id)}</small>` : ''}${lock ? '<small title="IG ต้องมี burner cookies บนมินิ">🔒</small>' : ''}${lane ? '' : '<small class="opacity-50">· ดูอย่างเดียว</small>'}`;
+        return url ? `<a class="badge badge-lg badge-outline gap-1" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${inner}</a>` : `<span class="badge badge-lg badge-outline gap-1">${inner}</span>`;
+      };
+      file.innerHTML = `
+        <div class="it-row border-b border-base-300 p-4 pl-3" style="grid-template-columns:6px 1fr auto">
+          <span class="it-stripe th-${t.threat}" style="border-radius:3px"></span>
+          <div class="min-w-0">
+            <button class="btn btn-ghost btn-xs mb-1 md:hidden" id="it-back">← รายชื่อ</button>
+            <div class="text-xs font-semibold uppercase tracking-wide opacity-60">แฟ้ม · ${(t.role ?? []).map((r) => esc(ROLE_LABEL[r as Role] ?? r)).join(' · ')}</div>
+            <h2 class="mt-1 font-display text-2xl font-bold leading-tight text-balance">${esc(t.name)}</h2>
+            ${t.aliases?.length ? `<div class="text-sm opacity-60">${esc(t.aliases.join(' · '))}</div>` : ''}
+            <div class="mt-2 flex flex-wrap gap-1.5"><span class="badge badge-sm border-0 text-white" style="background-color:${THREAT_COLOR[t.threat]}">${esc(THREAT_LABEL[t.threat])}</span><span class="badge badge-ghost badge-sm">สืบซ้ำทุก ${t.cadence_days} วัน</span>${t.section !== 'competitor' ? `<span class="badge badge-ghost badge-sm">${t.section}</span>` : ''}</div>
+            <div class="mt-1 text-xs opacity-60 tabular-nums">${seenTxt(t)} · ${nextTxt(t) || 'ยังไม่ตั้งรอบ'}</div>
+          </div>
+          <div class="flex flex-col items-end gap-1.5">
+            <button id="it-scout-now" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-navy);" ${lanes.length ? '' : 'disabled title="ยังไม่มี handle ที่สืบได้ — กดแก้ไขแล้วเติมก่อน"'}>🕵️ สืบตอนนี้</button>
+            <div class="flex gap-1"><button class="btn btn-outline btn-xs tap-44" id="it-edit-open">แก้ไข</button>${t.deep_dive ? `<span class="badge badge-ghost badge-sm" title="${esc(t.deep_dive)}">wiki ↗</span>` : ''}</div>
+          </div>
+        </div>
+        <div id="it-runner" class="hidden"></div>
+        <div class="border-b border-base-300 p-4"><h3 class="mb-2 text-xs font-bold uppercase tracking-wide opacity-60">Handles</h3>
+          <div class="flex flex-wrap gap-1.5">${(t.handles ?? []).length ? (t.handles ?? []).map(handleChip).join('') : '<span class="text-sm opacity-60">ยังไม่มี handle — กด "แก้ไข" เติม @handle / ชื่อเพจ / เว็บ แล้วปุ่มสืบจะเปิดเอง</span>'}</div></div>
+        <div class="border-b border-base-300 p-4"><dl class="grid gap-x-4 gap-y-1.5 text-sm sm:grid-cols-[120px_1fr]">
+          <dt class="font-semibold opacity-60">ขายอะไร + ราคา</dt><dd>${esc(t.sells || '—')}</dd>
+          <dt class="font-semibold opacity-60">ICP</dt><dd>${esc(t.icp || '—')}</dd>
+          <dt class="font-semibold opacity-60">Reach</dt><dd>${esc(t.reach || '—')}</dd>
+          <dt class="font-semibold opacity-60">ทำไมต้องจับตา</dt><dd>${esc(t.why_watch || '—')}</dd></dl></div>
+        <div class="border-b border-base-300 p-4"><h3 class="mb-2 text-xs font-bold uppercase tracking-wide opacity-60">Trigger — ถ้าเขาทำแบบนี้ ต้องขยับ</h3>
+          <div class="grid gap-1.5">${(t.triggers ?? []).length ? (t.triggers ?? []).map((x, i) => `<div class="grid grid-cols-[22px_1fr_auto] items-start gap-2 rounded-xl border ${x.fired_at ? 'border-warning bg-warning/10' : 'border-base-300 bg-base-200'} p-2.5 text-sm"><span>${x.fired_at ? '⚠️' : '○'}</span><span>${esc(x.text)}<div class="text-xs opacity-50">เช็คคำ: ${esc((x.keywords ?? []).join(', ') || '—')}</div></span>${x.fired_at ? `<button class="btn btn-ghost btn-xs" data-ack="${i}" title="รับทราบ — ปิดธง">ดังเมื่อ ${esc(fmtDate(x.fired_at))} · ปิดธง</button>` : '<span class="text-xs opacity-50">ยังไม่ดัง</span>'}</div>`).join('') : '<p class="text-sm opacity-60">ยังไม่ตั้ง — กด "แก้ไข" เขียน "ถ้าเขา… | คำที่เช็ค" ระบบจะเช็ครายงานใหม่ทุกชิ้นให้</p>'}</div></div>
+        <div class="p-4"><h3 class="mb-2 text-xs font-bold uppercase tracking-wide opacity-60">เส้นเวลา</h3><div id="it-timeline" class="grid gap-2"><p class="text-sm opacity-60">กำลังโหลด…</p></div></div>`;
+      $('it-scout-now').addEventListener('click', () => openRunner(t, lanes));
+      $('it-edit-open').addEventListener('click', () => openEdit(t));
+      document.getElementById('it-back')?.addEventListener('click', () => $('it-wrap').classList.remove('showfile'));
+      file.querySelectorAll('[data-ack]').forEach((b) => b.addEventListener('click', () => void ackTrigger(t, Number((b as HTMLElement).dataset.ack))));
+      try {
+        const items = await listItemsForTarget(t.id);
+        $('it-timeline').innerHTML = items.length ? items.map((x) => `<div class="grid grid-cols-[54px_1fr_auto] items-center gap-3 rounded-xl border border-base-300 bg-base-200 p-2">
+            <div class="grid aspect-[3/4] w-[54px] place-items-end rounded-lg bg-base-300 p-1 text-[10px] font-bold opacity-60">${esc(KIND_LABEL[x.kind] ?? x.kind)}</div>
+            <div class="min-w-0"><div class="font-semibold leading-snug">${esc(x.title || 'ยังไม่มีหัวข้อ')}</div>${x.verdict ? `<div class="text-sm opacity-80">${esc(x.verdict)}</div>` : ''}<div class="text-xs opacity-50 tabular-nums">${esc(fmtDate(x.scraped_at || x.created_at))} · ${esc(NR_PLATFORM[x.platform] ?? x.platform)}${x.score != null ? ` · ${esc(x.score)}/10` : ''}</div></div>
+            <button class="btn btn-outline btn-xs tap-44" data-open="${esc(x.id)}">เปิด</button></div>`).join('')
+          : '<p class="rounded-xl border border-dashed border-base-300 p-4 text-center text-sm opacity-60">ยังไม่มีรายงานในแฟ้มนี้ — กด "สืบตอนนี้" เพื่อเปิดรอบแรก</p>';
+      } catch (e) { $('it-timeline').innerHTML = `<p class="text-sm text-error">${esc((e as Error).message)}</p>`; }
+    }
+
+    async function ackTrigger(t: IntelTarget, i: number) {
+      const triggers = (t.triggers ?? []).map((x, k) => (k === i ? { ...x, fired_at: null, fired_by_item: null } : x));
+      try { const nt = await updateTarget(t.id, { triggers }); replaceTarget(nt); toast('ปิดธงแล้ว'); } catch (e) { oops(e); }
+    }
+    function replaceTarget(nt: IntelTarget) { targets = targets.map((x) => (x.id === nt.id ? nt : x)); renderList(); renderSignals(); void renderFile(); }
+
+    // ---------- สืบตอนนี้ ----------
+    function openRunner(t: IntelTarget, lanes: LanePick[]) {
+      const r = $('it-runner'); r.classList.remove('hidden');
+      r.innerHTML = `<div class="m-4 mb-0 overflow-hidden rounded-2xl border border-base-300 bg-base-200">
+        <div class="flex items-center justify-between gap-2 px-4 py-2.5"><b class="text-sm">สืบ ${esc(t.name)}</b><span class="text-xs opacity-60">เลือกเลนตาม handle ที่มี · มินิทำทีละงาน</span></div>
+        <div class="flex flex-wrap gap-1.5 border-t border-base-300 bg-base-100 px-4 py-2.5 text-sm">${lanes.map((p, i) => `<label class="flex items-center gap-1.5 rounded-full border border-base-300 px-2.5 py-1 ${p.platform === 'instagram' ? 'opacity-70' : ''}"><input type="checkbox" class="checkbox checkbox-xs" ${p.platform === 'instagram' ? '' : 'checked'} data-i="${i}"> ${esc(p.lane)} · ${esc(p.label)}${p.platform === 'instagram' ? ' <small class="opacity-60">🔒 ต้องมี ig-cookies บนมินิ</small>' : ''}</label>`).join('')}</div>
+        <div class="px-4 py-2 text-xs opacity-60">ประมาณ ${lanes.length * 1}–${lanes.length * 5} นาที (แกะช่องต้องถอดเสียง) · ปิดหน้าไปได้ เดี๋ยว Telegram เด้งตอนเสร็จ</div>
+        <div class="flex gap-2 px-4 pb-3"><button class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);" id="it-fire">ยิงเข้าคิว</button><button class="btn btn-ghost btn-sm tap-44" id="it-cancel">ยกเลิก</button></div></div>`;
+      $('it-cancel').addEventListener('click', () => r.classList.add('hidden'));
+      $('it-fire').addEventListener('click', () => void (async () => {
+        const picked = [...r.querySelectorAll<HTMLInputElement>('input:checked')].map((i) => lanes[Number(i.dataset.i)]);
+        if (!picked.length) return toast('เลือกอย่างน้อย 1 เลน', 'error');
+        try { const batch = await scoutTarget(t, picked); runBatch(t, batch, picked.length); } catch (e) { oops(e); }
+      })());
+    }
+
+    function runBatch(t: IntelTarget, batchId: string, n: number) {
+      const r = $('it-runner'); r.classList.remove('hidden');
+      const started = Date.now();
+      const tone: Record<string, string> = { queued: '⏳', submitted: '📤', running: '🔄', done: '✅', failed: '❌', preflight_failed: '❌' };
+      const draw = (rows: NewsroomJob[]) => {
+        const done = rows.filter((j) => ['done', 'failed', 'preflight_failed'].includes(j.status)).length;
+        const el = Math.floor((Date.now() - started) / 1000);
+        r.innerHTML = `<div class="m-4 mb-0 overflow-hidden rounded-2xl border border-base-300 bg-base-200">
+          <div class="flex items-center justify-between gap-2 px-4 py-2.5"><b class="text-sm">กำลังสืบ ${esc(t.name)}</b><span class="text-xs opacity-60 tabular-nums">${done}/${rows.length || n} เลน · ${Math.floor(el / 60)}:${String(el % 60).padStart(2, '0')}</span></div>
+          <div class="grid gap-1.5 border-t border-base-300 bg-base-100 px-4 py-2.5 text-sm">${rows.map((j) => `<div class="grid grid-cols-[22px_70px_1fr] items-center gap-2"><span>${tone[j.status] ?? '⏳'}</span><span class="font-semibold">${esc(j.lane || j.kind)}</span><span class="truncate text-xs opacity-70">${esc(j.error || (j.status === 'done' ? 'รายงานเข้าแฟ้มแล้ว' : j.status === 'running' ? 'มินิกำลังทำ' : j.status === 'submitted' ? 'Scout รับงานแล้ว' : 'รอ poller หยิบ (≤20 วิ)'))}</span></div>`).join('') || '<span class="text-xs opacity-60">กำลังเข้าคิว…</span>'}</div>
+          <div class="px-4 py-2 text-xs opacity-60">ความคืบหน้าอัปเดตเองผ่าน Realtime · ปิดหน้าได้ · ${done === rows.length && rows.length ? '<b>เสร็จครบ</b>' : 'Telegram เด้งตอนเสร็จ'}</div></div>`;
+        if (rows.length && done === rows.length) {
+          unsubBatch?.(); unsubBatch = null;
+          toast(`สืบ ${t.name} เสร็จ — ${rows.filter((j) => j.status === 'done').length} รายงานเข้าแฟ้ม`);
+          void reloadTargetsKeepCur();
+        }
+      };
+      unsubBatch?.();
+      unsubBatch = subscribeBatch(batchId, draw);
+      void listBatch(batchId).then(draw).catch(oops);
+      void loadJobs().catch(() => {});
+    }
+
+    async function reloadTargetsKeepCur() {
+      const [t, r] = await Promise.all([listTargets(), recentItems(7)]);
+      targets = t; recent = new Map(); for (const x of r) if (x.target_id) recent.set(x.target_id, (recent.get(x.target_id) ?? 0) + 1);
+      renderList(); renderSignals(); await renderFile();
+    }
+
+    // ---------- แก้ไขแฟ้ม ----------
+    let editing: IntelTarget | null = null;
+    function openEdit(t: IntelTarget) {
+      editing = t;
+      const f = $('it-edit-form') as HTMLFormElement;
+      (f.elements.namedItem('name') as HTMLInputElement).value = t.name;
+      (f.elements.namedItem('aliases') as HTMLInputElement).value = (t.aliases ?? []).join(' · ');
+      (f.elements.namedItem('threat') as HTMLSelectElement).value = t.threat;
+      (f.elements.namedItem('cadence_days') as HTMLInputElement).value = String(t.cadence_days);
+      f.querySelectorAll<HTMLInputElement>('input[name="role"]').forEach((c) => (c.checked = (t.role ?? []).includes(c.value as Role)));
+      (f.elements.namedItem('handles') as HTMLTextAreaElement).value = (t.handles ?? []).map((h) => `${h.platform} ${h.page_id && h.page_id !== h.ref ? h.page_id : h.ref}`).join('\n');
+      (f.elements.namedItem('sells') as HTMLTextAreaElement).value = t.sells ?? '';
+      (f.elements.namedItem('icp') as HTMLInputElement).value = t.icp ?? '';
+      (f.elements.namedItem('why_watch') as HTMLTextAreaElement).value = t.why_watch ?? '';
+      (f.elements.namedItem('triggers') as HTMLTextAreaElement).value = (t.triggers ?? []).map((x) => `${x.text} | ${(x.keywords ?? []).join(', ')}`).join('\n');
+      $('it-edit-title').textContent = `แก้ไขแฟ้ม — ${t.name}`;
+      ($('it-edit') as HTMLDialogElement).showModal();
+    }
+    function parseHandles(text: string): Handle[] {
+      return text.split('\n').map((l) => l.trim()).filter(Boolean).map((l) => {
+        const [platform, ...rest] = l.split(/\s+/); const ref = rest.join(' ').trim();
+        const h: Handle = { platform: platform.toLowerCase(), ref };
+        if (h.platform === 'facebook_page' && /^\d{12,}$/.test(ref)) h.page_id = ref;
+        return h;
+      }).filter((h) => h.ref);
+    }
+    function parseTriggers(text: string, old: IntelTarget['triggers']) {
+      return text.split('\n').map((l) => l.trim()).filter(Boolean).map((l) => {
+        const [text, kw = ''] = l.split('|').map((x) => x.trim());
+        const prev = (old ?? []).find((x) => x.text === text);
+        return { text, keywords: kw.split(',').map((k) => k.trim()).filter(Boolean), escalate_to: prev?.escalate_to ?? null, fired_at: prev?.fired_at ?? null, fired_by_item: prev?.fired_by_item ?? null };
+      });
+    }
+
+    // ---------- สืบคนใหม่ ----------
+    function openDiscover() { discovered = null; $('it-dfound').innerHTML = ''; $('it-dstat').textContent = ''; $('it-dadd').classList.add('hidden'); ($('it-discover') as HTMLDialogElement).showModal(); ($('it-dq') as HTMLInputElement).focus(); }
+    async function startDiscover() {
+      const qv = ($('it-dq') as HTMLInputElement).value.trim();
+      if (!qv) return toast('ใส่ชื่อ / @handle / ลิงก์ก่อน', 'error');
+      $('it-dstat').textContent = 'ส่งให้มินิแล้ว — TikTok/YouTube ~30 วิ · เว็บผ่าน daily-search ~1–2 นาที';
+      $('it-dfound').innerHTML = ''; $('it-dadd').classList.add('hidden');
+      try {
+        const jobId = await requestDiscovery(qv);
+        unsubDiscover?.();
+        unsubDiscover = subscribeJob(jobId, (job) => {
+          if (job.status === 'running') $('it-dstat').textContent = 'มินิกำลังไล่หา…';
+          if (job.status === 'failed' || job.status === 'preflight_failed') { $('it-dstat').textContent = job.error || 'ไม่สำเร็จ'; unsubDiscover?.(); unsubDiscover = null; }
+          if (job.status === 'done' && job.result) { unsubDiscover?.(); unsubDiscover = null; showDiscovered(job.result as DiscoveryResult); }
+        });
+      } catch (e) { oops(e); }
+    }
+    function showDiscovered(res: DiscoveryResult) {
+      discovered = res;
+      $('it-dstat').textContent = `${res.steps?.join(' · ') ?? ''}${res.ig ? ' · ' + res.ig : ''}`;
+      $('it-dfound').innerHTML = res.found?.length ? res.found.map((h, i) => `<label class="grid grid-cols-[22px_1fr_auto] items-center gap-2 rounded-xl border border-base-300 bg-base-200 p-2.5 text-sm"><input type="checkbox" class="checkbox checkbox-sm" data-i="${i}" ${h.scoutable ? 'checked' : 'disabled'}><span><b>${esc(h.ref)}</b> <small class="opacity-60">· ${esc(PLATFORM_LABEL[h.platform] ?? h.platform)}</small><br><small class="opacity-60">${esc(h.title)}${h.note ? ' · ' + esc(h.note) : ''}</small></span><small class="opacity-60">${h.scoutable ? 'เลน ' + esc(h.lane) : ''}</small></label>`).join('') : '<p class="text-sm opacity-60">ไม่เจอร่องรอย — ลองใส่ @handle ตรงๆ หรือลิงก์เว็บ</p>';
+      $('it-dadd').classList.toggle('hidden', !res.found?.length);
+    }
+    async function addDiscovered() {
+      if (!discovered) return;
+      const picks = [...$('it-dfound').querySelectorAll<HTMLInputElement>('input:checked')].map((i) => discovered!.found[Number(i.dataset.i)]);
+      const name = ($('it-dq') as HTMLInputElement).value.trim().replace(/^https?:\/\//, '');
+      const handles: Handle[] = picks.map((h) => ({ platform: h.platform, ref: h.ref }));
+      try {
+        const nt = await createTarget({ name, handles, role: ['competitor'], threat: 'yellow', why_watch: 'เพิ่มจาก "สืบคนใหม่" — รอรายงานรอบแรกแล้วค่อยเขียนเหตุผล', cadence_days: 30 });
+        targets.push(nt); ($('it-discover') as HTMLDialogElement).close();
+        cur = nt.id; renderList(); renderSignals(); await renderFile(); $('it-wrap').classList.add('showfile');
+        const lanes = lanesFor(nt);
+        if (lanes.length) { const batch = await scoutTarget(nt, lanes); runBatch(nt, batch, lanes.length); }
+        toast('เพิ่มเข้า watchlist แล้ว' + (lanes.length ? ' — เริ่มสืบรอบแรก' : ''));
+      } catch (e) { oops(e); }
+    }
+
+    // ---------- คลัง (โค้ดเดิม + filter แฟ้ม) ----------
+    function renderChips() {
+      $('nr-platforms').innerHTML = ['', ...PLATFORMS].map((p) => `<button class="btn btn-xs tap-44 ${platform === p ? 'btn-active' : ''}" data-platform="${esc(p)}">${p ? esc(NR_PLATFORM[p]) : 'ทั้งหมด'}</button>`).join('');
+      const sel = $('nr-target') as HTMLSelectElement;
+      const keep = sel.value;
+      sel.innerHTML = '<option value="">ทุกแฟ้ม</option><option value="__none">ไม่ระบุแฟ้ม</option>' + [...targets].sort((a, b) => a.name.localeCompare(b.name, 'th')).map((t) => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('');
+      sel.value = keep;
+    }
+    async function loadLibrary() {
+      const status = $('nr-status'); status.textContent = 'กำลังโหลดคลัง…';
+      const tsel = ($('nr-target') as HTMLSelectElement).value;
+      let items = await listItems({ platform, kind: ($('nr-kind') as HTMLSelectElement).value, search: ($('nr-search') as HTMLInputElement).value, sort: ($('nr-sort') as HTMLSelectElement).value as 'created_at' | 'score', limit: 120 });
+      if (tsel === '__none') items = items.filter((x) => !(x as NewsroomItem & { target_id?: string | null }).target_id);
+      else if (tsel) items = items.filter((x) => (x as NewsroomItem & { target_id?: string | null }).target_id === tsel);
+      const covers = await Promise.all(items.map((x) => signedUrl(x.cover_path).catch(() => null)));
+      status.textContent = `${items.length} รายการ`;
+      $('nr-cards').innerHTML = items.length ? items.map((x, i) => card(x, covers[i])).join('') : '<div class="col-span-full rounded-2xl border border-dashed border-base-300 p-8 text-center opacity-60">ไม่พบรายการ — ลองล้างตัวกรอง หรือสั่ง Scout ใหม่</div>';
+    }
+    function card(x: NewsroomItem, cover: string | null) {
+      const tname = targets.find((t) => t.id === (x as NewsroomItem & { target_id?: string | null }).target_id)?.name;
+      const art = cover ? `<img class="aspect-[9/16] w-full object-cover" src="${esc(cover)}" alt="ปก: ${esc(x.title || KIND_LABEL[x.kind] || x.kind)}" loading="lazy" />`
+        : `<div class="flex aspect-[9/16] items-end bg-base-200 p-3 text-xs opacity-60">[ ${esc(NR_PLATFORM[x.platform] ?? x.platform)} / ${esc(KIND_LABEL[x.kind] ?? x.kind)} ]</div>`;
+      return `<button type="button" class="overflow-hidden rounded-2xl border border-base-300 bg-base-100 text-left shadow-sm transition hover:border-[color:var(--color-brand-coral)] hover:shadow-md" data-open="${esc(x.id)}">${art}
+        <div class="space-y-1.5 p-3">${badge(x.platform)}${tname ? ` <span class="badge badge-sm badge-info">${esc(tname)}</span>` : ''}<h3 class="line-clamp-2 font-display text-sm font-semibold leading-snug">${esc(x.title || 'ยังไม่มีหัวข้อ')}</h3>
+          <div class="flex justify-between text-xs opacity-55"><span>${esc(fmtDate(x.scraped_at || x.created_at))}</span>${x.score != null ? `<span class="tabular-nums">${esc(x.score)}/10</span>` : ''}</div></div></button>`;
+    }
+
+    // ---------- รายงาน (โมดัลเดิม) ----------
+    async function openItem(id: string) {
+      const modal = $('nr-modal') as HTMLDialogElement;
+      $('nr-modal-body').innerHTML = '<p class="py-10 text-center opacity-60">กำลังโหลด…</p>'; modal.showModal();
+      try {
+        const x = await getItem(id); openedItem = x;
+        const cover = await signedUrl(x.cover_path);
+        const media = await Promise.all((x.media ?? []).map(async (m) => ({ type: m.type, url: await signedUrl(m.path).catch(() => null) })));
+        const tname = targets.find((t) => t.id === x.target_id)?.name;
+        $('nr-modal-body').innerHTML = `
+          <form method="dialog"><button class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3" aria-label="ปิด">✕</button></form>
+          <div class="grid gap-5 md:grid-cols-[14rem_1fr]">
+            <div>${cover ? `<img class="w-full rounded-xl border border-base-300" src="${esc(cover)}" alt="ปก: ${esc(x.title || x.kind)}" />` : '<div class="flex aspect-[9/16] items-end rounded-xl bg-base-200 p-4 text-sm opacity-60">[ ไม่มีปก ]</div>'}</div>
+            <div>
+              <div class="flex flex-wrap items-center gap-2">${badge(x.platform)}<span class="badge badge-outline badge-sm">${esc(KIND_LABEL[x.kind] ?? x.kind)}</span>${tname ? `<span class="badge badge-info badge-sm">แฟ้ม ${esc(tname)}</span>` : ''}${x.channel ? `<span class="text-xs opacity-60">${esc(x.channel)}</span>` : ''}</div>
+              <h2 class="mt-2 font-display text-xl font-bold leading-snug">${esc(x.title || 'ยังไม่มีหัวข้อ')}</h2>
+              <p class="mt-2 text-sm opacity-70">${esc(x.summary || 'ไม่มีสรุป')}</p>
+              <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs opacity-60"><span>${esc(fmtDate(x.scraped_at || x.created_at))}</span>${x.views != null ? `<span class="tabular-nums">${esc(x.views.toLocaleString('th-TH'))} views</span>` : ''}${x.duration_s ? `<span class="tabular-nums">${esc(x.duration_s)} วิ</span>` : ''}${x.score != null ? `<span class="tabular-nums">คะแนน ${esc(x.score)}/10</span>` : ''}</div>
+              ${x.verdict ? `<p class="mt-3 rounded-xl bg-base-200 p-3 text-sm">${esc(x.verdict)}</p>` : ''}
+              <div class="mt-4 flex flex-wrap gap-2">
+                ${x.source_url && /^https?:\/\//.test(x.source_url) ? `<a class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);" target="_blank" rel="noopener noreferrer" href="${esc(x.source_url)}">เปิดต้นฉบับ ↗</a>` : ''}
+                ${x.report_path ? `<button class="btn btn-sm btn-outline tap-44" data-copy="${esc(x.report_path)}">คัดลอก path รายงาน</button>` : ''}
+                <button class="btn btn-sm btn-ghost text-error tap-44" data-delete-item="${esc(x.id)}">ลบออกจากคลัง</button>
+              </div></div></div>
+          ${media.filter((m) => m.url).length ? `<section class="mt-6 space-y-3">${media.filter((m) => m.url).map((m) => `<figure><img class="w-full rounded-xl border border-base-300" src="${esc(m.url)}" alt="${esc(m.type)}" loading="lazy" /><figcaption class="mt-1 text-xs opacity-50">${esc(m.type)}</figcaption></figure>`).join('')}</section>` : ''}
+          ${x.report_md ? `<article class="nr-report mt-6 border-t border-base-300 pt-5 text-sm">${renderMarkdown(x.report_md)}</article>` : '<p class="mt-6 border-t border-base-300 pt-5 text-sm opacity-60">ยังไม่มีรายงาน</p>'}`;
+      } catch (e) { $('nr-modal-body').innerHTML = `<p class="py-10 text-center text-error">${esc((e as Error).message)}</p>`; }
+    }
+
+    // ---------- คิว ----------
+    const JOB_TONE: Record<string, string> = { queued: 'badge-warning', submitted: 'badge-info', running: 'badge-primary', done: 'badge-success', failed: 'badge-error', preflight_failed: 'badge-error' };
+    async function loadJobs() {
+      jobs = await listJobs(40);
+      const pending = jobs.filter((j) => ['queued', 'submitted', 'running'].includes(j.status)).length;
+      const b = $('nr-queue-badge'); b.textContent = String(pending); b.classList.toggle('hidden', pending === 0);
+      $('nr-jobs').innerHTML = jobs.length ? jobs.map((j) => { const tname = targets.find((t) => t.id === j.target_id)?.name; return `<tr>
+          <td><div class="max-w-64 truncate text-sm">${esc(j.target)}</div>${j.note ? `<p class="text-xs opacity-55">${esc(j.note)}</p>` : ''}${j.error ? `<p class="mt-1 whitespace-pre-wrap text-xs text-error">${esc(j.error.slice(0, 300))}</p>` : ''}</td>
+          <td class="text-xs">${tname ? `<span class="badge badge-info badge-sm">${esc(tname)}</span>` : '<span class="opacity-50">—</span>'}${j.lane ? ` · ${esc(j.lane)}` : j.kind === 'identity' ? ' · สืบคนใหม่' : ''}</td>
+          <td><span class="badge badge-sm ${JOB_TONE[j.status] ?? 'badge-ghost'}">${esc(j.status)}</span></td>
+          <td class="whitespace-nowrap">${j.status === 'done' && j.item_id ? `<button class="btn btn-ghost btn-xs" data-open="${esc(j.item_id)}">เปิด</button>` : (j.status === 'failed' || j.status === 'preflight_failed') ? `<button class="btn btn-outline btn-xs" data-retry="${esc(j.id)}">Retry</button>` : ''}<button class="btn btn-ghost btn-xs text-error" data-delete-job="${esc(j.id)}" aria-label="ลบงานนี้ออกจากคิว">ลบ</button></td></tr>`; }).join('')
+        : '<tr><td colspan="4" class="py-6 text-center opacity-60">ยังไม่มีงานในคิว</td></tr>';
+    }
+    function syncPolling() {
+      const active = document.visibilityState === 'visible' && !$('nr-pane-submit').classList.contains('hidden');
+      if (active && !jobTimer) jobTimer = window.setInterval(() => void loadJobs().catch(() => {}), 10000);
+      if (!active && jobTimer) { window.clearInterval(jobTimer); jobTimer = 0; }
+    }
+
+    // ---------- wire + boot ----------
+    function wire() {
+      document.querySelectorAll('[data-tab]').forEach((t) => t.addEventListener('click', () => showTab((t as HTMLElement).dataset.tab!)));
+      $('nr-refresh').addEventListener('click', () => void reloadTargetsKeepCur().then(() => toast('รีเฟรชแล้ว')).catch(oops));
+      $('it-search').addEventListener('input', (e) => { q = (e.target as HTMLInputElement).value.trim(); renderList(); });
+      $('it-rolechips').addEventListener('click', (e) => { const el = (e.target as HTMLElement).closest('[data-role]') as HTMLElement | null; if (!el) return; roleFilter = el.dataset.role!; $('it-rolechips').querySelectorAll('button').forEach((b) => b.classList.toggle('btn-active', b === el)); renderList(); });
+      $('it-list').addEventListener('click', (e) => {
+        const s = (e.target as HTMLElement).closest('[data-scout]') as HTMLElement | null;
+        if (s) { cur = s.dataset.scout!; renderList(); void renderFile().then(() => { const t = targets.find((x) => x.id === cur)!; openRunner(t, lanesFor(t)); $('it-runner').scrollIntoView({ block: 'center', behavior: 'smooth' }); }); $('it-wrap').classList.add('showfile'); return; }
+        const r = (e.target as HTMLElement).closest('[data-id]') as HTMLElement | null;
+        if (r) { cur = r.dataset.id!; renderList(); void renderFile(); $('it-wrap').classList.add('showfile'); }
+      });
+      $('it-list').addEventListener('keydown', (e) => { if (e.key === 'Enter') (e.target as HTMLElement).click(); });
+      // แก้ไขแฟ้ม
+      $('it-edit-cancel').addEventListener('click', () => ($('it-edit') as HTMLDialogElement).close());
+      $('it-edit-form').addEventListener('submit', (e) => { e.preventDefault(); void (async () => {
+        if (!editing) return;
+        const f = e.target as HTMLFormElement;
+        const v = (n: string) => (f.elements.namedItem(n) as HTMLInputElement).value.trim();
+        try {
+          const nt = await updateTarget(editing.id, {
+            name: v('name'), aliases: v('aliases').split('·').map((x) => x.trim()).filter(Boolean),
+            threat: v('threat') as Threat, cadence_days: Number(v('cadence_days')) || editing.cadence_days,
+            role: [...f.querySelectorAll<HTMLInputElement>('input[name="role"]:checked')].map((c) => c.value as Role),
+            handles: parseHandles(v('handles')), sells: v('sells') || null, icp: v('icp') || null, why_watch: v('why_watch') || null,
+            triggers: parseTriggers(v('triggers'), editing.triggers),
+          });
+          replaceTarget(nt); ($('it-edit') as HTMLDialogElement).close(); toast('บันทึกแล้ว — sync กลับ wiki ตอน 04:00');
+        } catch (err) { oops(err); }
+      })(); });
+      $('it-edit-delete').addEventListener('click', () => void (async () => {
+        if (!editing || !confirm(`ลบแฟ้ม "${editing.name}" ออกจาก watchlist? รายงานในคลังยังอยู่ แค่หลุดจากแฟ้ม`)) return;
+        try { await deleteTarget(editing.id); targets = targets.filter((x) => x.id !== editing!.id); cur = null; ($('it-edit') as HTMLDialogElement).close(); renderList(); renderSignals(); void renderFile(); toast('ลบแฟ้มแล้ว'); } catch (err) { oops(err); }
+      })());
+      // สืบคนใหม่
+      $('it-discover-open').addEventListener('click', openDiscover);
+      $('it-dclose').addEventListener('click', () => { unsubDiscover?.(); unsubDiscover = null; ($('it-discover') as HTMLDialogElement).close(); });
+      $('it-dgo').addEventListener('click', () => void startDiscover());
+      $('it-dq').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); void startDiscover(); } });
+      $('it-dadd').addEventListener('click', () => void addDiscovered());
+      // คลัง
+      $('nr-platforms').addEventListener('click', (e) => { const el = (e.target as HTMLElement).closest('[data-platform]') as HTMLElement | null; if (!el) return; platform = el.dataset.platform!; renderChips(); void loadLibrary().catch(oops); });
+      let debounce = 0;
+      $('nr-search').addEventListener('input', () => { window.clearTimeout(debounce); debounce = window.setTimeout(() => void loadLibrary().catch(oops), 250); });
+      ['nr-kind', 'nr-sort', 'nr-target'].forEach((id) => $(id).addEventListener('change', () => void loadLibrary().catch(oops)));
+      // รายงาน / คิว (delegation ทั้งหน้า)
+      document.addEventListener('click', (e) => {
+        const el = e.target as HTMLElement;
+        const open = el.closest('[data-open]') as HTMLElement | null; if (open) { void openItem(open.dataset.open!); return; }
+        const retry = el.closest('[data-retry]') as HTMLElement | null; if (retry) { void retryJob(retry.dataset.retry!).then(() => { toast('โยนกลับเข้าคิวแล้ว'); return loadJobs(); }).catch(oops); return; }
+        const copy = el.closest('[data-copy]') as HTMLElement | null; if (copy) { void navigator.clipboard.writeText(copy.dataset.copy!).then(() => toast('คัดลอกแล้ว')).catch(() => toast('คัดลอกไม่สำเร็จ', 'error')); return; }
+        const delItem = el.closest('[data-delete-item]') as HTMLElement | null;
+        if (delItem && openedItem && openedItem.id === delItem.dataset.deleteItem) {
+          if (!confirm(`ลบ "${openedItem.title || openedItem.kind}" ออกจากคลัง? ไฟล์ปก/ภาพจะถูกลบด้วย`)) return;
+          void deleteItem(openedItem).then(() => { ($('nr-modal') as HTMLDialogElement).close(); toast('ลบออกจากคลังแล้ว'); return Promise.all([loadLibrary(), loadJobs(), renderFile()]); }).catch(oops); return;
+        }
+        const delJob = el.closest('[data-delete-job]') as HTMLElement | null;
+        if (delJob) { if (!confirm('ลบงานนี้ออกจากคิว?')) return; void deleteJob(delJob.dataset.deleteJob!).then(() => { toast('ลบออกจากคิวแล้ว'); return loadJobs(); }).catch(oops); }
+      });
+      $('nr-submit').addEventListener('click', () => void (async () => {
+        const target = ($('nr-target-input') as HTMLTextAreaElement).value.trim();
+        if (!target) return toast('ใส่ลิงก์หรือข้อความก่อนครับ', 'error');
+        const btn = $('nr-submit') as HTMLButtonElement; btn.disabled = true;
+        try { await createJob({ kind: ($('nr-jobkind') as HTMLSelectElement).value, target, note: ($('nr-note') as HTMLInputElement).value }); ($('nr-target-input') as HTMLTextAreaElement).value = ''; ($('nr-note') as HTMLInputElement).value = ''; toast('เข้าคิวแล้ว — Scout บนมินิรับต่อ'); await loadJobs(); }
+        catch (e) { oops(e); } finally { btn.disabled = false; }
+      })());
+      document.addEventListener('visibilitychange', syncPolling);
+    }
+
+    let booted = false;
+    async function boot() {
+      if (booted) return; booted = true;
+      wire();
+      try {
+        const [t, r] = await Promise.all([listTargets(), recentItems(7)]);
+        targets = t; for (const x of r) if (x.target_id) recent.set(x.target_id, (recent.get(x.target_id) ?? 0) + 1);
+      } catch (e) { oops(e); }
+      renderChips(); renderList(); renderSignals();
+      const deepTarget = new URLSearchParams(location.search).get('target');
+      cur = deepTarget && targets.some((x) => x.id === deepTarget) ? deepTarget : (targets.find((x) => firedCount(x))?.id ?? targets[0]?.id ?? null);
+      void renderFile();
+      if (location.hash === '#library') showTab('library'); else if (location.hash === '#submit') showTab('submit'); else syncPolling();
+      void loadJobs().catch(() => {});
+      const deepItem = new URLSearchParams(location.search).get('item');
+      if (deepItem) void openItem(deepItem);
+    }
+    // dev เท่านั้น: ฉีดแถวจริงเข้ามาดู render โดยไม่ต้องมี session (Vite ตัดทิ้งใน production build)
+    if (import.meta.env.DEV) (window as any).__intelInject = (rows: IntelTarget[]) => { booted || wire(); booted = true; targets = rows; renderChips(); renderList(); renderSignals(); cur = rows[0]?.id ?? null; void renderFile(); };
+    document.addEventListener('intel:authed', () => void boot());
+    void (async () => { if (await getSupabaseSession()) void boot(); })();
+  </script>
+</DashboardLayout>

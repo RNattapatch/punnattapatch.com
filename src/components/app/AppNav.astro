@@ -13,7 +13,7 @@
 //   app            id ของแอปที่กำลังอยู่ (ทำแท็บนั้นเป็น active)
 //   menuToggleFor  id ของ checkbox drawer — ถ้ามี จะโชว์ปุ่ม hamburger บนจอเล็ก (CRM ใช้)
 // slot (default)   ปุ่มเฉพาะหน้า เช่น ⟳ · + Add Lead · Board/List
-type AppId = 'crm' | 'war-room' | 'news-desk' | 'newsroom' | 'audience';
+type AppId = 'crm' | 'content' | 'news-desk' | 'intel' | 'audience';
 
 interface Props {
   app: AppId;
@@ -22,11 +22,13 @@ interface Props {
 const { app, menuToggleFor } = Astro.props;
 
 // ลำดับตายตัว — เรียงตามจังหวะงานของคุณปัน: ลูกค้าก่อน แล้วค่อยเนื้อหา แล้วค่อยวัตถุดิบ
+// 2026-09-02 เปลี่ยนชื่อ+route: War Room → Content Center (/app/content) · Newsroom → Intel Warroom (/app/intel)
+// URL เก่า redirect ใน scripts/prune-for-app.mjs
 const APPS: { id: AppId; href: string; icon: string; label: string }[] = [
   { id: 'crm', href: '/app/dashboard', icon: '📊', label: 'CRM' },
-  { id: 'war-room', href: '/app/war-room', icon: '🎬', label: 'War Room' },
+  { id: 'content', href: '/app/content', icon: '🎬', label: 'Content Center' },
   { id: 'news-desk', href: '/app/news-desk', icon: '📰', label: 'News Desk' },
-  { id: 'newsroom', href: '/app/newsroom', icon: '🗂', label: 'Newsroom' },
+  { id: 'intel', href: '/app/intel', icon: '🕵️', label: 'Intel Warroom' },
   { id: 'audience', href: '/app/audience', icon: '🧲', label: 'Audience' },
 ];
 ---

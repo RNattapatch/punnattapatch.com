@@ -56,9 +56,17 @@ await cp(join(DIST, '_headers.app'), join(OUT, '_headers'));
 // 4. Redirects.
 //    - /app/* → flattened root: internal links use /app/... to match the src
 //      route + Astro dev server, but prod serves the pages flattened at root.
-//      This bridges the gap so cross-app links (dashboard ⇄ war-room) resolve.
+//      This bridges the gap so cross-app links (dashboard ⇄ content) resolve.
 //    - / → /dashboard until a launcher (src/pages/app/index.astro) exists.
-const redirects = ['/app/*  /:splat  302'];
+// เปลี่ยนชื่อ 2026-09-02: /war-room → /content · /newsroom → /intel (ลิงก์เก่าใน Telegram/wiki ยังใช้ได้)
+// ต้องมาก่อน /app/* เพราะ Cloudflare จับกฎแรกที่ตรง
+const redirects = [
+  '/app/war-room  /content  301',
+  '/war-room  /content  301',
+  '/app/newsroom  /intel  301',
+  '/newsroom  /intel  301',
+  '/app/*  /:splat  302',
+];
 let hasIndex = true;
 try {
   await access(join(OUT, 'index.html'));
