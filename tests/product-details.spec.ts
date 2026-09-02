@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { test, type Locator, type Page } from '@playwright/test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
@@ -40,6 +40,28 @@ test.afterAll(async () => new Promise<void>((resolve, reject) => server.close((e
 function schemas(html: string) {
   return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
     .flatMap((match) => JSON.parse(match[1])['@graph'] ?? []);
+}
+
+// ทุกจุดที่เชิญให้ตัดสินใจต้องมีทางเลือก LINE คู่กับปุ่มจอง — เช็คเป็น "หนึ่งอันต่อหนึ่งตำแหน่ง"
+// ไม่ใช่นับหัวรวม เพราะพอเพิ่มการ์ดใหม่ (เช่น Course Outline ที่ after_fit ใน ef7e224)
+// ตัวเลขที่ฮาร์ดโค้ดไว้จะแดงทั้งที่หน้าเว็บถูก และไม่บอกด้วยว่าตำแหน่งไหนหาย
+const CTA_LOCATIONS = ['hero', 'after_scope', 'after_fit', 'after_investment', 'final'] as const;
+
+async function expectOneLineActionPerLocation(actions: Locator, code: string) {
+  assert.deepEqual(
+    await actions.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-cta-location'))),
+    [...CTA_LOCATIONS],
+    `${code} must retain exactly one LINE alternative at each CTA location, in page order`,
+  );
+}
+
+// การ์ด Course Outline ต้องชี้ไปที่ PDF ที่มีอยู่จริงในบิลด์ — ลิงก์ตายคือ lead ที่หลุดมือ
+async function expectOutlineDownload(page: Page, code: string, href: string) {
+  const download = page.locator(`a[data-download-cta][data-product-code="${code}"]`);
+  assert.equal(await download.count(), 1, `${code} must expose exactly one Course Outline download`);
+  assert.equal(await download.getAttribute('href'), href, `${code} Course Outline must point at its published PDF`);
+  assert.equal(await download.getAttribute('download'), '', `${code} Course Outline must download instead of navigating away`);
+  assert.equal((await page.request.get(`${baseURL}${href}`)).status(), 200, `${code} Course Outline PDF must exist in the build`);
 }
 
 function lineContrastRatio(foreground: string, background: string) {
@@ -105,10 +127,8 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   assert.equal(await page.locator('[data-decision-cta][data-cta-location="after_scope"] [data-line-cta]').count(), 1, 'outline CTA must have one adjacent LINE action');
   assert.equal(await page.locator('[data-decision-cta][data-cta-location="after_fit"] [data-booking-cta]').count(), 1, 'large-team section must lead to the booking form');
   assert.equal(await page.locator('[data-decision-cta][data-cta-location="after_fit"] [data-line-cta]').count(), 1, 'large-team booking must retain one adjacent LINE action');
-  const pendingOutline = page.locator('[data-download-cta][data-cta-availability="pending"]');
-  assert.equal(await pendingOutline.count(), 1, 'T2 must reserve one Course Outline control while the PDF is being prepared');
-  assert.equal(await pendingOutline.isDisabled(), true, 'pending Course Outline control must not lead to a broken download');
-  assert.equal(await page.locator('a[data-download-cta]').count(), 0, 'T2 must not expose a download link before the PDF exists');
+  assert.equal(await page.locator('[data-download-cta][data-cta-availability="pending"]').count(), 0, 'T2 must not keep a pending Course Outline placeholder now that the PDF ships');
+  await expectOutlineDownload(page, 'T2', '/services/outlines/t2-online-to-sales.pdf');
   assert.equal(await page.locator('[data-cta-location="hero"][data-booking-cta]').count(), 1, 'Hero must expose one Coral booking action');
   assert.equal(await page.locator('[data-cta-location="hero"][data-line-cta]').count(), 1, 'Hero must retain one LINE alternative');
   assert.equal(await page.locator('[data-cta-location="final"][data-booking-cta]').count(), 1, 'final CTA must expose one Coral booking action');
@@ -267,7 +287,8 @@ test('T1 remediation keeps evidence, location-specific LINE actions, and mobile 
     assert.equal(await action.getAttribute('data-cta-intent'), intent, `${location} LINE action must retain its analytics intent`);
   }
   const allT1LineActions = page.locator('[data-product-code="T1"][data-line-cta]');
-  assert.equal(await allT1LineActions.count(), 4, 'T1 must retain one LINE alternative at each CTA location');
+  await expectOneLineActionPerLocation(allT1LineActions, 'T1');
+  await expectOutlineDownload(page, 'T1', '/services/outlines/t1-sales-psychology-ai-agent.pdf');
   for (const action of await allT1LineActions.all()) {
     assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'every T1 CTA must open the real SITE.social.line destination');
     assert.equal(await action.getAttribute('data-cta-keyword'), 'SALES PSYCHOLOGY', 'every T1 CTA must carry the approved lead-magnet keyword');
@@ -518,7 +539,8 @@ test('T3 teaches the team to design a sales back office prototype without promis
     assert.match(await action.getAttribute('href') ?? '', /^\/booking\?package=T3&intent=/, 'every T3 booking action must preserve product attribution');
   }
   const lineCtas = page.locator('[data-product-code="T3"][data-line-cta]');
-  assert.equal(await lineCtas.count(), 4, 'T3 must retain one LINE alternative at each CTA location');
+  await expectOneLineActionPerLocation(lineCtas, 'T3');
+  await expectOutlineDownload(page, 'T3', '/services/outlines/t3-sales-back-office.pdf');
   assert.ok(await page.getByRole('link', { name: 'รับ Agent Builder Kit ทาง LINE', exact: true }).count() >= 1, 'T3 Agent Builder Kit CTA must use the real LINE flow');
   for (const action of await lineCtas.all()) {
     assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'every T3 CTA must open SITE.social.line');
