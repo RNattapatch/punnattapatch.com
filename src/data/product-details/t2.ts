@@ -6,26 +6,10 @@ import t2WorkshopCompany from '../../assets/services/proof/t2-workshop-company.j
 import t2WorkshopHandsOn from '../../assets/services/proof/t2-workshop-hands-on.jpg';
 import type { ProductDetailPageData } from './types';
 
+import { CLIENT_LOGOS } from './client-logos';
+
 export const SHOW_BONUS_CARDS = false;
 
-const T2_CLIENT_LOGOS = [
-  { src: '/logos/clients/nissan.png', alt: 'Nissan' },
-  { src: '/logos/clients/futureskill.png', alt: 'FutureSkill' },
-  { src: '/logos/clients/ving.png', alt: 'V!NG' },
-  { src: '/logos/clients/gpx.jpg', alt: 'GPX' },
-  { src: '/logos/clients/royal-enfield.jpg', alt: 'Royal Enfield' },
-  { src: '/logos/clients/zontes.png', alt: 'Zontes' },
-  { src: '/logos/clients/lambretta.png', alt: 'Lambretta' },
-  { src: '/logos/clients/hfc-healthfoods.png', alt: 'HFC HealthFoods Corporation' },
-  { src: '/logos/clients/home-plus.png', alt: 'ฮ.โฮมพลัส' },
-  { src: '/logos/clients/farevefarm.jpg', alt: 'Farevefarm' },
-  { src: '/logos/clients/farmsuk.jpg', alt: 'ฟาร์มสุข farmsuk' },
-  { src: '/logos/clients/business-boy.jpg', alt: 'เด็กประกอบการ The Business Boy' },
-  { src: '/logos/clients/aes.jpg', alt: 'AES' },
-  { src: '/logos/clients/nsscrap.avif', alt: 'NSSCRAP' },
-  { src: '/logos/clients/scenery-farm.jpeg', alt: 'Scenery Farm' },
-  { src: '/logos/clients/ud-clinic.jpg', alt: 'UD Clinic' },
-];
 
 const T2_TESTIMONIALS = [
   { src: '/testimonial/2026-05/review-01.jpg', alt: 'ทีมงานร่วม Workshop AI กับปัน ณัฐพัชร์', width: 1000, height: 1000 },
@@ -79,7 +63,7 @@ export const T2_PRODUCT_DETAIL: ProductDetailPageData = {
     { kind: 'quote', quote: 'อาจารย์ปันสอนถูกใจทีมงานมากครับ', caption: 'ผู้บริหารเห็นภาพว่าจะขยายจากการใช้รายคน ไปสู่ระบบที่หลายฝ่ายใช้ร่วมกันยังไง', image: t2TrainingCompany, alt: 'ข้อความรีวิวจากผู้บริหารที่ปิดข้อมูลส่วนบุคคลแล้ว' },
     { kind: 'quote', quote: 'ต่อยอด โปรเจ็คเลขาครับ สนุกดีครับ😂', caption: 'เวลา 20:27 ผู้เรียนส่งภาพระบบ Morning Brief ที่ทำต่อเอง หลักฐานแบบนี้สำคัญเพราะความรู้ไม่ได้จบตอนปิดสไลด์', image: t2TrainingContinue, alt: 'ข้อความจากผู้เรียนหลังนำงานไปต่อยอด โดยปิดข้อมูลส่วนบุคคลแล้ว' },
   ],
-  clientLogos: T2_CLIENT_LOGOS,
+  clientLogos: CLIENT_LOGOS,
   testimonials: T2_TESTIMONIALS,
   decisionCtas: [
     {

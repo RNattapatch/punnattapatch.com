@@ -53,6 +53,8 @@ export interface IntelTarget {
   cadence_days: number;
   last_scouted_at: string | null;
   next_scout_at: string | null;
+  avatar_path?: string | null;
+  avatar_source?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -94,6 +96,9 @@ export function laneFor(h: Handle): Lane | null {
 export function scoutRef(h: Handle): string {
   if (h.platform === 'facebook_page') return h.page_id || h.ref;
   if (h.platform === 'web' && !/^https?:\/\//.test(h.ref)) return `https://${h.ref}`;
+  // "@handle" เปล่าๆ Scout ถือเป็น TikTok เสมอ → IG/YouTube ต้องส่งเป็น URL เต็ม
+  if (h.platform === 'instagram' && h.ref.startsWith('@')) return `https://www.instagram.com/${h.ref.slice(1)}/`;
+  if (h.platform === 'youtube' && h.ref.startsWith('@')) return `https://www.youtube.com/${h.ref}`;
   return h.ref;
 }
 
@@ -140,6 +145,45 @@ export function slugify(name: string, handles: Handle[]): string {
   let x = 0;
   for (const c of name) x = (x * 31 + c.charCodeAt(0)) >>> 0;
   return `th-${x.toString(16)}${Date.now().toString(36).slice(-3)}`;
+}
+
+// ---------- รูปโปรไฟล์ (มินิหามาเก็บใน bucket · avatar.py) ----------
+
+// bucket เป็น private → ขอ signed URL เป็นชุดเดียวทั้ง roster (ไม่ยิงทีละใบ)
+export async function avatarUrls(targets: IntelTarget[]): Promise<Map<string, string>> {
+  const paths = [...new Set(targets.map((t) => t.avatar_path).filter((p): p is string => !!p))];
+  const out = new Map<string, string>();
+  if (!paths.length) return out;
+  const { data } = await supabase.storage.from('newsroom').createSignedUrls(paths, 3600);
+  for (const row of data ?? []) if (row.signedUrl && row.path) out.set(row.path, row.signedUrl);
+  return out;
+}
+
+// ---------- ตัวเลขต่อรอบ (Phase 3 · intel_snapshots — publisher บันทึกหลังรายงานเข้าแฟ้ม) ----------
+
+export interface IntelSnapshot { id: string; target_id: string; item_id: string | null; lane: string; metrics: Record<string, unknown>; created_at: string }
+
+export async function listSnapshots(targetId: string): Promise<IntelSnapshot[]> {
+  const { data, error } = await supabase.from('intel_snapshots').select('*').eq('target_id', targetId).order('created_at', { ascending: false }).limit(40);
+  fail(error);
+  return (data ?? []) as IntelSnapshot[];
+}
+
+// ต่อเลน: รอบล่าสุด vs รอบก่อนหน้า → รายการ {label, now, before, delta}
+export const METRIC_LABEL: Record<string, string> = { median: 'median views/likes', per_week: 'โพสต์/สัปดาห์', followers: 'followers', scanned: 'โพสต์ที่สแกน', active_ads: 'แอด ACTIVE', max_longevity_days: 'แอดรันนานสุด (วัน)', views: 'views', score: 'คะแนน' };
+export function snapshotDiffs(rows: IntelSnapshot[]): { lane: string; at: string; before_at: string | null; items: { key: string; now: number; before: number | null; delta: number | null }[] }[] {
+  const byLane = new Map<string, IntelSnapshot[]>();
+  for (const r of rows) byLane.set(r.lane, [...(byLane.get(r.lane) ?? []), r]);
+  const out = [];
+  for (const [lane, list] of byLane) {
+    const [now, before] = list;
+    const items = Object.entries(now.metrics).filter(([, v]) => typeof v === 'number').map(([key, v]) => {
+      const prev = before && typeof before.metrics[key] === 'number' ? (before.metrics[key] as number) : null;
+      return { key, now: v as number, before: prev, delta: prev !== null && prev !== 0 ? Math.round(((v as number) - prev) / prev * 100) : null };
+    });
+    if (items.length) out.push({ lane, at: now.created_at, before_at: before?.created_at ?? null, items });
+  }
+  return out;
 }
 
 // ---------- รายงานที่เกาะแฟ้ม ----------
@@ -191,6 +235,34 @@ export async function scoutTarget(t: IntelTarget, picks: LanePick[]): Promise<st
   const { error } = await supabase.from('newsroom_jobs').insert(rows);
   fail(error);
   return batch_id;
+}
+
+// สืบหลายแฟ้มพร้อมกัน (ที่เลือก / ทั้งหมด) — batch เดียวทั้งกลุ่ม · มินิทำทีละงานตามลำดับที่ใส่
+export async function scoutTargets(list: IntelTarget[]): Promise<{ batch_id: string; jobs: number; skipped: string[] }> {
+  const batch_id = crypto.randomUUID();
+  const rows: Record<string, unknown>[] = [];
+  const skipped: string[] = [];
+  for (const t of list) {
+    const picks = lanesFor(t).filter((p) => p.platform !== 'instagram' || true);
+    if (!picks.length) { skipped.push(t.name); continue; }
+    for (const p of picks) rows.push({ kind: p.lane, target: p.ref, note: `intel:${t.id} สืบกลุ่ม — ${t.name}`, target_id: t.id, batch_id, lane: p.lane });
+  }
+  if (rows.length) {
+    const { error } = await supabase.from('newsroom_jobs').insert(rows);
+    fail(error);
+  }
+  return { batch_id, jobs: rows.length, skipped };
+}
+
+// batch ที่ยังวิ่งอยู่ (เปิดหน้าใหม่แล้วยังเห็นความคืบหน้า — ไม่ต้องจำไว้ในเบราว์เซอร์)
+export async function activeBatches(): Promise<Map<string, NewsroomJob[]>> {
+  const { data, error } = await supabase.from('newsroom_jobs').select('*').not('batch_id', 'is', null)
+    .gte('created_at', new Date(Date.now() - 6 * 3600000).toISOString()).order('created_at');
+  fail(error);
+  const out = new Map<string, NewsroomJob[]>();
+  for (const j of (data ?? []) as NewsroomJob[]) { const k = j.batch_id!; out.set(k, [...(out.get(k) ?? []), j]); }
+  for (const [k, jobs] of out) if (!jobs.some((j) => ['queued', 'submitted', 'running'].includes(j.status))) out.delete(k);
+  return out;
 }
 
 export async function listBatch(batchId: string): Promise<NewsroomJob[]> {

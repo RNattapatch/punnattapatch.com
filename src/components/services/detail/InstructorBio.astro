@@ -1,5 +1,28 @@
 ---
+// โปรไฟล์ผู้สอน — วางใต้ Offer ทุกหน้า LP (2026-09-02): คนซื้อคอร์สซื้อ "คนสอน" ก่อนหลักสูตร
+// รูป + ชื่อ + ตำแหน่ง (คำที่ล็อกไว้: ที่ปรึกษาด้านการปั้นทีมขาย และ AI Agent) + เรื่องเล่าต่อคอร์ส (data.bio)
+import { Image } from 'astro:assets';
+import portrait from '../../../assets/pun-ceo-1.jpg';
+
 interface Props { paragraphs: string[]; heading?: string; eyebrow?: string; }
-const { paragraphs, heading = 'ปัน ณัฐพัชร์', eyebrow = 'Instructor' } = Astro.props;
+const { paragraphs, heading, eyebrow = 'ผู้สอน' } = Astro.props;
 ---
-<section aria-labelledby="bio-heading" class="bg-navy py-14 text-white sm:py-20"><div class="mx-auto max-w-4xl px-5"><p class="text-xs font-bold uppercase tracking-[.2em] text-coral">{eyebrow}</p><h2 id="bio-heading" class="mt-3 font-display text-3xl font-bold sm:text-4xl">{heading}</h2>{paragraphs.map((paragraph) => <p class="mt-5 leading-8 text-white/85">{paragraph}</p>)}</div></section>
+<section aria-labelledby="bio-heading" class="bg-navy py-14 text-white sm:py-20">
+  <div class="mx-auto grid max-w-5xl gap-8 px-5 md:grid-cols-[240px_1fr] md:gap-12">
+    <div class="mx-auto w-full max-w-[240px] md:mx-0">
+      <Image src={portrait} alt="ปัน ณัฐพัชร์ ผู้สอน" width={480} height={640} class="aspect-[3/4] w-full rounded-2xl object-cover object-top" loading="lazy" />
+    </div>
+    <div>
+      <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">{eyebrow}</p>
+      <h2 id="bio-heading" class="mt-3 font-display text-3xl font-bold sm:text-4xl">ปัน ณัฐพัชร์</h2>
+      <p class="mt-2 text-base font-semibold text-white/90">ที่ปรึกษาด้านการปั้นทีมขาย และ AI Agent</p>
+      <ul class="mt-4 flex flex-wrap gap-2 text-sm" aria-label="ประสบการณ์">
+        <li class="rounded-full border border-white/20 px-3 py-1">อดีต Sales Engineer ตรีเพชรอีซูซุ</li>
+        <li class="rounded-full border border-white/20 px-3 py-1">ปั้นทีมขายและธุรกิจของตัวเองมาก่อน</li>
+        <li class="rounded-full border border-white/20 px-3 py-1">วาง AI Workflow ให้ทีมขายใช้จริง</li>
+      </ul>
+      {heading && <p class="mt-6 border-l-2 border-coral pl-4 font-display text-xl font-semibold leading-8 text-white">{heading}</p>}
+      {paragraphs.map((paragraph) => <p class="mt-5 leading-8 text-white/85">{paragraph}</p>)}
+    </div>
+  </div>
+</section>
