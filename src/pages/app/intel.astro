@@ -200,7 +200,7 @@ import AppNav from '../../components/app/AppNav.astro';
   <script>
     import { listItems, getItem, signedUrl, listJobs, createJob, retryJob, deleteItem, deleteJob, PLATFORMS, PLATFORM_LABEL as NR_PLATFORM, KIND_LABEL, type NewsroomItem, type NewsroomJob } from '../../scripts/newsroom/data';
     import {
-      listTargets, updateTarget, createTarget, deleteTarget, listItemsForTarget, recentItems, lanesFor, scoutTarget, scoutTargets, activeBatches, listBatch, subscribeBatch, avatarUrls,
+      listTargets, updateTarget, createTarget, deleteTarget, listItemsForTarget, recentItems, lanesFor, scoutTarget, scoutTargets, activeBatches, listBatch, subscribeBatch, avatarUrls, listSnapshots, snapshotDiffs, METRIC_LABEL,
       requestDiscovery, subscribeJob, daysSince, daysUntil, firedCount,
       THREAT_LABEL, THREAT_ORDER, THREAT_COLOR, ROLE_LABEL, PLATFORM_LABEL, type IntelTarget, type Handle, type LanePick, type DiscoveryResult, type Threat, type Role,
     } from '../../scripts/intel/data';
@@ -426,11 +426,24 @@ import AppNav from '../../components/app/AppNav.astro';
           <dt class="font-semibold opacity-60">ทำไมต้องจับตา</dt><dd>${esc(t.why_watch || '—')}</dd></dl></div>
         <div class="border-b border-base-300 p-4"><h3 class="mb-2 text-xs font-bold uppercase tracking-wide opacity-60">Trigger — ถ้าเขาทำแบบนี้ ต้องขยับ</h3>
           <div class="grid gap-1.5">${(t.triggers ?? []).length ? (t.triggers ?? []).map((x, i) => `<div class="grid grid-cols-[22px_1fr_auto] items-start gap-2 rounded-xl border ${x.fired_at ? 'border-warning bg-warning/10' : 'border-base-300 bg-base-200'} p-2.5 text-sm"><span>${x.fired_at ? '⚠️' : '○'}</span><span>${esc(x.text)}<div class="text-xs opacity-50">เช็คคำ: ${esc((x.keywords ?? []).join(', ') || '—')}</div></span>${x.fired_at ? `<button class="btn btn-ghost btn-xs" data-ack="${i}" title="รับทราบ — ปิดธง">ดังเมื่อ ${esc(fmtDate(x.fired_at))} · ปิดธง</button>` : '<span class="text-xs opacity-50">ยังไม่ดัง</span>'}</div>`).join('') : '<p class="text-sm opacity-60">ยังไม่ตั้ง — กด "แก้ไข" เขียน "ถ้าเขา… | คำที่เช็ค" ระบบจะเช็ครายงานใหม่ทุกชิ้นให้</p>'}</div></div>
+        <div id="it-trend" class="hidden border-b border-base-300 p-4"></div>
         <div class="p-4"><h3 class="mb-2 text-xs font-bold uppercase tracking-wide opacity-60">เส้นเวลา</h3><div id="it-timeline" class="grid gap-2"><p class="text-sm opacity-60">กำลังโหลด…</p></div></div>`;
       $('it-scout-now').addEventListener('click', () => openRunner(t, lanes));
       $('it-edit-open').addEventListener('click', () => openEdit(t));
       document.getElementById('it-back')?.addEventListener('click', () => $('it-wrap').classList.remove('showfile'));
       file.querySelectorAll('[data-ack]').forEach((b) => b.addEventListener('click', () => void ackTrigger(t, Number((b as HTMLElement).dataset.ack))));
+      // แนวโน้มข้ามรอบ — โชว์เฉพาะเมื่อมีตัวเลขอย่างน้อย 1 รอบ · มี 2 รอบขึ้นไปถึงเห็น delta
+      void listSnapshots(t.id).then((rows) => {
+        const diffs = snapshotDiffs(rows);
+        const box = document.getElementById('it-trend'); if (!box) return;
+        if (!diffs.length) { box.classList.add('hidden'); return; }
+        box.classList.remove('hidden');
+        box.innerHTML = `<h3 class="mb-2 text-xs font-bold uppercase tracking-wide opacity-60">แนวโน้ม — รอบล่าสุดเทียบรอบก่อน</h3><div class="flex flex-wrap gap-2">${diffs.map((d) => `
+          <div class="rounded-xl border border-base-300 bg-base-200 px-3 py-2 text-sm">
+            <div class="mb-1 text-xs font-semibold opacity-60">${esc(d.lane)} · ${esc(fmtDate(d.at))}${d.before_at ? ` <span class="opacity-60">vs ${esc(fmtDate(d.before_at))}</span>` : ' <span class="opacity-60">· รอบแรก</span>'}</div>
+            ${d.items.map((m) => `<div class="flex items-baseline gap-2 tabular-nums"><span class="w-40 text-xs opacity-60">${esc(METRIC_LABEL[m.key] ?? m.key)}</span><b>${esc(m.now.toLocaleString('th-TH'))}</b>${m.before !== null ? `<span class="text-xs opacity-60">← ${esc(m.before.toLocaleString('th-TH'))}</span>` : ''}${m.delta !== null ? `<span class="badge badge-xs ${m.delta > 0 ? 'badge-success' : m.delta < 0 ? 'badge-error' : 'badge-ghost'}">${m.delta > 0 ? '+' : ''}${m.delta}%</span>` : ''}</div>`).join('')}
+          </div>`).join('')}</div>`;
+      }).catch(() => {});
       try {
         const items = await listItemsForTarget(t.id);
         $('it-timeline').innerHTML = items.length ? items.map((x) => `<div class="grid grid-cols-[54px_1fr_auto] items-center gap-3 rounded-xl border border-base-300 bg-base-200 p-2">

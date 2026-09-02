@@ -159,6 +159,33 @@ export async function avatarUrls(targets: IntelTarget[]): Promise<Map<string, st
   return out;
 }
 
+// ---------- ตัวเลขต่อรอบ (Phase 3 · intel_snapshots — publisher บันทึกหลังรายงานเข้าแฟ้ม) ----------
+
+export interface IntelSnapshot { id: string; target_id: string; item_id: string | null; lane: string; metrics: Record<string, unknown>; created_at: string }
+
+export async function listSnapshots(targetId: string): Promise<IntelSnapshot[]> {
+  const { data, error } = await supabase.from('intel_snapshots').select('*').eq('target_id', targetId).order('created_at', { ascending: false }).limit(40);
+  fail(error);
+  return (data ?? []) as IntelSnapshot[];
+}
+
+// ต่อเลน: รอบล่าสุด vs รอบก่อนหน้า → รายการ {label, now, before, delta}
+export const METRIC_LABEL: Record<string, string> = { median: 'median views/likes', per_week: 'โพสต์/สัปดาห์', followers: 'followers', scanned: 'โพสต์ที่สแกน', active_ads: 'แอด ACTIVE', max_longevity_days: 'แอดรันนานสุด (วัน)', views: 'views', score: 'คะแนน' };
+export function snapshotDiffs(rows: IntelSnapshot[]): { lane: string; at: string; before_at: string | null; items: { key: string; now: number; before: number | null; delta: number | null }[] }[] {
+  const byLane = new Map<string, IntelSnapshot[]>();
+  for (const r of rows) byLane.set(r.lane, [...(byLane.get(r.lane) ?? []), r]);
+  const out = [];
+  for (const [lane, list] of byLane) {
+    const [now, before] = list;
+    const items = Object.entries(now.metrics).filter(([, v]) => typeof v === 'number').map(([key, v]) => {
+      const prev = before && typeof before.metrics[key] === 'number' ? (before.metrics[key] as number) : null;
+      return { key, now: v as number, before: prev, delta: prev !== null && prev !== 0 ? Math.round(((v as number) - prev) / prev * 100) : null };
+    });
+    if (items.length) out.push({ lane, at: now.created_at, before_at: before?.created_at ?? null, items });
+  }
+  return out;
+}
+
 // ---------- รายงานที่เกาะแฟ้ม ----------
 
 export async function listItemsForTarget(targetId: string): Promise<NewsroomItem[]> {
