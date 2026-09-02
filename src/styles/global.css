@@ -39,6 +39,12 @@
   --color-success: oklch(60% 0.16 155);
   --color-warning: oklch(80% 0.14 80);
   --color-error: #DD4155;
+  /* content ของ 4 สีนี้ไม่ได้ประกาศไว้ → DaisyUI ตกกลับไปใช้ base-content (หมึกเข้ม)
+     ทำให้ badge-info = ตัวหนังสือเข้มบนพื้น navy = อ่านไม่ออก (เจอจริงในคิวของ Intel Warroom 2026-09-03) */
+  --color-info-content: #F4F1EA;
+  --color-success-content: #F4F1EA;
+  --color-warning-content: #1E1B16;
+  --color-error-content: #ffffff;
 
   --radius-selector: 1rem;
   --radius-field: 0.75rem;
@@ -78,6 +84,10 @@
   --color-success: oklch(72% 0.16 155);
   --color-warning: oklch(82% 0.15 80);
   --color-error: oklch(68% 0.22 22);
+  --color-info-content: oklch(15% 0.02 250);
+  --color-success-content: oklch(15% 0.02 250);
+  --color-warning-content: oklch(15% 0.02 250);
+  --color-error-content: oklch(15% 0.02 250);
 
   --radius-selector: 1rem;
   --radius-field: 0.5rem;
