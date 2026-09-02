@@ -94,6 +94,9 @@ export function laneFor(h: Handle): Lane | null {
 export function scoutRef(h: Handle): string {
   if (h.platform === 'facebook_page') return h.page_id || h.ref;
   if (h.platform === 'web' && !/^https?:\/\//.test(h.ref)) return `https://${h.ref}`;
+  // "@handle" เปล่าๆ Scout ถือเป็น TikTok เสมอ → IG/YouTube ต้องส่งเป็น URL เต็ม
+  if (h.platform === 'instagram' && h.ref.startsWith('@')) return `https://www.instagram.com/${h.ref.slice(1)}/`;
+  if (h.platform === 'youtube' && h.ref.startsWith('@')) return `https://www.youtube.com/${h.ref}`;
   return h.ref;
 }
 
