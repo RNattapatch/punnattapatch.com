@@ -83,6 +83,21 @@ export const CATALOG = {
     outlineUrl: 'https://punnattapatch.com/services/outlines/t2-online-to-sales.pdf',
     note: 'T2 · HERO PRODUCT · Production key ของ Core 2 วัน — vertical edition ทุกตัว (Dealer=Online-to-Showroom · Clinic=Appointment · Hotel=Booking · Factory=Meeting/Quotation) ใช้ key นี้ ไม่เพิ่ม SKU (BHSV กฎ 4) · journey: Content → Ads → Lead/Chat → Qualification → Appointment → Follow-up → Close · rename + ลด 59,900 → 54,900 (ปันเคาะ 2026-08-28)',
   },
+  't4-ai-workflow-pilot-day': {
+    // 2026-09-02: T4 อนุมัติแล้ว (ปันเคาะ ฿34,900 = ราคามาตรฐาน in-house 1 วัน เดียวกับ inhouse-a/ai-workshop-advance)
+    // status ยังเป็น internal จนหน้า /services/advance-ai-automation ขึ้น live (WEB-T4-LP-01) แล้วค่อยสลับ 'live'
+    amount: 34900,
+    url: '/services/advance-ai-automation',
+    name: 'คอร์ส Advance AI & Business Automation',
+    nameEn: 'AI Workflow Pilot Day',
+    kind: 'inhouse',
+    duration: '1 วัน',
+    headline: 'ทดลอง AI Workflow จากงานจริงของบริษัท ก่อนลงทุนทำระบบจริง',
+    audience: 'บริษัทที่มีงานซ้ำชัด มี Process owner และยอมใช้ข้อมูลจำลอง/ข้อมูลที่ Mask แล้วใน Workshop',
+    status: 'internal',
+    botQuote: true,
+    note: 'T4 · Workflow Pilot Day 1 บริษัท 1 วัน — เอางานซ้ำ 1 เรื่องมาแยกหน้าที่คน/AI แล้วสร้าง Safe Sandbox ให้ทีมลองรันเอง · Artifact 4 ชิ้น: Workflow Map + Safe Sandbox + Human–AI Responsibility Brief + Stop/Revise/Install Decision Memo · Sandbox ไม่ใช่ production (งาน build จริง = daruma-starter/custom) · SSOT: wiki strategy-t1-t4-5a-offer-bonus-system · เปิดขายแบบ Warm/Organic Harvest Test ก่อน Cold · สลับ status เป็น live เมื่อ LP ขึ้นจริง',
+  },
 
   // ── บริการวางระบบฝ่ายขาย (Services grid) ─────────────────────────────────
   'daily-sales-consulting': {

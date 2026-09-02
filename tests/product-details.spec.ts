@@ -107,6 +107,31 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   const response = await page.goto(`${baseURL}/services/online-to-sales`);
   assert.equal(response?.status(), 200, 'T2 route must render');
   assert.equal(await page.locator('h1').innerText(), 'คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI', 'T2 H1 must resolve from the Catalog');
+  assert.equal(
+    await page.getByText('เปลี่ยนคนเห็น Content/Ads ให้เป็นแชต นัดหมาย และการส่งต่อถึงทีมขายที่ชัดเจน', { exact: true }).count(),
+    1,
+    'T2 Hero must state the approved 5A customer job exactly',
+  );
+  assert.deepEqual(
+    await page.locator('[data-detail-block="pain"] li').evaluateAll((items) => items.map((item) => item.textContent?.replace(/^✓/, ''))),
+    [
+      'Message: Content/Ads บอกประโยชน์ไม่ชัด คนที่ทักมาไม่ตรงกับทีมที่อยากคุย',
+      'Inbox: มีคนทัก แต่ตอบช้า หรือไม่มีคนรับผิดชอบตั้งแต่ข้อความแรก',
+      'Qualification: ทีมถามไม่ครบ จึงไม่รู้ว่า Lead ไหนควรพาไปขั้นถัดไป',
+      'Handoff: Marketing ส่งต่อแล้ว Sales ไม่รู้บริบท หรือไม่มี Owner และ Next action',
+      'Follow-up: Lead ที่ยังไม่พร้อมซื้อเงียบหาย เพราะไม่มีจังหวะและเหตุผลให้ทักกลับ',
+    ],
+    'T2 must mirror the five approved Message-to-Follow-up leak points in order',
+  );
+  const t2Flow = await page.locator('[data-detail-block="scope"]').innerText();
+  assert.match(t2Flow, /ก่อน: Content\/Ads → แชต → ส่งต่อแบบเดาเอง → Lead เงียบ/, 'T2 must show the before flow');
+  assert.match(t2Flow, /หลัง: Offer\/Message → First response → Qualification → Handoff → Follow-up → Review/, 'T2 must show the agreed after flow');
+  const t2Boundary = await page.locator('[data-detail-block="boundary"]').innerText();
+  assert.match(t2Boundary, /ให้ทีมการตลาดและฝ่ายขายวาง Flow เดียวกัน/, 'T2 must publish the approved offer block');
+  assert.match(t2Boundary, /ไม่รับยิง Ads แทนบริษัท/, 'T2 must clearly reject an agency engagement');
+  assert.match(await page.locator('[data-detail-block="fit"]').innerText(), /ราคาเห็นก่อนทัก/, 'T2 decision section must state that pricing is visible before contact');
+  assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “ONLINE SALES” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T2 must state the live LINE keyword and team-size instruction');
+  assert.equal(await page.getByText('ของที่ทีมคุณได้รับกลับไปใช้ต่อ', { exact: true }).count(), 0, 'T2 bonus cards must remain hidden until the release gate opens');
   assert.equal(await page.locator('form').count(), 0, 'T2 detail page must not include a form');
   assert.equal(await page.locator('[data-hero-activity]').count(), 1, 'T2 Hero must lead with one real workshop activity photo');
   assert.equal(await page.locator('[data-hero-activity] img').getAttribute('loading'), 'eager', 'T2 Hero activity photo must be ready at first glance');
@@ -176,6 +201,28 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   await page.locator('[data-mobile-nav] summary').click();
   const mobileMenu = await page.locator('[data-mobile-nav] ul').boundingBox();
   assert.ok(mobileMenu && mobileMenu.x >= 0 && mobileMenu.x + mobileMenu.width <= 320, 'open mobile menu must remain fully inside a 320px viewport');
+  await page.close();
+});
+
+test('T4 detail page keeps the Workflow Pilot Day in a one-workflow safe-sandbox boundary', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const response = await page.goto(`${baseURL}/services/advance-ai-automation`);
+  const catalog = CATALOG['t4-ai-workflow-pilot-day'];
+  assert.equal(response?.status(), 200, 'T4 route must render');
+  assert.equal(await page.locator('h1').innerText(), catalog.name, 'T4 H1 must resolve from the approved Catalog key');
+  assert.equal(await page.getByText('ทดลองงานจริงก่อนลงทุนระบบจริง', { exact: true }).count(), 1, 'T4 must use the approved strapline');
+  assert.match(await page.locator('[data-hero-price]').innerText(), new RegExp(fmtPrice('t4-ai-workflow-pilot-day')), 'T4 Hero must use the Catalog price');
+  assert.equal(await page.getByText(fmtPrice('t4-ai-workflow-pilot-day'), { exact: true }).count(), 1, 'T4 Investment must use the Catalog price');
+  const t4Boundary = await page.locator('[data-detail-block="boundary"]').innerText();
+  assert.match(t4Boundary, /หนึ่ง Workflow/, 'T4 must keep the one-workflow scope boundary');
+  assert.match(t4Boundary, /Safe Sandbox/, 'T4 must state the sandbox boundary');
+  assert.match(t4Boundary, /Fit Gate ก่อนออกใบแจ้งหนี้/, 'T4 must place the fit gate before invoicing');
+  assert.doesNotMatch(t4Boundary, /Production-ready/, 'T4 must never call a sandbox production-ready');
+  const takeHome = await page.locator('[data-detail-block="take-home"]').innerText();
+  for (const artifact of ['Workflow Map', 'Safe Sandbox', 'Human–AI Responsibility Brief', 'Decision Memo']) assert.match(takeHome, new RegExp(artifact), `T4 must publish ${artifact}`);
+  assert.match(await page.locator('[data-detail-block="scope"]').innerText(), /งานซ้ำอะไร.*บ่อยแค่ไหน.*Process owner.*ข้อมูลเสี่ยง/s, 'T4 must surface the four fit questions');
+  assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “AI WORKFLOW” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T4 must state the live LINE keyword AI WORKFLOW (oa-freebies entry t4-ai-workflow)');
+  assert.equal(await page.getByText('ของที่ทีมคุณได้รับกลับไปใช้ต่อ', { exact: true }).count(), 0, 'T4 bonus cards must remain hidden before their release gate');
   await page.close();
 });
 
@@ -253,6 +300,35 @@ test('T1 detail page presents the approved sales psychology customer job and fou
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), viewport.width, `T1 must not overflow at ${viewport.width}px`);
   }
   await page.close();
+});
+
+test('T1 and T3 align their 5A offer copy, metadata, and disabled bonus release gate', async ({ browser }) => {
+  const cases = [
+    {
+      route: '/services/t1-sales-skills',
+      coreOffer: 'เอาดีลจริงของทีมมาสร้าง Playbook การคุย ต่อรอง และ Follow-up',
+      offerBlock: 'ให้ทีมขายเอาดีลจริงมาฝึกตั้งคำถาม รับมือข้อโต้แย้ง ต่อรองโดยไม่รีบลดราคา',
+      description: 'เข้าใจเหตุผลซื้อ ถามและต่อรองได้ดีขึ้น ซ้อมดีลกับ AI Agent และ Follow-up โดยไม่รีบลดราคา',
+    },
+    {
+      route: '/services/t3-sales-back-office',
+      coreOffer: 'เอารายงานที่ทีมใช้อยู่มาจัดเป็นภาษากลางและกติกาเดียวกัน',
+      offerBlock: 'ให้ทีมจัดคำเรียกสถานะดีลและรูปแบบ Report เป็นภาษากลาง',
+      description: 'ทีมรายงานภาษาเดียวกัน ผู้จัดการเห็นดีลค้าง งานที่ต้องตาม และจุดที่ต้องเข้าไปช่วย',
+    },
+  ] as const;
+
+  for (const item of cases) {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    const response = await page.goto(`${baseURL}${item.route}`);
+    assert.equal(response?.status(), 200, `${item.route} must render`);
+    assert.match(await page.locator('[data-detail-block="boundary"]').innerText(), new RegExp(item.coreOffer), `${item.route} must show the approved Core Offer`);
+    assert.match(await page.locator('[data-detail-block="take-home"]').innerText(), new RegExp(item.offerBlock), `${item.route} must show the approved Offer block`);
+    assert.equal(await page.locator('[data-detail-block="bonus"]').count(), 0, `${item.route} bonus cards must remain hidden until the release gate opens`);
+    assert.equal(await page.locator('meta[name="description"]').getAttribute('content'), item.description, `${item.route} metadata must match its approved customer job`);
+    assert.equal(await page.locator('meta[property="og:description"]').getAttribute('content'), item.description, `${item.route} OG description must match its metadata`);
+    await page.close();
+  }
 });
 
 test('T1 remediation keeps evidence, location-specific LINE actions, and mobile CTA clearance faithful', async ({ browser }) => {

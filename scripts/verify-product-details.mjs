@@ -13,6 +13,7 @@ const expectedProducts = [
   ['C1', '/services/daily-consulting', 'daily-sales-consulting'],
   ['I1', '/services/dashboard-build', 'daruma-starter'],
   ['T3', '/services/t3-sales-back-office', 'ai-workshop-advance'],
+  ['T4', '/services/advance-ai-automation', 't4-ai-workflow-pilot-day'],
 ];
 const requiredComponents = [
   'ProductDetailLayout.astro',
@@ -46,7 +47,7 @@ function allFiles(directory) {
 const typesSource = source(typesPath);
 const indexSource = source(indexPath);
 
-assert.match(typesSource, /export type ProductDetailCode = 'T1' \| 'T2' \| 'T3' \| 'C1' \| 'I1';/, 'ProductDetailCode must cover exactly the five public details');
+assert.match(typesSource, /export type ProductDetailCode = 'T1' \| 'T2' \| 'T3' \| 'T4' \| 'C1' \| 'I1';/, 'ProductDetailCode must cover exactly the six public details');
 assert.match(typesSource, /export interface ProductDetailPageData/, 'typed ProductDetailPageData contract is required');
 for (const forbiddenField of ['h1', 'duration', 'price']) {
   assert.doesNotMatch(typesSource, new RegExp(`\\b${forbiddenField}\\s*:`), `${forbiddenField} must resolve from Catalog, not product data`);

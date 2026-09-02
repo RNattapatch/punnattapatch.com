@@ -42,20 +42,13 @@ export const T3_PRODUCT_DETAIL: ProductDetailPageData = {
   ],
   hero: {
     eyebrow: 'IN-HOUSE SALES OPERATIONS WORKSHOP · T3',
-    customerJob: 'ทำให้ทีมรายงานด้วยภาษาชุดเดียวกัน และให้หัวหน้าเห็นว่าดีลค้างตรงไหน ใครต้องตาม และเรื่องใดควรเข้าไปช่วย โดยไม่ต้องไล่ถามทีละคน',
+    customerJob: 'ทีมรายงานภาษาเดียวกัน ผู้จัดการเห็นดีลค้าง งานที่ต้องตาม และจุดที่ต้องเข้าไปช่วย',
     supportingCopy: [
-      'Report ที่ยาวขึ้นไม่ได้ทำให้บริหารง่ายขึ้นครับ ถ้าเซลล์แต่ละคนเข้าใจคำว่า “กำลังคุย” หรือ “ใกล้ปิด” ไม่เหมือนกัน Dashboard ก็แค่เอาความสับสนมาวาดเป็นกราฟ',
-      'คอร์สนี้พาทีมเริ่มจากนิยาม Stage และข้อมูลที่จำเป็น วาง Daily report, Follow-up list และกติกาที่ Manager ใช้ตัดสินใจ จากนั้นทำ Dashboard prototype จากข้อมูลตัวอย่างของบริษัท พร้อมใช้ AI ช่วย Cleaning และ Summary ในจุดที่มีคนตรวจได้',
+      'หัวหน้าต้องไล่ถามยอดทีละคน เพราะทีมรายงานคนละแบบ และ Admin เสียเวลารวมข้อมูลซ้ำ ปัญหาไม่ได้อยู่ที่ไม่มี Dashboard แต่อยู่ที่ยังไม่มีภาษาและกติกากลาง',
+      'คอร์สนี้เริ่มจาก Report chaos แล้วจัด Stage, Field, Owner และ Next action ให้คนกรอกกับคนใช้ข้อมูลเข้าใจตรงกัน ก่อนทดลองประชุมจากดีลตัวอย่างที่ปิดข้อมูลแล้ว',
     ],
     microcopy: 'ส่งตัวอย่าง Report ที่ใช้อยู่มาได้ครับ ผมจะช่วยเช็กว่าปัญหาอยู่ที่ Field, Stage หรือวิธีที่ Manager ใช้ข้อมูล',
     badges: ['In-house Workshop', 'Owner + Manager + Sales Admin', 'ได้ Prototype และ Operating rule'],
-    visual: {
-      image: { publicSrc: '/proof/01-command-center.jpg', width: 1400, height: 692 },
-      alt: 'Command Center ที่ปิดข้อมูลส่วนบุคคล แสดง Lead, Pipeline และรายการที่ต้องติดตาม',
-      label: 'ระบบที่ผมเปิดใช้จริง',
-      caption: 'ใน Workshop ทีมจะเรียนวิธีวาง Stage, Field และ Manager rule ที่ทำให้หน้าจอแบบนี้ตอบคำถามได้',
-      fit: 'contain',
-    },
   },
   authority: [
     'มี Sales Command Center และ Morning Brief ใช้งานจริง',
@@ -122,9 +115,10 @@ export const T3_PRODUCT_DETAIL: ProductDetailPageData = {
     '“วันนี้ต้องช่วยใครก่อน” เพราะ Dashboard สรุปยอดได้ แต่ไม่มี Stale lead หรือรายการเสี่ยง',
   ],
   boundary: {
-    heading: 'หนึ่งวันเพื่อวางภาษาและกติกากลางของงานขาย',
+    heading: 'จัดภาษาให้ตรงกัน ก่อนให้ Dashboard สรุปอะไรแทนทีม',
     body: [
-      'ทีมจะนิยาม Sales stage, Required fields, Lead owner และ Next action ร่วมกัน แล้วออกแบบ Report กับ Manager rhythm ที่ตอบคำถามหน้างาน สุดท้ายทำ Dashboard wireframe/prototype เพื่อให้ทุกคนเห็นภาพเดียวกันก่อนกลับไปทำต่อ',
+      'เอารายงานที่ทีมใช้อยู่มาจัดเป็นภาษากลางและกติกาเดียวกัน ให้หัวหน้าเปิดครั้งเดียวรู้ว่าดีลไหนค้าง ค้างเพราะอะไร และต้องเข้าไปช่วยใคร โดยไม่เพิ่มงานเอกสารซ้ำให้ทีม',
+      'เริ่มจาก Stage, Field, Owner และ Next action ที่มีผลต่อการตัดสินใจ แล้วจำลองการกรอก Report และการประชุมจากดีลตัวอย่างที่ปิดข้อมูลแล้วหนึ่งรอบ',
       'T3 คือทีมคุณเรียนวิธีวางและทำ Prototype เองครับ ถ้าอยากให้ทีมผมสร้างระบบให้ใช้จริง ตั้งแต่ Data map, Build, UAT ไปจนถึงสอนผู้ใช้ ให้เลือกบริการ I1 “Sales Dashboard + Report อัตโนมัติ”',
     ],
   },
@@ -176,13 +170,25 @@ export const T3_PRODUCT_DETAIL: ProductDetailPageData = {
     'AI-assisted Cleaning/Summary prompt พร้อม Human review checklist',
     'Workflow map และ Monday action plan',
   ],
+  bonusCards: {
+    enabled: false,
+    heading: 'ของที่ทีมคุณได้รับกลับไปใช้ต่อ',
+    intro: 'รวมอยู่ในค่าอบรมแล้ว ไม่ต้องซื้อ Template เพิ่ม',
+    items: [
+      { number: '01', title: 'Sales Stage Dictionary: คู่มือคำเรียกสถานะดีล', user: 'ทีมขายและ Sales Manager', timing: 'ก่อนเริ่มใช้ Report ใหม่', outcome: 'ตกลงความหมายของ Stage ลดการตีความ Hot หรือ Follow-up คนละแบบ', format: 'Google Sheet / PDF' },
+      { number: '02', title: 'Stuck Deal Checklist: สัญญาณเตือนดีลค้าง 12 แบบ', user: 'Sales Manager', timing: 'ก่อนประชุม Review', outcome: 'เห็นดีลที่ไม่มี Next step เกินกำหนด หรือรอข้อมูลสำคัญ', format: 'Google Sheet' },
+      { number: '03', title: 'Weekly Sales Meeting Sheet: แบบประชุมทีมขาย 30 นาที', user: 'Owner และ Sales Manager', timing: 'ประชุมรายสัปดาห์', outcome: 'จบการประชุมด้วย Owner, Next action และ Due date', format: 'Google Doc / Sheet' },
+      { number: '04', title: 'Manager View Examples: ตัวอย่างมุมมองผู้จัดการ 3 แบบ', user: 'Owner, Sales Manager และ Branch Manager', timing: 'ก่อนเลือกสิ่งที่ต้องเห็น', outcome: 'เลือกมุมมองตามบทบาทโดยไม่เริ่มสร้าง Dashboard ใหม่ทุกครั้ง', format: 'Google Sheet / PDF' },
+      { number: '05', title: 'AI Report QC Checklist: เช็กสรุปรายงาน 5 จุด', user: 'Sales Manager และ Admin', timing: 'ก่อนใช้ AI summary ในการประชุม', outcome: 'ให้คนตรวจตัวเลข ชื่อดีล สถานะ ความเสี่ยง และ Next action', format: 'Google Doc' },
+    ],
+  },
   fit: [
     'Owner, Sales Manager, Branch Manager และ Sales Admin ที่ดู Report ร่วมกัน',
     'ทีมขาย 5–20 คนที่มีข้อมูลอยู่ใน Excel, Sheets หรือ CRM แต่ใช้ Stage ไม่ตรงกัน',
     'บริษัทที่อยากทำ Prototype และให้ทีมภายในทำต่อ',
     'องค์กรที่ต้องการลดเวลารวม Report และเพิ่มความชัดของ Next action',
   ],
-  notFit: 'ถ้าต้องการระบบ production พร้อม Integration และดูแลหลังใช้งานตั้งแต่ต้น ให้เลือก I1 ครับ หากปัญหาหลักยังอยู่ที่โครงทีม KPI หรือค่าคอม ควรเริ่ม C1 Track B ก่อน เพราะ Dashboard จะสะท้อนกติกาที่วางไว้เท่านั้น',
+  notFit: 'ยังไม่เหมาะกับบริษัทที่ต้องการ CRM/ERP จริง, Data migration, Dashboard production, Integration หรือ Support ระบบต่อเนื่องครับ ถ้าโจทย์อยู่ที่ KPI, Commission หรือโครงทีมให้เริ่ม C1; ถ้าพร้อมใช้ Live data และต้องการ Build production ให้ไป I1',
   relatedOffer: { href: '/services/dashboard-build', label: 'ไม่มีคนทำต่อ หรืออยากให้ทีมปัน Build, UAT และสอนใช้จริง? ดูบริการ I1' },
   bio: [
     'ผมเคยผ่านทั้งงานขาย การหาเซลล์ ตั้ง KPI ค่าคอม Onboarding และโค้ชทีมหน้างาน จึงรู้ว่า Field บน Report สามารถสร้างพฤติกรรมได้ ถ้าวัดผิด ทีมก็วิ่งผิด หรือหาวิธีกรอกให้ผ่านแทนที่จะขยับดีล',
@@ -232,8 +238,8 @@ export const T3_PRODUCT_DETAIL: ProductDetailPageData = {
     },
   },
   seo: {
-    title: 'คอร์สอบรมวางระบบหลังบ้านฝ่ายขาย | Report + Dashboard + AI',
-    description: 'In-house Workshop สำหรับ Owner, Sales Manager และ Admin เพื่อวาง Sales stage, Daily report, Manager rule และ Dashboard prototype จากข้อมูลของบริษัท',
+    title: 'คอร์สอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI',
+    description: 'ทีมรายงานภาษาเดียวกัน ผู้จัดการเห็นดีลค้าง งานที่ต้องตาม และจุดที่ต้องเข้าไปช่วย',
   },
   sections: {
     authority: { heading: 'ผมสอนจากระบบที่สร้างและเปิดใช้เองจริง', copy: 'ผมไม่ได้เริ่มจากเลือก Chart ครับ ผมเริ่มจากคำถามว่าทุกเช้าหัวหน้าต้องตัดสินใจอะไร ดีลแบบไหนควรเตือน และข้อมูลช่องไหนถ้าไม่มีแล้วทีมไปต่อไม่ได้ พอคำถามชัด หน้าจอจึงเล็กลงและใช้ได้มากขึ้น' },
@@ -241,7 +247,7 @@ export const T3_PRODUCT_DETAIL: ProductDetailPageData = {
     pain: { heading: 'ทีมมี Report อยู่แล้ว แต่หัวหน้ายังต้องถามซ้ำแบบนี้มั้ย', close: 'หลายครั้งทีมกรอกข้อมูลไม่ครบ เพราะบริษัทขอข้อมูลเยอะเกินจำเป็นและคนกรอกไม่เห็นว่าจะช่วยงานตัวเองตรงไหน เราจะตัดให้เหลือ Field ที่ช่วยทั้งงานของเซลล์และการตัดสินใจของหัวหน้าครับ' },
     reasons: { heading: 'เพราะคนขอข้อมูลกับคนกรอกข้อมูล มักเห็นคนละปัญหา' },
     scope: { heading: 'Stage → Report → Manager → Prototype', intro: 'T3 = ทีมคุณเรียนวิธีวางและทำ Prototype · I1 = ทีมผม Build, UAT และสอนใช้จริง เราจะจัดภาษาและกติกาให้ตรงกันก่อน แล้วค่อยใช้ข้อมูลตัวอย่างทำ Dashboard ตัวแรกในห้อง', ctaHeading: 'อยากให้ทีมเห็น Dashboard ตัวแรกจากข้อมูลของตัวเองในห้อง?' },
-    takeHome: { heading: 'จบคลาสแล้ว ทีมมีแบบสำหรับทำต่อ', close: 'คุณค่าของ Prototype อยู่ที่ทีมตอบได้ตรงกันว่า ข้อมูลหนึ่งช่องมีไว้ช่วยใครตัดสินใจ และถ้าข้อมูลหายต้องย้อนกลับไปแก้ตรงไหนครับ' },
+    takeHome: { heading: 'จบคลาสแล้ว ทีมมีแบบสำหรับทำต่อ', close: 'ให้ทีมจัดคำเรียกสถานะดีลและรูปแบบ Report เป็นภาษากลาง ทดลองตั้งแต่พนักงานกรอกข้อมูลถึงหัวหน้าใช้ประชุม พร้อม Manager View, สัญญาณเตือนดีลค้าง และชุดประชุมที่จบด้วยคนรับผิดชอบกับวันนัดครั้งถัดไป' },
     fit: { heading: 'เหมาะกับทีมที่พร้อมตกลงกติกาก่อนซื้อระบบเพิ่ม' },
     bio: { eyebrow: 'Instructor + System builder', heading: 'ผมไม่ได้แยก Dashboard ออกจากวิธีบริหารทีม' },
     investment: { eyebrow: 'ราคาเดียวสำหรับทีม' },

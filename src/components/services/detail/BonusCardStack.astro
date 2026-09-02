@@ -1,0 +1,27 @@
+---
+import type { ProductBonusCard } from '../../../data/product-details/types';
+
+interface Props { heading: string; intro: string; items: ProductBonusCard[]; }
+const { heading, intro, items } = Astro.props;
+---
+
+<section data-detail-block="bonus" aria-labelledby="bonus-heading" class="bg-[#f4f1ea] py-14 sm:py-20">
+  <div class="mx-auto max-w-6xl px-5">
+    <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Bonus เฉพาะคอร์สนี้</p>
+    <h2 id="bonus-heading" class="mt-3 font-display text-3xl font-bold text-navy sm:text-4xl">{heading}</h2>
+    <p class="mt-4 max-w-3xl leading-7 text-navy/80">{intro}</p>
+    <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+      {items.map((item) => <article data-bonus-card class="rounded-3xl bg-white p-6 shadow-sm">
+        <p class="text-xs font-bold uppercase tracking-[.18em] text-coral">BONUS {item.number}</p>
+        <h3 class="mt-3 text-xl font-bold text-navy">{item.title}</h3>
+        <dl class="mt-5 space-y-3 text-sm leading-6 text-navy/80">
+          <div><dt class="font-bold text-navy">ใช้โดย</dt><dd>{item.user}</dd></div>
+          <div><dt class="font-bold text-navy">ใช้เมื่อ</dt><dd>{item.timing}</dd></div>
+          <div><dt class="font-bold text-navy">ช่วยให้ทีม</dt><dd>{item.outcome}</dd></div>
+          <div><dt class="font-bold text-navy">รูปแบบ</dt><dd>{item.format}</dd></div>
+        </dl>
+        <p class="mt-5 font-semibold text-navy">รวมอยู่ในค่าอบรมแล้ว</p>
+      </article>)}
+    </div>
+  </div>
+</section>

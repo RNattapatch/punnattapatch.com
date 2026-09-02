@@ -1,0 +1,463 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DarumaMark from '../../components/DarumaMark.astro';
+import AdsContentV2 from '../../components/ads/AdsContentV2.astro';
+import AfterHoursField from '../../components/AfterHoursField.astro';
+import { SITE } from '../../data/site';
+import { PRICES, TERMS, fmtPrice } from '../../data/pricing.mjs';
+
+const title = 'คอร์สอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI';
+const description = 'หัวหน้าเลิกไล่ถามความคืบหน้าทีละคน ทีมรายงานด้วยภาษาชุดเดียวกัน จบวันได้ Stage, Daily Report, กติกาหัวหน้า และ Dashboard ตัวแรกจากข้อมูลบริษัทคุณ อบรม In-house 1 วัน คุยฟรี 15–20 นาที';
+const canonical = `${SITE.url}/ads/sales-backoffice-team`;
+const lineUrl = SITE.social.line;
+// T3 = key ai-workshop-advance (คอร์ส 1 วัน ราคาเท่ากับ T1 โดยตั้งใจ — ดู PRICING-SSOT 2026-08-09)
+const PRICE_1DAY = fmtPrice('ai-workshop-advance');
+const perHead = Math.round(PRICES['ai-workshop-advance'].amount / 20);
+
+const content = {
+  pageId: 'sales-backoffice',
+  formAnchor: '#dealer-ai-form',
+  lineUrl,
+  capacity: 'ผมสอนเองทุกรุ่น รับสูงสุดเดือนละ 10 บริษัท',
+  capacityLeft: 'คิวว่างเดือนไหน ทักถามทาง LINE ได้เลยครับ',
+
+  eyebrow: 'คอร์สอบรม In-house · Owner + Manager + Sales Admin · 1 วันเต็ม · จัดที่บริษัทคุณ',
+  headlineLead: 'คอร์สวางระบบ',
+  headlineNowrap: 'หลังบ้านฝ่ายขาย',
+  headlineAccent: 'Report + Dashboard + AI',
+  productName: 'ทำให้หัวหน้ารู้ว่าดีลไหนค้าง ใครต้องตาม และเช้านี้ต้องเข้าไปช่วยใครก่อน',
+  productTagline: 'In-house 1 วันเต็มที่บริษัทคุณ · คนขอข้อมูลกับคนกรอกข้อมูลอยู่ห้องเดียวกัน · ราคาเดียวทั้งทีม',
+  lede: 'Report ที่ยาวขึ้นไม่ได้แปลว่าบริหารง่ายขึ้นครับ ถ้าเซลล์แต่ละคนเข้าใจคำว่า “กำลังคุย” กับ “ใกล้ปิด” ไม่เหมือนกัน Dashboard ก็แค่เอาความสับสนชุดเดิมมาวาดเป็นกราฟ วันนี้ทีมจะจัดภาษาและกติกาให้ตรงกันก่อน แล้วค่อยลงมือทำหน้าจอตัวแรกจากข้อมูลของบริษัทเอง',
+  badges: ['Owner + Manager + Sales Admin', 'จัดที่บริษัทคุณ 1 วันเต็ม', `ราคาเดียวทั้งทีม ${PRICE_1DAY}`],
+  ctaLabel: 'คุยเรื่องทีมของคุณ ฟรี 15 นาที',
+  ctaNote: 'คุยเพื่อเช็กความเหมาะสมก่อนครับ ถ้าทีมยังไม่พร้อม ผมบอกตรงๆ',
+
+  heroPhotos: {
+    main: { src: '/lp/inhouse/hero-pointing.jpg', alt: 'ปันยืนชี้อธิบายบนจอหน้าห้อง ขณะทีมลงมือทำบนเครื่องตัวเองในคลาสจริง', width: 1600, height: 1200 },
+    left: { src: '/testimonial/2026-07/onsite-nissan-pun.jpg', alt: 'ปัน ณัฐพัชร์ ที่งาน Nissan Sales Manager Seminar 2026', width: 1100, height: 1466 },
+    right: { src: '/lp/inhouse/team-selfie.jpg', alt: 'ปันถ่ายรูปกับทีมผู้เรียนเต็มห้องหลังจบคลาส', width: 1200, height: 1600 },
+  },
+  heroCaption: 'ภาพจากคลาสจริง · ผู้เรียนลงมือบนเครื่องตัวเอง',
+
+  clientLogos: [
+    { src: '/logos/clients/nissan.png', alt: 'Nissan' },
+    { src: '/logos/clients/royal-enfield.jpg', alt: 'Royal Enfield' },
+    { src: '/logos/clients/gpx.jpg', alt: 'GPX' },
+    { src: '/logos/clients/lambretta.png', alt: 'Lambretta' },
+    { src: '/logos/clients/zontes.png', alt: 'Zontes' },
+    { src: '/logos/clients/futureskill.png', alt: 'FutureSkill' },
+    { src: '/logos/clients/hfc-healthfoods.png', alt: 'HFC HealthFoods Corporation' },
+    { src: '/logos/clients/home-plus.png', alt: 'ฮ.โฮมพลัส' },
+    { src: '/logos/clients/ving.png', alt: 'V!NG' },
+    { src: '/logos/clients/nsscrap.avif', alt: 'NSSCRAP' },
+    { src: '/logos/clients/ud-clinic.jpg', alt: 'UD Clinic' },
+  ],
+
+  proofHeadline: 'องค์กรหลายวงการไว้วางใจ',
+  proofBody: 'งานที่ ฮ.โฮมพลัส เชื่อมโครงทีม KPI ค่าคอม Checklist และ Dashboard เข้าด้วยกัน เพราะหน้าจอต้องเดินตามกติกาบริหารคน ไม่ใช่โปรเจ็กต์กราฟที่แยกอยู่เดี่ยวๆ',
+  perHeadNote: `มากัน 20 คน เฉลี่ยคนละ ${perHead.toLocaleString('th-TH')} บาท ถูกกว่าส่งคนไปเรียนคอร์สข้างนอก 1 ที่นั่ง`,
+
+  calloutLead: 'เวลาถามว่า “ดีลนี้ถึงไหนแล้ว”',
+  calloutAccent: 'ได้คำตอบ หรือได้ความรู้สึก?',
+  calloutBody: '“กำลังคุยอยู่” “น่าจะใกล้แล้ว” “รอลูกค้าตอบ” — สามประโยคนี้ไม่ได้บอกว่าต้องทำอะไรต่อครับ เพราะคำที่ทีมใช้ยังไม่มีนิยามกลาง หัวหน้าเลยต้องไล่ถามทีละคนทุกสัปดาห์ แล้วเอาคำตอบมาต่อกันเองในหัว',
+  pains: [
+    { icon: 'user-x', text: 'ถามว่าดีลอยู่ขั้นไหน แล้วได้คำตอบคนละแบบ เพราะคำใน Report กว้างจนตีความได้หลายทาง' },
+    { icon: 'file', text: 'Lead ถูกส่งต่อในกลุ่มแชตแล้วเงียบหายไป เพราะไม่มีใครถูกระบุว่าเป็นเจ้าของดีล' },
+    { icon: 'brain', text: 'มี Note ยาวเต็มไปหมด แต่ไม่มีบรรทัดไหนบอกว่าขั้นต่อไปคืออะไร และต้องทำภายในวันไหน' },
+    { icon: 'moon', text: 'ตัวเลขจากสองไฟล์ไม่ตรงกัน เพราะแต่ละคนกรอกวันที่และชื่อลูกค้าคนละรูปแบบ' },
+    { icon: 'wallet', text: 'Dashboard สรุปยอดรวมได้ แต่ตอบไม่ได้ว่าเช้านี้หัวหน้าต้องเข้าไปช่วยใครก่อน' },
+  ],
+  painsClose: 'อาการพวกนี้ไม่ได้แก้ด้วยการซื้อระบบใหม่ครับ ส่วนใหญ่ทีมกรอกข้อมูลไม่ครบเพราะบริษัทขอเยอะเกินจำเป็น และคนกรอกไม่เห็นว่ามันช่วยงานตัวเองตรงไหน เราจะตัดให้เหลือเท่าที่ช่วยทั้งเซลล์และหัวหน้าพร้อมกัน',
+
+  whatIsThis: {
+    title: 'ก่อนเลื่อนต่อ — ขอพูดชัดๆ ว่าหน้านี้ขายอะไร',
+    isHeading: 'สิ่งที่คุณกำลังดูอยู่คือ',
+    isBody: `คอร์สอบรม In-house 1 วัน ที่ผมไปวางระบบหลังบ้านฝ่ายขายกับทีมคุณถึงออฟฟิศ — นิยาม Stage ให้ทั้งทีมเรียกตรงกัน ออกแบบ Daily Report ล็อกกติกาที่หัวหน้าใช้ตัดสินใจ แล้วทำ Dashboard prototype จากข้อมูลตัวอย่างของบริษัท ราคาเดียวทั้งทีม ${PRICE_1DAY}`,
+    notHeading: 'สิ่งที่คอร์สนี้ไม่ได้รวม',
+    notItems: [
+      'ในห้องได้ Dashboard prototype ที่ทีมทำต่อเอง ส่วนการ Build จนใช้งาน production, ทดสอบ และสอนผู้ใช้ เป็นบริการแยกต่างหาก',
+      'ไม่ต้องมี CRM มาก่อน ใช้ Excel หรือ Google Sheets เดิมได้ ขอแค่มีข้อมูลตัวอย่างที่ปิดข้อมูลส่วนบุคคลแล้ว',
+      'รูปแบบเป็น In-house Workshop ที่ทีมลงมือกับ Report และดีลจริงของบริษัท',
+    ],
+    whoBody: 'ส่วนผม — ปัน ณัฐพัชร์ เป็นที่ปรึกษาด้านการปั้นทีมขาย และ AI Agent ครับ เคยตั้ง KPI ค่าคอม และโค้ชทีมหน้างานมาก่อน ระบบที่เอามาสอนในคลาส ผมสร้างและใช้เองกับงานขายของตัวเองทุกตัว',
+  },
+
+  whyTitle: 'ทำไมผมถึงยกคลาสไปที่ออฟฟิศคุณ แทนที่จะให้คนไปเรียนข้างนอก',
+  whyCols: [
+    { heading: 'ใช้ Report ของคุณเองเป็นโจทย์', body: 'ตัวอย่างในห้องคือไฟล์ที่ทีมกรอกอยู่จริง ดีลที่ค้างอยู่จริง และคำที่ทีมเรียกกันเอง ชิ้นงานที่ทำเสร็จจึงเอาไปใช้วันจันทร์ได้เลย ไม่ต้องกลับมานั่งแปลงเอง' },
+    { heading: 'คนขอข้อมูลกับคนกรอกข้อมูลอยู่ห้องเดียวกัน', body: 'หัวหน้ารู้ว่าต้องเห็นอะไรถึงจะเข้าไปช่วยดีลได้ เซลล์รู้ว่าช่องไหนกรอกได้ทันทีและช่องไหนต้องเดา ถ้าสองฝั่งไม่ได้ตกลงกันในวันนั้น Report ก็จะกลับไปเป็นภาระเหมือนเดิม' },
+    { heading: 'ออฟฟิศไม่ต้องหยุด', body: 'ไม่ต้องพาทีมเดินทาง ใครติดลูกค้าโทรเข้ามาก็ออกไปรับได้แล้วกลับเข้าห้อง และราคาเดียวทั้งทีม ถูกกว่าซื้อคอร์สรายหัวหลายเท่า' },
+  ],
+  principleQuote: '“จัดภาษาให้ตรงกันก่อน แล้วค่อยทำหน้าจอ”',
+  principleBody: 'AI เหมือนน้องฝึกงานที่รู้ทุกอย่างบนโลก แต่ไม่รู้จักบริษัทคุณครับ ถ้าคำว่า Qualified หรือ Proposal Sent ยังไม่มีนิยามกลาง มันก็แค่สรุปความสับสนชุดเดิมได้เร็วขึ้นเท่านั้น เราจึงเดินตามลำดับ Stage → Report → กติกาหัวหน้า → Dashboard เสมอ',
+
+  agendaTitle: 'หนึ่งวันเดินจาก “คำที่ทีมเรียกไม่ตรงกัน” ไปถึง “Dashboard ตัวแรกของบริษัท”',
+  agendaLead: 'ทุกช่วงใช้ Report ดีลค้าง และคำถามที่หัวหน้าถามทีมอยู่จริง พร้อมชิ้นงานที่เอาไปใช้ต่อได้ครับ',
+  agenda: [
+    { time: '09:00', until: '–10:30', heading: 'นิยาม Stage จากเหตุการณ์จริงของลูกค้า', body: 'เอา Pipeline ที่ใช้อยู่มาไล่คำที่กว้างหรือซ้ำกัน แล้วตกลงว่าดีลจะขยับขั้นได้เมื่อเกิดอะไรขึ้นจริง ใครเป็นเจ้าของ และต้องมีข้อมูลอะไรติดมาด้วย', output: 'Sales Stage Dictionary + Required-field list' },
+    { time: '10:45', until: '–12:00', heading: 'ออกแบบ Daily Report และรายการที่ต้องตาม', body: 'แยกข้อมูลเป็นสามกอง — ที่เซลล์ต้องกรอกเอง ที่ระบบคำนวณให้ได้ และที่หัวหน้าใช้ดูความเสี่ยง แล้วตัดให้เหลือเท่าที่ทำงานได้จริง', output: 'Daily Report Template + Stale Lead List' },
+    { time: '13:00', until: '–14:45', heading: 'ล็อกกติกาหัวหน้าและจังหวะรีวิว', body: 'ตกลงว่าเมื่อไรหัวหน้าควรเข้าไปช่วยดีล เมื่อไรควรโค้ชเซลล์ และเมื่อไรต้องกลับไปแก้ข้อมูลต้นทาง จากนั้นวางวาระประชุมสั้นที่เริ่มจากรายการเสี่ยงจริง', output: 'Manager Rules + Review Rhythm' },
+    { time: '15:00', until: '–16:25', heading: 'ทำ Dashboard Prototype และให้ AI ช่วยงานที่ตรวจย้อนได้', body: 'เอาข้อมูลตัวอย่างที่ปิดข้อมูลส่วนบุคคลแล้วมาทำหน้าจอตัวแรก ทดสอบกับคำถามบริหารจริง แล้วลองใช้ AI ช่วยจัดรูปแบบข้อมูลและสรุปประเด็น โดยมีจุดที่คนต้องตรวจกำกับไว้ทุกจุด', output: 'Dashboard Prototype + Workflow Map + Human Review Checklist', final: true },
+  ],
+  nudgeAgenda: 'อ่านตารางแล้วยังนึกไม่ออกว่าทีมคุณจะได้อะไรกลับไป? ส่งภาพ Report ที่ใช้อยู่มาทางไลน์ ผมดูให้ว่าติดตรงไหนครับ',
+
+  menuTitle: 'AI ในคลาสนี้รับเฉพาะงานที่ตรวจย้อนกลับได้',
+  menuLead: 'ทีมจะให้ AI ช่วยงานหลังบ้านที่ทำซ้ำทุกวัน ส่วนงานที่มีผลต่อยอด ค่าคอม หรือการประเมินคน ต้องมีคนตรวจเสมอครับ',
+  menu: [
+    { heading: 'จัดรูปแบบข้อมูลให้เป็นชุดเดียว', body: 'รวมชื่อลูกค้าที่สะกดต่างกัน วันที่คนละฟอร์แมต และช่องว่างที่หลุดมา ก่อนเข้ารายงาน' },
+    { heading: 'ตรวจว่าข้อมูลช่องไหนหาย', body: 'ไล่หาดีลที่ไม่มีเจ้าของ ไม่มีขั้นต่อไป หรือไม่ได้อัปเดตเกินกำหนด แล้วส่งเป็นรายการให้หัวหน้า' },
+    { heading: 'ย่อ Note ยาวให้เหลือประเด็น', body: 'สรุปบันทึกการคุยของเซลล์ให้เหลือสิ่งที่หัวหน้าต้องรู้ก่อนประชุม โดยยังย้อนกลับไปหาต้นทางได้' },
+    { heading: 'ร่างรายการติดตามประจำวัน', body: 'จัดลำดับว่าวันนี้ควรตามใครก่อน จากกติกาที่ทีมกำหนดไว้เอง ไม่ใช่จากความรู้สึก' },
+    { heading: 'ร่างสรุปเช้าให้หัวหน้า', body: 'รวมดีลค้าง งานที่เลยกำหนด และเรื่องที่ต้องตัดสินใจ เป็นข้อความเดียวก่อนเริ่มวัน' },
+  ],
+
+  takeHomeTitle: 'จบวันแล้ว ทีมไม่ได้ถือ "ความรู้" กลับไปอย่างเดียว',
+  takeHomeFeature: { heading: 'Sales Stage Dictionary', body: 'นิยาม Stage ทุกขั้นพร้อมเงื่อนไขเข้า-ออก เจ้าของดีล และข้อมูลที่ต้องมี ทำจาก Pipeline จริงของบริษัทในห้อง' },
+  takeHome: [
+    { heading: 'Daily Report Template', body: 'แบบรายงานประจำวันที่มีเจ้าของดีล Stage วันที่คุยล่าสุด ขั้นต่อไป และวันครบกำหนด เท่าที่จำเป็น' },
+    { heading: 'Stale Lead / Follow-up List', body: 'รายการดีลที่เงียบเกินกำหนด พร้อมเกณฑ์ว่าเมื่อไรต้องถูกดันขึ้นมาให้หัวหน้าเห็น' },
+    { heading: 'Manager Rules + Review Rhythm', body: 'กติกาว่าหัวหน้าเข้าไปช่วยตอนไหน และวาระประชุมรายวัน-รายสัปดาห์ที่เริ่มจากรายการเสี่ยง' },
+    { heading: 'Dashboard Prototype + Data Schema', body: 'หน้าจอตัวแรกที่ทดสอบกับคำถามบริหารแล้ว พร้อมโครงข้อมูลที่ต่อเข้า Excel ได้' },
+    { heading: 'AI Prompt + Human Review Checklist', body: 'ชุดคำสั่งสำหรับงานจัดข้อมูลและสรุป พร้อมจุดที่คนต้องตรวจก่อนเอาไปใช้จริง' },
+  ],
+  takeHomeNote: 'พร้อมติดตามผ่าน LINE 7 วันหลังเรียน ผมไม่รับประกันว่าตัวเลขจะดีขึ้นทันทีนะครับ ผลขึ้นกับคุณภาพข้อมูลและวินัยของทีม แต่ของที่ต้องใช้ต่อ ผมวางให้ครบก่อนจบวัน',
+
+  fitTitle: 'เหมาะกับทีมที่มีข้อมูลอยู่แล้ว แต่ยังเอามาตัดสินใจไม่ได้',
+  fitYes: [
+    'เจ้าของหรือผู้จัดการฝ่ายขายที่ยังต้องไล่ถามความคืบหน้าทีละคนทุกสัปดาห์',
+    'ทีมขาย 5–20 คนที่มีข้อมูลอยู่ใน Excel, Google Sheets หรือ CRM แต่ใช้ Stage ไม่ตรงกัน',
+    'บริษัทที่มีคนรวม Report ด้วยมือทุกเดือน และอยากให้ทีมภายในทำต่อเองได้',
+  ],
+  fitNo: 'ธุรกิจที่ยังไม่มีทีมขาย · โจทย์หลักคือหา Lead เพิ่ม · อยากได้ระบบพร้อมใช้ production ตั้งแต่วันแรกโดยไม่ต้องลงมือเอง · ปัญหาหลักยังอยู่ที่โครงทีม KPI หรือค่าคอม ซึ่งควรเริ่มที่คอนซัลต์รายวันก่อน',
+  nudgeFit: 'อ่านแล้วยังไม่ชัดว่าบริษัทคุณเข้าข่ายไหม? เล่าให้ผมฟังสั้นๆ ในไลน์ ผมบอกตรงๆ ว่าเหมาะหรือยังไม่เหมาะ',
+
+  classPhotos: [
+    { src: '/lp/inhouse/class-full.jpg', alt: 'บรรยากาศคลาสเต็มห้อง ผู้เรียนลงมือทำบนเครื่องตัวเอง', width: 1600, height: 1200 },
+    { src: '/lp/inhouse/office-session.jpg', alt: 'ปันสอนทีมที่ออฟฟิศลูกค้า', width: 1600, height: 1200 },
+    { src: '/lp/inhouse/onsite-cafe.jpg', alt: 'คลาสสอนสดนอกสถานที่', width: 1600, height: 1200 },
+    { src: '/lp/inhouse/team-group.jpg', alt: 'ถ่ายรูปรวมทีมผู้เรียนหลังจบคลาส', width: 1600, height: 1200 },
+  ],
+
+  reviews: [
+    { src: '/testimonial/2026-07/review-09.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 1410, height: 1410 },
+    { src: '/testimonial/2026-07/review-10.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 736, height: 736 },
+    { src: '/testimonial/2026-07/review-11.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 914, height: 914 },
+    { src: '/testimonial/2026-05/review-02.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 1000, height: 1000 },
+    { src: '/testimonial/2026-05/review-04.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 1000, height: 1000 },
+    { src: '/testimonial/2026-05/review-05.jpg', alt: 'แชทรีวิวจากผู้เรียนจริง', width: 1000, height: 1000 },
+  ],
+
+  instructorPhoto: { src: '/lp/inhouse/pun-portrait.jpg', alt: 'ปัน ณัฐพัชร์ ผู้สอนคอร์สวางระบบหลังบ้านฝ่ายขาย Report Dashboard และ AI', width: 1066, height: 1600 },
+  instructorParas: [
+    'ผมเคยผ่านทั้งงานขาย การหาเซลล์ ตั้ง KPI ค่าคอม และโค้ชทีมหน้างานครับ เลยรู้ว่าช่องบน Report สร้างพฤติกรรมได้จริง ถ้าวัดผิด ทีมจะหาวิธีกรอกให้ผ่าน แทนที่จะขยับดีล',
+    'เคยคัดเรซูเม่มากกว่า 1,000 ใบและสัมภาษณ์คนเข้าทีมมากกว่า 100 คน ผมเลยสนใจว่าระบบจะช่วยให้หัวหน้าเห็นความสามารถและปัญหาของคนอย่างเป็นธรรมได้ยังไง โดยไม่ให้ AI ตัดสินคนแทนหัวหน้า',
+    'ทุกวันนี้ผมใช้ Sales Command Center, Morning Brief และระบบติดตามงานที่สร้างเอง ภาพหน้าจอ ข้อผิดพลาด และบทเรียนที่เอามาเล่าในห้องจึงมาจากของที่ผมใช้จริง',
+    'ผมทำ Prototype ให้ดูเร็วได้ครับ แต่จะไม่รีบพาทีมไปสร้างหน้าจอ ก่อนที่ทุกคนจะตกลงคำง่ายๆ อย่าง Stage เจ้าของดีล และขั้นต่อไป ให้ตรงกันเสียก่อน',
+  ],
+
+  priceLabel: 'คอร์สอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI · In-house 1 วัน',
+  priceAmount: PRICE_1DAY,
+  priceNote: `มากัน 20 คน เฉลี่ยคนละ ${perHead.toLocaleString('th-TH')} บาท ถูกกว่าส่งคนไปเรียนคอร์สข้างนอก 1 ที่นั่ง`,
+  priceIncludes: [
+    'อบรม on-site ที่ออฟฟิศคุณ 1 วันเต็ม (Owner, Manager, Sales Admin และเซลล์ รวม 5–20 คน)',
+    'Sales Stage Dictionary + Required-field list ทำจาก Pipeline จริงของบริษัท',
+    'Daily Report Template + Stale Lead / Follow-up List',
+    'Manager Rules + จังหวะรีวิวรายวันและรายสัปดาห์',
+    'Dashboard Prototype + Data Schema + AI Prompt พร้อม Human Review Checklist',
+    'ติดตามผ่าน LINE 7 วันหลังเรียน · ใบกำกับภาษีนามบริษัท ฝ่ายบัญชีเบิกได้',
+  ],
+  priceTerms: [
+    `เงื่อนไขเดียวที่ผมขอ: ชำระเต็มจำนวนก่อนวันอบรมครับ และขอตัวอย่าง Report ที่ปิดข้อมูลส่วนบุคคลแล้วล่วงหน้า เพื่อให้ทำ Prototype ในห้องได้จริง · ${TERMS.travel.value} ${TERMS.travel.detail}`,
+    'ถ้าไม่มีคนทำต่อหลังจบคอร์ส หรืออยากให้ทีมผม Build ระบบจนใช้งานจริง ทดสอบ และสอนผู้ใช้ให้ มีบริการแยกอีกตัว ถามรายละเอียดได้ในคิวคุยฟรี',
+  ],
+  priceReassure: 'ยังไม่ต้องเชื่อผมครับ ส่งภาพ Report ที่ทีมใช้อยู่มาให้ผมดูก่อน แล้วค่อยตัดสินใจว่าคุ้มไหม',
+
+  faqs: [
+    { q: 'ต้องมี CRM ก่อนถึงจะเรียนได้ไหม', a: 'ไม่ต้องครับ ใช้ Excel หรือ Google Sheets เดิมได้เลย ขอแค่มีข้อมูลตัวอย่างและทีมอธิบายวิธีทำงานปัจจุบันได้ สิ่งที่เราจัดในห้องคือภาษาและกติกา ซึ่งย้ายไปลงระบบไหนทีหลังก็ได้' },
+    { q: 'จบวันแล้วได้ Dashboard ใช้งานจริงเลยไหม', a: 'ได้ Prototype ที่ทดสอบกับคำถามบริหารจริงแล้วครับ ความพร้อมใช้ระดับ production ขึ้นกับคุณภาพข้อมูล สิทธิ์ผู้ใช้ และการเชื่อมระบบ ถ้าอยากได้ของที่เปิดใช้ได้เลย ผมมีบริการที่ทีมผม Build ทดสอบ และสอนผู้ใช้ให้ แยกอีกตัวหนึ่ง' },
+    { q: 'ทีมผมไม่เก่งเทคโนโลยีเลย เรียนไหวไหม', a: 'ไหวครับ ไม่ต้องเขียนโค้ด สั่งงานเป็นภาษาไทยได้ และเราเริ่มจาก Template ที่เตรียมไว้ ทุกขั้นตอนทำตามพร้อมกันทีละคลิก ใครหลุดผมเดินไปนั่งข้างๆ จนตามทัน คนที่พิมพ์ช้าที่สุดในห้องคือ KPI ของผม' },
+    { q: 'ใครควรเข้าห้องบ้าง', a: 'ควรมีเจ้าของหรือหัวหน้าฝ่ายขาย คนที่รวม Report และตัวแทนเซลล์ที่กรอกข้อมูลจริงครับ ถ้ามีแต่คนขอข้อมูลโดยไม่มีคนกรอก เราจะได้ Field ที่ดูดีแต่ไม่มีใครกรอกไหว' },
+    { q: 'AI เข้ามาช่วยตรงไหนบ้าง', a: 'ช่วยจัดรูปแบบข้อมูล ตรวจช่องที่ขาด ย่อประเด็น และร่างรายการติดตาม ตามกติกาที่ทีมกำหนดเองครับ ส่วนงานที่มีผลต่อการประเมินคน การอนุมัติส่วนลด หรือข้อความที่ส่งถึงลูกค้า ต้องมีคนตรวจทุกครั้ง' },
+    { q: 'ข้อมูลบริษัทที่เอามาใช้ในคลาส ปลอดภัยไหม', a: 'ขอเป็นตัวอย่างที่ปิดชื่อลูกค้าและตัวเลขลับแล้วครับ ไม่ต้องส่งฐานข้อมูลเต็ม และในคลาสมีกติกาการใช้ข้อมูลชัดเจน ซึ่งเป็นหนึ่งในของที่ทีมได้กลับไปใช้ต่อด้วย' },
+    { q: 'ทีมมีหลายสาขา ใช้ได้ไหม', a: 'ใช้หลักการเดียวกันได้ครับ แต่ในหนึ่งวันควรเลือกสาขาหรือสายงานต้นแบบก่อน ให้ทำ Dictionary กับ Prototype จบจริงหนึ่งชุด แล้วค่อยขยาย ส่วนการรวมหลายระบบเข้าด้วยกันต้องประเมินแยก' },
+    { q: 'จ่ายเงินยังไง มีเอกสารให้ฝ่ายบัญชีไหม', a: 'ชำระเต็มจำนวนก่อนวันอบรม ออกใบกำกับภาษีในนามบริษัทให้ครบครับ ใบเสนอราคาสำหรับขออนุมัติภายในก็ทำให้ได้ บอกผมในคิวคุยฟรีได้เลย' },
+  ],
+  nudgeFaq: 'คำถามของคุณไม่อยู่ในลิสต์นี้ใช่ไหมครับ? ถามผมตรงๆ ในไลน์ได้เลย ไม่ต้องกรอกฟอร์ม',
+};
+
+
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  ogImage={`${SITE.url}/og-image.jpg`}
+  noindex
+  robots="noindex,follow"
+  hideFloatingLine={true}
+  schema={{ types: ['WebPage'], title, description }}
+>
+  <link
+    slot="head"
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&display=swap"
+  />
+
+  <div id="dealer-ai-page" class="lp-v2">
+    <AdsContentV2 {...content} />
+
+    <section id="dealer-ai-form" class="scroll-mt-20 px-6 py-16 md:py-24">
+      <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">จองคิวคุยฟรี</p>
+          <h2 class="mt-3 font-display text-3xl font-bold leading-tight text-navy md:text-5xl">เล่าเรื่อง Report ของทีมให้ผมฟัง</h2>
+          <p class="mt-5 leading-relaxed text-warm-ink/75">กรอกข้อมูลสั้นๆ ไว้ครับ เดี๋ยวผมทักกลับทาง LINE หรือโทรศัพท์ แล้วคุยกัน 15–20 นาที ว่าปัญหาอยู่ที่นิยาม Stage ช่องข้อมูลที่ขาด หรือจังหวะที่หัวหน้าใช้ข้อมูล</p>
+        </div>
+
+        <form id="dealer-ai-booking-form" class="editorial-card p-6 md:p-9" novalidate>
+          <input name="honeypot-name" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true" />
+          <div class="space-y-5">
+            <label class="field-label">ชื่อของคุณ<input name="name" required autocomplete="name" class="field" aria-label="ชื่อของคุณ" /></label>
+            <label class="field-label">ชื่อบริษัท<input name="business" required autocomplete="organization" class="field" placeholder="เช่น บริษัท ตัวอย่าง จำกัด" aria-label="ชื่อบริษัท" /></label>
+            <fieldset class="field-label">
+              <legend class="mb-2">อยากให้ผมติดต่อกลับแบบไหนครับ</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="intent-option flex cursor-pointer items-start gap-3 rounded-xl border border-[#c9c2b2] bg-ivory p-4">
+                  <input type="radio" name="intent" value="chat" required class="mt-1 accent-coral" aria-label="คุยเบื้องต้นก่อน" />
+                  <span><span class="block font-semibold text-navy">คุยเบื้องต้นก่อน</span><span class="mt-0.5 block text-sm font-normal text-warm-ink/70">อยากสอบถามรายละเอียดก่อน</span></span>
+                </label>
+                <label class="intent-option flex cursor-pointer items-start gap-3 rounded-xl border border-[#c9c2b2] bg-ivory p-4">
+                  <input type="radio" name="intent" value="booking" required class="mt-1 accent-coral" aria-label="ขอนัดจองคิวเลย" />
+                  <span><span class="block font-semibold text-navy">ขอนัดจองคิวเลย</span><span class="mt-0.5 block text-sm font-normal text-warm-ink/70">พร้อมนัดคุยจริงจัง</span></span>
+                </label>
+              </div>
+            </fieldset>
+            <label class="field-label">เบอร์โทรมือถือ<input name="phone" type="tel" required inputmode="tel" autocomplete="tel" pattern={"[0-9\\(\\)\\+\\-\\s]{9,15}"} class="field" placeholder="เช่น 0812345678" aria-label="เบอร์โทรมือถือ" /></label>
+            <div class="grid gap-5 sm:grid-cols-2"> <label class="field-label">ตำแหน่งของคุณ<select name="position" required class="field" aria-label="ตำแหน่งของคุณ"><option value="">เลือกตำแหน่ง</option><option>CEO / เจ้าของกิจการ</option><option>Managing Director</option><option>Sales Director</option><option>Sales Manager</option><option>Marketing Manager</option><option>Operations Manager</option><option>อื่นๆ</option></select></label> <label class="field-label">LINE ID <span class="font-normal text-warm-ink/55">(ถ้ามี)</span><input name="line_id" autocomplete="off" class="field" placeholder="เช่น @yourshop หรือ ไอดีไลน์" aria-label="LINE ID" /></label> </div>
+            <label class="field-label">งบที่พร้อมลงทุน<select name="budget" required class="field" aria-label="งบที่พร้อมลงทุน"><option value="">เลือกช่วงงบ</option><option>ยังไม่ได้ตั้งงบ — อยากเห็นโจทย์ก่อน</option><option>ต่ำกว่า ฿50,000</option><option>฿50,000–฿100,000</option><option>฿100,000–฿300,000</option><option>มากกว่า ฿300,000</option></select></label>
+            <label class="field-label">เรื่องที่อยากแก้ก่อน <span class="font-normal text-warm-ink/55">(ถ้ามี)</span><textarea name="sales_issue" rows="4" class="field resize-y" placeholder="เช่น หัวหน้าต้องไล่ถามความคืบหน้าเองทุกสัปดาห์" aria-label="เรื่องที่อยากแก้ก่อน"></textarea></label>
+            <input id="utm_source" name="utm_source" type="hidden" />
+            <input id="utm_medium" name="utm_medium" type="hidden" />
+            <input id="utm_campaign" name="utm_campaign" type="hidden" />
+            <input id="utm_content" name="utm_content" type="hidden" />
+            <input id="utm_term" name="utm_term" type="hidden" />
+            <input id="fbclid" name="fbclid" type="hidden" />
+            <input id="ttclid" name="ttclid" type="hidden" />
+            <AfterHoursField variant="warm" />
+            <label class="flex cursor-pointer items-start gap-3 pt-1"><input name="consent" type="checkbox" required class="checkbox mt-0.5" aria-label="ยินยอมให้ติดต่อกลับตามนโยบายความเป็นส่วนตัว" /><span class="text-sm leading-relaxed text-warm-ink/75">ยินยอมให้ติดต่อกลับตาม <a href="/privacy" class="font-semibold text-cyan underline">นโยบายความเป็นส่วนตัว</a></span></label>
+            <p id="dealer-ai-error" class="hidden rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error" role="alert" aria-live="polite"></p>
+            <button id="dealer-ai-submit" type="submit" class="btn min-h-11 w-full border-0 bg-coral py-4 text-base text-white hover:bg-[#c43245]" aria-label="ส่งข้อมูล">ส่งข้อมูล</button>
+          </div>
+        </form>
+
+        <div id="dealer-ai-success" class="editorial-card hidden p-8 text-center lg:col-start-2" role="status" aria-live="polite">
+          <DarumaMark class="mx-auto h-auto w-20" />
+          <h2 class="mt-5 font-display text-3xl font-bold text-navy">รับข้อมูลแล้วครับ</h2>
+          <p class="mt-3 leading-relaxed text-warm-ink/75">ผมจะอ่านโจทย์ก่อนครับ แล้วทักกลับทาง LINE หรือโทรศัพท์ คุยกันฟรี 15–20 นาที</p>
+          <p class="mt-5 border-t border-[#c9c2b2] pt-4 text-sm leading-relaxed text-warm-ink/75">ระหว่างรอผมติดต่อกลับ อ่านหน้านี้ 3 นาทีครับ จะได้รู้จักกันก่อนคุยจริง<br /><a href="/start" class="font-semibold text-cyan underline">รู้จักผมใน 3 นาที →</a></p>
+        </div>
+      </div>
+
+      <div class="mx-auto mt-12 max-w-6xl border-t border-[#c9c2b2] pt-10">
+        <p class="text-center text-lg font-semibold text-navy">ยังไม่อยากกรอกฟอร์ม? ทักไลน์มาถามผมสั้นๆ ก่อนก็ได้ครับ</p>
+        <div class="mx-auto mt-5 flex max-w-2xl justify-center">
+          <a href={lineUrl} data-line-dealer target="_blank" rel="noopener" class="line-button flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#06c755] px-4 py-3 text-center font-semibold text-white transition-colors hover:bg-[#05b34c]" aria-label="ทัก LINE คุยเรื่องระบบหลังบ้านฝ่ายขาย">
+            <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" d="M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 8.9 8.2-.2.2-.4.5-.5.8-.2.5-.1.9.4 1 .4.1.8-.1 1.2-.3l3.3-2.1c4.6-.8 8.2-3.7 8.2-7.6Z"/></svg>
+            <span>ทัก LINE ส่ง Report มาให้ผมช่วยดู</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div id="dealer-ai-sticky" class="fixed inset-x-0 bottom-0 z-50 border-t border-[#c9c2b2] bg-ivory/95 p-3 shadow-[0_-3px_12px_rgba(30,27,22,0.10)] backdrop-blur md:hidden" hidden>
+      <a href="#dealer-ai-form" class="flex min-h-11 w-full items-center justify-center rounded-xl bg-coral px-6 py-3.5 font-semibold text-white transition active:scale-[0.98]">{content.ctaLabel}</a>
+    </div>
+  </div>
+
+</BaseLayout>
+
+<style>
+  .field-label { display: grid; gap: .45rem; color: var(--pun-navy); font-size: .95rem; font-weight: 600; }
+  .intent-option { transition: border-color .15s, background .15s, box-shadow .15s; }
+  .intent-option:has(input:checked) { border-color: var(--pun-coral); background: color-mix(in oklch, var(--pun-coral) 7%, transparent); box-shadow: inset 0 0 0 1px var(--pun-coral); }
+  .field { width: 100%; border: 1px solid var(--pun-border); border-radius: .75rem; background: var(--pun-ivory); color: var(--pun-ink); padding: .75rem 1rem; min-height: 44px; }
+  .field:focus { border-color: var(--pun-coral); outline: 2px solid color-mix(in oklch, var(--pun-coral) 25%, transparent); outline-offset: 2px; }
+  .line-button { min-height: 44px; }
+  :global(body:has(#dealer-ai-page) .nav-cta),
+  :global(body:has(#dealer-ai-page) .menu-mobile li.mt-2) { display: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .line-button { transition: none; }
+  }
+</style>
+
+<script>
+  import { foldAfterHours } from '../../scripts/after-hours';
+  import { submitLeadFallback, makeReference } from '../../scripts/lead-fallback';
+
+  type Attribution = Record<string, string | undefined>;
+  type MetaWindow = Window & { fbq?: (...args: unknown[]) => void; ttq?: { track: (...args: unknown[]) => void }; pnAttribution?: Attribution };
+
+  const pageWindow = window as MetaWindow;
+  const form = document.getElementById('dealer-ai-booking-form') as HTMLFormElement | null;
+  const formSection = document.getElementById('dealer-ai-form');
+  const success = document.getElementById('dealer-ai-success');
+  const error = document.getElementById('dealer-ai-error');
+  const submit = document.getElementById('dealer-ai-submit') as HTMLButtonElement | null;
+  const WEBHOOK = 'https://form-hook.punnattapatch.com/webhook/intake-form-v2';
+
+  /**
+   * Reference token, same shape as intake-form.astro's makeReference().
+   * Added 2026-08-01: the ads landing pages never sent one, so `reference`
+   * arrived empty at n8n — which meant the TikTok Events API node posted
+   * event_id: "" on every ads lead and could not dedupe against the browser
+   * pixel. It is also the event_id Meta CAPI will need.
+   */
+  function makeAdsReference(): string {
+    const stamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 12);
+    const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+    return `PN-${stamp}-${rand}`;
+  }
+
+  const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+  // Click IDs are the strongest match signal for Meta/TikTok server-side events.
+  // BaseLayout already stashes them in pnAttribution (14-day TTL); before
+  // 2026-08-01 the ads forms simply never read them back out, so every ads lead
+  // reached the CRM with fbclid/ttclid empty.
+  const CLICK_ID_KEYS = ['fbclid', 'ttclid'];
+
+  function populateAttribution() {
+    const query = new URLSearchParams(window.location.search);
+    const stored = pageWindow.pnAttribution || {};
+    [...UTM_KEYS, ...CLICK_ID_KEYS].forEach((key) => {
+      const input = document.getElementById(key) as HTMLInputElement | null;
+      if (input) input.value = query.get(key) || stored[key] || '';
+    });
+  }
+
+  populateAttribution();
+
+  if (formSection && 'IntersectionObserver' in window) {
+    let fired = false;
+    // threshold 0.4 ใช้ไม่ได้: ฟอร์มสูง ~1,560px บนเดสก์ท็อป และ ~2,073px บนมือถือ
+    // → บนจอ 375x812 เห็นได้มากสุด 0.39 ของบล็อก ไม่มีทางแตะ 0.4 ViewContent เลยไม่เคยยิง
+    // บนมือถือซึ่งเป็นทราฟฟิกเกือบทั้งหมดของแอด · เปลี่ยนเป็นวัดจากตำแหน่งแทนสัดส่วน
+    // (ยิงเมื่อหัวฟอร์มเลื่อนขึ้นมาถึง 65% ของจอ) ไม่ผูกกับความสูงฟอร์มอีก
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting) && !fired) {
+        fired = true;
+        if (typeof pageWindow.fbq === 'function') fbq('track', 'ViewContent', { content_name: 't3_sales_backoffice_form' });
+        observer.disconnect();
+      }
+    }, { threshold: 0, rootMargin: '0px 0px -35% 0px' });
+    observer.observe(formSection);
+  }
+
+  // ทุกลิงก์ LINE บนหน้าต้องยิง Contact — ก่อน 2026-08-31 ผูกไว้กับ data-line-dealer
+  // จุดเดียว ทั้งที่หน้ามีปุ่ม LINE 7 จุด (sticky bar · ท้ายแต่ละ section · ฟุตเตอร์)
+  // ทำให้ Contact ที่เห็นใน Ads Manager เป็นแค่เศษเสี้ยวของคนที่ทัก LINE จริง
+  const lineTargets = new Set<Element>([
+    ...document.querySelectorAll('a[href*="lin.ee"], a[href*="line.me"]'),
+    ...document.querySelectorAll('[data-line-dealer]'),
+  ]);
+  lineTargets.forEach((lineButton) => {
+    lineButton.addEventListener('click', () => {
+      if (typeof pageWindow.fbq === 'function') fbq('track', 'Contact', { content_name: 'line_add_t3_backoffice' });
+      if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('Contact', { content_name: 'line_add_t3_backoffice' });
+    });
+  });
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    if ((new FormData(form).get('honeypot-name') as string)?.trim()) return;
+
+    const phoneRaw = String(new FormData(form).get('phone') || '').replace(/[\s()\-]/g, '');
+    if (!/^(?:\+?66|0)\d{8,9}$/.test(phoneRaw)) {
+      if (error) { error.textContent = 'กรุณากรอกเบอร์โทรมือถือจริง เช่น 0812345678 ครับ'; error.classList.remove('hidden'); }
+      (form.querySelector('[name="phone"]') as HTMLInputElement | null)?.focus();
+      return;
+    }
+
+    const payload = Object.fromEntries(new FormData(form).entries());
+    const intentLabel = payload.intent === 'booking' ? 'ขอนัดจองคิว' : 'คุยเบื้องต้นก่อน';
+    Object.assign(payload, {
+      phone: phoneRaw,
+      lead_temp: payload.intent === 'booking' ? 'hot' : 'warm',
+      // Compatibility aliases so the shared intake-form-v2 flow + submit_lead RPC
+      // map these into CRM columns (it reads company/tier/problems/comment, not the raw dealer field names).
+      company: payload.business || '',                        // -> company_name
+      // LP นี้เจาะ vertical เดียว — industry รู้จากหน้าเลย ไม่ต้องถามเพิ่ม
+      // (ห้าม map จาก business เพราะช่องนั้นคือ "ชื่อบริษัท" จะซ้ำกับ company_name)
+      industry: '',                                            // หน้ากลาง ไม่ผูกวงการ -> business_type ว่างไว้ให้ทีมกรอกตอน qualify
+      tier: payload.intent === 'booking' ? 'HOT' : 'WARM',    // -> temperature (hot/warm)
+      problems: (payload.sales_issue as string) || '',        // -> pain_points
+      comment: [intentLabel, payload.sales_issue].filter(Boolean).join(' — '), // -> crm_notes + Telegram alert
+      source: 'ads-sales-backoffice-team',
+      source_page: 'ads/sales-backoffice-team',
+      booking_type: 'sales-backoffice-team',
+      // Flatten Body1 reads `submittedAt` (camelCase) — the snake_case key used
+      // here until 2026-08-01 never matched, so n8n silently fell back to its
+      // own execution time.
+      submittedAt: new Date().toISOString(),
+      // Flatten Body1 sources reference/user_agent/referrer from `_meta` only.
+      _meta: {
+        reference: makeAdsReference(),
+        page: window.location.pathname,
+        user_agent: navigator.userAgent,
+        referrer: document.referrer || '',
+      },
+    });
+    // ⏰ นอกเวลาทำการ — พ่วงเข้า comment ด้วย เพราะ n8n Flatten Body1 ยังไม่รู้จัก key นี้
+    foldAfterHours(payload as Record<string, unknown>);
+
+    if (submit) { submit.disabled = true; submit.textContent = 'กำลังส่ง...'; }
+    error?.classList.add('hidden');
+
+    try {
+      const response = await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true,
+      });
+      if (!response.ok) throw new Error('submission failed');
+      if (typeof pageWindow.fbq === 'function') fbq('track', 'Lead', { content_name: 't3_sales_backoffice_booking', lead_temp: payload.lead_temp });
+      if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('SubmitForm', { content_name: 't3_sales_backoffice_booking', lead_temp: payload.lead_temp });
+      form.classList.add('hidden');
+      success?.classList.remove('hidden');
+      success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch {
+      // form-hook (มินิ) ไม่ตอบ → ชั้น 2: เขียน Supabase ตรง — การ์ดแจ้งเตือนมาจาก DB trigger → guardian
+      if (await submitLeadFallback(payload as Record<string, unknown>, makeReference())) {
+        if (typeof pageWindow.fbq === 'function') fbq('track', 'Lead', { content_name: 't3_sales_backoffice_booking', lead_temp: payload.lead_temp });
+        if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('SubmitForm', { content_name: 't3_sales_backoffice_booking', lead_temp: payload.lead_temp });
+        form.classList.add('hidden');
+        success?.classList.remove('hidden');
+        success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      if (error) { error.textContent = 'ระบบรับข้อมูลขัดข้องชั่วคราว — ข้อมูลยังไม่ถึงผม กรุณาลองใหม่ หรือแอด LINE เพื่อส่งโจทย์ให้ผม'; error.classList.remove('hidden'); }
+      if (submit) { submit.disabled = false; submit.textContent = 'ส่งข้อมูล'; }
+    }
+  });
+
+</script>
+
+<style>
+  /* เผื่อที่ให้ปุ่มค้างล่างจอ ไม่ให้ทับปุ่มส่งฟอร์ม/ฟุตเตอร์บนมือถือ */
+  @media (max-width: 767px) { :global(body) { padding-bottom: 5.5rem; } }
+</style>
+
+<script is:inline data-sticky-cta>
+  (() => {
+    const bar = document.getElementById('dealer-ai-sticky');
+    const form = document.getElementById('dealer-ai-form');
+    if (!bar || !form || !('IntersectionObserver' in window)) return;
+    let formVisible = false;
+    const sync = () => { bar.hidden = formVisible || window.scrollY < 600; };
+    new IntersectionObserver(([entry]) => { formVisible = entry.isIntersecting; sync(); }, { threshold: 0 }).observe(form);
+    window.addEventListener('scroll', sync, { passive: true });
+    sync();
+  })();
+</script>
