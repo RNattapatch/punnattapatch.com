@@ -63,6 +63,7 @@ export interface NewsroomJob {
   batch_id?: string | null;
   lane?: string | null;
   result?: unknown;
+  attempts?: number;
 }
 
 export interface ItemFilter {
