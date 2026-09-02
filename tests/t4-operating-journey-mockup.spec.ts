@@ -77,6 +77,13 @@ test('T4 hero identifies the in-house course and one-day job at a glance', async
     assert.match(headingText, /Advance AI\s*&\s*Business Automation/i);
     assert.match(headingText, /ทีมในองค์กร/i);
 
+    const productDescription = hero.locator('[data-product-description]');
+    const productDescriptionText = await productDescription.innerText();
+    assert.match(productDescriptionText, /AI Agent/i);
+    assert.match(productDescriptionText, /ลดงาน/i);
+    assert.match(productDescriptionText, /เพิ่มยอด/i);
+    assert.match(productDescriptionText, /องค์กร/i);
+
     const glanceText = await hero.locator('[data-hero-glance]').innerText();
     assert.match(glanceText, /In-house/i);
     assert.match(glanceText, /1 วัน/i);
@@ -85,8 +92,10 @@ test('T4 hero identifies the in-house course and one-day job at a glance', async
     assert.match(glanceText, /หยุด|ปรับ|ทำระบบต่อ/i);
 
     const headingBox = await heading.boundingBox();
+    const productDescriptionBox = await productDescription.boundingBox();
     const glanceBox = await hero.locator('[data-hero-glance]').boundingBox();
     assert.ok(headingBox && headingBox.y + headingBox.height <= viewport.height, `${viewport.width}px must show the course name in the first screen`);
+    assert.ok(productDescriptionBox && productDescriptionBox.y + productDescriptionBox.height <= viewport.height, `${viewport.width}px must show the product description in the first screen`);
     assert.ok(glanceBox && glanceBox.y + glanceBox.height <= viewport.height, `${viewport.width}px must show the course facts in the first screen`);
     await page.close();
   }
