@@ -25,8 +25,11 @@ import AppNav from '../../components/app/AppNav.astro';
           <a role="tab" class="tab" data-tab="library">🗂 คลัง</a>
           <a role="tab" class="tab" data-tab="submit">⏳ คิว <span class="badge badge-warning badge-sm ml-1 hidden" id="nr-queue-badge">0</span></a>
         </div>
-        <button id="it-discover-open" class="btn ml-auto text-white tap-44" style="background-color:var(--color-brand-coral);">🔎 สืบคนใหม่</button>
+        <button id="it-scout-all" class="btn btn-outline ml-auto tap-44" title="ยิงทุกแฟ้มที่มี handle เข้าคิว — มินิทำทีละงาน">🕵️ สืบทั้งหมด</button>
+        <button id="it-discover-open" class="btn text-white tap-44" style="background-color:var(--color-brand-coral);">🔎 สืบคนใหม่</button>
       </div>
+      <!-- ความคืบหน้าของ batch กลุ่ม/ทั้งหมด — โผล่เองแม้เปิดหน้าใหม่ ตราบใดที่ยังมีงานวิ่ง -->
+      <div id="it-group-progress" class="mb-3 hidden rounded-2xl border border-base-300 bg-base-200 px-4 py-2.5 text-sm"></div>
 
       <!-- ============ เป้าหมาย ============ -->
       <section id="nr-pane-targets">
@@ -48,6 +51,12 @@ import AppNav from '../../components/app/AppNav.astro';
                 <button class="btn btn-xs tap-44" data-role="fired">⚠️ trigger ดัง</button>
                 <button class="btn btn-xs tap-44" data-role="due">⏰ เลยกำหนด</button>
               </div>
+            </div>
+            <div id="it-selbar" class="hidden items-center gap-2 border-b border-base-300 bg-base-200 px-3 py-2 text-sm">
+              <span class="tabular-nums" id="it-selcount">เลือก 0</span>
+              <button class="btn btn-xs text-white tap-44" style="background-color:var(--color-brand-navy);" id="it-scout-sel">🕵️ สืบที่เลือก</button>
+              <button class="btn btn-ghost btn-xs tap-44" id="it-sel-visible">เลือกที่เห็นทั้งหมด</button>
+              <button class="btn btn-ghost btn-xs tap-44" id="it-sel-clear">ล้าง</button>
             </div>
             <div id="it-list" class="max-h-[70vh] overflow-y-auto"></div>
           </aside>
@@ -167,7 +176,8 @@ import AppNav from '../../components/app/AppNav.astro';
     <div class="toast toast-end z-50"><div id="nr-toast" class="alert hidden text-sm shadow-lg"></div></div>
   </div>
 
-  <style>
+  <!-- is:global: element เกือบทั้งหมดในหน้านี้ถูก JS ฉีดทีหลัง (ไม่มี data-astro-cid) — style แบบ scoped จะไม่ครอบ · class ทุกตัวมี prefix nr-/it-/th- อยู่แล้ว -->
+  <style is:global>
     .nr-report { line-height: 1.75; }
     .nr-report h1, .nr-report h2, .nr-report h3 { font-weight: 700; margin: 1.25em 0 0.5em; line-height: 1.35; }
     .nr-report h1 { font-size: 1.35rem; } .nr-report h2 { font-size: 1.15rem; } .nr-report h3 { font-size: 1rem; }
@@ -190,7 +200,7 @@ import AppNav from '../../components/app/AppNav.astro';
   <script>
     import { listItems, getItem, signedUrl, listJobs, createJob, retryJob, deleteItem, deleteJob, PLATFORMS, PLATFORM_LABEL as NR_PLATFORM, KIND_LABEL, type NewsroomItem, type NewsroomJob } from '../../scripts/newsroom/data';
     import {
-      listTargets, updateTarget, createTarget, deleteTarget, listItemsForTarget, recentItems, lanesFor, scoutTarget, listBatch, subscribeBatch,
+      listTargets, updateTarget, createTarget, deleteTarget, listItemsForTarget, recentItems, lanesFor, scoutTarget, scoutTargets, activeBatches, listBatch, subscribeBatch, avatarUrls,
       requestDiscovery, subscribeJob, daysSince, daysUntil, firedCount,
       THREAT_LABEL, THREAT_ORDER, THREAT_COLOR, ROLE_LABEL, PLATFORM_LABEL, type IntelTarget, type Handle, type LanePick, type DiscoveryResult, type Threat, type Role,
     } from '../../scripts/intel/data';
@@ -206,6 +216,9 @@ import AppNav from '../../components/app/AppNav.astro';
     let jobTimer = 0;
     let openedItem: NewsroomItem | null = null;
     let recent: Map<string, number> = new Map();
+    let avatars: Map<string, string> = new Map();
+    const selected = new Set<string>();
+    let unsubGroup: (() => void) | null = null;
     let unsubBatch: (() => void) | null = null;
     let unsubDiscover: (() => void) | null = null;
     let discovered: DiscoveryResult | null = null;
@@ -264,6 +277,14 @@ import AppNav from '../../components/app/AppNav.astro';
     const seenTxt = (t: IntelTarget) => { const d = daysSince(t.last_scouted_at); return d === null ? 'ยังไม่เคยสืบ' : d === 0 ? 'สืบล่าสุด วันนี้' : `สืบล่าสุด ${d} วันก่อน`; };
     const isDue = (t: IntelTarget) => { const d = daysUntil(t.next_scout_at); return d !== null && d < 0; };
     const nextTxt = (t: IntelTarget) => { const d = daysUntil(t.next_scout_at); if (d === null) return ''; return d < 0 ? `<span class="text-error">เลยกำหนด ${-d} วัน</span>` : d === 0 ? 'ครบกำหนดวันนี้' : `ถัดไปอีก ${d} วัน`; };
+    // รูปโปรไฟล์ — ไม่มีก็เป็นตัวย่อบนพื้นสีระดับภัย (glance ได้เหมือนกัน)
+    function avatar(t: IntelTarget, size: number) {
+      const url = t.avatar_path ? avatars.get(t.avatar_path) : null;
+      const cls = `shrink-0 rounded-full object-cover`;
+      if (url) return `<img src="${esc(url)}" alt="" width="${size}" height="${size}" loading="lazy" class="${cls} border border-base-300" style="width:${size}px;height:${size}px" />`;
+      const initial = [...t.name.replace(/^[^\p{L}\p{N}]+/u, '')][0] ?? '?';
+      return `<span class="${cls} grid place-items-center font-display font-bold text-white th-${t.threat}" style="width:${size}px;height:${size}px;font-size:${Math.round(size * 0.42)}px" aria-hidden="true">${esc(initial)}</span>`;
+    }
     const roleIcons = (t: IntelTarget) => (t.role ?? []).map((r) => (ROLE_LABEL[r as Role] ?? r).split(' ')[0]).join('');
 
     function filtered(): IntelTarget[] {
@@ -288,8 +309,10 @@ import AppNav from '../../components/app/AppNav.astro';
         list.insertAdjacentHTML('beforeend', `<div class="flex items-center gap-2 px-3 pb-1 pt-3 text-xs font-bold uppercase tracking-wide opacity-60"><i class="inline-block size-2.5 rounded-sm th-${th}"></i>${groupLabel[th]} <span class="tabular-nums">(${grp.length})</span></div>`);
         for (const t of grp) {
           const fired = firedCount(t);
-          list.insertAdjacentHTML('beforeend', `<div class="it-row cursor-pointer border-t border-base-300 px-3 py-2 hover:bg-base-200 ${t.id === cur ? 'bg-base-200' : ''}" data-id="${esc(t.id)}" tabindex="0" role="button">
+          list.insertAdjacentHTML('beforeend', `<div class="it-row cursor-pointer border-t border-base-300 px-3 py-2 hover:bg-base-200 ${t.id === cur ? 'bg-base-200' : ''}" data-id="${esc(t.id)}" tabindex="0" role="button" style="grid-template-columns:4px 18px 32px 1fr auto">
             <span class="it-stripe th-${th}"></span>
+            <input type="checkbox" class="checkbox checkbox-xs" data-sel="${esc(t.id)}" ${selected.has(t.id) ? 'checked' : ''} aria-label="เลือก ${esc(t.name)}" ${lanesFor(t).length ? '' : 'disabled title="ไม่มี handle ให้สืบ"'} />
+            ${avatar(t, 32)}
             <div class="min-w-0">
               <div class="flex flex-wrap items-center gap-1.5 font-semibold leading-snug">${esc(t.name)}${fired ? `<span class="badge badge-warning badge-xs">⚠️ ${fired}</span>` : ''}${recent.get(t.id) ? '<span class="badge badge-info badge-xs">ใหม่</span>' : ''}</div>
               <div class="flex flex-wrap gap-x-2 text-xs opacity-60"><span>${roleIcons(t)}</span><span class="tabular-nums">${seenTxt(t)}</span><span class="tabular-nums">${nextTxt(t)}</span></div>
@@ -300,6 +323,54 @@ import AppNav from '../../components/app/AppNav.astro';
       }
       if (!rows.length) list.innerHTML = '<p class="p-6 text-center text-sm opacity-60">ไม่พบเป้าหมาย — ลอง "สืบคนใหม่"</p>';
       $('it-count').textContent = String(targets.length);
+      renderSelbar();
+    }
+    function renderSelbar() {
+      const n = selected.size;
+      $('it-selbar').classList.toggle('hidden', n === 0);
+      $('it-selbar').classList.toggle('flex', n > 0);
+      $('it-selcount').textContent = `เลือก ${n}`;
+      ($('it-scout-sel') as HTMLButtonElement).textContent = `🕵️ สืบที่เลือก (${n})`;
+    }
+
+    // ---------- สืบกลุ่ม / ทั้งหมด ----------
+    async function scoutGroup(list: IntelTarget[], label: string) {
+      const scoutable = list.filter((t) => lanesFor(t).length);
+      const jobs = scoutable.reduce((n, t) => n + lanesFor(t).length, 0);
+      if (!scoutable.length) return toast('ไม่มีแฟ้มไหนมี handle ให้สืบ — กด "แก้ไข" เติมก่อน', 'error');
+      const mins = jobs * 3;
+      if (!confirm(`${label}: ${scoutable.length} แฟ้ม · ${jobs} งาน\nมินิทำทีละงาน ประมาณ ${Math.round(mins / 60) || 1}–${Math.round(mins * 1.7 / 60) || 2} ชั่วโมง · ปิดหน้าได้ เดี๋ยว Telegram เด้งทีละงาน${list.length > scoutable.length ? `\n(ข้าม ${list.length - scoutable.length} แฟ้มที่ไม่มี handle)` : ''}\n\nยิงเข้าคิวเลย?`)) return;
+      try {
+        const res = await scoutTargets(scoutable);
+        selected.clear(); renderList();
+        toast(`เข้าคิวแล้ว ${res.jobs} งาน`);
+        watchGroup(res.batch_id);
+        void loadJobs().catch(() => {});
+      } catch (e) { oops(e); }
+    }
+    function watchGroup(batchId: string) {
+      const box = $('it-group-progress');
+      const draw = (rows: NewsroomJob[]) => {
+        const done = rows.filter((j) => ['done', 'failed', 'preflight_failed'].includes(j.status)).length;
+        const failed = rows.filter((j) => ['failed', 'preflight_failed'].includes(j.status)).length;
+        const byTarget = new Map<string, NewsroomJob[]>();
+        for (const j of rows) byTarget.set(j.target_id ?? '?', [...(byTarget.get(j.target_id ?? '?') ?? []), j]);
+        const now = rows.find((j) => j.status === 'running' || j.status === 'submitted');
+        const nowName = now ? (targets.find((t) => t.id === now.target_id)?.name ?? now.target) : null;
+        box.classList.remove('hidden');
+        box.innerHTML = `<div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <b>${done === rows.length ? '✅ สืบกลุ่มเสร็จ' : '🕵️ กำลังสืบกลุ่ม'}</b>
+          <span class="tabular-nums">${done}/${rows.length} งาน · ${byTarget.size} แฟ้ม${failed ? ` · ❌ ${failed}` : ''}</span>
+          ${nowName ? `<span class="opacity-70">ตอนนี้: ${esc(nowName)} · ${esc(now!.lane || now!.kind)}</span>` : ''}
+          <progress class="progress w-40" value="${done}" max="${rows.length || 1}"></progress>
+          ${done === rows.length ? '<button class="btn btn-ghost btn-xs" id="it-group-close">ปิด</button>' : '<span class="text-xs opacity-60">ปิดหน้าได้ · Realtime</span>'}
+        </div>`;
+        document.getElementById('it-group-close')?.addEventListener('click', () => { box.classList.add('hidden'); unsubGroup?.(); unsubGroup = null; });
+        if (done === rows.length && rows.length) { unsubGroup?.(); unsubGroup = null; void reloadTargetsKeepCur(); }
+      };
+      unsubGroup?.();
+      unsubGroup = subscribeBatch(batchId, draw);
+      void listBatch(batchId).then(draw).catch(oops);
     }
 
     function renderSignals() {
@@ -329,8 +400,13 @@ import AppNav from '../../components/app/AppNav.astro';
           <span class="it-stripe th-${t.threat}" style="border-radius:3px"></span>
           <div class="min-w-0">
             <button class="btn btn-ghost btn-xs mb-1 md:hidden" id="it-back">← รายชื่อ</button>
-            <div class="text-xs font-semibold uppercase tracking-wide opacity-60">แฟ้ม · ${(t.role ?? []).map((r) => esc(ROLE_LABEL[r as Role] ?? r)).join(' · ')}</div>
-            <h2 class="mt-1 font-display text-2xl font-bold leading-tight text-balance">${esc(t.name)}</h2>
+            <div class="flex items-start gap-3">
+              ${avatar(t, 64)}
+              <div class="min-w-0">
+                <div class="text-xs font-semibold uppercase tracking-wide opacity-60">แฟ้ม · ${(t.role ?? []).map((r) => esc(ROLE_LABEL[r as Role] ?? r)).join(' · ')}</div>
+                <h2 class="mt-1 font-display text-2xl font-bold leading-tight text-balance">${esc(t.name)}</h2>
+              </div>
+            </div>
             ${t.aliases?.length ? `<div class="text-sm opacity-60">${esc(t.aliases.join(' · '))}</div>` : ''}
             <div class="mt-2 flex flex-wrap gap-1.5"><span class="badge badge-sm border-0 text-white" style="background-color:${THREAT_COLOR[t.threat]}">${esc(THREAT_LABEL[t.threat])}</span><span class="badge badge-ghost badge-sm">สืบซ้ำทุก ${t.cadence_days} วัน</span>${t.section !== 'competitor' ? `<span class="badge badge-ghost badge-sm">${t.section}</span>` : ''}</div>
             <div class="mt-1 text-xs opacity-60 tabular-nums">${seenTxt(t)} · ${nextTxt(t) || 'ยังไม่ตั้งรอบ'}</div>
@@ -413,6 +489,7 @@ import AppNav from '../../components/app/AppNav.astro';
     async function reloadTargetsKeepCur() {
       const [t, r] = await Promise.all([listTargets(), recentItems(7)]);
       targets = t; recent = new Map(); for (const x of r) if (x.target_id) recent.set(x.target_id, (recent.get(x.target_id) ?? 0) + 1);
+      avatars = await avatarUrls(targets).catch(() => avatars);
       renderList(); renderSignals(); await renderFile();
     }
 
@@ -569,7 +646,18 @@ import AppNav from '../../components/app/AppNav.astro';
       $('nr-refresh').addEventListener('click', () => void reloadTargetsKeepCur().then(() => toast('รีเฟรชแล้ว')).catch(oops));
       $('it-search').addEventListener('input', (e) => { q = (e.target as HTMLInputElement).value.trim(); renderList(); });
       $('it-rolechips').addEventListener('click', (e) => { const el = (e.target as HTMLElement).closest('[data-role]') as HTMLElement | null; if (!el) return; roleFilter = el.dataset.role!; $('it-rolechips').querySelectorAll('button').forEach((b) => b.classList.toggle('btn-active', b === el)); renderList(); });
+      $('it-list').addEventListener('change', (e) => {
+        const c = e.target as HTMLInputElement;
+        if (!c.dataset.sel) return;
+        c.checked ? selected.add(c.dataset.sel) : selected.delete(c.dataset.sel);
+        renderSelbar();
+      });
+      $('it-scout-sel').addEventListener('click', () => void scoutGroup(targets.filter((t) => selected.has(t.id)), 'สืบที่เลือก'));
+      $('it-sel-visible').addEventListener('click', () => { for (const t of filtered()) if (lanesFor(t).length) selected.add(t.id); renderList(); });
+      $('it-sel-clear').addEventListener('click', () => { selected.clear(); renderList(); });
+      $('it-scout-all').addEventListener('click', () => void scoutGroup(targets, 'สืบทั้งหมด'));
       $('it-list').addEventListener('click', (e) => {
+        if ((e.target as HTMLElement).closest('[data-sel]')) return; // คลิก checkbox ไม่ต้องเปิดแฟ้ม
         const s = (e.target as HTMLElement).closest('[data-scout]') as HTMLElement | null;
         if (s) { cur = s.dataset.scout!; renderList(); void renderFile().then(() => { const t = targets.find((x) => x.id === cur)!; openRunner(t, lanesFor(t)); $('it-runner').scrollIntoView({ block: 'center', behavior: 'smooth' }); }); $('it-wrap').classList.add('showfile'); return; }
         const r = (e.target as HTMLElement).closest('[data-id]') as HTMLElement | null;
@@ -639,6 +727,7 @@ import AppNav from '../../components/app/AppNav.astro';
       try {
         const [t, r] = await Promise.all([listTargets(), recentItems(7)]);
         targets = t; for (const x of r) if (x.target_id) recent.set(x.target_id, (recent.get(x.target_id) ?? 0) + 1);
+        avatars = await avatarUrls(targets).catch(() => new Map());
       } catch (e) { oops(e); }
       renderChips(); renderList(); renderSignals();
       const deepTarget = new URLSearchParams(location.search).get('target');
@@ -648,6 +737,8 @@ import AppNav from '../../components/app/AppNav.astro';
       void loadJobs().catch(() => {});
       const deepItem = new URLSearchParams(location.search).get('item');
       if (deepItem) void openItem(deepItem);
+      // batch ที่ยังวิ่ง (จากเครื่องอื่น/ก่อนรีเฟรช) → โชว์ความคืบหน้าต่อทันที
+      void activeBatches().then((m) => { const [first] = [...m.keys()]; if (first) watchGroup(first); }).catch(() => {});
     }
     // dev เท่านั้น: ฉีดแถวจริงเข้ามาดู render โดยไม่ต้องมี session (Vite ตัดทิ้งใน production build)
     if (import.meta.env.DEV) (window as any).__intelInject = (rows: IntelTarget[]) => { booted || wire(); booted = true; targets = rows; renderChips(); renderList(); renderSignals(); cur = rows[0]?.id ?? null; void renderFile(); };

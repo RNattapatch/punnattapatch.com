@@ -53,6 +53,8 @@ export interface IntelTarget {
   cadence_days: number;
   last_scouted_at: string | null;
   next_scout_at: string | null;
+  avatar_path?: string | null;
+  avatar_source?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -145,6 +147,18 @@ export function slugify(name: string, handles: Handle[]): string {
   return `th-${x.toString(16)}${Date.now().toString(36).slice(-3)}`;
 }
 
+// ---------- รูปโปรไฟล์ (มินิหามาเก็บใน bucket · avatar.py) ----------
+
+// bucket เป็น private → ขอ signed URL เป็นชุดเดียวทั้ง roster (ไม่ยิงทีละใบ)
+export async function avatarUrls(targets: IntelTarget[]): Promise<Map<string, string>> {
+  const paths = [...new Set(targets.map((t) => t.avatar_path).filter((p): p is string => !!p))];
+  const out = new Map<string, string>();
+  if (!paths.length) return out;
+  const { data } = await supabase.storage.from('newsroom').createSignedUrls(paths, 3600);
+  for (const row of data ?? []) if (row.signedUrl && row.path) out.set(row.path, row.signedUrl);
+  return out;
+}
+
 // ---------- รายงานที่เกาะแฟ้ม ----------
 
 export async function listItemsForTarget(targetId: string): Promise<NewsroomItem[]> {
@@ -194,6 +208,34 @@ export async function scoutTarget(t: IntelTarget, picks: LanePick[]): Promise<st
   const { error } = await supabase.from('newsroom_jobs').insert(rows);
   fail(error);
   return batch_id;
+}
+
+// สืบหลายแฟ้มพร้อมกัน (ที่เลือก / ทั้งหมด) — batch เดียวทั้งกลุ่ม · มินิทำทีละงานตามลำดับที่ใส่
+export async function scoutTargets(list: IntelTarget[]): Promise<{ batch_id: string; jobs: number; skipped: string[] }> {
+  const batch_id = crypto.randomUUID();
+  const rows: Record<string, unknown>[] = [];
+  const skipped: string[] = [];
+  for (const t of list) {
+    const picks = lanesFor(t).filter((p) => p.platform !== 'instagram' || true);
+    if (!picks.length) { skipped.push(t.name); continue; }
+    for (const p of picks) rows.push({ kind: p.lane, target: p.ref, note: `intel:${t.id} สืบกลุ่ม — ${t.name}`, target_id: t.id, batch_id, lane: p.lane });
+  }
+  if (rows.length) {
+    const { error } = await supabase.from('newsroom_jobs').insert(rows);
+    fail(error);
+  }
+  return { batch_id, jobs: rows.length, skipped };
+}
+
+// batch ที่ยังวิ่งอยู่ (เปิดหน้าใหม่แล้วยังเห็นความคืบหน้า — ไม่ต้องจำไว้ในเบราว์เซอร์)
+export async function activeBatches(): Promise<Map<string, NewsroomJob[]>> {
+  const { data, error } = await supabase.from('newsroom_jobs').select('*').not('batch_id', 'is', null)
+    .gte('created_at', new Date(Date.now() - 6 * 3600000).toISOString()).order('created_at');
+  fail(error);
+  const out = new Map<string, NewsroomJob[]>();
+  for (const j of (data ?? []) as NewsroomJob[]) { const k = j.batch_id!; out.set(k, [...(out.get(k) ?? []), j]); }
+  for (const [k, jobs] of out) if (!jobs.some((j) => ['queued', 'submitted', 'running'].includes(j.status))) out.delete(k);
+  return out;
 }
 
 export async function listBatch(batchId: string): Promise<NewsroomJob[]> {
