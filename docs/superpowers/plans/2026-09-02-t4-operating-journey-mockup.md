@@ -33,7 +33,7 @@
 - Consumes: preview server URL from `PLAYWRIGHT_BASE_URL` or `http://127.0.0.1:4328`.
 - Produces: assertions for `[data-mockup="t4-operating-journey"]`, `[data-section]`, `[data-core-artifact]`, `[data-bonus-card]`, `[data-journey-stage]`, and real-photo `<img>` elements.
 
-- [ ] **Step 1: Write the failing structural test**
+- [x] **Step 1: Write the failing structural test**
 
 ```ts
 test('T4 mockup tells the operating journey in the approved order', async ({ page }) => {
@@ -49,11 +49,11 @@ test('T4 mockup tells the operating journey in the approved order', async ({ pag
 });
 ```
 
-- [ ] **Step 2: Add safety and responsive assertions**
+- [x] **Step 2: Add safety and responsive assertions**
 
 Assert that every content image resolves from `/lp/inhouse/`, declares width/height and has non-empty alt text; no anchors under Bonus; no `countdown`, `ตลอดชีพ`, `มูลค่า ฿`, or guarantee language; one H1; heading levels do not skip; and each required viewport has `scrollWidth <= clientWidth`.
 
-- [ ] **Step 3: Run the test and verify RED**
+- [x] **Step 3: Run the test and verify RED**
 
 Run: `pnpm exec playwright test tests/t4-operating-journey-mockup.spec.ts --reporter=line`
 
@@ -69,23 +69,23 @@ Expected: FAIL because `/previews/t4-operating-journey-mockup.html` does not exi
 - Consumes: `/lp/inhouse/office-session.jpg`, `/lp/inhouse/hands-on.jpg`, `/lp/inhouse/class-full.jpg`, `/lp/inhouse/hero-pointing.jpg`; production T4 copy and Bonus titles from `src/data/product-details/t4.ts`.
 - Produces: a standalone review page at `/previews/t4-operating-journey-mockup.html`; its displayed price is fetched from `/catalog.json` using the existing T4 Catalog key.
 
-- [ ] **Step 1: Build the Hero and Offer Stack**
+- [x] **Step 1: Build the Hero and Offer Stack**
 
 Create semantic `header`, `main`, `section`, and `article` markup. The Hero uses the real `office-session.jpg`, a three-step summary, and existing T4 CTA language. The immediately following Offer Stack fetches the current T4 price from `/catalog.json`, then presents four Core artifacts, five Bonus cards, and no Bonus links. If Catalog loading fails, show `สอบถามราคาตามขอบเขต` instead of a stale number.
 
-- [ ] **Step 2: Build Proof, Diagnosis, and Curriculum Journey**
+- [x] **Step 2: Build Proof, Diagnosis, and Curriculum Journey**
 
 Use real workshop photos for the Proof editorial spread. Use a navy/sand diagnosis band. Build the Curriculum as an ordered list with exact `data-journey-stage` values and separate `เข้าใจอะไร`, `ลงมือทำ`, and `ได้อะไรกลับไป` regions.
 
-- [ ] **Step 3: Build Decision closure**
+- [x] **Step 3: Build Decision closure**
 
 Add the four-item Decision Pack, fit/not-fit split, investment/terms panel, and final Fit Gate CTA. Keep Core artifacts semantically distinct from Bonus descriptions.
 
-- [ ] **Step 4: Add responsive and accessible behavior**
+- [x] **Step 4: Add responsive and accessible behavior**
 
 Use a 4/8px spacing rhythm, minimum 44px controls, responsive grid collapse, visible focus rings, reserved image dimensions, `prefers-reduced-motion`, and no horizontal carousel or scroll-jacking.
 
-- [ ] **Step 5: Run the focused test and verify GREEN**
+- [x] **Step 5: Run the focused test and verify GREEN**
 
 Run: `pnpm exec playwright test tests/t4-operating-journey-mockup.spec.ts --reporter=line`
 
@@ -103,7 +103,7 @@ Expected: all focused tests pass.
 - Consumes: the built static mockup and focused Playwright contract.
 - Produces: desktop/mobile evidence for Pun's approve-or-revise checkpoint.
 
-- [ ] **Step 1: Run repository build and gates**
+- [x] **Step 1: Run repository build and gates**
 
 Run:
 
@@ -116,19 +116,19 @@ git diff --check
 
 Expected: exit 0 for every command.
 
-- [ ] **Step 2: Capture the review set**
+- [x] **Step 2: Capture the review set**
 
 Start `pnpm preview --host 127.0.0.1 --port 4328`. Use Playwright to capture full-page desktop 1440×1000, full-page mobile 390×844, and the desktop Offer Stack. Wait for fonts and every image before capture.
 
-- [ ] **Step 3: Inspect and refine**
+- [x] **Step 3: Inspect and refine**
 
 Inspect all three images. Correct clipped text, weak section separation, hidden content, fixed CTA overlap, or unreadable mobile type. Re-run the focused test after every HTML correction.
 
-- [ ] **Step 4: Final verification**
+- [x] **Step 4: Final verification**
 
 Run the focused Playwright test, build, product/price contracts, and `git diff --check` fresh. Confirm T1–T3 production source files have no diff.
 
-- [ ] **Step 5: Commit the mockup checkpoint**
+- [x] **Step 5: Commit the mockup checkpoint**
 
 ```bash
 git add docs/superpowers/plans/2026-09-02-t4-operating-journey-mockup.md public/previews/t4-operating-journey-mockup.html tests/t4-operating-journey-mockup.spec.ts

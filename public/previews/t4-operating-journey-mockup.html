@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>T4 Operating Journey — HTML Mockup</title>
+  <meta name="description" content="T4 Operating Journey HTML mockup สำหรับตรวจทิศทางก่อนนำไปใช้จริง">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=Trirong:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/dist/full.css" rel="stylesheet" type="text/css">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    :root {
+      --navy: #072b4e;
+      --navy-deep: #00162f;
+      --coral: #dd4155;
+      --ivory: #f4f1ea;
+      --surface: #fffdf8;
+      --sand: #e8e0d2;
+      --mist: #eaf2f5;
+      --ink: #1e1b16;
+      --muted: #686158;
+      --line: rgba(7, 43, 78, .16);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--ivory);
+      color: var(--ink);
+      font-family: "Sarabun", sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2, .display { font-family: "Trirong", serif; }
+    img { display: block; max-width: 100%; }
+    a { text-underline-offset: 4px; }
+    a:focus-visible { outline: 3px solid #65d7f2; outline-offset: 4px; }
+
+    .shell { width: min(1180px, calc(100% - 40px)); margin-inline: auto; }
+    .eyebrow { margin-bottom: 14px; color: var(--coral); font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+    .section-title { max-width: 860px; margin-bottom: 18px; color: var(--navy); font-size: clamp(2rem, 4vw, 3.7rem); line-height: 1.15; letter-spacing: -.025em; }
+    .section-lead { max-width: 760px; margin-bottom: 0; color: var(--muted); font-size: 18px; }
+    .btn-main, .btn-line {
+      display: inline-flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 11px 22px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+    }
+    .btn-main { background: var(--coral); color: white; }
+    .btn-main:hover { background: #bf3044; }
+    .btn-line { border: 1px solid rgba(255, 255, 255, .32); color: white; }
+    .btn-line:hover { border-color: white; background: rgba(255, 255, 255, .08); }
+    .grid-field {
+      background-image:
+        linear-gradient(rgba(7, 43, 78, .055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(7, 43, 78, .055) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    .mock-nav { background: var(--surface); border-bottom: 1px solid var(--line); }
+    .mock-nav-inner { display: flex; min-height: 64px; align-items: center; justify-content: space-between; gap: 20px; }
+    .wordmark { display: inline-flex; min-height: 44px; align-items: center; color: var(--ink); font-family: "Trirong", serif; font-size: 19px; font-weight: 700; text-decoration: none; }
+    .wordmark span { color: var(--coral); }
+    .mock-label { border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; color: var(--navy); font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+
+    .hero { position: relative; overflow: hidden; background: var(--navy-deep); color: white; }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(101, 215, 242, .07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(101, 215, 242, .07) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to right, black, transparent 68%);
+    }
+    .hero-inner { position: relative; display: grid; min-height: 760px; grid-template-columns: 1.02fr .98fr; align-items: center; gap: 64px; padding-block: 76px; }
+    .hero h1 { max-width: 650px; margin-bottom: 24px; font-size: clamp(3.2rem, 5.8vw, 5.7rem); line-height: 1.03; letter-spacing: -.04em; }
+    .hero h1 strong { display: block; color: #65d7f2; font-weight: 700; }
+    .hero-course { max-width: 650px; margin-bottom: 14px; color: white; font-size: 19px; font-weight: 700; }
+    .hero-copy { max-width: 620px; margin-bottom: 28px; color: rgba(255, 255, 255, .74); font-size: 17px; }
+    .hero-path { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 28px; }
+    .hero-step { min-height: 112px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 18px; background: rgba(255, 255, 255, .055); padding: 16px; }
+    .hero-step span { display: block; margin-bottom: 5px; color: var(--coral); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .hero-step b { display: block; font-size: 16px; line-height: 1.45; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .hero-visual { position: relative; margin: 0; }
+    .hero-photo-frame { position: relative; overflow: hidden; border: 1px solid rgba(255, 255, 255, .2); border-radius: 30px; background: #173957; box-shadow: 20px 24px 0 rgba(101, 215, 242, .11); }
+    .hero-photo-frame img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+    .hero-caption { position: absolute; right: 18px; bottom: 18px; left: 18px; border-radius: 18px; background: rgba(0, 22, 47, .88); padding: 16px 18px; backdrop-filter: blur(8px); }
+    .hero-caption span { color: #65d7f2; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .hero-caption p { margin: 4px 0 0; color: white; font-weight: 600; line-height: 1.5; }
+    .hero-stamp { position: absolute; top: -22px; right: -18px; display: grid; width: 96px; aspect-ratio: 1; place-items: center; border-radius: 50%; background: var(--coral); color: white; font-size: 13px; font-weight: 700; line-height: 1.3; text-align: center; transform: rotate(5deg); }
+
+    .offer { background: var(--ivory); padding-block: 96px; }
+    .offer-grid { display: grid; grid-template-columns: minmax(280px, .78fr) minmax(0, 1.45fr); gap: 40px; align-items: start; }
+    .offer-summary { position: sticky; top: 24px; overflow: hidden; border-radius: 28px; background: var(--navy); color: white; box-shadow: 0 20px 50px rgba(7, 43, 78, .17); }
+    .offer-summary-top { padding: 32px; }
+    .offer-code { display: inline-flex; border-radius: 999px; background: #65d7f2; padding: 5px 11px; color: var(--navy-deep); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .offer-summary h2 { margin: 18px 0 14px; color: white; font-size: 32px; line-height: 1.25; }
+    .offer-summary p { color: rgba(255, 255, 255, .74); }
+    .price { margin: 26px 0 2px; color: #65d7f2; font-family: "Trirong", serif; font-size: 44px; font-weight: 700; line-height: 1.1; }
+    .price-note { font-size: 13px; }
+    .offer-meta { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: rgba(255, 255, 255, .16); }
+    .offer-meta div { min-height: 92px; background: rgba(0, 22, 47, .45); padding: 18px; }
+    .offer-meta span { display: block; color: rgba(255, 255, 255, .58); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .offer-meta b { display: block; margin-top: 4px; color: white; font-size: 15px; line-height: 1.45; }
+    .offer-summary-actions { display: grid; gap: 10px; padding: 24px 32px 32px; }
+    .offer-summary-actions .btn-main, .offer-summary-actions .btn-line { width: 100%; }
+    .offer-summary-actions small { color: rgba(255, 255, 255, .62); line-height: 1.5; }
+    .offer-content h2 { max-width: 720px; margin-bottom: 16px; color: var(--navy); font-size: clamp(2.3rem, 4.5vw, 4.3rem); line-height: 1.12; letter-spacing: -.03em; }
+    .offer-intro { max-width: 700px; color: var(--muted); font-size: 18px; }
+    .offer-rule { width: 88px; height: 8px; margin: 28px 0 38px; background: var(--coral); transform: rotate(-1deg); }
+    .group-label { display: flex; align-items: center; gap: 12px; margin: 0 0 18px; color: var(--navy); font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .group-label::after { content: ""; height: 1px; flex: 1; background: var(--line); }
+    .core-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 44px; }
+    .core-card { position: relative; min-height: 190px; overflow: hidden; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); padding: 24px; }
+    .core-card::after { content: attr(data-index); position: absolute; right: 12px; bottom: -28px; color: rgba(7, 43, 78, .055); font-family: "Trirong", serif; font-size: 104px; font-weight: 700; line-height: 1; }
+    .core-card span { color: var(--coral); font-size: 12px; font-weight: 700; letter-spacing: .12em; }
+    .core-card h3 { position: relative; z-index: 1; margin: 12px 0 8px; color: var(--navy); font-size: 20px; line-height: 1.4; }
+    .core-card p { position: relative; z-index: 1; margin-bottom: 0; color: var(--muted); font-size: 14px; }
+    .bonus-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .bonus-card { position: relative; overflow: hidden; border: 1px solid rgba(221, 65, 85, .26); border-radius: 22px; background: #fff8f4; padding: 24px; }
+    .bonus-card:first-child { grid-column: 1 / -1; display: grid; grid-template-columns: 100px 1fr; align-items: center; gap: 24px; background: var(--navy); color: white; }
+    .bonus-number { color: var(--coral); font-family: "Trirong", serif; font-size: 44px; font-weight: 700; line-height: 1; }
+    .bonus-card:first-child .bonus-number { color: #65d7f2; font-size: 72px; text-align: center; }
+    .bonus-card h3 { margin: 10px 0 8px; color: var(--navy); font-size: 19px; line-height: 1.4; }
+    .bonus-card:first-child h3 { color: white; font-size: 23px; }
+    .bonus-card p { margin: 0; color: var(--muted); font-size: 14px; }
+    .bonus-card:first-child p { color: rgba(255, 255, 255, .72); }
+    .bonus-use { display: block; margin-top: 14px; color: var(--coral); font-size: 12px; font-weight: 700; }
+    .bonus-card:first-child .bonus-use { color: #65d7f2; }
+
+    .journey-map { border-block: 1px solid rgba(255, 255, 255, .13); background: var(--navy); color: white; padding-block: 42px; }
+    .journey-map-grid { display: grid; grid-template-columns: .9fr 1.6fr; gap: 40px; align-items: center; }
+    .journey-map h2 { margin: 0; color: white; font-size: 30px; line-height: 1.3; }
+    .map-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .map-step { position: relative; min-height: 72px; border: 1px solid rgba(255, 255, 255, .18); padding: 13px 10px; text-align: center; }
+    .map-step:not(:last-child)::after { content: "→"; position: absolute; z-index: 2; top: 23px; right: -10px; color: #65d7f2; font-weight: 700; }
+    .map-step span { display: block; color: #65d7f2; font-size: 10px; font-weight: 700; letter-spacing: .12em; }
+    .map-step b { display: block; margin-top: 3px; font-size: 14px; }
+
+    .proof { background: var(--surface); padding-block: 104px; }
+    .proof-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 18px; margin-top: 44px; }
+    .proof-card { position: relative; overflow: hidden; border-radius: 26px; background: var(--navy); min-height: 310px; }
+    .proof-card:first-child { grid-row: span 2; min-height: 638px; }
+    .proof-card img { width: 100%; height: 100%; object-fit: cover; }
+    .proof-card:first-child img { object-position: 52% center; }
+    .proof-caption { position: absolute; inset: auto 0 0; background: linear-gradient(transparent, rgba(0, 22, 47, .96)); padding: 76px 24px 22px; color: white; }
+    .proof-caption span { color: #65d7f2; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .proof-caption p { margin: 5px 0 0; max-width: 570px; color: white; font-weight: 600; }
+
+    .diagnosis { background: var(--sand); padding-block: 104px; }
+    .diagnosis-grid { display: grid; grid-template-columns: .86fr 1.14fr; gap: 54px; align-items: start; }
+    .diagnosis-quote { position: sticky; top: 24px; }
+    .diagnosis-quote strong { display: block; max-width: 470px; color: var(--navy); font-family: "Trirong", serif; font-size: clamp(2.2rem, 4vw, 4rem); line-height: 1.2; }
+    .diagnosis-quote strong span { color: var(--coral); }
+    .diagnosis-quote p { max-width: 480px; margin: 22px 0 0; color: var(--muted); }
+    .pain-list { display: grid; gap: 12px; }
+    .pain-item { display: grid; grid-template-columns: 62px 1fr; gap: 18px; border-bottom: 1px solid rgba(7, 43, 78, .18); padding: 22px 0 24px; }
+    .pain-item:first-child { border-top: 1px solid rgba(7, 43, 78, .18); }
+    .pain-item span { color: var(--coral); font-family: "Trirong", serif; font-size: 28px; font-weight: 700; }
+    .pain-item h3 { margin: 0 0 6px; color: var(--navy); font-size: 19px; }
+    .pain-item p { margin: 0; color: var(--muted); }
+    .boundary { margin-top: 34px; border-left: 8px solid var(--coral); background: var(--navy); padding: 28px; color: white; }
+    .boundary b { display: block; margin-bottom: 8px; font-size: 19px; }
+    .boundary p { margin: 0; color: rgba(255, 255, 255, .75); }
+
+    .curriculum { background-color: var(--mist); padding-block: 108px; }
+    .curriculum-head { display: grid; grid-template-columns: 1fr .55fr; gap: 40px; align-items: end; margin-bottom: 58px; }
+    .curriculum-head .section-title { margin-bottom: 0; }
+    .curriculum-aside { border-top: 4px solid var(--coral); padding-top: 14px; color: var(--navy); font-weight: 600; }
+    .modules { position: relative; display: grid; gap: 26px; list-style: none; margin: 0; padding: 0; }
+    .modules::before { content: ""; position: absolute; top: 60px; bottom: 60px; left: 72px; width: 2px; background: rgba(7, 43, 78, .13); }
+    .module { position: relative; display: grid; grid-template-columns: 120px 1fr; gap: 26px; border: 1px solid rgba(7, 43, 78, .14); border-radius: 28px; background: rgba(255, 253, 248, .9); padding: 30px; box-shadow: 0 14px 36px rgba(7, 43, 78, .07); }
+    .module:nth-child(even) { margin-left: 8%; }
+    .module-number { position: relative; z-index: 1; display: grid; width: 86px; height: 86px; place-items: center; border-radius: 50%; background: var(--navy); color: #65d7f2; font-family: "Trirong", serif; font-size: 34px; font-weight: 700; }
+    .module-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+    .module-label { color: var(--coral); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .module h3 { margin: 7px 0 0; color: var(--navy); font-family: "Trirong", serif; font-size: 28px; line-height: 1.3; }
+    .stage-en { border: 1px solid var(--line); border-radius: 999px; padding: 5px 10px; color: var(--navy); font-size: 11px; font-weight: 700; }
+    .module-body { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 22px; }
+    .module-note { border-top: 1px solid var(--line); padding-top: 13px; color: var(--muted); font-size: 14px; }
+    .module-note b { display: block; margin-bottom: 4px; color: var(--navy); }
+    .module-output { grid-column: 1 / -1; border-radius: 17px; background: var(--navy); padding: 16px 18px; color: white; }
+    .module-output span { display: block; margin-bottom: 3px; color: #65d7f2; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+
+    .decision-pack { background: var(--surface); padding-block: 104px; }
+    .artifact-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-top: 42px; border: 1px solid var(--navy); background: var(--navy); }
+    .artifact { min-height: 260px; background: var(--surface); padding: 24px; }
+    .artifact span { color: var(--coral); font-size: 12px; font-weight: 700; letter-spacing: .14em; }
+    .artifact h3 { margin: 42px 0 10px; color: var(--navy); font-family: "Trirong", serif; font-size: 22px; line-height: 1.35; }
+    .artifact p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .fit { background: var(--navy); color: white; padding-block: 96px; }
+    .fit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(255, 255, 255, .22); }
+    .fit-panel { background: var(--navy); padding: 38px; }
+    .fit-panel:last-child { background: #0c3559; }
+    .fit h2 { margin-bottom: 20px; color: white; font-size: 34px; line-height: 1.3; }
+    .fit-list { list-style: none; margin: 0; padding: 0; }
+    .fit-list li { position: relative; border-top: 1px solid rgba(255, 255, 255, .18); padding: 15px 0 15px 28px; color: rgba(255, 255, 255, .82); }
+    .fit-list li::before { content: "✓"; position: absolute; left: 0; color: #65d7f2; font-weight: 700; }
+    .fit-panel:last-child .fit-list li::before { content: "—"; color: var(--coral); }
+
+    .investment { background: var(--ivory); padding-block: 92px; }
+    .investment-card { display: grid; grid-template-columns: 1.15fr .85fr; overflow: hidden; border: 1px solid var(--navy); border-radius: 30px; background: var(--surface); }
+    .investment-copy { padding: 46px; }
+    .investment-copy h2 { margin-bottom: 16px; color: var(--navy); font-size: 40px; line-height: 1.25; }
+    .investment-copy p { color: var(--muted); }
+    .investment-price { display: grid; align-content: center; background: var(--navy); padding: 46px; color: white; }
+    .investment-price span { color: #65d7f2; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .investment-price strong { display: block; margin: 8px 0; color: white; font-family: "Trirong", serif; font-size: 52px; line-height: 1.1; }
+    .investment-price p { margin-bottom: 22px; color: rgba(255, 255, 255, .7); }
+
+    .final-cta { position: relative; overflow: hidden; background: var(--coral); padding-block: 92px; color: white; text-align: center; }
+    .final-cta::before { content: "T4"; position: absolute; top: 50%; left: 50%; color: rgba(255, 255, 255, .08); font-family: "Trirong", serif; font-size: min(42vw, 520px); font-weight: 700; line-height: .7; transform: translate(-50%, -50%); }
+    .final-inner { position: relative; }
+    .final-cta h2 { max-width: 900px; margin: 0 auto 18px; color: white; font-size: clamp(2.2rem, 5vw, 4.5rem); line-height: 1.16; }
+    .final-cta p { max-width: 680px; margin: 0 auto 28px; color: rgba(255, 255, 255, .86); font-size: 18px; }
+    .final-cta .btn-main { background: var(--navy-deep); }
+    .final-cta .btn-main:hover { background: var(--navy); }
+
+    footer { background: var(--navy-deep); padding-block: 22px; color: rgba(255, 255, 255, .62); font-size: 13px; text-align: center; }
+
+    @media (max-width: 980px) {
+      .hero-inner, .offer-grid, .diagnosis-grid, .investment-card { grid-template-columns: 1fr; }
+      .hero-inner { padding-block: 64px; }
+      .hero-photo-frame img { aspect-ratio: 16 / 10; }
+      .offer-summary, .diagnosis-quote { position: relative; top: auto; }
+      .offer-summary { display: grid; grid-template-columns: 1.2fr .8fr; }
+      .offer-summary-top { grid-row: span 2; }
+      .offer-meta { align-self: stretch; }
+      .offer-summary-actions { align-content: center; }
+      .journey-map-grid, .curriculum-head { grid-template-columns: 1fr; }
+      .artifact-row { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 700px) {
+      .shell { width: min(100% - 32px, 1180px); }
+      .mock-label { display: none; }
+      .hero-inner { min-height: auto; grid-template-columns: 1fr; gap: 46px; padding-block: 52px 62px; }
+      .hero h1 { font-size: clamp(2.8rem, 14vw, 4.2rem); }
+      .hero-path, .core-grid, .bonus-grid, .proof-grid, .module-body, .fit-grid { grid-template-columns: 1fr; }
+      .hero-step { min-height: auto; }
+      .hero-photo-frame img { aspect-ratio: 4 / 3; }
+      .hero-stamp { top: -14px; right: -6px; width: 78px; font-size: 11px; }
+      .offer, .proof, .diagnosis, .curriculum, .decision-pack, .fit, .investment, .final-cta { padding-block: 72px; }
+      .offer-summary { display: block; }
+      .offer-summary h2 { font-size: 28px; }
+      .price { font-size: 38px; }
+      .bonus-card:first-child { display: block; grid-column: auto; }
+      .bonus-card:first-child .bonus-number { margin-bottom: 18px; text-align: left; }
+      .map-steps { grid-template-columns: 1fr; }
+      .map-step { display: grid; min-height: 52px; grid-template-columns: 42px 1fr; align-items: center; text-align: left; }
+      .map-step:not(:last-child)::after { content: "↓"; top: auto; right: auto; bottom: -17px; left: 20px; }
+      .proof-card:first-child { grid-row: auto; min-height: 420px; }
+      .proof-card { min-height: 250px; }
+      .pain-item { grid-template-columns: 46px 1fr; gap: 10px; }
+      .curriculum-head { margin-bottom: 36px; }
+      .modules::before { left: 51px; }
+      .module, .module:nth-child(even) { grid-template-columns: 72px 1fr; gap: 12px; margin-left: 0; padding: 20px 16px; }
+      .module-number { width: 62px; height: 62px; font-size: 25px; }
+      .module-top { display: block; }
+      .module h3 { font-size: 21px; }
+      .stage-en { display: inline-flex; margin-top: 8px; }
+      .module-body { margin-top: 18px; }
+      .module-output { grid-column: auto; }
+      .artifact-row { grid-template-columns: 1fr; }
+      .artifact { min-height: 210px; }
+      .fit-panel, .investment-copy, .investment-price { padding: 28px 22px; }
+      .investment-copy h2 { font-size: 31px; }
+      .investment-price strong { font-size: 42px; }
+    }
+
+    @media (max-width: 360px) {
+      .shell { width: min(100% - 24px, 1180px); }
+      .hero h1 { font-size: 2.6rem; }
+      .hero-actions { display: grid; }
+      .hero-actions a { width: 100%; }
+      .offer-summary-top, .offer-summary-actions { padding-inline: 22px; }
+      .module { grid-template-columns: 1fr; }
+      .modules::before { display: none; }
+      .module-number { width: 56px; height: 56px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body data-mockup="t4-operating-journey">
+  <header class="mock-nav">
+    <div class="shell mock-nav-inner">
+      <a class="wordmark" href="#top">Pun <span>Nattapatch</span></a>
+      <span class="mock-label">HTML Mockup · T4</span>
+    </div>
+  </header>
+
+  <main id="top">
+    <section data-section="hero" class="hero">
+      <div class="shell hero-inner">
+        <div>
+          <p class="eyebrow">In-house Workflow Pilot Day · T4</p>
+          <h1>ก่อนซื้อระบบ <strong>ลองกับงานจริงก่อน</strong></h1>
+          <p class="hero-course">คอร์ส Advance AI &amp; Business Automation</p>
+          <p class="hero-copy">เลือกงานซ้ำหนึ่งเรื่องของบริษัท แยกจุดที่ AI ช่วยกับจุดที่คนต้องตัดสิน แล้วให้ทีมลองรันใน Safe Sandbox ก่อนเลือกว่าจะหยุด ปรับ หรือทำระบบต่อ</p>
+          <div class="hero-path" aria-label="ผลลัพธ์หลักสามช่วง">
+            <div class="hero-step"><span>01 · Pick</span><b>เลือกงานที่มีเจ้าของและขอบเขตชัด</b></div>
+            <div class="hero-step"><span>02 · Test</span><b>ลองด้วยข้อมูลจำลองหรือข้อมูลที่ Mask</b></div>
+            <div class="hero-step"><span>03 · Decide</span><b>จบวันด้วยหลักฐานสำหรับตัดสินใจ</b></div>
+          </div>
+          <div class="hero-actions">
+            <a class="btn-main" href="#offer">ดูสิ่งที่รวมในหนึ่งวัน</a>
+            <a class="btn-line" href="#curriculum">ดู Journey ที่ทีมลงมือทำ</a>
+          </div>
+        </div>
+        <figure class="hero-visual">
+          <div class="hero-stamp">หนึ่งบริษัท<br>หนึ่ง Workflow</div>
+          <div class="hero-photo-frame">
+            <img src="/lp/inhouse/office-session.jpg" width="1600" height="1200" alt="ทีมผู้เข้าร่วม Advance AI Workshop นั่งทำงานร่วมกันหน้าจอในห้องประชุม" fetchpriority="high">
+            <figcaption class="hero-caption"><span>กิจกรรมจริง · ทีมจริง</span><p>ไล่งานหนึ่งเรื่องบนหน้าจอร่วมกัน ก่อนเลือก Flow ที่จะทดลอง</p></figcaption>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <section id="offer" data-section="offer" class="offer grid-field" aria-labelledby="offer-heading">
+      <div class="shell offer-grid">
+        <aside class="offer-summary" aria-label="สรุปแพ็กเกจ T4">
+          <div class="offer-summary-top">
+            <span class="offer-code">T4 · Workflow Pilot Day</span>
+            <h2>ลองหนึ่งงานให้เห็น ก่อนลงทุนทำระบบจริง</h2>
+            <p>เหมาะกับบริษัทที่มีงานซ้ำชัด มี Process owner และพร้อมใช้ข้อมูลจำลองหรือข้อมูลที่ Mask แล้ว</p>
+            <div data-catalog-price data-price-source="loading" class="price" aria-live="polite">กำลังอ่านราคา…</div>
+            <p class="price-note">ราคาสำหรับหนึ่งบริษัท · ตามขอบเขต Catalog</p>
+          </div>
+          <div class="offer-meta">
+            <div><span>เวลา</span><b>1 วัน</b></div>
+            <div><span>ขอบเขต</span><b>1 Workflow</b></div>
+            <div><span>ข้อมูล</span><b>Dummy / Masked</b></div>
+            <div><span>ปลายทาง</span><b>Stop / Revise / Install</b></div>
+          </div>
+          <div class="offer-summary-actions">
+            <a class="btn-main" href="#final-cta">เริ่ม Fit Gate ก่อนออกใบแจ้งหนี้</a>
+            <a class="btn-line" href="#fit">เช็กก่อนว่าทีมเหมาะไหม</a>
+            <small>ชำระค่าบริการ 100% ก่อนวันอบรมเพื่อยืนยันคิว</small>
+          </div>
+        </aside>
+
+        <div class="offer-content">
+          <p class="eyebrow">Complete offer · อยู่ตรงนี้ก่อนเลื่อนอ่านยาว</p>
+          <h2 id="offer-heading">หนึ่งวัน เพื่อรู้ว่างานนี้ควรหยุด ปรับ หรือทำระบบต่อ</h2>
+          <p class="offer-intro">สิ่งที่ทีมทำในห้องกับเครื่องมือที่ใช้ต่อหลังคลาสถูกแยกชัดเจน ของหลักคือหลักฐานสำหรับตัดสินใจ ส่วน Bonus ช่วยให้ทีมเตรียมและทบทวนงานได้ง่ายขึ้น</p>
+          <div class="offer-rule" aria-hidden="true"></div>
+
+          <p class="group-label">Core · ของหลักที่ทีมสร้างในห้อง</p>
+          <div class="core-grid">
+            <article data-core-artifact data-index="01" class="core-card"><span>CORE 01</span><h3>Workflow Map</h3><p>เห็น Trigger, Input, Rule, Exception, Output และจุดที่คนต้องตัดสินในงานเดิม</p></article>
+            <article data-core-artifact data-index="02" class="core-card"><span>CORE 02</span><h3>Safe Sandbox Prototype</h3><p>ต้นแบบสำหรับให้ทีมทดลองด้วยข้อมูลจำลองหรือข้อมูลที่ปิดข้อมูลสำคัญแล้ว</p></article>
+            <article data-core-artifact data-index="03" class="core-card"><span>CORE 03</span><h3>Human–AI Responsibility Brief</h3><p>ระบุว่า AI ช่วยตรงไหน ใครเป็นคนตรวจ และใครรับผิดชอบผลลัพธ์แต่ละขั้น</p></article>
+            <article data-core-artifact data-index="04" class="core-card"><span>CORE 04</span><h3>Decision Memo</h3><p>สรุปหลักฐาน ความเสี่ยง และ Next step สำหรับเลือก Stop, Revise หรือ Install</p></article>
+          </div>
+
+          <p class="group-label">Bonus · เครื่องมือใช้ต่อที่รวมอยู่ในแพ็กเกจ</p>
+          <div class="bonus-grid">
+            <article data-bonus-card class="bonus-card"><div class="bonus-number">01</div><div><h3>30 AI Workflow Ideas: ตัวอย่างงานซ้ำที่ AI อาจช่วยได้</h3><p>ช่วย Owner และ Champion หางานจาก Pain ของทีม โดยไม่เริ่มจากชื่อ Tool</p><span class="bonus-use">ใช้ก่อนเลือก Candidate · Google Sheet</span></div></article>
+            <article data-bonus-card class="bonus-card"><div class="bonus-number">02</div><h3>AI Data Safety Checklist: เช็กก่อนให้ AI แตะข้อมูล 30 จุด</h3><p>แยกข้อมูลที่ใช้ได้ ต้อง Mask ต้องขออนุมัติ หรือห้ามส่งออก</p><span class="bonus-use">ใช้ก่อนทดลองข้อมูล · Google Sheet / PDF</span></article>
+            <article data-bonus-card class="bonus-card"><div class="bonus-number">03</div><h3>AI Build Brief: เขียนโจทย์ก่อนสร้างเพื่อไม่ให้ระบบบวม</h3><p>ล็อก Goal, User, Input, Rule, Exception, Output และ Acceptance ให้ทีมคุยเรื่องเดียวกัน</p><span class="bonus-use">ใช้ก่อนเริ่ม Build · Google Doc</span></article>
+            <article data-bonus-card class="bonus-card"><div class="bonus-number">04</div><h3>Workflow Example Library: ดู Pattern แล้วปรับตามบริบท</h3><p>ช่วยทีมเห็นรูปแบบงานที่ใกล้เคียง พร้อมจุดที่ไม่ควรลอกระบบคนอื่นทั้งก้อน</p><span class="bonus-use">ใช้ตอนหาแนวทาง · Google Doc / PDF</span></article>
+            <article data-bonus-card class="bonus-card"><div class="bonus-number">05</div><h3>30-Minute Decision Review: ตัดสินใจจากหลักฐานหลังคลาส</h3><p>ให้ Owner และ Manager ทบทวนสิ่งที่ลอง แล้วเลือก Stop, Revise หรือ Install</p><span class="bonus-use">ใช้ภายใน 14 วัน · Google Sheet</span></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section data-section="journey-map" class="journey-map" aria-labelledby="journey-map-heading">
+      <div class="shell journey-map-grid">
+        <div><p class="eyebrow">One workflow · five decisions</p><h2 id="journey-map-heading">เส้นทางที่ทีมเดินด้วยกันในห้อง</h2></div>
+        <div class="map-steps" aria-label="ภาพรวม Journey ห้าขั้น">
+          <div class="map-step"><span>01</span><b>Pick</b></div><div class="map-step"><span>02</span><b>Map</b></div><div class="map-step"><span>03</span><b>Sandbox</b></div><div class="map-step"><span>04</span><b>Responsibility</b></div><div class="map-step"><span>05</span><b>Decide</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section data-section="proof" class="proof" aria-labelledby="proof-heading">
+      <div class="shell">
+        <p class="eyebrow">Proof · ดูห้องทำงานจริงก่อน</p>
+        <h2 id="proof-heading" class="section-title">ไม่เริ่มจาก Demo สวย<br>เริ่มจากคนที่ต้องใช้มันจริง</h2>
+        <p class="section-lead">ภาพทุกใบมาจาก Workshop และกิจกรรมจริง ทีมอยู่กับโจทย์ หน้าจอ และคำถามเดียวกันก่อนตัดสินใจว่าจะให้ AI ช่วยงานตรงไหน</p>
+        <div class="proof-grid">
+          <figure class="proof-card"><img src="/lp/inhouse/hero-pointing.jpg" width="1600" height="1200" alt="ปัน ณัฐพัชร์อธิบายงานบนหน้าจอกับผู้เข้าร่วม Workshop ในห้องประชุม" loading="lazy"><figcaption class="proof-caption"><span>01 · Map together</span><p>ไล่งานเดิมต่อหน้าทีม เพื่อให้ Process owner กับคนลงมือเห็น Flow เดียวกัน</p></figcaption></figure>
+          <figure class="proof-card"><img src="/lp/inhouse/hands-on.jpg" width="1600" height="1200" alt="ผู้เข้าร่วม Workshop เปิดคอมพิวเตอร์และลงมือทดลองงานร่วมกันที่โต๊ะ" loading="lazy"><figcaption class="proof-caption"><span>02 · Run it</span><p>ทีมต้องลอง Input ถึง Output ด้วยตัวเอง ไม่ใช่ดูผู้สอนกดให้</p></figcaption></figure>
+          <figure class="proof-card"><img src="/lp/inhouse/class-full.jpg" width="1600" height="1200" alt="บรรยากาศผู้เข้าร่วม In-house Workshop เต็มห้องและทำกิจกรรมร่วมกัน" loading="lazy"><figcaption class="proof-caption"><span>03 · Decide together</span><p>คนใช้ คนตรวจ และ Owner อยู่ในบทสนทนาเดียวกันก่อนวาง Next step</p></figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <section data-section="diagnosis" class="diagnosis" aria-labelledby="diagnosis-heading">
+      <div class="shell diagnosis-grid">
+        <div class="diagnosis-quote"><p class="eyebrow">Diagnosis · เลือกงานให้ถูก</p><strong id="diagnosis-heading">AI ยังไม่ใช่คำตอบ ถ้าทีมยังอธิบาย <span>งานเดิม</span> ไม่ตรงกัน</strong><p>Fit Gate จึงเริ่มจากงานซ้ำ ความถี่ Process owner และความเสี่ยงของข้อมูล ไม่ได้เริ่มจากถามว่าจะใช้ Tool ตัวไหน</p></div>
+        <div>
+          <div class="pain-list">
+            <article class="pain-item"><span>01</span><div><h3>งานซ้ำ แต่ไม่มีใครเห็นทั้ง Flow</h3><p>แต่ละคนรู้เฉพาะช่วงที่ตัวเองทำ จึงไม่รู้ว่าความล่าช้าหรือข้อมูลขาดเกิดตรงไหน</p></div></article>
+            <article class="pain-item"><span>02</span><div><h3>ซื้อ Tool แล้ว แต่ทีมยังทำแบบเดิม</h3><p>เครื่องมือถูกเพิ่มเข้าไปโดยที่ Owner, Rule และ Exception ของงานยังไม่ถูกตกลง</p></div></article>
+            <article class="pain-item"><span>03</span><div><h3>อยากให้ AI ทำแทน แต่ไม่รู้ว่าคนต้องตรวจอะไร</h3><p>เมื่อไม่มี Human review ที่ชัด ทีมไม่รู้ว่า Output ไหนใช้ต่อได้และใครรับผิดชอบ</p></div></article>
+            <article class="pain-item"><span>04</span><div><h3>Demo ผ่าน แต่ไม่รู้ว่าควรลงทุนต่อไหม</h3><p>ไม่มี Test record หรือ Decision Memo จึงตัดสินใจจากความรู้สึกแทนหลักฐาน</p></div></article>
+          </div>
+          <aside class="boundary"><b>ขอบเขตตั้งใจให้เล็ก: หนึ่งบริษัท · หนึ่งวัน · หนึ่ง Workflow</b><p>Workshop นี้ไม่ใช่ Production build, Live integration, migration หรือ SLA หาก Fit แล้วต้องเชื่อมข้อมูลจริง ให้แยก Scope ไปบริการ I1</p></aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="curriculum" data-section="curriculum" class="curriculum grid-field" aria-labelledby="curriculum-heading">
+      <div class="shell">
+        <div class="curriculum-head">
+          <div><p class="eyebrow">Curriculum · จากงานเดิมไปถึงคำตัดสิน</p><h2 id="curriculum-heading" class="section-title">ทุกช่วงต้องจบด้วยสิ่งที่ทีมถือกลับไปใช้ต่อได้</h2></div>
+          <p class="curriculum-aside">ไม่สอน Tool เรียงตามเมนู แต่พาทีมเดินตามงานหนึ่งเส้น ตั้งแต่เลือกโจทย์จน Owner ลงข้อสรุป</p>
+        </div>
+        <ol class="modules">
+          <li data-journey-stage="Pick" class="module"><div class="module-number">01</div><article><div class="module-top"><div><span class="module-label">Fit Gate</span><h3>เลือกงานที่ควรทดลองก่อน</h3></div><span class="stage-en">Pick</span></div><div class="module-body"><p class="module-note"><b>เข้าใจอะไร</b>งานซ้ำอะไร เกิดบ่อยแค่ไหน ใครเป็น Process owner และมีข้อมูลเสี่ยงหรือไม่</p><p class="module-note"><b>ลงมือทำ</b>เลือก Candidate หนึ่งเรื่องที่ทีมอธิบายงานเดิมและความเสี่ยงได้</p><p class="module-output"><span>ได้อะไรกลับไป</span>Fit decision + ขอบเขตหนึ่ง Workflow</p></div></article></li>
+          <li data-journey-stage="Map" class="module"><div class="module-number">02</div><article><div class="module-top"><div><span class="module-label">ช่วงที่ 1</span><h3>เห็นงานเดิมก่อนให้ AI แตะงาน</h3></div><span class="stage-en">Map</span></div><div class="module-body"><p class="module-note"><b>เข้าใจอะไร</b>Trigger, Input, Rule, Exception, Output และขั้นที่คนต้องตัดสิน</p><p class="module-note"><b>ลงมือทำ</b>ทำ Workflow Map จากตัวอย่างงานที่ปิดข้อมูลสำคัญแล้ว</p><p class="module-output"><span>ได้อะไรกลับไป</span>Workflow Map ฉบับบริษัท</p></div></article></li>
+          <li data-journey-stage="Sandbox" class="module"><div class="module-number">03</div><article><div class="module-top"><div><span class="module-label">ช่วงที่ 2</span><h3>สร้างที่ทดลองให้ทีมลองรันเอง</h3></div><span class="stage-en">Sandbox</span></div><div class="module-body"><p class="module-note"><b>เข้าใจอะไร</b>ข้อมูลจำลอง เส้นทางทดสอบ จุดหยุด และเกณฑ์ที่ถือว่าผลใช้ได้</p><p class="module-note"><b>ลงมือทำ</b>ให้ Core build team รัน Flow ตั้งแต่ Input ถึง Output</p><p class="module-output"><span>ได้อะไรกลับไป</span>Safe Sandbox Prototype + Test record</p></div></article></li>
+          <li data-journey-stage="Responsibility" class="module"><div class="module-number">04</div><article><div class="module-top"><div><span class="module-label">ช่วงที่ 3</span><h3>ล็อกว่าคนต้องตรวจและรับผิดชอบตรงไหน</h3></div><span class="stage-en">Responsibility</span></div><div class="module-body"><p class="module-note"><b>เข้าใจอะไร</b>AI ช่วยเตรียมหรือจัดรูปแบบได้ แต่คนยังตรวจ อนุมัติ และสื่อสารในจุดที่มีผลจริง</p><p class="module-note"><b>ลงมือทำ</b>เขียนจุด Human review จาก Flow ที่ทีมเพิ่งทดสอบ</p><p class="module-output"><span>ได้อะไรกลับไป</span>Human–AI Responsibility Brief</p></div></article></li>
+          <li data-journey-stage="Decide" class="module"><div class="module-number">05</div><article><div class="module-top"><div><span class="module-label">ช่วงที่ 4</span><h3>เลือก Stop, Revise หรือ Install</h3></div><span class="stage-en">Decide</span></div><div class="module-body"><p class="module-note"><b>เข้าใจอะไร</b>ตัดสินจากสิ่งที่รันได้จริง ความเสี่ยง และสิ่งที่ต้องเตรียมก่อนขยาย</p><p class="module-note"><b>ลงมือทำ</b>ให้ Owner/Manager ลงข้อสรุปและ Next step ที่มีเจ้าของ</p><p class="module-output"><span>ได้อะไรกลับไป</span>Stop / Revise / Install Decision Memo</p></div></article></li>
+        </ol>
+      </div>
+    </section>
+
+    <section data-section="decision-pack" class="decision-pack" aria-labelledby="decision-pack-heading">
+      <div class="shell"><p class="eyebrow">Decision Pack · Core deliverables</p><h2 id="decision-pack-heading" class="section-title">จบคลาสแล้ว ไม่ต้องจำจากสไลด์<br>เปิดของสี่ชิ้นนี้เพื่อตัดสินใจต่อ</h2><div class="artifact-row"><article class="artifact"><span>01 · เห็นงานเดิม</span><h3>Workflow Map</h3><p>ใช้ทวนว่า Flow เริ่มและจบที่ไหน พร้อม Rule และ Exception ที่ทีมพบ</p></article><article class="artifact"><span>02 · เห็นสิ่งที่ลอง</span><h3>Sandbox + Test Record</h3><p>ใช้ดูว่าเส้นทางไหนรันได้ จุดไหนยังติด และข้อมูลแบบใดถูกใช้ในการทดลอง</p></article><article class="artifact"><span>03 · เห็นคนรับผิดชอบ</span><h3>Responsibility Brief</h3><p>ใช้ล็อก Human review, Owner และสิ่งที่ห้ามให้ AI ตัดสินแทน</p></article><article class="artifact"><span>04 · เห็นทางต่อ</span><h3>Decision Memo</h3><p>ใช้ลงข้อสรุป Stop, Revise หรือเตรียม Scope สำหรับ Production build</p></article></div></div>
+    </section>
+
+    <section id="fit" data-section="fit" class="fit" aria-labelledby="fit-heading">
+      <div class="shell fit-grid"><article class="fit-panel"><p class="eyebrow">Fit · เหมาะเมื่อ</p><h2 id="fit-heading">ทีมพร้อมทดลองงานหนึ่งเรื่องให้เห็นจริง</h2><ul class="fit-list"><li>มีงานซ้ำที่เกิดบ่อยและมี Process owner ชัด</li><li>ทีมอธิบาย Input, Rule, Exception และ Output ได้</li><li>พร้อมใช้ dummy data หรือข้อมูลที่ Mask แล้ว</li><li>Owner พร้อมลงข้อสรุปหลังดู Test record</li></ul></article><article class="fit-panel"><p class="eyebrow">Not fit · ควรเริ่มทางอื่นเมื่อ</p><h2>โจทย์ยังใหญ่กว่าหนึ่ง Workflow หรือยังไม่มีเจ้าของงาน</h2><ul class="fit-list"><li>ยังเลือก Process สำคัญไม่ได้ — เริ่ม C1 เพื่อจัด Priority</li><li>ต้องเชื่อม Live data หรือระบบ Production — แยก Scope ไป I1</li><li>ต้องการหลาย Workflow, migration, integration หรือ SLA</li><li>คาดหวังให้ AI ตัดสินใจแทนคนหรือลดคนทันที</li></ul></article></div>
+    </section>
+
+    <section data-section="investment" class="investment grid-field" aria-labelledby="investment-heading">
+      <div class="shell investment-card"><div class="investment-copy"><p class="eyebrow">Investment · ก่อนล็อกวัน</p><h2 id="investment-heading">ผ่าน Fit Gate ก่อนออกใบแจ้งหนี้</h2><p>ส่งงานซ้ำ ความถี่ Process owner และข้อมูลเสี่ยงที่เกี่ยวข้องมาให้ดูก่อน เพื่อยืนยันว่าขอบเขตพอทำ Pilot ในหนึ่งวันได้</p><p><strong>เงื่อนไข:</strong> ชำระค่าบริการ 100% ก่อนวันอบรมเพื่อยืนยันคิว ค่าเดินทางนอกพื้นที่มาตรฐานจะแจ้งก่อนล็อกวัน</p></div><div class="investment-price"><span>ราคาปัจจุบันจาก Catalog</span><strong data-catalog-price data-price-source="loading" aria-live="polite">กำลังอ่านราคา…</strong><p>หนึ่งบริษัท · หนึ่งวัน · หนึ่ง Workflow</p><a class="btn-main" href="#final-cta">เริ่มเช็ก Fit Gate</a></div></div>
+    </section>
+
+    <section id="final-cta" data-section="final-cta" class="final-cta" aria-labelledby="final-heading">
+      <div class="shell final-inner"><h2 id="final-heading">มีงานซ้ำหนึ่งเรื่องที่ทีมอยากหยุดทำมือหรือยัง?</h2><p>ทัก LINE แล้วพิมพ์ “AI WORKFLOW” พร้อมจำนวนทีม บอกงานซ้ำ ความถี่ Process owner และข้อมูลเสี่ยงที่เกี่ยวข้อง เพื่อเช็ก Fit Gate ก่อนออกใบแจ้งหนี้</p><a class="btn-main" href="https://lin.ee/ioSnSUG" target="_blank" rel="noopener noreferrer">ทัก LINE พร้อมคำว่า AI WORKFLOW</a></div>
+    </section>
+  </main>
+
+  <footer>HTML direction mockup · T4 Operating Journey · ไม่ใช่หน้า Production</footer>
+
+  <script>
+    const priceNodes = [...document.querySelectorAll('[data-catalog-price]')];
+    fetch('/catalog.json')
+      .then((response) => {
+        if (!response.ok) throw new Error(`Catalog request failed: ${response.status}`);
+        return response.json();
+      })
+      .then((catalog) => {
+        const offer = catalog.packages?.find((item) => item.key === 't4-ai-workflow-pilot-day');
+        if (!offer?.price_label) throw new Error('T4 Catalog package not found');
+        priceNodes.forEach((node) => {
+          node.textContent = offer.price_label;
+          node.dataset.priceSource = 'catalog';
+        });
+      })
+      .catch(() => {
+        priceNodes.forEach((node) => {
+          node.textContent = 'สอบถามราคาตามขอบเขต';
+          node.dataset.priceSource = 'fallback';
+        });
+      });
+  </script>
+</body>
+</html>
