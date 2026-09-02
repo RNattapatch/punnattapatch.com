@@ -1,46 +1,60 @@
 ---
+// แถบย่อยของ CRM — แถวที่ 2 ใต้ AppNav บนจอใหญ่ (บนจอเล็กรายการเดียวกันอยู่ใน drawer
+// ที่เปิดจาก hamburger — คุณปันขอให้คงไว้ 2026-09-02)
+// ภาพรวม/Leads/Pipeline = เลื่อนไปหา section ในมุมมอง Leads · Client War Room/ค่าใช้จ่าย = สลับมุมมอง
 ---
-<div class="flex gap-2 mb-4">
-  <button
-    id="tab-leads"
-    class="btn btn-sm tap-44 btn-primary"
-    aria-pressed="true"
-  >📋 Leads</button>
-  <button
-    id="tab-expenses"
-    class="btn btn-sm tap-44 btn-outline btn-primary"
-    aria-pressed="false"
-  >💸 ค่าใช้จ่าย</button>
-</div>
+<nav id="crm-subnav" class="hidden items-center gap-1 lg:flex" aria-label="ส่วนของ CRM">
+  <button class="crm-sub" data-goto="top">ภาพรวม</button>
+  <button class="crm-sub" data-goto="leads-view">Leads</button>
+  <button class="crm-sub" data-goto="kanban-section">Pipeline</button>
+  <button class="crm-sub" data-tab="war-room">🎯 Client War Room</button>
+  <button class="crm-sub" data-tab="expenses">💸 ค่าใช้จ่าย</button>
+</nav>
+
+<style>
+  .crm-sub {
+    min-height: 36px;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: color-mix(in oklab, var(--color-base-content) 65%, transparent);
+    transition: color 120ms ease, background-color 120ms ease;
+  }
+  .crm-sub:hover { color: var(--color-base-content); background: var(--color-base-200); }
+  .crm-sub:focus-visible { outline: 2px solid var(--color-brand-coral); outline-offset: 2px; }
+  .crm-sub[aria-current="true"] { color: var(--color-base-100); background: var(--color-brand-navy); }
+</style>
 
 <script>
   import { getState, subscribe, switchTab } from '../../scripts/dashboard/store';
 
-  const btnLeads = document.getElementById('tab-leads') as HTMLButtonElement | null;
-  const btnExp = document.getElementById('tab-expenses') as HTMLButtonElement | null;
+  const subs = Array.from(document.querySelectorAll<HTMLButtonElement>('#crm-subnav .crm-sub'));
 
   function render() {
     const { activeTab, authed } = getState();
     if (!authed) return;
-    const onLeads = activeTab === 'leads';
-    const onExp = activeTab === 'expenses';
-    const onWar = activeTab === 'war-room';
-    btnLeads?.classList.toggle('btn-primary', onLeads);
-    btnLeads?.classList.toggle('btn-outline', !onLeads);
-    btnLeads?.setAttribute('aria-pressed', String(onLeads));
-    btnExp?.classList.toggle('btn-primary', onExp);
-    btnExp?.classList.toggle('btn-outline', !onExp);
-    btnExp?.setAttribute('aria-pressed', String(onExp));
-    const leadsView = document.getElementById('leads-view');
-    const expView = document.getElementById('expenses-view');
-    const warView = document.getElementById('war-room-view');
-    if (leadsView) leadsView.classList.toggle('hidden', !onLeads);
-    if (expView) expView.classList.toggle('hidden', !onExp);
-    if (warView) warView.classList.toggle('hidden', !onWar);
+    for (const b of subs) {
+      const tab = b.dataset.tab;
+      // ปุ่มเลื่อน 3 ตัวถือว่าอยู่ในมุมมอง Leads — ให้ "ภาพรวม" เป็นตัวแทน
+      const current = tab ? activeTab === tab : (activeTab === 'leads' && b.dataset.goto === 'top');
+      b.setAttribute('aria-current', String(current));
+    }
+    document.getElementById('leads-view')?.classList.toggle('hidden', activeTab !== 'leads');
+    document.getElementById('expenses-view')?.classList.toggle('hidden', activeTab !== 'expenses');
+    document.getElementById('war-room-view')?.classList.toggle('hidden', activeTab !== 'war-room');
   }
 
-  btnLeads?.addEventListener('click', () => switchTab('leads'));
-  btnExp?.addEventListener('click', () => switchTab('expenses'));
+  for (const b of subs) {
+    b.addEventListener('click', () => {
+      if (b.dataset.tab) return switchTab(b.dataset.tab as 'leads' | 'expenses' | 'war-room');
+      switchTab('leads');
+      requestAnimationFrame(() => {
+        if (b.dataset.goto === 'top') return window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.getElementById(b.dataset.goto!)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  }
 
   render();
   subscribe(render);

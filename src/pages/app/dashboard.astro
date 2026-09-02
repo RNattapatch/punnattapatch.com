@@ -2,7 +2,8 @@
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import PinGate from '../../components/dashboard/PinGate.astro';
 import DashboardSidebar from '../../components/dashboard/DashboardSidebar.astro';
-import DashboardHeader from '../../components/dashboard/DashboardHeader.astro';
+import CrmActions from '../../components/dashboard/CrmActions.astro';
+import AppNav from '../../components/app/AppNav.astro';
 import KpiGrid from '../../components/dashboard/KpiGrid.astro';
 import PipelineDonut from '../../components/dashboard/PipelineDonut.astro';
 import IndustryBar from '../../components/dashboard/IndustryBar.astro';
@@ -28,16 +29,19 @@ import Toast from '../../components/dashboard/Toast.astro';
   <script is:inline async src="https://accounts.google.com/gsi/client"></script>
   <PinGate />
 
-  <!-- DaisyUI drawer layout (sidebar left on desktop, hamburger on mobile) -->
+  <!-- แถบบนร่วมทุกแอป · จอเล็กมี hamburger เปิด drawer เมนูย่อยของ CRM · จอใหญ่เมนูย่อยเป็นแถวที่ 2 -->
   <div id="dashboard-app" class="hidden">
-    <div class="drawer lg:drawer-open">
+    <div class="drawer">
       <input id="dash-sidebar-toggle" type="checkbox" class="drawer-toggle" />
 
       <!-- Main content area -->
       <div class="drawer-content flex flex-col min-h-screen">
-        <DashboardHeader />
+        <AppNav app="crm" menuToggleFor="dash-sidebar-toggle">
+          <CrmActions />
+        </AppNav>
 
         <main class="flex-1 p-4 lg:p-6 max-w-7xl w-full mx-auto space-y-6 pb-32 lg:pb-8">
+          <TabBar />
 
           <!-- Hero banner (command center) -->
           <section class="rounded-3xl p-5 md:p-6 text-white flex flex-col md:flex-row md:items-center gap-4" style="background-color:var(--color-brand-navy);">
@@ -54,9 +58,6 @@ import Toast from '../../components/dashboard/Toast.astro';
 
           <!-- KPI grid (8 cards) -->
           <KpiGrid />
-
-          <!-- Tab switcher -->
-          <TabBar />
 
           <!-- Leads view -->
           <div id="leads-view">
