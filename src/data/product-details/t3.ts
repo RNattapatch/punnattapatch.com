@@ -1,11 +1,22 @@
 import t2TrainingCompany from '../../assets/services/proof/t2-training-company.png';
 import type { ProductDetailPageData } from './types';
+import { JOURNEY_CLIENT_LOGOS, JOURNEY_TESTIMONIALS, journeyInstructor, publicImage } from './shared-journey';
 
 export const T3_PRODUCT_DETAIL: ProductDetailPageData = {
   code: 'T3',
   pricingKey: 'ai-workshop-advance',
   route: '/services/t3-sales-back-office',
   kind: 'course',
+  showPriceInHero: true,
+  journey: {
+    heroMeta: '1 วัน · Report-to-Prototype',
+    capacityNote: 'ผมรับไม่เกิน 10 องค์กรต่อเดือน เพื่ออ่านตัวอย่าง Report และเตรียม Workshop ให้ตรงกับ Flow ที่ทีมใช้อยู่จริง',
+    offerMeta: '1 องค์กร · 1 วัน · Reporting Operating System',
+    offerBody: 'เอารายงานที่ทีมใช้อยู่มาจัดเป็นภาษากลางและกติกาเดียวกัน ให้หัวหน้าเปิดครั้งเดียวรู้ว่าดีลไหนค้าง ค้างเพราะอะไร และต้องเข้าไปช่วยใคร โดยไม่เพิ่มงานเอกสารซ้ำให้ทีม',
+    whyNow: { eyebrow: 'Why now', heading: 'Dashboard ไม่ควรสวยขึ้น ขณะที่หัวหน้ายังต้องไล่ถามว่าดีลไหนค้างและใครต้องตาม', labels: ['Stage ตีความไม่ตรง', 'Owner ไม่ชัด', 'ไม่มี Next action', 'กราฟไม่บอกว่าจะช่วยใคร'] },
+    curriculum: { eyebrow: 'Report-to-prototype journey', media: { afterStep: 2, image: publicImage('/lp/inhouse/office-session.jpg', 1600, 1200), alt: 'ปันทำ Workshop กับทีมในห้องประชุมขององค์กร', eyebrow: 'Test the meeting, not just the screen', heading: 'Prototype ที่ดีต้องถูกทดลองในจังหวะประชุมและการตัดสินใจจริง', copy: 'ทีมลองอ่านรายการเสี่ยง กำหนดคนรับผิดชอบ และจบด้วย Next action เพื่อดูว่าข้อมูลที่ออกแบบไว้ช่วย Manager ได้จริงหรือยัง' } },
+    finalEyebrow: 'Start with one reporting bottleneck',
+  },
   chapters: [
     {
       id: 'proof',
@@ -49,6 +60,12 @@ export const T3_PRODUCT_DETAIL: ProductDetailPageData = {
     ],
     microcopy: 'ส่งตัวอย่าง Report ที่ใช้อยู่มาได้ครับ ผมจะช่วยเช็กว่าปัญหาอยู่ที่ Field, Stage หรือวิธีที่ Manager ใช้ข้อมูล',
     badges: ['In-house Workshop', 'Owner + Manager + Sales Admin', 'ได้ Prototype และ Operating rule'],
+    steps: [
+      { label: '01 · จัดภาษา', title: 'ล็อก Stage, Field และ Owner', body: 'ให้คนกรอกกับคนใช้ข้อมูลเข้าใจคำเดียวกันก่อนสร้างจอ' },
+      { label: '02 · ทดลอง', title: 'ใช้ Report กับดีลตัวอย่าง', body: 'ดูรายการค้าง Warning และ Next action จากข้อมูลที่ปิดแล้ว' },
+      { label: '03 · ทำต้นแบบ', title: 'สร้าง Manager View เพื่อทดสอบ', body: 'จบที่ Prototype และแบบทำต่อ ไม่อ้างว่าเป็น Production System' },
+    ],
+    visual: { image: { publicSrc: '/lp/inhouse/office-session.jpg', width: 1600, height: 1200 }, alt: 'ปัน ณัฐพัชร์ทำ Workshop กับทีมในห้องประชุมขององค์กร', label: 'SALES OPERATIONS WORKSHOP · ทีมจริง', caption: 'จัดภาษาและกติกาก่อนวาง Dashboard' },
   },
   authority: [
     'มี Sales Command Center และ Morning Brief ใช้งานจริง',
@@ -94,7 +111,17 @@ export const T3_PRODUCT_DETAIL: ProductDetailPageData = {
       caption: 'ข้อความจากผู้บริหารหลังทีมเข้า Workshop ร่วมกัน',
     },
   ],
+  clientLogos: JOURNEY_CLIENT_LOGOS,
+  testimonials: JOURNEY_TESTIMONIALS,
   decisionCtas: [
+    {
+      location: 'after_proof', eyebrow: 'เริ่มจาก Report ที่ทีมเปิดอยู่ทุกวัน', heading: 'ยังไม่แน่ใจว่าปัญหาอยู่ที่ข้อมูล กติกา หรือหน้าจอ?', body: 'ส่งตัวอย่าง Report ที่ปิดข้อมูลแล้วมาได้ครับ ผมช่วยชี้ว่าควรเริ่มจัด Stage, Field หรือ Manager View ก่อน', variant: 'sand',
+      actions: [{ kind: 'line', label: 'ทัก LINE ส่งตัวอย่าง Report', intent: 'report_diagnosis' }],
+    },
+    {
+      location: 'after_scope', eyebrow: 'เห็นขอบเขต Prototype แล้ว', heading: 'ถ้าทีมมี Report เดิม เราใช้มันเป็นโจทย์ในห้องได้ครับ', body: 'บอกจำนวนผู้ใช้ รูปแบบไฟล์ คำที่ทีมตีความไม่ตรง และคำถามที่ Manager ถามบ่อย เพื่อเตรียม Workshop ให้ตรงจุด', variant: 'light',
+      actions: [{ kind: 'booking', label: 'จองคิวรับบริการ', intent: 'workshop_enquiry' }, { kind: 'line', label: 'ทัก LINE เช็ก Scope', intent: 'scope_fit' }],
+    },
     {
       location: 'after_fit',
       eyebrow: 'Course Outline',
@@ -129,49 +156,15 @@ export const T3_PRODUCT_DETAIL: ProductDetailPageData = {
   ],
   analogy: 'AI เหมือนน้องฝึกงานที่รู้ทุกอย่างบนโลกแต่ไม่รู้จักบริษัทคุณครับ ถ้าคำว่า Qualified หรือ Proposal Sent ยังไม่มีนิยามกลาง AI ก็สรุปความสับสนนั้นได้เร็วขึ้นเท่านั้น เราจึงจัดภาษาและข้อมูลก่อนใช้มันสรุป',
   scope: [
-    {
-      label: 'ช่วงที่ 1 · สร้าง Sales Stage Dictionary',
-      title: 'นิยามขั้นขายจากเหตุการณ์จริงของลูกค้า',
-      learn: 'Stage ที่ดีต้องมี Entry/Exit criteria และสะท้อนเหตุการณ์จริงของลูกค้า ไม่ใช้ความรู้สึกว่า “น่าจะใกล้ปิด”',
-      action: 'เอา Pipeline ปัจจุบันมาไล่คำที่ซ้ำหรือกว้าง แล้วนิยาม Stage, Owner, Required field และเหตุการณ์ที่ขยับขั้น',
-      output: 'Sales stage dictionary + Required-field list',
-    },
-    {
-      label: 'ช่วงที่ 2 · ออกแบบ Daily Report และ Follow-up List',
-      title: 'เก็บเท่าที่ทีมใช้ทำงานและหัวหน้าใช้ตัดสินใจ',
-      learn: 'แยกข้อมูลที่เซลล์ต้องอัปเดต ข้อมูลที่ระบบคำนวณได้ และข้อมูลที่ Manager ใช้ดูความเสี่ยง',
-      action: 'สร้าง Report schema ที่มี Lead owner, Stage, Last touch, Next action, Due date และ Data-quality flag เท่าที่จำเป็น',
-      output: 'Daily report template + Stale lead/Follow-up template',
-    },
-    {
-      label: 'ช่วงที่ 3 · ล็อกกติกา Manager และจังหวะ Review',
-      title: 'ให้หัวหน้าช่วยจากรายการเสี่ยงจริง',
-      learn: 'เมื่อไรหัวหน้าควรเข้าไปช่วยดีล เมื่อไรโค้ชเซลล์ และเมื่อไรต้องแก้ข้อมูลต้นทาง',
-      action: 'กำหนด Manager intervention rules และ Agenda ประชุมสั้นจากรายการเสี่ยงจริง',
-      output: 'Manager rules + Daily/weekly review rhythm',
-    },
-    {
-      label: 'ช่วงที่ 4 · ทำ Dashboard Prototype และ AI-assisted Summary',
-      title: 'ทดสอบหน้าจอกับคำถามบริหารก่อนลงทุน Build',
-      learn: 'เลือก Metric และ View ตามคำถามบริหาร ทดลองให้ AI ช่วย Cleaning/สรุป พร้อมตั้ง Human review สำหรับข้อมูลที่มีผลต่อยอดและการประเมินคน',
-      action: 'นำข้อมูลตัวอย่างที่ปิดข้อมูลส่วนตัวแล้วมาทำ Dashboard wireframe/prototype และทดสอบว่าตอบคำถาม Manager ได้หรือไม่',
-      output: 'Dashboard prototype + Workflow map + Human review checklist',
-    },
+    { id: 'stage', label: '01 · Stage', title: 'นิยามภาษาของ Pipeline จากเหตุการณ์จริง', learn: 'Stage ที่ดีมี Entry/Exit criteria และไม่ใช้ความรู้สึกว่า “น่าจะใกล้ปิด”', action: 'ไล่คำที่ซ้ำหรือกว้าง แล้วนิยาม Stage, Owner, Required field และเหตุการณ์ที่ขยับขั้น', output: 'Stage/Data Dictionary' },
+    { id: 'report', label: '02 · Report', title: 'เก็บครั้งเดียว แล้วใช้ได้ทั้งทีมและหัวหน้า', learn: 'แยกข้อมูลที่เซลล์ต้องกรอก ระบบคำนวณได้ และ Manager ใช้ตัดสินใจ', action: 'สร้าง Report schema ที่มี Owner, Stage, Last touch, Next action, Due date และ Data-quality flag', output: 'Single-input Reporting Standard' },
+    { id: 'warn', label: '03 · Warn', title: 'เปลี่ยนข้อมูลเป็นสัญญาณเตือนที่มีคนรับผิดชอบ', learn: 'เห็นดีลค้าง ข้อมูลขาด และงานเกินกำหนด โดยไม่ต้องไล่ถามทีละคน', action: 'กำหนด Warning Rules และจุดที่ Manager ต้องเข้าไปช่วย โค้ช หรือแก้ข้อมูลต้นทาง', output: 'Warning Rules + Manager View' },
+    { id: 'review', label: '04 · Review', title: 'ทดลองประชุมจากรายการเสี่ยงจริง', learn: 'Report มีค่าต่อเมื่อการประชุมจบด้วย Owner, Next action และ Due date', action: 'จำลอง Weekly Sales Meeting 30 นาทีจากดีลตัวอย่างที่ปิดข้อมูลแล้ว', output: 'Weekly Ritual + Manager Coaching Flow' },
+    { id: 'prototype', label: '05 · Prototype', title: 'ทำ Manager View ตัวแรกเพื่อทดสอบก่อน Build', learn: 'เลือก Metric และ View ตามคำถามบริหาร พร้อม Human Review ในข้อมูลที่มีผลต่อคนและยอด', action: 'ทำ Dashboard wireframe/prototype และทดสอบว่า Manager ตัดสินใจต่อได้หรือไม่', output: 'Dashboard Prototype + AI Summary Helper' },
   ],
-  takeHome: [
-    'Sales stage dictionary พร้อม Entry/Exit criteria',
-    'Lead owner และ Required-field rules',
-    'Daily report template',
-    'Stale lead / Follow-up template',
-    'Manager intervention rules',
-    'Daily/weekly review rhythm',
-    'Dashboard wireframe/prototype',
-    'Excel-ready data schema',
-    'AI-assisted Cleaning/Summary prompt พร้อม Human review checklist',
-    'Workflow map และ Monday action plan',
-  ],
+  takeHome: ['Stage/Data Dictionary', 'Single-input Reporting Standard', 'Manager View + Warning Rules + Weekly Ritual', 'Dashboard Prototype + AI Summary Helper'],
   bonusCards: {
-    enabled: false,
+    enabled: true,
     heading: 'ของที่ทีมคุณได้รับกลับไปใช้ต่อ',
     intro: 'รวมอยู่ในค่าอบรมแล้ว ไม่ต้องซื้อ Template เพิ่ม',
     items: [
@@ -182,13 +175,24 @@ export const T3_PRODUCT_DETAIL: ProductDetailPageData = {
       { number: '05', title: 'AI Report QC Checklist: เช็กสรุปรายงาน 5 จุด', user: 'Sales Manager และ Admin', timing: 'ก่อนใช้ AI summary ในการประชุม', outcome: 'ให้คนตรวจตัวเลข ชื่อดีล สถานะ ความเสี่ยง และ Next action', format: 'Google Doc' },
     ],
   },
+  spotlight: {
+    eyebrow: 'Spotlight modules', heading: 'สองช่วงที่ทำให้ Report ไม่เป็นแค่งานกรอก และ Dashboard ไม่เป็นแค่กราฟ', intro: 'ทีมต้องตกลงภาษาข้อมูล และ Manager ต้องบอกให้ได้ว่าต้องการใช้ข้อมูลตัดสินใจอะไร',
+    modules: [{ number: '01', tag: 'Language', title: 'Sales Data Dictionary', question: 'ทำอย่างไรให้คำว่า Hot, Proposal Sent และ Follow-up แปลเหมือนกันทั้งทีม', points: ['กำหนด Entry/Exit criteria จากเหตุการณ์ของลูกค้า', 'ล็อก Owner และ Required field เท่าที่จำเป็น', 'แยกข้อมูลที่คนกรอกจากข้อมูลที่คำนวณได้', 'วางรูปแบบวันที่ ชื่อ และสถานะให้ตรวจได้', 'ตัด Field ที่ไม่มีใครใช้ตัดสินใจ'] }, { number: '02', tag: 'Management', title: 'Manager Decision View', question: 'เปิดหน้าเดียวแล้วหัวหน้าควรรู้ว่าจะช่วยดีลไหนก่อน', points: ['เห็น Stale lead และงานเกิน Due date', 'รู้ว่า Next action อยู่กับใคร', 'แยกปัญหาดีลออกจากปัญหาคุณภาพข้อมูล', 'ประชุมจากรายการเสี่ยงแทนการอ่านยอดทุกบรรทัด', 'ให้ AI ช่วยสรุปได้ แต่คนตรวจตัวเลขและการประเมินคน'] }],
+  },
+  whatsNew: {
+    eyebrow: 'What’s new in Sep 2026', heading: 'เพิ่ม AI ช่วยตรวจและสรุป โดยไม่ข้ามการจัดภาษาและความรับผิดชอบของทีม', intro: 'ของใหม่ทำให้ตรวจ Report เร็วขึ้น ส่วนแกนหลักยังเป็น Stage, Owner และ Next action ที่ทุกคนเข้าใจตรงกัน',
+    fresh: { badge: 'อัปเดต ก.ย. 2026', heading: 'ของใหม่ที่เพิ่มเข้ามา', sub: 'ใช้ AI กับข้อมูลที่ปิดแล้วและมีคนตรวจ', items: [{ title: 'AI Report QC', body: 'ช่วยตรวจ Field ที่ขาด รูปแบบผิด และรายการที่ควรทบทวน' }, { title: 'AI-assisted Summary', body: 'ร่างสรุปดีลค้างและ Next action จากกติกาที่ทีมตั้ง' }, { title: 'Warning Pattern Review', body: 'จัดกลุ่มสัญญาณเตือนเพื่อให้ Manager เห็นงานที่ควรช่วยก่อน' }, { title: 'Human Review Checklist', body: 'คนตรวจตัวเลข ชื่อดีล สถานะ และข้อความที่กระทบการประเมินคน' }], footer: 'AI ช่วยอ่าน แต่ Manager ยังตัดสินใจ' },
+    core: { badge: 'ใช้ได้ทุกยุค', heading: 'แกนที่ต้องชัดก่อนซื้อ Dashboard เพิ่ม', sub: 'เปลี่ยนเครื่องมือแล้วกติกายังอยู่', items: [{ title: 'Stage/Data Dictionary', body: 'ภาษาเดียวกันตั้งแต่ข้อมูลต้นทาง' }, { title: 'Single-input Standard', body: 'กรอกครั้งเดียว ลดการรวม Report ซ้ำ' }, { title: 'Warning Rules', body: 'รู้ว่าเมื่อไรต้องเตือนและใครรับผิดชอบ' }, { title: 'Weekly Ritual', body: 'ประชุมจบด้วย Owner, Next action และ Due date' }], footer: 'กติกาก่อนกราฟ' },
+  },
+  whyMe: { eyebrow: 'ทำไมต้องเรียนกับผม', heading: 'เพราะผมไม่ได้เริ่มจาก Chart แต่เริ่มจากคำถามที่หัวหน้าต้องตัดสินใจทุกเช้า', items: [{ icon: '📊', title: 'มีระบบใช้งานจริงให้ดู', body: 'ผมเปิดใช้ Sales Command Center, Morning Brief และ Follow-up ในงานของตัวเอง' }, { icon: '👥', title: 'เข้าใจทั้งคนกรอกและคนใช้', body: 'เคยผ่านงานขาย การปั้นทีม KPI และการโค้ช จึงไม่เพิ่ม Field โดยไม่คิดถึงหน้างาน' }, { icon: '🧭', title: 'เริ่มจาก Manager Question', body: 'ทุก View ต้องตอบว่าหัวหน้าจะช่วยใคร ตัดสินใจอะไร หรือแก้กติกาตรงไหน' }, { icon: '🛠️', title: 'จบที่ Prototype อย่างซื่อสัตย์', body: 'T3 ให้ทีมเรียนและทำต้นแบบ ไม่อ้างว่าเป็น Production System พร้อมใช้' }, { icon: '🤖', title: 'วาง AI หลัง Data Rule', body: 'AI ช่วย Cleaning และ Summary เมื่อคำเรียกกับข้อมูลต้นทางชัดแล้ว' }, { icon: '🔒', title: 'มี Human Review', body: 'ตัวเลข การประเมินคน และการติดต่อถึงลูกค้าไม่ถูกโยนให้ AI ตัดสินเอง' }] },
+  instructorProfile: journeyInstructor({ heading: 'วิทยากร · ปัน ณัฐพัชร์ · คนขายที่สร้าง Report และ AI Workflow ใช้เอง', intro: 'ผมสอนเองทั้งคลาส และใช้ตัวอย่าง Report ที่ปิดข้อมูลแล้วของบริษัทเป็นฐาน เพื่อให้ทีมเห็นตั้งแต่คำเรียก Stage ไปจนถึงจังหวะที่ Manager ใช้หน้า Prototype ตัดสินใจ', chips: ['B2B Sales Consultant', 'Sales Operations', 'AI Workflow Builder'], angles: [{ icon: '📈', title: 'มุมคนขาย', body: 'รู้ว่าการกรอกข้อมูลแทรกอยู่ตรงไหนของงานหน้าลูกค้า' }, { icon: '👥', title: 'มุม Manager', body: 'ออกแบบรายการเตือนและการประชุมจากสิ่งที่หัวหน้าต้องตัดสินใจ' }, { icon: '🛠️', title: 'มุมคนสร้างระบบ', body: 'แยก Prototype ออกจาก Production และเห็นต้นทุนของข้อมูล สิทธิ์ และ UAT' }, { icon: '🤖', title: 'มุม AI Governance', body: 'กำหนด Human Review เมื่อสรุปข้อมูลที่กระทบยอดและการประเมินคน' }], quote: 'ถ้าคำว่า Qualified หรือ Proposal Sent ยังไม่มีนิยามกลาง AI ก็แค่สรุปความสับสนได้เร็วขึ้นครับ เราจึงจัดภาษาและข้อมูลก่อนสร้างจอ' }),
   fit: [
     'Owner, Sales Manager, Branch Manager และ Sales Admin ที่ดู Report ร่วมกัน',
     'ทีมขาย 5–20 คนที่มีข้อมูลอยู่ใน Excel, Sheets หรือ CRM แต่ใช้ Stage ไม่ตรงกัน',
     'บริษัทที่อยากทำ Prototype และให้ทีมภายในทำต่อ',
     'องค์กรที่ต้องการลดเวลารวม Report และเพิ่มความชัดของ Next action',
   ],
-  notFit: 'ยังไม่เหมาะกับบริษัทที่ต้องการ CRM/ERP จริง, Data migration, Dashboard production, Integration หรือ Support ระบบต่อเนื่องครับ ถ้าโจทย์อยู่ที่ KPI, Commission หรือโครงทีมให้เริ่ม C1; ถ้าพร้อมใช้ Live data และต้องการ Build production ให้ไป I1',
+  notFit: 'T3 คือทีมคุณเรียนวิธีวางและทำ Prototype เอง ยังไม่เหมาะกับบริษัทที่ต้องการ CRM/ERP จริง, Data migration, Dashboard production, Integration หรือ Support ระบบต่อเนื่องครับ ถ้าโจทย์อยู่ที่ KPI, Commission หรือโครงทีมให้เริ่ม C1; ถ้าพร้อมใช้ Live data และต้องการ Build production ให้ไป I1',
   relatedOffer: { href: '/services/dashboard-build', label: 'ไม่มีคนทำต่อ หรืออยากให้ทีมปัน Build, UAT และสอนใช้จริง? ดูบริการ I1' },
   bio: [
     'ผมเคยผ่านทั้งงานขาย การหาเซลล์ ตั้ง KPI ค่าคอม Onboarding และโค้ชทีมหน้างาน จึงรู้ว่า Field บน Report สามารถสร้างพฤติกรรมได้ ถ้าวัดผิด ทีมก็วิ่งผิด หรือหาวิธีกรอกให้ผ่านแทนที่จะขยับดีล',

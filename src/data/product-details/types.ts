@@ -174,6 +174,30 @@ export interface ProductInstructorProfile {
   quote: string;
 }
 
+export interface ProductJourneyPresentation {
+  heroMeta: string;
+  capacityNote: string;
+  offerMeta: string;
+  offerBody: string;
+  whyNow: {
+    eyebrow: string;
+    heading: string;
+    labels: string[];
+  };
+  curriculum: {
+    eyebrow: string;
+    media?: {
+      afterStep: number;
+      image: PublicProofImage;
+      alt: string;
+      eyebrow: string;
+      heading: string;
+      copy: string;
+    };
+  };
+  finalEyebrow: string;
+}
+
 export interface ProductDetailPageData {
   code: ProductDetailCode;
   pricingKey: string;
@@ -215,6 +239,8 @@ export interface ProductDetailPageData {
   bonusValues?: ProductBonusValues;
   whyMe?: ProductWhyMe;
   instructorProfile?: ProductInstructorProfile;
+  /** Opts a training product into the proof-led operating journey presentation. */
+  journey?: ProductJourneyPresentation;
   fit: string[];
   notFit: string;
   relatedOffer?: { href: string; label: string };

@@ -75,6 +75,19 @@ const isInverse = inverse || decision?.variant === 'navy';
         data-cta-label={action.label}
         class="btn min-h-12 w-full border-0 bg-[#06C755] px-6 text-[#072B4E] shadow-sm hover:bg-[#05ad49] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white sm:w-auto"
       >{action.label}</a>
+    ) : action.kind === 'download' && action.available && action.href ? (
+      <a
+        href={action.href}
+        download
+        data-download-cta
+        data-contact-cta
+        data-product-code={code}
+        data-cta-location={location}
+        data-cta-intent={action.intent}
+        data-cta-availability="available"
+        data-cta-label={action.label}
+        class="btn min-h-12 w-full border-2 border-navy bg-white px-6 text-navy shadow-sm hover:border-coral hover:text-coral focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral sm:w-auto"
+      >{action.label}</a>
     ) : null)}
   </div>
 </div>

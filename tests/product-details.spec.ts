@@ -1,4 +1,4 @@
-import { test, type Locator, type Page } from '@playwright/test';
+import { test, type Page } from '@playwright/test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
@@ -40,19 +40,6 @@ test.afterAll(async () => new Promise<void>((resolve, reject) => server.close((e
 function schemas(html: string) {
   return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
     .flatMap((match) => JSON.parse(match[1])['@graph'] ?? []);
-}
-
-// ทุกจุดที่เชิญให้ตัดสินใจต้องมีทางเลือก LINE คู่กับปุ่มจอง — เช็คเป็น "หนึ่งอันต่อหนึ่งตำแหน่ง"
-// ไม่ใช่นับหัวรวม เพราะพอเพิ่มการ์ดใหม่ (เช่น Course Outline ที่ after_fit ใน ef7e224)
-// ตัวเลขที่ฮาร์ดโค้ดไว้จะแดงทั้งที่หน้าเว็บถูก และไม่บอกด้วยว่าตำแหน่งไหนหาย
-const CTA_LOCATIONS = ['hero', 'after_scope', 'after_fit', 'after_investment', 'final'] as const;
-
-async function expectOneLineActionPerLocation(actions: Locator, code: string) {
-  assert.deepEqual(
-    await actions.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-cta-location'))),
-    [...CTA_LOCATIONS],
-    `${code} must retain exactly one LINE alternative at each CTA location, in page order`,
-  );
 }
 
 // การ์ด Course Outline ต้องชี้ไปที่ PDF ที่มีอยู่จริงในบิลด์ — ลิงก์ตายคือ lead ที่หลุดมือ
@@ -113,7 +100,7 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
     'T2 Hero must state the approved 5A customer job exactly',
   );
   assert.deepEqual(
-    await page.locator('[data-detail-block="pain"] li').evaluateAll((items) => items.map((item) => item.textContent?.replace(/^✓/, ''))),
+    await page.locator('[data-why-now-item] > p:last-child').allTextContents(),
     [
       'Message: Content/Ads บอกประโยชน์ไม่ชัด คนที่ทักมาไม่ตรงกับทีมที่อยากคุย',
       'Inbox: มีคนทัก แต่ตอบช้า หรือไม่มีคนรับผิดชอบตั้งแต่ข้อความแรก',
@@ -123,15 +110,13 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
     ],
     'T2 must mirror the five approved Message-to-Follow-up leak points in order',
   );
-  const t2Flow = await page.locator('[data-detail-block="scope"]').innerText();
-  assert.match(t2Flow, /ก่อน: Content\/Ads → แชต → ส่งต่อแบบเดาเอง → Lead เงียบ/, 'T2 must show the before flow');
-  assert.match(t2Flow, /หลัง: Offer\/Message → First response → Qualification → Handoff → Follow-up → Review/, 'T2 must show the agreed after flow');
-  const t2Boundary = await page.locator('[data-detail-block="boundary"]').innerText();
+  assert.deepEqual(await page.locator('[data-curriculum-step]').evaluateAll((items) => items.map((item) => item.getAttribute('data-step'))), ['message', 'respond', 'qualify', 'handoff', 'follow-up', 'review'], 'T2 must show the approved Message-to-Review journey');
+  const t2Boundary = await page.locator('[data-journey-section="offer"]').innerText();
   assert.match(t2Boundary, /ให้ทีมการตลาดและฝ่ายขายวาง Flow เดียวกัน/, 'T2 must publish the approved offer block');
-  assert.match(t2Boundary, /ไม่รับยิง Ads แทนบริษัท/, 'T2 must clearly reject an agency engagement');
+  assert.match(await page.locator('[data-journey-section="fit"]').innerText(), /ไม่เหมาะ.*รับยิง Ads/s, 'T2 must clearly reject an agency engagement');
   assert.match(await page.locator('[data-detail-block="fit"]').innerText(), /ราคาเห็นก่อนทัก/, 'T2 decision section must state that pricing is visible before contact');
   assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “ONLINE SALES” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T2 must state the live LINE keyword and team-size instruction');
-  assert.equal(await page.getByText('ของที่ทีมคุณได้รับกลับไปใช้ต่อ', { exact: true }).count(), 0, 'T2 bonus cards must remain hidden until the release gate opens');
+  assert.equal(await page.locator('[data-bonus-card]').count(), 5, 'T2 must publish the five approved practical bonuses');
   assert.equal(await page.locator('form').count(), 0, 'T2 detail page must not include a form');
   assert.equal(await page.locator('[data-hero-activity]').count(), 1, 'T2 Hero must lead with one real workshop activity photo');
   assert.equal(await page.locator('[data-hero-activity] img').getAttribute('loading'), 'eager', 'T2 Hero activity photo must be ready at first glance');
@@ -311,43 +296,33 @@ test('T4 makes the adoption boundary, curriculum, decision CTAs, FAQ, and LINE p
   await page.close();
 });
 
-test('T1 detail page presents the approved sales psychology customer job and four-stage AI Coach curriculum', async ({ browser }) => {
+test('T1 detail page presents the approved sales psychology customer job and five-stage AI Coach journey', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const response = await page.goto(`${baseURL}/services/t1-sales-skills`);
   const catalog = CATALOG['inhouse-a'];
   assert.equal(response?.status(), 200, 'T1 route must render');
   assert.equal(await page.locator('h1').count(), 1, 'T1 must contain exactly one H1');
   assert.equal(await page.locator('h1').innerText(), catalog.name, 'T1 H1 must resolve from Catalog inhouse-a');
-  assert.equal(await page.getByText(catalog.duration, { exact: true }).count(), 1, 'T1 duration must resolve from Catalog');
-  assert.equal(await page.getByText(fmtPrice('inhouse-a'), { exact: true }).count(), 1, 'T1 price must resolve from Catalog');
+  assert.match(await page.locator('[data-hero-price]').innerText(), /1 วัน · ดีลจริงของทีม/, 'T1 Hero must expose the one-day delivery boundary');
+  assert.match(await page.locator('[data-hero-price]').innerText(), new RegExp(fmtPrice('inhouse-a')), 'T1 price must resolve from Catalog');
   assert.equal(
     await page.getByText('เข้าใจเหตุผลซื้อ ถามและต่อรองได้ดีขึ้น ซ้อมดีลกับ AI Agent และ Follow-up โดยไม่รีบลดราคา', { exact: true }).count(),
     1,
     'T1 Hero must state the approved customer job exactly',
   );
   assert.deepEqual(
-    await page.locator('[data-scope-item] > p:first-child').allTextContents(),
-    [
-      'ช่วงที่ 1 · อ่านเหตุผลซื้อ 3 ชั้นให้ลึกกว่าสิ่งที่ลูกค้าพูด',
-      'ช่วงที่ 2 · ถาม ฟัง และสร้างความไว้วางใจ',
-      'ช่วงที่ 3 · ต่อรองโดยไม่รีบลดราคา',
-      'ช่วงที่ 4 · ฝึก AI Sales Coach จากเคสจริงของทีม',
-    ],
-    'T1 must render exactly the four approved curriculum stages in order',
+    await page.locator('[data-curriculum-step]').evaluateAll((items) => items.map((item) => item.getAttribute('data-step'))),
+    ['decision', 'ask', 'defend', 'rehearse', 'follow-up'],
+    'T1 must render the approved Decision-to-Follow-up journey in order',
   );
   assert.deepEqual(
-    await page.locator('[data-scope-item] > p:last-child').allTextContents(),
-    [
-      'Output: Customer Decision Map ของลูกค้าหลัก',
-      'Output: Question & Trust Playbook ของทีม',
-      'Output: Negotiation & Objection Playbook',
-      'Output: Company Context + AI Sales Coach Agent + Role-play Scorecard + Follow-up Playbook + Monday Plan',
-    ],
+    await page.locator('[data-curriculum-output]').allTextContents(),
+    ['Customer Decision Map', 'Question Playbook', 'Objection & Price-defense Library', 'AI Sales Coach Setup + Manager Coaching Rubric', 'Follow-up Cadence + 14-Day Sales Practice Plan'],
     'each T1 curriculum stage must publish its approved customer-facing output',
   );
   const heroText = await page.locator('h1').locator('xpath=ancestor::section').innerText();
   assert.doesNotMatch(heroText, /\b(?:Content|Ads)\b/i, 'T1 Hero must not promise Content or Ads');
-  assert.match(heroText, /ส่งประเภทธุรกิจ จำนวนเซลล์ และสถานการณ์ที่ทีมติดบ่อย/, 'T1 Hero must keep its approved CTA microcopy');
+  assert.match(heroText, /อ่านสินค้า ข้อโต้แย้ง และเคสที่ทีมอยากซ้อม/, 'T1 Hero must explain the preparation boundary');
   const ebookCta = page.locator('[data-cta-location="hero"][data-cta-intent="lead_magnet"]');
   assert.equal(await ebookCta.count(), 1, 'T1 Hero must expose one lead-magnet CTA');
   assert.equal(await ebookCta.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'T1 E-Book CTA must use SITE.social.line');
@@ -356,14 +331,14 @@ test('T1 detail page presents the approved sales psychology customer job and fou
   const t2Link = page.locator('a[href="/services/online-to-sales"]');
   assert.equal(await t2Link.count(), 1, 'T1 must offer one contextual canonical link to T2');
   assert.match(await t2Link.innerText(), /T2|ออนไลน์|Content/, 'T1 related link must explain the distinct T2 journey');
-  assert.equal(await page.getByText('ถ้ามีดีลที่ทีมอยากซ้อม บอกผมก่อนออกแบบคลาสได้ครับ', { exact: true }).count(), 1, 'T1 scope CTA must keep its approved workshop-case prompt');
+  assert.equal(await page.getByText('เลือกหนึ่งดีลที่ทีมอยากซ้อมก่อนวันอบรม', { exact: true }).count(), 1, 'T1 scope CTA must keep its workshop-case prompt');
   assert.equal(await page.getByText('เฉลี่ย ฿1,745 ต่อคน เมื่อเข้าอบรม 20 คน', { exact: true }).count(), 1, 'T1 per-head price must derive from the Catalog investment');
   assert.equal(await page.getByText('สแกน QR แล้วพิมพ์คำว่า “SALES PSYCHOLOGY” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T1 final CTA must keep the approved LINE keyword instruction');
   const psychologyFaq = page.getByRole('button', { name: 'จิตวิทยาการขายในคอร์สหมายถึงการอ่านใจหรือควบคุมลูกค้าหรือเปล่า?' });
   assert.equal(await psychologyFaq.count(), 1, 'T1 must publish an ethical psychology FAQ');
   await psychologyFaq.click();
   assert.match(await page.locator('#t1-faq-2').innerText(), /เคารพสิทธิ์ตัดสินใจของลูกค้า/, 'ethical psychology FAQ must reject manipulation');
-  const boundaryText = await page.locator('[data-detail-block="boundary"]').innerText();
+  const boundaryText = await page.locator('main').innerText();
   assert.match(boundaryText, /Human Review/, 'AI Sales Coach must require human review');
   assert.match(boundaryText, /การคุยกับลูกค้า.*อยู่กับเซลล์/, 'AI Sales Coach must not imply autonomous customer contact');
   assert.match(boundaryText, /CRM หรือ Dashboard production แยกเป็นบริการ Implementation/, 'AI Sales Coach must not be represented as a production CRM or dashboard');
@@ -387,7 +362,7 @@ test('T1 detail page presents the approved sales psychology customer job and fou
   await page.close();
 });
 
-test('T1 and T3 align their 5A offer copy, metadata, and disabled bonus release gate', async ({ browser }) => {
+test('T1 and T3 align their 5A offer copy, metadata, and visible practical bonuses', async ({ browser }) => {
   const cases = [
     {
       route: '/services/t1-sales-skills',
@@ -407,9 +382,9 @@ test('T1 and T3 align their 5A offer copy, metadata, and disabled bonus release 
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     const response = await page.goto(`${baseURL}${item.route}`);
     assert.equal(response?.status(), 200, `${item.route} must render`);
-    assert.match(await page.locator('[data-detail-block="boundary"]').innerText(), new RegExp(item.coreOffer), `${item.route} must show the approved Core Offer`);
+    assert.match(await page.locator('[data-journey-section="offer"]').innerText(), new RegExp(item.coreOffer), `${item.route} must show the approved Core Offer`);
     assert.match(await page.locator('[data-detail-block="take-home"]').innerText(), new RegExp(item.offerBlock), `${item.route} must show the approved Offer block`);
-    assert.equal(await page.locator('[data-detail-block="bonus"]').count(), 0, `${item.route} bonus cards must remain hidden until the release gate opens`);
+    assert.equal(await page.locator('[data-bonus-card]').count(), 5, `${item.route} must show all five approved bonuses`);
     assert.equal(await page.locator('meta[name="description"]').getAttribute('content'), item.description, `${item.route} metadata must match its approved customer job`);
     assert.equal(await page.locator('meta[property="og:description"]').getAttribute('content'), item.description, `${item.route} OG description must match its metadata`);
     await page.close();
@@ -448,13 +423,13 @@ test('T1 remediation keeps evidence, location-specific LINE actions, and mobile 
     assert.equal(await action.getAttribute('data-cta-intent'), intent, `${location} LINE action must retain its analytics intent`);
   }
   const allT1LineActions = page.locator('[data-product-code="T1"][data-line-cta]');
-  await expectOneLineActionPerLocation(allT1LineActions, 'T1');
+  assert.deepEqual(await allT1LineActions.evaluateAll((actions) => actions.map((action) => action.getAttribute('data-cta-location'))), ['hero', 'offer', 'after_proof', 'after_scope', 'why_me', 'after_fit', 'after_investment', 'final'], 'T1 must keep a LINE action across the full journey');
   await expectOutlineDownload(page, 'T1', '/services/outlines/t1-sales-psychology-ai-agent.pdf');
   for (const action of await allT1LineActions.all()) {
     assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'every T1 CTA must open the real SITE.social.line destination');
     assert.equal(await action.getAttribute('data-cta-keyword'), 'SALES PSYCHOLOGY', 'every T1 CTA must carry the approved lead-magnet keyword');
   }
-  assert.equal(await page.locator('[data-product-code="T1"][data-booking-cta]').count(), 4, 'T1 must provide one Coral booking action at each CTA location');
+  assert.equal(await page.locator('[data-product-code="T1"][data-booking-cta]').count(), 6, 'T1 must provide six Coral booking actions across the journey');
 
   const finalQr = page.locator('[data-final-line-qr]');
   assert.equal(await finalQr.count(), 1, 'desktop final CTA must contain a real LINE QR');
@@ -638,71 +613,36 @@ test('T3 teaches the team to design a sales back office prototype without promis
   assert.equal(response?.status(), 200, 'T3 canonical route must render');
   assert.equal(await page.locator('h1').count(), 1, 'T3 must contain exactly one H1');
   assert.equal(await page.locator('h1').innerText(), catalog.name, 'T3 H1 must resolve from the Catalog');
-  assert.equal(await page.getByText(catalog.duration, { exact: true }).count(), 1, 'T3 duration must resolve from the Catalog');
-  assert.equal(await page.getByText(fmtPrice('ai-workshop-advance'), { exact: true }).count(), 1, 'T3 price must resolve from the Catalog');
-
-  const chapterMap = page.locator('[data-chapter-map]');
-  const chapterLinks = chapterMap.locator('[data-chapter-link]');
-  const chapterGates = page.locator('[data-product-chapter]');
-  assert.equal(await chapterMap.count(), 1, 'T3 must expose one chapter map immediately after the Hero');
-  assert.deepEqual(await chapterLinks.evaluateAll((links) => links.map((link) => ({
-    href: link.getAttribute('href'),
-    number: link.getAttribute('data-chapter-number'),
-    label: link.textContent?.replace(/\s+/g, ' ').trim(),
-  }))), [
-    { href: '#chapter-proof', number: '01', label: '01 ดูของจริง' },
-    { href: '#chapter-diagnose', number: '02', label: '02 หาจุดที่ทีมติด' },
-    { href: '#chapter-workshop', number: '03', label: '03 ลงมือในหนึ่งวัน' },
-    { href: '#chapter-decision', number: '04', label: '04 ตัดสินใจ' },
-  ], 'T3 chapter map must preview the four customer decisions in reading order');
-  assert.deepEqual(await chapterGates.evaluateAll((gates) => gates.map((gate) => ({
-    id: gate.id,
-    number: gate.getAttribute('data-chapter-number'),
-  }))), [
-    { id: 'chapter-proof', number: '01' },
-    { id: 'chapter-diagnose', number: '02' },
-    { id: 'chapter-workshop', number: '03' },
-    { id: 'chapter-decision', number: '04' },
-  ], 'T3 must render four unique chapter gates in the same order as the map');
-  assert.equal(await chapterMap.evaluate((map) => map.previousElementSibling?.getAttribute('data-detail-block')), 'hero', 'T3 chapter map must follow the Hero without an intervening long-form section');
+  assert.match(await page.locator('[data-hero-price]').innerText(), /1 วัน · Report-to-Prototype/, 'T3 Hero must state the workshop-to-prototype boundary');
+  assert.match(await page.locator('[data-hero-price]').innerText(), new RegExp(fmtPrice('ai-workshop-advance')), 'T3 price must resolve from the Catalog');
 
   const scope = page.locator('[data-detail-block="scope"]');
-  const stages = scope.locator('[data-scope-item]');
-  assert.equal(await stages.count(), 4, 'T3 must render the four approved workshop stages');
-  assert.deepEqual(await stages.evaluateAll((items) => items.map((item) => item.getAttribute('data-scope-label'))), [
-    'ช่วงที่ 1 · สร้าง Sales Stage Dictionary',
-    'ช่วงที่ 2 · ออกแบบ Daily Report และ Follow-up List',
-    'ช่วงที่ 3 · ล็อกกติกา Manager และจังหวะ Review',
-    'ช่วงที่ 4 · ทำ Dashboard Prototype และ AI-assisted Summary',
-  ], 'T3 curriculum must preserve Stage → Report → Manager → Prototype order');
+  const stages = scope.locator('[data-curriculum-step]');
+  assert.equal(await stages.count(), 5, 'T3 must render the five approved workshop stages');
+  assert.deepEqual(await stages.evaluateAll((items) => items.map((item) => item.getAttribute('data-step'))), ['stage', 'report', 'warn', 'review', 'prototype'], 'T3 curriculum must preserve Stage → Report → Warn → Review → Prototype order');
   assert.match(await scope.innerText(), /T3 = ทีมคุณเรียนวิธีวางและทำ Prototype.*I1 = ทีมผม Build, UAT และสอนใช้จริง/s, 'T3/I1 distinction must sit next to the curriculum');
   const investmentText = await page.locator('[data-detail-block="investment"]').innerText();
   assert.match(investmentText, /T3 = ทีมคุณเรียนวิธีวางและทำ Prototype.*I1 = ทีมผม Build, UAT และสอนใช้จริง/s, 'T3/I1 distinction must repeat next to the price');
   assert.equal(await page.locator('a[href="/services/dashboard-build"]').count(), 1, 'T3 must link to the live I1 production-build route');
-  assert.match(await page.locator('[data-detail-block="boundary"]').innerText(), /ทีมคุณเรียนวิธีวางและทำ Prototype เอง/, 'T3 boundary must promise learning and prototype work only');
-  assert.deepEqual(await stages.locator(':scope > p:last-child').allInnerTexts(), [
-    'Output: Sales stage dictionary + Required-field list',
-    'Output: Daily report template + Stale lead/Follow-up template',
-    'Output: Manager rules + Daily/weekly review rhythm',
-    'Output: Dashboard prototype + Workflow map + Human review checklist',
-  ], 'T3 curriculum outputs must stop at workshop templates and prototype');
+  assert.match(await page.locator('main').innerText(), /T3 คือทีมคุณเรียนวิธีวางและทำ Prototype เอง/, 'T3 must promise learning and prototype work only');
+  assert.deepEqual(await stages.locator('[data-curriculum-output]').allInnerTexts(), ['Stage/Data Dictionary', 'Single-input Reporting Standard', 'Warning Rules + Manager View', 'Weekly Ritual + Manager Coaching Flow', 'Dashboard Prototype + AI Summary Helper'], 'T3 curriculum outputs must stop at workshop artifacts and a prototype');
   assert.doesNotMatch(await page.locator('[data-detail-block="take-home"]').innerText(), /(?:UAT sign-off|Production handover|Working system)/, 'T3 take-home stack must not include I1 delivery artifacts');
 
-  assert.equal(await page.locator('[data-detail-block="proof"] img').count(), 5, 'T3 must show five approved report, dashboard, client, and adoption receipts');
-  assert.equal(await page.getByText('“อาจารย์ปันสอนถูกใจทีมงานมากครับ”', { exact: true }).count(), 1, 'T3 must retain the exact approved workshop receipt');
+  assert.ok(await page.locator('[data-detail-block="proof"] img').count() >= 10, 'T3 must show report, dashboard, client, workshop, and testimonial receipts');
+  assert.equal(await page.getByText('อาจารย์ปันสอนถูกใจทีมงานมากครับ', { exact: true }).count(), 1, 'T3 must retain the exact approved workshop receipt');
   assert.equal(await page.locator('[data-product-faq-button]').count(), 8, 'T3 must publish the approved eight FAQs');
   assert.equal(await page.locator('form').count(), 0, 'T3 detail page must not include a form');
   assert.equal(await page.locator('[data-floating-line]').count(), 1, 'T3 must retain exactly one global Floating LINE CTA');
   const bookingCtas = page.locator('[data-product-code="T3"][data-booking-cta]');
-  assert.equal(await bookingCtas.count(), 4, 'T3 must provide four Coral booking actions');
+  assert.equal(await bookingCtas.count(), 6, 'T3 must provide six Coral booking actions');
   assert.equal(await bookingCtas.evaluateAll((actions) => actions.every((action) => action.textContent?.trim() === 'จองคิวรับบริการ')), true, 'every T3 booking action must use the approved label');
   for (const action of await bookingCtas.all()) {
     assert.match(await action.getAttribute('href') ?? '', /^\/booking\?package=T3&intent=/, 'every T3 booking action must preserve product attribution');
   }
   const lineCtas = page.locator('[data-product-code="T3"][data-line-cta]');
-  await expectOneLineActionPerLocation(lineCtas, 'T3');
+  assert.deepEqual(await lineCtas.evaluateAll((actions) => actions.map((action) => action.getAttribute('data-cta-location'))), ['hero', 'offer', 'after_proof', 'after_scope', 'why_me', 'after_fit', 'after_investment', 'final'], 'T3 must keep a LINE action across the full journey');
   await expectOutlineDownload(page, 'T3', '/services/outlines/t3-sales-back-office.pdf');
-  assert.ok(await page.getByRole('link', { name: 'รับ Agent Builder Kit ทาง LINE', exact: true }).count() >= 1, 'T3 Agent Builder Kit CTA must use the real LINE flow');
+  assert.ok(await page.locator('[data-line-cta][data-cta-label="รับ Agent Builder Kit ทาง LINE"]').count() >= 1, 'T3 Agent Builder Kit CTA must use the real LINE flow');
   for (const action of await lineCtas.all()) {
     assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'every T3 CTA must open SITE.social.line');
     assert.equal(await action.getAttribute('data-cta-keyword'), 'SALES REPORT', 'every T3 CTA must carry the SALES REPORT keyword');
@@ -733,10 +673,7 @@ test('T3 teaches the team to design a sales back office prototype without promis
   await page.setViewportSize({ width: 390, height: 844 });
   await page.reload();
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth === document.documentElement.clientWidth), true, 'mobile T3 must not overflow horizontally');
-  assert.equal(await chapterLinks.evaluateAll((links) => links.every((link) => link.getBoundingClientRect().height >= 44)), true, 'mobile T3 chapter map links must meet the 44px touch-target minimum');
-  assert.equal(await chapterMap.evaluate((map) => getComputedStyle(map.querySelector('[data-chapter-grid]')!).gridTemplateColumns.split(' ').length), 2, 'mobile T3 chapter map must use a glanceable 2-column grid');
-  await chapterLinks.first().focus();
-  assert.notEqual(await chapterLinks.first().evaluate((link) => getComputedStyle(link).outlineStyle), 'none', 'T3 chapter map links must expose a visible keyboard focus treatment');
+  assert.equal(await page.locator('[data-curriculum-step]').count(), 5, 'mobile T3 must retain the full operating journey');
   assert.equal(await page.locator('[data-final-line-qr]').isVisible(), false, 'mobile T3 must not show a scan instruction without an inline QR');
   assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “SALES REPORT” พร้อมจำนวนทีม', { exact: true }).isVisible(), true, 'mobile T3 final CTA must give a tappable LINE instruction');
   await page.close();

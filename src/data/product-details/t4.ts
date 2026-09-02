@@ -39,6 +39,29 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
   pricingKey: 't4-ai-workflow-pilot-day',
   route: '/services/advance-ai-automation',
   kind: 'course',
+  journey: {
+    heroMeta: '1 วัน · 1 Workflow',
+    capacityNote: '1 เดือนผมรับอบรมจำกัดแค่ 10 องค์กร สงวนสิทธิให้องค์กรที่ชำระค่าบริการและคิวก่อน',
+    offerMeta: '1 องค์กร · 1 วัน · 1 Workflow',
+    offerBody: 'ไม่ขายแค่ชั่วโมงสอน แต่จัดให้ทีมได้ทั้งต้นแบบ กติกาความปลอดภัย และแผนใช้ต่อหลังคลาส',
+    whyNow: {
+      eyebrow: 'Why now',
+      heading: 'ธุรกิจไม่ควรโตด้วยการโยนงานจุกจิกให้คนเก่งเพิ่ม',
+      labels: ['โตโดยไม่เพิ่มคน', 'สร้างได้ ≠ ใช้ได้จริง', 'ไม่รู้จะเริ่มตรงไหน', 'คืนเวลาให้คนเก่ง'],
+    },
+    curriculum: {
+      eyebrow: '1-day journey',
+      media: {
+        afterStep: 2,
+        image: publicImage('/advance-ai-course/IMG_5218.JPG', 1800, 1350),
+        alt: 'ปันและผู้เข้าร่วมลงมือทำ Advance AI Workshop ในห้องอบรมจริง',
+        eyebrow: 'Build together',
+        heading: 'หลังสร้างต้นแบบ ทีมต้องลองรันและอธิบายกติกาให้กันฟัง',
+        copy: 'เพราะระบบที่ใช้ต่อได้ ต้องมีคนในองค์กรเข้าใจว่ามันรับอะไร ทำอะไร และต้องหยุดให้คนตรวจเมื่อไร',
+      },
+    },
+    finalEyebrow: 'Start with one workflow',
+  },
   showPriceInHero: true,
   hero: {
     eyebrow: 'IN-HOUSE TRAINING · T4',

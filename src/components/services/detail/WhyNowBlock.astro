@@ -1,19 +1,21 @@
 ---
-interface Props { items: string[]; }
-const { items } = Astro.props;
-const labels = ['โตโดยไม่เพิ่มคน', 'สร้างได้ ≠ ใช้ได้จริง', 'ไม่รู้จะเริ่มตรงไหน', 'คืนเวลาให้คนเก่ง'];
+import type { ProductDetailCode, ProductJourneyPresentation } from '../../../data/product-details/types';
+
+interface Props { code: ProductDetailCode; items: string[]; journey: ProductJourneyPresentation; }
+const { code, items, journey } = Astro.props;
+const headingId = `${code.toLowerCase()}-why-heading`;
 ---
 
-<section data-t4-section="why-now" aria-labelledby="t4-why-heading" class="relative overflow-hidden bg-navy py-14 text-white sm:py-20">
+<section data-t4-section={code === 'T4' ? 'why-now' : undefined} data-journey-section="why-now" aria-labelledby={headingId} class="relative overflow-hidden bg-navy py-14 text-white sm:py-20">
   <div aria-hidden="true" class="absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_1px_1px,rgba(255,255,255,.35)_1px,transparent_0)] [background-size:28px_28px]"></div>
   <div class="relative mx-auto max-w-6xl px-5">
-    <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Why now</p>
-    <h2 id="t4-why-heading" class="mt-3 max-w-4xl text-balance font-display text-3xl font-bold sm:text-5xl">ธุรกิจไม่ควรโตด้วยการโยนงานจุกจิกให้คนเก่งเพิ่ม</h2>
+    <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">{journey.whyNow.eyebrow}</p>
+    <h2 id={headingId} class="mt-3 max-w-4xl text-balance font-display text-3xl font-bold sm:text-5xl">{journey.whyNow.heading}</h2>
     <div class="mt-9 grid gap-4 md:grid-cols-2">
       {items.map((item, index) => (
         <article data-why-now-item class="relative overflow-hidden rounded-[1.5rem] border border-white/15 bg-white/[0.07] p-6 backdrop-blur-sm sm:p-7">
           <span class="absolute right-5 top-3 font-display text-6xl font-bold text-white/[0.07]">0{index + 1}</span>
-          <p class="text-xs font-bold uppercase tracking-[.16em] text-[#ff677a]">{labels[index]}</p>
+          <p class="text-xs font-bold uppercase tracking-[.16em] text-[#ff677a]">{journey.whyNow.labels[index]}</p>
           <p class="relative mt-3 max-w-xl text-lg font-semibold leading-8 text-white/90">{item}</p>
         </article>
       ))}

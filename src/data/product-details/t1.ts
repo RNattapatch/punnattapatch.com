@@ -4,12 +4,37 @@ import t2TrainingCompany from '../../assets/services/proof/t2-training-company.p
 import t2TrainingContinue from '../../assets/services/proof/t2-training-continue.png';
 import t2WorkshopCompany from '../../assets/services/proof/t2-workshop-company.jpg';
 import type { ProductDetailPageData } from './types';
+import { JOURNEY_CLIENT_LOGOS, JOURNEY_TESTIMONIALS, journeyInstructor, publicImage } from './shared-journey';
 
 export const T1_PRODUCT_DETAIL: ProductDetailPageData = {
   code: 'T1',
   pricingKey: 'inhouse-a',
   route: '/services/t1-sales-skills',
   kind: 'course',
+  showPriceInHero: true,
+  journey: {
+    heroMeta: '1 วัน · ดีลจริงของทีม',
+    capacityNote: 'ผมรับไม่เกิน 10 องค์กรต่อเดือน เพื่ออ่านสินค้า ข้อโต้แย้ง และเคสที่ทีมอยากซ้อมก่อนวันอบรม',
+    offerMeta: '1 องค์กร · 1 วัน · Sales Playbook',
+    offerBody: 'เอาดีลจริงของทีมมาสร้าง Playbook การคุย ต่อรอง และ Follow-up ให้เซลล์รู้ว่าจะถามอะไร รับมือข้อโต้แย้งอย่างไร และล็อก Next Step โดยไม่รีบลดราคา พร้อมใช้ AI เป็นคู่ซ้อมก่อนคุยลูกค้า',
+    whyNow: {
+      eyebrow: 'Why now',
+      heading: 'ยอดไม่ควรหาย เพราะทีมรีบตอบก่อนเข้าใจว่าลูกค้ากำลังตัดสินใจอะไร',
+      labels: ['แพงแล้วรีบลด', 'ถามได้แต่ยังไม่ลึก', 'ตามดีลด้วยประโยคเดิม', 'หัวหน้าโค้ชคนละเกณฑ์'],
+    },
+    curriculum: {
+      eyebrow: 'Decision-to-follow-up journey',
+      media: {
+        afterStep: 2,
+        image: publicImage('/lp/inhouse/hands-on.jpg', 1600, 1200),
+        alt: 'ทีมขายลงมือซ้อมสถานการณ์จากงานจริงใน Workshop',
+        eyebrow: 'Rehearse together',
+        heading: 'ข้อโต้แย้งต้องถูกซ้อม ก่อนเอาคำตอบไปใช้กับลูกค้าจริง',
+        copy: 'ทีมใช้ดีลที่ปิดข้อมูลแล้วเป็นโจทย์ ซ้อมทั้งระหว่างคนและกับ AI Sales Coach แล้วใช้เกณฑ์เดียวกันทบทวนคำถาม คุณค่า และ Next Step',
+      },
+    },
+    finalEyebrow: 'Start with one stuck deal',
+  },
   hero: {
     eyebrow: 'IN-HOUSE SALES TRAINING · T1',
     customerJob: 'เข้าใจเหตุผลซื้อ ถามและต่อรองได้ดีขึ้น ซ้อมดีลกับ AI Agent และ Follow-up โดยไม่รีบลดราคา',
@@ -19,6 +44,17 @@ export const T1_PRODUCT_DETAIL: ProductDetailPageData = {
     ],
     microcopy: 'ส่งประเภทธุรกิจ จำนวนเซลล์ และสถานการณ์ที่ทีมติดบ่อยมาได้เลยครับ ผมจะช่วยดูว่าน้ำหนักของคลาสควรอยู่ที่การถาม การต่อรอง หรือการ Follow-up',
     badges: ['In-house ที่บริษัทคุณ', 'ทีมขาย 5–20 คน', 'ฝึกจากสินค้าและสถานการณ์จริงของทีม'],
+    steps: [
+      { label: '01 · เข้าใจ', title: 'อ่านเหตุผลซื้อก่อนเสนอคำตอบ', body: 'แยกสิ่งที่ลูกค้าพูดออกจากความคืบหน้าที่เขาต้องการจริง' },
+      { label: '02 · ซ้อม', title: 'ฝึกข้อโต้แย้งและการต่อรอง', body: 'ใช้ดีลจริงซ้อมการถาม รักษาคุณค่า และแลกเปลี่ยนเงื่อนไข' },
+      { label: '03 · ใช้ต่อ', title: 'ล็อก Follow-up และเกณฑ์โค้ช', body: 'ทีมและหัวหน้าเห็น Next Step และทบทวนดีลด้วยภาษาเดียวกัน' },
+    ],
+    visual: {
+      image: t1HfcTraining,
+      alt: 'ทีม HFC HealthFoods เข้าร่วม In-house Sales Training กับปัน ณัฐพัชร์',
+      label: 'IN-HOUSE SALES TRAINING · ทีมจริง',
+      caption: 'ฝึกจากสินค้า ลูกค้า และสถานการณ์ที่ทีมเจอจริง',
+    },
   },
   authority: [
     'อดีต Sales Engineer และ Instructor ฝั่ง Dealer',
@@ -32,7 +68,17 @@ export const T1_PRODUCT_DETAIL: ProductDetailPageData = {
     { kind: 'quote', quote: 'อาจารย์ปันสอนถูกใจทีมงานมากครับ', caption: 'ข้อความจากผู้เข้าร่วมหลังอบรมที่ปิดข้อมูลส่วนบุคคลแล้ว', image: t2TrainingCompany, alt: 'ข้อความรีวิวจากผู้บริหารที่ปิดข้อมูลส่วนบุคคลแล้ว' },
     { kind: 'quote', quote: 'ต่อยอด โปรเจ็คเลขาครับ สนุกดีครับ😂', caption: 'เวลา 20:27 ผู้เรียนส่งภาพระบบ Morning Brief ที่ทำต่อเองหลังคลาส โดยปิดข้อมูลส่วนบุคคลแล้ว', image: t2TrainingContinue, alt: 'ข้อความจากผู้เรียนหลังนำงานไปต่อยอด โดยปิดข้อมูลส่วนบุคคลแล้ว' },
   ],
+  clientLogos: JOURNEY_CLIENT_LOGOS,
+  testimonials: JOURNEY_TESTIMONIALS,
   decisionCtas: [
+    {
+      location: 'after_proof', eyebrow: 'เริ่มจากดีลที่ทีมกำลังติด', heading: 'มีดีลที่ลูกค้าบอกแพง ขอคิดก่อน หรือเงียบหลังส่งราคา?', body: 'ส่งสถานการณ์ที่ปิดข้อมูลแล้วมาได้ครับ ผมช่วยเช็กว่าเหมาะเอาเข้าห้องเพื่อทำ Decision Map และ Role-play หรือไม่', variant: 'sand',
+      actions: [{ kind: 'line', label: 'ทัก LINE ส่งสถานการณ์', intent: 'deal_diagnosis' }],
+    },
+    {
+      location: 'after_scope', eyebrow: 'เห็นวิธีซ้อมแล้ว', heading: 'เลือกหนึ่งดีลที่ทีมอยากซ้อมก่อนวันอบรม', body: 'บอกสินค้า จำนวนเซลล์ ข้อโต้แย้ง และจังหวะที่ดีลค้าง ผมจะช่วยวางน้ำหนักของ Workshop ให้ครับ', variant: 'light',
+      actions: [{ kind: 'booking', label: 'จองคิวรับบริการ', intent: 'inhouse_enquiry' }, { kind: 'line', label: 'รับ E-Book ก่อนตัดสินใจ', intent: 'lead_magnet' }],
+    },
     {
       location: 'after_fit',
       eyebrow: 'Course Outline',
@@ -67,24 +113,15 @@ export const T1_PRODUCT_DETAIL: ProductDetailPageData = {
   ],
   analogy: 'AI เหมือนคู่ซ้อมที่อดทนและพร้อมซ้อมได้หลายรอบครับ แต่ถ้าไม่สอนกติกา สินค้า และลูกค้าของบริษัท มันก็ทำได้เพียงตอบแบบกว้างๆ',
   scope: [
-    { label: 'ช่วงที่ 1 · อ่านเหตุผลซื้อ 3 ชั้นให้ลึกกว่าสิ่งที่ลูกค้าพูด', title: 'Jobs to Be Done ของลูกค้าที่กำลังเลือกจริง', learn: 'Functional, Emotional และ Social Job รวมถึง Desired Progress, Cost of Inaction และคุณค่าที่ลูกค้ากำลังเลือกจริง', action: 'เลือกดีลหรือสินค้าจริง แล้วแยกสิ่งที่ลูกค้าต้องการทำให้เสร็จ ความรู้สึกที่ต้องการ และภาพที่เขาต้องการให้คนอื่นมองเห็น', output: 'Customer Decision Map ของลูกค้าหลัก' },
-    { label: 'ช่วงที่ 2 · ถาม ฟัง และสร้างความไว้วางใจ', title: 'ให้ลูกค้าอธิบายสิ่งสำคัญออกมาด้วยตัวเอง', learn: 'Socratic Questions, Diagnostic Listening และการใช้ Framing, Reciprocity, Social Proof และ Familiarity อย่างโปร่งใส', action: 'ฝึกเปิดบทสนทนา ถามต่อจากคำตอบจริง สรุปสิ่งที่ได้ยิน และตรวจว่าสิ่งที่ทีมเสนอเชื่อมกับเหตุผลซื้อหรือยัง', output: 'Question & Trust Playbook ของทีม' },
-    { label: 'ช่วงที่ 3 · ต่อรองโดยไม่รีบลดราคา', title: 'แยกข้อโต้แย้งออกจากส่วนลดที่ไม่จำเป็น', learn: 'การวินิจฉัยข้อโต้แย้ง, Pricing Psychology, Choice Architecture, BATNA, Trade-off และ Value Exchange', action: 'Role-play สถานการณ์ “แพง” “ขอคิดก่อน” และ “เทียบอีกเจ้า” เพื่อแยกว่าควรถามเพิ่ม ให้หลักฐาน เปลี่ยนเงื่อนไข หรือยอมถอยจากดีล', output: 'Negotiation & Objection Playbook' },
-    { label: 'ช่วงที่ 4 · ฝึก AI Sales Coach จากเคสจริงของทีม', title: 'ซ้อมก่อนคุยจริง แล้วทบทวนจากเกณฑ์เดียวกัน', learn: 'การสร้าง Company Context, เตรียม Pre-call, จำลองบทลูกค้า, Debrief หลังซ้อม และร่าง Follow-up พร้อม Human Review', action: 'ให้ AI รับบทลูกค้าจากสถานการณ์จริง สลับกับ Role-play ระหว่างคน แล้วใช้ Scorecard ดูว่าคำถาม การฟัง การเสนอคุณค่า และการต่อรองควรปรับตรงไหน', output: 'Company Context + AI Sales Coach Agent + Role-play Scorecard + Follow-up Playbook + Monday Plan' },
+    { id: 'decision', label: '01 · Decision', title: 'อ่านเหตุผลซื้อให้ลึกกว่าสิ่งที่ลูกค้าพูด', learn: 'Functional, Emotional และ Social Job รวมถึงความเสี่ยงที่ทำให้ยังไม่ตัดสินใจ', action: 'เลือกดีลจริง แล้วแยก Desired Progress, Cost of Inaction และเกณฑ์ที่ลูกค้าใช้เลือก', output: 'Customer Decision Map' },
+    { id: 'ask', label: '02 · Ask', title: 'ถามและฟังให้ลูกค้าอธิบายสิ่งสำคัญ', learn: 'Socratic Questions, Diagnostic Listening และการสร้างความไว้วางใจอย่างโปร่งใส', action: 'ฝึกเปิดบทสนทนา ถามต่อจากคำตอบ และสรุปสิ่งที่ได้ยินก่อนเสนอ', output: 'Question Playbook' },
+    { id: 'defend', label: '03 · Defend', title: 'รับมือข้อโต้แย้งโดยไม่รีบลดราคา', learn: 'แยกคำว่าแพงออกจากความเสี่ยง คุณค่า เงื่อนไข และทางเลือกที่ลูกค้ากำลังเทียบ', action: 'Role-play เคส “แพง” “ขอคิดก่อน” และ “เทียบอีกเจ้า” ด้วย Value Exchange', output: 'Objection & Price-defense Library' },
+    { id: 'rehearse', label: '04 · Rehearse', title: 'ซ้อมดีลกับ AI Sales Coach และคนในทีม', learn: 'สร้าง Company Context, จำลองบทลูกค้า และ Debrief ด้วย Human Review', action: 'ให้ AI รับบทลูกค้า สลับ Role-play ระหว่างคน แล้วใช้ Scorecard ตรวจคำถาม การฟัง และการรักษาคุณค่า', output: 'AI Sales Coach Setup + Manager Coaching Rubric' },
+    { id: 'follow-up', label: '05 · Follow-up', title: 'ล็อก Next Step และรอบตามดีล', learn: 'Follow-up ที่ดีมีสมมติฐานว่าดีลติดตรงไหน ไม่ใช่ถามซ้ำว่า “ตัดสินใจหรือยัง”', action: 'วางข้อความ จังหวะ 7–14–30 วัน Owner และวันที่ทบทวนดีลร่วมกับหัวหน้า', output: 'Follow-up Cadence + 14-Day Sales Practice Plan' },
   ],
-  takeHome: [
-    'Customer Decision Map',
-    'Question & Trust Playbook',
-    'Negotiation & Objection Playbook',
-    'Company Context Pack',
-    'AI Sales Coach Agent',
-    'Role-play Scorecard',
-    'Follow-up Playbook',
-    'Monday Plan ของผู้เรียนแต่ละคน',
-    'ไฟล์ทบทวนและการดูแลหลังเรียนตามขอบเขตที่ตกลงก่อนเริ่มงาน',
-  ],
+  takeHome: ['Customer Decision Map', 'Question Playbook', 'Objection & Price-defense Library', 'Follow-up Cadence + Manager Coaching Rubric'],
   bonusCards: {
-    enabled: false,
+    enabled: true,
     heading: 'ของที่ทีมคุณได้รับกลับไปใช้ต่อ',
     intro: 'รวมอยู่ในค่าอบรมแล้ว ไม่ต้องซื้อ Template เพิ่ม',
     items: [
@@ -95,13 +132,32 @@ export const T1_PRODUCT_DETAIL: ProductDetailPageData = {
       { number: '05', title: '14-Day Sales Practice Plan: แผนฝึกกับดีลจริง', user: 'Sales Manager และทีมขาย', timing: '14 วันหลังคลาส', outcome: 'เปลี่ยนความรู้ในห้องเป็นรอบซ้อมและการใช้กับดีลจริง', format: 'Google Sheet' },
     ],
   },
+  spotlight: {
+    eyebrow: 'Spotlight modules',
+    heading: 'สองช่วงที่ทำให้ทีมขายไม่ได้แค่จำสคริปต์ แต่คิดกับดีลจริงเป็น',
+    intro: 'สอง Module นี้เชื่อมหลักการตัดสินใจกับการซ้อมซ้ำ เพื่อให้ทีมกลับไปปรับบทสนทนาของตัวเองได้',
+    modules: [
+      { number: '01', tag: 'Decision', title: 'Customer Decision Psychology', question: 'ลูกค้าพูดว่าแพง แต่จริงๆ กำลังกังวลเรื่องอะไร', points: ['แยก Functional, Emotional และ Social Job', 'เห็น Cost of Inaction และความเสี่ยงที่ลูกค้าต้องรับ', 'ใช้หลักจิตวิทยาเพื่อเข้าใจ ไม่ใช่ควบคุมการตัดสินใจ', 'เปลี่ยนจากรีบตอบ เป็นถามเพื่อวินิจฉัย', 'เชื่อมคุณค่ากับเหตุผลซื้อที่ลูกค้าพูดเอง'] },
+      { number: '02', tag: 'Practice', title: 'AI Sales Coach for Deliberate Practice', question: 'ทำอย่างไรให้เซลล์ซ้อมดีลได้บ่อย โดยหัวหน้าไม่ต้องนั่งประกบทุกครั้ง', points: ['สอน AI ด้วยสินค้า ลูกค้า และข้อจำกัดของบริษัท', 'จำลองข้อโต้แย้งจากสถานการณ์จริง', 'ใช้ Scorecard เดียวกันระหว่างเซลล์กับหัวหน้า', 'ให้คนตรวจทุกคำตอบก่อนใช้กับลูกค้า', 'เก็บบทเรียนจากการซ้อมไปเพิ่มใน Playbook'] },
+    ],
+  },
+  whatsNew: {
+    eyebrow: 'What’s new in Sep 2026', heading: 'เพิ่ม AI คู่ซ้อมเข้าไป โดยไม่ทิ้งหลักการขายที่ใช้ได้ทุกยุค', intro: 'เครื่องมือเปลี่ยนเร็ว แต่เหตุผลซื้อ คำถามที่ดี และการรักษาคุณค่าไม่หายไป คลาสนี้จึงแยกของใหม่กับแกนหลักให้ทีมเห็นชัด',
+    fresh: { badge: 'อัปเดต ก.ย. 2026', heading: 'ของใหม่ที่เพิ่มเข้ามา', sub: 'ใช้ AI ช่วยให้ทีมเตรียมและซ้อมได้ถี่ขึ้น', items: [{ title: 'AI Sales Coach Setup', body: 'ตั้ง Context ให้ AI รับบทลูกค้าตามธุรกิจของบริษัท' }, { title: 'Scenario Practice', body: 'สร้างเคสซ้อมจากข้อโต้แย้งและดีลจริงที่ปิดข้อมูลแล้ว' }, { title: 'Debrief with Rubric', body: 'ทบทวนคำถาม การฟัง คุณค่า และ Next Step ด้วยเกณฑ์เดียวกัน' }, { title: 'Human Review', body: 'ทุกข้อความถึงลูกค้ายังต้องผ่านเซลล์ผู้รับผิดชอบ' }], footer: 'AI ช่วยซ้อม แต่คนยังรับผิดชอบดีล' },
+    core: { badge: 'ใช้ได้ทุกยุค', heading: 'หลักที่ทีมต้องแม่นก่อนใช้ AI', sub: 'เปลี่ยน Tool แล้ว Playbook ยังอยู่', items: [{ title: 'Customer Decision Map', body: 'เข้าใจว่าลูกค้าพยายามขยับจากอะไรไปหาอะไร' }, { title: 'Question Playbook', body: 'ถามเพื่อวินิจฉัยก่อนเสนอ' }, { title: 'Price Defense', body: 'รักษาคุณค่าและแลกเปลี่ยนเงื่อนไขอย่างโปร่งใส' }, { title: 'Follow-up Cadence', body: 'ตามจากเหตุผลที่ดีลค้าง พร้อม Owner และวันนัด' }], footer: 'หลักการขายมาก่อนเครื่องมือ' },
+  },
+  whyMe: {
+    eyebrow: 'ทำไมต้องเรียนกับผม', heading: 'เพราะคลาสนี้ต้องเข้าใจทั้งคนซื้อ คนขาย และวิธีฝึกทีมให้ทำซ้ำ',
+    items: [{ icon: '🚗', title: 'เคยขายและสอน Dealer Sale', body: 'ผมเคยอยู่ทั้งหน้าลูกค้าและหน้าห้อง จึงรู้ว่าทฤษฎีต้องถูกแปลงเป็นคำถามและการสาธิตอย่างไร' }, { icon: '👥', title: 'เข้าใจงานของ Sales Manager', body: 'ประสบการณ์ปั้นทีมทำให้คลาสมีเกณฑ์โค้ช ไม่ได้จบที่เซลล์ได้สคริปต์กลับไปคนละชุด' }, { icon: '🎯', title: 'ใช้ดีลของบริษัทเป็นโจทย์', body: 'สินค้า ลูกค้า ข้อโต้แย้ง และสถานการณ์จริงถูกนำมาทำ Decision Map และ Role-play' }, { icon: '🤖', title: 'สร้าง AI Workflow ใช้เอง', body: 'AI Sales Coach ถูกวางเป็นคู่ซ้อมภายใต้ Context และ Human Review ไม่ใช่บอตพูดแทนเซลล์' }, { icon: '🔒', title: 'คลาสไพรเวทที่บริษัทคุณ', body: 'ทีมถามเรื่องดีลและเงื่อนไขได้เต็มที่ พร้อมปิดข้อมูลที่ไม่ควรเข้า AI' }, { icon: '🎁', title: 'Core 4 + Bonus 5 ใช้ต่อได้', body: 'ทีมและหัวหน้าได้ทั้ง Playbook ชุดซ้อม และแผนฝึก 14 วัน โดยไม่ตีมูลค่าของแถมเกิน Scope' }],
+  },
+  instructorProfile: journeyInstructor({ heading: 'วิทยากร · ปัน ณัฐพัชร์ · คนขายที่ใช้ AI ช่วยเตรียมและทบทวนดีลจริง', intro: 'ผมสอนเองทั้งคลาส เชื่อมประสบการณ์ Sales Engineer การสอน Dealer Sale การปั้นทีม และการสร้าง AI Workflow ให้กลายเป็นวิธีซ้อมที่ทีมคุณใช้ต่อได้', chips: ['B2B Sales Consultant', 'Sales Psychology', 'AI Sales Coach'], angles: [{ icon: '📈', title: 'มุมคนทำยอด', body: 'รู้ว่าคำว่าแพง ดีลเงียบ และขอคิดก่อน เกิดขึ้นจริงในจังหวะไหน' }, { icon: '👥', title: 'มุมหัวหน้าทีม', body: 'ออกแบบ Rubric ให้โค้ชจากพฤติกรรมที่เห็น ไม่ใช่ความรู้สึก' }, { icon: '🧠', title: 'มุมการตัดสินใจ', body: 'ใช้จิตวิทยาเพื่อเข้าใจความเสี่ยงและเหตุผลซื้อ โดยเคารพสิทธิ์ลูกค้า' }, { icon: '🤖', title: 'มุมคนสร้าง AI', body: 'วาง Context, Data Rule และ Human Review ก่อนให้ AI ช่วยซ้อม' }], quote: 'AI เป็นคู่ซ้อมที่ซ้อมได้ไม่เหนื่อยครับ แต่เซลล์ยังต้องเป็นคนฟัง ตัดสินใจ และรับผิดชอบทุกคำที่ส่งถึงลูกค้า' }),
   fit: [
     'ทีมขาย B2B 5–20 คน ที่ต้องคุย เจรจา และ Follow-up ก่อนลูกค้าตัดสินใจ',
     'เซลล์ที่รู้สินค้า แต่ยังเชื่อมคุณค่ากับเหตุผลซื้อได้ไม่สม่ำเสมอ',
     'Sales Manager ที่อยากมีวิธีซ้อมและเกณฑ์โค้ชจากดีลจริง',
     'บริษัทที่พร้อมนำสินค้า ลูกค้า และข้อโต้แย้งจริงมาใช้ใน Workshop',
   ],
-  notFit: 'ยังไม่เหมาะกับบริษัทที่ยังไม่มี Offer หรือ Lead, ต้องการ CRM production, ต้องการออกแบบ KPI/Commission หรือขอการันตียอดครับ ถ้าโจทย์คือโครงทีม KPI หรือ Commission ให้เริ่ม C1; ถ้าต้องการ CRM หรือ Follow-up automation production ให้ไป I1',
+  notFit: 'AI Sales Coach เป็นคู่ซ้อมภายใต้ Human Review เท่านั้น การคุยกับลูกค้า การตัดสินใจ ราคา และเงื่อนไขยังอยู่กับเซลล์ครับ ยังไม่เหมาะกับบริษัทที่ยังไม่มี Offer หรือ Lead, ต้องการออกแบบ KPI/Commission หรือขอการันตียอด หากต้องการ CRM หรือ Dashboard production แยกเป็นบริการ Implementation I1; ถ้าโจทย์คือโครงทีม KPI หรือ Commission ให้เริ่ม C1',
   relatedOffer: { href: '/services/online-to-sales', label: 'ดู T2: สร้าง Demand จาก Content + Ads แล้วส่งต่อจาก Marketing ไป Sales' },
   bio: [
     'ช่วงเป็น Sales Engineer ที่ตรีเพชรอีซูซุ ผมทำทั้ง Present สินค้า สอนเทคนิคการขายให้ Dealer Sale และสอนการใช้ผลิตภัณฑ์ งานนั้นทำให้เห็นว่าความรู้สินค้าจะมีค่าก็ต่อเมื่อเซลล์เชื่อมมันกับเหตุผลซื้อของลูกค้าได้',
@@ -128,6 +184,7 @@ export const T1_PRODUCT_DETAIL: ProductDetailPageData = {
     primary: 'จองคิวรับบริการ',
     secondary: 'รับ E-Book “หยุดหาเซลล์ผิดคน”',
     heroSecondary: 'รับ E-Book “หยุดหาเซลล์ผิดคน”',
+    heroSecondaryIntent: 'lead_magnet',
     finalSecondary: 'รับ E-Book หยุดหาเซลล์ผิดคน',
     finalCaption: 'สแกน QR แล้วพิมพ์คำว่า “SALES PSYCHOLOGY” พร้อมจำนวนทีม',
     finalMobileInstruction: 'ทัก LINE แล้วพิมพ์คำว่า “SALES PSYCHOLOGY” พร้อมจำนวนทีม',
