@@ -198,6 +198,10 @@ test('T4 detail page keeps the Workflow Pilot Day in a one-workflow safe-sandbox
   assert.match(t4Boundary, /Safe Sandbox/, 'T4 must state the sandbox boundary');
   assert.match(t4Boundary, /Fit Gate ก่อนออกใบแจ้งหนี้/, 'T4 must place the fit gate before invoicing');
   assert.doesNotMatch(t4Boundary, /Production-ready/, 'T4 must never call a sandbox production-ready');
+  assert.equal(await page.locator('[data-chapter-map] [data-chapter-link]').count(), 4, 'T4 must give the reader the same four-part page map used by the other long-form offers');
+  const t4ProofPhotos = page.locator('[data-detail-block="proof"] [data-proof-activity]');
+  assert.equal(await t4ProofPhotos.count(), 3, 'T4 must present three real workshop activity photographs, not an invented scenario');
+  assert.match(await t4ProofPhotos.first().locator('img').getAttribute('src') ?? '', /\/lp\/inhouse\/hero-pointing\.jpg$/, 'T4 lead proof must use Pun facilitating a real activity');
   const takeHome = await page.locator('[data-detail-block="take-home"]').innerText();
   for (const artifact of ['Workflow Map', 'Safe Sandbox', 'Human–AI Responsibility Brief', 'Decision Memo']) assert.match(takeHome, new RegExp(artifact), `T4 must publish ${artifact}`);
   assert.match(await page.locator('[data-detail-block="scope"]').innerText(), /งานซ้ำอะไร.*บ่อยแค่ไหน.*Process owner.*ข้อมูลเสี่ยง/s, 'T4 must surface the four fit questions');

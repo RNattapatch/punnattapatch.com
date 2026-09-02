@@ -1,8 +1,15 @@
 import t2WorkshopHandsOn from '../../assets/services/proof/t2-workshop-hands-on.jpg';
-import type { ProductDetailPageData } from './types';
+import t2WorkshopCompany from '../../assets/services/proof/t2-workshop-company.jpg';
+import type { ProductDetailPageData, PublicProofImage } from './types';
 
 export const T4_LINE_KEYWORD = 'AI WORKFLOW';
 export const SHOW_T4_BONUS_CARDS = false;
+
+const T4_REAL_ACTIVITY: PublicProofImage = {
+  publicSrc: '/lp/inhouse/hero-pointing.jpg',
+  width: 1600,
+  height: 1200,
+};
 
 export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
   code: 'T4',
@@ -10,22 +17,28 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
   route: '/services/advance-ai-automation',
   kind: 'course',
   showPriceInHero: true,
+  chapters: [
+    { id: 'proof', number: '01', navLabel: 'ดูห้องทำงานจริง', heading: 'เริ่มจากคนและงานที่อยู่ตรงหน้า', copy: 'ดูภาพจาก Workshop และการทำงานจริงก่อน แล้วค่อยดูว่า Pilot Day พาทีมแยกงานหนึ่งเรื่องอย่างไร', tone: 'ivory' },
+    { id: 'diagnose', number: '02', navLabel: 'เลือกงานให้ถูก', heading: 'เลือกงานซ้ำที่ควรลองก่อน', copy: 'งานต้องมีเจ้าของ อธิบาย Input และ Output ได้ และมีข้อมูลที่ทำให้ทดลองอย่างปลอดภัยได้', tone: 'sand' },
+    { id: 'workshop', number: '03', navLabel: 'ลองใน Sandbox', heading: 'ให้ทีมลองรัน Flow ด้วยตัวเอง', copy: 'Map งานเดิม วางจุดตรวจของคน แล้วทดลองด้วยข้อมูลจำลองหรือข้อมูลที่ปิดข้อมูลแล้วในหนึ่งวัน', tone: 'ivory' },
+    { id: 'decision', number: '04', navLabel: 'ตัดสินใจรอบถัดไป', heading: 'จบด้วยคำตอบที่ใช้ตัดสินใจได้', copy: 'ใช้สิ่งที่ทดสอบได้จริงเลือกว่าจะ Stop, Revise หรือเตรียม Scope สำหรับงาน Build ต่อ', tone: 'sand' },
+  ],
   hero: {
     eyebrow: 'IN-HOUSE WORKFLOW PILOT DAY · T4',
     customerJob: 'ทดลอง AI Workflow จากงานจริงของบริษัท ก่อนลงทุนทำระบบจริง',
     supportingCopy: [],
     microcopy: 'ทดลองงานจริงก่อนลงทุนระบบจริง',
     steps: [
-      { label: '01 · Pick', title: 'เลือกงานซ้ำหนึ่งเรื่อง', body: 'เริ่มจากงานที่เกิดบ่อย มี Process owner และอธิบาย Input/Output ได้' },
-      { label: '02 · Test', title: 'แยกคนกับ AI ใน Safe Sandbox', body: 'ทีมลองรันด้วยข้อมูลจำลอง พร้อมจุดตรวจที่คนต้องรับผิดชอบ' },
-      { label: '03 · Decide', title: 'หยุด ปรับ หรือทำต่อเป็นระบบจริง', body: 'ใช้หลักฐานจากการทดสอบ ไม่ตัดสินใจจากความตื่นเต้นกับเครื่องมือ' },
+      { label: '01 · Pick', title: 'เลือกงานที่ทีมทำซ้ำ', body: 'เริ่มจากงานที่เกิดบ่อย มี Process owner และอธิบาย Input/Output ได้' },
+      { label: '02 · Test', title: 'ลองกับข้อมูลที่ปลอดภัย', body: 'ทีมรัน Flow ด้วยข้อมูลจำลอง พร้อมจุดตรวจที่คนต้องรับผิดชอบ' },
+      { label: '03 · Decide', title: 'จบวันด้วยข้อสรุป', body: 'ใช้ผลทดสอบเลือก Stop, Revise หรือเตรียมทำระบบต่อ' },
     ],
     badges: ['หนึ่งบริษัท · หนึ่งวัน', 'หนึ่ง Workflow', 'ใช้ข้อมูลจำลองหรือข้อมูลที่ผ่านการ Mask'],
     visual: {
-      image: t2WorkshopHandsOn,
-      alt: 'ผู้เข้าร่วม Workshop ทดลองทำงานร่วมกันบนแล็ปท็อป',
+      image: T4_REAL_ACTIVITY,
+      alt: 'ปัน ณัฐพัชร์สอนทีมในกิจกรรม Workshop หน้าจอทำงานจริง',
       label: 'WORKFLOW PILOT DAY · ทีมจริง',
-      caption: 'ทีมเลือกงานซ้ำหนึ่งเรื่องแล้วทดสอบ Flow ใน Safe Sandbox ร่วมกัน',
+      caption: 'ภาพกิจกรรมจริง: ไล่งานหนึ่งเรื่องบนหน้าจอร่วมกัน ก่อนเลือก Flow ที่จะทดลอง',
     },
   },
   authority: [
@@ -35,7 +48,9 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
     'อบรมและวางระบบร่วมกับ 18 องค์กร',
   ],
   proof: [
-    { kind: 'photo', image: t2WorkshopHandsOn, alt: 'ผู้เข้าร่วม Workshop ทำงานร่วมกันบนแล็ปท็อป', caption: 'ห้อง Workshop ใช้โจทย์ของทีมเพื่อแยกขั้นตอนงาน, ข้อมูลที่ใช้ได้ และจุดที่ต้องให้คนตรวจ ก่อนเริ่มสร้างอะไรเพิ่ม' },
+    { id: 't4-live-workflow-session', kind: 'photo', image: T4_REAL_ACTIVITY, alt: 'ปัน ณัฐพัชร์สอนทีมในกิจกรรม Workshop หน้าจอทำงานจริง', caption: 'ภาพจากกิจกรรมจริง: ทีมดูงานบนหน้าจอเดียวกัน แล้วไล่สิ่งที่เข้ามา กติกาที่ใช้ และจุดที่คนต้องตัดสิน' },
+    { id: 't4-hands-on-workshop', kind: 'photo', image: t2WorkshopHandsOn, alt: 'ผู้เข้าร่วม Workshop ทำงานร่วมกันบนแล็ปท็อป', caption: 'ในห้อง Workshop ทีมต้องอธิบายงานของตัวเองให้กันฟัง ไม่ได้เริ่มจากเดโมที่ตัดข้อยกเว้นออก' },
+    { id: 't4-team-workshop', kind: 'photo', image: t2WorkshopCompany, alt: 'ปัน ณัฐพัชร์ยืนกับทีมผู้เข้าร่วม In-house Workshop', caption: 'งาน In-house ใช้คนที่ทำงานนั้นจริงอยู่ในห้อง เพื่อให้คนตัดสินกติกาและรับผิดชอบ Flow ต่อได้' },
   ],
   pains: [
     'งานซ้ำกินเวลาทีม แต่ไม่มีใครระบุได้ว่าขั้นไหนควรให้ AI ช่วยและขั้นไหนต้องให้คนตัดสิน',
@@ -47,17 +62,17 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
   boundary: {
     heading: 'Workflow Pilot Day สำหรับหนึ่ง Workflow ใน Safe Sandbox',
     body: [
-      'เราเอางานซ้ำที่ทีมเสียเวลามากที่สุดหนึ่งเรื่องมาแยกว่าอะไรควรให้ AI ทำ อะไรต้องให้คนตัดสิน แล้วสร้าง Safe Sandbox ให้ Core build team ลองรันด้วยข้อมูลจำลองหรือข้อมูลที่ผ่านการ Mask ภายในหนึ่งวัน',
-      'ทีมจะได้ Workflow Map, Safe Sandbox, Human–AI Responsibility Brief และ Stop/Revise/Install Decision Memo เพื่อใช้ตัดสินใจจากหลักฐานก่อนซื้อระบบหรือจ้างพัฒนาจริง',
-      'ต้องผ่าน Fit Gate ก่อนออกใบแจ้งหนี้: งานต้องมี Process owner, มีความถี่พอทดสอบ, ใช้ข้อมูลปลอดภัยได้ และยอมรับ Scope หนึ่ง Workflow. งานหลาย Workflow, Production integration, Migration, SLA หรือการรับประกันลด Headcount อยู่คนละ Scope และต้องประเมินเป็น I1/งาน Build แยก',
+      'วัน Workshop เราหยิบงานซ้ำที่ทีมเสียเวลาอยู่หนึ่งเรื่องมาแยกว่า AI ควรช่วยตรงไหน และตรงไหนต้องให้คนตัดสิน จากนั้น Core build team จะลองรันใน Safe Sandbox ด้วยข้อมูลจำลองหรือข้อมูลที่ผ่านการ Mask',
+      'เมื่อจบวัน ทีมมี Workflow Map, Safe Sandbox, Human–AI Responsibility Brief และ Stop/Revise/Install Decision Memo สำหรับตัดสินใจก่อนซื้อระบบหรือจ้างพัฒนาจริง',
+      'Fit Gate ก่อนออกใบแจ้งหนี้ ต้องเช็กว่างานมี Process owner, เกิดบ่อยพอให้ทดสอบ, ใช้ข้อมูลปลอดภัยได้ และยอมรับ Scope หนึ่ง Workflow. งานหลาย Workflow, Production integration, Migration, SLA หรือการรับประกันลด Headcount ต้องประเมินเป็น I1/งาน Build แยก',
     ],
   },
   reasons: [
-    { title: 'เริ่มจากงานซ้ำ ไม่เริ่มจากชื่อ Tool', body: 'ทีมเลือกงานที่อธิบาย Input, Rule, Exception และ Output ได้ จึงมองเห็นก่อนว่า AI มีที่ช่วยจริงหรือไม่' },
-    { title: 'Sandbox แยกความตื่นเต้นออกจากความเสี่ยง', body: 'ทดสอบด้วยข้อมูลจำลองหรือข้อมูลที่ผ่านการ Mask และตั้ง Human review ก่อนแตะข้อมูลหรือการตัดสินใจที่มีผลจริง' },
-    { title: 'Decision Memo ทำให้การลงทุนมีเหตุผล', body: 'Owner เห็นสิ่งที่ทดสอบแล้ว, ข้อจำกัด, ความเสี่ยง และ Next step ก่อนเลือก Stop, Revise หรือ Install' },
+    { title: 'เริ่มจากงานซ้ำ ไม่เริ่มจากชื่อ Tool', body: 'ทีมเลือกงานที่อธิบาย Input, Rule, Exception และ Output ได้ จึงเห็นว่า AI ช่วยตรงไหนได้จริง' },
+    { title: 'ข้อมูลยังไม่ออกจากขอบเขตที่ตกลงกัน', body: 'ทีมทดสอบด้วยข้อมูลจำลองหรือข้อมูลที่ผ่านการ Mask และตั้ง Human review ก่อนแตะข้อมูลหรือการตัดสินใจที่มีผลจริง' },
+    { title: 'Decision Memo เก็บสิ่งที่ลองไว้ครบ', body: 'Owner เห็นสิ่งที่ทดสอบ ข้อจำกัด ความเสี่ยง และ Next step ก่อนเลือก Stop, Revise หรือ Install' },
   ],
-  analogy: 'การทดลอง Workflow เหมือนลองเดินเส้นทางในพื้นที่จำลองก่อนเปิดใช้กับงานจริงครับ ถ้าทีมยังอธิบายกติกาและจุดตรวจไม่ได้ การซื้อ Tool เพิ่มจะทำให้ความไม่ชัดเดินเร็วขึ้นเท่านั้น',
+  analogy: 'Sandbox คือพื้นที่ลองเดิน Flow ก่อนใช้กับงานจริงครับ ถ้าทีมยังอธิบายกติกาและจุดตรวจไม่ได้ การซื้อ Tool เพิ่มจะทำให้ความไม่ชัดเดินเร็วขึ้น',
   scope: [
     { label: 'Fit Gate', title: 'ตอบ 4 คำถามก่อนเลือกงาน', learn: 'งานซ้ำอะไร · เกิดบ่อยแค่ไหน · ใครเป็น Process owner · มีข้อมูลเสี่ยงไหม', action: 'เลือก Candidate หนึ่งเรื่องที่ทีมอธิบายงานเดิมและความเสี่ยงได้', output: 'Fit decision + ขอบเขตหนึ่ง Workflow' },
     { label: 'ช่วงที่ 1 · Map', title: 'เห็นงานเดิมก่อนให้ AI แตะงาน', learn: 'แยก Trigger, Input, Rule, Exception, Output และขั้นที่คนต้องตัดสิน', action: 'ทำ Workflow Map จากตัวอย่างงานที่ปิดข้อมูลแล้ว', output: 'Workflow Map ฉบับบริษัท' },
@@ -130,12 +145,12 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
     description: 'In-house Workflow Pilot Day สำหรับทีมที่อยากทดลอง AI กับงานซ้ำหนึ่งเรื่องใน Safe Sandbox ก่อนตัดสินใจลงทุนระบบ Production',
   },
   sections: {
-    authority: { heading: 'ผมใช้ AI กับงานจริง แต่ไม่เอาความเสี่ยงของลูกค้ามาเป็นที่ทดลอง', copy: 'การทำ Automation ที่ใช้ได้เริ่มจากคนในทีมอธิบายงานเดิมได้ก่อนครับ เมื่อรู้ Input, Rule, Exception, Output และจุดที่ต้องให้คนตัดสิน เราจึงเลือก Tool และขอบเขตการทดลองได้โดยไม่ทำให้ระบบใหญ่เกินโจทย์' },
-    proof: { heading: 'เริ่มจากทีมทำงานกับโจทย์ ไม่เริ่มจากเดโมที่ตัดทุกข้อยกเว้นออก', intro: 'Workshop ใช้ตัวอย่างงานที่ปลอดภัยเพื่อให้ทีมเห็นว่า Workflow หนึ่งเส้นต้องมี Owner, กติกา และจุด Human review ก่อนคิดเรื่อง Production' },
-    pain: { heading: 'งานซ้ำที่ทีมอยากให้ AI ช่วย มีข้อไหนกำลังเกิดอยู่', close: 'เราไม่ต้องเลือก Tool ให้ครบทุกงานในวันเดียว เลือก Flow ที่ทีมพิสูจน์ได้หนึ่งเรื่องก่อน แล้วใช้ผลทดสอบตัดสินว่าควรเดินต่ออย่างไร' },
+    authority: { heading: 'ผมใช้ AI กับงานจริง แต่ไม่เอาข้อมูลลูกค้ามาเป็นที่ทดลอง', copy: 'Automation ที่ใช้ได้เริ่มจากคนในทีมอธิบายงานเดิมได้ก่อนครับ เมื่อรู้ Input, Rule, Exception, Output และจุดที่ต้องให้คนตัดสิน เราจึงเลือก Tool และขอบเขตการทดลองได้พอดีกับงาน' },
+    proof: { heading: 'ดูทีมทำงานกับโจทย์จริงก่อน', intro: 'ภาพทั้งหมดเป็นกิจกรรมจริงของคุณปันและผู้เข้าร่วม Workshop เราใช้ตัวอย่างงานที่ปลอดภัยเพื่อไล่ Owner กติกา และจุด Human review ของ Workflow หนึ่งเส้น' },
+    pain: { heading: 'งานซ้ำที่ทีมอยากให้ AI ช่วย มีข้อไหนกำลังเกิดอยู่', close: 'เลือก Flow ที่ทีมพิสูจน์ได้หนึ่งเรื่องก่อน แล้วใช้ผลทดสอบตัดสินว่าควรเดินต่ออย่างไร' },
     reasons: { heading: 'Pilot ที่มีประโยชน์ต้องช่วยให้ Owner ตัดสินใจได้' },
     scope: { heading: 'Pick → Map → Sandbox → Responsibility → Decide', intro: 'ก่อนเข้า Workshop ให้ตอบงานซ้ำอะไร, เกิดบ่อยแค่ไหน, ใครเป็น Process owner และมีข้อมูลเสี่ยงไหม. คำตอบทั้งสี่ข้อใช้ผ่าน Fit Gate และกำหนดขอบเขตการทดลอง', ctaHeading: 'มีงานซ้ำหนึ่งเรื่องที่อยากให้ทีมทดลองก่อนลงทุนระบบจริงหรือยัง?' },
-    takeHome: { heading: 'Artifact 4 ชิ้นที่ใช้ตัดสินใจหลัง Workshop', close: 'ทั้งสี่ชิ้นเป็น Core deliverable ของ Pilot Day. ช่วงดูแลและ Scope ต่อจากนี้ยึดตามใบเสนอราคา ไม่รับปากว่า Sandbox จะกลายเป็นระบบใช้งานจริงทันที' },
+    takeHome: { heading: 'Artifact 4 ชิ้นที่ใช้ตัดสินใจหลัง Workshop', close: 'ทั้งสี่ชิ้นเป็น Core deliverable ของ Pilot Day. งานต่อจากนี้ยึดตามใบเสนอราคา และ Sandbox ต้องผ่าน Scope, การทดสอบ และการดูแลเพิ่มก่อนใช้กับงานจริง' },
     fit: { heading: 'เหมาะกับทีมที่อยากรู้ว่าควรเดินต่อกับ AI Workflow อย่างไร ก่อนซื้อหรือจ้าง Build' },
     investment: { eyebrow: 'ราคาเดียวสำหรับหนึ่งบริษัท · หนึ่ง Workflow' },
     final: { heading: 'มีงานซ้ำที่ทีมอยากหยุดทำมือ แต่ยังไม่แน่ใจว่าควรให้ AI ช่วยตรงไหน?', copy: 'ทัก LINE แล้วพิมพ์ “AI WORKFLOW” พร้อมจำนวนทีม บอกงานซ้ำ ความถี่ Process owner และข้อมูลเสี่ยงที่เกี่ยวข้อง ผมจะช่วยเช็ก Fit Gate ก่อนออกใบแจ้งหนี้' },
