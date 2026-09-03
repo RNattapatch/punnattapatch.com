@@ -36,8 +36,13 @@ await page.evaluate(async () => {
 await page.screenshot({ path: `${outDir}/00-fullpage.png`, fullPage: true });
 
 for (const [name, section] of SHOTS) {
-  const target = page.locator(`[data-journey-section="${section}"]`).first();
-  await target.scrollIntoViewIfNeeded();
+  // Offset by the sticky header height so the section heading is not hidden under the nav.
+  await page.evaluate((selector) => {
+    const element = document.querySelector(selector);
+    if (!element) throw new Error(`missing section ${selector}`);
+    const top = element.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top: Math.max(top - 96, 0), behavior: 'instant' });
+  }, `[data-journey-section="${section}"]`);
   await page.waitForTimeout(600);
   // Viewport-sized frame anchored at the section top — this is what Pun sees on his phone.
   await page.screenshot({ path: `${outDir}/${name}.png` });
@@ -45,8 +50,11 @@ for (const [name, section] of SHOTS) {
 }
 
 // The public-cohort notice is the one thing T1–T4 do not have — capture it on its own too.
-const notice = page.locator('[data-public-notice="offer"]').first();
-await notice.scrollIntoViewIfNeeded();
+await page.evaluate(() => {
+  const element = document.querySelector('[data-public-notice="offer"]');
+  if (!element) throw new Error('missing offer cohort notice');
+  window.scrollTo({ top: element.getBoundingClientRect().top + window.scrollY - 96, behavior: 'instant' });
+});
 await page.waitForTimeout(400);
 await page.screenshot({ path: `${outDir}/09-public-notice.png` });
 console.log('shot 09-public-notice');

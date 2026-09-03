@@ -91,7 +91,7 @@ const cohort = data.publicCohort;
     {data.whatsNew && <div data-journey-section="whats-new"><WhatsNewBlock data={data.whatsNew} /></div>}
     <div data-t4-section={data.code === 'T4' ? 'take-home' : undefined} data-journey-section="take-home" data-detail-block="take-home"><TakeHomeStack items={data.takeHome} {...data.sections?.takeHome} /></div>
     {data.bonusValues
-      ? <div data-journey-section="bonus"><BonusValueStack data={data.bonusValues} price={catalog.price} /></div>
+      ? <div data-journey-section="bonus"><BonusValueStack data={data.bonusValues} price={catalog.price} unitNote={cohort ? 'ต่อ 1 ที่นั่ง' : undefined} /></div>
       : data.bonusCards?.enabled && <div data-journey-section="bonus"><BonusCardStack {...data.bonusCards} /></div>}
     {data.whyMe && <div data-journey-section="why-me"><WhyMeGrid data={data.whyMe} code={data.code} keyword={data.cta.keyword} price={catalog.price} amount={catalog.amount} bonusTotal={data.bonusValues?.items.reduce((sum, item) => sum + item.value, 0)} /></div>}
 
