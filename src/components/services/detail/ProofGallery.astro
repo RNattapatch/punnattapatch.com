@@ -21,7 +21,7 @@ const imageInfo = (image: ProofItem['image']) => 'publicSrc' in image
         const image = imageInfo(item.image);
         return (
           <figure data-proof-activity data-proof-id={item.id} class:list={['flex min-h-0 flex-col overflow-hidden rounded-[1.5rem] border border-navy/10 bg-white shadow-sm', index === 0 && 'sm:col-span-2 sm:row-span-2', index === 1 && 'lg:row-span-2']}>
-            <img src={image.src} alt={item.alt} width={image.width} height={image.height} loading="lazy" decoding="async" class="min-h-0 flex-1 w-full object-cover" />
+            <img src={image.src} alt={item.alt} width={image.width} height={image.height} loading="lazy" decoding="async" class:list={['min-h-0 flex-1 w-full object-cover', image.height > image.width ? 'object-[50%_22%]' : 'object-center']} />
             <figcaption data-proof-caption class="shrink-0 bg-white px-4 py-3 text-sm leading-5 text-navy/70">{item.caption}</figcaption>
           </figure>
         );
