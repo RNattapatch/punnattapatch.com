@@ -213,7 +213,7 @@ export async function addSnapshot(publication_id: string, metrics: SnapshotInput
 // หน้าเว็บ HTTPS เรียก mini ตรงๆ ไม่ได้ (mixed content) → insert job ที่นี่
 // worker บน mini (launchd com.pun.wrjobs-worker) poll ทุก 12s แล้วเขียนผลกลับ
 
-export type JobType = 'render_card' | 'ai_improve' | 'publish';
+export type JobType = 'render_card' | 'ai_improve' | 'publish' | 'rewrite_copy';
 export interface WrJob {
   id: string;
   job_type: JobType;
