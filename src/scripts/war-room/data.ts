@@ -213,7 +213,7 @@ export async function addSnapshot(publication_id: string, metrics: SnapshotInput
 // หน้าเว็บ HTTPS เรียก mini ตรงๆ ไม่ได้ (mixed content) → insert job ที่นี่
 // worker บน mini (launchd com.pun.wrjobs-worker) poll ทุก 12s แล้วเขียนผลกลับ
 
-export type JobType = 'render_card' | 'ai_improve' | 'publish' | 'rewrite_copy';
+export type JobType = 'render_card' | 'ai_improve' | 'publish' | 'rewrite_copy' | 'render_text_card';
 export interface WrJob {
   id: string;
   job_type: JobType;
@@ -222,6 +222,31 @@ export interface WrJob {
   result: Record<string, unknown> | null;
   error: string | null;
   created_at: string;
+}
+
+/** คิวงานล่าสุด — หน้าสถานะงานใน News Desk (ท่าเดียวกับคิวของ Intel Warroom) */
+export async function listWrJobs(limit = 40): Promise<WrJob[]> {
+  const { data, error } = await supabase
+    .from('wr_jobs')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(limit);
+  fail(error);
+  return (data ?? []) as WrJob[];
+}
+
+/** Retry = โยนกลับเข้าคิว ล้าง error/ผลเดิม เพื่อให้ worker บนมินิหยิบใหม่ */
+export async function retryWrJob(id: string): Promise<void> {
+  const { error } = await supabase
+    .from('wr_jobs')
+    .update({ status: 'queued', error: null, result: null, started_at: null, finished_at: null })
+    .eq('id', id);
+  fail(error);
+}
+
+export async function deleteWrJob(id: string): Promise<void> {
+  const { error } = await supabase.from('wr_jobs').delete().eq('id', id);
+  fail(error);
 }
 
 export async function enqueueJob(job_type: JobType, payload: Record<string, unknown>): Promise<string> {
