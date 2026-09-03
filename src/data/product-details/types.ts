@@ -144,6 +144,8 @@ export interface ProductBonusValueItem {
   points: string[];
   value: number;
   basis: string;
+  /** Shown instead of a baht figure (e.g. 'รวมในคอร์ส', '∞'); item is excluded from the total. */
+  valueLabel?: string;
 }
 
 export interface ProductBonusValues {
@@ -172,6 +174,30 @@ export interface ProductInstructorProfile {
   credentials: string[];
   angles: Array<{ icon: string; title: string; body: string }>;
   quote: string;
+}
+
+export interface ProductJourneyPresentation {
+  heroMeta: string;
+  capacityNote: string;
+  offerMeta: string;
+  offerBody: string;
+  whyNow: {
+    eyebrow: string;
+    heading: string;
+    labels: string[];
+  };
+  curriculum: {
+    eyebrow: string;
+    media?: {
+      afterStep: number;
+      image: PublicProofImage;
+      alt: string;
+      eyebrow: string;
+      heading: string;
+      copy: string;
+    };
+  };
+  finalEyebrow: string;
 }
 
 export interface ProductDetailPageData {
@@ -215,6 +241,8 @@ export interface ProductDetailPageData {
   bonusValues?: ProductBonusValues;
   whyMe?: ProductWhyMe;
   instructorProfile?: ProductInstructorProfile;
+  /** Opts a training product into the proof-led operating journey presentation. */
+  journey?: ProductJourneyPresentation;
   fit: string[];
   notFit: string;
   relatedOffer?: { href: string; label: string };

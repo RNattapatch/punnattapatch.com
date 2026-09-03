@@ -47,58 +47,64 @@ const scopeLineCta = data.cta.locations?.afterScope ?? { primary: data.cta.prima
 const investmentLineCta = data.cta.locations?.afterInvestment;
 const finalLineCta = data.cta.locations?.final ?? { primary: data.cta.primary, primaryIntent: 'quote', secondary: data.cta.finalSecondary ?? data.cta.secondary, secondaryIntent: data.cta.finalSecondaryIntent ?? data.cta.secondaryIntent ?? 'lead_magnet' };
 const chapters = data.chapters ?? [];
-const isT4Journey = data.code === 'T4';
+const isJourney = Boolean(data.journey);
 ---
 
-{isT4Journey ? (
+{isJourney && data.journey ? (
   <>
-    <JourneyHero data={data} name={catalog.name} duration={catalog.duration} price={catalog.price} />
+    <JourneyHero data={data} journey={data.journey} name={catalog.name} duration={catalog.duration} price={catalog.price} />
 
-    <OfferStack code={data.code} keyword={data.cta.keyword} name={catalog.name} price={catalog.price} core={data.takeHome.slice(0, 4)} bonuses={data.bonusCards?.items ?? []} values={data.bonusValues?.items} />
+    <OfferStack code={data.code} keyword={data.cta.keyword} name={catalog.name} price={catalog.price} core={data.takeHome.slice(0, 4)} bonuses={data.bonusCards?.items ?? []} values={data.bonusValues?.items} journey={data.journey} />
 
-    <div data-t4-section="logos" data-detail-block="authority">
+    <div data-t4-section={data.code === 'T4' ? 'logos' : undefined} data-journey-section="logos" data-detail-block="authority">
       <InstructorCard authority={data.authority} heading={data.sections?.authority?.heading ?? 'สอนจากประสบการณ์ขาย โค้ชทีม และสร้าง AI Workflow ใช้งานจริง'} compact />
       <ClientLogoWall items={data.clientLogos} />
     </div>
 
-    <ProofGallery items={data.proof} testimonials={data.testimonials ?? []} heading={data.sections?.proof?.heading ?? 'ภาพจากห้องอบรมจริง'} intro={data.sections?.proof?.intro ?? ''} />
+    <div data-journey-section="proof"><ProofGallery items={data.proof} testimonials={data.testimonials ?? []} heading={data.sections?.proof?.heading ?? 'ภาพจากห้องอบรมจริง'} intro={data.sections?.proof?.intro ?? ''} /></div>
     {afterProofCta && <section class="bg-[#f4f1ea] px-5 py-8 sm:py-10"><div class="mx-auto max-w-6xl"><JourneyCTA code={data.code} location="after_proof" keyword={data.cta.keyword} decision={afterProofCta} /></div></section>}
 
-    <WhyNowBlock items={data.pains} />
-    {data.spotlight && <SpotlightModules data={data.spotlight} />}
+    <WhyNowBlock code={data.code} items={data.pains} journey={data.journey} />
+    {data.spotlight && <div data-journey-section="spotlight"><SpotlightModules data={data.spotlight} /></div>}
 
-    <JourneyCurriculum items={data.scope} heading={data.sections?.scope?.heading ?? 'Choose → Map → Build → Guardrail → Adopt'} intro={data.sections?.scope?.intro ?? ''} />
-    {afterScopeCta && <section class="bg-[#fdfaf4] px-5 pb-14 sm:pb-20"><div class="mx-auto max-w-6xl"><JourneyCTA code={data.code} location="after_scope" keyword={data.cta.keyword} decision={afterScopeCta} /></div></section>}
+    <JourneyCurriculum code={data.code} items={data.scope} heading={data.sections?.scope?.heading ?? 'Choose → Map → Build → Guardrail → Adopt'} intro={data.sections?.scope?.intro ?? ''} journey={data.journey} />
+    <section class="bg-[#fdfaf4] px-5 pb-14 sm:pb-20"><div class="mx-auto max-w-6xl">
+      {afterScopeCta
+        ? <JourneyCTA code={data.code} location="after_scope" keyword={data.cta.keyword} decision={afterScopeCta} />
+        : <JourneyCTA code={data.code} location="after_scope" keyword={data.cta.keyword} primary={scopeLineCta.primary} primaryIntent={scopeLineCta.primaryIntent} secondary={scopeLineCta.secondary} secondaryIntent={scopeLineCta.secondaryIntent} />}
+    </div></section>
 
-    {data.whatsNew && <WhatsNewBlock data={data.whatsNew} />}
-    <div data-t4-section="take-home" data-detail-block="take-home"><TakeHomeStack items={data.takeHome} {...data.sections?.takeHome} /></div>
-    {data.bonusValues && <BonusValueStack data={data.bonusValues} price={catalog.price} />}
-    {data.whyMe && <WhyMeGrid data={data.whyMe} code={data.code} keyword={data.cta.keyword} price={catalog.price} amount={catalog.amount} bonusTotal={data.bonusValues?.items.reduce((sum, item) => sum + item.value, 0)} />}
+    {data.whatsNew && <div data-journey-section="whats-new"><WhatsNewBlock data={data.whatsNew} /></div>}
+    <div data-t4-section={data.code === 'T4' ? 'take-home' : undefined} data-journey-section="take-home" data-detail-block="take-home"><TakeHomeStack items={data.takeHome} {...data.sections?.takeHome} /></div>
+    {data.bonusValues
+      ? <div data-journey-section="bonus"><BonusValueStack data={data.bonusValues} price={catalog.price} /></div>
+      : data.bonusCards?.enabled && <div data-journey-section="bonus"><BonusCardStack {...data.bonusCards} /></div>}
+    {data.whyMe && <div data-journey-section="why-me"><WhyMeGrid data={data.whyMe} code={data.code} keyword={data.cta.keyword} price={catalog.price} amount={catalog.amount} bonusTotal={data.bonusValues?.items.reduce((sum, item) => sum + item.value, 0)} /></div>}
 
-    <div data-t4-section="fit" data-detail-block="fit">
+    <div data-t4-section={data.code === 'T4' ? 'fit' : undefined} data-journey-section="fit" data-detail-block="fit">
       <FitBlock fit={data.fit} notFit={data.notFit} heading={data.sections?.fit?.heading} relatedOffer={data.relatedOffer} />
       {afterFitCta && <section class="bg-navy px-5 pb-14 sm:pb-20"><div class="mx-auto max-w-6xl"><JourneyCTA code={data.code} location="after_fit" keyword={data.cta.keyword} decision={afterFitCta} /></div></section>}
     </div>
 
     {data.instructorProfile
-      ? <InstructorProfile data={data.instructorProfile} />
-      : <div data-t4-section="instructor" data-detail-block="instructor"><InstructorCard authority={data.authority} paragraphs={data.bio} heading={data.sections?.bio?.heading ?? 'คนสอนคือคนที่สร้าง AI Workflow ใช้กับธุรกิจตัวเองทุกวัน'} /></div>}
+      ? <div data-journey-section="instructor"><InstructorProfile data={data.instructorProfile} /></div>
+      : <div data-t4-section={data.code === 'T4' ? 'instructor' : undefined} data-journey-section="instructor" data-detail-block="instructor"><InstructorCard authority={data.authority} paragraphs={data.bio} heading={data.sections?.bio?.heading ?? 'คนสอนคือคนที่สร้าง AI Workflow ใช้กับธุรกิจตัวเองทุกวัน'} /></div>}
 
-    <div data-t4-section="investment" data-detail-block="investment" class="bg-white pb-14 sm:pb-20">
+    <div data-t4-section={data.code === 'T4' ? 'investment' : undefined} data-journey-section="investment" data-detail-block="investment" class="bg-white pb-14 sm:pb-20">
       <InvestmentBlock name={catalog.name} price={catalog.price} amount={catalog.amount} regularPrice={catalog.regularPrice} eyebrow={data.sections?.investment?.eyebrow} {...data.investment} />
       <div class="mx-auto max-w-5xl px-5">
-        <JourneyCTA code={data.code} location="after_investment" keyword={data.cta.keyword} primary="จองคิวรับบริการ" primaryIntent="book_training" secondary="ทัก LINE เช็กคิวว่าง" secondaryIntent="availability" />
+        <JourneyCTA code={data.code} location="after_investment" keyword={data.cta.keyword} primary={investmentLineCta?.primary ?? 'จองคิวรับบริการ'} primaryIntent={investmentLineCta?.primaryIntent ?? 'book_training'} secondary={investmentLineCta?.secondary ?? 'ทัก LINE เช็กคิวว่าง'} secondaryIntent={investmentLineCta?.secondaryIntent ?? 'availability'} />
       </div>
     </div>
 
-    <div data-t4-section="faq" data-detail-block="faq"><ProductFAQ code={data.code} items={data.faq} /></div>
+    <div data-t4-section={data.code === 'T4' ? 'faq' : undefined} data-journey-section="faq" data-detail-block="faq"><ProductFAQ code={data.code} items={data.faq} /></div>
 
-    <section data-t4-section="final" data-detail-block="final-cta" data-cta-location="final" class="bg-navy py-14 text-white sm:py-20">
+    <section data-t4-section={data.code === 'T4' ? 'final' : undefined} data-journey-section="final" data-detail-block="final-cta" data-cta-location="final" class="bg-navy py-14 text-white sm:py-20">
       <div class="mx-auto max-w-6xl px-5">
-        <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Start with one workflow</p>
+        <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">{data.journey.finalEyebrow}</p>
         <h2 class="mt-3 max-w-4xl text-balance font-display text-3xl font-bold sm:text-5xl">{data.sections?.final?.heading}</h2>
         <p class="mt-4 max-w-2xl leading-7 text-white/75">{data.sections?.final?.copy}</p>
-        <div class="mt-7"><JourneyCTA code={data.code} location="final" keyword={data.cta.keyword} primary="จองคิวรับบริการ" primaryIntent="book_training" secondary={data.cta.finalSecondary ?? data.cta.secondary} secondaryIntent={data.cta.finalSecondaryIntent ?? data.cta.secondaryIntent} /></div>
+        <div class="mt-7"><JourneyCTA code={data.code} location="final" keyword={data.cta.keyword} primary={finalLineCta.primary} primaryIntent={finalLineCta.primaryIntent} secondary={finalLineCta.secondary} secondaryIntent={finalLineCta.secondaryIntent} /></div>
         <a data-detail-chooser-link href="/services#offer-chooser" class="mt-5 inline-flex min-h-11 items-center font-semibold text-white underline decoration-coral decoration-2 underline-offset-4 transition-colors hover:text-coral focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-coral">ยังไม่แน่ใจ? กลับไปเลือกจากอาการของทีม</a>
         <div class="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center">
           <figure data-final-line-qr class="hidden rounded-2xl bg-white p-2 sm:block"><Image src={LINE_QR_IMAGE} alt="QR code สำหรับเพิ่มเพื่อน LINE ของปัน ณัฐพัชร์" width={120} height={120} class="size-30" /></figure>

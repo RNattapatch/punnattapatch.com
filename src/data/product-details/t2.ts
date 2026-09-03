@@ -5,10 +5,11 @@ import t2WorkshopClassroom from '../../assets/services/proof/t2-workshop-classro
 import t2WorkshopCompany from '../../assets/services/proof/t2-workshop-company.jpg';
 import t2WorkshopHandsOn from '../../assets/services/proof/t2-workshop-hands-on.jpg';
 import type { ProductDetailPageData } from './types';
+import { journeyInstructor, publicImage } from './shared-journey';
 
 import { CLIENT_LOGOS } from './client-logos';
 
-export const SHOW_BONUS_CARDS = false;
+export const SHOW_BONUS_CARDS = true;
 
 
 const T2_TESTIMONIALS = [
@@ -31,6 +32,15 @@ export const T2_PRODUCT_DETAIL: ProductDetailPageData = {
   pricingKey: 'tiktok-workshop',
   route: '/services/online-to-sales',
   kind: 'course',
+  journey: {
+    heroMeta: '2 วัน · ดูแลต่อ 30 วัน',
+    capacityNote: 'ผมรับไม่เกิน 10 องค์กรต่อเดือน เพื่ออ่าน Offer, Content, Ads และตัวอย่างแชตของบริษัทก่อน Workshop',
+    offerMeta: '1 องค์กร · 2 วัน · Online-to-Sales Flow',
+    offerBody: 'ให้ทีมการตลาดและฝ่ายขายวาง Flow เดียวกันตั้งแต่ Offer/Message, Content angle, First response, Qualification, Handoff, Follow-up ไปจนถึง Review เพื่อให้ Lead มี Owner และ Next action ที่ชัดเจน',
+    whyNow: { eyebrow: 'Why now', heading: 'ค่าแอดไม่ควรจบอยู่ใน Inbox เพราะไม่มีใครรู้ว่า Lead ต้องไปต่ออย่างไร', labels: ['คนเห็นแต่ไม่ทัก', 'ตอบแล้วไม่คัด', 'ส่งต่อแบบไม่มีบริบท', 'Lead เงียบไม่มีคนตาม'] },
+    curriculum: { eyebrow: 'Online-to-sales journey', media: { afterStep: 2, image: publicImage('/lp/inhouse/class-full.jpg', 1600, 1200), alt: 'ทีมขายและการตลาดลงมือออกแบบ Lead Flow ร่วมกันใน Workshop', eyebrow: 'Build the handoff together', heading: 'Marketing กับ Sales ต้องเห็น Lead คนเดียวกัน และเรียกขั้นงานตรงกัน', copy: 'ทีมทดลองตั้งแต่ข้อความแรก การถาม Qualification ไปจนถึงข้อมูลที่ Sales ต้องได้รับ พร้อม Owner และ Next action ที่ตรวจได้' } },
+    finalEyebrow: 'Start with one leaking lead flow',
+  },
   showPriceInHero: true,
   hero: {
     eyebrow: 'IN-HOUSE WORKSHOP · ONLINE-TO-SALES',
@@ -121,27 +131,54 @@ export const T2_PRODUCT_DETAIL: ProductDetailPageData = {
   ],
   analogy: 'ค่าแอดไม่หายตอนกดเผยแพร่ครับ มันหายตอน Lead เข้ามาแล้วไม่มีใครรู้ว่าต้องตอบอะไร ส่งต่อให้ใคร และควรตามต่อเมื่อไร เราจึงเริ่มจาก Flow ที่คนในทีมใช้ร่วมกันก่อน',
   scope: [
-    { label: 'ก่อน → หลัง', title: 'หยุดปล่อย Lead เดินตามความเคยชิน', learn: 'ก่อน: Content/Ads → แชต → ส่งต่อแบบเดาเอง → Lead เงียบ', action: 'หลัง: Offer/Message → First response → Qualification → Handoff → Follow-up → Review', output: 'Flow ที่ทุกฝ่ายเห็นและเรียกขั้นงานตรงกัน' },
-    { label: 'ช่วงที่ 1 · Message', title: 'ทำให้ข้อความพาคนที่ใช่เข้ามา', learn: 'แยก Pain, Trigger และคำถามซื้อของกลุ่มเป้าหมายจากหลักฐานที่บริษัทมี', action: 'ปรับ Offer/Message, Content angle และ CTA ให้เชื่อมกับขั้นรับ Lead', output: 'Campaign/Offer Brief + Content angle ที่ใช้เริ่มงานต่อได้' },
-    { label: 'ช่วงที่ 2 · Inbox + Qualification', title: 'รับ Lead และถามให้ได้ข้อมูลพอตัดสินใจ', learn: 'รู้ว่าคำถามใดช่วยแยกความต้องการ ความพร้อม และขั้นถัดไป โดยไม่ทำให้แชตกลายเป็นแบบสอบถาม', action: 'ออกแบบข้อความแรกและคำถาม Qualification จากสินค้าและ Journey ของบริษัท', output: 'Qualified Lead Definition + First-response Script' },
-    { label: 'ช่วงที่ 3 · Handoff', title: 'ส่งต่อพร้อมบริบทและคนรับผิดชอบ', learn: 'Lead ที่ส่งต่อได้ต้องมีข้อมูลอะไร ใครเป็น Owner และ Next action ใดต้องเกิดก่อน', action: 'ทดลองส่งต่อระหว่าง Marketing, คนตอบแชต และ Sales ด้วยบทสนทนาที่ปิดข้อมูลแล้ว', output: 'Marketing-to-Sales Handoff Rule' },
-    { label: 'ช่วงที่ 4 · Follow-up + Review', title: 'ตามต่อและดูจุดรั่วจากงานจริง', learn: 'แยก Lead ที่ควรตามต่อจาก Lead ที่ควรพัก พร้อมเก็บเหตุผลที่ทีมใช้ทบทวนได้', action: 'วาง Tracker และรอบ Review ให้หัวหน้าเห็น Owner, Next action และ Lead ที่ค้าง', output: 'Follow-up Tracker + แผนดูแล 30 วันตาม Catalog' },
+    { id: 'message', label: '01 · Message', title: 'ทำให้ Offer และข้อความพาคนที่ใช่เข้ามา', learn: 'แยก Pain, Trigger และคำถามซื้อจากหลักฐานที่บริษัทมี', action: 'ปรับ Offer/Message, Content angle และ CTA ให้เชื่อมกับขั้นรับ Lead', output: 'Campaign/Offer Brief' },
+    { id: 'respond', label: '02 · Respond', title: 'ตอบครั้งแรกให้บทสนทนาเดินต่อ', learn: 'คำตอบแรกต้องให้ข้อมูลพอและเปิดทางให้ถามต่อ โดยไม่กลายเป็นข้อความสำเร็จรูปยาวๆ', action: 'ออกแบบ First response จากสินค้า ช่องทาง และคำถามที่ Lead ถามจริง', output: 'First-response Script' },
+    { id: 'qualify', label: '03 · Qualify', title: 'ถามให้รู้ว่า Lead ต้องการอะไรและพร้อมแค่ไหน', learn: 'แยกข้อมูลที่จำเป็นต่อการช่วยลูกค้าออกจากคำถามที่ทำให้แชตเหมือนแบบสอบถาม', action: 'สร้างคำถาม Qualification และเกณฑ์ว่าเมื่อไรควรส่งต่อหรือพัก Lead', output: 'Qualified Lead Definition' },
+    { id: 'handoff', label: '04 · Handoff', title: 'ส่งต่อพร้อมบริบทและคนรับผิดชอบ', learn: 'Lead ที่ส่งต่อได้ต้องมีข้อมูลอะไร ใครเป็น Owner และ Next action ใดต้องเกิด', action: 'ทดลองส่งต่อระหว่าง Marketing, คนตอบแชต และ Sales ด้วยบทสนทนาที่ปิดข้อมูลแล้ว', output: 'Marketing-to-Sales Handoff Rule' },
+    { id: 'follow-up', label: '05 · Follow-up', title: 'ตาม Lead ต่อจากเหตุผล ไม่ใช่ส่งข้อความเดิมซ้ำ', learn: 'แยก Lead ที่ควรตามต่อ Lead ที่ควรพัก และเหตุผลที่ต้องกลับไปคุย', action: 'วาง Cadence, ข้อความตามบริบท, Owner และ Due date', output: 'Follow-up Tracker' },
+    { id: 'review', label: '06 · Review', title: 'ดูจุดรั่วจากงานจริง แล้วแก้ Flow ร่วมกัน', learn: 'หัวหน้าต้องเห็นว่า Lead หายที่ Message, Response, Qualification, Handoff หรือ Follow-up', action: 'จำลองการประชุม Marketing × Sales 30 นาทีและล็อกสิ่งที่จะติดตามในช่วงดูแล 30 วัน', output: 'Review Rhythm + 30-Day Support Plan' },
   ],
-  takeHome: [
-    'Campaign/Offer Brief ที่ทีมใช้ตั้งต้น Content และ Ads', 'Qualified Lead Definition ที่ Marketing และ Sales ยืนยันร่วมกัน', 'First-response Script สำหรับข้อความแรกและคำถามคัด Lead', 'Marketing-to-Sales Handoff Rule ที่ระบุข้อมูล Owner และ Next action', 'Follow-up Tracker ที่ใช้เห็น Lead ค้างและจังหวะตามต่อ', 'Flow simulation หนึ่งรอบจาก Content/Ads ถึง Follow-up ด้วยข้อมูลที่ปิดแล้ว', 'ช่วงดูแล 30 วันตาม Catalog',
-  ],
+  takeHome: ['Campaign/Offer Brief + Qualified Lead Definition', 'First-response Script', 'Marketing-to-Sales Handoff Rule', 'Follow-up Tracker + Review Rhythm'],
   bonusCards: {
     enabled: SHOW_BONUS_CARDS,
     heading: 'ของที่ทีมคุณได้รับกลับไปใช้ต่อ — รวมอยู่ในค่าอบรมแล้ว ไม่ต้องซื้อ Template เพิ่ม',
-    intro: 'ทุกชิ้นช่วยให้ทีมเริ่มใช้ Flow หลังเรียนและให้หัวหน้าตามงานต่อจากหลักฐานจริง',
+    intro: 'คลาสนี้ของแถมเป็นเครื่องมือที่มีสูตรจริง เปิดแล้วเห็นทำงาน ไม่ใช่เอกสารให้อ่าน',
     items: [
-      { number: '01', title: 'Content Hook Pack: 30 Hook ดึงคนที่ใช่', user: 'ทีม Content และ Marketing', timing: 'ก่อนทำ Content หรือ Ads ชุดใหม่', outcome: 'เริ่มจาก Pain, Trigger และคำถามซื้อ แทนการเจนโพสต์กว้างๆ', format: 'Google Sheet' },
-      { number: '02', title: 'Chat Reply Templates: 20 สถานการณ์ตอบแชท', user: 'คนตอบแชตและ Sales', timing: 'เมื่อเจอคำถามราคา ขอรายละเอียด ยังไม่พร้อม หรือนัดแล้วเงียบ', outcome: 'เลือกข้อความที่พา Lead ไปสู่ขั้นถัดไปและส่งต่อพร้อมบริบท', format: 'Google Doc' },
-      { number: '03', title: 'Ads-to-Sales Leak Checklist: เช็กจุดรั่ว 25 จุด', user: 'Owner และ Manager', timing: 'ก่อน Review Flow หรือเมื่อ Lead หลุดมากผิดปกติ', outcome: 'เห็นว่าจุดติดอยู่ที่ Message, Inbox, Qualification, Handoff หรือ Follow-up', format: 'Google Sheet/PDF' },
-      { number: '04', title: 'Marketing × Sales Meeting Sheet: แบบประชุม 30 นาที', user: 'Marketing, Sales และ Manager', timing: 'รอบ Review จาก Lead จริง', outcome: 'จบประชุมด้วยกติกา ข้อความ Owner และ Next action ที่ชัด', format: 'Google Sheet' },
-      { number: '05', title: 'Old Lead Follow-up Pack: ชุดตาม Lead เก่ากลับมาคุยใหม่', user: 'Sales และคนดูแล Inbox', timing: 'เมื่อคัด Lead เก่าที่มีเหตุผลให้ทักกลับ', outcome: 'เลือก Lead ที่ควรตามและใช้ข้อความตามบริบท ไม่ Blast ทั้งฐาน', format: 'Google Sheet + Google Doc' },
+      { number: '01', title: 'Online Class ดูย้อนหลัง 12 เดือน', user: 'ผู้เรียนทุกคนและคนใหม่ที่เข้าหลังคลาส', timing: 'เมื่ออยากทบทวนเฉพาะโมดูล', outcome: 'ดูซ้ำได้โดยไม่ต้องจ้างอบรมซ้ำ', format: 'คลิป 5–12 นาที/โมดูล · ส่งลิงก์ภายใน 14 วันหลังคลาส' },
+      { number: '02', title: 'Lead Inbox Tool: Sheet วัดเวลาตอบและคัด Lead', user: 'คนตอบแชต Sales และ Manager', timing: 'ทุกครั้งที่มี Lead ทักเข้ามา', outcome: 'ลงเวลาทัก/เวลาตอบแล้วนับนาทีให้เอง · คะแนน Qualified ตามกติกาของบริษัท · Owner และ Next action · แถวที่ค้างเกิน 60 นาทีขึ้นแดง', format: 'Google Sheet มีสูตร + ตัวอย่าง 30 Lead' },
+      { number: '03', title: 'Chat & Content Prompt Pack: ตอบแชท 20 สถานการณ์ + Hook 30 แบบ', user: 'คนตอบแชตและทีม Content', timing: 'เมื่อเจอคำถามราคา ลังเล เงียบ หรือคิดโพสต์ไม่ออก', outcome: 'ข้อความวางลง Quick reply ของ LINE OA ได้เลย · Hook มีช่องเติมสินค้าและตัวอย่างเติม 3 อุตสาหกรรม · ใช้กับ ChatGPT ได้ทันที', format: 'Google Sheet + Doc' },
+      { number: '04', title: 'Ads-to-Sales Leak Scorecard 25 จุด + ชุดตาม Lead เก่า', user: 'Owner และ Manager', timing: 'ก่อนเพิ่มงบแอด หรือเมื่อ Lead หลุดผิดปกติ', outcome: 'ติ๊กแล้วนับคะแนนเอง แยก 5 โซน Message → Follow-up · เกณฑ์คัด Lead เก่า A/B/C พร้อมข้อความทักกลับ ไม่ Blast ทั้งฐาน', format: 'Google Sheet · ติ๊กได้บนมือถือ' },
+      { number: '05', title: 'Check-in 30 นาที + ตรวจการบ้าน + กลุ่ม LINE ศิษย์เก่า', user: 'Owner, Manager และผู้เรียน', timing: 'ภายใน 30 วันหลังคลาส แล้วถามต่อได้ไม่จำกัดเวลา', outcome: 'ดูว่า Flow ใหม่ใช้กับ Lead จริงแล้วติดตรงไหน', format: 'Google Meet 30 นาที + กลุ่ม LINE · ผมตอบเอง' },
+      { number: '06', title: 'คลังศิษย์เก่า by Pun_Nattapatch', user: 'Owner, Manager และผู้เรียน', timing: 'หลังจบคลาส อัปเดตทุกเดือน', outcome: 'หยิบเคส Prompt และ Sheet ที่ทำแล้วจากบริษัทอื่น (ปิดชื่อ) ไปปรับใช้', format: 'Google Drive ศิษย์เก่า · อัปเดต 12 เดือน' },
+      { number: '07', title: 'Certificate of Completion', user: 'ผู้เรียนที่ส่งการบ้านครบ', timing: 'หลังส่งการบ้านหลังคลาส', outcome: 'ใบรับรองที่แปลว่าทำจริง ไม่ใช่แค่นั่งฟัง — ออกให้เมื่อส่ง Lead Inbox Tool ที่กรอกจริง 2 สัปดาห์ (ปิดข้อมูล) และ Lead ที่ส่งต่อพร้อม Owner/Next action อย่างน้อย 5 ราย', format: 'PDF · ออกให้เมื่อส่งการบ้านครบ' },
     ],
   },
+  bonusValues: {
+    eyebrow: 'Bonus หลังคอร์ส · แถมฟรี 6 ชิ้น + Certificate รวมอยู่ในราคาแล้ว',
+    heading: 'จบ Workshop แล้ว ผมแถมเครื่องมือใช้ต่ออีก 6 ชิ้น',
+    intro: 'ทุกชิ้นทำให้ทีมเริ่มใช้ Flow กับ Lead จริงได้ตั้งแต่วันจันทร์ และให้เจ้าของเห็นตัวเลขเวลาตอบเป็นครั้งแรก ส่งให้ทุกบริษัท ไม่ต้องซื้อ Template เพิ่ม',
+    items: [
+      { number: '01', icon: '🎬', title: 'Online Class ดูย้อนหลัง 12 เดือน', points: ['เจ้าของได้: คนใหม่ที่เข้าหลังคลาสเรียนเองได้ ไม่ต้องจ้างอบรมซ้ำ', 'ทีมได้: ดูซ้ำเฉพาะโมดูลที่ลืม คลิปละ 5–12 นาที ก่อนใช้กับงานจริง', 'ส่งลิงก์ภายใน 14 วันหลังคลาส · ดูได้ 12 เดือน'], value: 0, basis: 'รวมในคอร์ส', valueLabel: 'รวมในคอร์ส' },
+      { number: '02', icon: '📥', title: 'Lead Inbox Tool: Sheet วัดเวลาตอบและคัด Lead', points: ['เจ้าของได้: เห็นตัวเลข "ตอบช้ากี่นาที" ครั้งแรก และรู้ว่า Lead ค้างอยู่กับใคร', 'ทีมได้: ลงเวลาทัก/ตอบแล้ว Sheet นับให้ · คะแนน Qualified ตามกติกาบริษัท · แถวค้างเกิน 60 นาทีขึ้นแดง', 'Google Sheet มีสูตร + ตัวอย่าง 30 Lead · ส่งหลังจบคลาส'], value: 6500, basis: '1.5 ชม.' },
+      { number: '03', icon: '💬', title: 'Chat & Content Prompt Pack: ตอบแชท 20 สถานการณ์ + Hook 30 แบบ', points: ['เจ้าของได้: ทีม Content เลิกเจนโพสต์กว้างๆ ทีมแชตตอบเป็นมาตรฐานเดียวกัน', 'ทีมได้: วางลง Quick reply ของ LINE OA ได้เลย · Hook มีช่องเติมสินค้าและตัวอย่างเติม 3 อุตสาหกรรม · ใช้กับ ChatGPT ได้ทันที', 'Google Sheet + Doc · ส่งหลังจบคลาส'], value: 6500, basis: '1.5 ชม.' },
+      { number: '04', icon: '🔍', title: 'Ads-to-Sales Leak Scorecard 25 จุด + ชุดตาม Lead เก่า', points: ['เจ้าของได้: ก่อนเพิ่มงบแอด รู้ว่ารั่วโซนไหนใน 5 โซน Message → Follow-up', 'ทีมได้: เกณฑ์คัด Lead เก่า A/B/C พร้อมข้อความทักกลับ เอา Lead ที่ค้างในเพจมาเป็นนัดได้ก่อนเรียนจบ', 'Google Sheet · ติ๊กได้บนมือถือ · ส่งหลังจบคลาส'], value: 4400, basis: '1 ชม.' },
+      { number: '05', icon: '🎧', title: 'Check-in 30 นาที + ตรวจการบ้าน + กลุ่ม LINE ศิษย์เก่า', points: ['เจ้าของได้: มีคนกลับมาดูว่าทีมใช้จริงไหม ภายใน 30 วันหลังคลาส · ดูว่า Flow ใหม่ใช้กับ Lead จริงแล้วติดตรงไหน', 'ทีมได้: กลุ่ม LINE ศิษย์เก่าตลอดชีพ ถามเรื่องการใช้ของจากคลาสได้ไม่จำกัดเวลา (ไม่รวมรับทำระบบ ผลิต Content หรือตัดสินใจแทน)', 'Google Meet 30 นาที + LINE · ผมตอบเอง ไม่ใช่แอดมิน'], value: 2200, basis: '30 นาที เวลาผมจริง' },
+      { number: '06', icon: '📚', title: 'คลังศิษย์เก่า by Pun_Nattapatch', points: ['เจ้าของได้: เคส Prompt และ Sheet ใหม่จากบริษัทอื่น (ปิดชื่อ) อัปเดตทุกเดือน 12 เดือน', 'ทีมได้: หยิบของที่ทำแล้วไปปรับใช้ ไม่ต้องเริ่มจากศูนย์', 'Google Drive ศิษย์เก่า · เข้าได้หลังจบคลาส'], value: 0, basis: 'รวมในคอร์ส', valueLabel: 'รวมในคอร์ส' },
+      { number: '07', icon: '🏆', title: 'Certificate of Completion', points: ['เจ้าของได้: หลักฐานว่าทีมทำการบ้านหลังคลาสจริง ไม่ใช่แค่นั่งฟัง', 'ทีมได้: ใบรับรองใส่โปรไฟล์ อ้างอิงกับหัวหน้าและลูกค้าได้', 'ออกให้เมื่อส่ง Lead Inbox Tool ที่กรอกจริง 2 สัปดาห์ (ปิดข้อมูล) และ Lead ที่ส่งต่อพร้อม Owner/Next action อย่างน้อย 5 ราย'], value: 0, basis: 'ประเมินค่าไม่ได้', valueLabel: '∞' },
+    ],
+    footnote: 'มูลค่าคิดจากเวลาที่ผมใช้ทำและตรวจแต่ละชิ้น คูณอัตราที่ปรึกษารายวันที่ขายอยู่ ({{price}} / วัน) ไม่ใช่ตัวเลขตั้งขึ้นเอง และคุมไว้ไม่เกิน 60% ของค่าอบรม · Online Class, คลังศิษย์เก่า และ Certificate ยังไม่ตีเป็นเงินจนกว่าจะเปิดขายแยก · ไฟล์ทุกชิ้นเปิดได้และทำตามได้โดยไม่ต้องถามผม',
+  },
+  spotlight: {
+    eyebrow: 'Spotlight modules', heading: 'สองช่วงที่ทำให้ Content ไม่จบที่ Reach และ Lead ไม่จบที่ Inbox', intro: 'ทีมต้องเห็นทั้งข้อความที่ดึงคนเข้ามาและกติกาที่พาคนคนนั้นไปถึง Sales',
+    modules: [{ number: '01', tag: 'Demand', title: 'Message-to-Conversation Design', question: 'Content และ Ads ต้องพูดอะไร คนที่ใช่ถึงจะเริ่มคุย', points: ['แยก Pain, Trigger และคำถามซื้อจากหลักฐานจริง', 'วาง Offer/Message ให้สอดคล้องกับปลายทางของ Sales', 'เลือก CTA ที่บอกขั้นถัดไปชัด', 'ไม่วัดแค่ Reach แต่ดูคุณภาพของบทสนทนา', 'ใช้ AI ช่วยแตกมุม โดยคนยังตรวจ Brand และ Claim'] }, { number: '02', tag: 'Flow', title: 'Marketing-to-Sales Handoff', question: 'Lead ต้องมีข้อมูลอะไร ใครรับต่อ และเมื่อไรถึงถือว่าส่งต่อสำเร็จ', points: ['กำหนด Qualified Lead Definition ร่วมกัน', 'ล็อก First response และคำถามที่ต้องรู้', 'ระบุ Owner, Context และ Next action', 'แยก Lead ที่ควรตามต่อจาก Lead ที่ควรพัก', 'Review จุดรั่วจากหลักฐาน ไม่โทษกันด้วยความรู้สึก'] }],
+  },
+  whatsNew: {
+    eyebrow: 'What’s new in Sep 2026', heading: 'เพิ่ม AI ช่วยเตรียมข้อความ แต่ยังยึด Flow ที่คนในทีมรับผิดชอบร่วมกัน', intro: 'ของใหม่ช่วยให้ผลิตและทบทวนเร็วขึ้น ส่วนแกนหลักคือกติกาส่งต่อที่ทำให้ Lead ไม่หาย',
+    fresh: { badge: 'อัปเดต ก.ย. 2026', heading: 'ของใหม่ที่เพิ่มเข้ามา', sub: 'ใช้ AI เร่งงานเตรียม ไม่ปล่อยให้ AI สัญญาแทนบริษัท', items: [{ title: 'AI-assisted Message Angles', body: 'แตกมุม Content จาก Pain และ Trigger ที่ทีมยืนยัน' }, { title: 'Reply Practice', body: 'ซ้อมตอบสถานการณ์แชตจริงก่อนเปิดใช้' }, { title: 'Conversation Review', body: 'ใช้ AI ช่วยจัดกลุ่มเหตุผลที่ Lead ค้างภายใต้ Human Review' }, { title: 'Old Lead Re-entry', body: 'คัด Lead เก่าที่มีเหตุผลให้กลับไปคุย ไม่ Blast ทั้งฐาน' }], footer: 'เร็วขึ้นโดยไม่เสียความรับผิดชอบ' },
+    core: { badge: 'ใช้ได้ทุกยุค', heading: 'แกนของ Online-to-Sales ที่ Tool ไหนก็แทนไม่ได้', sub: 'ทีมยังต้องตกลงกันให้ชัด', items: [{ title: 'Offer + Message', body: 'คำสัญญาที่ชัดและตรวจสอบได้' }, { title: 'Qualified Lead Definition', body: 'ทุกฝ่ายรู้ว่า Lead แบบไหนควรไปต่อ' }, { title: 'Handoff Rule', body: 'ข้อมูล Owner และ Next action ไม่ตกหล่น' }, { title: 'Follow-up Tracker', body: 'รู้ว่าใครต้องตามอะไร เมื่อไร และเพราะอะไร' }], footer: 'Flow ชัดก่อนเพิ่มเครื่องมือ' },
+  },
+  whyMe: { eyebrow: 'ทำไมต้องเรียนกับผม', heading: 'เพราะผมมอง Journey ตั้งแต่ข้อความแรกจนถึงจังหวะที่ Sales ต้องรับผิดชอบต่อ', items: [{ icon: '🚗', title: 'เคยขายและสอน Dealer Sale', body: 'เข้าใจว่าข้อความออนไลน์ต้องพาคนไปสู่การนัด ทดลอง หรือขอใบเสนอราคาอย่างไร' }, { icon: '📈', title: 'เคยปั้นธุรกิจและทีมขาย', body: 'มอง Lead เป็นงานที่ต้องมี Owner ไม่ใช่แค่ตัวเลขบน Ads Manager' }, { icon: '🤝', title: 'จับ Marketing กับ Sales มาคุยกัน', body: 'Workshop ออกแบบให้คนทำ Content คนตอบแชต และคนปิดการขายตกลง Flow เดียวกัน' }, { icon: '🎯', title: 'ใช้ Content และแชตของบริษัท', body: 'ทีมฝึกจากหลักฐานจริงที่ปิดข้อมูลแล้ว ไม่ใช่ Funnel สำเร็จรูป' }, { icon: '🤖', title: 'ใช้ AI โดยมีคนตรวจ Claim', body: 'AI ช่วยเตรียมมุมและสรุป แต่คนยังรับผิดชอบ Brand ข้อเสนอ และคำตอบถึงลูกค้า' }, { icon: '🗓️', title: 'ดูแลต่อ 30 วันคือ Core', body: 'ช่วงดูแลอยู่ใน Main program ตาม Catalog ไม่ถูกย้ายไปนับเป็นของแถม' }] },
+  instructorProfile: journeyInstructor({ heading: 'วิทยากร · ปัน ณัฐพัชร์ · คนขายที่เชื่อม Content, Inbox และ Sales เป็นงานเดียวกัน', intro: 'ผมสอนเองทั้งสองวัน และอ่านสินค้า Content/Ads กับตัวอย่างบทสนทนาของบริษัทก่อนออกแบบ Workshop เพื่อให้ Flow ที่สร้างขึ้นพูดภาษาเดียวกับทีมคุณ', chips: ['B2B Sales Consultant', 'Online-to-Sales', 'AI Workflow Builder'], angles: [{ icon: '📣', title: 'มุมข้อความ', body: 'เห็นว่า Offer และ Content ต้องเปิดบทสนทนาแบบไหน' }, { icon: '💬', title: 'มุม Inbox', body: 'ออกแบบคำตอบและคำถามที่ช่วย Lead โดยไม่สอบสวน' }, { icon: '🤝', title: 'มุม Handoff', body: 'ล็อก Owner, Context และ Next action ระหว่างฝ่าย' }, { icon: '📈', title: 'มุม Manager', body: 'ทบทวนจุดรั่วจาก Lead จริงและพาทีมแก้ Flow' }], quote: 'ค่าแอดไม่ได้หายตอนกดเผยแพร่ครับ มันหายตอน Lead เข้ามาแล้วไม่มีใครรู้ว่าต้องตอบอะไร ส่งต่อให้ใคร และตามต่อเมื่อไร' }),
   fit: ['บริษัทที่มี Content, Ads หรือ Lead ออนไลน์อยู่แล้ว แต่หลุดระหว่าง Marketing, Inbox และ Sales', 'Owner/Manager ที่พร้อมให้ Marketing, คนตอบแชต และ Sales ตกลง Flow เดียวกัน', 'ทีมที่นำตัวอย่าง Content, Ads และบทสนทนาที่ปิดข้อมูลส่วนตัวแล้วมาใช้ใน Workshop', 'ราคาเห็นก่อนทัก: หน้านี้แสดงราคาและ Scope จาก Catalog เพื่อให้ทีมตัดสินใจก่อนเริ่มคุย'],
   notFit: 'ไม่เหมาะถ้าบริษัทยังไม่มี Offer หรือ Traffic, ต้องการให้ทีมภายนอกรับยิง Ads/ผลิต Content รายเดือน หรือคาดหวังการรับประกัน ROAS, นัดหมาย หรือยอดขาย หากต้องการ Chatbot, CRM หรือ Integration production ให้เลือก I1 หลังประเมิน Scope',
   bio: [
