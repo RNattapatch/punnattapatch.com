@@ -44,6 +44,7 @@ const products = [
     customerJob: 'เข้าใจเหตุผลซื้อ ถามและต่อรองได้ดีขึ้น ซ้อมดีลกับ AI Agent และ Follow-up โดยไม่รีบลดราคา',
     steps: ['decision', 'ask', 'defend', 'rehearse', 'follow-up'],
     keyword: 'SALES PSYCHOLOGY',
+    bonusTotal: '฿17,500',
   },
   {
     code: 'T2',
@@ -51,6 +52,7 @@ const products = [
     customerJob: 'เปลี่ยนคนเห็น Content/Ads ให้เป็นแชต นัดหมาย และการส่งต่อถึงทีมขายที่ชัดเจน',
     steps: ['message', 'respond', 'qualify', 'handoff', 'follow-up', 'review'],
     keyword: 'ONLINE SALES',
+    bonusTotal: '฿19,600',
   },
   {
     code: 'T3',
@@ -58,6 +60,7 @@ const products = [
     customerJob: 'ทีมรายงานภาษาเดียวกัน ผู้จัดการเห็นดีลค้าง งานที่ต้องตาม และจุดที่ต้องเข้าไปช่วย',
     steps: ['stage', 'report', 'warn', 'review', 'prototype'],
     keyword: 'SALES REPORT',
+    bonusTotal: '฿17,500',
   },
 ] as const;
 
@@ -73,7 +76,7 @@ for (const product of products) {
     );
     assert.equal(await page.getByText(product.customerJob, { exact: true }).count(), 1, `${product.code} must keep its approved customer job`);
     assert.equal(await page.locator('[data-offer-core]').count(), 4, `${product.code} must expose Core 4`);
-    assert.equal(await page.locator('[data-offer-bonus]').count(), 5, `${product.code} must expose Bonus 5`);
+    assert.equal(await page.locator('[data-offer-bonus]').count(), 7, `${product.code} must expose Bonus 6 + Certificate`);
     assert.deepEqual(
       await page.locator('[data-curriculum-step]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-step'))),
       product.steps,
@@ -81,8 +84,8 @@ for (const product of products) {
     );
     assert.equal(await page.locator('[data-spotlight-module]').count(), 2, `${product.code} must expose two product-specific spotlight modules`);
     assert.equal(await page.locator('[data-whats-new-column]').count(), 2, `${product.code} must explain what changed and what remains core`);
-    assert.equal(await page.locator('[data-bonus-card]').count(), 5, `${product.code} must explain all five bonuses without invented monetary value`);
-    assert.equal(await page.locator('[data-bonus-value-card]').count(), 0, `${product.code} must not show unapproved monetary bonus values`);
+    assert.equal(await page.locator('[data-bonus-value-card]').count(), 7, `${product.code} must show Bonus 6 + Certificate with approved values`);
+    assert.equal(await page.locator('[data-bonus-total]').innerText(), product.bonusTotal, `${product.code} bonus total must equal the approved stage-1 sum`);
     assert.equal(await page.locator('[data-why-me-item]').count(), 6, `${product.code} must answer why learn this with Pun`);
     assert.equal(await page.locator('[data-instructor-angle]').count(), 4, `${product.code} must show four relevant instructor perspectives`);
     assert.equal(await page.locator('[data-cta-location="final"] [data-cta-keyword]').first().getAttribute('data-cta-keyword'), product.keyword, `${product.code} must preserve its live LINE keyword`);

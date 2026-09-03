@@ -14,7 +14,9 @@ interface Props {
 }
 const { code, keyword, name, price, core, bonuses, values, journey } = Astro.props;
 const valueOf = (number: string) => values?.find((item) => item.number === number)?.value;
-const total = values?.reduce((sum, item) => sum + item.value, 0) ?? 0;
+const total = values?.filter((item) => !item.valueLabel).reduce((sum, item) => sum + item.value, 0) ?? 0;
+const labelOf = (number: string) => values?.find((item) => item.number === number)?.valueLabel;
+const pieces = bonuses.filter((item) => labelOf(item.number) !== '∞').length;
 const fmt = (n: number) => `฿${n.toLocaleString('en-US')}`;
 const headingId = `${code.toLowerCase()}-offer-heading`;
 ---
@@ -46,8 +48,8 @@ const headingId = `${code.toLowerCase()}-offer-heading`;
         <div class="mt-8 border-t border-navy/10 pt-7">
           <div class="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Bonus 5</p>
-              <h3 class="mt-2 font-display text-2xl font-bold text-navy">{total ? `Bonus หลังคอร์ส 5 ชิ้น มูลค่ารวม ${fmt(total)} แถมฟรี` : 'Material ที่ช่วยให้ทีมเริ่มง่ายและใช้ต่อได้'}</h3>
+              <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Bonus {pieces} ชิ้น + Certificate</p>
+              <h3 class="mt-2 font-display text-2xl font-bold text-navy">{total ? `Bonus หลังคอร์ส ${pieces} ชิ้น มูลค่ารวม ${fmt(total)} แถมฟรี` : 'Material ที่ช่วยให้ทีมเริ่มง่ายและใช้ต่อได้'}</h3>
             </div>
             <span class="rounded-full bg-[#06c755]/15 px-3 py-1.5 text-xs font-bold text-[#05a648]">แถมฟรี · ส่งให้หลังจบคลาส</span>
           </div>
@@ -55,11 +57,11 @@ const headingId = `${code.toLowerCase()}-offer-heading`;
             {bonuses.map((item) => (
               <li data-offer-bonus class="grid gap-1 rounded-xl border-l-4 border-coral bg-[#f7f1e7] px-4 py-3 sm:grid-cols-[1fr_auto] sm:items-center">
                 <span class="font-bold text-navy">BONUS {item.number} · {item.title}</span>
-                <span class="text-xs font-semibold text-navy/55">{valueOf(item.number) ? <><s>{fmt(valueOf(item.number)!)}</s> <strong class="text-[#05a648]">ฟรี</strong> · </> : null}{item.format}</span>
+                <span class="text-xs font-semibold text-navy/55">{valueOf(item.number) ? <><s>{fmt(valueOf(item.number)!)}</s> <strong class="text-[#05a648]">ฟรี</strong> · </> : labelOf(item.number) ? <><strong class="text-navy">{labelOf(item.number)}</strong> · </> : null}{item.format}</span>
               </li>
             ))}
           </ol>
-          {total ? <p class="mt-4 text-sm"><a href="#bonus" class="font-bold text-navy underline decoration-coral decoration-2 underline-offset-4">ดูรายละเอียด Bonus ทั้ง 5 ชิ้น</a></p> : null}
+          {total ? <p class="mt-4 text-sm"><a href="#bonus" class="font-bold text-navy underline decoration-coral decoration-2 underline-offset-4">ดูรายละเอียด Bonus ทั้ง {pieces} ชิ้น + Certificate</a></p> : null}
         </div>
 
         <div class="mt-8">

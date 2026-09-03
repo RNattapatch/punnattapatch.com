@@ -3,7 +3,9 @@ import type { ProductBonusValues } from '../../../data/product-details/types';
 interface Props { data: ProductBonusValues; price: string; }
 const { data, price } = Astro.props;
 const fmt = (n: number) => `฿${n.toLocaleString('en-US')}`;
-const total = data.items.reduce((sum, item) => sum + item.value, 0);
+const priced = data.items.filter((item) => !item.valueLabel);
+const total = priced.reduce((sum, item) => sum + item.value, 0);
+const pieces = data.items.filter((item) => item.valueLabel !== '∞').length;
 ---
 
 <section id="bonus" data-t4-section="bonus" aria-labelledby="t4-bonus-heading" class="bg-[#f4f1ea] py-14 sm:py-20">
@@ -15,7 +17,7 @@ const total = data.items.reduce((sum, item) => sum + item.value, 0);
         <p class="mt-4 max-w-3xl leading-7 text-navy/70">{data.intro}</p>
       </div>
       <div class="rounded-[1.75rem] bg-navy p-6 text-white md:min-w-[260px]">
-        <p class="text-xs font-bold uppercase tracking-[.16em] text-[#65d7f2]">Bonus รวม {data.items.length} ชิ้น</p>
+        <p class="text-xs font-bold uppercase tracking-[.16em] text-[#65d7f2]">Bonus {pieces} ชิ้น + Certificate</p>
         <p class="mt-2 flex items-baseline gap-2"><s class="text-lg text-white/50">{fmt(total)}</s><span class="font-display text-4xl font-bold text-[#65d7f2]">ฟรี</span></p>
         <p class="mt-1 text-sm text-white/70">เมื่อจองคอร์ส {price} ทั้งทีม</p>
       </div>
@@ -29,8 +31,10 @@ const total = data.items.reduce((sum, item) => sum + item.value, 0);
             {item.points.map((point) => <li class="flex gap-2"><span aria-hidden="true" class="mt-0.5 font-bold text-[#05a648]">✓</span><span>{point}</span></li>)}
           </ul>
           <div class="mt-auto flex items-center justify-between border-t border-navy/10 pt-4">
-            <p class="flex items-center gap-2"><s class="text-navy/50">{fmt(item.value)}</s><span class="rounded-md bg-[#06c755]/15 px-2.5 py-1 text-xs font-bold text-[#05a648]">ฟรี</span></p>
-            <p class="text-xs text-navy/60">มูลค่า <strong class="text-navy">{fmt(item.value)}</strong> · {item.basis}</p>
+            {item.valueLabel
+              ? <p class="flex items-center gap-2"><span class="font-display text-lg font-bold text-navy">{item.valueLabel}</span><span class="rounded-md bg-[#06c755]/15 px-2.5 py-1 text-xs font-bold text-[#05a648]">ฟรี</span></p>
+              : <p class="flex items-center gap-2"><s class="text-navy/50">{fmt(item.value)}</s><span class="rounded-md bg-[#06c755]/15 px-2.5 py-1 text-xs font-bold text-[#05a648]">ฟรี</span></p>}
+            <p class="text-xs text-navy/60">{item.valueLabel ? item.basis : <>มูลค่า <strong class="text-navy">{fmt(item.value)}</strong> · {item.basis}</>}</p>
           </div>
         </article>
       ))}

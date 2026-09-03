@@ -144,6 +144,8 @@ export interface ProductBonusValueItem {
   points: string[];
   value: number;
   basis: string;
+  /** Shown instead of a baht figure (e.g. 'รวมในคอร์ส', '∞'); item is excluded from the total. */
+  valueLabel?: string;
 }
 
 export interface ProductBonusValues {

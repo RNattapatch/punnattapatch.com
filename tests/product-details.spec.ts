@@ -116,7 +116,7 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   assert.match(await page.locator('[data-journey-section="fit"]').innerText(), /ไม่เหมาะ.*รับยิง Ads/s, 'T2 must clearly reject an agency engagement');
   assert.match(await page.locator('[data-detail-block="fit"]').innerText(), /ราคาเห็นก่อนทัก/, 'T2 decision section must state that pricing is visible before contact');
   assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “ONLINE SALES” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T2 must state the live LINE keyword and team-size instruction');
-  assert.equal(await page.locator('[data-bonus-card]').count(), 5, 'T2 must publish the five approved practical bonuses');
+  assert.equal(await page.locator('[data-bonus-value-card]').count(), 7, 'T2 must publish Bonus 6 + Certificate');
   assert.equal(await page.locator('form').count(), 0, 'T2 detail page must not include a form');
   assert.equal(await page.locator('[data-hero-activity]').count(), 1, 'T2 Hero must lead with one real workshop activity photo');
   assert.equal(await page.locator('[data-hero-activity] img').getAttribute('loading'), 'eager', 'T2 Hero activity photo must be ready at first glance');
@@ -234,7 +234,7 @@ test('T4 renders the approved 16-section sales journey with real proof, visible 
     'T4 must preserve the approved decision journey in order',
   );
   assert.equal(await page.locator('[data-offer-core]').count(), 4, 'T4 Offer must expose four core deliverables');
-  assert.equal(await page.locator('[data-offer-bonus]').count(), 5, 'T4 Offer must expose all five approved bonuses');
+  assert.equal(await page.locator('[data-offer-bonus]').count(), 7, 'T4 Offer must expose Bonus 6 + Certificate');
   assert.equal(await page.locator('[data-offer-bonus] a').count(), 0, 'pending bonus materials must not expose broken download links');
   assert.equal(await page.locator('[data-client-logo]').count(), 16, 'T4 must show every approved client logo except Singha Park');
   assert.equal(await page.locator('[data-client-logo] img').first().evaluate((image) => getComputedStyle(image).filter), 'none', 'T4 client logos must retain full colour');
@@ -286,7 +286,7 @@ test('T4 makes the adoption boundary, curriculum, decision CTAs, FAQ, and LINE p
   assert.equal(await page.locator('[data-spotlight-module]').count(), 2, 'T4 must present the two approved Spotlight modules');
   assert.deepEqual(await page.locator('[data-spotlight-module] h3').allTextContents(), ['AI Agent Mindset for Business Use', 'AI Data Engineering for Business Use'], 'Spotlight modules must use the approved titles');
   assert.equal(await page.locator('[data-whats-new-column]').count(), 2, 'T4 must contrast what is new against the evergreen core');
-  assert.equal(await page.locator('[data-bonus-value-card]').count(), 5, 'T4 must show all five bonuses with values');
+  assert.equal(await page.locator('[data-bonus-value-card]').count(), 7, 'T4 must show Bonus 6 + Certificate');
   assert.equal(await page.locator('[data-bonus-total]').innerText(), '฿19,700', 'T4 bonus total must equal the approved sum');
   assert.equal(await page.locator('[data-why-me-item]').count(), 6, 'T4 must answer why-learn-with-Pun with six points');
   assert.equal(await page.locator('[data-instructor-angle]').count(), 4, 'T4 instructor profile must show four perspectives');
@@ -384,7 +384,7 @@ test('T1 and T3 align their 5A offer copy, metadata, and visible practical bonus
     assert.equal(response?.status(), 200, `${item.route} must render`);
     assert.match(await page.locator('[data-journey-section="offer"]').innerText(), new RegExp(item.coreOffer), `${item.route} must show the approved Core Offer`);
     assert.match(await page.locator('[data-detail-block="take-home"]').innerText(), new RegExp(item.offerBlock), `${item.route} must show the approved Offer block`);
-    assert.equal(await page.locator('[data-bonus-card]').count(), 5, `${item.route} must show all five approved bonuses`);
+    assert.equal(await page.locator('[data-bonus-value-card]').count(), 7, `${item.route} must show Bonus 6 + Certificate`);
     assert.equal(await page.locator('meta[name="description"]').getAttribute('content'), item.description, `${item.route} metadata must match its approved customer job`);
     assert.equal(await page.locator('meta[property="og:description"]').getAttribute('content'), item.description, `${item.route} OG description must match its metadata`);
     await page.close();
