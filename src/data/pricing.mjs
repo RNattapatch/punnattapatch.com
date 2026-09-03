@@ -112,7 +112,20 @@ export const CATALOG = {
     audience: 'คนขาย B2B / BD / AE ที่มีดีลจริงและออกเงินเรียนเอง · เจ้าของที่ยังขายเอง · บริษัทส่ง ≥3 คนให้เทียบ in-house ก่อน',
     status: 'internal',
     botQuote: false,
-    note: 'Public P1 รุ่นที่ 1 · ต.ค. 2026 · สูงสุด 12 คน เปิดเมื่อครบ 6 · Core: Personal Sales Context + AI Sales Desk + ผู้ช่วย 3 ตำแหน่ง (จาก 5) + Test log + Before/After + 14-Day Plan · Founding perk: เครดิต 50% ของค่าตั๋วที่จ่ายจริง 1 ใบ/บริษัท (Blind ฿19,900 → ฿9,950) เข้า T/C1 ภายใน 90 วัน · Refund เฉพาะรอบไม่เปิด · SSOT: wiki strategy-public-cohort-product-lock-blind-ticket-2026-09 + strategy-public-course-p1-p2-ai-sales-labs · ราคา Standard 24,900 ยังไม่ใส่เป็น key แยก · Blind Ticket ฿19,900 จำกัด 10 ที่นั่งแรก',
+    note: 'Public P1 รุ่นที่ 1 · ต.ค. 2026 · สูงสุด 12 คน เปิดเมื่อครบ 6 · Core: Personal Sales Context + AI Sales Desk + ผู้ช่วย 3 ตำแหน่ง (จาก 5) + Test log + Before/After + 14-Day Plan · Founding perk: เครดิต 50% ของค่าตั๋วที่จ่ายจริง 1 ใบ/บริษัท (Blind ฿19,900 → ฿9,950) เข้า T/C1 ภายใน 90 วัน · Refund เฉพาะรอบไม่เปิด · SSOT: wiki strategy-public-cohort-product-lock-blind-ticket-2026-09 + strategy-public-course-p1-p2-ai-sales-labs · ราคา Standard 24,900 อยู่ที่ key public-p1-bootcamp-standard · Blind Ticket ฿19,900 จำกัด 10 ที่นั่งแรก',
+  },
+  'public-p1-bootcamp-standard': {
+    // 2026-09-03: ราคาปกติของ Public P1 หลังขายครบ 10 ที่นั่ง Blind Ticket · ปันเคาะ
+    // หน้า LP ดึงตัวเลขนี้ไปแสดงว่า "ครบ 10 แล้วเป็นราคาปกติเท่าไหร่" — ยังไม่ใช่ราคาที่เปิดขายตอนนี้
+    amount: 24900,
+    url: '/services/ai-sales-agent-bootcamp',
+    name: 'คอร์สสดสร้างทีม AI ผู้ช่วยงานขายส่วนตัว 2026 (ราคาปกติ)',
+    nameEn: 'AI Sales Agent Bootcamp — Standard',
+    kind: 'public',
+    duration: '2 วันสด (เสาร์-อาทิตย์ · กรุงเทพฯ) + Group clinic Day 14',
+    status: 'internal',
+    botQuote: false,
+    note: 'ราคาปกติหลังขายครบ 10 ที่นั่ง Blind Ticket · ปันเคาะ 2026-09-03',
   },
 
   // ── บริการวางระบบฝ่ายขาย (Services grid) ─────────────────────────────────

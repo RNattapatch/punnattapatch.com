@@ -1,6 +1,6 @@
 import type { ImageMetadata } from 'astro';
 
-export type ProductDetailCode = 'T1' | 'T2' | 'T3' | 'T4' | 'C1' | 'I1';
+export type ProductDetailCode = 'T1' | 'T2' | 'T3' | 'T4' | 'C1' | 'I1' | 'P1';
 
 export interface ProductFaqItem {
   question: string;
@@ -200,10 +200,32 @@ export interface ProductJourneyPresentation {
   finalEyebrow: string;
 }
 
+/**
+ * Public-cohort ticket facts (P1 Blind Ticket · locked 2026-09-03).
+ * Every figure the page prints comes from here — never hardcoded in a component.
+ */
+export interface ProductPublicCohort {
+  seatsTotal: number;
+  /** Seats actually paid for. Pun updates this by hand; never guess a number. */
+  seatsTaken: number;
+  dateWindow: string;
+  venue: string;
+  openWhen: string;
+  notMetPolicy: string;
+  vatNote: string;
+  /** Catalog key of the standard price shown once the blind-ticket seats run out. */
+  standardPricingKey: string;
+  foundingPerk: string;
+}
+
 export interface ProductDetailPageData {
   code: ProductDetailCode;
   pricingKey: string;
   route: string;
+  /** Present only on public-cohort tickets; opts the page into PublicCohortNotice. */
+  publicCohort?: ProductPublicCohort;
+  /** Keeps the page out of search until the pricing key goes live. */
+  noindex?: boolean;
   kind: 'course' | 'service';
   showPriceInHero?: boolean;
   serviceType?: 'Sales Consulting' | 'Sales System Implementation';

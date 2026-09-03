@@ -35,6 +35,7 @@ import WhatsNewBlock from './WhatsNewBlock.astro';
 import BonusValueStack from './BonusValueStack.astro';
 import WhyMeGrid from './WhyMeGrid.astro';
 import InstructorProfile from './InstructorProfile.astro';
+import PublicCohortNotice from './PublicCohortNotice.astro';
 
 interface Props { data: ProductDetailPageData; }
 const { data } = Astro.props;
@@ -48,13 +49,26 @@ const investmentLineCta = data.cta.locations?.afterInvestment;
 const finalLineCta = data.cta.locations?.final ?? { primary: data.cta.primary, primaryIntent: 'quote', secondary: data.cta.finalSecondary ?? data.cta.secondary, secondaryIntent: data.cta.finalSecondaryIntent ?? data.cta.secondaryIntent ?? 'lead_magnet' };
 const chapters = data.chapters ?? [];
 const isJourney = Boolean(data.journey);
+const cohort = data.publicCohort;
 ---
 
 {isJourney && data.journey ? (
   <>
     <JourneyHero data={data} journey={data.journey} name={catalog.name} duration={catalog.duration} price={catalog.price} />
 
+    {cohort && (
+      <section class="bg-[#072b4e] px-5 pb-8 pt-0 sm:pb-12">
+        <div class="mx-auto max-w-7xl"><PublicCohortNotice cohort={cohort} price={catalog.price} placement="hero" /></div>
+      </section>
+    )}
+
     <OfferStack code={data.code} keyword={data.cta.keyword} name={catalog.name} price={catalog.price} core={data.takeHome.slice(0, 4)} bonuses={data.bonusCards?.items ?? []} values={data.bonusValues?.items} journey={data.journey} />
+
+    {cohort && (
+      <section class="bg-[#f7f1e7] px-5 pb-14 pt-0 sm:pb-20">
+        <div class="mx-auto max-w-6xl"><PublicCohortNotice cohort={cohort} price={catalog.price} placement="offer" /></div>
+      </section>
+    )}
 
     <div data-t4-section={data.code === 'T4' ? 'logos' : undefined} data-journey-section="logos" data-detail-block="authority">
       <InstructorCard authority={data.authority} heading={data.sections?.authority?.heading ?? 'สอนจากประสบการณ์ขาย โค้ชทีม และสร้าง AI Workflow ใช้งานจริง'} compact />
@@ -92,6 +106,7 @@ const isJourney = Boolean(data.journey);
 
     <div data-t4-section={data.code === 'T4' ? 'investment' : undefined} data-journey-section="investment" data-detail-block="investment" class="bg-white pb-14 sm:pb-20">
       <InvestmentBlock name={catalog.name} price={catalog.price} amount={catalog.amount} regularPrice={catalog.regularPrice} eyebrow={data.sections?.investment?.eyebrow} {...data.investment} />
+      {cohort && <div class="mx-auto mb-7 max-w-5xl px-5"><PublicCohortNotice cohort={cohort} price={catalog.price} placement="investment" /></div>}
       <div class="mx-auto max-w-5xl px-5">
         <JourneyCTA code={data.code} location="after_investment" keyword={data.cta.keyword} primary={investmentLineCta?.primary ?? 'จองคิวรับบริการ'} primaryIntent={investmentLineCta?.primaryIntent ?? 'book_training'} secondary={investmentLineCta?.secondary ?? 'ทัก LINE เช็กคิวว่าง'} secondaryIntent={investmentLineCta?.secondaryIntent ?? 'availability'} />
       </div>

@@ -7,6 +7,7 @@ export const PRODUCT_DETAIL_ROUTE_BY_CODE: Readonly<Record<ProductDetailCode, st
   I1: '/services/dashboard-build',
   T3: '/services/t3-sales-back-office',
   T4: '/services/advance-ai-automation',
+  P1: '/services/ai-sales-agent-bootcamp',
 };
 
 export const PRODUCT_DETAIL_PRICING_KEY_BY_CODE: Readonly<Record<ProductDetailCode, string>> = {
@@ -16,4 +17,5 @@ export const PRODUCT_DETAIL_PRICING_KEY_BY_CODE: Readonly<Record<ProductDetailCo
   I1: 'daruma-starter',
   T3: 'ai-workshop-advance',
   T4: 't4-ai-workflow-pilot-day',
+  P1: 'public-p1-bootcamp',
 };
