@@ -60,7 +60,7 @@ const headingId = `${code.toLowerCase()}-offer-heading`;
                 <span class="flex flex-col items-start gap-1 sm:items-end">
                   <span class="flex items-center gap-2">
                     {valueOf(item.number)
-                      ? <><s class="text-base font-bold text-navy/45">{fmt(valueOf(item.number)!)}</s><span class="rounded-md bg-[#06c755]/15 px-2.5 py-1 text-xs font-bold text-[#05a648]">ฟรี</span></>
+                      ? <><s class="text-base font-bold text-coral">{fmt(valueOf(item.number)!)}</s><span class="rounded-md bg-[#06c755]/15 px-2.5 py-1 text-xs font-bold text-[#05a648]">ฟรี</span></>
                       : <span class="rounded-md bg-navy/10 px-2.5 py-1 text-xs font-bold text-navy">{labelOf(item.number) === '∞' ? 'ประเมินค่าไม่ได้ · ฟรี' : `${labelOf(item.number) ?? 'รวมในคอร์ส'} · ฟรี`}</span>}
                   </span>
                   <span class="text-xs text-navy/55">{item.format}</span>

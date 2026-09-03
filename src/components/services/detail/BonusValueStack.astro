@@ -33,7 +33,7 @@ const pieces = data.items.filter((item) => item.valueLabel !== '∞').length;
           <div class="mt-auto flex items-center justify-between border-t border-navy/10 pt-4">
             {item.valueLabel
               ? <p class="flex items-center gap-2"><span class="font-display text-lg font-bold text-navy">{item.valueLabel}</span><span class="rounded-md bg-[#06c755]/15 px-2.5 py-1 text-xs font-bold text-[#05a648]">ฟรี</span></p>
-              : <p class="flex items-center gap-2"><s class="text-navy/50">{fmt(item.value)}</s><span class="rounded-md bg-[#06c755]/15 px-2.5 py-1 text-xs font-bold text-[#05a648]">ฟรี</span></p>}
+              : <p class="flex items-center gap-2"><s class="text-coral">{fmt(item.value)}</s><span class="rounded-md bg-[#06c755]/15 px-2.5 py-1 text-xs font-bold text-[#05a648]">ฟรี</span></p>}
             <p class="text-xs text-navy/60">{item.valueLabel ? item.basis : <>มูลค่า <strong class="text-navy">{fmt(item.value)}</strong> · {item.basis}</>}</p>
           </div>
         </article>
