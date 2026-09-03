@@ -99,6 +99,21 @@ export const CATALOG = {
     image: '/services/thumbs/t4-ai-workflow-pilot.jpg',
     note: 'T4 · Workflow Pilot Day 1 บริษัท 1 วัน — เอางานซ้ำ 1 เรื่องมาแยกหน้าที่คน/AI แล้วสร้าง Safe Sandbox ให้ทีมลองรันเอง · Artifact 4 ชิ้น: Workflow Map + Safe Sandbox + Human–AI Responsibility Brief + Stop/Revise/Install Decision Memo · Sandbox ไม่ใช่ production (งาน build จริง = daruma-starter/custom) · SSOT: wiki strategy-t1-t4-5a-offer-bonus-system · เปิดขายแบบ Warm/Organic Harvest Test ก่อน Cold · สลับ status เป็น live เมื่อ LP ขึ้นจริง',
   },
+  'public-p1-bootcamp': {
+    // 2026-09-03: Public P1 ปันเคาะ — ตั๋วรายคน Founding ฿16,900 (Standard ฿22,900 หลัง deadline 26 ก.ย. / ครบ 8 คน — เปลี่ยน amount ตอนนั้น)
+    // status internal จนหน้า Blind Ticket ขึ้น (WEB-PUBLIC-P1) แล้วสลับ 'live' วันเปิดขาย · ไม่มี VAT (ยังไม่จด) · ห้ามบอท quote ก่อน live
+    amount: 16900,
+    url: '/services/ai-sales-agent-bootcamp',
+    name: 'คอร์สสดสร้างทีม AI ผู้ช่วยงานขายส่วนตัว 2026',
+    nameEn: 'AI Sales Agent Bootcamp',
+    kind: 'public',
+    duration: '2 วันสด (เสาร์-อาทิตย์ · กรุงเทพฯ) + Group clinic Day 14',
+    headline: 'สร้างทีม AI ผู้ช่วยงานขายของคุณเอง ใน 2 วัน — จากสินค้า ลูกค้า และดีลที่คุณมีอยู่',
+    audience: 'คนขาย B2B / BD / AE ที่มีดีลจริงและออกเงินเรียนเอง · เจ้าของที่ยังขายเอง · บริษัทส่ง ≥3 คนให้เทียบ in-house ก่อน',
+    status: 'internal',
+    botQuote: false,
+    note: 'Public P1 รุ่นที่ 1 · ต.ค. 2026 · สูงสุด 12 คน เปิดเมื่อครบ 6 · Core: Personal Sales Context + AI Sales Desk + ผู้ช่วย 3 ตำแหน่ง (จาก 5) + Test log + Before/After + 14-Day Plan · Founding perk: เครดิต 50% ของค่าตั๋ว 1 ใบ/บริษัท เข้า T/C1 ภายใน 90 วัน · Refund เฉพาะรอบไม่เปิด · SSOT: wiki strategy-public-cohort-product-lock-blind-ticket-2026-09 + strategy-public-course-p1-p2-ai-sales-labs · ราคา Standard 22,900 ยังไม่ใส่เป็น key แยก',
+  },
 
   // ── บริการวางระบบฝ่ายขาย (Services grid) ─────────────────────────────────
   'daily-sales-consulting': {
