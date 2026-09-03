@@ -17,8 +17,9 @@ import AppNav from '../../components/app/AppNav.astro';
     </AppNav>
 
     <main class="mx-auto max-w-3xl px-4 pb-24 pt-4">
-      <div role="tablist" class="tabs tabs-box mb-4 grid grid-cols-3 bg-base-200">
+      <div role="tablist" class="tabs tabs-box mb-4 grid grid-cols-4 bg-base-200">
         <a role="tab" class="tab tab-active" data-tab="candidates">📋 รอเลือก <span class="badge badge-warning badge-sm ml-1" id="nd-badge">0</span></a>
+        <a role="tab" class="tab" data-tab="jobs">⏳ คิวงาน <span class="badge badge-warning badge-sm ml-1 hidden" id="nd-queue-badge">0</span></a>
         <a role="tab" class="tab" data-tab="sources">📡 แหล่งข่าว</a>
         <a role="tab" class="tab" data-tab="log">🗒 ประวัติโพสต์</a>
       </div>
@@ -45,6 +46,18 @@ import AppNav from '../../components/app/AppNav.astro';
       </section>
 
       <section id="nd-pane-log" class="hidden"><div id="nd-log" class="space-y-2"></div></section>
+
+      <!-- ============ คิวงาน (ยกโครงจาก Intel Warroom) ============ -->
+      <section id="nd-pane-jobs" class="hidden">
+        <p class="mb-2 text-xs opacity-60">งานที่ส่งไปให้ Mac mini ทำ — เขียนคอปปี้ด้วย Codex · เรนเดอร์การ์ด · โพสต์ ·
+          worker หยิบทีละงานทุก 12 วินาที ปิดหน้านี้ได้ งานไม่หยุด</p>
+        <div class="overflow-x-auto rounded-2xl border border-base-300">
+          <table class="table table-sm">
+            <thead><tr><th>งาน</th><th>ข่าว</th><th>สถานะ</th><th>เวลา</th><th></th></tr></thead>
+            <tbody id="nd-jobs"></tbody>
+          </table>
+        </div>
+      </section>
     </main>
 
     <!-- Candidate detail -->
@@ -64,7 +77,7 @@ import AppNav from '../../components/app/AppNav.astro';
   </style>
 
   <script>
-    import { enqueueJob, waitJob } from '../../scripts/war-room/data';
+    import { enqueueJob, waitJob, listWrJobs, retryWrJob, deleteWrJob, type WrJob } from '../../scripts/war-room/data';
     import {
       listCandidates, listSources, listLog, patchCandidate, addSource, toggleSource, slugFor,
       type Candidate, type Source, type PostLog,
@@ -74,6 +87,8 @@ import AppNav from '../../components/app/AppNav.astro';
     let candidates: Candidate[] = [];
     let sources: Source[] = [];
     let logs: PostLog[] = [];
+    let jobs: WrJob[] = [];
+    let jobTimer = 0;
     let currentId: string | null = null;
 
     const $ = (id: string) => document.getElementById(id)!;
@@ -91,16 +106,49 @@ import AppNav from '../../components/app/AppNav.astro';
     const oops = (e: unknown) => toast((e as Error).message || 'ผิดพลาด ลองใหม่', 'error');
 
     async function refresh() {
-      [candidates, sources, logs] = await Promise.all([listCandidates(), listSources(), listLog()]);
-      renderCandidates(); renderSources(); renderLog();
+      [candidates, sources, logs, jobs] = await Promise.all([listCandidates(), listSources(), listLog(), listWrJobs(40)]);
+      renderCandidates(); renderSources(); renderLog(); await loadJobs();
     }
 
     // ---------- tabs ----------
     function showTab(name: string) {
-      for (const t of ['candidates', 'sources', 'log']) {
+      for (const t of ['candidates', 'jobs', 'sources', 'log']) {
         $(`nd-pane-${t}`).classList.toggle('hidden', t !== name);
         document.querySelector(`[data-tab="${t}"]`)!.classList.toggle('tab-active', t === name);
       }
+      if (name === 'jobs') void loadJobs().catch(() => {});
+      syncPolling();
+    }
+
+    // ---------- คิวงาน ----------
+    const JOB_TONE: Record<string, string> = { queued: 'badge-warning', running: 'badge-primary', done: 'badge-success', error: 'badge-error' };
+    const JOB_LABEL: Record<string, string> = {
+      rewrite_copy: '✍️ เขียนใหม่ด้วย Codex', render_text_card: '🖼 การ์ดตัวอักษร',
+      render_card: '🎨 การ์ดซีน AI', publish: '🚀 โพสต์', ai_improve: '✨ เกลาบท',
+    };
+    async function loadJobs() {
+      jobs = await listWrJobs(40);
+      const pending = jobs.filter((j) => j.status === 'queued' || j.status === 'running').length;
+      const b = $('nd-queue-badge');
+      b.textContent = String(pending);
+      b.classList.toggle('hidden', pending === 0);
+      const titleOf = (j: WrJob) => {
+        const id = (j.payload as { candidate_id?: string })?.candidate_id;
+        return candidates.find((c) => c.id === id)?.ca_news_items?.title ?? (id ? id.slice(0, 8) : '—');
+      };
+      $('nd-jobs').innerHTML = jobs.length ? jobs.map((j) => `<tr>
+          <td class="whitespace-nowrap text-sm">${esc(JOB_LABEL[j.job_type] ?? j.job_type)}</td>
+          <td><div class="max-w-56 truncate text-sm opacity-80">${esc(titleOf(j))}</div>${j.error ? `<p class="mt-1 whitespace-pre-wrap text-xs text-error">${esc(j.error.slice(0, 240))}</p>` : ''}</td>
+          <td><span class="badge badge-sm ${JOB_TONE[j.status] ?? 'badge-ghost'}">${esc(j.status)}</span></td>
+          <td class="whitespace-nowrap text-xs opacity-60">${fmtDate(j.created_at)}</td>
+          <td class="whitespace-nowrap">${j.status === 'error' ? `<button class="btn btn-outline btn-xs tap-44" data-retry="${esc(j.id)}">ลองใหม่</button>` : ''}<button class="btn btn-ghost btn-xs text-error tap-44" data-delete-job="${esc(j.id)}" aria-label="ลบงานนี้ออกจากคิว">ลบ</button></td></tr>`).join('')
+        : '<tr><td colspan="5" class="py-6 text-center opacity-60">ยังไม่มีงานในคิว</td></tr>';
+    }
+    // poll เฉพาะตอนแท็บคิวเปิดอยู่และหน้าจอยังมองเห็น — ไม่ยิง Supabase ทิ้งไว้เบื้องหลัง
+    function syncPolling() {
+      const active = document.visibilityState === 'visible' && !$('nd-pane-jobs').classList.contains('hidden');
+      if (active && !jobTimer) jobTimer = window.setInterval(() => void loadJobs().catch(() => {}), 10000);
+      if (!active && jobTimer) { window.clearInterval(jobTimer); jobTimer = 0; }
     }
 
     // ---------- candidates ----------
@@ -163,15 +211,18 @@ import AppNav from '../../components/app/AppNav.astro';
         <input id="nd-glance" type="text" maxlength="120" class="input input-bordered w-full text-sm" value="${esc(c.glance_line ?? '')}" aria-label="ข้อความบนการ์ด" placeholder="เศรษฐกิจโต | แต่[[ยอดคุณยังนิ่ง]]" />
         <textarea id="nd-scene" rows="3" maxlength="1200" class="textarea textarea-bordered mt-2 w-full text-sm leading-relaxed" aria-label="scene prompt" placeholder="scene prompt (อังกฤษ) — ซีนโต๊ะ/สนามของคนดู">${esc(c.scene_prompt ?? '')}</textarea>
         <div class="mt-2 flex flex-wrap items-center gap-2">
+          <button class="btn btn-sm tap-44 text-white" style="background-color:var(--color-brand-navy);" id="nd-textcard">🖼 สร้างการ์ดตัวอักษร</button>
+          <span class="badge badge-ghost badge-sm">ฟรี · ~1 นาที</span>
           <button class="btn btn-sm tap-44 text-white" style="background-color:var(--color-brand-coral);" id="nd-rerender">🎨 สร้างการ์ดซีน AI</button>
           <span class="badge badge-ghost badge-sm">ใช้เครดิต kie.ai</span>
           <span class="text-xs opacity-60" id="nd-rerender-status" role="status" aria-live="polite">${c.scene_field ? 'สนาม: ' + esc(c.scene_field) : ''}</span>
         </div>
-        <p class="mt-1 text-xs opacity-60">รอบเช้าเจนให้แค่การ์ดตัวอักษร (ฟรี) — การ์ดซีน AI สั่งเองตรงนี้เมื่อต้องการ ใช้เวลา 1-3 นาที</p>
+        <p class="mt-1 text-xs opacity-60">รอบเช้าไม่เจนการ์ดรอไว้แล้ว — พิมพ์ข้อความการ์ดด้านบนให้พอใจก่อน แล้วค่อยกดสั่งเจน
+          (การ์ดตัวอักษรได้ 3 สีให้เลือก · การ์ดซีน AI ใช้ scene prompt ด้วย)</p>
         <div class="mt-3 grid grid-cols-3 gap-2" id="nd-imgs">
           ${images.map((im, ii) => `
             <img src="${esc(im.url)}" data-ii="${ii}" class="nd-img aspect-square cursor-pointer rounded-lg object-cover ${c.selected_image === ii ? 'selected' : ''}" alt="การ์ดภาพ ${esc(im.style ?? '')}" loading="lazy" />`).join('') ||
-            '<p class="col-span-3 text-sm opacity-60">ไม่มีภาพ — โพสต์ FB แบบไม่มีรูปได้ หรือกด "สร้างการ์ดซีน AI" ด้านบน</p>'}
+            '<p class="col-span-3 text-sm opacity-60">ยังไม่มีการ์ด — พิมพ์ข้อความการ์ดด้านบนแล้วกด "🖼 สร้างการ์ดตัวอักษร" (ฟรี) หรือ "🎨 การ์ดซีน AI"</p>'}
         </div>
 
         <h4 class="font-display mb-1 mt-4 font-semibold">3) บทความ (แก้ได้เลย)</h4>
@@ -220,10 +271,10 @@ import AppNav from '../../components/app/AppNav.astro';
           timeoutMs: 15 * 60_000,
           onTick: (s) => { status.textContent = `Codex กำลังเขียนบน Mac mini… ${s} วิ (ปกติ 3-8 นาที)`; },
         });
-        const r = (job.result ?? {}) as { writer?: { attempts?: number; lint?: { yellow?: number } }; card_error?: string | null };
+        const r = (job.result ?? {}) as { writer?: { attempts?: number; lint?: { yellow?: number } }; card_stale?: boolean };
         await refresh();
         openDetail(c.id);
-        toast(`เขียนใหม่แล้ว ✍️ ผ่านด่านรอบที่ ${r.writer?.attempts ?? '?'} · YELLOW ${r.writer?.lint?.yellow ?? 0}${r.card_error ? ' · การ์ดตัวอักษรไม่ได้อัปเดต' : ''}`);
+        toast(`เขียนใหม่แล้ว ✍️ ผ่านด่านรอบที่ ${r.writer?.attempts ?? '?'} · YELLOW ${r.writer?.lint?.yellow ?? 0}${r.card_stale ? ' · การ์ดเดิมยังเป็นข้อความเก่า กดสร้างใหม่ได้' : ''}`);
       } catch (e) { status.textContent = ''; oops(e); }
       finally { btn.disabled = false; btn.classList.remove('loading'); }
     }
@@ -241,11 +292,40 @@ import AppNav from '../../components/app/AppNav.astro';
         c.selected_image = Number(el.dataset.ii);
         document.querySelectorAll('#nd-imgs .nd-img').forEach((x) => x.classList.toggle('selected', x === el));
       });
+      $('nd-textcard').addEventListener('click', () => void renderTextCard(c));
       $('nd-rerender').addEventListener('click', () => void rerenderCard(c));
       $('nd-rewrite').addEventListener('click', () => void rewriteCopy(c));
       $('nd-schedule').addEventListener('click', () => void act(c, 'schedule'));
       $('nd-reject').addEventListener('click', () => void act(c, 'reject'));
       $('nd-post').addEventListener('click', () => void act(c, 'post'));
+    }
+
+    // การ์ดตัวอักษร = on-demand เช่นกัน (2026-09-03 — คุณปันสั่งเลิกเจนรอไว้ในรอบเช้า)
+    // ฟรี: Playwright ในเครื่องมินิ ไม่แตะ kie.ai · ได้ 3 สี แล้วเลือกใบที่จะโพสต์
+    async function renderTextCard(c: Candidate) {
+      const glance = ($('nd-glance') as HTMLInputElement).value.trim();
+      if (!glance) return toast('พิมพ์ข้อความบนการ์ดก่อนครับ', 'error');
+      const btn = $('nd-textcard') as HTMLButtonElement;
+      const status = $('nd-rerender-status');
+      btn.disabled = true; btn.classList.add('loading');
+      try {
+        const jobId = await enqueueJob('render_text_card', { candidate_id: c.id, slug: slugFor(c), glance_line: glance });
+        const job = await waitJob(jobId, {
+          timeoutMs: 6 * 60_000,
+          onTick: (s) => { status.textContent = `กำลังเรนเดอร์การ์ดบน Mac mini… ${s} วิ`; },
+        });
+        const images = ((job.result as { images?: { style?: string; url: string }[] })?.images) ?? [];
+        c.images = images; c.glance_line = glance; c.selected_image = 0;
+        paintImages(images, 0);
+        status.textContent = 'การ์ดตัวอักษรพร้อมแล้ว';
+        toast('สร้างการ์ดตัวอักษรแล้ว 🖼');
+      } catch (e) { status.textContent = ''; oops(e); }
+      finally { btn.disabled = false; btn.classList.remove('loading'); }
+    }
+
+    function paintImages(images: { style?: string; url: string }[], selected: number | null) {
+      $('nd-imgs').innerHTML = images.map((im, ii) => `
+        <img src="${esc(im.url)}" data-ii="${ii}" class="nd-img aspect-square cursor-pointer rounded-lg object-cover ${ii === selected ? 'selected' : ''}" alt="การ์ดภาพ ${esc(im.style ?? '')}" loading="lazy" />`).join('');
     }
 
     // การ์ดซีน AI = on-demand เท่านั้น (2026-08-25 — ปิด auto ที่รอบเช้าเพื่อประหยัดเครดิต kie.ai)
@@ -267,8 +347,7 @@ import AppNav from '../../components/app/AppNav.astro';
         });
         const images = ((job.result as { images?: { style?: string; url: string }[] })?.images) ?? [];
         c.images = images; c.glance_line = glance; c.scene_prompt = scene; c.selected_image = 0;
-        $('nd-imgs').innerHTML = images.map((im, ii) => `
-          <img src="${esc(im.url)}" data-ii="${ii}" class="nd-img aspect-square cursor-pointer rounded-lg object-cover ${ii === 0 ? 'selected' : ''}" alt="การ์ดภาพ ${esc(im.style ?? '')}" loading="lazy" />`).join('');
+        paintImages(images, 0);
         status.textContent = 'การ์ดใหม่พร้อมแล้ว';
         toast('สร้างการ์ดใหม่แล้ว 🎨');
       } catch (e) { status.textContent = ''; oops(e); }
@@ -375,6 +454,20 @@ import AppNav from '../../components/app/AppNav.astro';
           await refresh();
         } catch (e) { oops(e); }
       })());
+      $('nd-jobs').addEventListener('click', (e) => void (async () => {
+        const el = e.target as HTMLElement;
+        const retry = el.closest('[data-retry]') as HTMLElement | null;
+        const del = el.closest('[data-delete-job]') as HTMLElement | null;
+        try {
+          if (retry) { await retryWrJob(retry.dataset.retry!); toast('ส่งกลับเข้าคิวแล้ว'); }
+          else if (del) {
+            if (!confirm('ลบงานนี้ออกจากคิว?')) return;
+            await deleteWrJob(del.dataset.deleteJob!); toast('ลบแล้ว');
+          } else return;
+          await loadJobs();
+        } catch (err) { oops(err); }
+      })());
+      document.addEventListener('visibilitychange', syncPolling);
       $('nd-sources').addEventListener('change', (e) => void (async () => {
         const el = e.target as HTMLInputElement;
         if (!el.dataset.src) return;
@@ -388,6 +481,7 @@ import AppNav from '../../components/app/AppNav.astro';
       booted = true;
       wire();
       if (location.hash === '#sources') showTab('sources');
+      if (location.hash === '#jobs') showTab('jobs');
       try { await refresh(); } catch (e) { oops(e); }
     }
     document.addEventListener('war-room:authed', () => void boot());
