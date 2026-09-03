@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import QcChecklist from '../../components/qc/QcChecklist.astro';
+import { QC_CHECKLISTS, type QcChecklist as QcChecklistData } from '../../data/qc';
+
+export function getStaticPaths() {
+  return QC_CHECKLISTS.map((checklist) => ({
+    params: { slug: checklist.slug },
+    props: { checklist },
+  }));
+}
+
+const { checklist } = Astro.props as { checklist: QcChecklistData };
+---
+
+<BaseLayout
+  title={checklist.title}
+  description={checklist.description}
+  noindex
+  schema={{ type: 'WebPage' }}
+>
+  <QcChecklist checklist={checklist} />
+</BaseLayout>

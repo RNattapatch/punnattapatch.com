@@ -1,0 +1,642 @@
+---
+import type { QcChecklist } from '../../data/qc';
+import { totalItems } from '../../data/qc';
+import { SITE } from '../../data/site';
+
+interface Props {
+  checklist: QcChecklist;
+}
+
+const { checklist } = Astro.props;
+const total = totalItems(checklist);
+const defaultIndustry = checklist.industries[0];
+const lineUrl = SITE.social.line;
+
+// The coral hand-underline only covers the opening phrase, so the accent is
+// declared in the data file rather than guessed from the title string.
+const titleAccent = checklist.titleAccent;
+const titleRest = checklist.title.startsWith(titleAccent)
+  ? checklist.title.slice(titleAccent.length)
+  : ` ${checklist.title}`;
+
+// Payload for the client script. The markup renders the default industry so the
+// page still reads correctly without JS; switching only swaps textContent.
+const payload = {
+  storageKey: checklist.storageKey,
+  title: checklist.title,
+  total,
+  lineUrl,
+  lineKeyword: checklist.lineKeyword,
+  defaultIndustry: defaultIndustry.id,
+  industries: checklist.industries,
+  zones: checklist.zones.map((zone) => ({
+    id: zone.id,
+    name: zone.name,
+    label: zone.label,
+    items: zone.items.map((item) => ({
+      id: item.id,
+      no: item.no,
+      title: item.title,
+      description: item.description,
+      who: item.who,
+      examples: item.examples,
+    })),
+  })),
+};
+---
+
+<div
+  data-qc-root
+  data-qc-storage={checklist.storageKey}
+  class="mx-auto w-full max-w-4xl px-margin-page pb-24 pt-10 md:pt-16"
+>
+  {/* ── Hero ─────────────────────────────────────────────────────────── */}
+  <header class="border-b border-[#C9C2B2] pb-8">
+    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-coral">
+      {checklist.code}
+    </p>
+    <h1 class="mt-3 font-display text-3xl font-bold leading-tight text-navy sm:text-4xl md:text-5xl">
+      <span class="hand-underline">{titleAccent}</span>{titleRest}
+    </h1>
+    <p class="mt-4 text-sm font-semibold text-navy/80">{checklist.kicker}</p>
+    <p class="mt-3 max-w-2xl text-base leading-relaxed text-warm-ink/80 [overflow-wrap:anywhere]">
+      {checklist.lead}
+    </p>
+    <p
+      data-qc-disclaimer
+      class="editorial-card mt-6 px-4 py-3 text-sm leading-relaxed text-warm-ink/70 [overflow-wrap:anywhere]"
+    >
+      {checklist.disclaimer}
+    </p>
+  </header>
+
+  {/* ── Counters ─────────────────────────────────────────────────────── */}
+  <section aria-label="สรุปจำนวนข้อที่ติ๊กแล้ว" class="mt-8">
+    <div class="grid grid-cols-3 gap-2 sm:gap-3">
+      <div class="editorial-card px-3 py-4 text-center">
+        <p class="text-xs text-warm-ink/60">ทั้งหมด</p>
+        <p data-qc-count-total class="stat-num mt-1 font-display text-2xl font-bold text-navy sm:text-3xl">{total}</p>
+      </div>
+      <div class="editorial-card px-3 py-4 text-center">
+        <p class="text-xs text-warm-ink/60">ติ๊กแล้ว</p>
+        <p data-qc-count-checked class="stat-num mt-1 font-display text-2xl font-bold text-coral sm:text-3xl">0</p>
+      </div>
+      <div class="editorial-card px-3 py-4 text-center">
+        <p class="text-xs text-warm-ink/60">ยังไม่ติ๊ก</p>
+        <p data-qc-count-remaining class="stat-num mt-1 font-display text-2xl font-bold text-navy sm:text-3xl">{total}</p>
+      </div>
+    </div>
+
+    <div
+      data-qc-progress
+      role="progressbar"
+      aria-label="ความคืบหน้าการติ๊ก"
+      aria-valuemin="0"
+      aria-valuemax={total}
+      aria-valuenow="0"
+      class="mt-3 h-2 w-full overflow-hidden rounded-full bg-sand"
+    >
+      <div data-qc-progress-bar class="h-full rounded-full bg-coral transition-[width] duration-200" style="width:0%"></div>
+    </div>
+
+    <p data-qc-saved-note class="mt-2 text-xs text-warm-ink/60">
+      สถานะจะถูกเก็บไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น ไม่ได้ส่งออกไปไหน
+    </p>
+  </section>
+
+  {/* ── Industry switch ──────────────────────────────────────────────── */}
+  <section aria-label="เลือกอุตสาหกรรมของตัวอย่าง" class="mt-8">
+    <p class="text-xs font-semibold uppercase tracking-[0.14em] text-warm-ink/60">ตัวอย่างสำหรับ</p>
+    <div class="mt-2 flex flex-wrap gap-2" role="group" aria-label="อุตสาหกรรมของตัวอย่าง">
+      {
+        checklist.industries.map((industry) => (
+          <button
+            type="button"
+            data-qc-industry={industry.id}
+            aria-pressed={industry.id === defaultIndustry.id ? 'true' : 'false'}
+            aria-label={`ดูตัวอย่างแบบ ${industry.label}`}
+            class="qc-chip"
+          >
+            {industry.label}
+          </button>
+        ))
+      }
+    </div>
+  </section>
+
+  {/* ── Search + filters ─────────────────────────────────────────────── */}
+  <section aria-label="ค้นหาและกรองรายการ" class="mt-6">
+    <label class="block">
+      <span class="sr-only">ค้นหาในรายการเช็ก</span>
+      <input
+        type="search"
+        data-qc-search
+        placeholder="ค้นหาคำในรายการ เช่น Owner, ส่งต่อ, วันตาม"
+        aria-label="ค้นหาในรายการเช็ก"
+        class="w-full rounded-xl border border-[#C9C2B2] bg-surface px-4 py-3 text-base text-warm-ink placeholder:text-warm-ink/40"
+      />
+    </label>
+
+    <div class="mt-3 flex flex-wrap gap-2" role="group" aria-label="กรองตามสถานะ">
+      <button type="button" data-qc-status="all" aria-pressed="true" aria-label="แสดงทั้งหมด" class="qc-chip">ทั้งหมด</button>
+      <button type="button" data-qc-status="unchecked" aria-pressed="false" aria-label="แสดงเฉพาะข้อที่ยังไม่ติ๊ก" class="qc-chip">ยังไม่ติ๊ก</button>
+      <button type="button" data-qc-status="checked" aria-pressed="false" aria-label="แสดงเฉพาะข้อที่ติ๊กแล้ว" class="qc-chip">ติ๊กแล้ว</button>
+    </div>
+
+    <div class="mt-2 flex flex-wrap gap-2" role="group" aria-label="กรองตามโซน">
+      <button type="button" data-qc-zone="all" aria-pressed="true" aria-label="แสดงทุกโซน" class="qc-chip">ทุกโซน</button>
+      {
+        checklist.zones.map((zone) => (
+          <button
+            type="button"
+            data-qc-zone={zone.id}
+            aria-pressed="false"
+            aria-label={`แสดงเฉพาะโซน ${zone.name} ${zone.label}`}
+            class="qc-chip"
+          >
+            {zone.name}
+          </button>
+        ))
+      }
+    </div>
+  </section>
+
+  {/* ── Actions ──────────────────────────────────────────────────────── */}
+  <section aria-label="ส่งผลและบันทึกข้อมูล" class="mt-6">
+    <div class="flex flex-wrap gap-2">
+      <button
+        type="button"
+        data-qc-send
+        aria-label="สร้างสรุปผลแล้วส่งให้คุณปันตรวจทาง LINE"
+        class="rounded-xl bg-coral px-5 py-3 text-sm font-semibold text-white transition hover:brightness-95"
+      >
+        ส่งให้คุณปันตรวจ
+      </button>
+      <button
+        type="button"
+        data-qc-export
+        aria-label="ดาวน์โหลดผลเป็นไฟล์ CSV"
+        class="rounded-xl border border-navy/30 bg-surface px-5 py-3 text-sm font-semibold text-navy transition hover:bg-sand"
+      >
+        Export CSV
+      </button>
+      <button
+        type="button"
+        data-qc-clear
+        aria-label="ล้างข้อมูลที่ติ๊กไว้ในเครื่องนี้"
+        class="rounded-xl border border-[#C9C2B2] bg-transparent px-5 py-3 text-sm font-semibold text-warm-ink/70 transition hover:bg-sand"
+      >
+        ล้างข้อมูลในเครื่องนี้
+      </button>
+    </div>
+
+    <div
+      data-qc-summary-panel
+      hidden
+      class="editorial-card mt-4 p-4"
+      role="region"
+      aria-label="สรุปผลที่คัดลอกแล้ว"
+    >
+      <p class="text-sm font-semibold text-navy">
+        คัดลอกสรุปแล้ว — เปิด LINE แล้ววางข้อความนี้ พร้อมพิมพ์คำว่า {checklist.lineKeyword}
+      </p>
+      <p data-qc-copy-state class="mt-1 text-xs text-warm-ink/60"></p>
+      <pre
+        data-qc-summary
+        class="mt-3 max-h-72 overflow-auto whitespace-pre-wrap rounded-lg bg-sand/60 p-3 text-xs leading-relaxed text-warm-ink [overflow-wrap:anywhere]"
+      ></pre>
+      <a
+        data-qc-line-link
+        href={lineUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-3 inline-block rounded-xl border border-navy/30 px-4 py-2 text-sm font-semibold text-navy hover:bg-sand"
+        aria-label="เปิด LINE ของปัน ณัฐพัชร์"
+      >
+        เปิด LINE อีกครั้ง
+      </a>
+    </div>
+  </section>
+
+  {/* ── Checklist ────────────────────────────────────────────────────── */}
+  <section aria-label="รายการเช็ก 25 ข้อ" class="mt-10 space-y-10">
+    {
+      checklist.zones.map((zone) => (
+        <div data-qc-zone-block={zone.id}>
+          <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-b border-[#C9C2B2] pb-2">
+            <h2 class="font-display text-xl font-bold text-navy sm:text-2xl">
+              {zone.name} <span class="text-warm-ink/60">· {zone.label}</span>
+            </h2>
+            <p data-qc-zone-count={zone.id} class="text-xs text-warm-ink/60 tabular-num">0/{zone.items.length}</p>
+          </div>
+          <p class="mt-2 text-sm text-warm-ink/60 [overflow-wrap:anywhere]">{zone.note}</p>
+
+          <ul class="mt-4 space-y-3">
+            {zone.items.map((item) => (
+              <li
+                data-qc-item={item.id}
+                data-qc-item-zone={zone.id}
+                class="editorial-card p-4 transition-colors"
+              >
+                <div class="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id={`qc-${item.id}`}
+                    data-qc-checkbox={item.id}
+                    aria-label={`ข้อ ${item.no} ${item.title}`}
+                    class="mt-1 h-5 w-5 shrink-0 accent-[#dd4155]"
+                  />
+                  <div class="min-w-0 flex-1">
+                    <label
+                      for={`qc-${item.id}`}
+                      class="block cursor-pointer font-display text-base font-bold leading-snug text-navy [overflow-wrap:anywhere] sm:text-lg"
+                    >
+                      <span class="tabular-num text-coral">{item.no}.</span> {item.title}
+                    </label>
+                    <p class="mt-1 text-sm leading-relaxed text-warm-ink/80 [overflow-wrap:anywhere]">
+                      {item.description}
+                    </p>
+                    <p class="mt-2 text-xs text-warm-ink/60">
+                      ใครติ๊ก ·{' '}
+                      <span class="rounded-full bg-sand px-2 py-0.5 font-semibold text-navy">{item.who}</span>
+                    </p>
+                    <p class="mt-2 border-l-2 border-coral/40 pl-3 text-sm leading-relaxed text-warm-ink/75 [overflow-wrap:anywhere]">
+                      <span data-qc-example-label class="font-semibold text-warm-ink/60">
+                        ตัวอย่าง · {defaultIndustry.label}
+                      </span>
+                      <br />
+                      <span data-qc-example={item.id}>{item.examples[defaultIndustry.id]}</span>
+                    </p>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+
+    <p data-qc-empty hidden class="editorial-card px-4 py-6 text-center text-sm text-warm-ink/60">
+      ไม่มีข้อที่ตรงกับคำค้นหรือตัวกรองนี้
+    </p>
+  </section>
+
+  <dialog
+    data-qc-clear-dialog
+    aria-label="ยืนยันการล้างข้อมูล"
+    class="max-w-sm rounded-2xl border border-[#C9C2B2] bg-surface p-6 text-warm-ink backdrop:bg-black/40"
+  >
+    <p class="font-display text-lg font-bold text-navy">ล้างข้อมูลในเครื่องนี้?</p>
+    <p class="mt-2 text-sm text-warm-ink/70">
+      ข้อที่ติ๊กไว้ทั้งหมดจะหายไป และย้อนกลับไม่ได้ ตัวเช็กลิสต์ยังอยู่เหมือนเดิม
+    </p>
+    <div class="mt-5 flex justify-end gap-2">
+      <button type="button" data-qc-clear-cancel class="rounded-xl border border-[#C9C2B2] px-4 py-2 text-sm font-semibold">
+        ยกเลิก
+      </button>
+      <button type="button" data-qc-clear-confirm class="rounded-xl bg-coral px-4 py-2 text-sm font-semibold text-white">
+        ล้างข้อมูล
+      </button>
+    </div>
+  </dialog>
+
+  <script type="application/json" data-qc-payload is:inline set:html={JSON.stringify(payload)}></script>
+</div>
+
+<style>
+  .qc-chip {
+    border: 1px solid #c9c2b2;
+    border-radius: 9999px;
+    background: #fcf9f2;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #072b4e;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .qc-chip:hover {
+    background: #ece6da;
+  }
+  .qc-chip[aria-pressed='true'] {
+    background: #072b4e;
+    border-color: #072b4e;
+    color: #f4f1ea;
+  }
+  li[data-qc-item].is-checked {
+    background: rgba(221, 65, 85, 0.06);
+    border-color: rgba(221, 65, 85, 0.35);
+  }
+  li[data-qc-item].is-checked label {
+    text-decoration: line-through;
+    text-decoration-color: rgba(221, 65, 85, 0.5);
+  }
+</style>
+
+<script>
+  type QcItemPayload = {
+    id: string;
+    no: number;
+    title: string;
+    description: string;
+    who: string;
+    examples: Record<string, string>;
+  };
+  type QcPayload = {
+    storageKey: string;
+    title: string;
+    total: number;
+    lineUrl: string;
+    lineKeyword: string;
+    defaultIndustry: string;
+    industries: { id: string; label: string }[];
+    zones: { id: string; name: string; label: string; items: QcItemPayload[] }[];
+  };
+
+  const root = document.querySelector<HTMLElement>('[data-qc-root]');
+  const payloadNode = root?.querySelector<HTMLScriptElement>('[data-qc-payload]');
+  if (root && payloadNode) {
+    const data: QcPayload = JSON.parse(payloadNode.textContent || '{}');
+    const items = data.zones.flatMap((zone) => zone.items.map((item) => ({ ...item, zoneId: zone.id })));
+    const industryLabel = (id: string) =>
+      data.industries.find((industry) => industry.id === id)?.label ?? id;
+
+    const state = {
+      checked: {} as Record<string, boolean>,
+      industry: data.defaultIndustry,
+      status: 'all' as 'all' | 'unchecked' | 'checked',
+      zone: 'all',
+      query: '',
+    };
+
+    // ── storage ────────────────────────────────────────────────────────
+    function load() {
+      try {
+        const raw = localStorage.getItem(data.storageKey);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          if (parsed.checked && typeof parsed.checked === 'object') state.checked = parsed.checked;
+          if (typeof parsed.industry === 'string' && data.industries.some((i) => i.id === parsed.industry)) {
+            state.industry = parsed.industry;
+          }
+        }
+      } catch {
+        /* storage blocked or corrupt — start clean */
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(
+          data.storageKey,
+          JSON.stringify({ checked: state.checked, industry: state.industry, savedAt: new Date().toISOString() }),
+        );
+      } catch {
+        /* private mode: page still works, nothing persists */
+      }
+    }
+
+    // ── derived ────────────────────────────────────────────────────────
+    const checkedCount = () => items.filter((item) => state.checked[item.id]).length;
+
+    function matchesFilters(item: QcItemPayload & { zoneId: string }) {
+      if (state.zone !== 'all' && item.zoneId !== state.zone) return false;
+      const isChecked = Boolean(state.checked[item.id]);
+      if (state.status === 'checked' && !isChecked) return false;
+      if (state.status === 'unchecked' && isChecked) return false;
+      if (state.query) {
+        const haystack = [item.no, item.title, item.description, item.who, item.examples[state.industry] ?? '']
+          .join(' ')
+          .toLowerCase();
+        if (!haystack.includes(state.query)) return false;
+      }
+      return true;
+    }
+
+    // ── render ─────────────────────────────────────────────────────────
+    function render() {
+      let visible = 0;
+
+      for (const item of items) {
+        const li = root!.querySelector<HTMLElement>(`[data-qc-item="${item.id}"]`);
+        const box = root!.querySelector<HTMLInputElement>(`[data-qc-checkbox="${item.id}"]`);
+        const example = root!.querySelector<HTMLElement>(`[data-qc-example="${item.id}"]`);
+        if (!li || !box) continue;
+
+        const isChecked = Boolean(state.checked[item.id]);
+        box.checked = isChecked;
+        li.classList.toggle('is-checked', isChecked);
+        if (example) example.textContent = item.examples[state.industry] ?? '';
+
+        const show = matchesFilters(item);
+        li.hidden = !show;
+        if (show) visible += 1;
+      }
+
+      root!.querySelectorAll<HTMLElement>('[data-qc-example-label]').forEach((node) => {
+        node.textContent = `ตัวอย่าง · ${industryLabel(state.industry)}`;
+      });
+
+      for (const zone of data.zones) {
+        const block = root!.querySelector<HTMLElement>(`[data-qc-zone-block="${zone.id}"]`);
+        const count = root!.querySelector<HTMLElement>(`[data-qc-zone-count="${zone.id}"]`);
+        const done = zone.items.filter((item) => state.checked[item.id]).length;
+        if (count) count.textContent = `${done}/${zone.items.length}`;
+        if (block) {
+          const anyVisible = zone.items.some(
+            (item) => !root!.querySelector<HTMLElement>(`[data-qc-item="${item.id}"]`)?.hidden,
+          );
+          block.hidden = !anyVisible;
+        }
+      }
+
+      const done = checkedCount();
+      const setText = (selector: string, value: string) => {
+        const node = root!.querySelector<HTMLElement>(selector);
+        if (node) node.textContent = value;
+      };
+      setText('[data-qc-count-total]', String(data.total));
+      setText('[data-qc-count-checked]', String(done));
+      setText('[data-qc-count-remaining]', String(data.total - done));
+
+      const progress = root!.querySelector<HTMLElement>('[data-qc-progress]');
+      const bar = root!.querySelector<HTMLElement>('[data-qc-progress-bar]');
+      if (progress) progress.setAttribute('aria-valuenow', String(done));
+      if (bar) bar.style.width = `${data.total ? Math.round((done / data.total) * 100) : 0}%`;
+
+      const empty = root!.querySelector<HTMLElement>('[data-qc-empty]');
+      if (empty) empty.hidden = visible > 0;
+
+      root!.querySelectorAll<HTMLElement>('[data-qc-industry]').forEach((node) => {
+        node.setAttribute('aria-pressed', String(node.dataset.qcIndustry === state.industry));
+      });
+      root!.querySelectorAll<HTMLElement>('[data-qc-status]').forEach((node) => {
+        node.setAttribute('aria-pressed', String(node.dataset.qcStatus === state.status));
+      });
+      root!.querySelectorAll<HTMLElement>('[data-qc-zone]').forEach((node) => {
+        node.setAttribute('aria-pressed', String(node.dataset.qcZone === state.zone));
+      });
+    }
+
+    // ── summary + export ───────────────────────────────────────────────
+    function today() {
+      return new Date().toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function buildSummary() {
+      const done = checkedCount();
+      const lines = [
+        data.title,
+        `ติ๊กแล้ว ${done}/${data.total}`,
+        `ตัวอย่างที่ใช้ · ${industryLabel(state.industry)}`,
+        `วันที่ ${today()}`,
+        '',
+      ];
+      for (const zone of data.zones) {
+        const zoneDone = zone.items.filter((item) => state.checked[item.id]).length;
+        lines.push(`${zone.name} · ${zone.label} — ${zoneDone}/${zone.items.length}`);
+        const missing = zone.items.filter((item) => !state.checked[item.id]);
+        if (missing.length === 0) lines.push('  ครบทุกข้อ');
+        else for (const item of missing) lines.push(`  ยังไม่ติ๊ก ${item.no}. ${item.title}`);
+        lines.push('');
+      }
+      lines.push(`ส่งข้อความนี้ใน LINE แล้วพิมพ์คำว่า ${data.lineKeyword}`);
+      return lines.join('\n');
+    }
+
+    async function copyText(text: string) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch {
+        /* fall through to the legacy path (no permission / insecure context) */
+      }
+      try {
+        const area = document.createElement('textarea');
+        area.value = text;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(area);
+        return ok;
+      } catch {
+        return false;
+      }
+    }
+
+    function csvCell(value: string) {
+      return `"${String(value).replace(/"/g, '""')}"`;
+    }
+
+    function buildCsv() {
+      const rows = [['โซน', 'ข้อที่', 'หัวข้อ', 'ใครติ๊ก', 'สถานะ', 'ตัวอย่าง']];
+      for (const zone of data.zones) {
+        for (const item of zone.items) {
+          rows.push([
+            `${zone.name} · ${zone.label}`,
+            String(item.no),
+            item.title,
+            item.who,
+            state.checked[item.id] ? 'ติ๊กแล้ว' : 'ยังไม่ติ๊ก',
+            item.examples[state.industry] ?? '',
+          ]);
+        }
+      }
+      return '﻿' + rows.map((row) => row.map(csvCell).join(',')).join('\r\n');
+    }
+
+    // ── events ─────────────────────────────────────────────────────────
+    root.addEventListener('change', (event) => {
+      const target = event.target as HTMLElement;
+      const id = target?.dataset?.qcCheckbox;
+      if (!id) return;
+      if ((target as HTMLInputElement).checked) state.checked[id] = true;
+      else delete state.checked[id];
+      save();
+      render();
+    });
+
+    root.addEventListener('click', async (event) => {
+      const target = (event.target as HTMLElement)?.closest<HTMLElement>('[data-qc-industry],[data-qc-status],[data-qc-zone],[data-qc-send],[data-qc-export],[data-qc-clear],[data-qc-clear-cancel],[data-qc-clear-confirm]');
+      if (!target || !root.contains(target)) return;
+      const dialog = root.querySelector<HTMLDialogElement>('[data-qc-clear-dialog]');
+
+      if (target.dataset.qcIndustry) {
+        state.industry = target.dataset.qcIndustry;
+        save();
+        render();
+        return;
+      }
+      if (target.dataset.qcStatus) {
+        state.status = target.dataset.qcStatus as typeof state.status;
+        render();
+        return;
+      }
+      if (target.dataset.qcZone) {
+        state.zone = target.dataset.qcZone;
+        render();
+        return;
+      }
+      if (target.hasAttribute('data-qc-send')) {
+        const summary = buildSummary();
+        const panel = root.querySelector<HTMLElement>('[data-qc-summary-panel]');
+        const output = root.querySelector<HTMLElement>('[data-qc-summary]');
+        const copyState = root.querySelector<HTMLElement>('[data-qc-copy-state]');
+        if (output) output.textContent = summary;
+        if (panel) panel.hidden = false;
+        const copied = await copyText(summary);
+        if (copyState) {
+          copyState.textContent = copied
+            ? 'คัดลอกเรียบร้อย วางในแชต LINE ได้เลย'
+            : 'เบราว์เซอร์นี้ไม่ให้คัดลอกอัตโนมัติ กดค้างที่ข้อความด้านล่างแล้วคัดลอกเอง';
+        }
+        window.open(data.lineUrl, '_blank', 'noopener,noreferrer');
+        return;
+      }
+      if (target.hasAttribute('data-qc-export')) {
+        const blob = new Blob([buildCsv()], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'qc-t2-leak-25.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        return;
+      }
+      if (target.hasAttribute('data-qc-clear')) {
+        dialog?.showModal();
+        return;
+      }
+      if (target.hasAttribute('data-qc-clear-cancel')) {
+        dialog?.close();
+        return;
+      }
+      if (target.hasAttribute('data-qc-clear-confirm')) {
+        state.checked = {};
+        try {
+          localStorage.removeItem(data.storageKey);
+        } catch {
+          /* nothing stored to remove */
+        }
+        const panel = root.querySelector<HTMLElement>('[data-qc-summary-panel]');
+        if (panel) panel.hidden = true;
+        dialog?.close();
+        render();
+      }
+    });
+
+    const search = root.querySelector<HTMLInputElement>('[data-qc-search]');
+    search?.addEventListener('input', () => {
+      state.query = search.value.trim().toLowerCase();
+      render();
+    });
+
+    load();
+    render();
+  }
+</script>
