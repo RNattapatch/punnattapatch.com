@@ -35,6 +35,15 @@ export interface TriggerRule {
   fired_by_item: string | null;
 }
 
+export interface HandleSuggestion {
+  platform: Platform;
+  ref: string;
+  url?: string | null;
+  confidence?: 'high' | 'medium' | 'low' | string;
+  note?: string;
+  verified?: boolean;
+}
+
 export interface IntelTarget {
   id: string;
   slug: string;
@@ -53,6 +62,8 @@ export interface IntelTarget {
   cadence_days: number;
   last_scouted_at: string | null;
   next_scout_at: string | null;
+  handle_suggestions?: HandleSuggestion[];
+  handles_enriched_at?: string | null;
   avatar_path?: string | null;
   avatar_source?: string | null;
   created_at: string;
@@ -116,7 +127,19 @@ export async function getTarget(id: string): Promise<IntelTarget> {
   return data as IntelTarget;
 }
 
-export type TargetPatch = Partial<Pick<IntelTarget, 'name' | 'aliases' | 'role' | 'threat' | 'section' | 'handles' | 'reach' | 'sells' | 'icp' | 'why_watch' | 'triggers' | 'deep_dive' | 'cadence_days'>>;
+// รับช่องทางที่ agent เสนอเข้าแฟ้ม (ตัดออกจากรายการที่เสนอ) หรือปัดทิ้ง
+export async function acceptSuggestion(t: IntelTarget, sug: HandleSuggestion): Promise<IntelTarget> {
+  const handles = [...(t.handles ?? []), { platform: sug.platform, ref: sug.ref }];
+  const rest = (t.handle_suggestions ?? []).filter((x) => !(x.platform === sug.platform && x.ref === sug.ref));
+  return updateTarget(t.id, { handles, handle_suggestions: rest } as TargetPatch);
+}
+
+export async function dismissSuggestion(t: IntelTarget, sug: HandleSuggestion): Promise<IntelTarget> {
+  const rest = (t.handle_suggestions ?? []).filter((x) => !(x.platform === sug.platform && x.ref === sug.ref));
+  return updateTarget(t.id, { handle_suggestions: rest } as TargetPatch);
+}
+
+export type TargetPatch = Partial<Pick<IntelTarget, 'name' | 'aliases' | 'role' | 'threat' | 'section' | 'handles' | 'reach' | 'sells' | 'icp' | 'why_watch' | 'triggers' | 'deep_dive' | 'cadence_days' | 'handle_suggestions'>>;
 
 export async function updateTarget(id: string, patch: TargetPatch): Promise<IntelTarget> {
   const { data, error } = await supabase.from('intel_targets').update(patch).eq('id', id).select('*').single();

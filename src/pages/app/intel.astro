@@ -50,6 +50,7 @@ import AppNav from '../../components/app/AppNav.astro';
                 <button class="btn btn-xs tap-44" data-role="mentor">🧭 mentor</button>
                 <button class="btn btn-xs tap-44" data-role="fired">⚠️ trigger ดัง</button>
                 <button class="btn btn-xs tap-44" data-role="due">⏰ เลยกำหนด</button>
+                <button class="btn btn-xs tap-44" data-role="sug">🔗 มีช่องทางใหม่</button>
               </div>
             </div>
             <div id="it-selbar" class="hidden items-center gap-2 border-b border-base-300 bg-base-200 px-3 py-2 text-sm">
@@ -201,8 +202,8 @@ import AppNav from '../../components/app/AppNav.astro';
     import { listItems, getItem, signedUrl, listJobs, createJob, retryJob, deleteItem, deleteJob, PLATFORMS, PLATFORM_LABEL as NR_PLATFORM, KIND_LABEL, type NewsroomItem, type NewsroomJob } from '../../scripts/newsroom/data';
     import {
       listTargets, updateTarget, createTarget, deleteTarget, listItemsForTarget, recentItems, lanesFor, scoutTarget, scoutTargets, activeBatches, listBatch, subscribeBatch, avatarUrls, listSnapshots, snapshotDiffs, METRIC_LABEL,
-      requestDiscovery, subscribeJob, askAgentToFix, linkJobToTarget, coverUrls, daysSince, daysUntil, firedCount,
-      THREAT_LABEL, THREAT_ORDER, THREAT_COLOR, ROLE_LABEL, PLATFORM_LABEL, type IntelTarget, type Handle, type LanePick, type DiscoveryResult, type Threat, type Role,
+      requestDiscovery, subscribeJob, askAgentToFix, linkJobToTarget, coverUrls, acceptSuggestion, dismissSuggestion, daysSince, daysUntil, firedCount,
+      THREAT_LABEL, THREAT_ORDER, THREAT_COLOR, ROLE_LABEL, PLATFORM_LABEL, type IntelTarget, type Handle, type HandleSuggestion, type LanePick, type DiscoveryResult, type Threat, type Role,
     } from '../../scripts/intel/data';
     import { getSupabaseSession } from '../../scripts/dashboard/supabase';
 
@@ -293,7 +294,8 @@ import AppNav from '../../components/app/AppNav.astro';
       return targets.filter((t) => {
         if (roleFilter === 'fired' && !firedCount(t)) return false;
         if (roleFilter === 'due' && !isDue(t)) return false;
-        if (!['all', 'fired', 'due'].includes(roleFilter) && !(t.role ?? []).includes(roleFilter as Role)) return false;
+        if (roleFilter === 'sug' && !(t.handle_suggestions ?? []).length) return false;
+        if (!['all', 'fired', 'due', 'sug'].includes(roleFilter) && !(t.role ?? []).includes(roleFilter as Role)) return false;
         if (!s) return true;
         const hay = [t.name, ...(t.aliases ?? []), t.sells, t.icp, t.why_watch, ...(t.handles ?? []).map((h) => h.ref)].join(' ').toLowerCase();
         return hay.includes(s);
@@ -315,7 +317,7 @@ import AppNav from '../../components/app/AppNav.astro';
             <input type="checkbox" class="checkbox checkbox-xs" data-sel="${esc(t.id)}" ${selected.has(t.id) ? 'checked' : ''} aria-label="เลือก ${esc(t.name)}" ${lanesFor(t).length ? '' : 'disabled title="ไม่มี handle ให้สืบ"'} />
             ${avatar(t, 32)}
             <div class="min-w-0">
-              <div class="flex flex-wrap items-center gap-1.5 font-semibold leading-snug">${esc(t.name)}${fired ? `<span class="badge badge-warning badge-xs">⚠️ ${fired}</span>` : ''}${recent.get(t.id) ? '<span class="badge badge-info badge-xs">ใหม่</span>' : ''}</div>
+              <div class="flex flex-wrap items-center gap-1.5 font-semibold leading-snug">${esc(t.name)}${fired ? `<span class="badge badge-warning badge-xs">⚠️ ${fired}</span>` : ''}${recent.get(t.id) ? '<span class="badge badge-info badge-xs">ใหม่</span>' : ''}${(t.handle_suggestions ?? []).length ? `<span class="badge badge-ghost badge-xs" title="มีช่องทางที่เจอเพิ่มรอรับ">🔗 ${(t.handle_suggestions ?? []).length}</span>` : ''}</div>
               <div class="flex flex-wrap gap-x-2 text-xs opacity-60"><span>${roleIcons(t)}</span><span class="tabular-nums">${seenTxt(t)}</span><span class="tabular-nums">${nextTxt(t)}</span></div>
             </div>
             <button class="btn btn-outline btn-xs tap-44" data-scout="${esc(t.id)}">สืบ</button>
@@ -418,6 +420,18 @@ import AppNav from '../../components/app/AppNav.astro';
           </div>
         </div>
         <div id="it-runner" class="hidden"></div>
+        ${(t.handle_suggestions ?? []).length ? `<div class="border-b border-base-300 bg-warning/10 p-4">
+          <h3 class="mb-1 text-xs font-bold uppercase tracking-wide opacity-70">🔗 ช่องทางที่เจอเพิ่ม — รับเข้าแฟ้มไหม</h3>
+          <p class="mb-2 text-xs opacity-60">agent บนมินิไล่หาจากผลค้นเว็บแล้วตรวจของจริงให้ · ✅ = เปิดได้จริง · ⚠️ เพจ FB ระบบไม่แตะ Meta เอง ยืนยันด้วยตาก่อนรับ</p>
+          <div class="grid gap-1.5">${(t.handle_suggestions ?? []).map((sg, i) => `<div class="flex flex-wrap items-center gap-2 rounded-xl border border-base-300 bg-base-100 p-2 text-sm">
+            <span>${sg.verified ? '✅' : sg.platform === 'facebook_page' ? '⚠️' : '❔'}</span>
+            <span class="font-semibold">${esc(PLATFORM_LABEL[sg.platform] ?? sg.platform)}</span>
+            ${sg.url ? `<a class="link" href="${esc(sg.url)}" target="_blank" rel="noopener noreferrer">${esc(sg.ref)} ↗</a>` : `<span>${esc(sg.ref)}</span>`}
+            <span class="badge badge-ghost badge-sm">${esc(sg.confidence ?? 'medium')}</span>
+            <span class="min-w-0 flex-1 truncate text-xs opacity-60" title="${esc(sg.note ?? '')}">${esc(sg.note ?? '')}</span>
+            <button class="btn btn-xs text-white" style="background-color:var(--color-brand-navy);" data-accept-sug="${i}">รับเข้าแฟ้ม</button>
+            <button class="btn btn-ghost btn-xs" data-dismiss-sug="${i}">ไม่ใช่</button>
+          </div>`).join('')}</div></div>` : ''}
         <div class="border-b border-base-300 p-4"><h3 class="mb-2 text-xs font-bold uppercase tracking-wide opacity-60">Handles</h3>
           <div class="flex flex-wrap gap-1.5">${(t.handles ?? []).length ? (t.handles ?? []).map(handleChip).join('') : '<span class="text-sm opacity-60">ยังไม่มี handle — กด "แก้ไข" เติม @handle / ชื่อเพจ / เว็บ แล้วปุ่มสืบจะเปิดเอง</span>'}</div></div>
         <div class="border-b border-base-300 p-4"><dl class="grid gap-x-4 gap-y-1.5 text-sm sm:grid-cols-[120px_1fr]">
@@ -434,6 +448,16 @@ import AppNav from '../../components/app/AppNav.astro';
       $('it-edit-open').addEventListener('click', () => openEdit(t));
       document.getElementById('it-back')?.addEventListener('click', () => $('it-wrap').classList.remove('showfile'));
       file.querySelectorAll('[data-ack]').forEach((b) => b.addEventListener('click', () => void ackTrigger(t, Number((b as HTMLElement).dataset.ack))));
+      file.querySelectorAll('[data-accept-sug]').forEach((b) => b.addEventListener('click', () => void (async () => {
+        const sg = (t.handle_suggestions ?? [])[Number((b as HTMLElement).dataset.acceptSug)];
+        if (!sg) return;
+        try { replaceTarget(await acceptSuggestion(t, sg)); toast(`เพิ่ม ${PLATFORM_LABEL[sg.platform] ?? sg.platform} ${sg.ref} เข้าแฟ้มแล้ว`); } catch (e) { oops(e); }
+      })()));
+      file.querySelectorAll('[data-dismiss-sug]').forEach((b) => b.addEventListener('click', () => void (async () => {
+        const sg = (t.handle_suggestions ?? [])[Number((b as HTMLElement).dataset.dismissSug)];
+        if (!sg) return;
+        try { replaceTarget(await dismissSuggestion(t, sg)); } catch (e) { oops(e); }
+      })()));
       // แนวโน้มข้ามรอบ — โชว์เฉพาะเมื่อมีตัวเลขอย่างน้อย 1 รอบ · มี 2 รอบขึ้นไปถึงเห็น delta
       void listSnapshots(t.id).then((rows) => {
         const diffs = snapshotDiffs(rows);
