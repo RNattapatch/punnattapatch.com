@@ -1,11 +1,21 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import StartContent from '../components/StartContent.astro';
+import DecisionHub from '../components/hub/DecisionHub.astro';
+import { T1_PRODUCT_DETAIL } from '../data/product-details/t1';
+import { T2_PRODUCT_DETAIL } from '../data/product-details/t2';
+import { T3_PRODUCT_DETAIL } from '../data/product-details/t3';
+import { T4_PRODUCT_DETAIL } from '../data/product-details/t4';
+import { C1_PRODUCT_DETAIL } from '../data/product-details/c1';
+import { I1_PRODUCT_DETAIL } from '../data/product-details/i1';
+
+// Sales Funnel v2 (2026-09-03): หน้าหลังส่งฟอร์ม = Decision Hub รายสินค้า (เปิดตัวที่ตรง ?package= ด้วย script ด้านล่าง)
+const HUB_PRODUCTS = [T1_PRODUCT_DETAIL, T2_PRODUCT_DETAIL, T3_PRODUCT_DETAIL, T4_PRODUCT_DETAIL, C1_PRODUCT_DETAIL, I1_PRODUCT_DETAIL];
 import { SITE } from '../data/site';
 
 const title = 'ขอบคุณที่กรอกแบบประเมิน';
 const description =
-  'รับแบบประเมินแล้ว ผมจะอ่านและตอบกลับภายใน 2 วันทำการ — ขั้นตอนสุดท้าย ทักใน LINE OA พร้อมรหัสอ้างอิง';
+  'รับเรื่องแล้ว ผมอ่านเองภายในวันทำการเดียวกัน — ขั้นตอนถัดไปคือนัดคอล 25 นาทีทาง LINE พร้อมรหัสอ้างอิง';
 ---
 
 <BaseLayout title={title} description={description} noindex={true}>
@@ -59,20 +69,20 @@ const description =
         </p>
         <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-base-content/80">
           <li id="thankyou-read-line">ผมอ่านแบบประเมินของคุณเอง ไม่ใช่ทีมงาน ไม่ใช่ AI ตอบแทน</li>
-          <li>ตอบกลับภายใน 2 วันทำการ (ช่วงกลางวันผมมักติดหน้างานลูกค้า อาจได้ตอบช่วงเย็นครับ)</li>
+          <li>ตอบภายในวันทำการเดียวกัน (กลางวันผมมักอยู่หน้างานลูกค้า จึงตอบช่วงเย็นครับ)</li>
           <li>
-            คอลแรกประมาณ 10-15 นาที <strong>ผมถามมากกว่าพูด</strong>
-            เพราะต้องเข้าใจธุรกิจคุณก่อนถึงจะรู้ว่าช่วยได้จริงไหม
+            นัดคอล 25 นาทีทาง LINE <strong>ผมเสนอ 2 ช่วงเวลาให้เลือก</strong>
+            คอลแรกมีไว้เช็กว่าโจทย์ของคุณตรงกับบริการไหน
           </li>
           <li>
-            <strong>ผมจะไม่ขายอะไรในคอลแรก</strong> ถ้าคุยแล้วไม่ตรง ผมบอกตรงๆ
-            และแนะนำทางที่เหมาะกว่าให้
+            <strong>ถ้าตรงและข้อมูลครบ เราสรุปขอบเขต ราคา และวันเริ่มได้ในรอบเดียว</strong>
+            ถ้าไม่ตรง ผมบอกตรงๆ และแนะนำทางที่เหมาะกว่าให้ ไม่พาไป Visit ต่อ
           </li>
         </ol>
       </div>
 
       <p class="mt-8 text-sm text-base-content/70">
-        ตอบกลับภายใน 2 วันทำการ · ไม่มี mass email · ข้อมูลไม่ส่งต่อบุคคลที่สาม
+        ตอบภายในวันทำการเดียวกัน · ไม่มี mass email · ข้อมูลไม่ส่งต่อบุคคลที่สาม
       </p>
 
       <p class="mt-12 text-base leading-relaxed text-base-content/80">
@@ -81,6 +91,8 @@ const description =
       </p>
     </div>
   </section>
+
+  {HUB_PRODUCTS.map((product) => <DecisionHub data={product} />)}
 
   <StartContent context="thankyou" />
 
@@ -98,6 +110,15 @@ const description =
       // 2026-09-02: content_name รายคอร์สเมื่อมาจากหน้า product (booking?package=T4 → thank-you?package=T4)
       const packageCode = (params.get('package') || '').replace(/[^a-z0-9]/gi, '').toLowerCase();
       const leadContentName = packageCode ? `${packageCode}_product_booking` : formType;
+      // Decision Hub รายสินค้า — เปิดเฉพาะตัวที่ตรง ?package= (T1/T2/T3/T4/C1/I1)
+      const hub = packageCode ? document.querySelector(`[data-decision-hub="${packageCode.toUpperCase()}"]`) : null;
+      if (hub) {
+        hub.hidden = false;
+        try {
+          if (typeof window.fbq === 'function') window.fbq('trackCustom', 'HubView', { content_ids: [packageCode.toUpperCase()] });
+        } catch {}
+      }
+
       if (formType === 'booking') {
         const heading = document.getElementById('thankyou-heading');
         if (heading) heading.textContent = 'รับเรื่องจองคิวแล้วครับ';

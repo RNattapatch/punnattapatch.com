@@ -159,6 +159,33 @@ export async function avatarUrls(targets: IntelTarget[]): Promise<Map<string, st
   return out;
 }
 
+// ---------- ตัวเลขต่อรอบ (Phase 3 · intel_snapshots — publisher บันทึกหลังรายงานเข้าแฟ้ม) ----------
+
+export interface IntelSnapshot { id: string; target_id: string; item_id: string | null; lane: string; metrics: Record<string, unknown>; created_at: string }
+
+export async function listSnapshots(targetId: string): Promise<IntelSnapshot[]> {
+  const { data, error } = await supabase.from('intel_snapshots').select('*').eq('target_id', targetId).order('created_at', { ascending: false }).limit(40);
+  fail(error);
+  return (data ?? []) as IntelSnapshot[];
+}
+
+// ต่อเลน: รอบล่าสุด vs รอบก่อนหน้า → รายการ {label, now, before, delta}
+export const METRIC_LABEL: Record<string, string> = { median: 'median views/likes', per_week: 'โพสต์/สัปดาห์', followers: 'followers', scanned: 'โพสต์ที่สแกน', active_ads: 'แอด ACTIVE', max_longevity_days: 'แอดรันนานสุด (วัน)', views: 'views', score: 'คะแนน' };
+export function snapshotDiffs(rows: IntelSnapshot[]): { lane: string; at: string; before_at: string | null; items: { key: string; now: number; before: number | null; delta: number | null }[] }[] {
+  const byLane = new Map<string, IntelSnapshot[]>();
+  for (const r of rows) byLane.set(r.lane, [...(byLane.get(r.lane) ?? []), r]);
+  const out = [];
+  for (const [lane, list] of byLane) {
+    const [now, before] = list;
+    const items = Object.entries(now.metrics).filter(([, v]) => typeof v === 'number').map(([key, v]) => {
+      const prev = before && typeof before.metrics[key] === 'number' ? (before.metrics[key] as number) : null;
+      return { key, now: v as number, before: prev, delta: prev !== null && prev !== 0 ? Math.round(((v as number) - prev) / prev * 100) : null };
+    });
+    if (items.length) out.push({ lane, at: now.created_at, before_at: before?.created_at ?? null, items });
+  }
+  return out;
+}
+
 // ---------- รายงานที่เกาะแฟ้ม ----------
 
 export async function listItemsForTarget(targetId: string): Promise<NewsroomItem[]> {
@@ -255,6 +282,40 @@ export function subscribeBatch(batchId: string, cb: (jobs: NewsroomJob[]) => voi
   // กันเคส Realtime ไม่ต่อ (เช่น publication ยังไม่ครอบ) — poll สำรองทุก 15 วิ
   const timer = window.setInterval(() => void listBatch(batchId).then(cb).catch(() => {}), 15000);
   return () => { window.clearInterval(timer); void supabase.removeChannel(channel); };
+}
+
+// ผูกงาน "สืบคนใหม่" เข้ากับแฟ้มที่เพิ่งสร้าง — คิวจะได้เปลี่ยนปุ่มเป็น "เปิดแฟ้ม" แทน "ดูผลที่เจอ"
+export async function linkJobToTarget(jobId: string, targetId: string): Promise<void> {
+  const { error } = await supabase.from('newsroom_jobs').update({ target_id: targetId }).eq('id', jobId);
+  fail(error);
+}
+
+// signed URL ของปกหลายใบในคำขอเดียว (bucket เป็น private) — ใช้กับแกลเลอรีในแฟ้ม
+export async function coverUrls(paths: (string | null | undefined)[]): Promise<Map<string, string>> {
+  const list = [...new Set(paths.filter((p): p is string => !!p))];
+  const out = new Map<string, string>();
+  if (!list.length) return out;
+  const { data } = await supabase.storage.from('newsroom').createSignedUrls(list, 3600);
+  for (const row of data ?? []) if (row.signedUrl && row.path) out.set(row.path, row.signedUrl);
+  return out;
+}
+
+// ---------- ส่งงานที่พังให้ Agent บนมินิแก้ (poller ยิงเข้า tmux ของ claude-bot) ----------
+
+export async function askAgentToFix(job: NewsroomJob, targetName?: string): Promise<void> {
+  const lane = job.lane || job.kind;
+  const body = [
+    `tech: งานสืบใน Intel Warroom ล้ม ช่วยหาสาเหตุและแก้ให้ที`,
+    `เป้าหมาย: ${targetName || '(ไม่ผูกแฟ้ม)'} · เลน: ${lane} · target: ${job.target}`,
+    `job id: ${job.id}${job.scout_job_id ? ` · scout job: ${job.scout_job_id}` : ''} · ลองแล้ว ${(job.attempts ?? 0)} ครั้ง`,
+    `error: ${job.error ?? '(ไม่มีข้อความ error)'}`,
+    `ทำ: อ่าน ~/scout/scout.log + ~/newsroom/publisher.log ของ job นี้ → บอกสาเหตุ → ถ้าแก้ที่โค้ดได้ให้แก้ในรีโป mac-mini-ops แล้ว deploy + retry งานนี้ให้ · ถ้าแก้ไม่ได้ให้ตอบว่าติดอะไรและต้องให้คุณปันทำอะไร`,
+  ].join('\n');
+  const { error } = await supabase.from('agent_requests').insert({
+    kind: 'fix_bug', title: `แก้บั๊ก: ${lane} · ${targetName || job.target}`.slice(0, 90),
+    body, source: 'intel-warroom', job_id: job.id, target_id: job.target_id ?? null,
+  });
+  fail(error);
 }
 
 // ---------- สืบคนใหม่ (identity discovery บนมินิ: newsroom/discover.py) ----------

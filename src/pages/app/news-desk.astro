@@ -143,6 +143,11 @@ import AppNav from '../../components/app/AppNav.astro';
           <form method="dialog"><button class="btn btn-circle btn-ghost btn-sm tap-44" aria-label="ปิด">✕</button></form>
         </div>
         <a href="${esc(news.url ?? '#')}" target="_blank" rel="noopener" class="link link-primary text-sm">อ่านข่าวต้นทาง ↗</a>
+        <div class="mt-2 flex flex-wrap items-center gap-2">
+          <button class="btn btn-outline btn-sm tap-44" id="nd-rewrite">✍️ เขียนใหม่ด้วย Codex</button>
+          <span class="badge badge-ghost badge-sm">GPT-5.6 Sol บน Mac mini · เสียงปัน + ai-language-check</span>
+          <span class="text-xs opacity-60" id="nd-rewrite-status" role="status" aria-live="polite"></span>
+        </div>
 
         <h4 class="font-display mb-1 mt-4 font-semibold">1) เลือก Hook (ย่อหน้าแรกของโพสต์)</h4>
         <div class="max-h-64 space-y-1 overflow-y-auto pr-1" id="nd-hooks">
@@ -197,7 +202,30 @@ import AppNav from '../../components/app/AppNav.astro';
           <button class="btn flex-1 text-white tap-44" style="background-color:var(--color-brand-coral);" id="nd-post">🚀 โพสต์เลย</button>
         </div>`;
       wireDetail(c);
-      ($('nd-modal') as HTMLDialogElement).showModal();
+      const dlg = $('nd-modal') as HTMLDialogElement;
+      if (!dlg.open) dlg.showModal();
+    }
+
+    // เขียน copy ใหม่ทั้งชุดด้วย Codex (GPT-5.6 Sol) บน Mac mini — v4 2026-09-03
+    // ทำไม: candidate ที่ค้างอยู่ถูกเขียนโดย template รุ่นเก่า (ปันบอก "อ่านแล้วเป็น AI") — ไม่ต้องรอรอบเช้า
+    // job วิ่งผ่าน wr_jobs → wrjobs_worker.mjs (news-brief → codex-write → lint gate → การ์ดตัวอักษรใหม่)
+    async function rewriteCopy(c: Candidate) {
+      if (!confirm('ให้ Codex บนมินิเขียน hook / บทความ / คอมเมนต์ / ข้อความการ์ด ใหม่ทั้งชุด (ทับของเดิม รวมที่แก้มือไว้) ใช้เวลา 3-8 นาที ยืนยันไหมครับ?')) return;
+      const btn = $('nd-rewrite') as HTMLButtonElement;
+      const status = $('nd-rewrite-status');
+      btn.disabled = true; btn.classList.add('loading');
+      try {
+        const jobId = await enqueueJob('rewrite_copy', { candidate_id: c.id });
+        const job = await waitJob(jobId, {
+          timeoutMs: 15 * 60_000,
+          onTick: (s) => { status.textContent = `Codex กำลังเขียนบน Mac mini… ${s} วิ (ปกติ 3-8 นาที)`; },
+        });
+        const r = (job.result ?? {}) as { writer?: { attempts?: number; lint?: { yellow?: number } }; card_error?: string | null };
+        await refresh();
+        openDetail(c.id);
+        toast(`เขียนใหม่แล้ว ✍️ ผ่านด่านรอบที่ ${r.writer?.attempts ?? '?'} · YELLOW ${r.writer?.lint?.yellow ?? 0}${r.card_error ? ' · การ์ดตัวอักษรไม่ได้อัปเดต' : ''}`);
+      } catch (e) { status.textContent = ''; oops(e); }
+      finally { btn.disabled = false; btn.classList.remove('loading'); }
     }
 
     function wireDetail(c: Candidate) {
@@ -214,6 +242,7 @@ import AppNav from '../../components/app/AppNav.astro';
         document.querySelectorAll('#nd-imgs .nd-img').forEach((x) => x.classList.toggle('selected', x === el));
       });
       $('nd-rerender').addEventListener('click', () => void rerenderCard(c));
+      $('nd-rewrite').addEventListener('click', () => void rewriteCopy(c));
       $('nd-schedule').addEventListener('click', () => void act(c, 'schedule'));
       $('nd-reject').addEventListener('click', () => void act(c, 'reject'));
       $('nd-post').addEventListener('click', () => void act(c, 'post'));

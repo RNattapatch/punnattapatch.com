@@ -1,0 +1,82 @@
+---
+// DecisionHub — Sales Funnel v2 (2026-09-03): หน้าหลังส่งฟอร์มแบบ "รายสินค้า"
+// ทำหน้าที่ Selection ต่อทันทีหลัง submit: สิ่งที่จะเกิดขึ้น (SLA จริง) · ราคา/ขอบเขตเดิมจาก LP · proof 3 · FAQ 3 · CTA นัดคุยผ่าน LINE
+// SSOT: wiki/pages/strategy-post-form-trust-to-decision-funnel.md + audit-…-thai-fit-2026-09.md §1.2
+// Static build: render ทุก product แล้วซ่อน · script ในหน้า /thank-you เปิดตัวที่ตรง ?package=
+import { resolveProductDetailCatalog } from '../../data/product-details/catalog';
+import { SITE } from '../../data/site';
+import type { ProductDetailPageData } from '../../data/product-details/types';
+
+interface Props { data: ProductDetailPageData; }
+const { data } = Astro.props;
+const catalog = resolveProductDetailCatalog(data.pricingKey);
+const photos = data.proof.filter((p) => p.kind === 'photo').slice(0, 3);
+const faq = data.faq.slice(0, 3);
+const imgSrc = (image: ProductDetailPageData['proof'][number]['image']) => ('publicSrc' in image ? image.publicSrc : image.src);
+const keyword = `นัดคุย ${data.code}`;
+const steps = [
+  { when: 'ตอนนี้', text: 'ระบบรับเรื่องแล้ว เลขอ้างอิงอยู่ด้านบน ทักใน LINE ได้ทันทีถ้าอยากคุยก่อน' },
+  { when: 'ภายในวันทำการเดียวกัน', text: 'ผมอ่านโจทย์ของคุณเอง กลางวันผมมักอยู่หน้างานลูกค้า จึงตอบช่วงเย็นครับ' },
+  { when: 'นัดคอล 25 นาที', text: 'ผมเสนอ 2 ช่วงเวลาให้เลือกทาง LINE คอลแรกมีไว้เช็กว่าโจทย์ตรงกับบริการไหน' },
+  { when: 'จบคอล', text: 'ถ้าตรงและข้อมูลครบ เราสรุปขอบเขต ราคา และวันเริ่มได้ในรอบเดียว ถ้าไม่ตรง ผมบอกตรงๆ ไม่พาไป Visit ต่อ' },
+];
+---
+
+<section data-decision-hub={data.code} hidden aria-labelledby={`hub-${data.code}-heading`} class="border-t border-[#c9c2b2] bg-base-100 px-4 py-14 md:py-16">
+  <div class="mx-auto max-w-3xl">
+    <p class="text-xs font-bold uppercase tracking-[.2em] text-secondary">สิ่งที่จะเกิดขึ้นต่อจากนี้ · {data.code}</p>
+    <h2 id={`hub-${data.code}-heading`} class="mt-3 font-display text-2xl font-bold text-base-content md:text-3xl">คุณจอง <span class="text-secondary">{catalog.name}</span> ไว้แล้ว นี่คือ 4 ขั้นถัดไป</h2>
+
+    <ol class="mt-6 grid gap-3 sm:grid-cols-2">
+      {steps.map((s, i) => (
+        <li class="rounded-2xl border border-[#c9c2b2] bg-white p-4">
+          <p class="text-xs font-bold text-secondary">{i + 1} · {s.when}</p>
+          <p class="mt-1 text-sm leading-6 text-base-content/85">{s.text}</p>
+        </li>
+      ))}
+    </ol>
+
+    <div class="mt-8 grid gap-4 rounded-2xl bg-primary p-6 text-primary-content sm:grid-cols-[1fr_auto] sm:items-center">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[.16em] text-primary-content/70">ราคาเดิมจากหน้าบริการ ไม่มีเปลี่ยนตอนคุย</p>
+        <p class="mt-1 font-display text-3xl font-bold">{catalog.price}</p>
+        <p class="mt-1 text-sm text-primary-content/80">{catalog.duration} · {data.hero.customerJob}</p>
+      </div>
+      <div class="flex flex-col gap-2">
+        <a href={SITE.social.line} target="_blank" rel="noopener" data-contact-cta data-product-code={data.code} data-cta-location="decision_hub" data-cta-label={`ทัก LINE พิมพ์ ${keyword}`} class="btn min-h-12 border-0 bg-[#06C755] text-[#072B4E] hover:bg-[#05ad49]" aria-label={`ทัก LINE แล้วพิมพ์ ${keyword} เพื่อนัดคอล 25 นาที`}>
+          <img src="/line-logo.png" alt="" class="h-5 w-5" aria-hidden="true" /> นัดคอล 25 นาที ทาง LINE
+        </a>
+        <p class="text-center text-xs text-primary-content/75">พิมพ์ “{keyword}” พร้อมเลขอ้างอิง ผมเสนอ 2 ช่วงเวลาให้เลือก</p>
+      </div>
+    </div>
+
+    {photos.length > 0 && (
+      <div class="mt-8">
+        <p class="text-sm font-bold text-base-content">ภาพจากงานจริงของบริการนี้</p>
+        <div class="mt-3 grid grid-cols-3 gap-2">
+          {photos.map((p) => (
+            <figure class="overflow-hidden rounded-xl">
+              <img src={imgSrc(p.image)} alt={p.alt} loading="lazy" decoding="async" class="aspect-[4/3] w-full object-cover" />
+            </figure>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {faq.length > 0 && (
+      <div class="mt-8">
+        <p class="text-sm font-bold text-base-content">คำถามที่คนมักถามก่อนคอล</p>
+        <div class="mt-3 divide-y divide-[#c9c2b2] rounded-2xl border border-[#c9c2b2] bg-white px-4">
+          {faq.map((f) => (
+            <details class="py-1">
+              <summary class="cursor-pointer py-3 text-sm font-bold text-base-content">{f.question}</summary>
+              <p class="pb-3 text-sm leading-6 text-base-content/80">{f.answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <p class="mt-6 text-xs leading-5 text-base-content/60">ชำระ 100% ก่อนเริ่มงาน · ราคาและขอบเขตตรงกับหน้าบริการ · ข้อมูลไม่ส่งต่อบุคคลที่สาม</p>
+  </div>
+</section>
