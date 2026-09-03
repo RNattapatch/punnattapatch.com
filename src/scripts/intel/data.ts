@@ -284,6 +284,22 @@ export function subscribeBatch(batchId: string, cb: (jobs: NewsroomJob[]) => voi
   return () => { window.clearInterval(timer); void supabase.removeChannel(channel); };
 }
 
+// ผูกงาน "สืบคนใหม่" เข้ากับแฟ้มที่เพิ่งสร้าง — คิวจะได้เปลี่ยนปุ่มเป็น "เปิดแฟ้ม" แทน "ดูผลที่เจอ"
+export async function linkJobToTarget(jobId: string, targetId: string): Promise<void> {
+  const { error } = await supabase.from('newsroom_jobs').update({ target_id: targetId }).eq('id', jobId);
+  fail(error);
+}
+
+// signed URL ของปกหลายใบในคำขอเดียว (bucket เป็น private) — ใช้กับแกลเลอรีในแฟ้ม
+export async function coverUrls(paths: (string | null | undefined)[]): Promise<Map<string, string>> {
+  const list = [...new Set(paths.filter((p): p is string => !!p))];
+  const out = new Map<string, string>();
+  if (!list.length) return out;
+  const { data } = await supabase.storage.from('newsroom').createSignedUrls(list, 3600);
+  for (const row of data ?? []) if (row.signedUrl && row.path) out.set(row.path, row.signedUrl);
+  return out;
+}
+
 // ---------- ส่งงานที่พังให้ Agent บนมินิแก้ (poller ยิงเข้า tmux ของ claude-bot) ----------
 
 export async function askAgentToFix(job: NewsroomJob, targetName?: string): Promise<void> {
