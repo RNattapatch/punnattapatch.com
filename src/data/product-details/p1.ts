@@ -41,8 +41,8 @@ export const P1_PRODUCT_DETAIL: ProductDetailPageData = {
       eyebrow: 'Pre-work to Day 14 journey',
       media: {
         afterStep: 2,
-        image: publicImage('/lp/inhouse/hands-on.jpg', 1600, 1200),
-        alt: 'ผู้เข้าร่วมลงมือทำงานบนแล็ปท็อปของตัวเองในห้อง Workshop',
+        image: publicImage('/lp/inhouse/office-session.jpg', 1600, 1200),
+        alt: 'กลุ่มผู้เรียนนั่งรอบโต๊ะ เปิดโน้ตบุ๊กของตัวเองทำตามสไลด์บนจอ',
         eyebrow: 'Hands on your own deals',
         heading: 'ทุกคนลงมือบนเครื่องตัวเอง ด้วยดีลของตัวเอง',
         copy: 'คุณเปิดโน้ตบุ๊กของคุณเอง แล้วใช้ดีลที่ปิดชื่อแล้ว 3 ดีลที่เตรียมมาเป็นโจทย์ ผมเดินดูทีละคน ไม่ใช่ยืนสาธิตหน้าห้องให้ดูอย่างเดียว',

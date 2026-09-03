@@ -54,7 +54,7 @@ const cohort = data.publicCohort;
 
 {isJourney && data.journey ? (
   <>
-    <JourneyHero data={data} journey={data.journey} name={catalog.name} duration={catalog.duration} price={catalog.price} />
+    <JourneyHero data={data} journey={data.journey} name={catalog.name} duration={catalog.duration} price={catalog.price} primaryLabel={cohort ? data.cta.primary : undefined} primaryIntent={cohort ? data.cta.locations?.final?.primaryIntent : undefined} />
 
     {cohort && (
       <section class="bg-[#072b4e] px-5 pb-8 pt-0 sm:pb-12">
@@ -62,7 +62,7 @@ const cohort = data.publicCohort;
       </section>
     )}
 
-    <OfferStack code={data.code} keyword={data.cta.keyword} name={catalog.name} price={catalog.price} core={data.takeHome.slice(0, 4)} bonuses={data.bonusCards?.items ?? []} values={data.bonusValues?.items} journey={data.journey} />
+    <OfferStack code={data.code} keyword={data.cta.keyword} name={catalog.name} price={catalog.price} core={data.takeHome.slice(0, 4)} bonuses={data.bonusCards?.items ?? []} values={data.bonusValues?.items} journey={data.journey} primaryLabel={cohort ? data.cta.primary : undefined} primaryIntent={cohort ? data.cta.locations?.final?.primaryIntent : undefined} />
 
     {cohort && (
       <section class="bg-[#f7f1e7] px-5 pb-14 pt-0 sm:pb-20">

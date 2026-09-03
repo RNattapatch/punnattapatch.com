@@ -11,8 +11,11 @@ interface Props {
   bonuses: ProductBonusCard[];
   values?: ProductBonusValueItem[];
   journey: ProductJourneyPresentation;
+  primaryLabel?: string;
+  primaryIntent?: string;
 }
-const { code, keyword, name, price, core, bonuses, values, journey } = Astro.props;
+// Default keeps T1–T4 wording; public tickets pass their own "จองที่นั่ง" label.
+const { code, keyword, name, price, core, bonuses, values, journey, primaryLabel = 'จองคิวรับบริการ', primaryIntent = 'book_training' } = Astro.props;
 const valueOf = (number: string) => values?.find((item) => item.number === number)?.value;
 const total = values?.filter((item) => !item.valueLabel).reduce((sum, item) => sum + item.value, 0) ?? 0;
 const labelOf = (number: string) => values?.find((item) => item.number === number)?.valueLabel;
@@ -72,7 +75,7 @@ const headingId = `${code.toLowerCase()}-offer-heading`;
         </div>
 
         <div class="mt-8">
-          <JourneyCTA code={code} location="offer" keyword={keyword} primary="จองคิวรับบริการ" primaryIntent="book_training" secondary="ทัก LINE เช็กโจทย์ก่อน" secondaryIntent="fit_check" />
+          <JourneyCTA code={code} location="offer" keyword={keyword} primary={primaryLabel} primaryIntent={primaryIntent} secondary="ทัก LINE เช็กโจทย์ก่อน" secondaryIntent="fit_check" />
         </div>
       </div>
     </div>

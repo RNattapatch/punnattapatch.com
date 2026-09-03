@@ -2,8 +2,9 @@
 import type { ProductDetailPageData, ProductJourneyPresentation, PublicProofImage } from '../../../data/product-details/types';
 import JourneyCTA from './JourneyCTA.astro';
 
-interface Props { data: ProductDetailPageData; journey: ProductJourneyPresentation; name: string; price: string; duration: string; }
-const { data, journey, name, price } = Astro.props;
+interface Props { data: ProductDetailPageData; journey: ProductJourneyPresentation; name: string; price: string; duration: string; primaryLabel?: string; primaryIntent?: string; }
+// T1–T4 book a service slot; a public ticket books a seat. Default keeps the in-house wording untouched.
+const { data, journey, name, price, primaryLabel = 'จองคิวรับบริการ', primaryIntent = 'book_training' } = Astro.props;
 const visual = data.hero.visual;
 const visualImage = visual?.image;
 const src = visualImage && 'publicSrc' in visualImage ? visualImage.publicSrc : visualImage?.src;
@@ -30,8 +31,8 @@ const sectionId = `${data.code.toLowerCase()}-hero-heading`;
           code={data.code}
           location="hero"
           keyword={data.cta.keyword}
-          primary="จองคิวรับบริการ"
-          primaryIntent="book_training"
+          primary={primaryLabel}
+          primaryIntent={primaryIntent}
           secondary={data.cta.heroSecondary ?? data.cta.secondary}
           secondaryIntent={data.cta.heroSecondaryIntent ?? data.cta.secondaryIntent}
         />
