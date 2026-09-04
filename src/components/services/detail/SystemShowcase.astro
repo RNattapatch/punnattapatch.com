@@ -1,0 +1,205 @@
+---
+// T2 system chapter — "ระบบที่ทีมได้กลับไป" (WEB-T2-SYSTEM-01)
+// spec: docs/superpowers/specs/2026-09-05-t2-system-section-design.md
+// เปลือกของ chapter: S1 opener · S2 failure · S3 desks · [S4 GoldenPathFlow] · [S5 HandoffTimeline] · S6 metrics · S7 value · S8 CTA
+import { fmtPrice } from '../../../data/pricing.mjs';
+import { SITE } from '../../../data/site';
+import type { ProductDetailCode, ProductSystemSection, SystemShot } from '../../../data/product-details/types';
+import GoldenPathFlow from './GoldenPathFlow.astro';
+import HandoffTimeline from './HandoffTimeline.astro';
+
+interface Props { data: ProductSystemSection; code: ProductDetailCode; keyword: string; }
+const { data, code, keyword } = Astro.props;
+
+// Release gate §15: ภาพที่ไม่มีตาราง delta ห้ามขึ้นหน้าเว็บ
+const usable = (shot?: SystemShot) => (shot && shot.delta.length > 0 ? shot : undefined);
+const srcOf = (shot: SystemShot) => ('publicSrc' in shot.image ? shot.image.publicSrc : shot.image.src);
+const openerShot = usable(data.opener.shot);
+const valueRef = fmtPrice(data.value.valueRefKey);
+// ทั้งสองปุ่มเป็น LINE จริง — คลิปเดินระบบยังไม่ปล่อยสาธารณะ จึงไม่มีปุ่มที่กดแล้วไม่เกิดอะไร
+const ctaActions = [
+  { label: data.cta.lineLabel, intent: data.cta.lineIntent },
+  { label: data.cta.secondaryLabel, intent: 'system_walkthrough_video' },
+];
+---
+
+<section data-journey-section="system" data-detail-block="system" aria-labelledby="t2-system-heading" class="bg-[#f4f1ea] pt-14 sm:pt-20">
+  <div class="mx-auto max-w-6xl px-5">
+    <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">{data.eyebrow}</p>
+    <h2 id="t2-system-heading" class="mt-3 max-w-4xl text-balance font-display text-3xl font-bold text-navy sm:text-5xl">{data.heading}</h2>
+    <p class="mt-4 max-w-3xl leading-7 text-navy/70">{data.intro}</p>
+
+    <!-- S1 · เปิดเรื่อง -->
+    <div class="mt-10 grid gap-6 lg:grid-cols-[1.05fr_.95fr] lg:items-start">
+      <div class="space-y-4">
+        {data.opener.body.map((paragraph) => <p class="max-w-2xl leading-8 text-navy/85">{paragraph}</p>)}
+      </div>
+      {openerShot && (
+        <figure data-system-shot class="overflow-hidden rounded-[1.5rem] border border-navy/10 bg-white">
+          <div class="relative">
+            <img src={srcOf(openerShot)} alt={openerShot.alt} width={openerShot.image.width} height={openerShot.image.height} loading="lazy" decoding="async" class="aspect-[16/10] w-full object-cover" />
+            <p data-shot-label class="absolute left-4 top-4 rounded-lg bg-navy/90 px-3 py-1.5 text-xs font-bold text-white">{openerShot.label}</p>
+          </div>
+          <figcaption class="p-5">
+            <p class="leading-7 text-navy/75">{openerShot.caption}</p>
+            <table class="mt-4 w-full border-collapse text-left text-sm">
+              <caption class="sr-only">ตารางเทียบสิ่งที่เห็นในภาพกับรุ่นที่ลูกค้าได้รับ</caption>
+              <thead><tr class="border-b border-navy/15">
+                <th scope="col" class="py-2 pr-4 font-bold text-navy">ในภาพ</th>
+                <th scope="col" class="py-2 font-bold text-navy">รุ่นที่คุณได้รับ</th>
+              </tr></thead>
+              <tbody>
+                {openerShot.delta.map((row) => (
+                  <tr class="border-b border-navy/10 align-top"><td class="py-2 pr-4 leading-6 text-navy/70">{row.inShot}</td><td class="py-2 leading-6 text-navy/85">{row.youGet}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </figcaption>
+        </figure>
+      )}
+    </div>
+
+    <!-- S2 · ทำไมไม่ให้ build ตามในห้อง -->
+    <div data-system-block="failure" class="mt-12 rounded-[1.75rem] bg-navy p-7 text-white sm:p-10">
+      <h3 class="max-w-3xl text-balance font-display text-2xl font-bold sm:text-3xl">{data.failure.heading}</h3>
+      <p class="mt-4 max-w-3xl leading-7 text-white/75">{data.failure.intro}</p>
+      <ol class="mt-7 grid gap-3 md:grid-cols-2">
+        {data.failure.items.map((item, index) => (
+          <li data-failure-item class="flex gap-3 rounded-xl bg-white/5 p-4 text-sm leading-6 text-white/85">
+            <span aria-hidden="true" class="flex size-6 shrink-0 items-center justify-center rounded-full border border-[#ff677a] text-xs font-bold text-[#ff677a]">{index + 1}</span>
+            <span>{item}</span>
+          </li>
+        ))}
+      </ol>
+      <p class="mt-7 border-t border-white/10 pt-5 max-w-3xl leading-7 text-white/85">{data.failure.close}</p>
+    </div>
+  </div>
+
+  <!-- S3 · 3 โต๊ะ -->
+  <div data-system-block="desks" class="mx-auto mt-12 max-w-6xl px-5 pb-14 sm:pb-20">
+    <h3 class="max-w-3xl text-balance font-display text-2xl font-bold text-navy sm:text-4xl">{data.desks.heading}</h3>
+    <p class="mt-4 max-w-3xl leading-7 text-navy/70">{data.desks.intro}</p>
+    <div class="mt-8 grid gap-5 lg:grid-cols-3">
+      {data.desks.items.map((desk) => {
+        const shot = usable(desk.shot);
+        return (
+          <article data-system-desk class="flex flex-col overflow-hidden rounded-[1.5rem] border border-navy/10 bg-white">
+            {shot && (
+              <figure data-system-shot class="border-b border-navy/10">
+                <div class="relative">
+                  <img src={srcOf(shot)} alt={shot.alt} width={shot.image.width} height={shot.image.height} loading="lazy" decoding="async" class="aspect-[16/10] w-full object-cover" />
+                  <p data-shot-label class="absolute left-3 top-3 rounded-lg bg-navy/90 px-2.5 py-1 text-[11px] font-bold text-white">{shot.label}</p>
+                </div>
+                <figcaption class="px-5 pb-5 pt-4">
+                  <p class="text-sm leading-6 text-navy/70">{shot.caption}</p>
+                  <table class="mt-4 w-full border-collapse text-left text-xs">
+                    <caption class="sr-only">ตารางเทียบสิ่งที่เห็นในภาพกับรุ่นที่ลูกค้าได้รับ</caption>
+                    <thead><tr class="border-b border-navy/15">
+                      <th scope="col" class="py-2 pr-3 font-bold text-navy">ในภาพ</th>
+                      <th scope="col" class="py-2 font-bold text-navy">รุ่นที่คุณได้รับ</th>
+                    </tr></thead>
+                    <tbody>
+                      {shot.delta.map((row) => (
+                        <tr class="border-b border-navy/10 align-top"><td class="py-2 pr-3 leading-5 text-navy/65">{row.inShot}</td><td class="py-2 leading-5 text-navy/85">{row.youGet}</td></tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </figcaption>
+              </figure>
+            )}
+            <div class="flex flex-1 flex-col p-6">
+              <p class="text-xs font-bold uppercase tracking-[.18em] text-coral">โต๊ะ {desk.number}</p>
+              <h4 class="mt-2 font-display text-xl font-bold text-navy">{desk.name}</h4>
+              <dl class="mt-5 space-y-3 text-sm leading-6 text-navy/80">
+                <div><dt class="font-bold text-navy">ใครใช้</dt><dd>{desk.who}</dd></div>
+                <div><dt class="font-bold text-navy">เปิดตอนไหน</dt><dd>{desk.when}</dd></div>
+                <div><dt class="font-bold text-navy">เข้าอะไร</dt><dd>{desk.input}</dd></div>
+                <div><dt class="font-bold text-navy">ออกอะไร</dt><dd>{desk.output}</dd></div>
+              </dl>
+              <p class="mt-5 rounded-xl bg-[#f4f1ea] p-4 text-sm leading-6 text-navy"><span class="font-bold">กติกาที่ข้ามไม่ได้ </span>{desk.rule}</p>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<!-- S4 -->
+<GoldenPathFlow data={data.goldenPath} />
+
+<!-- S5 -->
+<HandoffTimeline data={data.handoff} />
+
+<!-- S6 · ตัวเลขจริงของปัน -->
+<section data-system-block="metrics" aria-labelledby="t2-system-metrics-heading" class="bg-[#fdfaf4] py-12 sm:py-16">
+  <div class="mx-auto max-w-6xl px-5">
+    <h3 id="t2-system-metrics-heading" class="max-w-3xl text-balance font-display text-2xl font-bold text-navy sm:text-4xl">{data.metrics.heading}</h3>
+    <p class="mt-4 max-w-3xl leading-7 text-navy/70">{data.metrics.intro}</p>
+    <dl class="mt-8 grid gap-4 md:grid-cols-3">
+      {data.metrics.items.map((item) => (
+        <div data-system-metric class="min-w-0 rounded-[1.5rem] border border-navy/10 bg-white p-6">
+          <dt class="text-sm font-bold text-navy/70">{item.label}</dt>
+          <dd class="mt-3 font-display text-3xl font-bold text-coral [overflow-wrap:anywhere]">{item.value}</dd>
+          <p class="mt-3 text-sm leading-6 text-navy/65">{item.note}</p>
+        </div>
+      ))}
+    </dl>
+    <p class="mt-6 max-w-3xl text-sm leading-6 text-navy/60">{data.metrics.disclaimer}</p>
+  </div>
+</section>
+
+<!-- S7 · มูลค่า + ไม่รวมอะไร -->
+<section data-system-block="value" aria-labelledby="t2-system-value-heading" class="bg-[#f4f1ea] py-12 sm:py-16">
+  <div class="mx-auto max-w-6xl px-5 lg:grid lg:grid-cols-[1.1fr_.9fr] lg:gap-6">
+    <div>
+      <h3 id="t2-system-value-heading" class="max-w-2xl text-balance font-display text-2xl font-bold text-navy sm:text-4xl">{data.value.heading}</h3>
+      <div class="mt-5 space-y-4">
+        {data.value.body.map((paragraph) => (
+          <p class="max-w-2xl leading-8 text-navy/85" set:html={paragraph.replaceAll('{{VALUE_REF}}', `<strong data-system-value-ref class="font-bold text-navy">${valueRef}</strong>`)} />
+        ))}
+      </div>
+      <p class="mt-4 max-w-2xl text-sm leading-6 text-navy/60">{data.value.valueRefNote}</p>
+    </div>
+    <aside class="mt-8 rounded-[1.75rem] border border-navy/10 bg-white p-6 sm:p-8 lg:mt-0">
+      <h4 class="font-display text-xl font-bold text-navy">{data.value.excluded.heading}</h4>
+      <ul class="mt-5 space-y-3">
+        {data.value.excluded.items.map((item) => (
+          <li class="flex gap-3 text-sm leading-6 text-navy/80"><span aria-hidden="true" class="mt-0.5 font-bold text-coral">✕</span><span>{item}</span></li>
+        ))}
+      </ul>
+      <p class="mt-5 border-t border-navy/10 pt-4 text-sm leading-6 text-navy/70">{data.value.excluded.route}</p>
+    </aside>
+  </div>
+</section>
+
+<!-- S8 · CTA คู่ -->
+<section data-system-block="cta" aria-labelledby="t2-system-cta-heading" class="bg-[#f4f1ea] px-5 pb-14 sm:pb-20">
+  <div class="mx-auto max-w-6xl">
+    <div class="rounded-[2rem] border border-navy/10 bg-white p-6 shadow-[0_20px_60px_rgba(7,43,78,.08)] sm:p-8 lg:grid lg:grid-cols-[1fr_auto] lg:items-center lg:gap-8">
+      <div class="max-w-2xl">
+        <h3 id="t2-system-cta-heading" class="text-balance font-display text-2xl font-bold text-navy sm:text-3xl">{data.cta.heading}</h3>
+        <p class="mt-3 leading-7 text-navy/70">{data.cta.body}</p>
+        <p class="mt-3 text-sm leading-6 text-navy/60">{data.cta.secondaryNote}</p>
+      </div>
+      <div data-cta-location="system_chapter" class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:mt-0 lg:justify-end">
+        {ctaActions.map((action) => (
+          <a
+            href={SITE.social.line}
+            target="_blank"
+            rel="noopener"
+            aria-label={`${action.label} ผ่าน LINE`}
+            data-line-cta
+            data-contact-cta
+            data-product-code={code}
+            data-cta-location="system_chapter"
+            data-cta-intent={action.intent}
+            data-cta-keyword={keyword}
+            data-cta-label={action.label}
+            class="btn min-h-12 w-full border-0 bg-[#06C755] px-6 text-[#072B4E] shadow-sm hover:bg-[#05ad49] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral sm:w-auto"
+          >{action.label}</a>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

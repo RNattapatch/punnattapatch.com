@@ -156,6 +156,92 @@ export interface ProductBonusValues {
   footnote: string;
 }
 
+/**
+ * T2 system chapter (WEB-T2-SYSTEM-01) — "ระบบที่ทีมได้กลับไป"
+ * spec: docs/superpowers/specs/2026-09-05-t2-system-section-design.md
+ * ⚠️ ห้ามตั้งชื่อฟิลด์ว่า price / duration / h1 (verify-product-details.mjs ห้ามไว้)
+ * ⚠️ ห้าม literal สกุลเงินในไฟล์นี้ — มูลค่าอ้างผ่าน Catalog key เท่านั้น
+ */
+export interface SystemShot {
+  image: ImageMetadata | PublicProofImage;
+  alt: string;
+  /** ป้ายที่พิมพ์ทับมุมภาพ — บอกว่าเป็นรุ่นไหน/ข้อมูลอะไร (Release gate §15) */
+  label: string;
+  caption: string;
+  /** ตาราง "ในภาพ vs รุ่นที่คุณได้รับ" — ห้ามว่าง ไม่งั้น component ไม่ render ภาพ */
+  delta: Array<{ inShot: string; youGet: string }>;
+}
+
+export interface SystemDesk {
+  number: string;
+  name: string;
+  who: string;
+  when: string;
+  input: string;
+  output: string;
+  rule: string;
+  shot?: SystemShot;
+}
+
+export interface SystemGoldenPathStep {
+  number: string;
+  title: string;
+  actor: string;
+  input: string;
+  output: string;
+}
+
+export interface SystemGoldenPath {
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  steps: SystemGoldenPathStep[];
+  note: string;
+  shot?: SystemShot;
+}
+
+export interface SystemHandoffStage {
+  code: string;
+  when: string;
+  what: string;
+  evidence: string;
+}
+
+export interface SystemHandoff {
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  /** 45 นาทีแรกในห้อง แตกเป็นช่วง (ฟิลด์ชื่อ span เพราะ duration ถูกห้าม) */
+  install: Array<{ span: string; step: string }>;
+  installNote: string;
+  stages: SystemHandoffStage[];
+  prerequisites: { heading: string; items: string[] };
+  shot?: SystemShot;
+}
+
+export interface ProductSystemSection {
+  /** ปิดไว้จนกว่า Kit v1 ผ่าน Non-builder trial — คุณปันสั่งเปิดเท่านั้น */
+  enabled: boolean;
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  opener: { body: string[]; shot: SystemShot };
+  failure: { heading: string; intro: string; items: string[]; close: string };
+  desks: { heading: string; intro: string; items: SystemDesk[] };
+  goldenPath: SystemGoldenPath;
+  handoff: SystemHandoff;
+  metrics: { heading: string; intro: string; items: Array<{ label: string; value: string; note: string }>; disclaimer: string };
+  value: {
+    heading: string;
+    body: string[];
+    /** Catalog key ที่ใช้อ้างมูลค่า — ห้าม hardcode ตัวเลข · ห้ามขีดฆ่า (ระบบเป็น Core ไม่ใช่ Bonus) */
+    valueRefKey: string;
+    valueRefNote: string;
+    excluded: { heading: string; items: string[]; route: string };
+  };
+  cta: { heading: string; body: string; lineLabel: string; lineIntent: string; secondaryLabel: string; secondaryNote: string };
+}
+
 export interface ProductWhyMe {
   eyebrow: string;
   heading: string;
@@ -243,6 +329,8 @@ export interface ProductDetailPageData {
   instructorProfile?: ProductInstructorProfile;
   /** Opts a training product into the proof-led operating journey presentation. */
   journey?: ProductJourneyPresentation;
+  /** T2 system chapter (WEB-T2-SYSTEM-01) — optional; สินค้าอื่นไม่มีก็ไม่ render */
+  systemSection?: ProductSystemSection;
   fit: string[];
   notFit: string;
   relatedOffer?: { href: string; label: string };

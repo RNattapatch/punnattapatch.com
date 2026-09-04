@@ -35,6 +35,7 @@ import WhatsNewBlock from './WhatsNewBlock.astro';
 import BonusValueStack from './BonusValueStack.astro';
 import WhyMeGrid from './WhyMeGrid.astro';
 import InstructorProfile from './InstructorProfile.astro';
+import SystemShowcase from './SystemShowcase.astro';
 
 interface Props { data: ProductDetailPageData; }
 const { data } = Astro.props;
@@ -48,13 +49,16 @@ const investmentLineCta = data.cta.locations?.afterInvestment;
 const finalLineCta = data.cta.locations?.final ?? { primary: data.cta.primary, primaryIntent: 'quote', secondary: data.cta.finalSecondary ?? data.cta.secondary, secondaryIntent: data.cta.finalSecondaryIntent ?? data.cta.secondaryIntent ?? 'lead_magnet' };
 const chapters = data.chapters ?? [];
 const isJourney = Boolean(data.journey);
+// WEB-T2-SYSTEM-01: chapter "ระบบที่ทีมได้กลับไป" — flag ปิดอยู่จนกว่า Kit v1 ผ่าน Non-builder trial
+const systemSection = data.systemSection?.enabled ? data.systemSection : undefined;
+const offerCore = data.takeHome.slice(0, systemSection ? 5 : 4);
 ---
 
 {isJourney && data.journey ? (
   <>
     <JourneyHero data={data} journey={data.journey} name={catalog.name} duration={catalog.duration} price={catalog.price} />
 
-    <OfferStack code={data.code} keyword={data.cta.keyword} name={catalog.name} price={catalog.price} core={data.takeHome.slice(0, 4)} bonuses={data.bonusCards?.items ?? []} values={data.bonusValues?.items} journey={data.journey} />
+    <OfferStack code={data.code} keyword={data.cta.keyword} name={catalog.name} price={catalog.price} core={offerCore} bonuses={data.bonusCards?.items ?? []} values={data.bonusValues?.items} journey={data.journey} />
 
     <div data-t4-section={data.code === 'T4' ? 'logos' : undefined} data-journey-section="logos" data-detail-block="authority">
       <InstructorCard authority={data.authority} heading={data.sections?.authority?.heading ?? 'สอนจากประสบการณ์ขาย โค้ชทีม และสร้าง AI Workflow ใช้งานจริง'} compact />
@@ -73,6 +77,8 @@ const isJourney = Boolean(data.journey);
         ? <JourneyCTA code={data.code} location="after_scope" keyword={data.cta.keyword} decision={afterScopeCta} />
         : <JourneyCTA code={data.code} location="after_scope" keyword={data.cta.keyword} primary={scopeLineCta.primary} primaryIntent={scopeLineCta.primaryIntent} secondary={scopeLineCta.secondary} secondaryIntent={scopeLineCta.secondaryIntent} />}
     </div></section>
+
+    {systemSection && <SystemShowcase data={systemSection} code={data.code} keyword={data.cta.keyword} />}
 
     {data.whatsNew && <div data-journey-section="whats-new"><WhatsNewBlock data={data.whatsNew} /></div>}
     <div data-t4-section={data.code === 'T4' ? 'take-home' : undefined} data-journey-section="take-home" data-detail-block="take-home"><TakeHomeStack items={data.takeHome} {...data.sections?.takeHome} /></div>
