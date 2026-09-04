@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductDetailLayout from '../../components/services/detail/ProductDetailLayout.astro';
+import ProductLeadForm from '../../components/forms/ProductLeadForm.astro';
 import { resolveProductDetailCatalog } from '../../data/product-details/catalog';
 import { T4_PRODUCT_DETAIL } from '../../data/product-details/t4';
 import { SITE } from '../../data/site';
@@ -11,4 +12,19 @@ const canonical = `${SITE.url}${T4_PRODUCT_DETAIL.route}`;
 
 <BaseLayout title={T4_PRODUCT_DETAIL.seo.title} description={T4_PRODUCT_DETAIL.seo.description} canonical={canonical} ogImage={`${SITE.url}/lp/inhouse/office-session.jpg`} schema={{ types: ['WebPage', 'FAQPage', 'BreadcrumbList', 'ProductDetail'], title: T4_PRODUCT_DETAIL.seo.title, description: T4_PRODUCT_DETAIL.seo.description, url: canonical, faq: T4_PRODUCT_DETAIL.faq, breadcrumbs: [{ name: 'บริการ', url: `${SITE.url}/services` }, { name: catalog.name, url: canonical }], productDetail: { code: T4_PRODUCT_DETAIL.code, kind: T4_PRODUCT_DETAIL.kind, name: catalog.name, description: T4_PRODUCT_DETAIL.seo.description, url: canonical, duration: catalog.duration } }}>
   <ProductDetailLayout data={T4_PRODUCT_DETAIL} />
+  {/* ฟอร์มอยู่ในหน้าเลย ไม่พาไป /booking — ปุ่ม "จองคิวรับบริการ" ทุกจุดบนหน้าจะเลื่อนลงมาที่นี่
+      ทำให้ conversion ถูกนับตอน "ส่งฟอร์มสำเร็จ" บนหน้าเดียวกัน ไม่ใช่ตอนกดปุ่ม
+      และไม่ต้องพึ่ง redirect ไป /thank-you ซึ่ง in-app browser ของ IG/LINE กลืนได้ */}
+  <ProductLeadForm
+    code={T4_PRODUCT_DETAIL.code}
+    source="lp-t4-advance-ai-automation"
+    bookingType="t4-ai-workflow-pilot-day"
+    eventPrefix="t4_advance_ai"
+    heading="เล่าให้ผมฟังว่างานซ้ำของทีมคืออะไร"
+    intro="กรอกข้อมูลสั้นๆ ไว้ครับ เดี๋ยวผมทักกลับทาง LINE หรือโทรศัพท์ แล้วคุยกัน 15–20 นาที ว่างานไหนของทีมคุ้มที่จะยกเข้าห้องเป็น Workflow แรก และงานไหนยังไม่ควรแตะ"
+    issuePlaceholder="เช่น ทีมขายต้องคีย์ข้อมูลลูกค้าซ้ำสามที่ทุกวัน"
+    lineUrl={SITE.social.line}
+    lineLabel="ทัก LINE ส่งโจทย์งานให้ผมดู"
+    lineNote="ยังไม่อยากกรอกฟอร์ม? ทักไลน์มาเล่าโจทย์สั้นๆ ก่อนก็ได้ครับ"
+  />
 </BaseLayout>
