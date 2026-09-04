@@ -222,6 +222,8 @@ const {
 
       const payload = Object.fromEntries(new FormData(form).entries());
       const intentLabel = payload.intent === 'booking' ? 'ขอนัดจองคิว' : 'คุยเบื้องต้นก่อน';
+      // รหัสอ้างอิงตัวเดียว ใช้ทั้งใน payload · เป็น eventID ให้ Meta dedupe · และส่งต่อไป /thank-you
+      const reference = makeFormReference();
       Object.assign(payload, {
         phone: phoneRaw,
         lead_temp: payload.intent === 'booking' ? 'hot' : 'warm',
@@ -238,7 +240,7 @@ const {
         // Flatten Body1 reads `submittedAt` (camelCase); snake_case never matched.
         submittedAt: new Date().toISOString(),
         _meta: {
-          reference: makeFormReference(),
+          reference,
           page: window.location.pathname,
           user_agent: navigator.userAgent,
           referrer: document.referrer || '',
@@ -246,12 +248,43 @@ const {
       });
       foldAfterHours(payload as Record<string, unknown>);
 
-      const done = () => {
-        if (typeof pageWindow.fbq === 'function') pageWindow.fbq('track', 'Lead', { content_name: leadEvent, content_ids: [code], lead_temp: payload.lead_temp });
-        if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('SubmitForm', { content_name: leadEvent, lead_temp: payload.lead_temp });
+      // ตาข่ายในหน้าเดิม — ใช้เมื่อ redirect ไป /thank-you ไม่ทำงาน
+      // (in-app browser ของ IG/LINE กลืน redirect · เป็นเหตุผลเดียวกับที่ booking.astro ต้องมี)
+      const revealInlineSuccess = () => {
+        if (form.classList.contains('hidden')) return;
         form.classList.add('hidden');
-        success?.classList.remove('hidden');
+        if (success) {
+          const note = document.createElement('p');
+          note.className = 'mt-4 text-sm leading-relaxed text-warm-ink/75';
+          note.innerHTML = `บันทึกไว้แล้วครับ · Reference: <code class="font-mono font-bold">${reference}</code>`
+            + '<br/>ทัก LINE พร้อมส่งรหัสนี้มา ผมจะตอบได้เร็วขึ้น';
+          success.appendChild(note);
+          success.classList.remove('hidden');
+        }
         success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      };
+
+      const done = () => {
+        // eventID = reference ตัวเดียวกับที่ /thank-you จะยิง → Meta dedupe ให้ ไม่นับซ้ำ
+        if (typeof pageWindow.fbq === 'function') {
+          pageWindow.fbq('track', 'Lead', { content_name: leadEvent, content_ids: [code], lead_temp: payload.lead_temp }, { eventID: reference });
+        }
+        if (typeof pageWindow.ttq?.track === 'function') pageWindow.ttq.track('SubmitForm', { content_name: leadEvent, lead_temp: payload.lead_temp });
+
+        // Sales Funnel v2 (2026-09-03): หน้าหลังส่งฟอร์ม = Decision Hub ที่ /thank-you
+        // ไม่ใช่การ์ด "รับข้อมูลแล้ว" ในหน้าเดิม — ที่นั่นมีรหัสอ้างอิง ปุ่ม LINE
+        // และคำสัญญาขั้นถัดไปที่มีวัน (นัดคอล 25 นาที เสนอ 2 ช่วงเวลา)
+        // ถ้าจบที่การ์ดในหน้า ดีลจะไม่มี Commitment Anchor ซึ่งคือปัญหาที่ funnel ใหม่ตั้งใจแก้
+        const hub = new URL('/thank-you', window.location.origin);
+        hub.searchParams.set('type', 'booking');
+        hub.searchParams.set('ref', reference);
+        hub.searchParams.set('package', code);
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'ttclid'].forEach((k) => {
+          const v = String(payload[k] ?? '');
+          if (v) hub.searchParams.set(k, v);
+        });
+        window.location.href = hub.toString();
+        setTimeout(revealInlineSuccess, 800);
       };
 
       if (submit) { submit.disabled = true; submit.textContent = 'กำลังส่ง...'; }
