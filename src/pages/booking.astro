@@ -243,6 +243,27 @@ const issues = [
     const revealInlineSuccess = () => {
       if (form.classList.contains('hidden')) return;
       form.classList.add('hidden');
+      // 2026-09-04: ตาข่ายนี้เคยรับแค่ "ผู้ใช้เห็นหน้าขอบคุณ" แต่ไม่ได้บอก pixel
+      // → lead ที่มาจาก in-app browser ของ IG/LINE (ซึ่งกลืน redirect ไป /thank-you
+      // จนต้องมีตาข่ายนี้ตั้งแต่แรก) กลายเป็น conversion ที่ Meta มองไม่เห็นเลย
+      // ทั้งที่ traffic จากแอดเกือบทั้งหมดมาจากเบราว์เซอร์ในแอปพวกนี้
+      // ใช้ eventID = reference ตัวเดียวกับที่ /thank-you ใช้ → ถ้า redirect ทำงานทีหลัง
+      // Meta จะ dedupe ให้เอง ไม่นับซ้ำ
+      const trackWindow = window as unknown as {
+        fbq?: (...args: unknown[]) => void;
+        ttq?: { track: (...args: unknown[]) => void };
+      };
+      if (typeof trackWindow.fbq === 'function') {
+        trackWindow.fbq(
+          'track',
+          'Lead',
+          { content_name: 'booking_page', content_ids: productCode ? [productCode.toUpperCase()] : undefined, currency: 'THB', value: 0 },
+          { eventID: reference },
+        );
+      }
+      if (typeof trackWindow.ttq?.track === 'function') {
+        trackWindow.ttq.track('CompleteRegistration', { content_id: reference, currency: 'THB', value: 0 });
+      }
       if (recommendation) recommendation.textContent = 'ผมจะอ่านโจทย์ของคุณก่อน แล้วคุยกันตรงๆ ว่าทีมควรเริ่มจาก In-house, โปรแกรมเต็ม หรือยังมีอะไรที่กลับไปทำเองได้ครับ';
       success?.classList.remove('hidden');
       // เข้าทาง fallback = Telegram ไม่เด้ง ผมอาจเห็นช้า → ให้ reference ไว้อ้างอิงตอนทัก LINE
