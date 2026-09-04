@@ -273,7 +273,7 @@ const {
 
         // Sales Funnel v2 (2026-09-03): หน้าหลังส่งฟอร์ม = Decision Hub ที่ /thank-you
         // ไม่ใช่การ์ด "รับข้อมูลแล้ว" ในหน้าเดิม — ที่นั่นมีรหัสอ้างอิง ปุ่ม LINE
-        // และคำสัญญาขั้นถัดไปที่มีวัน (นัดคอล 25 นาที เสนอ 2 ช่วงเวลา)
+        // และคำสัญญาขั้นถัดไปที่มีวัน (คุยกันไม่เกิน 15 นาที โทรหรือ online meeting)
         // ถ้าจบที่การ์ดในหน้า ดีลจะไม่มี Commitment Anchor ซึ่งคือปัญหาที่ funnel ใหม่ตั้งใจแก้
         const hub = new URL('/thank-you', window.location.origin);
         hub.searchParams.set('type', 'booking');

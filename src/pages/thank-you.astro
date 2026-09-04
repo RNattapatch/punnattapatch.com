@@ -15,7 +15,7 @@ import { SITE } from '../data/site';
 
 const title = 'ขอบคุณที่กรอกแบบประเมิน';
 const description =
-  'รับเรื่องแล้ว ผมอ่านเองภายในวันทำการเดียวกัน — ขั้นตอนถัดไปคือนัดคอล 25 นาทีทาง LINE พร้อมรหัสอ้างอิง';
+  'รับเรื่องแล้ว ผมอ่านเองภายในวันทำการเดียวกัน — ขั้นตอนถัดไปคือโทรคุยหรือ online meeting ไม่เกิน 15 นาที ทาง LINE พร้อมรหัสอ้างอิง';
 ---
 
 <BaseLayout title={title} description={description} noindex={true}>
@@ -71,24 +71,27 @@ const description =
           <li id="thankyou-read-line">ผมอ่านแบบประเมินของคุณเอง ไม่ใช่ทีมงาน ไม่ใช่ AI ตอบแทน</li>
           <li>ตอบภายในวันทำการเดียวกัน (กลางวันผมมักอยู่หน้างานลูกค้า จึงตอบช่วงเย็นครับ)</li>
           <li>
-            นัดคอล 25 นาทีทาง LINE <strong>ผมเสนอ 2 ช่วงเวลาให้เลือก</strong>
-            คอลแรกมีไว้เช็กว่าโจทย์ของคุณตรงกับบริการไหน
+            <strong>โทรคุย หรือ online meeting ไม่เกิน 15 นาที</strong>
+            คุยกันสั้นๆ ว่าโจทย์ของคุณตรงกับบริการไหน
           </li>
           <li>
             <strong>ถ้าตรงและข้อมูลครบ เราสรุปขอบเขต ราคา และวันเริ่มได้ในรอบเดียว</strong>
-            ถ้าไม่ตรง ผมบอกตรงๆ และแนะนำทางที่เหมาะกว่าให้ ไม่พาไป Visit ต่อ
+            ถ้าไม่ตรง ผมบอกตรงๆ และแนะนำทางที่เหมาะกว่าให้
           </li>
         </ol>
       </div>
 
-      <p class="mt-8 text-sm text-base-content/70">
-        ตอบภายในวันทำการเดียวกัน · ไม่มี mass email · ข้อมูลไม่ส่งต่อบุคคลที่สาม
-      </p>
-
-      <p class="mt-12 text-base leading-relaxed text-base-content/80">
-        ⏳ ถ้ามีเวลาอีก 3 นาที เลื่อนลงอ่านต่อครับ จะได้รู้จักกันก่อนคุยจริง
-        แล้วคอลแรกของเราจะสั้นลงครึ่งหนึ่ง
-      </p>
+      <div class="mt-12 rounded-2xl bg-primary p-7 text-left text-primary-content shadow-lg">
+        <p class="font-display text-2xl font-bold leading-snug md:text-3xl">
+          <span aria-hidden="true">⏳</span> มีเวลาอีก 2 นาทีไหมครับ
+        </p>
+        <p class="mt-3 text-base leading-relaxed text-primary-content/85">
+          เลื่อนลงอ่านต่อ จะได้รู้จักกันก่อนคุยจริง แล้วคอลแรกของเราจะสั้นลงครึ่งหนึ่ง
+        </p>
+        <p class="mt-5 flex items-center gap-2 font-display text-lg font-bold">
+          <span class="thankyou-scroll-hint" aria-hidden="true">↓</span> เลื่อนลงเลยครับ
+        </p>
+      </div>
     </div>
   </section>
 
@@ -185,3 +188,18 @@ const description =
     })();
   </script>
 </BaseLayout>
+
+<style>
+  /* ลูกศรกระตุกเบาๆ ให้สายตาไปต่อท้ายหน้า — ปิดเองเมื่อผู้ใช้ตั้งค่าลดการเคลื่อนไหว */
+  .thankyou-scroll-hint {
+    display: inline-block;
+    animation: thankyou-nudge 1.6s ease-in-out infinite;
+  }
+  @keyframes thankyou-nudge {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .thankyou-scroll-hint { animation: none; }
+  }
+</style>

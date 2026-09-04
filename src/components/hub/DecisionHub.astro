@@ -17,8 +17,8 @@ const keyword = `นัดคุย ${data.code}`;
 const steps = [
   { when: 'ตอนนี้', text: 'ระบบรับเรื่องแล้ว เลขอ้างอิงอยู่ด้านบน ทักใน LINE ได้ทันทีถ้าอยากคุยก่อน' },
   { when: 'ภายในวันทำการเดียวกัน', text: 'ผมอ่านโจทย์ของคุณเอง กลางวันผมมักอยู่หน้างานลูกค้า จึงตอบช่วงเย็นครับ' },
-  { when: 'นัดคอล 25 นาที', text: 'ผมเสนอ 2 ช่วงเวลาให้เลือกทาง LINE คอลแรกมีไว้เช็กว่าโจทย์ตรงกับบริการไหน' },
-  { when: 'จบคอล', text: 'ถ้าตรงและข้อมูลครบ เราสรุปขอบเขต ราคา และวันเริ่มได้ในรอบเดียว ถ้าไม่ตรง ผมบอกตรงๆ ไม่พาไป Visit ต่อ' },
+  { when: 'คุยกันไม่เกิน 15 นาที', text: 'โทรคุย หรือ online meeting ก็ได้ นัดกันทาง LINE คุยสั้นๆ ว่าโจทย์ตรงกับบริการไหน' },
+  { when: 'จบคอล', text: 'ถ้าตรงและข้อมูลครบ เราสรุปขอบเขต ราคา และวันเริ่มได้ในรอบเดียว ถ้าไม่ตรง ผมบอกตรงๆ' },
 ];
 ---
 
@@ -43,10 +43,10 @@ const steps = [
         <p class="mt-1 text-sm text-primary-content/80">{catalog.duration} · {data.hero.customerJob}</p>
       </div>
       <div class="flex flex-col gap-2">
-        <a href={SITE.social.line} target="_blank" rel="noopener" data-contact-cta data-product-code={data.code} data-cta-location="decision_hub" data-cta-label={`ทัก LINE พิมพ์ ${keyword}`} class="btn min-h-12 border-0 bg-[#06C755] text-[#072B4E] hover:bg-[#05ad49]" aria-label={`ทัก LINE แล้วพิมพ์ ${keyword} เพื่อนัดคอล 25 นาที`}>
-          <img src="/line-logo.png" alt="" class="h-5 w-5" aria-hidden="true" /> นัดคอล 25 นาที ทาง LINE
+        <a href={SITE.social.line} target="_blank" rel="noopener" data-contact-cta data-product-code={data.code} data-cta-location="decision_hub" data-cta-label={`ทัก LINE พิมพ์ ${keyword}`} class="btn min-h-12 border-0 bg-[#06C755] text-[#072B4E] hover:bg-[#05ad49]" aria-label={`ทัก LINE แล้วพิมพ์ ${keyword} เพื่อนัดคุยไม่เกิน 15 นาที`}>
+          <img src="/line-logo.png" alt="" class="h-5 w-5" aria-hidden="true" /> นัดคุย 15 นาที ทาง LINE
         </a>
-        <p class="text-center text-xs text-primary-content/75">พิมพ์ “{keyword}” พร้อมเลขอ้างอิง ผมเสนอ 2 ช่วงเวลาให้เลือก</p>
+        <p class="text-center text-xs text-primary-content/75">พิมพ์ “{keyword}” พร้อมเลขอ้างอิง · โทรคุยหรือ online meeting ก็ได้</p>
       </div>
     </div>
 
