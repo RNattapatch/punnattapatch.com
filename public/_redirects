@@ -15,7 +15,9 @@
 /ads/lp-line-ads/* /services 301
 # ads LP รุ่นเก่า (positioning "ลดงานซ้ำ คืนเวลาเซลล์") → รุ่นใหม่ H1 = ชื่อคอร์ส (catalog-revision-plan §3.7 · 2026-08-28)
 # CF Pages ส่ง query string (utm) ต่อให้อัตโนมัติ
-/ads/daruma-consult /ads/sales-ai-team 301
+# 2026-09-04: แอด Daruma ที่ยังรันอยู่ชี้มาที่นี่ · ปลายทางเดิม (T1 จิตวิทยาการขาย) คนละเรื่อง
+# กับตัวโฆษณา → ลีดจากแอดเป็นศูนย์ตั้งแต่ 28 ส.ค. · ชี้เข้า T4 ซึ่งตรงกับสารในโฆษณา
+/ads/daruma-consult /services/advance-ai-automation 301
 /ads/dealer-ai-sales /ads/dealer-online-sales 301
 # นอกแผน: hotel = Wave 2 ยังไม่เปิด · line-ai-response = Implementation product ที่ master strategy ไม่มี
 /ads/hotel-resort-ai /services 301
