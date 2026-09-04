@@ -173,7 +173,7 @@ import AppNav from '../../components/app/AppNav.astro';
               <span class="ml-auto text-xs opacity-50">${fmtDate(c.created_at)}</span>
             </div>
             <h3 class="font-display font-semibold leading-snug">${esc(title)}</h3>
-            <p class="line-clamp-2 text-sm opacity-70">${esc((c.edited_article_md ?? c.article_md).slice(0, 160))}…</p>
+            <p class="line-clamp-2 text-sm opacity-70">${esc((c.edited_article_md ?? c.article_md).replace(/^📍.*$/gm, '').replace(/\s+/g, ' ').trim().slice(0, 160))}…</p>
           </div></div>`;
       }).join('');
     }
@@ -226,7 +226,13 @@ import AppNav from '../../components/app/AppNav.astro';
         </div>
 
         <h4 class="font-display mb-1 mt-4 font-semibold">3) บทความ (แก้ได้เลย)</h4>
-        <textarea id="nd-article" class="textarea textarea-bordered h-48 w-full text-sm leading-relaxed" aria-label="บทความ">${esc(c.edited_article_md ?? c.article_md)}</textarea>
+        <p class="mb-2 text-xs opacity-60">บทความเล่าเรื่อง 1,500-2,000 ตัวอักษร · 📍 คั่นช่วง 3-4 จุด · บรรทัดสั้น 3-8 คำ ·
+          กด <kbd class="kbd kbd-xs">⌥↩</kbd> เพื่อดูเต็มจอ</p>
+        <textarea id="nd-article" class="textarea textarea-bordered h-[28rem] w-full font-mono text-sm leading-relaxed" aria-label="บทความ" spellcheck="false">${esc(c.edited_article_md ?? c.article_md)}</textarea>
+        <div class="mt-1 flex flex-wrap items-center gap-2 text-xs opacity-60">
+          <span id="nd-article-count" role="status" aria-live="polite"></span>
+          <button type="button" class="btn btn-ghost btn-xs tap-44" id="nd-article-expand">⤢ เต็มจอ</button>
+        </div>
 
         <h4 class="font-display mb-1 mt-4 font-semibold">4) คอมเมนต์ใต้โพสต์ (${(c.comment_thread ?? []).length} รายการ)</h4>
         <p class="mb-2 text-xs opacity-60">caption ลงแค่ hook + "ผมสรุปไว้ใน comment" — เนื้อหาเต็มลงเป็นคอมเมนต์ตามลำดับนี้</p>
@@ -234,7 +240,7 @@ import AppNav from '../../components/app/AppNav.astro';
           ${(c.comment_thread ?? []).map((cm, ci) => `
             <div>
               <span class="badge badge-neutral badge-xs mb-1">${ci + 1}. ${esc(cm.role ?? '')}</span>
-              <textarea class="nd-thread-item textarea textarea-bordered w-full text-sm leading-relaxed" rows="3" data-role="${esc(cm.role ?? '')}" aria-label="คอมเมนต์ ${ci + 1}">${esc(cm.text ?? '')}</textarea>
+              <textarea class="nd-thread-item textarea textarea-bordered w-full text-sm leading-relaxed" rows="${cm.role === 'article' ? 14 : 3}" data-role="${esc(cm.role ?? '')}" aria-label="คอมเมนต์ ${ci + 1}">${esc(cm.text ?? '')}</textarea>
             </div>`).join('') || '<p class="text-sm opacity-60">ไม่มีคอมเมนต์ (บทความเต็มจะลงใน caption แทน)</p>'}
         </div>
 
@@ -291,6 +297,31 @@ import AppNav from '../../components/app/AppNav.astro';
         if (!el) return;
         c.selected_image = Number(el.dataset.ii);
         document.querySelectorAll('#nd-imgs .nd-img').forEach((x) => x.classList.toggle('selected', x === el));
+      });
+      const ta = $('nd-article') as HTMLTextAreaElement;
+      const countEl = $('nd-article-count');
+      // ตัวนับตัวอักษรไทย — กรอบเดียวกับด่านตรวจฝั่งมินิ (1,500-2,000)
+      const paintCount = () => {
+        const v = ta.value;
+        const thai = (v.match(/[\u0E00-\u0E7F]/g) ?? []).length;
+        const pins = (v.match(/📍/g) ?? []).length;
+        const long = v.split('\n').filter((l) => !l.trim().startsWith('📍') && l.trim().length > 48).length;
+        const bits = [`${thai.toLocaleString()} ตัวอักษรไทย`, `อ่าน ~${Math.max(1, Math.round(thai / 900))} นาที`, `📍 ${pins} จุด`];
+        if (long) bits.push(`⚠️ บรรทัดยาวเกิน 48 ตัวอักษร ${long} บรรทัด`);
+        countEl.textContent = bits.join(' · ');
+        countEl.className = thai < 1500 || thai > 2100 || pins < 3 || pins > 4 || long ? 'text-warning' : '';
+      };
+      ta.addEventListener('input', () => {
+        paintCount();
+        // คอมเมนต์ role=article ต้องตรงกับบทความเสมอ — publisher โพสต์ตัวคอมเมนต์
+        const mirror = document.querySelector('.nd-thread-item[data-role="article"]') as HTMLTextAreaElement | null;
+        if (mirror) mirror.value = ta.value;
+      });
+      paintCount();
+      $('nd-article-expand').addEventListener('click', () => {
+        const big = ta.classList.toggle('h-[80vh]');
+        ta.classList.toggle('h-[28rem]', !big);
+        ($('nd-article-expand') as HTMLElement).textContent = big ? '⤡ ย่อลง' : '⤢ เต็มจอ';
       });
       $('nd-textcard').addEventListener('click', () => void renderTextCard(c));
       $('nd-rerender').addEventListener('click', () => void rerenderCard(c));
