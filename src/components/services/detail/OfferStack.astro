@@ -1,6 +1,7 @@
 ---
 import type { ProductBonusCard, ProductBonusValueItem, ProductDetailCode, ProductJourneyPresentation } from '../../../data/product-details/types';
 import JourneyCTA from './JourneyCTA.astro';
+import ContentUpdateRibbon from './ContentUpdateRibbon.astro';
 
 interface Props {
   code: ProductDetailCode;
@@ -8,11 +9,13 @@ interface Props {
   name: string;
   price: string;
   core: string[];
+  /** ข้อความของ core item ที่ต้องเด่นกว่าตัวอื่น (T2: Marketing Warroom OS — สีส้มโทน Claude) */
+  highlight?: string;
   bonuses: ProductBonusCard[];
   values?: ProductBonusValueItem[];
   journey: ProductJourneyPresentation;
 }
-const { code, keyword, name, price, core, bonuses, values, journey } = Astro.props;
+const { code, keyword, name, price, core, bonuses, values, journey, highlight } = Astro.props;
 const valueOf = (number: string) => values?.find((item) => item.number === number)?.value;
 const total = values?.filter((item) => !item.valueLabel).reduce((sum, item) => sum + item.value, 0) ?? 0;
 const labelOf = (number: string) => values?.find((item) => item.number === number)?.valueLabel;
@@ -25,6 +28,7 @@ const headingId = `${code.toLowerCase()}-offer-heading`;
   <div class="mx-auto max-w-6xl px-5">
     <div class="grid overflow-hidden rounded-[2rem] border border-navy/10 bg-white shadow-[0_30px_90px_rgba(7,43,78,.10)] lg:grid-cols-[.78fr_1.22fr]">
       <div class="relative overflow-hidden bg-navy p-7 text-white sm:p-10">
+        <ContentUpdateRibbon />
         <div aria-hidden="true" class="absolute -bottom-20 -right-16 size-64 rounded-full border-[44px] border-coral/20"></div>
         <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Offer · เห็นครบก่อนจอง</p>
         <h2 id={headingId} class="mt-4 text-balance font-display text-3xl font-bold leading-tight sm:text-4xl">{name}</h2>
@@ -37,12 +41,27 @@ const headingId = `${code.toLowerCase()}-offer-heading`;
         <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Core {core.length}</p>
         <h3 class="mt-2 font-display text-2xl font-bold text-navy">สิ่งที่ทีมสร้างเสร็จในห้อง</h3>
         <ol class="mt-6 grid gap-3 sm:grid-cols-2">
-          {core.map((item, index) => (
-            <li data-offer-core class="flex gap-3 rounded-2xl border border-navy/10 bg-[#fdfaf4] p-4 text-sm font-semibold leading-6 text-navy">
-              <span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-coral text-xs font-bold text-white">{index + 1}</span>
-              <span>{item}</span>
-            </li>
-          ))}
+          {core.map((item, index) => {
+            const isHighlight = Boolean(highlight) && item === highlight;
+            return (
+              <li
+                data-offer-core
+                data-offer-core-highlight={isHighlight ? '' : undefined}
+                class:list={[
+                  'flex gap-3 rounded-2xl border p-4 text-sm font-semibold leading-6',
+                  isHighlight
+                    ? 'border-[#d97757] bg-[#fff3ec] text-navy shadow-[0_10px_30px_rgba(217,119,87,.18)] sm:col-span-2'
+                    : 'border-navy/10 bg-[#fdfaf4] text-navy',
+                ]}
+              >
+                <span class:list={['flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white', isHighlight ? 'bg-[#d97757]' : 'bg-coral']}>{index + 1}</span>
+                <span>
+                  {isHighlight && <span class="mb-1 block text-[11px] font-bold uppercase tracking-[.16em] text-[#c2603f]">ระบบที่ติดตั้งให้ · ห้องเดียวกับที่ผมใช้ทุกวัน</span>}
+                  {item}
+                </span>
+              </li>
+            );
+          })}
         </ol>
 
         <div class="mt-8 border-t border-navy/10 pt-7">
@@ -55,7 +74,7 @@ const headingId = `${code.toLowerCase()}-offer-heading`;
           </div>
           <ol class="mt-5 space-y-3">
             {bonuses.map((item) => (
-              <li data-offer-bonus class="grid gap-2 rounded-xl border-l-4 border-coral bg-[#f7f1e7] px-4 py-3 sm:grid-cols-[1fr_auto] sm:items-center">
+              <li data-offer-bonus class="grid gap-2 rounded-xl border-l-4 border-coral bg-[#f7f1e7] px-4 py-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,17rem)] sm:items-center">
                 <span class="font-bold text-navy">BONUS {item.number} · {item.title}</span>
                 <span class="flex flex-col items-start gap-1 sm:items-end">
                   <span class="flex items-center gap-2">

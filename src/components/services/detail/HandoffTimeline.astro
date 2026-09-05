@@ -5,8 +5,8 @@ import type { SystemHandoff } from '../../../data/product-details/types';
 
 interface Props { data: SystemHandoff; }
 const { data } = Astro.props;
-// Release gate §15: ภาพที่ไม่มีตาราง delta ห้ามขึ้นหน้าเว็บ
-const shot = data.shot?.delta.length ? data.shot : undefined;
+// ภาพต้องมีป้ายกำกับ (label) เสมอ — ตาราง delta ถูกตัดตามคำสั่งคุณปัน 2026-09-05
+const shot = data.shot?.label ? data.shot : undefined;
 const shotSrc = shot ? ('publicSrc' in shot.image ? shot.image.publicSrc : shot.image.src) : '';
 ---
 
@@ -53,18 +53,6 @@ const shotSrc = shot ? ('publicSrc' in shot.image ? shot.image.publicSrc : shot.
         </div>
         <figcaption class="p-5 sm:p-6">
           <p class="leading-7 text-navy/75">{shot.caption}</p>
-          <table class="mt-4 w-full border-collapse text-left text-sm">
-            <caption class="sr-only">ตารางเทียบสิ่งที่เห็นในภาพกับรุ่นที่ลูกค้าได้รับ</caption>
-            <thead><tr class="border-b border-navy/15">
-              <th scope="col" class="py-2 pr-4 font-bold text-navy">ในภาพ</th>
-              <th scope="col" class="py-2 font-bold text-navy">รุ่นที่คุณได้รับ</th>
-            </tr></thead>
-            <tbody>
-              {shot.delta.map((row) => (
-                <tr class="border-b border-navy/10 align-top"><td class="py-2 pr-4 leading-6 text-navy/70">{row.inShot}</td><td class="py-2 leading-6 text-navy/85">{row.youGet}</td></tr>
-              ))}
-            </tbody>
-          </table>
         </figcaption>
       </figure>
     )}

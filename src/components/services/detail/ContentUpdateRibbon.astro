@@ -1,0 +1,18 @@
+---
+// แถบพาดเฉียงมุมกล่อง Offer: "อัปเดตเนื้อหา <เดือน> · รองรับ <โมเดล>" — ใช้สีส้มโทน Claude
+// วางในกล่องที่มี `relative overflow-hidden` เท่านั้น ไม่งั้นแถบจะหลุดออกนอกการ์ด
+import { CONTENT_UPDATE_LINE_1, CONTENT_UPDATE_LINE_2 } from '../../../data/content-update';
+interface Props { tone?: 'light' | 'dark'; }
+const { tone = 'dark' } = Astro.props;
+---
+<div
+  data-content-update-ribbon
+  aria-label={`${CONTENT_UPDATE_LINE_1} · ${CONTENT_UPDATE_LINE_2}`}
+  class:list={[
+    'pointer-events-none absolute -right-[4.25rem] top-4 z-10 w-[19rem] rotate-[28deg] py-2 text-center shadow-[0_8px_24px_rgba(0,0,0,.18)] sm:-right-12 sm:top-9 sm:w-[22rem]',
+    tone === 'dark' ? 'bg-[#d97757] text-white' : 'bg-[#d97757] text-white',
+  ]}
+>
+  <p class="text-[11px] font-bold tracking-[.08em] sm:text-xs">{CONTENT_UPDATE_LINE_1}</p>
+  <p class="text-[11px] font-semibold leading-tight text-white/95 sm:text-xs">{CONTENT_UPDATE_LINE_2}</p>
+</div>
