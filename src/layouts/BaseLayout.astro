@@ -7,6 +7,7 @@ import Schema from '../components/Schema.astro';
 import MetaPixel from '../components/MetaPixel.astro';
 import FloatingLineCTA from '../components/FloatingLineCTA.astro';
 import ContactTracking from '../components/ContactTracking.astro';
+import LinePrefill from '../components/LinePrefill.astro';
 import type { ComponentProps } from 'astro/types';
 
 type SchemaProps = ComponentProps<typeof Schema>;
@@ -166,6 +167,7 @@ const shouldShowFloatingLine = showFloatingLine && !hideFloatingLine && !isFloat
     <Footer />
     {shouldShowFloatingLine && <FloatingLineCTA />}
     <ContactTracking />
+    <LinePrefill />
 
     <!--
       UTM + click-ID capture · runs on every page

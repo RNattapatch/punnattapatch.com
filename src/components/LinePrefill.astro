@@ -1,0 +1,16 @@
+---
+// ปุ่ม LINE ทุกปุ่ม → เปิดแชตพร้อมข้อความ + แท็ก [รหัสคอร์ส/angle] (ดู src/scripts/line-prefill.ts)
+// วางใน BaseLayout คู่กับ ContactTracking · SSR ยังเป็น lin.ee เผื่อไม่มี JS
+---
+<script>
+  import { SITE } from '../data/site';
+  import { currentAngle, rewriteLineLinks } from '../scripts/line-prefill';
+  const apply = () => rewriteLineLinks(document, SITE.social.lineOaId, currentAngle());
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply, { once: true });
+  else apply();
+  // ปุ่มที่ render ทีหลัง (drawer/modal) — เขียนซ้ำตอนกดก่อนเบราว์เซอร์เปิดลิงก์
+  document.addEventListener('click', (event) => {
+    const a = event.target instanceof Element ? event.target.closest('a[data-contact-cta][href^="https://lin.ee/"], a[data-line-cta][href^="https://lin.ee/"]') : null;
+    if (a) rewriteLineLinks(document, SITE.social.lineOaId, currentAngle());
+  }, true);
+</script>
