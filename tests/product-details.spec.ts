@@ -241,6 +241,13 @@ test('T2 system chapter keeps every screenshot labelled with a delta table, and 
   }
   // Launch tripwire: เปิด flag โดยยังไม่เติมตัวเลขจริงของคุณปัน = gate แดง (packet STOP RULE 8 ห้ามเดาตัวเลข)
   assert.doesNotMatch(body, /PUN_METRIC_/, 'fill the real numbers before enabling the system chapter — placeholder metric tokens must never render');
+  // Amendment 2026-09-05 (strategy-t2-30-day-conversion-review-loop): Certificate ออกเมื่อจบคลาส ไม่ผูกกับการบ้าน
+  for (const stale of ['ผู้เรียนที่ส่งการบ้านครบ', 'ออกให้เมื่อส่งการบ้านครบ', 'ตรวจการบ้าน']) {
+    assert.ok(!body.includes(stale), `T2 must not gate the certificate on homework any more: "${stale}"`);
+  }
+  assert.ok(body.includes('30-Day Conversion Review'), 'Bonus 05 must carry its approved name');
+  // Release gate §10 ของ loop: ห้ามสัญญา AI ตรวจงาน / วันตรวจ บน LP จนกว่า pilot ผ่าน
+  assert.ok(!/วันพุธและวันอาทิตย์/.test(body), 'review-day promise must stay off the LP until the pilot gate passes');
   await page.close();
 });
 
