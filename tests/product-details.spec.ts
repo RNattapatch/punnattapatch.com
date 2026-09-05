@@ -94,25 +94,32 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   const response = await page.goto(`${baseURL}/services/online-to-sales`);
   assert.equal(response?.status(), 200, 'T2 route must render');
   assert.equal(await page.locator('h1').innerText(), 'คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI', 'T2 H1 must resolve from the Catalog');
+  // ปันเคาะ 2026-09-05 ค่ำ: T2 = Content + Ads + Warroom (ไม่ใช่ Online-to-Sales Flow เรื่องแชต/คัด Lead)
   assert.equal(
-    await page.getByText('เปลี่ยนคนเห็น Content/Ads ให้เป็นแชต นัดหมาย และการส่งต่อถึงทีมขายที่ชัดเจน', { exact: true }).count(),
+    await page.getByText('ให้เซลล์และทีมการตลาดหาลูกค้าใหม่จากออนไลน์ได้เอง ด้วย Content, Ads และระบบ AI ที่ติดตั้งบนเครื่องบริษัท', { exact: true }).count(),
     1,
-    'T2 Hero must state the approved 5A customer job exactly',
+    'T2 Hero must state the Content + Ads + Warroom customer job exactly',
   );
   assert.deepEqual(
     await page.locator('[data-why-now-item] > p:last-child').allTextContents(),
     [
-      'Message: Content/Ads บอกประโยชน์ไม่ชัด คนที่ทักมาไม่ตรงกับทีมที่อยากคุย',
-      'Inbox: มีคนทัก แต่ตอบช้า หรือไม่มีคนรับผิดชอบตั้งแต่ข้อความแรก',
-      'Qualification: ทีมถามไม่ครบ จึงไม่รู้ว่า Lead ไหนควรพาไปขั้นถัดไป',
-      'Handoff: Marketing ส่งต่อแล้ว Sales ไม่รู้บริบท หรือไม่มี Owner และ Next action',
-      'Follow-up: Lead ที่ยังไม่พร้อมซื้อเงียบหาย เพราะไม่มีจังหวะและเหตุผลให้ทักกลับ',
+      'เซลล์ขายเก่ง แต่รอลูกค้าเดินเข้ามาเอง เพราะไม่มีใครในทีมถนัดทำ Content',
+      'โพสต์ไปแล้วเงียบ ไม่รู้ว่าชิ้นไหนควรสร้างตัวตน ชิ้นไหนควรขาย เลยขายทุกโพสต์จนคนเลื่อนผ่าน',
+      'ยิงแอดได้แต่คนดู ไม่มีคนทัก เพราะรูปเดียว หลายรูป และคลิปสั้น ใช้โครงเดียวกันหมด',
+      'คู่แข่งออกคอนเทนต์เรื่องใหม่ก่อนทุกครั้ง ทีมรู้ทีหลังจากลูกค้าถาม',
+      'ทำ Content ได้เป็นพักๆ พอคนที่ทำลาออกหรือยุ่ง ช่องก็หยุด เพราะไม่มีระบบรองรับ',
     ],
-    'T2 must mirror the five approved Message-to-Follow-up leak points in order',
+    'T2 must mirror the five approved content/ads pain points in order',
   );
-  assert.deepEqual(await page.locator('[data-curriculum-step]').evaluateAll((items) => items.map((item) => item.getAttribute('data-step'))), ['message', 'respond', 'qualify', 'handoff', 'follow-up', 'review'], 'T2 must show the approved Message-to-Review journey');
+  assert.deepEqual(await page.locator('[data-curriculum-step]').evaluateAll((items) => items.map((item) => item.getAttribute('data-step'))), ['mindset', 'funnel', 'produce', 'ads', 'lead-channel', 'warroom'], 'T2 must show the Content → Ads → Warroom journey');
+  // ขอบเขตต้องพูดชัดว่าไม่ใช่คอร์ส Prompt สร้างรูป และไม่มีเรื่องแชต/คัด Lead/CRM ในแกนคอร์ส
+  const t2Body = await page.locator('body').innerText();
+  assert.match(t2Body, /ไม่(ได้มา)?สอน Prompt สร้างรูป/, 'T2 must say plainly that it is not an image-prompt course');
+  for (const stale of ['First-response Script', 'Qualified Lead Definition', 'Handoff Rule', 'Lead Inbox Tool', 'ตอบแชท 20 สถานการณ์', 'Leak Scorecard']) {
+    assert.ok(!t2Body.includes(stale), `T2 must not carry the retired lead-flow artifact "${stale}"`);
+  }
   const t2Boundary = await page.locator('[data-journey-section="offer"]').innerText();
-  assert.match(t2Boundary, /ให้ทีมการตลาดและฝ่ายขายวาง Flow เดียวกัน/, 'T2 must publish the approved offer block');
+  assert.match(t2Boundary, /Content \+ Ads \+ Warroom/, 'T2 offer block must carry the Content + Ads + Warroom framing');
   assert.match(await page.locator('[data-journey-section="fit"]').innerText(), /ไม่เหมาะ.*รับยิง Ads/s, 'T2 must clearly reject an agency engagement');
   assert.match(await page.locator('[data-detail-block="fit"]').innerText(), /ราคาเห็นก่อนทัก/, 'T2 decision section must state that pricing is visible before contact');
   assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “ONLINE SALES” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T2 must state the live LINE keyword and team-size instruction');
