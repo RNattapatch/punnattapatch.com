@@ -116,7 +116,9 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   assert.match(await page.locator('[data-journey-section="fit"]').innerText(), /ไม่เหมาะ.*รับยิง Ads/s, 'T2 must clearly reject an agency engagement');
   assert.match(await page.locator('[data-detail-block="fit"]').innerText(), /ราคาเห็นก่อนทัก/, 'T2 decision section must state that pricing is visible before contact');
   assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “ONLINE SALES” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T2 must state the live LINE keyword and team-size instruction');
-  assert.equal(await page.locator('[data-bonus-value-card]').count(), 7, 'T2 must publish Bonus 6 + Certificate');
+  // WEB-T2-SYSTEM-01: Bonus 08 ขึ้นพร้อม system chapter เท่านั้น — สองก้อนต้องเปิด/ปิดพร้อมกันเสมอ
+  const hasSystemChapter = (await page.locator('[data-detail-block="system"]').count()) === 1;
+  assert.equal(await page.locator('[data-bonus-value-card]').count(), hasSystemChapter ? 8 : 7, 'T2 must publish Bonus 6 + Certificate (+ Bonus 08 only with the system chapter)');
   assert.equal(await page.locator('form').count(), 0, 'T2 detail page must not include a form');
   assert.equal(await page.locator('[data-hero-activity]').count(), 1, 'T2 Hero must lead with one real workshop activity photo');
   assert.equal(await page.locator('[data-hero-activity] img').getAttribute('loading'), 'eager', 'T2 Hero activity photo must be ready at first glance');
@@ -158,7 +160,8 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   }
   const lineActions = page.locator('[data-line-cta]');
   for (const action of await lineActions.all()) assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'all detail actions must use SITE.social.line');
-  assert.equal(await page.locator('[data-product-faq-button]').count(), 8, 'T2 must publish the approved eight FAQs');
+  // WEB-T2-SYSTEM-02: FAQ 4 ข้อเรื่องระบบขึ้นพร้อม system chapter เท่านั้น (ข้อ 4 = ระบบโพสต์ให้ไหม)
+  assert.equal(await page.locator('[data-product-faq-button]').count(), (await page.locator('[data-detail-block="system"]').count()) === 1 ? 12 : 8, 'T2 must publish the approved eight FAQs (+4 system FAQs only with the system chapter)');
   assert.equal(await page.locator('[data-proof-activity]').count(), 3, 'T2 proof must lead with three real workshop activity photos');
   const firstActivity = page.locator('[data-proof-activity]').first();
   const firstChatProof = page.locator('[data-proof-quote]').first();
@@ -186,6 +189,65 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   await page.locator('[data-mobile-nav] summary').click();
   const mobileMenu = await page.locator('[data-mobile-nav] ul').boundingBox();
   assert.ok(mobileMenu && mobileMenu.x >= 0 && mobileMenu.x + mobileMenu.width <= 320, 'open mobile menu must remain fully inside a 320px viewport');
+  await page.close();
+});
+
+// WEB-T2-SYSTEM-01 — chapter "ระบบที่ทีมได้กลับไป"
+// เปิด: ทุกภาพต้องมีป้ายกำกับ + ตาราง delta (Release gate §15) และไม่มี token ค้าง
+// ปิด: ห้ามมีคำที่สัญญาระบบหลุดไปที่ส่วนอื่นของหน้า (Release gate ยังไม่ผ่าน = ห้ามสัญญา)
+test('T2 system chapter keeps every screenshot labelled with a delta table, and stays fully dark while the flag is off', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(`${baseURL}/services/online-to-sales`);
+  const chapter = page.locator('[data-detail-block="system"]');
+  const chapterOn = (await chapter.count()) === 1;
+  const body = await page.locator('body').innerText();
+
+  if (chapterOn) {
+    const shots = page.locator('figure[data-system-shot], [data-system-room] figure');
+    const shotCount = await shots.count();
+    assert.ok(shotCount >= 4, 'system chapter must show every room and the walkthrough screenshots');
+    for (let index = 0; index < shotCount; index += 1) {
+      const shot = shots.nth(index);
+      assert.equal(await shot.locator('[data-shot-label]').count(), 1, `screenshot ${index + 1} must carry a visible edition label`);
+      assert.ok((await shot.locator('table th').allInnerTexts()).includes('ในภาพ'), `screenshot ${index + 1} must carry the "ในภาพ vs รุ่นที่คุณได้รับ" delta table`);
+      assert.ok(await shot.locator('img').getAttribute('alt'), `screenshot ${index + 1} must have alt text`);
+    }
+    assert.equal(await page.locator('[data-system-metric]').count(), 3, 'system chapter must publish the three owner-facing numbers');
+    assert.doesNotMatch(body, /\{\{VALUE_REF\}\}/, 'the value reference must resolve from the Catalog, never leak as a token');
+    assert.match(await page.locator('[data-system-value-ref]').innerText(), /^฿[\d,]+$/, 'the system value must render a Catalog price');
+    assert.equal(await page.locator('[data-cta-location="system_chapter"] a').count(), 2, 'the chapter must close with exactly two live LINE actions');
+
+    // v2 (packet WEB-T2-SYSTEM-02): the chapter sells the three real rooms, never the v1 desks
+    const rooms = page.locator('[data-system-room]');
+    assert.equal(await rooms.count(), 3, 'system chapter must present exactly the three rooms of the real app');
+    const roomNames = await rooms.locator('h4').allInnerTexts();
+    for (const expected of ['Intel Warroom', 'News Desk', 'Content Center']) {
+      assert.ok(roomNames.some((name) => name.includes(expected)), `room "${expected}" must appear with the name used in the real app`);
+    }
+    for (let index = 0; index < 3; index += 1) {
+      const flow = await rooms.nth(index).locator('[data-room-flow] li').count();
+      assert.equal(flow, 3, `room ${index + 1} must show its three-step flow`);
+      assert.equal(await rooms.nth(index).locator('[data-room-pun]').count(), 1, `room ${index + 1} must state what Pun uses it for`);
+    }
+    const chapterText = await chapter.innerText();
+    for (const banned of ['โต๊ะ Lead', 'Campaign Desk', 'โต๊ะ Campaign', 'โต๊ะทบทวนงาน', 'Mac mini', 'Supabase']) {
+      assert.ok(!chapterText.includes(banned), `system chapter must not mention "${banned}" — it is not part of the delivered system`);
+    }
+    assert.ok((await page.locator('[data-system-block="value-delta"] tbody tr').count()) >= 8, 'the value block must publish the full delta table from the kit spec');
+  } else {
+    assert.doesNotMatch(body, /\[Placeholder\]/, 'no system placeholder name may leak while the chapter is off');
+    assert.doesNotMatch(body, /ระบบพร้อมใช้ก่อนวันเรียน/, 'no system promise may leak while the Release gate is unmet');
+    assert.equal(await page.locator('[data-offer-core]').count(), 4, 'the offer must stay at Core 4 while the chapter is off');
+  }
+  // Launch tripwire: เปิด flag โดยยังไม่เติมตัวเลขจริงของคุณปัน = gate แดง (packet STOP RULE 8 ห้ามเดาตัวเลข)
+  assert.doesNotMatch(body, /PUN_METRIC_/, 'fill the real numbers before enabling the system chapter — placeholder metric tokens must never render');
+  // Amendment 2026-09-05 (strategy-t2-30-day-conversion-review-loop): Certificate ออกเมื่อจบคลาส ไม่ผูกกับการบ้าน
+  for (const stale of ['ผู้เรียนที่ส่งการบ้านครบ', 'ออกให้เมื่อส่งการบ้านครบ', 'ตรวจการบ้าน']) {
+    assert.ok(!body.includes(stale), `T2 must not gate the certificate on homework any more: "${stale}"`);
+  }
+  assert.ok(body.includes('30-Day Conversion Review'), 'Bonus 05 must carry its approved name');
+  // Release gate §10 ของ loop: ห้ามสัญญา AI ตรวจงาน / วันตรวจ บน LP จนกว่า pilot ผ่าน
+  assert.ok(!/วันพุธและวันอาทิตย์/.test(body), 'review-day promise must stay off the LP until the pilot gate passes');
   await page.close();
 });
 
