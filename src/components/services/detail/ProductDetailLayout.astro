@@ -58,7 +58,9 @@ const offerCore = data.takeHome.slice(0, systemSection ? 5 : 4);
   <>
     <JourneyHero data={data} journey={data.journey} name={catalog.name} duration={catalog.duration} price={catalog.price} />
 
-    <OfferStack code={data.code} keyword={data.cta.keyword} name={catalog.name} price={catalog.price} core={offerCore} bonuses={data.bonusCards?.items ?? []} values={data.bonusValues?.items} journey={data.journey} />
+    <OfferStack code={data.code} keyword={data.cta.keyword} name={catalog.name} price={catalog.price} core={offerCore} highlight={systemSection ? offerCore[offerCore.length - 1] : undefined} bonuses={data.bonusCards?.items ?? []} values={data.bonusValues?.items} journey={data.journey} />
+
+    {systemSection && <SystemShowcase data={systemSection} code={data.code} keyword={data.cta.keyword} part="teaser" />}
 
     <div data-t4-section={data.code === 'T4' ? 'logos' : undefined} data-journey-section="logos" data-detail-block="authority">
       <InstructorCard authority={data.authority} heading={data.sections?.authority?.heading ?? 'สอนจากประสบการณ์ขาย โค้ชทีม และสร้าง AI Workflow ใช้งานจริง'} compact />
@@ -101,7 +103,7 @@ const offerCore = data.takeHome.slice(0, systemSection ? 5 : 4);
     {systemSection && <SystemShowcase data={systemSection} code={data.code} keyword={data.cta.keyword} part="investment" />}
 
     <div data-t4-section={data.code === 'T4' ? 'investment' : undefined} data-journey-section="investment" data-detail-block="investment" class="bg-white pb-14 sm:pb-20">
-      <InvestmentBlock name={catalog.name} price={catalog.price} amount={catalog.amount} regularPrice={catalog.regularPrice} eyebrow={data.sections?.investment?.eyebrow} {...data.investment} />
+      <InvestmentBlock name={catalog.name} price={catalog.price} amount={catalog.amount} regularPrice={catalog.regularPrice} eyebrow={data.sections?.investment?.eyebrow} ribbon={false} {...data.investment} />
       <div class="mx-auto max-w-5xl px-5">
         <JourneyCTA code={data.code} location="after_investment" keyword={data.cta.keyword} primary={investmentLineCta?.primary ?? 'จองคิวรับบริการ'} primaryIntent={investmentLineCta?.primaryIntent ?? 'book_training'} secondary={investmentLineCta?.secondary ?? 'ทัก LINE เช็กคิวว่าง'} secondaryIntent={investmentLineCta?.secondaryIntent ?? 'availability'} />
       </div>

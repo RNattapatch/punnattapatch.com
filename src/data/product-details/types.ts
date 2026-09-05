@@ -168,8 +168,21 @@ export interface SystemShot {
   /** ป้ายที่พิมพ์ทับมุมภาพ — บอกว่าเป็นรุ่นไหน/ข้อมูลอะไร (Release gate §15) */
   label: string;
   caption: string;
-  /** ตาราง "ในภาพ vs รุ่นที่คุณได้รับ" — ห้ามว่าง ไม่งั้น component ไม่ render ภาพ */
-  delta: Array<{ inShot: string; youGet: string }>;
+  /** ตาราง "ในภาพ vs รุ่นที่คุณได้รับ" — คุณปันสั่งตัดออกจากหน้า 2026-09-05 (ลูกค้ารู้สึกโดน downgrade)
+   *  เก็บ type ไว้เผื่อใช้ในเอกสารส่งมอบ ไม่ render บนเว็บ */
+  delta?: Array<{ inShot: string; youGet: string }>;
+}
+
+/** Teaser ระบบใต้ Offer — โชว์หน้าตา + ชีวิตหลังใช้ ก่อนเข้าเนื้อหาขาย (บล็อก 11 ของโครง อ.เบิร์ด) */
+export interface SystemTeaser {
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  outcomes: Array<{ value: string; label: string }>;
+  mainShot: SystemShot;
+  sideShots: SystemShot[];
+  close: string;
+  linkLabel: string;
 }
 
 /** ห้องใน Marketing Warroom OS — 3 ห้องเดียวกับที่ปันใช้ทุกวัน (spec kit v2 §0)
@@ -238,6 +251,8 @@ export interface ProductSystemSection {
   eyebrow: string;
   heading: string;
   intro: string;
+  /** S0 · teaser ใต้ Offer (optional — ไม่มีก็ไม่ render) */
+  teaser?: SystemTeaser;
   opener: { body: string[]; shot: SystemShot };
   failure: { heading: string; intro: string; items: string[]; close: string };
   /** S3 · 3 ห้องของระบบ (แทน desks เดิมของ v1 ที่คุณปันตีกลับ 2026-09-05) */
@@ -253,8 +268,6 @@ export interface ProductSystemSection {
     /** Catalog key ที่ใช้อ้างมูลค่า — ห้าม hardcode ตัวเลข · ห้ามขีดฆ่า (ระบบเป็น Core ไม่ใช่ Bonus) */
     valueRefKey: string;
     valueRefNote: string;
-    /** ตารางเทียบเต็ม "ระบบที่ผมใช้ vs รุ่นที่บริษัทได้รับ" (kit v2 spec §11) */
-    delta: { heading: string; note: string; rows: Array<{ inShot: string; youGet: string }> };
     excluded: { heading: string; items: string[]; route: string };
   };
   cta: { heading: string; body: string; lineLabel: string; lineIntent: string; secondaryLabel: string; secondaryNote: string };

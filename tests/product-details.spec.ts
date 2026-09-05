@@ -209,7 +209,6 @@ test('T2 system chapter keeps every screenshot labelled with a delta table, and 
     for (let index = 0; index < shotCount; index += 1) {
       const shot = shots.nth(index);
       assert.equal(await shot.locator('[data-shot-label]').count(), 1, `screenshot ${index + 1} must carry a visible edition label`);
-      assert.ok((await shot.locator('table th').allInnerTexts()).includes('ในภาพ'), `screenshot ${index + 1} must carry the "ในภาพ vs รุ่นที่คุณได้รับ" delta table`);
       assert.ok(await shot.locator('img').getAttribute('alt'), `screenshot ${index + 1} must have alt text`);
     }
     assert.equal(await page.locator('[data-system-metric]').count(), 3, 'system chapter must publish the three owner-facing numbers');
@@ -233,7 +232,19 @@ test('T2 system chapter keeps every screenshot labelled with a delta table, and 
     for (const banned of ['โต๊ะ Lead', 'Campaign Desk', 'โต๊ะ Campaign', 'โต๊ะทบทวนงาน', 'Mac mini', 'Supabase']) {
       assert.ok(!chapterText.includes(banned), `system chapter must not mention "${banned}" — it is not part of the delivered system`);
     }
-    assert.ok((await page.locator('[data-system-block="value-delta"] tbody tr').count()) >= 8, 'the value block must publish the full delta table from the kit spec');
+    // คุณปันสั่ง 2026-09-05: ตัดตาราง "ในภาพ vs รุ่นที่คุณได้รับ" ออกทุกจุด (ลูกค้ารู้สึกโดน downgrade)
+    assert.ok(!body.includes('รุ่นที่คุณได้รับ'), 'delta tables must stay off the page');
+    // teaser ใต้ Offer: หน้าตาระบบ + ชีวิตหลังใช้ ต้องมาก่อนเนื้อหาขาย
+    const teaser = page.locator('[data-system-block="teaser"]');
+    assert.equal(await teaser.count(), 1, 'system teaser must render under the offer');
+    assert.equal(await teaser.locator('[data-system-teaser-outcomes] li').count(), 3, 'teaser must show the three life-after numbers');
+    assert.ok((await teaser.locator('figure[data-system-shot]').count()) >= 3, 'teaser must show the system face with at least three screenshots');
+    const offerIdx = body.indexOf('สิ่งที่ทีมสร้างเสร็จในห้อง');
+    const teaserIdx = body.indexOf(await teaser.locator('h2').innerText());
+    assert.ok(offerIdx > -1 && teaserIdx > offerIdx, 'teaser must sit after the offer stack');
+    // Warroom ต้องเด่นในกอง Core (สีส้มโทน Claude)
+    assert.equal(await page.locator('[data-offer-core-highlight]').count(), 1, 'the system core item must be highlighted');
+    assert.ok((await page.locator('[data-offer-core-highlight]').innerText()).includes('Marketing Warroom OS'), 'the highlighted core item must be the system');
   } else {
     assert.doesNotMatch(body, /\[Placeholder\]/, 'no system placeholder name may leak while the chapter is off');
     assert.doesNotMatch(body, /ระบบพร้อมใช้ก่อนวันเรียน/, 'no system promise may leak while the Release gate is unmet');
@@ -883,5 +894,19 @@ test('I1 dashboard build presents bounded implementation evidence, handover, and
   }
   assert.equal(await finalQr.isVisible(), false, 'mobile I1 must hide the desktop-only scan QR');
   assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “DASHBOARD” พร้อมจำนวนทีม', { exact: true }).isVisible(), true, 'mobile I1 must show the tap instruction');
+  await page.close();
+});
+
+
+test('every service page carries the content-update ribbon with the supported models', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  for (const route of ['/services/t1-sales-skills', '/services/online-to-sales', '/services/t3-sales-back-office', '/services/advance-ai-automation', '/services/daily-consulting', '/services/dashboard-build']) {
+    await page.goto(`${baseURL}${route}`);
+    const ribbon = page.locator('[data-content-update-ribbon]');
+    assert.equal(await ribbon.count(), 1, `${route} must show exactly one content-update ribbon`);
+    const text = await ribbon.innerText();
+    assert.ok(text.includes('กันยายน 2026'), `${route} ribbon must name the update month`);
+    assert.ok(text.includes('GPT-6 Astra') && text.includes('Claude Fable 5.1'), `${route} ribbon must name both supported models`);
+  }
   await page.close();
 });
