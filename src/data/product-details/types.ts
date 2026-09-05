@@ -172,30 +172,28 @@ export interface SystemShot {
   delta: Array<{ inShot: string; youGet: string }>;
 }
 
-export interface SystemDesk {
-  number: string;
+/** ห้องใน Marketing Warroom OS — 3 ห้องเดียวกับที่ปันใช้ทุกวัน (spec kit v2 §0)
+ *  ภาพประกอบเป็นหน้าจอจริงของปัน ปิดชื่อ/ใบหน้า/ช่องทางตาม PDPA และต้องมีตาราง delta เสมอ */
+export interface SystemRoom {
+  icon: string;
   name: string;
+  tagline: string;
+  /** flow 3 ขั้นของห้อง เช่น แฟ้ม → สืบ → ธงดัง */
+  flow: string[];
   who: string;
   when: string;
   input: string;
   output: string;
   rule: string;
+  /** ปันใช้ห้องนี้ทำอะไรจริง — ทำให้ภาพหน้าจอเป็นหลักฐานว่าคนสอนใช้เอง */
+  punUses: string;
   shot?: SystemShot;
 }
 
-/** ห้องในระบบตัวแม่ที่ปันใช้เอง — ภาพหน้าจอจริง ปิดชื่อ/ใบหน้า/ช่องทางตาม PDPA */
-export interface SystemRoom {
-  name: string;
-  what: string;
-  shot: SystemShot;
-}
-
 export interface SystemRooms {
-  eyebrow: string;
   heading: string;
   intro: string;
   items: SystemRoom[];
-  note: string;
 }
 
 export interface SystemGoldenPathStep {
@@ -242,9 +240,8 @@ export interface ProductSystemSection {
   intro: string;
   opener: { body: string[]; shot: SystemShot };
   failure: { heading: string; intro: string; items: string[]; close: string };
-  desks: { heading: string; intro: string; items: SystemDesk[] };
-  /** ห้องของระบบตัวแม่ที่ป้อนสัญญาณให้โต๊ะบรีฟ — ไม่ได้ส่งมอบให้บริษัท */
-  rooms?: SystemRooms;
+  /** S3 · 3 ห้องของระบบ (แทน desks เดิมของ v1 ที่คุณปันตีกลับ 2026-09-05) */
+  rooms: SystemRooms;
   goldenPath: SystemGoldenPath;
   handoff: SystemHandoff;
   metrics: { heading: string; intro: string; items: Array<{ label: string; value: string; note: string }>;
@@ -256,6 +253,8 @@ export interface ProductSystemSection {
     /** Catalog key ที่ใช้อ้างมูลค่า — ห้าม hardcode ตัวเลข · ห้ามขีดฆ่า (ระบบเป็น Core ไม่ใช่ Bonus) */
     valueRefKey: string;
     valueRefNote: string;
+    /** ตารางเทียบเต็ม "ระบบที่ผมใช้ vs รุ่นที่บริษัทได้รับ" (kit v2 spec §11) */
+    delta: { heading: string; note: string; rows: Array<{ inShot: string; youGet: string }> };
     excluded: { heading: string; items: string[]; route: string };
   };
   cta: { heading: string; body: string; lineLabel: string; lineIntent: string; secondaryLabel: string; secondaryNote: string };

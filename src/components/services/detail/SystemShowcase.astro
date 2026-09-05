@@ -115,15 +115,15 @@ const ctaActions = [
       </div>
     </div>
 
-    <!-- S3 · 3 โต๊ะ -->
-    <div data-system-block="desks" class="mx-auto mt-12 max-w-6xl px-5 pb-14 sm:pb-20">
-      <h3 class="max-w-3xl text-balance font-display text-2xl font-bold text-navy sm:text-4xl">{data.desks.heading}</h3>
-      <p class="mt-4 max-w-3xl leading-7 text-navy/70">{data.desks.intro}</p>
+    <!-- S3 · 3 ห้องของระบบ -->
+    <div data-system-block="rooms" class="mx-auto mt-12 max-w-6xl px-5 pb-14 sm:pb-20">
+      <h3 class="max-w-3xl text-balance font-display text-2xl font-bold text-navy sm:text-4xl">{data.rooms.heading}</h3>
+      <p class="mt-4 max-w-3xl leading-7 text-navy/70">{data.rooms.intro}</p>
       <div class="mt-8 grid gap-5 lg:grid-cols-3">
-        {data.desks.items.map((desk) => {
-          const shot = usable(desk.shot);
+        {data.rooms.items.map((room) => {
+          const shot = usable(room.shot);
           return (
-            <article data-system-desk class="flex flex-col overflow-hidden rounded-[1.5rem] border border-navy/10 bg-white">
+            <article data-system-room class="flex flex-col overflow-hidden rounded-[1.5rem] border border-navy/10 bg-white">
               {shot && (
                 <figure data-system-shot class="border-b border-navy/10">
                   <div class="relative">
@@ -148,15 +148,27 @@ const ctaActions = [
                 </figure>
               )}
               <div class="flex flex-1 flex-col p-6">
-                <p class="text-xs font-bold uppercase tracking-[.18em] text-coral">โต๊ะ {desk.number}</p>
-                <h4 class="mt-2 font-display text-xl font-bold text-navy">{desk.name}</h4>
+                <div class="flex items-center gap-2">
+                  <span aria-hidden="true" class="text-2xl leading-none">{room.icon}</span>
+                  <h4 class="font-display text-xl font-bold text-navy">{room.name}</h4>
+                </div>
+                <p class="mt-2 text-sm leading-6 text-navy/70">{room.tagline}</p>
+                <ol data-room-flow class="mt-4 flex flex-wrap items-center gap-1.5" aria-label={`ลำดับงานในห้อง ${room.name}`}>
+                  {room.flow.map((stepLabel, index) => (
+                    <li class="flex items-center gap-1.5">
+                      {index > 0 && <span aria-hidden="true" class="text-navy/35">→</span>}
+                      <span class="rounded-md bg-[#f4f1ea] px-2.5 py-1 text-xs font-bold text-navy">{stepLabel}</span>
+                    </li>
+                  ))}
+                </ol>
                 <dl class="mt-5 space-y-3 text-sm leading-6 text-navy/80">
-                  <div><dt class="font-bold text-navy">ใครใช้</dt><dd>{desk.who}</dd></div>
-                  <div><dt class="font-bold text-navy">เปิดตอนไหน</dt><dd>{desk.when}</dd></div>
-                  <div><dt class="font-bold text-navy">เข้าอะไร</dt><dd>{desk.input}</dd></div>
-                  <div><dt class="font-bold text-navy">ออกอะไร</dt><dd>{desk.output}</dd></div>
+                  <div><dt class="font-bold text-navy">ใครใช้</dt><dd>{room.who}</dd></div>
+                  <div><dt class="font-bold text-navy">เปิดตอนไหน</dt><dd>{room.when}</dd></div>
+                  <div><dt class="font-bold text-navy">เข้าอะไร</dt><dd>{room.input}</dd></div>
+                  <div><dt class="font-bold text-navy">ออกอะไร</dt><dd>{room.output}</dd></div>
                 </dl>
-                <p class="mt-5 rounded-xl bg-[#f4f1ea] p-4 text-sm leading-6 text-navy"><span class="font-bold">กติกาที่ข้ามไม่ได้ </span>{desk.rule}</p>
+                <p class="mt-5 rounded-xl bg-[#f4f1ea] p-4 text-sm leading-6 text-navy"><span class="font-bold">กติกาที่ข้ามไม่ได้ </span>{room.rule}</p>
+                <p data-room-pun class="mt-4 border-t border-navy/10 pt-4 text-sm leading-6 text-navy/75"><span class="font-bold text-navy">ผมใช้ห้องนี้ทำอะไร </span>{room.punUses}</p>
               </div>
             </article>
           );
@@ -164,54 +176,6 @@ const ctaActions = [
       </div>
     </div>
   </section>
-
-  <!-- S3.5 · ห้องของระบบตัวแม่ที่ป้อนสัญญาณ (ไม่ได้ส่งมอบให้บริษัท) -->
-  {data.rooms && (
-    <section data-system-block="rooms" aria-labelledby="t2-system-rooms-heading" class="bg-[#f4f1ea] px-5 pb-14 sm:pb-20">
-      <div class="mx-auto max-w-6xl">
-        <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">{data.rooms.eyebrow}</p>
-        <h3 id="t2-system-rooms-heading" class="mt-3 max-w-3xl text-balance font-display text-2xl font-bold text-navy sm:text-4xl">{data.rooms.heading}</h3>
-        <p class="mt-4 max-w-3xl leading-7 text-navy/70">{data.rooms.intro}</p>
-        <div class="mt-8 grid gap-5 lg:grid-cols-2">
-          {data.rooms.items.map((room) => {
-            const shot = usable(room.shot);
-            return (
-              <article data-system-room class="flex flex-col overflow-hidden rounded-[1.5rem] border border-navy/10 bg-white">
-                {shot && (
-                  <figure data-system-shot class="border-b border-navy/10">
-                    <div class="relative">
-                      <img src={srcOf(shot)} alt={shot.alt} width={shot.image.width} height={shot.image.height} loading="lazy" decoding="async" class="aspect-[22/10] w-full object-cover" />
-                      <p data-shot-label class="absolute left-3 top-3 rounded-lg bg-navy/90 px-2.5 py-1 text-[11px] font-bold text-white">{shot.label}</p>
-                    </div>
-                    <figcaption class="px-5 pb-5 pt-4">
-                      <p class="text-sm leading-6 text-navy/70">{shot.caption}</p>
-                      <table class="mt-4 w-full border-collapse text-left text-xs">
-                        <caption class="sr-only">ตารางเทียบสิ่งที่เห็นในภาพกับรุ่นที่ลูกค้าได้รับ</caption>
-                        <thead><tr class="border-b border-navy/15">
-                          <th scope="col" class="py-2 pr-3 font-bold text-navy">ในภาพ</th>
-                          <th scope="col" class="py-2 font-bold text-navy">รุ่นที่คุณได้รับ</th>
-                        </tr></thead>
-                        <tbody>
-                          {shot.delta.map((row) => (
-                            <tr class="border-b border-navy/10 align-top"><td class="py-2 pr-3 leading-5 text-navy/65">{row.inShot}</td><td class="py-2 leading-5 text-navy/85">{row.youGet}</td></tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </figcaption>
-                  </figure>
-                )}
-                <div class="flex flex-1 flex-col p-6">
-                  <h4 class="font-display text-xl font-bold text-navy">{room.name}</h4>
-                  <p class="mt-3 text-sm leading-6 text-navy/80">{room.what}</p>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-        <p class="mt-6 max-w-3xl text-sm leading-6 text-navy/60">{data.rooms.note}</p>
-      </div>
-    </section>
-  )}
 
   <!-- S4 -->
   <GoldenPathFlow data={data.goldenPath} />
@@ -265,6 +229,25 @@ const ctaActions = [
           ))}
         </div>
         <p class="mt-4 max-w-2xl text-sm leading-6 text-navy/60">{data.value.valueRefNote}</p>
+
+        <div data-system-block="value-delta" class="mt-8 rounded-[1.5rem] border border-navy/10 bg-white p-5 sm:p-6">
+          <h4 class="font-display text-lg font-bold text-navy">{data.value.delta.heading}</h4>
+          <div class="mt-4 overflow-x-auto">
+            <table class="w-full min-w-[34rem] border-collapse text-left text-sm">
+              <caption class="sr-only">{data.value.delta.heading}</caption>
+              <thead><tr class="border-b border-navy/15">
+                <th scope="col" class="py-2 pr-4 font-bold text-navy">ระบบที่ผมใช้</th>
+                <th scope="col" class="py-2 font-bold text-navy">รุ่นที่บริษัทได้รับ</th>
+              </tr></thead>
+              <tbody>
+                {data.value.delta.rows.map((row) => (
+                  <tr class="border-b border-navy/10 align-top"><td class="py-2.5 pr-4 leading-6 text-navy/65">{row.inShot}</td><td class="py-2.5 leading-6 text-navy/85">{row.youGet}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-4 text-sm leading-6 text-navy/60">{data.value.delta.note}</p>
+        </div>
       </div>
       <aside class="mt-8 rounded-[1.75rem] border border-navy/10 bg-white p-6 sm:p-8 lg:mt-0">
         <h4 class="font-display text-xl font-bold text-navy">{data.value.excluded.heading}</h4>
