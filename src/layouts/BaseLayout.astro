@@ -200,6 +200,13 @@ const shouldShowFloatingLine = showFloatingLine && !hideFloatingLine && !isFloat
             if (v) fromUrl[k] = v;
           });
 
+          // ?angle=... — ทางลัดตั้งชื่อ angle ของครีเอทีฟ โดยไม่ต้องพิมพ์ utm_content เต็มใน Ads Manager
+          // เก็บลงช่อง utm_content เพราะเป็นคีย์เดียวในสายนี้ที่เดินทางครบเส้น:
+          // ฟอร์ม → n8n (Flatten Body1 ส่งเฉพาะคีย์ utm_*) → RPC submit_lead ที่เขียนลง leads.ad_angle
+          // (migration submit_lead_capture_ad_angle_and_vertical · 2026-09-05)
+          const angleParam = params.get('angle');
+          if (angleParam && !fromUrl.utm_content) fromUrl.utm_content = angleParam;
+
           // Last-click attribution: URL params overwrite stored
           // No URL params → keep stored (within-session continuity)
           let attribution;

@@ -7,7 +7,9 @@ const replacementPagePath = new URL('../../src/pages/ads/sales-ai-team.astro', i
 
 test('retired Daruma consult landing permanently redirects to its compliant replacement', async () => {
   const redirects = await readFile(redirectsPath, 'utf8');
-  assert.match(redirects, /^\/ads\/daruma-consult \/ads\/sales-ai-team 301$/m);
+  // ปลายทางเปลี่ยน 2026-09-04: แอด Daruma ที่ยังรันอยู่พูดเรื่อง automation → ชี้เข้า T4
+  // แทน T1 (จิตวิทยาการขาย) ที่คนละเรื่องกับตัวโฆษณา · test เดิมค้างที่ปลายทางเก่าจนแดง
+  assert.match(redirects, /^\/ads\/daruma-consult \/services\/advance-ai-automation 301$/m);
 
   const source = await readFile(replacementPagePath, 'utf8');
   const required = [
