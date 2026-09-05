@@ -68,6 +68,8 @@ const offerCore = data.takeHome.slice(0, systemSection ? 5 : 4);
     <div data-journey-section="proof"><ProofGallery items={data.proof} testimonials={data.testimonials ?? []} heading={data.sections?.proof?.heading ?? 'ภาพจากห้องอบรมจริง'} intro={data.sections?.proof?.intro ?? ''} /></div>
     {afterProofCta && <section class="bg-[#f4f1ea] px-5 py-8 sm:py-10"><div class="mx-auto max-w-6xl"><JourneyCTA code={data.code} location="after_proof" keyword={data.cta.keyword} decision={afterProofCta} /></div></section>}
 
+    {systemSection && <SystemShowcase data={systemSection} code={data.code} keyword={data.cta.keyword} part="proof" />}
+
     <WhyNowBlock code={data.code} items={data.pains} journey={data.journey} />
     {data.spotlight && <div data-journey-section="spotlight"><SpotlightModules data={data.spotlight} /></div>}
 
@@ -78,7 +80,7 @@ const offerCore = data.takeHome.slice(0, systemSection ? 5 : 4);
         : <JourneyCTA code={data.code} location="after_scope" keyword={data.cta.keyword} primary={scopeLineCta.primary} primaryIntent={scopeLineCta.primaryIntent} secondary={scopeLineCta.secondary} secondaryIntent={scopeLineCta.secondaryIntent} />}
     </div></section>
 
-    {systemSection && <SystemShowcase data={systemSection} code={data.code} keyword={data.cta.keyword} />}
+    {systemSection && <SystemShowcase data={systemSection} code={data.code} keyword={data.cta.keyword} part="main" />}
 
     {data.whatsNew && <div data-journey-section="whats-new"><WhatsNewBlock data={data.whatsNew} /></div>}
     <div data-t4-section={data.code === 'T4' ? 'take-home' : undefined} data-journey-section="take-home" data-detail-block="take-home"><TakeHomeStack items={data.takeHome} {...data.sections?.takeHome} /></div>
@@ -95,6 +97,8 @@ const offerCore = data.takeHome.slice(0, systemSection ? 5 : 4);
     {data.instructorProfile
       ? <div data-journey-section="instructor"><InstructorProfile data={data.instructorProfile} /></div>
       : <div data-t4-section={data.code === 'T4' ? 'instructor' : undefined} data-journey-section="instructor" data-detail-block="instructor"><InstructorCard authority={data.authority} paragraphs={data.bio} heading={data.sections?.bio?.heading ?? 'คนสอนคือคนที่สร้าง AI Workflow ใช้กับธุรกิจตัวเองทุกวัน'} /></div>}
+
+    {systemSection && <SystemShowcase data={systemSection} code={data.code} keyword={data.cta.keyword} part="investment" />}
 
     <div data-t4-section={data.code === 'T4' ? 'investment' : undefined} data-journey-section="investment" data-detail-block="investment" class="bg-white pb-14 sm:pb-20">
       <InvestmentBlock name={catalog.name} price={catalog.price} amount={catalog.amount} regularPrice={catalog.regularPrice} eyebrow={data.sections?.investment?.eyebrow} {...data.investment} />

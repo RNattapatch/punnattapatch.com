@@ -230,7 +230,9 @@ export interface ProductSystemSection {
   desks: { heading: string; intro: string; items: SystemDesk[] };
   goldenPath: SystemGoldenPath;
   handoff: SystemHandoff;
-  metrics: { heading: string; intro: string; items: Array<{ label: string; value: string; note: string }>; disclaimer: string };
+  metrics: { heading: string; intro: string; items: Array<{ label: string; value: string; note: string }>;
+    reclaim: { heading: string; intro: string; items: Array<{ icon: string; title: string; body: string }> };
+    disclaimer: string };
   value: {
     heading: string;
     body: string[];
