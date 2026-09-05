@@ -29,6 +29,9 @@ export const SITE = {
     // ❌ DO NOT change to 'lin.ee/punnattapatch' — that handle is NOT registered to Pun.
     // Reference: index.astro line 265 + faq/no-public-course-why.md line 35 (same URL).
     line: 'https://lin.ee/ioSnSUG',
+    // LINE OA basic ID (ตัวเดียวกับ line.me/R/ti/p/@011xgvap ที่ใช้ในหน้า /link) — ใช้สร้างลิงก์
+    // เปิดแชตพร้อมข้อความ (oaMessage) ให้ปุ่ม LINE ทุกปุ่ม ดู src/scripts/line-prefill.ts
+    lineOaId: '@011xgvap',
   },
   nav: [
     { label: 'หน้าหลัก', href: '/' },
