@@ -141,7 +141,11 @@ import AppNav from '../../components/app/AppNav.astro';
             <label class="flex items-center gap-1"><input type="checkbox" name="role" value="mentor" class="checkbox checkbox-sm" /> 🧭 mentor</label>
             <label class="flex items-center gap-1"><input type="checkbox" name="role" value="context" class="checkbox checkbox-sm" /> 👁 context</label>
           </fieldset>
-          <label class="block"><span class="mb-1 block text-sm opacity-70">Handles — บรรทัดละ 1 · รูปแบบ <code>platform ref</code> (tiktok @x · youtube @x · instagram @x · facebook_page ชื่อเพจหรือ page_id · web https://… · line @x)</span><textarea name="handles" class="textarea textarea-bordered h-28 w-full font-mono text-sm"></textarea></label>
+          <div class="block">
+            <span class="mb-1 block text-sm opacity-70">ช่องทาง — วางลิงก์เต็มหรือ <code>@handle</code> ก็ได้ ระบบเดาแพลตฟอร์มจากลิงก์ให้เอง</span>
+            <div id="it-handles" class="grid gap-2"></div>
+            <button type="button" id="it-handle-add" class="btn btn-outline btn-sm mt-2 tap-44">+ เพิ่มช่องทาง</button>
+          </div>
           <label class="block"><span class="mb-1 block text-sm opacity-70">ขายอะไร + ราคา</span><textarea name="sells" class="textarea textarea-bordered w-full"></textarea></label>
           <label class="block"><span class="mb-1 block text-sm opacity-70">ICP</span><input name="icp" class="input input-bordered w-full" /></label>
           <label class="block"><span class="mb-1 block text-sm opacity-70">ทำไมต้องจับตา</span><textarea name="why_watch" class="textarea textarea-bordered h-24 w-full"></textarea></label>
@@ -205,6 +209,7 @@ import AppNav from '../../components/app/AppNav.astro';
       requestDiscovery, subscribeJob, askAgentToFix, linkJobToTarget, coverUrls, acceptSuggestion, dismissSuggestion, daysSince, daysUntil, firedCount,
       THREAT_LABEL, THREAT_ORDER, THREAT_COLOR, ROLE_LABEL, PLATFORM_LABEL, type IntelTarget, type Handle, type HandleSuggestion, type LanePick, type DiscoveryResult, type Threat, type Role,
     } from '../../scripts/intel/data';
+    import { createHandleEditor, type HandleEditor } from '../../scripts/intel/handle-editor';
     import { getSupabaseSession } from '../../scripts/dashboard/supabase';
 
     // ---------- state ----------
@@ -577,7 +582,7 @@ import AppNav from '../../components/app/AppNav.astro';
       (f.elements.namedItem('threat') as HTMLSelectElement).value = t.threat;
       (f.elements.namedItem('cadence_days') as HTMLInputElement).value = String(t.cadence_days);
       f.querySelectorAll<HTMLInputElement>('input[name="role"]').forEach((c) => (c.checked = (t.role ?? []).includes(c.value as Role)));
-      (f.elements.namedItem('handles') as HTMLTextAreaElement).value = (t.handles ?? []).map((h) => `${h.platform} ${h.page_id && h.page_id !== h.ref ? h.page_id : h.ref}`).join('\n');
+      handleEditor?.set(t.handles ?? []);
       (f.elements.namedItem('sells') as HTMLTextAreaElement).value = t.sells ?? '';
       (f.elements.namedItem('icp') as HTMLInputElement).value = t.icp ?? '';
       (f.elements.namedItem('why_watch') as HTMLTextAreaElement).value = t.why_watch ?? '';
@@ -585,14 +590,8 @@ import AppNav from '../../components/app/AppNav.astro';
       $('it-edit-title').textContent = `แก้ไขแฟ้ม — ${t.name}`;
       ($('it-edit') as HTMLDialogElement).showModal();
     }
-    function parseHandles(text: string): Handle[] {
-      return text.split('\n').map((l) => l.trim()).filter(Boolean).map((l) => {
-        const [platform, ...rest] = l.split(/\s+/); const ref = rest.join(' ').trim();
-        const h: Handle = { platform: platform.toLowerCase(), ref };
-        if (h.platform === 'facebook_page' && /^\d{12,}$/.test(ref)) h.page_id = ref;
-        return h;
-      }).filter((h) => h.ref);
-    }
+    let handleEditor: HandleEditor | null = null;
+
     function parseTriggers(text: string, old: IntelTarget['triggers']) {
       return text.split('\n').map((l) => l.trim()).filter(Boolean).map((l) => {
         const [text, kw = ''] = l.split('|').map((x) => x.trim());
@@ -771,6 +770,7 @@ import AppNav from '../../components/app/AppNav.astro';
       $('it-list').addEventListener('keydown', (e) => { if (e.key === 'Enter') (e.target as HTMLElement).click(); });
       // แก้ไขแฟ้ม
       $('it-edit-cancel').addEventListener('click', () => ($('it-edit') as HTMLDialogElement).close());
+      handleEditor = createHandleEditor($('it-handles'), $('it-handle-add'));
       $('it-edit-form').addEventListener('submit', (e) => { e.preventDefault(); void (async () => {
         if (!editing) return;
         const f = e.target as HTMLFormElement;
@@ -780,7 +780,7 @@ import AppNav from '../../components/app/AppNav.astro';
             name: v('name'), aliases: v('aliases').split('·').map((x) => x.trim()).filter(Boolean),
             threat: v('threat') as Threat, cadence_days: Number(v('cadence_days')) || editing.cadence_days,
             role: [...f.querySelectorAll<HTMLInputElement>('input[name="role"]:checked')].map((c) => c.value as Role),
-            handles: parseHandles(v('handles')), sells: v('sells') || null, icp: v('icp') || null, why_watch: v('why_watch') || null,
+            handles: handleEditor?.get() ?? editing.handles, sells: v('sells') || null, icp: v('icp') || null, why_watch: v('why_watch') || null,
             triggers: parseTriggers(v('triggers'), editing.triggers),
           });
           replaceTarget(nt); ($('it-edit') as HTMLDialogElement).close(); toast('บันทึกแล้ว — sync กลับ wiki ตอน 04:00');

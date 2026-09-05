@@ -113,6 +113,87 @@ export function scoutRef(h: Handle): string {
   return h.ref;
 }
 
+// ---------- กรอกช่องทาง (UI) ----------
+
+// ลำดับที่โชว์ใน dropdown ของฟอร์มแก้ไขแฟ้ม
+export const PLATFORM_ORDER: Platform[] = ['tiktok', 'youtube', 'instagram', 'facebook_page', 'web', 'line', 'skool'];
+
+const HOST_PLATFORM: [RegExp, Platform][] = [
+  [/(^|\.)tiktok\.com$/, 'tiktok'],
+  [/(^|\.)youtube\.com$/, 'youtube'],
+  [/^youtu\.be$/, 'youtube'],
+  [/(^|\.)instagram\.com$/, 'instagram'],
+  [/(^|\.)threads\.(net|com)$/, 'instagram'],
+  [/(^|\.)facebook\.com$/, 'facebook_page'],
+  [/^fb\.(com|me|watch)$/, 'facebook_page'],
+  [/(^|\.)line\.me$/, 'line'],
+  [/^lin\.ee$/, 'line'],
+  [/(^|\.)skool\.com$/, 'skool'],
+];
+
+// FB: /pg/<ชื่อเพจ> เอาตัวถัดไป · ส่วน /share/… /groups/… ฯลฯ ไม่มีชื่อเพจอยู่ในลิงก์เลย → เก็บลิงก์ไว้เฉยๆ
+const FB_PREFIX = new Set(['pg']);
+const FB_NOT_PAGE = new Set(['share', 'groups', 'group', 'watch', 'story.php', 'photo', 'photo.php', 'posts', 'permalink.php', 'reel', 'reels', 'videos', 'events', 'marketplace', 'media', 'login.php']);
+const IG_NOT_PROFILE = new Set(['p', 'reel', 'reels', 'stories', 'explore', 'tv', 'accounts']);
+const JUNK_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'fbclid', 'gclid', 'igsh', 'mibextid'];
+
+function asUrl(raw: string): URL | null {
+  const s = raw.trim();
+  if (!s || /\s/.test(s)) return /^https?:\/\//i.test(s) ? tryUrl(s) : null;
+  if (/^https?:\/\//i.test(s)) return tryUrl(s);
+  // "bizdrive.online/x" หรือ "www.facebook.com/x" — ไม่มี scheme แต่เป็นลิงก์ชัดๆ
+  return /^[\w-]+(\.[\w-]+)+(\/|\?|$)/.test(s) ? tryUrl(`https://${s}`) : null;
+}
+function tryUrl(s: string): URL | null {
+  try { return new URL(s); } catch { return null; }
+}
+
+/**
+ * รับได้ทั้งลิงก์เต็มและ @handle — ถ้าเป็นลิงก์จะเดาแพลตฟอร์มเอง (ทับ hint จาก dropdown)
+ * แล้วคืน ref ในรูปแบบที่ scoutRef()/laneFor() ใช้ต่อได้จริง · คืน null ถ้าว่าง
+ */
+export function parseHandleInput(raw: string, hint?: Platform): Handle | null {
+  const s = (raw ?? '').trim();
+  if (!s) return null;
+  const url = asUrl(s);
+  if (!url) {
+    const platform: Platform = hint || (s.startsWith('@') ? 'tiktok' : 'web');
+    const h: Handle = { platform, ref: s.replace(/\s+/g, ' ') };
+    if (platform === 'facebook_page' && /^\d{9,}$/.test(h.ref)) h.page_id = h.ref;
+    return h;
+  }
+  const host = url.hostname.replace(/^(www|m|web|vt|vm)\./i, '').toLowerCase();
+  const platform: Platform = HOST_PLATFORM.find(([re]) => re.test(host))?.[1] ?? 'web';
+  const seg = url.pathname.split('/').filter(Boolean).map((x) => { try { return decodeURIComponent(x); } catch { return x; } });
+  const at = seg.find((x) => x.startsWith('@'));
+
+  if (platform === 'tiktok' || platform === 'youtube') {
+    // ลิงก์ย่อ (vt/vm/youtu.be) แกะชื่อช่องไม่ได้ → เก็บลิงก์ไว้ ให้ Scout ไปเปิดเอง
+    return { platform, ref: at ?? `${url.origin}${url.pathname}`.replace(/\/$/, '') };
+  }
+  if (platform === 'instagram') {
+    // ลิงก์โพสต์/รีล ไม่มีชื่อโปรไฟล์อยู่ในลิงก์ → เก็บลิงก์ ไม่เดาเป็น handle
+    const name = seg[0];
+    return { platform, ref: name && !IG_NOT_PROFILE.has(name.toLowerCase()) ? (name.startsWith('@') ? name : `@${name}`) : url.href };
+  }
+  if (platform === 'facebook_page') {
+    const qid = url.searchParams.get('id');
+    if (qid && /^\d{6,}$/.test(qid)) return { platform, ref: qid, page_id: qid };
+    if (seg[0] === 'people' && seg[2] && /^\d{6,}$/.test(seg[2])) return { platform, ref: seg[1] || seg[2], page_id: seg[2] };
+    if (seg[0] && FB_NOT_PAGE.has(seg[0].toLowerCase())) return { platform, ref: url.href };
+    const name = seg.find((x) => !FB_PREFIX.has(x.toLowerCase()));
+    if (!name) return { platform, ref: url.href };
+    const ref = name.replace(/^@/, '');
+    return /^\d{9,}$/.test(ref) ? { platform, ref, page_id: ref } : { platform, ref };
+  }
+  if (platform === 'line') return { platform, ref: at ?? url.href };
+  if (platform === 'skool') return { platform, ref: seg[0] ?? url.href };
+
+  JUNK_PARAMS.forEach((k) => url.searchParams.delete(k));
+  url.hash = '';
+  return { platform: 'web', ref: url.href.replace(/\/$/, '') };
+}
+
 // ---------- Targets ----------
 
 export async function listTargets(): Promise<IntelTarget[]> {
