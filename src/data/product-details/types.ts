@@ -183,6 +183,21 @@ export interface SystemDesk {
   shot?: SystemShot;
 }
 
+/** ห้องในระบบตัวแม่ที่ปันใช้เอง — ภาพหน้าจอจริง ปิดชื่อ/ใบหน้า/ช่องทางตาม PDPA */
+export interface SystemRoom {
+  name: string;
+  what: string;
+  shot: SystemShot;
+}
+
+export interface SystemRooms {
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  items: SystemRoom[];
+  note: string;
+}
+
 export interface SystemGoldenPathStep {
   number: string;
   title: string;
@@ -228,6 +243,8 @@ export interface ProductSystemSection {
   opener: { body: string[]; shot: SystemShot };
   failure: { heading: string; intro: string; items: string[]; close: string };
   desks: { heading: string; intro: string; items: SystemDesk[] };
+  /** ห้องของระบบตัวแม่ที่ป้อนสัญญาณให้โต๊ะบรีฟ — ไม่ได้ส่งมอบให้บริษัท */
+  rooms?: SystemRooms;
   goldenPath: SystemGoldenPath;
   handoff: SystemHandoff;
   metrics: { heading: string; intro: string; items: Array<{ label: string; value: string; note: string }>;

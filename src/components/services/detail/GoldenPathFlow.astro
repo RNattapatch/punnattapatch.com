@@ -35,7 +35,7 @@ const shotSrc = shot ? ('publicSrc' in shot.image ? shot.image.publicSrc : shot.
     {shot && (
       <figure data-system-shot class="mt-8 overflow-hidden rounded-[1.5rem] border border-navy/10 bg-white">
         <div class="relative">
-          <img src={shotSrc} alt={shot.alt} width={shot.image.width} height={shot.image.height} loading="lazy" decoding="async" class="aspect-[16/10] w-full object-cover" />
+          <img src={shotSrc} alt={shot.alt} width={shot.image.width} height={shot.image.height} loading="lazy" decoding="async" class="aspect-[22/10] w-full object-cover" />
           <p data-shot-label class="absolute left-4 top-4 rounded-lg bg-navy/90 px-3 py-1.5 text-xs font-bold text-white">{shot.label}</p>
         </div>
         <figcaption class="p-5 sm:p-6">
