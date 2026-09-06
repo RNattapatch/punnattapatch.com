@@ -24,6 +24,15 @@
       "detail": "ไม่มีคอร์สออนไลน์ · ราคาเดียวทั้งทีม (คอร์ส 1 วัน รับไม่เกิน 20 คน เกินกว่านี้คุยกันได้)"
     }
   },
+  "content_update": {
+    "month": "กันยายน 2026",
+    "models": [
+      "GPT-6 Astra",
+      "Claude Fable 5.1"
+    ],
+    "line_1": "อัปเดตเนื้อหา กันยายน 2026",
+    "line_2": "รองรับ GPT-6 Astra · Claude Fable 5.1"
+  },
   "packages": [
     {
       "key": "inhouse-a",

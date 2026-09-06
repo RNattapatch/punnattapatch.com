@@ -11,6 +11,7 @@
 
 import { writeFile, readFile } from 'node:fs/promises';
 import { CATALOG, TERMS, fmtPrice } from '../src/data/pricing.mjs';
+import { CONTENT_UPDATE, CONTENT_UPDATE_LINE_1, CONTENT_UPDATE_LINE_2 } from '../src/data/content-update.mjs';
 
 const SITE = 'https://punnattapatch.com';
 
@@ -48,6 +49,14 @@ const catalog = {
       'ห้ามยกเงื่อนไขการเงิน/ค่าเดินทางมาบอกก่อนลูกค้าถาม — ตอบเมื่อลูกค้าถามเอง หรือเมื่อคุยถึงขั้นจองคิว/ออกใบเสนอราคาแล้ว',
   },
   terms: TERMS,
+  // ป้าย "อัปเดตเนื้อหา <เดือน>" — เว็บพาดเป็นริบบิ้นบนกล่อง Offer, บอท LINE เอาไป
+  // ขึ้นบรรทัดบนสุดของการ์ด Flex (Flex วางเฉียงไม่ได้) · SSOT = src/data/content-update.mjs
+  content_update: {
+    month: CONTENT_UPDATE.month,
+    models: [...CONTENT_UPDATE.models],
+    line_1: CONTENT_UPDATE_LINE_1,
+    line_2: CONTENT_UPDATE_LINE_2,
+  },
   packages,
 };
 
