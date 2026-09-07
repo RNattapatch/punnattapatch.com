@@ -83,9 +83,39 @@ export type FormatCode = keyof typeof FORMAT_CODES;
 
 export const PLATFORMS = ['tiktok', 'instagram', 'facebook', 'line_oa', 'linkedin', 'website', 'youtube'];
 
-const fail = (error: { message: string } | null) => {
-  if (error) throw new Error(error.message);
-};
+// ---------- ทนเน็ตสะดุด ----------
+// แล็ปท็อปตื่นจาก sleep / สลับ Wi-Fi / Tailscale ต่อใหม่ → fetch นัดแรกพังเป็น
+// TypeError "Failed to fetch" แล้วหายเองถ้ายิงซ้ำ. ของเดิมโยนข้อความดิบขึ้นหน้าจอ
+// (ลากการ์ดแล้วขึ้น "Failed to fetch" เฉยๆ ไม่บอกว่าต้องทำอะไร) — ชั้นนี้ยิงซ้ำให้ก่อน
+const NET_ERR = /failed to fetch|load failed|networkerror|network request failed|fetch failed|err_network/i;
+const isNetErr = (e: unknown): boolean => NET_ERR.test(String((e as { message?: string })?.message ?? e));
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+type Res<T> = { data: T; error: { message: string } | null };
+
+/**
+ * ยิง query แล้วลองซ้ำ **เฉพาะ** ตอนเน็ตพัง — error จาก RLS/schema/constraint
+ * โยนออกทันที เพราะยิงกี่ครั้งก็ผิดเหมือนเดิม
+ */
+async function q<T>(build: () => PromiseLike<Res<T>>, tries = 3): Promise<T> {
+  let last: unknown = null;
+  for (let attempt = 1; attempt <= tries; attempt++) {
+    if (attempt > 1) await wait(300 * 2 ** (attempt - 2));
+    let res: Res<T>;
+    try {
+      res = await build();
+    } catch (thrown) {
+      if (!isNetErr(thrown)) throw thrown;
+      last = thrown;
+      continue;
+    }
+    if (!res.error) return res.data;
+    if (!isNetErr(res.error)) throw new Error(res.error.message);
+    last = res.error;
+  }
+  const detail = String((last as { message?: string })?.message ?? last ?? '');
+  throw new Error(`ต่อฐานข้อมูลไม่ได้ (${detail}) — เช็คเน็ตแล้วลองอีกครั้ง ถ้ายังไม่ได้ให้รีเฟรชหน้าเพื่อต่อ session ใหม่`);
+}
 
 // ---------- Content ID ----------
 
@@ -93,11 +123,10 @@ export const bkkToday = (): string => new Date(Date.now() + 7 * 3600e3).toISOStr
 
 export async function nextContentId(): Promise<string> {
   const d = bkkToday();
-  const { data, error } = await supabase
+  const data = await q<{ content_id: string }[]>(() => supabase
     .from('content_items').select('content_id')
     .like('content_id', `CNT-${d}-%`)
-    .order('content_id', { ascending: false }).limit(1);
-  fail(error);
+    .order('content_id', { ascending: false }).limit(1));
   const n = data?.[0] ? Number(data[0].content_id.slice(-3)) + 1 : 1;
   return `CNT-${d}-${String(n).padStart(3, '0')}`;
 }
@@ -105,36 +134,32 @@ export async function nextContentId(): Promise<string> {
 // ---------- Reads ----------
 
 export async function listIdeas(): Promise<Idea[]> {
-  const { data, error } = await supabase
+  const data = await q(() => supabase
     .from('content_items').select('*')
-    .order('created_at', { ascending: false }).limit(300);
-  fail(error);
+    .order('created_at', { ascending: false }).limit(300));
   return (data ?? []) as Idea[];
 }
 
 export async function listVariants(): Promise<Variant[]> {
-  const { data, error } = await supabase
+  const data = await q(() => supabase
     .from('content_variants').select('*')
-    .order('created_at', { ascending: false }).limit(1000);
-  fail(error);
+    .order('created_at', { ascending: false }).limit(1000));
   return (data ?? []) as Variant[];
 }
 
 export async function listPublications(): Promise<Publication[]> {
-  const { data, error } = await supabase.from('publications').select('*').limit(2000);
-  fail(error);
+  const data = await q(() => supabase.from('publications').select('*').limit(2000));
   return (data ?? []) as Publication[];
 }
 
 export async function snapshotPubIds(): Promise<Set<string>> {
-  const { data, error } = await supabase.from('analytics_snapshots').select('publication_id').limit(5000);
-  fail(error);
-  return new Set((data ?? []).map((r) => r.publication_id as string));
+  const data = await q<{ publication_id: string }[]>(() =>
+    supabase.from('analytics_snapshots').select('publication_id').limit(5000));
+  return new Set((data ?? []).map((r) => r.publication_id));
 }
 
 export async function findSimilar(text: string): Promise<SimilarHit[]> {
-  const { data, error } = await supabase.rpc('search_similar_content', { q: text });
-  fail(error);
+  const data = await q(() => supabase.rpc('search_similar_content', { q: text }));
   return (data ?? []) as SimilarHit[];
 }
 
@@ -142,24 +167,22 @@ export async function findSimilar(text: string): Promise<SimilarHit[]> {
 
 export async function createIdea(fields: Partial<Idea> & { title: string }): Promise<Idea> {
   const content_id = await nextContentId();
-  const { data, error } = await supabase
+  const data = await q(() => supabase
     .from('content_items')
     .insert({ content_id, source_type: 'webapp', ...fields })
-    .select().single();
-  fail(error);
+    .select().single());
   return data as Idea;
 }
 
 export async function updateIdea(content_id: string, patch: Partial<Idea>): Promise<void> {
-  const { error } = await supabase.from('content_items').update(patch).eq('content_id', content_id);
-  fail(error);
+  await q(() => supabase.from('content_items').update(patch).eq('content_id', content_id));
 }
 
 export async function createVariant(idea: Idea, code: FormatCode): Promise<Variant> {
   const meta = FORMAT_CODES[code];
   const variant_id = `${idea.content_id}-${code}`;
   const slug = idea.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
-  const { data, error } = await supabase
+  const data = await q(() => supabase
     .from('content_variants')
     .insert({
       variant_id,
@@ -169,8 +192,7 @@ export async function createVariant(idea: Idea, code: FormatCode): Promise<Varia
       working_title: idea.title,
       markdown_path: `output/content/${meta.dir}/${variant_id}${slug ? `--${slug}` : ''}.md`,
     })
-    .select().single();
-  fail(error);
+    .select().single());
   // Idea with a variant in production = active
   if (idea.idea_status === 'captured' || idea.idea_status === 'triaged' || idea.idea_status === 'selected') {
     await updateIdea(idea.content_id, { idea_status: 'active' });
@@ -181,32 +203,28 @@ export async function createVariant(idea: Idea, code: FormatCode): Promise<Varia
 export async function updateVariant(variant_id: string, patch: Partial<Variant>): Promise<void> {
   // Every status change stamps status_changed_at — the stale-alert clock.
   const stamped = patch.variant_status ? { ...patch, status_changed_at: new Date().toISOString() } : patch;
-  const { error } = await supabase.from('content_variants').update(stamped).eq('variant_id', variant_id);
-  fail(error);
+  await q(() => supabase.from('content_variants').update(stamped).eq('variant_id', variant_id));
 }
 
 export async function addPublication(
   variant_id: string, platform: string, post_url: string, published_at: string
 ): Promise<void> {
-  const { error } = await supabase.from('publications').insert({
+  await q(() => supabase.from('publications').insert({
     variant_id, platform, post_url: post_url || null,
     published_at: published_at || new Date().toISOString(), status: 'posted',
-  });
-  fail(error);
+  }));
   await updateVariant(variant_id, { variant_status: 'posted' });
 }
 
 export async function setDecision(publication_id: string, label: DecisionLabel | null): Promise<void> {
-  const { error } = await supabase.from('publications').update({ decision_label: label }).eq('publication_id', publication_id);
-  fail(error);
+  await q(() => supabase.from('publications').update({ decision_label: label }).eq('publication_id', publication_id));
 }
 
 export async function addSnapshot(publication_id: string, metrics: SnapshotInput): Promise<void> {
   const clean = Object.fromEntries(
     Object.entries(metrics).filter(([, v]) => v !== undefined && v !== null && v !== '')
   );
-  const { error } = await supabase.from('analytics_snapshots').insert({ publication_id, source: 'manual', ...clean });
-  fail(error);
+  await q(() => supabase.from('analytics_snapshots').insert({ publication_id, source: 'manual', ...clean }));
 }
 
 // ---------- wr_jobs (Mac mini job queue — 2026-08-13) ----------
@@ -226,32 +244,28 @@ export interface WrJob {
 
 /** คิวงานล่าสุด — หน้าสถานะงานใน News Desk (ท่าเดียวกับคิวของ Intel Warroom) */
 export async function listWrJobs(limit = 40): Promise<WrJob[]> {
-  const { data, error } = await supabase
+  const data = await q(() => supabase
     .from('wr_jobs')
     .select('*')
     .order('created_at', { ascending: false })
-    .limit(limit);
-  fail(error);
+    .limit(limit));
   return (data ?? []) as WrJob[];
 }
 
 /** Retry = โยนกลับเข้าคิว ล้าง error/ผลเดิม เพื่อให้ worker บนมินิหยิบใหม่ */
 export async function retryWrJob(id: string): Promise<void> {
-  const { error } = await supabase
+  await q(() => supabase
     .from('wr_jobs')
     .update({ status: 'queued', error: null, result: null, started_at: null, finished_at: null })
-    .eq('id', id);
-  fail(error);
+    .eq('id', id));
 }
 
 export async function deleteWrJob(id: string): Promise<void> {
-  const { error } = await supabase.from('wr_jobs').delete().eq('id', id);
-  fail(error);
+  await q(() => supabase.from('wr_jobs').delete().eq('id', id));
 }
 
 export async function enqueueJob(job_type: JobType, payload: Record<string, unknown>): Promise<string> {
-  const { data, error } = await supabase.from('wr_jobs').insert({ job_type, payload }).select('id').single();
-  fail(error);
+  const data = await q(() => supabase.from('wr_jobs').insert({ job_type, payload }).select('id').single());
   return (data as { id: string }).id;
 }
 
@@ -264,8 +278,7 @@ export async function waitJob(
   const t0 = Date.now();
   for (;;) {
     await new Promise((r) => setTimeout(r, intervalMs));
-    const { data, error } = await supabase.from('wr_jobs').select('*').eq('id', id).single();
-    fail(error);
+    const data = await q(() => supabase.from('wr_jobs').select('*').eq('id', id).single());
     const job = data as WrJob;
     if (job.status === 'done') return job;
     if (job.status === 'error') throw new Error(job.error ?? 'job ล้มเหลว');
