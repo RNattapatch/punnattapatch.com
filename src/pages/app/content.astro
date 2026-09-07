@@ -316,6 +316,14 @@ import AppNav from '../../components/app/AppNav.astro';
       const code = vid.slice(-2) as FormatCode;
       return FORMAT_CODES[code] ?? { label: code };
     };
+    // ไอเดียเดียวมีได้หลาย variant (Reel/Carousel/Article) และการ์ดทุกใบใช้ "ชื่อไอเดีย"
+    // เป็นหัวเรื่อง — ถ้าไม่ย้อมสีแยกฟอร์แมต การ์ดพี่น้องจะดูเหมือนการ์ดซ้ำ
+    const FMT_COLOR: Record<string, string> = {
+      RL: 'var(--color-brand-navy)', CR: 'var(--color-brand-coral)',
+      AR: '#4b5563', LN: '#0f766e',
+    };
+    const siblingsOf = (v: Variant) =>
+      variants.filter((x) => x.content_id === v.content_id && x.variant_id !== v.variant_id);
 
     function variantCard(v: Variant): string {
       const meta: any = fmtMeta(v.variant_id);
@@ -323,17 +331,22 @@ import AppNav from '../../components/app/AppNav.astro';
       const stale = age >= 3;
       const idea = ideas.find((i) => i.content_id === v.content_id);
       const vPubs = pubs.filter((p) => p.variant_id === v.variant_id);
+      const sibs = siblingsOf(v);
+      const sibHint = sibs.length
+        ? `<p class="mt-1 truncate text-[10px] opacity-55" title="${esc(sibs.map((s) => `${(fmtMeta(s.variant_id) as any).label ?? ''} → ${colOf(s.variant_status)?.label ?? s.variant_status}`).join(' · '))}">⧉ ไอเดียนี้มีอีก ${sibs.length} ฟอร์แมต: ${esc(sibs.map((s) => (fmtMeta(s.variant_id) as any).label ?? '').join(' · '))}</p>`
+        : '';
       return `<article draggable="true" data-card="variant" data-v="${esc(v.variant_id)}" data-cid="${esc(v.content_id)}"
         class="wr-card group cursor-grab rounded-xl border border-base-300 bg-base-100 p-2.5 shadow-sm transition hover:border-[color:var(--color-brand-coral)] hover:shadow-md active:cursor-grabbing">
         <div class="flex items-center justify-between gap-2">
-          <span class="badge badge-xs font-semibold" style="background-color:var(--color-brand-navy);color:white;">${esc(meta.label ?? '')}</span>
-          <span class="font-mono text-[10px] opacity-50">${esc(v.content_id.replace('CNT-', ''))}</span>
+          <span class="badge badge-xs font-semibold" style="background-color:${FMT_COLOR[v.variant_id.slice(-2)] ?? 'var(--color-brand-navy)'};color:white;">${esc(meta.label ?? '')}</span>
+          <span class="font-mono text-[10px] opacity-50">${esc(v.variant_id.replace('CNT-', ''))}</span>
         </div>
         <p class="mt-1.5 line-clamp-2 text-sm font-medium leading-snug">${esc(idea?.title ?? v.working_title ?? v.variant_id)}</p>
         <div class="mt-1.5 flex items-center justify-between gap-2">
           <span class="text-[11px] ${stale ? 'font-semibold text-error' : 'opacity-50'}">${stale ? `⏳ ค้าง ${age} วัน` : (age ? `${age} วัน` : 'วันนี้')}</span>
           ${vPubs.length ? `<span class="text-[11px] opacity-60">${vPubs.map((p) => esc(p.platform)).slice(0, 3).join(' · ')}</span>` : ''}
         </div>
+        ${sibHint}
       </article>`;
     }
 
@@ -710,37 +723,60 @@ import AppNav from '../../components/app/AppNav.astro';
       })());
 
       // Board drag-drop (variant cards → columns)
+      //
+      // id ของการ์ดเดินทางมากับ dataTransfer และถูกล้างทุกครั้งที่การลากจบ (dragend ยิงเสมอ
+      // ทั้งตอนปล่อยสำเร็จ ปล่อยนอกช่อง และกด Esc). ของเดิมจำ id ไว้ในตัวแปรนอกฟังก์ชันแล้ว
+      // ล้างเฉพาะตอนปล่อยลงช่องสำเร็จ — ลากค้างแล้วปล่อยนอกช่องหนึ่งครั้ง id เก่าจะค้าง แล้ว
+      // การลากอะไรก็ได้ครั้งถัดไป (ข้อความในการ์ดไอเดีย ไฟล์จาก Finder) ทำให้การ์ด "ใบเก่า"
+      // เด้งไปโผล่ช่องใหม่ทั้งที่ไม่ได้สั่ง = อาการการ์ดซ้ำ/การ์ดโผล่เอง
+      const DRAG_MIME = 'application/x-wr-variant';
       let dragVid: string | null = null;
+      let moving = false;
+      const clearDropHint = () => $('wr-board').querySelectorAll('.wr-col')
+        .forEach((c) => c.classList.remove('ring-2', 'ring-[color:var(--color-brand-coral)]'));
+
       $('wr-board').addEventListener('dragstart', (e) => {
         const card = (e.target as HTMLElement).closest('[data-card="variant"]') as HTMLElement | null;
-        if (!card) return;
-        dragVid = card.dataset.v!;
+        dragVid = card?.dataset.v ?? null;   // ลากอย่างอื่น (เช่น ข้อความในการ์ดไอเดีย) = ไม่ใช่การย้าย
+        if (!card || !dragVid) return;
         card.classList.add('opacity-40');
-        (e as DragEvent).dataTransfer!.effectAllowed = 'move';
+        const dt = (e as DragEvent).dataTransfer!;
+        dt.effectAllowed = 'move';
+        dt.setData(DRAG_MIME, dragVid);
+        dt.setData('text/plain', dragVid);
       });
-      $('wr-board').addEventListener('dragend', (e) => {
-        (e.target as HTMLElement).closest('[data-card]')?.classList.remove('opacity-40');
-        document.querySelectorAll('.wr-col').forEach((c) => c.classList.remove('ring-2'));
+      $('wr-board').addEventListener('dragend', () => {
+        dragVid = null;
+        $('wr-board').querySelectorAll('[data-card]').forEach((c) => c.classList.remove('opacity-40'));
+        clearDropHint();
       });
       $('wr-board').addEventListener('dragover', (e) => {
         const col = (e.target as HTMLElement).closest('.wr-col[data-col]') as HTMLElement | null;
-        if (!col || !col.dataset.col || !dragVid) return;
+        const mine = dragVid || (e as DragEvent).dataTransfer?.types.includes(DRAG_MIME);
+        if (!col || !col.dataset.col || !mine) return;   // ของนอกบอร์ดไม่รับ
         e.preventDefault();
         (e as DragEvent).dataTransfer!.dropEffect = 'move';
-        document.querySelectorAll('.wr-col').forEach((c) => c.classList.toggle('ring-2', c === col));
+        $('wr-board').querySelectorAll('.wr-col').forEach((c) => c.classList.toggle('ring-2', c === col));
         col.classList.add('ring-[color:var(--color-brand-coral)]');
       });
-      $('wr-board').addEventListener('drop', (e) => void (async () => {
+      $('wr-board').addEventListener('drop', (e) => {
         const col = (e.target as HTMLElement).closest('.wr-col[data-col]') as HTMLElement | null;
-        document.querySelectorAll('.wr-col').forEach((c) => c.classList.remove('ring-2'));
-        if (!col || !col.dataset.col || !dragVid) return;
+        const vid = (e as DragEvent).dataTransfer?.getData(DRAG_MIME) || dragVid;
+        clearDropHint();
+        dragVid = null;
+        if (!col || !col.dataset.col || !vid) return;
         e.preventDefault();
-        const vid = dragVid; dragVid = null;
+        if (moving) return;                              // ปล่อยรัวสองที = ยิงซ้ำ
         const v = variants.find((x) => x.variant_id === vid);
         const target = col.dataset.col as VariantStatus;
         if (!v || v.variant_status === target || colOf(v.variant_status)?.key === COLUMNS.find((c) => c.primary === target)?.key) return;
-        try { await updateVariant(vid, { variant_status: target }); toast(`ย้าย → ${target}`); await refresh(); } catch (err) { oops(err); }
-      })());
+        moving = true;
+        void (async () => {
+          try { await updateVariant(vid, { variant_status: target }); toast(`ย้าย ${vid.replace('CNT-', '')} → ${col.dataset.col}`); await refresh(); }
+          catch (err) { oops(err); }
+          finally { moving = false; }
+        })();
+      });
 
       // Drawer close
       $('wr-drawer-close').addEventListener('click', closeDrawer);
