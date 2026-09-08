@@ -788,7 +788,7 @@ import AppNav from '../../components/app/AppNav.astro';
           <h3 class="font-display font-bold">✍️ บทเวอร์ชันผม <span id="nr-rw-count" class="badge badge-ghost badge-sm"></span></h3>
           ${ready ? '<button class="btn btn-sm btn-outline tap-44" data-rewrite-open>+ เกลาใหม่</button>' : ''}
         </div>
-        <p class="mt-1 text-xs opacity-60">ยืม "โครง" ของคลิปนี้มาเขียนเป็นบทของปันตามธงที่เลือก — ห้ามลอกคำ · ออก 3 ชั้น (บทพูด · 🔤 Hook Text · 📝 Caption)</p>
+        <p class="mt-1 text-xs opacity-60">ยืม "โครง" ของคลิปนี้มาเขียนเป็นบทของปันตามธงที่เลือก — ห้ามลอกคำ · ออก 3 ชั้น (บทพูด · 🔤 Hook Text · 📝 Caption) · เสร็จแล้วส่งเข้า Content Center เป็นการ์ด Reel ให้เอง</p>
         ${form}
         <p id="nr-rw-status" class="mt-3 text-sm ${running ? '' : 'hidden'}" role="status" aria-live="polite">${running ? `⏳ Codex กำลังเกลา… ${rewriteJob!.elapsed} วิ` : ''}</p>
         <div id="nr-scripts" class="mt-3 space-y-3"><p class="text-xs opacity-50">กำลังโหลดเวอร์ชัน…</p></div>
@@ -854,9 +854,10 @@ import AppNav from '../../components/app/AppNav.astro';
         // worker ให้ Codex 15 นาที (งานจริงครั้งแรก 9 นาที) — หน้าเว็บรอเผื่อคิวรอบละ 12 วิ
         const job = await waitJob(jobId, { timeoutMs: 16 * 60_000, onTick: (s) => { if (rewriteJob) rewriteJob.elapsed = s; if (openedItem?.id === x.id) setRewriteStatus(`⏳ Codex กำลังเกลา… ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')} นาที (ปกติ 5-10 นาที) — ปิดหน้านี้ได้ ผลจะมาอยู่ที่การ์ดนี้`); } });
         rewriteJob = null;
-        toast('เกลาเสร็จแล้ว ✨ เวอร์ชันใหม่อยู่บนการ์ด');
+        // worker ส่งเข้า Content Center ให้เองแล้ว (2026-09-08 เย็น) — result.content_id · ถ้าส่งไม่ผ่านปุ่ม ⬆️ บนเวอร์ชันยังส่งมือได้
+        const r = (job.result ?? {}) as { content_id?: string | null; handoff_error?: string | null };
+        toast(r.content_id ? `เกลาเสร็จ ✨ ส่งเข้า Content Center แล้ว — ${r.content_id}-RL` : 'เกลาเสร็จแล้ว ✨ เวอร์ชันใหม่อยู่บนการ์ด' + (r.handoff_error ? ' (ส่งเข้า Content Center ไม่ผ่าน กด ⬆️ ส่งเองได้)' : ''));
         if (openedItem?.id === x.id) { setRewriteStatus(''); await loadScripts(x.id); }
-        void job;
       } catch (e) {
         rewriteJob = null;
         if (openedItem?.id === x.id) { setRewriteStatus(''); toggleRewriteForm(true); }
