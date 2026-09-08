@@ -780,7 +780,7 @@ import AppNav from '../../components/app/AppNav.astro';
             <div class="flex flex-wrap items-center gap-2">
               <button type="submit" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-navy);" data-rewrite-submit>🚀 ส่งให้ Codex เกลา</button>
               <button type="button" class="btn btn-sm btn-ghost tap-44" data-rewrite-cancel>ยกเลิก</button>
-              <span class="text-xs opacity-60">Codex บนมินิอ่านบทพูด + voice ของปัน · ปกติ 2-5 นาที</span>
+              <span class="text-xs opacity-60">Codex บนมินิอ่านบทพูด + voice ของปัน · ปกติ 5-10 นาที</span>
             </div>
           </form>`;
       return `<section id="nr-rewrite" class="mt-6 rounded-2xl border border-base-300 bg-base-200/50 p-4">
@@ -850,8 +850,9 @@ import AppNav from '../../components/app/AppNav.astro';
         const jobId = await enqueueJob('rewrite_reel', payload);
         rewriteJob = { itemId: x.id, jobId, startedAt: Date.now(), elapsed: 0 };
         toggleRewriteForm(false);
-        setRewriteStatus('⏳ ส่งเข้าคิว Mac mini แล้ว — Codex กำลังอ่านบทพูด + voice ของปัน (ปกติ 2-5 นาที) ปิดหน้านี้ได้ ผลจะมาอยู่ที่การ์ดนี้');
-        const job = await waitJob(jobId, { timeoutMs: 11 * 60_000, onTick: (s) => { if (rewriteJob) rewriteJob.elapsed = s; if (openedItem?.id === x.id) setRewriteStatus(`⏳ Codex กำลังเกลา… ${s} วิ (ปกติ 2-5 นาที) — ปิดหน้านี้ได้ ผลจะมาอยู่ที่การ์ดนี้`); } });
+        setRewriteStatus('⏳ ส่งเข้าคิว Mac mini แล้ว — Codex กำลังอ่านบทพูด + voice ของปัน (ปกติ 5-10 นาที) ปิดหน้านี้ได้ ผลจะมาอยู่ที่การ์ดนี้');
+        // worker ให้ Codex 15 นาที (งานจริงครั้งแรก 9 นาที) — หน้าเว็บรอเผื่อคิวรอบละ 12 วิ
+        const job = await waitJob(jobId, { timeoutMs: 16 * 60_000, onTick: (s) => { if (rewriteJob) rewriteJob.elapsed = s; if (openedItem?.id === x.id) setRewriteStatus(`⏳ Codex กำลังเกลา… ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')} นาที (ปกติ 5-10 นาที) — ปิดหน้านี้ได้ ผลจะมาอยู่ที่การ์ดนี้`); } });
         rewriteJob = null;
         toast('เกลาเสร็จแล้ว ✨ เวอร์ชันใหม่อยู่บนการ์ด');
         if (openedItem?.id === x.id) { setRewriteStatus(''); await loadScripts(x.id); }
