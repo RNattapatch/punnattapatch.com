@@ -38,31 +38,41 @@ const headingId = `${code.toLowerCase()}-offer-heading`;
       </div>
 
       <div class="p-7 sm:p-10">
-        <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Core {core.length}</p>
-        <h3 class="mt-2 font-display text-2xl font-bold text-navy">สิ่งที่ทีมสร้างเสร็จในห้อง</h3>
-        <ol class="mt-6 grid gap-3 sm:grid-cols-2">
-          {core.map((item, index) => {
-            const isHighlight = Boolean(highlight) && item === highlight;
-            return (
-              <li
-                data-offer-core
-                data-offer-core-highlight={isHighlight ? '' : undefined}
-                class:list={[
-                  'flex gap-3 rounded-2xl border p-4 text-sm font-semibold leading-6',
-                  isHighlight
-                    ? 'border-[#d97757] bg-[#fff3ec] text-navy shadow-[0_10px_30px_rgba(217,119,87,.18)] sm:col-span-2'
-                    : 'border-navy/10 bg-[#fdfaf4] text-navy',
-                ]}
-              >
-                <span class:list={['flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white', isHighlight ? 'bg-[#d97757]' : 'bg-coral']}>{index + 1}</span>
-                <span>
-                  {isHighlight && <span class="mb-1 block text-[11px] font-bold uppercase tracking-[.16em] text-[#c2603f]">ระบบพร้อมใช้บนเครื่องบริษัท · ห้องเดียวกับที่ผมใช้ทุกวัน</span>}
-                  {item}
-                </span>
-              </li>
-            );
-          })}
-        </ol>
+        {/* Core panel — คุณปันสั่ง 2026-09-08: บล็อกนี้ต้องเด่นจนเลื่อนผ่านไม่ได้ และภาษาต้องคุยกับอาเฮีย/เซลล์แล้วเก็ตทันที
+            item รูปแบบ "หัวข้อสั้น||คำอธิบาย" จะแยกเป็น 2 ชั้น · item ธรรมดาที่ไม่มี || แสดงเหมือนเดิม */}
+        <div data-offer-core-panel class="rounded-[1.75rem] border-2 border-coral/45 bg-[#fff4ec] p-5 shadow-[0_18px_50px_rgba(214,69,80,.14)] sm:p-7">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Core {core.length}</p>
+              <h3 class="mt-2 font-display text-3xl font-bold text-navy sm:text-4xl">สิ่งที่ทีมสร้างเสร็จในห้อง</h3>
+              <p class="mt-2 text-base font-semibold text-navy/70">จบวันได้ {core.length} อย่างนี้กลับบ้านแน่ๆ ไม่ใช่แค่สไลด์กับความรู้</p>
+            </div>
+            <span class="rounded-full bg-coral px-4 py-2 text-sm font-bold text-white shadow-[0_8px_20px_rgba(214,69,80,.3)]">ทำเสร็จในห้อง · ใช้ต่อได้เลย</span>
+          </div>
+          <ol class="mt-6 grid gap-4 sm:grid-cols-2">
+            {core.map((item, index) => {
+              const isHighlight = Boolean(highlight) && item === highlight;
+              const [title, body] = item.includes('||') ? item.split('||') : [item, ''];
+              return (
+                <li
+                  data-offer-core
+                  data-offer-core-highlight={isHighlight ? '' : undefined}
+                  class:list={[
+                    'flex gap-4 rounded-2xl border-l-4 bg-white p-5 shadow-[0_10px_30px_rgba(7,43,78,.08)] leading-7 text-navy',
+                    isHighlight ? 'border-[#d97757] bg-[#fff3ec] sm:col-span-2' : 'border-coral',
+                  ]}
+                >
+                  <span class:list={['flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white', isHighlight ? 'bg-[#d97757]' : 'bg-coral']}>{index + 1}</span>
+                  <span class="min-w-0">
+                    {isHighlight && <span class="mb-1 block text-[11px] font-bold uppercase tracking-[.16em] text-[#c2603f]">ระบบพร้อมใช้บนเครื่องบริษัท · ห้องเดียวกับที่ผมใช้ทุกวัน</span>}
+                    <span class="block text-lg font-bold leading-7">{title}</span>
+                    {body && <span class="mt-1 block text-[15px] font-medium leading-6 text-navy/75">{body}</span>}
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
 
         <div class="mt-8 border-t border-navy/10 pt-7">
           <div class="flex flex-wrap items-end justify-between gap-3">
