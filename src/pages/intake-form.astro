@@ -628,6 +628,12 @@ const budgets = [
     /* URL not available (SSR) or malformed — ignore */
   }
 
+  /** อ่านคุกกี้ที่ Meta Pixel วางไว้ (_fbp / _fbc) — ส่งไปให้ server ใช้กับ Conversions API */
+  function fbCookie(name: string): string {
+    const hit = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return hit ? decodeURIComponent(hit[1]) : '';
+  }
+
   function makeReference(): string {
     const stamp = new Date()
       .toISOString()
@@ -844,6 +850,9 @@ const budgets = [
         user_agent: navigator.userAgent,
         referrer: document.referrer || null,
         path: window.location.pathname,
+        // คุกกี้ Meta Pixel — server ต้องใช้ยิง Conversions API ให้ match กับคนที่คลิกแอด
+        fbp: fbCookie('_fbp'),
+        fbc: fbCookie('_fbc'),
       },
     };
 

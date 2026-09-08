@@ -942,7 +942,9 @@ const faqs = [
           }
           // Meta Pixel — conditional, fires only if loaded
           if (typeof window.fbq === 'function') {
-            try { window.fbq('track', 'Lead', { event_id: ref }); } catch (_) {}
+            // eventID ต้องเป็น argument ที่ 4 ของ fbq — ใส่ event_id ใน custom data (แบบเดิม)
+            // Meta ไม่ได้อ่านเป็น dedupe key เลย ทำให้ยิงจาก server ซ้ำเมื่อไหร่จะนับสองครั้ง
+            try { window.fbq('track', 'Lead', { content_name: 'agent_builder_kit' }, { eventID: ref }); } catch (_) {}
           }
           // TikTok Pixel — conditional, fires only if loaded
           if (typeof window.ttq === 'object' && window.ttq && typeof window.ttq.track === 'function') {

@@ -172,6 +172,16 @@ const {
   // BaseLayout stashes them in pnAttribution with a 14-day TTL.
   const CLICK_ID_KEYS = ['fbclid', 'ttclid'];
 
+  /**
+   * คุกกี้ที่ Meta Pixel วางไว้ในเบราว์เซอร์ — `_fbp` (browser id) และ `_fbc` (มาจาก fbclid ตอนคลิกแอด)
+   * ต้องส่งไปกับ payload ให้ server ยิงเข้า Conversions API ด้วย ไม่งั้น Event Match Quality ต่ำ
+   * และ Meta จับคู่ event ฝั่ง server กับคนที่คลิกแอดไม่ได้
+   */
+  function fbCookie(name: string): string {
+    const hit = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return hit ? decodeURIComponent(hit[1]) : '';
+  }
+
   /** Reference token — same shape as intake-form's makeReference(); also the event_id for CAPI dedupe. */
   function makeFormReference(): string {
     const stamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 12);
@@ -249,6 +259,8 @@ const {
           page: window.location.pathname,
           user_agent: navigator.userAgent,
           referrer: document.referrer || '',
+          fbp: fbCookie('_fbp'),
+          fbc: fbCookie('_fbc'),
         },
       });
       foldAfterHours(payload as Record<string, unknown>);

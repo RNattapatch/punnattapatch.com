@@ -133,6 +133,12 @@ const issues = [
   const SUPABASE_ANON_KEY =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5a29jdmhvcmdjZ3phbHV1bGRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjYwNTYsImV4cCI6MjA5NTgwMjA1Nn0.04ya1crnMRK6SgLfwhhxIp14DQ1n_ZkY5Fj-urTsv1E';
 
+  /** อ่านคุกกี้ที่ Meta Pixel วางไว้ (_fbp / _fbc) — ส่งไปให้ server ใช้กับ Conversions API */
+  function fbCookie(name: string): string {
+    const hit = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return hit ? decodeURIComponent(hit[1]) : '';
+  }
+
   function makeReference(): string {
     const stamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 12);
     return `PN-${stamp}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
@@ -187,6 +193,9 @@ const issues = [
     if ((new FormData(form).get('honeypot-name') as string)?.trim()) return;
     const data = new FormData(form);
     const payload = Object.fromEntries(data.entries());
+    // ออกรหัสอ้างอิงตั้งแต่ตรงนี้ (เดิมออกทีหลังตอน fallback) เพราะมันคือ event_id ที่ทั้ง
+    // pixel ในเบราว์เซอร์และ Conversions API ฝั่ง server ต้องใช้ตัวเดียวกัน Meta ถึงจะ dedupe ได้
+    const reference = makeReference();
     // เบอร์เก็บเป็นตัวเลขล้วน (คง +66 ไว้) — เว้นวรรค/ขีดที่คนพิมพ์มาไม่ต้องไปถึง CRM
     payload.phone = String(payload.phone || '').replace(/[\s()-]/g, '');
     const productNote = productContext && productCode
@@ -206,6 +215,14 @@ const issues = [
       submitted_at: new Date().toISOString(), path: `${window.location.pathname}${window.location.search}`,
       referrer: document.referrer,
       recommended_path: productContext?.route || 'free-consultation',
+      _meta: {
+        reference,
+        page: window.location.pathname,
+        user_agent: navigator.userAgent,
+        referrer: document.referrer || '',
+        fbp: fbCookie('_fbp'),
+        fbc: fbCookie('_fbc'),
+      },
     });
     // ⏰ นอกเวลาทำการ — พ่วงเข้า comment เพราะ n8n Flatten Body1 ยังไม่รู้จัก key นี้
     foldAfterHours(payload as Record<string, unknown>);
@@ -221,8 +238,7 @@ const issues = [
       console.error('[booking] n8n post failed', err);
     }
 
-    // ── ชั้น 2: Supabase RPC ตรง — ใช้เมื่อ n8n ไม่ตอบเท่านั้น
-    const reference = makeReference();
+    // ── ชั้น 2: Supabase RPC ตรง — ใช้เมื่อ n8n ไม่ตอบเท่านั้น (reference ออกไปแล้วด้านบน)
     if (status === 'failed') {
       if (await postSupabaseLead(payload as Record<string, unknown>, reference, 8000)) status = 'sent-fallback';
     }
