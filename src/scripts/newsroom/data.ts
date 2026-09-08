@@ -173,3 +173,81 @@ export async function deleteJob(id: string): Promise<void> {
   const { error } = await supabase.from('newsroom_jobs').delete().eq('id', id);
   fail(error);
 }
+
+// ---------- แก้การ์ด (2026-09-08 · policy "pun edits items") ----------
+
+export type ItemPatch = Partial<Pick<NewsroomItem, 'title' | 'tags'>>;
+
+export async function updateItem(id: string, patch: ItemPatch): Promise<void> {
+  const { error } = await supabase.from('newsroom_items').update(patch).eq('id', id);
+  fail(error);
+}
+
+// ---------- เวอร์ชันบทที่ Codex เกลาเป็นเสียงปัน (intel_scripts · wr_jobs.rewrite_reel) ----------
+// worker บนมินิเป็นคน INSERT หลัง Codex เขียนเสร็จ · หน้าเว็บอ่าน/ลบ/ผูก content_id เท่านั้น
+
+export type Pillar = 'ai_in_business' | 'sales_team' | 'intersection' | 'persona';
+export type HookStyle = 'auto' | 'question' | 'contrarian' | 'number' | 'case' | 'show';
+export type ScriptLength = 'short' | 'mid' | 'long';
+
+export interface RewriteBrief {
+  theme: string;
+  pillar: Pillar | null;
+  hook_style: HookStyle;
+  length: ScriptLength;
+  cta_keyword: string;
+  notes?: string;
+}
+
+export interface IntelScript {
+  id: string;
+  item_id: string;
+  job_id: string | null;
+  title: string;
+  brief: RewriteBrief;
+  script_md: string;
+  content_id: string | null;
+  created_at: string;
+}
+
+export const PILLAR_LABEL: Record<Pillar, string> = {
+  ai_in_business: '40% AI ในธุรกิจจริง',
+  sales_team: '30% ปั้นทีมขาย',
+  intersection: '20% จุดตัด AI×ขาย×ระบบ',
+  persona: '10% ตัวตนปัน',
+};
+export const HOOK_STYLE_LABEL: Record<HookStyle, string> = {
+  auto: 'ตามโครงต้นฉบับ', question: 'คำถามเจ็บจุด', contrarian: 'ขัดความเชื่อ',
+  number: 'ตัวเลข/ผลลัพธ์', case: 'เล่าเคสคนพลาด', show: 'พาไปดูหน้างาน',
+};
+export const LENGTH_LABEL: Record<ScriptLength, string> = { short: '30-45 วิ', mid: '45-75 วิ', long: '75-120 วิ' };
+
+export async function listScripts(itemId: string): Promise<IntelScript[]> {
+  const { data, error } = await supabase
+    .from('intel_scripts').select('*').eq('item_id', itemId)
+    .order('created_at', { ascending: false }).limit(30);
+  fail(error);
+  return (data ?? []) as IntelScript[];
+}
+
+export async function updateScript(id: string, patch: Partial<Pick<IntelScript, 'title' | 'content_id'>>): Promise<void> {
+  const { error } = await supabase.from('intel_scripts').update(patch).eq('id', id);
+  fail(error);
+}
+
+export async function deleteScript(id: string): Promise<void> {
+  const { error } = await supabase.from('intel_scripts').delete().eq('id', id);
+  fail(error);
+}
+
+/** การ์ดมีบทพูดถอดเสียงให้เกลาไหม — ท่าเดียวกับ extractSource ฝั่ง worker (บรรทัด `[m:ss] …`) */
+export function hasTranscript(reportMd: string | null | undefined): boolean {
+  const lines = String(reportMd ?? '').split('\n').filter((l) => /^`?\[\d{1,2}:\d{2}\]`?\s*\S/.test(l.trim()));
+  return lines.join('\n').length >= 120;
+}
+
+/** ประโยค "ตัวอย่างที่ปันเอาไปใช้" จาก Steal-the-structure — ใช้เป็นคำใบ้ตั้งธง */
+export function suggestedTheme(reportMd: string | null | undefined): string {
+  const m = /ตัวอย่างที่ปันเอาไปใช้\s*[:：]?\s*["“]?([^\n"”]{12,200})/.exec(String(reportMd ?? ''));
+  return m ? m[1].trim() : '';
+}

@@ -203,7 +203,13 @@ import AppNav from '../../components/app/AppNav.astro';
   </style>
 
   <script>
-    import { listItems, getItem, signedUrl, listJobs, createJob, retryJob, deleteItem, deleteJob, PLATFORMS, PLATFORM_LABEL as NR_PLATFORM, KIND_LABEL, type NewsroomItem, type NewsroomJob } from '../../scripts/newsroom/data';
+    import {
+      listItems, getItem, signedUrl, listJobs, createJob, retryJob, deleteItem, deleteJob, updateItem, PLATFORMS, PLATFORM_LABEL as NR_PLATFORM, KIND_LABEL,
+      listScripts, updateScript, deleteScript, hasTranscript, suggestedTheme, PILLAR_LABEL, HOOK_STYLE_LABEL, LENGTH_LABEL,
+      type NewsroomItem, type NewsroomJob, type IntelScript, type Pillar, type HookStyle, type ScriptLength,
+    } from '../../scripts/newsroom/data';
+    // "เกลาเป็น version ผม" (2026-09-08): คิว wr_jobs → Codex บนมินิ · ส่งต่อเข้า Content Center เป็น idea + variant RL
+    import { enqueueJob, waitJob, createIdea, createVariant, updateVariant } from '../../scripts/war-room/data';
     import {
       listTargets, updateTarget, createTarget, deleteTarget, listItemsForTarget, recentItems, lanesFor, scoutTarget, scoutTargets, activeBatches, listBatch, subscribeBatch, avatarUrls, listSnapshots, snapshotDiffs, METRIC_LABEL,
       requestDiscovery, subscribeJob, askAgentToFix, linkJobToTarget, coverUrls, acceptSuggestion, dismissSuggestion, daysSince, daysUntil, firedCount,
@@ -229,6 +235,9 @@ import AppNav from '../../components/app/AppNav.astro';
     let unsubDiscover: (() => void) | null = null;
     let discovered: DiscoveryResult | null = null;
     let discoverJobId: string | null = null;
+    // เวอร์ชันบทของการ์ดที่เปิดอยู่ + งานเกลาที่กำลังวิ่ง (คงอยู่แม้ปิด/เปิดโมดัลใหม่ — worker ทำต่อฝั่งมินิ)
+    let scripts: IntelScript[] = [];
+    let rewriteJob: { itemId: string; jobId: string; startedAt: number; elapsed: number } | null = null;
 
     const $ = (id: string) => document.getElementById(id)!;
     const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -691,18 +700,179 @@ import AppNav from '../../components/app/AppNav.astro';
             <div>${cover ? `<img class="w-full rounded-xl border border-base-300" src="${esc(cover)}" alt="ปก: ${esc(x.title || x.kind)}" />` : '<div class="flex aspect-[9/16] items-end rounded-xl bg-base-200 p-4 text-sm opacity-60">[ ไม่มีปก ]</div>'}</div>
             <div>
               <div class="flex flex-wrap items-center gap-2">${badge(x.platform)}<span class="badge badge-outline badge-sm">${esc(KIND_LABEL[x.kind] ?? x.kind)}</span>${tname ? `<span class="badge badge-info badge-sm">แฟ้ม ${esc(tname)}</span>` : ''}${x.channel ? `<span class="text-xs opacity-60">${esc(x.channel)}</span>` : ''}</div>
-              <h2 class="mt-2 font-display text-xl font-bold leading-snug">${esc(x.title || 'ยังไม่มีหัวข้อ')}</h2>
+              ${titleView(x.title)}
               <p class="mt-2 text-sm opacity-70">${esc(x.summary || 'ไม่มีสรุป')}</p>
               <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs opacity-60"><span>${esc(fmtDate(x.scraped_at || x.created_at))}</span>${x.views != null ? `<span class="tabular-nums">${esc(x.views.toLocaleString('th-TH'))} views</span>` : ''}${x.duration_s ? `<span class="tabular-nums">${esc(x.duration_s)} วิ</span>` : ''}${x.score != null ? `<span class="tabular-nums">คะแนน ${esc(x.score)}/10</span>` : ''}</div>
               ${x.verdict ? `<p class="mt-3 rounded-xl bg-base-200 p-3 text-sm">${esc(x.verdict)}</p>` : ''}
               <div class="mt-4 flex flex-wrap gap-2">
                 ${x.source_url && /^https?:\/\//.test(x.source_url) ? `<a class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);" target="_blank" rel="noopener noreferrer" href="${esc(x.source_url)}">เปิดต้นฉบับ ↗</a>` : ''}
                 ${x.report_path ? `<button class="btn btn-sm btn-outline tap-44" data-copy="${esc(x.report_path)}">คัดลอก path รายงาน</button>` : ''}
+                ${x.kind === 'clip' ? `<button class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-navy);" data-rewrite-open>✍️ เกลาเป็น version ผม</button>` : ''}
                 <button class="btn btn-sm btn-ghost text-error tap-44" data-delete-item="${esc(x.id)}">ลบออกจากคลัง</button>
               </div></div></div>
+          ${x.kind === 'clip' ? rewriteSection(x) : ''}
           ${media.filter((m) => m.url).length ? `<section class="mt-6 space-y-3">${media.filter((m) => m.url).map((m) => `<figure><img class="w-full rounded-xl border border-base-300" src="${esc(m.url)}" alt="${esc(m.type)}" loading="lazy" /><figcaption class="mt-1 text-xs opacity-50">${esc(m.type)}</figcaption></figure>`).join('')}</section>` : ''}
           ${x.report_md ? `<article class="nr-report mt-6 border-t border-base-300 pt-5 text-sm">${renderMarkdown(x.report_md)}</article>` : '<p class="mt-6 border-t border-base-300 pt-5 text-sm opacity-60">ยังไม่มีรายงาน</p>'}`;
+        if (x.kind === 'clip') void loadScripts(x.id);
       } catch (e) { $('nr-modal-body').innerHTML = `<p class="py-10 text-center text-error">${esc((e as Error).message)}</p>`; }
+    }
+
+    // ---------- ชื่อการ์ด: แก้ในที่ (✏️ → input · Enter บันทึก · Esc ยกเลิก) ----------
+    function titleView(title: string | null) {
+      return `<div id="nr-title-wrap" class="mt-2 flex items-start gap-2">
+        <h2 class="min-w-0 flex-1 font-display text-xl font-bold leading-snug">${esc(title || 'ยังไม่มีหัวข้อ')}</h2>
+        <button class="btn btn-ghost btn-xs tap-44 shrink-0" data-edit-title aria-label="แก้ชื่อหัวข้อ" title="แก้ชื่อหัวข้อ">✏️</button></div>`;
+    }
+    function titleEditor(title: string | null) {
+      return `<div id="nr-title-wrap" class="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <input id="nr-title-input" class="input input-bordered w-full font-display font-bold" value="${esc(title ?? '')}" maxlength="200" aria-label="ชื่อหัวข้อการ์ด" placeholder="พิมพ์หัวข้อใหม่" />
+        <div class="flex shrink-0 gap-1">
+          <button class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);" data-save-title>บันทึก</button>
+          <button class="btn btn-sm btn-ghost tap-44" data-cancel-title>ยกเลิก</button></div></div>`;
+    }
+    function swapTitle(html: string) { const w = $('nr-title-wrap'); if (w) w.outerHTML = html; }
+    async function saveTitle() {
+      if (!openedItem) return;
+      const input = $('nr-title-input') as HTMLInputElement;
+      const title = input.value.trim();
+      if (!title) return toast('หัวข้อว่างไม่ได้ครับ', 'error');
+      if (title === (openedItem.title ?? '')) { swapTitle(titleView(openedItem.title)); return; }
+      input.disabled = true;
+      try {
+        await updateItem(openedItem.id, { title });
+        openedItem.title = title;
+        swapTitle(titleView(title));
+        toast('บันทึกหัวข้อแล้ว');
+        void Promise.all([loadLibrary(), renderFile()]).catch(() => {});
+      } catch (e) { input.disabled = false; oops(e); }
+    }
+
+    // ---------- "เกลาเป็น version ผม" (เฉพาะการ์ดคลิป) ----------
+    const RESCOUT_NOTE = 'intel:rescout แกะใหม่เพื่อเอาบทพูดไปเกลาเป็นเวอร์ชันปัน';
+    function rewriteSection(x: NewsroomItem) {
+      const ready = hasTranscript(x.report_md);
+      const hint = suggestedTheme(x.report_md);
+      const running = rewriteJob && rewriteJob.itemId === x.id;
+      // DaisyUI 5: radio ที่ใส่ class btn จะโชว์ aria-label เป็นปุ่ม และติดสีเองตอน checked
+      const chip = (v: Pillar, label: string) => `<input type="radio" name="nr-rw-pillar" value="${v}" class="btn btn-xs tap-44" aria-label="${esc(label)}" />`;
+      const form = !ready
+        ? `<div class="mt-3 rounded-xl border border-dashed border-warning/60 bg-warning/10 p-3 text-sm">
+            <p>การ์ดนี้ยังไม่มีบทพูดถอดเสียง (แกะก่อน 4 ก.ย. 2569) — Codex ต้องเห็นบทพูดจริงถึงจะยืมโครงมาเกลาได้</p>
+            ${x.source_url && /^https?:\/\//.test(x.source_url) ? `<button class="btn btn-sm mt-2 tap-44" data-rescout="${esc(x.source_url)}">🔁 แกะใหม่ให้มีบทพูด</button><span class="ml-2 text-xs opacity-60">ได้การ์ดใหม่ใน 3-10 นาที แล้วค่อยกดเกลาจากการ์ดนั้น</span>` : '<p class="mt-1 text-xs opacity-60">ไม่มีลิงก์ต้นฉบับให้แกะใหม่</p>'}
+          </div>`
+        : `<form id="nr-rw-form" class="mt-3 hidden space-y-3" novalidate>
+            <label class="form-control">
+              <span class="label-text text-xs font-semibold">ธง / หัวข้อคลิปของผม <span class="text-error">*</span></span>
+              <textarea id="nr-rw-theme" class="textarea textarea-bordered w-full" rows="2" maxlength="600" placeholder="เช่น คนเป็นเซลล์ ทำคอนเทนต์บอกราคาไป ผิดไหม โดนแบนไหม?" aria-label="ธงหรือหัวข้อคลิป"></textarea>
+              ${hint ? `<span class="label-text-alt mt-1 flex flex-wrap items-center gap-1 text-xs opacity-70">💡 Night Scout เสนอ: "${esc(hint)}" <button type="button" class="btn btn-ghost btn-xs" data-use-hint>ใช้อันนี้</button></span>` : ''}
+            </label>
+            <div class="grid gap-3 sm:grid-cols-2">
+              <div><span class="mb-1 block text-xs font-semibold">หมวด Content Mix</span><div class="flex flex-wrap gap-1">${(Object.keys(PILLAR_LABEL) as Pillar[]).map((k) => chip(k, PILLAR_LABEL[k])).join('')}</div></div>
+              <label class="form-control"><span class="label-text text-xs font-semibold">สไตล์ hook</span>
+                <select id="nr-rw-hook" class="select select-bordered select-sm">${(Object.keys(HOOK_STYLE_LABEL) as HookStyle[]).map((k) => `<option value="${k}">${esc(HOOK_STYLE_LABEL[k])}</option>`).join('')}</select></label>
+              <label class="form-control"><span class="label-text text-xs font-semibold">ความยาว</span>
+                <select id="nr-rw-len" class="select select-bordered select-sm">${(Object.keys(LENGTH_LABEL) as ScriptLength[]).map((k) => `<option value="${k}" ${k === 'mid' ? 'selected' : ''}>${esc(LENGTH_LABEL[k])}</option>`).join('')}</select></label>
+              <label class="form-control"><span class="label-text text-xs font-semibold">คีย์เวิร์ด DM (CTA)</span>
+                <input id="nr-rw-cta" class="input input-bordered input-sm" value="Agent" maxlength="40" /></label>
+            </div>
+            <label class="form-control"><span class="label-text text-xs font-semibold">โน้ตเพิ่ม (ถ้ามี)</span>
+              <input id="nr-rw-notes" class="input input-bordered input-sm" maxlength="1000" placeholder="เช่น เคสจริงที่อยากให้ใส่ · มุมที่ไม่อยากแตะ" /></label>
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="submit" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-navy);" data-rewrite-submit>🚀 ส่งให้ Codex เกลา</button>
+              <button type="button" class="btn btn-sm btn-ghost tap-44" data-rewrite-cancel>ยกเลิก</button>
+              <span class="text-xs opacity-60">Codex บนมินิอ่านบทพูด + voice ของปัน · ปกติ 2-5 นาที</span>
+            </div>
+          </form>`;
+      return `<section id="nr-rewrite" class="mt-6 rounded-2xl border border-base-300 bg-base-200/50 p-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h3 class="font-display font-bold">✍️ บทเวอร์ชันผม <span id="nr-rw-count" class="badge badge-ghost badge-sm"></span></h3>
+          ${ready ? '<button class="btn btn-sm btn-outline tap-44" data-rewrite-open>+ เกลาใหม่</button>' : ''}
+        </div>
+        <p class="mt-1 text-xs opacity-60">ยืม "โครง" ของคลิปนี้มาเขียนเป็นบทของปันตามธงที่เลือก — ห้ามลอกคำ · ออก 3 ชั้น (บทพูด · 🔤 Hook Text · 📝 Caption)</p>
+        ${form}
+        <p id="nr-rw-status" class="mt-3 text-sm ${running ? '' : 'hidden'}" role="status" aria-live="polite">${running ? `⏳ Codex กำลังเกลา… ${rewriteJob!.elapsed} วิ` : ''}</p>
+        <div id="nr-scripts" class="mt-3 space-y-3"><p class="text-xs opacity-50">กำลังโหลดเวอร์ชัน…</p></div>
+      </section>`;
+    }
+    function toggleRewriteForm(show: boolean) {
+      const f = $('nr-rw-form'); if (!f) return;
+      f.classList.toggle('hidden', !show);
+      if (show) ($('nr-rw-theme') as HTMLTextAreaElement).focus();
+    }
+    async function loadScripts(itemId: string) {
+      try { scripts = await listScripts(itemId); } catch (e) { scripts = []; oops(e); }
+      if (openedItem?.id === itemId) renderScripts();
+    }
+    function renderScripts() {
+      const box = document.getElementById('nr-scripts'); if (!box) return;
+      const count = document.getElementById('nr-rw-count'); if (count) count.textContent = scripts.length ? `${scripts.length} เวอร์ชัน` : '';
+      if (!scripts.length) { box.innerHTML = '<p class="text-sm opacity-60">ยังไม่มีเวอร์ชัน — กด "+ เกลาใหม่" แล้วบอกธงที่อยากเล่า</p>'; return; }
+      box.innerHTML = scripts.map((s, i) => {
+        const b = s.brief || ({} as IntelScript['brief']);
+        const meta = [fmtDate(s.created_at), b.pillar ? PILLAR_LABEL[b.pillar] : '', b.hook_style ? HOOK_STYLE_LABEL[b.hook_style] : '', b.length ? LENGTH_LABEL[b.length] : ''].filter(Boolean).join(' · ');
+        return `<details class="rounded-xl border border-base-300 bg-base-100" ${i === 0 ? 'open' : ''}>
+          <summary class="flex cursor-pointer flex-wrap items-center gap-2 p-3">
+            <span class="font-semibold">${esc(s.title)}</span>
+            ${s.content_id ? `<span class="badge badge-success badge-sm">${esc(s.content_id)}</span>` : ''}
+            <span class="text-xs opacity-60">${esc(meta)}</span>
+          </summary>
+          <div class="px-3 pb-3">
+            <article class="nr-report rounded-lg bg-base-200/60 px-3 py-1 text-sm">${renderMarkdown(s.script_md)}</article>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <button class="btn btn-sm btn-outline tap-44" data-script-copy="${esc(s.id)}">📋 คัดลอกบท</button>
+              ${s.content_id
+                ? `<a class="btn btn-sm btn-ghost tap-44" href="/app/content">✅ อยู่ใน Content Center แล้ว (${esc(s.content_id)}) ↗</a>`
+                : `<button class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);" data-script-handoff="${esc(s.id)}">⬆️ ส่งเข้า Content Center</button>`}
+              <button class="btn btn-sm btn-ghost text-error tap-44" data-script-delete="${esc(s.id)}">ลบเวอร์ชัน</button>
+            </div></div></details>`;
+      }).join('');
+    }
+    function setRewriteStatus(text: string) {
+      const el = document.getElementById('nr-rw-status'); if (!el) return;
+      el.textContent = text; el.classList.toggle('hidden', !text);
+    }
+    async function runRewrite() {
+      const x = openedItem; if (!x) return;
+      if (rewriteJob) return toast('มีงานเกลากำลังวิ่งอยู่ รอให้เสร็จก่อนครับ', 'error');
+      const theme = ($('nr-rw-theme') as HTMLTextAreaElement).value.trim();
+      if (theme.length < 8) { toast('บอกธง/หัวข้อคลิปอย่างน้อย 8 ตัวอักษรก่อนครับ', 'error'); ($('nr-rw-theme') as HTMLTextAreaElement).focus(); return; }
+      const pillar = (document.querySelector('input[name="nr-rw-pillar"]:checked') as HTMLInputElement | null)?.value || null;
+      const payload = {
+        item_id: x.id, theme, pillar,
+        hook_style: ($('nr-rw-hook') as HTMLSelectElement).value,
+        length: ($('nr-rw-len') as HTMLSelectElement).value,
+        cta_keyword: ($('nr-rw-cta') as HTMLInputElement).value.trim() || 'Agent',
+        notes: ($('nr-rw-notes') as HTMLInputElement).value.trim(),
+      };
+      const btn = document.querySelector('[data-rewrite-submit]') as HTMLButtonElement | null;
+      if (btn) { btn.disabled = true; btn.classList.add('loading'); }
+      try {
+        const jobId = await enqueueJob('rewrite_reel', payload);
+        rewriteJob = { itemId: x.id, jobId, startedAt: Date.now(), elapsed: 0 };
+        toggleRewriteForm(false);
+        setRewriteStatus('⏳ ส่งเข้าคิว Mac mini แล้ว — Codex กำลังอ่านบทพูด + voice ของปัน (ปกติ 2-5 นาที) ปิดหน้านี้ได้ ผลจะมาอยู่ที่การ์ดนี้');
+        const job = await waitJob(jobId, { timeoutMs: 11 * 60_000, onTick: (s) => { if (rewriteJob) rewriteJob.elapsed = s; if (openedItem?.id === x.id) setRewriteStatus(`⏳ Codex กำลังเกลา… ${s} วิ (ปกติ 2-5 นาที) — ปิดหน้านี้ได้ ผลจะมาอยู่ที่การ์ดนี้`); } });
+        rewriteJob = null;
+        toast('เกลาเสร็จแล้ว ✨ เวอร์ชันใหม่อยู่บนการ์ด');
+        if (openedItem?.id === x.id) { setRewriteStatus(''); await loadScripts(x.id); }
+        void job;
+      } catch (e) {
+        rewriteJob = null;
+        if (openedItem?.id === x.id) { setRewriteStatus(''); toggleRewriteForm(true); }
+        oops(e);
+      } finally { if (btn) { btn.disabled = false; btn.classList.remove('loading'); } }
+    }
+    // ส่งเข้า Content Center: idea (ธง = canonical angle · หมวดตาม brief) + variant RL ที่มีบทอยู่ในช่อง AI ของ Script Studio
+    async function handoffScript(s: IntelScript) {
+      const idea = await createIdea({
+        title: s.title, canonical_angle: s.brief?.theme ?? null, pillar_bucket: s.brief?.pillar ?? null,
+        source_ref: `intel:${s.item_id}${openedItem?.source_url ? ` ${openedItem.source_url}` : ''}`,
+      });
+      const v = await createVariant(idea, 'RL');
+      await updateVariant(v.variant_id, { ai_result: s.script_md, ai_result_at: new Date().toISOString(), cta_keyword: s.brief?.cta_keyword ?? null, variant_status: 'ai_improved' });
+      await updateScript(s.id, { content_id: idea.content_id });
+      s.content_id = idea.content_id;
+      return idea.content_id;
     }
 
     // ---------- คิว ----------
@@ -812,6 +982,36 @@ import AppNav from '../../components/app/AppNav.astro';
           if (!confirm(`ลบ "${openedItem.title || openedItem.kind}" ออกจากคลัง? ไฟล์ปก/ภาพจะถูกลบด้วย`)) return;
           void deleteItem(openedItem).then(() => { ($('nr-modal') as HTMLDialogElement).close(); toast('ลบออกจากคลังแล้ว'); return Promise.all([loadLibrary(), loadJobs(), renderFile()]); }).catch(oops); return;
         }
+        // ชื่อการ์ด (2026-09-08)
+        if (el.closest('[data-edit-title]') && openedItem) { swapTitle(titleEditor(openedItem.title)); const i = $('nr-title-input') as HTMLInputElement; i.focus(); i.select(); return; }
+        if (el.closest('[data-save-title]')) { void saveTitle(); return; }
+        if (el.closest('[data-cancel-title]') && openedItem) { swapTitle(titleView(openedItem.title)); return; }
+        // เกลาเป็น version ผม (2026-09-08)
+        if (el.closest('[data-rewrite-open]')) { toggleRewriteForm(true); $('nr-rewrite')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+        if (el.closest('[data-rewrite-cancel]')) { toggleRewriteForm(false); return; }
+        if (el.closest('[data-use-hint]') && openedItem) { ($('nr-rw-theme') as HTMLTextAreaElement).value = suggestedTheme(openedItem.report_md); ($('nr-rw-theme') as HTMLTextAreaElement).focus(); return; }
+        const rescout = el.closest('[data-rescout]') as HTMLElement | null;
+        if (rescout) {
+          (rescout as HTMLButtonElement).disabled = true;
+          void createJob({ kind: 'clip', target: rescout.dataset.rescout!, note: RESCOUT_NOTE }).then(() => { toast('เข้าคิวแกะใหม่แล้ว — ดูความคืบหน้าที่แท็บคิว'); return loadJobs(); }).catch((err) => { (rescout as HTMLButtonElement).disabled = false; oops(err); });
+          return;
+        }
+        const sCopy = el.closest('[data-script-copy]') as HTMLElement | null;
+        if (sCopy) { const s = scripts.find((y) => y.id === sCopy.dataset.scriptCopy); if (s) void navigator.clipboard.writeText(s.script_md).then(() => toast('คัดลอกบทแล้ว')).catch(() => toast('คัดลอกไม่สำเร็จ', 'error')); return; }
+        const sHand = el.closest('[data-script-handoff]') as HTMLElement | null;
+        if (sHand) {
+          const s = scripts.find((y) => y.id === sHand.dataset.scriptHandoff); if (!s) return;
+          (sHand as HTMLButtonElement).disabled = true;
+          void handoffScript(s).then((cid) => { toast(`ส่งเข้า Content Center แล้ว — ${cid}`); renderScripts(); }).catch((err) => { (sHand as HTMLButtonElement).disabled = false; oops(err); });
+          return;
+        }
+        const sDel = el.closest('[data-script-delete]') as HTMLElement | null;
+        if (sDel) {
+          const s = scripts.find((y) => y.id === sDel.dataset.scriptDelete); if (!s) return;
+          if (!confirm(`ลบเวอร์ชัน "${s.title}"?${s.content_id ? ` (ไอเดีย ${s.content_id} ใน Content Center ยังอยู่)` : ''}`)) return;
+          void deleteScript(s.id).then(() => { scripts = scripts.filter((y) => y.id !== s.id); renderScripts(); toast('ลบเวอร์ชันแล้ว'); }).catch(oops);
+          return;
+        }
         const goto = el.closest('[data-goto-target]') as HTMLElement | null;
         if (goto) { openTargetFromQueue(goto.dataset.gotoTarget!); return; }
         const found = el.closest('[data-show-found]') as HTMLElement | null;
@@ -844,6 +1044,15 @@ import AppNav from '../../components/app/AppNav.astro';
         try { await createJob({ kind: ($('nr-jobkind') as HTMLSelectElement).value, target, note: ($('nr-note') as HTMLInputElement).value }); ($('nr-target-input') as HTMLTextAreaElement).value = ''; ($('nr-note') as HTMLInputElement).value = ''; toast('เข้าคิวแล้ว — Scout บนมินิรับต่อ'); await loadJobs(); }
         catch (e) { oops(e); } finally { btn.disabled = false; }
       })());
+      // Enter = บันทึกชื่อ · Esc = ยกเลิก (ในช่องแก้ชื่อเท่านั้น — Esc นอกช่องยังปิดโมดัลตามปกติ)
+      document.addEventListener('keydown', (e) => {
+        const t = e.target as HTMLElement;
+        if (t?.id === 'nr-title-input') {
+          if (e.key === 'Enter') { e.preventDefault(); void saveTitle(); }
+          else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); if (openedItem) swapTitle(titleView(openedItem.title)); }
+        }
+      }, true);
+      document.addEventListener('submit', (e) => { if ((e.target as HTMLElement).id === 'nr-rw-form') { e.preventDefault(); void runRewrite(); } });
       document.addEventListener('visibilitychange', syncPolling);
     }
 

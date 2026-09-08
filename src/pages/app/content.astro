@@ -478,7 +478,10 @@ import AppNav from '../../components/app/AppNav.astro';
               <span class="font-mono text-xs opacity-60">${esc(idea.content_id)}</span>
               <button data-action="copy-id" data-v="${esc(idea.content_id)}" class="btn btn-ghost btn-xs" aria-label="copy content id">📋</button>
             </div>
-            <h2 class="font-display text-lg font-bold leading-snug">${esc(idea.title)}</h2>
+            <div id="wr-title-wrap" class="flex items-start gap-2">
+              <h2 class="min-w-0 flex-1 font-display text-lg font-bold leading-snug">${esc(idea.title)}</h2>
+              <button data-action="edit-title" class="btn btn-ghost btn-xs tap-44 shrink-0" aria-label="แก้ชื่อหัวข้อ" title="แก้ชื่อหัวข้อ">✏️</button>
+            </div>
           </div>
         </div>
         <label class="form-control mt-2">
@@ -500,6 +503,31 @@ import AppNav from '../../components/app/AppNav.astro';
         ${idea.acid_test !== 'passed' ? `<p class="mt-2 rounded-lg bg-warning/20 px-3 py-2 text-xs">🧪 Triage Gate: ถามก่อนถ่าย — "ตัดหน้า/ชื่อปันออก คนดูยังได้ของกลับบ้านไหม?" ผ่านแล้วตั้ง acid: passed ก่อนเข้า weekly plan</p>` : ''}
         <h3 class="mt-4 font-display text-sm font-bold">Variants <span class="font-normal opacity-50">(format เท่านั้น — platform บันทึกตอนลงจริง)</span></h3>
         <div class="mt-2 grid gap-2 sm:grid-cols-2">${variantCards}</div>`;
+    }
+
+    // ---------- แก้ชื่อไอเดียในที่ (2026-09-08 · ✏️ → input · Enter บันทึก · Esc ยกเลิก) ----------
+    function titleEditorHtml(title: string) {
+      return `<div id="wr-title-wrap" class="flex flex-col gap-2">
+        <input id="wr-title-input" class="input input-bordered input-sm w-full font-display font-bold" value="${esc(title)}" maxlength="200" aria-label="ชื่อหัวข้อไอเดีย" />
+        <div class="flex gap-1">
+          <button data-action="save-title" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);">บันทึก</button>
+          <button data-action="cancel-title" class="btn btn-sm btn-ghost tap-44">ยกเลิก</button></div></div>`;
+    }
+    async function saveIdeaTitle() {
+      const idea = ideas.find((i) => i.content_id === selectedId);
+      const input = $('wr-title-input') as HTMLInputElement | null;
+      if (!idea || !input) return;
+      const title = input.value.trim();
+      if (!title) return toast('หัวข้อว่างไม่ได้ครับ', 'error');
+      if (title === idea.title) { renderDetail(); return; }
+      input.disabled = true;
+      try {
+        await updateIdea(idea.content_id, { title });
+        idea.title = title;                       // การ์ดบนบอร์ดโชว์ idea.title → อัปเดตทันทีไม่ต้องรอ refresh
+        for (const v of variants) if (v.content_id === idea.content_id) v.working_title = title;
+        renderBoard(); renderList(); renderDetail();
+        toast('บันทึกหัวข้อแล้ว');
+      } catch (err) { input.disabled = false; oops(err); }
     }
 
     // ---------- drawer open/close ----------
@@ -781,7 +809,15 @@ import AppNav from '../../components/app/AppNav.astro';
       // Drawer close
       $('wr-drawer-close').addEventListener('click', closeDrawer);
       $('wr-drawer-scrim').addEventListener('click', closeDrawer);
-      document.addEventListener('keydown', (e) => { if ((e as KeyboardEvent).key === 'Escape' && !$('wr-drawer').classList.contains('hidden')) closeDrawer(); });
+      document.addEventListener('keydown', (e) => {
+        const k = e as KeyboardEvent;
+        if ((k.target as HTMLElement)?.id === 'wr-title-input') {          // ในช่องแก้ชื่อ: Enter บันทึก · Esc แค่ยกเลิกแก้ ไม่ปิดแผง
+          if (k.key === 'Enter') { k.preventDefault(); void saveIdeaTitle(); }
+          else if (k.key === 'Escape') { k.preventDefault(); renderDetail(); }
+          return;
+        }
+        if (k.key === 'Escape' && !$('wr-drawer').classList.contains('hidden')) closeDrawer();
+      });
 
       // Detail — click delegation
       $('wr-detail-body').addEventListener('click', (e) => void (async () => {
@@ -791,6 +827,9 @@ import AppNav from '../../components/app/AppNav.astro';
         if (!idea) return;
         try {
           switch (el.dataset.action) {
+            case 'edit-title': { $('wr-title-wrap').outerHTML = titleEditorHtml(idea.title); const i = $('wr-title-input') as HTMLInputElement; i.focus(); i.select(); break; }
+            case 'save-title': await saveIdeaTitle(); break;
+            case 'cancel-title': renderDetail(); break;
             case 'copy-id': await copyText(el.dataset.v!); toast(`คัดลอก ${el.dataset.v}`); break;
             case 'create-variant': await createVariant(idea, el.dataset.code as FormatCode); toast('สร้าง variant แล้ว'); await refresh(); break;
             case 'studio': openStudio(el.dataset.v!); break;

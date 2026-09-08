@@ -231,7 +231,8 @@ export async function addSnapshot(publication_id: string, metrics: SnapshotInput
 // หน้าเว็บ HTTPS เรียก mini ตรงๆ ไม่ได้ (mixed content) → insert job ที่นี่
 // worker บน mini (launchd com.pun.wrjobs-worker) poll ทุก 12s แล้วเขียนผลกลับ
 
-export type JobType = 'render_card' | 'ai_improve' | 'publish' | 'rewrite_copy' | 'render_text_card';
+// rewrite_reel (2026-09-08): Intel Warroom → "เกลาเป็น version ผม" — payload {item_id, theme, pillar, hook_style, length, cta_keyword}
+export type JobType = 'render_card' | 'ai_improve' | 'publish' | 'rewrite_copy' | 'render_text_card' | 'rewrite_reel';
 export interface WrJob {
   id: string;
   job_type: JobType;
