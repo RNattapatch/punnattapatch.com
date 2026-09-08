@@ -27,6 +27,8 @@ interface Props {
   bookingType: string;
   /** คำนำหน้าชื่อ event: <prefix>_form / <prefix>_booking / line_add_<prefix> */
   eventPrefix: string;
+  /** LP ที่เจาะ vertical เดียว (เช่น /ads/dealer-ai-sales) รู้ industry จากหน้าเลย ไม่ต้องถามเพิ่ม → business_type ใน CRM */
+  industry?: string;
   eyebrow?: string;
   heading: string;
   intro: string;
@@ -44,6 +46,7 @@ const {
   source,
   bookingType,
   eventPrefix,
+  industry = '',
   eyebrow = 'จองคิวคุยฟรี',
   heading,
   intro,
@@ -72,6 +75,7 @@ const {
       data-source={source}
       data-booking-type={bookingType}
       data-event-prefix={eventPrefix}
+      data-industry={industry}
     >
       <input name="honeypot-name" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true" />
       <div class="space-y-5">
@@ -184,6 +188,7 @@ const {
     const source = form.dataset.source || '';
     const bookingType = form.dataset.bookingType || '';
     const prefix = form.dataset.eventPrefix || 'product';
+    const industry = form.dataset.industry || '';
     const viewEvent = `${prefix}_form`;
     const leadEvent = `${prefix}_booking`;
 
@@ -230,7 +235,7 @@ const {
         // Compatibility aliases for the shared intake-form-v2 flow + submit_lead RPC
         // (it reads company/tier/problems/comment, not the raw field names).
         company: payload.business || '',
-        industry: '',
+        industry,
         tier: payload.intent === 'booking' ? 'HOT' : 'WARM',
         problems: (payload.sales_issue as string) || '',
         comment: [intentLabel, payload.sales_issue].filter(Boolean).join(' — '),

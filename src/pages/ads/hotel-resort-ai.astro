@@ -1,0 +1,49 @@
+---
+/**
+ * /ads/hotel-resort-ai — Hotel & Resort Edition ของ T4 (คืนชีพ 2026-09-08)
+ *
+ * URL นี้คือปลายทางเดิมของแอด Reel "AI กับงานโรงแรม ทำได้มากกว่าเขียนเมลแปลภาษา" (CPL ถูกสุดของบัญชี · lead CEO/MD 10/10)
+ * ระหว่าง 2026-08-30 → 09-08 มัน redirect ไป /services รวม ทำให้คนจากคลิปโรงแรมไปเจอหน้ารวม 6 บริการ
+ * คลิปพูดชื่อ "Advance AI & Business Automation" อยู่แล้ว = T4 พอดี · หน้านี้เล่า T4 ด้วยงานของโรงแรม
+ * source/booking/pixel event ใช้ชื่อเดิมเพื่อให้เทียบกับ cohort ส.ค. ได้
+ * ออกแบบ: wiki/pages/strategy-industry-edition-front-doors-dealer-hotel-t4-2026-09.md (repo ความรู้)
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductDetailLayout from '../../components/services/detail/ProductDetailLayout.astro';
+import ProductLeadForm from '../../components/forms/ProductLeadForm.astro';
+import { resolveProductDetailCatalog } from '../../data/product-details/catalog';
+import { T4_HOTEL_EDITION } from '../../data/product-details/t4-hotel';
+import { SITE } from '../../data/site';
+
+const data = T4_HOTEL_EDITION;
+const catalog = resolveProductDetailCatalog(data.pricingKey);
+const canonical = `${SITE.url}${data.route}`;
+---
+
+<BaseLayout
+  title={data.seo.title}
+  description={data.seo.description}
+  canonical={canonical}
+  ogImage={`${SITE.url}/testimonial/2026-07/scenery/scenery-room.jpg`}
+  noindex
+  robots="noindex,follow"
+  schema={{ types: ['WebPage', 'FAQPage', 'BreadcrumbList', 'ProductDetail'], title: data.seo.title, description: data.seo.description, url: canonical, faq: data.faq, breadcrumbs: [{ name: 'บริการ', url: `${SITE.url}/services` }, { name: catalog.name, url: `${SITE.url}/services/advance-ai-automation` }, { name: 'Hotel & Resort Edition', url: canonical }], productDetail: { code: data.code, kind: data.kind, name: catalog.name, description: data.seo.description, url: canonical, duration: catalog.duration } }}
+>
+  <ProductDetailLayout data={data} />
+  {/* ฟอร์มอยู่ในหน้าเลย — Lead ยิงตอนส่งสำเร็จบนหน้าเดียวกัน ไม่พึ่ง redirect ที่ in-app browser ของ FB/IG กลืน
+      source / bookingType / eventPrefix ตั้งใจใช้ชื่อเดิมของหน้า ส.ค. (ads-hotel-resort-ai · hotel_ai_booking)
+      เพื่อให้ Meta optimize ต่อจาก conversion เดิม และ CRM เทียบ cohort ได้ · industry คงที่เพราะหน้านี้เจาะ vertical เดียว */}
+  <ProductLeadForm
+    code={data.code}
+    source="ads-hotel-resort-ai"
+    bookingType="t4-ai-workflow-pilot-day"
+    eventPrefix="hotel_ai"
+    industry="โรงแรม / รีสอร์ท"
+    heading="เล่าให้ผมฟังว่างานซ้ำที่กินเวลาทีมโรงแรมคุณคืออะไร"
+    intro="กรอกข้อมูลสั้นๆ ไว้ครับ เดี๋ยวผมทักกลับทาง LINE หรือโทรศัพท์ แล้วคุยกัน 15–20 นาที ว่างานไหนของทีม Front หรือ Reservation คุ้มที่จะยกเข้าห้องเป็น Workflow แรก และงานไหนยังไม่ควรแตะ"
+    issuePlaceholder="เช่น แขกทักตอนดึกวันละ 50 ข้อความ ตอบไม่ทัน / ราคาแต่ละฤดูอยู่ในหัวคนเดียว"
+    lineUrl={SITE.social.line}
+    lineLabel="ทัก LINE เล่างานที่ซ้ำให้ผมดู"
+    lineNote="ยังไม่อยากกรอกฟอร์ม? ทักไลน์มาเล่าสั้นๆ ก่อนก็ได้ครับ"
+  />
+</BaseLayout>

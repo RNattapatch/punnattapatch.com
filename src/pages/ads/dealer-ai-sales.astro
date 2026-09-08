@@ -1,0 +1,48 @@
+---
+/**
+ * /ads/dealer-ai-sales — Dealer Edition ของ T4 (คืนชีพ 2026-09-08)
+ *
+ * URL นี้คือปลายทางเดิมของแอด "เซลล์ขายรถลืมตามลูกค้า = ยอดรั่วทุกเดือน" (ก.ค.–ส.ค. 2026 · lead 70% เข้า Discovery)
+ * ระหว่าง 2026-08-30 → 09-08 มัน redirect ไป /ads/dealer-online-sales (T2 · 2 วัน) ซึ่งเป็นคนละสินค้ากับที่คลิปพูด
+ * ตอนนี้ขาย T4 (1 วัน · 1 Workflow) ในภาษาโชว์รูม · source/booking/pixel event ใช้ชื่อเดิมเพื่อให้เทียบกับ cohort ส.ค. ได้
+ * ออกแบบ: wiki/pages/strategy-industry-edition-front-doors-dealer-hotel-t4-2026-09.md (repo ความรู้)
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductDetailLayout from '../../components/services/detail/ProductDetailLayout.astro';
+import ProductLeadForm from '../../components/forms/ProductLeadForm.astro';
+import { resolveProductDetailCatalog } from '../../data/product-details/catalog';
+import { T4_DEALER_EDITION } from '../../data/product-details/t4-dealer';
+import { SITE } from '../../data/site';
+
+const data = T4_DEALER_EDITION;
+const catalog = resolveProductDetailCatalog(data.pricingKey);
+const canonical = `${SITE.url}${data.route}`;
+---
+
+<BaseLayout
+  title={data.seo.title}
+  description={data.seo.description}
+  canonical={canonical}
+  ogImage={`${SITE.url}/lp/inhouse/hero-pointing.jpg`}
+  noindex
+  robots="noindex,follow"
+  schema={{ types: ['WebPage', 'FAQPage', 'BreadcrumbList', 'ProductDetail'], title: data.seo.title, description: data.seo.description, url: canonical, faq: data.faq, breadcrumbs: [{ name: 'บริการ', url: `${SITE.url}/services` }, { name: catalog.name, url: `${SITE.url}/services/advance-ai-automation` }, { name: 'Dealer Edition', url: canonical }], productDetail: { code: data.code, kind: data.kind, name: catalog.name, description: data.seo.description, url: canonical, duration: catalog.duration } }}
+>
+  <ProductDetailLayout data={data} />
+  {/* ฟอร์มอยู่ในหน้าเลย — Lead ยิงตอนส่งสำเร็จบนหน้าเดียวกัน ไม่พึ่ง redirect ที่ in-app browser ของ FB/IG กลืน
+      source / bookingType / eventPrefix ตั้งใจใช้ชื่อเดิมของหน้า ก.ค.–ส.ค. (ads-dealer-ai-sales · dealer_ai_booking)
+      เพื่อให้ Meta optimize ต่อจาก conversion เดิม และ CRM เทียบ cohort ได้ · industry คงที่เพราะหน้านี้เจาะ vertical เดียว */}
+  <ProductLeadForm
+    code={data.code}
+    source="ads-dealer-ai-sales"
+    bookingType="t4-ai-workflow-pilot-day"
+    eventPrefix="dealer_ai"
+    industry="ดีลเลอร์รถ / โชว์รูม"
+    heading="เล่าให้ผมฟังว่างานตามลูกค้าที่รั่วในโชว์รูมคุณคืออะไร"
+    intro="กรอกข้อมูลสั้นๆ ไว้ครับ เดี๋ยวผมทักกลับทาง LINE หรือโทรศัพท์ แล้วคุยกัน 15–20 นาที ว่างานไหนของทีมขายคุ้มที่จะยกเข้าห้องเป็น Workflow แรก และงานไหนยังไม่ควรแตะ"
+    issuePlaceholder="เช่น ลูกค้าทดลองขับแล้วเงียบ ไม่มีใครตามต่อ / ตารางผ่อนต้องทำมือทุกครั้ง"
+    lineUrl={SITE.social.line}
+    lineLabel="ทัก LINE เล่างานที่รั่วให้ผมดู"
+    lineNote="ยังไม่อยากกรอกฟอร์ม? ทักไลน์มาเล่าสั้นๆ ก่อนก็ได้ครับ"
+  />
+</BaseLayout>
