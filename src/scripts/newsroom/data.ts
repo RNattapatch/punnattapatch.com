@@ -240,6 +240,17 @@ export async function deleteScript(id: string): Promise<void> {
   fail(error);
 }
 
+/** ชื่อการ์ดหลายใบจาก id — คิวงานใน Content Center ใช้โชว์ว่างาน rewrite_reel มาจากการ์ดไหน */
+export async function listItemTitles(ids: string[]): Promise<Map<string, { title: string | null; source_url: string | null }>> {
+  const out = new Map<string, { title: string | null; source_url: string | null }>();
+  const clean = [...new Set(ids.filter((id) => /^[0-9a-f-]{36}$/i.test(id)))];
+  if (!clean.length) return out;
+  const { data, error } = await supabase.from('newsroom_items').select('id,title,source_url').in('id', clean);
+  fail(error);
+  for (const row of (data ?? []) as { id: string; title: string | null; source_url: string | null }[]) out.set(row.id, { title: row.title, source_url: row.source_url });
+  return out;
+}
+
 /** การ์ดมีบทพูดถอดเสียงให้เกลาไหม — ท่าเดียวกับ extractSource ฝั่ง worker (บรรทัด `[m:ss] …`) */
 export function hasTranscript(reportMd: string | null | undefined): boolean {
   const lines = String(reportMd ?? '').split('\n').filter((l) => /^`?\[\d{1,2}:\d{2}\]`?\s*\S/.test(l.trim()));

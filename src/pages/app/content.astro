@@ -20,6 +20,7 @@ import AppNav from '../../components/app/AppNav.astro';
       <div role="tablist" aria-label="มุมมอง" class="join rounded-full border border-base-300 p-0.5">
         <button id="wr-view-board" role="tab" aria-selected="true" class="join-item btn btn-sm rounded-full border-0 text-white tap-44" style="background-color:var(--color-brand-navy);">🗂 Board</button>
         <button id="wr-view-list" role="tab" aria-selected="false" class="join-item btn btn-sm rounded-full border-0 btn-ghost tap-44">📋 List</button>
+        <button id="wr-view-queue" role="tab" aria-selected="false" class="join-item btn btn-sm rounded-full border-0 btn-ghost tap-44">⏳ คิว <span id="wr-queue-badge" class="badge badge-warning badge-sm ml-1 hidden">0</span></button>
       </div>
     </div>
 
@@ -48,6 +49,27 @@ import AppNav from '../../components/app/AppNav.astro';
 
         <!-- Columns -->
         <div id="wr-board" class="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-3"></div>
+      </section>
+
+      <!-- ============ QUEUE VIEW (2026-09-08) — งาน AI ที่ Mac mini กำลังทำ: ✨ เกลาบท (Script Studio) · ✍️ version ผม (Intel Warroom) ============ -->
+      <section id="wr-queue-view" class="hidden space-y-3" aria-label="คิวงาน AI">
+        <div id="wr-queue-health" class="rounded-2xl border border-base-300 bg-base-200/60 px-4 py-3 text-sm" role="status" aria-live="polite">กำลังโหลดคิว…</div>
+        <div class="flex flex-wrap items-center gap-2">
+          <div id="wr-queue-filter" class="flex flex-wrap gap-1">
+            <button class="btn btn-xs tap-44 btn-active" data-qf="all">ทั้งหมด</button>
+            <button class="btn btn-xs tap-44" data-qf="ai_improve">✨ เกลาบท</button>
+            <button class="btn btn-xs tap-44" data-qf="rewrite_reel">✍️ version ผม</button>
+            <button class="btn btn-xs tap-44" data-qf="other">อื่นๆ (News Desk)</button>
+          </div>
+          <button id="wr-queue-refresh" class="btn btn-ghost btn-xs tap-44 ml-auto" aria-label="รีเฟรชคิว">⟳ รีเฟรช</button>
+        </div>
+        <div class="overflow-x-auto rounded-2xl border border-base-300">
+          <table class="table table-sm">
+            <thead><tr><th>งาน</th><th>การ์ด / ธง</th><th>สถานะ</th><th>ส่งเมื่อ</th><th></th></tr></thead>
+            <tbody id="wr-queue"></tbody>
+          </table>
+        </div>
+        <p class="text-xs opacity-60">worker บน Mac mini หยิบทีละงานทุก 12 วินาที · Codex ใช้ 2-10 นาทีต่องาน · ปิดหน้านี้ได้ งานไม่หยุด · งานที่วิ่งเกิน 20 นาที = ผิดปกติ ให้พิมพ์ใน Telegram ว่า <code>scout: status</code> หรือสั่ง <code>launchctl kickstart -k gui/$(id -u)/com.pun.wrjobs-worker</code> บนมินิ</p>
       </section>
 
       <!-- ============ LIST VIEW ============ -->
@@ -203,10 +225,11 @@ import AppNav from '../../components/app/AppNav.astro';
       listIdeas, listVariants, listPublications, snapshotPubIds, findSimilar,
       createIdea, updateIdea, createVariant, updateVariant, addPublication,
       setDecision, addSnapshot, buildVariantMarkdown, downloadText, copyText,
-      enqueueJob, waitJob,
+      enqueueJob, waitJob, listWrJobs, retryWrJob, deleteWrJob,
       type Idea, type Variant, type Publication, type FormatCode,
-      type IdeaStatus, type VariantStatus, type DecisionLabel,
+      type IdeaStatus, type VariantStatus, type DecisionLabel, type WrJob,
     } from '../../scripts/war-room/data';
+    import { listItemTitles } from '../../scripts/newsroom/data';
     import { supabase, getSupabaseSession } from '../../scripts/dashboard/supabase';
 
     // ---------- state ----------
@@ -218,7 +241,12 @@ import AppNav from '../../components/app/AppNav.astro';
     let filter = 'all';
     let search = '';
     let boardSearch = '';
-    let view: 'board' | 'list' = 'board';
+    let view: 'board' | 'list' | 'queue' = 'board';
+    // คิวงาน AI (wr_jobs) — badge นับงานที่รอ/กำลังทำ · ตารางเต็มเมื่อเปิดมุมมองคิว
+    let wrJobs: WrJob[] = [];
+    let itemTitles = new Map<string, { title: string | null; source_url: string | null }>();
+    let queueFilter: 'all' | 'ai_improve' | 'rewrite_reel' | 'other' = 'all';
+    let queueTimer = 0;
     let pendingIdea: { title: string; angle: string; source: 'list' | 'quick' } | null = null;
     let studioVariantId: string | null = null;
     let snapPubId: string | null = null;
@@ -545,19 +573,109 @@ import AppNav from '../../components/app/AppNav.astro';
     }
 
     // ---------- view toggle ----------
-    function setView(v: 'board' | 'list') {
+    function setView(v: 'board' | 'list' | 'queue') {
       view = v;
       $('wr-board-view').classList.toggle('hidden', v !== 'board');
       $('wr-list-view').classList.toggle('hidden', v !== 'list');
-      const b = $('wr-view-board'), l = $('wr-view-list');
-      b.setAttribute('aria-selected', String(v === 'board'));
-      l.setAttribute('aria-selected', String(v === 'list'));
-      b.classList.toggle('btn-ghost', v !== 'board');
-      l.classList.toggle('btn-ghost', v !== 'list');
-      (b as HTMLElement).style.backgroundColor = v === 'board' ? 'var(--color-brand-navy)' : '';
-      (l as HTMLElement).style.backgroundColor = v === 'list' ? 'var(--color-brand-navy)' : '';
-      b.classList.toggle('text-white', v === 'board');
-      l.classList.toggle('text-white', v === 'list');
+      $('wr-queue-view').classList.toggle('hidden', v !== 'queue');
+      for (const [id, key] of [['wr-view-board', 'board'], ['wr-view-list', 'list'], ['wr-view-queue', 'queue']] as const) {
+        const el = $(id), on = v === key;
+        el.setAttribute('aria-selected', String(on));
+        el.classList.toggle('btn-ghost', !on);
+        el.classList.toggle('text-white', on);
+        el.style.backgroundColor = on ? 'var(--color-brand-navy)' : '';
+      }
+      if (v === 'queue') void loadQueue().catch(oops);
+      syncQueuePolling();
+    }
+
+    // ---------- คิวงาน AI (wr_jobs · 2026-09-08) ----------
+    // คุณปันขอ: "อยากดูว่าการ์ดไหนกำลังให้ AI improve อยู่ / งานที่มาจากกดเกลาเป็น version ผมใน Warroom กำลังทำอยู่ ไม่มีปัญหาใช่ไหม"
+    const JOB_TONE: Record<string, string> = { queued: 'badge-warning', running: 'badge-primary', done: 'badge-success', error: 'badge-error' };
+    const JOB_LABEL: Record<string, string> = {
+      ai_improve: '✨ เกลาบท (Script Studio)', rewrite_reel: '✍️ version ผม (Intel Warroom)',
+      rewrite_copy: '✍️ เขียนข่าวใหม่ (News Desk)', render_text_card: '🖼 การ์ดตัวอักษร', render_card: '🎨 การ์ดซีน AI', publish: '🚀 โพสต์',
+    };
+    const STALL_MS = 20 * 60_000;
+    const mmss = (ms: number) => `${Math.floor(ms / 60_000)}:${String(Math.floor((ms % 60_000) / 1000)).padStart(2, '0')}`;
+    const fmtWhen = (iso: string) => new Date(iso).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' });
+    const jobIsMine = (j: WrJob) => j.job_type === 'ai_improve' || j.job_type === 'rewrite_reel';
+
+    async function loadQueue() {
+      wrJobs = await listWrJobs(60);
+      const pending = wrJobs.filter((j) => j.status === 'queued' || j.status === 'running');
+      const b = $('wr-queue-badge');
+      b.textContent = String(pending.length);
+      b.classList.toggle('hidden', pending.length === 0);
+      // ชื่อการ์ด Intel ของงาน rewrite_reel — ดึงเฉพาะที่ยังไม่รู้
+      const need = wrJobs.map((j) => (j.payload as { item_id?: string })?.item_id).filter((id): id is string => !!id && !itemTitles.has(id));
+      if (need.length) { try { for (const [id, v] of await listItemTitles(need)) itemTitles.set(id, v); } catch { /* ชื่อไม่มา ยังโชว์ id ได้ */ } }
+      if (view === 'queue') renderQueue();
+    }
+
+    function jobSubject(j: WrJob): { text: string; sub: string; href: string | null; variantId: string | null } {
+      const p = (j.payload ?? {}) as Record<string, unknown>;
+      if (j.job_type === 'ai_improve') {
+        const vid = String(p.variant_id ?? '');
+        const v = variants.find((x) => x.variant_id === vid);
+        const idea = ideas.find((i) => i.content_id === v?.content_id);
+        return { text: idea?.title ?? v?.working_title ?? vid ?? '—', sub: vid, href: null, variantId: vid || null };
+      }
+      if (j.job_type === 'rewrite_reel') {
+        const id = String(p.item_id ?? '');
+        const it = itemTitles.get(id);
+        return { text: String(p.theme ?? '—'), sub: it?.title ? `จากการ์ด: ${it.title}` : (id ? `การ์ด ${id.slice(0, 8)}…` : ''), href: id ? `/app/intel?item=${encodeURIComponent(id)}` : null, variantId: null };
+      }
+      const cid = String(p.candidate_id ?? '');
+      return { text: cid ? `ข่าว ${cid.slice(0, 8)}…` : '—', sub: '', href: '/app/news-desk', variantId: null };
+    }
+
+    function renderQueue() {
+      const now = Date.now();
+      const rows = wrJobs.filter((j) => queueFilter === 'all' ? true : queueFilter === 'other' ? !jobIsMine(j) : j.job_type === queueFilter);
+      const running = wrJobs.filter((j) => j.status === 'running');
+      const queued = wrJobs.filter((j) => j.status === 'queued');
+      const stalled = running.filter((j) => j.started_at && now - new Date(j.started_at).getTime() > STALL_MS);
+      // worker ตาย = มีงานรอเกิน 1 นาทีแต่ไม่มีอะไร running (worker หยิบทุก 12 วิ)
+      const oldestQueued = queued.length ? Math.min(...queued.map((j) => new Date(j.created_at).getTime())) : 0;
+      const workerSilent = queued.length > 0 && running.length === 0 && now - oldestQueued > 60_000;
+      const lastDone = wrJobs.filter((j) => j.status === 'done' && j.finished_at).sort((a, b) => String(b.finished_at).localeCompare(String(a.finished_at)))[0];
+      const health = $('wr-queue-health');
+      if (stalled.length || workerSilent) {
+        health.className = 'rounded-2xl border border-error/50 bg-error/10 px-4 py-3 text-sm';
+        health.innerHTML = stalled.length
+          ? `⚠️ <b>งานวิ่งนานผิดปกติ ${stalled.length} งาน</b> (เกิน 20 นาที) — Codex/worker บนมินิอาจค้าง · ลองรอถึง 25 นาทีแล้วกด "ลองใหม่" หรือสั่ง kickstart worker`
+          : `⚠️ <b>มีงานรอคิว ${queued.length} งาน แต่ worker ยังไม่หยิบ</b> เกิน 1 นาที — worker บนมินิอาจไม่ทำงาน · พิมพ์ใน Telegram: <code>scout: status</code>`;
+      } else {
+        health.className = 'rounded-2xl border border-base-300 bg-base-200/60 px-4 py-3 text-sm';
+        health.innerHTML = running.length
+          ? `🟢 <b>กำลังทำ ${running.length} งาน</b>${queued.length ? ` · รอคิว ${queued.length}` : ''} — ${running.map((j) => `${JOB_LABEL[j.job_type] ?? j.job_type} ${j.started_at ? mmss(now - new Date(j.started_at).getTime()) : ''} นาที`).join(' · ')}`
+          : queued.length ? `🟡 <b>รอคิว ${queued.length} งาน</b> — worker หยิบภายใน 12 วินาที`
+          : `✅ <b>คิวว่าง</b> ไม่มีงานค้าง${lastDone?.finished_at ? ` · งานล่าสุดเสร็จ ${fmtWhen(lastDone.finished_at)}` : ''}`;
+      }
+      $('wr-queue').innerHTML = rows.length ? rows.map((j) => {
+        const s = jobSubject(j);
+        const started = j.started_at ? new Date(j.started_at).getTime() : 0;
+        const stateNote = j.status === 'running' && started ? `<span class="ml-1 text-xs tabular-nums ${now - started > STALL_MS ? 'text-error font-semibold' : 'opacity-60'}">${mmss(now - started)} นาที${now - started > STALL_MS ? ' ⚠️' : ''}</span>`
+          : j.status === 'queued' ? `<span class="ml-1 text-xs opacity-60">อันดับ ${queued.findIndex((q) => q.id === j.id) + 1}</span>`
+          : j.status === 'done' && j.finished_at && started ? `<span class="ml-1 text-xs opacity-60">ใช้ ${mmss(new Date(j.finished_at).getTime() - started)} นาที</span>` : '';
+        const open = j.status === 'done'
+          ? (s.variantId ? `<button class="btn btn-outline btn-xs tap-44" data-open-variant="${esc(s.variantId)}">เปิด Studio</button>` : s.href ? `<a class="btn btn-outline btn-xs tap-44" href="${esc(s.href)}">เปิดการ์ด</a>` : '')
+          : '';
+        return `<tr class="align-top">
+          <td class="whitespace-nowrap text-sm">${esc(JOB_LABEL[j.job_type] ?? j.job_type)}</td>
+          <td><div class="max-w-72 truncate text-sm font-medium" title="${esc(s.text)}">${esc(s.text)}</div>${s.sub ? `<div class="max-w-72 truncate text-xs opacity-60">${esc(s.sub)}</div>` : ''}${j.error ? `<p class="mt-1 whitespace-pre-wrap text-xs text-error">${esc(j.error.slice(0, 240))}</p>` : ''}</td>
+          <td class="whitespace-nowrap"><span class="badge badge-sm ${JOB_TONE[j.status] ?? 'badge-ghost'}">${esc({ queued: 'รอคิว', running: 'กำลังทำ', done: 'เสร็จ', error: 'พัง' }[j.status] ?? j.status)}</span>${stateNote}</td>
+          <td class="whitespace-nowrap text-xs opacity-60">${esc(fmtWhen(j.created_at))}</td>
+          <td class="whitespace-nowrap">${open}${j.status === 'error' ? `<button class="btn btn-outline btn-xs tap-44" data-retry="${esc(j.id)}">ลองใหม่</button>` : ''}<button class="btn btn-ghost btn-xs text-error tap-44" data-delete-job="${esc(j.id)}" aria-label="ลบงานนี้ออกจากคิว">ลบ</button></td></tr>`;
+      }).join('') : '<tr><td colspan="5" class="py-6 text-center opacity-60">ไม่มีงานในหมวดนี้</td></tr>';
+    }
+
+    // badge นับทุก 30 วิเสมอ (เห็นจากบอร์ดว่ามีอะไรกำลังทำ) · เปิดมุมมองคิว = ถี่ขึ้นเป็น 10 วิ · หน้าจอไม่เห็น = หยุด
+    function syncQueuePolling() {
+      if (queueTimer) { window.clearInterval(queueTimer); queueTimer = 0; }
+      if (document.visibilityState !== 'visible') return;
+      queueTimer = window.setInterval(() => void loadQueue().catch(() => {}), view === 'queue' ? 10_000 : 30_000);
     }
 
     // ---------- Idea capture (shared by list + quick) ----------
@@ -714,6 +832,29 @@ import AppNav from '../../components/app/AppNav.astro';
       // View toggle
       $('wr-view-board').addEventListener('click', () => setView('board'));
       $('wr-view-list').addEventListener('click', () => setView('list'));
+      $('wr-view-queue').addEventListener('click', () => setView('queue'));
+      $('wr-queue-refresh').addEventListener('click', () => void loadQueue().then(() => toast('รีเฟรชคิวแล้ว')).catch(oops));
+      $('wr-queue-filter').addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest('button[data-qf]') as HTMLButtonElement | null;
+        if (!b) return;
+        queueFilter = b.dataset.qf as typeof queueFilter;
+        $('wr-queue-filter').querySelectorAll('button').forEach((x) => x.classList.toggle('btn-active', x === b));
+        renderQueue();
+      });
+      $('wr-queue').addEventListener('click', (e) => void (async () => {
+        const el = e.target as HTMLElement;
+        const openV = el.closest('[data-open-variant]') as HTMLElement | null;
+        if (openV) { const v = variants.find((x) => x.variant_id === openV.dataset.openVariant); if (v) { openDrawer(v.content_id); openStudio(v.variant_id); } return; }
+        const retry = el.closest('[data-retry]') as HTMLElement | null;
+        const del = el.closest('[data-delete-job]') as HTMLElement | null;
+        try {
+          if (retry) { await retryWrJob(retry.dataset.retry!); toast('ส่งกลับเข้าคิวแล้ว'); }
+          else if (del) { if (!confirm('ลบงานนี้ออกจากคิว?')) return; await deleteWrJob(del.dataset.deleteJob!); toast('ลบแล้ว'); }
+          else return;
+          await loadQueue();
+        } catch (err) { oops(err); }
+      })());
+      document.addEventListener('visibilitychange', syncQueuePolling);
 
       // Quick capture
       $('wr-quick-save').addEventListener('click', () => void saveIdea(false, 'quick'));
@@ -918,8 +1059,9 @@ import AppNav from '../../components/app/AppNav.astro';
       if (booted) return;
       booted = true;
       wire();
-      setView('board');
+      setView(location.hash === '#queue' ? 'queue' : 'board');
       try { await refresh(); } catch (e) { oops(e); }
+      void loadQueue().catch(() => {});   // badge ⏳ บนปุ่มมุมมอง — รู้ตั้งแต่เปิดหน้าว่ามีงาน AI กำลังวิ่ง
     }
     document.addEventListener('war-room:authed', () => void boot());
     void (async () => { if (await getSupabaseSession()) void boot(); })();

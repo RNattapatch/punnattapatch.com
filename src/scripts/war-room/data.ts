@@ -241,6 +241,8 @@ export interface WrJob {
   result: Record<string, unknown> | null;
   error: string | null;
   created_at: string;
+  started_at?: string | null;    // worker stamp ตอนหยิบงาน — หน้าคิวใช้คำนวณ "กำลังทำมากี่นาที"
+  finished_at?: string | null;
 }
 
 /** คิวงานล่าสุด — หน้าสถานะงานใน News Desk (ท่าเดียวกับคิวของ Intel Warroom) */

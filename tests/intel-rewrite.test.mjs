@@ -46,6 +46,15 @@ const ITEMS = { [ITEM_ID]: item(ITEM_ID), [NO_TS_ID]: item(NO_TS_ID, { report_md
 const SCRIPT_MD = '# 🎯 ธง\nคนดูได้ของ\n# Hook (0-2 วิ)\nบอกราคาในคลิป ผิดไหม?\n# Setup (2-10 วิ)\nเดี๋ยวพาไปดู\n# Body\nb\n↻ Rehook: แล้วถ้า…\n# Payoff\np\n# CTA\nทัก DM คำว่า Agent\n# 🔤 Hook Text\nบอกราคา\nโดนแบน?\n# 📝 Caption\n📍 หนึ่ง\n📍 สอง\n📍 สาม ☺️';
 const IDEA = { content_id: 'CNT-2026-09-08-001', title: 'คนเป็นเซลล์ ทำคอนเทนต์บอกราคาไป ผิดไหม', canonical_angle: 'x', topic_cluster: null, funnel_stage: null, pillar_bucket: 'sales_team', angle_type: null, acid_test: 'pending', idea_status: 'active', source_type: 'webapp', source_ref: null, created_at: '2026-09-08T00:00:00Z' };
 
+// คิวงาน AI ที่โชว์ใน Content Center: กำลังเกลา version ผม 3 นาที · เกลาบทพัง · การ์ดข่าวเสร็จ · งานค้าง 25 นาที
+const ago = (min) => new Date(Date.now() - min * 60_000).toISOString();
+const QUEUE_JOBS = [
+  { id: 'q-run', job_type: 'rewrite_reel', payload: { item_id: ITEM_ID, theme: 'คนเป็นเซลล์ ทำคอนเทนต์บอกราคาไป ผิดไหม' }, status: 'running', result: null, error: null, created_at: ago(4), started_at: ago(3), finished_at: null },
+  { id: 'q-err', job_type: 'ai_improve', payload: { variant_id: 'CNT-2026-09-08-001-RL', script: 'x' }, status: 'error', result: null, error: 'codex ตอบกลับว่าง', created_at: ago(30), started_at: ago(29), finished_at: ago(28) },
+  { id: 'q-done', job_type: 'render_text_card', payload: { candidate_id: 'abcdef12-0000-0000-0000-000000000000', slug: 'x', glance_line: 'y' }, status: 'done', result: { images: [] }, error: null, created_at: ago(60), started_at: ago(59), finished_at: ago(58) },
+  { id: 'q-stall', job_type: 'ai_improve', payload: { variant_id: 'CNT-2026-09-08-001-RL', script: 'x' }, status: 'running', result: null, error: null, created_at: ago(26), started_at: ago(25), finished_at: null },
+];
+
 const jwt = () => {
   const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64url');
   return `${b64({ alg: 'HS256', typ: 'JWT' })}.${b64({ sub: 'test-user', role: 'authenticated', exp: 4102444800 })}.sig`;
@@ -85,6 +94,7 @@ async function open(path, { scripts = [], jobStatus = ['running', 'done'] } = {}
       return json(Object.values(ITEMS));
     }
     if (url.includes('/rest/v1/intel_scripts')) return json(scripts);
+    if (url.includes('/rest/v1/wr_jobs') && url.includes('order=created_at.desc')) return json(QUEUE_JOBS);   // มุมมองคิวใน Content Center
     if (url.includes('/rest/v1/wr_jobs')) {
       const st = jobStatus[Math.min(jobPolls++, jobStatus.length - 1)];
       const job = { id: 'job-1', job_type: 'rewrite_reel', status: st, result: st === 'done' ? { improved: SCRIPT_MD, script_id: 's-1' } : null, error: null, payload: {}, created_at: '2026-09-08T00:00:00Z' };
@@ -209,6 +219,35 @@ console.log('\n📋 Intel Warroom — แก้ชื่อการ์ด + เ
   await page.keyboard.press('Escape');
   await page.waitForSelector('#wr-title-wrap h2');
   check(!(await page.$('#wr-drawer.hidden')), 'Esc ในช่องแก้ชื่อไม่ปิดแผง');
+  check(errors.length === 0, `ไม่มี JS error (${errors.join(' | ')})`);
+  await ctx.close();
+}
+
+// ── 5. Content Center: มุมมองคิวงาน AI ──────────────────────────────────────
+{
+  const { page, ctx, writes, errors } = await open('/app/content#queue');
+  await page.waitForSelector('#wr-queue tr', { timeout: 15000 });
+  await page.waitForFunction(() => document.querySelectorAll('#wr-queue tr').length >= 4, null, { timeout: 5000 });
+  const badge = await page.textContent('#wr-queue-badge');
+  check(badge.trim() === '2' && await page.isVisible('#wr-queue-badge'), 'badge บนปุ่ม ⏳ คิว นับงานที่รอ/กำลังทำ = 2');
+  const health = await page.textContent('#wr-queue-health');
+  check(health.includes('วิ่งนานผิดปกติ'), 'มีงานค้าง 25 นาที → แถบสุขภาพเตือน (ไม่โชว์ว่าปกติ)');
+  const rows = await page.$$eval('#wr-queue tr', (trs) => trs.map((t) => t.innerText.replace(/\s+/g, ' ')));
+  check(rows.some((r) => r.includes('version ผม') && r.includes('คนเป็นเซลล์') && r.includes('กำลังทำ') && /3:\d\d นาที/.test(r)), 'งาน rewrite_reel โชว์ธง + กำลังทำ + นาทีที่ใช้');
+  check(rows.some((r) => r.includes('จากการ์ด: Night Scout')), 'บอกว่ามาจากการ์ด Intel ใบไหน');
+  check(rows.some((r) => r.includes('เกลาบท') && r.includes('พัง') && r.includes('codex ตอบกลับว่าง') && r.includes('ลองใหม่')), 'งาน ai_improve ที่พังโชว์ error + ปุ่มลองใหม่');
+  check(rows.some((r) => r.includes('เกลาบท') && r.includes('ไอเดียทดสอบ') || r.includes('คนเป็นเซลล์ ทำคอนเทนต์บอกราคาไป ผิดไหม')), 'งาน ai_improve ชี้ไปที่ชื่อไอเดีย/การ์ดใน Content Center');
+  check(rows.some((r) => r.includes('25:') && r.includes('⚠️')), 'งานที่วิ่งเกิน 20 นาทีถูกขีดเตือนในแถว');
+  await page.click('#wr-queue-filter [data-qf="rewrite_reel"]');
+  await page.waitForTimeout(200);
+  check((await page.$$('#wr-queue tr')).length === 1, 'ตัวกรอง "version ผม" เหลือแถวเดียว');
+  await page.click('#wr-queue-filter [data-qf="all"]');
+  await page.click('[data-retry="q-err"]');
+  await page.waitForTimeout(400);
+  const retry = writes.find((w) => w.table === 'wr_jobs' && w.method === 'PATCH');
+  check(!!retry && retry.body.status === 'queued' && retry.url.includes('id=eq.q-err'), 'ลองใหม่ → PATCH wr_jobs status=queued');
+  await page.click('#wr-view-board');
+  check(await page.isHidden('#wr-queue-view') && await page.isVisible('#wr-board-view'), 'สลับกลับบอร์ดได้');
   check(errors.length === 0, `ไม่มี JS error (${errors.join(' | ')})`);
   await ctx.close();
 }
