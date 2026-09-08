@@ -22,6 +22,9 @@ const labelOf = (number: string) => values?.find((item) => item.number === numbe
 const pieces = bonuses.filter((item) => labelOf(item.number) !== '∞').length;
 const fmt = (n: number) => `฿${n.toLocaleString('en-US')}`;
 const headingId = `${code.toLowerCase()}-offer-heading`;
+// core item ที่ขึ้นต้นด้วย 'line::' = ของที่ทีมได้ใช้บน LINE OA ของบริษัท → การ์ดสีแบรนด์ LINE + โลโก้
+// (คุณปันสั่ง 2026-09-08: ให้เห็นตั้งแต่กวาดตาว่า Agent ตัวนี้อยู่ในไลน์)
+const LINE_MARK = 'M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 8.9 8.2-.2.2-.4.5-.5.8-.2.5-.1.9.4 1 .4.1.8-.1 1.2-.3l3.3-2.1c4.6-.8 8.2-3.7 8.2-7.6Z';
 ---
 
 <section data-t4-section={code === 'T4' ? 'offer' : undefined} data-journey-section="offer" aria-labelledby={headingId} class="bg-[#f7f1e7] py-14 sm:py-20">
@@ -52,20 +55,33 @@ const headingId = `${code.toLowerCase()}-offer-heading`;
           <ol class="mt-6 grid gap-4 sm:grid-cols-2">
             {core.map((item, index) => {
               const isHighlight = Boolean(highlight) && item === highlight;
-              const [title, body] = item.includes('||') ? item.split('||') : [item, ''];
+              const isLine = item.startsWith('line::');
+              const plain = isLine ? item.slice('line::'.length) : item;
+              const [title, body] = plain.includes('||') ? plain.split('||') : [plain, ''];
               return (
                 <li
                   data-offer-core
+                  data-offer-core-line={isLine ? '' : undefined}
                   data-offer-core-highlight={isHighlight ? '' : undefined}
                   class:list={[
                     'flex gap-4 rounded-2xl border-l-4 bg-white p-5 shadow-[0_10px_30px_rgba(7,43,78,.08)] leading-7 text-navy',
-                    isHighlight ? 'border-[#d97757] bg-[#fff3ec] sm:col-span-2' : 'border-coral',
+                    isLine
+                      ? 'border-[#06c755] bg-[#f1fbf4] shadow-[0_12px_34px_rgba(6,199,85,.18)] sm:col-span-2'
+                      : isHighlight
+                        ? 'border-[#d97757] bg-[#fff3ec] sm:col-span-2'
+                        : 'border-coral',
                   ]}
                 >
-                  <span class:list={['flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white', isHighlight ? 'bg-[#d97757]' : 'bg-coral']}>{index + 1}</span>
+                  <span class:list={['flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white', isLine ? 'bg-[#06c755]' : isHighlight ? 'bg-[#d97757]' : 'bg-coral']}>{index + 1}</span>
                   <span class="min-w-0">
-                    {isHighlight && <span class="mb-1 block text-[11px] font-bold uppercase tracking-[.16em] text-[#c2603f]">ระบบพร้อมใช้บนเครื่องบริษัท · ห้องเดียวกับที่ผมใช้ทุกวัน</span>}
-                    <span class="block text-lg font-bold leading-7">{title}</span>
+                    {isLine && (
+                      <span class="mb-2 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-[#06c755] px-3 py-1 text-[11px] font-bold leading-4 text-white">
+                        <svg class="size-3.5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" d={LINE_MARK} /></svg>
+                        ทำงานบน LINE OA ของบริษัท
+                      </span>
+                    )}
+                    {isHighlight && !isLine && <span class="mb-1 block text-[11px] font-bold uppercase tracking-[.16em] text-[#c2603f]">ระบบพร้อมใช้บนเครื่องบริษัท · ห้องเดียวกับที่ผมใช้ทุกวัน</span>}
+                    <span class:list={['block text-lg font-bold leading-7', isLine && 'text-xl sm:text-2xl']}>{title}</span>
                     {body && <span class="mt-1 block text-[15px] font-medium leading-6 text-navy/75">{body}</span>}
                   </span>
                 </li>
