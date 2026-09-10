@@ -2,7 +2,7 @@
  * Doc Center — กติกาที่ต้องไม่เพี้ยน: ตราประทับ "ขาดอะไร" ต่อดีล · รอบภาษี 50 ทวิ · ช่องว่างที่ถูกหักแต่ไม่มีใบ · CSV · เดาชนิดจากชื่อไฟล์
  * Usage: node tests/docs-center-logic.test.mjs
  */
-import { checklistFor, missingCount, taxBuckets, whtGaps, whtCsv, guessKind, isJuristic, storageKey, searchDocs, thaiYear, periodOf, leadName } from '../src/scripts/docs/logic.ts';
+import { checklistFor, missingCount, taxBuckets, whtGaps, whtCsv, guessKind, isJuristic, storageKey, searchDocs, thaiYear, periodOf, leadName, liveDocs, isPending, canHardDelete } from '../src/scripts/docs/logic.ts';
 
 let pass = 0, fail = 0;
 const check = (c, m) => { c ? (pass++, console.log(`  ✅ ${m}`)) : (fail++, console.log(`  ❌ ${m}`)); };
@@ -10,7 +10,7 @@ const check = (c, m) => { c ? (pass++, console.log(`  ✅ ${m}`)) : (fail++, con
 const juristic = { id: 'L1', company_name: 'บริษัท ตัวอย่าง จำกัด', full_name: 'คุณเอ', nickname: null, tax_id: '0105555061861', deal_outcome: 'won', pipeline_status: 'Proposal Sent', lifetime_value_thb: 34900, last_purchase_at: '2026-09-01' };
 const person = { id: 'L2', company_name: null, full_name: 'คุณบี', nickname: 'บี', tax_id: '1103900048085', deal_outcome: 'won', pipeline_status: null, lifetime_value_thb: 9900, last_purchase_at: '2026-08-20' };
 const open = { id: 'L3', company_name: 'ยังคุยอยู่', full_name: null, nickname: null, tax_id: null, deal_outcome: 'in_progress', pipeline_status: 'Discovery Call', lifetime_value_thb: null, last_purchase_at: null };
-const doc = (o) => ({ id: o.id || Math.random().toString(36).slice(2), lead_id: null, kind: 'other', direction: 'in', title: 't', doc_number: null, doc_date: null, amount_thb: null, wht_amount_thb: null, wht_rate: null, payer_name: null, payer_tax_id: null, tax_year: null, tax_period: null, filed_at: null, bucket: 'client-docs', storage_path: 'x', preview_path: null, external_url: null, mime: null, size_bytes: null, source: 'web-upload', is_pii: false, expires_at: null, confirmed_at: null, notes: null, created_at: '2026-09-10T00:00:00Z', origin: 'client_docs', ...o });
+const doc = (o) => ({ archived_at: null, archive_reason: null, id: o.id || Math.random().toString(36).slice(2), lead_id: null, kind: 'other', direction: 'in', title: 't', doc_number: null, doc_date: null, amount_thb: null, wht_amount_thb: null, wht_rate: null, payer_name: null, payer_tax_id: null, tax_year: null, tax_period: null, filed_at: null, bucket: 'client-docs', storage_path: 'x', preview_path: null, external_url: null, mime: null, size_bytes: null, source: 'web-upload', is_pii: false, expires_at: null, confirmed_at: null, notes: null, created_at: '2026-09-10T00:00:00Z', origin: 'client_docs', ...o });
 
 console.log('\n📁 Doc Center logic\n');
 
@@ -66,6 +66,15 @@ console.log('\n📁 Doc Center logic\n');
   check(found.length === 1 && found[0].id === 'a', 'ค้นด้วยยอดเงิน (มี comma) เจอใบที่ยอดตรง');
   check(searchDocs([doc({ id: 'b', lead_id: 'L2', title: 'อื่น', doc_number: 'INV-2026-09-001' })], [person], 'inv-2026')[0]?.id === 'b', 'ค้นเลขใบไม่สนตัวพิมพ์');
   check(leadName(juristic) === 'บริษัท ตัวอย่าง จำกัด' && leadName(person) === 'คุณบี' && leadName(null) === 'ไม่ผูกลูกค้า', 'ชื่อแฟ้ม: บริษัทก่อน ชื่อคน แล้ว null');
+}
+
+// ── Archive / รอตรวจ ──
+{
+  const a = doc({ id: 'a', archived_at: '2026-09-09T00:00:00Z' }), p = doc({ id: 'p', confirmed_at: null, source: 'telegram' }), c = doc({ id: 'c', confirmed_at: '2026-09-01T00:00:00Z' });
+  const botVoid = doc({ id: 'v', origin: 'documents', archived_at: '2026-08-21T00:00:00Z', confirmed_at: null });
+  check(liveDocs([a, p, c, botVoid]).map((d) => d.id).join() === 'p,c', 'liveDocs ตัดใบที่ archive ทุก origin');
+  check(isPending(p) && !isPending(c) && !isPending(botVoid), 'รอตรวจ = client_docs ที่ยังไม่ยืนยันและยังไม่ archive (ใบ doc-bot ไม่นับ)');
+  check(canHardDelete(a) && !canHardDelete(c) && !canHardDelete(botVoid), 'ลบถาวรได้เฉพาะของ Doc Center ที่ archive แล้ว');
 }
 
 console.log(`\n${pass} passed · ${fail} failed\n`);

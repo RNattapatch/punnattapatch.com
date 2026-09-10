@@ -86,7 +86,16 @@ export interface DocRow {
   notes: string | null;
   created_at: string;
   origin: 'client_docs' | 'documents' | 'id_copies';
+  archived_at: string | null;       // ย้ายไป Archive แล้ว (doc-bot void / id copy revoke ก็นับ)
+  archive_reason: string | null;
 }
+
+/** เอกสารที่ยังอยู่ในแฟ้ม (ไม่ถูก archive) */
+export const liveDocs = (docs: DocRow[]) => docs.filter((d) => !d.archived_at);
+/** รอตรวจ = เข้ามาทางท่ออัตโนมัติ (Telegram/อีเมล) แล้วปันยังไม่ยืนยันชนิด/ลูกค้า/ยอด */
+export const isPending = (d: DocRow) => d.origin === 'client_docs' && !d.confirmed_at && !d.archived_at;
+/** ลบถาวรได้เฉพาะของที่ Doc Center เป็นเจ้าของและถูก archive แล้ว — ใบที่ doc-bot ออกมีเลขที่รัน ต้องคงอยู่ */
+export const canHardDelete = (d: DocRow) => d.origin === 'client_docs' && !!d.archived_at;
 
 export interface LeadLite {
   id: string;

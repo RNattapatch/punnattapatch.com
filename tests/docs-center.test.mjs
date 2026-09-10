@@ -26,11 +26,15 @@ const PURCHASES = [
   { id: 'p0', lead_id: L1, amount_thb: 50000, purchased_at: '2026-01-10T00:00:00Z', document_id: null },
   { id: 'p2', lead_id: L2, amount_thb: 9900, purchased_at: '2026-08-20T00:00:00Z', document_id: null },
 ];
+const BASEFLAGS = { archived_at: null, archive_reason: null };
 const DOCS = [
   { id: 'd-inv', lead_id: L1, kind: 'invoice', direction: 'out', title: 'INV-2026-09-001 — บริษัท ไลค์ มี จำกัด', doc_number: 'INV-2026-09-001', doc_date: '2026-09-07', amount_thb: 34920, wht_amount_thb: null, wht_rate: null, payer_name: null, payer_tax_id: '0105555061861', tax_year: 2569, tax_period: 'H2', filed_at: null, bucket: 'documents', storage_path: 'invoice/INV-2026-09-001.pdf', preview_path: 'invoice/INV-2026-09-001.png', external_url: null, mime: 'application/pdf', size_bytes: null, source: 'doc-bot', is_pii: false, expires_at: null, confirmed_at: null, notes: null, created_at: '2026-09-07T00:00:00Z', origin: 'documents' },
   { id: 'd-qo', lead_id: L1, kind: 'quotation', direction: 'out', title: 'QO-2026-08-005-A — บริษัท ไลค์ มี จำกัด', doc_number: 'QO-2026-08-005-A', doc_date: '2026-08-20', amount_thb: 33853, wht_amount_thb: null, wht_rate: null, payer_name: null, payer_tax_id: null, tax_year: 2569, tax_period: 'H2', filed_at: null, bucket: 'documents', storage_path: 'qo/QO-2026-08-005-A.pdf', preview_path: null, external_url: null, mime: 'application/pdf', size_bytes: null, source: 'doc-bot', is_pii: false, expires_at: null, confirmed_at: null, notes: null, created_at: '2026-08-20T00:00:00Z', origin: 'documents' },
   { id: 'd-wht', lead_id: L1, kind: 'wht_cert', direction: 'in', title: 'ใบหัก ณ ที่จ่าย ก.ย. 69 — บริษัท ไลค์ มี จำกัด', doc_number: '0001/2569', doc_date: '2026-09-08', amount_thb: 34920, wht_amount_thb: 1047.6, wht_rate: 3, payer_name: 'บริษัท ไลค์ มี จำกัด', payer_tax_id: '0105555061861', tax_year: 2569, tax_period: 'H2', filed_at: null, bucket: 'client-docs', storage_path: `${L1}/wht_cert/2026/x.pdf`, preview_path: null, external_url: null, mime: 'application/pdf', size_bytes: 180000, source: 'web-upload', is_pii: false, expires_at: null, confirmed_at: '2026-09-08T00:00:00Z', notes: null, created_at: '2026-09-08T00:00:00Z', origin: 'client_docs' },
   { id: 'd-slip', lead_id: L2, kind: 'payment_slip', direction: 'in', title: 'สลิปโอนเงิน ส.ค. 69 — คุณบี', doc_number: null, doc_date: '2026-08-20', amount_thb: 9900, wht_amount_thb: null, wht_rate: null, payer_name: null, payer_tax_id: null, tax_year: null, tax_period: null, filed_at: null, bucket: 'client-docs', storage_path: `${L2}/payment_slip/2026/s.jpg`, preview_path: null, external_url: null, mime: 'image/jpeg', size_bytes: 210000, source: 'web-upload', is_pii: false, expires_at: null, confirmed_at: '2026-08-20T00:00:00Z', notes: null, created_at: '2026-08-20T00:00:00Z', origin: 'client_docs' },
+  { id: 'd-pend', lead_id: L1, kind: 'payment_slip', direction: 'in', title: 'สลิปโอนเงิน ก.ย. 69 — บริษัท ไลค์ มี จำกัด', doc_number: null, doc_date: '2026-09-07', amount_thb: 33872, wht_amount_thb: null, wht_rate: null, payer_name: null, payer_tax_id: null, tax_year: null, tax_period: null, filed_at: null, bucket: 'client-docs', storage_path: `${L1}/payment_slip/2026/t.jpg`, preview_path: null, external_url: null, mime: 'image/jpeg', size_bytes: 150000, source: 'telegram', is_pii: false, expires_at: null, confirmed_at: null, notes: 'จาก Telegram', created_at: '2026-09-07T01:00:00Z', origin: 'client_docs', archived_at: null, archive_reason: null },
+  { id: 'd-arch', lead_id: L1, kind: 'proposal', direction: 'out', title: 'Proposal v1 (ร่างเก่า)', doc_number: null, doc_date: '2026-08-01', amount_thb: null, wht_amount_thb: null, wht_rate: null, payer_name: null, payer_tax_id: null, tax_year: null, tax_period: null, filed_at: null, bucket: 'client-docs', storage_path: `${L1}/proposal/2026/p.pdf`, preview_path: null, external_url: null, mime: 'application/pdf', size_bytes: 90000, source: 'web-upload', is_pii: false, expires_at: null, confirmed_at: '2026-08-01T00:00:00Z', notes: null, created_at: '2026-08-01T00:00:00Z', origin: 'client_docs', archived_at: '2026-09-09T00:00:00Z', archive_reason: 'ไม่ใช้แล้ว' },
+  { id: 'd-void', lead_id: L1, kind: 'quotation', direction: 'out', title: 'QO-2026-08-005-B — บริษัท ไลค์ มี จำกัด', doc_number: 'QO-2026-08-005-B', doc_date: '2026-08-20', amount_thb: 67803, wht_amount_thb: null, wht_rate: null, payer_name: null, payer_tax_id: null, tax_year: 2569, tax_period: 'H2', filed_at: null, bucket: 'documents', storage_path: 'qo/QO-2026-08-005-B.pdf', preview_path: null, external_url: null, mime: 'application/pdf', size_bytes: null, source: 'doc-bot', is_pii: false, expires_at: null, confirmed_at: null, notes: null, created_at: '2026-08-20T00:00:00Z', origin: 'documents', archived_at: '2026-08-21T00:00:00Z', archive_reason: 'void ผ่าน doc-bot' },
 ];
 
 const jwt = () => { const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64url'); return `${b64({ alg: 'HS256', typ: 'JWT' })}.${b64({ sub: 'test-user', role: 'authenticated', exp: 4102444800 })}.sig`; };
@@ -55,7 +59,7 @@ async function open(path, { mobile = false } = {}) {
       if (table === 'client_docs' && method === 'POST') return json({ id: 'new-1', ...body, created_at: '2026-09-10T00:00:00Z' });
       return json(single ? {} : []);
     }
-    if (url.includes('/rest/v1/client_docs_all')) return json(DOCS);
+    if (url.includes('/rest/v1/client_docs_all')) return json(DOCS.map((d) => ({ ...BASEFLAGS, ...d })));
     if (url.includes('/rest/v1/client_docs?') && url.includes('sha256=eq.')) return json([]);
     if (url.includes('/rest/v1/leads')) return json(LEADS);
     if (url.includes('/rest/v1/purchases')) return json(PURCHASES);
@@ -67,6 +71,7 @@ async function open(path, { mobile = false } = {}) {
   await page.goto(`${BASE}${path}`, { waitUntil: 'domcontentloaded' });
   return { page, ctx, writes, errors };
 }
+const folder_has_archived = (t) => t.includes('Proposal v1') || t.includes('QO-2026-08-005-B');
 const shots = process.env.SHOTS === '1'; if (shots) mkdirSync('tests/shots', { recursive: true });
 
 console.log('\n📁 Doc Center — /app/docs\n');
@@ -76,18 +81,22 @@ console.log('\n📁 Doc Center — /app/docs\n');
   const { page, ctx, errors } = await open('/app/docs');
   await page.waitForSelector('[data-lead]', { timeout: 15000 });
   const signals = await page.textContent('#dc-signals');
-  check(signals.includes('4ใบในแฟ้ม'), `แถบสัญญาณนับเอกสาร (${signals.replace(/\s+/g, ' ').slice(0, 80)})`);
+  check(signals.includes('5ใบในแฟ้ม'), `แถบสัญญาณนับเฉพาะที่ยังไม่ archive (${signals.replace(/\s+/g, ' ').slice(0, 80)})`);
+  check(signals.includes('1รอตรวจ'), 'นับใบที่เข้ามาทาง Telegram ที่ยังไม่ยืนยัน = 1');
+  check((await page.textContent('#dc-archive-badge')) === '2', 'badge Archive = 2 (proposal เก่า + QO ที่ void ผ่าน doc-bot)');
   check(signals.includes('2ดีลปิดแล้วยังขาดเอกสาร'), 'นับดีลปิดแล้วที่ยังขาดเอกสาร = 2 (ไลค์มี · คุณบี)');
   check(signals.includes('1ถูกหัก ณ ที่จ่ายแต่ยังไม่มีใบ 50 ทวิ'), 'ช่องว่าง 50 ทวิ = 1 (ซื้อ ม.ค. ไม่มีใบ)');
   const first = await page.textContent('[data-lead]');
-  check(first.includes('ไลค์ มี') && first.includes('ขาด'), 'แฟ้มที่ขาดมากสุดอยู่บนสุด + ป้าย "ขาด"');
+  check(first.includes('คุณบี') && first.includes('ขาด 3'), `แฟ้มที่ขาดมากสุด (คุณบี ขาด 3) อยู่บนสุด + ป้าย "ขาด" (${first.replace(/\s+/g, ' ').trim().slice(0, 60)})`);
   check(!(await page.textContent('#dc-roster')).includes('ยังคุยอยู่') || (await page.$$('[data-lead]')).length === 3, 'ดีลที่ยังไม่ปิดอยู่ในรายชื่อโดยไม่มีป้ายขาด');
   await page.click(`[data-lead="${L1}"]`);
   await page.waitForSelector('#dc-folder .stamp');
   const stamps = await page.$$eval('#dc-folder .stamp', (els) => els.map((e) => e.className.replace('stamp ', '') + ':' + e.textContent.trim()));
   check(stamps.some((s) => s.startsWith('stamp-have:QO')) && stamps.some((s) => s.startsWith('stamp-have:50ทวิ')), 'ตรา QO + 50 ทวิ ประทับแล้ว');
-  check(stamps.some((s) => s.startsWith('stamp-missing:SLIP')) && stamps.some((s) => s.startsWith('stamp-missing:RC')), 'ตราสลิป + ใบเสร็จ = เส้นประขาด');
+  check(stamps.some((s) => s.startsWith('stamp-have:SLIP')) && stamps.some((s) => s.startsWith('stamp-missing:RC')), 'สลิปที่รอตรวจนับว่ามีแล้ว · ใบเสร็จยังขาด');
+  check(!folder_has_archived(await page.textContent('#dc-folder')), 'แฟ้มไม่โชว์ใบที่ archive แล้ว (Proposal v1 / QO-…-B)');
   const folder = await page.textContent('#dc-folder');
+  check(folder.includes('⏳ รอตรวจ') && await page.isVisible('#dc-folder [data-confirm="d-pend"]'), 'ใบที่รอตรวจมีตรา ⏳ + ปุ่ม ✅ ยืนยัน');
   check(folder.includes('ออกให้ลูกค้า') && folder.includes('การเงินขาเข้า') && folder.includes('INV-2026-09-001') && folder.includes('฿34,920'), 'แฟ้มจัดกลุ่มตามหมวด + เลขใบ + ยอด');
   check(folder.includes('doc-bot'), 'เอกสารจาก doc-bot ติดป้ายบอกที่มา');
   check(new URL(page.url()).searchParams.get('lead') === L1, 'deep link ?lead= อัปเดตตามแฟ้มที่เปิด');
@@ -152,7 +161,7 @@ console.log('\n📁 Doc Center — /app/docs\n');
   const { page, ctx, errors } = await open('/app/docs#kinds', { mobile: true });
   await page.waitForSelector('#dc-kind-chips [data-kind]', { timeout: 15000 });
   const chips = await page.$$eval('#dc-kind-chips [data-kind]', (els) => els.map((e) => e.textContent.trim()));
-  check(chips.some((c) => c.startsWith('ทั้งหมด 4')) && chips.some((c) => c.includes('ใบหัก ณ ที่จ่าย')), `chip ต่อชนิดพร้อมจำนวน (${chips.join(' | ')})`);
+  check(chips.some((c) => c.startsWith('ทั้งหมด 5')) && chips.some((c) => c.includes('ใบหัก ณ ที่จ่าย')), `chip ต่อชนิดพร้อมจำนวน (${chips.join(' | ')})`);
   await page.click('[data-kind="payment_slip"]');
   await page.waitForTimeout(150);
   const list = await page.textContent('#dc-kind-list');
@@ -160,6 +169,47 @@ console.log('\n📁 Doc Center — /app/docs\n');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
   check(!overflow, 'มือถือ 390px ไม่ล้นแนวนอน');
   if (shots) await page.screenshot({ path: 'tests/shots/docs-mobile.png', fullPage: true });
+  check(errors.length === 0, `ไม่มี JS error (${errors.join(' | ')})`);
+  await ctx.close();
+}
+
+// ── 5. รอตรวจ → ยืนยัน · Archive: กู้คืน / ลบถาวร / doc-bot void ลบไม่ได้ · แก้ไข → ย้ายไป Archive ──
+{
+  const { page, ctx, writes, errors } = await open(`/app/docs?lead=${L1}`);
+  await page.waitForSelector('#dc-folder [data-confirm="d-pend"]', { timeout: 15000 });
+  await page.click('#dc-folder [data-confirm="d-pend"]');
+  await page.waitForTimeout(400);
+  const conf = writes.find((w) => w.method === 'PATCH' && w.table === 'client_docs' && w.url.includes('id=eq.d-pend'));
+  check(!!conf && typeof conf.body.confirmed_at === 'string', '✅ ยืนยัน → PATCH client_docs {confirmed_at}');
+  await page.click('[data-filter="pending"]');
+  await page.waitForTimeout(150);
+  check((await page.$$('[data-lead]')).length === 1, 'chip ⏳ รอตรวจ กรองเหลือแฟ้มที่มีใบรอตรวจ');
+  await page.click('[data-filter="all"]');
+  await page.click('#dc-folder [data-edit="d-wht"]');
+  await page.waitForSelector('#dc-edit[open]');
+  check((await page.textContent('#de-delete')).includes('ย้ายไป Archive'), 'ปุ่มในฟอร์มแก้ไขคือ "ย้ายไป Archive" ไม่ใช่ลบ');
+  page.once('dialog', (d) => d.accept('ออกใบใหม่แทน'));
+  await page.click('#de-delete');
+  await page.waitForFunction(() => !document.querySelector('#dc-edit')?.open, null, { timeout: 5000 });
+  const arch = writes.find((w) => w.method === 'PATCH' && w.table === 'client_docs' && w.url.includes('id=eq.d-wht'));
+  check(!!arch && typeof arch.body.archived_at === 'string' && arch.body.archive_reason === 'ออกใบใหม่แทน', 'ย้ายไป Archive → PATCH {archived_at, archive_reason} ไม่มี DELETE');
+  check(!writes.some((w) => w.method === 'DELETE'), 'ไม่มี DELETE เกิดขึ้นจากแฟ้มปกติ');
+  await page.click('[data-view="archive"]');
+  await page.waitForSelector('#dc-archive-list [data-doc]');
+  const archive = await page.textContent('#dc-view-archive');
+  check(archive.includes('Proposal v1') && archive.includes('QO-2026-08-005-B') && archive.includes('void ผ่าน doc-bot'), 'Archive โชว์ทั้งที่ย้ายจากเว็บและที่ doc-bot void');
+  check(await page.isVisible('[data-restore="d-arch"]') && await page.isVisible('[data-purge="d-arch"]'), 'ใบของ Doc Center กู้คืน/ลบถาวรได้');
+  check(!(await page.$('[data-purge="d-void"]')) && !(await page.$('[data-restore="d-void"]')), 'ใบที่ doc-bot void ไม่มีปุ่มลบถาวร/กู้คืน (เลขที่รันต้องคงอยู่)');
+  await page.click('[data-restore="d-arch"]');
+  await page.waitForTimeout(400);
+  const rest = writes.find((w) => w.method === 'PATCH' && w.url.includes('id=eq.d-arch'));
+  check(!!rest && rest.body.archived_at === null, 'กู้คืน → PATCH archived_at=null');
+  page.once('dialog', (d) => d.accept('ลบถาวร'));
+  await page.click('[data-purge="d-arch"]');
+  await page.waitForTimeout(500);
+  const rm = writes.find((w) => w.kind === 'remove'); const del = writes.find((w) => w.method === 'DELETE' && w.table === 'client_docs');
+  check(!!rm && !!del && del.url.includes('id=eq.d-arch'), 'ลบถาวร (พิมพ์ยืนยัน) → ลบไฟล์ใน Storage + DELETE client_docs');
+  if (shots) await page.screenshot({ path: 'tests/shots/docs-archive.png', fullPage: true });
   check(errors.length === 0, `ไม่มี JS error (${errors.join(' | ')})`);
   await ctx.close();
 }

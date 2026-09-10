@@ -4,7 +4,7 @@
 // (docs/CRM-SSOT.md ข้อ 5) → view รวมให้หน้าเดียวเห็นครบ โดย doc-bot ไม่ต้องรู้จัก Doc Center เลย
 // Spec: claude-code repo → docs/superpowers/specs/2026-09-10-doc-center-design.md
 import { supabase, getSupabaseSession } from '../dashboard/supabase';
-import { KIND_META, storageKey, thaiYear, periodOf, type DocKind, type DocRow, type LeadLite, type PurchaseLite } from './logic';
+import { KIND_META, storageKey, thaiYear, periodOf, canHardDelete, type DocKind, type DocRow, type LeadLite, type PurchaseLite } from './logic';
 
 export const BUCKET = 'client-docs';
 export const MAX_UPLOAD_BYTES = 15 * 1024 * 1024;
@@ -46,6 +46,7 @@ function normalizeRow(r: Record<string, unknown>): DocRow {
     external_url: (r.external_url as string) ?? null, mime: (r.mime as string) ?? null, size_bytes: r.size_bytes == null ? null : Number(r.size_bytes),
     source: String(r.source || ''), is_pii: Boolean(r.is_pii), expires_at: (r.expires_at as string) ?? null, confirmed_at: (r.confirmed_at as string) ?? null,
     notes: (r.notes as string) ?? null, created_at: String(r.created_at || ''), origin: (r.origin as DocRow['origin']) || 'client_docs',
+    archived_at: (r.archived_at as string) ?? null, archive_reason: (r.archive_reason as string) ?? null,
   };
 }
 
@@ -151,17 +152,40 @@ export async function uploadDoc(input: UploadInput, onStep?: (s: string) => void
   return normalizeRow({ ...ins.data, origin: 'client_docs', preview_path: null });
 }
 
-export async function updateDoc(id: string, patch: Partial<Pick<DocRow, 'title' | 'kind' | 'lead_id' | 'doc_number' | 'doc_date' | 'amount_thb' | 'wht_amount_thb' | 'wht_rate' | 'payer_name' | 'payer_tax_id' | 'filed_at' | 'notes' | 'expires_at' | 'tax_year' | 'tax_period'>>): Promise<void> {
+export async function updateDoc(id: string, patch: Partial<Pick<DocRow, 'title' | 'kind' | 'lead_id' | 'doc_number' | 'doc_date' | 'amount_thb' | 'wht_amount_thb' | 'wht_rate' | 'payer_name' | 'payer_tax_id' | 'filed_at' | 'notes' | 'expires_at' | 'tax_year' | 'tax_period' | 'confirmed_at'>>): Promise<void> {
   await requireSession();
   const { error } = await supabase.from('client_docs').update({ ...patch, updated_at: new Date().toISOString() }).eq('id', id);
   if (error) throw new Error(error.message);
 }
 
-export async function deleteDoc(doc: DocRow): Promise<void> {
+/** ลบ = ย้ายไป Archive (ปันสั่ง 2026-09-10) — ไฟล์ยังอยู่ · กู้คืนได้ · ใบที่ doc-bot ออกต้อง void ทาง doc-bot */
+export async function archiveDoc(doc: DocRow, reason = 'ย้ายไป Archive จาก Doc Center'): Promise<void> {
   await requireSession();
-  if (doc.origin !== 'client_docs') throw new Error('เอกสารที่ doc-bot ออกลบจากที่นี่ไม่ได้ — void ใน doc-bot แทน');
+  if (doc.origin !== 'client_docs') throw new Error('ใบที่ doc-bot ออก ให้ void ผ่าน doc-bot (redo/void) — จะมาอยู่ใน Archive เอง');
+  const { error } = await supabase.from('client_docs').update({ archived_at: new Date().toISOString(), archive_reason: reason.slice(0, 200) }).eq('id', doc.id);
+  if (error) throw new Error(error.message);
+}
+
+export async function restoreDoc(doc: DocRow): Promise<void> {
+  await requireSession();
+  if (doc.origin !== 'client_docs') throw new Error('ใบที่ doc-bot void แล้วกู้คืนไม่ได้ — ออกใหม่ด้วย redo ใน doc-bot');
+  const { error } = await supabase.from('client_docs').update({ archived_at: null, archive_reason: null }).eq('id', doc.id);
+  if (error) throw new Error(error.message);
+}
+
+/** ลบถาวร — จาก Archive เท่านั้น · ลบไฟล์ใน Storage ด้วย · ใบที่ doc-bot ออกลบไม่ได้ (เลขที่รันต้องคงอยู่) */
+export async function hardDeleteDoc(doc: DocRow): Promise<void> {
+  await requireSession();
+  if (!canHardDelete(doc)) throw new Error(doc.origin === 'client_docs' ? 'ต้องย้ายไป Archive ก่อน แล้วค่อยลบถาวรจากที่นั่น' : 'ใบที่ doc-bot ออกลบถาวรไม่ได้ — void แล้วเก็บไว้ตามกฎหมาย');
   if (doc.storage_path) await supabase.storage.from(doc.bucket).remove([doc.storage_path]);
   const { error } = await supabase.from('client_docs').delete().eq('id', doc.id);
+  if (error) throw new Error(error.message);
+}
+
+/** ✅ ยืนยันเอกสารที่เข้ามาทางท่ออัตโนมัติ (Telegram) — ชนิด/ลูกค้า/ยอดถูกแล้ว */
+export async function confirmDoc(id: string): Promise<void> {
+  await requireSession();
+  const { error } = await supabase.from('client_docs').update({ confirmed_at: new Date().toISOString() }).eq('id', id);
   if (error) throw new Error(error.message);
 }
 

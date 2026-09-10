@@ -69,10 +69,11 @@ import AppNav from '../../components/app/AppNav.astro';
           <h1 class="font-display text-xl font-bold">📁 แฟ้มเอกสารลูกค้า</h1>
           <p class="text-xs opacity-60">ทุกใบที่ออกให้ · ทุกใบที่ลูกค้าส่งมา — QO · ใบเสร็จ · สลิป · ใบ 50 ทวิ · proposal · SOW อยู่แฟ้มเดียวกัน</p>
         </div>
-        <div id="dc-views" class="join" role="tablist" aria-label="มุมมอง">
-          <button class="view-tab btn btn-sm join-item tap-44" role="tab" data-view="folders" aria-selected="true">👤 ตามลูกค้า</button>
-          <button class="view-tab btn btn-sm join-item tap-44" role="tab" data-view="kinds" aria-selected="false">🗂 ตามชนิด</button>
-          <button class="view-tab btn btn-sm join-item tap-44" role="tab" data-view="tax" aria-selected="false">🧾 รอบภาษี <span id="dc-tax-badge" class="badge badge-error badge-sm hidden"></span></button>
+        <div id="dc-views" class="flex flex-wrap gap-1" role="tablist" aria-label="มุมมอง">
+          <button class="view-tab btn btn-sm tap-44" role="tab" data-view="folders" aria-selected="true">👤 ตามลูกค้า</button>
+          <button class="view-tab btn btn-sm tap-44" role="tab" data-view="kinds" aria-selected="false">🗂 ตามชนิด</button>
+          <button class="view-tab btn btn-sm tap-44" role="tab" data-view="tax" aria-selected="false">🧾 รอบภาษี <span id="dc-tax-badge" class="badge badge-error badge-sm hidden"></span></button>
+          <button class="view-tab btn btn-sm tap-44" role="tab" data-view="archive" aria-selected="false">🗄 Archive <span id="dc-archive-badge" class="badge badge-ghost badge-sm"></span></button>
         </div>
       </div>
 
@@ -92,6 +93,7 @@ import AppNav from '../../components/app/AppNav.astro';
               <button class="btn btn-xs tap-44" data-filter="missing">🔴 ขาดเอกสาร</button>
               <button class="btn btn-xs tap-44" data-filter="closed">ปิดดีลแล้ว</button>
               <button class="btn btn-xs tap-44" data-filter="hasdocs">มีเอกสาร</button>
+              <button class="btn btn-xs tap-44" data-filter="pending">⏳ รอตรวจ</button>
             </div>
             <ul id="dc-roster" class="menu menu-sm max-h-[70vh] w-full overflow-y-auto p-0" aria-label="รายชื่อแฟ้ม"></ul>
           </div>
@@ -109,6 +111,9 @@ import AppNav from '../../components/app/AppNav.astro';
 
       <!-- 🧾 รอบภาษี -->
       <section id="dc-view-tax" class="hidden space-y-4"></section>
+
+      <!-- 🗄 Archive: ลบ = มาอยู่ที่นี่ก่อน · ลบจริงได้จากที่นี่เท่านั้น (ปันสั่ง 2026-09-10) -->
+      <section id="dc-view-archive" class="hidden space-y-3"></section>
     </div>
 
     <!-- หย่อนใส่แฟ้ม -->
@@ -188,10 +193,10 @@ import AppNav from '../../components/app/AppNav.astro';
   </div>
 
   <script>
-    import { loadAll, uploadDoc, openUrl, updateDoc, deleteDoc, previewUrls, downloadText, MAX_UPLOAD_BYTES } from '../../scripts/docs/data';
+    import { loadAll, uploadDoc, openUrl, updateDoc, archiveDoc, restoreDoc, hardDeleteDoc, confirmDoc, previewUrls, downloadText, MAX_UPLOAD_BYTES } from '../../scripts/docs/data';
     import { getSupabaseSession } from '../../scripts/dashboard/supabase';
     import {
-      KIND_META, KINDS, GROUP_LABEL, checklistFor, missingCount, taxBuckets, whtGaps, whtCsv, searchDocs,
+      KIND_META, KINDS, GROUP_LABEL, checklistFor, missingCount, taxBuckets, whtGaps, whtCsv, searchDocs, liveDocs, isPending, canHardDelete,
       guessKind, guessTitle, leadName, isJuristic, fmtBaht, fmtDate, fmtSize,
       type DocRow, type LeadLite, type PurchaseLite, type DocKind, type DocGroup, type ChecklistItem,
     } from '../../scripts/docs/logic';
@@ -208,31 +213,36 @@ import AppNav from '../../components/app/AppNav.astro';
     }
     const oops = (e: unknown) => toast((e as Error).message || 'ผิดพลาด ลองใหม่', 'error');
 
-    type View = 'folders' | 'kinds' | 'tax';
+    type View = 'folders' | 'kinds' | 'tax' | 'archive';
     const state = { docs: [] as DocRow[], leads: [] as LeadLite[], purchases: [] as PurchaseLite[], view: 'folders' as View, filter: 'all', q: '', leadId: null as string | null, kind: 'all' as DocKind | 'all', previews: new Map<string, string>() };
     const leadById = () => new Map(state.leads.map((l) => [l.id, l]));
-    const docsOf = (leadId: string) => state.docs.filter((d) => d.lead_id === leadId);
+    const live = () => liveDocs(state.docs);   // ทุกมุมมองปกติมองเฉพาะที่ยังไม่ archive
+    const docsOf = (leadId: string) => live().filter((d) => d.lead_id === leadId);
     const purchasesOf = (leadId: string) => state.purchases.filter((p) => p.lead_id === leadId);
 
     // ---------- signals ----------
     function renderSignals() {
       const missing = state.leads.filter((l) => missingCount(checklistFor(l, docsOf(l.id), purchasesOf(l.id))) > 0).length;
       const gaps = whtGaps(state.leads, state.docs, state.purchases);
-      const pii = state.docs.filter((d) => d.is_pii && d.expires_at && new Date(d.expires_at).getTime() - Date.now() < 14 * 86400000);
-      const week = state.docs.filter((d) => Date.now() - new Date(d.created_at).getTime() < 7 * 86400000).length;
+      const docs = live();
+      const pii = docs.filter((d) => d.is_pii && d.expires_at && new Date(d.expires_at).getTime() - Date.now() < 14 * 86400000);
+      const week = docs.filter((d) => Date.now() - new Date(d.created_at).getTime() < 7 * 86400000).length;
+      const pending = docs.filter(isPending).length;
       $('#dc-signals').innerHTML = [
-        `<span><b>${state.docs.length}</b>ใบในแฟ้ม · <b>${week}</b>ใบใหม่สัปดาห์นี้</span>`,
+        `<span><b>${docs.length}</b>ใบในแฟ้ม · <b>${week}</b>ใบใหม่สัปดาห์นี้</span>`,
+        `<span data-warn="${pending ? 1 : 0}"><b>${pending}</b>รอตรวจ (เข้ามาทาง Telegram)</span>`,
         `<span data-warn="${missing ? 1 : 0}"><b>${missing}</b>ดีลปิดแล้วยังขาดเอกสาร</span>`,
         `<span data-warn="${gaps.length ? 1 : 0}"><b>${gaps.length}</b>ถูกหัก ณ ที่จ่ายแต่ยังไม่มีใบ 50 ทวิ</span>`,
         `<span data-warn="${pii.length ? 1 : 0}"><b>${pii.length}</b>เอกสารส่วนบุคคลใกล้หมดอายุ</span>`,
       ].join('');
       const badge = $('#dc-tax-badge'); badge.textContent = String(gaps.length); badge.classList.toggle('hidden', gaps.length === 0);
+      const archived = state.docs.filter((d) => d.archived_at).length; $('#dc-archive-badge').textContent = String(archived);
     }
 
     // ---------- folders ----------
     function rosterRows(): { lead: LeadLite; docs: DocRow[]; items: ChecklistItem[]; missing: number }[] {
       const q = state.q.trim().toLowerCase();
-      const hit = q ? new Set(searchDocs(state.docs, state.leads, q).map((d) => d.lead_id)) : null;
+      const hit = q ? new Set(searchDocs(live(), state.leads, q).map((d) => d.lead_id)) : null;
       return state.leads.map((lead) => {
         const docs = docsOf(lead.id); const items = checklistFor(lead, docs, purchasesOf(lead.id));
         return { lead, docs, items, missing: missingCount(items) };
@@ -241,13 +251,14 @@ import AppNav from '../../components/app/AppNav.astro';
         if (state.filter === 'missing') return r.missing > 0;
         if (state.filter === 'closed') return ['won', 'repeat', 'retainer'].includes(r.lead.deal_outcome || '') || purchasesOf(r.lead.id).length > 0;
         if (state.filter === 'hasdocs') return r.docs.length > 0;
+        if (state.filter === 'pending') return r.docs.some(isPending);
         return true;
       }).sort((a, b) => (b.missing - a.missing) || (b.docs.length - a.docs.length) || leadName(a.lead).localeCompare(leadName(b.lead), 'th'));
     }
 
     function renderRoster() {
       const rows = rosterRows();
-      const unassigned = state.docs.filter((d) => !d.lead_id);
+      const unassigned = live().filter((d) => !d.lead_id);
       $('#dc-roster').innerHTML = (rows.map((r) => `<li><button class="folder flex w-full items-center justify-between gap-2 rounded-r-lg px-3 py-2 text-left tap-44" data-lead="${esc(r.lead.id)}" data-missing="${r.missing ? 1 : 0}" aria-current="${state.leadId === r.lead.id}">
           <span class="min-w-0"><span class="block truncate text-sm font-semibold">${esc(leadName(r.lead))}</span><span class="block truncate text-xs opacity-60">${r.lead.company_name && r.lead.full_name ? esc(r.lead.full_name) + ' · ' : ''}${isJuristic(r.lead.tax_id) ? 'นิติบุคคล' : r.lead.tax_id ? 'บุคคล' : 'ไม่มี tax id'}</span></span>
           <span class="flex shrink-0 items-center gap-1 text-xs"><span class="badge badge-ghost badge-sm tabular-nums">${r.docs.length}</span>${r.missing ? `<span class="stamp stamp-missing" title="ขาด ${r.missing} อย่าง">ขาด ${r.missing}</span>` : ''}</span>
@@ -262,7 +273,7 @@ import AppNav from '../../components/app/AppNav.astro';
       const meta = KIND_META[d.kind]; const lead = d.lead_id ? leadById().get(d.lead_id) : null;
       const money = d.amount_thb != null ? `<span class="mono">${fmtBaht(d.amount_thb)}</span>${d.wht_amount_thb != null ? ` <span class="mono opacity-60">หัก ${fmtBaht(d.wht_amount_thb)}</span>` : ''}` : '';
       const prev = state.previews.get(d.id);
-      const flags = [d.filed_at ? '<span class="stamp stamp-green" style="transform:none">ยื่นแล้ว</span>' : '', d.is_pii ? `<span class="badge badge-ghost badge-xs">🔒${d.expires_at ? ' ถึง ' + fmtDate(d.expires_at) : ''}</span>` : '', d.origin !== 'client_docs' ? '<span class="badge badge-ghost badge-xs">doc-bot</span>' : ''].filter(Boolean).join(' ');
+      const flags = [isPending(d) ? '<span class="stamp stamp-missing" style="transform:none">⏳ รอตรวจ</span>' : '', d.archived_at ? `<span class="badge badge-ghost badge-xs">🗄 ${esc(d.archive_reason || 'archive')} · ${fmtDate(d.archived_at)}</span>` : '', d.filed_at ? '<span class="stamp stamp-green" style="transform:none">ยื่นแล้ว</span>' : '', d.is_pii ? `<span class="badge badge-ghost badge-xs">🔒${d.expires_at ? ' ถึง ' + fmtDate(d.expires_at) : ''}</span>` : '', d.origin !== 'client_docs' ? '<span class="badge badge-ghost badge-xs">doc-bot</span>' : ''].filter(Boolean).join(' ');
       return `<div class="row-doc" data-doc="${esc(d.id)}">
         ${prev ? `<img src="${esc(prev)}" alt="" class="h-12 w-11 rounded object-cover" loading="lazy" onerror="this.hidden=true;this.nextElementSibling.hidden=false" /><span class="glyph glyph-${meta.group} glyph-${d.kind}" hidden>${esc(meta.glyph)}</span>` : `<span class="glyph glyph-${meta.group} glyph-${d.kind}">${esc(meta.glyph)}</span>`}
         <div class="min-w-0">
@@ -272,7 +283,10 @@ import AppNav from '../../components/app/AppNav.astro';
         </div>
         <div class="flex shrink-0 gap-1">
           <button class="btn btn-xs tap-44" data-open="${esc(d.id)}">เปิด</button>
-          ${d.origin === 'client_docs' ? `<button class="btn btn-xs btn-ghost tap-44" data-edit="${esc(d.id)}" aria-label="แก้ไข">✏️</button>` : ''}
+          ${isPending(d) ? `<button class="btn btn-xs tap-44" style="border-color:var(--carbon-green);color:var(--carbon-green);" data-confirm="${esc(d.id)}">✅ ยืนยัน</button>` : ''}
+          ${d.origin === 'client_docs' && !d.archived_at ? `<button class="btn btn-xs btn-ghost tap-44" data-edit="${esc(d.id)}" aria-label="แก้ไข">✏️</button>` : ''}
+          ${d.archived_at && d.origin === 'client_docs' ? `<button class="btn btn-xs btn-ghost tap-44" data-restore="${esc(d.id)}">↩︎ กู้คืน</button>` : ''}
+          ${canHardDelete(d) ? `<button class="btn btn-xs btn-ghost tap-44" style="color:var(--stamp-red);" data-purge="${esc(d.id)}">🗑 ลบถาวร</button>` : ''}
         </div></div>`;
     }
 
@@ -283,12 +297,20 @@ import AppNav from '../../components/app/AppNav.astro';
         try { window.open(await openUrl(d), '_blank', 'noopener'); } catch (e) { oops(e); } finally { b.disabled = false; }
       }));
       root.querySelectorAll<HTMLButtonElement>('[data-edit]').forEach((b) => b.addEventListener('click', () => openEdit(b.dataset.edit!)));
+      root.querySelectorAll<HTMLButtonElement>('[data-confirm]').forEach((b) => b.addEventListener('click', async () => { b.disabled = true; try { await confirmDoc(b.dataset.confirm!); toast('ยืนยันแล้ว ✅'); await reload(); } catch (e) { b.disabled = false; oops(e); } }));
+      root.querySelectorAll<HTMLButtonElement>('[data-restore]').forEach((b) => b.addEventListener('click', async () => { const d = state.docs.find((x) => x.id === b.dataset.restore); if (!d) return; b.disabled = true; try { await restoreDoc(d); toast('กู้คืนเข้าแฟ้มแล้ว'); await reload(); } catch (e) { b.disabled = false; oops(e); } }));
+      root.querySelectorAll<HTMLButtonElement>('[data-purge]').forEach((b) => b.addEventListener('click', async () => {
+        const d = state.docs.find((x) => x.id === b.dataset.purge); if (!d) return;
+        // ลบถาวร = ไฟล์หายจาก Storage ด้วย → ให้พิมพ์ยืนยัน ไม่ใช่กดผ่านๆ
+        if (prompt(`ลบ "${d.title}" ถาวร? ไฟล์จะหายจาก Storage (สำเนาบนมินิยังอยู่จนกว่าจะ prune)\nพิมพ์ "ลบถาวร" เพื่อยืนยัน`) !== 'ลบถาวร') return;
+        b.disabled = true; try { await hardDeleteDoc(d); toast('ลบถาวรแล้ว'); await reload(); } catch (e) { b.disabled = false; oops(e); }
+      }));
     }
 
     function openFolder(leadId: string) {
       state.leadId = leadId; renderRoster();
       const panel = $('#dc-folder'); const url = new URL(location.href); url.searchParams.set('lead', leadId); history.replaceState(null, '', url);
-      const docs = leadId === '__none' ? state.docs.filter((d) => !d.lead_id) : docsOf(leadId);
+      const docs = leadId === '__none' ? live().filter((d) => !d.lead_id) : docsOf(leadId);
       const lead = leadId === '__none' ? null : leadById().get(leadId) || null;
       const groups = new Map<DocGroup, DocRow[]>();
       for (const d of docs) groups.set(KIND_META[d.kind].group, [...(groups.get(KIND_META[d.kind].group) || []), d]);
@@ -309,18 +331,18 @@ import AppNav from '../../components/app/AppNav.astro';
 
     // ---------- kinds ----------
     function renderKinds() {
-      const counts = new Map<DocKind, number>(); for (const d of state.docs) counts.set(d.kind, (counts.get(d.kind) || 0) + 1);
-      $('#dc-kind-chips').innerHTML = [`<button class="btn btn-xs tap-44 ${state.kind === 'all' ? 'btn-active' : ''}" data-kind="all">ทั้งหมด ${state.docs.length}</button>`,
+      const counts = new Map<DocKind, number>(); for (const d of live()) counts.set(d.kind, (counts.get(d.kind) || 0) + 1);
+      $('#dc-kind-chips').innerHTML = [`<button class="btn btn-xs tap-44 ${state.kind === 'all' ? 'btn-active' : ''}" data-kind="all">ทั้งหมด ${live().length}</button>`,
         ...KINDS.filter((k) => counts.get(k)).map((k) => `<button class="btn btn-xs tap-44 ${state.kind === k ? 'btn-active' : ''}" data-kind="${k}">${esc(KIND_META[k].label)} ${counts.get(k)}</button>`)].join('');
       document.querySelectorAll<HTMLButtonElement>('[data-kind]').forEach((b) => b.addEventListener('click', () => { state.kind = b.dataset.kind as DocKind | 'all'; renderKinds(); }));
-      const rows = searchDocs(state.docs.filter((d) => state.kind === 'all' || d.kind === state.kind), state.leads, state.q);
+      const rows = searchDocs(live().filter((d) => state.kind === 'all' || d.kind === state.kind), state.leads, state.q);
       const list = $('#dc-kind-list'); list.innerHTML = rows.length ? rows.map((d) => docRow(d, true)).join('') : '<p class="py-6 text-center text-sm opacity-60">ยังไม่มีเอกสารชนิดนี้</p>';
       bindDocRows(list);
     }
 
     // ---------- tax ----------
     function renderTax() {
-      const buckets = taxBuckets(state.docs); const gaps = whtGaps(state.leads, state.docs, state.purchases); const leads = leadById();
+      const buckets = taxBuckets(live()); const gaps = whtGaps(state.leads, live(), state.purchases); const leads = leadById();
       const gapHtml = gaps.length ? `<section class="card border bg-base-200" style="border-color:var(--stamp-red);"><div class="card-body gap-2 p-4">
           <h2 class="font-display font-bold" style="color:var(--stamp-red);">🔴 ถูกหัก ณ ที่จ่ายแล้ว แต่ยังไม่ได้ใบ 50 ทวิ · ${gaps.length} รายการ</h2>
           <p class="text-xs opacity-70">ลูกค้านิติบุคคลหัก 3% ตอนจ่าย — ไม่มีใบ = ขอเครดิตภาษีคืนไม่ได้ · ทวงพร้อมวันกำหนด ไม่ใช่ "แล้วแต่สะดวก"</p>
@@ -344,6 +366,17 @@ import AppNav from '../../components/app/AppNav.astro';
         const msg = `สวัสดีครับ ${lead?.full_name || lead?.company_name || ''} 🙏\nรบกวนขอหนังสือรับรองการหักภาษี ณ ที่จ่าย (50 ทวิ) ยอดหัก ${fmtBaht(Number(b.dataset.amt))} สำหรับค่าบริการที่ชำระแล้วครับ\nใช้ยื่นภาษีประจำงวด — ขอภายในวันที่ ${due} ครับ ส่งเป็นไฟล์ในแชทนี้ได้เลย ขอบคุณครับ`;
         try { await navigator.clipboard.writeText(msg); toast('คัดลอกข้อความทวงแล้ว — มีวันกำหนดในข้อความ'); } catch { prompt('คัดลอกข้อความ', msg); }
       }));
+    }
+
+    // ---------- archive ----------
+    function renderArchive() {
+      const rows = state.docs.filter((d) => d.archived_at).sort((a, b) => String(b.archived_at).localeCompare(String(a.archived_at)));
+      const root = $('#dc-view-archive');
+      root.innerHTML = `<section class="card border border-base-300 bg-base-200"><div class="card-body gap-2 p-4">
+          <div><h2 class="font-display font-bold">🗄 Archive · ${rows.length} ใบ</h2>
+          <p class="text-xs opacity-70">ลบจากแฟ้ม = มาอยู่ที่นี่ก่อน กู้คืนได้ · <b>ลบถาวรได้จากหน้านี้เท่านั้น</b> และเฉพาะใบที่ Doc Center เป็นเจ้าของ — ใบที่ doc-bot ออก (มีเลขที่รัน) void แล้วเก็บไว้ตามกฎหมาย ลบไม่ได้</p></div>
+          <div id="dc-archive-list">${rows.length ? rows.map((d) => docRow(d, true)).join('') : '<p class="py-6 text-center text-sm opacity-60">Archive ว่าง</p>'}</div></div></section>`;
+      bindDocRows(root);
     }
 
     // ---------- upload ----------
@@ -414,7 +447,7 @@ import AppNav from '../../components/app/AppNav.astro';
           <div class="form-control sm:col-span-2"><label class="label py-0.5 text-xs" for="de-notes">โน้ต</label><input id="de-notes" class="input input-sm input-bordered" value="${esc(d.notes || '')}" maxlength="500" /></div>
           ${d.filed_at ? `<p class="text-xs sm:col-span-2" style="color:var(--carbon-green);">✓ ประทับยื่นแล้วเมื่อ ${fmtDate(d.filed_at)} — ยอด/วันที่ล็อก (ผิดจริงให้ยกเลิกตราแล้วออกใบใหม่)</p>` : ''}
           <div class="modal-action sm:col-span-2">
-            <button type="button" id="de-delete" class="btn btn-ghost btn-sm mr-auto tap-44" style="color:var(--stamp-red);">ลบออกจากแฟ้ม</button>
+            <button type="button" id="de-delete" class="btn btn-ghost btn-sm mr-auto tap-44" style="color:var(--stamp-red);">🗄 ย้ายไป Archive</button>
             ${d.filed_at ? '<button type="button" id="de-unfile" class="btn btn-ghost btn-sm tap-44">ยกเลิกตรา ยื่นแล้ว</button>' : ''}
             <button type="button" id="de-cancel" class="btn btn-ghost btn-sm tap-44">ยกเลิก</button>
             <button type="submit" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-navy);">บันทึก</button>
@@ -422,7 +455,11 @@ import AppNav from '../../components/app/AppNav.astro';
       const dlg = $<HTMLDialogElement>('#dc-edit'); dlg.showModal();
       const g = (id: string) => (document.getElementById(id) as HTMLInputElement);
       g('de-cancel').addEventListener('click', () => dlg.close());
-      g('de-delete').addEventListener('click', async () => { if (!confirm(`ลบ "${d.title}" ออกจากแฟ้ม? ไฟล์จะถูกลบด้วย`)) return; try { await deleteDoc(d); dlg.close(); toast('ลบแล้ว'); await reload(); } catch (e) { oops(e); } });
+      g('de-delete').addEventListener('click', async () => {
+        const reason = prompt(`ย้าย "${d.title}" ไป Archive? ไฟล์ยังอยู่ กู้คืนได้ · ลบจริงต้องไปที่หน้า 🗄 Archive\nเหตุผล (ไม่ใส่ก็ได้):`, 'ไม่ใช้แล้ว');
+        if (reason === null) return;
+        try { await archiveDoc(d, reason || 'ย้ายไป Archive จาก Doc Center'); dlg.close(); toast('ย้ายไป Archive แล้ว'); await reload(); } catch (e) { oops(e); }
+      });
       document.getElementById('de-unfile')?.addEventListener('click', async () => { try { await updateDoc(d.id, { filed_at: null }); dlg.close(); toast('ยกเลิกตราแล้ว'); await reload(); } catch (e) { oops(e); } });
       g('de-edit-form' as string)?.addEventListener('submit', () => {});
       (document.getElementById('dc-edit-form') as HTMLFormElement).addEventListener('submit', async (ev) => {
@@ -433,6 +470,7 @@ import AppNav from '../../components/app/AppNav.astro';
           await updateDoc(d.id, { lead_id: g('de-lead').value || null, kind, title: g('de-title').value.trim(), doc_number: g('de-number').value.trim() || null, doc_date: date,
             amount_thb: d.filed_at ? d.amount_thb : n('de-amount'), wht_amount_thb: d.filed_at ? d.wht_amount_thb : n('de-wht'), payer_name: g('de-payer').value.trim() || null, payer_tax_id: g('de-payer-tax').value.replace(/\D/g, '') || null,
             expires_at: g('de-expires').value ? new Date(g('de-expires').value).toISOString() : null, notes: g('de-notes').value.trim() || null,
+            confirmed_at: d.confirmed_at || new Date().toISOString(),   // แก้แล้วบันทึก = ตรวจแล้ว
             tax_year: kind === 'wht_cert' || kind === 'tax_filing' ? (date ? Number(date.slice(0, 4)) + 543 : null) : null, tax_period: kind === 'wht_cert' || kind === 'tax_filing' ? (date ? (Number(date.slice(5, 7)) <= 6 ? 'H1' : 'H2') : null) : null });
           dlg.close(); toast('บันทึกแล้ว'); await reload();
         } catch (e) { oops(e); }
@@ -443,8 +481,8 @@ import AppNav from '../../components/app/AppNav.astro';
     function setView(view: View) {
       state.view = view;
       document.querySelectorAll<HTMLButtonElement>('.view-tab').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.view === view)));
-      $('#dc-view-folders').classList.toggle('hidden', view !== 'folders'); $('#dc-view-kinds').classList.toggle('hidden', view !== 'kinds'); $('#dc-view-tax').classList.toggle('hidden', view !== 'tax');
-      if (view === 'kinds') renderKinds(); if (view === 'tax') renderTax();
+      $('#dc-view-folders').classList.toggle('hidden', view !== 'folders'); $('#dc-view-kinds').classList.toggle('hidden', view !== 'kinds'); $('#dc-view-tax').classList.toggle('hidden', view !== 'tax'); $('#dc-view-archive').classList.toggle('hidden', view !== 'archive');
+      if (view === 'kinds') renderKinds(); if (view === 'tax') renderTax(); if (view === 'archive') renderArchive();
       history.replaceState(null, '', view === 'folders' ? location.pathname + location.search : `#${view}`);
     }
     async function reload() {
@@ -453,7 +491,7 @@ import AppNav from '../../components/app/AppNav.astro';
         state.previews = await previewUrls(state.docs.filter((d) => d.preview_path || d.mime?.startsWith('image/')).slice(0, 120)).catch(() => new Map());
         renderSignals(); renderRoster();
         if (state.leadId) openFolder(state.leadId);
-        if (state.view === 'kinds') renderKinds(); if (state.view === 'tax') renderTax();
+        if (state.view === 'kinds') renderKinds(); if (state.view === 'tax') renderTax(); if (state.view === 'archive') renderArchive();
       } catch (e) { oops(e); }
     }
 
@@ -492,7 +530,7 @@ import AppNav from '../../components/app/AppNav.astro';
       await reload();
       const url = new URL(location.href); const lead = url.searchParams.get('lead');
       if (lead && (state.leads.some((l) => l.id === lead) || lead === '__none')) openFolder(lead);
-      if (location.hash === '#tax') setView('tax'); else if (location.hash === '#kinds') setView('kinds');
+      if (location.hash === '#tax') setView('tax'); else if (location.hash === '#kinds') setView('kinds'); else if (location.hash === '#archive') setView('archive');
     }
     document.addEventListener('docs:authed', () => void boot());
     void (async () => { if (await getSupabaseSession()) void boot(); })();
