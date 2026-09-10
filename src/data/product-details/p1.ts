@@ -11,8 +11,8 @@ export const P1_PRODUCT_DETAIL: ProductDetailPageData = {
   code: 'P1',
   pricingKey: 'public-p1-bootcamp',
   route: '/services/ai-sales-agent-bootcamp',
-  // Blind Ticket ยังไม่เปิดขายสาธารณะ → กันหน้านี้ออกจาก search จนกว่า key จะเป็น live
-  noindex: true,
+  // 2026-09-10: key เป็น live แล้ว หน้าเปิดขายจริง → ปล่อยให้ search เก็บได้
+  noindex: false,
   publicCohort: {
     seatsTotal: 10,
     // ค่าจริง ณ วันเปิดหน้า · ปันเป็นคนอัปเดตเมื่อมีคนโอนจริง ห้ามเดาเลข

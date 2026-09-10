@@ -101,7 +101,8 @@ export const CATALOG = {
   },
   'public-p1-bootcamp': {
     // 2026-09-03: Public P1 ปันเคาะ — ตั๋วรายคน Founding ฿19,900 (ขึ้น 1 step จาก 16,900 · ปันสั่ง 16:50) · Standard ฿24,900 หลังขายครบ 10 ที่นั่งราคา Blind Ticket — เปลี่ยน amount ตอนนั้น
-    // status internal จนหน้า Blind Ticket ขึ้น (WEB-PUBLIC-P1) แล้วสลับ 'live' วันเปิดขาย · ไม่มี VAT (ยังไม่จด) · ห้ามบอท quote ก่อน live
+    // 2026-09-10: LP ขึ้น production แล้ว → status 'live' · ไม่มี VAT (ยังไม่จด)
+    // botQuote ยัง false โดยตั้งใจ: ชุด copy B กำหนดว่าราคาคอร์สนี้ให้คนตอบเท่านั้น (คัดโจทย์ก่อนบอกตัวเลข)
     amount: 19900,
     url: '/services/ai-sales-agent-bootcamp',
     name: 'คอร์สสดสร้างทีม AI ผู้ช่วยงานขายส่วนตัว 2026',
@@ -110,7 +111,8 @@ export const CATALOG = {
     duration: '2 วันสด (เสาร์-อาทิตย์ · กรุงเทพฯ) + Group clinic Day 14',
     headline: 'สร้างทีม AI ผู้ช่วยงานขายของคุณเอง ใน 2 วัน — จากสินค้า ลูกค้า และดีลที่คุณมีอยู่',
     audience: 'คนขาย B2B / BD / AE ที่มีดีลจริงและออกเงินเรียนเอง · เจ้าของที่ยังขายเอง · บริษัทส่ง ≥3 คนให้เทียบ in-house ก่อน',
-    status: 'internal',
+    image: '/services/thumbs/p1-ai-sales-agent-bootcamp.jpg',
+    status: 'live',
     botQuote: false,
     note: 'Public P1 รุ่นที่ 1 · ต.ค. 2026 · สูงสุด 12 คน เปิดเมื่อครบ 6 · Core: Personal Sales Context + AI Sales Desk + ผู้ช่วย 3 ตำแหน่ง (จาก 5) + Test log + Before/After + 14-Day Plan · Founding perk: เครดิต 50% ของค่าตั๋วที่จ่ายจริง 1 ใบ/บริษัท (Blind ฿19,900 → ฿9,950) เข้า T/C1 ภายใน 90 วัน · Refund เฉพาะรอบไม่เปิด · SSOT: wiki strategy-public-cohort-product-lock-blind-ticket-2026-09 + strategy-public-course-p1-p2-ai-sales-labs · ราคา Standard 24,900 อยู่ที่ key public-p1-bootcamp-standard · Blind Ticket ฿19,900 จำกัด 10 ที่นั่งแรก',
   },
@@ -351,8 +353,8 @@ export const TERMS = {
   },
   format: {
     label: 'รูปแบบ',
-    value: 'In-house on-site เท่านั้น — คุณปันเดินทางไปที่บริษัทคุณ',
-    detail: 'ไม่มีคอร์สออนไลน์ · ราคาเดียวทั้งทีม (คอร์ส 1 วัน รับไม่เกิน 20 คน เกินกว่านี้คุยกันได้)',
+    value: 'งานบริษัทเป็น In-house on-site — คุณปันเดินทางไปที่บริษัทคุณ',
+    detail: 'ไม่มีคอร์สออนไลน์ · ราคาเดียวทั้งทีม (คอร์ส 1 วัน รับไม่เกิน 20 คน เกินกว่านี้คุยกันได้) · ข้อยกเว้นเดียวคือ AI Sales Agent Bootcamp ตั๋วรายคน จัดที่โรงแรมในกรุงเทพฯ (key public-p1-bootcamp)',
   },
 };
 
