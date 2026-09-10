@@ -34,3 +34,6 @@ dist-app
 
 # QA screenshot artifacts (ไม่ใช่ source — 34MB ไม่ควรอยู่ใน history)
 output/
+
+# screenshots จาก tests (SHOTS=1) — ของชั่วคราว
+tests/shots/
