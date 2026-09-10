@@ -1,0 +1,75 @@
+---
+/**
+ * Public-cohort ticket notice (P1 Blind Ticket · 2026-09-04).
+ * The Public layer that T1–T4 do not have: seats, cohort window, venue, open-when,
+ * refund-if-not-met, VAT wording. Rendered at three points (hero / offer / investment)
+ * from ProductDetailLayout — it never adds a data-journey-section, so the 16-step order stays intact.
+ *
+ * Every figure comes from data. Seats remaining is computed, never typed by hand
+ * (SSOT §4 "ห้าม countdown ปลอม").
+ */
+import { fmtPrice } from '../../../data/pricing.mjs';
+import type { ProductPublicCohort } from '../../../data/product-details/types';
+
+interface Props {
+  cohort: ProductPublicCohort;
+  /** Blind-ticket price, already formatted by the catalog. */
+  price: string;
+  placement: 'hero' | 'offer' | 'investment';
+}
+const { cohort, price, placement } = Astro.props;
+const standardPrice = fmtPrice(cohort.standardPricingKey);
+const seatsLeft = Math.max(cohort.seatsTotal - cohort.seatsTaken, 0);
+const seatsLine = `Blind Ticket ${price} · รับ ${cohort.seatsTotal} ที่นั่งแรก · เหลือ ${seatsLeft} ที่นั่งราคานี้`;
+const standardLine = `ครบ ${cohort.seatsTotal} ที่นั่งเมื่อไหร่ เป็นราคาปกติ ${standardPrice}`;
+
+const facts = [
+  { icon: '🎟️', label: 'ราคาและที่นั่ง', body: `${seatsLine} · ${standardLine}` },
+  { icon: '🗓️', label: 'วันเรียน', body: cohort.dateWindow },
+  { icon: '📍', label: 'สถานที่', body: cohort.venue },
+  { icon: '🪑', label: 'เปิดสอนเมื่อไหร่', body: `${cohort.openWhen} · ${cohort.notMetPolicy}` },
+  { icon: '🧾', label: 'ใบเสร็จ', body: cohort.vatNote },
+];
+
+const tone = {
+  hero: {
+    wrap: 'border-white/20 bg-white/[0.07] text-white',
+    label: 'text-[#ff677a]',
+    body: 'text-white/80',
+  },
+  offer: {
+    wrap: 'border-navy/10 bg-[#fdfaf4] text-navy',
+    label: 'text-coral',
+    body: 'text-navy/75',
+  },
+  investment: {
+    wrap: 'border-navy/10 bg-white text-navy',
+    label: 'text-coral',
+    body: 'text-navy/75',
+  },
+}[placement];
+---
+
+<div
+  data-public-notice={placement}
+  class={`rounded-2xl border px-5 py-4 sm:px-6 sm:py-5 ${tone.wrap}`}
+>
+  <dl class="grid gap-3 sm:grid-cols-2">
+    {facts.map((fact) => (
+      <div class="flex gap-3">
+        <span aria-hidden="true" class="shrink-0 text-base leading-6">{fact.icon}</span>
+        <div class="min-w-0">
+          <dt class={`text-[11px] font-bold uppercase tracking-[.16em] ${tone.label}`}>{fact.label}</dt>
+          <dd class={`mt-1 text-sm leading-6 ${tone.body}`}>{fact.body}</dd>
+        </div>
+      </div>
+    ))}
+  </dl>
+
+  {placement === 'investment' && (
+    <div class="mt-4 rounded-xl border border-coral/30 bg-coral/5 px-4 py-3">
+      <p class="text-[11px] font-bold uppercase tracking-[.16em] text-coral">สิทธิ์ Founding รุ่น 1</p>
+      <p class="mt-1 text-sm leading-6 text-navy/80">{cohort.foundingPerk}</p>
+    </div>
+  )}
+</div>
