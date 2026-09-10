@@ -87,7 +87,7 @@ test('P1 states the Blind Ticket terms at all three decision points', async ({ b
   await page.close();
 });
 
-test('P1 keeps the approved wording, keyword and stays indexable after launch', async ({ browser }) => {
+test('P1 keeps the approved wording, keyword and noindex flag', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(`${baseURL}${ROUTE}`);
 
@@ -103,11 +103,12 @@ test('P1 keeps the approved wording, keyword and stays indexable after launch', 
     'BOOTCAMP',
     'P1 must use the BOOTCAMP LINE keyword at the final CTA',
   );
-  // 2026-09-10 launch: pricing key is live, so the page must be reachable from search.
-  // A page with nothing to hide emits no robots meta at all — absent is the expected state.
-  const robots = page.locator('meta[name="robots"]');
-  const robotsContent = (await robots.count()) ? ((await robots.first().getAttribute('content')) ?? '') : '';
-  assert.doesNotMatch(robotsContent, /noindex/, 'P1 must be indexable now that the Blind Ticket is on sale');
+  // 2026-09-10: sale paused while the course is rebuilt — the page must stay out of search.
+  assert.match(
+    (await page.locator('meta[name="robots"]').getAttribute('content')) ?? '',
+    /noindex/,
+    'P1 stays out of search while the course is being rebuilt',
+  );
 
   await page.close();
 });
