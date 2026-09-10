@@ -202,11 +202,14 @@ import InteractionLog from './InteractionLog.astro';
     const target = document.getElementById('lead-document-history');
     if (!target) return;
     const { documents, purchases } = getState();
+    // 2026-09-10 Doc Center — สลิป/ใบ 50 ทวิ/proposal ของลูกค้ารายนี้อยู่ที่ /app/docs (ลิ้นชักนี้โชว์เฉพาะที่ doc-bot ออก)
+    const leadId = String((getState().selectedLead as Record<string, unknown> | null)?.lead_id || '');
+    const folderLink = leadId ? `<a class="btn btn-xs btn-ghost tap-44" href="/app/docs?lead=${esc(leadId)}">📁 แฟ้มเอกสารทั้งหมด ↗</a>` : '';
     if (!documents.length) {
-      target.innerHTML = '<p class="text-sm opacity-60">ยังไม่มีเอกสารจาก Doc-Bot</p>';
+      target.innerHTML = `<p class="text-sm opacity-60">ยังไม่มีเอกสารจาก Doc-Bot</p>${folderLink}`;
       return;
     }
-    target.innerHTML = documents.map((document) => {
+    target.innerHTML = folderLink + documents.map((document) => {
       const paid = purchases
         .filter((purchase) => purchase.document_id === document.id)
         .reduce((sum, purchase) => sum + (Number(purchase.amount_thb) || 0), 0);

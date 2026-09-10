@@ -1,0 +1,500 @@
+---
+// Doc Center — แฟ้มเอกสารลูกค้า (2026-09-10)
+//
+// ทำไมต้องมีหน้านี้: เอกสาร 1 ลูกค้ากระจาย 3 โลก — doc-bot (QO/INV/ใบเสร็จ) · ไฟล์ในรีโป (proposal/outline/SOW) ·
+// แชท (สลิป · ใบ 50 ทวิ · PO) → ตอนยื่นภาษีต้องเลื่อนหาในแชท · ตอนเขียน proposal รอบใหม่หาของเดิมไม่เจอ
+// หน้านี้คือ "ทะเบียนเดียว" ที่รู้ว่าลูกค้าคนนี้มีอะไร ไม่ว่าไฟล์อยู่ไหน + ท่อรับเข้าที่ไม่ต้องจัดมือ
+//
+// ภาพที่ใช้: โต๊ะบัญชีกระดาษ — แฟ้มมนิลามีแท็บคั่นชื่อลูกค้า · หัวแฟ้มมี "แถวตราประทับ" 5 ดวง (QO · สลิป · ใบเสร็จ · 50 ทวิ · SOW)
+// ดวงที่ประทับแล้ว = มี · เส้นประแดง = ขาด · จาง = ยังไม่ถึงขั้น → เห็นทันทีว่าดีลนี้ขาดอะไรก่อนอ่านรายละเอียด
+// มุมมองรอบภาษีเป็น "สมุดบัญชี" เส้นบรรทัด ตัวเลข tabular · ปุ่ม "ประทับ ยื่นแล้ว" ล็อกใบ
+//
+// Spec: claude-code repo → docs/superpowers/specs/2026-09-10-doc-center-design.md
+// Data: view client_docs_all (client_docs + documents ของ doc-bot + id_copies) · bucket client-docs (private · signed URL 1 ชม.)
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
+import AppNav from '../../components/app/AppNav.astro';
+---
+<DashboardLayout title="Doc Center — Pun">
+  <script is:inline async src="https://accounts.google.com/gsi/client"></script>
+  <WarRoomGate appId="docs-app" title="Doc Center" icon="📁" event="docs:authed" />
+
+  <style is:global>
+    /* is:global — แถว/ตรา/สมุดบัญชีถูก render ผ่าน innerHTML ตอน runtime · style แบบ scoped ของ Astro ไปไม่ถึง
+    /* โลกของหน้านี้: กระดาษ · หมึกน้ำเงิน · ตราประทับแดง · สำเนาคาร์บอนเขียว · แบบฟอร์มราชการฟ้าซีด */
+    #docs-app {
+      --stamp-ink: var(--color-brand-navy);
+      --stamp-red: var(--color-brand-coral);
+      --carbon-green: #2f6b4f;
+      --form-blue: #4d6f99;
+      --manila: #e9dcb8;
+      --ledger-line: color-mix(in srgb, var(--color-brand-navy) 12%, transparent);
+      --paper-shade: color-mix(in srgb, var(--color-brand-navy) 4%, transparent);
+    }
+    [data-theme="pundark"] #docs-app { --manila: #4a4030; --carbon-green: #6fb08f; --form-blue: #8fb0da; }
+    .stamp { display: inline-flex; align-items: center; justify-content: center; min-width: 2.6rem; height: 1.6rem; padding: 0 .45rem; border: 2px solid var(--stamp-ink); border-radius: .3rem; color: var(--stamp-ink); font-weight: 700; font-size: .68rem; letter-spacing: .04em; line-height: 1; transform: rotate(-3deg); background: transparent; }
+    .stamp-have { background: color-mix(in srgb, var(--stamp-ink) 10%, transparent); }
+    .stamp-missing { border-style: dashed; border-color: var(--stamp-red); color: var(--stamp-red); background: transparent; }
+    .stamp-na { border-color: var(--ledger-line); color: var(--color-brand-muted); opacity: .55; transform: none; }
+    .stamp-green { border-color: var(--carbon-green); color: var(--carbon-green); background: color-mix(in srgb, var(--carbon-green) 10%, transparent); }
+    .glyph { display: inline-grid; place-items: center; width: 2.75rem; height: 2rem; border: 1.5px solid var(--ledger-line); border-radius: .35rem; font-size: .62rem; font-weight: 700; letter-spacing: .03em; color: var(--stamp-ink); background: var(--paper-shade); flex: none; }
+    .glyph-money_in { border-color: var(--form-blue); color: var(--form-blue); }
+    .glyph-sales.glyph-receipt, .glyph-paid { border-color: var(--carbon-green); color: var(--carbon-green); }
+    .glyph-identity { border-color: var(--stamp-red); color: var(--stamp-red); }
+    .folder { border-left: 4px solid var(--manila); }
+    .folder[data-missing="1"] { border-left-color: var(--stamp-red); }
+    .folder[aria-current="true"] { background: var(--paper-shade); }
+    .ledger tr { border-bottom: 1px solid var(--ledger-line); }
+    .ledger td, .ledger th { padding: .45rem .5rem; vertical-align: top; }
+    .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .8rem; font-variant-numeric: tabular-nums; }
+    .drop { border: 2px dashed var(--ledger-line); border-radius: 1rem; transition: border-color .15s, background .15s; }
+    .drop.is-over { border-color: var(--stamp-ink); background: var(--paper-shade); }
+    .row-doc { display: grid; grid-template-columns: auto 1fr auto; gap: .75rem; align-items: start; padding: .55rem 0; border-bottom: 1px solid var(--ledger-line); }
+    .row-doc:last-child { border-bottom: 0; }
+    .signal { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; align-items: baseline; }
+    .signal b { font-size: 1.35rem; font-variant-numeric: tabular-nums; margin-right: .3rem; }
+    .signal [data-warn="1"] b { color: var(--stamp-red); }
+    .view-tab[aria-selected="true"] { background: var(--stamp-ink); color: #fff; }
+  </style>
+
+  <div id="docs-app" class="hidden min-h-dvh bg-base-100">
+    <AppNav app="docs">
+      <button id="dc-refresh" class="btn btn-ghost btn-sm tap-44" aria-label="รีเฟรช" title="รีเฟรช">⟳</button>
+      <button id="dc-upload-open" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-navy);">⬆️ หย่อนใส่แฟ้ม</button>
+    </AppNav>
+
+    <div class="mx-auto max-w-7xl space-y-4 px-4 py-4">
+      <div class="flex flex-wrap items-end justify-between gap-2">
+        <div>
+          <h1 class="font-display text-xl font-bold">📁 แฟ้มเอกสารลูกค้า</h1>
+          <p class="text-xs opacity-60">ทุกใบที่ออกให้ · ทุกใบที่ลูกค้าส่งมา — QO · ใบเสร็จ · สลิป · ใบ 50 ทวิ · proposal · SOW อยู่แฟ้มเดียวกัน</p>
+        </div>
+        <div id="dc-views" class="join" role="tablist" aria-label="มุมมอง">
+          <button class="view-tab btn btn-sm join-item tap-44" role="tab" data-view="folders" aria-selected="true">👤 ตามลูกค้า</button>
+          <button class="view-tab btn btn-sm join-item tap-44" role="tab" data-view="kinds" aria-selected="false">🗂 ตามชนิด</button>
+          <button class="view-tab btn btn-sm join-item tap-44" role="tab" data-view="tax" aria-selected="false">🧾 รอบภาษี <span id="dc-tax-badge" class="badge badge-error badge-sm hidden"></span></button>
+        </div>
+      </div>
+
+      <!-- แถบสัญญาณ: พูดเป็นประโยค ไม่ใช่การ์ด KPI -->
+      <section id="dc-signals" class="signal rounded-2xl border border-base-300 bg-base-200 px-4 py-3 text-sm" aria-label="สัญญาณ"></section>
+
+      <!-- 👤 ตามลูกค้า -->
+      <section id="dc-view-folders" class="grid gap-4 lg:grid-cols-[360px_1fr]">
+        <aside class="card border border-base-300 bg-base-200">
+          <div class="card-body gap-2 p-3">
+            <label class="flex items-center gap-2 rounded-full border border-base-300 bg-base-100 px-3">
+              <span aria-hidden="true" class="opacity-50">🔍</span>
+              <input id="dc-search" class="input input-ghost w-full border-0 px-0 focus:outline-none" placeholder="ชื่อ · บริษัท · เลขใบ · ยอด" aria-label="ค้นหาเอกสารหรือลูกค้า" autocomplete="off" />
+            </label>
+            <div class="flex flex-wrap gap-1" role="group" aria-label="กรองแฟ้ม">
+              <button class="btn btn-xs btn-active tap-44" data-filter="all">ทั้งหมด</button>
+              <button class="btn btn-xs tap-44" data-filter="missing">🔴 ขาดเอกสาร</button>
+              <button class="btn btn-xs tap-44" data-filter="closed">ปิดดีลแล้ว</button>
+              <button class="btn btn-xs tap-44" data-filter="hasdocs">มีเอกสาร</button>
+            </div>
+            <ul id="dc-roster" class="menu menu-sm max-h-[70vh] w-full overflow-y-auto p-0" aria-label="รายชื่อแฟ้ม"></ul>
+          </div>
+        </aside>
+        <section id="dc-folder" class="card border border-base-300 bg-base-200 min-h-64">
+          <div class="card-body p-4"><p class="text-sm opacity-60">เลือกแฟ้มจากรายชื่อ — หรือค้นหาเลขใบ/ยอดเงินได้เลย</p></div>
+        </section>
+      </section>
+
+      <!-- 🗂 ตามชนิด -->
+      <section id="dc-view-kinds" class="hidden space-y-3">
+        <div id="dc-kind-chips" class="flex flex-wrap gap-1" role="group" aria-label="กรองตามชนิด"></div>
+        <section class="card border border-base-300 bg-base-200"><div class="card-body p-3"><div id="dc-kind-list"></div></div></section>
+      </section>
+
+      <!-- 🧾 รอบภาษี -->
+      <section id="dc-view-tax" class="hidden space-y-4"></section>
+    </div>
+
+    <!-- หย่อนใส่แฟ้ม -->
+    <dialog id="dc-upload" class="modal">
+      <div class="modal-box max-w-2xl">
+        <h2 class="font-display text-lg font-bold">⬆️ หย่อนใส่แฟ้ม</h2>
+        <p class="text-xs opacity-60">รูปจากมือถือถูกบีบให้ ≤300 KB ก่อนเก็บ · PDF เก็บตามเดิม · ไฟล์ซ้ำ (เนื้อหาเดียวกัน) ระบบไม่รับซ้ำ</p>
+        <div id="dc-drop" class="drop mt-3 grid place-items-center gap-1 px-4 py-6 text-center text-sm">
+          <span>ลากไฟล์มาวาง · วาง (⌘V) จาก clipboard · หรือ</span>
+          <div class="flex flex-wrap justify-center gap-2">
+            <label class="btn btn-sm tap-44">เลือกไฟล์<input id="dc-file" type="file" class="hidden" accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx" /></label>
+            <label class="btn btn-sm tap-44 sm:hidden">📷 ถ่ายรูป<input id="dc-camera" type="file" class="hidden" accept="image/*" capture="environment" /></label>
+          </div>
+          <p id="dc-file-name" class="mono opacity-70"></p>
+        </div>
+        <form id="dc-form" class="mt-3 grid gap-2 sm:grid-cols-2">
+          <div class="form-control sm:col-span-2">
+            <label class="label py-0.5 text-xs" for="dc-lead-q">ลูกค้า</label>
+            <div class="relative">
+              <input id="dc-lead-q" class="input input-sm input-bordered w-full" placeholder="พิมพ์ชื่อ/บริษัท…" autocomplete="off" aria-autocomplete="list" aria-controls="dc-lead-list" />
+              <ul id="dc-lead-list" class="menu menu-sm absolute z-10 mt-1 hidden max-h-48 w-full overflow-y-auto rounded-box border border-base-300 bg-base-100 shadow" role="listbox"></ul>
+            </div>
+            <p id="dc-lead-pick" class="mt-1 text-xs opacity-70"></p>
+            <input type="hidden" id="dc-lead-id" />
+          </div>
+          <div class="form-control">
+            <label class="label py-0.5 text-xs" for="dc-kind">ชนิดเอกสาร</label>
+            <select id="dc-kind" class="select select-sm select-bordered"></select>
+          </div>
+          <div class="form-control">
+            <label class="label py-0.5 text-xs" for="dc-date">วันที่ในเอกสาร</label>
+            <input id="dc-date" type="date" class="input input-sm input-bordered" />
+          </div>
+          <div class="form-control sm:col-span-2">
+            <label class="label py-0.5 text-xs" for="dc-title">ชื่อที่จะเห็นในแฟ้ม</label>
+            <input id="dc-title" class="input input-sm input-bordered" maxlength="200" required />
+          </div>
+          <div class="form-control">
+            <label class="label py-0.5 text-xs" for="dc-number">เลขที่เอกสาร</label>
+            <input id="dc-number" class="input input-sm input-bordered mono" placeholder="QO-… / เลข 50 ทวิ / PO" />
+          </div>
+          <div class="form-control" data-money>
+            <label class="label py-0.5 text-xs" for="dc-amount">ยอดเงิน (บาท)</label>
+            <input id="dc-amount" type="number" inputmode="decimal" step="0.01" class="input input-sm input-bordered mono" />
+          </div>
+          <div class="form-control" data-wht>
+            <label class="label py-0.5 text-xs" for="dc-wht">ภาษีหัก ณ ที่จ่าย (บาท)</label>
+            <input id="dc-wht" type="number" inputmode="decimal" step="0.01" class="input input-sm input-bordered mono" />
+          </div>
+          <div class="form-control" data-wht>
+            <label class="label py-0.5 text-xs" for="dc-payer">ผู้จ่าย/ผู้หัก (ชื่อบนใบ)</label>
+            <input id="dc-payer" class="input input-sm input-bordered" />
+          </div>
+          <div class="form-control" data-wht>
+            <label class="label py-0.5 text-xs" for="dc-payer-tax">เลขผู้เสียภาษีผู้จ่าย</label>
+            <input id="dc-payer-tax" class="input input-sm input-bordered mono" inputmode="numeric" maxlength="13" />
+          </div>
+          <div class="form-control sm:col-span-2">
+            <label class="label py-0.5 text-xs" for="dc-notes">โน้ต</label>
+            <input id="dc-notes" class="input input-sm input-bordered" maxlength="500" placeholder="เช่น ลูกค้าส่งมาทาง LINE 3 ก.ย." />
+          </div>
+          <p id="dc-pii-note" class="hidden text-xs sm:col-span-2" style="color:var(--stamp-red);">🔒 เอกสารส่วนบุคคล — ระบบตั้งวันหมดอายุ 1 ปีให้ แก้ได้ทีหลัง · ห้ามส่งต่อลิงก์นอกงาน</p>
+          <div class="modal-action sm:col-span-2">
+            <span id="dc-step" class="mr-auto self-center text-xs opacity-70" role="status"></span>
+            <button type="button" id="dc-upload-cancel" class="btn btn-ghost btn-sm tap-44">ยกเลิก</button>
+            <button type="submit" id="dc-upload-submit" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-navy);">📥 เก็บเข้าแฟ้ม</button>
+          </div>
+        </form>
+      </div>
+      <form method="dialog" class="modal-backdrop"><button aria-label="ปิด">ปิด</button></form>
+    </dialog>
+
+    <!-- แก้ไข -->
+    <dialog id="dc-edit" class="modal"><div id="dc-edit-body" class="modal-box max-w-xl"></div><form method="dialog" class="modal-backdrop"><button aria-label="ปิด">ปิด</button></form></dialog>
+
+    <div class="toast toast-end z-50"><div id="dc-toast" class="alert hidden text-sm shadow-lg"></div></div>
+  </div>
+
+  <script>
+    import { loadAll, uploadDoc, openUrl, updateDoc, deleteDoc, previewUrls, downloadText, MAX_UPLOAD_BYTES } from '../../scripts/docs/data';
+    import { getSupabaseSession } from '../../scripts/dashboard/supabase';
+    import {
+      KIND_META, KINDS, GROUP_LABEL, checklistFor, missingCount, taxBuckets, whtGaps, whtCsv, searchDocs,
+      guessKind, guessTitle, leadName, isJuristic, fmtBaht, fmtDate, fmtSize,
+      type DocRow, type LeadLite, type PurchaseLite, type DocKind, type DocGroup, type ChecklistItem,
+    } from '../../scripts/docs/logic';
+
+    const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector(sel) as T;
+    const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] as string);
+
+    let toastTimer: number | undefined;
+    function toast(msg: string, kind: 'success' | 'error' = 'success') {
+      const el = $('#dc-toast');
+      el.className = `alert text-sm shadow-lg ${kind === 'error' ? 'alert-error' : 'alert-success'}`;
+      el.textContent = msg; el.classList.remove('hidden');
+      window.clearTimeout(toastTimer); toastTimer = window.setTimeout(() => el.classList.add('hidden'), 3200);
+    }
+    const oops = (e: unknown) => toast((e as Error).message || 'ผิดพลาด ลองใหม่', 'error');
+
+    type View = 'folders' | 'kinds' | 'tax';
+    const state = { docs: [] as DocRow[], leads: [] as LeadLite[], purchases: [] as PurchaseLite[], view: 'folders' as View, filter: 'all', q: '', leadId: null as string | null, kind: 'all' as DocKind | 'all', previews: new Map<string, string>() };
+    const leadById = () => new Map(state.leads.map((l) => [l.id, l]));
+    const docsOf = (leadId: string) => state.docs.filter((d) => d.lead_id === leadId);
+    const purchasesOf = (leadId: string) => state.purchases.filter((p) => p.lead_id === leadId);
+
+    // ---------- signals ----------
+    function renderSignals() {
+      const missing = state.leads.filter((l) => missingCount(checklistFor(l, docsOf(l.id), purchasesOf(l.id))) > 0).length;
+      const gaps = whtGaps(state.leads, state.docs, state.purchases);
+      const pii = state.docs.filter((d) => d.is_pii && d.expires_at && new Date(d.expires_at).getTime() - Date.now() < 14 * 86400000);
+      const week = state.docs.filter((d) => Date.now() - new Date(d.created_at).getTime() < 7 * 86400000).length;
+      $('#dc-signals').innerHTML = [
+        `<span><b>${state.docs.length}</b>ใบในแฟ้ม · <b>${week}</b>ใบใหม่สัปดาห์นี้</span>`,
+        `<span data-warn="${missing ? 1 : 0}"><b>${missing}</b>ดีลปิดแล้วยังขาดเอกสาร</span>`,
+        `<span data-warn="${gaps.length ? 1 : 0}"><b>${gaps.length}</b>ถูกหัก ณ ที่จ่ายแต่ยังไม่มีใบ 50 ทวิ</span>`,
+        `<span data-warn="${pii.length ? 1 : 0}"><b>${pii.length}</b>เอกสารส่วนบุคคลใกล้หมดอายุ</span>`,
+      ].join('');
+      const badge = $('#dc-tax-badge'); badge.textContent = String(gaps.length); badge.classList.toggle('hidden', gaps.length === 0);
+    }
+
+    // ---------- folders ----------
+    function rosterRows(): { lead: LeadLite; docs: DocRow[]; items: ChecklistItem[]; missing: number }[] {
+      const q = state.q.trim().toLowerCase();
+      const hit = q ? new Set(searchDocs(state.docs, state.leads, q).map((d) => d.lead_id)) : null;
+      return state.leads.map((lead) => {
+        const docs = docsOf(lead.id); const items = checklistFor(lead, docs, purchasesOf(lead.id));
+        return { lead, docs, items, missing: missingCount(items) };
+      }).filter((r) => {
+        if (q && !(hit!.has(r.lead.id) || leadName(r.lead).toLowerCase().includes(q) || (r.lead.tax_id || '').includes(q))) return false;
+        if (state.filter === 'missing') return r.missing > 0;
+        if (state.filter === 'closed') return ['won', 'repeat', 'retainer'].includes(r.lead.deal_outcome || '') || purchasesOf(r.lead.id).length > 0;
+        if (state.filter === 'hasdocs') return r.docs.length > 0;
+        return true;
+      }).sort((a, b) => (b.missing - a.missing) || (b.docs.length - a.docs.length) || leadName(a.lead).localeCompare(leadName(b.lead), 'th'));
+    }
+
+    function renderRoster() {
+      const rows = rosterRows();
+      const unassigned = state.docs.filter((d) => !d.lead_id);
+      $('#dc-roster').innerHTML = (rows.map((r) => `<li><button class="folder flex w-full items-center justify-between gap-2 rounded-r-lg px-3 py-2 text-left tap-44" data-lead="${esc(r.lead.id)}" data-missing="${r.missing ? 1 : 0}" aria-current="${state.leadId === r.lead.id}">
+          <span class="min-w-0"><span class="block truncate text-sm font-semibold">${esc(leadName(r.lead))}</span><span class="block truncate text-xs opacity-60">${r.lead.company_name && r.lead.full_name ? esc(r.lead.full_name) + ' · ' : ''}${isJuristic(r.lead.tax_id) ? 'นิติบุคคล' : r.lead.tax_id ? 'บุคคล' : 'ไม่มี tax id'}</span></span>
+          <span class="flex shrink-0 items-center gap-1 text-xs"><span class="badge badge-ghost badge-sm tabular-nums">${r.docs.length}</span>${r.missing ? `<span class="stamp stamp-missing" title="ขาด ${r.missing} อย่าง">ขาด ${r.missing}</span>` : ''}</span>
+        </button></li>`).join('') || '<li class="px-3 py-4 text-sm opacity-60">ไม่มีแฟ้มที่ตรงเงื่อนไข</li>')
+        + (unassigned.length ? `<li><button class="folder flex w-full items-center justify-between gap-2 rounded-r-lg px-3 py-2 text-left tap-44" data-lead="__none" aria-current="${state.leadId === '__none'}"><span class="text-sm font-semibold opacity-70">ยังไม่ผูกลูกค้า</span><span class="badge badge-ghost badge-sm">${unassigned.length}</span></button></li>` : '');
+      document.querySelectorAll<HTMLButtonElement>('[data-lead]').forEach((b) => b.addEventListener('click', () => openFolder(b.dataset.lead!)));
+    }
+
+    const stampRow = (items: ChecklistItem[]) => `<div class="flex flex-wrap gap-1.5" role="list" aria-label="เอกสารของดีลนี้">${items.map((i) => `<span role="listitem" class="stamp stamp-${i.state}" title="${esc(KIND_META[i.kind].label)} — ${i.state === 'have' ? 'มีแล้ว' : i.state === 'missing' ? 'ยังไม่มี: ' + esc(i.why || '') : esc(i.why || 'ยังไม่ถึงขั้น')}">${esc(KIND_META[i.kind].glyph)}${i.state === 'have' ? ' ✓' : i.state === 'missing' ? ' ✗' : ''}</span>`).join('')}</div>`;
+
+    function docRow(d: DocRow, showLead = false): string {
+      const meta = KIND_META[d.kind]; const lead = d.lead_id ? leadById().get(d.lead_id) : null;
+      const money = d.amount_thb != null ? `<span class="mono">${fmtBaht(d.amount_thb)}</span>${d.wht_amount_thb != null ? ` <span class="mono opacity-60">หัก ${fmtBaht(d.wht_amount_thb)}</span>` : ''}` : '';
+      const prev = state.previews.get(d.id);
+      const flags = [d.filed_at ? '<span class="stamp stamp-green" style="transform:none">ยื่นแล้ว</span>' : '', d.is_pii ? `<span class="badge badge-ghost badge-xs">🔒${d.expires_at ? ' ถึง ' + fmtDate(d.expires_at) : ''}</span>` : '', d.origin !== 'client_docs' ? '<span class="badge badge-ghost badge-xs">doc-bot</span>' : ''].filter(Boolean).join(' ');
+      return `<div class="row-doc" data-doc="${esc(d.id)}">
+        ${prev ? `<img src="${esc(prev)}" alt="" class="h-12 w-11 rounded object-cover" loading="lazy" onerror="this.hidden=true;this.nextElementSibling.hidden=false" /><span class="glyph glyph-${meta.group} glyph-${d.kind}" hidden>${esc(meta.glyph)}</span>` : `<span class="glyph glyph-${meta.group} glyph-${d.kind}">${esc(meta.glyph)}</span>`}
+        <div class="min-w-0">
+          <p class="truncate text-sm font-semibold">${esc(d.title)}</p>
+          <p class="text-xs opacity-70">${esc(meta.label)}${d.doc_number ? ` · <span class="mono">${esc(d.doc_number)}</span>` : ''} · ${fmtDate(d.doc_date || d.created_at)}${showLead ? ` · ${esc(leadName(lead))}` : ''}${d.size_bytes ? ` · ${fmtSize(d.size_bytes)}` : ''}</p>
+          <p class="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs">${money}${flags}</p>
+        </div>
+        <div class="flex shrink-0 gap-1">
+          <button class="btn btn-xs tap-44" data-open="${esc(d.id)}">เปิด</button>
+          ${d.origin === 'client_docs' ? `<button class="btn btn-xs btn-ghost tap-44" data-edit="${esc(d.id)}" aria-label="แก้ไข">✏️</button>` : ''}
+        </div></div>`;
+    }
+
+    function bindDocRows(root: HTMLElement) {
+      root.querySelectorAll<HTMLButtonElement>('[data-open]').forEach((b) => b.addEventListener('click', async () => {
+        const d = state.docs.find((x) => x.id === b.dataset.open); if (!d) return;
+        b.disabled = true;
+        try { window.open(await openUrl(d), '_blank', 'noopener'); } catch (e) { oops(e); } finally { b.disabled = false; }
+      }));
+      root.querySelectorAll<HTMLButtonElement>('[data-edit]').forEach((b) => b.addEventListener('click', () => openEdit(b.dataset.edit!)));
+    }
+
+    function openFolder(leadId: string) {
+      state.leadId = leadId; renderRoster();
+      const panel = $('#dc-folder'); const url = new URL(location.href); url.searchParams.set('lead', leadId); history.replaceState(null, '', url);
+      const docs = leadId === '__none' ? state.docs.filter((d) => !d.lead_id) : docsOf(leadId);
+      const lead = leadId === '__none' ? null : leadById().get(leadId) || null;
+      const groups = new Map<DocGroup, DocRow[]>();
+      for (const d of docs) groups.set(KIND_META[d.kind].group, [...(groups.get(KIND_META[d.kind].group) || []), d]);
+      const head = lead ? `<div class="flex flex-wrap items-start justify-between gap-3">
+          <div><h2 class="font-display text-lg font-bold">${esc(leadName(lead))}</h2>
+            <p class="text-xs opacity-70">${lead.full_name && lead.company_name ? esc(lead.full_name) + ' · ' : ''}${lead.tax_id ? `<span class="mono">${esc(lead.tax_id)}</span> · ` : ''}${lead.deal_outcome ? esc(lead.deal_outcome) + ' · ' : ''}${lead.lifetime_value_thb ? 'LTV ' + fmtBaht(lead.lifetime_value_thb) : 'ยังไม่มียอดซื้อ'}</p></div>
+          <div class="flex gap-1"><button class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-navy);" data-upload-for="${esc(lead.id)}">⬆️ หย่อนใส่แฟ้มนี้</button><a class="btn btn-sm btn-ghost tap-44" href="/app/dashboard?lead=${esc(lead.id)}">เปิดใน CRM ↗</a></div>
+        </div>
+        <div class="mt-3">${stampRow(checklistFor(lead, docs, purchasesOf(lead.id)))}</div>`
+        : `<h2 class="font-display text-lg font-bold">ยังไม่ผูกลูกค้า</h2><p class="text-xs opacity-70">กด ✏️ ที่แต่ละใบเพื่อผูกแฟ้ม</p>`;
+      const body = docs.length ? [...groups.entries()].sort((a, b) => Object.keys(GROUP_LABEL).indexOf(a[0]) - Object.keys(GROUP_LABEL).indexOf(b[0])).map(([g, rows]) => `<section class="mt-4"><h3 class="mb-1 text-xs font-bold uppercase tracking-wide opacity-50">${esc(GROUP_LABEL[g])} · ${rows.length}</h3>${rows.map((d) => docRow(d)).join('')}</section>`).join('')
+        : `<p class="mt-4 rounded-xl border border-dashed border-base-300 px-4 py-6 text-center text-sm opacity-60">แฟ้มนี้ยังว่าง — หย่อนสลิป/ใบ 50 ทวิ/proposal ที่เคยส่งเข้ามาได้เลย</p>`;
+      panel.innerHTML = `<div class="card-body p-4">${head}${body}</div>`;
+      bindDocRows(panel);
+      panel.querySelector<HTMLButtonElement>('[data-upload-for]')?.addEventListener('click', () => openUpload(lead?.id || null));
+      if (window.innerWidth < 1024) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ---------- kinds ----------
+    function renderKinds() {
+      const counts = new Map<DocKind, number>(); for (const d of state.docs) counts.set(d.kind, (counts.get(d.kind) || 0) + 1);
+      $('#dc-kind-chips').innerHTML = [`<button class="btn btn-xs tap-44 ${state.kind === 'all' ? 'btn-active' : ''}" data-kind="all">ทั้งหมด ${state.docs.length}</button>`,
+        ...KINDS.filter((k) => counts.get(k)).map((k) => `<button class="btn btn-xs tap-44 ${state.kind === k ? 'btn-active' : ''}" data-kind="${k}">${esc(KIND_META[k].label)} ${counts.get(k)}</button>`)].join('');
+      document.querySelectorAll<HTMLButtonElement>('[data-kind]').forEach((b) => b.addEventListener('click', () => { state.kind = b.dataset.kind as DocKind | 'all'; renderKinds(); }));
+      const rows = searchDocs(state.docs.filter((d) => state.kind === 'all' || d.kind === state.kind), state.leads, state.q);
+      const list = $('#dc-kind-list'); list.innerHTML = rows.length ? rows.map((d) => docRow(d, true)).join('') : '<p class="py-6 text-center text-sm opacity-60">ยังไม่มีเอกสารชนิดนี้</p>';
+      bindDocRows(list);
+    }
+
+    // ---------- tax ----------
+    function renderTax() {
+      const buckets = taxBuckets(state.docs); const gaps = whtGaps(state.leads, state.docs, state.purchases); const leads = leadById();
+      const gapHtml = gaps.length ? `<section class="card border bg-base-200" style="border-color:var(--stamp-red);"><div class="card-body gap-2 p-4">
+          <h2 class="font-display font-bold" style="color:var(--stamp-red);">🔴 ถูกหัก ณ ที่จ่ายแล้ว แต่ยังไม่ได้ใบ 50 ทวิ · ${gaps.length} รายการ</h2>
+          <p class="text-xs opacity-70">ลูกค้านิติบุคคลหัก 3% ตอนจ่าย — ไม่มีใบ = ขอเครดิตภาษีคืนไม่ได้ · ทวงพร้อมวันกำหนด ไม่ใช่ "แล้วแต่สะดวก"</p>
+          <table class="ledger w-full text-sm"><thead><tr class="text-xs opacity-60"><th class="text-left">ลูกค้า</th><th class="text-right">ยอดซื้อ</th><th class="text-right">คาดว่าหัก</th><th class="text-right">ผ่านมา</th><th></th></tr></thead><tbody>
+          ${gaps.map((g) => `<tr><td>${esc(leadName(g.lead))}<br><span class="text-xs opacity-60">${fmtDate(g.purchase.purchased_at)}</span></td><td class="mono text-right">${fmtBaht(g.purchase.amount_thb)}</td><td class="mono text-right">${fmtBaht(g.expectedWht)}</td><td class="mono text-right">${g.daysSince} วัน</td><td class="text-right"><button class="btn btn-xs tap-44" data-nudge="${esc(g.lead.id)}" data-amt="${g.expectedWht}">📋 ข้อความทวง</button></td></tr>`).join('')}</tbody></table></div></section>` : '';
+      const bucketHtml = buckets.length ? buckets.map((b) => `<section class="card border border-base-300 bg-base-200"><div class="card-body gap-2 p-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h2 class="font-display font-bold">🧾 ปีภาษี ${b.year} · ${b.period === 'H1' ? 'ครึ่งปีแรก (ภ.ง.ด.94)' : 'ครึ่งปีหลัง (ภ.ง.ด.90)'}</h2>
+            <div class="flex gap-1"><button class="btn btn-xs tap-44" data-csv="${b.year}-${b.period}">⬇️ CSV ชุดยื่นภาษี</button>${b.filed < b.rows.length ? `<button class="btn btn-xs tap-44" data-file-all="${b.year}-${b.period}">ประทับ "ยื่นแล้ว" ทั้งงวด</button>` : ''}</div>
+          </div>
+          <div class="signal text-sm"><span><b>${b.rows.length}</b>ใบ</span><span>เงินได้ <b class="mono">${fmtBaht(b.income)}</b></span><span>ภาษีหักรวม <b class="mono" style="color:var(--form-blue);">${fmtBaht(b.wht)}</b></span><span>ยื่นแล้ว <b>${b.filed}/${b.rows.length}</b></span></div>
+          <table class="ledger w-full text-sm"><thead><tr class="text-xs opacity-60"><th class="text-left">วันที่</th><th class="text-left">ผู้จ่าย</th><th class="text-left">เลขที่</th><th class="text-right">เงินได้</th><th class="text-right">ภาษีหัก</th><th class="text-center">สถานะ</th><th></th></tr></thead><tbody>
+          ${b.rows.map((r) => `<tr><td class="mono whitespace-nowrap">${fmtDate(r.doc_date)}</td><td>${esc(r.payer_name || leadName(leads.get(r.lead_id || '')))}<br><span class="mono text-xs opacity-60">${esc(r.payer_tax_id || leads.get(r.lead_id || '')?.tax_id || '')}</span></td><td class="mono">${esc(r.doc_number || '—')}</td><td class="mono text-right">${fmtBaht(r.amount_thb)}</td><td class="mono text-right">${fmtBaht(r.wht_amount_thb)}</td><td class="text-center">${r.filed_at ? '<span class="stamp stamp-green">ยื่นแล้ว</span>' : `<button class="btn btn-xs btn-ghost tap-44" data-file-one="${esc(r.id)}">ประทับ ยื่นแล้ว</button>`}</td><td class="text-right"><button class="btn btn-xs tap-44" data-open="${esc(r.id)}">เปิด</button></td></tr>`).join('')}</tbody></table></div></section>`).join('')
+        : `<section class="card border border-base-300 bg-base-200"><div class="card-body p-6 text-center text-sm opacity-60">ยังไม่มีใบ 50 ทวิ ในแฟ้ม — หย่อนใบแรกได้ที่ปุ่ม ⬆️ (เลือกชนิด "ใบหัก ณ ที่จ่าย")</div></section>`;
+      const root = $('#dc-view-tax'); root.innerHTML = gapHtml + bucketHtml; bindDocRows(root);
+      root.querySelectorAll<HTMLButtonElement>('[data-csv]').forEach((b) => b.addEventListener('click', () => { const bk = buckets.find((x) => `${x.year}-${x.period}` === b.dataset.csv)!; downloadText(`wht-${bk.year}-${bk.period}.csv`, whtCsv(bk.rows, state.leads)); toast('ดาวน์โหลด CSV แล้ว'); }));
+      root.querySelectorAll<HTMLButtonElement>('[data-file-one]').forEach((b) => b.addEventListener('click', async () => { if (!confirm('ประทับว่ายื่นสรรพากรแล้ว? ใบนี้จะแก้ยอดไม่ได้อีก')) return; try { await updateDoc(b.dataset.fileOne!, { filed_at: new Date().toISOString() }); toast('ประทับ ยื่นแล้ว'); await reload(); } catch (e) { oops(e); } }));
+      root.querySelectorAll<HTMLButtonElement>('[data-file-all]').forEach((b) => b.addEventListener('click', async () => { const bk = buckets.find((x) => `${x.year}-${x.period}` === b.dataset.fileAll)!; const todo = bk.rows.filter((r) => !r.filed_at && r.origin === 'client_docs'); if (!confirm(`ประทับ "ยื่นแล้ว" ${todo.length} ใบของงวดนี้?`)) return; try { for (const r of todo) await updateDoc(r.id, { filed_at: new Date().toISOString() }); toast(`ประทับแล้ว ${todo.length} ใบ`); await reload(); } catch (e) { oops(e); } }));
+      root.querySelectorAll<HTMLButtonElement>('[data-nudge]').forEach((b) => b.addEventListener('click', async () => {
+        const lead = leads.get(b.dataset.nudge!); const due = new Date(Date.now() + 7 * 86400000).toLocaleDateString('th-TH', { day: 'numeric', month: 'long' });
+        const msg = `สวัสดีครับ ${lead?.full_name || lead?.company_name || ''} 🙏\nรบกวนขอหนังสือรับรองการหักภาษี ณ ที่จ่าย (50 ทวิ) ยอดหัก ${fmtBaht(Number(b.dataset.amt))} สำหรับค่าบริการที่ชำระแล้วครับ\nใช้ยื่นภาษีประจำงวด — ขอภายในวันที่ ${due} ครับ ส่งเป็นไฟล์ในแชทนี้ได้เลย ขอบคุณครับ`;
+        try { await navigator.clipboard.writeText(msg); toast('คัดลอกข้อความทวงแล้ว — มีวันกำหนดในข้อความ'); } catch { prompt('คัดลอกข้อความ', msg); }
+      }));
+    }
+
+    // ---------- upload ----------
+    let pendingFile: File | null = null;
+    function kindOptions(selected: DocKind) {
+      const groups = new Map<DocGroup, DocKind[]>(); for (const k of KINDS) groups.set(KIND_META[k].group, [...(groups.get(KIND_META[k].group) || []), k]);
+      return [...groups.entries()].map(([g, ks]) => `<optgroup label="${esc(GROUP_LABEL[g])}">${ks.filter((k) => k !== 'id_copy_pun').map((k) => `<option value="${k}" ${k === selected ? 'selected' : ''}>${esc(KIND_META[k].label)}</option>`).join('')}</optgroup>`).join('');
+    }
+    function syncKindFields(kind: DocKind) {
+      const meta = KIND_META[kind];
+      document.querySelectorAll<HTMLElement>('#dc-form [data-money]').forEach((el) => el.classList.toggle('hidden', !meta.money));
+      document.querySelectorAll<HTMLElement>('#dc-form [data-wht]').forEach((el) => el.classList.toggle('hidden', kind !== 'wht_cert'));
+      $('#dc-pii-note').classList.toggle('hidden', !meta.pii);
+    }
+    function pickLead(lead: LeadLite | null) {
+      $<HTMLInputElement>('#dc-lead-id').value = lead?.id || ''; $('#dc-lead-list').classList.add('hidden');
+      $<HTMLInputElement>('#dc-lead-q').value = lead ? leadName(lead) : '';
+      $('#dc-lead-pick').textContent = lead ? `✓ แฟ้ม ${leadName(lead)}${lead.tax_id ? ` · ${lead.tax_id}` : ''}` : 'ไม่ผูกลูกค้า (ผูกทีหลังได้)';
+      if (lead && pendingFile) $<HTMLInputElement>('#dc-title').value = guessTitle($<HTMLSelectElement>('#dc-kind').value as DocKind, lead, $<HTMLInputElement>('#dc-date').value || null, pendingFile.name);
+    }
+    function setFile(file: File | null) {
+      pendingFile = file; $('#dc-file-name').textContent = file ? `${file.name} · ${fmtSize(file.size)}` : '';
+      if (!file) return;
+      if (file.size > MAX_UPLOAD_BYTES) { toast('ไฟล์ใหญ่เกิน 15 MB', 'error'); pendingFile = null; return; }
+      const kind = guessKind(file.name, file.type); const sel = $<HTMLSelectElement>('#dc-kind'); sel.value = kind; syncKindFields(kind);
+      const lead = leadById().get($<HTMLInputElement>('#dc-lead-id').value) || null;
+      $<HTMLInputElement>('#dc-title').value = guessTitle(kind, lead, $<HTMLInputElement>('#dc-date').value || null, file.name);
+    }
+    function openUpload(leadId: string | null) {
+      const dlg = $<HTMLDialogElement>('#dc-upload'); $<HTMLFormElement>('#dc-form').reset(); setFile(null);
+      $<HTMLSelectElement>('#dc-kind').innerHTML = kindOptions('payment_slip'); syncKindFields('payment_slip');
+      $<HTMLInputElement>('#dc-date').value = new Date().toISOString().slice(0, 10);
+      pickLead(leadId ? leadById().get(leadId) || null : null); $('#dc-step').textContent = '';
+      dlg.showModal();
+    }
+    async function submitUpload(ev: Event) {
+      ev.preventDefault();
+      if (!pendingFile) { toast('ยังไม่ได้เลือกไฟล์', 'error'); return; }
+      const v = (id: string) => $<HTMLInputElement>(id).value.trim();
+      const num = (id: string) => { const n = Number(v(id).replace(/[,฿]/g, '')); return v(id) && Number.isFinite(n) ? n : null; };
+      const kind = $<HTMLSelectElement>('#dc-kind').value as DocKind;
+      const btn = $<HTMLButtonElement>('#dc-upload-submit'); btn.disabled = true;
+      try {
+        const doc = await uploadDoc({ file: pendingFile, lead_id: v('#dc-lead-id') || null, kind, title: v('#dc-title') || pendingFile.name, doc_number: v('#dc-number'), doc_date: v('#dc-date') || null,
+          amount_thb: KIND_META[kind].money ? num('#dc-amount') : null, wht_amount_thb: kind === 'wht_cert' ? num('#dc-wht') : null, wht_rate: kind === 'wht_cert' && num('#dc-wht') && num('#dc-amount') ? Math.round((num('#dc-wht')! / num('#dc-amount')!) * 100) : null,
+          payer_name: kind === 'wht_cert' ? v('#dc-payer') : null, payer_tax_id: kind === 'wht_cert' ? v('#dc-payer-tax') : null, notes: v('#dc-notes') }, (s) => { $('#dc-step').textContent = s; });
+        $<HTMLDialogElement>('#dc-upload').close(); toast(`เก็บเข้าแฟ้มแล้ว — ${doc.title}`);
+        await reload(); if (doc.lead_id) openFolder(doc.lead_id);
+      } catch (e) { oops(e); } finally { btn.disabled = false; $('#dc-step').textContent = ''; }
+    }
+
+    // ---------- edit ----------
+    function openEdit(id: string) {
+      const d = state.docs.find((x) => x.id === id); if (!d) return;
+      const lead = d.lead_id ? leadById().get(d.lead_id) : null;
+      $('#dc-edit-body').innerHTML = `<h2 class="font-display text-lg font-bold">✏️ แก้ไขเอกสาร</h2>
+        <form id="dc-edit-form" class="mt-3 grid gap-2 sm:grid-cols-2">
+          <div class="form-control sm:col-span-2"><label class="label py-0.5 text-xs" for="de-lead">ลูกค้า</label><select id="de-lead" class="select select-sm select-bordered"><option value="">— ไม่ผูก —</option>${state.leads.map((l) => `<option value="${esc(l.id)}" ${l.id === d.lead_id ? 'selected' : ''}>${esc(leadName(l))}</option>`).join('')}</select></div>
+          <div class="form-control"><label class="label py-0.5 text-xs" for="de-kind">ชนิด</label><select id="de-kind" class="select select-sm select-bordered">${kindOptions(d.kind)}</select></div>
+          <div class="form-control"><label class="label py-0.5 text-xs" for="de-date">วันที่</label><input id="de-date" type="date" class="input input-sm input-bordered" value="${esc(d.doc_date || '')}" ${d.filed_at ? 'disabled' : ''} /></div>
+          <div class="form-control sm:col-span-2"><label class="label py-0.5 text-xs" for="de-title">ชื่อ</label><input id="de-title" class="input input-sm input-bordered" value="${esc(d.title)}" maxlength="200" required /></div>
+          <div class="form-control"><label class="label py-0.5 text-xs" for="de-number">เลขที่</label><input id="de-number" class="input input-sm input-bordered mono" value="${esc(d.doc_number || '')}" /></div>
+          <div class="form-control"><label class="label py-0.5 text-xs" for="de-amount">ยอดเงิน</label><input id="de-amount" type="number" step="0.01" class="input input-sm input-bordered mono" value="${d.amount_thb ?? ''}" ${d.filed_at ? 'disabled' : ''} /></div>
+          <div class="form-control"><label class="label py-0.5 text-xs" for="de-wht">ภาษีหัก</label><input id="de-wht" type="number" step="0.01" class="input input-sm input-bordered mono" value="${d.wht_amount_thb ?? ''}" ${d.filed_at ? 'disabled' : ''} /></div>
+          <div class="form-control"><label class="label py-0.5 text-xs" for="de-payer">ผู้จ่าย/ผู้หัก</label><input id="de-payer" class="input input-sm input-bordered" value="${esc(d.payer_name || '')}" /></div>
+          <div class="form-control"><label class="label py-0.5 text-xs" for="de-payer-tax">เลขผู้เสียภาษีผู้จ่าย</label><input id="de-payer-tax" class="input input-sm input-bordered mono" value="${esc(d.payer_tax_id || '')}" maxlength="13" /></div>
+          <div class="form-control"><label class="label py-0.5 text-xs" for="de-expires">หมดอายุ (เอกสารส่วนบุคคล)</label><input id="de-expires" type="date" class="input input-sm input-bordered" value="${esc((d.expires_at || '').slice(0, 10))}" /></div>
+          <div class="form-control sm:col-span-2"><label class="label py-0.5 text-xs" for="de-notes">โน้ต</label><input id="de-notes" class="input input-sm input-bordered" value="${esc(d.notes || '')}" maxlength="500" /></div>
+          ${d.filed_at ? `<p class="text-xs sm:col-span-2" style="color:var(--carbon-green);">✓ ประทับยื่นแล้วเมื่อ ${fmtDate(d.filed_at)} — ยอด/วันที่ล็อก (ผิดจริงให้ยกเลิกตราแล้วออกใบใหม่)</p>` : ''}
+          <div class="modal-action sm:col-span-2">
+            <button type="button" id="de-delete" class="btn btn-ghost btn-sm mr-auto tap-44" style="color:var(--stamp-red);">ลบออกจากแฟ้ม</button>
+            ${d.filed_at ? '<button type="button" id="de-unfile" class="btn btn-ghost btn-sm tap-44">ยกเลิกตรา ยื่นแล้ว</button>' : ''}
+            <button type="button" id="de-cancel" class="btn btn-ghost btn-sm tap-44">ยกเลิก</button>
+            <button type="submit" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-navy);">บันทึก</button>
+          </div></form>`;
+      const dlg = $<HTMLDialogElement>('#dc-edit'); dlg.showModal();
+      const g = (id: string) => (document.getElementById(id) as HTMLInputElement);
+      g('de-cancel').addEventListener('click', () => dlg.close());
+      g('de-delete').addEventListener('click', async () => { if (!confirm(`ลบ "${d.title}" ออกจากแฟ้ม? ไฟล์จะถูกลบด้วย`)) return; try { await deleteDoc(d); dlg.close(); toast('ลบแล้ว'); await reload(); } catch (e) { oops(e); } });
+      document.getElementById('de-unfile')?.addEventListener('click', async () => { try { await updateDoc(d.id, { filed_at: null }); dlg.close(); toast('ยกเลิกตราแล้ว'); await reload(); } catch (e) { oops(e); } });
+      g('de-edit-form' as string)?.addEventListener('submit', () => {});
+      (document.getElementById('dc-edit-form') as HTMLFormElement).addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        const n = (id: string) => { const s = g(id).value.trim(); const x = Number(s); return s && Number.isFinite(x) ? x : null; };
+        const kind = g('de-kind').value as DocKind; const date = g('de-date').value || null;
+        try {
+          await updateDoc(d.id, { lead_id: g('de-lead').value || null, kind, title: g('de-title').value.trim(), doc_number: g('de-number').value.trim() || null, doc_date: date,
+            amount_thb: d.filed_at ? d.amount_thb : n('de-amount'), wht_amount_thb: d.filed_at ? d.wht_amount_thb : n('de-wht'), payer_name: g('de-payer').value.trim() || null, payer_tax_id: g('de-payer-tax').value.replace(/\D/g, '') || null,
+            expires_at: g('de-expires').value ? new Date(g('de-expires').value).toISOString() : null, notes: g('de-notes').value.trim() || null,
+            tax_year: kind === 'wht_cert' || kind === 'tax_filing' ? (date ? Number(date.slice(0, 4)) + 543 : null) : null, tax_period: kind === 'wht_cert' || kind === 'tax_filing' ? (date ? (Number(date.slice(5, 7)) <= 6 ? 'H1' : 'H2') : null) : null });
+          dlg.close(); toast('บันทึกแล้ว'); await reload();
+        } catch (e) { oops(e); }
+      });
+    }
+
+    // ---------- views / reload ----------
+    function setView(view: View) {
+      state.view = view;
+      document.querySelectorAll<HTMLButtonElement>('.view-tab').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.view === view)));
+      $('#dc-view-folders').classList.toggle('hidden', view !== 'folders'); $('#dc-view-kinds').classList.toggle('hidden', view !== 'kinds'); $('#dc-view-tax').classList.toggle('hidden', view !== 'tax');
+      if (view === 'kinds') renderKinds(); if (view === 'tax') renderTax();
+      history.replaceState(null, '', view === 'folders' ? location.pathname + location.search : `#${view}`);
+    }
+    async function reload() {
+      try {
+        const data = await loadAll(); state.docs = data.docs; state.leads = data.leads; state.purchases = data.purchases;
+        state.previews = await previewUrls(state.docs.filter((d) => d.preview_path || d.mime?.startsWith('image/')).slice(0, 120)).catch(() => new Map());
+        renderSignals(); renderRoster();
+        if (state.leadId) openFolder(state.leadId);
+        if (state.view === 'kinds') renderKinds(); if (state.view === 'tax') renderTax();
+      } catch (e) { oops(e); }
+    }
+
+    function bind() {
+      $('#dc-refresh').addEventListener('click', async () => { await reload(); toast('รีเฟรชแล้ว'); });
+      $('#dc-upload-open').addEventListener('click', () => openUpload(state.leadId && state.leadId !== '__none' ? state.leadId : null));
+      $('#dc-upload-cancel').addEventListener('click', () => $<HTMLDialogElement>('#dc-upload').close());
+      $('#dc-form').addEventListener('submit', submitUpload);
+      $<HTMLSelectElement>('#dc-kind').addEventListener('change', (e) => { const k = (e.target as HTMLSelectElement).value as DocKind; syncKindFields(k); if (pendingFile) $<HTMLInputElement>('#dc-title').value = guessTitle(k, leadById().get($<HTMLInputElement>('#dc-lead-id').value) || null, $<HTMLInputElement>('#dc-date').value || null, pendingFile.name); });
+      $<HTMLInputElement>('#dc-file').addEventListener('change', (e) => setFile((e.target as HTMLInputElement).files?.[0] || null));
+      $<HTMLInputElement>('#dc-camera').addEventListener('change', (e) => setFile((e.target as HTMLInputElement).files?.[0] || null));
+      const drop = $('#dc-drop');
+      drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('is-over'); });
+      drop.addEventListener('dragleave', () => drop.classList.remove('is-over'));
+      drop.addEventListener('drop', (e) => { e.preventDefault(); drop.classList.remove('is-over'); setFile(e.dataTransfer?.files?.[0] || null); });
+      document.addEventListener('paste', (e) => { if (!$<HTMLDialogElement>('#dc-upload').open) return; const f = [...(e.clipboardData?.files || [])][0]; if (f) setFile(f); });
+      const q = $<HTMLInputElement>('#dc-lead-q'); const list = $('#dc-lead-list');
+      q.addEventListener('input', () => {
+        const s = q.value.trim().toLowerCase(); $<HTMLInputElement>('#dc-lead-id').value = ''; $('#dc-lead-pick').textContent = '';
+        if (!s) { list.classList.add('hidden'); return; }
+        const hits = state.leads.filter((l) => leadName(l).toLowerCase().includes(s) || (l.full_name || '').toLowerCase().includes(s) || (l.nickname || '').toLowerCase().includes(s) || (l.tax_id || '').includes(s)).slice(0, 8);
+        list.innerHTML = hits.map((l) => `<li><button type="button" role="option" data-pick="${esc(l.id)}">${esc(leadName(l))}${l.full_name && l.company_name ? ` <span class="opacity-60">· ${esc(l.full_name)}</span>` : ''}</button></li>`).join('') || '<li class="px-3 py-2 text-xs opacity-60">ไม่เจอ — ปล่อยว่างแล้วผูกทีหลังได้</li>';
+        list.classList.remove('hidden');
+        list.querySelectorAll<HTMLButtonElement>('[data-pick]').forEach((b) => b.addEventListener('click', () => pickLead(leadById().get(b.dataset.pick!) || null)));
+      });
+      $<HTMLInputElement>('#dc-search').addEventListener('input', (e) => { state.q = (e.target as HTMLInputElement).value; renderRoster(); if (state.view === 'kinds') renderKinds(); });
+      document.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((b) => b.addEventListener('click', () => { state.filter = b.dataset.filter!; document.querySelectorAll('[data-filter]').forEach((x) => x.classList.toggle('btn-active', x === b)); renderRoster(); }));
+      document.querySelectorAll<HTMLButtonElement>('.view-tab').forEach((b) => b.addEventListener('click', () => setView(b.dataset.view as View)));
+    }
+
+    // gate อาจ dispatch ก่อน module นี้โหลดเสร็จ (session อยู่ใน localStorage แล้ว) → เช็ค session เองด้วย ท่าเดียวกับ intel.astro
+    let booted = false;
+    async function boot() {
+      if (booted) return; booted = true;
+      bind();
+      await reload();
+      const url = new URL(location.href); const lead = url.searchParams.get('lead');
+      if (lead && (state.leads.some((l) => l.id === lead) || lead === '__none')) openFolder(lead);
+      if (location.hash === '#tax') setView('tax'); else if (location.hash === '#kinds') setView('kinds');
+    }
+    document.addEventListener('docs:authed', () => void boot());
+    void (async () => { if (await getSupabaseSession()) void boot(); })();
+  </script>
+</DashboardLayout>
