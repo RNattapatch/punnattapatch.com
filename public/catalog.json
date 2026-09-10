@@ -20,8 +20,8 @@
     },
     "format": {
       "label": "รูปแบบ",
-      "value": "งานบริษัทเป็น In-house on-site — คุณปันเดินทางไปที่บริษัทคุณ",
-      "detail": "ไม่มีคอร์สออนไลน์ · ราคาเดียวทั้งทีม (คอร์ส 1 วัน รับไม่เกิน 20 คน เกินกว่านี้คุยกันได้) · ข้อยกเว้นเดียวคือ AI Sales Agent Bootcamp ตั๋วรายคน จัดที่โรงแรมในกรุงเทพฯ (key public-p1-bootcamp)"
+      "value": "In-house on-site เท่านั้น — คุณปันเดินทางไปที่บริษัทคุณ",
+      "detail": "ไม่มีคอร์สออนไลน์ · ราคาเดียวทั้งทีม (คอร์ส 1 วัน รับไม่เกิน 20 คน เกินกว่านี้คุยกันได้)"
     }
   },
   "content_update": {
@@ -97,22 +97,6 @@
       "outline_url": null,
       "status": "live",
       "bot_may_quote": true
-    },
-    {
-      "key": "public-p1-bootcamp",
-      "name": "คอร์สสดสร้างทีม AI ผู้ช่วยงานขายส่วนตัว 2026",
-      "name_en": "AI Sales Agent Bootcamp",
-      "kind": "public",
-      "duration": "2 วันสด (เสาร์-อาทิตย์ · กรุงเทพฯ) + Group clinic Day 14",
-      "headline": "สร้างทีม AI ผู้ช่วยงานขายของคุณเอง ใน 2 วัน — จากสินค้า ลูกค้า และดีลที่คุณมีอยู่",
-      "audience": "คนขาย B2B / BD / AE ที่มีดีลจริงและออกเงินเรียนเอง · เจ้าของที่ยังขายเอง · บริษัทส่ง ≥3 คนให้เทียบ in-house ก่อน",
-      "amount_thb": 19900,
-      "price_label": "฿19,900",
-      "url": "https://punnattapatch.com/services/ai-sales-agent-bootcamp",
-      "image_url": "https://punnattapatch.com/services/thumbs/p1-ai-sales-agent-bootcamp.jpg",
-      "outline_url": null,
-      "status": "live",
-      "bot_may_quote": false
     },
     {
       "key": "daily-sales-consulting",
