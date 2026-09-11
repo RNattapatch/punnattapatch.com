@@ -307,7 +307,7 @@ function buildCatalog() {
     {
       '@type': 'ItemList',
       '@id': `${url}#catalog`,
-      name: 'คอร์สและบริการสำหรับทีมขาย',
+      name: 'คลาสและบริการสำหรับทีมขาย',
       numberOfItems: itemListElement.length,
       itemListOrder: 'https://schema.org/ItemListOrderAscending',
       itemListElement,
@@ -339,7 +339,7 @@ function buildEvent() {
   const offers: Record<string, unknown>[] = [
     {
       '@type': 'Offer',
-      name: 'Public Course Early Bird',
+      name: 'Public Class Early Bird',
       price: training.foundingPriceThb ?? training.priceThb,
       priceCurrency: 'THB',
       availability: 'https://schema.org/LimitedAvailability',

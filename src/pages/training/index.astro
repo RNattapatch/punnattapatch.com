@@ -14,8 +14,8 @@ const formatPrice = (n: number): string => '฿' + n.toLocaleString('en-US');
 const formatDate = (d: Date): string =>
   d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
 
-const title = 'Public Training — Public Course #1 เปิดรับสมัคร';
-const description = 'เรียนกับ Pun Nattapatch · คอร์สทีมขายรูปแบบ Public รอบพิเศษ (เนื้อหาเดียวกับคอร์ส In-house) · max 8-25 seats ต่อ program';
+const title = 'Public Training — Public Class #1 เปิดรับสมัคร';
+const description = 'เรียนกับ Pun Nattapatch · คลาสทีมขายรูปแบบ Public รอบพิเศษ (เนื้อหาเดียวกับคลาส In-house) · max 8-25 seats ต่อ program';
 ---
 
 <BaseLayout
@@ -35,7 +35,7 @@ const description = 'เรียนกับ Pun Nattapatch · คอร์ส�
     <div class="mx-auto max-w-5xl">
       <p class="text-xs font-bold uppercase tracking-widest text-secondary">Public Training</p>
       <h1 class="mt-3 font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl">
-        Public Course #1<br class="hidden md:block" />
+        Public Class #1<br class="hidden md:block" />
         <span class="text-secondary">เปิดรับ 8-25 ที่นั่ง</span>ต่อ program
       </h1>
       <p class="mt-5 max-w-2xl text-lg text-base-content/75">
@@ -110,7 +110,7 @@ const description = 'เรียนกับ Pun Nattapatch · คอร์ส�
                         )}
                       </p>
                       <p class="mt-2 text-xs text-base-content/55">
-                        {hasFounding ? 'Public Course #1' : 'Standard enrollment'}
+                        {hasFounding ? 'Public Class #1' : 'Standard enrollment'}
                       </p>
                     </div>
 
@@ -126,7 +126,7 @@ const description = 'เรียนกับ Pun Nattapatch · คอร์ส�
           <div class="mx-auto mt-14 max-w-2xl rounded-2xl border border-secondary/30 bg-secondary/5 p-8 text-center">
             <p class="text-xs font-bold uppercase tracking-widest text-secondary">Alumni Perk</p>
             <p class="mt-3 font-display text-lg font-bold">
-              จบ Public Training คอร์สใดก็ได้ แล้วได้ส่วนลด <span class="text-secondary">15%</span> เข้า Tier 2 Agentic AI Transformation
+              จบ Public Training คลาสใดก็ได้ แล้วได้ส่วนลด <span class="text-secondary">15%</span> เข้า Tier 2 Agentic AI Transformation
             </p>
             <p class="mt-2 text-sm text-base-content/70">
               ระบบ 90-day ที่ติดตั้ง AI Agents ให้ทั้งองค์กร · สำหรับคนที่อยากไปต่อหลังเรียนจบ

@@ -136,7 +136,7 @@ AI ไม่ได้มาแทนที่คนเก่งของคุ�
 
 ---
 
-## The "winning zone" — ทำไม Kit นี้ต่างจาก free AI course อื่น
+## The "winning zone" — ทำไม Kit นี้ต่างจาก free AI class อื่น
 
 ความรู้ในคู่มือนี้มาจาก "winning zone" ของผม ซึ่งคือจุดตัดของประสบการณ์ 4 ด้าน:
 

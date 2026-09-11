@@ -67,7 +67,7 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
     eyebrow: 'IN-HOUSE TRAINING · T4',
     customerJob: 'สอนทีมคุณให้ใช้ AI Agent ทำงานเอกสารจุกจิกแทนคนเก่ง',
     supportingCopy: [
-      'คอร์สอบรมการนำ AI Agent มาใช้ลดงานเพิ่มยอด ในองค์กร',
+      'คลาสอบรมการนำ AI Agent มาใช้ลดงานเพิ่มยอด ในองค์กร',
       'ทีมเลือกงานซ้ำหนึ่งเรื่องจากบริษัท แล้วลงมือทำตั้งแต่เห็นขั้นตอนเดิม สร้างต้นแบบ วางกติกาความปลอดภัย ไปจนถึงแผนใช้ต่อ 30 วัน',
     ],
     microcopy: 'เริ่มจากงานที่คนเก่งไม่ควรเสียเวลาทำซ้ำทุกวัน',
@@ -79,7 +79,7 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
     badges: ['In-house · 1 วัน', '1 Workflow', 'Owner + Manager + Core team'],
     visual: {
       image: T4_HERO_IMAGE,
-      alt: 'ปัน ณัฐพัชร์สอนทีมใช้ AI ในห้องอบรมจริง โดยมีชื่อคอร์ส Advance AI บนจอ',
+      alt: 'ปัน ณัฐพัชร์สอนทีมใช้ AI ในห้องอบรมจริง โดยมีชื่อคลาส Advance AI บนจอ',
       label: 'ADVANCE AI · ทีมจริง',
       caption: 'ภาพกิจกรรมจริง: ทีมอยู่หน้าจอเดียวกันและลงมือกับโจทย์ขององค์กร',
     },
@@ -97,7 +97,7 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
     { id: 't4-hands-on', kind: 'photo', image: publicImage('/lp/inhouse/hands-on.jpg', 1600, 1200), alt: 'ผู้เข้าร่วมลงมือทำงานบนแล็ปท็อปใน Workshop', caption: 'ทุกคนลงมือบน Laptop ของตัวเอง ไม่ได้นั่งดูเดโมอย่างเดียว' },
     { id: 't4-class-full', kind: 'photo', image: publicImage('/lp/inhouse/class-full.jpg', 1600, 1200), alt: 'ผู้เข้าร่วม Workshop เต็มห้องพร้อมอุปกรณ์ทำงาน', caption: 'ใช้ห้องจริง ทีมจริง และคำถามที่เกิดจากงานจริงของบริษัท' },
     { id: 't4-activity-six', kind: 'photo', image: publicImage('/advance-ai-course/testimonial6.JPG', 1800, 1350), alt: 'ปันทำกิจกรรม Advance AI ร่วมกับผู้เข้าอบรม', caption: 'ออกแบบกิจกรรมให้ทีมเห็นว่าขั้นไหนควรให้ AI ช่วย และขั้นไหนคนต้องตรวจ' },
-    { id: 't4-activity-seven', kind: 'photo', image: publicImage('/advance-ai-course/gallery1.JPG', 1800, 1350), alt: 'ห้องอบรม Advance AI & Business Automation ในบริษัทลูกค้า ทีมเปิด Laptop ทำงานตามสไลด์บนจอ', caption: 'สไลด์บนจอคือคอร์สนี้ สอนในห้องประชุมของบริษัทลูกค้า' },
+    { id: 't4-activity-seven', kind: 'photo', image: publicImage('/advance-ai-course/gallery1.JPG', 1800, 1350), alt: 'ห้องอบรม Advance AI & Business Automation ในบริษัทลูกค้า ทีมเปิด Laptop ทำงานตามสไลด์บนจอ', caption: 'สไลด์บนจอคือคลาสนี้ สอนในห้องประชุมของบริษัทลูกค้า' },
     { id: 't4-activity-eight', kind: 'photo', image: publicImage('/advance-ai-course/gallery7.JPG', 1479, 1109), alt: 'บรรยากาศการสอน AI Workflow จากกิจกรรมจริง', caption: 'ภาพจากกิจกรรมจริง ไม่ใช่ภาพจำลองหรือภาพที่สร้างด้วย AI' },
     { id: 't4-quote-company', kind: 'quote', quote: 'อาจารย์ปันสอนถูกใจทีมงานมากครับ', image: publicImage('/testimonial/2026-05/review-05.jpg', 1000, 1000), alt: 'ข้อความรีวิวจากผู้บริหารหลังอบรม', caption: 'ข้อความที่ผู้บริหารส่งกลับมาหลังทีมเข้าอบรม' },
     { id: 't4-quote-build', kind: 'quote', quote: 'ทำเว็บจ้างหลายแสน จบในคืนเดียว เป็นไปได้เฉยพี่', image: publicImage('/testimonial/2026-07/review-09.jpg', 1410, 1410), alt: 'ข้อความผู้เรียนนำวิธีคิดไปสร้างงานต่อ', caption: 'ผู้เรียนนำวิธีคิดจากห้องไปต่อกับงานของตัวเอง' },
@@ -144,7 +144,7 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
     'คนเก่งเสียเวลากับการคัดลอก สรุป จัดเอกสาร และตามข้อมูล แทนที่จะได้ใช้เวลากับงานที่ต้องอาศัยประสบการณ์',
   ],
   boundary: {
-    heading: 'คอร์สหนึ่งวัน ที่พาทีมสร้าง AI Agent จากงานจริงหนึ่ง Workflow',
+    heading: 'คลาสหนึ่งวัน ที่พาทีมสร้าง AI Agent จากงานจริงหนึ่ง Workflow',
     body: [
       'เราเริ่มจากงานซ้ำที่กินเวลาคนในทีม เลือกหนึ่ง Workflow ที่มีเจ้าของชัด แล้วทำ Workflow Map ให้เห็น Input, Rule, Exception, Output และจุดที่คนต้องตัดสิน',
       'ทีมลงมือสร้าง AI Agent Working Prototype ด้วยข้อมูลจำลองหรือข้อมูลที่ Mask แล้ว พร้อมกำหนด Data Safety และ Human Review ก่อนเอาไปแตะงานที่มีผลจริง',
@@ -186,11 +186,11 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
     ],
   },
   bonusValues: {
-    eyebrow: 'Bonus หลังคอร์ส · แถมฟรี 6 ชิ้น + Certificate รวมอยู่ในราคาแล้ว',
+    eyebrow: 'Bonus หลังคลาส · แถมฟรี 6 ชิ้น + Certificate รวมอยู่ในราคาแล้ว',
     heading: 'จบคลาสแล้ว ผมแถมเครื่องมือใช้ต่ออีก 6 ชิ้น',
     intro: 'ทุกชิ้นมีไว้ให้ทีมสร้าง Agent ตัวถัดไปเองได้ และให้หัวหน้าตามผลได้โดยไม่ต้องรอผม ส่งให้หลังจบคลาสทุกบริษัท ไม่ต้องซื้อ Template เพิ่ม',
     items: [
-      { number: '01', icon: '🎬', title: 'Online Class ดูย้อนหลัง 12 เดือน', points: ['เจ้าของได้: คนใหม่ที่เข้าหลังคลาสเรียนเองได้ ไม่ต้องจ้างอบรมซ้ำ', 'ทีมได้: ดูซ้ำเฉพาะโมดูลที่ลืม คลิปละ 5–12 นาที ก่อนใช้กับงานจริง', 'ส่งลิงก์ภายใน 14 วันหลังคลาส · ดูได้ 12 เดือน'], value: 0, basis: 'รวมในคอร์ส', valueLabel: 'รวมในคอร์ส' },
+      { number: '01', icon: '🎬', title: 'Online Class ดูย้อนหลัง 12 เดือน', points: ['เจ้าของได้: คนใหม่ที่เข้าหลังคลาสเรียนเองได้ ไม่ต้องจ้างอบรมซ้ำ', 'ทีมได้: ดูซ้ำเฉพาะโมดูลที่ลืม คลิปละ 5–12 นาที ก่อนใช้กับงานจริง', 'ส่งลิงก์ภายใน 14 วันหลังคลาส · ดูได้ 12 เดือน'], value: 0, basis: 'รวมในคลาส', valueLabel: 'รวมในคลาส' },
       { number: '02', icon: '🗂️', title: '30 AI Workflow Ideas', points: ['เจ้าของได้: เห็นงานซ้ำ 30 แบบที่ AI ช่วยได้ (งานขาย 10 · หลังบ้าน 10 · ปฏิบัติการ 10) เลือกตัวถัดไปเองได้', 'ทีมได้: หา Agent ตัวถัดไปโดยไม่เริ่มจากชื่อเครื่องมือ', 'Google Sheet · ส่งหลังจบคลาส'], value: 4400, basis: '1 ชม.' },
       { number: '03', icon: '📝', title: 'AI Build Brief: Prompt สั่ง AI สร้างระบบโดยไม่บวม', points: ['เจ้าของได้: ทีมสร้าง Agent ตัวที่ 2, 3 เองได้ ระบบไม่บวม', 'ทีมได้: แบบฟอร์มเขียนโจทย์ก่อนสั่ง AI — Goal, User, Input, Rule, Exception, Output, Acceptance', 'Google Doc · ส่งหลังจบคลาส'], value: 2200, basis: '30 นาที' },
       { number: '04', icon: '🛡️', title: 'AI Data Safety Checklist 30 จุด', points: ['เจ้าของได้: ผู้จัดการตรวจได้เองก่อนเปิด Agent ใหม่ทุกตัว ข้อมูลลูกค้าไม่หลุด', 'ทีมได้: ติ๊กเองว่าข้อมูลไหนใช้ได้ ต้อง Mask ต้องขออนุมัติ หรือห้ามส่งออก', 'Google Sheet / PDF · ส่งหลังจบคลาส'], value: 4400, basis: '1 ชม.' },
@@ -203,7 +203,7 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
   spotlight: {
     eyebrow: 'Spotlight · 2 Module ที่มีเฉพาะคลาสนี้ · ช่วงเช้า 9:00–10:15',
     heading: 'ใครๆ ก็ใช้ AI Agent ได้ แต่ใช้ในธุรกิจให้ได้ผล ต้องปรับ 2 อย่างก่อน',
-    intro: 'คอร์ส AI ทั่วไปสอนกดเครื่องมือ 2 Module นี้สอนสิ่งที่เครื่องมือให้ไม่ได้ คือวิธีคิดของคนในบริษัท กับข้อมูลที่ทำให้ AI ของคุณต่างจากของคู่แข่ง',
+    intro: 'คลาส AI ทั่วไปสอนกดเครื่องมือ 2 Module นี้สอนสิ่งที่เครื่องมือให้ไม่ได้ คือวิธีคิดของคนในบริษัท กับข้อมูลที่ทำให้ AI ของคุณต่างจากของคู่แข่ง',
     modules: [
       {
         number: '01', tag: 'Mindset', title: 'AI Agent Mindset for Business Use',
@@ -239,7 +239,7 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
       items: [
         { title: 'Frontier Model รุ่นล่าสุด', body: 'เนื้อหาปรับรับ Claude Fable 5.1 และ Codex Sol 5.6 ใช้ตัวไหนกับงานไหน ไม่ต้องลองผิดเอง' },
         { title: 'MCP อัปเดตล่าสุด', body: 'มาตรฐานเชื่อม AI กับข้อมูลบริษัท เรียนเสร็จต่อกับระบบที่มีอยู่ได้ทันที' },
-        { title: 'AI Agent Mindset + Data Engineering', body: '2 Spotlight Module ที่ไม่มีในคอร์สสอนกดเครื่องมือทั่วไป' },
+        { title: 'AI Agent Mindset + Data Engineering', body: '2 Spotlight Module ที่ไม่มีในคลาสสอนกดเครื่องมือทั่วไป' },
         { title: 'เนื้อหาอัปเดตทุกเดือนตามโมเดลในตลาด', body: 'ผมใช้ของใหม่กับงานตัวเองก่อน แล้วค่อยเอาเข้าคลาส ไม่สอนจากข่าว' },
       ],
       footer: 'ตามทันตลาด โดยไม่ต้องไล่อ่านเอง',
@@ -257,11 +257,11 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
     },
   },
   whyMe: {
-    eyebrow: 'ทำไมต้องเรียนกับผม · คอร์สนี้ต่างยังไง',
-    heading: 'คอร์ส AI ซื้อรายคนมีเยอะ แต่คลาสที่ยกไปสอนถึงบริษัทด้วยโจทย์ของคุณเอง มีไม่กี่ที่',
+    eyebrow: 'ทำไมต้องเรียนกับผม · คลาสนี้ต่างยังไง',
+    heading: 'คลาส AI ซื้อรายคนมีเยอะ แต่คลาสที่ยกไปสอนถึงบริษัทด้วยโจทย์ของคุณเอง มีไม่กี่ที่',
     items: [
       { icon: '🚗', title: 'ผมเดินทางไปสอนถึงบริษัทคุณ', body: 'ทีมไม่ต้องเสียเวลาเดินทางหรือปิดออฟฟิศ เรียนที่ห้องประชุมของคุณเอง ฟรีระยะรวมไป-กลับไม่เกิน 150 กม. จากกรุงเทพฯ' },
-      { icon: '🧮', title: '20 คน หารแล้วไม่ถึงคนละ {{perHead}}', body: 'ราคาเดียว {{price}} ทั้งทีม ไม่คิดต่อหัว ถูกกว่าซื้อคอร์สออนไลน์แยกให้ทีละคน แล้วไม่มีใครเอาไปใช้' },
+      { icon: '🧮', title: '20 คน หารแล้วไม่ถึงคนละ {{perHead}}', body: 'ราคาเดียว {{price}} ทั้งทีม ไม่คิดต่อหัว ถูกกว่าซื้อคลาสออนไลน์แยกให้ทีละคน แล้วไม่มีใครเอาไปใช้' },
       { icon: '🔒', title: 'คลาสไพรเวท ถามได้เต็มที่', body: 'ในห้องมีแต่คนบริษัทคุณ ถามเรื่องลูกค้า ตัวเลข หรือปัญหาภายในได้โดยไม่ต้องกลัวคู่แข่งนั่งอยู่ข้างๆ' },
       { icon: '🎯', title: 'เรียนด้วยโจทย์จริงของคุณ', body: 'ใช้ปัญหา ข้อมูล และกลยุทธ์ของบริษัทคุณเป็นแบบฝึกหัด ไม่ใช่ตัวอย่างสำเร็จรูปที่กลับไปแล้วใช้ไม่ได้' },
       { icon: '💻', title: 'ทุกคนได้ลงมือทำ กลับไปใช้ทันที', body: 'ไม่มีนั่งฟังอย่างเดียว ทุกคนเปิดคอมฯ สร้าง Agent ของทีมไปพร้อมกัน จบวันมีของที่รันได้จริง' },
@@ -307,17 +307,17 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
     'ในห้องผมจะพาทีมสร้างเองกับหนึ่ง Workflow เพื่อให้หลังจบคลาส คนในองค์กรยังอธิบาย แก้ และวางแผนใช้ต่อได้ครับ',
   ],
   investment: {
-    included: ['In-house Training 1 วัน สำหรับหนึ่งองค์กร', 'เลือกและทำงานกับ 1 Workflow ของบริษัท', 'Workflow Map + AI Agent Working Prototype', 'Data Safety + Human Review Rules', 'Spotlight 2 Module: AI Agent Mindset + AI Data Engineering for Business Use', '30-Day Adoption Plan และ Bonus หลังคอร์ส 5 ชิ้น แถมฟรี (รายละเอียดในส่วน Bonus)', 'เอกสารใบเสนอราคาและใบกำกับภาษีสำหรับบริษัท'],
+    included: ['In-house Training 1 วัน สำหรับหนึ่งองค์กร', 'เลือกและทำงานกับ 1 Workflow ของบริษัท', 'Workflow Map + AI Agent Working Prototype', 'Data Safety + Human Review Rules', 'Spotlight 2 Module: AI Agent Mindset + AI Data Engineering for Business Use', '30-Day Adoption Plan และ Bonus หลังคลาส 5 ชิ้น แถมฟรี (รายละเอียดในส่วน Bonus)', 'เอกสารใบเสนอราคาและใบกำกับภาษีสำหรับบริษัท'],
     terms: 'ชำระค่าบริการ 100% ก่อนวันอบรมเพื่อยืนยันคิว บริษัทเตรียม Process owner และตัวอย่างงานที่ใช้ข้อมูลจำลองหรือข้อมูลที่ Mask แล้วตาม Pre-work',
     scarcity: '1 เดือนผมรับอบรมจำกัดแค่ 10 องค์กร สงวนสิทธิให้องค์กรที่ชำระค่าบริการและคิวก่อน',
   },
   faq: [
-    { question: 'คอร์สนี้เหมาะกับฝ่ายไหน?', answer: 'เริ่มได้ทั้งฝ่ายขาย การตลาด แอดมิน บัญชี จัดซื้อ HR หรือ Operations ครับ ขอเพียงมีงานซ้ำหนึ่ง Workflow และมีคนที่อธิบายงานนั้นได้จริง' },
+    { question: 'คลาสนี้เหมาะกับฝ่ายไหน?', answer: 'เริ่มได้ทั้งฝ่ายขาย การตลาด แอดมิน บัญชี จัดซื้อ HR หรือ Operations ครับ ขอเพียงมีงานซ้ำหนึ่ง Workflow และมีคนที่อธิบายงานนั้นได้จริง' },
     { question: 'ต้องมีทีม IT หรือเขียนโค้ดเป็นไหม?', answer: 'ไม่จำเป็นครับ ทีมใช้เครื่องมือ AI ที่เรียนรู้ได้ในห้อง สิ่งที่ต้องมีคือ Process owner, ตัวอย่างงาน และคนที่จะรับผิดชอบการใช้ต่อ' },
     { question: 'ในหนึ่งวันสร้างได้กี่ระบบ?', answer: 'เราเลือก 1 Workflow เพื่อให้ทีมได้ครบตั้งแต่ Map, Build, Guardrail ถึง Adoption Plan ครับ ถ้าแบ่งหลายเรื่องพร้อมกัน มักเหลือแต่เดโมที่ไม่มีเจ้าของเอาไปใช้ต่อ' },
     { question: 'ใช้ข้อมูลลูกค้าจริงในห้องได้ไหม?', answer: 'เริ่มจากข้อมูลจำลองหรือข้อมูลที่ Mask แล้วครับ ทีมจะใช้ Data Safety Checklist แยกว่าอะไรใช้ได้ ต้องขออนุมัติ หรือต้องห้ามส่งออกก่อน' },
     { question: 'จบวันแล้วได้ระบบ Production เลยไหม?', answer: 'สิ่งที่ได้คือ AI Agent Working Prototype และแผนใช้ต่อ 30 วันครับ หากต้องเชื่อม Live data, จัดสิทธิ์ผู้ใช้, ทำ UAT, Monitoring หรือ SLA จะประเมินเป็นบริการ I1 แยก' },
-    { question: 'คอร์สนี้ช่วยลดคนได้ไหม?', answer: 'ผมไม่รับประกันการลดจำนวนคนครับ เป้าหมายคือย้ายงานเอกสารและงานข้อมูลซ้ำให้ AI ช่วย เพื่อให้คนเก่งมีเวลากลับไปทำงานที่ต้องใช้ประสบการณ์และการตัดสินใจ' },
+    { question: 'คลาสนี้ช่วยลดคนได้ไหม?', answer: 'ผมไม่รับประกันการลดจำนวนคนครับ เป้าหมายคือย้ายงานเอกสารและงานข้อมูลซ้ำให้ AI ช่วย เพื่อให้คนเก่งมีเวลากลับไปทำงานที่ต้องใช้ประสบการณ์และการตัดสินใจ' },
     { question: 'ต้องเตรียมอะไรก่อนวันอบรม?', answer: 'เตรียมรายชื่อ Candidate งานซ้ำ, Process owner, ตัวอย่าง Input/Output ที่ปิดข้อมูลแล้ว, กติกาหรือข้อยกเว้น และรายชื่อ Core team ที่จะลงมือสร้าง' },
     { question: 'ถ้ายังไม่รู้ว่าจะเลือก Workflow ไหน?', answer: 'ทัก LINE ส่งตัวอย่างงานที่ทีมทำซ้ำพร้อมความถี่มาได้ครับ ผมจะช่วยเช็กความเหมาะสมก่อนออกใบแจ้งหนี้' },
   ],
@@ -340,7 +340,7 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
   },
   seo: {
     title: 'Advance AI & Business Automation | สอนทีมใช้ AI Agent ในองค์กร',
-    description: 'คอร์สอบรม In-house 1 วัน สอนทีมใช้ AI Agent ลดงานเอกสารจุกจิก สร้าง Working Prototype พร้อม Data Safety, Human Review และแผนใช้ต่อ 30 วัน',
+    description: 'คลาสอบรม In-house 1 วัน สอนทีมใช้ AI Agent ลดงานเอกสารจุกจิก สร้าง Working Prototype พร้อม Data Safety, Human Review และแผนใช้ต่อ 30 วัน',
   },
   sections: {
     authority: { heading: 'สอนจากประสบการณ์ขาย โค้ชทีม และสร้าง AI Workflow ใช้งานจริง', copy: 'ผมพาทีมเริ่มจากงานที่คนทำอยู่ ไม่เริ่มจาก Tool เพื่อให้สิ่งที่สร้างในห้องมีเจ้าของ มีคนตรวจ และมีทางใช้ต่อหลังจบคลาส' },

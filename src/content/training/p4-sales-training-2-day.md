@@ -47,7 +47,7 @@ seats:
 priceThb:
   normal: 19900
   founding: 16900
-priceCompare: "🔥 Public Course #1 ฿16,900 (ปกติ ฿19,900) · 12 ที่แรกได้ priority seat รอบถัดไป · หลังเต็มราคากลับเป็น ฿19,900"
+priceCompare: "🔥 Public Class #1 ฿16,900 (ปกติ ฿19,900) · 12 ที่แรกได้ priority seat รอบถัดไป · หลังเต็มราคากลับเป็น ฿19,900"
 closesAt: 2026-05-15T23:59:00+07:00
 startsAt: 2026-05-31T09:00:00+07:00
 endsAt: 2026-06-01T16:00:00+07:00
@@ -57,7 +57,7 @@ location:
   virtual: false
 outcomes:
   - "เซลล์เลิกปิดดีลด้วยการลดราคา — ปิดด้วย value ที่ลูกค้ามองเห็น"
-  - "เพิ่มยอดขาย 20-40% ภายใน 60 วันหลังคอร์ส (ตัวเลขจาก client ที่ทำตาม post-training KPI tracking)"
+  - "เพิ่มยอดขาย 20-40% ภายใน 60 วันหลังคลาส (ตัวเลขจาก client ที่ทำตาม post-training KPI tracking)"
   - "มี 30-script Objection Handling Swipe File ไปใช้จริงวันจันทร์"
   - "Manager ได้ framework coach ทีมเอง ไม่ต้องพึ่งคลาสอีก"
 syllabus:
@@ -73,15 +73,15 @@ syllabus:
 founding_perks:
   - "ราคา Early Bird ฿16,900 (ปกติ ฿19,900 — ประหยัด ฿3,000)"
   - "ทีม 2 คนแรกของแต่ละบริษัทเข้าได้ราคาเดียวกัน"
-  - "Priority seat for P5 (Sales Team Builder) public course รอบถัดไป"
+  - "Priority seat for P5 (Sales Team Builder) public class รอบถัดไป"
   - "Alumni → Tier 2 Agentic AI Transformation 15% off"
 qualifies:
   - "มีทีมขาย 3+ คน ที่ปิดดีลด้วยส่วนลดเป็นหลัก"
   - "เจ้าของ/manager พร้อมมา attend ด้วย ไม่ใช่ส่ง junior มาคนเดียว"
-  - "พร้อม commit practice 30 วันหลังคอร์ส (ทำ role-play + ใช้ swipe file จริง)"
+  - "พร้อม commit practice 30 วันหลังคลาส (ทำ role-play + ใช้ swipe file จริง)"
   - "พร้อมจ่าย ฿16,900 upfront — ไม่ต้องรอขออนุมัติ"
 disqualifies:
-  - "มองหา motivational talk หรือ theory — คอร์สนี้ hands-on role-play เยอะ"
+  - "มองหา motivational talk หรือ theory — คลาสนี้ hands-on role-play เยอะ"
   - "B2C ขายของจำนวนเยอะ ราคาเดียว — framework นี้สำหรับ B2B ดีล 50K+"
   - "ทีมไม่พร้อม video-record ตัวเอง — เราใช้ recording เพื่อ feedback"
 faq:
@@ -91,10 +91,10 @@ faq:
     a: "ได้ แต่แนะนำส่งทีมขาย 2-3 คน — framework ใช้ dynamics peer pressure + post-class peer support"
   - q: "60 วัน ทีมจะเห็นผลจริงเหรอ?"
     a: "ถ้าทีมทำตามขั้นตอนที่ผมวางให้จริงจัง + ใช้ swipe file + ซ้อม AI Role-play Bot อย่างน้อย 2 ครั้ง/สัปดาห์ · client ผม 5+ ราย เห็นยอดขยับ 20-40% ภายใน 60 วัน · แต่ถ้าทีมไม่ commit practice จะไม่เห็นผล — ทำครึ่งๆ กลางๆ ไม่มีใครช่วยได้"
-  - q: "ต่างจากคอร์ส value selling ในตลาดยังไง?"
+  - q: "ต่างจากคลาส value selling ในตลาดยังไง?"
     a: "ตลาดสอน framework แล้วลูกค้าลืม · เราส่ง AI Role-play Bot ให้ซ้อมต่อ 24 ชม. + 30-day async LINE support"
-  - q: "ราคา Public Course #1 กับราคาปกติต่างกันยังไง?"
-    a: "Public Course #1 (12 คนแรก) ได้ราคา ฿16,900 + priority seat สำหรับรอบถัดไป หลังจากนั้น ฿19,900"
+  - q: "ราคา Public Class #1 กับราคาปกติต่างกันยังไง?"
+    a: "Public Class #1 (12 คนแรก) ได้ราคา ฿16,900 + priority seat สำหรับรอบถัดไป หลังจากนั้น ฿19,900"
   - q: "ถ้าทีมมี manager — เหมาะกับ manager ด้วยไหม?"
     a: "เหมาะมาก · Day 2 ช่วง Negotiation + Closing Psychology เป็น framework ที่ manager ใช้ coach ทีมต่อได้"
 ---
@@ -107,12 +107,12 @@ faq:
 
 หลักสูตร P4 ปรับวิธีคิดของทีมจากการขายด้วยราคา (price-driven) เป็นการขายด้วยคุณค่า (value-driven) ภายใน 2 วัน ลงมือทำจริง 70% ของเวลา · role-play 3 รอบพร้อม feedback รายบุคคลให้เห็นจุดต้องแก้ชัดเจน
 
-## สิ่งที่ได้หลังจบคอร์ส
+## สิ่งที่ได้หลังจบคลาส
 
 *   AI Role-play Bot สำหรับซ้อมสถานการณ์จำลองได้ 24 ชั่วโมง พร้อมรับ feedback ทันที
 *   Swipe File รวม 30 สคริปต์รับมือข้อโต้แย้ง (Objection Handling) ที่พิมพ์และเคลือบไว้ให้ทีมพกพาได้
 *   LINE support แบบ async เป็นเวลา 30 วัน เพื่อปรึกษาเคส negotiation หรือ closing ที่เจอหน้างานจริง
-*   สิทธิ์ Alumni รับส่วนลด 15% สำหรับคอร์ส Tier 2 Agentic AI Transformation
+*   สิทธิ์ Alumni รับส่วนลด 15% สำหรับคลาส Tier 2 Agentic AI Transformation
 
 ## Venue + Format
 

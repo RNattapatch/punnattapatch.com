@@ -22,7 +22,7 @@ export const KIND_META: Record<DocKind, KindMeta> = {
   invoice: { label: 'ใบแจ้งหนี้', glyph: 'INV', group: 'sales', direction: 'out', money: true },
   receipt: { label: 'ใบเสร็จรับเงิน', glyph: 'RC', group: 'sales', direction: 'out', money: true },
   proposal: { label: 'Proposal', glyph: 'PR', group: 'sales', direction: 'out' },
-  course_outline: { label: 'Course outline', glyph: 'CO', group: 'sales', direction: 'out' },
+  course_outline: { label: 'Class outline', glyph: 'CO', group: 'sales', direction: 'out' },
   sow: { label: 'ขอบเขตงาน (SOW)', glyph: 'SOW', group: 'sales', direction: 'out' },
   rate_card: { label: 'Rate card', glyph: 'RATE', group: 'sales', direction: 'out' },
   payment_slip: { label: 'สลิปโอนเงิน', glyph: 'SLIP', group: 'money_in', direction: 'in', money: true },

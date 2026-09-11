@@ -16,7 +16,7 @@ export const PRODUCT_DETAIL_FIXTURE: ProductDetailPageData = {
   proof: [{
     kind: 'photo',
     image: OFFER_ASSET_BY_CODE.T2,
-    alt: 'ภาพประกอบคอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content Ads และ AI',
+    alt: 'ภาพประกอบคลาสเพิ่มยอดขายจากออนไลน์ด้วย Content Ads และ AI',
     caption: 'ภาพประกอบ fixture สำหรับตรวจการแสดงผลของ proof wall เท่านั้น',
   }],
   pains: ['Lead เข้ามาแล้วไม่มีคนรับช่วงชัดเจน', 'ทีมทำ Content กับทีมขายทำงานคนละจังหวะ', 'หัวหน้ามองไม่เห็นว่า Lead ค้างอยู่ตรงไหน'],

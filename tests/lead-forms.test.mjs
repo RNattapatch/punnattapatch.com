@@ -106,7 +106,7 @@ async function fillAllRequired(page, formSel, values = {}) {
   await page.goto(`${BASE}/booking?package=T2&intent=quote`, { waitUntil: 'domcontentloaded' });
   check(await page.locator('[data-booking-product-context]').isVisible(), 'เห็นบริบทบริการที่ส่งต่อมาจาก Product Detail');
   check((await page.locator('[data-booking-product-name]').textContent() || '').includes('T2'), 'แสดงชื่อ T2 ให้ลูกค้ารู้ว่ากำลังส่งโจทย์เรื่องอะไร');
-  check(await page.locator('[name="package"]').inputValue() === 'T2 · คอร์สเพิ่มยอดขายจากออนไลน์', 'hidden package ใช้ canonical key และชื่อที่คนอ่านรู้เรื่อง');
+  check(await page.locator('[name="package"]').inputValue() === 'T2 · คลาสเพิ่มยอดขายจากออนไลน์', 'hidden package ใช้ canonical key และชื่อที่คนอ่านรู้เรื่อง');
 
   await fillAllRequired(page, '#booking-form', {
     name: 'ทดสอบ ระบบ', phone: '0812345678', company: 'บจก. ทดสอบ', business: 'ขายเครื่องจักร B2B',
@@ -114,8 +114,8 @@ async function fillAllRequired(page, formSel, values = {}) {
   await page.click('#booking-submit');
   await page.waitForTimeout(1200);
 
-  check(sent?.package === 'T2 · คอร์สเพิ่มยอดขายจากออนไลน์', 'payload เก็บ package ของ Product ที่ลูกค้าสนใจ');
-  check((sent?.comment || '').includes('T2 · คอร์สเพิ่มยอดขายจากออนไลน์'), 'comment บอก Product ให้เห็นใน CRM/Telegram');
+  check(sent?.package === 'T2 · คลาสเพิ่มยอดขายจากออนไลน์', 'payload เก็บ package ของ Product ที่ลูกค้าสนใจ');
+  check((sent?.comment || '').includes('T2 · คลาสเพิ่มยอดขายจากออนไลน์'), 'comment บอก Product ให้เห็นใน CRM/Telegram');
   check((sent?.comment || '').includes('ขอแผนและใบเสนอราคา'), 'comment แปล intent เป็นภาษาที่คนขายอ่านรู้เรื่อง');
   check(sent?.recommended_path === '/services/online-to-sales', 'recommended_path ย้อนกลับไปหน้า Product ต้นทางได้');
   check(sent?.path === '/booking?package=T2&intent=quote', 'path เก็บ query attribution ครบ');

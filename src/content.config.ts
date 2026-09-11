@@ -94,7 +94,7 @@ const training = defineCollection({
     caseStudyImages: z.array(z.string()).optional(),
     /** Short display name for badge/dropdown slots (e.g. "AI Agent 101"). Falls back to programCode.toUpperCase() if absent. */
     shortName: z.string().optional(),
-    /** "คอร์สนี้เหมาะกับใคร" — 3-card audience persona section, appears below Pains */
+    /** "คลาสนี้เหมาะกับใคร" — 3-card audience persona section, appears below Pains */
     audienceFor: z.array(z.object({
       icon: z.string().optional(),
       title: z.string(),
