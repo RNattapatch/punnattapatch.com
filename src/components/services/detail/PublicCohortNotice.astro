@@ -13,14 +13,15 @@ import type { ProductPublicCohort } from '../../../data/product-details/types';
 
 interface Props {
   cohort: ProductPublicCohort;
-  /** Blind-ticket price, already formatted by the catalog. */
+  /** ราคาชั้นแรก (Early Bird) ที่ catalog จัดรูปแบบมาแล้ว */
   price: string;
   placement: 'hero' | 'offer' | 'investment';
 }
 const { cohort, price, placement } = Astro.props;
 const standardPrice = fmtPrice(cohort.standardPricingKey);
 const seatsLeft = Math.max(cohort.seatsTotal - cohort.seatsTaken, 0);
-const seatsLine = `Blind Ticket ${price} · รับ ${cohort.seatsTotal} ที่นั่งแรก · เหลือ ${seatsLeft} ที่นั่งราคานี้`;
+const ticketLabel = cohort.ticketLabel ?? 'Early Bird';
+const seatsLine = `${ticketLabel} ${price} · รับ ${cohort.seatsTotal} ที่นั่งแรก · เหลือ ${seatsLeft} ที่นั่งราคานี้`;
 const standardLine = `ครบ ${cohort.seatsTotal} ที่นั่งเมื่อไหร่ เป็นราคาปกติ ${standardPrice}`;
 
 const facts = [

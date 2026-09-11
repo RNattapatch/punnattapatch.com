@@ -2,7 +2,8 @@
 import type { ProductBonusValues } from '../../../data/product-details/types';
 interface Props { data: ProductBonusValues; price: string; unitNote?: string; }
 // In-house products are booked for a whole team; a public ticket is bought per person.
-const { data, price, unitNote = 'ทั้งทีม' } = Astro.props;
+const { data, price, unitNote = 'ทั้งทีม', hasCertificate = true } = Astro.props;
+const bonusSuffix = hasCertificate ? ' + Certificate' : '';
 const fmt = (n: number) => `฿${n.toLocaleString('en-US')}`;
 const priced = data.items.filter((item) => !item.valueLabel);
 const total = priced.reduce((sum, item) => sum + item.value, 0);
@@ -18,7 +19,7 @@ const pieces = data.items.filter((item) => item.valueLabel !== '∞').length;
         <p class="mt-4 max-w-3xl leading-7 text-navy/70">{data.intro}</p>
       </div>
       <div class="rounded-[1.75rem] bg-navy p-6 text-white md:min-w-[260px]">
-        <p class="text-xs font-bold uppercase tracking-[.16em] text-[#65d7f2]">Bonus {pieces} ชิ้น + Certificate</p>
+        <p class="text-xs font-bold uppercase tracking-[.16em] text-[#65d7f2]">Bonus {pieces} ชิ้น{bonusSuffix}</p>
         <p class="mt-2 flex items-baseline gap-2"><s class="text-lg text-white/50">{fmt(total)}</s><span class="font-display text-4xl font-bold text-[#65d7f2]">ฟรี</span></p>
         <p class="mt-1 text-sm text-white/70">เมื่อจองคลาส {price} {unitNote}</p>
       </div>

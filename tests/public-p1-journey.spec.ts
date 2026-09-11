@@ -53,19 +53,19 @@ test('P1 renders the T1–T4 journey with its own Public cohort layer', async ({
   );
 
   assert.equal(await page.locator('[data-offer-core]').count(), 4, 'P1 must expose Core 4');
-  assert.equal(await page.locator('[data-offer-bonus]').count(), 7, 'P1 must expose all 7 bonus rows in the offer');
-  assert.equal(await page.locator('[data-bonus-value-card]').count(), 7, 'P1 must show 7 bonus value cards');
+  assert.equal(await page.locator('[data-offer-bonus]').count(), 6, 'P1 must expose all 6 bonus rows in the offer');
+  assert.equal(await page.locator('[data-bonus-value-card]').count(), 6, 'P1 must show 6 bonus value cards');
   assert.equal(await page.locator('[data-bonus-total]').innerText(), '฿8,800', 'P1 bonus total must equal the approved sum');
   assert.equal(await page.locator('[data-spotlight-module]').count(), 2, 'P1 must expose its two spotlight modules');
   assert.equal(await page.locator('[data-whats-new-column]').count(), 2, 'P1 must explain what changed and what stays core');
   assert.equal(await page.locator('[data-why-me-item]').count(), 6, 'P1 must answer why learn this with Pun');
   assert.equal(await page.locator('[data-instructor-angle]').count(), 4, 'P1 must show four instructor perspectives');
-  assert.equal(await page.locator('[data-curriculum-step]').count(), 5, 'P1 must show pre-work, Day 1, Day 2 and Day 14');
+  assert.equal(await page.locator('[data-curriculum-step]').count(), 8, 'P1 must show Day 0 pre-work, four Day 1-2 blocks and the clinic');
 
   await page.close();
 });
 
-test('P1 states the Blind Ticket terms at all three decision points', async ({ browser }) => {
+test('P1 states the Early Bird terms at all three decision points', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(`${baseURL}${ROUTE}`);
 
@@ -81,13 +81,13 @@ test('P1 states the Blind Ticket terms at all three decision points', async ({ b
   assert.ok(noticeText.includes('฿24,900'), 'the standard price after the blind seats sell out must be shown');
 
   const bodyText = await page.locator('body').innerText();
-  assert.ok(bodyText.includes('ครบ 6 คน'), 'the run-if-6 rule must be visible');
+  assert.ok(bodyText.includes('ครบ 6 ท่าน'), 'the run-if-6 rule must be visible');
   assert.ok(bodyText.includes('สิทธิ์ Founding รุ่น 1'), 'the founding perk block must be visible');
 
   await page.close();
 });
 
-test('P1 keeps the approved wording, keyword and noindex flag', async ({ browser }) => {
+test('P1 keeps the approved wording, keyword and stays indexable while on sale', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(`${baseURL}${ROUTE}`);
 
@@ -104,11 +104,11 @@ test('P1 keeps the approved wording, keyword and noindex flag', async ({ browser
     'P1 must use the BOOTCAMP LINE keyword at the final CTA',
   );
   // 2026-09-10: sale paused while the course is rebuilt — the page must stay out of search.
-  assert.match(
-    (await page.locator('meta[name="robots"]').getAttribute('content')) ?? '',
-    /noindex/,
-    'P1 stays out of search while the course is being rebuilt',
-  );
+  // 2026-09-11 relaunch: the class is on sale again, so the page must be reachable from search.
+  // A page with nothing to hide emits no robots meta at all — absent is the expected state.
+  const robots = page.locator('meta[name="robots"]');
+  const robotsContent = (await robots.count()) ? ((await robots.first().getAttribute('content')) ?? '') : '';
+  assert.doesNotMatch(robotsContent, /noindex/, 'P1 must be indexable while the Early Bird is on sale');
 
   await page.close();
 });

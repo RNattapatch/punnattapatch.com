@@ -322,6 +322,8 @@ export interface ProductJourneyPresentation {
  * Every figure the page prints comes from here — never hardcoded in a component.
  */
 export interface ProductPublicCohort {
+  /** ชื่อชั้นราคาที่โชว์ในกล่องข้อมูลรอบ เช่น "Early Bird" (เดิมรอบ Blind Ticket ใช้คำนั้น) */
+  ticketLabel?: string;
   seatsTotal: number;
   /** Seats actually paid for. Pun updates this by hand; never guess a number. */
   seatsTaken: number;
@@ -343,6 +345,8 @@ export interface ProductDetailPageData {
   publicCohort?: ProductPublicCohort;
   /** Keeps the page out of search until the pricing key goes live. */
   noindex?: boolean;
+  /** T1–T4 นับ Certificate เป็น Bonus ชิ้นสุดท้าย · P1 ย้ายใบรับรองไปอยู่ใน Core จึงตั้ง false */
+  bonusHasCertificate?: boolean;
   kind: 'course' | 'service';
   showPriceInHero?: boolean;
   serviceType?: 'Sales Consulting' | 'Sales System Implementation';

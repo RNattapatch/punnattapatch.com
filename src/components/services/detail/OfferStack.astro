@@ -18,7 +18,9 @@ interface Props {
   primaryIntent?: string;
 }
 // Default keeps T1–T4 wording; public tickets pass their own "จองที่นั่ง" label.
-const { code, keyword, name, price, core, bonuses, values, journey, highlight, primaryLabel = 'จองคิวรับบริการ', primaryIntent = 'book_training' } = Astro.props;
+const { code, keyword, name, price, core, bonuses, values, journey, highlight, primaryLabel = 'จองคิวรับบริการ', primaryIntent = 'book_training', hasCertificate = true } = Astro.props;
+// P1 ย้ายใบรับรองไปอยู่ใน Core จึงส่ง hasCertificate={false} · T1–T4 ไม่ขยับ
+const bonusSuffix = hasCertificate ? ' + Certificate' : '';
 const valueOf = (number: string) => values?.find((item) => item.number === number)?.value;
 const total = values?.filter((item) => !item.valueLabel).reduce((sum, item) => sum + item.value, 0) ?? 0;
 const labelOf = (number: string) => values?.find((item) => item.number === number)?.valueLabel;
@@ -96,7 +98,7 @@ const LINE_MARK = 'M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 
         <div class="mt-8 border-t border-navy/10 pt-7">
           <div class="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Bonus {pieces} ชิ้น + Certificate</p>
+              <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Bonus {pieces} ชิ้น{bonusSuffix}</p>
               <h3 class="mt-2 font-display text-2xl font-bold text-navy">{total ? `Bonus หลังคลาส ${pieces} ชิ้น มูลค่ารวม ${fmt(total)} แถมฟรี` : 'Material ที่ช่วยให้ทีมเริ่มง่ายและใช้ต่อได้'}</h3>
             </div>
             <span class="rounded-full bg-[#06c755]/15 px-3 py-1.5 text-xs font-bold text-[#05a648]">แถมฟรี · ส่งให้หลังจบคลาส</span>
@@ -116,7 +118,7 @@ const LINE_MARK = 'M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 
               </li>
             ))}
           </ol>
-          {total ? <p class="mt-4 text-sm"><a href="#bonus" class="font-bold text-navy underline decoration-coral decoration-2 underline-offset-4">ดูรายละเอียด Bonus ทั้ง {pieces} ชิ้น + Certificate</a></p> : null}
+          {total ? <p class="mt-4 text-sm"><a href="#bonus" class="font-bold text-navy underline decoration-coral decoration-2 underline-offset-4">ดูรายละเอียด Bonus ทั้ง {pieces} ชิ้น{bonusSuffix}</a></p> : null}
         </div>
 
         <div class="mt-8">
