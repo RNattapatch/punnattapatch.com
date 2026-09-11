@@ -21,11 +21,13 @@ const contentTypes: Record<string, string> = {
 
 const routes = [
   ['สอบถามหรือจองคิว', 'https://lin.ee/ioSnSUG'],
+  ['คลาสออนไลน์บน FutureSkill', 'https://futureskill.co/course/detail/6030'],
   ['ดูบริการที่ปรึกษาหรือจัดอบรม ทั้งหมด', 'https://punnattapatch.com/services'],
   ['ชวนไปร่วมงาน', 'https://punnattapatch.com/sponsor'],
 ] as const;
 const supportCopy = [
   'ทัก LINE เล่าโจทย์คร่าวๆ ได้เลย',
+  'ตั้ง Worker บน Cloud ด้วย AI Agent',
   'เลือกจากโจทย์จริงของทีมและองค์กร',
   'Sponsor · Partnership · Speaker',
 ] as const;
@@ -119,7 +121,7 @@ test.afterAll(async () => {
   await new Promise<void>((resolve, reject) => server?.close((error) => error ? reject(error) : resolve()));
 });
 
-test('content and destination contract exposes only the three approved routes', async ({ browser }) => {
+test('content and destination contract exposes the four approved routes', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   const errors = await preparePage(page);
 
@@ -127,10 +129,14 @@ test('content and destination contract exposes only the three approved routes', 
   await expect(page.locator('header').getByText('@pun_nattapatch', { exact: true })).toBeVisible();
   await expect(page.getByText('ที่ปรึกษาการปั้นทีมขาย × AI Agent', { exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'วันนี้คุณมาหาผมเรื่องไหนครับ?' })).toBeVisible();
-  await expect(page.locator('[data-primary-route]')).toHaveCount(3);
+  await expect(page.locator('[data-primary-route]')).toHaveCount(4);
   for (const [label, href] of routes) {
     await expect(page.getByRole('link', { name: new RegExp(label) })).toHaveAttribute('href', href);
   }
+  const futureSkillRoute = page.getByRole('link', { name: /คลาสออนไลน์บน FutureSkill/ });
+  await expect(futureSkillRoute).toHaveAttribute('target', '_blank');
+  await expect(futureSkillRoute).toHaveAttribute('rel', 'noopener');
+  await expect(futureSkillRoute).toHaveAttribute('data-link-platform', 'futureskill');
   for (const copy of supportCopy) await expect(page.getByText(copy, { exact: true })).toBeVisible();
   await expect(page.locator('a[href*="/booking"], a[href*="/intake-form"]')).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'ติดตามผลงานต่างๆได้ทาง' })).toBeVisible();
@@ -307,7 +313,7 @@ test('responsive glance, tap targets, and keyboard order remain usable from 320 
         page.getByText('ปัน ณัฐพัชร์', { exact: true }),
         page.getByRole('heading', { name: 'วันนี้คุณมาหาผมเรื่องไหนครับ?' }),
         ...routes.map(([label]) => page.getByRole('link', { name: new RegExp(label) })),
-        page.getByRole('heading', { name: 'เคยทำงานร่วมกับทีมเหล่านี้' }),
+        page.locator('[data-trust-section]'),
       ]) {
         const box = await locator.boundingBox();
         assert.ok(box && box.y < viewport.height && box.y + box.height > 0, `${await locator.textContent()} must intersect the first viewport`);
@@ -318,7 +324,7 @@ test('responsive glance, tap targets, and keyboard order remain usable from 320 
       await page.keyboard.press('Tab');
       if (await page.locator('[data-primary-route]').first().evaluate((route) => route === document.activeElement)) break;
     }
-    for (let index = 0; index < 3; index += 1) {
+    for (let index = 0; index < 4; index += 1) {
       if (index > 0) await page.keyboard.press('Tab');
       const route = page.locator('[data-primary-route]').nth(index);
       await expect(route).toBeFocused();

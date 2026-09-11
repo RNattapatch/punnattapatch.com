@@ -211,6 +211,7 @@ function assertServicesPageBuildOutput() {
   const sectionIds = [
     'services-hero',
     'services-proof-strip',
+    'public-online-courses',
     'training-catalog',
     'consulting-implementation',
     'advance-program',
@@ -252,6 +253,7 @@ function assertServicesPageBuildOutput() {
   assert.match(html, /ให้ผมช่วยเลือกทาง LINE/, 'services hero must offer LINE decision help');
 
   for (const heading of [
+    'คลาสสำหรับบุคคลทั่วไป',
     'คลาสสำหรับทีมขายที่เปิดสอนตอนนี้',
     'ถ้าอบรมอย่างเดียวยังไม่พอ ผมเข้าไปวางระบบกับทีมให้',
     'องค์กรที่เคยเชิญไปสอนและวางระบบ',

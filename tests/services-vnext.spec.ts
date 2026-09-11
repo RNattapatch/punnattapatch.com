@@ -296,6 +296,52 @@ test('services catalog has healthy card images and no horizontal overflow at rel
   await page.close();
 });
 
+test('public learning section leads to the live cohort and the external FutureSkill class', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  page.setDefaultTimeout(5_000);
+  await page.goto(`${baseURL}/services`);
+
+  const section = page.locator('#public-online-courses');
+  assert.equal(await section.count(), 1, 'services must expose one public and online learning section');
+  assert.equal(await section.evaluate((element) => {
+    const proof = document.querySelector('#services-proof-strip');
+    const inhouse = document.querySelector('#training-catalog');
+    return Boolean(
+      proof
+      && inhouse
+      && (proof.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING)
+      && (element.compareDocumentPosition(inhouse) & Node.DOCUMENT_POSITION_FOLLOWING)
+    );
+  }), true, 'public learning must appear before the in-house training catalog');
+
+  const cards = section.locator('[data-public-course]');
+  assert.deepEqual(
+    await cards.evaluateAll((elements) => elements.map((element) => element.getAttribute('data-public-course'))),
+    ['P1', 'FUTURESKILL'],
+  );
+
+  const cohort = cards.filter({ has: page.getByRole('heading', { name: 'AI Sale Loop System · รุ่นที่ 1' }) });
+  assert.equal(await cohort.getByRole('link', { name: /ดูรายละเอียดคลาสสด/ }).getAttribute('href'), '/services/ai-sales-agent-bootcamp');
+  await assert.doesNotReject(async () => {
+    const price = await cohort.locator('[data-public-course-price]').textContent();
+    assert.match(price ?? '', /฿19,900/);
+  });
+
+  const futureSkill = cards.filter({ has: page.getByRole('heading', { name: 'ตั้ง Worker บน Cloud ด้วย AI Agent' }) });
+  const futureSkillLink = futureSkill.getByRole('link', { name: /ดูคลาสบน FutureSkill/ });
+  assert.equal(await futureSkillLink.getAttribute('href'), 'https://futureskill.co/course/detail/6030');
+  assert.equal(await futureSkillLink.getAttribute('target'), '_blank');
+  assert.equal(await futureSkillLink.getAttribute('rel'), 'noopener');
+  assert.equal(await futureSkill.locator('[data-public-course-price]').count(), 0, 'FutureSkill pricing must stay on the external source of truth');
+
+  const overflow = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+  assert.ok(overflow.scrollWidth <= overflow.clientWidth, 'public learning cards must not create horizontal overflow');
+  await page.close();
+});
+
 test('six catalog cards open their canonical detail pages and preserve LINE decision help', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   page.setDefaultTimeout(5_000);
