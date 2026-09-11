@@ -34,8 +34,6 @@ const FORMS = [
     form: '#dealer-ai-booking-form', submit: '#dealer-ai-submit', phoneField: 'phone', phone: '0812340005', success: null },
   { slug: 'ads-2day',       path: '/ads/sales-online-team?utm_source=meta&utm_medium=paid_social&utm_campaign=sales_ai_online_202609&utm_content=manager_pain_video_01',
     form: '#dealer-ai-booking-form', submit: '#dealer-ai-submit', phoneField: 'phone', phone: '0812340006', success: null },
-  // 2026-09-12: ฟอร์มบนหน้า P1 (ProductLeadForm ตัวเดียวกับ T4/ads) — พิสูจน์ booking_type public-p1-bootcamp ผ่าน form-hook ถึง Supabase + Telegram
-  { slug: 'p1-class',       path: '/services/ai-sales-agent-bootcamp', form: '#product-lead-form form[data-lead-form]', submit: '#product-lead-form [data-lead-submit]', phoneField: 'phone', phone: '0812340008', success: null },
   { slug: 'ebook',          path: '/ebook-sales-interview', form: '#ebook-form', submit: '#ebook-form button[type="submit"]', phoneField: 'contact', phone: '0812340007', success: null, hook: 'free-material' },
   { slug: 'bosi-quiz',      path: '/bosi-dna-quiz',        form: null,                           submit: null,                     phoneField: null,      phone: null,         success: null, quiz: true, hook: 'free-material' },
 ];

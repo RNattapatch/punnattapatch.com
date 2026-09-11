@@ -115,7 +115,7 @@ export const P1_PRODUCT_DETAIL: ProductDetailPageData = {
       actions: [{ kind: 'line', label: 'ทัก LINE พิมพ์ BOOTCAMP', intent: 'fit_check' }],
     },
     {
-      location: 'after_scope', eyebrow: 'เห็นทั้ง 4 Module แล้ว', heading: 'เลือกงานฝ่ายขายที่ค้างที่สุดมา 1 งาน แล้วมาทำให้ AI Agent รับไปทำในห้อง', body: 'รุ่นที่ 1 เรียนเสาร์ 24 – อาทิตย์ 25 ตุลาคม 2026 รับ 20 ท่าน กรอกฟอร์มด้านล่างไว้ ผมส่งขั้นตอนชำระเงินให้ในวันทำการเดียวกันครับ', variant: 'light',
+      location: 'after_scope', eyebrow: 'เห็นทั้ง 4 Module แล้ว', heading: 'เลือกงานฝ่ายขายที่ค้างที่สุดมา 1 งาน แล้วมาทำให้ AI Agent รับไปทำในห้อง', body: 'รุ่นที่ 1 เรียนเสาร์ 24 – อาทิตย์ 25 ตุลาคม 2026 รับ 20 ท่าน กดจองแล้วส่งข้อความในไลน์ได้เลย ผมส่งขั้นตอนชำระเงินให้ในวันทำการเดียวกันครับ', variant: 'light',
       actions: [{ kind: 'booking', label: 'จองที่นั่ง Early Bird', intent: 'course_planning' }, { kind: 'line', label: 'ทัก LINE ถามก่อน', intent: 'fit_check' }],
     },
     {

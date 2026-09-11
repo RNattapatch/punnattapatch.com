@@ -20,6 +20,9 @@
       } catch {}
       try {
         window.fbq?.('track', 'Contact', { content_name: props.cta_location, content_ids: [props.product_code] });
+        // 2026-09-12 (แบบ อ.เบิร์ด): ปุ่มที่ประกาศ data-cta-event ยิง event ชื่อตามปุ่มเพิ่ม
+        // เพื่อให้ปันตั้ง Custom Conversion แยก "จองที่นั่ง" ออกจาก "ถามก่อน" ได้ใน Events Manager
+        if (cta.dataset.ctaEvent) window.fbq?.('trackCustom', cta.dataset.ctaEvent, { content_ids: [props.product_code], cta_location: props.cta_location });
       } catch {}
       try {
         window.ttq?.track?.('Contact', props);

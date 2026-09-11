@@ -10,7 +10,7 @@
   else apply();
   // ปุ่มที่ render ทีหลัง (drawer/modal) — เขียนซ้ำตอนกดก่อนเบราว์เซอร์เปิดลิงก์
   document.addEventListener('click', (event) => {
-    const a = event.target instanceof Element ? event.target.closest('a[data-contact-cta][href^="https://lin.ee/"], a[data-line-cta][href^="https://lin.ee/"]') : null;
+    const a = event.target instanceof Element ? event.target.closest('a[data-contact-cta][href^="https://lin.ee/"], a[data-line-cta][href^="https://lin.ee/"], a[data-booking-cta]') : null;
     if (a) rewriteLineLinks(document, SITE.social.lineOaId, currentAngle());
   }, true);
 </script>
