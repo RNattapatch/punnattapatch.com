@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
 import OfferCard from '../components/services/OfferCard.astro';
 import OfferChooser from '../components/services/OfferChooser.astro';
 import AdvanceProgramStrip from '../components/services/AdvanceProgramStrip.astro';
@@ -8,6 +9,7 @@ import { SITE } from '../data/site';
 import { fmtPrice } from '../data/pricing.mjs';
 import { SERVICE_OFFERS, type OfferCode } from '../data/service-offers';
 import { LINE_QR_IMAGE, OFFER_ASSET_BY_CODE } from '../data/service-offer-assets';
+import p1CourseThumbnail from '../assets/services/product-thumbnails/p1-ai-sales-agent-bootcamp.png';
 
 const title = 'คลาสสำหรับทีมขาย และบริการวางระบบฝ่ายขาย | ปัน ณัฐพัชร์';
 const description = 'Training, Consulting และ Implementation สำหรับทีมขายที่ต้องการเพิ่มยอด วาง Funnel, Follow-up, Report และ Dashboard โดยใช้ AI เป็นตัวช่วยในงานที่เหมาะสม';
@@ -115,7 +117,7 @@ const faqs = [
           </div>
         </div>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <a href="#training-catalog" class="inline-flex min-h-12 items-center justify-center rounded-full border border-coral bg-coral px-6 font-bold text-white transition-colors hover:border-navy hover:bg-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral">
+          <a href="#public-online-courses" class="inline-flex min-h-12 items-center justify-center rounded-full border border-coral bg-coral px-6 font-bold text-white transition-colors hover:border-navy hover:bg-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral">
             ดูคลาสและบริการ ↓
           </a>
           <a
@@ -143,6 +145,57 @@ const faqs = [
               <img src={logo.src} alt={logo.alt} width="160" height="96" loading="lazy" decoding="async" class="max-h-12 max-w-full object-contain" />
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="public-online-courses" class="scroll-mt-20 border-b border-sand-deep bg-surface">
+      <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
+        <div class="max-w-3xl">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">Public & Online Classes</p>
+          <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">คลาสสำหรับบุคคลทั่วไป</h2>
+          <p class="mt-4 leading-7 text-[#625C53]">เลือกเรียนสดแบบลงมือทำในห้อง หรือเรียนออนไลน์ย้อนหลังตามเวลาของคุณ</p>
+        </div>
+
+        <div class="mt-10 grid min-w-0 gap-6 lg:grid-cols-2">
+          <article data-public-course="P1" class="flex min-w-0 flex-col overflow-hidden rounded-[1.5rem] border border-coral/40 bg-ivory shadow-[0_18px_40px_-28px_rgba(7,43,78,.35)]">
+            <figure class="aspect-video overflow-hidden bg-navy">
+              <Image src={p1CourseThumbnail} alt="AI Sale Loop System คลาสสดสร้างวงจรงานขายด้วย AI Agent" width={1600} height={900} loading="lazy" decoding="async" class="size-full object-cover" />
+            </figure>
+            <div class="flex flex-1 flex-col p-5 sm:p-7">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="rounded-full bg-coral px-3 py-1.5 text-xs font-bold text-white">Live Public Class</span>
+                <span class="rounded-full bg-navy px-3 py-1.5 text-xs font-bold text-white">24–25 Oct 2026 · Bangkok</span>
+              </div>
+              <p class="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-coral">สร้างวงจรงานขายด้วย AI Agent ใน 2 วัน</p>
+              <h3 class="mt-2 font-display text-2xl font-bold leading-snug tracking-[-0.02em] text-navy">AI Sale Loop System · รุ่นที่ 1</h3>
+              <p class="mt-3 leading-7 text-[#625C53]">วาดวงจรงานขายของคุณ ทำฐานข้อมูลดีลและคลังบริบท แล้วประกอบ AI Agent 2 ขาให้รับแชท ทำเอกสารและตามดีลต่อในระบบเดียว</p>
+              <div class="mt-auto pt-6">
+                <p class="text-xs font-semibold text-muted">Early Bird 10 ที่นั่งแรก</p>
+                <p data-public-course-price class="mt-1 font-display text-2xl font-bold tabular-nums text-coral">{fmtPrice('public-p1-bootcamp')}</p>
+                <a href="/services/ai-sales-agent-bootcamp" class="mt-5 inline-flex min-h-12 items-center justify-center rounded-full border border-coral bg-coral px-5 font-bold text-white transition-colors hover:border-navy hover:bg-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral">ดูรายละเอียดคลาสสด<span aria-hidden="true" class="ml-2">→</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article data-public-course="FUTURESKILL" class="flex min-w-0 flex-col overflow-hidden rounded-[1.5rem] border border-sand-deep bg-ivory shadow-[0_18px_40px_-28px_rgba(7,43,78,.35)]">
+            <figure class="flex aspect-video items-center justify-center overflow-hidden bg-[#f3efff] p-10 sm:p-14">
+              <img src="/services/futureskill.png" alt="FutureSkill" width="640" height="640" loading="lazy" decoding="async" class="size-full object-contain" />
+            </figure>
+            <div class="flex flex-1 flex-col p-5 sm:p-7">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="rounded-full bg-navy px-3 py-1.5 text-xs font-bold text-white">Online Class</span>
+                <span class="rounded-full border border-navy/15 bg-surface px-3 py-1.5 text-xs font-bold text-navy">เรียนย้อนหลัง</span>
+              </div>
+              <p class="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-coral">เรียนออนไลน์ตามเวลาของคุณ</p>
+              <h3 class="mt-2 font-display text-2xl font-bold leading-snug tracking-[-0.02em] text-navy">ตั้ง Worker บน Cloud ด้วย AI Agent</h3>
+              <p class="mt-3 leading-7 text-[#625C53]">เรียนวิธีเตรียมและตั้ง Worker บน Cloud เพื่อให้ AI Agent รันนอกเครื่อง ผ่านบทเรียนวิดีโอบน FutureSkill</p>
+              <div class="mt-auto pt-6">
+                <p class="text-sm leading-6 text-[#625C53]">ดูราคา เนื้อหาล่าสุด และเงื่อนไขการเรียนได้โดยตรงบน FutureSkill</p>
+                <a href="https://futureskill.co/course/detail/6030" target="_blank" rel="noopener" class="mt-5 inline-flex min-h-12 items-center justify-center rounded-full border border-navy bg-navy px-5 font-bold text-white transition-colors hover:border-coral hover:bg-coral focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy">ดูคลาสบน FutureSkill<span aria-hidden="true" class="ml-2">↗</span></a>
+              </div>
+            </div>
+          </article>
         </div>
       </div>
     </section>
