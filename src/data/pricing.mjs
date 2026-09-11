@@ -35,13 +35,13 @@
 
 /** @type {Record<string, CatalogEntry>} */
 export const CATALOG = {
-  // ── คอร์สสด In-house 3 ตัว — เลือกตามแผนกที่ติด ไม่ใช่เลือกตามราคา ──────────
+  // ── คลาสสด In-house 3 ตัว — เลือกตามแผนกที่ติด ไม่ใช่เลือกตามราคา ──────────
   // ราคา 1 วัน เท่ากันทั้ง 2 ตัวโดยตั้งใจ (ปันเคาะ 2026-08-09): ตัดตัวแปรราคาออก
   // จากการตัดสินใจ → ลูกค้าเลือกจาก "แผนกไหนติด" แทนการเทียบว่าอันไหนถูกกว่า
   'inhouse-a': {
     amount: 34900,
     url: '/services/t1-sales-skills',
-    name: 'คอร์สจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B',
+    name: 'คลาสจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B',
     nameEn: 'B2B Sales Psychology + AI Agent',
     kind: 'inhouse',
     duration: '1 วัน',
@@ -56,7 +56,7 @@ export const CATALOG = {
   'ai-workshop-advance': {
     amount: 34900,
     url: '/services/t3-sales-back-office',
-    name: 'คอร์สอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI',
+    name: 'คลาสอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI',
     nameEn: 'Sales Back Office: Report + Dashboard × AI',
     kind: 'inhouse',
     duration: '1 วัน',
@@ -66,12 +66,12 @@ export const CATALOG = {
     botQuote: true,
     image: '/services/thumbs/t3-sales-back-office-ai.jpg',
     outlineUrl: 'https://punnattapatch.com/services/outlines/t3-sales-back-office.pdf',
-    note: 'T3 · rename 2026-08-30 (Product SSOT — ชื่อบอก job "วางระบบหลังบ้านฝ่ายขาย") · ชื่อก่อนหน้า "คอร์สอบรม Report ทีมขาย + Dashboard + AI" (2026-08-28) · เดิม "AI สำหรับงานหลังบ้าน 2026" · Workshop ทำ Prototype + Operating rule — **T3 คือเรียนวิธีวาง · งานลงมือสร้างระบบ production = daruma-starter (I1)**',
+    note: 'T3 · rename 2026-08-30 (Product SSOT — ชื่อบอก job "วางระบบหลังบ้านฝ่ายขาย") · ชื่อก่อนหน้า "คลาสอบรม Report ทีมขาย + Dashboard + AI" (2026-08-28) · เดิม "AI สำหรับงานหลังบ้าน 2026" · Workshop ทำ Prototype + Operating rule — **T3 คือเรียนวิธีวาง · งานลงมือสร้างระบบ production = daruma-starter (I1)**',
   },
   'tiktok-workshop': {
     amount: 54900,
     url: '/services/online-to-sales',
-    name: 'คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI',
+    name: 'คลาสเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI',
     nameEn: 'Online-to-Offline × Content + Ads + AI',
     kind: 'content',
     duration: '2 วัน + ดูแลต่อ 30 วัน',
@@ -88,7 +88,7 @@ export const CATALOG = {
     // status ยังเป็น internal จนหน้า /services/advance-ai-automation ขึ้น live (WEB-T4-LP-01) แล้วค่อยสลับ 'live'
     amount: 34900,
     url: '/services/advance-ai-automation',
-    name: 'คอร์ส Advance AI & Business Automation',
+    name: 'คลาส Advance AI & Business Automation',
     nameEn: 'AI Workflow Pilot Day',
     kind: 'inhouse',
     duration: '1 วัน',
@@ -102,10 +102,10 @@ export const CATALOG = {
   'public-p1-bootcamp': {
     // 2026-09-03: Public P1 ปันเคาะ — ตั๋วรายคน Founding ฿19,900 (ขึ้น 1 step จาก 16,900 · ปันสั่ง 16:50) · Standard ฿24,900 หลังขายครบ 10 ที่นั่งราคา Blind Ticket — เปลี่ยน amount ตอนนั้น
     // 2026-09-10 14:4x: ปันสั่งหยุดขาย รื้อหลักสูตรใหม่ทั้งตัว → กลับเป็น internal (หน้ายังอยู่แต่ noindex · บอทมองไม่เห็น)
-    // botQuote ยัง false โดยตั้งใจ: ชุด copy B กำหนดว่าราคาคอร์สนี้ให้คนตอบเท่านั้น (คัดโจทย์ก่อนบอกตัวเลข)
+    // botQuote ยัง false โดยตั้งใจ: ชุด copy B กำหนดว่าราคาคลาสนี้ให้คนตอบเท่านั้น (คัดโจทย์ก่อนบอกตัวเลข)
     amount: 19900,
     url: '/services/ai-sales-agent-bootcamp',
-    name: 'คอร์สสดสร้างทีม AI ผู้ช่วยงานขายส่วนตัว 2026',
+    name: 'คลาสสดสร้างทีม AI ผู้ช่วยงานขายส่วนตัว 2026',
     nameEn: 'AI Sales Agent Bootcamp',
     kind: 'public',
     duration: '2 วันสด (เสาร์-อาทิตย์ · กรุงเทพฯ) + Group clinic Day 14',
@@ -121,7 +121,7 @@ export const CATALOG = {
     // หน้า LP ดึงตัวเลขนี้ไปแสดงว่า "ครบ 10 แล้วเป็นราคาปกติเท่าไหร่" — ยังไม่ใช่ราคาที่เปิดขายตอนนี้
     amount: 24900,
     url: '/services/ai-sales-agent-bootcamp',
-    name: 'คอร์สสดสร้างทีม AI ผู้ช่วยงานขายส่วนตัว 2026 (ราคาปกติ)',
+    name: 'คลาสสดสร้างทีม AI ผู้ช่วยงานขายส่วนตัว 2026 (ราคาปกติ)',
     nameEn: 'AI Sales Agent Bootcamp — Standard',
     kind: 'public',
     duration: '2 วันสด (เสาร์-อาทิตย์ · กรุงเทพฯ) + Group clinic Day 14',
@@ -214,7 +214,7 @@ export const CATALOG = {
     audience: 'ทีมขายที่พึ่งคนเก่งคนเดียว อยากให้ทั้งทีมทำงานด้วยมาตรฐานเดียวกัน',
     status: 'sunset',
     botQuote: false,
-    note: 'SUNSET 2026-08-28 (catalog-revision-plan): นอก portfolio master §8 · pain ซ้ำกับ Core course — key คงไว้กันบทความ/ลิงก์เก่าพัง',
+    note: 'SUNSET 2026-08-28 (catalog-revision-plan): นอก portfolio master §8 · pain ซ้ำกับ Core class — key คงไว้กันบทความ/ลิงก์เก่าพัง',
   },
   'system-health-check': {
     // 2026-08-18: ดีลเปิดประตูใหม่ — stress test (จำลองข้อมูล 7 ปีข้างหน้าแล้ววัดจริง) + secure-app audit
@@ -327,7 +327,7 @@ export const CATALOG = {
     kind: 'internal', status: 'internal', botQuote: false, note: 'locked 2026-07-20 · anchor #package-a ถูกยุบเข้า #inhouse-b',
   },
   'tiktok-workshop-regular': {
-    amount: 59900, url: '/services/trust-content-tiktok-workshop', name: 'คอร์สเพิ่มยอดขายจากออนไลน์ (ราคาเดิมก่อนปรับ)',
+    amount: 59900, url: '/services/trust-content-tiktok-workshop', name: 'คลาสเพิ่มยอดขายจากออนไลน์ (ราคาเดิมก่อนปรับ)',
     kind: 'internal', status: 'internal', botQuote: false, note: 'ราคาเดิมของ tiktok-workshop ก่อนลดเหลือ 54,900 (2026-08-28) — ใช้เป็น list price ขีดฆ่าได้ · เก็บ key ไว้เพราะบทความเก่ายังอ้างถึง',
   },
   'ai-workshop-basic': {
@@ -354,7 +354,7 @@ export const TERMS = {
   format: {
     label: 'รูปแบบ',
     value: 'In-house on-site เท่านั้น — คุณปันเดินทางไปที่บริษัทคุณ',
-    detail: 'ไม่มีคอร์สออนไลน์ · ราคาเดียวทั้งทีม (คอร์ส 1 วัน รับไม่เกิน 20 คน เกินกว่านี้คุยกันได้)',
+    detail: 'ไม่มีคลาสออนไลน์ · ราคาเดียวทั้งทีม (คลาส 1 วัน รับไม่เกิน 20 คน เกินกว่านี้คุยกันได้)',
   },
 };
 

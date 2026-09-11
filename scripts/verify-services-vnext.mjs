@@ -22,7 +22,7 @@ const llmsOutputPath = `${distPath}/llms.txt`;
 const llmsFullOutputPath = `${distPath}/llms-full.txt`;
 
 const servicesCanonical = 'https://punnattapatch.com/services';
-const servicesTitle = 'คอร์สสำหรับทีมขาย และบริการวางระบบฝ่ายขาย | ปัน ณัฐพัชร์';
+const servicesTitle = 'คลาสสำหรับทีมขาย และบริการวางระบบฝ่ายขาย | ปัน ณัฐพัชร์';
 const servicesDescription = 'Training, Consulting และ Implementation สำหรับทีมขายที่ต้องการเพิ่มยอด วาง Funnel, Follow-up, Report และ Dashboard โดยใช้ AI เป็นตัวช่วยในงานที่เหมาะสม';
 const detailRouteByCode = {
   T1: '/services/t1-sales-skills',
@@ -246,17 +246,17 @@ function assertServicesPageBuildOutput() {
   }
 
   assert.match(html, /SALES TRAINING · CONSULTING · IMPLEMENTATION/, 'services hero eyebrow must match the approved copy');
-  assert.match(html, /คอร์สและบริการสำหรับทีมขาย ที่อยากเพิ่มยอดและทำงานเป็นระบบ/, 'services hero heading must match the approved copy');
+  assert.match(html, /คลาสและบริการสำหรับทีมขาย ที่อยากเพิ่มยอดและทำงานเป็นระบบ/, 'services hero heading must match the approved copy');
   assert.match(html, /เลือกจากงานที่อยากให้ทีมทำได้จริง ไม่ต้องเริ่มจากชื่อเครื่องมือ ผมช่วยได้ตั้งแต่พัฒนาทักษะเซลล์ วาง Funnel ไปจนถึงสร้าง Report และ Dashboard ให้ใช้งานจริง/, 'services hero support copy must match the approved copy');
-  assert.match(html, /ดูคอร์สและบริการ ↓/, 'services hero must link to the offer catalog');
+  assert.match(html, /ดูคลาสและบริการ ↓/, 'services hero must link to the offer catalog');
   assert.match(html, /ให้ผมช่วยเลือกทาง LINE/, 'services hero must offer LINE decision help');
 
   for (const heading of [
-    'คอร์สสำหรับทีมขายที่เปิดสอนตอนนี้',
+    'คลาสสำหรับทีมขายที่เปิดสอนตอนนี้',
     'ถ้าอบรมอย่างเดียวยังไม่พอ ผมเข้าไปวางระบบกับทีมให้',
     'องค์กรที่เคยเชิญไปสอนและวางระบบ',
-    'คำถามที่ถามบ่อยก่อนเลือกคอร์สหรือบริการ',
-    'ยังไม่แน่ใจว่าควรเริ่มจากคอร์สหรือวางระบบ?',
+    'คำถามที่ถามบ่อยก่อนเลือกคลาสหรือบริการ',
+    'ยังไม่แน่ใจว่าควรเริ่มจากคลาสหรือวางระบบ?',
   ]) {
     assert.ok(html.includes(heading), `services page must use exact required heading: ${heading}`);
   }
@@ -432,22 +432,22 @@ function assertServicesSeoBuildOutput() {
 
 const expected = {
   T1: {
-    publicName: 'คอร์สจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B',
+    publicName: 'คลาสจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B',
     kind: 'training', pricingKey: 'inhouse-a', thumbnailFile: 't1-sales-skill-ai.png',
-    imageAlt: 'คอร์สจิตวิทยาการขายและ AI Agent สำหรับทีมขาย B2B',
-    detailHref: '/services/t1-sales-skills', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดคอร์ส',
+    imageAlt: 'คลาสจิตวิทยาการขายและ AI Agent สำหรับทีมขาย B2B',
+    detailHref: '/services/t1-sales-skills', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดคลาส',
   },
   T2: {
-    publicName: 'คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI',
+    publicName: 'คลาสเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI',
     kind: 'training', pricingKey: 'tiktok-workshop', thumbnailFile: 't2-online-to-offline-ai.png',
-    imageAlt: 'คอร์สเพิ่มยอดขายจากออนไลน์ไปสู่การนัดหมายและยอดขาย',
-    detailHref: '/services/online-to-sales', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดคอร์ส',
+    imageAlt: 'คลาสเพิ่มยอดขายจากออนไลน์ไปสู่การนัดหมายและยอดขาย',
+    detailHref: '/services/online-to-sales', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดคลาส',
   },
   T3: {
-    publicName: 'คอร์สอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI',
+    publicName: 'คลาสอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI',
     kind: 'training', pricingKey: 'ai-workshop-advance', thumbnailFile: 't3-sales-back-office-ai.png',
-    imageAlt: 'คอร์สอบรมวางระบบ Report และ Dashboard สำหรับฝ่ายขาย',
-    detailHref: '/services/t3-sales-back-office', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดคอร์ส',
+    imageAlt: 'คลาสอบรมวางระบบ Report และ Dashboard สำหรับฝ่ายขาย',
+    detailHref: '/services/t3-sales-back-office', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดคลาส',
   },
   C1: {
     publicName: 'บริการวางระบบฝ่ายขายแบบรายวัน',
@@ -462,10 +462,10 @@ const expected = {
     detailHref: '/services/dashboard-build', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดบริการ',
   },
   T4: {
-    publicName: 'คอร์ส Advance AI & Business Automation',
+    publicName: 'คลาส Advance AI & Business Automation',
     kind: 'training', pricingKey: 't4-ai-workflow-pilot-day', thumbnailFile: 't4-ai-workflow-pilot.png',
     imageAlt: 'ทีมไทยกำลังทดลอง AI Workflow จากงานจริงของบริษัท',
-    detailHref: '/services/advance-ai-automation', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดคอร์ส',
+    detailHref: '/services/advance-ai-automation', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดคลาส',
   },
   A1: {
     publicName: 'Advance Program: Sales Mastery with AI',

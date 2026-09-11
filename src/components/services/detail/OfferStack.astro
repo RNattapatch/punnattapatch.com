@@ -97,7 +97,7 @@ const LINE_MARK = 'M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 
           <div class="flex flex-wrap items-end justify-between gap-3">
             <div>
               <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Bonus {pieces} ชิ้น + Certificate</p>
-              <h3 class="mt-2 font-display text-2xl font-bold text-navy">{total ? `Bonus หลังคอร์ส ${pieces} ชิ้น มูลค่ารวม ${fmt(total)} แถมฟรี` : 'Material ที่ช่วยให้ทีมเริ่มง่ายและใช้ต่อได้'}</h3>
+              <h3 class="mt-2 font-display text-2xl font-bold text-navy">{total ? `Bonus หลังคลาส ${pieces} ชิ้น มูลค่ารวม ${fmt(total)} แถมฟรี` : 'Material ที่ช่วยให้ทีมเริ่มง่ายและใช้ต่อได้'}</h3>
             </div>
             <span class="rounded-full bg-[#06c755]/15 px-3 py-1.5 text-xs font-bold text-[#05a648]">แถมฟรี · ส่งให้หลังจบคลาส</span>
           </div>
@@ -109,7 +109,7 @@ const LINE_MARK = 'M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 
                   <span class="flex items-center gap-2">
                     {valueOf(item.number)
                       ? <><s class="text-base font-bold text-coral">{fmt(valueOf(item.number)!)}</s><span class="rounded-md bg-[#06c755]/15 px-2.5 py-1 text-xs font-bold text-[#05a648]">ฟรี</span></>
-                      : <span class="rounded-md bg-navy/10 px-2.5 py-1 text-xs font-bold text-navy">{labelOf(item.number) === '∞' ? 'ประเมินค่าไม่ได้ · ฟรี' : `${labelOf(item.number) ?? 'รวมในคอร์ส'} · ฟรี`}</span>}
+                      : <span class="rounded-md bg-navy/10 px-2.5 py-1 text-xs font-bold text-navy">{labelOf(item.number) === '∞' ? 'ประเมินค่าไม่ได้ · ฟรี' : `${labelOf(item.number) ?? 'รวมในคลาส'} · ฟรี`}</span>}
                   </span>
                   <span class="text-xs text-navy/55">{item.format}</span>
                 </span>

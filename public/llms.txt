@@ -7,7 +7,7 @@
 ## Identity
 
 - [About](https://punnattapatch.com/about): ตัวตน · expertise 4 หมวด · หลักการทำงาน · credentials · BOSI DNA framework
-- [Services](https://punnattapatch.com/services): คอร์สอบรมสำหรับทีมขาย 3 ตัว + บริการวางระบบฝ่ายขาย 3 ตัว
+- [Services](https://punnattapatch.com/services): คลาสอบรมสำหรับทีมขาย 3 ตัว + บริการวางระบบฝ่ายขาย 3 ตัว
 - [BOSI DNA Quiz](https://punnattapatch.com/bosi-dna-quiz): แบบทดสอบ Entrepreneurial DNA 10 ข้อ · 5-10 นาที · รู้จุดแข็ง/จุดบอดทีมขายก่อนวางระบบ
 - [Intake Form](https://punnattapatch.com/intake-form): แบบประเมินปัญหาทีมขาย 3 นาที
 - [Booking](https://punnattapatch.com/booking): จอง package + preferred date + contact ครบที่เดียว
@@ -16,21 +16,21 @@
 
 ## Services & Pricing (v6 — 2026-08-30 · supersedes all earlier price lists)
 
-### คอร์สอบรมสำหรับทีมขาย (In-house on-site เท่านั้น · ไม่มี online · ราคาเดียวทั้งทีมไม่เกิน 20 คน)
-- คอร์สจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B — ฿34,900 · 1 วัน · เข้าใจเหตุผลซื้อ 3 ชั้น ฝึกคำถามและการต่อรองโดยไม่รีบลดราคา แล้วสร้าง AI Sales Coach จาก Company Context เพื่อช่วยเตรียม ซ้อม และทบทวนดีล · https://punnattapatch.com/services/t1-sales-skills
-- คอร์สอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI — ฿34,900 · 1 วัน · ทีมรายงานภาษาเดียวกัน ผู้จัดการเห็นดีลค้างและงานที่ต้องตาม (เรียนวิธีวางระบบ — งานติดตั้งจริงคือบริการทำ Sales Dashboard) · https://punnattapatch.com/services/t3-sales-back-office
-- คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI — ฿54,900 · 2 วัน + ดูแลต่อ 30 วัน · เปลี่ยนคนดูออนไลน์ให้เป็นแชต นัดหมาย และยอดขาย · มี Vertical Edition เช่น คอร์สเพิ่มยอดขายรถจากออนไลน์ (Dealer) ราคาเดียวกัน · https://punnattapatch.com/services/online-to-sales
+### คลาสอบรมสำหรับทีมขาย (In-house on-site เท่านั้น · ไม่มี online · ราคาเดียวทั้งทีมไม่เกิน 20 คน)
+- คลาสจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B — ฿34,900 · 1 วัน · เข้าใจเหตุผลซื้อ 3 ชั้น ฝึกคำถามและการต่อรองโดยไม่รีบลดราคา แล้วสร้าง AI Sales Coach จาก Company Context เพื่อช่วยเตรียม ซ้อม และทบทวนดีล · https://punnattapatch.com/services/t1-sales-skills
+- คลาสอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI — ฿34,900 · 1 วัน · ทีมรายงานภาษาเดียวกัน ผู้จัดการเห็นดีลค้างและงานที่ต้องตาม (เรียนวิธีวางระบบ — งานติดตั้งจริงคือบริการทำ Sales Dashboard) · https://punnattapatch.com/services/t3-sales-back-office
+- คลาสเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI — ฿54,900 · 2 วัน + ดูแลต่อ 30 วัน · เปลี่ยนคนดูออนไลน์ให้เป็นแชต นัดหมาย และยอดขาย · มี Vertical Edition เช่น คลาสเพิ่มยอดขายรถจากออนไลน์ (Dealer) ราคาเดียวกัน · https://punnattapatch.com/services/online-to-sales
 
 ### บริการวางระบบฝ่ายขาย
 - บริการวางระบบฝ่ายขายแบบรายวัน — ฿34,900 · 1 วัน / 1 เรื่องหลัก · เลือก 1 ปัญหาขายแล้ววางทางออกให้จบใน 1 วัน (Online-to-Sales Journey · โครงทีม+KPI+ค่าคอม · ออกแบบ Report/Dashboard · AI Workflow prototype) — หลายเรื่องประเมินจำนวนวันรวมใน proposal เดียว · https://punnattapatch.com/services/daily-consulting
 - บริการทำ Sales Dashboard + Report อัตโนมัติ — ฿69,900 · 3 วัน on-site + ดูแลต่อ 30 วัน · Deal register + Daily report + Follow-up list + Excel export + UAT (ทีมปันลงมือสร้างระบบจริงให้) · https://punnattapatch.com/services/dashboard-build
-- โปรแกรมยกระดับทักษะและระบบทีมขายด้วย AI (Advance Program: Sales Mastery with AI) — เรียนคอร์สหลักแล้วต่อ Guided Implementation 2 วันจนใช้จริง · เสนอผ่าน proposal (ไม่ quote ราคาหน้าเว็บ)
+- โปรแกรมยกระดับทักษะและระบบทีมขายด้วย AI (Advance Program: Sales Mastery with AI) — เรียนคลาสหลักแล้วต่อ Guided Implementation 2 วันจนใช้จริง · เสนอผ่าน proposal (ไม่ quote ราคาหน้าเว็บ)
 
 ### Retainer / งานวางระบบใหญ่
 - ที่ปรึกษาดูแลระบบรายเดือน และงานวางระบบฝ่ายขายครบวงจร — เสนอผ่าน proposal หลังคุย fit call (ไม่ quote ราคาหน้าเว็บ)
 
-### Public Course
-- ยังไม่เปิดรับสมัคร — ทุกคอร์สจัดเป็น in-house ที่บริษัทลูกค้าก่อน · public เปิดภายหลัง
+### Public Class
+- ยังไม่เปิดรับสมัคร — ทุกคลาสจัดเป็น in-house ที่บริษัทลูกค้าก่อน · public เปิดภายหลัง
 
 ## Case Studies (3 anonymized · real numbers + methodology)
 
@@ -61,7 +61,7 @@
 ## FAQ (18 long-tail answers)
 
 - [FAQ index](https://punnattapatch.com/faq): รวม Q&A เจ้าของ SME ถามบ่อย
-- Topics: ที่ปรึกษาการขาย B2B กรุงเทพราคา · AI workshop เตรียมอะไร · Commission structure ทีม 10 คน · AI Agent vs chatbot · KPI dashboard Sheets · Payment upfront · Discovery call ฟรี · Team maintain หลัง handover · consultant vs AI agency · ไม่เก่ง tech ใช้ AI ได้ · public course ทำไมไม่มี · ปันช่วยธุรกิจแบบไหน · Sales training 2 วัน content · SME AI budget ปีแรก · CRM SME Thai B2B · Workshop vs Consulting · Team resist AI · Where to start AI transformation
+- Topics: ที่ปรึกษาการขาย B2B กรุงเทพราคา · AI workshop เตรียมอะไร · Commission structure ทีม 10 คน · AI Agent vs chatbot · KPI dashboard Sheets · Payment upfront · Discovery call ฟรี · Team maintain หลัง handover · consultant vs AI agency · ไม่เก่ง tech ใช้ AI ได้ · public class ทำไมไม่มี · ปันช่วยธุรกิจแบบไหน · Sales training 2 วัน content · SME AI budget ปีแรก · CRM SME Thai B2B · Workshop vs Consulting · Team resist AI · Where to start AI transformation
 
 ## Channels
 

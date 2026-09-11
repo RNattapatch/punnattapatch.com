@@ -51,11 +51,11 @@ export const BRAND_COLORS = {
   cream: '#fdfaf4',
 } as const;
 
-// Public Catalog v2.1 lineup (course names locked 2026-08-06).
-// Naming formula: คอร์สสด AI สำหรับ[แผนก] [ปี] · (English Brand Tag) + subtitle 3 outcomes.
+// Public Catalog v2.1 lineup (class names locked 2026-08-06).
+// Naming formula: คลาสสด AI สำหรับ[แผนก] [ปี] · (English Brand Tag) + subtitle 3 outcomes.
 // Thai leads, English follows — SME owners search the department, not "AI Agent".
 // Mapping old → new: output/docs/course-name-mapping-2026-08.md (in the agent repo).
-// Public Course stays off-web — design still undecided as of 2026-08-06.
+// Public Class stays off-web — design still undecided as of 2026-08-06.
 export const SERVICES = [
   {
     id: 'inhouse-a',

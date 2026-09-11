@@ -4,7 +4,7 @@
  * ทำไมมีไฟล์นี้ (2026-09-08): แอด Reel "AI กับงานโรงแรม ทำได้มากกว่าเขียนเมลแปลภาษา" (CPL ถูกสุดของบัญชี · lead เป็น CEO/MD 10/10)
  * เคยส่งคนไป /services รวม จนคุยต่อไม่ติด · คลิปพูดชื่อ "Advance AI & Business Automation" อยู่แล้ว = T4 พอดี (key t4-ai-workflow-pilot-day)
  * หน้านี้เล่า T4 ด้วยงานของโรงแรม: แขกทักตีสอง · คำถามเดิมวนทุกวัน · ราคาแต่ละฤดูอยู่ในหัวคนเดียว · รีวิวแย่รู้ทีหลัง
- * กติกา: ชื่อคอร์ส/ราคา/Bonus/Spotlight สืบทอดจาก T4 ทั้งก้อน (spread) · แก้ได้เฉพาะ Headline / Subheadline / Offer block / Pain / Scope wording
+ * กติกา: ชื่อคลาส/ราคา/Bonus/Spotlight สืบทอดจาก T4 ทั้งก้อน (spread) · แก้ได้เฉพาะ Headline / Subheadline / Offer block / Pain / Scope wording
  * SSOT ออกแบบ: wiki/pages/strategy-industry-edition-front-doors-dealer-hotel-t4-2026-09.md
  */
 import type { ClientLogo, ProductDetailPageData, PublicProofImage } from './types';
@@ -58,7 +58,7 @@ export const T4_HOTEL_EDITION: ProductDetailPageData = {
     eyebrow: 'IN-HOUSE TRAINING · HOTEL & RESORT EDITION',
     customerJob: 'Advance AI & Business Automation สำหรับโรงแรมและรีสอร์ท · สอนทีม Front, Reservation และ Sales ให้มี AI Agent คัดกรองการจองจากแชต สรุปรีวิว และตอบข้อมูลห้องด้วยข้อมูลชุดเดียวกัน',
     supportingCopy: [
-      'คอร์ส Advance AI & Business Automation ฉบับโรงแรมและรีสอร์ท · In-house 1 วันที่โรงแรมคุณ · ทีม 5–20 คน',
+      'คลาส Advance AI & Business Automation ฉบับโรงแรมและรีสอร์ท · In-house 1 วันที่โรงแรมคุณ · ทีม 5–20 คน',
       'เลือกงานซ้ำที่กินเวลาทีมมากที่สุดมา 1 เรื่อง แล้วลงมือทำตั้งแต่ไล่เส้นทางแขก สร้างต้นแบบจากประเภทห้องและราคาจริง วางกติกาว่าราคากับเงื่อนไขยกเลิกใครตรวจ ไปจนถึงแผนใช้ต่อ 30 วัน',
     ],
     microcopy: 'การต้อนรับแขกด้วยใจ ยังไงคนก็ชนะ AI ครับ AI เอาไว้ทำงานซ้ำๆ ให้คนไปดูแลแขกให้มีความสุข',
@@ -88,7 +88,7 @@ export const T4_HOTEL_EDITION: ProductDetailPageData = {
     { id: 'hotel-hero-pointing', kind: 'photo', image: publicImage('/lp/inhouse/hero-pointing.jpg', 1600, 1200), alt: 'ปันอธิบาย AI Workflow ให้ผู้เข้าร่วมในห้องอบรมจริง', caption: 'อธิบาย Flow บนจอ แล้วให้ทีมถามจากข้อความแขกที่ตัวเองตอบอยู่' },
     { id: 'hotel-hands-on', kind: 'photo', image: publicImage('/lp/inhouse/hands-on.jpg', 1600, 1200), alt: 'ผู้เข้าร่วมลงมือทำงานบนแล็ปท็อปใน Workshop', caption: 'ทุกคนลงมือบน Laptop ของตัวเอง ไม่ได้นั่งดูเดโมอย่างเดียว' },
     { id: 'hotel-team-group', kind: 'photo', image: publicImage('/lp/inhouse/team-group.jpg', 1200, 1600), alt: 'ปันถ่ายภาพร่วมกับผู้เข้าร่วมอบรมในองค์กร', caption: 'ห้องอบรมที่มีเจ้าของ ผู้จัดการ และคนหน้างานจริงร่วมกัน' },
-    { id: 'hotel-activity-seven', kind: 'photo', image: publicImage('/advance-ai-course/gallery1.JPG', 1800, 1350), alt: 'ห้องอบรม Advance AI & Business Automation ในบริษัทลูกค้า ทีมเปิด Laptop ทำงานตามสไลด์บนจอ', caption: 'สไลด์บนจอคือคอร์สนี้ สอนในห้องประชุมของบริษัทลูกค้า' },
+    { id: 'hotel-activity-seven', kind: 'photo', image: publicImage('/advance-ai-course/gallery1.JPG', 1800, 1350), alt: 'ห้องอบรม Advance AI & Business Automation ในบริษัทลูกค้า ทีมเปิด Laptop ทำงานตามสไลด์บนจอ', caption: 'สไลด์บนจอคือคลาสนี้ สอนในห้องประชุมของบริษัทลูกค้า' },
     { id: 'hotel-quote-company', kind: 'quote', quote: 'อาจารย์ปันสอนถูกใจทีมงานมากครับ', image: publicImage('/testimonial/2026-05/review-05.jpg', 1000, 1000), alt: 'ข้อความรีวิวจากผู้บริหารหลังอบรม', caption: 'ข้อความที่ผู้บริหารส่งกลับมาหลังทีมเข้าอบรม' },
     { id: 'hotel-quote-build', kind: 'quote', quote: 'ทำเว็บจ้างหลายแสน จบในคืนเดียว เป็นไปได้เฉยพี่', image: publicImage('/testimonial/2026-07/review-09.jpg', 1410, 1410), alt: 'ข้อความผู้เรียนนำวิธีคิดไปสร้างงานต่อ', caption: 'ผู้เรียนนำวิธีคิดจากห้องไปต่อกับงานของตัวเอง' },
     { id: 'hotel-quote-continue', kind: 'quote', quote: 'ต่อยอดโปรเจกต์เลขาครับ สนุกดีครับ', image: publicImage('/testimonial/2026-07/review-11.jpg', 914, 914), alt: 'ข้อความผู้เรียนต่อยอดโปรเจกต์ AI หลังอบรม', caption: 'หลักฐานว่าผู้เรียนยังหยิบงานกลับไปทำต่อหลังคลาส' },
@@ -133,7 +133,7 @@ export const T4_HOTEL_EDITION: ProductDetailPageData = {
     'รีวิวแย่โผล่มาทีหลัง ไม่รู้ว่าเรื่องไหนพังซ้ำๆ กว่าจะรู้ดาวก็ตกแล้ว และยอดขึ้นๆ ลงๆ เดาไม่ได้ว่าเดือนหน้าจะเป็นยังไง',
   ],
   boundary: {
-    heading: 'คอร์ส 1 วันที่โรงแรมคุณ พาทีมสร้าง AI Agent จากงานซ้ำจริง 1 Workflow',
+    heading: 'คลาส 1 วันที่โรงแรมคุณ พาทีมสร้าง AI Agent จากงานซ้ำจริง 1 Workflow',
     body: [
       'เราเริ่มจากงานที่กินเวลาทีมมากที่สุด เลือกมา 1 Workflow ที่มีเจ้าของชัด เช่น คัดกรองการจองจากแชตแล้วร่างคำตอบไทยและอังกฤษให้ Reservation ตรวจ รวมรีวิวกับคอมเพลนต์จากทุกช่องทางเป็นสรุปรายสัปดาห์ หรือทำข้อมูลห้อง ราคา และแพ็กเกจให้ Front กับ Sales ตอบเหมือนกันหมด แล้วทำ Workflow Map ให้เห็นว่าแขกเข้ามาตรงไหน หลุดตรงไหน และใครต้องตัดสินใจ',
       'ทีมลงมือสร้าง AI Agent Working Prototype จากประเภทห้อง ราคาแต่ละฤดู แพ็กเกจ และเงื่อนไขการจองที่ปิดข้อมูลแขกแล้ว พร้อมกติกา Data Safety และ Human Review ว่าราคาและเงื่อนไขยกเลิกต้องผ่านคนตรวจก่อนถึงมือแขกทุกครั้ง',
@@ -162,7 +162,7 @@ export const T4_HOTEL_EDITION: ProductDetailPageData = {
   ],
   whyMe: {
     ...T4_PRODUCT_DETAIL.whyMe!,
-    heading: 'คอร์ส AI ซื้อรายคนมีเยอะ แต่คลาสที่ยกไปสอนถึงโรงแรมด้วยห้องและราคาของคุณเอง มีไม่กี่ที่',
+    heading: 'คลาส AI ซื้อรายคนมีเยอะ แต่คลาสที่ยกไปสอนถึงโรงแรมด้วยห้องและราคาของคุณเอง มีไม่กี่ที่',
     items: T4_PRODUCT_DETAIL.whyMe!.items.map((item, index) =>
       index === 0
         ? { ...item, title: 'ผมเดินทางไปสอนถึงโรงแรมคุณ', body: 'โรงแรมไม่ต้องหยุดให้บริการ ใครติดแขกที่เคาน์เตอร์ก็ออกไปดูแลแล้วกลับเข้าห้องได้ ฟรีระยะรวมไป-กลับไม่เกิน 150 กม. จากกรุงเทพฯ' }
@@ -196,7 +196,7 @@ export const T4_HOTEL_EDITION: ProductDetailPageData = {
       'Workflow Map + AI Agent Working Prototype จากประเภทห้อง ราคา และเงื่อนไขการจองของคุณ',
       'company-context ของโรงแรม + Data Safety + Human Review Rules',
       'Spotlight 2 Module: AI Agent Mindset + AI Data Engineering for Business Use',
-      '30-Day Adoption Plan และ Bonus หลังคอร์ส 6 ชิ้น แถมฟรี (รายละเอียดในส่วน Bonus)',
+      '30-Day Adoption Plan และ Bonus หลังคลาส 6 ชิ้น แถมฟรี (รายละเอียดในส่วน Bonus)',
       'ใบเสนอราคาสำหรับขออนุมัติภายใน และใบกำกับภาษีในนามบริษัท',
     ],
     terms: 'ชำระค่าบริการ 100% ก่อนวันอบรมเพื่อยืนยันคิว ที่พักเตรียมหัวหน้า Front หรือ Reservation เป็น Process owner พร้อมข้อมูลประเภทห้อง ราคาแต่ละฤดู แพ็กเกจ เงื่อนไขการจอง และตัวอย่างข้อความแขกที่ปิดชื่อแล้วตาม Pre-work · ฟรีระยะรวมไป-กลับไม่เกิน 150 กม. จากกรุงเทพฯ',

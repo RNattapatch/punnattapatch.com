@@ -17,7 +17,7 @@ tags: [faq, pricing, bangkok, consulting]
 |---|---|---|
 | AI สำหรับงานหลังบ้าน 2026 | {{price:ai-workshop-advance}} | 1 วัน |
 | บริการวางระบบฝ่ายขายแบบรายวัน | {{price:daily-sales-consulting}} | 1 วัน · 1 primary outcome |
-| คอร์สอบรมทักษะการขาย + Follow-up + AI | {{price:inhouse-a}} | 1 วัน |
+| คลาสอบรมทักษะการขาย + Follow-up + AI | {{price:inhouse-a}} | 1 วัน |
 | Daruma Sales Transformation | {{price:daruma-transformation}} | 45 วัน |
 | AI สำหรับการตลาดและคอนเทนต์ 2026 | {{price:tiktok-workshop}} | 1 วัน (5 ธุรกิจแรก) |
 

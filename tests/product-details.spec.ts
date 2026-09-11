@@ -67,7 +67,7 @@ test('detail fixtures render all blocks with Catalog values, accessible FAQs, tr
   assert.equal(courseResponse?.status(), 200, 'course fixture must render');
   assert.equal(await page.locator('h1').count(), 1, 'fixture must contain exactly one H1');
   assert.equal(await page.locator('[data-detail-block]').count(), 13, 'fixture must render the shared 13-block detail sequence');
-  assert.equal(await page.locator('h1').innerText(), 'คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI', 'H1 must resolve from the Catalog');
+  assert.equal(await page.locator('h1').innerText(), 'คลาสเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI', 'H1 must resolve from the Catalog');
   assert.equal(await page.getByText('2 วัน + ดูแลต่อ 30 วัน', { exact: true }).count(), 1, 'duration must resolve from the Catalog');
   assert.equal(await page.getByText('฿54,900', { exact: true }).count(), 1, 'price must resolve from the Catalog');
   assert.equal(await page.locator('[data-contact-cta][data-product-code="T2"][data-cta-intent="quote"]').count(), 3, 'each detail CTA location must carry quote tracking');
@@ -93,7 +93,7 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const response = await page.goto(`${baseURL}/services/online-to-sales`);
   assert.equal(response?.status(), 200, 'T2 route must render');
-  assert.equal(await page.locator('h1').innerText(), 'คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI', 'T2 H1 must resolve from the Catalog');
+  assert.equal(await page.locator('h1').innerText(), 'คลาสเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI', 'T2 H1 must resolve from the Catalog');
   // ปันเคาะ 2026-09-05 ค่ำ: T2 = Content + Ads + Warroom (ไม่ใช่ Online-to-Sales Flow เรื่องแชต/คัด Lead)
   assert.equal(
     await page.getByText('ให้เซลล์และทีมการตลาดหาลูกค้าใหม่จากออนไลน์ได้เอง ด้วย Content, Ads และระบบ AI ที่ติดตั้งบนเครื่องบริษัท', { exact: true }).count(),
@@ -112,7 +112,7 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
     'T2 must mirror the five approved content/ads pain points in order',
   );
   assert.deepEqual(await page.locator('[data-curriculum-step]').evaluateAll((items) => items.map((item) => item.getAttribute('data-step'))), ['mindset', 'funnel', 'produce', 'ads', 'lead-channel', 'warroom'], 'T2 must show the Content → Ads → Warroom journey');
-  // ขอบเขตต้องพูดชัดว่าไม่ใช่คอร์ส Prompt สร้างรูป และไม่มีเรื่องแชต/คัด Lead/CRM ในแกนคอร์ส
+  // ขอบเขตต้องพูดชัดว่าไม่ใช่คลาส Prompt สร้างรูป และไม่มีเรื่องแชต/คัด Lead/CRM ในแกนคลาส
   const t2Body = await page.locator('body').innerText();
   assert.match(t2Body, /ไม่(ได้มา)?สอน Prompt สร้างรูป/, 'T2 must say plainly that it is not an image-prompt course');
   for (const stale of ['First-response Script', 'Qualified Lead Definition', 'Handoff Rule', 'Lead Inbox Tool', 'ตอบแชท 20 สถานการณ์', 'Leak Scorecard']) {
@@ -414,7 +414,7 @@ test('T1 detail page presents the approved sales psychology customer job and fiv
   assert.equal(await page.getByText('เลือกหนึ่งดีลที่ทีมอยากซ้อมก่อนวันอบรม', { exact: true }).count(), 1, 'T1 scope CTA must keep its workshop-case prompt');
   assert.equal(await page.getByText('เฉลี่ย ฿1,745 ต่อคน เมื่อเข้าอบรม 20 คน', { exact: true }).count(), 1, 'T1 per-head price must derive from the Catalog investment');
   assert.equal(await page.getByText('สแกน QR แล้วพิมพ์คำว่า “SALES PSYCHOLOGY” พร้อมจำนวนทีม', { exact: true }).count(), 1, 'T1 final CTA must keep the approved LINE keyword instruction');
-  const psychologyFaq = page.getByRole('button', { name: 'จิตวิทยาการขายในคอร์สหมายถึงการอ่านใจหรือควบคุมลูกค้าหรือเปล่า?' });
+  const psychologyFaq = page.getByRole('button', { name: 'จิตวิทยาการขายในคลาสหมายถึงการอ่านใจหรือควบคุมลูกค้าหรือเปล่า?' });
   assert.equal(await psychologyFaq.count(), 1, 'T1 must publish an ethical psychology FAQ');
   await psychologyFaq.click();
   assert.match(await page.locator('#t1-faq-2').innerText(), /เคารพสิทธิ์ตัดสินใจของลูกค้า/, 'ethical psychology FAQ must reject manipulation');

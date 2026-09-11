@@ -9,11 +9,11 @@
 /advance-ai /services/t3-sales-back-office 301
 /ai-workshop-advance /services/t3-sales-back-office 301
 /inhouse /services/t1-sales-skills 301
-# waitlist P1 ปิดชั่วคราว (2026-08-12) — workflow n8n ปิดไปแล้ว + คอร์ส pause · 302 เผื่อเปิดกลับ
+# waitlist P1 ปิดชั่วคราว (2026-08-12) — workflow n8n ปิดไปแล้ว + คลาส pause · 302 เผื่อเปิดกลับ
 /waitlist /booking 302
 # lp-line-ads: static LP เก่าโชว์ ฿39,900 (ราคาตาย) + index,follow — ลบทิ้ง 2026-08-28 (catalog-revision-plan Phase 0)
 /ads/lp-line-ads/* /services 301
-# ads LP รุ่นเก่า (positioning "ลดงานซ้ำ คืนเวลาเซลล์") → รุ่นใหม่ H1 = ชื่อคอร์ส (catalog-revision-plan §3.7 · 2026-08-28)
+# ads LP รุ่นเก่า (positioning "ลดงานซ้ำ คืนเวลาเซลล์") → รุ่นใหม่ H1 = ชื่อคลาส (catalog-revision-plan §3.7 · 2026-08-28)
 # CF Pages ส่ง query string (utm) ต่อให้อัตโนมัติ
 # 2026-09-04: แอด Daruma ที่ยังรันอยู่ชี้มาที่นี่ · ปลายทางเดิม (T1 จิตวิทยาการขาย) คนละเรื่อง
 # กับตัวโฆษณา → ลีดจากแอดเป็นศูนย์ตั้งแต่ 28 ส.ค. · ชี้เข้า T4 ซึ่งตรงกับสารในโฆษณา

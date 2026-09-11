@@ -83,7 +83,7 @@ test('T4 places instructor experience and every approved client logo between Off
   assert.deepEqual(await logos.evaluateAll((images) => images.slice(0, 7).map((image) => image.alt)), [
     'Nissan', 'FutureSkill', 'V!NG', 'GPX', 'Royal Enfield', 'Zontes', 'Lambretta',
   ]);
-  assert.match(await logoWall.innerText(), /ไม่ได้หมายความว่าแต่ละองค์กรเป็นผู้ซื้อคอร์สนี้/);
+  assert.match(await logoWall.innerText(), /ไม่ได้หมายความว่าแต่ละองค์กรเป็นผู้ซื้อคลาสนี้/);
   for (let index = 0; index < await logos.count(); index += 1) {
     const logo = logos.nth(index);
     await logo.scrollIntoViewIfNeeded();
@@ -103,7 +103,7 @@ test('T4 hero identifies the in-house course and one-day job at a glance', async
     const hero = page.locator('[data-section="hero"]');
     const heading = hero.getByRole('heading', { level: 1 });
     const headingText = await heading.innerText();
-    assert.match(headingText, /คอร์สอบรม/i);
+    assert.match(headingText, /คลาสอบรม/i);
     assert.match(headingText, /Advance AI\s*&\s*Business Automation/i);
     assert.match(headingText, /ทีมในองค์กร/i);
 

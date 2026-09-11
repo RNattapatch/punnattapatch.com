@@ -25,7 +25,7 @@ test('services catalog gives Training and Consulting equal first-screen routes',
   const html = await builtPage('/services');
 
   assert.match(visibleText(html), /ฝึกทีมให้ทำเป็น หรือให้ผมเข้าไปวางระบบให้/);
-  assert.match(html, /href="#core-training"[^>]*>\s*ดูคอร์สสำหรับทีมขาย/);
+  assert.match(html, /href="#core-training"[^>]*>\s*ดูคลาสสำหรับทีมขาย/);
   assert.match(html, /href="#system-services"[^>]*>\s*ดูบริการวางระบบฝ่ายขาย/);
   assert.ok(
     html.indexOf('id="system-services"') < html.indexOf('id="trusted-by"'),

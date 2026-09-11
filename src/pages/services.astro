@@ -9,7 +9,7 @@ import { fmtPrice } from '../data/pricing.mjs';
 import { SERVICE_OFFERS, type OfferCode } from '../data/service-offers';
 import { LINE_QR_IMAGE, OFFER_ASSET_BY_CODE } from '../data/service-offer-assets';
 
-const title = 'คอร์สสำหรับทีมขาย และบริการวางระบบฝ่ายขาย | ปัน ณัฐพัชร์';
+const title = 'คลาสสำหรับทีมขาย และบริการวางระบบฝ่ายขาย | ปัน ณัฐพัชร์';
 const description = 'Training, Consulting และ Implementation สำหรับทีมขายที่ต้องการเพิ่มยอด วาง Funnel, Follow-up, Report และ Dashboard โดยใช้ AI เป็นตัวช่วยในงานที่เหมาะสม';
 const canonical = `${SITE.url}/services`;
 
@@ -40,7 +40,7 @@ const faqs = [
     a: 'ไม่จำเป็นครับ เราเริ่มจากงานขายหรือรายงานที่ทีมทำอยู่แล้ว ผู้เรียนไม่ต้องเขียนโค้ด แต่ควรใช้คอมพิวเตอร์และไฟล์งานพื้นฐานได้ ส่วน AI จะถูกใช้เป็นตัวช่วยในจุดที่เหมาะกับงานจริง',
   },
   {
-    q: 'คอร์ส T1, T2 และ T3 ต่างกันอย่างไร',
+    q: 'คลาส T1, T2 และ T3 ต่างกันอย่างไร',
     a: 'T1 เน้นจิตวิทยาการตัดสินใจ คำถาม การต่อรอง และซ้อมดีลกับ AI Sales Coach, T2 เน้นเส้นทางจาก Content และ Ads ไปสู่ Lead นัดหมายและยอดขาย, ส่วน T3 เน้น Report, Dashboard และข้อมูลที่ช่วยให้หัวหน้าเห็นดีลค้าง เลือกจากงานที่ทีมต้องทำให้ดีขึ้นก่อนครับ',
   },
   {
@@ -57,7 +57,7 @@ const faqs = [
   },
   {
     q: 'อบรมแล้วจะได้ Automation ที่พร้อมใช้ทันทีหรือไม่',
-    a: 'ในคลาสทีมจะได้ Workflow, Template หรือ Prototype ตามขอบเขตคอร์ส ระบบที่เชื่อมฐานข้อมูล มีสิทธิ์ผู้ใช้ และต้องทำงานอัตโนมัติอย่างเสถียรในระยะยาวเป็นงาน Implementation แยก เพื่อให้มีการทดสอบและส่งมอบที่ชัดเจน',
+    a: 'ในคลาสทีมจะได้ Workflow, Template หรือ Prototype ตามขอบเขตคลาส ระบบที่เชื่อมฐานข้อมูล มีสิทธิ์ผู้ใช้ และต้องทำงานอัตโนมัติอย่างเสถียรในระยะยาวเป็นงาน Implementation แยก เพื่อให้มีการทดสอบและส่งมอบที่ชัดเจน',
   },
   {
     q: 'ถ้าข้อมูลอยู่หลายระบบ สามารถเชื่อมทั้งหมดได้ไหม',
@@ -65,7 +65,7 @@ const faqs = [
   },
   {
     q: 'ขอ Outline หรือใบเสนอราคาได้อย่างไร',
-    a: 'ทัก LINE พร้อมบอกประเภทธุรกิจ จำนวนผู้เรียน ปัญหาที่อยากแก้ และช่วงวันที่สะดวก ผมจะช่วยเทียบโจทย์กับคอร์สหรือบริการ แล้วส่ง Outline และใบเสนอราคาตาม Scope ที่ตกลงกัน',
+    a: 'ทัก LINE พร้อมบอกประเภทธุรกิจ จำนวนผู้เรียน ปัญหาที่อยากแก้ และช่วงวันที่สะดวก ผมจะช่วยเทียบโจทย์กับคลาสหรือบริการ แล้วส่ง Outline และใบเสนอราคาตาม Scope ที่ตกลงกัน',
   },
   {
     q: 'จองวันอบรมหรือวัน Consulting อย่างไร',
@@ -92,7 +92,7 @@ const faqs = [
     faq: faqs.map((faq) => ({ question: faq.q, answer: faq.a })),
     breadcrumbs: [
       { name: 'หน้าแรก', url: SITE.url },
-      { name: 'คอร์สและบริการ', url: `${SITE.url}/services` },
+      { name: 'คลาสและบริการ', url: `${SITE.url}/services` },
     ],
   }}
 >
@@ -102,7 +102,7 @@ const faqs = [
       <div class="relative mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
         <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">SALES TRAINING · CONSULTING · IMPLEMENTATION</p>
         <h1 class="mt-4 max-w-4xl font-display text-[2.45rem] font-bold leading-[1.16] tracking-[-0.04em] text-navy sm:text-5xl lg:text-[3.55rem]">
-          คอร์สและบริการสำหรับทีมขาย ที่อยากเพิ่มยอดและทำงานเป็นระบบ
+          คลาสและบริการสำหรับทีมขาย ที่อยากเพิ่มยอดและทำงานเป็นระบบ
         </h1>
         <p class="mt-6 max-w-3xl text-lg leading-8 text-[#625C53]">
           เลือกจากงานที่อยากให้ทีมทำได้จริง ไม่ต้องเริ่มจากชื่อเครื่องมือ ผมช่วยได้ตั้งแต่พัฒนาทักษะเซลล์ วาง Funnel ไปจนถึงสร้าง Report และ Dashboard ให้ใช้งานจริง
@@ -110,13 +110,13 @@ const faqs = [
         <div class="mt-8 max-w-3xl rounded-2xl border border-navy/15 bg-sand/70 p-4 sm:flex sm:items-center sm:justify-between sm:gap-5">
           <p class="font-display font-bold leading-7 text-navy">ฝึกทีมให้ทำเป็น หรือให้ผมเข้าไปวางระบบให้</p>
           <div class="mt-3 flex flex-col gap-2 sm:mt-0 sm:flex-row sm:flex-wrap">
-            <a href="#core-training" class="inline-flex min-h-12 items-center justify-center rounded-full border border-navy px-4 text-sm font-bold text-navy transition-colors hover:bg-navy hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy">ดูคอร์สสำหรับทีมขาย</a>
+            <a href="#core-training" class="inline-flex min-h-12 items-center justify-center rounded-full border border-navy px-4 text-sm font-bold text-navy transition-colors hover:bg-navy hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy">ดูคลาสสำหรับทีมขาย</a>
             <a href="#system-services" class="inline-flex min-h-12 items-center justify-center rounded-full border border-navy px-4 text-sm font-bold text-navy transition-colors hover:bg-navy hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy">ดูบริการวางระบบฝ่ายขาย</a>
           </div>
         </div>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <a href="#training-catalog" class="inline-flex min-h-12 items-center justify-center rounded-full border border-coral bg-coral px-6 font-bold text-white transition-colors hover:border-navy hover:bg-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral">
-            ดูคอร์สและบริการ ↓
+            ดูคลาสและบริการ ↓
           </a>
           <a
             href={SITE.social.line}
@@ -152,7 +152,7 @@ const faqs = [
       <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
         <div class="max-w-3xl">
           <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">Training catalog</p>
-          <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">คอร์สสำหรับทีมขายที่เปิดสอนตอนนี้</h2>
+          <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">คลาสสำหรับทีมขายที่เปิดสอนตอนนี้</h2>
           <p class="mt-4 leading-7 text-[#625C53]">เลือกจากสิ่งที่ทีมต้องทำให้ดีขึ้น ตั้งแต่เข้าใจเหตุผลซื้อ เปลี่ยน Lead เป็นยอดขาย ทำ Report ที่หัวหน้าใช้ตัดสินใจ ไปจนถึงทดลอง AI Workflow ก่อนลงทุนทำระบบจริง</p>
         </div>
 
@@ -163,7 +163,7 @@ const faqs = [
           </div>
           <p data-take-home-for="T2" class="mt-3 rounded-2xl border border-navy/10 bg-surface px-5 py-3 text-sm leading-6 text-[#625C53]"><strong class="text-navy">สิ่งที่ทีมจะได้กลับไป:</strong> Funnel map + Campaign kit + Chat script + Tracking sheet</p>
           <aside data-proof-for="T2" class="mt-4 rounded-2xl border border-coral/20 bg-coral/[0.055] px-5 py-4 text-sm leading-6 text-[#625C53]">
-            <strong class="text-navy">ภาพรถคือ Dealer proof จากงานยานยนต์จริง</strong> แต่เครื่องยนต์ของคอร์สคือการพา Content และ Ads ไปสู่ Lead นัดหมาย และยอดขาย จึงใช้ได้กับ Clinic, Hotel, B2B และธุรกิจอื่นที่รับ Lead เช่นกัน
+            <strong class="text-navy">ภาพรถคือ Dealer proof จากงานยานยนต์จริง</strong> แต่เครื่องยนต์ของคลาสคือการพา Content และ Ads ไปสู่ Lead นัดหมาย และยอดขาย จึงใช้ได้กับ Clinic, Hotel, B2B และธุรกิจอื่นที่รับ Lead เช่นกัน
           </aside>
         </div>
 
@@ -271,7 +271,7 @@ const faqs = [
     <section id="faq" class="scroll-mt-20 border-y border-sand-deep bg-sand">
       <div class="mx-auto max-w-[900px] px-5 py-16 sm:px-8 sm:py-20">
         <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">Before you choose</p>
-        <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">คำถามที่ถามบ่อยก่อนเลือกคอร์สหรือบริการ</h2>
+        <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">คำถามที่ถามบ่อยก่อนเลือกคลาสหรือบริการ</h2>
         <div class="mt-8 space-y-3">
           {faqs.map((faq, index) => (
             <details data-service-faq class="group overflow-hidden rounded-2xl border border-sand-deep bg-surface" open={index === 0}>
@@ -287,7 +287,7 @@ const faqs = [
       <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10">
         <LineDecisionCTA
           location="services_final_cta"
-          headline="ยังไม่แน่ใจว่าควรเริ่มจากคอร์สหรือวางระบบ?"
+          headline="ยังไม่แน่ใจว่าควรเริ่มจากคลาสหรือวางระบบ?"
           copy="เล่าอาการที่เกิดในทีม จำนวนคน และผลลัพธ์ที่อยากได้ทาง LINE ผมช่วยแยกให้ว่าเรื่องนี้ควรเริ่มจาก Training, Consulting หรือ Implementation"
           lineLabel="ให้ผมช่วยเลือกทาง LINE"
           desktopQr={LINE_QR_IMAGE}

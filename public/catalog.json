@@ -21,7 +21,7 @@
     "format": {
       "label": "รูปแบบ",
       "value": "In-house on-site เท่านั้น — คุณปันเดินทางไปที่บริษัทคุณ",
-      "detail": "ไม่มีคอร์สออนไลน์ · ราคาเดียวทั้งทีม (คอร์ส 1 วัน รับไม่เกิน 20 คน เกินกว่านี้คุยกันได้)"
+      "detail": "ไม่มีคลาสออนไลน์ · ราคาเดียวทั้งทีม (คลาส 1 วัน รับไม่เกิน 20 คน เกินกว่านี้คุยกันได้)"
     }
   },
   "content_update": {
@@ -36,7 +36,7 @@
   "packages": [
     {
       "key": "inhouse-a",
-      "name": "คอร์สจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B",
+      "name": "คลาสจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B",
       "name_en": "B2B Sales Psychology + AI Agent",
       "kind": "inhouse",
       "duration": "1 วัน",
@@ -52,7 +52,7 @@
     },
     {
       "key": "ai-workshop-advance",
-      "name": "คอร์สอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI",
+      "name": "คลาสอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI",
       "name_en": "Sales Back Office: Report + Dashboard × AI",
       "kind": "inhouse",
       "duration": "1 วัน",
@@ -68,7 +68,7 @@
     },
     {
       "key": "tiktok-workshop",
-      "name": "คอร์สเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI",
+      "name": "คลาสเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI",
       "name_en": "Online-to-Offline × Content + Ads + AI",
       "kind": "content",
       "duration": "2 วัน + ดูแลต่อ 30 วัน",
@@ -84,7 +84,7 @@
     },
     {
       "key": "t4-ai-workflow-pilot-day",
-      "name": "คอร์ส Advance AI & Business Automation",
+      "name": "คลาส Advance AI & Business Automation",
       "name_en": "AI Workflow Pilot Day",
       "kind": "inhouse",
       "duration": "1 วัน",

@@ -1,4 +1,4 @@
-// Logo ลูกค้า/องค์กรที่เคยร่วมงาน — ชุดเดียวใช้ทุกหน้า LP (คุณปันสั่ง 2026-09-02: โชว์ทั้งหมดใต้ Offer ทุกคอร์ส)
+// Logo ลูกค้า/องค์กรที่เคยร่วมงาน — ชุดเดียวใช้ทุกหน้า LP (คุณปันสั่ง 2026-09-02: โชว์ทั้งหมดใต้ Offer ทุกคลาส)
 // เดิมอยู่เฉพาะ T2 (T2_CLIENT_LOGOS) · ลำดับ 7 ตัวแรกล็อกด้วย test: Nissan · FutureSkill · V!NG · GPX · Royal Enfield · Zontes · Lambretta
 import type { ClientLogo } from './types';
 
