@@ -1,16 +1,34 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductDetailLayout from '../../components/services/detail/ProductDetailLayout.astro';
+import ProductLeadForm from '../../components/forms/ProductLeadForm.astro';
 import { resolveProductDetailCatalog } from '../../data/product-details/catalog';
 import { P1_PRODUCT_DETAIL } from '../../data/product-details/p1';
 import { SITE } from '../../data/site';
 
 const catalog = resolveProductDetailCatalog(P1_PRODUCT_DETAIL.pricingKey);
 const canonical = `${SITE.url}${P1_PRODUCT_DETAIL.route}`;
-// key ยัง internal จน Blind Ticket เปิดขาย → Catalog ยังไม่มี image ของตัวเอง ใช้ OG กลางของเว็บไปก่อน
+// key เป็น live แล้ว (2026-09-11) → มี thumbnail ของตัวเองใน Catalog · fallback OG กลางไว้กันพัง
 const ogImage = `${SITE.url}${catalog.image ?? '/og-image.jpg'}`;
 ---
 
 <BaseLayout title={P1_PRODUCT_DETAIL.seo.title} description={P1_PRODUCT_DETAIL.seo.description} canonical={canonical} ogImage={ogImage} noindex={P1_PRODUCT_DETAIL.noindex} schema={{ types: ['WebPage', 'FAQPage', 'BreadcrumbList', 'ProductDetail'], title: P1_PRODUCT_DETAIL.seo.title, description: P1_PRODUCT_DETAIL.seo.description, url: canonical, faq: P1_PRODUCT_DETAIL.faq, breadcrumbs: [{ name: 'บริการ', url: `${SITE.url}/services` }, { name: catalog.name, url: canonical }], productDetail: { code: P1_PRODUCT_DETAIL.code, kind: P1_PRODUCT_DETAIL.kind, name: catalog.name, description: P1_PRODUCT_DETAIL.seo.description, url: canonical, duration: catalog.duration } }}>
   <ProductDetailLayout data={P1_PRODUCT_DETAIL} />
+  {/* 2026-09-12 ปันสั่ง: ฟอร์มอยู่บนหน้าเหมือน LP ads/T4 ไม่พาไป /booking — ปุ่ม "จองที่นั่ง Early Bird" ทุกจุด
+      (a[data-booking-cta]) จะเลื่อนลงมาที่ฟอร์มนี้ด้วยสคริปต์ใน ProductLeadForm · ไม่มี JS ยังไป /booking?package=P1 ได้
+      ส่งสำเร็จ → /thank-you?package=P1 ซึ่งมี Decision Hub ของ P1 (hubSteps ใน p1.ts) เล่าขั้นชำระเงิน/เตรียมตัว */}
+  <ProductLeadForm
+    code={P1_PRODUCT_DETAIL.code}
+    source="lp-p1-ai-sale-loop"
+    bookingType="public-p1-bootcamp"
+    eventPrefix="p1_class"
+    eyebrow="จองที่นั่ง Early Bird"
+    heading="เล่าให้ผมฟังสั้นๆ ว่าฝ่ายขายคุณติดงานไหนที่สุด แล้วผมส่งขั้นตอนจองให้"
+    intro="กรอกไว้ครับ ผมอ่านเองแล้วทักกลับทาง LINE หรือโทรศัพท์ในวันทำการเดียวกัน ถ้าโจทย์ตรงกับห้องนี้ ผมส่งขั้นตอนชำระเงินกับใบเตรียมตัวให้เลย ถ้าไม่ตรง ผมบอกตรงๆ และชี้ทางที่ควรไปแทน"
+    issuePlaceholder="เช่น ใบเสนอราคาทุกใบรอแอดมินคนเดียว / แชท LINE นอกเวลาไม่มีคนตอบ"
+    successNote="รับเรื่องแล้วครับ ผมทักกลับในวันทำการเดียวกัน พร้อมขั้นตอนชำระเงินและใบเตรียมตัว"
+    lineUrl={SITE.social.line}
+    lineLabel="ทัก LINE พิมพ์ BOOTCAMP"
+    lineNote="ยังไม่อยากกรอกฟอร์ม? ทักไลน์พิมพ์ BOOTCAMP มาก่อนก็ได้ครับ"
+  />
 </BaseLayout>

@@ -18,7 +18,7 @@ interface Props {
   primaryIntent?: string;
 }
 // Default keeps T1–T4 wording; public tickets pass their own "จองที่นั่ง" label.
-const { code, keyword, name, price, core, bonuses, values, journey, highlight, primaryLabel = 'จองคิวรับบริการ', primaryIntent = 'book_training', hasCertificate = true } = Astro.props;
+const { code, keyword, name, price, core, bonuses, values, journey, highlight, primaryLabel = 'จองคิวรับบริการ', primaryIntent = 'book_training', hasCertificate = true, coreHeading = 'สิ่งที่ทีมสร้างเสร็จในห้อง', coreSub, coreBadge = 'ทำเสร็จในห้อง · ใช้ต่อได้เลย' } = Astro.props;
 // P1 ย้ายใบรับรองไปอยู่ใน Core จึงส่ง hasCertificate={false} · T1–T4 ไม่ขยับ
 const bonusSuffix = hasCertificate ? ' + Certificate' : '';
 const valueOf = (number: string) => values?.find((item) => item.number === number)?.value;
@@ -52,10 +52,10 @@ const LINE_MARK = 'M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 
           <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">Core {core.length}</p>
-              <h3 class="mt-2 font-display text-3xl font-bold text-navy sm:text-4xl">สิ่งที่ทีมสร้างเสร็จในห้อง</h3>
-              <p class="mt-2 text-base font-semibold text-navy/70">จบวันได้ {core.length} อย่างนี้กลับบ้านแน่ๆ ไม่ใช่แค่สไลด์กับความรู้</p>
+              <h3 class="mt-2 font-display text-3xl font-bold text-navy sm:text-4xl">{coreHeading}</h3>
+              <p class="mt-2 text-base font-semibold text-navy/70">{coreSub ?? `จบวันได้ ${core.length} อย่างนี้กลับบ้านแน่ๆ ไม่ใช่แค่สไลด์กับความรู้`}</p>
             </div>
-            <span class="rounded-full bg-coral px-4 py-2 text-sm font-bold text-white shadow-[0_8px_20px_rgba(214,69,80,.3)]">ทำเสร็จในห้อง · ใช้ต่อได้เลย</span>
+            <span class="rounded-full bg-coral px-4 py-2 text-sm font-bold text-white shadow-[0_8px_20px_rgba(214,69,80,.3)]">{coreBadge}</span>
           </div>
           <ol class="mt-6 grid gap-4 sm:grid-cols-2">
             {core.map((item, index) => {

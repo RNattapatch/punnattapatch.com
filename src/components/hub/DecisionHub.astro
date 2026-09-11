@@ -14,7 +14,7 @@ const photos = data.proof.filter((p) => p.kind === 'photo').slice(0, 3);
 const faq = data.faq.slice(0, 3);
 const imgSrc = (image: ProductDetailPageData['proof'][number]['image']) => ('publicSrc' in image ? image.publicSrc : image.src);
 const keyword = `นัดคุย ${data.code}`;
-const steps = [
+const steps = data.hubSteps ?? [
   { when: 'ตอนนี้', text: 'ระบบรับเรื่องแล้ว เลขอ้างอิงอยู่ด้านบน ทักใน LINE ได้ทันทีถ้าอยากคุยก่อน' },
   { when: 'ภายในวันทำการเดียวกัน', text: 'ผมอ่านโจทย์ของคุณเอง กลางวันผมมักอยู่หน้างานลูกค้า จึงตอบช่วงเย็นครับ' },
   { when: 'คุยกันไม่เกิน 15 นาที', text: 'โทรคุย หรือ online meeting ก็ได้ นัดกันทาง LINE คุยสั้นๆ ว่าโจทย์ตรงกับบริการไหน' },

@@ -60,7 +60,7 @@ test('P1 renders the T1–T4 journey with its own Public cohort layer', async ({
   assert.equal(await page.locator('[data-whats-new-column]').count(), 2, 'P1 must explain what changed and what stays core');
   assert.equal(await page.locator('[data-why-me-item]').count(), 6, 'P1 must answer why learn this with Pun');
   assert.equal(await page.locator('[data-instructor-angle]').count(), 4, 'P1 must show four instructor perspectives');
-  assert.equal(await page.locator('[data-curriculum-step]').count(), 8, 'P1 must show Day 0 pre-work, four Day 1-2 blocks and the clinic');
+  assert.equal(await page.locator('[data-curriculum-step]').count(), 6, 'P1 must show foundation, four Core Modules and the follow-up clinic call');
 
   await page.close();
 });

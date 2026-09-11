@@ -52,7 +52,7 @@ const chapters = data.chapters ?? [];
 const isJourney = Boolean(data.journey);
 // WEB-T2-SYSTEM-01: chapter "ระบบที่ทีมได้กลับไป" — flag ปิดอยู่จนกว่า Kit v1 ผ่าน Non-builder trial
 const systemSection = data.systemSection?.enabled ? data.systemSection : undefined;
-const offerCore = data.takeHome.slice(0, systemSection ? 5 : 4);
+const offerCore = data.offerCore ?? data.takeHome.slice(0, systemSection ? 5 : 4);
 const cohort = data.publicCohort;
 ---
 
@@ -66,7 +66,7 @@ const cohort = data.publicCohort;
       </section>
     )}
 
-    <OfferStack code={data.code} keyword={data.cta.keyword} name={catalog.name} price={catalog.price} core={offerCore} highlight={systemSection ? offerCore[offerCore.length - 1] : undefined} bonuses={data.bonusCards?.items ?? []} values={data.bonusValues?.items} journey={data.journey} primaryLabel={cohort ? data.cta.primary : undefined} primaryIntent={cohort ? data.cta.locations?.final?.primaryIntent : undefined} hasCertificate={data.bonusHasCertificate ?? true} />
+    <OfferStack code={data.code} keyword={data.cta.keyword} name={catalog.name} price={catalog.price} core={offerCore} highlight={systemSection ? offerCore[offerCore.length - 1] : undefined} bonuses={data.bonusCards?.items ?? []} values={data.bonusValues?.items} journey={data.journey} primaryLabel={cohort ? data.cta.primary : undefined} primaryIntent={cohort ? data.cta.locations?.final?.primaryIntent : undefined} hasCertificate={data.bonusHasCertificate ?? true} coreHeading={data.offerCoreHeading} coreSub={data.offerCoreSub} coreBadge={data.offerCoreBadge} />
 
     {systemSection && <SystemShowcase data={systemSection} code={data.code} keyword={data.cta.keyword} part="teaser" />}
 

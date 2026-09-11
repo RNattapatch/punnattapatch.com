@@ -347,6 +347,13 @@ export interface ProductDetailPageData {
   noindex?: boolean;
   /** T1–T4 นับ Certificate เป็น Bonus ชิ้นสุดท้าย · P1 ย้ายใบรับรองไปอยู่ใน Core จึงตั้ง false */
   bonusHasCertificate?: boolean;
+  /** บล็อก Core ใน Offer · ถ้าไม่ตั้ง = takeHome 4 ชิ้นแรก (พฤติกรรมเดิมของ T1–T4) · P1 ใช้เป็น Module ที่เรียน ไม่ใช่ของกลับบ้าน */
+  offerCore?: string[];
+  offerCoreHeading?: string;
+  offerCoreSub?: string;
+  offerCoreBadge?: string;
+  /** ขั้นถัดไปบน /thank-you Decision Hub · ถ้าไม่ตั้งใช้ชุดคอลปรึกษาเดิม · P1 เป็นตั๋วราคาตายตัวจึงต้องเล่าเรื่องชำระเงิน/เตรียมตัวแทน */
+  hubSteps?: { when: string; text: string }[];
   kind: 'course' | 'service';
   showPriceInHero?: boolean;
   serviceType?: 'Sales Consulting' | 'Sales System Implementation';
