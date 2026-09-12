@@ -65,7 +65,7 @@ test('P1 renders the T1–T4 journey with its own Public cohort layer', async ({
   await page.close();
 });
 
-test('P1 states the Early Bird terms at all three decision points', async ({ browser }) => {
+test('P1 states the Super Early Bird terms and four remaining seats at all three decision points', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(`${baseURL}${ROUTE}`);
 
@@ -73,11 +73,11 @@ test('P1 states the Early Bird terms at all three decision points', async ({ bro
   assert.ok(await notices.count() >= 3, 'the cohort notice must appear at hero, offer and investment');
 
   const noticeText = (await notices.allInnerTexts()).join('\n');
-  for (const fragment of ['10 ที่นั่ง', 'ไม่มี VAT', 'ตุลาคม']) {
+  for (const fragment of ['Super Early Bird', '10 ที่นั่ง', 'ไม่มี VAT', 'ตุลาคม']) {
     assert.ok(noticeText.includes(fragment), `cohort notice must state "${fragment}"`);
   }
   // Seats remaining is derived from data (seatsTotal − seatsTaken), never hardcoded.
-  assert.ok(noticeText.includes('เหลือ 10 ที่นั่งราคานี้'), 'seats remaining must be computed from data');
+  assert.ok(noticeText.includes('เหลือ 4 ที่นั่งราคานี้'), 'seats remaining must be computed from 10 total minus 6 taken');
   assert.ok(noticeText.includes('฿24,900'), 'the standard price after the blind seats sell out must be shown');
 
   const bodyText = await page.locator('body').innerText();
