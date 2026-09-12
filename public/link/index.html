@@ -91,6 +91,12 @@
         .paper-route:hover { @apply -translate-y-0.5 bg-[#fffdf8] shadow-[4px_6px_0_rgba(30,27,22,0.11)]; }
         .paper-route:active { @apply translate-y-0.5 scale-[0.988] shadow-[1px_2px_0_rgba(30,27,22,0.10)]; }
         .paper-route:focus-visible { @apply outline-2 outline-offset-4 outline-coral; }
+        .p1-route {
+          @apply relative block touch-manipulation overflow-hidden rounded-[15px] border border-coral/65 bg-[#fff8f2] text-navy no-underline shadow-[3px_4px_0_rgba(221,65,85,0.16)] transition-[transform,box-shadow,background-color] duration-150 ease-out;
+        }
+        .p1-route:hover { @apply -translate-y-0.5 bg-white shadow-[4px_6px_0_rgba(221,65,85,0.22)]; }
+        .p1-route:active { @apply translate-y-0.5 scale-[0.988] shadow-[1px_2px_0_rgba(221,65,85,0.14)]; }
+        .p1-route:focus-visible { @apply outline-2 outline-offset-4 outline-coral; }
         .social-link {
           @apply flex min-h-[72px] touch-manipulation flex-col items-center justify-center gap-1.5 rounded-[11px] border border-white/25 bg-white/[0.07] px-2 text-paper no-underline transition-[transform,background-color] duration-150 ease-out;
         }
@@ -111,7 +117,7 @@
       }
       dialog[data-video-dialog]::backdrop { background: rgba(0, 20, 40, 0.86); }
       @media (prefers-reduced-motion: reduce) {
-        .paper-route, .social-link, .video-note-play { transition: none !important; transform: none !important; }
+        .paper-route, .p1-route, .social-link, .video-note-play { transition: none !important; transform: none !important; }
         .trust-marquee { overflow-x: auto; scroll-snap-type: x proximity; }
         .trust-track { transform: none !important; }
         .logo-tile { scroll-snap-align: start; }
@@ -143,7 +149,7 @@
       </section>
 
       <nav class="mt-5" aria-label="เส้นทางหลัก">
-        <ol class="m-0 list-none space-y-3 p-0">
+        <ol class="m-0 list-none space-y-2.5 p-0">
           <li>
             <a href="https://lin.ee/ioSnSUG" target="_blank" rel="noopener me" data-primary-route data-link-event="line" data-link-target="line" data-link-platform="line" class="group relative flex min-h-[100px] touch-manipulation items-center gap-3.5 rounded-[15px] border border-[#001f3d] bg-navy px-4 py-3.5 text-paper no-underline shadow-[4px_5px_0_rgba(221,65,85,0.28)] transition-[transform,box-shadow,background-color] duration-150 ease-out hover:-translate-y-0.5 hover:bg-[#0b355b] hover:shadow-[5px_7px_0_rgba(221,65,85,0.32)] active:translate-y-0.5 active:scale-[0.988] active:shadow-[1px_2px_0_rgba(221,65,85,0.25)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-coral">
               <span class="grid size-11 shrink-0 place-items-center rounded-[11px] bg-line text-[11px] font-extrabold text-[#052c18]" aria-hidden="true">LINE</span>
@@ -152,14 +158,18 @@
               <span class="absolute -left-2.5 -top-2 rotate-[-5deg] border border-coral-dark bg-coral-dark px-2 py-0.5 text-[9px] font-bold tracking-[0.08em] text-white shadow-[1px_2px_0_rgba(30,27,22,0.12)]">01 · ทางลัด</span>
             </a>
           </li>
-          <li>
-            <a href="https://lin.ee/ioSnSUG" target="_blank" rel="noopener" data-primary-route data-p1-line-cta data-link-event="p1-bootcamp" data-link-target="p1-bootcamp" data-link-platform="line" class="paper-route group border-coral/65 bg-[#fff8f2] shadow-[3px_4px_0_rgba(221,65,85,0.16)] hover:bg-white">
-              <span data-p1-urgency class="absolute -top-2.5 right-3 rotate-[1deg] whitespace-nowrap border border-coral-dark bg-coral-dark px-2.5 py-1 text-[9px] font-extrabold tabular-nums tracking-[0.045em] text-white shadow-[1px_2px_0_rgba(30,27,22,0.12)] sm:text-[10px]">SUPER EARLY BIRD · เหลือแค่ 4 จาก 10 ที่นั่ง</span>
-              <span class="grid size-11 shrink-0 place-items-center rounded-[11px] border border-coral/30 bg-coral/10 font-display text-[15px] font-bold text-coral-dark" aria-hidden="true">P1</span>
-              <span class="min-w-0 flex-1"><span class="block text-[17px] font-bold leading-tight text-navy sm:text-[18px]">สมัครคลาส P1</span><span class="mt-1.5 block text-[12.5px] font-semibold leading-[1.45] tabular-nums text-coral-dark">24–25 ต.ค. 2026 · ฿19,900</span><span class="mt-0.5 block text-[11.5px] leading-[1.4] tabular-nums text-[#6f685e]">มีผู้สมัครแล้ว 6 คน</span></span>
-              <svg viewBox="0 0 24 24" class="size-5 shrink-0 text-coral-dark" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
-              <span class="absolute -left-2 top-3 font-display text-[11px] font-bold text-coral-dark" aria-hidden="true">02</span>
+          <li class="relative">
+            <a href="https://lin.ee/ioSnSUG" target="_blank" rel="noopener" data-primary-route data-p1-line-cta data-link-event="p1-bootcamp" data-link-target="p1-bootcamp" data-link-platform="line" class="p1-route group">
+              <span data-p1-urgency class="flex min-h-10 w-full items-center justify-center bg-coral-dark px-3 py-2 text-center text-[11px] font-extrabold tabular-nums tracking-[0.04em] text-white sm:text-[12px]">SUPER EARLY BIRD · ตอนนี้เหลือแค่ 4 ที่นั่ง</span>
+              <span class="flex min-h-[98px] items-center gap-3 px-4 py-3">
+                <span class="min-w-0 flex-1">
+                  <span class="block text-[16px] font-bold leading-[1.35] text-navy sm:text-[18px]">สมัครคลาสสดสร้างวงจรงานขายด้วย AI Agent 2026</span>
+                  <span class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] font-semibold leading-[1.4] tabular-nums text-coral-dark"><span class="rounded-full border border-coral/30 bg-coral/10 px-2 py-0.5 font-extrabold">P1</span><span>24–25 ต.ค. 2026 · ฿19,900</span><span class="text-[#6f685e]">สมัครแล้ว 6/10</span></span>
+                </span>
+                <svg viewBox="0 0 24 24" class="size-5 shrink-0 text-coral-dark" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+              </span>
             </a>
+            <span class="absolute -left-2 top-[52px] font-display text-[11px] font-bold text-coral-dark" aria-hidden="true">02</span>
           </li>
           <li>
             <a href="https://futureskill.co/course/detail/6030" target="_blank" rel="noopener" data-primary-route data-link-event="futureskill-course" data-link-target="course-6030" data-link-platform="futureskill" class="paper-route group">

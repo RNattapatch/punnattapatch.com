@@ -21,7 +21,7 @@ const contentTypes: Record<string, string> = {
 
 const routes = [
   ['สอบถามหรือจองคิว', 'https://lin.ee/ioSnSUG'],
-  ['สมัครคลาส P1', 'https://lin.ee/ioSnSUG'],
+  ['สมัครคลาสสดสร้างวงจรงานขายด้วย AI Agent 2026', 'https://lin.ee/ioSnSUG'],
   ['คลาสออนไลน์บน FutureSkill', 'https://futureskill.co/course/detail/6030'],
   ['ดูบริการที่ปรึกษาหรือจัดอบรม ทั้งหมด', 'https://punnattapatch.com/services'],
   ['ชวนไปร่วมงาน', 'https://punnattapatch.com/sponsor'],
@@ -136,7 +136,7 @@ test('content and destination contract exposes the five approved routes', async 
     await expect(page.getByRole('link', { name: new RegExp(label) })).toHaveAttribute('href', href);
   }
   const futureSkillRoute = page.getByRole('link', { name: /คลาสออนไลน์บน FutureSkill/ });
-  const p1Route = page.getByRole('link', { name: /สมัครคลาส P1/ });
+  const p1Route = page.getByRole('link', { name: /สมัครคลาสสดสร้างวงจรงานขายด้วย AI Agent 2026/ });
   assert.ok(
     await p1Route.evaluate((link) => link.compareDocumentPosition(document.querySelector('[data-link-event="futureskill-course"]')!) & Node.DOCUMENT_POSITION_FOLLOWING),
     'P1 must appear immediately before FutureSkill',
@@ -144,8 +144,13 @@ test('content and destination contract exposes the five approved routes', async 
   await expect(p1Route).toHaveAttribute('data-link-event', 'p1-bootcamp');
   await expect(p1Route).toHaveAttribute('data-link-target', 'p1-bootcamp');
   await expect(p1Route).toHaveAttribute('data-link-platform', 'line');
-  await expect(p1Route.locator('[data-p1-urgency]')).toHaveText('SUPER EARLY BIRD · เหลือแค่ 4 จาก 10 ที่นั่ง');
-  await expect(p1Route.getByText('มีผู้สมัครแล้ว 6 คน', { exact: true })).toBeVisible();
+  const urgencyBanner = p1Route.locator('[data-p1-urgency]');
+  await expect(urgencyBanner).toHaveText('SUPER EARLY BIRD · ตอนนี้เหลือแค่ 4 ที่นั่ง');
+  const [routeBox, bannerBox] = await Promise.all([p1Route.boundingBox(), urgencyBanner.boundingBox()]);
+  assert.ok(routeBox && bannerBox, 'P1 route and urgency banner must be measurable');
+  assert.ok(Math.abs(routeBox.x - bannerBox.x) <= 2, 'urgency banner must start at the card edge');
+  assert.ok(Math.abs(routeBox.width - bannerBox.width) <= 2, 'urgency banner must span the card width');
+  await expect(p1Route.getByText('สมัครแล้ว 6/10', { exact: true })).toBeVisible();
   await expect(futureSkillRoute).toHaveAttribute('target', '_blank');
   await expect(futureSkillRoute).toHaveAttribute('rel', 'noopener');
   await expect(futureSkillRoute).toHaveAttribute('data-link-platform', 'futureskill');
@@ -169,7 +174,7 @@ test('P1 opens LINE with BOOTCAMP and a link-hub attribution tag on mobile', asy
   const page = await context.newPage();
   await preparePage(page);
 
-  await expect(page.getByRole('link', { name: /สมัครคลาส P1/ })).toHaveAttribute(
+  await expect(page.getByRole('link', { name: /สมัครคลาสสดสร้างวงจรงานขายด้วย AI Agent 2026/ })).toHaveAttribute(
     'href',
     'https://line.me/R/oaMessage/@011xgvap/?BOOTCAMP%20%5BP1%2Flink-hub%5D',
   );
