@@ -37,6 +37,7 @@ test.beforeAll(async () => {
 test.afterAll(async () => new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve())));
 
 const JOURNEY_ORDER = ['hero', 'offer', 'logos', 'proof', 'why-now', 'spotlight', 'curriculum', 'whats-new', 'take-home', 'bonus', 'why-me', 'fit', 'instructor', 'investment', 'faq', 'final'];
+const T2_JOURNEY_ORDER = JOURNEY_ORDER.flatMap((section) => section === 'curriculum' ? [section, 'system'] : [section]);
 const products = [
   {
     code: 'T1',
@@ -45,14 +46,20 @@ const products = [
     steps: ['decision', 'ask', 'defend', 'rehearse', 'follow-up'],
     keyword: 'SALES PSYCHOLOGY',
     bonusTotal: '฿17,500',
+    coreCount: 4,
+    bonusCount: 7,
+    whyMeCount: 6,
   },
   {
     code: 'T2',
     route: '/services/online-to-sales',
-    customerJob: 'เปลี่ยนคนเห็น Content/Ads ให้เป็นแชต นัดหมาย และการส่งต่อถึงทีมขายที่ชัดเจน',
-    steps: ['message', 'respond', 'qualify', 'handoff', 'follow-up', 'review'],
+    customerJob: 'ให้เซลล์และทีมการตลาดหาลูกค้าใหม่จากออนไลน์ได้เอง ด้วย Content, Ads และระบบ AI ที่ติดตั้งบนเครื่องบริษัท',
+    steps: ['mindset', 'funnel', 'produce', 'ads', 'lead-channel', 'warroom'],
     keyword: 'ONLINE SALES',
-    bonusTotal: '฿19,600',
+    bonusTotal: '฿26,100',
+    coreCount: 5,
+    bonusCount: 8,
+    whyMeCount: 4,
   },
   {
     code: 'T3',
@@ -61,6 +68,9 @@ const products = [
     steps: ['stage', 'report', 'warn', 'review', 'prototype'],
     keyword: 'SALES REPORT',
     bonusTotal: '฿17,500',
+    coreCount: 4,
+    bonusCount: 7,
+    whyMeCount: 6,
   },
 ] as const;
 
@@ -71,12 +81,12 @@ for (const product of products) {
     assert.equal(response?.status(), 200);
     assert.deepEqual(
       await page.locator('[data-journey-section]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-journey-section'))),
-      JOURNEY_ORDER,
-      `${product.code} must follow the exact T4 storytelling order`,
+      product.code === 'T2' ? T2_JOURNEY_ORDER : JOURNEY_ORDER,
+      `${product.code} must follow its approved storytelling order`,
     );
     assert.equal(await page.getByText(product.customerJob, { exact: true }).count(), 1, `${product.code} must keep its approved customer job`);
-    assert.equal(await page.locator('[data-offer-core]').count(), 4, `${product.code} must expose Core 4`);
-    assert.equal(await page.locator('[data-offer-bonus]').count(), 7, `${product.code} must expose Bonus 6 + Certificate`);
+    assert.equal(await page.locator('[data-offer-core]').count(), product.coreCount, `${product.code} must expose every approved Core item`);
+    assert.equal(await page.locator('[data-offer-bonus]').count(), product.bonusCount, `${product.code} must expose every approved Bonus item`);
     assert.deepEqual(
       await page.locator('[data-curriculum-step]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-step'))),
       product.steps,
@@ -84,9 +94,9 @@ for (const product of products) {
     );
     assert.equal(await page.locator('[data-spotlight-module]').count(), 2, `${product.code} must expose two product-specific spotlight modules`);
     assert.equal(await page.locator('[data-whats-new-column]').count(), 2, `${product.code} must explain what changed and what remains core`);
-    assert.equal(await page.locator('[data-bonus-value-card]').count(), 7, `${product.code} must show Bonus 6 + Certificate with approved values`);
+    assert.equal(await page.locator('[data-bonus-value-card]').count(), product.bonusCount, `${product.code} must show every approved Bonus value`);
     assert.equal(await page.locator('[data-bonus-total]').innerText(), product.bonusTotal, `${product.code} bonus total must equal the approved stage-1 sum`);
-    assert.equal(await page.locator('[data-why-me-item]').count(), 6, `${product.code} must answer why learn this with Pun`);
+    assert.equal(await page.locator('[data-why-me-item]').count(), product.whyMeCount, `${product.code} must answer why learn this with Pun`);
     assert.equal(await page.locator('[data-instructor-angle]').count(), 4, `${product.code} must show four relevant instructor perspectives`);
     assert.equal(await page.locator('[data-cta-location="final"] [data-cta-keyword]').first().getAttribute('data-cta-keyword'), product.keyword, `${product.code} must preserve its live LINE keyword`);
     for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }, { width: 320, height: 844 }, { width: 844, height: 390 }]) {
