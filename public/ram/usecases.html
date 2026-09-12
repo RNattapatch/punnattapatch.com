@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="th" data-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f1ea">
+    <meta name="description" content="ค้นและกรอง 154 use case จากงานจริง แบ่งตาม 14 หมวดและหน้าที่ทางธุรกิจ">
+    <title>คลัง 154 Use Cases · Rethink Business In The Age Of Agentic AI</title>
+    <link rel="canonical" href="https://punnattapatch.com/ram/usecases">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="คลัง 154 Use Cases · Rethink Business In The Age Of Agentic AI">
+    <meta property="og:description" content="ค้นไทยหรืออังกฤษ กรอง 14 หมวด และดู pattern งานที่คนสร้างด้วย AI Agent">
+    <meta property="og:url" content="https://punnattapatch.com/ram/usecases">
+    <meta property="og:image" content="https://punnattapatch.com/og-image.jpg">
+    <meta property="og:locale" content="th_TH">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="คลัง 154 Use Cases · ม.รามคำแหง">
+    <meta name="twitter:description" content="ค้นและกรอง use case ตามงานที่คุณสนใจ">
+    <meta name="twitter:image" content="https://punnattapatch.com/og-image.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Trirong:wght@400;500;600;700&amp;family=Sarabun:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/ram/styles.css">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "154 AI Agent Use Cases",
+        "url": "https://punnattapatch.com/ram/usecases",
+        "inLanguage": "th",
+        "isPartOf": { "@id": "https://punnattapatch.com/ram" }
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#case-results">ข้ามไปผลลัพธ์</a>
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="/ram" aria-label="กลับหน้าหลักของคลาส">← <span>กลับหน้าคลาส</span></a>
+        <span class="class-stamp">USE-CASE FIELD BOOK</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="reader-hero">
+        <div class="shell">
+          <p class="eyebrow">154 records · 14 categories · local snapshot</p>
+          <h1>ค้นหา pattern จากงานที่คนลงมือสร้างแล้ว</h1>
+          <p>พิมพ์ชื่ออุตสาหกรรม งาน หรือเครื่องมือที่สนใจ แล้วค่อยเปิดต้นทางของโปรเจกต์ที่ใกล้กับงานคุณที่สุด</p>
+          <p class="disclosure">จำนวนโปรเจกต์ ≠ จำนวนธุรกิจที่สำเร็จ · ข้อมูลเป็น snapshot สำหรับใช้เรียนรู้ ไม่ใช่การจัดอันดับ</p>
+
+          <form class="filters" id="case-filters" role="search">
+            <div class="filter-field">
+              <label for="case-query">ค้นหา use case</label>
+              <input id="case-query" type="search" placeholder="เช่น ฟาร์ม, บัญชี, LINE" autocomplete="off" enterkeyhint="search">
+            </div>
+            <div class="filter-field">
+              <label for="case-category">หมวด</label>
+              <select id="case-category"><option value="">ทุกหมวด</option></select>
+            </div>
+            <div class="filter-field">
+              <label for="case-function">งานธุรกิจ</label>
+              <select id="case-function">
+                <option value="">ทุกงาน</option>
+                <option value="sales">Sales</option>
+                <option value="finance">Finance</option>
+                <option value="operations">Operations</option>
+                <option value="knowledge">Knowledge</option>
+                <option value="marketing">Marketing</option>
+                <option value="people">People / HR</option>
+                <option value="education">Education</option>
+                <option value="strategy">Strategy</option>
+                <option value="workforce">Workforce</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="shell" aria-labelledby="results-title">
+        <h2 class="sr-only" id="results-title">ผลการค้นหา</h2>
+        <div class="reader-status" role="status" aria-live="polite"><strong id="case-count">0</strong><span>รายการ</span></div>
+        <div class="reader-grid" id="case-results"></div>
+        <div class="empty-state" id="case-empty" hidden>
+          <h2>ไม่พบ use case ตามตัวกรองนี้</h2>
+          <p>ลองลดตัวกรองหรือเปลี่ยนคำค้น แล้วผลลัพธ์จะอัปเดตทันที</p>
+          <button class="btn-action secondary" id="case-reset" type="button">ล้างตัวกรอง</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="shell footer-inner">
+        <strong class="font-display">Use-case field book · ม.รามคำแหง</strong>
+        <p>ข้อมูลอ้างอิงจาก catalog สาธารณะและแหล่งต้นทางของแต่ละโปรเจกต์ ตรวจ snapshot วันที่ 11 ก.ย. 2026</p>
+        <a href="/ram">กลับไปทำเทส 90/10</a>
+      </div>
+    </footer>
+
+    <script type="module" src="/ram/usecases.js"></script>
+  </body>
+</html>

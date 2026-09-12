@@ -1,0 +1,3373 @@
+[
+  {
+    "id": "uc-minemiew-com-eb30ef47",
+    "name": "Minemiew",
+    "summary": "ระบบสร้างเกม Visual Novel Engine แบบลากวาง มีระบบขายผลงานและการแก้ไขร่วมกัน",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Web",
+      "No-code"
+    ],
+    "url": "http://minemiew.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales"
+    ],
+    "tasks": [
+      "transact"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-genhaha-com-616417dd",
+    "name": "Genhaha",
+    "summary": "ระบบสร้างวิดีโอสั้นด้วย AI (flux3) เริ่มมีรายได้จากการขายแล้ว",
+    "categoryKey": "ai",
+    "category": "AI & Dev Tools",
+    "platform": [
+      "Web",
+      "Video"
+    ],
+    "url": "http://genhaha.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales",
+      "marketing"
+    ],
+    "tasks": [
+      "transact"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "owner_claim",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-meysure-com-d2f6cdc9",
+    "name": "Meysure",
+    "summary": "โปรแกรมถอดแบบก่อสร้าง (QS) ทำเสร็จใน ~2 สัปดาห์ 700 commits — ใช้งานฟรีที่ app.meysure.com",
+    "categoryKey": "biz",
+    "category": "ระบบธุรกิจ & องค์กร",
+    "platform": [
+      "Web",
+      "ก่อสร้าง"
+    ],
+    "url": "https://meysure.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-kaset-helper-vercel-app-71fe40fe",
+    "name": "Kaset Helper",
+    "summary": "ระบบช่วยเกษตรกร หนึ่งใน 8 โปรเจกต์ที่เจ้าของทำภายใน 6 เดือน",
+    "categoryKey": "biz",
+    "category": "ระบบธุรกิจ & องค์กร",
+    "platform": [
+      "Web",
+      "เกษตร"
+    ],
+    "url": "https://kaset-helper.vercel.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-nikhomkonom-ac-th-9428473d",
+    "name": "โรงเรียนนิคมโคกน้อย",
+    "summary": "ระบบบริหารจัดการโรงเรียนสังกัด สพฐ.",
+    "categoryKey": "edu",
+    "category": "การศึกษา",
+    "platform": [
+      "Web"
+    ],
+    "url": "https://nikhomkonom.ac.th",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "people"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-velotech-solutions-vercel-app-483da20e",
+    "name": "VeloTech Solutions",
+    "summary": "เว็บไซต์บริษัทเวโลเทค",
+    "categoryKey": "biz",
+    "category": "ระบบธุรกิจ & องค์กร",
+    "platform": [
+      "Web"
+    ],
+    "url": "https://velotech-solutions.vercel.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-velofinn-accouting-up-railway-app-d05befa4",
+    "name": "VeloFinn Accounting",
+    "summary": "ระบบบัญชีสำหรับบริษัท",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "Web"
+    ],
+    "url": "https://velofinn-accouting.up.railway.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-velorent-tms-com-3f9a88cc",
+    "name": "VeloRent TMS",
+    "summary": "ระบบการจัดการขนส่งและเช่ารถ",
+    "categoryKey": "auto",
+    "category": "ยานยนต์ & อสังหาฯ",
+    "platform": [
+      "Web",
+      "ขนส่ง"
+    ],
+    "url": "https://velorent-tms.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "operations"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-lottery-th-prediction-vercel-app-5baaa297",
+    "name": "Lottery TH Prediction",
+    "summary": "ระบบทำนายหวยและดูดวง",
+    "categoryKey": "fortune",
+    "category": "ดูดวง & ความเชื่อ",
+    "platform": [
+      "Web"
+    ],
+    "url": "https://lottery-th-prediction.vercel.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-marketing-tau-teal-vercel-app-9b12fa41",
+    "name": "ระบบเช็คไลน์ผลิต + AI CCTV",
+    "summary": "ระบบลงเวลาเช็คไลน์ผลิต พร้อม AI CCTV ด้านความปลอดภัย",
+    "categoryKey": "biz",
+    "category": "ระบบธุรกิจ & องค์กร",
+    "platform": [
+      "Web",
+      "โรงงาน"
+    ],
+    "url": "https://marketing-tau-teal.vercel.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "operations",
+      "people"
+    ],
+    "tasks": [
+      "capture"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-utcha-portfolio-up-railway-app-2369e9d1",
+    "name": "Utcha Portfolio",
+    "summary": "พอร์ตโฟลิโอรวมผลงานทั้งหมดที่ทำใน 6 เดือน",
+    "categoryKey": "misc",
+    "category": "อื่น ๆ",
+    "platform": [
+      "Web"
+    ],
+    "url": "https://utcha-portfolio.up.railway.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-jotbantuek-app-8f252aa6",
+    "name": "JotBantuek",
+    "summary": "แอปจดบันทึกเล็ก ๆ — Journal your way",
+    "categoryKey": "prod",
+    "category": "Productivity & เครื่องมือ",
+    "platform": [
+      "Web",
+      "Journal"
+    ],
+    "url": "https://jotbantuek.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [
+      "capture"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-hyphen-plus-com-52ec6e4e",
+    "name": "Hyphen Plus",
+    "summary": "หนึ่งใน 6 ระบบของสตาร์ทอัพเล็ก ๆ ที่ขึ้น Production แล้ว เริ่มจากทุนหลักพัน",
+    "categoryKey": "biz",
+    "category": "ระบบธุรกิจ & องค์กร",
+    "platform": [
+      "Web",
+      "Startup"
+    ],
+    "url": "http://hyphen-plus.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "owner_claim",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-cf-shops-com-fbbb088f",
+    "name": "CF Shops",
+    "summary": "ระบบร้านค้าออนไลน์/CF จากสตาร์ทอัพชุดเดียวกับ Hyphen Plus",
+    "categoryKey": "ecom",
+    "category": "อีคอมเมิร์ซ & ขายของ",
+    "platform": [
+      "Web"
+    ],
+    "url": "http://cf-shops.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-check-slip-com-3e9c9718",
+    "name": "Check Slip",
+    "summary": "ระบบตรวจสลิปโอนเงิน",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "Web",
+      "สลิป"
+    ],
+    "url": "http://check-slip.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance"
+    ],
+    "tasks": [
+      "classify"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-kittung-com-1e9c2cde",
+    "name": "Kittung",
+    "summary": "หนึ่งใน 6 ระบบที่ขึ้น Production แล้ว มูลค่าซื้อขายผ่านระบบรวม ~100M/เดือน",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "Web"
+    ],
+    "url": "http://kittung.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales"
+    ],
+    "tasks": [
+      "transact"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "owner_claim",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-earn-back-com-26472225",
+    "name": "Earn Back",
+    "summary": "ระบบเงินคืน (cashback) จากสตาร์ทอัพชุดเดียวกัน",
+    "categoryKey": "ecom",
+    "category": "อีคอมเมิร์ซ & ขายของ",
+    "platform": [
+      "Web",
+      "Cashback"
+    ],
+    "url": "http://earn-back.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-dee-pos-com-b16895e4",
+    "name": "Dee POS",
+    "summary": "ระบบขายสินค้าหน้าร้านและร้านอาหาร",
+    "categoryKey": "biz",
+    "category": "ระบบธุรกิจ & องค์กร",
+    "platform": [
+      "Web",
+      "POS"
+    ],
+    "url": "http://www.dee-pos.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales"
+    ],
+    "tasks": [
+      "transact"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-fastledchecker-com-4dc390ee",
+    "name": "FastLEDChecker",
+    "summary": "เอาทรัพย์บังคับคดีมาปักหมุดบนแผนที่ให้ค้นหาง่ายขึ้น",
+    "categoryKey": "gov",
+    "category": "ภาครัฐ ข้อมูล & สังคม",
+    "platform": [
+      "Web",
+      "แผนที่"
+    ],
+    "url": "http://fastledchecker.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "knowledge"
+    ],
+    "tasks": [
+      "retrieve"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-store-steampowered-com-2682d249",
+    "name": "Guild of the Tower",
+    "summary": "เกมแนวไต่หอคอย 100 ชั้น ทำร่วมกับ RPG Maker MZ วางขายบน Steam",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Steam",
+      "RPG Maker MZ"
+    ],
+    "url": "https://store.steampowered.com/app/5062950/Guild_of_the_Tower",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales"
+    ],
+    "tasks": [
+      "transact"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-wuxia-rpg-com-c398d924",
+    "name": "Wuxia RPG",
+    "summary": "เกมกำลังภายในออนไลน์ มีระบบ Quiz ค้นหาตัวตนที่ /quiz",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Web",
+      "RPG"
+    ],
+    "url": "https://wuxia-rpg.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "knowledge"
+    ],
+    "tasks": [
+      "retrieve"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-apps-apple-com-9da291b7",
+    "name": "Tether Me",
+    "summary": "แอปเช็คอินวันละครั้งให้คนที่บ้านรู้ว่าเรายังคิดถึงกัน ทำเพื่อแม่ที่ไม่กล้าโทรหาลูก",
+    "categoryKey": "health",
+    "category": "สุขภาพ ครอบครัว & สัตว์เลี้ยง",
+    "platform": [
+      "iOS",
+      "ครอบครัว"
+    ],
+    "url": "https://apps.apple.com/th/app/tether-me-daily-check-in/id6788275309",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "people"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-github-com-e51b0ec8",
+    "name": "Aetox",
+    "summary": "ระบบ AI Agent ที่ทำงานอยู่ในคอมพิวเตอร์ของเราเอง",
+    "categoryKey": "ai",
+    "category": "AI & Dev Tools",
+    "platform": [
+      "Open Source",
+      "Agent"
+    ],
+    "url": "https://github.com/Mike0165115321/Aetox",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-openquok-com-82ccae71",
+    "name": "OpenQuok",
+    "summary": "บริหารโซเชียลมีเดียทั้งหมดผ่านการแชท",
+    "categoryKey": "mkt",
+    "category": "การตลาด & SEO",
+    "platform": [
+      "Web",
+      "Social"
+    ],
+    "url": "https://www.openquok.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "marketing"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-boluang-disaster-gis-vercel-app-0a0fc3f2",
+    "name": "Boluang Disaster GIS",
+    "summary": "ระบบภูมิศาสตร์ด้านสาธารณภัยระดับพื้นที่ (Claude Code + Vercel + Supabase)",
+    "categoryKey": "gov",
+    "category": "ภาครัฐ ข้อมูล & สังคม",
+    "platform": [
+      "Web",
+      "GIS"
+    ],
+    "url": "https://boluang-disaster-gis.vercel.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-suratthanigame-vercel-app-904a7ded",
+    "name": "สุราษฎร์ธานีเกมส์ 41",
+    "summary": "เว็บจัดการข้อมูลนักกีฬา การเดินทางและสถานที่ ในกีฬาเยาวชนแห่งชาติครั้งที่ 41",
+    "categoryKey": "gov",
+    "category": "ภาครัฐ ข้อมูล & สังคม",
+    "platform": [
+      "Web",
+      "อีเวนต์"
+    ],
+    "url": "https://suratthanigame.vercel.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-oneclickmcp-com-a1b8dfee",
+    "name": "OneClickMCP",
+    "summary": "บริการสร้าง MCP server แบบคลิกเดียว เริ่มจาก SaaS เล็ก ๆ กลายเป็น Agent-as-a-Service",
+    "categoryKey": "ai",
+    "category": "AI & Dev Tools",
+    "platform": [
+      "Web",
+      "MCP"
+    ],
+    "url": "http://www.oneclickmcp.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-tellme-best-73342ea5",
+    "name": "Tellme.best",
+    "summary": "โปรเจกต์เดี่ยว ทำเสร็จใน 2 สัปดาห์ รวมระบบหลังบ้าน",
+    "categoryKey": "misc",
+    "category": "อื่น ๆ",
+    "platform": [
+      "Web"
+    ],
+    "url": "https://tellme.best",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-github-com-e81bc7b3",
+    "name": "Gnome Widget Center",
+    "summary": "ศูนย์รวมวิดเจ็ตสำหรับ GNOME (ยังพัฒนาไม่เสร็จ)",
+    "categoryKey": "ai",
+    "category": "AI & Dev Tools",
+    "platform": [
+      "Open Source",
+      "Linux"
+    ],
+    "url": "https://github.com/xenlism/gnome-widget-center",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-chaossongkran-agentsoffice3d-com-3134aaf5",
+    "name": "Chaos Songkran",
+    "summary": "เกมสงกรานต์แนว 3D บนเว็บ",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Web",
+      "3D"
+    ],
+    "url": "https://chaossongkran.agentsoffice3d.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-tarot-oracle-one-vercel-app-23cc64b3",
+    "name": "Tarot Oracle",
+    "summary": "เว็บทำนายไพ่ที่ใช้รูปไพ่ที่ผู้ใช้สร้างเองมาทำนายได้ อนาคตจะให้ขายไพ่หารายได้",
+    "categoryKey": "fortune",
+    "category": "ดูดวง & ความเชื่อ",
+    "platform": [
+      "Web",
+      "ไพ่ทาโรต์"
+    ],
+    "url": "https://tarot-oracle-one.vercel.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales"
+    ],
+    "tasks": [
+      "transact"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "owner_claim",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-rodarea-com-dc51deb2",
+    "name": "RodArea",
+    "summary": "แผนที่รวมงานรถทั่วประเทศไทย",
+    "categoryKey": "auto",
+    "category": "ยานยนต์ & อสังหาฯ",
+    "platform": [
+      "Web",
+      "แผนที่"
+    ],
+    "url": "https://rodarea.com/map",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-toytime-online-4c9ddf8d",
+    "name": "ToyTime",
+    "summary": "เว็บของมือใหม่หัดทำ",
+    "categoryKey": "misc",
+    "category": "อื่น ๆ",
+    "platform": [
+      "Web"
+    ],
+    "url": "https://www.toytime.online",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-nubjarn-com-4533b5ec",
+    "name": "Nubjarn",
+    "summary": "เว็บจดประวัติ หารบิล และแชร์บิล สำหรับร้านซูชิสายพาน",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "Web",
+      "หารบิล"
+    ],
+    "url": "http://nubjarn.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [
+      "capture"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-optadmin-com-512b53be",
+    "name": "OptAdmin",
+    "summary": "ระบบตอบแชท AI sales agent ยัดข้อมูลทั้งบริษัทได้ ต้นทุนไม่เกิน 0.1 บาท/ข้อความ",
+    "categoryKey": "ai",
+    "category": "AI & Dev Tools",
+    "platform": [
+      "Web",
+      "Sales Agent"
+    ],
+    "url": "https://optadmin.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-encoreevent-app-8f5ae1f7",
+    "name": "Encore Event",
+    "summary": "แอปจัดการอีเวนต์",
+    "categoryKey": "travel",
+    "category": "ท่องเที่ยว & ไลฟ์สไตล์",
+    "platform": [
+      "iOS",
+      "Android"
+    ],
+    "url": "https://encoreevent.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-planndee-com-703ef210",
+    "name": "PlanNdee",
+    "summary": "เว็บวางแผนเกษียณและภาษี ทำมาแก้ pain ตัวเอง เปิดให้ส่ง feedback ในหน้าเว็บ",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "Web",
+      "ภาษี"
+    ],
+    "url": "https://planndee.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-changpile-com-9b441281",
+    "name": "ช้างไพล์",
+    "summary": "เว็บบริษัท + เว็บแอปคำนวณและบริหารโครงการด้านวิศวกรรมโยธา (พัฒนาไม่ถึง 2 เดือน)",
+    "categoryKey": "biz",
+    "category": "ระบบธุรกิจ & องค์กร",
+    "platform": [
+      "Web",
+      "วิศวกรรม"
+    ],
+    "url": "http://www.changpile.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "operations"
+    ],
+    "tasks": [
+      "classify"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-jodjam-com-46001046",
+    "name": "JodJam",
+    "summary": "ระบบ backup พร้อมบอทถามตอบในไลน์",
+    "categoryKey": "ai",
+    "category": "AI & Dev Tools",
+    "platform": [
+      "Web",
+      "LINE Bot"
+    ],
+    "url": "https://jodjam.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "knowledge"
+    ],
+    "tasks": [
+      "retrieve"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-pawana-pages-dev-bfc83908",
+    "name": "Pawana",
+    "summary": "เกมภาวนา",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Web",
+      "สมาธิ"
+    ],
+    "url": "https://pawana.pages.dev",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-doodtone-vercel-app-d55a2a08",
+    "name": "DoodTone",
+    "summary": "ระบบดูดโทน คำนวณแสง สี โทน และทำพรีเซต พัฒนาโดยไม่ใช้ API ทดสอบมา 3 เดือน",
+    "categoryKey": "misc",
+    "category": "อื่น ๆ",
+    "platform": [
+      "Web",
+      "ครีเอทีฟ"
+    ],
+    "url": "https://doodtone.vercel.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [
+      "classify"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-samkok-online-d4cbd491",
+    "name": "สามก๊กออนไลน์",
+    "summary": "บอร์ดเกมสามก๊กออนไลน์ เล่นฟรี",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Web",
+      "บอร์ดเกม"
+    ],
+    "url": "https://samkok.online",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-vccasset-com-39510ad6",
+    "name": "VCC Asset",
+    "summary": "เว็บอสังหาฯ + CRM ลงทรัพย์ครั้งเดียว ส่งออกลง 4 แพลตฟอร์ม (ทำด้วย Gemini)",
+    "categoryKey": "auto",
+    "category": "ยานยนต์ & อสังหาฯ",
+    "platform": [
+      "Web",
+      "CRM"
+    ],
+    "url": "http://vccasset.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-divvyroam-com-7bb61591",
+    "name": "DivvyRoam",
+    "summary": "แอปจดค่าใช้จ่ายระหว่างทริป แปลงสกุลเงินตามเรทปัจจุบัน หารกับเพื่อนร่วมทริป พิมพ์สลิปสรุปได้",
+    "categoryKey": "travel",
+    "category": "ท่องเที่ยว & ไลฟ์สไตล์",
+    "platform": [
+      "Web",
+      "หารเงิน"
+    ],
+    "url": "https://divvyroam.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance",
+      "knowledge"
+    ],
+    "tasks": [
+      "capture",
+      "draft"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-saasthai-com-d92bba73",
+    "name": "SaaS Thai",
+    "summary": "แพลตฟอร์มที่ใช้งานจริงอยู่ เปิดให้คนอื่นเข้ามาร่วมได้",
+    "categoryKey": "biz",
+    "category": "ระบบธุรกิจ & องค์กร",
+    "platform": [
+      "Web",
+      "คอมมูนิตี้"
+    ],
+    "url": "https://saasthai.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-rakatookyang-com-4359e602",
+    "name": "ราคาถูกจริงยัง",
+    "summary": "เว็บเช็คประวัติราคาสินค้า Shopee ดูว่าของที่จะซื้อถูกจริงไหม",
+    "categoryKey": "ecom",
+    "category": "อีคอมเมิร์ซ & ขายของ",
+    "platform": [
+      "Web",
+      "Shopee"
+    ],
+    "url": "https://rakatookyang.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-github-com-aea75d7a",
+    "name": "OpenPud",
+    "summary": "แปลงเสียงพูดเป็นข้อความอัตโนมัติบน Windows กดปุ่มลัด พูด ปล่อย แล้ววางที่ cursor ทันที",
+    "categoryKey": "ai",
+    "category": "AI & Dev Tools",
+    "platform": [
+      "Open Source",
+      "Windows"
+    ],
+    "url": "https://github.com/gotzastory/OpenPud",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "knowledge"
+    ],
+    "tasks": [
+      "draft"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-sourceexpert-co-th-70f326da",
+    "name": "Source Expert",
+    "summary": "เว็บไซต์หลักสูตรอบรม",
+    "categoryKey": "edu",
+    "category": "การศึกษา",
+    "platform": [
+      "Web",
+      "อบรม"
+    ],
+    "url": "http://www.sourceexpert.co.th",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "knowledge"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-jofjam-space-58e3b9e1",
+    "name": "JofJam",
+    "summary": "ผู้ช่วยจดจำและเตือนความจำสำหรับคนขี้ลืม",
+    "categoryKey": "prod",
+    "category": "Productivity & เครื่องมือ",
+    "platform": [
+      "Web",
+      "เตือนความจำ"
+    ],
+    "url": "https://jofjam.space",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [
+      "capture"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-chromewebstore-google-com-51654a09",
+    "name": "Postwi for Facebook",
+    "summary": "ช่วยโพสต์เฟซบุ๊กกลุ่มแบบอัตโนมัติ สำหรับโปรโมทร้าน สินค้า หรือขายของหลายกลุ่ม",
+    "categoryKey": "mkt",
+    "category": "การตลาด & SEO",
+    "platform": [
+      "Chrome Extension"
+    ],
+    "url": "https://chromewebstore.google.com/detail/postwi-for-facebook/nipfigapikmcbahbldeoeepofnnelolm",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales"
+    ],
+    "tasks": [
+      "transact"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-carcarejadhai-com-8ff771bc",
+    "name": "CarCare JadHai",
+    "summary": "ระบบบริหารจัดการร้านคาร์แคร์ ใช้เองและเปิดให้ตลาดใช้",
+    "categoryKey": "biz",
+    "category": "ระบบธุรกิจ & องค์กร",
+    "platform": [
+      "Web",
+      "คาร์แคร์"
+    ],
+    "url": "https://carcarejadhai.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-github-com-4642326a",
+    "name": "OpenLedger CFO",
+    "summary": "Terminal + AI agent ทำหน้าที่เป็น Personal CFO — เปิดซอร์สโค้ด (ดู harness ที่ openledger.sh)",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "Open Source",
+      "Terminal"
+    ],
+    "url": "https://github.com/phureewat29/openledger-cfo",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-rusheng-2d-7391-web-app-f4fae6d6",
+    "name": "Rusheng 2D",
+    "summary": "เกมฝึกซิ่งรถฝึกภาษาสำหรับเด็ก เล่นบน PC ผ่านเว็บหรือมือถือบางรุ่น",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Web",
+      "เด็ก"
+    ],
+    "url": "https://rusheng-2d-7391.web.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-tadmilin-itch-io-5aca2385",
+    "name": "Kill 'em All",
+    "summary": "เกมเดโมที่อาศัยหลายองค์ประกอบมาประกอบกัน",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "itch.io",
+      "Demo"
+    ],
+    "url": "https://tadmilin.itch.io/killemall",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-do-ngan-apichart-dev-ea48ffda",
+    "name": "Do-Ngan",
+    "summary": "ระบบติดตามงาน เห็นภาพรวมว่าใครมีงานอะไรและทำถึงไหน",
+    "categoryKey": "biz",
+    "category": "ระบบธุรกิจ & องค์กร",
+    "platform": [
+      "Web",
+      "Task"
+    ],
+    "url": "https://do-ngan.apichart.dev",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "operations"
+    ],
+    "tasks": [
+      "monitor"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-ai-agent-academy-easy-ai-online-787d516e",
+    "name": "PF 26",
+    "summary": "เกมฟุตบอลแมตช์เต็มกติกาจริง มี VAR รีเพลย์ ใบเหลืองใบแดง ในไฟล์ HTML เดียว",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Web",
+      "HTML เดียว"
+    ],
+    "url": "https://ai-agent-academy.easy-ai.online/playground/pf26",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-vaulta-family-3b89da44",
+    "name": "Vaulta Family",
+    "summary": "Family Office App จัดการสินทรัพย์ครอบครัว วางแผนมรดกแบบเห็นภาพ เข้ารหัส 100% ในเครื่อง",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "Web",
+      "Offline"
+    ],
+    "url": "https://vaulta.family",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "people"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-motoparts-in-th-d3e0e4bc",
+    "name": "MotoParts",
+    "summary": "เว็บ affiliate อะไหล่มอเตอร์ไซค์ พร้อม Chrome extension ที่ให้ Claude เขียนให้",
+    "categoryKey": "ecom",
+    "category": "อีคอมเมิร์ซ & ขายของ",
+    "platform": [
+      "Web",
+      "Affiliate"
+    ],
+    "url": "https://motoparts.in.th",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-appsoom-com-a5b1de6b",
+    "name": "AppSoom (แอปส้ม)",
+    "summary": "รายงานรายได้ Affiliate ทุกแพลตฟอร์ม พร้อมเครื่องมือสร้างวิดีโออัตโนมัติและออโต้โพสต์",
+    "categoryKey": "mkt",
+    "category": "การตลาด & SEO",
+    "platform": [
+      "Web",
+      "Affiliate"
+    ],
+    "url": "https://appsoom.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales",
+      "marketing"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "owner_claim",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-drive-google-com-5e70c551",
+    "name": "Solfeggio Soundscape",
+    "summary": "แอปฟังเสียงความถี่ Solfeggio ปรับได้ 1–22,000 Hz ตั้งเวลา บันทึกค่าโปรด ไม่มีโฆษณา",
+    "categoryKey": "health",
+    "category": "สุขภาพ ครอบครัว & สัตว์เลี้ยง",
+    "platform": [
+      "Android",
+      "APK"
+    ],
+    "url": "https://drive.google.com/drive/folders/1bnGYrhSGol0qKYFI92gv4SDZJkInBgyb",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [
+      "capture"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-ewery-day-020e7474",
+    "name": "Ewery.day",
+    "summary": "LINE แจ้งเตือนและจด todo ออกแบบให้ใช้ง่ายแบบไม่ต้องคิดเยอะ ทำคนเดียว ~1 เดือน",
+    "categoryKey": "prod",
+    "category": "Productivity & เครื่องมือ",
+    "platform": [
+      "LINE",
+      "Todo"
+    ],
+    "url": "https://ewery.day",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [
+      "capture",
+      "monitor"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-freedomlifeboardgame-com-0e9e4f5b",
+    "name": "Freedom Life Board Game",
+    "summary": "บอร์ดเกมจำลองชีวิตให้สำเร็จทั้ง 6 ด้าน มี Leaderboard และโหมดฝึกสอน เล่นฟรี",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Web",
+      "การเงิน"
+    ],
+    "url": "http://www.freedomlifeboardgame.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-dojindb-th-com-9ee950a6",
+    "name": "DojinDB TH",
+    "summary": "ฐานข้อมูลโดจินภาษาไทย",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Web",
+      "ฐานข้อมูล"
+    ],
+    "url": "http://dojindb-th.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [
+      "retrieve"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-packstamp-com-63ef5e3a",
+    "name": "PackStamp",
+    "summary": "ระบบอัดวิดีโอตอนแพ็คของ กันเคลมสินค้า",
+    "categoryKey": "ecom",
+    "category": "อีคอมเมิร์ซ & ขายของ",
+    "platform": [
+      "Web",
+      "แพ็คของ"
+    ],
+    "url": "https://packstamp.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "marketing"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-thform-com-d10d5bac",
+    "name": "THForm",
+    "summary": "แบบฟอร์มออนไลน์ กรอกได้ทันที",
+    "categoryKey": "prod",
+    "category": "Productivity & เครื่องมือ",
+    "platform": [
+      "Web",
+      "ฟอร์ม"
+    ],
+    "url": "https://thform.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-reviewflash-com-fec521c1",
+    "name": "ReviewFlash",
+    "summary": "ป้ายรีวิวสำหรับหน้าร้าน",
+    "categoryKey": "mkt",
+    "category": "การตลาด & SEO",
+    "platform": [
+      "Web",
+      "รีวิว"
+    ],
+    "url": "https://reviewflash.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "marketing"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-tookjorthai-com-d2fee2b8",
+    "name": "ถูกจ้อไทย",
+    "summary": "แพลตฟอร์มแปลหนัง เกม และนิยาย ให้เป็นภาษาไทย",
+    "categoryKey": "ai",
+    "category": "AI & Dev Tools",
+    "platform": [
+      "Web",
+      "แปลภาษา"
+    ],
+    "url": "https://tookjorthai.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "knowledge"
+    ],
+    "tasks": [
+      "draft"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-13ytex-com-421eaf4f",
+    "name": "13YTex",
+    "summary": "รวมโปรเจกต์ RFID, หอพัก, อ่านป้ายทะเบียน, Smart Home, ร้านขายยา, POS, Warehouse, mini ERP และอีกมาก",
+    "categoryKey": "biz",
+    "category": "ระบบธุรกิจ & องค์กร",
+    "platform": [
+      "Web",
+      "IoT"
+    ],
+    "url": "https://13ytex.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales",
+      "operations"
+    ],
+    "tasks": [
+      "transact"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-firekeeper-site-e1fadad0",
+    "name": "Fire Keeper",
+    "summary": "Cognitive AI / Decision Governance System แยกความสามารถในการสร้างคำตอบออกจากอำนาจตัดสินใจ",
+    "categoryKey": "ai",
+    "category": "AI & Dev Tools",
+    "platform": [
+      "Web",
+      "Governance"
+    ],
+    "url": "https://firekeeper.site",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-firemaitour-xyz-52aeded2",
+    "name": "ทัวร์ไฟไหม้",
+    "summary": "เว็บรวมทัวร์ไฟไหม้",
+    "categoryKey": "misc",
+    "category": "อื่น ๆ",
+    "platform": [
+      "Web",
+      "ขำ ๆ"
+    ],
+    "url": "https://firemaitour.xyz",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-apps-apple-com-1baa7df1",
+    "name": "Fitty Up",
+    "summary": "แอปสุขภาพที่เจ้าของทำจนเสร็จจริงจังตัวเดียว รอ Apple อนุมัติเวอร์ชันแก้บั๊ก",
+    "categoryKey": "health",
+    "category": "สุขภาพ ครอบครัว & สัตว์เลี้ยง",
+    "platform": [
+      "iOS",
+      "ฟิตเนส"
+    ],
+    "url": "https://apps.apple.com/th/app/fitty-up/id6759182045",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "people"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-edu-thpl-me-15e7d1b4",
+    "name": "THPL Edu",
+    "summary": "แพลตฟอร์มด้านการศึกษา",
+    "categoryKey": "edu",
+    "category": "การศึกษา",
+    "platform": [
+      "Web"
+    ],
+    "url": "https://edu.thpl.me",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "knowledge"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-nueathong-com-77858faf",
+    "name": "Nueathong",
+    "summary": "โปรเจกต์ที่เจ้าของบอกว่า \"ยังอวดไม่ได้ ขออวดของคนอื่นก่อน\"",
+    "categoryKey": "misc",
+    "category": "อื่น ๆ",
+    "platform": [
+      "Web"
+    ],
+    "url": "http://nueathong.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-linktour-me-35adefda",
+    "name": "LinkTour",
+    "summary": "แพลตฟอร์มขายทัวร์",
+    "categoryKey": "travel",
+    "category": "ท่องเที่ยว & ไลฟ์สไตล์",
+    "platform": [
+      "Web",
+      "ทัวร์"
+    ],
+    "url": "https://linktour.me",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales"
+    ],
+    "tasks": [
+      "transact"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-meow-wat-com-46c76145",
+    "name": "Meow Wat",
+    "summary": "เปิดมาสองเดือน คนเข้าไม่ลดลงเลย",
+    "categoryKey": "misc",
+    "category": "อื่น ๆ",
+    "platform": [
+      "Web"
+    ],
+    "url": "https://meow-wat.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-cleartang-com-1eb5b684",
+    "name": "ClearTang",
+    "summary": "หารค่าใช้จ่ายและเคลียร์ตังกับเพื่อน",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "Web",
+      "หารบิล"
+    ],
+    "url": "https://cleartang.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-praganeasy-com-3eac3d7d",
+    "name": "ประกันอีซี่",
+    "summary": "เว็บประกันภัย",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "Web",
+      "ประกัน"
+    ],
+    "url": "https://www.praganeasy.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-uniz-host-21f6aac6",
+    "name": "Uniz Host",
+    "summary": "บริการเช่าเซิร์ฟเวอร์เกม",
+    "categoryKey": "ai",
+    "category": "AI & Dev Tools",
+    "platform": [
+      "Web",
+      "Hosting"
+    ],
+    "url": "https://uniz.host",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-betterpetter-vercel-app-8fb9ae6c",
+    "name": "BetterPetter",
+    "summary": "เว็บเปรียบเทียบอาหารแมว เริ่มจากอยากรู้เอง เผื่อทาสแมวคนอื่นอยากรู้ด้วย",
+    "categoryKey": "health",
+    "category": "สุขภาพ ครอบครัว & สัตว์เลี้ยง",
+    "platform": [
+      "Web",
+      "แมว"
+    ],
+    "url": "https://betterpetter.vercel.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [
+      "classify"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-tofu-dubbing-dolishco-com-42fbf5f2",
+    "name": "เต้าหู้แปลภาษา",
+    "summary": "พากย์เสียงไทยทับวิดีโอแบบเรียลไทม์ ใช้ได้ทั้ง YouTube และ Udemy พร้อม sync เสียงให้ตรงจังหวะ",
+    "categoryKey": "ai",
+    "category": "AI & Dev Tools",
+    "platform": [
+      "Chrome Extension",
+      "พากย์เสียง"
+    ],
+    "url": "https://tofu-dubbing.dolishco.com/th",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "knowledge",
+      "marketing"
+    ],
+    "tasks": [
+      "draft"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-apps-apple-com-3fe9c03e",
+    "name": "ต.แบด",
+    "summary": "แอปหาคอร์ท หาเพื่อนตีแบด — ปัจจุบันมีผู้ใช้ 13,000 คน active วันละ 500–600 คน",
+    "categoryKey": "travel",
+    "category": "ท่องเที่ยว & ไลฟ์สไตล์",
+    "platform": [
+      "iOS",
+      "กีฬา"
+    ],
+    "url": "https://apps.apple.com/th/app/id6747997461",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "owner_claim",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-schoolyard-survival-game-vercel-app-a9c00641",
+    "name": "Schoolyard Survival",
+    "summary": "เกมจากโปรแกรมเมอร์ที่ฝันอยากทำเกม",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Web"
+    ],
+    "url": "https://schoolyard-survival-game.vercel.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-apps-apple-com-89471a7a",
+    "name": "Punn Baby Pumping Tracker",
+    "summary": "แอปติดตามการปั๊มนมและดูแลลูกน้อย ทำคนเดียว 100%",
+    "categoryKey": "health",
+    "category": "สุขภาพ ครอบครัว & สัตว์เลี้ยง",
+    "platform": [
+      "iOS",
+      "Android"
+    ],
+    "url": "https://apps.apple.com/th/app/punn-baby-pumping-tracker/id6762541359",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [
+      "monitor"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-xn-12cmb2chmn1rzb2evd0c-com-8c14d13c",
+    "name": "จุดกางเต็นท์",
+    "summary": "เว็บรวมจุดกางเต็นท์ทั่วไทย",
+    "categoryKey": "travel",
+    "category": "ท่องเที่ยว & ไลฟ์สไตล์",
+    "platform": [
+      "Web",
+      "แคมป์ปิ้ง"
+    ],
+    "url": "https://www.xn--12cmb2chmn1rzb2evd0c.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-kudokit-co-10608d7d",
+    "name": "Kudokit",
+    "summary": "รวมรีวิวจากหลายช่องทางแล้วเอาไปแชร์ต่อบน Social หรือเว็บไซต์ได้ง่าย ๆ",
+    "categoryKey": "mkt",
+    "category": "การตลาด & SEO",
+    "platform": [
+      "Web",
+      "รีวิว"
+    ],
+    "url": "https://kudokit.co",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "marketing"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-untitled-kobkrit-com-d78c41dc",
+    "name": "Untitled CS",
+    "summary": "เกม Counter-Strike ทั้งเกมบนเว็บ",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Web",
+      "FPS"
+    ],
+    "url": "https://untitled.kobkrit.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-apps-apple-com-c1ef288b",
+    "name": "DooSpend",
+    "summary": "แอปบันทึกรายรับรายจ่ายสำหรับคนขี้เกียจจด — Claude Code 98% ปรับ UI เอง 2%",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "iOS"
+    ],
+    "url": "https://apps.apple.com/th/app/id6774424817",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance"
+    ],
+    "tasks": [
+      "capture"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-sportnec-com-fa176378",
+    "name": "SportNec",
+    "summary": "แพลตฟอร์มด้านกีฬา",
+    "categoryKey": "travel",
+    "category": "ท่องเที่ยว & ไลฟ์สไตล์",
+    "platform": [
+      "Web",
+      "กีฬา"
+    ],
+    "url": "http://www.sportnec.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-line-me-80ecfe29",
+    "name": "น้อง AUM",
+    "summary": "บอทไลน์สกรีนโมเมนตัมหุ้นคร่าว ๆ จากสถิติ (ไม่ใช่คำแนะนำการลงทุน)",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "LINE",
+      "หุ้น"
+    ],
+    "url": "https://line.me/R/ti/p/@857psamd",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-mnkoratpt044-github-io-4910cef0",
+    "name": "Balance App",
+    "summary": "สถานีคัดกรองการทรงตัวในผู้สูงอายุ 60 ปีขึ้นไป เพื่อวิเคราะห์ความเสี่ยงหกล้ม",
+    "categoryKey": "health",
+    "category": "สุขภาพ ครอบครัว & สัตว์เลี้ยง",
+    "platform": [
+      "Web",
+      "ผู้สูงอายุ"
+    ],
+    "url": "https://mnkoratpt044.github.io/balance-app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "people"
+    ],
+    "tasks": [
+      "classify"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-qinarimu-netlify-app-d1dec849",
+    "name": "Qinarimu",
+    "summary": "เว็บฝากไหว้ ทำรวม ๆ ประมาณ 1 สัปดาห์",
+    "categoryKey": "fortune",
+    "category": "ดูดวง & ความเชื่อ",
+    "platform": [
+      "Web",
+      "ไหว้"
+    ],
+    "url": "https://qinarimu.netlify.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-cardealdee-com-f5fec792",
+    "name": "CarDealDee",
+    "summary": "เว็บนายหน้ารถมือสอง",
+    "categoryKey": "auto",
+    "category": "ยานยนต์ & อสังหาฯ",
+    "platform": [
+      "Web",
+      "รถมือสอง"
+    ],
+    "url": "https://cardealdee.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-siahra-radar-co-820163f7",
+    "name": "Siahra Radar",
+    "summary": "แผนที่ 3 มิติรายจังหวัด แสดงข้อมูลภัยพิบัติ/ความเสี่ยงที่วัดจริง ดึงจากหลายแหล่งข้อมูล",
+    "categoryKey": "gov",
+    "category": "ภาครัฐ ข้อมูล & สังคม",
+    "platform": [
+      "Web",
+      "3D Map"
+    ],
+    "url": "https://siahra-radar.co",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-mutta-ireadcustomer-life-8898327a",
+    "name": "Mutta",
+    "summary": "เลขา AI สั่งงาน ตามงาน จัดระเบียบชีวิตผ่านไลน์",
+    "categoryKey": "ai",
+    "category": "AI & Dev Tools",
+    "platform": [
+      "LINE",
+      "เลขา AI"
+    ],
+    "url": "https://mutta.ireadcustomer.life",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-kitchenkan-crm-vercel-app-b3fd66ac",
+    "name": "KitchenKan CRM",
+    "summary": "POS ร้านอาหาร เชื่อมเครื่องพิมพ์ + บอทจดรายรับรายจ่าย สต๊อก ผ่าน LINE + CRM รวมศูนย์ในแดชบอร์ด",
+    "categoryKey": "biz",
+    "category": "ระบบธุรกิจ & องค์กร",
+    "platform": [
+      "Web",
+      "POS"
+    ],
+    "url": "https://kitchenkan-crm.vercel.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales",
+      "finance",
+      "operations"
+    ],
+    "tasks": [
+      "capture"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-drive-music-taupe-vercel-app-079f30e9",
+    "name": "Drive Music",
+    "summary": "สตรีมเพลงจาก Google Drive มีทั้ง web app และ native app (ซอร์สโค้ดบน GitHub)",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Web",
+      "iOS",
+      "Android"
+    ],
+    "url": "https://drive-music-taupe.vercel.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-pandekdee-com-873f9256",
+    "name": "ปั้นเด็กดี",
+    "summary": "ช่วยพ่อแม่สร้างเวลาคุณภาพกับลูก ระบุเวลาที่มี ระบบจัดกิจกรรม นิทาน และเกมฝึกคิดให้ทันที",
+    "categoryKey": "health",
+    "category": "สุขภาพ ครอบครัว & สัตว์เลี้ยง",
+    "platform": [
+      "Web",
+      "ครอบครัว"
+    ],
+    "url": "https://pandekdee.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "people"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-calorian-clan-com-c0ab2c6f",
+    "name": "Calorian Clan",
+    "summary": "แพลตฟอร์มด้านสุขภาพและแคลอรี่",
+    "categoryKey": "health",
+    "category": "สุขภาพ ครอบครัว & สัตว์เลี้ยง",
+    "platform": [
+      "Web",
+      "แคลอรี่"
+    ],
+    "url": "https://calorian-clan.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "people"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-kpcrm-net-017bea5e",
+    "name": "KP CRM",
+    "summary": "ระบบจัดการรถเช่า ปรับปรุงจากร้านที่ใช้จริง ตอนนี้มี 30 กว่าร้านในระบบ",
+    "categoryKey": "biz",
+    "category": "ระบบธุรกิจ & องค์กร",
+    "platform": [
+      "Web",
+      "รถเช่า"
+    ],
+    "url": "https://www.kpcrm.net",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "owner_claim",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-mapleuhub-com-2ec430dc",
+    "name": "MapleU Hub",
+    "summary": "ฮับสำหรับคอมมูนิตี้ผู้เล่นเกม",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Web"
+    ],
+    "url": "http://mapleuhub.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-roostfarm-vercel-app-54bd098c",
+    "name": "Roost Farm",
+    "summary": "ระบบบริหารจัดการฟาร์มไก่ มอนิเตอร์ฟาร์ม งานอะไหล่ บันทึกงานประจำวัน แจ้งเตือนเข้าไลน์",
+    "categoryKey": "biz",
+    "category": "ระบบธุรกิจ & องค์กร",
+    "platform": [
+      "Web",
+      "เกษตร"
+    ],
+    "url": "https://roostfarm.vercel.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "operations"
+    ],
+    "tasks": [
+      "capture",
+      "monitor"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-klai-chun-com-10557e7a",
+    "name": "ใกล้ฉัน",
+    "summary": "ระบบค้นร้านค้า/ธุรกิจใกล้ตัว พร้อมระบบบริหารจัดการร้านเล็กน้อย",
+    "categoryKey": "biz",
+    "category": "ระบบธุรกิจ & องค์กร",
+    "platform": [
+      "Web",
+      "แผนที่"
+    ],
+    "url": "https://klai-chun.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-ximi-ai-com-cc9df423",
+    "name": "XIMI AI",
+    "summary": "Studio AI ครบวงจร: gen ภาพ/วิดีโอ/SFX, storyboard, video editor, comic creator, 3D scene, game asset, API และต่อ MCP ได้",
+    "categoryKey": "ai",
+    "category": "AI & Dev Tools",
+    "platform": [
+      "Web",
+      "Studio"
+    ],
+    "url": "https://ximi-ai.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "marketing"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-sonsanook-com-f282fa2e",
+    "name": "สอนสนุก",
+    "summary": "เกมสื่อการสอน ทำด้วย Claude + Codex มีเกมปลูกผัก Little Farm ให้เล่นฟรีไม่ต้องสมัคร",
+    "categoryKey": "edu",
+    "category": "การศึกษา",
+    "platform": [
+      "Web",
+      "เกมการสอน"
+    ],
+    "url": "https://sonsanook.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-unjumbl-ing-60a31311",
+    "name": "Unjumbl.ing",
+    "summary": "แอปช่วยเคลียร์กองดอง แทร็คเวลาอ่านหนังสือ",
+    "categoryKey": "prod",
+    "category": "Productivity & เครื่องมือ",
+    "platform": [
+      "Web",
+      "หนังสือ"
+    ],
+    "url": "https://unjumbl.ing",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-afternoonteareview-com-ae323695",
+    "name": "Afternoon Tea Review",
+    "summary": "รีวิวชุดน้ำชายามบ่าย ไมเกรตจากเพจมาอยู่บนเว็บ",
+    "categoryKey": "travel",
+    "category": "ท่องเที่ยว & ไลฟ์สไตล์",
+    "platform": [
+      "Web",
+      "รีวิว"
+    ],
+    "url": "https://www.afternoonteareview.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "marketing"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-woowey-ai-54167814",
+    "name": "Woowey AI",
+    "summary": "เจ้าของบอกว่าใช้แล้วเหมือนมีทีม 20 คน+",
+    "categoryKey": "ai",
+    "category": "AI & Dev Tools",
+    "platform": [
+      "Web"
+    ],
+    "url": "http://woowey.ai",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "owner_claim",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-shop2earn-app-f365c87e",
+    "name": "Shop2Earn",
+    "summary": "แปลงลิงก์สินค้า Shopee/Lazada เป็นลิงก์ Cashback ซื้อเองได้เงินคืน แชร์ได้คอมมิชชัน ถอนได้ตั้งแต่ 1 บาท",
+    "categoryKey": "ecom",
+    "category": "อีคอมเมิร์ซ & ขายของ",
+    "platform": [
+      "Web",
+      "Cashback"
+    ],
+    "url": "https://shop2earn.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance",
+      "knowledge"
+    ],
+    "tasks": [
+      "draft"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-linkdonate-com-a4d125dc",
+    "name": "LinkDonate",
+    "summary": "หน้าโดเนทของตัวเอง ค่าธรรมเนียม 0% เข้าพร้อมเพย์ตรง ตรวจสลิปอัตโนมัติใน 3 วินาที แจ้งเตือนขึ้นจอ OBS",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "Web",
+      "ครีเอเตอร์"
+    ],
+    "url": "https://linkdonate.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance"
+    ],
+    "tasks": [
+      "classify",
+      "monitor"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-mahaheng-site-e56af87e",
+    "name": "MahaHeng",
+    "summary": "เว็บดูดวง Bazi จีน อ้างอิงตำราจีนเวอร์ชันที่น่าเชื่อถือที่สุด",
+    "categoryKey": "fortune",
+    "category": "ดูดวง & ความเชื่อ",
+    "platform": [
+      "Web",
+      "ปาจื่อ"
+    ],
+    "url": "https://mahaheng.site",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-khunquant-com-7ed1863f",
+    "name": "KhunQuant",
+    "summary": "AI agent ผู้ช่วยดูแลพอร์ต รวมหุ้นไทย หุ้นนอก คริปโต ไว้ที่เดียว คุยผ่าน Telegram / LINE / Discord",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "Self-host",
+      "AI Agent"
+    ],
+    "url": "https://khunquant.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-seemywish-com-cd543913",
+    "name": "Thai Warning",
+    "summary": "แจ้งเตือนความเสี่ยงน้ำท่วมรอบรัศมีอัตโนมัติ และสถานะน้ำท่วมทั่วไทยแบบเรียลไทม์จากข้อมูลสาธารณะ",
+    "categoryKey": "gov",
+    "category": "ภาครัฐ ข้อมูล & สังคม",
+    "platform": [
+      "Web",
+      "ภัยพิบัติ"
+    ],
+    "url": "https://www.seemywish.com/thaiwarning",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [
+      "monitor"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-virl-me-7cf437d2",
+    "name": "Virl.me",
+    "summary": "เว็บสร้างเซลเพจ มี AI และ MCP ในตัว",
+    "categoryKey": "mkt",
+    "category": "การตลาด & SEO",
+    "platform": [
+      "Web",
+      "Sales Page"
+    ],
+    "url": "https://virl.me",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales",
+      "marketing"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-frames-zentry-com-5bb92e01",
+    "name": "Zentry Frames",
+    "summary": "สร้างและจัดบอร์ดของตัวเองได้อิสระ พร้อมตัวอย่างบอร์ดสำเร็จรูป",
+    "categoryKey": "prod",
+    "category": "Productivity & เครื่องมือ",
+    "platform": [
+      "Web",
+      "บอร์ด"
+    ],
+    "url": "https://frames.zentry.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-vibeworld-vibecodingthailand-com-03f6a5f7",
+    "name": "VibeWorld",
+    "summary": "เกมจากคอมมูนิตี้ Vibe Coding Thailand",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Web"
+    ],
+    "url": "https://vibeworld.vibecodingthailand.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-vibecodingthailand-com-c96d721c",
+    "name": "Vibe Coding Thailand",
+    "summary": "เว็บบทความและคอมมูนิตี้สาย vibe coding",
+    "categoryKey": "misc",
+    "category": "อื่น ๆ",
+    "platform": [
+      "Web",
+      "บทความ"
+    ],
+    "url": "https://vibecodingthailand.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-apps-apple-com-60841623",
+    "name": "Lukkhon (ลูกขน)",
+    "summary": "สมุดสุขภาพสัตว์เลี้ยง จดอาการประจำวัน เตือนวัคซีน/ยา โหมดพาเดินเล่น วิเคราะห์ค่าใช้จ่าย และแผนที่ Pet-Friendly",
+    "categoryKey": "health",
+    "category": "สุขภาพ ครอบครัว & สัตว์เลี้ยง",
+    "platform": [
+      "iOS",
+      "สัตว์เลี้ยง"
+    ],
+    "url": "https://apps.apple.com/th/app/lukkhon-ai/id6789553353",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "people"
+    ],
+    "tasks": [
+      "capture",
+      "classify"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-purrtobooth-vercel-app-d01c7a90",
+    "name": "PurrToBooth",
+    "summary": "เว็บถ่ายรูปเล่นกับแมวที่บ้าน ภาพประกอบวาดเองทั้งหมด",
+    "categoryKey": "health",
+    "category": "สุขภาพ ครอบครัว & สัตว์เลี้ยง",
+    "platform": [
+      "Web",
+      "แมว"
+    ],
+    "url": "https://purrtobooth.vercel.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-digitalok-store-9ba6b139",
+    "name": "DigitalOK",
+    "summary": "เว็บขายบัญชี AI เอาเงินมาต่อยอดโปรเจกต์อื่น",
+    "categoryKey": "ecom",
+    "category": "อีคอมเมิร์ซ & ขายของ",
+    "platform": [
+      "Web"
+    ],
+    "url": "https://www.digitalok.store",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales",
+      "finance"
+    ],
+    "tasks": [
+      "transact"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-shop-patiphandev-com-f33d0b1d",
+    "name": "Patiphan Shop",
+    "summary": "ร้านค้าออนไลน์สร้าง passive income",
+    "categoryKey": "ecom",
+    "category": "อีคอมเมิร์ซ & ขายของ",
+    "platform": [
+      "Web"
+    ],
+    "url": "https://shop.patiphandev.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-kobi-ai-com-307ecd82",
+    "name": "Kobi AI",
+    "summary": "แพลตฟอร์มระดมไอเดียและสื่อการสอน brainstorm กับทีม",
+    "categoryKey": "edu",
+    "category": "การศึกษา",
+    "platform": [
+      "Web",
+      "Brainstorm"
+    ],
+    "url": "https://kobi-ai.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-bainaidee-com-ed7c78ee",
+    "name": "บัตรไหนดี",
+    "summary": "เว็บ + chatbot ช่วยหาโปรบัตรเครดิตข้ามค่าย และเทียบบัตรตอนสมัคร",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "Web",
+      "Chatbot"
+    ],
+    "url": "https://bainaidee.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-sannstay-com-1be8a870",
+    "name": "SannStay",
+    "summary": "เว็บไซต์ที่พักพร้อม Booking Engine",
+    "categoryKey": "travel",
+    "category": "ท่องเที่ยว & ไลฟ์สไตล์",
+    "platform": [
+      "Web",
+      "Booking"
+    ],
+    "url": "https://www.sannstay.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-khummai-com-52ccf08f",
+    "name": "คำนวณค่าธรรมเนียมขายออนไลน์",
+    "summary": "คำนวณค่าธรรมเนียมการขายของออนไลน์บน Shopee, TikTok และ Lazada",
+    "categoryKey": "ecom",
+    "category": "อีคอมเมิร์ซ & ขายของ",
+    "platform": [
+      "Web",
+      "เครื่องมือ"
+    ],
+    "url": "https://khummai.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales"
+    ],
+    "tasks": [
+      "classify",
+      "transact"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-phisith-com-a0594bf1",
+    "name": "พี่สิทธิ์",
+    "summary": "AI ที่ปรึกษาสิทธิแรงงานไทย คำนวณค่าชดเชย ประเมินคดีเลิกจ้างไม่เป็นธรรม ร่างคำฟ้องเบื้องต้น",
+    "categoryKey": "gov",
+    "category": "ภาครัฐ ข้อมูล & สังคม",
+    "platform": [
+      "Web",
+      "กฎหมาย"
+    ],
+    "url": "https://phisith.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "knowledge"
+    ],
+    "tasks": [
+      "classify",
+      "draft"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-therenaissanceman-club-ceabd59c",
+    "name": "Renaissance Pipeline",
+    "summary": "โปรเจกต์ส่วนตัวสำหรับธุรกิจอสังหาฯ ทำด้วย Claude Code + สกิล UX/UI ใน 2 สัปดาห์",
+    "categoryKey": "auto",
+    "category": "ยานยนต์ & อสังหาฯ",
+    "platform": [
+      "Web",
+      "อสังหาฯ"
+    ],
+    "url": "https://therenaissanceman.club/pipeline",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-chess-devlionng-com-408d8181",
+    "name": "DevLionng Chess",
+    "summary": "หมากรุกสากลออนไลน์",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Web",
+      "หมากรุก"
+    ],
+    "url": "https://chess.devlionng.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-weesuwan-phra-shop-a54c069e",
+    "name": "วีสุวรรณ พระเครื่อง",
+    "summary": "เว็บเช่าพระ เชื่อม API ไปรษณีย์ออกเลขแทร็คทันที ตรวจสลิป แจ้งออร์เดอร์ทาง Telegram แมปโดเมนให้ร้านใหม่ได้",
+    "categoryKey": "ecom",
+    "category": "อีคอมเมิร์ซ & ขายของ",
+    "platform": [
+      "Web",
+      "พระเครื่อง"
+    ],
+    "url": "https://weesuwan.phra.shop",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance"
+    ],
+    "tasks": [
+      "classify",
+      "transact"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-azhub-co-67dd4d86",
+    "name": "AZ Hub",
+    "summary": "ระบบแชทบน VPS เชื่อมกันทุกที่ ขึ้นโปรเจกต์ใหม่ได้สะดวก",
+    "categoryKey": "ai",
+    "category": "AI & Dev Tools",
+    "platform": [
+      "Web",
+      "VPS"
+    ],
+    "url": "https://azhub.co/lp/dev",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-claude-ai-46d96f9f",
+    "name": "ชุดข้อสอบนายหน้าวินาศภัย",
+    "summary": "ชุดข้อสอบสำหรับคนเตรียมสอบนายหน้าวินาศภัย มีชุดจรรยาบรรณฟรี 40 ข้อ",
+    "categoryKey": "edu",
+    "category": "การศึกษา",
+    "platform": [
+      "Artifact",
+      "ข้อสอบ"
+    ],
+    "url": "https://claude.ai/code/artifact/b8313119-a8d1-46a0-a8eb-d3767010284e",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-yooop-online-0a55ca04",
+    "name": "Yooop",
+    "summary": "เว็บแอปรวมรีวิวร้านอาหารแบบวิดีโอสั้น หาร้านตามย่าน ดูคลิปจาก YouTube+TikTok และนำทางจบในที่เดียว",
+    "categoryKey": "travel",
+    "category": "ท่องเที่ยว & ไลฟ์สไตล์",
+    "platform": [
+      "Web",
+      "อาหาร"
+    ],
+    "url": "https://yooop.online",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "marketing"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-elccenter-github-io-aa9a5e9b",
+    "name": "TZD Resource",
+    "summary": "ระบบฐานข้อมูลทรัพยากรด้านการศึกษาสำหรับเด็กนอกระบบ",
+    "categoryKey": "edu",
+    "category": "การศึกษา",
+    "platform": [
+      "Web",
+      "สังคม"
+    ],
+    "url": "https://elccenter.github.io/TZDresource",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "knowledge"
+    ],
+    "tasks": [
+      "retrieve"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-seo-aiservice-dev-9a334a71",
+    "name": "SEO AI Service",
+    "summary": "ระบบสร้างคอนเทนต์ SEO ครบวงจร ค้นหา keyword, วิเคราะห์ SERP, สร้างและวิเคราะห์บทความ",
+    "categoryKey": "mkt",
+    "category": "การตลาด & SEO",
+    "platform": [
+      "Web",
+      "SEO"
+    ],
+    "url": "https://seo.aiservice.dev",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "knowledge",
+      "marketing"
+    ],
+    "tasks": [
+      "classify",
+      "retrieve",
+      "draft"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-open-thaith-ai-ca766f1d",
+    "name": "อนุ ๆ งบไทย",
+    "summary": "พรีเซนต์ปัญหางบประมาณไทยแบบเปิดข้อมูล",
+    "categoryKey": "gov",
+    "category": "ภาครัฐ ข้อมูล & สังคม",
+    "platform": [
+      "Web",
+      "งบประมาณ"
+    ],
+    "url": "http://open.thaith.ai/anu2/summary",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-gridnova-pages-dev-1061b30a",
+    "name": "GridNova",
+    "summary": "เกม Sudoku พร้อมระบบจัดอันดับแข่งกัน",
+    "categoryKey": "game",
+    "category": "เกม & บันเทิง",
+    "platform": [
+      "Web",
+      "Sudoku"
+    ],
+    "url": "https://gridnova.pages.dev",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-livvie-site-38f496cb",
+    "name": "Livvie",
+    "summary": "รวมเรื่องในบ้านไว้ที่เดียว รายรับรายจ่าย ของใกล้หมด/ใกล้หมดอายุ งานดูแลบ้าน ภาษีรถ วัคซีนสัตว์เลี้ยง + AI คิดเมนูและสแกนใบเสร็จ",
+    "categoryKey": "health",
+    "category": "สุขภาพ ครอบครัว & สัตว์เลี้ยง",
+    "platform": [
+      "iOS",
+      "บ้าน"
+    ],
+    "url": "https://livvie.site",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance"
+    ],
+    "tasks": [
+      "capture"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-samong-app-499c4b4f",
+    "name": "Samong App",
+    "summary": "แอปผู้ช่วยความจำ/สมอง",
+    "categoryKey": "prod",
+    "category": "Productivity & เครื่องมือ",
+    "platform": [
+      "Web"
+    ],
+    "url": "http://samong.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-tangjai-online-86c8bb2e",
+    "name": "ตังใจ",
+    "summary": "บันทึกรายรับ–รายจ่ายผ่าน LINE + LIFF มี Dashboard และ OCR อ่านสลิป (Claude + Codex)",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "LINE",
+      "LIFF"
+    ],
+    "url": "https://www.tangjai.online",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance"
+    ],
+    "tasks": [
+      "capture"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-thewhitemarketing-com-d9a04ee9",
+    "name": "The White Marketing",
+    "summary": "บริการเขียนบทความและรับทำ SEO — รายได้ปีละ 3 ล้าน",
+    "categoryKey": "mkt",
+    "category": "การตลาด & SEO",
+    "platform": [
+      "Web",
+      "SEO"
+    ],
+    "url": "https://thewhitemarketing.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "marketing"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "owner_claim",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-triptactoe-com-658a625b",
+    "name": "Triptactoe",
+    "summary": "วางแพลนเที่ยวรายวัน แชร์กับเพื่อนร่วมทริป จดค่าใช้จ่ายหลายสกุลเงิน กระเป๋าเงินสด แชร์ทริป และนับถอยหลัง",
+    "categoryKey": "travel",
+    "category": "ท่องเที่ยว & ไลฟ์สไตล์",
+    "platform": [
+      "Web",
+      "วางแผนทริป"
+    ],
+    "url": "http://www.triptactoe.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance"
+    ],
+    "tasks": [
+      "capture"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-lin-ee-84eea309",
+    "name": "เงินดีมีสุข (LINE)",
+    "summary": "จัดการเงินส่วนบุคคลครบ ใช้ได้ทั้ง desktop, mobile และ LINE bot — ลงทุน วางแผน จดรายรับรายจ่าย ดู DCA",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "LINE",
+      "Web"
+    ],
+    "url": "https://lin.ee/YmHMOAja",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "finance"
+    ],
+    "tasks": [
+      "capture"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-moodoo-io-f3239180",
+    "name": "MooDoo",
+    "summary": "ดูดวงโหราศาสตร์ไทยสายสุริยยาตร์ ผูกดวง หาฤกษ์ และเลขศาสตร์ ใช้ฟรี",
+    "categoryKey": "fortune",
+    "category": "ดูดวง & ความเชื่อ",
+    "platform": [
+      "Web",
+      "อัปเดตใหม่"
+    ],
+    "url": "https://moodoo.io",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-apps-apple-com-ba57a306",
+    "name": "LawLoop",
+    "summary": "แอปค้นกฎหมายไทยที่อ่านออกเสียงให้ฟังเหมือนฟังเพลง ค้นง่ายไม่ต้องจำเลขมาตรา",
+    "categoryKey": "edu",
+    "category": "การศึกษา",
+    "platform": [
+      "iOS",
+      "อัปเดตใหม่"
+    ],
+    "url": "https://apps.apple.com/th/app/id6797557268",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "knowledge"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-apps-apple-com-b952ba2f",
+    "name": "Mitty Film",
+    "summary": "กล้องฟิล์มจำลองบน iPhone ถ่าย 24 รูปต่อม้วน ไม่มีพรีวิว ต้องรอล้างถึงจะเห็น",
+    "categoryKey": "misc",
+    "category": "อื่น ๆ",
+    "platform": [
+      "iOS",
+      "อัปเดตใหม่"
+    ],
+    "url": "https://apps.apple.com/th/app/mitty-film-analog-camera/id6758087099",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "marketing"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-mypdfs-app-1f320173",
+    "name": "MyPDFs",
+    "summary": "เครื่องมือจัดการ PDF ครบชุด ไม่มีลิมิต ไม่มีโฆษณา ทำไว้ใช้เอง",
+    "categoryKey": "prod",
+    "category": "Productivity & เครื่องมือ",
+    "platform": [
+      "Web",
+      "อัปเดตใหม่"
+    ],
+    "url": "https://mypdfs.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "knowledge"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-sbtc-pntc-ac-th-b75817c3",
+    "name": "เครื่องมือ PDF วิทยาลัยเทคนิคพังงา",
+    "summary": "รวม แยก หมุน ลดขนาด และแปลง PDF เป็นรูปภาพ ใช้ได้ฟรีบนเว็บวิทยาลัย",
+    "categoryKey": "prod",
+    "category": "Productivity & เครื่องมือ",
+    "platform": [
+      "Web",
+      "อัปเดตใหม่"
+    ],
+    "url": "https://www.sbtc.pntc.ac.th/pdf-tools",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "knowledge"
+    ],
+    "tasks": [
+      "draft"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-sup-d-com-2f6d25b4",
+    "name": "SUP-D ทรัพย์ดี",
+    "summary": "ค้นหาและลงประกาศอสังหาฯ บ้าน ที่ดิน คอนโด รวมทรัพย์กรมบังคับคดีและ NPA ทั่วประเทศ",
+    "categoryKey": "auto",
+    "category": "ยานยนต์ & อสังหาฯ",
+    "platform": [
+      "Web",
+      "อัปเดตใหม่"
+    ],
+    "url": "https://sup-d.com/asset",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "knowledge"
+    ],
+    "tasks": [
+      "retrieve"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-taxi-narongkorn-com-48445d0f",
+    "name": "Taxi Meter Guard",
+    "summary": "เทียบค่าโดยสารแท็กซี่แบบเรียลไทม์ด้วย GPS ไว้เช็กว่ามิเตอร์เดินเร็วเกินจริงไหม",
+    "categoryKey": "travel",
+    "category": "ท่องเที่ยว & ไลฟ์สไตล์",
+    "platform": [
+      "Web",
+      "อัปเดตใหม่"
+    ],
+    "url": "https://taxi.narongkorn.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-nokkaew-co-8a436543",
+    "name": "นกแก้ว",
+    "summary": "ระบบเพื่อนชวนคุยสำหรับพ่อแม่ เก็บบทสนทนาเป็น AI Memory ของครอบครัว",
+    "categoryKey": "health",
+    "category": "สุขภาพ ครอบครัว & สัตว์เลี้ยง",
+    "platform": [
+      "Web",
+      "อัปเดตใหม่"
+    ],
+    "url": "https://nokkaew.co",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "people"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-xn-b3cz7afsb3e2a1hwd5b-com-97666900",
+    "name": "เที่ยวชัวร์",
+    "summary": "เว็บหาไกด์พาเที่ยวต่างประเทศ ยังอยู่ในช่วง beta",
+    "categoryKey": "travel",
+    "category": "ท่องเที่ยว & ไลฟ์สไตล์",
+    "platform": [
+      "Web",
+      "อัปเดตใหม่"
+    ],
+    "url": "https://xn--b3cz7afsb3e2a1hwd5b.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-capitribe-online-c3e1c59f",
+    "name": "Capitribe",
+    "summary": "คอมมูนิตี้นักลงทุน แชร์มุมมอง แท็กสินทรัพย์ มีพอร์ตจำลองซื้อขายหุ้น ทอง น้ำมัน คริปโต",
+    "categoryKey": "fin",
+    "category": "การเงิน & บัญชี",
+    "platform": [
+      "Web",
+      "อัปเดตใหม่"
+    ],
+    "url": "https://capitribe.online",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "sales",
+      "finance"
+    ],
+    "tasks": [
+      "transact"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-jaiflow-app-6b8d9600",
+    "name": "JaiFlow",
+    "summary": "แอปบันทึกอารมณ์ที่ใส่ระบบเกม สร้างเกาะ เก็บสตรีค ให้จดทุกวันแล้วสนุก",
+    "categoryKey": "health",
+    "category": "สุขภาพ ครอบครัว & สัตว์เลี้ยง",
+    "platform": [
+      "Web",
+      "อัปเดตใหม่"
+    ],
+    "url": "https://www.jaiflow.app",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [
+      "capture"
+    ],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "uc-madewithclaude-peesamac-com-be3d84b9",
+    "name": "Made with Claude",
+    "summary": "คลังรวมผลงานคนไทยที่สร้างด้วย Claude เปิดให้ชุมชนส่งโปรเจกต์เข้ามาเอง",
+    "categoryKey": "ai",
+    "category": "AI & Dev Tools",
+    "platform": [
+      "Web",
+      "อัปเดตใหม่"
+    ],
+    "url": "https://madewithclaude.peesamac.com",
+    "collection": "one_claude_catalog",
+    "businessFunctions": [
+      "other"
+    ],
+    "tasks": [],
+    "humanGate": null,
+    "evidenceLevel": "catalog_only",
+    "source": "https://open.thaith.ai/1claude/",
+    "checkedAt": "2026-09-11"
+  },
+  {
+    "id": "curated-anthropic-nurse-task-map",
+    "name": "Anthropic Economic Scenario Explorer — Nurse Task Map",
+    "summary": "แบบจำลองที่มองหนึ่งอาชีพเป็นชุดงานย่อย และแยกผลของ AI เป็นงานเดิม งานที่คนทำเร็วขึ้น งานที่ระบบทำแทน และงานใหม่สำหรับตรวจ AI",
+    "categoryKey": "gov",
+    "category": "ภาครัฐ ข้อมูล & สังคม",
+    "platform": [
+      "Web",
+      "Interactive",
+      "Economics"
+    ],
+    "url": "https://www.anthropic.com/institute/econ-scenarios",
+    "discoveryUrl": "https://www.facebook.com/share/1JnMaxKWWR/?mibextid=wwXIfr",
+    "collection": "curated_addition",
+    "businessFunctions": [
+      "workforce",
+      "strategy",
+      "education"
+    ],
+    "tasks": [
+      "classify",
+      "model",
+      "review"
+    ],
+    "humanGate": "ผู้ใช้เลือกสมมติฐานและตีความผลแบบจำลอง โดยไม่ถือผลลัพธ์เป็นคำพยากรณ์",
+    "evidenceLevel": "independently_verified",
+    "primarySource": "https://www.anthropic.com/institute/econ-scenarios",
+    "source": "Anthropic Economic Scenario Explorer v1.0, September 2026",
+    "checkedAt": "2026-09-11",
+    "taskMap": {
+      "unchanged": [
+        "อาบน้ำผู้ป่วย",
+        "เจาะเลือด",
+        "เดินตรวจ",
+        "พูดคุยกับผู้ป่วย"
+      ],
+      "augmented": [
+        "วางตารางดูแล",
+        "คัดกรองผู้ป่วย",
+        "ร่างคำแนะนำกลับบ้าน",
+        "ประสานแพทย์"
+      ],
+      "automated": [
+        "บันทึกสัญญาณชีพ",
+        "สั่งของเข้าวอร์ด",
+        "นัดติดตาม"
+      ],
+      "created": [
+        "ตรวจผลการคัดกรองของ AI",
+        "ทบทวนแผนดูแลที่ AI เสนอ"
+      ]
+    }
+  }
+]
