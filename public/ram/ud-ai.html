@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="ดาวน์โหลด Marketing Warroom OS และคัดลอกคำสั่งติดตั้งสำหรับ Claude Code หรือ Codex">
+  <meta name="description" content="ดาวน์โหลด Marketing Warroom OS พร้อมคำสั่งติดตั้งและ LINE Agent Building Prompt สำหรับ Claude Code หรือ Codex">
   <meta name="referrer" content="no-referrer">
   <title>รับ Marketing Warroom OS 2.0.3</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,22 +43,87 @@
       </ol>
       <details class="mt-8 rounded-2xl bg-[#f4f0e7] p-5"><summary class="cursor-pointer font-semibold">ตรวจว่าไฟล์ดาวน์โหลดครบ</summary><div class="mt-3 space-y-3 text-sm text-[#35536c]"><p>macOS: <code class="break-all">shasum -a 256 marketing-warroom-os-delivery-v2.0.3-marketing-warroom-os.zip</code></p><p>Windows: <code class="break-all">certutil -hashfile marketing-warroom-os-delivery-v2.0.3-marketing-warroom-os.zip SHA256</code></p><p>ค่าที่ได้ต้องตรงกับ SHA-256 ด้านซ้าย</p></div></details>
     </section>
+
+    <section id="line-agent-building-prompt" class="overflow-hidden rounded-[2rem] bg-[#10283f] text-white shadow-2xl shadow-[#072b4e]/20 lg:col-span-2">
+      <div class="grid gap-0 lg:grid-cols-[.78fr_1.22fr]">
+        <div class="p-7 sm:p-10">
+          <p class="text-sm font-semibold uppercase tracking-[.2em] text-[#58d0cb]">Bonus builder · พร้อมใช้ในคลาส</p>
+          <h2 class="mt-5 [font-family:'Kanit',sans-serif] text-3xl font-semibold leading-tight sm:text-5xl">LINE Agent <br>Building Prompt</h2>
+          <p class="mt-5 max-w-md text-base leading-7 text-white/75">ให้ผู้เรียนเปิดโฟลเดอร์ AI Office ใน Codex Desktop หรือ Claude Code Desktop แล้ววาง Prompt นี้ครั้งเดียว Agent จะเดินงานตั้งแต่ตรวจเครื่องจนถึงทดสอบส่ง LINE จริง</p>
+          <ul class="mt-7 grid gap-3 text-sm sm:grid-cols-3 lg:grid-cols-1">
+            <li class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">ใช้ OA ทดสอบหรือ OA ภายในเท่านั้น</li>
+            <li class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">เก็บ Token ในไฟล์ env ไม่วางในแชต</li>
+            <li class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">ส่งตรงหา LINE ส่วนตัว ไม่เปิด broadcast</li>
+          </ul>
+        </div>
+
+        <div class="bg-white p-6 text-[#072b4e] sm:p-10">
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <label class="[font-family:'Kanit',sans-serif] text-xl font-semibold" for="line-agent-prompt">Setup Prompt สำหรับผู้เรียน</label>
+              <p class="mt-1 text-sm text-[#526b7e]">ฉบับเต็มมีขั้นตอนความปลอดภัย, LINE MCP และ Morning briefing</p>
+            </div>
+            <a class="text-sm font-semibold text-[#0f7779] underline decoration-2 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#072b4e]" href="/ram/ud-ai/line-agent-building-prompt.md" target="_blank" rel="noopener">เปิด Prompt แบบไฟล์</a>
+          </div>
+          <textarea id="line-agent-prompt" class="textarea mt-5 min-h-96 w-full resize-y border-[#072b4e]/20 bg-[#f8fafc] font-mono text-sm leading-6 text-[#072b4e]" data-source="/ram/ud-ai/line-agent-building-prompt.md" readonly aria-describedby="line-agent-prompt-status">กำลังโหลด Prompt…</textarea>
+          <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <button class="btn min-h-12 border-0 bg-[#dd4155] px-6 text-white hover:bg-[#b92f43] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#072b4e] disabled:bg-[#9aa8b3] disabled:text-white" type="button" data-copy-line-prompt disabled>คัดลอก LINE Agent Prompt</button>
+            <p id="line-agent-prompt-status" class="text-sm text-[#526b7e]" aria-live="polite" data-copy-line-status>กำลังโหลด Prompt ฉบับเต็ม</p>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
   <script>
-    const button = document.querySelector('[data-copy-prompt]');
-    const prompt = document.querySelector('#install-prompt');
-    const status = document.querySelector('[data-copy-status]');
-    button.addEventListener('click', async () => {
+    async function copyPrompt(prompt, button, status, successMessage) {
       try {
         if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(prompt.value);
         else { prompt.select(); document.execCommand('copy'); prompt.setSelectionRange(0, 0); }
         button.textContent = 'คัดลอกแล้ว';
-        status.textContent = 'เปิด Claude Code หรือ Codex ที่โฟลเดอร์ซึ่งแตก ZIP แล้ววางข้อความได้เลย';
+        status.textContent = successMessage;
       } catch {
         prompt.focus(); prompt.select();
         status.textContent = 'กด Ctrl+C หรือ Command+C เพื่อคัดลอกข้อความที่เลือกไว้';
       }
-    });
+    }
+
+    const installButton = document.querySelector('[data-copy-prompt]');
+    const installPrompt = document.querySelector('#install-prompt');
+    const installStatus = document.querySelector('[data-copy-status]');
+    installButton.addEventListener('click', () => copyPrompt(
+      installPrompt,
+      installButton,
+      installStatus,
+      'เปิด Claude Code หรือ Codex ที่โฟลเดอร์ซึ่งแตก ZIP แล้ววางข้อความได้เลย',
+    ));
+
+    const lineButton = document.querySelector('[data-copy-line-prompt]');
+    const linePrompt = document.querySelector('#line-agent-prompt');
+    const lineStatus = document.querySelector('[data-copy-line-status]');
+
+    async function loadLinePrompt() {
+      try {
+        const response = await fetch(linePrompt.dataset.source, { credentials: 'omit', cache: 'no-store' });
+        if (!response.ok) throw new Error(`Prompt request failed: ${response.status}`);
+        const markdown = await response.text();
+        const promptBlock = markdown.match(/```text\s*\n([\s\S]*?)\n```/);
+        if (!promptBlock) throw new Error('Prompt block is missing');
+        linePrompt.value = promptBlock[1].trim();
+        lineButton.disabled = false;
+        lineStatus.textContent = 'Prompt พร้อมคัดลอก ใช้กับ OA ทดสอบหรือ OA ภายในเท่านั้น';
+      } catch {
+        linePrompt.value = 'โหลด Prompt ไม่สำเร็จ กรุณาเปิด Prompt แบบไฟล์จากลิงก์ด้านบน';
+        lineStatus.textContent = 'โหลด Prompt ไม่สำเร็จ ให้เปิด Prompt แบบไฟล์จากลิงก์ด้านบน';
+      }
+    }
+
+    lineButton.addEventListener('click', () => copyPrompt(
+      linePrompt,
+      lineButton,
+      lineStatus,
+      'คัดลอกแล้ว เปิดโฟลเดอร์ AI Office ใน Codex หรือ Claude Code แล้ววางได้เลย',
+    ));
+    loadLinePrompt();
   </script>
 </body>
 </html>
