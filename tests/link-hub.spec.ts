@@ -28,7 +28,7 @@ const routes = [
 ] as const;
 const supportCopy = [
   'ทัก LINE เล่าโจทย์คร่าวๆ ได้เลย',
-  '24–25 ต.ค. 2026 · ฿19,900',
+  '17–18 ต.ค. 2026 · ฿19,900',
   'ตั้ง Worker บน Cloud ด้วย AI Agent',
   'เลือกจากโจทย์จริงของทีมและองค์กร',
   'Sponsor · Partnership · Speaker',
@@ -144,13 +144,21 @@ test('content and destination contract exposes the five approved routes', async 
   await expect(p1Route).toHaveAttribute('data-link-event', 'p1-bootcamp');
   await expect(p1Route).toHaveAttribute('data-link-target', 'p1-bootcamp');
   await expect(p1Route).toHaveAttribute('data-link-platform', 'line');
-  const urgencyBanner = p1Route.locator('[data-p1-urgency]');
-  await expect(urgencyBanner).toHaveText('SUPER EARLY BIRD · ตอนนี้เหลือแค่ 4 ที่นั่ง');
-  const [routeBox, bannerBox] = await Promise.all([p1Route.boundingBox(), urgencyBanner.boundingBox()]);
-  assert.ok(routeBox && bannerBox, 'P1 route and urgency banner must be measurable');
-  assert.ok(Math.abs(routeBox.x - bannerBox.x) <= 2, 'urgency banner must start at the card edge');
-  assert.ok(Math.abs(routeBox.width - bannerBox.width) <= 2, 'urgency banner must span the card width');
-  await expect(p1Route.getByText('สมัครแล้ว 6/10', { exact: true })).toBeVisible();
+  await expect(p1Route.locator('[data-p1-urgency]')).toHaveCount(0);
+  await expect(p1Route.getByText('สมัครแล้ว 6/10', { exact: true })).toHaveCount(0);
+  const capacity = page.locator('[data-p1-capacity]');
+  const progress = capacity.getByRole('progressbar', { name: 'ที่นั่งราคา Super Early Bird' });
+  await expect(capacity.getByText('SUPER EARLY BIRD', { exact: true })).toBeVisible();
+  await expect(capacity.getByText('เหลือ 4 ที่นั่ง', { exact: true })).toBeVisible();
+  await expect(progress).toHaveAttribute('aria-valuemin', '0');
+  await expect(progress).toHaveAttribute('aria-valuemax', '10');
+  await expect(progress).toHaveAttribute('aria-valuenow', '6');
+  await expect(progress).toHaveAttribute('aria-valuetext', 'สมัครแล้ว 6 ที่นั่ง เหลือ 4 ที่นั่ง');
+  const [routeBox, capacityBox] = await Promise.all([p1Route.boundingBox(), capacity.boundingBox()]);
+  assert.ok(routeBox && capacityBox, 'P1 route and capacity bar must be measurable');
+  assert.ok(capacityBox.y >= routeBox.y + routeBox.height, 'capacity bar must sit below the P1 button');
+  assert.ok(Math.abs(routeBox.x - capacityBox.x) <= 2, 'capacity bar must align with the P1 button');
+  assert.ok(Math.abs(routeBox.width - capacityBox.width) <= 2, 'capacity bar must match the P1 button width');
   await expect(futureSkillRoute).toHaveAttribute('target', '_blank');
   await expect(futureSkillRoute).toHaveAttribute('rel', 'noopener');
   await expect(futureSkillRoute).toHaveAttribute('data-link-platform', 'futureskill');
