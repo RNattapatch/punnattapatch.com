@@ -49,6 +49,50 @@ async function openPage(viewport = { width: 390, height: 844 }) {
   return { context, page };
 }
 
+test('the page starts with the slide and shared-context classroom sessions in order', async () => {
+  const { context, page } = await openPage();
+  const sectionIds = await page.locator('main > section').evaluateAll((sections) => sections.slice(0, 2).map((section) => section.id));
+
+  assert.deepEqual(sectionIds, ['classroom-slides', 'shared-context-handoff-prompt']);
+  const slides = page.locator('#classroom-slides');
+  assert.match(await slides.getByRole('heading', { name: 'สไลด์บทเรียน' }).textContent(), /สไลด์บทเรียน/);
+  assert.equal(await slides.getByRole('button', { name: 'ไฟล์ PDF กำลัง Export' }).isDisabled(), true);
+  assert.equal(await slides.locator('a[href$=".pdf"]').count(), 0, 'pending slide section must not expose a fake download');
+  await context.close();
+});
+
+test('a student can load and copy the complete Shared Context and Handoff Prompt', async () => {
+  const { context, page } = await openPage();
+  const section = page.locator('#shared-context-handoff-prompt');
+  const prompt = page.locator('#shared-context-prompt');
+
+  assert.equal(await section.isVisible(), true, 'Shared Context + Cross-Agent Handoff section is missing');
+  await page.waitForFunction(() => document.querySelector('#shared-context-prompt')?.value.startsWith('สร้างระบบ Shared Context'));
+
+  const promptText = await prompt.inputValue();
+  assert.match(promptText, /^สร้างระบบ Shared Context \+ Cross-Agent Handoff/);
+  assert.match(promptText, /AI Agent ที่ใช้: \[กรอก เช่น Claude Code, Codex, GPT\]/);
+  assert.match(promptText, /memory\/SHARED\.md/);
+  assert.match(promptText, /จำลอง Agent A เปิดงานและส่งต่อให้ Agent B/);
+
+  await section.getByRole('button', { name: 'คัดลอก Shared Context Prompt' }).click();
+  assert.equal(await page.evaluate(() => navigator.clipboard.readText()), promptText);
+  assert.match(await section.locator('[data-copy-shared-status]').textContent(), /คัดลอกแล้ว/);
+  await context.close();
+});
+
+test('the Agent A to Agent B handoff flow stays on one row on mobile', async () => {
+  const { context, page } = await openPage({ width: 375, height: 812 });
+  const boxes = await page.locator('[aria-label="Agent handoff flow"] > span:not([aria-hidden="true"])').evaluateAll((labels) => labels.map((label) => {
+    const box = label.getBoundingClientRect();
+    return { top: box.top, bottom: box.bottom };
+  }));
+
+  assert.equal(boxes.length, 3);
+  assert.ok(Math.max(...boxes.map((box) => box.top)) - Math.min(...boxes.map((box) => box.top)) < 2, 'handoff labels wrap onto different rows');
+  await context.close();
+});
+
 test('a student can load and copy the complete LINE Agent Building Prompt', async () => {
   const { context, page } = await openPage();
   const section = page.locator('#line-agent-building-prompt');
