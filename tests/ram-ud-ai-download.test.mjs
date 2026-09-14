@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import test, { after, before } from 'node:test';
 import { chromium } from 'playwright';
 
@@ -7,6 +8,12 @@ const port = 4397;
 const localOrigin = `http://127.0.0.1:${port}`;
 const targetUrl = process.env.UD_AI_URL ?? `${localOrigin}/ram/ud-ai.html`;
 const slideFilename = 'Final-UD_Clinic_AI_Office_1Day_Training_Deck_2026-09-12_v2_REVISED.pdf';
+const freshInstallFilename = 'marketing-warroom-os-delivery-v2.0.4-marketing-warroom-os.zip';
+const updateFilename = 'marketing-warroom-os-update-v2.0.4-from-v2.0.3.zip';
+const expectedArtifacts = [
+  { filename: freshInstallFilename, bytes: 363_431, sha256: '00ef3ee70a3bde21f0b6b1c86db73c0135f7757fc1177b1f5e1b702df6a3e6b0' },
+  { filename: updateFilename, bytes: 367_907, sha256: '5562854a97fb717be1bb797d0920fef1da49c80728dd63bc7cd48d9e8e94db4c' },
+];
 let server;
 let browser;
 
@@ -72,6 +79,41 @@ test('the classroom slide action serves the complete PDF artifact', async () => 
   const body = new Uint8Array(await response.arrayBuffer());
   assert.equal(new TextDecoder().decode(body.subarray(0, 4)), '%PDF');
   assert.equal(body.byteLength, 15_081_332, 'served PDF differs from the verified classroom deck');
+});
+
+test('existing users get the V2.0.3 updater while new users get the V2.0.4 full install', async () => {
+  const { context, page } = await openPage();
+  assert.match(await page.title(), /Marketing Warroom OS 2\.0\.4/);
+
+  const updateSection = page.locator('#warroom-update');
+  const installSection = page.locator('#warroom-fresh-install');
+  assert.equal(await updateSection.isVisible(), true);
+  assert.equal(await installSection.isVisible(), true);
+  assert.equal(
+    await updateSection.getByRole('link', { name: 'ดาวน์โหลดตัวอัปเดต V2.0.4' }).getAttribute('href'),
+    `/ram/ud-ai/${updateFilename}`,
+  );
+  assert.equal(
+    await installSection.getByRole('link', { name: 'ดาวน์โหลดชุดติดตั้งใหม่ V2.0.4' }).getAttribute('href'),
+    `/ram/ud-ai/${freshInstallFilename}`,
+  );
+  assert.match(await updateSection.textContent(), /เก็บ company\/.*data\/.*wiki\/.*output\//s);
+  assert.match(await updateSection.textContent(), /Apply Update\.command/);
+  assert.match(await updateSection.textContent(), /Apply Update\.bat/);
+  const installPrompt = await page.locator('#install-prompt').inputValue();
+  assert.match(installPrompt, /Claude Code:\s*\/install/);
+  assert.match(installPrompt, /Codex:\s*\$install/);
+  await context.close();
+});
+
+test('both V2.0.4 downloads serve the pinned bytes and SHA-256', async () => {
+  for (const artifact of expectedArtifacts) {
+    const response = await fetch(new URL(`/ram/ud-ai/${artifact.filename}`, targetUrl));
+    assert.equal(response.ok, true, `${artifact.filename} request failed with ${response.status}`);
+    const body = Buffer.from(await response.arrayBuffer());
+    assert.equal(body.byteLength, artifact.bytes, `${artifact.filename} size changed`);
+    assert.equal(createHash('sha256').update(body).digest('hex'), artifact.sha256, `${artifact.filename} SHA-256 changed`);
+  }
 });
 
 test('a student can load and copy the complete Shared Context and Handoff Prompt', async () => {
@@ -157,4 +199,32 @@ test('the delivery page has no horizontal overflow at classroom viewports', asyn
     assert.ok(geometry.sectionWidth > 0 && geometry.sectionWidth <= geometry.clientWidth, `${viewport.width}px prompt section is outside the viewport`);
     await context.close();
   }
+});
+
+test('download controls and prompts expose accessible names, descriptions, and heading order', async () => {
+  const { context, page } = await openPage();
+  const audit = await page.evaluate(() => {
+    const headings = [...document.querySelectorAll('h1,h2,h3,h4,h5,h6')];
+    const headingLevels = headings.map((heading) => Number(heading.tagName.slice(1)));
+    return {
+      unnamedControls: [...document.querySelectorAll('a[href],button,textarea')]
+        .filter((element) => {
+          const labelledBy = element.getAttribute('aria-labelledby');
+          const label = element.id ? document.querySelector(`label[for="${element.id}"]`) : null;
+          return !(element.getAttribute('aria-label') || labelledBy || label || element.textContent?.trim());
+        })
+        .map((element) => element.outerHTML),
+      headingSkip: headingLevels.some((level, index) => index > 0 && level > headingLevels[index - 1] + 1),
+      installLabel: Boolean(document.querySelector('label[for="install-prompt"]')),
+      installDescription: document.querySelector('#install-prompt')?.getAttribute('aria-describedby') || null,
+      descriptionExists: Boolean(document.querySelector('#install-prompt-status')),
+    };
+  });
+
+  assert.deepEqual(audit.unnamedControls, []);
+  assert.equal(audit.headingSkip, false);
+  assert.equal(audit.installLabel, true);
+  assert.equal(audit.installDescription, 'install-prompt-status');
+  assert.equal(audit.descriptionExists, true);
+  await context.close();
 });

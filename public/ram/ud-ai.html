@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="ดาวน์โหลดสไลด์ Marketing Warroom OS พร้อม Shared Context, Handoff และ LINE Agent Building Prompt สำหรับ Claude Code หรือ Codex">
   <meta name="referrer" content="no-referrer">
-  <title>รับ Marketing Warroom OS 2.0.3</title>
+  <title>รับ Marketing Warroom OS 2.0.4</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
@@ -62,34 +62,63 @@
       </div>
     </section>
 
-    <section class="rounded-[2rem] bg-[#072b4e] p-7 text-white shadow-2xl shadow-[#072b4e]/20 sm:p-10">
-      <p class="mb-8 text-sm font-semibold uppercase tracking-[.2em] text-[#f1b44c]">Marketing Warroom OS · Delivery 2.0.3</p>
-      <h2 class="max-w-xl [font-family:'Kanit',sans-serif] text-4xl font-semibold leading-tight sm:text-6xl">โหลดหนึ่งไฟล์<br>แล้วให้ AI ติดตั้ง</h2>
-      <p class="mt-6 max-w-lg text-lg leading-8 text-white/75">Edition: Marketing Warroom OS · ใช้ได้บน macOS และ Windows · ต้องมี Node.js 20+ พร้อม Claude Code หรือ Codex</p>
-      <div class="mt-10 border-l-4 border-[#dd4155] pl-5">
-        <p class="text-sm text-white/60">SHA-256</p>
-        <code class="mt-2 block break-all text-sm text-[#f1b44c]">976355b736fa99c52ee5ace041a3bbc8d202779f2885a2a6ac06c8d6a793101d</code>
+    <section id="warroom-update" class="overflow-hidden rounded-[2rem] border border-[#072b4e]/10 bg-white shadow-xl shadow-[#072b4e]/10 lg:col-span-2">
+      <div class="grid lg:grid-cols-[.78fr_1.22fr]">
+        <div class="bg-[#dd4155] p-7 text-white sm:p-10">
+          <p class="text-sm font-semibold uppercase tracking-[.2em] text-white/75">Existing workspace · V2.0.3</p>
+          <h2 class="mt-4 [font-family:'Kanit',sans-serif] text-4xl font-semibold leading-tight sm:text-5xl">ใช้ V2.0.3 อยู่<br>อัปเดตของเดิม</h2>
+          <p class="mt-5 max-w-md text-lg leading-8 text-white/85">เก็บ <code>company/</code>, <code>data/</code>, <code>wiki/</code> และ <code>output/</code> เดิมไว้ครบ ไม่ต้องติดตั้ง workspace ใหม่</p>
+          <div class="mt-8 border-l-4 border-white/60 pl-5">
+            <p class="text-sm text-white/70">Update SHA-256</p>
+            <code class="mt-2 block break-all text-xs text-white">5562854a97fb717be1bb797d0920fef1da49c80728dd63bc7cd48d9e8e94db4c</code>
+          </div>
+        </div>
+        <div class="p-6 sm:p-10">
+          <p class="text-sm font-semibold uppercase tracking-[.16em] text-[#dd4155]">V2.0.3 → V2.0.4</p>
+          <h3 class="mt-2 [font-family:'Kanit',sans-serif] text-3xl font-semibold">อัปเดตครั้งเดียว ระบบตรวจและ rollback ให้เอง</h3>
+          <ol class="mt-6 space-y-4 text-[#35536c]">
+            <li><strong class="text-[#072b4e]">1.</strong> ดาวน์โหลด ZIP ไปไว้ในโฟลเดอร์ V2.0.3 เดิม โฟลเดอร์เดียวกับ <code>VERSION</code> และ <code>company/</code></li>
+            <li><strong class="text-[#072b4e]">2.</strong> แตก ZIP ตรงนั้น แล้วเปิด <code>Apply Update.command</code> บน macOS หรือ <code>Apply Update.bat</code> บน Windows</li>
+            <li><strong class="text-[#072b4e]">3.</strong> เปิดระบบจาก launcher เดิมเมื่อหน้าต่างรายงานว่า Golden และ Company Doctor ผ่าน</li>
+          </ol>
+          <a class="btn mt-7 h-auto min-h-12 max-w-full whitespace-normal border-0 bg-[#dd4155] px-6 py-3 text-center leading-5 text-white hover:bg-[#b92f43] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#072b4e]" href="/ram/ud-ai/marketing-warroom-os-update-v2.0.4-from-v2.0.3.zip" download>ดาวน์โหลดตัวอัปเดต V2.0.4</a>
+          <a class="mt-4 block w-fit text-sm font-semibold text-[#0f7779] underline decoration-2 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#072b4e]" href="/ram/ud-ai/marketing-warroom-os-update-v2.0.4-from-v2.0.3.sha256.txt" download>ดาวน์โหลดไฟล์ checksum</a>
+          <p class="mt-5 rounded-2xl bg-[#f4f0e7] p-4 text-sm leading-6 text-[#35536c]">ตัวอัปเดตสร้าง snapshot ก่อนเปลี่ยนไฟล์ระบบ หาก Golden หรือ Company Doctor ไม่ผ่าน จะคืน V2.0.3 ให้อัตโนมัติ</p>
+        </div>
       </div>
     </section>
 
-    <section class="rounded-[2rem] border border-[#072b4e]/10 bg-white p-6 shadow-xl shadow-[#072b4e]/10 sm:p-10">
-      <ol class="space-y-8">
-        <li class="grid grid-cols-[3rem_1fr] gap-4">
-          <span class="grid h-12 w-12 place-items-center rounded-full bg-[#dd4155] [font-family:'Kanit',sans-serif] text-xl font-semibold text-white">1</span>
-          <div class="min-w-0"><h2 class="[font-family:'Kanit',sans-serif] text-2xl font-semibold">ดาวน์โหลดและแตก ZIP</h2><p class="mt-1 text-[#35536c]">ห้ามเปิด workspace จากใน ZIP โดยตรง</p><a class="btn mt-4 h-auto min-h-12 max-w-full whitespace-normal border-0 bg-[#dd4155] px-6 py-3 text-center leading-5 text-white hover:bg-[#b92f43] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#072b4e]" href="/ram/ud-ai/marketing-warroom-os-delivery-v2.0.3-marketing-warroom-os.zip" download>ดาวน์โหลด marketing-warroom-os-delivery-v2.0.3-marketing-warroom-os.zip</a></div>
-        </li>
-        <li class="grid grid-cols-[3rem_1fr] gap-4">
-          <span class="grid h-12 w-12 place-items-center rounded-full bg-[#0f8b8d] [font-family:'Kanit',sans-serif] text-xl font-semibold text-white">2</span>
-          <div class="min-w-0"><h2 class="[font-family:'Kanit',sans-serif] text-2xl font-semibold">เปิดโฟลเดอร์ใน AI agent</h2><p class="mt-1 text-[#35536c]">ใช้บัญชีบริษัท แล้ววางข้อความนี้ครั้งเดียว</p><textarea id="install-prompt" class="textarea mt-4 min-h-40 w-full border-[#072b4e]/20 bg-[#f8fafc] font-mono text-sm leading-6 text-[#072b4e]" readonly>อ่าน AGENTS.md และ เริ่มตรงนี้.md แล้วติดตั้ง Marketing Warroom OS
+    <section id="warroom-fresh-install" class="overflow-hidden rounded-[2rem] border border-[#072b4e]/10 bg-white shadow-xl shadow-[#072b4e]/10 lg:col-span-2">
+      <div class="grid lg:grid-cols-[.78fr_1.22fr]">
+        <div class="bg-[#072b4e] p-7 text-white sm:p-10">
+          <p class="text-sm font-semibold uppercase tracking-[.2em] text-[#f1b44c]">Fresh install · Delivery 2.0.4</p>
+          <h2 class="mt-4 max-w-xl [font-family:'Kanit',sans-serif] text-4xl font-semibold leading-tight sm:text-5xl">ยังไม่มี Warroom<br>ติดตั้งชุดใหม่</h2>
+          <p class="mt-5 max-w-md text-lg leading-8 text-white/75">ใช้ได้บน macOS และ Windows ต้องมี Node.js 20+ พร้อม Claude Code หรือ Codex</p>
+          <div class="mt-8 border-l-4 border-[#dd4155] pl-5">
+            <p class="text-sm text-white/60">Fresh install SHA-256</p>
+            <code class="mt-2 block break-all text-xs text-[#f1b44c]">00ef3ee70a3bde21f0b6b1c86db73c0135f7757fc1177b1f5e1b702df6a3e6b0</code>
+          </div>
+        </div>
+        <div class="p-6 sm:p-10">
+          <ol class="space-y-8">
+            <li class="grid grid-cols-[3rem_1fr] gap-4">
+              <span class="grid h-12 w-12 place-items-center rounded-full bg-[#dd4155] [font-family:'Kanit',sans-serif] text-xl font-semibold text-white">1</span>
+              <div class="min-w-0"><h3 class="[font-family:'Kanit',sans-serif] text-2xl font-semibold">ดาวน์โหลดและแตก ZIP</h3><p class="mt-1 text-[#35536c]">ใช้ขั้นตอนนี้เมื่อยังไม่มี Marketing Warroom OS เท่านั้น</p><a class="btn mt-4 h-auto min-h-12 max-w-full whitespace-normal border-0 bg-[#dd4155] px-6 py-3 text-center leading-5 text-white hover:bg-[#b92f43] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#072b4e]" href="/ram/ud-ai/marketing-warroom-os-delivery-v2.0.4-marketing-warroom-os.zip" download>ดาวน์โหลดชุดติดตั้งใหม่ V2.0.4</a><a class="mt-4 block w-fit text-sm font-semibold text-[#0f7779] underline decoration-2 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#072b4e]" href="/ram/ud-ai/marketing-warroom-os-delivery-v2.0.4-marketing-warroom-os.sha256.txt" download>ดาวน์โหลดไฟล์ checksum</a></div>
+            </li>
+            <li class="grid grid-cols-[3rem_1fr] gap-4">
+              <span class="grid h-12 w-12 place-items-center rounded-full bg-[#0f8b8d] [font-family:'Kanit',sans-serif] text-xl font-semibold text-white">2</span>
+              <div class="min-w-0"><h3 class="[font-family:'Kanit',sans-serif] text-2xl font-semibold">เปิดโฟลเดอร์ใน AI agent</h3><p class="mt-1 text-[#35536c]">ใช้บัญชีบริษัท แล้ววางข้อความนี้ครั้งเดียว</p><label class="sr-only" for="install-prompt">คำสั่งติดตั้ง Marketing Warroom OS V2.0.4</label><textarea id="install-prompt" class="textarea mt-4 min-h-40 w-full border-[#072b4e]/20 bg-[#f8fafc] font-mono text-sm leading-6 text-[#072b4e]" readonly aria-describedby="install-prompt-status">อ่าน AGENTS.md และ เริ่มตรงนี้.md แล้วติดตั้ง Marketing Warroom OS
 ห้ามสร้างหรือแก้ feature ระหว่างติดตั้ง
-รัน /install ให้ครบทุกด่าน ถ้าผ่านให้เปิดระบบและรายงาน Delivery Status</textarea><button class="btn mt-3 min-h-12 border-0 bg-[#0f8b8d] px-6 text-white hover:bg-[#0b6f71] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#072b4e]" type="button" data-copy-prompt>คัดลอกคำสั่งติดตั้ง</button><p class="mt-3 text-sm text-[#526b7e]" aria-live="polite" data-copy-status>เมื่อ agent รายงาน READY และ Golden 26/26 จึงเริ่มใช้ระบบ</p></div>
-        </li>
-        <li class="grid grid-cols-[3rem_1fr] gap-4">
-          <span class="grid h-12 w-12 place-items-center rounded-full bg-[#072b4e] [font-family:'Kanit',sans-serif] text-xl font-semibold text-white">3</span>
-          <div class="min-w-0"><h2 class="[font-family:'Kanit',sans-serif] text-2xl font-semibold">ตรวจสถานะก่อนเริ่มใช้</h2><p class="mt-1 text-[#35536c]">เริ่มงานเมื่อ agent รายงาน <code>READY</code>, Golden 26/26 และเปิด URL ในเครื่องได้ ถ้าสถานะไม่ผ่าน ให้ทำตาม <code>next_action</code> ที่ agent รายงาน</p></div>
-        </li>
-      </ol>
-      <details class="mt-8 rounded-2xl bg-[#f4f0e7] p-5"><summary class="cursor-pointer font-semibold">ตรวจว่าไฟล์ดาวน์โหลดครบ</summary><div class="mt-3 space-y-3 text-sm text-[#35536c]"><p>macOS: <code class="break-all">shasum -a 256 marketing-warroom-os-delivery-v2.0.3-marketing-warroom-os.zip</code></p><p>Windows: <code class="break-all">certutil -hashfile marketing-warroom-os-delivery-v2.0.3-marketing-warroom-os.zip SHA256</code></p><p>ค่าที่ได้ต้องตรงกับ SHA-256 ด้านซ้าย</p></div></details>
+ใช้ install skill ให้ครบทุกด่าน (Claude Code: /install · Codex: $install)
+ถ้าผ่านให้เปิดระบบและรายงาน Delivery Status</textarea><button class="btn mt-3 min-h-12 border-0 bg-[#0f8b8d] px-6 text-white hover:bg-[#0b6f71] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#072b4e]" type="button" data-copy-prompt>คัดลอกคำสั่งติดตั้ง</button><p id="install-prompt-status" class="mt-3 text-sm text-[#526b7e]" aria-live="polite" data-copy-status>เมื่อ agent รายงาน READY และ Golden 26/26 จึงเริ่มใช้ระบบ</p></div>
+            </li>
+            <li class="grid grid-cols-[3rem_1fr] gap-4">
+              <span class="grid h-12 w-12 place-items-center rounded-full bg-[#072b4e] [font-family:'Kanit',sans-serif] text-xl font-semibold text-white">3</span>
+              <div class="min-w-0"><h3 class="[font-family:'Kanit',sans-serif] text-2xl font-semibold">ตรวจสถานะก่อนเริ่มใช้</h3><p class="mt-1 text-[#35536c]">เริ่มงานเมื่อ agent รายงาน <code>READY</code>, Golden 26/26 และเปิด URL ในเครื่องได้ ถ้าสถานะไม่ผ่าน ให้ทำตาม <code>next_action</code> ที่ agent รายงาน</p></div>
+            </li>
+          </ol>
+        </div>
+      </div>
     </section>
 
     <section id="line-agent-building-prompt" class="overflow-hidden rounded-[2rem] bg-[#10283f] text-white shadow-2xl shadow-[#072b4e]/20 lg:col-span-2">
