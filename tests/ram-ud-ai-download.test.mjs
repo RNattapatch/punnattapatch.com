@@ -6,6 +6,7 @@ import { chromium } from 'playwright';
 const port = 4397;
 const localOrigin = `http://127.0.0.1:${port}`;
 const targetUrl = process.env.UD_AI_URL ?? `${localOrigin}/ram/ud-ai.html`;
+const slideFilename = 'Final-UD_Clinic_AI_Office_1Day_Training_Deck_2026-09-12_v2_REVISED.pdf';
 let server;
 let browser;
 
@@ -56,9 +57,21 @@ test('the page starts with the slide and shared-context classroom sessions in or
   assert.deepEqual(sectionIds, ['classroom-slides', 'shared-context-handoff-prompt']);
   const slides = page.locator('#classroom-slides');
   assert.match(await slides.getByRole('heading', { name: 'สไลด์บทเรียน' }).textContent(), /สไลด์บทเรียน/);
-  assert.equal(await slides.getByRole('button', { name: 'ไฟล์ PDF กำลัง Export' }).isDisabled(), true);
-  assert.equal(await slides.locator('a[href$=".pdf"]').count(), 0, 'pending slide section must not expose a fake download');
+  const download = slides.getByRole('link', { name: 'ดาวน์โหลดสไลด์บทเรียน PDF' });
+  assert.equal(await download.getAttribute('href'), `/ram/ud-ai/${slideFilename}`);
+  assert.notEqual(await download.getAttribute('download'), null, 'slide link must download rather than navigate away');
+  assert.equal(await slides.getByText('ไฟล์ PDF กำลัง Export').count(), 0, 'published slide section must not retain pending copy');
   await context.close();
+});
+
+test('the classroom slide action serves the complete PDF artifact', async () => {
+  const response = await fetch(new URL(`/ram/ud-ai/${slideFilename}`, targetUrl));
+  assert.equal(response.ok, true, `slide PDF request failed with ${response.status}`);
+  assert.match(response.headers.get('content-type') ?? '', /application\/pdf/i);
+
+  const body = new Uint8Array(await response.arrayBuffer());
+  assert.equal(new TextDecoder().decode(body.subarray(0, 4)), '%PDF');
+  assert.equal(body.byteLength, 15_081_332, 'served PDF differs from the verified classroom deck');
 });
 
 test('a student can load and copy the complete Shared Context and Handoff Prompt', async () => {
