@@ -4,6 +4,7 @@
 
 export interface CatalogPackage {
   key: string;
+  name?: string;
   amount_thb: number;
   bot_may_quote: boolean;
 }
