@@ -112,7 +112,7 @@
       "image_url": "https://punnattapatch.com/services/thumbs/p1-ai-sales-agent-bootcamp.jpg",
       "outline_url": null,
       "status": "live",
-      "bot_may_quote": false
+      "bot_may_quote": true
     },
     {
       "key": "daily-sales-consulting",

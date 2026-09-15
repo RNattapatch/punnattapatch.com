@@ -104,7 +104,8 @@ export const CATALOG = {
     // 2026-09-11: รื้อเนื้อคลาสใหม่ทั้งตัวตาม OUTLINE-DRAFT-v2 (AI Sale Loop System) แล้วเปิดขายอีกครั้ง → live
     // ปันสั่ง 2026-09-11: รุ่นที่ 1 รับ 20 ท่าน · เรียนเสาร์ 24 – อาทิตย์ 25 ต.ค. 2026 (เลิกใช้กติกา Blind Ticket เพราะประกาศวันแล้ว)
     // Early Bird = 10 ที่นั่งแรกของห้อง 20 ที่นั่ง · ราคาไม่ขยับจาก SSOT
-    // botQuote ยัง false โดยตั้งใจ: ชุด copy B กำหนดว่าราคาคลาสนี้ให้คนตอบเท่านั้น (คัดโจทย์ก่อนบอกตัวเลข)
+    // ปันสั่ง 2026-09-15: botQuote false → true — ของเดิมขัดกันเอง ชุด copy B1 ที่บอทส่งตรงใส่ราคาไว้แล้ว
+    // บอทจึงบอกราคาอยู่ทุกเคสทั้งที่ flag ห้าม · ราคานี้อยู่บนหน้า LP สาธารณะและในแอดแล้ว ปิดไว้ไม่ได้อะไรคืน
     amount: 19900,
     url: '/services/ai-sales-agent-bootcamp',
     name: 'คลาสสดสร้างวงจรงานขายด้วย AI Agent 2026',
@@ -115,7 +116,7 @@ export const CATALOG = {
     audience: 'เจ้าของกิจการ · หัวหน้าฝ่ายขาย · หัวหน้า Sale Admin · เจ้าของที่ยังขายเอง — คนที่กำหนดได้ว่าฝ่ายขายทำงานยังไง · บริษัทส่ง ≥3 ท่านให้เทียบ in-house ก่อน',
     image: '/services/thumbs/p1-ai-sales-agent-bootcamp.jpg',
     status: 'live',
-    botQuote: false,
+    botQuote: true,
     note: 'Public P1 รุ่นที่ 1 · เสาร์ 24 – อาทิตย์ 25 ต.ค. 2026 กรุงเทพฯ · รับ 20 ท่าน เปิดเมื่อครบ 6 · Early Bird 10 ที่นั่งแรก ฿19,900 ครบแล้วเป็นราคาปกติที่ key public-p1-bootcamp-standard · Core: วงจรงานขาย 1 วง + ฐานข้อมูลดีล + คลังบริบท 5 ไฟล์ + AI Agent หลังบ้าน (เอกสาร 3 ชนิด/ตามดีล) + AI Agent หน้าบ้านบน LINE OA (Hermes + OpenRouter) + Test log + แผนย้ายขึ้นเครื่องจริง + ใบรับรอง · ผู้เรียนออกค่าบัญชี AI 1 ตัว + เครดิต OpenRouter เอง · Founding perk: เครดิต 50% ของค่าตั๋ว 1 ใบ/บริษัท เข้า T/C1 ภายใน 90 วัน · Refund เฉพาะรอบไม่ถึง 6 ท่าน · SSOT เนื้อหา: output/docs/course-outline-public-p1/OUTLINE-DRAFT-v2.md'
   },
   'public-p1-bootcamp-standard': {
