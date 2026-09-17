@@ -13,7 +13,7 @@
 //   app            id ของแอปที่กำลังอยู่ (ทำแท็บนั้นเป็น active)
 //   menuToggleFor  id ของ checkbox drawer — ถ้ามี จะโชว์ปุ่ม hamburger บนจอเล็ก (CRM ใช้)
 // slot (default)   ปุ่มเฉพาะหน้า เช่น ⟳ · + Add Lead · Board/List
-type AppId = 'crm' | 'content' | 'news-desk' | 'intel' | 'audience' | 'docs';
+type AppId = 'crm' | 'content' | 'news-desk' | 'intel' | 'audience' | 'chat' | 'docs';
 
 interface Props {
   app: AppId;
@@ -30,6 +30,8 @@ const APPS: { id: AppId; href: string; icon: string; label: string }[] = [
   { id: 'news-desk', href: '/app/news-desk', icon: '📰', label: 'News Desk' },
   { id: 'intel', href: '/app/intel', icon: '🕵️', label: 'Intel Warroom' },
   { id: 'audience', href: '/app/audience', icon: '🧲', label: 'Audience' },
+  // Chat Center ใช้ทุกวันระหว่างรับแชต จึงอยู่ก่อน Doc Center ที่เปิดตามรอบเอกสาร/ภาษี
+  { id: 'chat', href: '/app/chat', icon: '💬', label: 'Chat Center' },
   // 2026-09-10 Doc Center — แฟ้มเอกสารลูกค้า (QO/ใบเสร็จ/สลิป/50 ทวิ/proposal) อยู่ท้ายสุดเพราะเปิดตามจังหวะภาษี/ส่งมอบ ไม่ใช่ทุกวัน
   { id: 'docs', href: '/app/docs', icon: '📁', label: 'Doc Center' },
 ];

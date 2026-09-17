@@ -1,0 +1,275 @@
+---
+// Chat Center — SSOT for bot reply copy and CTA keywords.
+// Structure intentionally mirrors docs.astro: shared layout, gate, nav, runtime-rendered views, and full reload after writes.
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
+import AppNav from '../../components/app/AppNav.astro';
+---
+<DashboardLayout title="Chat Center — Pun">
+  <script is:inline async src="https://accounts.google.com/gsi/client"></script>
+  <WarRoomGate appId="chat-app" title="Chat Center" icon="💬" event="chat:authed" />
+
+  <style is:global>
+    /* Runtime cards and rows are rendered through innerHTML, so these selectors must remain global. */
+    #chat-app {
+      --chat-ink: var(--color-brand-navy);
+      --chat-alert: var(--color-brand-coral);
+      --chat-line: color-mix(in srgb, var(--color-brand-navy) 14%, transparent);
+      --chat-wash: color-mix(in srgb, var(--color-brand-navy) 5%, transparent);
+    }
+    .chat-tab[aria-selected="true"] { background: var(--chat-ink); color: var(--color-base-100); }
+    .chat-panel-grid { display: grid; gap: .75rem; }
+    .chat-offer { border-left: 4px solid var(--chat-ink); }
+    .chat-offer[open] { background: var(--chat-wash); }
+    .chat-offer summary { cursor: pointer; list-style: none; }
+    .chat-offer summary::-webkit-details-marker { display: none; }
+    .chat-source { border: 1px dashed var(--chat-line); background: var(--color-base-100); }
+    .chat-preview { border: 1px solid var(--chat-line); background: var(--chat-wash); }
+    .chat-copy { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .chat-warning { border-left: 4px solid var(--chat-alert); }
+    .chat-hash { overflow-wrap: anywhere; font-size: .75rem; font-variant-numeric: tabular-nums; }
+    .chat-drift { color: var(--chat-alert); }
+    .chat-ok { color: var(--chat-ink); }
+    @media (min-width: 768px) { .chat-compare { grid-template-columns: 1fr 1fr; } }
+  </style>
+
+  <div id="chat-app" class="hidden min-h-dvh bg-base-100">
+    <AppNav app="chat">
+      <button id="chat-refresh" class="btn btn-ghost btn-sm tap-44" aria-label="รีเฟรช Chat Center" title="รีเฟรช">⟳</button>
+    </AppNav>
+
+    <main class="mx-auto max-w-7xl space-y-4 px-4 py-4">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 class="font-display text-xl font-bold">💬 Chat Center</h1>
+          <p class="text-xs opacity-60">ข้อความตอบลูกค้า · CTA keyword · สถานะของที่บอทใช้อยู่</p>
+        </div>
+        <div id="chat-tabs" class="flex max-w-full gap-1 overflow-x-auto" role="tablist" aria-label="ส่วนของ Chat Center">
+          <button id="chat-tab-offers" class="chat-tab btn btn-sm tap-44" role="tab" aria-selected="true" aria-controls="chat-view-offers" data-view="offers">Offers</button>
+          <button id="chat-tab-snippets" class="chat-tab btn btn-sm tap-44" role="tab" aria-selected="false" aria-controls="chat-view-snippets" data-view="snippets">Snippets</button>
+          <button id="chat-tab-keywords" class="chat-tab btn btn-sm tap-44" role="tab" aria-selected="false" aria-controls="chat-view-keywords" data-view="keywords">Keywords</button>
+          <button id="chat-tab-publish" class="chat-tab btn btn-sm tap-44" role="tab" aria-selected="false" aria-controls="chat-view-publish" data-view="publish">Publish</button>
+        </div>
+      </div>
+
+      <section id="chat-summary" class="rounded-2xl border border-base-300 bg-base-200 px-4 py-3 text-sm" aria-label="สรุป Chat Center" aria-live="polite"></section>
+      <section id="chat-view-offers" role="tabpanel" aria-labelledby="chat-tab-offers"></section>
+      <section id="chat-view-snippets" class="hidden space-y-3" role="tabpanel" aria-labelledby="chat-tab-snippets">
+        <div class="grid gap-2 rounded-2xl border border-base-300 bg-base-200 p-3 sm:grid-cols-3">
+          <label class="text-xs">สินค้า<select id="chat-filter-offer" class="select select-sm select-bordered mt-1 w-full" aria-label="กรองข้อความตามสินค้า"></select></label>
+          <label class="text-xs">ช่วงข้อความ<select id="chat-filter-slot" class="select select-sm select-bordered mt-1 w-full" aria-label="กรองข้อความตามช่วง"></select></label>
+          <label class="text-xs">ช่องทาง<select id="chat-filter-channel" class="select select-sm select-bordered mt-1 w-full" aria-label="กรองข้อความตามช่องทาง"></select></label>
+        </div>
+        <div id="chat-snippets"></div>
+      </section>
+      <section id="chat-view-keywords" class="hidden" role="tabpanel" aria-labelledby="chat-tab-keywords"></section>
+      <section id="chat-view-publish" class="hidden space-y-3" role="tabpanel" aria-labelledby="chat-tab-publish"></section>
+    </main>
+
+    <dialog id="chat-snippet-dialog" class="modal">
+      <div id="chat-snippet-dialog-body" class="modal-box max-w-4xl"></div>
+      <form method="dialog" class="modal-backdrop"><button aria-label="ปิดหน้าต่างแก้ข้อความ">ปิด</button></form>
+    </dialog>
+    <dialog id="chat-keyword-dialog" class="modal">
+      <div id="chat-keyword-dialog-body" class="modal-box max-w-3xl"></div>
+      <form method="dialog" class="modal-backdrop"><button aria-label="ปิดหน้าต่างแก้ keyword">ปิด</button></form>
+    </dialog>
+    <div class="toast toast-end z-50"><div id="chat-toast" class="alert hidden text-sm shadow-lg" role="status" aria-live="polite"></div></div>
+  </div>
+
+  <script>
+    import { loadAll, saveSnippet, saveKeyword, type OfferRow, type SnippetRow, type KeywordRow, type PublishRow, type PublishVersionRow, type DeclaredRef , requestPublish, rollbackTo, type KeywordStatRow } from '../../scripts/chat/data';
+    import { renderTokens, validateSnippet, keywordConflicts, type CatalogLike } from '../../scripts/chat/logic';
+    import { getSupabaseSession } from '../../scripts/dashboard/supabase';
+
+    const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector(selector) as T;
+    const esc = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char] as string);
+    const fmtDate = (value?: string | null) => value ? new Intl.DateTimeFormat('th-TH', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value)) : 'ยังไม่เคยส่ง';
+    const shortHash = (value?: string | null) => value ? value.slice(0, 12) : '—';
+    const safeHref = (value?: string | null) => value && (/^https?:\/\//i.test(value) || value.startsWith('/')) ? value : null;
+    let toastTimer: number | undefined;
+    function toast(message: string, kind: 'success' | 'error' = 'success') {
+      const element = $('#chat-toast');
+      element.className = `alert text-sm shadow-lg ${kind === 'error' ? 'alert-error' : 'alert-success'}`;
+      element.textContent = message; element.classList.remove('hidden');
+      window.clearTimeout(toastTimer); toastTimer = window.setTimeout(() => element.classList.add('hidden'), 3200);
+    }
+    const oops = (error: unknown) => toast((error as Error)?.message || 'ทำรายการไม่สำเร็จ — ลองใหม่อีกครั้ง', 'error');
+
+    type View = 'offers' | 'snippets' | 'keywords' | 'publish';
+    const state: any = {
+      offers: [] as OfferRow[], snippets: [] as SnippetRow[], keywords: [] as KeywordRow[],
+      publish: [] as PublishRow[], versions: [] as PublishVersionRow[], catalog: { packages: [] } as CatalogLike,
+      view: 'offers' as View, offerFilter: 'all', slotFilter: 'all', channelFilter: 'all',
+    };
+    const offerByCode = () => new Map(state.offers.map((offer) => [offer.code, offer]));
+    const catalogByKey = () => new Map(state.catalog.packages.map((item) => [item.key, item]));
+    const declared = (keyword: KeywordRow) => Array.isArray(keyword.declared_in) ? keyword.declared_in : [];
+    const preview = (body: string) => { try { return renderTokens(body, state.catalog); } catch (error) { return `⚠️ ${(error as Error).message}`; } };
+    const botWrittenAt = () => state.publish.find((row) => row.file === 'oa-service-scripts.json')?.bot_written_at;
+    const copyIsDirty = (updatedAt: string) => !botWrittenAt() || new Date(updatedAt) > new Date(botWrittenAt()!);
+
+    function renderSummary() {
+      const dirty = state.offers.filter((offer) => copyIsDirty(offer.updated_at)).length;
+      $('#chat-summary').innerHTML = `<b>${state.offers.length}</b> สินค้า · <b>${state.snippets.length}</b> ข้อความ · <b>${state.keywords.length}</b> keyword · <span class="${dirty ? 'chat-drift' : ''}"><b>${dirty}</b> สินค้ามีการแก้หลังส่งถึงบอทครั้งล่าสุด</span>`;
+    }
+
+    function renderOffers() {
+      const prices = catalogByKey();
+      $('#chat-view-offers').innerHTML = `<div class="chat-panel-grid">${state.offers.map((offer) => {
+        const item = prices.get(offer.pricing_key); const snippets = state.snippets.filter((row) => row.offer_code === offer.code);
+        const keywords = state.keywords.filter((row) => row.offer_code === offer.code);
+        const declaredCount = keywords.reduce((sum, row) => sum + declared(row).length, 0);
+        return `<details class="chat-offer rounded-2xl border border-base-300 bg-base-200 p-4">
+          <summary class="flex flex-wrap items-start justify-between gap-3" aria-label="เปิดรายละเอียด ${esc(offer.code)}">
+            <span><span class="font-display text-lg font-bold">${esc(offer.code)} · ${esc(item?.name || offer.pricing_key)}</span><br><span class="text-sm opacity-70">${esc(offer.one_liner)}</span></span>
+            <span class="text-right"><span class="font-display text-lg font-bold">${item ? Number(item.amount_thb).toLocaleString('th-TH') : 'ไม่พบราคา'}</span><br><span class="badge ${item?.bot_may_quote ? 'badge-success' : 'badge-warning'}">${item?.bot_may_quote ? 'บอทบอกราคาได้' : 'บอทห้ามบอกราคา'}</span>${copyIsDirty(offer.updated_at) ? '<br><span class="badge badge-warning mt-1">ยังไม่ได้ส่งให้บอท</span>' : ''}</span>
+          </summary>
+          <div class="mt-4 grid gap-4 lg:grid-cols-[1fr_2fr]">
+            <div class="space-y-2 text-sm"><p><b>เหมาะกับ:</b> ${esc(offer.fit || 'ยังไม่ได้ระบุ')}</p><p><b>ยังไม่เหมาะ:</b> ${esc(offer.not_fit || 'ยังไม่ได้ระบุ')}</p><p><b>ขั้นถัดไป:</b> ${esc(offer.next_step || 'ยังไม่ได้ระบุ')}</p><p><b>Keyword:</b> ${keywords.length ? keywords.map((row) => `<span class="badge badge-outline mr-1">${esc(row.keyword)}</span>`).join('') : 'ยังไม่มี'}</p><p><b>รายการประกาศที่ผูกอยู่:</b> ${declaredCount}</p><div class="flex flex-wrap gap-2">${safeHref(offer.lp_url) ? `<a class="btn btn-sm tap-44" href="${esc(safeHref(offer.lp_url))}" target="_blank" rel="noreferrer">เปิด LP</a>` : ''}${safeHref(offer.outline_url) ? `<a class="btn btn-sm tap-44" href="${esc(safeHref(offer.outline_url))}" target="_blank" rel="noreferrer">เปิด Outline</a>` : ''}</div></div>
+            <div class="space-y-2">${snippets.map((row) => `<div class="rounded-xl border border-base-300 bg-base-100 p-3"><div class="mb-1 flex justify-between gap-2 text-xs"><b>${esc(row.slot)} · ${esc(row.channel)}</b><span>${row.char_count} ตัวอักษร</span></div><p class="chat-copy text-sm">${esc(preview(row.body))}</p></div>`).join('')}</div>
+          </div></details>`;
+      }).join('')}</div>`;
+    }
+
+    function syncFilters() {
+      const options = (values: string[]) => `<option value="all">ทั้งหมด</option>${[...new Set(values)].sort().map((value) => `<option value="${esc(value)}">${esc(value)}</option>`).join('')}`;
+      const offer = $<HTMLSelectElement>('#chat-filter-offer'), slot = $<HTMLSelectElement>('#chat-filter-slot'), channel = $<HTMLSelectElement>('#chat-filter-channel');
+      offer.innerHTML = options(state.offers.map((row) => row.code)); slot.innerHTML = options(state.snippets.map((row) => row.slot)); channel.innerHTML = options(state.snippets.map((row) => row.channel));
+      offer.value = state.offerFilter; slot.value = state.slotFilter; channel.value = state.channelFilter;
+    }
+
+    function renderSnippets() {
+      const rows = state.snippets.filter((row) => (state.offerFilter === 'all' || row.offer_code === state.offerFilter) && (state.slotFilter === 'all' || row.slot === state.slotFilter) && (state.channelFilter === 'all' || row.channel === state.channelFilter));
+      $('#chat-snippets').innerHTML = `<div class="overflow-x-auto rounded-2xl border border-base-300 bg-base-200"><table class="table table-sm min-w-[720px]"><thead><tr><th>สินค้า / ช่วง</th><th>ช่องทาง</th><th>Preview ที่ใช้คัดลอก</th><th>ความยาว</th><th></th></tr></thead><tbody>${rows.map((row) => `<tr><td><b>${esc(row.offer_code)}</b><br><span class="text-xs opacity-60">${esc(row.slot)}${row.faq_q ? ` · ${esc(row.faq_q)}` : ''}</span>${copyIsDirty(row.updated_at) ? '<br><span class="badge badge-warning mt-1">ยังไม่ได้ส่งให้บอท</span>' : ''}</td><td>${esc(row.channel)}</td><td class="max-w-xl"><p class="chat-copy line-clamp-3 text-sm">${esc(preview(row.body))}</p></td><td>${row.char_count}/1,900</td><td><div class="flex gap-1"><button class="btn btn-sm tap-44" data-copy="${esc(row.id)}" aria-label="คัดลอกข้อความ ${esc(row.offer_code)} ${esc(row.slot)}">คัดลอก</button><button class="btn btn-sm tap-44" data-edit-snippet="${esc(row.id)}" aria-label="แก้ข้อความ ${esc(row.offer_code)} ${esc(row.slot)}">แก้</button></div></td></tr>`).join('')}</tbody></table></div>`;
+      bindSnippetActions();
+    }
+
+    function bindSnippetActions() {
+      document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+        const row = state.snippets.find((item) => item.id === button.dataset.copy); if (!row) return;
+        try { await navigator.clipboard.writeText(renderTokens(row.body, state.catalog)); toast('คัดลอกข้อความที่ใส่ราคาจริงแล้ว'); } catch (error) { oops(error); }
+      }));
+      document.querySelectorAll<HTMLButtonElement>('[data-edit-snippet]').forEach((button) => button.addEventListener('click', () => openSnippet(button.dataset.editSnippet!)));
+    }
+
+    function openSnippet(id: string) {
+      const row = state.snippets.find((item) => item.id === id); if (!row) return;
+      const dialog = $<HTMLDialogElement>('#chat-snippet-dialog'); const body = $('#chat-snippet-dialog-body');
+      body.innerHTML = `<h2 class="font-display text-lg font-bold">แก้ข้อความ ${esc(row.offer_code)} · ${esc(row.slot)}</h2><form id="chat-snippet-form" class="mt-3 space-y-3">
+        <div class="grid gap-2 sm:grid-cols-3"><label class="text-xs">ช่องทาง<select id="chat-snippet-channel" class="select select-sm select-bordered mt-1 w-full"><option>any</option><option>line</option><option>messenger</option><option>manual</option></select></label><label class="text-xs">สถานะ<select id="chat-snippet-status" class="select select-sm select-bordered mt-1 w-full"><option>draft</option><option>live</option></select></label><label class="text-xs">คำถาม FAQ<input id="chat-snippet-faq" class="input input-sm input-bordered mt-1 w-full" value="${esc(row.faq_q || '')}" /></label></div>
+        <div class="chat-compare grid gap-3"><label class="text-xs">ต้นฉบับ (เก็บ token)<textarea id="chat-snippet-body" class="textarea textarea-bordered mt-1 min-h-56 w-full text-sm" required>${esc(row.body)}</textarea><span id="chat-snippet-count" class="mt-1 block opacity-60"></span></label><div class="text-xs">Preview ที่ลูกค้าเห็น<div id="chat-snippet-preview" class="chat-preview chat-copy mt-1 min-h-56 rounded-xl p-3 text-sm"></div></div></div>
+        <div id="chat-snippet-errors" class="text-sm text-error" role="alert"></div><div class="modal-action"><button type="button" class="btn btn-ghost btn-sm tap-44" data-close>ยกเลิก</button><button type="button" class="btn btn-sm tap-44" data-copy-preview>คัดลอก Preview</button><button id="chat-snippet-save" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-navy);">บันทึก</button></div></form>`;
+      $<HTMLSelectElement>('#chat-snippet-channel').value = row.channel; $<HTMLSelectElement>('#chat-snippet-status').value = row.status;
+      const source = $<HTMLTextAreaElement>('#chat-snippet-body');
+      const sync = () => { $('#chat-snippet-count').textContent = `${source.value.length}/1,900 ตัวอักษร`; $('#chat-snippet-preview').textContent = preview(source.value); };
+      sync(); source.addEventListener('input', sync); body.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
+      body.querySelector('[data-copy-preview]')?.addEventListener('click', async () => { try { await navigator.clipboard.writeText(renderTokens(source.value, state.catalog)); toast('คัดลอก Preview แล้ว'); } catch (error) { oops(error); } });
+      $('#chat-snippet-form').addEventListener('submit', async (event) => {
+        event.preventDefault(); const save = $<HTMLButtonElement>('#chat-snippet-save'); save.disabled = true;
+        const candidate = { ...row, body: source.value, channel: $<HTMLSelectElement>('#chat-snippet-channel').value, status: $<HTMLSelectElement>('#chat-snippet-status').value, faq_q: $<HTMLInputElement>('#chat-snippet-faq').value.trim() || null };
+        const validation = validateSnippet(candidate, state.catalog); $('#chat-snippet-errors').textContent = validation.issues.map((issue) => issue.message).join(' · ');
+        if (!validation.valid) { save.disabled = false; return; }
+        try { await saveSnippet(row.id, candidate); dialog.close(); toast('บันทึกข้อความแล้ว'); await reload(); } catch (error) { oops(error); } finally { save.disabled = false; }
+      });
+      dialog.showModal(); source.focus();
+    }
+
+    function keywordWarnings(row: KeywordRow): string[] {
+      const warnings: string[] = [];
+      if (keywordConflicts(state.keywords).some((item) => item.leftId === row.id || item.rightId === row.id)) warnings.push('คำนี้ชนหรือซ้อนกับ keyword อื่น');
+      const age = (Date.now() - new Date(row.updated_at).getTime()) / 86400000;
+      if (declared(row).length && age >= 14 && !Number(row.hits_30d || 0)) warnings.push('ประกาศมาอย่างน้อย 14 วันแต่ยังไม่มี hit');
+      if (!row.enabled && declared(row).length) warnings.push('ปิด keyword อยู่ แต่ยังมีรายการประกาศที่ผูกไว้');
+      return warnings;
+    }
+
+    function statBadge(id: string) {
+      const stat = (state.stats || []).find((item: KeywordStatRow) => item.id === id);
+      if (!stat) return '';
+      const quiet = !stat.last_hit_at;
+      return `<span class="badge ${quiet ? 'badge-ghost' : 'badge-success'}" title="30 วันล่าสุด">${quiet ? 'ยังไม่มีใครพิมพ์' : `พิมพ์เข้ามา ${stat.hits_30d} ครั้ง/30 วัน`}</span>${stat.near_miss_30d ? `<span class="badge badge-warning" title="พิมพ์ใกล้เคียงแต่ไม่ตรง — แอดอาจเขียนคำไว้คนละแบบ">พิมพ์ผิดรูป ${stat.near_miss_30d}</span>` : ''}`;
+    }
+
+    function renderKeywords() {
+      $('#chat-view-keywords').innerHTML = `<div class="space-y-2">${state.keywords.map((row) => { const warnings = keywordWarnings(row); return `<article class="rounded-2xl border border-base-300 bg-base-200 p-4 ${warnings.length ? 'chat-warning' : ''}"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="font-display font-bold">${esc(row.keyword)} ${statBadge(row.id)} ${row.enabled ? '' : '<span class="badge badge-ghost">ปิด</span>'}</h2><p class="text-xs opacity-60">${esc(row.match_mode)} · ${esc(row.offer_code || 'ไม่ผูกสินค้า')} · aliases: ${esc([...(row.aliases || []), ...(row.aliases_exact || []).map((item) => `${item} (exact-alias)`)].join(', ') || '—')}</p></div><button class="btn btn-sm tap-44" data-edit-keyword="${esc(row.id)}" aria-label="แก้ keyword ${esc(row.keyword)}">แก้</button></div><div class="mt-2 flex flex-wrap gap-3 text-xs"><span>รายการประกาศ ${declared(row).length}</span><span>hits 30 วัน: ${row.hits_30d ?? 'รอ M4'}</span><span>ล่าสุด: ${row.last_hit_at ? esc(fmtDate(row.last_hit_at)) : '—'}</span></div>${warnings.map((warning) => `<p class="mt-1 text-xs chat-drift">⚠️ ${esc(warning)}</p>`).join('')}</article>`; }).join('')}</div>`;
+      document.querySelectorAll<HTMLButtonElement>('[data-edit-keyword]').forEach((button) => button.addEventListener('click', () => openKeyword(button.dataset.editKeyword!)));
+    }
+
+    function openKeyword(id: string) {
+      const row = state.keywords.find((item) => item.id === id); if (!row) return;
+      const dialog = $<HTMLDialogElement>('#chat-keyword-dialog'); const body = $('#chat-keyword-dialog-body');
+      body.innerHTML = `<h2 class="font-display text-lg font-bold">แก้ Keyword</h2><form id="chat-keyword-form" class="mt-3 space-y-3"><div class="grid gap-2 sm:grid-cols-2"><label class="text-xs">Keyword<input id="chat-keyword-value" class="input input-sm input-bordered mt-1 w-full" required value="${esc(row.keyword)}" /></label><label class="text-xs">สินค้า<select id="chat-keyword-offer" class="select select-sm select-bordered mt-1 w-full"><option value="">ไม่ผูกสินค้า</option>${state.offers.map((offer) => `<option value="${esc(offer.code)}">${esc(offer.code)}</option>`).join('')}</select></label><label class="text-xs">Aliases (คั่นด้วยบรรทัด)<textarea id="chat-keyword-aliases" class="textarea textarea-bordered mt-1 w-full">${esc((row.aliases || []).join('\n'))}</textarea></label><label class="text-xs">Exact aliases (คั่นด้วยบรรทัด)<textarea id="chat-keyword-exact" class="textarea textarea-bordered mt-1 w-full">${esc((row.aliases_exact || []).join('\n'))}</textarea></label><label class="text-xs">โหมด<select id="chat-keyword-mode" class="select select-sm select-bordered mt-1 w-full"><option value="contains">contains</option><option value="exact">exact</option></select></label><label class="text-xs">ความยาวข้อความสูงสุด<input id="chat-keyword-max" type="number" min="1" class="input input-sm input-bordered mt-1 w-full" value="${row.max_len}" /></label></div>
+        <label class="label cursor-pointer justify-start gap-2"><input id="chat-keyword-enabled" type="checkbox" class="toggle toggle-sm" ${row.enabled ? 'checked' : ''} /><span class="label-text">เปิดใช้งาน</span></label>
+        <fieldset class="rounded-xl border border-base-300 p-3"><legend class="px-1 text-sm font-bold">ประกาศอยู่ที่ไหน</legend><div id="chat-declared-list" class="space-y-2"></div><button type="button" class="btn btn-sm mt-2 tap-44" data-add-ref>เพิ่มรายการ</button></fieldset>
+        <div id="chat-keyword-errors" class="text-sm text-error" role="alert"></div><div class="modal-action"><button type="button" class="btn btn-ghost btn-sm tap-44" data-close>ยกเลิก</button><button id="chat-keyword-save" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-navy);">บันทึก</button></div></form>`;
+      $<HTMLSelectElement>('#chat-keyword-offer').value = row.offer_code || ''; $<HTMLSelectElement>('#chat-keyword-mode').value = row.match_mode;
+      const refs = declared(row).map((item) => ({ ...item }));
+      const syncRefs = () => refs.forEach((item, index) => {
+        const type = document.querySelector<HTMLSelectElement>(`[data-ref-type="${index}"]`);
+        const name = document.querySelector<HTMLInputElement>(`[data-ref-name="${index}"]`);
+        const url = document.querySelector<HTMLInputElement>(`[data-ref-url="${index}"]`);
+        if (type) item.type = type.value; if (name) item.ref = name.value; if (url) item.url = url.value || undefined;
+      });
+      const renderRefs = () => { $('#chat-declared-list').innerHTML = refs.map((item, index) => `<div class="grid gap-1 sm:grid-cols-[120px_1fr_1fr_auto]"><select class="select select-sm select-bordered" data-ref-type="${index}" aria-label="ชนิดรายการประกาศ ${index + 1}">${['ad','lp','reel','broadcast'].map((type) => `<option ${item.type === type ? 'selected' : ''}>${type}</option>`).join('')}</select><input class="input input-sm input-bordered" data-ref-name="${index}" aria-label="ชื่ออ้างอิง ${index + 1}" value="${esc(item.ref)}" placeholder="ชื่อ campaign/หน้า" /><input class="input input-sm input-bordered" data-ref-url="${index}" aria-label="ลิงก์อ้างอิง ${index + 1}" value="${esc(item.url || '')}" placeholder="URL (ถ้ามี)" /><button type="button" class="btn btn-ghost btn-sm tap-44" data-remove-ref="${index}" aria-label="ลบรายการประกาศ ${index + 1}">ลบ</button></div>`).join('') || '<p class="text-xs opacity-60">ยังไม่มีรายการที่ประกาศอยู่</p>'; document.querySelectorAll<HTMLButtonElement>('[data-remove-ref]').forEach((button) => button.addEventListener('click', () => { syncRefs(); refs.splice(Number(button.dataset.removeRef), 1); renderRefs(); })); };
+      renderRefs(); body.querySelector('[data-add-ref]')?.addEventListener('click', () => { syncRefs(); refs.push({ type: 'ad', ref: '' }); renderRefs(); }); body.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
+      $('#chat-keyword-form').addEventListener('submit', async (event) => {
+        event.preventDefault(); const save = $<HTMLButtonElement>('#chat-keyword-save'); save.disabled = true;
+        const lines = (selector: string) => $<HTMLTextAreaElement>(selector).value.split(/\r?\n/).map((item) => item.trim()).filter(Boolean);
+        const declaredIn: DeclaredRef[] = refs.map((_item, index) => ({ type: $<HTMLSelectElement>(`[data-ref-type="${index}"]`).value, ref: $<HTMLInputElement>(`[data-ref-name="${index}"]`).value.trim(), url: $<HTMLInputElement>(`[data-ref-url="${index}"]`).value.trim() || undefined })).filter((item) => item.ref);
+        const candidate: KeywordRow = { ...row, keyword: $<HTMLInputElement>('#chat-keyword-value').value.trim(), aliases: lines('#chat-keyword-aliases'), aliases_exact: lines('#chat-keyword-exact'), match_mode: $<HTMLSelectElement>('#chat-keyword-mode').value as 'contains' | 'exact', max_len: Number($<HTMLInputElement>('#chat-keyword-max').value), offer_code: $<HTMLSelectElement>('#chat-keyword-offer').value || null, declared_in: declaredIn, enabled: $<HTMLInputElement>('#chat-keyword-enabled').checked };
+        if (!candidate.keyword || !Number.isInteger(candidate.max_len) || candidate.max_len < 1) { $('#chat-keyword-errors').textContent = 'กรอก keyword และความยาวสูงสุดเป็นจำนวนเต็มตั้งแต่ 1 ขึ้นไป'; save.disabled = false; return; }
+        const conflict = keywordConflicts(state.keywords.map((item) => item.id === id ? candidate : item)).find((item) => item.leftId === id || item.rightId === id);
+        if (conflict) { $('#chat-keyword-errors').textContent = `บันทึกไม่ได้: “${conflict.leftTerm}” ชนกับ “${conflict.rightTerm}”`; save.disabled = false; return; }
+        try { await saveKeyword(id, candidate); dialog.close(); toast('บันทึก keyword แล้ว'); await reload(); } catch (error) { oops(error); } finally { save.disabled = false; }
+      });
+      dialog.showModal(); $<HTMLInputElement>('#chat-keyword-value').focus();
+    }
+
+    function renderPublish() {
+      $('#chat-view-publish').innerHTML = `<div class="alert border border-base-300 bg-base-200 text-sm"><span>กดส่งแล้วมินิจะหยิบไปเขียนไฟล์ให้บอทภายใน 5 นาที · ย้อนเวอร์ชันคือเอาไฟล์เก่ากลับไปใช้ ข้อมูลใน DB ไม่ถูกย้อน จึงจะขึ้นว่าไม่ตรงกับบอทจนกว่าจะส่งใหม่</span></div><div class="grid gap-3 lg:grid-cols-2">${state.publish.map((row) => { const drift = !row.bot_written_at || !row.db_hash || row.db_hash !== row.bot_hash; return `<article class="rounded-2xl border border-base-300 bg-base-200 p-4"><div class="flex items-start justify-between gap-2"><h2 class="font-display font-bold">${esc(row.file)}</h2><span class="badge ${drift ? 'badge-warning' : 'badge-success'}">${drift ? 'แก้แล้วยังไม่ได้ส่ง' : 'ตรงกับบอท'}</span></div><dl class="mt-3 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm"><dt>สถานะ</dt><dd>${esc(row.status)}</dd><dt>ส่งถึงบอทล่าสุด</dt><dd>${esc(fmtDate(row.bot_written_at))}</dd><dt>DB hash</dt><dd class="chat-hash">${esc(shortHash(row.db_hash))}</dd><dt>Bot hash</dt><dd class="chat-hash">${esc(shortHash(row.bot_hash))}</dd>${row.error ? `<dt>ข้อผิดพลาด</dt><dd class="chat-drift">${esc(row.error)}</dd>` : ''}</dl><button class="btn btn-primary btn-sm mt-4 tap-44" data-publish="${esc(row.file)}"${row.status === 'requested' ? ' disabled' : ''}>${row.status === 'requested' ? 'รอมินิหยิบไปทำ…' : 'ส่งให้บอทใช้'}</button></article>`; }).join('')}</div><p class="text-xs opacity-70">มินิตรวจทุก 5 นาที · ถ้าด่านตรวจไม่ผ่าน ไฟล์จะไม่ถูกแตะเลยและขึ้นเหตุผลไว้ตรงนี้</p><section class="rounded-2xl border border-base-300 bg-base-200 p-4"><h2 class="font-display font-bold">ประวัติเวอร์ชัน</h2>${state.versions.length ? `<div class="mt-2 overflow-x-auto"><table class="table table-sm min-w-[620px]"><thead><tr><th>เวลา</th><th>ไฟล์</th><th>Hash</th><th>หมายเหตุ</th><th></th></tr></thead><tbody>${state.versions.map((row) => `<tr><td>${esc(fmtDate(row.created_at))}</td><td>${esc(row.file)}</td><td class="chat-hash">${esc(shortHash(row.hash))}</td><td>${esc(row.note || '—')}</td><td><button class="btn btn-sm tap-44" data-rollback="${row.id}" data-rollback-file="${esc(row.file)}">ย้อนเวอร์ชัน</button></td></tr>`).join('')}</tbody></table></div>` : '<p class="mt-2 text-sm opacity-60">ยังไม่มีประวัติ — จะเริ่มเก็บเมื่อส่งให้บอทครั้งแรก</p>'}</section>`;
+    }
+
+    function bindPublishActions() {
+      document.querySelectorAll<HTMLButtonElement>('[data-publish]').forEach((button) => button.addEventListener('click', async () => {
+        button.disabled = true;
+        try { await requestPublish(button.dataset.publish!); toast('สั่งส่งแล้ว มินิจะหยิบไปทำภายใน 5 นาที'); await reload(); }
+        catch (error) { oops(error); button.disabled = false; }
+      }));
+      document.querySelectorAll<HTMLButtonElement>('[data-rollback]').forEach((button) => button.addEventListener('click', async () => {
+        const file = button.dataset.rollbackFile!;
+        if (!confirm(`ย้อน ${file} ไปเวอร์ชันนี้?\n\nไฟล์ที่บอทใช้จะกลับไปเป็นของเก่า แต่ข้อมูลในหน้านี้ไม่ถูกย้อน จึงจะขึ้นว่าไม่ตรงกับบอทจนกว่าจะกดส่งใหม่`)) return;
+        button.disabled = true;
+        try { await rollbackTo(file, Number(button.dataset.rollback)); toast('สั่งย้อนเวอร์ชันแล้ว'); await reload(); }
+        catch (error) { oops(error); button.disabled = false; }
+      }));
+    }
+
+    function renderAll() { renderSummary(); renderOffers(); syncFilters(); renderSnippets(); renderKeywords(); renderPublish(); bindPublishActions(); }
+    function setView(view: View, focus = false) {
+      state.view = view;
+      document.querySelectorAll<HTMLButtonElement>('.chat-tab').forEach((button) => { const active = button.dataset.view === view; button.setAttribute('aria-selected', String(active)); button.tabIndex = active ? 0 : -1; if (active && focus) button.focus(); });
+      (['offers','snippets','keywords','publish'] as View[]).forEach((name) => $(`#chat-view-${name}`).classList.toggle('hidden', name !== view));
+      history.replaceState(null, '', view === 'offers' ? location.pathname + location.search : `#${view}`);
+    }
+    async function reload() {
+      const [data, catalogResponse] = await Promise.all([loadAll(), fetch('/catalog.json', { cache: 'no-store' })]);
+      if (!catalogResponse.ok) throw new Error(`โหลดราคาสดไม่ได้ (${catalogResponse.status}) — รีเฟรชแล้วลองใหม่`);
+      Object.assign(state, data); state.catalog = await catalogResponse.json() as CatalogLike; renderAll();
+    }
+    function bind() {
+      $('#chat-refresh').addEventListener('click', async (event) => { const button = event.currentTarget as HTMLButtonElement; button.disabled = true; try { await reload(); toast('รีเฟรชแล้ว'); } catch (error) { oops(error); } finally { button.disabled = false; } });
+      ['#chat-filter-offer','#chat-filter-slot','#chat-filter-channel'].forEach((selector) => $(selector).addEventListener('change', () => { state.offerFilter = $<HTMLSelectElement>('#chat-filter-offer').value; state.slotFilter = $<HTMLSelectElement>('#chat-filter-slot').value; state.channelFilter = $<HTMLSelectElement>('#chat-filter-channel').value; renderSnippets(); }));
+      const tabs = [...document.querySelectorAll<HTMLButtonElement>('.chat-tab')];
+      tabs.forEach((button) => button.addEventListener('click', () => setView(button.dataset.view as View)));
+      $('#chat-tabs').addEventListener('keydown', (event) => { if (!['ArrowLeft','ArrowRight'].includes(event.key)) return; event.preventDefault(); const index = tabs.findIndex((item) => item.dataset.view === state.view); const offset = event.key === 'ArrowRight' ? 1 : -1; const next = tabs[(index + offset + tabs.length) % tabs.length]; setView(next.dataset.view as View, true); });
+    }
+    let booted = false;
+    async function boot() {
+      if (booted) return; booted = true; bind();
+      try { await reload(); const hash = location.hash.slice(1) as View; if (['snippets','keywords','publish'].includes(hash)) setView(hash); } catch (error) { oops(error); }
+    }
+    document.addEventListener('chat:authed', () => void boot());
+    void (async () => { if (await getSupabaseSession()) void boot(); })();
+  </script>
+</DashboardLayout>
