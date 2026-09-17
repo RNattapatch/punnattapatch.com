@@ -159,7 +159,10 @@ export function validateSnippet(snippet: ChatSnippet, catalog: CatalogLike): Val
   const rawPrices = [...body.matchAll(RAW_PRICE)].map((match) => match[0]);
   if (rawPrices.length) issues.push({ code: 'G08_RAW_PRICE', severity: 'error', message: `พบราคาดิบ ${rawPrices.join(', ')} — เปลี่ยนเป็น {{price:key}}`, ref });
 
-  if (hasBankAccount(body)) issues.push({ code: 'G09_BANK_ACCOUNT', severity: 'error', message: 'พบเลขที่หน้าตาเป็นบัญชีธนาคารใน snippet', ref });
+  // ก้อน payment ไม่เข้า prompt และถูกส่งโดยโค้ดเมื่อถึงจังหวะเท่านั้น (สเปก §18) จึงเป็นที่เดียวที่เลขบัญชีอยู่ได้
+  if (snippet?.slot !== 'payment' && hasBankAccount(body)) {
+    issues.push({ code: 'G09_BANK_ACCOUNT', severity: 'error', message: 'พบเลขที่หน้าตาเป็นบัญชีธนาคารใน snippet — ย้ายไป slot payment ที่โค้ดเป็นคนส่ง', ref });
+  }
 
   return result(issues);
 }

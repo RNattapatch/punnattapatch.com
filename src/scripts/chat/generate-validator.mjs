@@ -24,4 +24,14 @@ if (built.status !== 0) {
   process.exit(built.status ?? 1);
 }
 console.log(`generated ${output}`);
+
+// ก้อนที่สอง: logic เปล่าๆ ให้ pull-brain.mjs import renderTokens ไปใช้ตอน publish
+// แยกจาก CLI เพราะ CLI มี top-level await ที่จะรันทันทีเมื่อถูก import
+const libOut = join(dirname(output), 'chat-logic.mjs');
+const lib = spawnSync(esbuild, [source, '--bundle', '--platform=node', '--format=esm', '--target=node22', `--outfile=${libOut}`, `--banner:js=// generated-from-logic-sha256: ${sourceHash}`], { cwd: repo, encoding: 'utf8' });
+if (lib.status !== 0) {
+  process.stderr.write(lib.stderr || lib.stdout);
+  process.exit(lib.status ?? 1);
+}
+console.log(`generated ${libOut}`);
 console.log(`logic.ts sha256 ${sourceHash}`);

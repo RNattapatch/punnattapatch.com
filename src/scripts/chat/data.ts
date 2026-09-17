@@ -22,6 +22,7 @@ export interface PublishRow {
   bot_hash: string | null; bot_written_at: string | null; error: string | null;
 }
 export interface PublishVersionRow { id: number; file: string; hash: string; created_at: string; created_by: string | null; note: string | null }
+export interface KeywordStatRow { id: string; keyword: string; offer_code: string | null; hits_30d: number; hits_7d: number; near_miss_30d: number; last_hit_at: string | null }
 
 async function requireSession() {
   const session = await getSupabaseSession();
@@ -61,15 +62,37 @@ export async function loadPublishState(): Promise<{ publish: PublishRow[]; versi
   return { publish: publish || [], versions: versions || [] };
 }
 
-export async function loadAll(): Promise<{ offers: OfferRow[]; snippets: SnippetRow[]; keywords: KeywordRow[]; publish: PublishRow[]; versions: PublishVersionRow[] }> {
+export async function loadAll(): Promise<{ offers: OfferRow[]; snippets: SnippetRow[]; keywords: KeywordRow[]; publish: PublishRow[]; versions: PublishVersionRow[]; stats: KeywordStatRow[] }> {
   await requireSession();
-  const [offers, snippets, keywords, publishState] = await Promise.all([
+  const [offers, snippets, keywords, publishState, stats] = await Promise.all([
     query<OfferRow[]>(() => supabase.from('chat_offers').select('*').order('display_order').order('code')),
     query<SnippetRow[]>(() => supabase.from('chat_snippets').select('*').order('offer_code').order('slot').order('channel')),
     query<KeywordRow[]>(() => supabase.from('chat_keywords').select('*').order('keyword')),
     loadPublishState(),
+    loadKeywordStats(),
   ]);
-  return { offers: offers || [], snippets: snippets || [], keywords: keywords || [], ...publishState };
+  return { offers: offers || [], snippets: snippets || [], keywords: keywords || [], ...publishState, stats: stats || [] };
+}
+
+export async function loadKeywordStats(): Promise<KeywordStatRow[]> {
+  await requireSession();
+  return (await query<KeywordStatRow[]>(() => supabase.from('v_chat_keyword_stats').select('*'))) || [];
+}
+
+/** สั่งให้มินิเขียนไฟล์จากของที่อยู่ใน DB ตอนนี้ — pull-brain หยิบไปทำในรอบถัดไป (ไม่เกิน 5 นาที) */
+export async function requestPublish(file: string): Promise<void> {
+  const session = await requireSession();
+  await query(() => supabase.from('chat_publish')
+    .update({ status: 'requested', requested_at: new Date().toISOString(), requested_by: session.user?.email ?? 'owner', error: null, rollback_to_version: null })
+    .eq('file', file).select('file'));
+}
+
+/** เอาไฟล์เวอร์ชันเก่ากลับไปให้บอทใช้ — ไม่ย้อนข้อมูลใน DB ดังนั้นหลังจากนี้จะขึ้นว่าไม่ตรงกับบอทโดยตั้งใจ */
+export async function rollbackTo(file: string, versionId: number): Promise<void> {
+  const session = await requireSession();
+  await query(() => supabase.from('chat_publish')
+    .update({ status: 'requested', rollback_to_version: versionId, requested_at: new Date().toISOString(), requested_by: session.user?.email ?? 'owner', error: null })
+    .eq('file', file).select('file'));
 }
 
 export async function saveSnippet(id: string, patch: Pick<SnippetRow, 'body' | 'faq_q' | 'channel' | 'status'>): Promise<void> {

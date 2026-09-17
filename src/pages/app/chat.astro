@@ -78,7 +78,7 @@ import AppNav from '../../components/app/AppNav.astro';
   </div>
 
   <script>
-    import { loadAll, saveSnippet, saveKeyword, type OfferRow, type SnippetRow, type KeywordRow, type PublishRow, type PublishVersionRow, type DeclaredRef } from '../../scripts/chat/data';
+    import { loadAll, saveSnippet, saveKeyword, type OfferRow, type SnippetRow, type KeywordRow, type PublishRow, type PublishVersionRow, type DeclaredRef , requestPublish, rollbackTo, type KeywordStatRow } from '../../scripts/chat/data';
     import { renderTokens, validateSnippet, keywordConflicts, type CatalogLike } from '../../scripts/chat/logic';
     import { getSupabaseSession } from '../../scripts/dashboard/supabase';
 
@@ -97,7 +97,7 @@ import AppNav from '../../components/app/AppNav.astro';
     const oops = (error: unknown) => toast((error as Error)?.message || 'ทำรายการไม่สำเร็จ — ลองใหม่อีกครั้ง', 'error');
 
     type View = 'offers' | 'snippets' | 'keywords' | 'publish';
-    const state = {
+    const state: any = {
       offers: [] as OfferRow[], snippets: [] as SnippetRow[], keywords: [] as KeywordRow[],
       publish: [] as PublishRow[], versions: [] as PublishVersionRow[], catalog: { packages: [] } as CatalogLike,
       view: 'offers' as View, offerFilter: 'all', slotFilter: 'all', channelFilter: 'all',
@@ -184,8 +184,15 @@ import AppNav from '../../components/app/AppNav.astro';
       return warnings;
     }
 
+    function statBadge(id: string) {
+      const stat = (state.stats || []).find((item: KeywordStatRow) => item.id === id);
+      if (!stat) return '';
+      const quiet = !stat.last_hit_at;
+      return `<span class="badge ${quiet ? 'badge-ghost' : 'badge-success'}" title="30 วันล่าสุด">${quiet ? 'ยังไม่มีใครพิมพ์' : `พิมพ์เข้ามา ${stat.hits_30d} ครั้ง/30 วัน`}</span>${stat.near_miss_30d ? `<span class="badge badge-warning" title="พิมพ์ใกล้เคียงแต่ไม่ตรง — แอดอาจเขียนคำไว้คนละแบบ">พิมพ์ผิดรูป ${stat.near_miss_30d}</span>` : ''}`;
+    }
+
     function renderKeywords() {
-      $('#chat-view-keywords').innerHTML = `<div class="space-y-2">${state.keywords.map((row) => { const warnings = keywordWarnings(row); return `<article class="rounded-2xl border border-base-300 bg-base-200 p-4 ${warnings.length ? 'chat-warning' : ''}"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="font-display font-bold">${esc(row.keyword)} ${row.enabled ? '' : '<span class="badge badge-ghost">ปิด</span>'}</h2><p class="text-xs opacity-60">${esc(row.match_mode)} · ${esc(row.offer_code || 'ไม่ผูกสินค้า')} · aliases: ${esc([...(row.aliases || []), ...(row.aliases_exact || []).map((item) => `${item} (exact-alias)`)].join(', ') || '—')}</p></div><button class="btn btn-sm tap-44" data-edit-keyword="${esc(row.id)}" aria-label="แก้ keyword ${esc(row.keyword)}">แก้</button></div><div class="mt-2 flex flex-wrap gap-3 text-xs"><span>รายการประกาศ ${declared(row).length}</span><span>hits 30 วัน: ${row.hits_30d ?? 'รอ M4'}</span><span>ล่าสุด: ${row.last_hit_at ? esc(fmtDate(row.last_hit_at)) : '—'}</span></div>${warnings.map((warning) => `<p class="mt-1 text-xs chat-drift">⚠️ ${esc(warning)}</p>`).join('')}</article>`; }).join('')}</div>`;
+      $('#chat-view-keywords').innerHTML = `<div class="space-y-2">${state.keywords.map((row) => { const warnings = keywordWarnings(row); return `<article class="rounded-2xl border border-base-300 bg-base-200 p-4 ${warnings.length ? 'chat-warning' : ''}"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="font-display font-bold">${esc(row.keyword)} ${statBadge(row.id)} ${row.enabled ? '' : '<span class="badge badge-ghost">ปิด</span>'}</h2><p class="text-xs opacity-60">${esc(row.match_mode)} · ${esc(row.offer_code || 'ไม่ผูกสินค้า')} · aliases: ${esc([...(row.aliases || []), ...(row.aliases_exact || []).map((item) => `${item} (exact-alias)`)].join(', ') || '—')}</p></div><button class="btn btn-sm tap-44" data-edit-keyword="${esc(row.id)}" aria-label="แก้ keyword ${esc(row.keyword)}">แก้</button></div><div class="mt-2 flex flex-wrap gap-3 text-xs"><span>รายการประกาศ ${declared(row).length}</span><span>hits 30 วัน: ${row.hits_30d ?? 'รอ M4'}</span><span>ล่าสุด: ${row.last_hit_at ? esc(fmtDate(row.last_hit_at)) : '—'}</span></div>${warnings.map((warning) => `<p class="mt-1 text-xs chat-drift">⚠️ ${esc(warning)}</p>`).join('')}</article>`; }).join('')}</div>`;
       document.querySelectorAll<HTMLButtonElement>('[data-edit-keyword]').forEach((button) => button.addEventListener('click', () => openKeyword(button.dataset.editKeyword!)));
     }
 
@@ -220,10 +227,25 @@ import AppNav from '../../components/app/AppNav.astro';
     }
 
     function renderPublish() {
-      $('#chat-view-publish').innerHTML = `<div class="alert border border-base-300 bg-base-200 text-sm"><span>ฝั่งบอทยังอยู่ระหว่างติดตั้งใน M4 — รอบนี้ดูสถานะได้ แต่ยังส่งหรือย้อนเวอร์ชันไม่ได้</span></div><div class="grid gap-3 lg:grid-cols-2">${state.publish.map((row) => { const drift = !row.bot_written_at || !row.db_hash || row.db_hash !== row.bot_hash; return `<article class="rounded-2xl border border-base-300 bg-base-200 p-4"><div class="flex items-start justify-between gap-2"><h2 class="font-display font-bold">${esc(row.file)}</h2><span class="badge ${drift ? 'badge-warning' : 'badge-success'}">${drift ? 'แก้แล้วยังไม่ได้ส่ง' : 'ตรงกับบอท'}</span></div><dl class="mt-3 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm"><dt>สถานะ</dt><dd>${esc(row.status)}</dd><dt>ส่งถึงบอทล่าสุด</dt><dd>${esc(fmtDate(row.bot_written_at))}</dd><dt>DB hash</dt><dd class="chat-hash">${esc(shortHash(row.db_hash))}</dd><dt>Bot hash</dt><dd class="chat-hash">${esc(shortHash(row.bot_hash))}</dd>${row.error ? `<dt>ข้อผิดพลาด</dt><dd class="chat-drift">${esc(row.error)}</dd>` : ''}</dl><button class="btn btn-sm mt-4 tap-44" disabled aria-describedby="chat-publish-disabled">ส่งให้บอทใช้</button></article>`; }).join('')}</div><p id="chat-publish-disabled" class="text-xs opacity-70">ปุ่มส่งและย้อนเวอร์ชันเปิดใช้เมื่อฝั่งบอทพร้อมใน M4 เพื่อไม่ให้คำสั่งค้างโดยไม่มีระบบรับไปทำต่อ</p><section class="rounded-2xl border border-base-300 bg-base-200 p-4"><h2 class="font-display font-bold">ประวัติเวอร์ชัน</h2>${state.versions.length ? `<div class="mt-2 overflow-x-auto"><table class="table table-sm min-w-[620px]"><thead><tr><th>เวลา</th><th>ไฟล์</th><th>Hash</th><th>หมายเหตุ</th><th></th></tr></thead><tbody>${state.versions.map((row) => `<tr><td>${esc(fmtDate(row.created_at))}</td><td>${esc(row.file)}</td><td class="chat-hash">${esc(shortHash(row.hash))}</td><td>${esc(row.note || '—')}</td><td><button class="btn btn-sm tap-44" disabled aria-describedby="chat-publish-disabled">ย้อนเวอร์ชัน</button></td></tr>`).join('')}</tbody></table></div>` : '<p class="mt-2 text-sm opacity-60">ยังไม่มีประวัติ — ระบบจะเริ่มเก็บเมื่อเปิด publish ใน M4</p>'}</section>`;
+      $('#chat-view-publish').innerHTML = `<div class="alert border border-base-300 bg-base-200 text-sm"><span>กดส่งแล้วมินิจะหยิบไปเขียนไฟล์ให้บอทภายใน 5 นาที · ย้อนเวอร์ชันคือเอาไฟล์เก่ากลับไปใช้ ข้อมูลใน DB ไม่ถูกย้อน จึงจะขึ้นว่าไม่ตรงกับบอทจนกว่าจะส่งใหม่</span></div><div class="grid gap-3 lg:grid-cols-2">${state.publish.map((row) => { const drift = !row.bot_written_at || !row.db_hash || row.db_hash !== row.bot_hash; return `<article class="rounded-2xl border border-base-300 bg-base-200 p-4"><div class="flex items-start justify-between gap-2"><h2 class="font-display font-bold">${esc(row.file)}</h2><span class="badge ${drift ? 'badge-warning' : 'badge-success'}">${drift ? 'แก้แล้วยังไม่ได้ส่ง' : 'ตรงกับบอท'}</span></div><dl class="mt-3 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm"><dt>สถานะ</dt><dd>${esc(row.status)}</dd><dt>ส่งถึงบอทล่าสุด</dt><dd>${esc(fmtDate(row.bot_written_at))}</dd><dt>DB hash</dt><dd class="chat-hash">${esc(shortHash(row.db_hash))}</dd><dt>Bot hash</dt><dd class="chat-hash">${esc(shortHash(row.bot_hash))}</dd>${row.error ? `<dt>ข้อผิดพลาด</dt><dd class="chat-drift">${esc(row.error)}</dd>` : ''}</dl><button class="btn btn-primary btn-sm mt-4 tap-44" data-publish="${esc(row.file)}"${row.status === 'requested' ? ' disabled' : ''}>${row.status === 'requested' ? 'รอมินิหยิบไปทำ…' : 'ส่งให้บอทใช้'}</button></article>`; }).join('')}</div><p class="text-xs opacity-70">มินิตรวจทุก 5 นาที · ถ้าด่านตรวจไม่ผ่าน ไฟล์จะไม่ถูกแตะเลยและขึ้นเหตุผลไว้ตรงนี้</p><section class="rounded-2xl border border-base-300 bg-base-200 p-4"><h2 class="font-display font-bold">ประวัติเวอร์ชัน</h2>${state.versions.length ? `<div class="mt-2 overflow-x-auto"><table class="table table-sm min-w-[620px]"><thead><tr><th>เวลา</th><th>ไฟล์</th><th>Hash</th><th>หมายเหตุ</th><th></th></tr></thead><tbody>${state.versions.map((row) => `<tr><td>${esc(fmtDate(row.created_at))}</td><td>${esc(row.file)}</td><td class="chat-hash">${esc(shortHash(row.hash))}</td><td>${esc(row.note || '—')}</td><td><button class="btn btn-sm tap-44" data-rollback="${row.id}" data-rollback-file="${esc(row.file)}">ย้อนเวอร์ชัน</button></td></tr>`).join('')}</tbody></table></div>` : '<p class="mt-2 text-sm opacity-60">ยังไม่มีประวัติ — จะเริ่มเก็บเมื่อส่งให้บอทครั้งแรก</p>'}</section>`;
     }
 
-    function renderAll() { renderSummary(); renderOffers(); syncFilters(); renderSnippets(); renderKeywords(); renderPublish(); }
+    function bindPublishActions() {
+      document.querySelectorAll<HTMLButtonElement>('[data-publish]').forEach((button) => button.addEventListener('click', async () => {
+        button.disabled = true;
+        try { await requestPublish(button.dataset.publish!); toast('สั่งส่งแล้ว มินิจะหยิบไปทำภายใน 5 นาที'); await reload(); }
+        catch (error) { oops(error); button.disabled = false; }
+      }));
+      document.querySelectorAll<HTMLButtonElement>('[data-rollback]').forEach((button) => button.addEventListener('click', async () => {
+        const file = button.dataset.rollbackFile!;
+        if (!confirm(`ย้อน ${file} ไปเวอร์ชันนี้?\n\nไฟล์ที่บอทใช้จะกลับไปเป็นของเก่า แต่ข้อมูลในหน้านี้ไม่ถูกย้อน จึงจะขึ้นว่าไม่ตรงกับบอทจนกว่าจะกดส่งใหม่`)) return;
+        button.disabled = true;
+        try { await rollbackTo(file, Number(button.dataset.rollback)); toast('สั่งย้อนเวอร์ชันแล้ว'); await reload(); }
+        catch (error) { oops(error); button.disabled = false; }
+      }));
+    }
+
+    function renderAll() { renderSummary(); renderOffers(); syncFilters(); renderSnippets(); renderKeywords(); renderPublish(); bindPublishActions(); }
     function setView(view: View, focus = false) {
       state.view = view;
       document.querySelectorAll<HTMLButtonElement>('.chat-tab').forEach((button) => { const active = button.dataset.view === view; button.setAttribute('aria-selected', String(active)); button.tabIndex = active ? 0 : -1; if (active && focus) button.focus(); });

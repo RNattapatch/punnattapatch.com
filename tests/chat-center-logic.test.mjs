@@ -115,6 +115,20 @@ test('G08 fail: raw product-looking price is blocked', () => {
   assert.ok(codes(validateSnippet(snippet('ราคา 34,900 บาทค่ะ'), catalog)).includes('G08_RAW_PRICE'));
 });
 
+test('G09 pass: slot payment is the one place a bank account may live', () => {
+  const snippet = { offer_code: 'P1', slot: 'payment', channel: 'any', status: 'live',
+    body: 'ธนาคารกสิกรไทย\nเลขบัญชี 192-3-46057-4\nชื่อบัญชี นาย ณัฐพัชร์ รุขพันธ์เมธี' };
+  const issues = validateSnippet(snippet, catalog).issues.filter((i) => i.code === 'G09_BANK_ACCOUNT');
+  assert.equal(issues.length, 0);
+});
+
+test('G09 fail: the same account number in a prompt-bound block is still blocked', () => {
+  const snippet = { offer_code: 'P1', slot: 'b5', channel: 'any', status: 'live',
+    body: 'ธนาคารกสิกรไทย\nเลขบัญชี 192-3-46057-4\nชื่อบัญชี นาย ณัฐพัชร์ รุขพันธ์เมธี' };
+  const issues = validateSnippet(snippet, catalog).issues.filter((i) => i.code === 'G09_BANK_ACCOUNT');
+  assert.equal(issues.length, 1);
+});
+
 test('G09 pass: ordinary dates and amounts do not look like a bank account', () => {
   assert.equal(validateSnippet(snippet('เรียนวันที่ 24-25 ตุลาคม 2026 ค่ะ'), catalog).valid, true);
 });
