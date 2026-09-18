@@ -135,7 +135,7 @@ import AppNav from '../../components/app/AppNav.astro';
 
     function renderOffers() {
       const prices = catalogByKey();
-      $('#chat-view-offers').innerHTML = `<div class="mb-3 flex justify-end"><button class="btn btn-primary btn-sm tap-44" data-add-offer>+ เพิ่มสินค้า/บริการ</button></div><div class="chat-panel-grid">${state.offers.map((offer) => {
+      $('#chat-view-offers').innerHTML = `<div class="mb-3 flex flex-wrap items-center justify-between gap-2"><p class="text-xs opacity-70">ปิดสินค้าไหน บอทจะไม่หยิบสคริปต์ชุดนั้นไปตอบลูกค้าเลย · มีผลหลังกด "ส่งให้บอทใช้" ที่แท็บ Publish</p></div><div class="mb-3 flex justify-end"><button class="btn btn-primary btn-sm tap-44" data-add-offer>+ เพิ่มสินค้า/บริการ</button></div><div class="chat-panel-grid">${state.offers.map((offer) => {
         const item = prices.get(offer.pricing_key); const snippets = state.snippets.filter((row) => row.offer_code === offer.code);
         const keywords = state.keywords.filter((row) => row.offer_code === offer.code);
         const declaredCount = keywords.reduce((sum, row) => sum + declared(row).length, 0);
@@ -162,6 +162,7 @@ import AppNav from '../../components/app/AppNav.astro';
             </div>`;
           })()}
           <div class="mt-3 flex flex-wrap gap-2 border-t border-base-300 pt-3">
+            <button class="btn btn-sm tap-44 ${offer.enabled ? '' : 'btn-warning'}" data-toggle-offer="${esc(offer.code)}" aria-pressed="${offer.enabled}">${offer.enabled ? 'เปิดอยู่ · กดเพื่อปิด' : 'ปิดอยู่ · กดเพื่อเปิด'}</button>
             <button class="btn btn-sm tap-44" data-edit-offer="${esc(offer.code)}">แก้รายละเอียด</button>
             <button class="btn btn-sm tap-44" data-add-snippet="${esc(offer.code)}">+ เพิ่มข้อความ</button>
             <button class="btn btn-ghost btn-sm tap-44" data-del-offer="${esc(offer.code)}" aria-label="ลบสินค้า ${esc(offer.code)}">ลบสินค้านี้</button>
@@ -565,6 +566,19 @@ import AppNav from '../../components/app/AppNav.astro';
       document.querySelectorAll<HTMLButtonElement>('[data-edit-context]').forEach((b) => b.addEventListener('click', () => openContext(b.dataset.editContext!)));
       document.querySelectorAll<HTMLButtonElement>('[data-edit-offer]').forEach((b) => b.addEventListener('click', () => openOffer(b.dataset.editOffer!)));
       document.querySelectorAll<HTMLButtonElement>('[data-add-offer]').forEach((b) => b.addEventListener('click', () => openOffer(null)));
+
+      document.querySelectorAll<HTMLButtonElement>('[data-toggle-offer]').forEach((b) => b.addEventListener('click', async () => {
+        const code = b.dataset.toggleOffer!;
+        const row = state.offers.find((item: OfferRow) => item.code === code);
+        if (!row) return;
+        const next = !row.enabled;
+        // ปิดสินค้าที่ยังมี keyword ชี้อยู่ = ลูกค้าพิมพ์คำนั้นแล้วบอทเงียบ บอกก่อนดีกว่าให้ไปเจอเอง
+        const kws = state.keywords.filter((k: KeywordRow) => k.offer_code === code && k.enabled);
+        if (!next && kws.length && !confirm(`ปิด ${code}?\n\nบอทจะไม่หยิบสคริปต์ชุดนี้ไปตอบ แต่ยังมี keyword ${kws.map((k: KeywordRow) => k.keyword).join(', ')} ชี้มาที่สินค้านี้อยู่\nลูกค้าที่พิมพ์คำนั้นจะไม่ได้สคริปต์`)) return;
+        b.disabled = true;
+        try { await saveOffer(code, { enabled: next }); toast(next ? `เปิด ${code} แล้ว` : `ปิด ${code} แล้ว — กดส่งให้บอทใช้ที่แท็บ Publish`); await reload(); }
+        catch (error) { oops(error); b.disabled = false; }
+      }));
 
       document.querySelectorAll<HTMLButtonElement>('[data-add-context]').forEach((b) => b.addEventListener('click', async () => {
         const file = b.dataset.addContext!;
