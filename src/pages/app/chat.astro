@@ -96,7 +96,7 @@ import AppNav from '../../components/app/AppNav.astro';
   </div>
 
   <script>
-    import { loadAll, saveSnippet, saveKeyword, type OfferRow, type SnippetRow, type KeywordRow, type PublishRow, type PublishVersionRow, type DeclaredRef , requestPublish, rollbackTo, type KeywordStatRow, type ContextRow, saveContext, createContext, deleteContext, createOffer, saveOffer, deleteOffer, createSnippet, deleteSnippet, type AssetRow, loadAssets, createAsset, saveAsset, deleteAsset, uploadThumb, signThumb } from '../../scripts/chat/data';
+    import { loadAll, saveSnippet, saveKeyword, type OfferRow, type SnippetRow, type KeywordRow, type PublishRow, type PublishVersionRow, type DeclaredRef , requestPublish, rollbackTo, type KeywordStatRow, type ContextRow, saveContext, createContext, deleteContext, createOffer, saveOffer, deleteOffer, createSnippet, deleteSnippet, type AssetRow, loadAssets, createAsset, saveAsset, deleteAsset, uploadThumb, signThumb, requestMetricSync } from '../../scripts/chat/data';
     import { renderTokens, validateSnippet, keywordConflicts, type CatalogLike } from '../../scripts/chat/logic';
     import { getSupabaseSession } from '../../scripts/dashboard/supabase';
 
@@ -317,7 +317,7 @@ import AppNav from '../../components/app/AppNav.astro';
             <label class="text-xs">สินค้า<select id="chat-asset-filter-offer" class="select select-sm select-bordered mt-1"><option value="all">ทั้งหมด</option>${codes.map((code: string) => `<option${state.assetOffer === code ? ' selected' : ''}>${esc(code)}</option>`).join('')}<option value="none"${state.assetOffer === 'none' ? ' selected' : ''}>ยังไม่ผูกสินค้า</option></select></label>
             <label class="text-xs">ชนิด<select id="chat-asset-filter-kind" class="select select-sm select-bordered mt-1"><option value="all">ทั้งหมด</option>${ASSET_KINDS.map((kind) => `<option value="${kind}"${state.assetKind === kind ? ' selected' : ''}>${esc(KIND_LABEL[kind])}</option>`).join('')}</select></label>
           </div>
-          <button class="btn btn-primary btn-sm tap-44" data-add-asset>+ เพิ่มชิ้นงาน</button>
+          <div class="flex gap-2"><button class="btn btn-sm tap-44" data-sync-all>ขอดึงตัวเลขทั้งหมด</button><button class="btn btn-primary btn-sm tap-44" data-add-asset>+ เพิ่มชิ้นงาน</button></div>
         </div>
         ${rows.length ? `<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">${rows.map((row: AssetRow) => {
           const m = row.metrics || {};
@@ -328,11 +328,13 @@ import AppNav from '../../components/app/AppNav.astro';
             </div>
             <h3 class="mt-2 font-bold">${esc(row.title)}</h3>
             <p class="text-xs opacity-70">${esc(KIND_LABEL[row.kind] || row.kind)} · ${esc(row.offer_code || 'ไม่ผูกสินค้า')}${row.ratio ? ` · ${esc(row.ratio)}` : ''} · ${esc(row.status)}</p>
-            ${(m.views || m.ctr || m.leads) ? `<p class="mt-1 text-xs">📊 ${m.views ? `${Number(m.views).toLocaleString('en-US')} วิว · ` : ''}${m.ctr ? `CTR ${m.ctr}% · ` : ''}${m.leads ? `${m.leads} ลีด` : ''}<span class="opacity-60"> ${m.as_of ? `ณ ${esc(m.as_of)}` : stale}</span></p>` : ''}
+            ${(m.views || m.ctr || m.leads) ? `<p class="mt-1 text-xs">📊 ${m.views ? `${Number(m.views).toLocaleString('en-US')} วิว · ` : ''}${m.ctr ? `CTR ${m.ctr}% · ` : ''}${m.leads ? `${m.leads} ลีด` : ''}${(m.spend && m.leads) ? ` · ฿${Math.round(Number(m.spend) / Number(m.leads)).toLocaleString('en-US')}/ลีด` : m.spend ? ` · ใช้ ฿${Number(m.spend).toLocaleString('en-US')}` : ''}<span class="opacity-60"> ${m.as_of ? `ณ ${esc(m.as_of)}${m.window ? ` (${esc(String(m.window))})` : ''}` : stale}</span></p>` : ''}
+            ${row.external_id ? `<p class="mt-1 text-xs opacity-60">Meta ad ${esc(row.external_id)}${row.sync_requested_at ? ' · รอดึงตัวเลข' : row.metrics_synced_at ? ` · ดึงล่าสุด ${esc(fmtDate(row.metrics_synced_at))}` : ''}</p>` : ''}
             ${row.source_path ? `<p class="mt-1 text-xs opacity-60">ต้นฉบับ: ${esc(row.source_path)}</p>` : ''}
             <div class="mt-2 flex flex-wrap gap-1">
               ${safeHref(row.url) ? `<a class="btn btn-xs tap-44" href="${esc(safeHref(row.url))}" target="_blank" rel="noreferrer">เปิดของจริง</a>` : ''}
               <button class="btn btn-xs tap-44" data-edit-asset="${esc(row.id)}">แก้</button>
+              ${row.external_id && !row.sync_requested_at ? `<button class="btn btn-xs tap-44" data-sync-asset="${esc(row.id)}">ขอดึงตัวเลข</button>` : ''}
               <button class="btn btn-ghost btn-xs tap-44" data-del-asset="${esc(row.id)}" aria-label="ลบชิ้นงาน ${esc(row.title)}">ลบ</button>
             </div>
           </article>`;
@@ -361,6 +363,7 @@ import AppNav from '../../components/app/AppNav.astro';
           </div>
           <label class="block text-xs">ลิงก์ของจริง (reel · LP · creative ใน Meta)<input id="chat-asset-url" class="input input-sm input-bordered mt-1 w-full" placeholder="https://…"></label>
           <label class="block text-xs">ไฟล์ต้นฉบับอยู่ไหน (path ในเครื่อง · Canva · Drive)<input id="chat-asset-source" class="input input-sm input-bordered mt-1 w-full" placeholder="output/images/ads/…"></label>
+          <label class="block text-xs">Meta ad id (ใส่แล้วกดขอดึงตัวเลขได้)<input id="chat-asset-external" class="input input-sm input-bordered mt-1 w-full" placeholder="120257878588510595"></label>
           <label class="block text-xs">ภาพตัวอย่าง (ระบบย่อให้เอง ลากไฟล์ใหญ่มาได้เลย)<input id="chat-asset-file" type="file" accept="image/*" class="file-input file-input-sm file-input-bordered mt-1 w-full"></label>
           <p id="chat-asset-filenote" class="text-xs opacity-60">${row?.thumb_path ? 'มีภาพตัวอย่างแล้ว — เลือกไฟล์ใหม่เพื่อแทนที่' : 'ยังไม่มีภาพตัวอย่าง'}</p>
           <fieldset class="rounded-xl border border-base-300 p-3">
@@ -385,6 +388,7 @@ import AppNav from '../../components/app/AppNav.astro';
         $<HTMLInputElement>('#chat-asset-url').value = row.url || '';
         $<HTMLInputElement>('#chat-asset-source').value = row.source_path || '';
         $<HTMLInputElement>('#chat-asset-note').value = row.note || '';
+        $<HTMLInputElement>('#chat-asset-external').value = row.external_id || '';
         if (m.views != null) $<HTMLInputElement>('#chat-asset-views').value = String(m.views);
         if (m.ctr != null) $<HTMLInputElement>('#chat-asset-ctr').value = String(m.ctr);
         if (m.leads != null) $<HTMLInputElement>('#chat-asset-leads').value = String(m.leads);
@@ -424,6 +428,7 @@ import AppNav from '../../components/app/AppNav.astro';
             source_path: $<HTMLInputElement>('#chat-asset-source').value.trim() || null,
             note: $<HTMLInputElement>('#chat-asset-note').value.trim() || null,
             thumb_path: thumb, width, height, ratio, metrics,
+            external_id: $<HTMLInputElement>('#chat-asset-external').value.trim() || null,
           };
           if (row) await saveAsset(row.id, patch); else await createAsset(patch as never);
           dialog.close(); toast(row ? 'บันทึกแล้ว' : 'เพิ่มชิ้นงานแล้ว'); await reload();
@@ -540,6 +545,18 @@ import AppNav from '../../components/app/AppNav.astro';
         if (!row || !confirm(`ลบ "${row.title}" ออกจากทะเบียน?\n\nภาพตัวอย่างถูกลบด้วย แต่ไฟล์ต้นฉบับที่อื่นไม่ถูกแตะ`)) return;
         b.disabled = true;
         try { await deleteAsset(row.id, row.thumb_path); toast('ลบแล้ว'); await reload(); } catch (error) { oops(error); b.disabled = false; }
+      }));
+      document.querySelectorAll<HTMLButtonElement>('[data-sync-asset]').forEach((b) => b.addEventListener('click', async () => {
+        b.disabled = true;
+        try { await requestMetricSync([b.dataset.syncAsset!]); toast('ขอแล้ว — ตัวเลขจะอัปเดตเมื่อรันคำสั่งดึงจาก Meta รอบถัดไป'); await reload(); }
+        catch (error) { oops(error); b.disabled = false; }
+      }));
+      document.querySelectorAll<HTMLButtonElement>('[data-sync-all]').forEach((b) => b.addEventListener('click', async () => {
+        const ids = (state.assets || []).filter((row: AssetRow) => row.external_id && !row.sync_requested_at).map((row: AssetRow) => row.id);
+        if (!ids.length) { toast('ไม่มีชิ้นที่ผูก Meta ad id ไว้', 'info'); return; }
+        b.disabled = true;
+        try { await requestMetricSync(ids); toast(`ขอดึง ${ids.length} ชิ้นแล้ว`); await reload(); }
+        catch (error) { oops(error); b.disabled = false; }
       }));
       document.querySelectorAll<HTMLButtonElement>('[data-goto-assets]').forEach((b) => b.addEventListener('click', () => { state.assetOffer = b.dataset.gotoAssets!; state.assetKind = 'all'; setView('assets'); void renderAssets(); bindAssetActions(); }));
     }

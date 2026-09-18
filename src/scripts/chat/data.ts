@@ -29,6 +29,7 @@ export interface AssetRow {
   platform: string | null; campaign_id: string | null; status: string;
   ratio: string | null; width: number | null; height: number | null;
   metrics: AssetMetrics; note: string | null; display_order: number; updated_at: string;
+  external_id: string | null; external_account: string | null; metrics_synced_at: string | null; sync_requested_at: string | null;
 }
 
 export interface ContextRow {
@@ -144,6 +145,17 @@ export async function uploadThumb(blob: Blob, filename: string): Promise<string>
 export async function signThumb(path: string): Promise<string | null> {
   const { data } = await supabase.storage.from('offer-assets').createSignedUrl(path, 3600);
   return data?.signedUrl ?? null;
+}
+
+/**
+ * ขอให้ดึงตัวเลขจาก Meta — หน้าเว็บทำได้แค่ตั้งคิว
+ * เรียก Meta API จากเบราว์เซอร์ไม่ได้ (ต้องมี token ฝั่ง server) และการเปิดหน้า Meta ด้วยเครื่องมืออัตโนมัติ
+ * เคยทำให้บัญชีโฆษณาโดนระงับมาแล้ว จึงต้องผ่าน Meta MCP จาก session ที่ต่อ connector เท่านั้น
+ */
+export async function requestMetricSync(ids: string[]): Promise<void> {
+  await requireSession();
+  if (!ids.length) return;
+  await query(() => supabase.from('chat_assets').update({ sync_requested_at: new Date().toISOString() }).in('id', ids).select('id'));
 }
 
 export async function loadContext(): Promise<ContextRow[]> {
