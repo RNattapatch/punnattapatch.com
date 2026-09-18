@@ -22,6 +22,10 @@ export interface PublishRow {
   bot_hash: string | null; bot_written_at: string | null; error: string | null;
 }
 export interface PublishVersionRow { id: number; file: string; hash: string; created_at: string; created_by: string | null; note: string | null }
+export interface ContextRow {
+  id: string; file: string; heading: string; body: string;
+  display_order: number; enabled: boolean; note: string | null; updated_at: string;
+}
 export interface KeywordStatRow { id: string; keyword: string; offer_code: string | null; hits_30d: number; hits_7d: number; near_miss_30d: number; last_hit_at: string | null }
 
 async function requireSession() {
@@ -62,16 +66,17 @@ export async function loadPublishState(): Promise<{ publish: PublishRow[]; versi
   return { publish: publish || [], versions: versions || [] };
 }
 
-export async function loadAll(): Promise<{ offers: OfferRow[]; snippets: SnippetRow[]; keywords: KeywordRow[]; publish: PublishRow[]; versions: PublishVersionRow[]; stats: KeywordStatRow[] }> {
+export async function loadAll(): Promise<{ offers: OfferRow[]; snippets: SnippetRow[]; keywords: KeywordRow[]; publish: PublishRow[]; versions: PublishVersionRow[]; stats: KeywordStatRow[]; context: ContextRow[] }> {
   await requireSession();
-  const [offers, snippets, keywords, publishState, stats] = await Promise.all([
+  const [offers, snippets, keywords, publishState, stats, context] = await Promise.all([
     query<OfferRow[]>(() => supabase.from('chat_offers').select('*').order('display_order').order('code')),
     query<SnippetRow[]>(() => supabase.from('chat_snippets').select('*').order('offer_code').order('slot').order('channel')),
     query<KeywordRow[]>(() => supabase.from('chat_keywords').select('*').order('keyword')),
     loadPublishState(),
     loadKeywordStats(),
+    loadContext(),
   ]);
-  return { offers: offers || [], snippets: snippets || [], keywords: keywords || [], ...publishState, stats: stats || [] };
+  return { offers: offers || [], snippets: snippets || [], keywords: keywords || [], ...publishState, stats: stats || [], context: context || [] };
 }
 
 export async function loadKeywordStats(): Promise<KeywordStatRow[]> {
@@ -93,6 +98,52 @@ export async function rollbackTo(file: string, versionId: number): Promise<void>
   await query(() => supabase.from('chat_publish')
     .update({ status: 'requested', rollback_to_version: versionId, requested_at: new Date().toISOString(), requested_by: session.user?.email ?? 'owner', error: null })
     .eq('file', file).select('file'));
+}
+
+export async function loadContext(): Promise<ContextRow[]> {
+  await requireSession();
+  return (await query<ContextRow[]>(() => supabase.from('chat_context').select('*').order('file').order('display_order'))) || [];
+}
+
+export async function saveContext(id: string, patch: Pick<ContextRow, 'heading' | 'body' | 'display_order' | 'enabled' | 'note'>): Promise<void> {
+  const session = await requireSession();
+  await query(() => supabase.from('chat_context').update({ ...patch, updated_at: new Date().toISOString(), updated_by: session.user?.email ?? 'owner' }).eq('id', id).select('id'));
+}
+
+export async function createContext(row: Pick<ContextRow, 'file' | 'heading' | 'body' | 'display_order'>): Promise<void> {
+  const session = await requireSession();
+  await query(() => supabase.from('chat_context').insert({ ...row, enabled: true, updated_by: session.user?.email ?? 'owner' }).select('id'));
+}
+
+export async function deleteContext(id: string): Promise<void> {
+  await requireSession();
+  await query(() => supabase.from('chat_context').delete().eq('id', id).select('id'));
+}
+
+export async function createOffer(row: Pick<OfferRow, 'code' | 'pricing_key' | 'one_liner'> & Partial<OfferRow>): Promise<void> {
+  await requireSession();
+  await query(() => supabase.from('chat_offers').insert({ enabled: true, display_order: 100, ...row }).select('code'));
+}
+
+export async function saveOffer(code: string, patch: Partial<OfferRow>): Promise<void> {
+  await requireSession();
+  await query(() => supabase.from('chat_offers').update({ ...patch, updated_at: new Date().toISOString() }).eq('code', code).select('code'));
+}
+
+/** ลบสินค้า — snippets ของมันหายตามด้วย (on delete cascade) keyword ที่ผูกอยู่จะเหลือ offer_code ว่าง */
+export async function deleteOffer(code: string): Promise<void> {
+  await requireSession();
+  await query(() => supabase.from('chat_offers').delete().eq('code', code).select('code'));
+}
+
+export async function createSnippet(row: Pick<SnippetRow, 'offer_code' | 'slot' | 'channel' | 'body'> & Partial<SnippetRow>): Promise<void> {
+  const session = await requireSession();
+  await query(() => supabase.from('chat_snippets').insert({ status: 'live', display_order: 10, ...row, updated_by: session.user?.email ?? 'owner' }).select('id'));
+}
+
+export async function deleteSnippet(id: string): Promise<void> {
+  await requireSession();
+  await query(() => supabase.from('chat_snippets').delete().eq('id', id).select('id'));
 }
 
 export async function saveSnippet(id: string, patch: Pick<SnippetRow, 'body' | 'faq_q' | 'channel' | 'status'>): Promise<void> {
