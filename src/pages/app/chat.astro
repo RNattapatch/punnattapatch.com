@@ -331,7 +331,7 @@ import AppNav from '../../components/app/AppNav.astro';
             ${(m.views || m.ctr || m.leads) ? `<p class="mt-1 text-xs">📊 ${m.views ? `${Number(m.views).toLocaleString('en-US')} วิว · ` : ''}${m.ctr ? `CTR ${m.ctr}% · ` : ''}${m.leads ? `${m.leads} ลีด` : ''}<span class="opacity-60"> ${m.as_of ? `ณ ${esc(m.as_of)}` : stale}</span></p>` : ''}
             ${row.source_path ? `<p class="mt-1 text-xs opacity-60">ต้นฉบับ: ${esc(row.source_path)}</p>` : ''}
             <div class="mt-2 flex flex-wrap gap-1">
-              ${row.url ? `<a class="btn btn-xs tap-44" href="${safeHref(row.url)}" target="_blank" rel="noopener">เปิดของจริง</a>` : ''}
+              ${safeHref(row.url) ? `<a class="btn btn-xs tap-44" href="${esc(safeHref(row.url))}" target="_blank" rel="noreferrer">เปิดของจริง</a>` : ''}
               <button class="btn btn-xs tap-44" data-edit-asset="${esc(row.id)}">แก้</button>
               <button class="btn btn-ghost btn-xs tap-44" data-del-asset="${esc(row.id)}" aria-label="ลบชิ้นงาน ${esc(row.title)}">ลบ</button>
             </div>
