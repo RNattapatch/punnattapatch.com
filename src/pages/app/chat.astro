@@ -47,6 +47,7 @@ import AppNav from '../../components/app/AppNav.astro';
         <div id="chat-tabs" class="flex max-w-full gap-1 overflow-x-auto" role="tablist" aria-label="ส่วนของ Chat Center">
           <button id="chat-tab-offers" class="chat-tab btn btn-sm tap-44" role="tab" aria-selected="true" aria-controls="chat-view-offers" data-view="offers">Offers</button>
           <button id="chat-tab-snippets" class="chat-tab btn btn-sm tap-44" role="tab" aria-selected="false" aria-controls="chat-view-snippets" data-view="snippets">Snippets</button>
+          <button id="chat-tab-assets" class="chat-tab btn btn-sm tap-44" role="tab" aria-selected="false" aria-controls="chat-view-assets" data-view="assets">Assets</button>
           <button id="chat-tab-faq" class="chat-tab btn btn-sm tap-44" role="tab" aria-selected="false" aria-controls="chat-view-faq" data-view="faq">FAQ</button>
           <button id="chat-tab-keywords" class="chat-tab btn btn-sm tap-44" role="tab" aria-selected="false" aria-controls="chat-view-keywords" data-view="keywords">Keywords</button>
           <button id="chat-tab-context" class="chat-tab btn btn-sm tap-44" role="tab" aria-selected="false" aria-controls="chat-view-context" data-view="context">Context บอท</button>
@@ -64,6 +65,7 @@ import AppNav from '../../components/app/AppNav.astro';
         </div>
         <div id="chat-snippets"></div>
       </section>
+      <section id="chat-view-assets" class="hidden space-y-3" role="tabpanel" aria-labelledby="chat-tab-assets"></section>
       <section id="chat-view-faq" class="hidden space-y-3" role="tabpanel" aria-labelledby="chat-tab-faq"></section>
       <section id="chat-view-keywords" class="hidden" role="tabpanel" aria-labelledby="chat-tab-keywords"></section>
       <section id="chat-view-context" class="hidden space-y-3" role="tabpanel" aria-labelledby="chat-tab-context"></section>
@@ -78,6 +80,10 @@ import AppNav from '../../components/app/AppNav.astro';
       <div id="chat-keyword-dialog-body" class="modal-box max-w-3xl"></div>
       <form method="dialog" class="modal-backdrop"><button aria-label="ปิดหน้าต่างแก้ keyword">ปิด</button></form>
     </dialog>
+    <dialog id="chat-asset-dialog" class="modal">
+      <div id="chat-asset-dialog-body" class="modal-box max-w-3xl"></div>
+      <form method="dialog" class="modal-backdrop"><button class="tap-44" aria-label="ปิดหน้าต่างชิ้นงาน">ปิด</button></form>
+    </dialog>
     <dialog id="chat-offer-dialog" class="modal">
       <div id="chat-offer-dialog-body" class="modal-box max-w-3xl"></div>
       <form method="dialog" class="modal-backdrop"><button class="tap-44" aria-label="ปิดหน้าต่างแก้สินค้า">ปิด</button></form>
@@ -90,7 +96,7 @@ import AppNav from '../../components/app/AppNav.astro';
   </div>
 
   <script>
-    import { loadAll, saveSnippet, saveKeyword, type OfferRow, type SnippetRow, type KeywordRow, type PublishRow, type PublishVersionRow, type DeclaredRef , requestPublish, rollbackTo, type KeywordStatRow, type ContextRow, saveContext, createContext, deleteContext, createOffer, saveOffer, deleteOffer, createSnippet, deleteSnippet } from '../../scripts/chat/data';
+    import { loadAll, saveSnippet, saveKeyword, type OfferRow, type SnippetRow, type KeywordRow, type PublishRow, type PublishVersionRow, type DeclaredRef , requestPublish, rollbackTo, type KeywordStatRow, type ContextRow, saveContext, createContext, deleteContext, createOffer, saveOffer, deleteOffer, createSnippet, deleteSnippet, type AssetRow, loadAssets, createAsset, saveAsset, deleteAsset, uploadThumb, signThumb } from '../../scripts/chat/data';
     import { renderTokens, validateSnippet, keywordConflicts, type CatalogLike } from '../../scripts/chat/logic';
     import { getSupabaseSession } from '../../scripts/dashboard/supabase';
 
@@ -108,8 +114,9 @@ import AppNav from '../../components/app/AppNav.astro';
     }
     const oops = (error: unknown) => toast((error as Error)?.message || 'ทำรายการไม่สำเร็จ — ลองใหม่อีกครั้ง', 'error');
 
-    type View = 'offers' | 'snippets' | 'faq' | 'keywords' | 'context' | 'publish';
+    type View = 'offers' | 'snippets' | 'assets' | 'faq' | 'keywords' | 'context' | 'publish';
     const state: any = {
+      assetOffer: 'all', assetKind: 'all',
       offers: [] as OfferRow[], snippets: [] as SnippetRow[], keywords: [] as KeywordRow[],
       publish: [] as PublishRow[], versions: [] as PublishVersionRow[], catalog: { packages: [] } as CatalogLike,
       view: 'offers' as View, offerFilter: 'all', slotFilter: 'all', channelFilter: 'all',
@@ -141,6 +148,19 @@ import AppNav from '../../components/app/AppNav.astro';
             <div class="space-y-2 text-sm"><p><b>เหมาะกับ:</b> ${esc(offer.fit || 'ยังไม่ได้ระบุ')}</p><p><b>ยังไม่เหมาะ:</b> ${esc(offer.not_fit || 'ยังไม่ได้ระบุ')}</p><p><b>ขั้นถัดไป:</b> ${esc(offer.next_step || 'ยังไม่ได้ระบุ')}</p><p><b>Keyword:</b> ${keywords.length ? keywords.map((row) => `<span class="badge badge-outline mr-1">${esc(row.keyword)}</span>`).join('') : 'ยังไม่มี'}</p><p><b>รายการประกาศที่ผูกอยู่:</b> ${declaredCount}</p><div class="flex flex-wrap gap-2">${safeHref(offer.lp_url) ? `<a class="btn btn-sm tap-44" href="${esc(safeHref(offer.lp_url))}" target="_blank" rel="noreferrer">เปิด LP</a>` : ''}${safeHref(offer.outline_url) ? `<a class="btn btn-sm tap-44" href="${esc(safeHref(offer.outline_url))}" target="_blank" rel="noreferrer">เปิด Outline</a>` : ''}</div></div>
             <div class="space-y-2">${snippets.map((row) => `<div class="rounded-xl border border-base-300 bg-base-100 p-3"><div class="mb-1 flex justify-between gap-2 text-xs"><b>${esc(row.slot)} · ${esc(row.channel)}</b><span>${row.char_count} ตัวอักษร</span></div><p class="chat-copy text-sm">${esc(preview(row.body))}</p></div>`).join('')}</div>
           </div>
+          ${(() => {
+            const mine = (state.assets || []).filter((row: AssetRow) => row.offer_code === offer.code);
+            if (!mine.length) return '<p class="mt-3 border-t border-base-300 pt-3 text-xs opacity-60">ยังไม่มีชิ้นงาน (รูปแอด · reel · LP) ผูกกับสินค้านี้</p>';
+            return `<div class="mt-3 border-t border-base-300 pt-3">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs opacity-70">ชิ้นงาน ${mine.length} ชิ้น</span>
+                <button class="btn btn-xs tap-44" data-goto-assets="${esc(offer.code)}">ดูทั้งหมด</button>
+              </div>
+              <div class="mt-2 flex gap-2">${mine.slice(0, 3).map((row: AssetRow) => row.thumb_path
+                ? `<img data-thumb="${esc(row.thumb_path)}" alt="${esc(row.title)}" class="h-14 w-24 rounded-lg border border-base-300 object-cover" loading="lazy">`
+                : `<span class="flex h-14 w-24 items-center justify-center rounded-lg border border-base-300 text-[10px] opacity-50">${esc(row.kind)}</span>`).join('')}</div>
+            </div>`;
+          })()}
           <div class="mt-3 flex flex-wrap gap-2 border-t border-base-300 pt-3">
             <button class="btn btn-sm tap-44" data-edit-offer="${esc(offer.code)}">แก้รายละเอียด</button>
             <button class="btn btn-sm tap-44" data-add-snippet="${esc(offer.code)}">+ เพิ่มข้อความ</button>
@@ -264,6 +284,154 @@ import AppNav from '../../components/app/AppNav.astro';
 
     // FAQ อยู่ 2 ที่จริงๆ: ต่อบริการ (snippet slot=faq ที่บอทหยิบตอนถือสคริปต์อยู่)
     // กับ FAQ กลางใน oa-knowledge.md (บอทตอบได้ตลอดเวลา) — หน้านี้รวมให้เห็นพร้อมกัน
+    const ASSET_KINDS = ['ad_image', 'ad_video', 'reel', 'carousel', 'lp', 'outline', 'other'];
+    const KIND_LABEL: Record<string, string> = { ad_image: '🖼 รูปแอด', ad_video: '🎬 วิดีโอแอด', reel: '📱 Reel', carousel: '🎠 Carousel', lp: '🔗 Landing page', outline: '📄 Outline', other: '📦 อื่นๆ' };
+    const ratioOf = (w: number, h: number) => {
+      if (!w || !h) return null;
+      const r = w / h;
+      const table: [string, number][] = [['1:1', 1], ['4:5', 0.8], ['9:16', 0.5625], ['16:9', 1.7778], ['3:4', 0.75]];
+      return table.reduce((best, item) => (Math.abs(r - item[1]) < Math.abs(r - best[1]) ? item : best))[0];
+    };
+
+    /** ย่อรูปที่เบราว์เซอร์ก่อนอัป — ไฟล์ 23MB ไม่เคยวิ่งผ่านเน็ต และ bucket จำกัด 2MB อยู่แล้ว */
+    async function shrink(file: File, max = 400): Promise<{ blob: Blob; width: number; height: number }> {
+      const bitmap = await createImageBitmap(file);
+      const scale = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(bitmap.width * scale);
+      canvas.height = Math.round(bitmap.height * scale);
+      canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', 0.82));
+      if (!blob) throw new Error('ย่อรูปไม่สำเร็จ — ลองไฟล์อื่น');
+      return { blob, width: bitmap.width, height: bitmap.height };   // คืนขนาดจริงของต้นฉบับ ไม่ใช่ของที่ย่อ
+    }
+
+    async function renderAssets() {
+      const rows: AssetRow[] = (state.assets || []).filter((row: AssetRow) =>
+        (state.assetOffer === 'all' || row.offer_code === (state.assetOffer === 'none' ? null : state.assetOffer)) &&
+        (state.assetKind === 'all' || row.kind === state.assetKind));
+      const codes = state.offers.map((offer: OfferRow) => offer.code);
+      $('#chat-view-assets').innerHTML = `
+        <div class="flex flex-wrap items-end justify-between gap-2">
+          <div class="flex flex-wrap gap-2">
+            <label class="text-xs">สินค้า<select id="chat-asset-filter-offer" class="select select-sm select-bordered mt-1"><option value="all">ทั้งหมด</option>${codes.map((code: string) => `<option${state.assetOffer === code ? ' selected' : ''}>${esc(code)}</option>`).join('')}<option value="none"${state.assetOffer === 'none' ? ' selected' : ''}>ยังไม่ผูกสินค้า</option></select></label>
+            <label class="text-xs">ชนิด<select id="chat-asset-filter-kind" class="select select-sm select-bordered mt-1"><option value="all">ทั้งหมด</option>${ASSET_KINDS.map((kind) => `<option value="${kind}"${state.assetKind === kind ? ' selected' : ''}>${esc(KIND_LABEL[kind])}</option>`).join('')}</select></label>
+          </div>
+          <button class="btn btn-primary btn-sm tap-44" data-add-asset>+ เพิ่มชิ้นงาน</button>
+        </div>
+        ${rows.length ? `<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">${rows.map((row: AssetRow) => {
+          const m = row.metrics || {};
+          const stale = m.as_of ? '' : ' (ยังไม่ระบุวันที่)';
+          return `<article class="rounded-2xl border border-base-300 bg-base-200 p-3 ${row.status === 'active' ? '' : 'opacity-60'}">
+            <div class="aspect-video overflow-hidden rounded-xl border border-base-300 bg-base-100">
+              ${row.thumb_path ? `<img data-thumb="${esc(row.thumb_path)}" alt="ภาพตัวอย่าง ${esc(row.title)}" class="h-full w-full object-cover" loading="lazy">` : '<div class="flex h-full items-center justify-center text-xs opacity-50">ไม่มีภาพตัวอย่าง</div>'}
+            </div>
+            <h3 class="mt-2 font-bold">${esc(row.title)}</h3>
+            <p class="text-xs opacity-70">${esc(KIND_LABEL[row.kind] || row.kind)} · ${esc(row.offer_code || 'ไม่ผูกสินค้า')}${row.ratio ? ` · ${esc(row.ratio)}` : ''} · ${esc(row.status)}</p>
+            ${(m.views || m.ctr || m.leads) ? `<p class="mt-1 text-xs">📊 ${m.views ? `${Number(m.views).toLocaleString('en-US')} วิว · ` : ''}${m.ctr ? `CTR ${m.ctr}% · ` : ''}${m.leads ? `${m.leads} ลีด` : ''}<span class="opacity-60"> ${m.as_of ? `ณ ${esc(m.as_of)}` : stale}</span></p>` : ''}
+            ${row.source_path ? `<p class="mt-1 text-xs opacity-60">ต้นฉบับ: ${esc(row.source_path)}</p>` : ''}
+            <div class="mt-2 flex flex-wrap gap-1">
+              ${safeHref(row.url) ? `<a class="btn btn-xs tap-44" href="${esc(safeHref(row.url))}" target="_blank" rel="noreferrer">เปิดของจริง</a>` : ''}
+              <button class="btn btn-xs tap-44" data-edit-asset="${esc(row.id)}">แก้</button>
+              <button class="btn btn-ghost btn-xs tap-44" data-del-asset="${esc(row.id)}" aria-label="ลบชิ้นงาน ${esc(row.title)}">ลบ</button>
+            </div>
+          </article>`;
+        }).join('')}</div>` : '<p class="rounded-2xl border border-base-300 bg-base-200 p-6 text-center text-sm opacity-60">ยังไม่มีชิ้นงานในเงื่อนไขนี้</p>'}`;
+
+      // signed URL หมดอายุ 1 ชม. จึงขอทีละใบตอน render ไม่เก็บไว้ใน state
+      for (const img of document.querySelectorAll<HTMLImageElement>('[data-thumb]')) {
+        signThumb(img.dataset.thumb!).then((url) => { if (url) img.src = url; }).catch(() => {});
+      }
+    }
+
+    function openAsset(id: string | null) {
+      const row = id ? (state.assets || []).find((item: AssetRow) => item.id === id) : null;
+      const dialog = $<HTMLDialogElement>('#chat-asset-dialog'); const body = $('#chat-asset-dialog-body');
+      const m = row?.metrics || {};
+      body.innerHTML = `<h2 class="font-display text-lg font-bold">${row ? 'แก้ชิ้นงาน' : 'เพิ่มชิ้นงาน'}</h2>
+        <form id="chat-asset-form" class="mt-3 space-y-3">
+          <div class="grid gap-2 sm:grid-cols-2">
+            <label class="text-xs">ชื่อเรียก<input id="chat-asset-title" class="input input-sm input-bordered mt-1 w-full" required></label>
+            <label class="text-xs">ชนิด<select id="chat-asset-kind" class="select select-sm select-bordered mt-1 w-full">${ASSET_KINDS.map((kind) => `<option value="${kind}">${esc(KIND_LABEL[kind])}</option>`).join('')}</select></label>
+          </div>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <label class="text-xs">สินค้า<select id="chat-asset-offer" class="select select-sm select-bordered mt-1 w-full"><option value="">ยังไม่ผูก</option>${state.offers.map((offer: OfferRow) => `<option>${esc(offer.code)}</option>`).join('')}</select></label>
+            <label class="text-xs">ช่องทาง<input id="chat-asset-platform" class="input input-sm input-bordered mt-1 w-full" placeholder="meta · tiktok · web"></label>
+            <label class="text-xs">สถานะ<select id="chat-asset-status" class="select select-sm select-bordered mt-1 w-full"><option>active</option><option>draft</option><option>paused</option><option>retired</option></select></label>
+          </div>
+          <label class="block text-xs">ลิงก์ของจริง (reel · LP · creative ใน Meta)<input id="chat-asset-url" class="input input-sm input-bordered mt-1 w-full" placeholder="https://…"></label>
+          <label class="block text-xs">ไฟล์ต้นฉบับอยู่ไหน (path ในเครื่อง · Canva · Drive)<input id="chat-asset-source" class="input input-sm input-bordered mt-1 w-full" placeholder="output/images/ads/…"></label>
+          <label class="block text-xs">ภาพตัวอย่าง (ระบบย่อให้เอง ลากไฟล์ใหญ่มาได้เลย)<input id="chat-asset-file" type="file" accept="image/*" class="file-input file-input-sm file-input-bordered mt-1 w-full"></label>
+          <p id="chat-asset-filenote" class="text-xs opacity-60">${row?.thumb_path ? 'มีภาพตัวอย่างแล้ว — เลือกไฟล์ใหม่เพื่อแทนที่' : 'ยังไม่มีภาพตัวอย่าง'}</p>
+          <fieldset class="rounded-xl border border-base-300 p-3">
+            <legend class="px-1 text-xs opacity-70">ผลงาน (กรอกเอง · ปุ่มดึงจาก Meta จะมาในรอบถัดไป)</legend>
+            <div class="grid gap-2 sm:grid-cols-4">
+              <label class="text-xs">ยอดวิว<input id="chat-asset-views" type="number" class="input input-sm input-bordered mt-1 w-full"></label>
+              <label class="text-xs">CTR %<input id="chat-asset-ctr" type="number" step="0.01" class="input input-sm input-bordered mt-1 w-full"></label>
+              <label class="text-xs">ลีด<input id="chat-asset-leads" type="number" class="input input-sm input-bordered mt-1 w-full"></label>
+              <label class="text-xs">ตัวเลข ณ วันที่<input id="chat-asset-asof" type="date" class="input input-sm input-bordered mt-1 w-full"></label>
+            </div>
+          </fieldset>
+          <label class="block text-xs">โน้ต<input id="chat-asset-note" class="input input-sm input-bordered mt-1 w-full"></label>
+          <div id="chat-asset-errors" class="text-sm text-error" role="alert"></div>
+          <div class="modal-action"><button type="button" class="btn btn-ghost btn-sm tap-44" data-close>ยกเลิก</button><button type="submit" id="chat-asset-save" class="btn btn-primary btn-sm tap-44">บันทึก</button></div>
+        </form>`;
+      if (row) {
+        $<HTMLInputElement>('#chat-asset-title').value = row.title;
+        $<HTMLSelectElement>('#chat-asset-kind').value = row.kind;
+        $<HTMLSelectElement>('#chat-asset-offer').value = row.offer_code || '';
+        $<HTMLInputElement>('#chat-asset-platform').value = row.platform || '';
+        $<HTMLSelectElement>('#chat-asset-status').value = row.status;
+        $<HTMLInputElement>('#chat-asset-url').value = row.url || '';
+        $<HTMLInputElement>('#chat-asset-source').value = row.source_path || '';
+        $<HTMLInputElement>('#chat-asset-note').value = row.note || '';
+        if (m.views != null) $<HTMLInputElement>('#chat-asset-views').value = String(m.views);
+        if (m.ctr != null) $<HTMLInputElement>('#chat-asset-ctr').value = String(m.ctr);
+        if (m.leads != null) $<HTMLInputElement>('#chat-asset-leads').value = String(m.leads);
+        if (m.as_of) $<HTMLInputElement>('#chat-asset-asof').value = m.as_of;
+      }
+      body.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
+      $('#chat-asset-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const save = $<HTMLButtonElement>('#chat-asset-save'); save.disabled = true;
+        const errors = $('#chat-asset-errors'); errors.textContent = '';
+        try {
+          const file = $<HTMLInputElement>('#chat-asset-file').files?.[0];
+          let thumb = row?.thumb_path ?? null; let width = row?.width ?? null; let height = row?.height ?? null; let ratio = row?.ratio ?? null;
+          if (file) {
+            $('#chat-asset-filenote').textContent = 'กำลังย่อและอัปภาพ…';
+            const shrunk = await shrink(file);
+            thumb = await uploadThumb(shrunk.blob, file.name.replace(/\.[^.]+$/, '.webp'));
+            width = shrunk.width; height = shrunk.height; ratio = ratioOf(shrunk.width, shrunk.height);
+          }
+          const views = $<HTMLInputElement>('#chat-asset-views').value;
+          const ctr = $<HTMLInputElement>('#chat-asset-ctr').value;
+          const leads = $<HTMLInputElement>('#chat-asset-leads').value;
+          const asOf = $<HTMLInputElement>('#chat-asset-asof').value;
+          const metrics: Record<string, unknown> = {};
+          if (views) metrics.views = Number(views);
+          if (ctr) metrics.ctr = Number(ctr);
+          if (leads) metrics.leads = Number(leads);
+          if (asOf) metrics.as_of = asOf;
+          if (Object.keys(metrics).length && !asOf) { errors.textContent = 'กรอกตัวเลขผลงานแล้วต้องระบุวันที่ด้วย — ตัวเลขที่ไม่รู้ว่าของวันไหนใช้ตัดสินใจไม่ได้'; save.disabled = false; return; }
+          const patch = {
+            title: $<HTMLInputElement>('#chat-asset-title').value.trim(),
+            kind: $<HTMLSelectElement>('#chat-asset-kind').value,
+            offer_code: $<HTMLSelectElement>('#chat-asset-offer').value || null,
+            platform: $<HTMLInputElement>('#chat-asset-platform').value.trim() || null,
+            status: $<HTMLSelectElement>('#chat-asset-status').value,
+            url: $<HTMLInputElement>('#chat-asset-url').value.trim() || null,
+            source_path: $<HTMLInputElement>('#chat-asset-source').value.trim() || null,
+            note: $<HTMLInputElement>('#chat-asset-note').value.trim() || null,
+            thumb_path: thumb, width, height, ratio, metrics,
+          };
+          if (row) await saveAsset(row.id, patch); else await createAsset(patch as never);
+          dialog.close(); toast(row ? 'บันทึกแล้ว' : 'เพิ่มชิ้นงานแล้ว'); await reload();
+        } catch (error) { oops(error); errors.textContent = (error as Error).message; } finally { save.disabled = false; }
+      });
+      dialog.showModal();
+    }
+
     function openContext(id: string) {
       const row = (state.context || []).find((item: ContextRow) => item.id === id); if (!row) return;
       const dialog = $<HTMLDialogElement>('#chat-context-dialog'); const body = $('#chat-context-dialog-body');
@@ -360,6 +528,20 @@ import AppNav from '../../components/app/AppNav.astro';
         } catch (error) { oops(error); } finally { save.disabled = false; }
       });
       dialog.showModal();
+    }
+
+    function bindAssetActions() {
+      $('#chat-asset-filter-offer')?.addEventListener('change', (event) => { state.assetOffer = (event.target as HTMLSelectElement).value; void renderAssets(); });
+      $('#chat-asset-filter-kind')?.addEventListener('change', (event) => { state.assetKind = (event.target as HTMLSelectElement).value; void renderAssets(); });
+      document.querySelectorAll<HTMLButtonElement>('[data-add-asset]').forEach((b) => b.addEventListener('click', () => openAsset(null)));
+      document.querySelectorAll<HTMLButtonElement>('[data-edit-asset]').forEach((b) => b.addEventListener('click', () => openAsset(b.dataset.editAsset!)));
+      document.querySelectorAll<HTMLButtonElement>('[data-del-asset]').forEach((b) => b.addEventListener('click', async () => {
+        const row = (state.assets || []).find((item: AssetRow) => item.id === b.dataset.delAsset);
+        if (!row || !confirm(`ลบ "${row.title}" ออกจากทะเบียน?\n\nภาพตัวอย่างถูกลบด้วย แต่ไฟล์ต้นฉบับที่อื่นไม่ถูกแตะ`)) return;
+        b.disabled = true;
+        try { await deleteAsset(row.id, row.thumb_path); toast('ลบแล้ว'); await reload(); } catch (error) { oops(error); b.disabled = false; }
+      }));
+      document.querySelectorAll<HTMLButtonElement>('[data-goto-assets]').forEach((b) => b.addEventListener('click', () => { state.assetOffer = b.dataset.gotoAssets!; state.assetKind = 'all'; setView('assets'); void renderAssets(); bindAssetActions(); }));
     }
 
     function bindCrudActions() {
@@ -468,11 +650,11 @@ import AppNav from '../../components/app/AppNav.astro';
         }).join('')}`;
     }
 
-    function renderAll() { renderSummary(); renderOffers(); syncFilters(); renderSnippets(); renderFaq(); renderKeywords(); renderContext(); renderPublish(); bindPublishActions(); bindCrudActions(); }
+    function renderAll() { renderSummary(); renderOffers(); syncFilters(); renderSnippets(); void renderAssets(); renderFaq(); renderKeywords(); renderContext(); renderPublish(); bindPublishActions(); bindCrudActions(); bindAssetActions(); }
     function setView(view: View, focus = false) {
       state.view = view;
       document.querySelectorAll<HTMLButtonElement>('.chat-tab').forEach((button) => { const active = button.dataset.view === view; button.setAttribute('aria-selected', String(active)); button.tabIndex = active ? 0 : -1; if (active && focus) button.focus(); });
-      (['offers','snippets','faq','keywords','context','publish'] as View[]).forEach((name) => $(`#chat-view-${name}`).classList.toggle('hidden', name !== view));
+      (['offers','snippets','assets','faq','keywords','context','publish'] as View[]).forEach((name) => $(`#chat-view-${name}`).classList.toggle('hidden', name !== view));
       history.replaceState(null, '', view === 'offers' ? location.pathname + location.search : `#${view}`);
     }
     async function reload() {

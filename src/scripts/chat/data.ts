@@ -22,6 +22,15 @@ export interface PublishRow {
   bot_hash: string | null; bot_written_at: string | null; error: string | null;
 }
 export interface PublishVersionRow { id: number; file: string; hash: string; created_at: string; created_by: string | null; note: string | null }
+export interface AssetMetrics { views?: number; ctr?: number; leads?: number; spend?: number; as_of?: string }
+export interface AssetRow {
+  id: string; offer_code: string | null; kind: string; title: string;
+  url: string | null; thumb_path: string | null; source_path: string | null;
+  platform: string | null; campaign_id: string | null; status: string;
+  ratio: string | null; width: number | null; height: number | null;
+  metrics: AssetMetrics; note: string | null; display_order: number; updated_at: string;
+}
+
 export interface ContextRow {
   id: string; file: string; heading: string; body: string;
   display_order: number; enabled: boolean; note: string | null; updated_at: string;
@@ -66,17 +75,18 @@ export async function loadPublishState(): Promise<{ publish: PublishRow[]; versi
   return { publish: publish || [], versions: versions || [] };
 }
 
-export async function loadAll(): Promise<{ offers: OfferRow[]; snippets: SnippetRow[]; keywords: KeywordRow[]; publish: PublishRow[]; versions: PublishVersionRow[]; stats: KeywordStatRow[]; context: ContextRow[] }> {
+export async function loadAll(): Promise<{ offers: OfferRow[]; snippets: SnippetRow[]; keywords: KeywordRow[]; publish: PublishRow[]; versions: PublishVersionRow[]; stats: KeywordStatRow[]; context: ContextRow[]; assets: AssetRow[] }> {
   await requireSession();
-  const [offers, snippets, keywords, publishState, stats, context] = await Promise.all([
+  const [offers, snippets, keywords, publishState, stats, context, assets] = await Promise.all([
     query<OfferRow[]>(() => supabase.from('chat_offers').select('*').order('display_order').order('code')),
     query<SnippetRow[]>(() => supabase.from('chat_snippets').select('*').order('offer_code').order('slot').order('channel')),
     query<KeywordRow[]>(() => supabase.from('chat_keywords').select('*').order('keyword')),
     loadPublishState(),
     loadKeywordStats(),
     loadContext(),
+    loadAssets(),
   ]);
-  return { offers: offers || [], snippets: snippets || [], keywords: keywords || [], ...publishState, stats: stats || [], context: context || [] };
+  return { offers: offers || [], snippets: snippets || [], keywords: keywords || [], ...publishState, stats: stats || [], context: context || [], assets: assets || [] };
 }
 
 export async function loadKeywordStats(): Promise<KeywordStatRow[]> {
@@ -98,6 +108,42 @@ export async function rollbackTo(file: string, versionId: number): Promise<void>
   await query(() => supabase.from('chat_publish')
     .update({ status: 'requested', rollback_to_version: versionId, requested_at: new Date().toISOString(), requested_by: session.user?.email ?? 'owner', error: null })
     .eq('file', file).select('file'));
+}
+
+export async function loadAssets(): Promise<AssetRow[]> {
+  await requireSession();
+  return (await query<AssetRow[]>(() => supabase.from('chat_assets').select('*').order('offer_code', { nullsFirst: false }).order('display_order'))) || [];
+}
+
+export async function createAsset(row: Partial<AssetRow> & Pick<AssetRow, 'kind' | 'title'>): Promise<void> {
+  const session = await requireSession();
+  await query(() => supabase.from('chat_assets').insert({ status: 'active', display_order: 100, metrics: {}, ...row, updated_by: session.user?.email ?? 'owner' }).select('id'));
+}
+
+export async function saveAsset(id: string, patch: Partial<AssetRow>): Promise<void> {
+  const session = await requireSession();
+  await query(() => supabase.from('chat_assets').update({ ...patch, updated_at: new Date().toISOString(), updated_by: session.user?.email ?? 'owner' }).eq('id', id).select('id'));
+}
+
+/** ลบทะเบียนพร้อมภาพตัวอย่าง — ไฟล์ต้นฉบับที่อื่นไม่ถูกแตะ */
+export async function deleteAsset(id: string, thumbPath: string | null): Promise<void> {
+  await requireSession();
+  await query(() => supabase.from('chat_assets').delete().eq('id', id).select('id'));
+  if (thumbPath) { try { await supabase.storage.from('offer-assets').remove([thumbPath]); } catch { /* ทะเบียนหายแล้ว ไฟล์กำพร้าไม่ทำให้พัง */ } }
+}
+
+/** อัปภาพตัวอย่าง — ต้องย่อมาก่อน (bucket จำกัด 2MB) คืน path ที่เก็บไว้ในทะเบียน */
+export async function uploadThumb(blob: Blob, filename: string): Promise<string> {
+  await requireSession();
+  const path = `${new Date().toISOString().slice(0, 7)}/${crypto.randomUUID()}-${filename.replace(/[^\w.-]+/g, '-').slice(-40)}`;
+  const { error } = await supabase.storage.from('offer-assets').upload(path, blob, { contentType: blob.type || 'image/webp', upsert: false });
+  if (error) throw new Error(`อัปภาพตัวอย่างไม่ได้: ${error.message}`);
+  return path;
+}
+
+export async function signThumb(path: string): Promise<string | null> {
+  const { data } = await supabase.storage.from('offer-assets').createSignedUrl(path, 3600);
+  return data?.signedUrl ?? null;
 }
 
 export async function loadContext(): Promise<ContextRow[]> {
