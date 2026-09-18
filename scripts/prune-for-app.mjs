@@ -23,7 +23,10 @@ const OUT = 'dist-app';
 // Static assets (from public/) the private apps rely on. Bundled CSS/JS lives in
 // _astro and is always kept. Sukhumvit Set is a system font (not bundled).
 // 404.html lets Cloudflare serve a real 404 for unknown app paths.
-const KEEP_ASSETS = ['_astro', '404.html', 'favicon-32x32.png', 'favicon.ico', 'favicon.svg'];
+// catalog.json: Chat Center อ่านราคาสดจาก same-origin (/catalog.json) เพื่อ render {{price:key}}
+// ถ้าไม่ยกมาด้วย หน้าจะขึ้น "โหลดราคาสดไม่ได้ (404)" แล้วไม่ render อะไรเลย
+// ไม่ใช่ข้อมูลลับ — ไฟล์เดียวกันเปิดสาธารณะอยู่บน punnattapatch.com อยู่แล้ว
+const KEEP_ASSETS = ['_astro', '404.html', 'favicon-32x32.png', 'favicon.ico', 'favicon.svg', 'catalog.json'];
 
 const appDir = join(DIST, 'app');
 try {
