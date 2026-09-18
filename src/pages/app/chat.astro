@@ -230,8 +230,23 @@ import AppNav from '../../components/app/AppNav.astro';
     }
 
     function renderKeywords() {
-      $('#chat-view-keywords').innerHTML = `<div class="space-y-2">${state.keywords.map((row) => { const warnings = keywordWarnings(row); return `<article class="rounded-2xl border border-base-300 bg-base-200 p-4 ${warnings.length ? 'chat-warning' : ''}"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="font-display font-bold">${esc(row.keyword)} ${statBadge(row.id)} ${row.enabled ? '' : '<span class="badge badge-ghost">ปิด</span>'}</h2><p class="text-xs opacity-60">${esc(row.match_mode)} · ${esc(row.offer_code || 'ไม่ผูกสินค้า')} · aliases: ${esc([...(row.aliases || []), ...(row.aliases_exact || []).map((item) => `${item} (exact-alias)`)].join(', ') || '—')}</p></div><button class="btn btn-sm tap-44" data-edit-keyword="${esc(row.id)}" aria-label="แก้ keyword ${esc(row.keyword)}">แก้</button></div><div class="mt-2 flex flex-wrap gap-3 text-xs"><span>รายการประกาศ ${declared(row).length}</span><span>hits 30 วัน: ${row.hits_30d ?? 'รอ M4'}</span><span>ล่าสุด: ${row.last_hit_at ? esc(fmtDate(row.last_hit_at)) : '—'}</span></div>${warnings.map((warning) => `<p class="mt-1 text-xs chat-drift">⚠️ ${esc(warning)}</p>`).join('')}</article>`; }).join('')}</div>`;
+      $('#chat-view-keywords').innerHTML = `<p class="mb-2 text-xs opacity-70">ปิดคำไหน บอทจะไม่ส่งการ์ดให้คนที่พิมพ์คำนั้น · มีผลหลังกด "ส่งให้บอทใช้" ที่แท็บ Publish</p><div class="space-y-2">${state.keywords.map((row) => { const warnings = keywordWarnings(row); return `<article class="rounded-2xl border border-base-300 bg-base-200 p-4 ${warnings.length ? 'chat-warning' : ''}"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="font-display font-bold">${esc(row.keyword)} ${statBadge(row.id)} ${row.enabled ? '' : '<span class="badge badge-ghost">ปิด</span>'}</h2><p class="text-xs opacity-60">${esc(row.match_mode)} · ${esc(row.offer_code || 'ไม่ผูกสินค้า')} · aliases: ${esc([...(row.aliases || []), ...(row.aliases_exact || []).map((item) => `${item} (exact-alias)`)].join(', ') || '—')}</p></div><span class="flex shrink-0 gap-1"><button class="btn btn-sm tap-44 ${row.enabled ? '' : 'btn-warning'}" data-toggle-keyword="${esc(row.id)}" aria-pressed="${row.enabled}">${row.enabled ? 'เปิดอยู่ · กดเพื่อปิด' : 'ปิดอยู่ · กดเพื่อเปิด'}</button><button class="btn btn-sm tap-44" data-edit-keyword="${esc(row.id)}" aria-label="แก้ keyword ${esc(row.keyword)}">แก้</button></span></div><div class="mt-2 flex flex-wrap gap-3 text-xs"><span>รายการประกาศ ${declared(row).length}</span><span>hits 30 วัน: ${row.hits_30d ?? 'รอ M4'}</span><span>ล่าสุด: ${row.last_hit_at ? esc(fmtDate(row.last_hit_at)) : '—'}</span></div>${warnings.map((warning) => `<p class="mt-1 text-xs chat-drift">⚠️ ${esc(warning)}</p>`).join('')}</article>`; }).join('')}</div>`;
       document.querySelectorAll<HTMLButtonElement>('[data-edit-keyword]').forEach((button) => button.addEventListener('click', () => openKeyword(button.dataset.editKeyword!)));
+
+      document.querySelectorAll<HTMLButtonElement>('[data-toggle-keyword]').forEach((b) => b.addEventListener('click', async () => {
+        const row = state.keywords.find((item: KeywordRow) => item.id === b.dataset.toggleKeyword);
+        if (!row) return;
+        const next = !row.enabled;
+        // คำที่ประกาศไว้ในแอดแล้ว ปิดไปคือลูกค้าพิมพ์ตามแอดแล้วบอทเงียบ ไม่ใช่แค่ไม่ส่งการ์ด
+        const refs = declared(row);
+        if (!next && refs.length && !confirm(`ปิด "${row.keyword}"?\n\nคำนี้ประกาศไว้ ${refs.length} ที่ (${refs.map((r: DeclaredRef) => r.ref).join(', ')})\nลูกค้าที่พิมพ์ตามแอดจะไม่ได้การ์ดอะไรเลย`)) return;
+        b.disabled = true;
+        try {
+          await saveKeyword(row.id, { keyword: row.keyword, aliases: row.aliases, aliases_exact: row.aliases_exact, match_mode: row.match_mode, max_len: row.max_len, offer_code: row.offer_code, declared_in: row.declared_in, enabled: next });
+          toast(next ? `เปิด ${row.keyword} แล้ว` : `ปิด ${row.keyword} แล้ว — กดส่งให้บอทใช้ที่แท็บ Publish`);
+          await reload();
+        } catch (error) { oops(error); b.disabled = false; }
+      }));
     }
 
     function openKeyword(id: string) {
