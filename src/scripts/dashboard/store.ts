@@ -30,6 +30,7 @@ import type {
   PurchaseUi,
 } from './api';
 import type { LeadUi } from './adapter';
+import { classifySource, type SourceKey } from './lead-source';
 import { pickTemplate } from './templates';
 import { rangeBounds, RANGE_LABELS, type RangeKey } from './date-range';
 import { buildRangeDashboard, expensesInRange, summarizeExpensesInRange } from './dashboard-range';
@@ -74,6 +75,9 @@ type State = {
   total: number;
   generatedAt: string | null;
   filter: FilterChip;
+  // ที่มาของ lead (LINE Bot / ฟอร์มจองเว็บ / แอด …) — แยกจาก filter chip เพราะใช้คู่กันได้
+  // เช่น "มาจาก LINE Bot + ยังไม่ปิด" · null = ไม่กรองที่มา
+  sourceFilter: SourceKey | null;
   sort: SortMode;
   search: string;
   // ── ช่วงเวลา ──
@@ -106,6 +110,7 @@ const state: State = {
   total: 0,
   generatedAt: null,
   filter: 'all',
+  sourceFilter: null,
   sort: 'submitted_desc',
   search: '',
   range: 'all',
@@ -566,6 +571,11 @@ export function setFilter(f: FilterChip): void {
   state.filter = f;
   notify();
 }
+/** กดที่มาเดิมซ้ำ = ยกเลิกตัวกรอง (toggle) — banner ไม่มีปุ่ม "ล้าง" แยก */
+export function setSourceFilter(key: SourceKey | null): void {
+  state.sourceFilter = state.sourceFilter === key ? null : key;
+  notify();
+}
 export function setSort(s: SortMode): void {
   state.sort = s;
   notify();
@@ -646,6 +656,9 @@ export function visibleLeads(): LeadUi[] {
       ].map((v) => (v || '').toString().toLowerCase()).join(' ');
       return hay.includes(q);
     });
+  }
+  if (state.sourceFilter) {
+    rows = rows.filter((r) => classifySource(r).key === state.sourceFilter);
   }
   switch (state.filter) {
     case 'today':
@@ -769,4 +782,19 @@ export function initDashboard(): void {
       notify();
     }
   })();
+}
+
+// ── dev seam ────────────────────────────────────────────────────────────────
+// หน้า CRM อยู่หลัง Google sign-in ทั้งหน้า — ตอนรีวิว UI (banner ที่มา · การ์ด ·
+// kanban) จึงต้องมีทางป้อนข้อมูลตัวอย่างเข้า state โดยไม่ต้องล็อกอินจริง
+// บล็อกนี้มีอยู่เฉพาะตอน `astro dev` · Vite ตัดทิ้งทั้งก้อนตอน build production
+if (import.meta.env.DEV && typeof window !== 'undefined') {
+  (window as unknown as Record<string, unknown>).__devSeedLeads = (rows: LeadUi[], today: LeadUi[] = []) => {
+    state.authed = true;
+    state.loading = false;
+    state.leads = rows;
+    state.total = rows.length;
+    state.today = today;
+    notify();
+  };
 }

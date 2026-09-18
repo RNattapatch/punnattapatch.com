@@ -16,6 +16,7 @@
   import { subscribe, dashboardLeads, openLead } from '../../scripts/dashboard/store';
   import type { LeadUi } from '../../scripts/dashboard/adapter';
   import { markName } from '../../scripts/after-hours';
+  import { classifySource } from '../../scripts/dashboard/lead-source';
 
   const STAGES: { key: string; label: string; color: string }[] = [
     { key: 'new',         label: 'New Lead',      color: 'var(--color-pun-cyan)' },
@@ -76,15 +77,24 @@
     company.textContent = (lead.company_name || '').toString();
 
     const bottomRow = document.createElement('div');
-    bottomRow.className = 'flex items-center justify-between border-t border-base-300 pt-2';
+    bottomRow.className = 'flex items-center justify-between border-t border-base-300 pt-2 gap-1';
+    // การ์ด kanban แคบ — ที่มาใส่เป็นไอคอนอย่างเดียว ชื่อเต็มอยู่ใน tooltip
+    const left = document.createElement('span');
+    left.className = 'flex items-center gap-1 min-w-0';
+    const src = classifySource(lead);
+    const srcIcon = document.createElement('span');
+    srcIcon.className = 'text-xs shrink-0';
+    srcIcon.textContent = src.icon;
+    srcIcon.title = `ที่มา: ${src.label}${src.detail ? ` (${src.detail})` : ''}`;
     const industry = document.createElement('span');
     industry.className = 'text-xs opacity-50 line-clamp-1';
     industry.textContent = (lead.business_type || '').toString();
+    left.append(srcIcon, industry);
     const amount = document.createElement('span');
     amount.className = 'text-xs font-semibold';
     amount.style.color = stageColor;
     amount.textContent = fmtTHB(lead.package_price);
-    bottomRow.append(industry, amount);
+    bottomRow.append(left, amount);
 
     card.append(topRow, company, bottomRow);
     card.addEventListener('click', () => void openLead(String(lead.lead_id || '')));

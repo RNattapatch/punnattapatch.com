@@ -143,6 +143,7 @@ import InteractionLog from './InteractionLog.astro';
 <script>
   import { subscribe, getState, closeLead, emit, patchLead, setLeadStatus, toast } from '../../scripts/dashboard/store';
   import { markName, AFTER_HOURS_MARK, OFFICE_HOURS_MARK } from '../../scripts/after-hours';
+  import { classifySource, sourceChipStyle } from '../../scripts/dashboard/lead-source';
 
   const REASON_KEYS = ['freebie_seeker', 'scam', 'cheap_client', 'mismatch', 'price_too_high', 'no_budget', 'wrong_timing', 'competitor', 'other'];
   const OUTCOMES = ['won', 'repeat', 'retainer', 'lost', 'unqualified'];
@@ -248,7 +249,10 @@ import InteractionLog from './InteractionLog.astro';
     const pc = Number(lead.purchase_count) || 0;
     const temp = String(lead.temperature || '');
     const isSponsor = String(lead.source || '').toLowerCase().includes('sponsor');
+    const src = classifySource(lead);
     const badges: string[] = [];
+    // ที่มาขึ้นก่อน temperature — คำถามแรกเวลาเปิดการ์ดคือ "คนนี้มาจากไหน"
+    badges.push(`<span class="badge badge-sm" style="${sourceChipStyle(src)}">${src.icon} ${src.label}</span>`);
     if (temp) badges.push(`<span class="badge badge-sm ${temp === 'hot' ? 'badge-error' : temp === 'warm' ? 'badge-warning' : 'badge-ghost'}">${temp === 'hot' ? '🔥' : temp === 'warm' ? '🌤' : '❄️'} ${temp}</span>`);
     if (pc > 0) badges.push(`<span class="badge badge-sm badge-secondary tabular-nums">🔁 ซื้อ ${pc} ครั้ง · ฿${fmt0(Number(lead.lifetime_value_thb) || 0)}</span>`);
     if (isSponsor) badges.push(`<span class="badge badge-sm badge-info">🤝 Sponsor</span>`);
@@ -274,6 +278,11 @@ import InteractionLog from './InteractionLog.astro';
     setEd('next_action', String(lead.next_action || ''));
     setEd('next_action_due', ymd(String(lead.next_action_due || '')));
     setEd('nickname', String(lead.nickname || ''));
+
+    // ค่าดิบต่อท้ายเฉพาะตอนที่มันบอกอะไรเพิ่ม — 'แอด hotel-resort-ai · ads-hotel-resort-ai' ซ้ำเปล่าๆ
+    const srcDetailExtra = src.detail && !src.label.toLowerCase().includes(src.detail.toLowerCase().replace(/^(ads|lp)-/, ''))
+      ? src.detail
+      : '';
 
     const rp = (lead.raw_payload as Record<string, unknown>) || {};
     const detail = document.getElementById('lead-detail-body') as HTMLElement;
@@ -312,7 +321,7 @@ import InteractionLog from './InteractionLog.astro';
       detailRow('Walkthrough', dtLocal(String(lead.walkthrough_at || '')), 'walkthrough_at', 'datetime-local'),
       detailRow('Payment', String(lead.payment_status || '')),
       detailRow('Temperature', temp),
-      detailRow('ที่มา', [String(lead.source || ''), String(lead.source_page || rp.source_page || '')].filter(Boolean).join(' · ')),
+      detailRow('ที่มา', [`${src.icon} ${src.label}`, srcDetailExtra, String(lead.source_page || rp.source_page || '')].filter(Boolean).join(' · ')),
       hasAttribution ? detailRow('แคมเปญ', [utmSource, attr('utm_medium'), utmCampaign].filter(Boolean).join(' / ')) : '',
       hasAttribution && creative ? detailRow('ครีเอทีฟ / Placement', creative) : '',
       detailRow('Score / Tier', [String(lead.score ?? ''), String(lead.tier || '')].filter(Boolean).join(' · ')),

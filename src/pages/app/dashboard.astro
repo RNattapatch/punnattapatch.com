@@ -9,6 +9,7 @@ import PipelineDonut from '../../components/dashboard/PipelineDonut.astro';
 import IndustryBar from '../../components/dashboard/IndustryBar.astro';
 import SalesTrend from '../../components/dashboard/SalesTrend.astro';
 import SourceDonut from '../../components/dashboard/SourceDonut.astro';
+import SourceBanner from '../../components/dashboard/SourceBanner.astro';
 import TodayPanel from '../../components/dashboard/TodayPanel.astro';
 import KanbanBoard from '../../components/dashboard/KanbanBoard.astro';
 import LeadList from '../../components/dashboard/LeadList.astro';
@@ -61,6 +62,9 @@ import Toast from '../../components/dashboard/Toast.astro';
 
           <!-- Leads view -->
           <div id="leads-view">
+            <!-- ที่มาของ lead — กวาดตาก่อนกราฟ เพราะเป็นคำถามแรกของทุกเช้า -->
+            <SourceBanner />
+
             <!-- Charts row -->
             <section class="grid gap-3 md:grid-cols-2 mb-4">
               <PipelineDonut />

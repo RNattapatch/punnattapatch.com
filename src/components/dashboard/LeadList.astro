@@ -81,6 +81,7 @@ import LeadCard from './LeadCard.astro';
   import type { RangeKey } from '../../scripts/dashboard/store';
   import type { LeadUi } from '../../scripts/dashboard/adapter';
   import { markName } from '../../scripts/after-hours';
+  import { classifySource, sourceChipStyle } from '../../scripts/dashboard/lead-source';
 
   function ageDays(iso?: string): string {
     if (!iso) return '';
@@ -153,6 +154,18 @@ import LeadCard from './LeadCard.astro';
       badge.className = `badge badge-sm ${b.cls}`;
       badge.textContent = b.text;
     }
+    fillSource(node, lead);
+  }
+
+  // แถบที่มา — ป้ายเดียวกันทุกที่ (list · today · kanban · drawer) มาจาก classifySource
+  function fillSource(node: HTMLElement, lead: LeadUi) {
+    const el = node.querySelector('[data-field="source"]') as HTMLElement | null;
+    if (!el) return;
+    const src = classifySource(lead);
+    el.className = 'badge badge-sm shrink-0';
+    el.style.cssText = sourceChipStyle(src);
+    el.textContent = `${src.icon} ${src.label}`;
+    if (src.detail) el.title = `ที่มา: ${src.detail}`;
   }
 
   function renderRangeSummary() {

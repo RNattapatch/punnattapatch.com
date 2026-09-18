@@ -16,6 +16,7 @@ import LeadCard from './LeadCard.astro';
   import { subscribe, dashboardToday, openLead } from '../../scripts/dashboard/store';
   import type { LeadUi } from '../../scripts/dashboard/adapter';
   import { markName } from '../../scripts/after-hours';
+  import { classifySource, sourceChipStyle } from '../../scripts/dashboard/lead-source';
 
   function ageDays(iso?: string): string {
     if (!iso) return '';
@@ -58,6 +59,14 @@ import LeadCard from './LeadCard.astro';
     if (badge) {
       badge.className = `badge badge-sm ${b.cls}`;
       badge.textContent = b.text;
+    }
+    const srcEl = node.querySelector('[data-field="source"]') as HTMLElement | null;
+    if (srcEl) {
+      const src = classifySource(lead);
+      srcEl.className = 'badge badge-sm shrink-0';
+      srcEl.style.cssText = sourceChipStyle(src);
+      srcEl.textContent = `${src.icon} ${src.label}`;
+      if (src.detail) srcEl.title = `ที่มา: ${src.detail}`;
     }
   }
 
