@@ -47,7 +47,9 @@ import AppNav from '../../components/app/AppNav.astro';
         <div id="chat-tabs" class="flex max-w-full gap-1 overflow-x-auto" role="tablist" aria-label="ส่วนของ Chat Center">
           <button id="chat-tab-offers" class="chat-tab btn btn-sm tap-44" role="tab" aria-selected="true" aria-controls="chat-view-offers" data-view="offers">Offers</button>
           <button id="chat-tab-snippets" class="chat-tab btn btn-sm tap-44" role="tab" aria-selected="false" aria-controls="chat-view-snippets" data-view="snippets">Snippets</button>
+          <button id="chat-tab-faq" class="chat-tab btn btn-sm tap-44" role="tab" aria-selected="false" aria-controls="chat-view-faq" data-view="faq">FAQ</button>
           <button id="chat-tab-keywords" class="chat-tab btn btn-sm tap-44" role="tab" aria-selected="false" aria-controls="chat-view-keywords" data-view="keywords">Keywords</button>
+          <button id="chat-tab-context" class="chat-tab btn btn-sm tap-44" role="tab" aria-selected="false" aria-controls="chat-view-context" data-view="context">Context บอท</button>
           <button id="chat-tab-publish" class="chat-tab btn btn-sm tap-44" role="tab" aria-selected="false" aria-controls="chat-view-publish" data-view="publish">Publish</button>
         </div>
       </div>
@@ -62,7 +64,9 @@ import AppNav from '../../components/app/AppNav.astro';
         </div>
         <div id="chat-snippets"></div>
       </section>
+      <section id="chat-view-faq" class="hidden space-y-3" role="tabpanel" aria-labelledby="chat-tab-faq"></section>
       <section id="chat-view-keywords" class="hidden" role="tabpanel" aria-labelledby="chat-tab-keywords"></section>
+      <section id="chat-view-context" class="hidden space-y-3" role="tabpanel" aria-labelledby="chat-tab-context"></section>
       <section id="chat-view-publish" class="hidden space-y-3" role="tabpanel" aria-labelledby="chat-tab-publish"></section>
     </main>
 
@@ -74,11 +78,19 @@ import AppNav from '../../components/app/AppNav.astro';
       <div id="chat-keyword-dialog-body" class="modal-box max-w-3xl"></div>
       <form method="dialog" class="modal-backdrop"><button aria-label="ปิดหน้าต่างแก้ keyword">ปิด</button></form>
     </dialog>
+    <dialog id="chat-offer-dialog" class="modal">
+      <div id="chat-offer-dialog-body" class="modal-box max-w-3xl"></div>
+      <form method="dialog" class="modal-backdrop"><button class="tap-44" aria-label="ปิดหน้าต่างแก้สินค้า">ปิด</button></form>
+    </dialog>
+    <dialog id="chat-context-dialog" class="modal">
+      <div id="chat-context-dialog-body" class="modal-box max-w-4xl"></div>
+      <form method="dialog" class="modal-backdrop"><button class="tap-44" aria-label="ปิดหน้าต่างแก้ context">ปิด</button></form>
+    </dialog>
     <div class="toast toast-end z-50"><div id="chat-toast" class="alert hidden text-sm shadow-lg" role="status" aria-live="polite"></div></div>
   </div>
 
   <script>
-    import { loadAll, saveSnippet, saveKeyword, type OfferRow, type SnippetRow, type KeywordRow, type PublishRow, type PublishVersionRow, type DeclaredRef , requestPublish, rollbackTo, type KeywordStatRow } from '../../scripts/chat/data';
+    import { loadAll, saveSnippet, saveKeyword, type OfferRow, type SnippetRow, type KeywordRow, type PublishRow, type PublishVersionRow, type DeclaredRef , requestPublish, rollbackTo, type KeywordStatRow, type ContextRow, saveContext, createContext, deleteContext, createOffer, saveOffer, deleteOffer, createSnippet, deleteSnippet } from '../../scripts/chat/data';
     import { renderTokens, validateSnippet, keywordConflicts, type CatalogLike } from '../../scripts/chat/logic';
     import { getSupabaseSession } from '../../scripts/dashboard/supabase';
 
@@ -96,7 +108,7 @@ import AppNav from '../../components/app/AppNav.astro';
     }
     const oops = (error: unknown) => toast((error as Error)?.message || 'ทำรายการไม่สำเร็จ — ลองใหม่อีกครั้ง', 'error');
 
-    type View = 'offers' | 'snippets' | 'keywords' | 'publish';
+    type View = 'offers' | 'snippets' | 'faq' | 'keywords' | 'context' | 'publish';
     const state: any = {
       offers: [] as OfferRow[], snippets: [] as SnippetRow[], keywords: [] as KeywordRow[],
       publish: [] as PublishRow[], versions: [] as PublishVersionRow[], catalog: { packages: [] } as CatalogLike,
@@ -116,18 +128,23 @@ import AppNav from '../../components/app/AppNav.astro';
 
     function renderOffers() {
       const prices = catalogByKey();
-      $('#chat-view-offers').innerHTML = `<div class="chat-panel-grid">${state.offers.map((offer) => {
+      $('#chat-view-offers').innerHTML = `<div class="mb-3 flex justify-end"><button class="btn btn-primary btn-sm tap-44" data-add-offer>+ เพิ่มสินค้า/บริการ</button></div><div class="chat-panel-grid">${state.offers.map((offer) => {
         const item = prices.get(offer.pricing_key); const snippets = state.snippets.filter((row) => row.offer_code === offer.code);
         const keywords = state.keywords.filter((row) => row.offer_code === offer.code);
         const declaredCount = keywords.reduce((sum, row) => sum + declared(row).length, 0);
         return `<details class="chat-offer rounded-2xl border border-base-300 bg-base-200 p-4">
           <summary class="flex flex-wrap items-start justify-between gap-3" aria-label="เปิดรายละเอียด ${esc(offer.code)}">
-            <span><span class="font-display text-lg font-bold">${esc(offer.code)} · ${esc(item?.name || offer.pricing_key)}</span><br><span class="text-sm opacity-70">${esc(offer.one_liner)}</span></span>
+            <span><span class="font-display text-lg font-bold">${esc(offer.code)} · ${esc(item?.name || offer.pricing_key)}</span>${offer.enabled ? '' : ' <span class="badge badge-ghost">ปิดอยู่</span>'}<br><span class="text-sm opacity-70">${esc(offer.one_liner)}</span></span>
             <span class="text-right"><span class="font-display text-lg font-bold">${item ? Number(item.amount_thb).toLocaleString('th-TH') : 'ไม่พบราคา'}</span><br><span class="badge ${item?.bot_may_quote ? 'badge-success' : 'badge-warning'}">${item?.bot_may_quote ? 'บอทบอกราคาได้' : 'บอทห้ามบอกราคา'}</span>${copyIsDirty(offer.updated_at) ? '<br><span class="badge badge-warning mt-1">ยังไม่ได้ส่งให้บอท</span>' : ''}</span>
           </summary>
           <div class="mt-4 grid gap-4 lg:grid-cols-[1fr_2fr]">
             <div class="space-y-2 text-sm"><p><b>เหมาะกับ:</b> ${esc(offer.fit || 'ยังไม่ได้ระบุ')}</p><p><b>ยังไม่เหมาะ:</b> ${esc(offer.not_fit || 'ยังไม่ได้ระบุ')}</p><p><b>ขั้นถัดไป:</b> ${esc(offer.next_step || 'ยังไม่ได้ระบุ')}</p><p><b>Keyword:</b> ${keywords.length ? keywords.map((row) => `<span class="badge badge-outline mr-1">${esc(row.keyword)}</span>`).join('') : 'ยังไม่มี'}</p><p><b>รายการประกาศที่ผูกอยู่:</b> ${declaredCount}</p><div class="flex flex-wrap gap-2">${safeHref(offer.lp_url) ? `<a class="btn btn-sm tap-44" href="${esc(safeHref(offer.lp_url))}" target="_blank" rel="noreferrer">เปิด LP</a>` : ''}${safeHref(offer.outline_url) ? `<a class="btn btn-sm tap-44" href="${esc(safeHref(offer.outline_url))}" target="_blank" rel="noreferrer">เปิด Outline</a>` : ''}</div></div>
             <div class="space-y-2">${snippets.map((row) => `<div class="rounded-xl border border-base-300 bg-base-100 p-3"><div class="mb-1 flex justify-between gap-2 text-xs"><b>${esc(row.slot)} · ${esc(row.channel)}</b><span>${row.char_count} ตัวอักษร</span></div><p class="chat-copy text-sm">${esc(preview(row.body))}</p></div>`).join('')}</div>
+          </div>
+          <div class="mt-3 flex flex-wrap gap-2 border-t border-base-300 pt-3">
+            <button class="btn btn-sm tap-44" data-edit-offer="${esc(offer.code)}">แก้รายละเอียด</button>
+            <button class="btn btn-sm tap-44" data-add-snippet="${esc(offer.code)}">+ เพิ่มข้อความ</button>
+            <button class="btn btn-ghost btn-sm tap-44" data-del-offer="${esc(offer.code)}" aria-label="ลบสินค้า ${esc(offer.code)}">ลบสินค้านี้</button>
           </div></details>`;
       }).join('')}</div>`;
     }
@@ -141,7 +158,7 @@ import AppNav from '../../components/app/AppNav.astro';
 
     function renderSnippets() {
       const rows = state.snippets.filter((row) => (state.offerFilter === 'all' || row.offer_code === state.offerFilter) && (state.slotFilter === 'all' || row.slot === state.slotFilter) && (state.channelFilter === 'all' || row.channel === state.channelFilter));
-      $('#chat-snippets').innerHTML = `<div class="overflow-x-auto rounded-2xl border border-base-300 bg-base-200"><table class="table table-sm min-w-[720px]"><thead><tr><th>สินค้า / ช่วง</th><th>ช่องทาง</th><th>Preview ที่ใช้คัดลอก</th><th>ความยาว</th><th></th></tr></thead><tbody>${rows.map((row) => `<tr><td><b>${esc(row.offer_code)}</b><br><span class="text-xs opacity-60">${esc(row.slot)}${row.faq_q ? ` · ${esc(row.faq_q)}` : ''}</span>${copyIsDirty(row.updated_at) ? '<br><span class="badge badge-warning mt-1">ยังไม่ได้ส่งให้บอท</span>' : ''}</td><td>${esc(row.channel)}</td><td class="max-w-xl"><p class="chat-copy line-clamp-3 text-sm">${esc(preview(row.body))}</p></td><td>${row.char_count}/1,900</td><td><div class="flex gap-1"><button class="btn btn-sm tap-44" data-copy="${esc(row.id)}" aria-label="คัดลอกข้อความ ${esc(row.offer_code)} ${esc(row.slot)}">คัดลอก</button><button class="btn btn-sm tap-44" data-edit-snippet="${esc(row.id)}" aria-label="แก้ข้อความ ${esc(row.offer_code)} ${esc(row.slot)}">แก้</button></div></td></tr>`).join('')}</tbody></table></div>`;
+      $('#chat-snippets').innerHTML = `<div class="overflow-x-auto rounded-2xl border border-base-300 bg-base-200"><table class="table table-sm min-w-[720px]"><thead><tr><th>สินค้า / ช่วง</th><th>ช่องทาง</th><th>Preview ที่ใช้คัดลอก</th><th>ความยาว</th><th></th></tr></thead><tbody>${rows.map((row) => `<tr><td><b>${esc(row.offer_code)}</b><br><span class="text-xs opacity-60">${esc(row.slot)}${row.faq_q ? ` · ${esc(row.faq_q)}` : ''}</span>${copyIsDirty(row.updated_at) ? '<br><span class="badge badge-warning mt-1">ยังไม่ได้ส่งให้บอท</span>' : ''}</td><td>${esc(row.channel)}</td><td class="max-w-xl"><p class="chat-copy line-clamp-3 text-sm">${esc(preview(row.body))}</p></td><td>${row.char_count}/1,900</td><td><div class="flex gap-1"><button class="btn btn-sm tap-44" data-copy="${esc(row.id)}" aria-label="คัดลอกข้อความ ${esc(row.offer_code)} ${esc(row.slot)}">คัดลอก</button><button class="btn btn-sm tap-44" data-edit-snippet="${esc(row.id)}" aria-label="แก้ข้อความ ${esc(row.offer_code)} ${esc(row.slot)}">แก้</button><button class="btn btn-ghost btn-sm tap-44" data-del-snippet="${esc(row.id)}" aria-label="ลบข้อความ ${esc(row.offer_code)} ${esc(row.slot)}">ลบ</button></div></td></tr>`).join('')}</tbody></table></div>`;
       bindSnippetActions();
     }
 
@@ -245,11 +262,217 @@ import AppNav from '../../components/app/AppNav.astro';
       }));
     }
 
-    function renderAll() { renderSummary(); renderOffers(); syncFilters(); renderSnippets(); renderKeywords(); renderPublish(); bindPublishActions(); }
+    // FAQ อยู่ 2 ที่จริงๆ: ต่อบริการ (snippet slot=faq ที่บอทหยิบตอนถือสคริปต์อยู่)
+    // กับ FAQ กลางใน oa-knowledge.md (บอทตอบได้ตลอดเวลา) — หน้านี้รวมให้เห็นพร้อมกัน
+    function openContext(id: string) {
+      const row = (state.context || []).find((item: ContextRow) => item.id === id); if (!row) return;
+      const dialog = $<HTMLDialogElement>('#chat-context-dialog'); const body = $('#chat-context-dialog-body');
+      body.innerHTML = `<h2 class="font-display text-lg font-bold">แก้หัวข้อใน ${esc(row.file)}</h2>
+        <form id="chat-context-form" class="mt-3 space-y-3">
+          <label class="block text-xs">หัวข้อ (ขึ้นต้นด้วย ## ตามรูปแบบไฟล์)<input id="chat-context-heading" class="input input-sm input-bordered mt-1 w-full" required></label>
+          <label class="block text-xs">เนื้อหา<textarea id="chat-context-body" class="textarea textarea-bordered mt-1 min-h-72 w-full text-sm"></textarea></label>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <label class="text-xs">ลำดับ<input id="chat-context-order" type="number" class="input input-sm input-bordered mt-1 w-full"></label>
+            <label class="text-xs">หมายเหตุภายใน<input id="chat-context-note" class="input input-sm input-bordered mt-1 w-full"></label>
+            <label class="mt-5 flex items-center gap-2 text-xs"><input id="chat-context-enabled" type="checkbox" class="checkbox checkbox-sm"> เปิดให้บอทเห็น</label>
+          </div>
+          <p id="chat-context-count" class="text-xs opacity-60"></p>
+          <div class="modal-action"><button type="button" class="btn btn-ghost btn-sm tap-44" data-close>ยกเลิก</button><button type="submit" id="chat-context-save" class="btn btn-primary btn-sm tap-44">บันทึก</button></div>
+        </form>`;
+      $<HTMLInputElement>('#chat-context-heading').value = row.heading;
+      const area = $<HTMLTextAreaElement>('#chat-context-body'); area.value = row.body;
+      $<HTMLInputElement>('#chat-context-order').value = String(row.display_order);
+      $<HTMLInputElement>('#chat-context-note').value = row.note || '';
+      $<HTMLInputElement>('#chat-context-enabled').checked = row.enabled;
+      const sync = () => { $('#chat-context-count').textContent = `${area.value.length.toLocaleString('en-US')} ตัวอักษร — ยิ่งยาวยิ่งกินพื้นที่ใน context ของบอททุกข้อความ`; };
+      sync(); area.addEventListener('input', sync);
+      body.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
+      $('#chat-context-form').addEventListener('submit', async (event) => {
+        event.preventDefault(); const save = $<HTMLButtonElement>('#chat-context-save'); save.disabled = true;
+        try {
+          await saveContext(row.id, { heading: $<HTMLInputElement>('#chat-context-heading').value.trim(), body: area.value, display_order: Number($<HTMLInputElement>('#chat-context-order').value) || row.display_order, enabled: $<HTMLInputElement>('#chat-context-enabled').checked, note: $<HTMLInputElement>('#chat-context-note').value.trim() || null });
+          dialog.close(); toast('บันทึกแล้ว — กดส่งให้บอทใช้ที่แท็บ Publish'); await reload();
+        } catch (error) { oops(error); } finally { save.disabled = false; }
+      });
+      dialog.showModal();
+    }
+
+    function openOffer(code: string | null) {
+      const row = code ? state.offers.find((item: OfferRow) => item.code === code) : null;
+      const dialog = $<HTMLDialogElement>('#chat-offer-dialog'); const body = $('#chat-offer-dialog-body');
+      const keys = (state.catalog?.packages || []).map((item: { key: string }) => item.key);
+      body.innerHTML = `<h2 class="font-display text-lg font-bold">${row ? `แก้สินค้า ${esc(row.code)}` : 'เพิ่มสินค้า/บริการ'}</h2>
+        <form id="chat-offer-form" class="mt-3 space-y-3">
+          <div class="grid gap-2 sm:grid-cols-2">
+            <label class="text-xs">รหัส (T1 · C1 · P1 …)<input id="chat-offer-code" class="input input-sm input-bordered mt-1 w-full" ${row ? 'disabled' : 'required'}></label>
+            <label class="text-xs">ผูกกับราคาใน catalog<select id="chat-offer-key" class="select select-sm select-bordered mt-1 w-full">${keys.map((key: string) => `<option>${esc(key)}</option>`).join('')}</select></label>
+          </div>
+          <label class="block text-xs">ประโยคเดียวว่าคืออะไร<input id="chat-offer-liner" class="input input-sm input-bordered mt-1 w-full" required></label>
+          <div class="grid gap-2 sm:grid-cols-2">
+            <label class="text-xs">เหมาะกับใคร<textarea id="chat-offer-fit" class="textarea textarea-bordered mt-1 min-h-20 w-full text-sm"></textarea></label>
+            <label class="text-xs">ยังไม่เหมาะกับใคร<textarea id="chat-offer-notfit" class="textarea textarea-bordered mt-1 min-h-20 w-full text-sm"></textarea></label>
+          </div>
+          <label class="block text-xs">ขั้นถัดไปที่อยากให้ลูกค้าไป<input id="chat-offer-next" class="input input-sm input-bordered mt-1 w-full"></label>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <label class="text-xs">ลิงก์หน้าเว็บ<input id="chat-offer-lp" class="input input-sm input-bordered mt-1 w-full"></label>
+            <label class="text-xs">ลิงก์ outline<input id="chat-offer-outline" class="input input-sm input-bordered mt-1 w-full"></label>
+            <label class="text-xs">ลำดับ<input id="chat-offer-order" type="number" class="input input-sm input-bordered mt-1 w-full"></label>
+          </div>
+          <label class="flex items-center gap-2 text-xs"><input id="chat-offer-enabled" type="checkbox" class="checkbox checkbox-sm"> เปิดใช้ (ปิด = บอทไม่หยิบสคริปต์ชุดนี้)</label>
+          <div id="chat-offer-errors" class="text-sm text-error" role="alert"></div>
+          <div class="modal-action"><button type="button" class="btn btn-ghost btn-sm tap-44" data-close>ยกเลิก</button><button type="submit" id="chat-offer-save" class="btn btn-primary btn-sm tap-44">บันทึก</button></div>
+        </form>`;
+      if (row) {
+        $<HTMLInputElement>('#chat-offer-code').value = row.code;
+        $<HTMLSelectElement>('#chat-offer-key').value = row.pricing_key;
+        $<HTMLInputElement>('#chat-offer-liner').value = row.one_liner || '';
+        $<HTMLTextAreaElement>('#chat-offer-fit').value = row.fit || '';
+        $<HTMLTextAreaElement>('#chat-offer-notfit').value = row.not_fit || '';
+        $<HTMLInputElement>('#chat-offer-next').value = row.next_step || '';
+        $<HTMLInputElement>('#chat-offer-lp').value = row.lp_url || '';
+        $<HTMLInputElement>('#chat-offer-outline').value = row.outline_url || '';
+        $<HTMLInputElement>('#chat-offer-order').value = String(row.display_order);
+        $<HTMLInputElement>('#chat-offer-enabled').checked = row.enabled;
+      } else { $<HTMLInputElement>('#chat-offer-order').value = '100'; $<HTMLInputElement>('#chat-offer-enabled').checked = true; }
+      body.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
+      $('#chat-offer-form').addEventListener('submit', async (event) => {
+        event.preventDefault(); const save = $<HTMLButtonElement>('#chat-offer-save'); save.disabled = true;
+        const patch = {
+          pricing_key: $<HTMLSelectElement>('#chat-offer-key').value,
+          one_liner: $<HTMLInputElement>('#chat-offer-liner').value.trim(),
+          fit: $<HTMLTextAreaElement>('#chat-offer-fit').value.trim() || null,
+          not_fit: $<HTMLTextAreaElement>('#chat-offer-notfit').value.trim() || null,
+          next_step: $<HTMLInputElement>('#chat-offer-next').value.trim() || null,
+          lp_url: $<HTMLInputElement>('#chat-offer-lp').value.trim() || null,
+          outline_url: $<HTMLInputElement>('#chat-offer-outline').value.trim() || null,
+          display_order: Number($<HTMLInputElement>('#chat-offer-order').value) || 100,
+          enabled: $<HTMLInputElement>('#chat-offer-enabled').checked,
+        };
+        try {
+          if (row) await saveOffer(row.code, patch);
+          else {
+            const code = $<HTMLInputElement>('#chat-offer-code').value.trim().toUpperCase();
+            if (!/^[A-Z]\d$/.test(code)) { $('#chat-offer-errors').textContent = 'รหัสต้องเป็นตัวอักษร 1 ตัวตามด้วยเลข 1 ตัว เช่น T5'; save.disabled = false; return; }
+            if (state.offers.some((item: OfferRow) => item.code === code)) { $('#chat-offer-errors').textContent = `มีรหัส ${code} อยู่แล้ว`; save.disabled = false; return; }
+            await createOffer({ code, ...patch });
+          }
+          dialog.close(); toast(row ? 'บันทึกแล้ว' : 'เพิ่มสินค้าแล้ว — ใส่ข้อความ b1/b2 ที่แท็บ Snippets ก่อนส่งให้บอท'); await reload();
+        } catch (error) { oops(error); } finally { save.disabled = false; }
+      });
+      dialog.showModal();
+    }
+
+    function bindCrudActions() {
+      document.querySelectorAll<HTMLButtonElement>('[data-edit-context]').forEach((b) => b.addEventListener('click', () => openContext(b.dataset.editContext!)));
+      document.querySelectorAll<HTMLButtonElement>('[data-edit-offer]').forEach((b) => b.addEventListener('click', () => openOffer(b.dataset.editOffer!)));
+      document.querySelectorAll<HTMLButtonElement>('[data-add-offer]').forEach((b) => b.addEventListener('click', () => openOffer(null)));
+
+      document.querySelectorAll<HTMLButtonElement>('[data-add-context]').forEach((b) => b.addEventListener('click', async () => {
+        const file = b.dataset.addContext!;
+        const heading = prompt(`หัวข้อใหม่ใน ${file} (ขึ้นต้นด้วย ##)`, '## ');
+        if (!heading?.trim()) return;
+        b.disabled = true;
+        const last = (state.context || []).filter((row: ContextRow) => row.file === file).reduce((max: number, row: ContextRow) => Math.max(max, row.display_order), 0);
+        try { await createContext({ file, heading: heading.trim(), body: '', display_order: last + 10 }); toast('เพิ่มหัวข้อแล้ว'); await reload(); }
+        catch (error) { oops(error); b.disabled = false; }
+      }));
+
+      document.querySelectorAll<HTMLButtonElement>('[data-del-context]').forEach((b) => b.addEventListener('click', async () => {
+        const row = (state.context || []).find((item: ContextRow) => item.id === b.dataset.delContext);
+        if (!row || !confirm(`ลบหัวข้อ "${row.heading.replace(/^#+\s*/, '')}" ออกจาก ${row.file}?\n\nบอทจะไม่เห็นข้อมูลส่วนนี้อีก`)) return;
+        b.disabled = true;
+        try { await deleteContext(row.id); toast('ลบแล้ว'); await reload(); } catch (error) { oops(error); b.disabled = false; }
+      }));
+
+      document.querySelectorAll<HTMLButtonElement>('[data-del-snippet]').forEach((b) => b.addEventListener('click', async () => {
+        const row = state.snippets.find((item: SnippetRow) => item.id === b.dataset.delSnippet);
+        if (!row || !confirm(`ลบข้อความ ${row.offer_code} · ${row.slot}${row.faq_q ? ` (${row.faq_q})` : ''}?`)) return;
+        b.disabled = true;
+        try { await deleteSnippet(row.id); toast('ลบแล้ว'); await reload(); } catch (error) { oops(error); b.disabled = false; }
+      }));
+
+      document.querySelectorAll<HTMLButtonElement>('[data-add-faq]').forEach((b) => b.addEventListener('click', async () => {
+        const offer = b.dataset.addFaq!;
+        const question = prompt(`คำถามใหม่ของ ${offer}`);
+        if (!question?.trim()) return;
+        b.disabled = true;
+        const last = state.snippets.filter((row: SnippetRow) => row.offer_code === offer && row.slot === 'faq').reduce((max: number, row: SnippetRow) => Math.max(max, row.display_order ?? 0), 0);
+        try { await createSnippet({ offer_code: offer, slot: 'faq', channel: 'any', body: 'ค่ะ', faq_q: question.trim(), display_order: last + 10 }); toast('เพิ่มคำถามแล้ว — กดแก้เพื่อใส่คำตอบ'); await reload(); }
+        catch (error) { oops(error); b.disabled = false; }
+      }));
+
+      document.querySelectorAll<HTMLButtonElement>('[data-add-snippet]').forEach((b) => b.addEventListener('click', async () => {
+        const offer = b.dataset.addSnippet!;
+        const slot = prompt(`ช่วงข้อความใหม่ของ ${offer} (b1–b6 หรือ payment)`, 'b3');
+        if (!slot?.trim()) return;
+        b.disabled = true;
+        try { await createSnippet({ offer_code: offer, slot: slot.trim(), channel: 'any', body: 'ค่ะ' }); toast('เพิ่มข้อความแล้ว — กดแก้เพื่อใส่เนื้อหา'); await reload(); }
+        catch (error) { oops(error); b.disabled = false; }
+      }));
+
+      document.querySelectorAll<HTMLButtonElement>('[data-del-offer]').forEach((b) => b.addEventListener('click', async () => {
+        const code = b.dataset.delOffer!;
+        const count = state.snippets.filter((row: SnippetRow) => row.offer_code === code).length;
+        if (!confirm(`ลบ ${code} ออกจาก Chat Center?\n\nข้อความ ${count} ก้อนของสินค้านี้จะถูกลบตามไปด้วย\nราคาใน catalog ไม่ถูกแตะ`)) return;
+        b.disabled = true;
+        try { await deleteOffer(code); toast('ลบแล้ว'); await reload(); } catch (error) { oops(error); b.disabled = false; }
+      }));
+    }
+
+    function renderFaq() {
+      const perOffer = state.snippets.filter((row: SnippetRow) => row.slot === 'faq');
+      const central = (state.context || []).filter((row: ContextRow) => row.file === 'oa-knowledge.md' && /FAQ|คำถาม/i.test(row.heading));
+      const groups = state.offers.map((offer: OfferRow) => ({ offer, rows: perOffer.filter((row: SnippetRow) => row.offer_code === offer.code) }));
+      $('#chat-view-faq').innerHTML = `
+        <section class="rounded-2xl border border-base-300 bg-base-200 p-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div><h2 class="font-display font-bold">FAQ ต่อบริการ</h2><p class="text-xs opacity-70">บอทหยิบตอบเมื่อลูกค้าถือสคริปต์ของบริการนั้นอยู่</p></div>
+          </div>
+          <div class="mt-3 space-y-3">${groups.map(({ offer, rows }) => `
+            <article class="rounded-xl border border-base-300 bg-base-100 p-3">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="font-bold">${esc(offer.code)} <span class="text-xs font-normal opacity-60">${rows.length} ข้อ</span></h3>
+                <button class="btn btn-sm tap-44" data-add-faq="${esc(offer.code)}">+ เพิ่มคำถาม</button>
+              </div>
+              ${rows.length ? `<ul class="mt-2 space-y-1">${rows.map((row: SnippetRow) => `<li class="flex items-start justify-between gap-2 border-t border-base-300 pt-2 text-sm"><span><b>${esc(row.faq_q || '(ไม่มีคำถาม)')}</b><br><span class="opacity-70">${esc(preview(row.body))}</span></span><span class="flex shrink-0 gap-1"><button class="btn btn-xs tap-44" data-edit-snippet="${esc(row.id)}">แก้</button><button class="btn btn-xs btn-ghost tap-44" data-del-snippet="${esc(row.id)}" aria-label="ลบคำถาม ${esc(row.faq_q || '')}">ลบ</button></span></li>`).join('')}</ul>` : '<p class="mt-2 text-sm opacity-60">ยังไม่มีคำถามของบริการนี้</p>'}
+            </article>`).join('')}</div>
+        </section>
+        <section class="rounded-2xl border border-base-300 bg-base-200 p-4">
+          <h2 class="font-display font-bold">FAQ กลาง (บอทตอบได้ตลอด)</h2>
+          <p class="text-xs opacity-70">อยู่ใน oa-knowledge.md — แก้ที่แท็บ Context บอท</p>
+          ${central.length ? central.map((row: ContextRow) => `<article class="mt-3 rounded-xl border border-base-300 bg-base-100 p-3"><div class="flex items-center justify-between gap-2"><h3 class="font-bold">${esc(row.heading.replace(/^#+\s*/, ''))}</h3><button class="btn btn-sm tap-44" data-edit-context="${esc(row.id)}">แก้</button></div><pre class="chat-copy mt-2 whitespace-pre-wrap text-sm">${esc(row.body.slice(0, 900))}${row.body.length > 900 ? '…' : ''}</pre></article>`).join('') : '<p class="mt-2 text-sm opacity-60">ไม่พบหัวข้อ FAQ ใน knowledge</p>'}
+        </section>`;
+    }
+
+    function renderContext() {
+      const files = ['oa-knowledge.md', 'oa-campaigns.md'];
+      $('#chat-view-context').innerHTML = `
+        <div class="alert border border-base-300 bg-base-200 text-sm"><span>นี่คือของที่บอทถืออยู่ตอนคุยกับลูกค้า · ปิดหัวข้อไหนบอทจะไม่เห็นหัวข้อนั้นเลย · กติกาบุคลิกบอทกับตัวอย่างโทนอยู่ในโค้ด ไม่ได้แก้จากหน้านี้</span></div>
+        ${files.map((file) => {
+          const rows = (state.context || []).filter((row: ContextRow) => row.file === file).sort((a: ContextRow, b: ContextRow) => a.display_order - b.display_order);
+          const chars = rows.filter((row: ContextRow) => row.enabled).reduce((sum: number, row: ContextRow) => sum + row.body.length, 0);
+          return `<section class="rounded-2xl border border-base-300 bg-base-200 p-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div><h2 class="font-display font-bold">${esc(file)}</h2><p class="text-xs opacity-70">${rows.length} หัวข้อ · ที่เปิดอยู่รวม ${chars.toLocaleString('en-US')} ตัวอักษร</p></div>
+              <button class="btn btn-sm tap-44" data-add-context="${esc(file)}">+ เพิ่มหัวข้อ</button>
+            </div>
+            <div class="mt-3 space-y-2">${rows.map((row: ContextRow) => `
+              <article class="rounded-xl border border-base-300 bg-base-100 p-3 ${row.enabled ? '' : 'opacity-60'}">
+                <div class="flex items-start justify-between gap-2">
+                  <h3 class="font-bold">${esc(row.heading.replace(/^#+\s*/, ''))} ${row.enabled ? '' : '<span class="badge badge-ghost">ปิดอยู่</span>'}</h3>
+                  <span class="flex shrink-0 gap-1"><button class="btn btn-xs tap-44" data-edit-context="${esc(row.id)}">แก้</button><button class="btn btn-xs btn-ghost tap-44" data-del-context="${esc(row.id)}" aria-label="ลบหัวข้อ ${esc(row.heading)}">ลบ</button></span>
+                </div>
+                <p class="mt-1 text-xs opacity-60">${row.body.length.toLocaleString('en-US')} ตัวอักษร${row.note ? ` · ${esc(row.note)}` : ''}</p>
+              </article>`).join('')}</div>
+          </section>`;
+        }).join('')}`;
+    }
+
+    function renderAll() { renderSummary(); renderOffers(); syncFilters(); renderSnippets(); renderFaq(); renderKeywords(); renderContext(); renderPublish(); bindPublishActions(); bindCrudActions(); }
     function setView(view: View, focus = false) {
       state.view = view;
       document.querySelectorAll<HTMLButtonElement>('.chat-tab').forEach((button) => { const active = button.dataset.view === view; button.setAttribute('aria-selected', String(active)); button.tabIndex = active ? 0 : -1; if (active && focus) button.focus(); });
-      (['offers','snippets','keywords','publish'] as View[]).forEach((name) => $(`#chat-view-${name}`).classList.toggle('hidden', name !== view));
+      (['offers','snippets','faq','keywords','context','publish'] as View[]).forEach((name) => $(`#chat-view-${name}`).classList.toggle('hidden', name !== view));
       history.replaceState(null, '', view === 'offers' ? location.pathname + location.search : `#${view}`);
     }
     async function reload() {
