@@ -1,0 +1,345 @@
+{
+  "meta": {
+    "title": "ผลงาน ปัน ณัฐพัชร์",
+    "subtitle": "อบรม วางระบบ และสร้าง AI Agent จากโจทย์ธุรกิจจริง",
+    "asOf": "11 กันยายน 2026",
+    "owner": "ปัน ณัฐพัชร์",
+    "handle": "@pun_nattapatch"
+  },
+  "featured": {
+    "nissan": {
+      "audienceCount": "300+",
+      "audience": "Senior, Sales Manager และผู้บริหาร Nissan Motor ประเทศไทย"
+    },
+    "scenery": {
+      "audienceCount": "30+",
+      "audience": "ทีมงาน The Scenery Vintage Farm"
+    },
+    "hfc": {
+      "audienceCount": "100+",
+      "audience": "ทีมงาน HFC"
+    }
+  },
+  "futureskill": {
+    "status": "Future Expert",
+    "courseTitle": "สร้าง AI Sales Agent บน LINE OA ด้วย Claude Code",
+    "courseUrl": "https://futureskill.co/course/detail/6030",
+    "recordingDates": "14 และ 17 สิงหาคม 2026",
+    "duration": "4 EP รวมประมาณ 3 ชั่วโมง 46 นาที"
+  },
+  "relationshipOrigins": {
+    "summary": "งาน organic และการแนะนำจากคนรู้จัก",
+    "untrackedLogos": [
+      "GPX",
+      "Lambretta",
+      "Royal Enfield",
+      "Zontes",
+      "Farmsuk",
+      "NS Scrap",
+      "UD Clinic"
+    ]
+  },
+  "evidence": {
+    "chatFolder": "input-to-agent/testimonial/Chat-testimonial/",
+    "onsiteFolder": "input-to-agent/testimonial/onsite-testimonial/",
+    "sources": [
+      "input-to-agent/testimonial/Chat-testimonial/IMG_6910.JPG",
+      "input-to-agent/testimonial/Chat-testimonial/IMG_7488.JPG",
+      "input-to-agent/testimonial/Chat-testimonial/IMG_7511.JPG",
+      "input-to-agent/testimonial/Chat-testimonial/IMG_8076.JPG",
+      "input-to-agent/testimonial/Chat-testimonial/IMG_8697.JPG",
+      "input-to-agent/testimonial/Chat-testimonial/IMG_8892.JPG",
+      "input-to-agent/testimonial/onsite-testimonial/IMG_7155.JPG",
+      "input-to-agent/testimonial/onsite-testimonial/IMG_7461.JPG",
+      "input-to-agent/testimonial/onsite-testimonial/IMG_7871.JPG",
+      "input-to-agent/testimonial/onsite-testimonial/IMG_9120.JPG"
+    ],
+    "excludedFromPublic": [
+      "งานที่ยังไม่ได้จัด",
+      "เคสรถมือสองที่คุณปันขอไม่เล่า",
+      "ชื่อลูกค้าที่อนุญาตให้เล่าได้เฉพาะแบบ anonymous"
+    ]
+  },
+  "public": {
+    "intro": "ผมเริ่มจากโจทย์ของทีมก่อน แล้วค่อยเลือกว่าจะฝึกคน วางระบบ หรือสร้าง AI Agent อะไรให้ใช้ต่อได้จริง หลักฐานชุดนี้รวมทั้งขนาดห้อง งานที่ส่งมอบ และสิ่งที่ลูกค้ากลับไปทำต่อหลังจบคลาส",
+    "proofCards": [
+      {
+        "value": "300+",
+        "label": "ผู้เข้าร่วมงาน Nissan",
+        "detail": "Senior, Sales Manager และผู้บริหาร Nissan Motor ประเทศไทย"
+      },
+      {
+        "value": "100+",
+        "label": "ผู้เข้าร่วมงาน HFC",
+        "detail": "อบรมทีมในองค์กรและต่อยอดสู่ระบบงานจริง"
+      },
+      {
+        "value": "30+",
+        "label": "ผู้เข้าร่วมงาน Scenery",
+        "detail": "ทีมโรงแรม ฟาร์ม ร้านอาหาร และงานหลังบ้าน"
+      }
+    ],
+    "trainingCases": [
+      {
+        "slug": "scenery",
+        "name": "The Scenery Vintage Farm",
+        "industry": "Hospitality · Farm · Restaurant",
+        "audienceCount": "30+ คน",
+        "summary": "อบรม Advance AI แล้วทำงานต่อในรูปแบบ consult เพื่อออกแบบ 4 ระบบสำหรับบริบทหน้างานที่ไม่มี ERP หรือ CRM กลาง",
+        "deliverables": [
+          "Workshop และ prompt pack ที่ทีมใช้ต่อได้",
+          "แบบระบบ 4 งานจากโจทย์จริงของ Scenery",
+          "Social Listening Report สำหรับตัดสินใจด้านตลาด"
+        ],
+        "image": "/testimonial/2026-07/scenery/scenery-team.jpg",
+        "pdfImage": "scenery-team.jpg",
+        "alt": "ปัน ณัฐพัชร์กับทีม The Scenery Vintage Farm หลังเวิร์กช็อป"
+      },
+      {
+        "slug": "hfc",
+        "name": "HFC",
+        "industry": "Food Manufacturing",
+        "audienceCount": "100+ คน",
+        "summary": "อบรมและ consult 3 วัน โดยเชื่อม AI เข้ากับงานโรงงาน ข้อมูลความรู้ และการมองต้นทุนการผลิต",
+        "deliverables": [
+          "Knowledge Base สำหรับทีม",
+          "Dashboard ต้นทุนต่อกิโลกรัม",
+          "Roadmap สำหรับพัฒนา AI Agent ต่อในองค์กร"
+        ],
+        "image": "/testimonial/web/class-selfie.jpg",
+        "pdfImage": "hfc-training.jpg",
+        "alt": "ปัน ณัฐพัชร์กับทีม HFC ในห้องอบรม"
+      },
+      {
+        "slug": "ving",
+        "name": "VING Intertrade",
+        "industry": "Trading · Operations",
+        "audienceCount": "ทีมหลายแผนก",
+        "summary": "คลาส 3 วันที่พาทีมลงมือทำกับงานของบริษัท และต่อยอดจากกลุ่มแรกไปสู่การใช้ AI ระดับทั้งบริษัท",
+        "deliverables": [
+          "Workshop 3 วันจากงานจริงของทีม",
+          "แนวทางนำ AI ไปต่อยอดกับงานประจำ",
+          "ระบบติดตามงานและข้อมูลสำหรับทีม"
+        ],
+        "image": "/testimonial/web/seminar-room.jpg",
+        "pdfImage": "ving-room.jpg",
+        "alt": "ห้องเวิร์กช็อป VING Intertrade ที่ผู้เรียนเปิดโน้ตบุ๊กลงมือทำ"
+      },
+      {
+        "slug": "farevefarm",
+        "name": "Farevefarm",
+        "industry": "Luxury Retail",
+        "audienceCount": "12 บทบาทงาน",
+        "summary": "ออกแบบ AI Homework Sprint แยกตามงานจริงของ Admin, Stock, Media, Buying และ Product เพื่อให้แต่ละคนมีภารกิจที่เอากลับไปใช้ต่อได้",
+        "deliverables": [
+          "Homework 12 แฟ้มตามบทบาท",
+          "Roadmap Crawl → Walk → Run → Agentic",
+          "Demo Friday และ tracker ให้เจ้าของตาม adoption ได้"
+        ]
+      },
+      {
+        "slug": "home-plus",
+        "name": "ฮ.โฮมพลัส",
+        "industry": "Construction Materials",
+        "audienceCount": "ทีมขายและหัวหน้างาน 16+ คน",
+        "summary": "วางโครง Sales Strategy, KPI, checklist และ dashboard เพื่อทำให้ยอดขายที่เคยกระจายอยู่ตามคน กลับมามองเห็นและบริหารร่วมกันได้",
+        "deliverables": [
+          "Sales Strategy และ Project Sales KPI",
+          "Department Checklist และ Staff Performance Report",
+          "Sales Target Calculator และ dashboard"
+        ]
+      }
+    ],
+    "anonymousCase": {
+      "name": "ผู้จัดจำหน่ายอุปกรณ์อุตสาหกรรม",
+      "summary": "วางระบบให้ทีมรับช่วงงานลูกค้าได้มากขึ้น เจ้าของจึงไม่ต้องคอยตอบแชตดึกแทบทุกคืน",
+      "metrics": [
+        {
+          "label": "คืนที่เจ้าของต้องตอบ LINE ตี 1–2",
+          "before": "3–4 คืน/สัปดาห์",
+          "after": "0 คืน"
+        },
+        {
+          "label": "Response time",
+          "before": "มากกว่า 12 ชั่วโมง",
+          "after": "น้อยกว่า 2 ชั่วโมงในเวลาทำการ"
+        },
+        {
+          "label": "Inquiry ที่ทีมจัดการเองได้",
+          "before": "ประมาณ 30%",
+          "after": "ประมาณ 75%"
+        },
+        {
+          "label": "เวลาของเจ้าของที่ถูกงาน operation ดึงไป",
+          "before": "มากกว่า 15 ชั่วโมง/สัปดาห์",
+          "after": "4–5 ชั่วโมง/สัปดาห์"
+        }
+      ]
+    },
+    "speaking": {
+      "name": "Nissan Sales Manager Seminar 2026",
+      "date": "12 มิถุนายน 2026",
+      "audienceCount": "300+ คน",
+      "audience": "Senior, Sales Manager และผู้บริหาร Nissan Motor ประเทศไทย",
+      "duration": "ประมาณ 90 นาที",
+      "theme": "AI คือ E-Power ของธุรกิจคุณ",
+      "summary": "พาคนฟังไล่จากการใช้ AI ทำภาพและคอนเทนต์ ไปสู่การเข้าถึงลูกค้า วิเคราะห์ทีมขาย และเห็นภาพ AI Agent ในงานจริง",
+      "deliverables": [
+        "เด็ค 41 สไลด์",
+        "Prompt pack เฉพาะงาน",
+        "Social listening insight ของ Nissan",
+        "Storyboard โฆษณา X-Trail",
+        "E-book และหน้าแจกเครื่องมือผ่าน QR LINE"
+      ],
+      "image": "/testimonial/2026-07/review-12.jpg",
+      "portraitImage": "/testimonial/2026-07/onsite-nissan-pun.jpg",
+      "pdfImage": "nissan-stage.jpg",
+      "alt": "เวที Nissan Sales Manager Seminar 2026"
+    },
+    "futureSkill": {
+      "badge": "FutureSkill Future Expert",
+      "title": "สร้าง AI Sales Agent บน LINE OA ด้วย Claude Code",
+      "summary": "คลาส 4 EP ที่พาผู้เรียนสร้างระบบตอบแชต คัดกรองลูกค้า ออกใบเสนอราคา และส่งต่อให้คนดูแลต่อ โดยใช้ร้านบ้านโซฟาเป็นโจทย์เดโมทั้งคลาส",
+      "details": [
+        "ถ่ายทำ 14 และ 17 สิงหาคม 2026",
+        "4 EP รวมประมาณ 3 ชั่วโมง 46 นาที",
+        "มี Class Project ทุก EP และใบรับรอง",
+        "Setup Companion S0–S10, Troubleshooting Matrix และ Prompt Block 8 ชุด",
+        "ระบบเดโมผ่าน dry-run ข้ามคืน 15 PASS / 2 PARTIAL ก่อนถ่ายทำ"
+      ],
+      "courseUrl": "https://futureskill.co/course/detail/6030"
+    },
+    "testimonials": [
+      {
+        "label": "ใช้ต่อหลังคลาส",
+        "quote": "ตั้งแต่พี่มาสอน ผมนอนน้อยมากพี่ ใช้ AI มันมากครับ",
+        "followup": "ทำเว็บจ้างหลายแสน จบในคืนเดียว เป็นไปได้เฉยพี่",
+        "source": "IMG_8697.JPG",
+        "image": "/testimonial/2026-07/review-09.jpg",
+        "pdfImage": "chat-web-overnight.jpg"
+      },
+      {
+        "label": "ต่อยอดเป็นระบบของตัวเอง",
+        "quote": "ต่อยอด โปรเจ็คเลขาครับ สนุกดีครับ",
+        "source": "IMG_8892.JPG",
+        "image": "/testimonial/2026-07/review-11.jpg",
+        "pdfImage": "chat-secretary.jpg"
+      },
+      {
+        "label": "ทีม VING นำไปใช้กับงานจริง",
+        "quote": "ขอบคุณน้องปันมากๆ นะคะ สำหรับ 3 วันที่มีคุณภาพมาก",
+        "followup": "พยายามนำสิ่งที่ได้ไปต่อยอดกับงานจริง",
+        "source": "IMG_7511.JPG",
+        "image": "/testimonial/2026-05/review-04.jpg",
+        "pdfImage": "chat-ving.jpg"
+      },
+      {
+        "label": "จากทีมหนึ่งไปสู่ทั้งบริษัท",
+        "quote": "อาจารย์ปันสอนถูกใจทีมงานมากครับ",
+        "followup": "AI แบบทั้งบริษัท",
+        "source": "IMG_7488.JPG",
+        "image": "/testimonial/2026-05/review-05.jpg",
+        "pdfImage": "chat-ving-company.jpg"
+      }
+    ],
+    "systems": [
+      {
+        "name": "Sales Center",
+        "description": "รวม lead, pipeline, next action และเอกสารไว้ในที่เดียว"
+      },
+      {
+        "name": "Doc Bot และ Doc Center",
+        "description": "ออกใบเสนอราคา ใบแจ้งหนี้ ใบเสร็จ และเก็บทะเบียนเอกสารลูกค้า"
+      },
+      {
+        "name": "LINE OA Agent และ Guardian",
+        "description": "รับข้อความลูกค้า ส่งต่อคน และกันข้อความหายเมื่อระบบหลังบ้านล่ม"
+      },
+      {
+        "name": "Health Watch",
+        "description": "ตรวจจุดที่พังแล้วเงียบทุก 5 นาที ทั้งฟอร์ม เว็บฮุก และท่อส่ง lead"
+      },
+      {
+        "name": "Night Scout และ War Room",
+        "description": "กวาดสัญญาณตลาด จัด brief และส่งงานเข้าคิวคอนเทนต์ทุกวัน"
+      },
+      {
+        "name": "Video Pipeline",
+        "description": "ถอดเสียงภาษาไทยและเตรียมวิดีโอแบบอัตโนมัติบน Mac mini"
+      }
+    ],
+    "organizationLogos": [
+      {
+        "name": "Nissan",
+        "src": "/logos/clients/nissan.png"
+      },
+      {
+        "name": "FutureSkill",
+        "src": "/logos/clients/futureskill.png"
+      },
+      {
+        "name": "VING",
+        "src": "/logos/clients/ving.png"
+      },
+      {
+        "name": "GPX",
+        "src": "/logos/clients/gpx.jpg"
+      },
+      {
+        "name": "Royal Enfield",
+        "src": "/logos/clients/royal-enfield.jpg"
+      },
+      {
+        "name": "Zontes",
+        "src": "/logos/clients/zontes.png"
+      },
+      {
+        "name": "Lambretta",
+        "src": "/logos/clients/lambretta.png"
+      },
+      {
+        "name": "HFC",
+        "src": "/logos/clients/hfc-healthfoods.png"
+      },
+      {
+        "name": "ฮ.โฮมพลัส",
+        "src": "/logos/clients/home-plus.png"
+      },
+      {
+        "name": "Farevefarm",
+        "src": "/logos/clients/farevefarm.jpg"
+      },
+      {
+        "name": "Farmsuk",
+        "src": "/logos/clients/farmsuk.jpg"
+      },
+      {
+        "name": "Business Boy",
+        "src": "/logos/clients/business-boy.jpg"
+      },
+      {
+        "name": "AES",
+        "src": "/logos/clients/aes.jpg"
+      },
+      {
+        "name": "NS Scrap",
+        "src": "/logos/clients/nsscrap.avif"
+      },
+      {
+        "name": "Scenery Farm",
+        "src": "/logos/clients/scenery-farm.jpeg"
+      },
+      {
+        "name": "UD Clinic",
+        "src": "/logos/clients/ud-clinic.jpg"
+      }
+    ],
+    "relationshipNote": "รายชื่อบางส่วนมาจากงาน organic และการแนะนำจากคนรู้จัก จึงแสดงในฐานะองค์กรหรือแบรนด์ที่เคยร่วมงาน ไม่ได้นับเป็นดีลใน CRM",
+    "cta": {
+      "heading": "อยากดูเคสที่ใกล้กับทีมคุณกว่านี้?",
+      "body": "ส่งบริบทธุรกิจ จำนวนคน และโจทย์ที่ติดอยู่มาได้ครับ ผมจะเลือกเคสและวิธีเริ่มที่ตรงกับทีมให้",
+      "primary": "/booking",
+      "secondary": "/services"
+    }
+  }
+}

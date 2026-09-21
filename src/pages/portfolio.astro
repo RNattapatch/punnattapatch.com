@@ -1,0 +1,309 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/site';
+import portfolio from '../data/portfolio.json';
+
+const { public: proof, meta } = portfolio;
+const title = 'ผลงานอบรม วางระบบ และ AI Agent';
+const description =
+  'ผลงานของปัน ณัฐพัชร์จากห้องอบรม งานที่ปรึกษา และระบบ AI Agent ที่ใช้จริง พร้อมจำนวนผู้เข้าร่วม สิ่งที่ส่งมอบ และแชตหลังจบคลาส';
+const logoByName = new Map(proof.organizationLogos.map((logo) => [logo.name, logo]));
+const caseLogoNames: Record<string, string> = {
+  farevefarm: 'Farevefarm',
+  'home-plus': 'ฮ.โฮมพลัส',
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  ogImage={`${SITE.url}/testimonial/2026-07/onsite-nissan-pun.jpg`}
+  schema={{
+    types: ['WebPage', 'Person', 'BreadcrumbList'],
+    title,
+    description,
+    breadcrumbs: [
+      { name: 'หน้าแรก', url: SITE.url },
+      { name: 'ผลงาน', url: `${SITE.url}/portfolio` },
+    ],
+  }}
+>
+  <section class="overflow-hidden border-b border-[#c9c2b2] bg-ivory px-6 py-14 md:py-20">
+    <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.12fr_.88fr]">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">Portfolio · Proof of work</p>
+        <h1 class="mt-5 max-w-4xl font-display text-4xl font-bold leading-tight text-navy md:text-6xl">
+          ดูงานที่เกิดขึ้นจริง<br />ก่อนตัดสินใจคุยกับผม
+        </h1>
+        <p class="mt-6 max-w-3xl text-lg leading-8 text-warm-ink/75">{proof.intro}</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/booking" class="btn border-0 bg-coral px-6 text-white hover:bg-[#c43245] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy">
+            เล่าโจทย์ของทีมให้ผมฟัง
+          </a>
+          <a href="/services" class="btn border-navy bg-transparent px-6 text-navy hover:bg-navy hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy">
+            ดูบริการทั้งหมด
+          </a>
+        </div>
+      </div>
+
+      <figure class="relative mx-auto w-full max-w-md">
+        <div class="overflow-hidden rounded-[1.75rem] border border-[#c9c2b2] bg-surface p-3 shadow-[8px_10px_0_rgba(7,43,78,0.12)]">
+          <img
+            src="/testimonial/2026-07/onsite-nissan-pun.jpg"
+            alt="ปัน ณัฐพัชร์ในงาน Nissan Sales Manager Seminar 2026"
+            width="1100"
+            height="1466"
+            fetchpriority="high"
+            decoding="async"
+            class="aspect-[4/5] w-full rounded-[1.25rem] object-cover object-[50%_48%]"
+          />
+        </div>
+        <figcaption class="absolute -bottom-5 left-4 rounded-xl border border-[#c9c2b2] bg-surface px-4 py-3 text-sm font-semibold text-navy shadow-[3px_4px_0_rgba(30,27,22,0.08)]">
+          Nissan Sales Manager Seminar 2026
+        </figcaption>
+        <div class="evidence-stamp" aria-hidden="true">FIELD<br />PROOF</div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="border-b border-[#c9c2b2] bg-sand px-6 py-14 md:py-20" aria-labelledby="proof-numbers">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ขนาดห้องที่ยืนยันแล้ว</p>
+      <h2 id="proof-numbers" class="mt-3 font-display text-3xl font-bold text-navy md:text-5xl">จำนวนคนที่อยู่ในงานจริง</h2>
+      <div class="proof-ledger mt-9 grid gap-4 md:grid-cols-3">
+        {proof.proofCards.map((card) => (
+          <article class="ledger-entry rounded-2xl border border-[#c9c2b2] bg-surface p-6">
+            <span class="block font-display text-5xl font-bold tabular-nums text-coral">{card.value}</span>
+            <h3 class="mt-3 font-display text-xl font-bold text-navy">{card.label}</h3>
+            <p class="mt-2 text-sm leading-6 text-warm-ink/70">{card.detail}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="border-b border-[#c9c2b2] bg-ivory px-6 py-14 md:py-20" aria-labelledby="organizations">
+    <div class="mx-auto max-w-6xl">
+      <div class="max-w-3xl">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">Organizations and brands</p>
+        <h2 id="organizations" class="mt-3 font-display text-3xl font-bold text-navy md:text-5xl">องค์กรและแบรนด์ที่เคยร่วมงาน</h2>
+        <p class="mt-5 leading-7 text-warm-ink/70">{proof.relationshipNote}</p>
+      </div>
+      <div class="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+        {proof.organizationLogos.map((logo) => (
+          <figure class="flex min-h-24 flex-col items-center justify-center rounded-xl border border-[#c9c2b2] bg-surface p-3">
+            <img src={logo.src} alt={logo.name} width="160" height="160" loading="lazy" decoding="async" class="h-11 w-full object-contain" />
+            <figcaption class="sr-only">{logo.name}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="border-b border-[#c9c2b2] bg-surface px-6 py-14 md:py-20" aria-labelledby="training-cases">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">Training and consulting</p>
+      <h2 id="training-cases" class="mt-3 max-w-4xl font-display text-3xl font-bold text-navy md:text-5xl">แต่ละห้องเริ่มจากงานของบริษัทนั้น</h2>
+      <div class="mt-10 space-y-5">
+        {proof.trainingCases.map((item, index) => {
+          const logo = caseLogoNames[item.slug] ? logoByName.get(caseLogoNames[item.slug]) : undefined;
+          return (
+            <article class="case-row grid overflow-hidden rounded-2xl border border-[#c9c2b2] bg-ivory lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)]">
+              <div class="min-h-64 bg-sand">
+                {item.image ? (
+                  <img src={item.image} alt={item.alt} width="1200" height="900" loading="lazy" decoding="async" class="h-full min-h-64 w-full object-cover" />
+                ) : logo ? (
+                  <div class="flex h-full min-h-64 items-center justify-center p-12"><img src={logo.src} alt={logo.name} width="320" height="160" loading="lazy" decoding="async" class="max-h-24 w-full object-contain" /></div>
+                ) : null}
+              </div>
+              <div class="p-7 md:p-9">
+                <div class="flex flex-wrap items-center gap-3 text-xs font-bold uppercase tracking-[0.14em] text-cyan">
+                  <span>Case {String(index + 1).padStart(2, '0')}</span><span aria-hidden="true">·</span><span>{item.industry}</span>
+                </div>
+                <h3 class="mt-3 font-display text-3xl font-bold text-navy">{item.name}</h3>
+                <p class="mt-3 font-display text-2xl font-bold text-coral">{item.audienceCount}</p>
+                <p class="mt-4 leading-7 text-warm-ink/75">{item.summary}</p>
+                <ul class="mt-5 grid gap-2 text-sm leading-6 text-warm-ink/75 sm:grid-cols-2">
+                  {item.deliverables.map((deliverable) => (
+                    <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-coral" aria-hidden="true"></span><span>{deliverable}</span></li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <section class="border-b border-[#c9c2b2] bg-navy px-6 py-14 text-ivory md:py-20" aria-labelledby="anonymous-case">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#68d2dc]">Anonymous case study</p>
+      <h2 id="anonymous-case" class="mt-3 max-w-4xl font-display text-3xl font-bold md:text-5xl">{proof.anonymousCase.name}</h2>
+      <p class="mt-5 max-w-3xl text-lg leading-8 text-ivory/75">{proof.anonymousCase.summary}</p>
+      <dl class="mt-10 grid gap-4 md:grid-cols-2">
+        {proof.anonymousCase.metrics.map((metric) => (
+          <div class="rounded-2xl border border-white/20 bg-white/[0.06] p-6">
+            <dt class="font-display text-lg font-semibold text-white">{metric.label}</dt>
+            <dd class="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-sm">
+              <span class="rounded-lg bg-white/10 px-3 py-3 text-white/65">{metric.before}</span>
+              <span aria-hidden="true" class="text-coral-soft">→</span>
+              <span class="rounded-lg bg-[#68d2dc]/15 px-3 py-3 font-bold text-[#8ee7ee]">{metric.after}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="border-b border-[#c9c2b2] bg-sand px-6 py-14 md:py-20" aria-labelledby="after-class">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">After the class</p>
+      <h2 id="after-class" class="mt-3 max-w-4xl font-display text-3xl font-bold text-navy md:text-5xl">ปิดคลาสแล้ว คนยังกลับไปทำต่อ</h2>
+      <div class="mt-10 grid gap-5 md:grid-cols-2">
+        {proof.testimonials.map((item) => (
+          <article class="grid overflow-hidden rounded-2xl border border-[#c9c2b2] bg-surface sm:grid-cols-[9rem_1fr]">
+            <img src={item.image} alt={`แชตจริง: ${item.quote}`} width="1000" height="1000" loading="lazy" decoding="async" class="aspect-square h-full w-full object-cover object-top" />
+            <div class="p-6">
+              <p class="text-xs font-bold uppercase tracking-[0.14em] text-cyan">{item.label}</p>
+              <blockquote class="mt-3 font-display text-xl font-bold leading-relaxed text-navy">“{item.quote}”</blockquote>
+              {item.followup && <p class="mt-3 text-sm leading-6 text-warm-ink/70">{item.followup}</p>}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="border-b border-[#c9c2b2] bg-ivory px-6 py-14 md:py-20" aria-labelledby="nissan-speaking">
+    <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[.92fr_1.08fr] lg:items-center">
+      <div class="grid grid-cols-2 gap-3">
+        <img src={proof.speaking.image} alt={proof.speaking.alt} width="1000" height="1000" loading="lazy" decoding="async" class="aspect-square w-full rounded-2xl border border-[#c9c2b2] object-cover" />
+        <img src={proof.speaking.portraitImage} alt="ปัน ณัฐพัชร์หน้างาน Nissan Sales Manager Seminar 2026" width="1100" height="1466" loading="lazy" decoding="async" class="aspect-square w-full rounded-2xl border border-[#c9c2b2] object-cover object-[50%_48%]" />
+      </div>
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">Speaking · {proof.speaking.date}</p>
+        <h2 id="nissan-speaking" class="mt-3 font-display text-3xl font-bold text-navy md:text-5xl">{proof.speaking.name}</h2>
+        <p class="mt-4 font-display text-4xl font-bold text-coral">{proof.speaking.audienceCount}</p>
+        <p class="mt-2 font-semibold text-navy">{proof.speaking.audience}</p>
+        <p class="mt-5 leading-7 text-warm-ink/75">{proof.speaking.summary}</p>
+        <ul class="mt-6 grid gap-2 text-sm leading-6 text-warm-ink/75 sm:grid-cols-2">
+          {proof.speaking.deliverables.map((deliverable) => (
+            <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-coral" aria-hidden="true"></span><span>{deliverable}</span></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-b border-[#c9c2b2] bg-surface px-6 py-14 md:py-20" aria-labelledby="futureskill">
+    <div class="mx-auto max-w-6xl rounded-[2rem] border border-[#c9c2b2] bg-navy p-8 text-ivory shadow-[8px_10px_0_rgba(221,65,85,0.16)] md:p-12">
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#68d2dc]">{proof.futureSkill.badge}</p>
+      <h2 id="futureskill" class="mt-4 max-w-4xl font-display text-3xl font-bold md:text-5xl">{proof.futureSkill.title}</h2>
+      <p class="mt-6 max-w-4xl text-lg leading-8 text-ivory/75">{proof.futureSkill.summary}</p>
+      <ul class="mt-8 grid gap-3 text-sm leading-6 text-ivory/75 md:grid-cols-2">
+        {proof.futureSkill.details.map((detail) => (
+          <li class="rounded-xl border border-white/15 bg-white/[0.06] p-4">{detail}</li>
+        ))}
+      </ul>
+      <a href={proof.futureSkill.courseUrl} target="_blank" rel="noopener" class="btn mt-8 border-0 bg-coral px-7 text-white hover:bg-[#c43245] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+        เปิดหน้าคลาส FutureSkill
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="border-b border-[#c9c2b2] bg-sand px-6 py-14 md:py-20" aria-labelledby="daily-systems">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">Systems I run daily</p>
+      <h2 id="daily-systems" class="mt-3 max-w-4xl font-display text-3xl font-bold text-navy md:text-5xl">ผมใช้ AI ทำงานของตัวเองทุกวัน</h2>
+      <div class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {proof.systems.map((system, index) => (
+          <article class="rounded-2xl border border-[#c9c2b2] bg-surface p-6">
+            <span class="text-xs font-bold tabular-nums text-coral">SYS-{String(index + 1).padStart(2, '0')}</span>
+            <h3 class="mt-3 font-display text-xl font-bold text-navy">{system.name}</h3>
+            <p class="mt-3 text-sm leading-6 text-warm-ink/70">{system.description}</p>
+          </article>
+        ))}
+      </div>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/proof" class="font-semibold text-navy underline decoration-coral/60 decoration-2 underline-offset-4 hover:decoration-coral focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-navy">ดูระบบพร้อมภาพหน้าจอจริง →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-ivory px-6 py-16 text-center md:py-24">
+    <div class="mx-auto max-w-4xl">
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">Next decision</p>
+      <h2 class="mt-4 font-display text-3xl font-bold text-navy md:text-5xl">{proof.cta.heading}</h2>
+      <p class="mx-auto mt-5 max-w-2xl text-lg leading-8 text-warm-ink/70">{proof.cta.body}</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a href={proof.cta.primary} class="btn border-0 bg-coral px-7 text-white hover:bg-[#c43245] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy">จองคิวคุยกับผม</a>
+        <a href={proof.cta.secondary} class="btn border-navy bg-transparent px-7 text-navy hover:bg-navy hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy">ดูบริการก่อน</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .evidence-stamp {
+    position: absolute;
+    right: -0.75rem;
+    top: -1.25rem;
+    display: grid;
+    height: 5.75rem;
+    width: 5.75rem;
+    place-items: center;
+    border: 2px solid #dd4155;
+    border-radius: 9999px;
+    background: #f4f1ea;
+    color: #072b4e;
+    font-size: 0.68rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: 0.13em;
+    text-align: center;
+    transform: rotate(8deg);
+  }
+
+  .proof-ledger {
+    position: relative;
+  }
+
+  .proof-ledger::before {
+    content: '';
+    position: absolute;
+    top: -1rem;
+    left: 0;
+    width: 6rem;
+    height: 0.25rem;
+    border-radius: 9999px;
+    background: #dd4155;
+  }
+
+  .ledger-entry,
+  .case-row {
+    box-shadow: 3px 4px 0 rgba(7, 43, 78, 0.07);
+  }
+
+  @media (max-width: 640px) {
+    .evidence-stamp {
+      right: -0.25rem;
+      height: 4.75rem;
+      width: 4.75rem;
+      font-size: 0.58rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ledger-entry,
+    .case-row {
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+    .ledger-entry:hover,
+    .case-row:hover {
+      transform: translateY(-2px);
+      box-shadow: 5px 7px 0 rgba(7, 43, 78, 0.1);
+    }
+  }
+</style>
