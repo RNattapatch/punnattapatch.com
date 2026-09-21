@@ -1,0 +1,74 @@
+---
+// LeadGlanceBanner — แถบกวาดตาก่อนลงมือ: "ติดต่อได้ไหม" กับ "มาจากไหน" อยู่ในกรอบเดียว
+//
+// เคยแยกเป็นสองกรอบ แต่บนมือถือกินจอไป 722px ก่อนจะถึงรายชื่อ — ทั้งสองแถวนับจากชุด
+// เดียวกันและมีบรรทัด "นับจาก N lead" เหมือนกันเป๊ะ จึงยุบเหลือหัวเดียว
+//
+// กดช่องไหน = กรองรายการด้านล่าง · กดซ้ำ = ยกเลิก · สองแกนใช้พร้อมกันได้
+// (เช่น "โทรได้ + มาจาก LINE Bot") · โครงช่องอยู่ที่ scripts/dashboard/filter-tiles.ts
+---
+<section class="rounded-2xl border border-base-300 bg-base-200 p-4 mb-4">
+  <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 mb-3">
+    <h2 class="font-display text-base">lead ที่ดูอยู่</h2>
+    <p id="glance-base" class="text-xs opacity-60"></p>
+  </div>
+
+  <p class="text-xs opacity-55 mb-1.5">ติดต่อได้ไหม</p>
+  <div id="contact-banner-tiles" class="flex flex-wrap gap-2" role="group" aria-label="กรองตามช่องทางติดต่อ"></div>
+
+  <p class="text-xs opacity-55 mt-3 mb-1.5">มาจากไหน</p>
+  <div id="source-banner-tiles" class="flex flex-wrap gap-2" role="group" aria-label="กรองตามที่มาของ lead"></div>
+
+  <p id="glance-active" class="hidden mt-3 text-xs opacity-70" role="status" aria-live="polite"></p>
+</section>
+
+<script>
+  import {
+    subscribe, getState, dashboardLeads, setSourceFilter, setContactFilter,
+    dashboardRangeLabel, hasDashboardRange,
+  } from '../../scripts/dashboard/store';
+  import { tallySources, SOURCE_GROUPS, type SourceKey } from '../../scripts/dashboard/lead-source';
+  import { tallyContacts, CONTACT_GROUPS, type ContactKey } from '../../scripts/dashboard/lead-contact';
+  import { renderFilterTiles } from '../../scripts/dashboard/filter-tiles';
+
+  // สิ่งที่ควรทำต่อเมื่อกรองกลุ่มนั้นอยู่ — กลุ่มที่ "ต้องแก้" ต้องบอกว่าแก้ยังไง
+  const NEXT_STEP: Record<ContactKey, string> = {
+    'callable': 'กดช่องเดิมซ้ำเพื่อดูทั้งหมด',
+    'broken': 'เบอร์ในระบบโทรไม่ออก — เปิดการ์ดดูค่าที่เก็บไว้แล้วแก้ให้ถูก',
+    'line-only': 'ยังไม่มีเบอร์ — ทัก LINE ขอเบอร์ก่อนค่อยโทร',
+    'unreachable': 'ไม่มีช่องทางเลย — ไล่ดูที่มาว่าหลุดตรงไหน',
+  };
+
+  function render() {
+    const contactWrap = document.getElementById('contact-banner-tiles');
+    const sourceWrap = document.getElementById('source-banner-tiles');
+    const base = document.getElementById('glance-base');
+    const activeLine = document.getElementById('glance-active');
+    if (!contactWrap || !sourceWrap || !base || !activeLine) return;
+
+    const leads = dashboardLeads();
+    const { contactFilter, sourceFilter } = getState();
+
+    base.textContent = hasDashboardRange()
+      ? `นับจาก ${leads.length} lead · ${dashboardRangeLabel()}`
+      : `นับจาก ${leads.length} lead ที่โหลดอยู่ (ล่าสุด)`;
+
+    renderFilterTiles(contactWrap, tallyContacts(leads), contactFilter, (key) => setContactFilter(key as ContactKey));
+    renderFilterTiles(sourceWrap, tallySources(leads), sourceFilter, (key) => setSourceFilter(key as SourceKey));
+
+    const parts: string[] = [];
+    if (contactFilter) parts.push(`${CONTACT_GROUPS[contactFilter].icon} ${CONTACT_GROUPS[contactFilter].groupLabel}`);
+    if (sourceFilter) parts.push(`${SOURCE_GROUPS[sourceFilter].icon} ${SOURCE_GROUPS[sourceFilter].groupLabel}`);
+    if (parts.length) {
+      const hint = contactFilter ? NEXT_STEP[contactFilter] : 'กดช่องเดิมซ้ำเพื่อดูทั้งหมด';
+      activeLine.classList.remove('hidden');
+      activeLine.textContent = `กรองอยู่: ${parts.join(' + ')} — ${hint}`;
+    } else {
+      activeLine.classList.add('hidden');
+      activeLine.textContent = '';
+    }
+  }
+
+  render();
+  subscribe(render);
+</script>

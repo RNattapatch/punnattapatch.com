@@ -31,6 +31,7 @@ import type {
 } from './api';
 import type { LeadUi } from './adapter';
 import { classifySource, type SourceKey } from './lead-source';
+import { classifyContact, type ContactKey } from './lead-contact';
 import { pickTemplate } from './templates';
 import { rangeBounds, RANGE_LABELS, type RangeKey } from './date-range';
 import { buildRangeDashboard, expensesInRange, summarizeExpensesInRange } from './dashboard-range';
@@ -78,6 +79,9 @@ type State = {
   // ที่มาของ lead (LINE Bot / ฟอร์มจองเว็บ / แอด …) — แยกจาก filter chip เพราะใช้คู่กันได้
   // เช่น "มาจาก LINE Bot + ยังไม่ปิด" · null = ไม่กรองที่มา
   sourceFilter: SourceKey | null;
+  // ช่องทางติดต่อ (โทรได้ / เบอร์เพี้ยน / มีแต่ LINE / ไม่มีเลย) — แยกอีกแกนหนึ่ง
+  // ใช้พร้อมกับ sourceFilter ได้ เช่น "มาจาก LINE Bot + โทรได้"
+  contactFilter: ContactKey | null;
   sort: SortMode;
   search: string;
   // ── ช่วงเวลา ──
@@ -111,6 +115,7 @@ const state: State = {
   generatedAt: null,
   filter: 'all',
   sourceFilter: null,
+  contactFilter: null,
   sort: 'submitted_desc',
   search: '',
   range: 'all',
@@ -576,6 +581,11 @@ export function setSourceFilter(key: SourceKey | null): void {
   state.sourceFilter = state.sourceFilter === key ? null : key;
   notify();
 }
+/** กดช่องทางติดต่อเดิมซ้ำ = ยกเลิก (toggle) เหมือนกัน */
+export function setContactFilter(key: ContactKey | null): void {
+  state.contactFilter = state.contactFilter === key ? null : key;
+  notify();
+}
 export function setSort(s: SortMode): void {
   state.sort = s;
   notify();
@@ -659,6 +669,9 @@ export function visibleLeads(): LeadUi[] {
   }
   if (state.sourceFilter) {
     rows = rows.filter((r) => classifySource(r).key === state.sourceFilter);
+  }
+  if (state.contactFilter) {
+    rows = rows.filter((r) => classifyContact(r).key === state.contactFilter);
   }
   switch (state.filter) {
     case 'today':
@@ -795,6 +808,15 @@ if (import.meta.env.DEV && typeof window !== 'undefined') {
     state.leads = rows;
     state.total = rows.length;
     state.today = today;
+    notify();
+  };
+  // เปิดลิ้นชักด้วยข้อมูลตัวอย่าง — openLead ตัวจริงยิง Supabase ซึ่งต้องล็อกอินก่อน
+  (window as unknown as Record<string, unknown>).__devSelectLead = (lead: LeadUi) => {
+    state.selectedLeadId = String(lead.lead_id || '');
+    state.selectedLead = lead;
+    state.interactions = [];
+    state.documents = [];
+    state.purchases = [];
     notify();
   };
 }

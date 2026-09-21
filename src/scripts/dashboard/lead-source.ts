@@ -9,6 +9,8 @@
  * กติกา: ไม่รู้จัก = 'other' เสมอ ห้ามเดา — เดาผิดแล้วตัวเลขใน banner จะโกหกเงียบๆ
  */
 
+import { tintedChipStyle } from './chip-style.ts';
+
 export type SourceKey =
   | 'line-bot'
   | 'booking-form'
@@ -128,12 +130,7 @@ export function classifySource(lead: SourceInput | null | undefined): SourceMeta
  * ใส่เป็น style attribute เพราะสีมาจาก CSS var ที่ Tailwind ไม่ได้ generate เป็นคลาสไว้
  */
 export function sourceChipStyle(meta: Pick<SourceMeta, 'tint'>): string {
-  return [
-    // พื้นอ่อนพอให้ตัวอักษร ink อ่านออก · ขอบเข้มเป็นตัวแบกสีให้กวาดตาเจอ
-    `background-color: color-mix(in oklab, var(${meta.tint}) 12%, var(--color-base-100))`,
-    `border: 1px solid color-mix(in oklab, var(${meta.tint}) 55%, transparent)`,
-    'color: var(--color-base-content)',
-  ].join(';');
+  return tintedChipStyle(meta.tint);
 }
 
 /** ป้ายสั้นสำหรับการ์ด — ไอคอน + ชื่อ */

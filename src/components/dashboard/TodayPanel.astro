@@ -17,6 +17,7 @@ import LeadCard from './LeadCard.astro';
   import type { LeadUi } from '../../scripts/dashboard/adapter';
   import { markName } from '../../scripts/after-hours';
   import { classifySource, sourceChipStyle } from '../../scripts/dashboard/lead-source';
+  import { classifyContact, contactChipStyle } from '../../scripts/dashboard/lead-contact';
 
   function ageDays(iso?: string): string {
     if (!iso) return '';
@@ -67,6 +68,14 @@ import LeadCard from './LeadCard.astro';
       srcEl.style.cssText = sourceChipStyle(src);
       srcEl.textContent = `${src.icon} ${src.label}`;
       if (src.detail) srcEl.title = `ที่มา: ${src.detail}`;
+    }
+    const contactEl = node.querySelector('[data-field="contact"]') as HTMLElement | null;
+    if (contactEl) {
+      const c = classifyContact(lead);
+      contactEl.className = 'badge badge-sm shrink-0';
+      contactEl.style.cssText = contactChipStyle(c);
+      contactEl.textContent = `${c.icon} ${c.label}`;
+      contactEl.title = c.note || `โทรได้: ${c.label}`;
     }
   }
 

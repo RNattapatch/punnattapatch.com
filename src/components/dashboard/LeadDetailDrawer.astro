@@ -144,6 +144,7 @@ import InteractionLog from './InteractionLog.astro';
   import { subscribe, getState, closeLead, emit, patchLead, setLeadStatus, toast } from '../../scripts/dashboard/store';
   import { markName, AFTER_HOURS_MARK, OFFICE_HOURS_MARK } from '../../scripts/after-hours';
   import { classifySource, sourceChipStyle } from '../../scripts/dashboard/lead-source';
+  import { classifyContact, contactChipStyle } from '../../scripts/dashboard/lead-contact';
 
   const REASON_KEYS = ['freebie_seeker', 'scam', 'cheap_client', 'mismatch', 'price_too_high', 'no_budget', 'wrong_timing', 'competitor', 'other'];
   const OUTCOMES = ['won', 'repeat', 'retainer', 'lost', 'unqualified'];
@@ -197,6 +198,23 @@ import InteractionLog from './InteractionLog.astro';
     return `<div class="flex items-start justify-between gap-3 py-1.5 border-b border-base-300/60 last:border-0">
       <span class="text-xs opacity-55 shrink-0">${esc(label)}</span>
       <span class="ro text-sm text-right break-words">${v ? esc(v) : '—'}</span>${ed}</div>`;
+  }
+
+  /**
+   * แถวเบอร์โทร — ต่างจาก detailRow ตรงที่ฝั่งอ่านเป็นลิงก์ tel: (เปิดจากมือถือแล้วกดโทรได้เลย)
+   * และเมื่อเบอร์ใช้ไม่ได้จะบอกค่าที่ระบบเก็บไว้ ไม่ใช่ปล่อยให้เห็นแต่ขีด
+   */
+  function phoneRow(raw: string, contact: ReturnType<typeof classifyContact>): string {
+    const ed = `<input class="ed input input-bordered input-xs" data-field="phone" type="tel" value="${esc(raw)}" aria-label="โทร" autocomplete="off" style="max-width:60%" />`;
+    const ro = contact.dialable
+      ? `<a class="link link-primary" href="tel:${esc(contact.dialable)}">${esc(contact.label)}</a>`
+      : raw
+        // ค่าดิบอยู่ตรงหน้าแล้ว จึงบอกแค่ว่าโทรไม่ออก + เบอร์ที่น่าจะถูก ไม่พูดเบอร์ซ้ำ
+        ? `<span class="opacity-70">${esc(raw)}</span> <span class="opacity-55">· โทรไม่ออก${contact.suggestion ? ` — น่าจะเป็น ${esc(contact.suggestion)}` : ''}</span>`
+        : `<span class="opacity-55">${esc(contact.note || 'ไม่มีเบอร์')}</span>`;
+    return `<div class="flex items-start justify-between gap-3 py-1.5 border-b border-base-300/60 last:border-0">
+      <span class="text-xs opacity-55 shrink-0">โทร</span>
+      <span class="ro text-sm text-right break-words">${ro}</span>${ed}</div>`;
   }
 
   function renderDocuments() {
@@ -253,6 +271,9 @@ import InteractionLog from './InteractionLog.astro';
     const badges: string[] = [];
     // ที่มาขึ้นก่อน temperature — คำถามแรกเวลาเปิดการ์ดคือ "คนนี้มาจากไหน"
     badges.push(`<span class="badge badge-sm" style="${sourceChipStyle(src)}">${src.icon} ${src.label}</span>`);
+    // โทรได้ไหม = คำถามถัดมาทันทีหลังรู้ว่ามาจากไหน
+    const contact = classifyContact(lead);
+    badges.push(`<span class="badge badge-sm" style="${contactChipStyle(contact)}">${contact.icon} ${contact.label}</span>`);
     if (temp) badges.push(`<span class="badge badge-sm ${temp === 'hot' ? 'badge-error' : temp === 'warm' ? 'badge-warning' : 'badge-ghost'}">${temp === 'hot' ? '🔥' : temp === 'warm' ? '🌤' : '❄️'} ${temp}</span>`);
     if (pc > 0) badges.push(`<span class="badge badge-sm badge-secondary tabular-nums">🔁 ซื้อ ${pc} ครั้ง · ฿${fmt0(Number(lead.lifetime_value_thb) || 0)}</span>`);
     if (isSponsor) badges.push(`<span class="badge badge-sm badge-info">🤝 Sponsor</span>`);
@@ -303,7 +324,7 @@ import InteractionLog from './InteractionLog.astro';
       detailRow('ตำแหน่ง', String(lead.position || rp.role || ''), 'position'),
       detailRow('บริษัท', company, 'company_name'),
       detailRow('ประเภทธุรกิจ', String(lead.business_type || ''), 'business_type'),
-      detailRow('โทร', String(lead.phone || ''), 'phone', 'tel'),
+      phoneRow(String(lead.phone || ''), contact),
       // ⏰ ตอบจากฟอร์ม/บอท LINE — ตัวชี้ว่าโทรกลับตอนเย็นหรือเสาร์-อาทิตย์ได้ไหม
       detailRow(
         'โทรนอกเวลาทำการ',
