@@ -26,6 +26,8 @@ const HOTEL_CLIENT_LOGOS: ClientLogo[] = [
   { src: '/logos/clients/business-boy.jpg', alt: 'เด็กประกอบการ The Business Boy' },
   { src: '/logos/clients/aes.jpg', alt: 'AES' },
   { src: '/logos/clients/ud-clinic.jpg', alt: 'UD Clinic' },
+  { src: '/logos/clients/kanchanok-clinic.jpg', alt: 'Kanchanok Clinic' },
+  { src: '/logos/clients/meetme-bkk.png', alt: 'MEET MÉ' },
 ];
 
 export const T4_HOTEL_EDITION: ProductDetailPageData = {

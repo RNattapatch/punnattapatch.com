@@ -19,6 +19,8 @@ export const JOURNEY_CLIENT_LOGOS: ClientLogo[] = [
   { src: '/logos/clients/nsscrap.avif', alt: 'NSSCRAP' },
   { src: '/logos/clients/scenery-farm.jpeg', alt: 'Scenery Farm' },
   { src: '/logos/clients/ud-clinic.jpg', alt: 'UD Clinic' },
+  { src: '/logos/clients/kanchanok-clinic.jpg', alt: 'Kanchanok Clinic' },
+  { src: '/logos/clients/meetme-bkk.png', alt: 'MEET MÉ' },
 ];
 
 export const JOURNEY_TESTIMONIALS: ProductTestimonial[] = [
@@ -32,7 +34,7 @@ export const JOURNEY_TESTIMONIALS: ProductTestimonial[] = [
 const credentials = [
   'อดีต Sales Engineer และ Instructor ฝั่ง Dealer รถยนต์',
   'คัดเรซูเม่กว่า 1,000 ใบ และสัมภาษณ์คนเข้าทีมกว่า 100 คน',
-  'อบรมและวางระบบร่วมกับ 18 องค์กร ในธุรกิจยานยนต์ ผู้ผลิต ค้าปลีก โรงแรม และบริการ',
+  'อบรมและวางระบบร่วมกับ 20 องค์กร ในธุรกิจยานยนต์ ผู้ผลิต ค้าปลีก โรงแรม และบริการ',
   'วิทยากร Nissan Sales Manager Seminar 2026',
   'สร้าง AI Workflow ใช้กับงานขาย การติดตาม และการบริหารของตัวเองทุกวัน',
 ];

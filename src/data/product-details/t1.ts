@@ -59,7 +59,7 @@ export const T1_PRODUCT_DETAIL: ProductDetailPageData = {
   authority: [
     'อดีต Sales Engineer และ Instructor ฝั่ง Dealer',
     'คัดเรซูเม่ 1,000+ ใบ · สัมภาษณ์คนเข้าทีม 100+ คน',
-    'อบรมและวางระบบร่วมกับ 18 องค์กร',
+    'อบรมและวางระบบร่วมกับ 20 องค์กร',
   ],
   proof: [
     { id: 'hfc-journey', kind: 'photo', caption: 'เริ่มจากงาน Training แล้วต่อยอดเป็น Consult 3 วัน เพื่อจัด Company Knowledge, Dashboard และ Roadmap ของงานขายให้เข้ากับบริบทธุรกิจจริง', image: t1HfcTraining, alt: 'ทีม HFC HealthFoods เข้าร่วม In-house Training' },

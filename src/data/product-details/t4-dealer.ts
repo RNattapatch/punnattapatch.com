@@ -26,6 +26,8 @@ const DEALER_CLIENT_LOGOS: ClientLogo[] = [
   { src: '/logos/clients/home-plus.png', alt: 'ฮ.โฮมพลัส' },
   { src: '/logos/clients/nsscrap.avif', alt: 'NSSCRAP' },
   { src: '/logos/clients/ud-clinic.jpg', alt: 'UD Clinic' },
+  { src: '/logos/clients/kanchanok-clinic.jpg', alt: 'Kanchanok Clinic' },
+  { src: '/logos/clients/meetme-bkk.png', alt: 'MEET MÉ' },
 ];
 
 export const T4_DEALER_EDITION: ProductDetailPageData = {

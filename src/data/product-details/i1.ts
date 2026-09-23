@@ -26,7 +26,7 @@ export const I1_PRODUCT_DETAIL: ProductDetailPageData = {
     'มี Command Center และระบบงานขายที่ใช้งานจริง',
     'ทำงานตั้งแต่ Data schema ถึง Manager workflow',
     'ผ่านงาน UAT, Training และ Adoption กับทีมลูกค้า',
-    'อบรมและวางระบบร่วมกับ 18 องค์กร',
+    'อบรมและวางระบบร่วมกับ 20 องค์กร',
   ],
   proof: [
     {

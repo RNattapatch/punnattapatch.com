@@ -332,6 +332,14 @@
       {
         "name": "UD Clinic",
         "src": "/logos/clients/ud-clinic.jpg"
+      },
+      {
+        "name": "Kanchanok Clinic",
+        "src": "/logos/clients/kanchanok-clinic.jpg"
+      },
+      {
+        "name": "MEET MÉ",
+        "src": "/logos/clients/meetme-bkk.png"
       }
     ],
     "relationshipNote": "รายชื่อบางส่วนมาจากงาน organic และการแนะนำจากคนรู้จัก จึงแสดงในฐานะองค์กรหรือแบรนด์ที่เคยร่วมงาน ไม่ได้นับเป็นดีลใน CRM",

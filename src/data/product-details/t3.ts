@@ -71,7 +71,7 @@ export const T3_PRODUCT_DETAIL: ProductDetailPageData = {
     'มี Sales Command Center และ Morning Brief ใช้งานจริง',
     'ทำงานตั้งแต่ KPI/Commission ถึง Report/Dashboard',
     'ผ่าน Workshop กับ Owner, Manager และทีมหลังบ้าน',
-    'อบรมและวางระบบร่วมกับ 18 องค์กร',
+    'อบรมและวางระบบร่วมกับ 20 องค์กร',
   ],
   proof: [
     {

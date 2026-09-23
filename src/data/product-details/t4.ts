@@ -24,6 +24,8 @@ const T4_CLIENT_LOGOS: ClientLogo[] = [
   { src: '/logos/clients/nsscrap.avif', alt: 'NSSCRAP' },
   { src: '/logos/clients/scenery-farm.jpeg', alt: 'Scenery Farm' },
   { src: '/logos/clients/ud-clinic.jpg', alt: 'UD Clinic' },
+  { src: '/logos/clients/kanchanok-clinic.jpg', alt: 'Kanchanok Clinic' },
+  { src: '/logos/clients/meetme-bkk.png', alt: 'MEET MÉ' },
 ];
 
 const T4_TESTIMONIALS: ProductTestimonial[] = [
@@ -88,7 +90,7 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
     'อดีต Sales Engineer และ Instructor ฝั่ง Dealer',
     'คัดเคสขายและสัมภาษณ์คนเข้าทีมรวมกว่า 1,000 เคส',
     'สร้าง AI Workflow ใช้กับงานขาย งานเอกสาร และการบริหารของตัวเอง',
-    'อบรมและวางระบบร่วมกับ 18 องค์กร',
+    'อบรมและวางระบบร่วมกับ 20 องค์กร',
   ],
   proof: [
     { id: 't4-real-session', kind: 'photo', image: publicImage('/lp/inhouse/hero-pointing.jpg', 1600, 1200), alt: 'ปันอธิบาย AI Workflow ให้ผู้เข้าร่วมในห้องอบรมจริง', caption: 'อธิบาย Flow บนจอ แล้วให้ทีมถามจากงานที่ตัวเองทำอยู่' },
@@ -281,7 +283,7 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
       'อดีต Sales Engineer และ Instructor ฝั่ง Dealer รถยนต์',
       'ปั้นธุรกิจจากยอดติดลบ ไปสู่ยอดขายร้อยล้าน',
       'คัดเคสขายและสัมภาษณ์คนเข้าทีมรวมกว่า 1,000 เคส',
-      'อบรมและวางระบบร่วมกับ 18 องค์กร ยานยนต์ ผู้ผลิต ค้าปลีก โรงแรม บริการ',
+      'อบรมและวางระบบร่วมกับ 20 องค์กร ยานยนต์ ผู้ผลิต ค้าปลีก โรงแรม บริการ',
       'วิทยากร Nissan Sales Manager Seminar 2026',
       'สร้าง AI Agent ใช้กับงานขายของตัวเองทุกวัน ตั้งแต่เตรียมข้อมูลลูกค้าถึง Morning Brief',
     ],
@@ -289,7 +291,7 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
       { icon: '📈', title: 'มุมของคนขาย · หัวอกคนทำยอด', body: 'ผมเคยต้องปิดยอดเองทุกเดือน จึงรู้ว่างานเอกสารแบบไหนที่ดึงเซลล์ออกจากหน้าลูกค้า และงานไหนที่ AI ควรรับไปก่อน' },
       { icon: '👥', title: 'มุมของหัวหน้าทีม · หัวอกคนคุมคน', body: 'คัดเคสและสัมภาษณ์คนเข้าทีมมากว่า 1,000 เคส ผมรู้ว่าทีมรับของใหม่ยังไง และทำไมระบบดีๆ ถึงตายหลังอบรม 2 สัปดาห์' },
       { icon: '🛠️', title: 'มุมของคนสร้างระบบ · ใช้เองก่อนสอน', body: 'Agent ที่ผมสอน คือตัวที่ผมใช้กับงานตัวเองอยู่ทุกวัน เตรียมข้อมูลก่อนคุยลูกค้า ร่างเอกสาร ตามดีล Morning Brief ทุกเช้า' },
-      { icon: '🎓', title: 'มุมของผู้สอน · เรื่องยากเล่าให้ง่าย', body: 'สอนมา 18 องค์กร ผมอธิบาย AI ด้วยภาษาเจ้าของกิจการ ไม่ใช้ศัพท์เทคนิค เจ้าของที่ไม่เคยเขียนโค้ดก็ตามทัน' },
+      { icon: '🎓', title: 'มุมของผู้สอน · เรื่องยากเล่าให้ง่าย', body: 'สอนมา 20 องค์กร ผมอธิบาย AI ด้วยภาษาเจ้าของกิจการ ไม่ใช้ศัพท์เทคนิค เจ้าของที่ไม่เคยเขียนโค้ดก็ตามทัน' },
     ],
     quote: 'ใครๆ ก็สั่ง AI สร้างระบบได้ แต่ถ้าไม่เข้าใจธุรกิจ System Design และ Cyber Security ปัญหาจะตามมา ผมสอนให้ทีมคุณเข้าใจ 3 เรื่องนี้ก่อน แล้วค่อยสร้าง',
   },

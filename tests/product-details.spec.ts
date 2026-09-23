@@ -130,7 +130,7 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   assert.equal(await page.locator('[data-hero-activity]').count(), 1, 'T2 Hero must lead with one real workshop activity photo');
   assert.equal(await page.locator('[data-hero-activity] img').getAttribute('loading'), 'eager', 'T2 Hero activity photo must be ready at first glance');
   assert.equal(await page.locator('[data-hero-step]').count(), 3, 'T2 Hero must break the learning journey into three scannable decision cards');
-  assert.equal(await page.locator('[data-client-logo]').count(), 16, 'T2 must show every approved public client logo except Singha Park');
+  assert.equal(await page.locator('[data-client-logo]').count(), 18, 'T2 must show every approved public client logo except Singha Park');
   assert.deepEqual(await page.locator('[data-client-logo] img').evaluateAll((images) => images.slice(0, 7).map((image) => image.alt)), ['Nissan', 'FutureSkill', 'V!NG', 'GPX', 'Royal Enfield', 'Zontes', 'Lambretta'], 'T2 must lead its proof wall with Nissan, FutureSkill, V!NG, and motorcycle brands');
   assert.equal(await page.locator('[data-client-logo] img').first().evaluate((image) => getComputedStyle(image).filter), 'none', 'T2 client logos must retain their original full colour');
   assert.equal(await page.locator('[data-client-logo] img').first().evaluate((image) => getComputedStyle(image).opacity), '1', 'T2 client logos must not be faded');
@@ -316,7 +316,7 @@ test('T4 renders the approved 16-section sales journey with real proof, visible 
   assert.equal(await page.locator('[data-offer-core]').count(), 4, 'T4 Offer must expose four core deliverables');
   assert.equal(await page.locator('[data-offer-bonus]').count(), 7, 'T4 Offer must expose Bonus 6 + Certificate');
   assert.equal(await page.locator('[data-offer-bonus] a').count(), 0, 'pending bonus materials must not expose broken download links');
-  assert.equal(await page.locator('[data-client-logo]').count(), 16, 'T4 must show every approved client logo except Singha Park');
+  assert.equal(await page.locator('[data-client-logo]').count(), 18, 'T4 must show every approved client logo except Singha Park');
   assert.equal(await page.locator('[data-client-logo] img').first().evaluate((image) => getComputedStyle(image).filter), 'none', 'T4 client logos must retain full colour');
   assert.equal(await page.locator('[data-proof-activity]').count(), 8, 'T4 must lead proof with eight real activity photographs');
   assert.equal(await page.locator('[data-proof-quote]').count(), 3, 'T4 must pull three customer quotes into readable proof cards');

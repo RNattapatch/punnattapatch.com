@@ -348,7 +348,7 @@ export const T2_PRODUCT_DETAIL: ProductDetailPageData = {
   authority: [
     'วิทยากร Nissan Sales Manager Seminar 2026',
     'อดีต Sales Engineer และ Instructor ฝั่ง Dealer',
-    'อบรมและวางระบบร่วมกับ 18 องค์กร',
+    'อบรมและวางระบบร่วมกับ 20 องค์กร',
     'ทำงานกับธุรกิจยานยนต์ ผู้ผลิต ค้าปลีก โรงแรม และบริการ',
   ],
   proof: [

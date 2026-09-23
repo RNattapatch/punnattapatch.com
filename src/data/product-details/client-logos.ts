@@ -19,4 +19,6 @@ export const CLIENT_LOGOS: ClientLogo[] = [
   { src: '/logos/clients/nsscrap.avif', alt: 'NSSCRAP' },
   { src: '/logos/clients/scenery-farm.jpeg', alt: 'Scenery Farm' },
   { src: '/logos/clients/ud-clinic.jpg', alt: 'UD Clinic' },
+  { src: '/logos/clients/kanchanok-clinic.jpg', alt: 'Kanchanok Clinic' },
+  { src: '/logos/clients/meetme-bkk.png', alt: 'MEET MÉ' },
 ];
