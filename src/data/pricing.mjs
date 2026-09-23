@@ -97,6 +97,8 @@ export const CATALOG = {
     status: 'live',
     botQuote: true,
     image: '/services/thumbs/t4-ai-workflow-pilot.jpg',
+    // 2026-09-23 ปันสั่งเอาขึ้น: Class Outline T4 (source: claude-code-pun-nattapatch/output/docs/course-outline-t4-master/outline.config.js)
+    outlineUrl: 'https://punnattapatch.com/services/outlines/t4-advance-ai-business-automation.pdf',
     note: 'T4 · Workflow Pilot Day 1 บริษัท 1 วัน — เอางานซ้ำ 1 เรื่องมาแยกหน้าที่คน/AI แล้วสร้าง Safe Sandbox ให้ทีมลองรันเอง · Artifact 4 ชิ้น: Workflow Map + Safe Sandbox + Human–AI Responsibility Brief + Stop/Revise/Install Decision Memo · Sandbox ไม่ใช่ production (งาน build จริง = daruma-starter/custom) · SSOT: wiki strategy-t1-t4-5a-offer-bonus-system · เปิดขายแบบ Warm/Organic Harvest Test ก่อน Cold · สลับ status เป็น live เมื่อ LP ขึ้นจริง',
   },
   'public-p1-bootcamp': {
