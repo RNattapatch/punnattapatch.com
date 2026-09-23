@@ -117,6 +117,8 @@ export const CATALOG = {
     image: '/services/thumbs/p1-ai-sales-agent-bootcamp.jpg',
     status: 'live',
     botQuote: true,
+    // 2026-09-23 ปันสั่งเอาขึ้น: Class Outline P1 (source: claude-code-pun-nattapatch/output/docs/course-outline-public-p1/outline.config.js)
+    outlineUrl: 'https://punnattapatch.com/services/outlines/p1-ai-sale-loop-system.pdf',
     note: 'Public P1 รุ่นที่ 1 · เสาร์ 17 – อาทิตย์ 18 ต.ค. 2026 กรุงเทพฯ · รับ 20 ท่าน เปิดเมื่อครบ 6 · Early Bird 10 ที่นั่งแรก ฿19,900 ครบแล้วเป็นราคาปกติที่ key public-p1-bootcamp-standard · Core: วงจรงานขาย 1 วง + ฐานข้อมูลดีล + คลังบริบท 5 ไฟล์ + AI Agent หลังบ้าน (เอกสาร 3 ชนิด/ตามดีล) + AI Agent หน้าบ้านบน LINE OA (Hermes + OpenRouter) + Test log + แผนย้ายขึ้นเครื่องจริง + ใบรับรอง · ผู้เรียนออกค่าบัญชี AI 1 ตัว + เครดิต OpenRouter เอง · Founding perk: เครดิต 50% ของค่าตั๋ว 1 ใบ/บริษัท เข้า T/C1 ภายใน 90 วัน · Refund เฉพาะรอบไม่ถึง 6 ท่าน · SSOT เนื้อหา: output/docs/course-outline-public-p1/OUTLINE-DRAFT-v2.md'
   },
   'public-p1-bootcamp-standard': {
