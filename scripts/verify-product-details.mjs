@@ -54,6 +54,11 @@ for (const forbiddenField of ['h1', 'duration', 'price']) {
   assert.doesNotMatch(typesSource, new RegExp(`\\b${forbiddenField}\\s*:`), `${forbiddenField} must resolve from Catalog, not product data`);
 }
 
+// Pun is not VAT-registered — public pages must never promise a tax invoice (use ใบแจ้งหนี้/ใบเสร็จรับเงิน).
+for (const path of [...allFiles(dataDirectory), ...allFiles(`${root}/src/pages/ads`)]) {
+  assert.doesNotMatch(readFileSync(path, 'utf8'), /ใบกำกับภาษี/, `${path.replace(`${root}/`, '')} promises ใบกำกับภาษี but Pun is not VAT-registered`);
+}
+
 for (const [code, route, pricingKey] of expectedProducts) {
   assert.match(indexSource, new RegExp(`\\b${code}\\s*:`), `missing ${code} in the product index`);
   assert.match(indexSource, new RegExp(route.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')), `missing canonical route for ${code}`);
