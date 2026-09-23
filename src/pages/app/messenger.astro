@@ -1,0 +1,402 @@
+---
+// Messenger Console — หน้าจอของแอป chat-bot-n8n (2026-09-23)
+//
+// ทำไมมีหน้านี้: Meta App Review ตีกลับ (18 ก.ย.) เพราะคลิปไม่เห็น "login ของ Meta → ให้สิทธิ์ → เลือกเพจ →
+// กดส่งจาก UI ของแอปเรา → ข้อความโผล่ใน Messenger" · บอทบนมินิไม่มีหน้าจอ หน้านี้จึงเป็นหน้าจอนั้น
+// และใช้ตอบลูกค้า FB เองได้จริง (ข้อความที่ส่งจากที่นี่ติด metadata "console" → บอทบันทึกว่าคนพิมพ์)
+//
+// ⚠️ UI ภาษาอังกฤษทั้งหน้า — reviewer ของ Meta ขอ "English as the app UI language" · ห้ามใส่ AppNav (มีคำไทย)
+// ⚠️ token อยู่ในหน่วยความจำของแท็บเท่านั้น ไม่ลง localStorage/URL · ปิดแท็บ = หาย
+// Login: OAuth redirect ตรง (ไม่ใช้ FB JS SDK) → redirect URI ต้องลงทะเบียนเป็น https://app.punnattapatch.com/messenger
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+---
+<DashboardLayout title="Messenger Console — Pun Nattapatch">
+  <style is:global>
+    #mc .step-num { display: inline-grid; place-items: center; width: 1.75rem; height: 1.75rem; border-radius: 999px; background: var(--color-brand-navy); color: #fff; font-weight: 700; font-size: .85rem; flex: none; }
+    #mc .step[data-state="locked"] { opacity: .5; }
+    #mc .step[data-state="done"] .step-num { background: #2f7a55; }
+    #mc .perm { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .72rem; }
+    #mc .caption { font-size: .8rem; line-height: 1.45; opacity: .75; }
+    #mc .bubble { max-width: 80%; padding: .5rem .75rem; border-radius: 1rem; white-space: pre-wrap; word-break: break-word; font-size: .9rem; }
+    #mc .bubble-in { background: var(--color-base-200); border-bottom-left-radius: .25rem; }
+    #mc .bubble-out { background: var(--color-brand-navy); color: #fff; border-bottom-right-radius: .25rem; margin-left: auto; }
+    #mc .conv[aria-current="true"] { background: var(--color-base-200); outline: 2px solid var(--color-brand-navy); }
+    #mc .page-card:has(input:checked) { outline: 2px solid var(--color-brand-navy); background: var(--color-base-200); }
+  </style>
+
+  <div id="mc" class="min-h-dvh bg-base-100" lang="en">
+    <header class="sticky top-0 z-30 border-b border-base-300 bg-base-200">
+      <div class="mx-auto flex h-14 max-w-7xl items-center gap-3 px-4">
+        <span class="grid size-8 place-items-center rounded-xl text-sm font-bold text-white" style="background-color:var(--color-brand-navy);" aria-hidden="true">P</span>
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-sm font-semibold leading-tight">Messenger Console</p>
+          <p class="truncate text-xs opacity-60">Pun Nattapatch · internal tool for our Page admin</p>
+        </div>
+        <span id="mc-who" class="hidden"></span>
+        <button id="mc-signout" class="btn btn-ghost btn-sm tap-44 hidden" type="button" title="Forget the Facebook token held in this browser tab">Sign out</button>
+        <a href="/app/dashboard" class="btn btn-ghost btn-sm tap-44" title="Back to the Pun Workspace apps">Workspace</a>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 py-5">
+      <div class="mb-4 max-w-3xl">
+        <h1 class="text-xl font-bold">Connect our Facebook Page and reply to customers</h1>
+        <p class="caption mt-1">This console belongs to the app <b>chat-bot-n8n</b> (App ID 2457605941352131). Our automated assistant answers people who message our Page; this screen lets a human admin connect the Page and reply by hand. Follow the steps from top to bottom.</p>
+      </div>
+
+      <div id="mc-alert" role="alert" aria-live="assertive" class="alert alert-error mb-4 hidden"></div>
+
+      <div class="grid gap-4 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+        <!-- Left column: setup steps 1–3 -->
+        <div class="space-y-4">
+          <section id="step1" class="step card border border-base-300 bg-base-100" data-state="active" aria-labelledby="step1-h">
+            <div class="card-body gap-3 p-4">
+              <div class="flex items-center gap-2"><span class="step-num">1</span><h2 id="step1-h" class="font-semibold">Log in with Facebook</h2></div>
+              <p class="caption">Opens Meta's own login window. There you choose our business and our Page, then allow the permissions this app needs. Nothing is shared until you press <i>Continue</i> on Meta's screen.</p>
+              <ul class="flex flex-wrap gap-1" aria-label="Permissions requested">
+                <li class="badge badge-outline perm">business_management</li>
+                <li class="badge badge-outline perm">pages_show_list</li>
+                <li class="badge badge-outline perm">pages_read_engagement</li>
+                <li class="badge badge-outline perm">pages_manage_metadata</li>
+                <li class="badge badge-outline perm">pages_messaging</li>
+              </ul>
+              <button id="mc-login" type="button" class="btn tap-44 text-white" style="background-color:#1877F2;" title="Go to Meta's login and permission screen">Continue with Facebook</button>
+              <div id="mc-perms" class="hidden">
+                <p class="text-sm font-medium">Permissions you granted</p>
+                <ul id="mc-perm-list" class="mt-1 space-y-1 text-sm"></ul>
+              </div>
+            </div>
+          </section>
+
+          <section id="step2" class="step card border border-base-300 bg-base-100" data-state="locked" aria-labelledby="step2-h">
+            <div class="card-body gap-3 p-4">
+              <div class="flex items-center gap-2"><span class="step-num">2</span><h2 id="step2-h" class="font-semibold">Choose the business and the Page</h2></div>
+              <div>
+                <p class="text-sm font-medium">Business portfolio <span class="badge badge-ghost perm">business_management</span></p>
+                <p class="caption">The business that owns the Page this app works for.</p>
+                <ul id="mc-biz" class="mt-1 space-y-1 text-sm"><li class="opacity-60">Log in first.</li></ul>
+              </div>
+              <div>
+                <p class="text-sm font-medium">Pages you manage <span class="badge badge-ghost perm">pages_show_list</span></p>
+                <p class="caption">Pick the Page the assistant should work for. The app only ever uses the Page you pick here.</p>
+                <div id="mc-pages" class="mt-1 space-y-2 text-sm"><p class="opacity-60">Log in first.</p></div>
+              </div>
+              <div id="mc-page-info" class="hidden rounded-box border border-base-300 p-3">
+                <p class="text-sm font-medium">Page details <span class="badge badge-ghost perm">pages_read_engagement</span></p>
+                <p class="caption">Read from the Page itself, so we can confirm we are connected to the right one.</p>
+                <div id="mc-page-detail" class="mt-2 flex items-center gap-3"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="step3" class="step card border border-base-300 bg-base-100" data-state="locked" aria-labelledby="step3-h">
+            <div class="card-body gap-3 p-4">
+              <div class="flex items-center gap-2"><span class="step-num">3</span><h2 id="step3-h" class="font-semibold">Connect the Page to the assistant</h2></div>
+              <p class="caption">Subscribes this app to the Page's message webhook <span class="badge badge-ghost perm">pages_manage_metadata</span>. After this, every message people send to the Page is delivered to our assistant. No other Page setting is changed.</p>
+              <div id="mc-sub-status" class="text-sm">Choose a Page first.</div>
+              <button id="mc-subscribe" type="button" class="btn btn-outline tap-44" disabled title="Subscribe chat-bot-n8n to this Page's messages">Connect webhook</button>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right column: step 4 conversations + reply -->
+        <section id="step4" class="step card border border-base-300 bg-base-100" data-state="locked" aria-labelledby="step4-h">
+          <div class="card-body gap-3 p-4">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="step-num">4</span><h2 id="step4-h" class="font-semibold">Reply to a customer</h2>
+              <span class="badge badge-ghost perm">pages_messaging</span>
+              <button id="mc-refresh" type="button" class="btn btn-ghost btn-sm tap-44 ml-auto" disabled title="Reload conversations from Messenger">Refresh</button>
+            </div>
+            <p class="caption">Conversations people started with our Page in Messenger. Open one, type a reply and press <i>Send</i>. The reply is delivered to the customer in Messenger. Replies are only possible within 24 hours of the customer's last message (Messenger policy); this app never messages people who have not written to us first.</p>
+
+            <div class="grid min-h-[26rem] gap-3 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+              <ul id="mc-convs" class="max-h-[32rem] space-y-1 overflow-y-auto text-sm" aria-label="Conversations"><li class="opacity-60">Connect a Page first.</li></ul>
+
+              <div class="flex min-h-0 flex-col rounded-box border border-base-300">
+                <div id="mc-thread-head" class="border-b border-base-300 px-3 py-2 text-sm font-medium">No conversation selected</div>
+                <div id="mc-thread" class="flex min-h-[14rem] flex-1 flex-col gap-2 overflow-y-auto p-3" aria-live="polite"></div>
+                <form id="mc-send-form" class="border-t border-base-300 p-3">
+                  <label for="mc-text" class="text-sm font-medium">Your reply</label>
+                  <textarea id="mc-text" class="textarea textarea-bordered mt-1 w-full" rows="3" maxlength="2000" placeholder="Type a message to the customer…" disabled enterkeyhint="send"></textarea>
+                  <div class="mt-2 flex flex-wrap items-center gap-2">
+                    <span id="mc-window" class="text-xs opacity-70"></span>
+                    <button id="mc-send" type="submit" class="btn tap-44 ml-auto text-white" style="background-color:var(--color-brand-navy);" disabled title="Send this reply to the customer in Messenger">Send</button>
+                  </div>
+                  <p id="mc-sent" class="mt-2 hidden text-sm" role="status"></p>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <p class="caption mt-6 max-w-3xl">Privacy: the Facebook access token stays in this browser tab's memory only and is never saved; closing the tab or pressing <i>Sign out</i> forgets it. Privacy policy: <a class="link" href="https://punnattapatch.com/privacy" target="_blank" rel="noopener">punnattapatch.com/privacy</a>.</p>
+    </main>
+  </div>
+
+  <script>
+    import {
+      GRAPH, PAGE_ID, APP_ID, LOGIN_CONFIG_ID, SUBSCRIBED_FIELDS,
+      buildLoginUrl, parseAuthReturn, permissionReport, customerOf, threadItems,
+      lastCustomerAt, replyWindow, formatRemaining, buildSendBody, redactToken,
+      type GraphConversation, type GraphMessage, type PermissionRow,
+    } from '../../scripts/messenger/logic';
+
+    const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector(sel) as T;
+    const esc = (v: unknown) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] as string);
+    const fmt = (iso: string) => new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(iso));
+    const STATE_KEY = 'mc_oauth_state';
+
+    // Tokens live in these variables only.
+    let userToken = '';
+    let page: { id: string; name: string; token: string } | null = null;
+    let current: { convId: string; psid: string; name: string; lastIn: number } | null = null;
+
+    function showError(msg: string) {
+      const el = $('#mc-alert');
+      el.textContent = redactToken(msg);
+      el.classList.remove('hidden');
+    }
+    const clearError = () => $('#mc-alert').classList.add('hidden');
+
+    function setStep(n: number, state: 'locked' | 'active' | 'done') {
+      $(`#step${n}`).dataset.state = state;
+    }
+
+    async function api<T = any>(path: string, token: string, opts: { method?: string; params?: Record<string, string>; body?: unknown } = {}): Promise<T> {
+      const url = new URL(GRAPH + path);
+      for (const [k, v] of Object.entries(opts.params || {})) url.searchParams.set(k, v);
+      const res = await fetch(url, {
+        method: opts.method || 'GET',
+        headers: { Authorization: `Bearer ${token}`, ...(opts.body ? { 'Content-Type': 'application/json' } : {}) },
+        body: opts.body ? JSON.stringify(opts.body) : undefined,
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || json.error) {
+        const e = json.error || {};
+        throw new Error(`${e.message || `Request failed (${res.status})`}${e.code ? ` [code ${e.code}]` : ''}`);
+      }
+      return json as T;
+    }
+
+    // ---------------------------------------------------------------- step 1
+    $('#mc-login').addEventListener('click', () => {
+      const state = crypto.randomUUID();
+      try { sessionStorage.setItem(STATE_KEY, state); } catch { /* private mode — state check will fail closed */ }
+      location.assign(buildLoginUrl({ redirectUri: location.origin + location.pathname, state, configId: LOGIN_CONFIG_ID }));
+    });
+
+    $('#mc-signout').addEventListener('click', () => {
+      userToken = ''; page = null; current = null;
+      location.replace(location.pathname);
+    });
+
+    async function afterLogin() {
+      const me = await api<{ id: string; name: string }>('/me', userToken, { params: { fields: 'id,name' } });
+      $('#mc-who').textContent = `Logged in as ${me.name}`;
+      $('#mc-who').className = 'hidden text-xs opacity-80 sm:inline';   // phones: the title needs the room
+      $('#mc-signout').classList.remove('hidden');
+      $('#mc-login').textContent = 'Logged in — log in again to change access';
+
+      const perms = await api<{ data: PermissionRow[] }>('/me/permissions', userToken);
+      $('#mc-perm-list').innerHTML = permissionReport(perms.data).map((p) =>
+        `<li class="flex items-center gap-2"><span aria-hidden="true">${p.granted ? '✅' : '⚠️'}</span><span class="perm">${esc(p.scope)}</span><span class="text-xs opacity-70">${p.granted ? 'granted' : 'not granted — log in again and allow it'}</span></li>`
+      ).join('');
+      $('#mc-perms').classList.remove('hidden');
+      setStep(1, 'done');
+      setStep(2, 'active');
+      await Promise.all([loadBusinesses(), loadPages()]);
+    }
+
+    // ---------------------------------------------------------------- step 2
+    async function loadBusinesses() {
+      try {
+        const r = await api<{ data: { id: string; name: string; verification_status?: string }[] }>('/me/businesses', userToken, { params: { fields: 'id,name,verification_status' } });
+        $('#mc-biz').innerHTML = r.data.length
+          ? r.data.map((b) => `<li>🏢 <b>${esc(b.name)}</b> <span class="text-xs opacity-60">ID ${esc(b.id)}${b.verification_status ? ` · ${esc(b.verification_status)}` : ''}</span></li>`).join('')
+          : '<li class="opacity-60">No business was shared in the login window.</li>';
+      } catch (e) {
+        $('#mc-biz').innerHTML = `<li class="text-error">${esc(redactToken((e as Error).message))}</li>`;
+      }
+    }
+
+    async function loadPages() {
+      const r = await api<{ data: { id: string; name: string; category?: string; access_token: string; picture?: { data?: { url?: string } } }[] }>(
+        '/me/accounts', userToken, { params: { fields: 'id,name,category,access_token,picture{url}' } });
+      const box = $('#mc-pages');
+      if (!r.data.length) { box.innerHTML = '<p class="opacity-60">No Page was shared in the login window. Log in again and select the Page.</p>'; return; }
+      box.innerHTML = r.data.map((p) => `
+        <label class="page-card flex cursor-pointer items-center gap-3 rounded-box border border-base-300 p-2">
+          <input type="radio" name="mc-page" class="radio radio-sm" value="${esc(p.id)}" />
+          ${p.picture?.data?.url ? `<img src="${esc(p.picture.data.url)}" alt="" class="size-8 rounded-full" />` : ''}
+          <span class="min-w-0 flex-1"><b>${esc(p.name)}</b><br><span class="text-xs opacity-60">${esc(p.category || 'Page')} · ID ${esc(p.id)}</span></span>
+        </label>`).join('');
+      const tokens = new Map(r.data.map((p) => [p.id, { id: p.id, name: p.name, token: p.access_token }]));
+      box.querySelectorAll<HTMLInputElement>('input[name="mc-page"]').forEach((input) => {
+        input.addEventListener('change', () => selectPage(tokens.get(input.value)!).catch((e) => showError(e.message)));
+      });
+      // Pre-select our own Page when it is the only sensible choice.
+      const ours = box.querySelector<HTMLInputElement>(`input[value="${PAGE_ID}"]`);
+      if (ours) { ours.checked = true; await selectPage(tokens.get(PAGE_ID)!); }
+    }
+
+    async function selectPage(p: { id: string; name: string; token: string }) {
+      clearError();
+      page = p;
+      current = null;
+      const info = await api<{ id: string; name: string; category?: string; fan_count?: number; link?: string; picture?: { data?: { url?: string } } }>(
+        `/${p.id}`, p.token, { params: { fields: 'id,name,category,fan_count,link,picture{url}' } });
+      $('#mc-page-detail').innerHTML = `
+        ${info.picture?.data?.url ? `<img src="${esc(info.picture.data.url)}" alt="" class="size-12 rounded-full" />` : ''}
+        <div class="text-sm"><b>${esc(info.name)}</b><br>
+          <span class="text-xs opacity-70">${esc(info.category || '')}${info.fan_count != null ? ` · ${info.fan_count.toLocaleString('en-US')} followers` : ''} · ID ${esc(info.id)}</span></div>`;
+      $('#mc-page-info').classList.remove('hidden');
+      setStep(2, 'done');
+      setStep(3, 'active');
+      await loadSubscription();
+    }
+
+    // ---------------------------------------------------------------- step 3
+    async function loadSubscription() {
+      if (!page) return;
+      const r = await api<{ data: { id: string; name: string; subscribed_fields?: string[] }[] }>(`/${page.id}/subscribed_apps`, page.token);
+      const ours = r.data.find((a) => a.id === APP_ID);
+      const missing = SUBSCRIBED_FIELDS.filter((f) => !ours?.subscribed_fields?.includes(f));
+      const btn = $<HTMLButtonElement>('#mc-subscribe');
+      btn.disabled = false;
+      if (ours && !missing.length) {
+        $('#mc-sub-status').innerHTML = `✅ <b>Connected.</b> ${esc(ours.name)} receives: <span class="perm">${esc((ours.subscribed_fields || []).join(', '))}</span>`;
+        btn.textContent = 'Reconnect webhook';
+        setStep(3, 'done');
+        await unlockReplies();
+      } else {
+        $('#mc-sub-status').innerHTML = ours
+          ? `⚠️ Connected, but missing: <span class="perm">${esc(missing.join(', '))}</span>`
+          : '⚠️ <b>Not connected.</b> Messages to this Page do not reach the assistant yet.';
+        btn.textContent = 'Connect webhook';
+      }
+    }
+
+    $('#mc-subscribe').addEventListener('click', async () => {
+      if (!page) return;
+      const btn = $<HTMLButtonElement>('#mc-subscribe');
+      btn.disabled = true;
+      try {
+        clearError();
+        await api(`/${page.id}/subscribed_apps`, page.token, { method: 'POST', params: { subscribed_fields: SUBSCRIBED_FIELDS.join(',') } });
+        await loadSubscription();
+      } catch (e) {
+        showError(`Could not connect the webhook: ${(e as Error).message}`);
+        btn.disabled = false;
+      }
+    });
+
+    // ---------------------------------------------------------------- step 4
+    async function unlockReplies() {
+      setStep(4, 'active');
+      $<HTMLButtonElement>('#mc-refresh').disabled = false;
+      await loadConversations();
+    }
+
+    async function loadConversations() {
+      if (!page) return;
+      const list = $('#mc-convs');
+      list.innerHTML = '<li class="opacity-60">Loading…</li>';
+      const r = await api<{ data: GraphConversation[] }>(`/${page.id}/conversations`, page.token, {
+        params: { platform: 'messenger', limit: '25', fields: 'id,updated_time,participants,messages.limit(1){message,from,created_time}' },
+      });
+      if (!r.data.length) { list.innerHTML = '<li class="opacity-60">No conversations yet. Message the Page from Messenger to start one.</li>'; return; }
+      list.innerHTML = r.data.map((c) => {
+        const who = customerOf(c, page!.id);
+        const last = c.messages?.data?.[0];
+        return `<li><button type="button" class="conv w-full rounded-box p-2 text-left" data-conv="${esc(c.id)}" data-psid="${esc(who?.id || '')}" data-name="${esc(who?.name || 'Customer')}">
+          <b>${esc(who?.name || 'Customer')}</b><span class="float-right text-xs opacity-60">${c.updated_time ? esc(fmt(c.updated_time)) : ''}</span><br>
+          <span class="line-clamp-1 text-xs opacity-70">${esc(last?.message || '(attachment)')}</span></button></li>`;
+      }).join('');
+      list.querySelectorAll<HTMLButtonElement>('button.conv').forEach((b) => {
+        b.addEventListener('click', () => openConversation(b.dataset.conv!, b.dataset.psid!, b.dataset.name!).catch((e) => showError(e.message)));
+      });
+      if (current) list.querySelector<HTMLButtonElement>(`button[data-conv="${CSS.escape(current.convId)}"]`)?.setAttribute('aria-current', 'true');
+    }
+
+    async function openConversation(convId: string, psid: string, name: string) {
+      if (!page) return;
+      clearError();
+      document.querySelectorAll('#mc-convs button.conv').forEach((b) => b.setAttribute('aria-current', String((b as HTMLElement).dataset.conv === convId)));
+      const r = await api<{ messages?: { data: GraphMessage[] } }>(`/${convId}`, page.token, {
+        params: { fields: 'messages.limit(30){id,message,from,created_time}' },
+      });
+      const msgs = r.messages?.data || [];
+      current = { convId, psid, name, lastIn: lastCustomerAt(msgs, page.id) };
+      $('#mc-thread-head').innerHTML = `${esc(name)} <span class="text-xs font-normal opacity-60">in Messenger</span>`;
+      const items = threadItems(msgs, page.id);
+      const thread = $('#mc-thread');
+      thread.innerHTML = items.map((m) => `
+        <div class="flex flex-col ${m.fromPage ? 'items-end' : 'items-start'}">
+          <div class="bubble ${m.fromPage ? 'bubble-out' : 'bubble-in'}">${esc(m.text)}</div>
+          <span class="mt-0.5 text-[0.7rem] opacity-50">${m.fromPage ? 'Page' : esc(name)} · ${esc(fmt(m.at))}</span>
+        </div>`).join('') || '<p class="opacity-60 text-sm">No messages.</p>';
+      thread.scrollTop = thread.scrollHeight;
+      updateWindow();
+    }
+
+    function updateWindow() {
+      const text = $<HTMLTextAreaElement>('#mc-text');
+      const send = $<HTMLButtonElement>('#mc-send');
+      if (!current) { text.disabled = true; send.disabled = true; return; }
+      const w = replyWindow(current.lastIn, Date.now());
+      text.disabled = !w.open;
+      send.disabled = !w.open;
+      $('#mc-window').textContent = w.open
+        ? `Reply window open · ${formatRemaining(w.remainingMs)} left`
+        : 'Reply window closed — the customer last wrote more than 24 hours ago, so Messenger policy does not allow a reply.';
+      if (w.open) text.focus();
+    }
+
+    $('#mc-send-form').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      if (!page || !current) return;
+      const text = $<HTMLTextAreaElement>('#mc-text');
+      const send = $<HTMLButtonElement>('#mc-send');
+      const out = $('#mc-sent');
+      let body;
+      try { body = buildSendBody(current.psid, text.value); } catch (e) { showError((e as Error).message); return; }
+      send.disabled = true;
+      send.textContent = 'Sending…';
+      try {
+        clearError();
+        const r = await api<{ message_id: string }>(`/${page.id}/messages`, page.token, { method: 'POST', body });
+        text.value = '';
+        out.textContent = `✅ Delivered to Messenger · message ID ${r.message_id}`;
+        out.classList.remove('hidden');
+        await openConversation(current.convId, current.psid, current.name);
+      } catch (e) {
+        showError(`Message not sent: ${(e as Error).message}`);
+      } finally {
+        send.textContent = 'Send';
+        updateWindow();
+      }
+    });
+
+    $('#mc-text').addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter' && (ev.metaKey || ev.ctrlKey)) $<HTMLFormElement>('#mc-send-form').requestSubmit();
+    });
+
+    $('#mc-refresh').addEventListener('click', () => {
+      loadConversations().then(() => current && openConversation(current.convId, current.psid, current.name)).catch((e) => showError(e.message));
+    });
+
+    // ---------------------------------------------------------------- boot
+    (async () => {
+      const ret = parseAuthReturn(location.hash, location.search);
+      if (ret.kind === 'none') return;
+      let expected = '';
+      try { expected = sessionStorage.getItem(STATE_KEY) || ''; sessionStorage.removeItem(STATE_KEY); } catch { /* ignore */ }
+      history.replaceState(null, '', location.pathname);   // drop the token from the address bar
+      if (!expected || ret.state !== expected) { showError('Login could not be verified (state mismatch). Please press "Continue with Facebook" again.'); return; }
+      if (ret.kind === 'error') { showError(`Facebook login was not completed: ${ret.message}`); return; }
+      userToken = ret.token;
+      try { await afterLogin(); } catch (e) { showError((e as Error).message); }
+    })();
+  </script>
+</DashboardLayout>
