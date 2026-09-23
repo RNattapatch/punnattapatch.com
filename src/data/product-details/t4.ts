@@ -309,7 +309,7 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
     'ในห้องผมจะพาทีมสร้างเองกับหนึ่ง Workflow เพื่อให้หลังจบคลาส คนในองค์กรยังอธิบาย แก้ และวางแผนใช้ต่อได้ครับ',
   ],
   investment: {
-    included: ['In-house Training 1 วัน สำหรับหนึ่งองค์กร', 'เลือกและทำงานกับ 1 Workflow ของบริษัท', 'Workflow Map + AI Agent Working Prototype', 'Data Safety + Human Review Rules', 'Spotlight 2 Module: AI Agent Mindset + AI Data Engineering for Business Use', '30-Day Adoption Plan และ Bonus หลังคลาส 5 ชิ้น แถมฟรี (รายละเอียดในส่วน Bonus)', 'เอกสารใบเสนอราคาและใบกำกับภาษีสำหรับบริษัท'],
+    included: ['In-house Training 1 วัน สำหรับหนึ่งองค์กร', 'เลือกและทำงานกับ 1 Workflow ของบริษัท', 'Workflow Map + AI Agent Working Prototype', 'Data Safety + Human Review Rules', 'Spotlight 2 Module: AI Agent Mindset + AI Data Engineering for Business Use', '30-Day Adoption Plan และ Bonus หลังคลาส 5 ชิ้น แถมฟรี (รายละเอียดในส่วน Bonus)', 'เอกสารใบเสนอราคา ใบแจ้งหนี้ และใบเสร็จรับเงินในนามบริษัท (ราคานี้ไม่มี VAT · บริษัทหัก ณ ที่จ่าย 3% ได้ และส่ง 50 ทวิ กลับมา)'],
     terms: 'ชำระค่าบริการ 100% ก่อนวันอบรมเพื่อยืนยันคิว บริษัทเตรียม Process owner และตัวอย่างงานที่ใช้ข้อมูลจำลองหรือข้อมูลที่ Mask แล้วตาม Pre-work',
     scarcity: '1 เดือนผมรับอบรมจำกัดแค่ 10 องค์กร สงวนสิทธิให้องค์กรที่ชำระค่าบริการและคิวก่อน',
   },

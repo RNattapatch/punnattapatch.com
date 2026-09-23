@@ -131,7 +131,7 @@ export const C1_PRODUCT_DETAIL: ProductDetailPageData = {
     'คำตอบสำเร็จรูปใช้กับทุกบริษัทไม่ได้ครับ งานวันแรกของผมคือฟังให้เข้าใจว่าอะไรคือข้อจำกัดจริง แล้วช่วยคุณตัดสิ่งที่ยังไม่ต้องทำออกให้ได้',
   ],
   investment: {
-    included: ['Pre-call เพื่อเลือก Primary Outcome และระบุผู้เข้าร่วม', 'Consulting on-site 1 วัน สำหรับ 1 เรื่องหลัก', 'Blueprint, Template และ Decision log ตาม Track', 'Executive recap + 30-day action plan', 'ใบเสนอราคาและใบกำกับภาษีสำหรับบริษัท'],
+    included: ['Pre-call เพื่อเลือก Primary Outcome และระบุผู้เข้าร่วม', 'Consulting on-site 1 วัน สำหรับ 1 เรื่องหลัก', 'Blueprint, Template และ Decision log ตาม Track', 'Executive recap + 30-day action plan', 'ใบเสนอราคา ใบแจ้งหนี้ และใบเสร็จรับเงินในนามบริษัท (ราคานี้ไม่มี VAT · บริษัทหัก ณ ที่จ่าย 3% ได้ และส่ง 50 ทวิ กลับมา)'],
     terms: 'ชำระค่าบริการ 100% ก่อนวัน Consult เพื่อยืนยันคิว ค่าเดินทางนอกพื้นที่มาตรฐานจะแจ้งก่อนล็อกวัน',
     scarcity: 'ผมรับงานรวมไม่เกินเดือนละ 10 บริษัท เพราะเป็นคนเตรียมและเข้าห้อง Consult เองทุกเคส',
   },
