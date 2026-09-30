@@ -29,11 +29,13 @@ const catalogOffers = (['T2', 'T1', 'T3', 'T4', 'C1', 'I1', 'A1'] as const).map(
 
 const trustLogos = [
   { src: '/services/nissan.png', alt: 'Nissan' },
+  { src: '/services/futureskill.png', alt: 'FutureSkill' },
+  { src: '/services/ramkhamhaeng.png', alt: 'มหาวิทยาลัยรามคำแหง' },
+  { src: '/services/tni.png', alt: 'สถาบันเทคโนโลยีไทย-ญี่ปุ่น (TNI)' },
   { src: '/services/royal-enfield.jpg', alt: 'Royal Enfield' },
   { src: '/services/gpx.jpg', alt: 'GPX' },
   { src: '/services/lambretta.png', alt: 'Lambretta' },
   { src: '/services/zontes.png', alt: 'Zontes' },
-  { src: '/services/futureskill.png', alt: 'FutureSkill' },
 ];
 
 const faqs = [
@@ -139,7 +141,7 @@ const faqs = [
     <section id="services-proof-strip" aria-labelledby="proof-strip-heading" class="border-b border-sand-deep bg-sand">
       <div class="mx-auto max-w-[1180px] px-5 py-8 sm:px-8 lg:px-10">
         <h2 id="proof-strip-heading" class="text-center text-sm font-semibold text-navy">องค์กรที่เคยเชิญไปสอน อบรม และทำงานกับทีม</h2>
-        <div class="mt-5 grid grid-cols-3 gap-3 sm:grid-cols-6">
+        <div class="mt-5 grid grid-cols-4 gap-3 lg:grid-cols-8">
           {trustLogos.map((logo) => (
             <div class="flex min-h-20 min-w-0 items-center justify-center rounded-xl border border-navy/10 bg-surface p-3">
               <img src={logo.src} alt={logo.alt} width="160" height="96" loading="lazy" decoding="async" class="max-h-12 max-w-full object-contain" />

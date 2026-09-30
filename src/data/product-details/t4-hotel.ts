@@ -20,6 +20,8 @@ const HOTEL_CLIENT_LOGOS: ClientLogo[] = [
   { src: '/logos/clients/farmsuk.jpg', alt: 'ฟาร์มสุข farmsuk' },
   { src: '/logos/clients/nissan.png', alt: 'Nissan' },
   { src: '/logos/clients/futureskill.png', alt: 'FutureSkill' },
+  { src: '/logos/clients/ramkhamhaeng.png', alt: 'มหาวิทยาลัยรามคำแหง' },
+  { src: '/logos/clients/tni.png', alt: 'สถาบันเทคโนโลยีไทย-ญี่ปุ่น (TNI)' },
   { src: '/logos/clients/ving.png', alt: 'V!NG' },
   { src: '/logos/clients/hfc-healthfoods.png', alt: 'HFC HealthFoods Corporation' },
   { src: '/logos/clients/home-plus.png', alt: 'ฮ.โฮมพลัส' },
