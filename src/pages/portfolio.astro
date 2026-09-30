@@ -89,10 +89,10 @@ const caseLogoNames: Record<string, string> = {
         <h2 id="organizations" class="mt-3 font-display text-3xl font-bold text-navy md:text-5xl">องค์กรและแบรนด์ที่เคยร่วมงาน</h2>
         <p class="mt-5 leading-7 text-warm-ink/70">{proof.relationshipNote}</p>
       </div>
-      <div class="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+      <div class="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         {proof.organizationLogos.map((logo) => (
-          <figure class="flex min-h-24 flex-col items-center justify-center rounded-xl border border-[#c9c2b2] bg-surface p-3">
-            <img src={logo.src} alt={logo.name} width="160" height="160" loading="lazy" decoding="async" class="h-11 w-full object-contain" />
+          <figure class="flex aspect-[5/3] flex-col items-center justify-center rounded-xl border border-[#c9c2b2] bg-surface p-3 sm:p-5">
+            <img src={logo.src} alt={logo.name} width="160" height="160" loading="lazy" decoding="async" class="h-full w-full object-contain" />
             <figcaption class="sr-only">{logo.name}</figcaption>
           </figure>
         ))}

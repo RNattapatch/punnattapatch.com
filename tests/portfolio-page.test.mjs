@@ -28,7 +28,8 @@ test('synced web data keeps the confirmed claims and exclusions', () => {
   assert.equal(data.featured.scenery.audienceCount, '30+');
   assert.equal(data.featured.hfc.audienceCount, '100+');
   assert.equal(data.futureskill.courseUrl, 'https://futureskill.co/course/detail/6030');
-  for (const forbidden of ['M2Homecar', 'รามคำแหง', 'TNI', 'วิทยาลัยเทคโนโลยีชลบุรี', 'Good & Rich']) {
+  // รามคำแหง + TNI ขึ้น logo wall ได้แล้ว — ปันยืนยันเป็นลูกค้า 2026-09-30 (เดิมกันไว้เพราะงานยังไม่ได้จัด)
+  for (const forbidden of ['M2Homecar', 'วิทยาลัยเทคโนโลยีชลบุรี', 'Good & Rich']) {
     assert.equal(publicText.includes(forbidden), false, `web public content must exclude ${forbidden}`);
   }
 });

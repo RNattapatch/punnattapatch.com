@@ -97,8 +97,8 @@ const recentWork = [
           <p class="text-xs font-bold uppercase tracking-[0.16em] text-warm-ink/60">ดูแลองค์กรชั้นนำและแบรนด์ดัง</p>
           <div class="homepage-proof-scroll mt-3 flex gap-2 overflow-x-auto pb-1" aria-label="องค์กรที่ไว้ใจให้ปันดูแล">
             {clientLogos.map((logo) => (
-              <div class="flex h-11 w-20 shrink-0 items-center justify-center rounded-lg border border-[#c9c2b2] bg-surface p-2">
-                <img src={logo.src} alt={logo.alt} width="160" height="160" loading="lazy" decoding="async" class="max-h-full max-w-full object-contain opacity-70" />
+              <div class="flex h-16 w-36 shrink-0 items-center justify-center rounded-lg border border-[#c9c2b2] bg-surface p-2">
+                <img src={logo.src} alt={logo.alt} width="160" height="160" loading="lazy" decoding="async" class="h-full w-full object-contain" />
               </div>
             ))}
           </div>
@@ -166,10 +166,10 @@ const recentWork = [
         <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">องค์กรที่ไว้ใจ</p>
         <h2 class="mt-3 font-display text-3xl font-bold text-navy md:text-5xl">องค์กรบางส่วนที่ไว้ใจให้ผมดูแล</h2>
       </div>
-      <div class="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      <div class="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
         {clientLogos.map((logo) => (
-          <div class="flex aspect-[5/3] items-center justify-center rounded-2xl border border-[#c9c2b2] bg-surface p-5">
-            <img src={logo.src} alt={logo.alt} width="160" height="160" loading="lazy" decoding="async" class="max-h-full max-w-full object-contain" />
+          <div class="flex aspect-[5/3] items-center justify-center rounded-2xl border border-[#c9c2b2] bg-surface p-3 sm:p-5">
+            <img src={logo.src} alt={logo.alt} width="160" height="160" loading="lazy" decoding="async" class="h-full w-full object-contain" />
           </div>
         ))}
       </div>

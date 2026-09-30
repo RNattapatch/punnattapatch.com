@@ -439,7 +439,7 @@ test('logo walk advances exactly one complete card only while visible', async ({
 
   const tablet = await browser.newPage({ viewport: { width: 768, height: 1024 } });
   await preparePage(tablet);
-  assert.deepEqual(await tablet.locator('.logo-run:not(.marquee-copy) .logo-tile').evaluateAll((tiles) => tiles.slice(0, 3).map((tile) => tile.querySelector('img')?.getAttribute('alt'))), ['FutureSkill', 'Nissan', 'Ving']);
+  assert.deepEqual(await tablet.locator('.logo-run:not(.marquee-copy) .logo-tile').evaluateAll((tiles) => tiles.slice(0, 3).map((tile) => tile.querySelector('img')?.getAttribute('alt'))), ['FutureSkill', 'Nissan', 'มหาวิทยาลัยรามคำแหง']);
   await tablet.close();
 });
 
