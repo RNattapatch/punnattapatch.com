@@ -113,7 +113,7 @@ export const CATALOG = {
     name: 'คลาสสดสร้างวงจรงานขายด้วย AI Agent 2026',
     nameEn: 'AI Sale Loop System',
     kind: 'public',
-    duration: 'เรียนสด 2 วัน เสาร์ 17 – อาทิตย์ 18 ต.ค. 2026 (กรุงเทพฯ) + Day 0 ตรวจเครื่อง + Follow-up Clinic Call 1 ครั้ง',
+    duration: 'เรียนสด 2 วัน กรุงเทพฯ (เลื่อนจาก 17–18 ต.ค. 2026 เหตุน้ำท่วม · ประกาศวันใหม่เร็วๆ นี้) + Day 0 ตรวจเครื่อง + Follow-up Clinic Call 1 ครั้ง',
     headline: 'สร้างวงจรงานขายที่ AI Agent รันให้ ใน 2 วัน — ขาหลังบ้านทำเอกสารและตามดีล ขาหน้าบ้านรับแชทบน LINE OA',
     audience: 'เจ้าของกิจการ · หัวหน้าฝ่ายขาย · หัวหน้า Sale Admin · เจ้าของที่ยังขายเอง — คนที่กำหนดได้ว่าฝ่ายขายทำงานยังไง · บริษัทส่ง ≥3 ท่านให้เทียบ in-house ก่อน',
     image: '/services/thumbs/p1-ai-sales-agent-bootcamp.jpg',
@@ -121,7 +121,7 @@ export const CATALOG = {
     botQuote: true,
     // 2026-09-23 ปันสั่งเอาขึ้น: Class Outline P1 (source: claude-code-pun-nattapatch/output/docs/course-outline-public-p1/outline.config.js)
     outlineUrl: 'https://punnattapatch.com/services/outlines/p1-ai-sale-loop-system.pdf',
-    note: 'Public P1 รุ่นที่ 1 · เสาร์ 17 – อาทิตย์ 18 ต.ค. 2026 กรุงเทพฯ · รับ 20 ท่าน เปิดเมื่อครบ 6 · Early Bird 10 ที่นั่งแรก ฿19,900 ครบแล้วเป็นราคาปกติที่ key public-p1-bootcamp-standard · Core: วงจรงานขาย 1 วง + ฐานข้อมูลดีล + คลังบริบท 5 ไฟล์ + AI Agent หลังบ้าน (เอกสาร 3 ชนิด/ตามดีล) + AI Agent หน้าบ้านบน LINE OA (Hermes + OpenRouter) + Test log + แผนย้ายขึ้นเครื่องจริง + ใบรับรอง · ผู้เรียนออกค่าบัญชี AI 1 ตัว + เครดิต OpenRouter เอง · Founding perk: เครดิต 50% ของค่าตั๋ว 1 ใบ/บริษัท เข้า T/C1 ภายใน 90 วัน · Refund เฉพาะรอบไม่ถึง 6 ท่าน · SSOT เนื้อหา: output/docs/course-outline-public-p1/OUTLINE-DRAFT-v2.md'
+    note: 'Public P1 รุ่นที่ 1 · เลื่อนจาก 17–18 ต.ค. 2026 (ปันสั่ง 2026-09-30 · น้ำท่วม venue เสียหาย · ยังไม่รับชำระจนประกาศวันใหม่) · กรุงเทพฯ · รับ 20 ท่าน เปิดเมื่อครบ 6 · Early Bird 10 ที่นั่งแรก ฿19,900 ครบแล้วเป็นราคาปกติที่ key public-p1-bootcamp-standard · Core: วงจรงานขาย 1 วง + ฐานข้อมูลดีล + คลังบริบท 5 ไฟล์ + AI Agent หลังบ้าน (เอกสาร 3 ชนิด/ตามดีล) + AI Agent หน้าบ้านบน LINE OA (Hermes + OpenRouter) + Test log + แผนย้ายขึ้นเครื่องจริง + ใบรับรอง · ผู้เรียนออกค่าบัญชี AI 1 ตัว + เครดิต OpenRouter เอง · Founding perk: เครดิต 50% ของค่าตั๋ว 1 ใบ/บริษัท เข้า T/C1 ภายใน 90 วัน · Refund เฉพาะรอบไม่ถึง 6 ท่าน · SSOT เนื้อหา: output/docs/course-outline-public-p1/OUTLINE-DRAFT-v2.md'
   },
   'public-p1-bootcamp-standard': {
     // 2026-09-03: ราคาปกติของ Public P1 หลังขายครบ 10 ที่นั่ง Blind Ticket · ปันเคาะ
@@ -131,7 +131,7 @@ export const CATALOG = {
     name: 'คลาสสดสร้างวงจรงานขายด้วย AI Agent 2026 (ราคาปกติ)',
     nameEn: 'AI Sale Loop System — Standard',
     kind: 'public',
-    duration: 'เรียนสด 2 วัน เสาร์ 17 – อาทิตย์ 18 ต.ค. 2026 (กรุงเทพฯ) + Day 0 ตรวจเครื่อง + Follow-up Clinic Call 1 ครั้ง',
+    duration: 'เรียนสด 2 วัน กรุงเทพฯ (เลื่อนจาก 17–18 ต.ค. 2026 เหตุน้ำท่วม · ประกาศวันใหม่เร็วๆ นี้) + Day 0 ตรวจเครื่อง + Follow-up Clinic Call 1 ครั้ง',
     status: 'internal',
     botQuote: false,
     note: 'ราคาปกติหลังขายครบ 10 ที่นั่ง Early Bird · ห้องรับ 20 ท่าน · ปันเคาะ 2026-09-03 · ปรับชื่อ/วัน 2026-09-11',
