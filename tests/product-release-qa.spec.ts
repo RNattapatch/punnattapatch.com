@@ -140,7 +140,11 @@ for (const route of routes) {
       assert.ok(contrastRatio(lineStyle.color, lineStyle.background) >= 4.5, `${route.code} LINE CTA must pass WCAG AA contrast`);
 
       const heroImages = page.locator('[data-detail-block="hero"] img[fetchpriority="high"][loading="eager"]');
-      assert.equal(await heroImages.count(), 1, `${route.code} must prioritize exactly one Hero image`);
+      // C1 (2026-09-30): hero เป็นกราฟตัวเลข ไม่มีรูป → ไม่มีรูปแย่ง LCP แต่ต้องมีกราฟแทน
+      if (route.code === 'C1') {
+        assert.equal(await heroImages.count(), 0, 'C1 chart hero must not ship an eager hero image');
+        assert.equal(await page.locator('[data-detail-block="hero"] [data-leak-chart]').count(), 1, 'C1 hero must render the comparison chart');
+      } else assert.equal(await heroImages.count(), 1, `${route.code} must prioritize exactly one Hero image`);
       assert.equal(await page.locator('[data-detail-block="proof"] img:not([loading="lazy"])').count(), 0, `${route.code} proof images must stay lazy below the fold`);
 
       await page.evaluate(async () => {

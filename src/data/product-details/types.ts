@@ -356,6 +356,25 @@ export interface ProductDetailPageData {
   hubSteps?: { when: string; text: string }[];
   kind: 'course' | 'service';
   showPriceInHero?: boolean;
+  /** C1 (2026-09-30): hero ตัวเลข "ทำมือต่อ vs ให้ AI Agent รับงานซ้ำ" 1/6/12 เดือน + Offer ใต้ hero ทันที
+   *  ตั้งค่านี้ = layout ใช้ LeakHero + LeakOffer แทน ProductHero และย้าย Investment ขึ้นมาไว้ใต้ hero */
+  leakHero?: {
+    eyebrow: string;
+    /** {team} · {yearBaht} ถูกแทนด้วยค่าตัวอย่างใน LEAK_DEFAULTS · [[…]] = ห้ามตัดบรรทัด (กันภาษาไทยขาดกลางคำ เช่น ปี/ละ) */
+    headline: string;
+    exampleNote: string;
+    promise: string;
+    chartTitle: string;
+    chartSub: string;
+    manualLabel: string;
+    aiLabel: string;
+    firstMonthNote: string;
+    calcToggle: string;
+    assumptions: string[];
+    offerEyebrow: string;
+    offerHeading: string;
+    offerNext: string;
+  };
   serviceType?: 'Sales Consulting' | 'Sales System Implementation';
   hero: {
     eyebrow: string;

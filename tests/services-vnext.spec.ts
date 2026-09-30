@@ -79,7 +79,8 @@ test('visibility matrix renders one global control only on public marketing page
     ['Home', '/', 1],
     ['Services', '/services', 1],
     ['Training (no detail is published)', '/training', 1],
-    ['Case Study', '/case-studies/forklift-distributor-5-person-team', 1],
+    // 2026-09-30 ถอด case study ที่ตัวเลขไม่มีที่มา → /case-studies/* 302 ไป /portfolio (หน้าหลักฐานแทน)
+    ['Portfolio', '/portfolio', 1],
     ['Insight', '/insights/ai-transformation-sales', 1],
     ['FAQ', '/faq', 1],
     ['Booking', '/booking', 0],

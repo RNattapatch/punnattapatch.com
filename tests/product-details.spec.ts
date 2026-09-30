@@ -546,7 +546,17 @@ test('C1 daily consulting is one service with four selectable primary-outcome tr
 
   assert.equal(response?.status(), 200, 'C1 canonical route must render');
   assert.equal(await page.locator('h1').count(), 1, 'C1 must contain exactly one H1');
-  assert.equal(await page.locator('h1').innerText(), catalog.name, 'C1 H1 must resolve from the Catalog');
+  // 2026-09-30 ปันสั่ง: H1 พาดตัวเลข (ตัวอย่างที่คำนวณจากสมมติฐานบนหน้า) · ชื่อสินค้าจาก Catalog ย้ายไปหัว Offer ใต้ hero
+  assert.match(await page.locator('h1').innerText(), /^งานซ้ำของทีมขาย 8 คน กินเงินเดือนปีละ 450,000 บาท$/, 'C1 H1 must lead with the computed example number');
+  assert.equal(await page.locator('#c1-offer-heading').innerText(), catalog.name, 'C1 offer heading must resolve from the Catalog');
+  assert.deepEqual(await page.locator('[data-detail-block]').evaluateAll((blocks) => blocks.slice(0, 2).map((block) => block.getAttribute('data-detail-block'))), ['hero', 'investment'], 'C1 offer must sit directly under the hero');
+  const leak = page.locator('[data-leak-hero]');
+  assert.equal(await leak.locator('[data-leak-row]').count(), 3, 'C1 hero must compare 1 month, 6 months and 1 year');
+  assert.match(await leak.locator('[data-leak-gap]').innerText(), /1,452 ชั่วโมง/, 'C1 default gap must match the stated assumptions');
+  assert.match(await leak.innerText(), /ไม่ใช่ผลที่รับประกัน/, 'C1 must label the AI share as an assumption, not a promise');
+  await leak.locator('[data-leak-calc] summary').click();
+  await leak.locator('[data-leak-input="team"]').fill('16');
+  assert.match(await leak.locator('[data-leak-gap]').innerText(), /2,904 ชั่วโมง/, 'C1 calculator must recompute from the buyer\'s own numbers');
   assert.equal(await page.getByText(catalog.duration, { exact: true }).count(), 1, 'C1 duration must resolve from the Catalog');
   assert.equal(await page.getByText(fmtPrice('daily-sales-consulting'), { exact: true }).count(), 1, 'C1 price must resolve from the Catalog');
 
@@ -616,10 +626,10 @@ test('C1 daily consulting is one service with four selectable primary-outcome tr
   const lineCtas = page.locator('[data-product-code="C1"][data-line-cta]');
   assert.equal(await lineCtas.count(), 5, 'C1 must retain four LINE alternatives plus one system-proof fit CTA');
   assert.deepEqual(await lineCtas.evaluateAll((actions) => actions.map((action) => [action.getAttribute('data-cta-location'), action.getAttribute('data-cta-label')])), [
-    ['hero', 'เล่าอาการให้ผมช่วยเลือก Track'],
+    ['hero', 'ทัก LINE ให้ผมช่วยดูตัวเลข'],
+    ['after_investment', 'ทัก LINE ให้ผมช่วยเลือก Track'],
     ['after_systems', 'ทัก LINE ให้ผมช่วยเลือกจุดเริ่ม'],
     ['after_scope', 'ทัก LINE ส่งรูป Report'],
-    ['after_investment', 'ทัก LINE ให้ผมช่วยเลือก Track'],
     ['final', 'ทัก LINE เล่าอาการสั้น ๆ'],
   ], 'C1 CTA journey must preserve every approved LINE alternative');
   for (const action of await lineCtas.all()) {

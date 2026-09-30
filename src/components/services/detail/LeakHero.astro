@@ -1,0 +1,182 @@
+---
+// C1 hero (ปันสั่ง 2026-09-30): พาดตัวเลขได้เลย + โชว์ทีมที่ให้ AI Agent รับงานซ้ำ vs ทำมือต่อ ที่ 1 / 6 / 12 เดือน
+// ตัวเลขทั้งหมดคำนวณจากสมมติฐานที่เขียนไว้บนหน้า และลูกค้าเปลี่ยนเป็นเลขตัวเองได้ (ภาษาเงินชั้น ① ใน wiki audit-offer-pain-outcome-money-language-2026-09)
+// สี 2 series ผ่าน validate_palette บนพื้น navy #072b4e: #e8505f (ทำมือต่อ) · #3d9be0 (AI Agent)
+import type { ProductDetailPageData } from '../../../data/product-details/types';
+import { SITE } from '../../../data/site';
+import { LEAK_DEFAULTS, leakSeries, fmtBaht, fmtHours, monthLabel } from '../../../scripts/leak-calc';
+import DetailLineCTA from './DetailLineCTA.astro';
+
+interface Props { data: ProductDetailPageData; }
+const { data } = Astro.props;
+const copy = data.leakHero!;
+const series = leakSeries(LEAK_DEFAULTS);
+const year = series[series.length - 1];
+const max = year.manualHours;
+const pct = (n: number) => `${Math.max(2, (n / max) * 100).toFixed(1)}%`;
+const headline = copy.headline
+  .replace('{team}', String(LEAK_DEFAULTS.team))
+  .replace('{yearBaht}', Math.round(year.manualBaht).toLocaleString('en-US'));
+const exampleNote = copy.exampleNote
+  .replaceAll('{team}', String(LEAK_DEFAULTS.team))
+  .replace('{hours}', String(LEAK_DEFAULTS.hoursPerDay))
+  .replace('{salary}', LEAK_DEFAULTS.salary.toLocaleString('en-US'));
+// [[…]] ในข้อความ = ช่วงที่ห้ามตัดบรรทัด · แปลงเป็นชิ้นให้ template ห่อ whitespace-nowrap
+const nowrapParts = (text: string) => text.split(/(\[\[.*?\]\])/).filter(Boolean).map((part) => part.startsWith('[[') ? { text: part.slice(2, -2), keep: true } : { text: part, keep: false });
+const plain = (text: string) => text.replace(/\[\[|\]\]/g, '');
+const gapHours = year.manualHours - year.aiHours;
+const gapBaht = year.manualBaht - year.aiBaht;
+const MANUAL = '#e8505f';
+const AI = '#3d9be0';
+---
+
+<section data-detail-block="hero" data-leak-hero data-line-oa={SITE.social.lineOaId} class="bg-navy py-12 text-white sm:py-16">
+  <div class="mx-auto grid max-w-6xl gap-9 px-5 lg:grid-cols-[1fr_1fr] lg:items-start">
+    <div>
+      <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">{copy.eyebrow}</p>
+      <h1 class="mt-4 text-balance font-display text-4xl font-bold leading-tight sm:text-5xl">{nowrapParts(headline).map((part) => part.keep ? <span class="whitespace-nowrap">{part.text}</span> : part.text)}</h1>
+      <p class="mt-4 max-w-xl text-sm leading-6 text-white/70">{exampleNote}</p>
+      <p class="mt-6 max-w-xl text-pretty text-xl font-semibold leading-relaxed text-white">{copy.promise}</p>
+      <div class="mt-8">
+        <DetailLineCTA
+          code={data.code}
+          location="hero"
+          primary={data.cta.primary}
+          secondary={data.cta.heroSecondary ?? data.cta.secondary}
+          secondaryIntent={data.cta.heroSecondaryIntent ?? data.cta.secondaryIntent}
+          keyword={data.cta.keyword}
+          inverse
+        />
+      </div>
+      {data.hero.microcopy && <p class="mt-4 max-w-xl text-sm leading-6 text-white/70">{data.hero.microcopy}</p>}
+    </div>
+
+    <figure data-leak-chart aria-labelledby="leak-chart-title" class="rounded-3xl border border-white/15 bg-white/[0.06] p-5 shadow-2xl sm:p-7">
+      <h2 id="leak-chart-title" class="font-display text-xl font-bold leading-snug sm:text-2xl">{nowrapParts(copy.chartTitle).map((part) => part.keep ? <span class="whitespace-nowrap">{part.text}</span> : part.text)}</h2>
+      <p class="mt-1 text-sm leading-6 text-white/70">{copy.chartSub}</p>
+      <ul class="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-sm text-white/85" aria-hidden="true">
+        <li class="flex items-center gap-2"><span class="inline-block size-3 rounded-sm" style={`background:${MANUAL}`}></span>{copy.manualLabel}</li>
+        <li class="flex items-center gap-2"><span class="inline-block size-3 rounded-sm" style={`background:${AI}`}></span>{copy.aiLabel}</li>
+      </ul>
+
+      <div class="mt-5 space-y-5" aria-hidden="true">
+        {series.map((point, index) => (
+          <div data-leak-row={index}>
+            <p class="text-sm font-bold text-white">{monthLabel(point.months)}</p>
+            <div class="mt-2 grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-[2px]">
+              <div class="h-3 rounded-r bg-white/5"><div data-bar="manual" class="h-3 rounded-r transition-[width] duration-300 motion-reduce:transition-none" style={`width:${pct(point.manualHours)};background:${MANUAL}`} title={`${copy.manualLabel}: ${fmtBaht(point.manualBaht)} · ${fmtHours(point.manualHours)} ชม.`}></div></div>
+              <p data-val="manual" class="text-right text-xs tabular-nums text-white/85">{fmtBaht(point.manualBaht)} · {fmtHours(point.manualHours)} ชม.</p>
+              <div class="h-3 rounded-r bg-white/5"><div data-bar="ai" class="h-3 rounded-r transition-[width] duration-300 motion-reduce:transition-none" style={`width:${pct(point.aiHours)};background:${AI}`} title={`${copy.aiLabel}: ${fmtBaht(point.aiBaht)} · ${fmtHours(point.aiHours)} ชม.`}></div></div>
+              <p data-val="ai" class="text-right text-xs tabular-nums text-white/85">{fmtBaht(point.aiBaht)} · {fmtHours(point.aiHours)} ชม.</p>
+            </div>
+            {index === 0 && <p class="mt-1 text-xs leading-5 text-white/60">{copy.firstMonthNote}</p>}
+          </div>
+        ))}
+      </div>
+
+      <p data-leak-gap class="mt-6 rounded-2xl bg-white/10 px-4 py-3 font-semibold leading-7" aria-live="polite">
+        ปีแรกต่างกัน <span data-gap-hours class="tabular-nums">{fmtHours(gapHours)}</span> ชั่วโมง · ค่าแรงราว <span data-gap-baht class="tabular-nums">{fmtBaht(gapBaht)}</span>
+      </p>
+
+      <div class="sr-only"><table>
+        <caption>{plain(copy.chartTitle)}</caption>
+        <thead><tr><th scope="col">ช่วงเวลา</th><th scope="col">{copy.manualLabel}</th><th scope="col">{copy.aiLabel}</th></tr></thead>
+        <tbody data-leak-table>
+          {series.map((point) => (
+            <tr><th scope="row">{monthLabel(point.months)}</th><td>{fmtBaht(point.manualBaht)} · {fmtHours(point.manualHours)} ชั่วโมง</td><td>{fmtBaht(point.aiBaht)} · {fmtHours(point.aiHours)} ชั่วโมง</td></tr>
+          ))}
+        </tbody>
+      </table></div>
+
+      <details data-leak-calc class="group mt-5 rounded-2xl border border-white/15 open:bg-white/[0.04]">
+        <summary class="flex min-h-12 cursor-pointer touch-manipulation list-none active:bg-white/5 items-center justify-between gap-3 rounded-2xl px-4 font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral [&::-webkit-details-marker]:hidden">
+          {copy.calcToggle}
+          <span aria-hidden="true" class="text-coral transition-transform group-open:rotate-45 motion-reduce:transition-none">+</span>
+        </summary>
+        <div class="grid gap-4 px-4 pb-5 pt-1 sm:grid-cols-2">
+          <label class="text-sm text-white/85">คนในทีมขาย (คน)
+            <input data-leak-input="team" type="number" autocomplete="off" enterkeyhint="next" inputmode="numeric" min="1" max="200" step="1" value={LEAK_DEFAULTS.team} class="mt-1 block min-h-11 w-full rounded-xl border border-white/25 bg-white/10 px-3 text-base text-white tabular-nums focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral" />
+          </label>
+          <label class="text-sm text-white/85">งานซ้ำต่อคนต่อวัน (ชั่วโมง)
+            <input data-leak-input="hoursPerDay" type="number" autocomplete="off" enterkeyhint="next" inputmode="decimal" min="0.25" max="8" step="0.25" value={LEAK_DEFAULTS.hoursPerDay} class="mt-1 block min-h-11 w-full rounded-xl border border-white/25 bg-white/10 px-3 text-base text-white tabular-nums focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral" />
+          </label>
+          <label class="text-sm text-white/85">เงินเดือนเฉลี่ยต่อคน (บาท)
+            <input data-leak-input="salary" type="number" autocomplete="off" enterkeyhint="done" inputmode="numeric" min="5000" max="500000" step="1000" value={LEAK_DEFAULTS.salary} class="mt-1 block min-h-11 w-full rounded-xl border border-white/25 bg-white/10 px-3 text-base text-white tabular-nums focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral" />
+          </label>
+          <label class="text-sm text-white/85">งานซ้ำที่ AI Agent รับไป <output data-leak-share-out class="font-bold text-white tabular-nums">{Math.round(LEAK_DEFAULTS.aiShare * 100)}%</output>
+            <input data-leak-input="aiShare" type="range" min="10" max="80" step="5" value={Math.round(LEAK_DEFAULTS.aiShare * 100)} class="mt-3 block w-full accent-[#3d9be0]" />
+          </label>
+        </div>
+      </details>
+
+      <ul class="mt-4 space-y-1 text-xs leading-5 text-white/60">
+        {copy.assumptions.map((item) => <li>{item}</li>)}
+      </ul>
+    </figure>
+  </div>
+</section>
+
+<script>
+  import { leakSeries, fmtBaht, fmtHours, monthLabel, sanitize, type LeakInputs } from '../../../scripts/leak-calc';
+
+  const root = document.querySelector<HTMLElement>('[data-leak-hero]');
+  if (root) {
+    const inputs = [...root.querySelectorAll<HTMLInputElement>('[data-leak-input]')];
+    let edited = false;
+
+    const read = (): LeakInputs => {
+      const get = (key: string) => Number(inputs.find((el) => el.dataset.leakInput === key)?.value);
+      return sanitize({ team: get('team'), hoursPerDay: get('hoursPerDay'), salary: get('salary'), aiShare: get('aiShare') / 100 });
+    };
+
+    const render = () => {
+      const values = read();
+      const series = leakSeries(values);
+      const max = series[series.length - 1].manualHours || 1;
+      const pct = (n: number) => `${Math.max(2, (n / max) * 100).toFixed(1)}%`;
+      series.forEach((point, index) => {
+        const row = root.querySelector<HTMLElement>(`[data-leak-row="${index}"]`);
+        if (!row) return;
+        const set = (kind: 'manual' | 'ai', hours: number, baht: number) => {
+          const bar = row.querySelector<HTMLElement>(`[data-bar="${kind}"]`);
+          const val = row.querySelector<HTMLElement>(`[data-val="${kind}"]`);
+          if (bar) bar.style.width = pct(hours);
+          if (val) val.textContent = `${fmtBaht(baht)} · ${fmtHours(hours)} ชม.`;
+        };
+        set('manual', point.manualHours, point.manualBaht);
+        set('ai', point.aiHours, point.aiBaht);
+      });
+      const year = series[series.length - 1];
+      const gapHours = root.querySelector('[data-gap-hours]');
+      const gapBaht = root.querySelector('[data-gap-baht]');
+      if (gapHours) gapHours.textContent = fmtHours(year.manualHours - year.aiHours);
+      if (gapBaht) gapBaht.textContent = fmtBaht(year.manualBaht - year.aiBaht);
+      const out = root.querySelector('[data-leak-share-out]');
+      if (out) out.textContent = `${Math.round(values.aiShare * 100)}%`;
+      const table = root.querySelector('[data-leak-table]');
+      if (table) {
+        table.querySelectorAll('tr').forEach((tr, index) => {
+          const point = series[index];
+          if (!point) return;
+          const cells = tr.querySelectorAll('td');
+          tr.querySelector('th')!.textContent = monthLabel(point.months);
+          cells[0].textContent = `${fmtBaht(point.manualBaht)} · ${fmtHours(point.manualHours)} ชั่วโมง`;
+          cells[1].textContent = `${fmtBaht(point.aiBaht)} · ${fmtHours(point.aiHours)} ชั่วโมง`;
+        });
+      }
+    };
+
+    inputs.forEach((el) => el.addEventListener('input', () => { edited = true; render(); }));
+
+    // ลูกค้าที่ใส่ตัวเลขเองแล้วกด LINE ใน hero → มือถือเปิดแชตพร้อมตัวเลขทีม (แท็ก [C1/calc] ให้บอทแกะ)
+    // desktop ปล่อย lin.ee (หน้า QR) ตามกติกาเดิมของ line-prefill.ts
+    const lineCta = root.querySelector<HTMLAnchorElement>('a[data-line-cta]');
+    lineCta?.addEventListener('click', () => {
+      if (!edited || !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) return;
+      const v = read();
+      const oa = (root.dataset.lineOa || '').startsWith('@') ? root.dataset.lineOa : `@${root.dataset.lineOa}`;
+      const text = `${lineCta.dataset.ctaKeyword || 'CONSULT'} [C1/calc] ทีมขาย ${v.team} คน งานซ้ำคนละ ${v.hoursPerDay} ชม./วัน เงินเดือนเฉลี่ย ${v.salary.toLocaleString('en-US')} บาท`;
+      lineCta.href = `https://line.me/R/oaMessage/${oa}/?${encodeURIComponent(text)}`;
+    });
+  }
+</script>
