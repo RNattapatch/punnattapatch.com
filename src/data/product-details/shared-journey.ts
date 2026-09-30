@@ -5,6 +5,8 @@ export const publicImage = (publicSrc: string, width: number, height: number) =>
 export const JOURNEY_CLIENT_LOGOS: ClientLogo[] = [
   { src: '/logos/clients/nissan.png', alt: 'Nissan' },
   { src: '/logos/clients/futureskill.png', alt: 'FutureSkill' },
+  { src: '/logos/clients/ramkhamhaeng.png', alt: 'มหาวิทยาลัยรามคำแหง' },
+  { src: '/logos/clients/tni.png', alt: 'สถาบันเทคโนโลยีไทย-ญี่ปุ่น (TNI)' },
   { src: '/logos/clients/ving.png', alt: 'V!NG' },
   { src: '/logos/clients/gpx.jpg', alt: 'GPX' },
   { src: '/logos/clients/royal-enfield.jpg', alt: 'Royal Enfield' },
@@ -34,7 +36,7 @@ export const JOURNEY_TESTIMONIALS: ProductTestimonial[] = [
 const credentials = [
   'อดีต Sales Engineer และ Instructor ฝั่ง Dealer รถยนต์',
   'คัดเรซูเม่กว่า 1,000 ใบ และสัมภาษณ์คนเข้าทีมกว่า 100 คน',
-  'อบรมและวางระบบร่วมกับ 20 องค์กร ในธุรกิจยานยนต์ ผู้ผลิต ค้าปลีก โรงแรม และบริการ',
+  'อบรมและวางระบบร่วมกับ 22 องค์กร ในธุรกิจยานยนต์ ผู้ผลิต ค้าปลีก โรงแรม บริการ และสถาบันการศึกษา',
   'วิทยากร Nissan Sales Manager Seminar 2026',
   'สร้าง AI Workflow ใช้กับงานขาย การติดตาม และการบริหารของตัวเองทุกวัน',
 ];
