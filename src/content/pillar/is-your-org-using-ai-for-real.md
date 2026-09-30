@@ -104,10 +104,6 @@ readingTimeMinutes: 9
 **3. ให้พนักงาน upskill เรื่อง AI ไม่ใช่แค่ทำงานเดิม**
 คนที่ทำงาน routine จะถูกแทนที่ ส่วนคนที่ manage AI และคิดเผื่อกรณีที่ไม่ค่อยเกิดขึ้น (edge case) ได้ คือคนที่จะสร้างคุณค่าเพิ่มให้บริษัท
 
-## Case Study — องค์กรที่ขยับจาก User → Commander จริง
-
--   [Manufacturing B2B ทีม 12 คน](/case-studies/manufacturing-b2b-12-person-team) — ตอนเริ่มตอบ "ใช่" 8/10 ข้อ → จบที่ 1/10 ข้อ, pipeline velocity (ความเร็วในการปิดดีลใน pipeline) +30%, margin (กำไรขั้นต้น) +15%
--   [Forklift Distributor ทีม 5 คน](/case-studies/forklift-distributor-5-person-team) — SME เล็กก็ขยับได้: ค่าซอฟต์แวร์ -97%, ยอดขาย +30%
 
 ## อ่านต่อ
 

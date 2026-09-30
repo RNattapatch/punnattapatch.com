@@ -38,7 +38,7 @@ export const SITE = {
     { label: 'บริการ', href: '/services' },
     { label: 'Free Kit', href: '/agent-builder-kit' },
     { label: 'BOSI Quiz', href: '/bosi-dna-quiz' },
-    { label: 'Case Study', href: '/case-studies' },
+    { label: 'ผลงาน', href: '/portfolio' },
     { label: 'บทเรียน 100 ล้าน', href: '/insights' },
     { label: 'FAQ', href: '/faq' },
     { label: 'เกี่ยวกับปัน', href: '/about' },

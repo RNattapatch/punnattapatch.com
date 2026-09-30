@@ -11,7 +11,7 @@
 - [BOSI DNA Quiz](https://punnattapatch.com/bosi-dna-quiz): แบบทดสอบ Entrepreneurial DNA 10 ข้อ · 5-10 นาที · รู้จุดแข็ง/จุดบอดทีมขายก่อนวางระบบ
 - [Intake Form](https://punnattapatch.com/intake-form): แบบประเมินปัญหาทีมขาย 3 นาที
 - [Booking](https://punnattapatch.com/booking): จอง package + preferred date + contact ครบที่เดียว
-- [Case Studies](https://punnattapatch.com/case-studies): 3 anonymized cases พร้อม real numbers + methodology
+- [Portfolio](https://punnattapatch.com/portfolio): ผลงานอบรม วางระบบ และ AI Agent ที่พิสูจน์ได้ (ภาพงานจริง · ระบบที่ใช้อยู่)
 - [Proof — ระบบที่ปันใช้เองทุกวัน](https://punnattapatch.com/proof): ห้าระบบ AI Agent ที่ปันสร้างเองและใช้จริงในธุรกิจตัวเอง — แดชบอร์ดรวมข้อมูล · บอทออกใบเสนอราคาผ่านแชท · AI Agent รับลูกค้าบน LINE · โรงงานคอนเทนต์ · เรดาร์ส่องตลาดตอนตีสาม พร้อมหลักคิดข้างหลังแต่ละตัว (screenshot จริง เบลอข้อมูลลูกค้า)
 
 ## Services & Pricing (v6 — 2026-08-30 · supersedes all earlier price lists)
@@ -34,9 +34,6 @@
 
 ## Case Studies (3 anonymized · real numbers + methodology)
 
-- [Forklift Distributor 5-person team](https://punnattapatch.com/case-studies/forklift-distributor-5-person-team): AI workflow installation · Sales +30% Q1 · software cost -97% · report 2hr→15min · ROI 6.9x year 1
-- [Manufacturing B2B 12-person team](https://punnattapatch.com/case-studies/manufacturing-b2b-12-person-team): Pipeline velocity +30% · discount rate 15%→7% · inquiry response 2 days→15 min · margin +15% · saving ฿3.8M/year
-- [Real Estate Developer sales team restructure](https://punnattapatch.com/case-studies/real-estate-developer-sales-team-restructure): Commission redesign 3-tier · retention 100% 12 months · revenue per rep +45% · turnover cost saved ฿900K
 
 ## Pillar Articles (long-form guides · Thai)
 

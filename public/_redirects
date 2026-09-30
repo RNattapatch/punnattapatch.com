@@ -20,3 +20,6 @@
 /ads/daruma-consult /services/advance-ai-automation 301
 # นอกแผน: hotel = Wave 2 ยังไม่เปิด · line-ai-response = Implementation product ที่ master strategy ไม่มี
 /ads/line-ai-response /services 301
+# 2026-09-30: ถอด 3 case study (ตัวเลขไม่มีที่มา) → ชี้ไปหน้าผลงานที่พิสูจน์ได้ · 302 เพราะจะเปิดคืนเมื่อมีเคสที่ยืนยันแล้ว
+/case-studies /portfolio 302
+/case-studies/* /portfolio 302

@@ -141,10 +141,6 @@ SME ไทยมักอยากเริ่มจาก "Agent ขายข�
 **4. Lock-in (ผูกติดกับ vendor) กับ vendor ที่ export (ส่งออกข้อมูล) data ไม่ได้**
 ควรเลือกใช้ stack ที่เราเป็นเจ้าของ data เอง (เช่น Sheets หรือเครื่องมือที่ self-host ได้) อย่าใช้ proprietary SaaS ที่เอาข้อมูลออกมายาก
 
-## Case Study — ลูกค้าที่เริ่ม Agent ตัวแรกจริง
-
-- [Forklift Distributor ทีม 5 คน: AI ช่วยงาน report + stock check รายวัน](/case-studies/forklift-distributor-5-person-team) — report 2 ชม.→15 นาที, software cost -97%, ROI 6.9x ปีแรก
-- [Manufacturing B2B ทีม 12 คน: Agent ช่วย qualifier + follow-up (ติดตามลูกค้า)](/case-studies/manufacturing-b2b-12-person-team) — inquiry response 2 วัน→15 นาที, pipeline velocity +30%
 
 ## อ่านต่อ — คำถามเฉพาะที่เจอบ่อย
 

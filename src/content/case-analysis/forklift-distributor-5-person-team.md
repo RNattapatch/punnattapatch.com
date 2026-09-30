@@ -3,7 +3,7 @@ title: "Forklift Distributor: ทีม 5 คน ลดเวลา Report 2 ช
 description: "Case จริง: ผู้จัดจำหน่าย Forklift ทีม 5 คน ใช้ AI Workshop + Monthly Consulting — ยอด +30%, ประหยัดค่า software ฿97k/เดือน, report 2ชม.→15นาที, ROI 6.9x ปีแรก"
 lang: th
 published: 2026-04-18
-draft: false
+draft: true  # 2026-09-30 ถอด: ตัวเลขไม่มีที่มา/ขัดกับข้อมูลลูกค้าจริง — เปิดคืนได้เมื่อมี evidence pack + คำอนุญาตลูกค้า
 tags: [case-study, forklift, distribution, ai-workflow, sme]
 industry: "Heavy Equipment / Forklift Distribution"
 companySize: "5-person sales team + owner"

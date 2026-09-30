@@ -102,9 +102,6 @@ Sales rep อาวุโสที่ closing rate (อัตราปิดก�
 
 อย่าปล่อยให้คำว่า "ลูกรัก" มาทำร้ายธุรกิจที่คุณสร้างมากับมือ
 
-## Case Study — ลูกค้าที่โดน "ลูกรัก syndrome" แล้วแก้ได้
-
-- [Real Estate Developer: เสียเซลล์เก่ง 3 คนใน 6 เดือน → retention 100% หลัง redesign commission](/case-studies/real-estate-developer-sales-team-restructure) — Revenue per rep +45%, ประหยัด turnover cost ฿900k
 
 ## อ่านต่อ
 

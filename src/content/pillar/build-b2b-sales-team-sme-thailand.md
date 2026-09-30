@@ -97,7 +97,7 @@ KPI dashboard (หน้าจอสรุปข้อมูล) พื้นฐ
 
 ผลหลัง 4 เดือน: dealer active เพิ่มจาก 11 → 15 ราย, concentration จาก top-4 = 80% ลงมาที่ 65%, เจ้าของเอาเวลา follow-up dealer กลับมาได้ 3 ชม./วัน. งบทำระบบรวม ฿65,000 <!-- price:historical -->
 
-เคสเต็มอ่านที่ [Dealer หนีไปคู่แข่งแก้ยังไง](/faq#dealer-switching-to-competitor) + [Forklift Distributor ทีม 5 คน](/case-studies/forklift-distributor-5-person-team) สำหรับเคสลักษณะคล้ายกัน
+เคสเต็มอ่านที่ [Dealer หนีไปคู่แข่งแก้ยังไง](/faq#dealer-switching-to-competitor)
 
 ## 5 ข้อผิดพลาดที่เจ้าของ SME ทำซ้ำ
 

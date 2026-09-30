@@ -3,7 +3,7 @@ title: "Manufacturing B2B: ทีม 12 คน เพิ่ม Pipeline Velocity
 description: "Case จริง: Manufacturing B2B ทีม 12 คน — pipeline velocity (ความเร็วในการปิดดีล) +30%, discount rate 15%→7%, inquiry response 2วัน→15นาที, margin (กำไรขั้นต้น) +15%, saving ฿3.8M/ปี"
 lang: th
 published: 2026-04-18
-draft: false
+draft: true  # 2026-09-30 ถอด: ตัวเลขไม่มีที่มา/ขัดกับข้อมูลลูกค้าจริง — เปิดคืนได้เมื่อมี evidence pack + คำอนุญาตลูกค้า
 tags: [case-study, manufacturing, b2b, monthly-consulting, pipeline]
 industry: "Manufacturing / B2B Distribution"
 companySize: "12-person sales team + 20 production + ownership"

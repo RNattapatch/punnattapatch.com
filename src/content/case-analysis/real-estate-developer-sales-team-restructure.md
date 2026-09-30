@@ -3,7 +3,7 @@ title: "Real Estate Developer: ออกแบบ Commission ใหม่ให�
 description: "Case จริง: Real Estate Developer เสียเซลล์เก่ง 3 คนเพราะ commission flat — หลัง redesign 3-tier: retention 100% 12 เดือน, revenue per rep +45%, ประหยัด turnover cost ฿900k"
 lang: th
 published: 2026-04-18
-draft: false
+draft: true  # 2026-09-30 ถอด: ตัวเลขไม่มีที่มา/ขัดกับข้อมูลลูกค้าจริง — เปิดคืนได้เมื่อมี evidence pack + คำอนุญาตลูกค้า
 tags: [case-study, real-estate, commission, retention, sales-team]
 industry: "Real Estate Development (Residential Housing)"
 companySize: "8-person sales team + 3 managers"

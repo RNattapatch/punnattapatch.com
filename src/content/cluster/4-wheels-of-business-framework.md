@@ -137,10 +137,6 @@ parentPillar: sales-consulting
   - สร้าง SOP กว่า 40 ฉบับ ให้ทีมทำงานเองได้
 - Result: เจ้าของลดชั่วโมงทำงานเหลือ 8-9 ชั่วโมง/วัน มีเวลาให้ครอบครัวในวันหยุด และ margin เพิ่มขึ้น 15%
 
-## Case Study — ลูกค้าที่วางระบบครบ 4 ล้อพร้อมกันจริง
-
-- [Manufacturing B2B ทีม 12 คน](/case-studies/manufacturing-b2b-12-person-team) — 👥 ทีม commission (ค่าคอมมิชชั่น) ใหม่ + 📣 pipeline velocity (ความเร็วในการปิดดีล) +30% + 💰 margin +15% + ⚙️ inquiry (การสอบถามจากลูกค้า) 2 วัน→15 นาที
-- [Real Estate Developer: ซ่อมล้อคนก่อน แล้วล้อการขายหมุนตาม](/case-studies/real-estate-developer-sales-team-restructure) — retention (การรักษาพนักงาน) 100%, revenue per rep (รายได้ต่อพนักงานขายหนึ่งคน) +45%
 
 ## อ่านต่อ
 

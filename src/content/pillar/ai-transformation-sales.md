@@ -122,10 +122,6 @@ Setup time ปกติใช้เวลา 2-3 สัปดาห์สำห�
 
 Total Year 1 ประมาณ ฿100,000-150,000 + tool cost ปกติจะคืนทุนใน 2-4 เดือน ถ้าเลือก wedge ถูก
 
-## Case Study — ลูกค้าที่เดินผ่าน 5 ขั้นนี้จริง
-
-- [Forklift Distributor ทีม 5 คน: AI ลด report 2 ชม.→15 นาที, software cost -97%](/case-studies/forklift-distributor-5-person-team) — ROI 6.9x ปีแรก
-- [Manufacturing B2B ทีม 12 คน: pipeline velocity +30%, discount rate 15%→7%](/case-studies/manufacturing-b2b-12-person-team) — Inquiry response 2 วัน→15 นาที
 
 ## อ่านต่อ — คำถามที่เจ้าของ SME ถามบ่อย
 

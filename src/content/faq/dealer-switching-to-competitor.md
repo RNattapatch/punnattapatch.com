@@ -105,4 +105,4 @@ ROI (ผลตอบแทนการลงทุน): ทุน ฿65,000 ไ�
 - [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation): วาง dealer portal + รอบการ check-in + ระบบติดตาม concentration risk ทั้งระบบ
 - [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office): 1 วัน สอนทำระบบอัปเดต dealer และแจ้งเตือน follow-up อัตโนมัติ
 
-อ่านต่อ: [คู่มือสร้างทีมขาย B2B](/insights/build-b2b-sales-team-sme-thailand) | [เพิ่มพนักงานขายแล้วยอดจะเพิ่มไหม](/faq#add-sales-staff-revenue-not-increase) | [Forklift Distributor 5 คน case study](/case-studies/forklift-distributor-5-person-team)
+อ่านต่อ: [คู่มือสร้างทีมขาย B2B](/insights/build-b2b-sales-team-sme-thailand) | [เพิ่มพนักงานขายแล้วยอดจะเพิ่มไหม](/faq#add-sales-staff-revenue-not-increase)

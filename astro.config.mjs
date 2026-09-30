@@ -44,6 +44,7 @@ export default defineConfig({
         !page.endsWith('/thank-you') && // intake thank-you is noindex
         !page.endsWith('/agent-builder-kit/thank-you') && // Kit thank-you is noindex
         !page.includes('/agent-builder-kit/manual/') && // manual dark pages — distributed via email/PDF only
+        !page.includes('/case-studies') && // 2026-09-30 ถอดเคส → 302 ไป /portfolio
         !page.includes('/app/') && // private app hub → app.punnattapatch.com (pruned from marketing)
         !page.endsWith('/app') && // private app hub launcher — noindex
         !page.endsWith('/privacy'), // legal page — noindex; reachable via footer + direct link only

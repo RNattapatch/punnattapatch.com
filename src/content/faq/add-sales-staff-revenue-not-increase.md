@@ -53,16 +53,14 @@ tags: [faq, hiring, sales-team, scaling, sme]
 
 ถ้ามีเซลล์ 6 คนแต่ 2 คน performance ต่ำกว่า 50% ของ median การ replace 2 คนนี้ได้ผลมากกว่าเพิ่มคนที่ 7, 8 เพราะ cost เท่าเดิม productivity ขึ้น
 
-## เมื่อไหร่ถึงควรเพิ่มคน: ตัวอย่างจริง
+## เมื่อไหร่ถึงควรเพิ่มคน: ตัวอย่างการคิด
 
-ลูกค้าธุรกิจ forklift distributor ทีม 5 คน. Inbound lead เฉลี่ย 85 คน/เดือน ทีมดูแลไหวแค่ 60 คน ลูกค้า 25 คน/เดือนไม่ได้ follow-up ภายใน 48 ชม. ซึ่งเข้า threshold ชัด
+สมมติทีมขาย 5 คน Inbound lead เฉลี่ย 85 คน/เดือน ทีมดูแลไหวแค่ 60 คน ลูกค้า 25 คน/เดือนไม่ได้ follow-up ภายใน 48 ชม. ซึ่งเข้า threshold ชัด
 
 การเพิ่มคนที่ 6 ผ่าน process นี้
 1. เตรียม onboarding doc + script ล่วงหน้า 2 สัปดาห์
 2. คนใหม่รับ lead "ล่างสุด" ที่ทีมเดิมดูไม่ทัน
 3. วัดผล 90 วัน: ถ้า revenue per rep รวมทีมขึ้น ≥ 15% แปลว่าการเพิ่มคนได้ผล
-
-ผลจริงหลัง 4 เดือน: revenue เพิ่ม 22% ทีมเดิม overload ลดลง NPS จาก 45 → 68 เคสเต็มอ่านที่ [Forklift Distributor 5 คน](/case-studies/forklift-distributor-5-person-team)
 
 ## สัญญาณที่บอกว่า "อย่าเพิ่มคน"
 
