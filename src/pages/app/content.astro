@@ -577,6 +577,7 @@ import AppNav from '../../components/app/AppNav.astro';
         if (!box) continue;
         box.innerHTML = list.length ? list.map((m, i) => `<li class="relative">
             <a href="${esc(m.url ?? '#')}" target="_blank" rel="noopener"><img src="${esc(m.url ?? '')}" alt="รูปที่ ${i + 1}" loading="lazy" class="aspect-[4/5] w-full rounded object-cover ${i === 0 ? 'ring-2 ring-[var(--color-brand-coral)]' : ''}" /></a>
+            ${m.drive_file_id ? `<a href="https://drive.google.com/file/d/${esc(m.drive_file_id)}/view" target="_blank" rel="noopener" class="absolute right-0.5 top-0.5 rounded bg-base-100/90 px-1.5 py-0.5 text-[11px] font-semibold shadow" aria-label="เปิดต้นฉบับรูป ${i + 1} ใน Google Drive">Drive</a>` : ''}
             <span class="mt-0.5 flex justify-between">
               <button data-action="m-left" data-v="${esc(id)}" data-i="${i}" class="btn btn-ghost btn-xs px-1" aria-label="เลื่อนรูป ${i + 1} ไปก่อน" ${i === 0 ? 'disabled' : ''}>◀</button>
               <button data-action="m-del" data-v="${esc(id)}" data-i="${i}" class="btn btn-ghost btn-xs px-1" aria-label="เอารูป ${i + 1} ออก">✕</button>

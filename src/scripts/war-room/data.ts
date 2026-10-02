@@ -313,6 +313,7 @@ export interface MediaAsset {
   is_cover: boolean;
   asset_status: string;
   drive_path: string | null;
+  drive_file_id: string | null; // ต้นฉบับย้ายเข้า Google Drive แล้ว (worker บนมินิ) · storage_path = พรีวิว JPEG 1080
   width: number | null;
   height: number | null;
   url?: string; // signed URL (อายุ 1 ชม.) — เติมตอนโหลด
