@@ -1,7 +1,7 @@
 // แท็บแคมเปญ (2026-10-02) — "มุมลูกค้า / มุมผลิต"
 // แคมเปญ = เส้นทาง N จุดที่ลูกค้าหนึ่งคนจะเจอคุณในสัปดาห์ · ช่องว่าง = วันที่เขาไม่เห็นคุณ
 import {
-  PILLAR_V14_LABEL, type PillarV14, type Idea, type Variant, type Publication,
+  PILLAR_V14_LABEL, TEMPERATURE, type PillarV14, type Temperature, type Idea, type Variant, type Publication,
   type Campaign, type CampaignItem, type MediaAsset,
 } from './data';
 
@@ -11,7 +11,7 @@ export type CampaignApi = {
   updateCampaignItem: (id: string, patch: Partial<CampaignItem>) => Promise<void>;
   addCampaignItems: (rows: Partial<CampaignItem>[]) => Promise<void>;
   deleteCampaignItem: (id: string) => Promise<void>;
-  createCampaign: (c: { name: string; goal: string; start_date: string | null; end_date: string | null; value: number; me: number }) => Promise<string>;
+  createCampaign: (c: { name: string; goal: string; start_date: string | null; end_date: string | null; value: number; me: number; temperature: Temperature }) => Promise<string>;
   updateIdea: (cid: string, patch: Partial<Idea>) => Promise<void>;
   updateCampaign: (id: string, patch: Partial<Campaign>) => Promise<void>;
   listMedia: (variantIds: string[]) => Promise<MediaAsset[]>;
@@ -31,6 +31,10 @@ const STATUS: Record<string, [string, string]> = {
   idea: ['ไอเดีย', 'badge-ghost'], planning: ['วางแผน', 'badge-outline'], producing: ['กำลังผลิต', 'badge-secondary'],
   live: ['กำลังยิง', 'badge-success'], paused: ['พัก', 'badge-warning'], done: ['จบแล้ว', 'badge-ghost'],
 };
+const TEMP_STYLE: Record<Temperature, string> = {
+  cold: 'background-color:#DCE6F0;color:#072B4E', warm: 'background-color:#F6E3C8;color:#7A4B12', hot: 'background-color:var(--color-brand-coral);color:#fff',
+};
+const tempBadge = (t?: Temperature | null) => t ? `<span class="badge border-0 font-semibold" style="${TEMP_STYLE[t]}" title="${esc(TEMPERATURE[t].hint)}">${TEMPERATURE[t].label}</span>` : '';
 const AD: Record<string, string> = { none: 'ยังไม่ตั้ง', ready: 'พร้อมตั้ง', live: 'กำลังยิง', paused: 'พัก' };
 const FORMAT: Record<string, string> = { reel: 'Reel', carousel: 'Carousel', article: 'Post', line_broadcast: 'LINE' };
 const AFTER_SHOOT = ['recorded', 'editing', 'edited', 'scheduled', 'posted', 'analyzed', 'repurposed'];
@@ -112,7 +116,7 @@ function renderCards() {
     const [lbl, cls] = STATUS[c.status] ?? [c.status, 'badge-ghost'];
     const dates = [c.start_date, c.end_date].filter(Boolean).map((d) => new Date(d!).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' })).join('–');
     return `<button data-cp-open="${esc(c.campaign_id)}" class="group rounded-2xl bg-base-200 p-5 text-left transition hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-3 focus-visible:outline-[var(--color-brand-navy)] active:scale-[.99] motion-reduce:transition-none">
-      <div class="flex items-center justify-between gap-2"><span class="badge ${cls}">${lbl}</span><span class="text-sm opacity-70">${esc(dates)}</span></div>
+      <div class="flex items-center justify-between gap-2"><span class="flex gap-1">${tempBadge(c.temperature)}<span class="badge ${cls}">${lbl}</span></span><span class="text-sm opacity-70">${esc(dates)}</span></div>
       <h3 class="mt-3 font-display text-lg font-bold">${esc(c.name)}</h3>
       ${c.goal ? `<p class="mt-0.5 line-clamp-2 text-sm opacity-80">${esc(c.goal)}</p>` : ''}
       <div class="mt-4 flex gap-1.5" aria-hidden="true">${slots.map((s) => `<span class="h-2 flex-1 rounded-full ${!s.variant_id ? 'bg-base-300' : isReady(s) ? 'bg-success' : 'bg-warning'}"></span>`).join('')}</div>
@@ -133,6 +137,7 @@ function renderDetail() {
         <div class="mb-2 flex flex-wrap items-center gap-2">
           <label class="sr-only" for="cp-status">สถานะแคมเปญ</label>
           <select id="cp-status" class="select select-bordered select-xs w-auto" aria-label="สถานะแคมเปญ">${Object.entries(STATUS).map(([k, [l]]) => `<option value="${k}" ${k === c.status ? 'selected' : ''}>${l}</option>`).join('')}</select>
+          ${tempBadge(c.temperature)}
           <span class="badge ${cls} hidden sm:inline-flex">${lbl}</span>
           <span class="badge badge-outline">${c.touch_per_week} จุด/สัปดาห์</span>
           ${c.start_date ? `<span class="badge badge-outline">${esc(c.start_date)} → ${esc(c.end_date ?? '…')}</span>` : ''}
@@ -174,7 +179,7 @@ function renderDetail() {
     return `<li class="flex items-start gap-3 sm:block">${head}<div class="min-w-0 flex-1 rounded-2xl bg-base-200 p-2 sm:mt-2">
       <button data-cp-drawer="${esc(v.content_id)}" class="flex w-full gap-3 text-left focus-visible:outline-3 sm:block" aria-label="เปิด ${esc(idea?.title ?? v.variant_id)}">
         <div class="grid aspect-[4/5] w-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-base-300 text-center text-xs sm:w-full sm:text-sm">${img ? `<img src="${esc(img)}" alt="" loading="lazy" class="h-full w-full object-cover" />` : `<span class="opacity-70">${v.format === 'reel' ? '▶ Reel' : 'ยังไม่มีรูป'}</span>`}</div>
-        <p class="line-clamp-2 text-sm font-semibold leading-snug sm:mt-2">${esc((idea?.title ?? v.working_title ?? v.variant_id).replace(/^\[แอดอุ่น ต\.ค\.\]\s*/, ''))}</p>
+        <p class="line-clamp-2 text-sm font-semibold leading-snug sm:mt-2">${esc((idea?.title ?? v.working_title ?? v.variant_id).replace(/^\[[^\]]+\]\s*/, ''))}</p>
       </button>
       <div class="mt-1 flex items-center justify-between gap-1"><span class="text-xs opacity-70">${pv ? PILLAR_V14_LABEL[pv] : 'ยังไม่ระบุหมวด'} · ${FORMAT[v.format] ?? v.format}</span>${dots(r)}</div>
       <button data-cp-clear="${esc(s.id)}" class="btn btn-ghost btn-xs mt-1 w-full opacity-70 tap-44" aria-label="ย้ายออกจากช่อง ${esc(s.slot_code)} ไปม้านั่ง">ย้ายไปม้านั่ง</button>
@@ -189,7 +194,7 @@ function renderDetail() {
     const r = readiness(s);
     const idea = ideaOf(s.content_id);
     return `<tr><td class="font-bold">${esc(s.slot_code)}</td>
-      <td><button data-cp-drawer="${esc(v.content_id)}" class="link text-left">${esc((idea?.title ?? v.variant_id).replace(/^\[แอดอุ่น ต\.ค\.\]\s*/, ''))}</button></td>
+      <td><button data-cp-drawer="${esc(v.content_id)}" class="link text-left">${esc((idea?.title ?? v.variant_id).replace(/^\[[^\]]+\]\s*/, ''))}</button></td>
       <td>${FORMAT[v.format] ?? v.format}</td><td class="text-center">${ic(r.w)}</td><td class="text-center">${ic(r.i)}</td><td class="text-center">${ic(r.o)}</td>
       <td><select data-cp-ad="${esc(s.id)}" class="select select-bordered select-xs w-auto" aria-label="สถานะแอดช่อง ${esc(s.slot_code)}">${Object.entries(AD).map(([k, l]) => `<option value="${k}" ${k === s.ad_status ? 'selected' : ''}>${l}</option>`).join('')}</select></td>
       <td class="text-sm">${nextStep(s, r)}</td></tr>`;
@@ -206,7 +211,7 @@ function renderDetail() {
     return `<li class="flex gap-3 rounded-xl bg-base-100 p-2">
       <button data-cp-drawer="${esc(b.content_id ?? '')}" class="shrink-0" aria-label="เปิดรายละเอียด">${img ? `<img src="${esc(img)}" alt="" loading="lazy" class="aspect-[4/5] w-16 rounded-lg object-cover" />` : `<span class="grid aspect-[4/5] w-16 place-items-center rounded-lg bg-base-300 text-[10px] opacity-70">${v ? FORMAT[v.format] : '—'}</span>`}</button>
       <div class="min-w-0 flex-1">
-        <p class="line-clamp-2 text-sm font-semibold leading-snug">${esc((idea?.title ?? b.variant_id ?? '').replace(/^\[แอดอุ่น ต\.ค\.\]\s*/, ''))}</p>
+        <p class="line-clamp-2 text-sm font-semibold leading-snug">${esc((idea?.title ?? b.variant_id ?? '').replace(/^\[[^\]]+\]\s*/, ''))}</p>
         <p class="text-xs opacity-70">${v ? FORMAT[v.format] : ''}${(mediaCount.get(b.variant_id ?? '') ?? 0) ? ` · ${mediaCount.get(b.variant_id!)} รูป` : ''}${idea?.pillar_v14 ? ` · ${PILLAR_V14_LABEL[idea.pillar_v14]}` : ''}</p>
         <div class="mt-1 flex flex-wrap items-center gap-1">${dots(r)}
           ${empties.length ? `<select data-cp-move="${esc(b.id)}" class="select select-bordered select-xs w-auto" aria-label="ใส่ช่อง"><option value="">ใส่ช่อง…</option>${empties.map((e) => `<option value="${esc(e.id)}">${esc(e.slot_code)}</option>`).join('')}</select>` : ''}
@@ -350,6 +355,7 @@ export function initCampaigns(d: Deps) {
         name, goal: String(f.get('goal') ?? '').trim(),
         start_date: String(f.get('start') || '') || null, end_date: String(f.get('end') || '') || null,
         value: Math.max(1, Number(f.get('value') || 5)), me: Math.max(0, Number(f.get('me') || 0)),
+        temperature: (String(f.get('temperature') || 'warm') as Temperature),
       });
       ($('cp-create') as HTMLDialogElement).close(); (e.target as HTMLFormElement).reset();
       deps.toast('สร้างแคมเปญแล้ว'); await loadCampaigns(); openCampaign(id);

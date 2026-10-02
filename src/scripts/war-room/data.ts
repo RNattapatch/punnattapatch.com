@@ -376,9 +376,17 @@ export async function saveVisualSpec(variant_id: string, spec: import('./note-re
 // ---------- แคมเปญ (2026-10-02 · ตาราง campaigns + campaign_items) ----------
 
 export type CampaignStatus = 'idea' | 'planning' | 'producing' | 'live' | 'paused' | 'done';
+/** อุณหภูมิกลุ่มเป้าหมาย — ปันขอใช้ Cold/Warm/Hot (คำว่า "อุ่น" จักจี้หู · 2026-10-02) */
+export type Temperature = 'cold' | 'warm' | 'hot';
+export const TEMPERATURE: Record<Temperature, { label: string; hint: string }> = {
+  cold: { label: 'Cold', hint: 'คนที่ยังไม่รู้จักคุณ' },
+  warm: { label: 'Warm', hint: 'เคยเห็น/โต้ตอบ/ทักมาแล้ว' },
+  hot: { label: 'Hot', hint: 'ใกล้ตัดสินใจ — ดูคลาสจบ · กรอกฟอร์ม · คุยแล้ว' },
+};
 export interface Campaign {
   campaign_id: string; name: string; goal: string | null; audience: string | null;
   status: CampaignStatus; start_date: string | null; end_date: string | null;
+  temperature?: Temperature | null;
   touch_per_week: number; kpi_label: string | null; budget_note: string | null;
   mix_target: { team?: number; buyer?: number; ai?: number; value?: number; me?: number } | null;
   brief_md_path: string | null; drive_folder: string | null; created_at: string;
@@ -417,11 +425,11 @@ export function slotPattern(value: number, me: number): { code: string; role: 'v
   return Array.from({ length: total }, (_, i) => (meAt.has(i) ? { code: `M${++m}`, role: 'me' as const } : { code: `V${++v}`, role: 'value' as const }));
 }
 
-export async function createCampaign(c: { name: string; goal: string; start_date: string | null; end_date: string | null; value: number; me: number }): Promise<string> {
+export async function createCampaign(c: { name: string; goal: string; start_date: string | null; end_date: string | null; value: number; me: number; temperature: Temperature }): Promise<string> {
   const base = c.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30) || 'campaign';
   const campaign_id = `${base}-${Date.now().toString(36)}`;
   await q(() => supabase.from('campaigns').insert({
-    campaign_id, name: c.name, goal: c.goal || null, status: 'planning',
+    campaign_id, name: c.name, goal: c.goal || null, status: 'planning', temperature: c.temperature,
     start_date: c.start_date, end_date: c.end_date, touch_per_week: c.value + c.me,
     mix_target: { team: 40, buyer: 30, ai: 30, value: c.value, me: c.me },
     brief_md_path: `output/content/war-room/campaigns/${base}.md`,

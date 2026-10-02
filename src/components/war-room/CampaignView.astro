@@ -72,7 +72,16 @@
     <h3 id="cp-create-title" class="font-display font-bold">แคมเปญใหม่</h3>
     <form id="cp-create-form" class="mt-3 space-y-3" method="dialog">
       <label class="form-control"><span class="label-text text-sm">ชื่อแคมเปญ *</span>
-        <input name="name" required maxlength="120" class="input input-bordered input-sm" placeholder="เช่น ตามหลอนกลุ่มอุ่น · พ.ย." /></label>
+        <input name="name" required maxlength="120" class="input input-bordered input-sm" placeholder="เช่น Warm Retarget · พ.ย." /></label>
+      <fieldset class="form-control">
+        <legend class="label-text mb-1 text-sm">กลุ่มเป้าหมาย *</legend>
+        <div class="join w-full">
+          <label class="join-item btn btn-sm flex-1 tap-44 has-[:checked]:text-white has-[:checked]:bg-[var(--color-brand-navy)] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2"><input type="radio" name="temperature" value="cold" class="sr-only" />Cold</label>
+          <label class="join-item btn btn-sm flex-1 tap-44 has-[:checked]:text-white has-[:checked]:bg-[var(--color-brand-navy)] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2"><input type="radio" name="temperature" value="warm" class="sr-only" checked />Warm</label>
+          <label class="join-item btn btn-sm flex-1 tap-44 has-[:checked]:text-white has-[:checked]:bg-[var(--color-brand-navy)] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2"><input type="radio" name="temperature" value="hot" class="sr-only" />Hot</label>
+        </div>
+        <p class="mt-1 text-xs opacity-60">Cold = ยังไม่รู้จักคุณ · Warm = เคยเห็น/โต้ตอบ/ทักมาแล้ว · Hot = ใกล้ตัดสินใจ</p>
+      </fieldset>
       <label class="form-control"><span class="label-text text-sm">เป้าหมาย (1 บรรทัด)</span>
         <input name="goal" maxlength="200" class="input input-bordered input-sm" placeholder="ใครเห็นอะไร กี่ครั้ง" /></label>
       <div class="grid grid-cols-2 gap-2">
