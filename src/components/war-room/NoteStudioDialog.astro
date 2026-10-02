@@ -1,0 +1,47 @@
+---
+// Note Studio dialog markup — logic อยู่ src/scripts/war-room/note-studio.ts
+---
+<!-- Note Studio (2026-10-02): ทำรูป carousel / รูปเดี่ยว สไตล์ Notes · พรีวิวสด → render จริงบน Mac mini -->
+<dialog id="ns-dialog" class="modal" aria-labelledby="ns-title">
+  <div class="modal-box flex h-[100dvh] max-h-[100dvh] w-full max-w-6xl flex-col rounded-none p-0 sm:h-[94dvh] sm:rounded-2xl">
+    <header class="flex flex-wrap items-center gap-2 border-b border-base-300 px-4 py-3">
+      <div class="min-w-0 flex-1">
+        <p id="ns-id" class="font-mono text-[11px] opacity-50"></p>
+        <h3 id="ns-title" class="truncate font-display font-bold">Note Studio</h3>
+      </div>
+      <label class="flex items-center gap-1 text-xs"><span class="opacity-60">แบบ</span>
+        <select id="ns-mode" class="select select-bordered select-xs" aria-label="แบบรูป"><option value="carousel">Carousel</option><option value="single">รูปเดี่ยว</option></select></label>
+      <label class="flex items-center gap-1 text-xs"><span class="opacity-60">สัดส่วน</span>
+        <select id="ns-ratio" class="select select-bordered select-xs" aria-label="สัดส่วนรูป"><option value="4:5">4:5</option><option value="1:1">1:1</option></select></label>
+      <label class="flex cursor-pointer items-center gap-1 text-xs"><input id="ns-follow" type="checkbox" class="checkbox checkbox-xs" /> หน้า Follow</label>
+      <button id="ns-close" class="btn btn-ghost btn-sm btn-circle tap-44" aria-label="ปิด Note Studio">✕</button>
+    </header>
+    <div class="grid min-h-0 flex-1 gap-0 overflow-y-auto lg:grid-cols-[1fr_420px] lg:overflow-hidden">
+      <section class="p-4 lg:min-h-0 lg:overflow-y-auto" aria-label="แก้ข้อความทีละใบ">
+        <p class="mb-3 rounded-lg bg-base-200 px-3 py-2 text-xs">Enter = ขึ้นบรรทัดใหม่ · เน้นคำด้วย <code>==คำ==</code> · ใบ "เนื้อ" บรรทัดแรกจะเป็นตัวหนา · ตัวเลข px = ขนาดตัวอักษรบนมือถือ (ควร ≥64)</p>
+        <ol id="ns-slides" class="space-y-3"></ol>
+        <button id="ns-add" class="btn btn-sm btn-ghost mt-3 w-full border border-dashed border-base-300 tap-44">+ เพิ่มใบ</button>
+      </section>
+      <aside class="border-t border-base-300 bg-base-200/60 p-4 lg:min-h-0 lg:overflow-y-auto lg:border-l lg:border-t-0" aria-label="พรีวิว">
+        <div class="flex items-center justify-between gap-2">
+          <button id="ns-prev" class="btn btn-ghost btn-sm tap-44" aria-label="ใบก่อนหน้า">◀</button>
+          <p id="ns-pos" class="text-center text-xs opacity-70" aria-live="polite"></p>
+          <button id="ns-next" class="btn btn-ghost btn-sm tap-44" aria-label="ใบถัดไป">▶</button>
+        </div>
+        <div class="mt-2 overflow-hidden rounded-xl shadow-sm"><iframe id="ns-frame" title="พรีวิวการ์ด" class="block border-0" sandbox=""></iframe></div>
+        <p class="mt-1 text-[11px] opacity-50">พรีวิวในเบราว์เซอร์ · รูปจริงทำบน Mac mini ด้วยแม่แบบเดียวกัน</p>
+        <h4 class="mt-4 font-display text-sm font-bold">ตรวจกลิ่น AI</h4>
+        <ul id="ns-lint" class="mt-1 space-y-1"></ul>
+        <h4 class="mt-4 font-display text-sm font-bold">รูปที่ render แล้ว</h4>
+        <div id="ns-rendered" class="mt-2 grid grid-cols-4 gap-1.5"></div>
+      </aside>
+    </div>
+    <footer class="flex flex-wrap items-center gap-2 border-t border-base-300 px-4 py-3">
+      <span id="ns-dirty" class="text-xs opacity-60"></span>
+      <span id="ns-status" class="text-xs" role="status" aria-live="polite"></span>
+      <button id="ns-save" class="btn btn-sm btn-ghost ml-auto tap-44">💾 บันทึก</button>
+      <button id="ns-render" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);">🖨 Render รูปจริง</button>
+    </footer>
+  </div>
+</dialog>
+

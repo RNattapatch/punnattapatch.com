@@ -5,6 +5,7 @@
 // State truth = Supabase (RLS is_owner) · Content truth = repo .md (Save = copy/download)
 // UI: Kanban pipeline board (default) + List capture view + slide-in detail drawer.
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import NoteStudioDialog from '../../components/war-room/NoteStudioDialog.astro';
 import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
 import AppNav from '../../components/app/AppNav.astro';
 ---
@@ -187,6 +188,8 @@ import AppNav from '../../components/app/AppNav.astro';
       <form method="dialog" class="modal-backdrop"><button aria-label="ปิด">close</button></form>
     </dialog>
 
+    <NoteStudioDialog />
+
     <!-- Analytics snapshot dialog -->
     <dialog id="wr-snap" class="modal modal-bottom sm:modal-middle">
       <div class="modal-box">
@@ -226,11 +229,14 @@ import AppNav from '../../components/app/AppNav.astro';
       createIdea, updateIdea, createVariant, updateVariant, addPublication,
       setDecision, addSnapshot, buildVariantMarkdown, downloadText, copyText,
       enqueueJob, waitJob, listWrJobs, retryWrJob, deleteWrJob,
+      listMedia, uploadMedia, reorderMedia, archiveMedia, type MediaAsset,
       type Idea, type Variant, type Publication, type FormatCode,
       type IdeaStatus, type VariantStatus, type DecisionLabel, type WrJob,
     } from '../../scripts/war-room/data';
     import { listItemTitles } from '../../scripts/newsroom/data';
     import { supabase, getSupabaseSession } from '../../scripts/dashboard/supabase';
+    import { initNoteStudio, openNoteStudio } from '../../scripts/war-room/note-studio';
+    import { zipSync } from 'fflate';
 
     // ---------- state ----------
     let ideas: Idea[] = [];
@@ -490,6 +496,17 @@ import AppNav from '../../components/app/AppNav.astro';
           </select>
           <p class="break-all font-mono text-[10px] opacity-50">${esc(v.markdown_path ?? '')}</p>
           <button data-action="studio" data-v="${esc(v.variant_id)}" class="btn btn-xs w-full tap-44">📝 Script Studio</button>
+          ${v.format === 'carousel' || v.format === 'article' ? `<div class="rounded-lg bg-base-200/70 p-2">
+            <div class="flex items-center justify-between gap-1">
+              <span class="text-xs font-semibold">🖼 รูป <span data-media-count="${esc(v.variant_id)}" class="font-normal opacity-60"></span></span>
+              <span class="flex gap-1">
+                <label class="btn btn-ghost btn-xs tap-44">อัปรูป<input type="file" accept="image/*" multiple class="sr-only" data-upload="${esc(v.variant_id)}" aria-label="อัปโหลดรูปให้ ${esc(v.variant_id)}" /></label>
+                <button data-action="m-zip" data-v="${esc(v.variant_id)}" class="btn btn-ghost btn-xs tap-44" aria-label="ดาวน์โหลดรูปทั้งชุด">⬇️ .zip</button>
+              </span>
+            </div>
+            <ol data-media-for="${esc(v.variant_id)}" class="mt-1 grid grid-cols-4 gap-1" aria-label="ลำดับรูป ใบแรก = ปก"><li class="col-span-4 text-xs opacity-50">กำลังโหลด…</li></ol>
+            <button data-action="note-studio" data-v="${esc(v.variant_id)}" class="btn btn-xs mt-2 w-full text-white tap-44" style="background-color:var(--color-brand-navy);">🎨 Note Studio — ทำ/แก้รูป</button>
+          </div>` : ''}
           ${pubRows}
           ${platOpts ? `<div class="flex gap-1">
             <select data-role="pub-platform" data-v="${esc(v.variant_id)}" class="select select-bordered select-xs flex-1" aria-label="platform">${platOpts}</select>
@@ -531,6 +548,53 @@ import AppNav from '../../components/app/AppNav.astro';
         ${idea.acid_test !== 'passed' ? `<p class="mt-2 rounded-lg bg-warning/20 px-3 py-2 text-xs">🧪 Triage Gate: ถามก่อนถ่าย — "ตัดหน้า/ชื่อปันออก คนดูยังได้ของกลับบ้านไหม?" ผ่านแล้วตั้ง acid: passed ก่อนเข้า weekly plan</p>` : ''}
         <h3 class="mt-4 font-display text-sm font-bold">Variants <span class="font-normal opacity-50">(format เท่านั้น — platform บันทึกตอนลงจริง)</span></h3>
         <div class="mt-2 grid gap-2 sm:grid-cols-2">${variantCards}</div>`;
+      void loadMediaFor(vs.filter((v) => v.format === 'carousel' || v.format === 'article').map((v) => v.variant_id));
+    }
+
+    // ---------- รูปของ post/carousel (2026-10-02) ----------
+    let mediaByVariant = new Map<string, MediaAsset[]>();
+    async function loadMediaFor(ids: string[]) {
+      if (!ids.length) return;
+      let rows: MediaAsset[] = [];
+      try { rows = await listMedia(ids); } catch (e) { oops(e); return; }
+      for (const id of ids) {
+        const list = rows.filter((r) => r.variant_id === id);
+        mediaByVariant.set(id, list);
+        const box = document.querySelector(`[data-media-for="${CSS.escape(id)}"]`);
+        const cnt = document.querySelector(`[data-media-count="${CSS.escape(id)}"]`);
+        if (cnt) cnt.textContent = list.length ? `(${list.length})` : '';
+        if (!box) continue;
+        box.innerHTML = list.length ? list.map((m, i) => `<li class="relative">
+            <a href="${esc(m.url ?? '#')}" target="_blank" rel="noopener"><img src="${esc(m.url ?? '')}" alt="รูปที่ ${i + 1}" loading="lazy" class="aspect-[4/5] w-full rounded object-cover ${i === 0 ? 'ring-2 ring-[var(--color-brand-coral)]' : ''}" /></a>
+            <span class="mt-0.5 flex justify-between">
+              <button data-action="m-left" data-v="${esc(id)}" data-i="${i}" class="btn btn-ghost btn-xs px-1" aria-label="เลื่อนรูป ${i + 1} ไปก่อน" ${i === 0 ? 'disabled' : ''}>◀</button>
+              <button data-action="m-del" data-v="${esc(id)}" data-i="${i}" class="btn btn-ghost btn-xs px-1" aria-label="เอารูป ${i + 1} ออก">✕</button>
+              <button data-action="m-right" data-v="${esc(id)}" data-i="${i}" class="btn btn-ghost btn-xs px-1" aria-label="เลื่อนรูป ${i + 1} ไปหลัง" ${i === list.length - 1 ? 'disabled' : ''}>▶</button>
+            </span></li>`).join('')
+          : '<li class="col-span-4 text-xs opacity-50">ยังไม่มีรูป — อัปเอง หรือทำใน Note Studio</li>';
+      }
+    }
+    async function moveMedia(id: string, i: number, d: number) {
+      const list = [...(mediaByVariant.get(id) ?? [])];
+      if (!list[i + d]) return;
+      [list[i], list[i + d]] = [list[i + d], list[i]];
+      await reorderMedia(list.map((m) => m.asset_id));
+      await loadMediaFor([id]);
+    }
+    async function zipMedia(id: string) {
+      const list = mediaByVariant.get(id) ?? [];
+      if (!list.length) { toast('ยังไม่มีรูปให้ดาวน์โหลด', 'error'); return; }
+      toast(`กำลังรวม ${list.length} รูป…`);
+      const files: Record<string, Uint8Array> = {};
+      for (const [i, m] of list.entries()) {
+        if (!m.url) continue;
+        const buf = new Uint8Array(await (await fetch(m.url)).arrayBuffer());
+        const ext = (m.storage_path ?? '').split('.').pop() || 'png';
+        files[`${String(i + 1).padStart(2, '0')}.${ext}`] = buf;
+      }
+      const blob = new Blob([zipSync(files, { level: 0 })], { type: 'application/zip' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = `${id}.zip`; a.click(); URL.revokeObjectURL(a.href);
     }
 
     // ---------- แก้ชื่อไอเดียในที่ (2026-09-08 · ✏️ → input · Enter บันทึก · Esc ยกเลิก) ----------
@@ -974,6 +1038,18 @@ import AppNav from '../../components/app/AppNav.astro';
             case 'copy-id': await copyText(el.dataset.v!); toast(`คัดลอก ${el.dataset.v}`); break;
             case 'create-variant': await createVariant(idea, el.dataset.code as FormatCode); toast('สร้าง variant แล้ว'); await refresh(); break;
             case 'studio': openStudio(el.dataset.v!); break;
+            case 'note-studio': { const v = variants.find((x) => x.variant_id === el.dataset.v); if (v) await openNoteStudio(v); break; }
+            case 'm-left': await moveMedia(el.dataset.v!, Number(el.dataset.i), -1); break;
+            case 'm-right': await moveMedia(el.dataset.v!, Number(el.dataset.i), 1); break;
+            case 'm-del': {
+              const m = mediaByVariant.get(el.dataset.v!)?.[Number(el.dataset.i)];
+              if (!m || !confirm('เอารูปนี้ออกจากชุด? (ไฟล์ยังเก็บไว้ กู้คืนได้)')) break;
+              await archiveMedia(m.asset_id);
+              const rest = (mediaByVariant.get(el.dataset.v!) ?? []).filter((x) => x.asset_id !== m.asset_id);
+              await reorderMedia(rest.map((x) => x.asset_id));
+              toast('เอารูปออกแล้ว'); await loadMediaFor([el.dataset.v!]); break;
+            }
+            case 'm-zip': await zipMedia(el.dataset.v!); break;
             case 'snap': {
               snapPubId = el.dataset.pub!;
               $('wr-snap-sub').textContent = el.dataset.label ?? '';
@@ -999,6 +1075,20 @@ import AppNav from '../../components/app/AppNav.astro';
 
       $('wr-detail-body').addEventListener('change', (e) => void (async () => {
         const el = e.target as HTMLElement;
+        const upFor = (el as HTMLInputElement).dataset?.upload;
+        if (upFor) {
+          const input = el as HTMLInputElement;
+          const v = variants.find((x) => x.variant_id === upFor);
+          const files = [...(input.files ?? [])];
+          if (!v || !files.length) return;
+          try {
+            toast(`กำลังอัป ${files.length} รูป…`);
+            const n = await uploadMedia(v, files, (mediaByVariant.get(upFor) ?? []).length);
+            toast(`อัปแล้ว ${n} รูป`);
+            await loadMediaFor([upFor]);
+          } catch (err) { oops(err); } finally { input.value = ''; }
+          return;
+        }
         const action = el.dataset.action;
         const idea = ideas.find((i) => i.content_id === selectedId);
         if (!action || !idea) return;
@@ -1059,6 +1149,7 @@ import AppNav from '../../components/app/AppNav.astro';
       if (booted) return;
       booted = true;
       wire();
+      initNoteStudio({ toast, onRendered: async () => { await refresh(); } });
       setView(location.hash === '#queue' ? 'queue' : 'board');
       try { await refresh(); } catch (e) { oops(e); }
       void loadQueue().catch(() => {});   // badge ⏳ บนปุ่มมุมมอง — รู้ตั้งแต่เปิดหน้าว่ามีงาน AI กำลังวิ่ง

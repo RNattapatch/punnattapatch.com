@@ -1,6 +1,6 @@
 {
   "name": "punnattapatch-com",
-  "description": "Authority site for Pun Nattapatch \u2014 B2B Sales Consultant & Agentic AI Transformation",
+  "description": "Authority site for Pun Nattapatch — B2B Sales Consultant & Agentic AI Transformation",
   "type": "module",
   "version": "1.0.0",
   "private": true,
@@ -21,6 +21,7 @@
     "@tailwindcss/vite": "^4.2.2",
     "astro": "^6.1.7",
     "daisyui": "^5.5.19",
+    "fflate": "^0.8.3",
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {

@@ -49,6 +49,8 @@ export interface Variant {
   script_draft: string | null;
   ai_result: string | null;
   ai_result_at: string | null;
+  // Note Studio (2026-10-02): สเปกรูปแบบ Notes (carousel/รูปเดี่ยว) — render จริงบนมินิ
+  visual_spec?: import('./note-render').NoteSpec | null;
 }
 
 export interface Publication {
@@ -232,7 +234,8 @@ export async function addSnapshot(publication_id: string, metrics: SnapshotInput
 // worker บน mini (launchd com.pun.wrjobs-worker) poll ทุก 12s แล้วเขียนผลกลับ
 
 // rewrite_reel (2026-09-08): Intel Warroom → "เกลาเป็น version ผม" — payload {item_id, theme, pillar, hook_style, length, cta_keyword}
-export type JobType = 'render_card' | 'ai_improve' | 'publish' | 'rewrite_copy' | 'render_text_card' | 'rewrite_reel';
+// render_notes (2026-10-02): Note Studio → payload {variant_id} · worker อ่าน visual_spec จาก DB แล้ว render.mjs → media_assets
+export type JobType = 'render_card' | 'ai_improve' | 'publish' | 'rewrite_copy' | 'render_text_card' | 'rewrite_reel' | 'render_notes';
 export interface WrJob {
   id: string;
   job_type: JobType;
@@ -289,6 +292,80 @@ export async function waitJob(
     onTick?.(elapsed);
     if (Date.now() - t0 > timeoutMs) throw new Error('รอนานเกินไป — งานยังวิ่งอยู่ฝั่ง Mac mini ลองรีเฟรชดูทีหลัง');
   }
+}
+
+// ---------- รูปของ post/carousel (media_assets + bucket ส่วนตัว content-media · 2026-10-02) ----------
+
+export interface MediaAsset {
+  asset_id: string;
+  content_id: string | null;
+  variant_id: string | null;
+  asset_type: string;
+  storage_path: string | null;
+  source: 'upload' | 'note_studio' | 'agent' | null;
+  render_batch: string | null;
+  sort_order: number;
+  is_cover: boolean;
+  asset_status: string;
+  drive_path: string | null;
+  width: number | null;
+  height: number | null;
+  url?: string; // signed URL (อายุ 1 ชม.) — เติมตอนโหลด
+}
+
+const MEDIA_BUCKET = 'content-media';
+
+/** รูปที่ใช้งานอยู่ของ variant (ไม่รวมที่เก็บเข้ากรุ) พร้อม signed URL */
+export async function listMedia(variantIds: string[]): Promise<MediaAsset[]> {
+  if (!variantIds.length) return [];
+  const rows = (await q(() => supabase
+    .from('media_assets').select('*')
+    .in('variant_id', variantIds).neq('asset_status', 'archived')
+    .order('sort_order', { ascending: true }))) as MediaAsset[];
+  const paths = rows.map((r) => r.storage_path).filter(Boolean) as string[];
+  if (paths.length) {
+    const { data } = await supabase.storage.from(MEDIA_BUCKET).createSignedUrls(paths, 3600);
+    const byPath = new Map((data ?? []).map((d) => [d.path, d.signedUrl]));
+    for (const r of rows) if (r.storage_path) r.url = byPath.get(r.storage_path) ?? undefined;
+  }
+  return rows;
+}
+
+/** อัปโหลดรูปเอง (ลากวาง) — ต่อท้ายลำดับเดิม */
+export async function uploadMedia(v: Variant, files: File[], startOrder: number): Promise<number> {
+  const batch = `upload-${Date.now()}`;
+  let n = 0;
+  for (const [i, f] of files.entries()) {
+    if (!f.type.startsWith('image/')) continue;
+    const safe = f.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-').slice(-60);
+    const path = `${v.content_id}/${v.variant_id}/${batch}/${String(i + 1).padStart(2, '0')}-${safe}`;
+    const up = await supabase.storage.from(MEDIA_BUCKET).upload(path, f, { contentType: f.type, upsert: false });
+    if (up.error) throw new Error(`อัปโหลด ${f.name} ไม่สำเร็จ: ${up.error.message}`);
+    await q(() => supabase.from('media_assets').insert({
+      content_id: v.content_id, variant_id: v.variant_id,
+      asset_type: v.format === 'carousel' ? 'carousel_png' : 'screenshot',
+      storage_path: path, source: 'upload', render_batch: batch,
+      sort_order: startOrder + n, is_cover: startOrder + n === 0, asset_status: 'imported', bytes: f.size,
+    }));
+    n++;
+  }
+  return n;
+}
+
+/** บันทึกลำดับใหม่ — ใบแรก = ปก */
+export async function reorderMedia(ids: string[]): Promise<void> {
+  for (const [i, id] of ids.entries()) {
+    await q(() => supabase.from('media_assets').update({ sort_order: i, is_cover: i === 0 }).eq('asset_id', id));
+  }
+}
+
+/** เอาออกจากชุด (เก็บเข้ากรุ ไม่ลบไฟล์ — กู้คืนได้) */
+export async function archiveMedia(id: string): Promise<void> {
+  await q(() => supabase.from('media_assets').update({ asset_status: 'archived' }).eq('asset_id', id));
+}
+
+export async function saveVisualSpec(variant_id: string, spec: import('./note-render').NoteSpec): Promise<void> {
+  await q(() => supabase.from('content_variants').update({ visual_spec: spec }).eq('variant_id', variant_id));
 }
 
 // ---------- Markdown builder (Save .md = download/copy — repo file is content truth) ----------
