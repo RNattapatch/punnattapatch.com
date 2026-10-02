@@ -26,7 +26,8 @@ const OUT = 'dist-app';
 // catalog.json: Chat Center อ่านราคาสดจาก same-origin (/catalog.json) เพื่อ render {{price:key}}
 // ถ้าไม่ยกมาด้วย หน้าจะขึ้น "โหลดราคาสดไม่ได้ (404)" แล้วไม่ render อะไรเลย
 // ไม่ใช่ข้อมูลลับ — ไฟล์เดียวกันเปิดสาธารณะอยู่บน punnattapatch.com อยู่แล้ว
-const KEEP_ASSETS = ['_astro', '404.html', 'favicon-32x32.png', 'favicon.ico', 'favicon.svg', 'catalog.json'];
+// images/pun-avatar-notes.jpg: Note Studio (/content) ฝังรูปโปรไฟล์ลงพรีวิวการ์ด — ไม่ยกมา = หน้าหายในพรีวิว (2026-10-02)
+const KEEP_ASSETS = ['_astro', '404.html', 'favicon-32x32.png', 'favicon.ico', 'favicon.svg', 'catalog.json', 'images/pun-avatar-notes.jpg'];
 
 const appDir = join(DIST, 'app');
 try {

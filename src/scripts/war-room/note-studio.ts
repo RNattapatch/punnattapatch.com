@@ -12,13 +12,18 @@ const esc = (s: unknown) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 // iframe พรีวิวเป็น sandbox (origin ทึบ) — โหลดรูปจาก URL ไม่ขึ้น จึงฝังเป็น data URL ครั้งเดียว
 let avatarData = '';
-const AVATAR = () => avatarData || `${location.origin}/images/pun-avatar-notes.jpg`;
+// โหลดไม่ได้ → วงกลมเทาแทน (เคยใช้ URL ตรงเป็นสำรอง แต่ iframe sandbox โหลด URL ไม่ได้อยู่ดี ได้แค่ไอคอนรูปแตก)
+const AVATAR_FALLBACK = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><circle cx=".5" cy=".5" r=".5" fill="#d9d6ce"/></svg>');
+const AVATAR = () => avatarData || AVATAR_FALLBACK;
 async function loadAvatar() {
   if (avatarData) return;
   try {
-    const blob = await (await fetch('/images/pun-avatar-notes.jpg')).blob();
-    avatarData = await new Promise<string>((res) => { const r = new FileReader(); r.onload = () => res(String(r.result)); r.readAsDataURL(blob); });
-  } catch { /* พรีวิวไม่มีรูปโปรไฟล์ ไม่ใช่เหตุให้พัง */ }
+    const res = await fetch('/images/pun-avatar-notes.jpg');
+    // ไฟล์หายบนโดเมน app → Cloudflare ตอบหน้า 404 (HTML) · ห้ามแปลง HTML เป็นรูป
+    if (!res.ok || !(res.headers.get('content-type') ?? '').startsWith('image/')) throw new Error(`avatar ${res.status}`);
+    const blob = await res.blob();
+    avatarData = await new Promise<string>((ok, bad) => { const r = new FileReader(); r.onload = () => ok(String(r.result)); r.onerror = bad; r.readAsDataURL(blob); });
+  } catch (e) { console.warn('Note Studio: โหลดรูปโปรไฟล์ไม่ได้', e); }
 }
 const TYPE_LABEL: Record<string, string> = { hook: 'ปก', content: 'เนื้อ', cta: 'ปิดท้าย' };
 

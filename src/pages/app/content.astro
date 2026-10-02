@@ -914,6 +914,7 @@ import AppNav from '../../components/app/AppNav.astro';
       $('wr-view-board').addEventListener('click', () => setView('board'));
       $('wr-view-list').addEventListener('click', () => setView('list'));
       $('wr-view-queue').addEventListener('click', () => setView('queue'));
+      $('wr-view-campaign').addEventListener('click', () => { openCampaign(null); setView('campaign'); });
       $('wr-queue-refresh').addEventListener('click', () => void loadQueue().then(() => toast('รีเฟรชคิวแล้ว')).catch(oops));
       $('wr-queue-filter').addEventListener('click', (e) => {
         const b = (e.target as HTMLElement).closest('button[data-qf]') as HTMLButtonElement | null;
