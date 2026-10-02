@@ -1,0 +1,92 @@
+---
+// แท็บ "แคมเปญ" ใน Content Center (2026-10-02) — logic อยู่ src/scripts/war-room/campaigns.ts
+// แบบ: docs/superpowers/specs/2026-10-02-content-center-campaigns-media-design.md (รีโปความรู้)
+---
+<section id="wr-campaign-view" class="hidden" aria-label="แคมเปญ">
+  <!-- รายการแคมเปญ -->
+  <div id="cp-list-wrap">
+    <div class="mb-4 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <h2 class="font-display text-xl font-bold">แคมเปญ</h2>
+        <p class="text-sm opacity-70">1 แคมเปญ = เส้นทางที่ลูกค้าหนึ่งคนจะเจอคุณ · กดเข้าไปดูว่าแต่ละจุดพร้อมหรือยัง</p>
+      </div>
+      <button id="cp-new" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);">+ แคมเปญใหม่</button>
+    </div>
+    <div id="cp-cards" class="grid gap-4 md:grid-cols-2 xl:grid-cols-3"><p class="text-sm opacity-60">กำลังโหลด…</p></div>
+  </div>
+
+  <!-- หน้าแคมเปญ -->
+  <div id="cp-detail" class="hidden">
+    <button id="cp-back" class="btn btn-ghost btn-sm tap-44 mb-3">← แคมเปญทั้งหมด</button>
+    <div id="cp-head" class="mb-5 rounded-2xl bg-base-200 p-5"></div>
+
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+      <div role="tablist" aria-label="มุมมองแคมเปญ" class="join rounded-full border border-base-300 p-0.5">
+        <button id="cp-lens-customer" role="tab" aria-selected="true" class="join-item btn btn-sm rounded-full border-0 tap-44 text-white" style="background-color:var(--color-brand-navy);">มุมลูกค้า · เขาเห็นอะไร</button>
+        <button id="cp-lens-factory" role="tab" aria-selected="false" class="join-item btn btn-sm rounded-full border-0 btn-ghost tap-44">มุมผลิต · ขาดอะไร</button>
+      </div>
+      <p class="text-sm opacity-70">กดช่องว่างเพื่อเลือกชิ้นงาน · กดการ์ดเพื่อเปิดรายละเอียด</p>
+    </div>
+
+    <ol id="cp-track" class="relative grid grid-cols-1 gap-3 sm:grid-cols-4 lg:grid-cols-7" aria-label="จุดที่ลูกค้าจะเจอในสัปดาห์"></ol>
+    <div id="cp-factory" class="hidden overflow-x-auto rounded-2xl bg-base-200">
+      <table class="table table-sm">
+        <thead><tr><th>ช่อง</th><th>ชิ้นงาน</th><th>ฟอร์แมต</th><th class="text-center">เขียน</th><th class="text-center">รูป/คลิป</th><th class="text-center">ลง organic</th><th>แอด</th><th>ต้องทำต่อ</th></tr></thead>
+        <tbody id="cp-factory-rows"></tbody>
+      </table>
+    </div>
+
+    <div class="mt-6 grid gap-4 lg:grid-cols-[2fr_1fr]">
+      <div class="rounded-2xl bg-base-200 p-4">
+        <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <h3 class="font-display font-bold">ม้านั่งสำรอง</h3>
+          <button id="cp-bench-add" class="btn btn-ghost btn-xs tap-44">+ เพิ่มชิ้นเข้าม้านั่ง</button>
+        </div>
+        <ul id="cp-bench" class="grid gap-3 sm:grid-cols-2"></ul>
+      </div>
+      <div class="rounded-2xl bg-base-200 p-4" aria-label="ตรวจสมดุล">
+        <h3 class="mb-3 font-display font-bold">สมดุลของสัปดาห์</h3>
+        <div id="cp-mix"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- เลือกชิ้นงานใส่ช่อง / ม้านั่ง -->
+<dialog id="cp-picker" class="modal modal-bottom sm:modal-middle" aria-labelledby="cp-picker-title">
+  <div class="modal-box max-w-2xl">
+    <h3 id="cp-picker-title" class="font-display font-bold">เลือกชิ้นงาน</h3>
+    <p id="cp-picker-sub" class="mt-1 text-xs opacity-60"></p>
+    <label class="mt-3 block"><span class="sr-only">ค้นหาชิ้นงาน</span>
+      <input id="cp-picker-q" class="input input-bordered input-sm w-full" placeholder="ค้นหาชื่อ หรือ CNT…" autocomplete="off" /></label>
+    <div id="cp-picker-filter" class="mt-2 flex flex-wrap gap-1 text-xs"></div>
+    <ul id="cp-picker-list" class="mt-3 max-h-[55dvh] space-y-1 overflow-y-auto"></ul>
+    <div class="modal-action"><form method="dialog"><button class="btn btn-sm btn-ghost tap-44">ปิด</button></form></div>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button aria-label="ปิด">close</button></form>
+</dialog>
+
+<!-- สร้างแคมเปญใหม่ -->
+<dialog id="cp-create" class="modal modal-bottom sm:modal-middle" aria-labelledby="cp-create-title">
+  <div class="modal-box">
+    <h3 id="cp-create-title" class="font-display font-bold">แคมเปญใหม่</h3>
+    <form id="cp-create-form" class="mt-3 space-y-3" method="dialog">
+      <label class="form-control"><span class="label-text text-sm">ชื่อแคมเปญ *</span>
+        <input name="name" required maxlength="120" class="input input-bordered input-sm" placeholder="เช่น ตามหลอนกลุ่มอุ่น · พ.ย." /></label>
+      <label class="form-control"><span class="label-text text-sm">เป้าหมาย (1 บรรทัด)</span>
+        <input name="goal" maxlength="200" class="input input-bordered input-sm" placeholder="ใครเห็นอะไร กี่ครั้ง" /></label>
+      <div class="grid grid-cols-2 gap-2">
+        <label class="form-control"><span class="label-text text-sm">เริ่ม</span><input name="start" type="date" class="input input-bordered input-sm" /></label>
+        <label class="form-control"><span class="label-text text-sm">จบ</span><input name="end" type="date" class="input input-bordered input-sm" /></label>
+        <label class="form-control"><span class="label-text text-sm">จุด VALUE / สัปดาห์</span><input name="value" type="number" min="1" max="14" value="5" class="input input-bordered input-sm" /></label>
+        <label class="form-control"><span class="label-text text-sm">จุด ME / สัปดาห์</span><input name="me" type="number" min="0" max="7" value="2" class="input input-bordered input-sm" /></label>
+      </div>
+      <p class="text-xs opacity-60">ระบบเรียงช่องให้ ME ไม่ติดกัน (5:2 = V V M V V M V) · รายละเอียดอื่นเติมทีหลังได้</p>
+      <div class="modal-action">
+        <button type="button" id="cp-create-cancel" class="btn btn-sm btn-ghost tap-44">ยกเลิก</button>
+        <button type="submit" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);">สร้าง</button>
+      </div>
+    </form>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button aria-label="ปิด">close</button></form>
+</dialog>

@@ -6,6 +6,7 @@
 // UI: Kanban pipeline board (default) + List capture view + slide-in detail drawer.
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import NoteStudioDialog from '../../components/war-room/NoteStudioDialog.astro';
+import CampaignView from '../../components/war-room/CampaignView.astro';
 import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
 import AppNav from '../../components/app/AppNav.astro';
 ---
@@ -22,6 +23,7 @@ import AppNav from '../../components/app/AppNav.astro';
         <button id="wr-view-board" role="tab" aria-selected="true" class="join-item btn btn-sm rounded-full border-0 text-white tap-44" style="background-color:var(--color-brand-navy);">🗂 Board</button>
         <button id="wr-view-list" role="tab" aria-selected="false" class="join-item btn btn-sm rounded-full border-0 btn-ghost tap-44">📋 List</button>
         <button id="wr-view-queue" role="tab" aria-selected="false" class="join-item btn btn-sm rounded-full border-0 btn-ghost tap-44">⏳ คิว <span id="wr-queue-badge" class="badge badge-warning badge-sm ml-1 hidden">0</span></button>
+        <button id="wr-view-campaign" role="tab" aria-selected="false" class="join-item btn btn-sm rounded-full border-0 btn-ghost tap-44">🎯 แคมเปญ</button>
       </div>
     </div>
 
@@ -31,6 +33,8 @@ import AppNav from '../../components/app/AppNav.astro';
         <div id="wr-stats" class="flex min-w-max gap-2 sm:grid sm:min-w-0 sm:grid-cols-4"></div>
       </section>
       <div id="wr-stale" class="hidden rounded-2xl px-4 py-2.5 text-sm text-white" style="background-color:var(--color-brand-navy);" role="status"></div>
+
+      <CampaignView />
 
       <!-- ============ BOARD VIEW ============ -->
       <section id="wr-board-view" aria-label="Kanban pipeline">
@@ -230,12 +234,15 @@ import AppNav from '../../components/app/AppNav.astro';
       setDecision, addSnapshot, buildVariantMarkdown, downloadText, copyText,
       enqueueJob, waitJob, listWrJobs, retryWrJob, deleteWrJob,
       listMedia, uploadMedia, reorderMedia, archiveMedia, type MediaAsset,
+      listCampaigns, listCampaignItems, updateCampaignItem, addCampaignItems, deleteCampaignItem, createCampaign, updateCampaign,
+      PILLAR_V14_LABEL, type PillarV14,
       type Idea, type Variant, type Publication, type FormatCode,
       type IdeaStatus, type VariantStatus, type DecisionLabel, type WrJob,
     } from '../../scripts/war-room/data';
     import { listItemTitles } from '../../scripts/newsroom/data';
     import { supabase, getSupabaseSession } from '../../scripts/dashboard/supabase';
     import { initNoteStudio, openNoteStudio } from '../../scripts/war-room/note-studio';
+    import { initCampaigns, loadCampaigns, openCampaign } from '../../scripts/war-room/campaigns';
     import { zipSync } from 'fflate';
 
     // ---------- state ----------
@@ -247,7 +254,7 @@ import AppNav from '../../components/app/AppNav.astro';
     let filter = 'all';
     let search = '';
     let boardSearch = '';
-    let view: 'board' | 'list' | 'queue' = 'board';
+    let view: 'board' | 'list' | 'queue' | 'campaign' = 'board';
     // คิวงาน AI (wr_jobs) — badge นับงานที่รอ/กำลังทำ · ตารางเต็มเมื่อเปิดมุมมองคิว
     let wrJobs: WrJob[] = [];
     let itemTitles = new Map<string, { title: string | null; source_url: string | null }>();
@@ -291,6 +298,7 @@ import AppNav from '../../components/app/AppNav.astro';
     async function refresh() {
       [ideas, variants, pubs, snapIds] = await Promise.all([listIdeas(), listVariants(), listPublications(), snapshotPubIds()]);
       renderStats(); renderBoard(); renderList(); if (selectedId) renderDetail();
+      if (view === 'campaign') void loadCampaigns().catch(oops);
     }
 
     // ---------- stat pills ----------
@@ -544,6 +552,9 @@ import AppNav from '../../components/app/AppNav.astro';
           <select data-action="i-funnel" class="select select-bordered select-xs" aria-label="funnel">
             ${opt('', idea.funnel_stage, 'funnel?')}${opt('top', idea.funnel_stage)}${opt('middle', idea.funnel_stage)}${opt('bottom', idea.funnel_stage)}
           </select>
+          <select data-action="i-pillar14" class="select select-bordered select-xs col-span-2 md:col-span-4" aria-label="หมวดตามธง v1.4">
+            ${opt('', idea.pillar_v14 ?? null, 'หมวด (ธง v1.4)?')}${(Object.keys(PILLAR_V14_LABEL) as PillarV14[]).map((k) => opt(k, idea.pillar_v14 ?? null, `หมวด: ${PILLAR_V14_LABEL[k]}`)).join('')}
+          </select>
         </div>
         ${idea.acid_test !== 'passed' ? `<p class="mt-2 rounded-lg bg-warning/20 px-3 py-2 text-xs">🧪 Triage Gate: ถามก่อนถ่าย — "ตัดหน้า/ชื่อปันออก คนดูยังได้ของกลับบ้านไหม?" ผ่านแล้วตั้ง acid: passed ก่อนเข้า weekly plan</p>` : ''}
         <h3 class="mt-4 font-display text-sm font-bold">Variants <span class="font-normal opacity-50">(format เท่านั้น — platform บันทึกตอนลงจริง)</span></h3>
@@ -637,12 +648,17 @@ import AppNav from '../../components/app/AppNav.astro';
     }
 
     // ---------- view toggle ----------
-    function setView(v: 'board' | 'list' | 'queue') {
+    function setView(v: 'board' | 'list' | 'queue' | 'campaign') {
       view = v;
       $('wr-board-view').classList.toggle('hidden', v !== 'board');
       $('wr-list-view').classList.toggle('hidden', v !== 'list');
       $('wr-queue-view').classList.toggle('hidden', v !== 'queue');
-      for (const [id, key] of [['wr-view-board', 'board'], ['wr-view-list', 'list'], ['wr-view-queue', 'queue']] as const) {
+      $('wr-campaign-view').classList.toggle('hidden', v !== 'campaign');
+      // แถบสถิติ/แบนเนอร์ค้างเป็นของมุมผลิต — ในหน้าแคมเปญซ่อนให้โล่ง
+      $('wr-stats').parentElement!.classList.toggle('hidden', v === 'campaign');
+      if (v === 'campaign') void loadCampaigns().catch(oops);
+      else if (location.hash.startsWith('#campaign')) history.replaceState(null, '', location.pathname);
+      for (const [id, key] of [['wr-view-board', 'board'], ['wr-view-list', 'list'], ['wr-view-queue', 'queue'], ['wr-view-campaign', 'campaign']] as const) {
         const el = $(id), on = v === key;
         el.setAttribute('aria-selected', String(on));
         el.classList.toggle('btn-ghost', !on);
@@ -1098,6 +1114,7 @@ import AppNav from '../../components/app/AppNav.astro';
           else if (action === 'i-status') await updateIdea(idea.content_id, { idea_status: (el as HTMLSelectElement).value as IdeaStatus });
           else if (action === 'i-acid') await updateIdea(idea.content_id, { acid_test: (el as HTMLSelectElement).value as Idea['acid_test'] });
           else if (action === 'i-pillar') await updateIdea(idea.content_id, { pillar_bucket: ((el as HTMLSelectElement).value || null) as Idea['pillar_bucket'] });
+          else if (action === 'i-pillar14') await updateIdea(idea.content_id, { pillar_v14: ((el as HTMLSelectElement).value || null) as Idea['pillar_v14'] });
           else if (action === 'i-funnel') await updateIdea(idea.content_id, { funnel_stage: ((el as HTMLSelectElement).value || null) as Idea['funnel_stage'] });
           else if (action === 'angle') await updateIdea(idea.content_id, { canonical_angle: (el as HTMLTextAreaElement).value.trim() || null });
           else return;
@@ -1150,7 +1167,15 @@ import AppNav from '../../components/app/AppNav.astro';
       booted = true;
       wire();
       initNoteStudio({ toast, onRendered: async () => { await refresh(); } });
-      setView(location.hash === '#queue' ? 'queue' : 'board');
+      initCampaigns({
+        api: { listCampaigns, listCampaignItems, updateCampaignItem, addCampaignItems, deleteCampaignItem, createCampaign, updateIdea, updateCampaign, listMedia },
+        data: () => ({ ideas, variants, pubs }),
+        openDrawer: (cid) => openDrawer(cid),
+        toast,
+      });
+      const camp = location.hash.match(/^#campaign=(.+)$/);
+      if (camp || location.hash === '#campaigns') openCampaign(camp ? decodeURIComponent(camp[1]) : null);
+      setView(location.hash === '#queue' ? 'queue' : camp || location.hash === '#campaigns' ? 'campaign' : 'board');
       try { await refresh(); } catch (e) { oops(e); }
       void loadQueue().catch(() => {});   // badge ⏳ บนปุ่มมุมมอง — รู้ตั้งแต่เปิดหน้าว่ามีงาน AI กำลังวิ่ง
     }

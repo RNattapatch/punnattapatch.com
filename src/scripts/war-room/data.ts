@@ -32,7 +32,12 @@ export interface Idea {
   source_type: string | null;
   source_ref: string | null;
   created_at: string;
+  // หมวดตามธง v1.4 (2026-10-02): ปั้นทีมขาย · ถอดรหัสคนซื้อ · AI รับงานซ้ำ · bonus · me
+  pillar_v14?: PillarV14 | null;
 }
+
+export type PillarV14 = 'team' | 'buyer' | 'ai' | 'bonus' | 'me';
+export const PILLAR_V14_LABEL: Record<PillarV14, string> = { team: 'ปั้นทีมขาย', buyer: 'ถอดรหัสคนซื้อ', ai: 'AI รับงานซ้ำ', bonus: 'Bonus', me: 'ME' };
 
 export interface Variant {
   variant_id: string;
@@ -366,6 +371,63 @@ export async function archiveMedia(id: string): Promise<void> {
 
 export async function saveVisualSpec(variant_id: string, spec: import('./note-render').NoteSpec): Promise<void> {
   await q(() => supabase.from('content_variants').update({ visual_spec: spec }).eq('variant_id', variant_id));
+}
+
+// ---------- แคมเปญ (2026-10-02 · ตาราง campaigns + campaign_items) ----------
+
+export type CampaignStatus = 'idea' | 'planning' | 'producing' | 'live' | 'paused' | 'done';
+export interface Campaign {
+  campaign_id: string; name: string; goal: string | null; audience: string | null;
+  status: CampaignStatus; start_date: string | null; end_date: string | null;
+  touch_per_week: number; kpi_label: string | null; budget_note: string | null;
+  mix_target: { team?: number; buyer?: number; ai?: number; value?: number; me?: number } | null;
+  brief_md_path: string | null; drive_folder: string | null; created_at: string;
+}
+export interface CampaignItem {
+  id: string; campaign_id: string; content_id: string | null; variant_id: string | null;
+  slot_code: string | null; role: 'value' | 'me' | 'hot' | 'bonus' | 'bench';
+  week: number; sort: number; ad_status: 'none' | 'ready' | 'live' | 'paused' | string;
+  meta_ad_id: string | null; note: string | null;
+}
+
+export async function listCampaigns(): Promise<Campaign[]> {
+  return (await q(() => supabase.from('campaigns').select('*').order('created_at', { ascending: false }))) as Campaign[];
+}
+export async function listCampaignItems(): Promise<CampaignItem[]> {
+  return (await q(() => supabase.from('campaign_items').select('*').order('sort', { ascending: true }).limit(2000))) as CampaignItem[];
+}
+export async function updateCampaignItem(id: string, patch: Partial<CampaignItem>): Promise<void> {
+  await q(() => supabase.from('campaign_items').update(patch).eq('id', id));
+}
+export async function addCampaignItems(rows: Partial<CampaignItem>[]): Promise<void> {
+  await q(() => supabase.from('campaign_items').insert(rows));
+}
+export async function deleteCampaignItem(id: string): Promise<void> {
+  await q(() => supabase.from('campaign_items').delete().eq('id', id));
+}
+export async function updateCampaign(id: string, patch: Partial<Campaign>): Promise<void> {
+  await q(() => supabase.from('campaigns').update(patch).eq('campaign_id', id));
+}
+
+/** เรียงช่อง VALUE/ME ให้ ME กระจาย ไม่ติดกัน — 5:2 ได้ V V M V V M V */
+export function slotPattern(value: number, me: number): { code: string; role: 'value' | 'me' }[] {
+  const total = value + me;
+  const meAt = new Set(Array.from({ length: me }, (_, k) => Math.min(total - 1, Math.round(((k + 0.5) * total) / me))));
+  let v = 0, m = 0;
+  return Array.from({ length: total }, (_, i) => (meAt.has(i) ? { code: `M${++m}`, role: 'me' as const } : { code: `V${++v}`, role: 'value' as const }));
+}
+
+export async function createCampaign(c: { name: string; goal: string; start_date: string | null; end_date: string | null; value: number; me: number }): Promise<string> {
+  const base = c.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30) || 'campaign';
+  const campaign_id = `${base}-${Date.now().toString(36)}`;
+  await q(() => supabase.from('campaigns').insert({
+    campaign_id, name: c.name, goal: c.goal || null, status: 'planning',
+    start_date: c.start_date, end_date: c.end_date, touch_per_week: c.value + c.me,
+    mix_target: { team: 40, buyer: 30, ai: 30, value: c.value, me: c.me },
+    brief_md_path: `output/content/war-room/campaigns/${base}.md`,
+  }));
+  await addCampaignItems(slotPattern(c.value, c.me).map((s, i) => ({ campaign_id, slot_code: s.code, role: s.role, week: 1, sort: i })));
+  return campaign_id;
 }
 
 // ---------- Markdown builder (Save .md = download/copy — repo file is content truth) ----------
