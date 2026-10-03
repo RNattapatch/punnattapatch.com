@@ -5,24 +5,26 @@
 <dialog id="ns-dialog" class="modal" aria-labelledby="ns-title">
   <div class="modal-box flex h-[100dvh] max-h-[100dvh] w-full max-w-6xl flex-col rounded-none p-0 sm:h-[94dvh] sm:rounded-2xl">
     <header class="flex flex-wrap items-center gap-2 border-b border-base-300 px-4 py-3">
-      <div class="min-w-0 flex-1">
-        <p id="ns-id" class="font-mono text-[11px] opacity-50"></p>
+      <!-- มือถือ: แถวแรก = ชื่อ + ✕ · แถวสอง = ตัวเลือก (เดิมชื่อถูกบีบจนรหัส CNT ตัดทีละตัวอักษร) -->
+      <div class="order-1 min-w-0 flex-1 basis-[calc(100%-3.5rem)] sm:order-none sm:basis-0">
+        <p id="ns-id" class="truncate font-mono text-[11px] opacity-50"></p>
         <h3 id="ns-title" class="truncate font-display font-bold">Note Studio</h3>
       </div>
-      <label class="flex items-center gap-1 text-xs"><span class="opacity-60">แบบ</span>
+      <label class="order-3 flex items-center gap-1 text-xs sm:order-none"><span class="opacity-60">แบบ</span>
         <select id="ns-mode" class="select select-bordered select-xs" aria-label="แบบรูป"><option value="carousel">Carousel</option><option value="single">รูปเดี่ยว</option></select></label>
-      <label class="flex items-center gap-1 text-xs"><span class="opacity-60">สัดส่วน</span>
+      <label class="order-3 flex items-center gap-1 text-xs sm:order-none"><span class="opacity-60">สัดส่วน</span>
         <select id="ns-ratio" class="select select-bordered select-xs" aria-label="สัดส่วนรูป"><option value="4:5">4:5</option><option value="1:1">1:1</option></select></label>
-      <label class="flex cursor-pointer items-center gap-1 text-xs"><input id="ns-follow" type="checkbox" class="checkbox checkbox-xs" /> หน้า Follow</label>
-      <button id="ns-close" class="btn btn-ghost btn-sm btn-circle tap-44" aria-label="ปิด Note Studio">✕</button>
+      <label class="order-3 flex cursor-pointer items-center gap-1 text-xs sm:order-none"><input id="ns-follow" type="checkbox" class="checkbox checkbox-xs" /> หน้า Follow</label>
+      <button id="ns-close" class="order-2 btn btn-ghost btn-sm btn-circle tap-44 sm:order-none" aria-label="ปิด Note Studio">✕</button>
     </header>
-    <div class="grid min-h-0 flex-1 gap-0 overflow-y-auto lg:grid-cols-[1fr_420px] lg:overflow-hidden">
-      <section class="p-4 lg:min-h-0 lg:overflow-y-auto" aria-label="แก้ข้อความทีละใบ">
+    <!-- grid-cols-[minmax(0,1fr)]: iframe พรีวิวกว้างจริง 1080px (ย่อด้วย transform) — คอลัมน์ auto จะถ่างตามจนล้นจอมือถือ -->
+    <div class="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)] gap-0 overflow-y-auto overflow-x-hidden lg:grid-cols-[minmax(0,1fr)_420px] lg:overflow-hidden">
+      <section class="min-w-0 p-4 lg:min-h-0 lg:overflow-y-auto" aria-label="แก้ข้อความทีละใบ">
         <p class="mb-3 rounded-lg bg-base-200 px-3 py-2 text-xs">Enter = ขึ้นบรรทัดใหม่ · เน้นคำด้วย <code>==คำ==</code> · ใบ "เนื้อ" บรรทัดแรกจะเป็นตัวหนา · ตัวเลข px = ขนาดตัวอักษรบนมือถือ (ควร ≥64)</p>
         <ol id="ns-slides" class="space-y-3"></ol>
         <button id="ns-add" class="btn btn-sm btn-ghost mt-3 w-full border border-dashed border-base-300 tap-44">+ เพิ่มใบ</button>
       </section>
-      <aside class="border-t border-base-300 bg-base-200/60 p-4 lg:min-h-0 lg:overflow-y-auto lg:border-l lg:border-t-0" aria-label="พรีวิว">
+      <aside class="min-w-0 border-t border-base-300 bg-base-200/60 p-4 lg:min-h-0 lg:overflow-y-auto lg:border-l lg:border-t-0" aria-label="พรีวิว">
         <div class="flex items-center justify-between gap-2">
           <button id="ns-prev" class="btn btn-ghost btn-sm tap-44" aria-label="ใบก่อนหน้า">◀</button>
           <p id="ns-pos" class="text-center text-xs opacity-70" aria-live="polite"></p>

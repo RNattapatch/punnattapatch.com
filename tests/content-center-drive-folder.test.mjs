@@ -181,6 +181,28 @@ await page.setViewportSize({ width: 375, height: 812 });
 await open(CIDS.A);   // ป้ายยาวสุด (⏳ ขึ้น Drive ราว HH:MM น.)
 const overflow = await page.$eval('#ns-dialog footer', (f) => f.scrollWidth > f.clientWidth + 1);
 check(!overflow, 'จอมือถือ 375px — footer ของ Note Studio ไม่ล้นแนวนอน');
+// Note Studio มือถือ (2026-10-03): iframe พรีวิวกว้างจริง 1080px เคยถ่างคอลัมน์จนเนื้อหาล้นขวา + รหัส CNT ตัดทีละตัว
+const mob = await page.evaluate(() => {
+  const box = document.querySelector('#ns-dialog .modal-box');
+  const ta = document.querySelector('#ns-slides textarea');
+  const frame = document.getElementById('ns-frame');
+  const id = document.getElementById('ns-id');
+  const close = document.getElementById('ns-close').getBoundingClientRect();
+  const title = document.getElementById('ns-title').getBoundingClientRect();
+  return {
+    boxOverflow: box.scrollWidth - box.clientWidth,
+    gridOverflow: [...box.querySelectorAll('section, aside')].map((el) => el.getBoundingClientRect().right).some((r) => r > innerWidth + 1),
+    taRight: ta.getBoundingClientRect().right,
+    scale: Number((frame.style.transform.match(/scale\(([\d.]+)\)/) || [])[1] || 1),
+    idLines: Math.round(id.getBoundingClientRect().height / parseFloat(getComputedStyle(id).lineHeight || '16')),
+    closeSameRow: Math.abs(close.top - title.top) < 40 && close.left > title.left,
+  };
+});
+check(mob.boxOverflow <= 1 && !mob.gridOverflow, `375px — เนื้อหา Note Studio ไม่ล้นขวา (ล้น ${mob.boxOverflow}px)`);
+check(mob.taRight <= 375 + 1, `375px — ช่องพิมพ์อยู่ในจอ (ขอบขวา ${Math.round(mob.taRight)}px)`);
+check(mob.scale < 0.5, `375px — พรีวิวย่อพอดีจอ (scale ${mob.scale.toFixed(2)})`);
+check(mob.idLines <= 1, `375px — รหัส CNT อยู่บรรทัดเดียว (${mob.idLines} บรรทัด)`);
+check(mob.closeSameRow, '375px — ปุ่ม ✕ อยู่แถวเดียวกับชื่อ');
 await page.screenshot({ path: process.env.SHOT || '/tmp/drive-folder-button.png', fullPage: false });
 
 await browser.close();
