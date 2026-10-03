@@ -4,6 +4,7 @@
 import { slideDoc, withFollow, sizePx, toMarkup, toEditable, type NoteSpec, type NoteSlide } from './note-render';
 import { lintSlides } from './note-lint';
 import { saveVisualSpec, enqueueJob, waitJob, listMedia, type Variant, type MediaAsset } from './data';
+import { driveButtonHtml, downloadMediaZip, zipTitle } from './media-actions';
 
 type Deps = { toast: (m: string, k?: 'success' | 'error') => void; onRendered: () => Promise<void> };
 
@@ -28,6 +29,7 @@ async function loadAvatar() {
 const TYPE_LABEL: Record<string, string> = { hook: 'ปก', content: 'เนื้อ', cta: 'ปิดท้าย', follow: 'ปิดท้าย · ปุ่มติดตาม' };
 
 let deps: Deps;
+let media: MediaAsset[] = [];   // รูปที่ใช้อยู่ของ variant (ชุด render + ที่อัปเอง) — ให้ปุ่ม .zip / Drive ใน footer
 let variant: Variant | null = null;
 let spec: NoteSpec | null = null;
 let current = 0;
@@ -124,8 +126,15 @@ function markDirty() { dirty = true; $('ns-dirty').textContent = 'ยังไ�
 
 async function loadRendered() {
   if (!variant) return;
-  const media: MediaAsset[] = await listMedia([variant.variant_id]);
+  const vid = variant.variant_id;
+  const rows = await listMedia([vid]);
+  if (variant?.variant_id !== vid) return;   // ปิดแล้วเปิดชิ้นอื่นระหว่างโหลด — อย่าเอารูปชิ้นเก่ามาทับ
+  media = rows;
   const rendered = media.filter((m) => m.source !== 'upload');
+  const zip = $('ns-zip') as HTMLButtonElement;
+  zip.disabled = !media.length;
+  zip.title = zipTitle(media); zip.setAttribute('aria-label', zip.title);
+  $('ns-drive').innerHTML = driveButtonHtml(variant.variant_id, media);
   $('ns-rendered').innerHTML = rendered.length
     ? rendered.map((m, i) => `<a href="${esc(m.url ?? '#')}" target="_blank" rel="noopener" class="block"><img src="${esc(m.url ?? '')}" alt="รูปที่ render แล้ว ใบ ${i + 1}" loading="lazy" class="w-full aspect-[4/5] rounded-lg object-cover bg-base-200"></a>`).join('')
     : '<p class="col-span-full text-sm opacity-60">ยังไม่มีรูปที่ render</p>';
@@ -135,6 +144,9 @@ export async function openNoteStudio(v: Variant) {
   variant = v;
   spec = v.visual_spec ? structuredClone(v.visual_spec) : seedSpec(v);
   current = 0; dirty = !v.visual_spec;
+  // ไม่โชว์รูป/ปุ่มของชิ้นก่อนระหว่างโหลด
+  media = []; ($('ns-zip') as HTMLButtonElement).disabled = true; $('ns-drive').innerHTML = '';
+  $('ns-rendered').innerHTML = '<p class="col-span-full text-sm opacity-60">กำลังโหลด…</p>';
   $('ns-title').textContent = v.working_title ?? v.variant_id;
   $('ns-id').textContent = v.variant_id;
   $('ns-dirty').textContent = dirty ? 'ร่างใหม่ — ยังไม่บันทึก' : 'บันทึกแล้ว';
@@ -188,6 +200,9 @@ export function initNoteStudio(d: Deps) {
   $('ns-close').addEventListener('click', close);
   $('ns-save').addEventListener('click', () => void save().catch((e) => deps.toast(e.message, 'error')));
   $('ns-render').addEventListener('click', () => void render());
+  $('ns-zip').addEventListener('click', () => {
+    if (variant) void downloadMediaZip(variant.variant_id, media, deps.toast).catch((e) => deps.toast((e as Error).message, 'error'));
+  });
   $('ns-prev').addEventListener('click', () => { current--; renderList(); renderPreview(); });
   $('ns-next').addEventListener('click', () => { current++; renderList(); renderPreview(); });
   $('ns-add').addEventListener('click', () => {

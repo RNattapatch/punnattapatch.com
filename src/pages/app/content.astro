@@ -233,7 +233,7 @@ import AppNav from '../../components/app/AppNav.astro';
       createIdea, updateIdea, createVariant, updateVariant, addPublication,
       setDecision, addSnapshot, buildVariantMarkdown, downloadText, copyText,
       enqueueJob, waitJob, listWrJobs, retryWrJob, deleteWrJob,
-      listMedia, uploadMedia, reorderMedia, archiveMedia, driveLinkFor, type MediaAsset,
+      listMedia, uploadMedia, reorderMedia, archiveMedia, type MediaAsset,
       listCampaigns, listCampaignItems, updateCampaignItem, addCampaignItems, deleteCampaignItem, createCampaign, updateCampaign,
       PILLAR_V14_LABEL, type PillarV14,
       type Idea, type Variant, type Publication, type FormatCode,
@@ -243,7 +243,6 @@ import AppNav from '../../components/app/AppNav.astro';
     import { supabase, getSupabaseSession } from '../../scripts/dashboard/supabase';
     import { initNoteStudio, openNoteStudio } from '../../scripts/war-room/note-studio';
     import { initCampaigns, loadCampaigns, openCampaign } from '../../scripts/war-room/campaigns';
-    import { zipSync } from 'fflate';
 
     // ---------- state ----------
     let ideas: Idea[] = [];
@@ -505,13 +504,9 @@ import AppNav from '../../components/app/AppNav.astro';
           <p class="break-all font-mono text-[10px] opacity-50">${esc(v.markdown_path ?? '')}</p>
           <button data-action="studio" data-v="${esc(v.variant_id)}" class="btn btn-xs w-full tap-44">📝 Script Studio</button>
           ${v.format === 'carousel' || v.format === 'article' ? `<div class="rounded-lg bg-base-200/70 p-2">
-            <div class="flex flex-wrap items-center justify-between gap-1">
+            <div class="flex items-center justify-between gap-1">
               <span class="text-xs font-semibold">🖼 รูป <span data-media-count="${esc(v.variant_id)}" class="font-normal opacity-60"></span></span>
-              <span class="flex flex-wrap justify-end gap-1">
-                <span data-drive-for="${esc(v.variant_id)}" class="contents"></span>
-                <label class="btn btn-ghost btn-xs tap-44">อัปรูป<input type="file" accept="image/*" multiple class="sr-only" data-upload="${esc(v.variant_id)}" aria-label="อัปโหลดรูปให้ ${esc(v.variant_id)}" /></label>
-                <button data-action="m-zip" data-v="${esc(v.variant_id)}" class="btn btn-ghost btn-xs tap-44" aria-label="ดาวน์โหลดรูปทั้งชุด">⬇️ .zip</button>
-              </span>
+              <label class="btn btn-ghost btn-xs tap-44">อัปรูป<input type="file" accept="image/*" multiple class="sr-only" data-upload="${esc(v.variant_id)}" aria-label="อัปโหลดรูปให้ ${esc(v.variant_id)}" /></label>
             </div>
             <ol data-media-for="${esc(v.variant_id)}" class="mt-1 grid grid-cols-4 gap-1" aria-label="ลำดับรูป ใบแรก = ปก"><li class="col-span-4 text-xs opacity-50">กำลังโหลด…</li></ol>
             <button data-action="note-studio" data-v="${esc(v.variant_id)}" class="btn btn-xs mt-2 w-full text-white tap-44" style="background-color:var(--color-brand-navy);">🎨 Note Studio — ทำ/แก้รูป</button>
@@ -575,8 +570,6 @@ import AppNav from '../../components/app/AppNav.astro';
         const box = document.querySelector(`[data-media-for="${CSS.escape(id)}"]`);
         const cnt = document.querySelector(`[data-media-count="${CSS.escape(id)}"]`);
         if (cnt) cnt.textContent = list.length ? `(${list.length})` : '';
-        const drive = document.querySelector(`[data-drive-for="${CSS.escape(id)}"]`);
-        if (drive) drive.innerHTML = driveButtonHtml(id, list);
         if (!box) continue;
         box.innerHTML = list.length ? list.map((m, i) => `<li class="relative">
             <a href="${esc(m.url ?? '#')}" target="_blank" rel="noopener"><img src="${esc(m.url ?? '')}" alt="รูปที่ ${i + 1}" loading="lazy" class="aspect-[4/5] w-full rounded object-cover ${i === 0 ? 'ring-2 ring-[var(--color-brand-coral)]' : ''}" /></a>
@@ -589,43 +582,12 @@ import AppNav from '../../components/app/AppNav.astro';
           : '<li class="col-span-4 text-xs opacity-50">ยังไม่มีรูป — อัปเอง หรือทำใน Note Studio</li>';
       }
     }
-    // ปุ่ม "📁 เปิดใน Drive" — โฟลเดอร์ชุดรูปล่าสุด · ยังไม่ขึ้น Drive = ปุ่มกดไม่ได้ + บอกเวลาโดยประมาณ (2026-10-03)
-    function driveButtonHtml(id: string, list: MediaAsset[]) {
-      const d = driveLinkFor(list);
-      if (d.state === 'none') return '';
-      if (d.state === 'pending') {
-        const late = Date.now() > d.readyBy.getTime();
-        const at = d.readyBy.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-        const label = late ? '⏳ รอคิวขึ้น Drive' : `⏳ ขึ้น Drive ราว ${at} น.`;
-        const why = `กำลังย้ายรูป ${d.total} ใบชุดล่าสุดขึ้น Google Drive — มินิย้ายรูปที่อายุเกิน 30 นาที รอบละ 10 นาที`;
-        return `<button type="button" class="btn btn-ghost btn-xs tap-44" disabled aria-label="${esc(why)}" title="${esc(why)}">${label}</button>`;
-      }
-      const partial = d.inDrive < d.total ? ` <span class="font-normal opacity-60">${d.inDrive}/${d.total}</span>` : '';
-      const what = d.kind === 'folder' ? `เปิดโฟลเดอร์รูปชุดล่าสุดของ ${id} ใน Google Drive` : `เปิดรูปชุดล่าสุดของ ${id} ใน Google Drive (ยังไม่มีลิงก์โฟลเดอร์ เปิดเป็นไฟล์แทน)`;
-      const more = d.inDrive < d.total ? ` · ขึ้นแล้ว ${d.inDrive} จาก ${d.total} ใบ ที่เหลือกำลังตามไป` : '';
-      return `<a href="${esc(d.href)}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-xs tap-44" aria-label="${esc(what + more)}" title="${esc(what + more)}">📁 เปิดใน Drive${partial}</a>`;
-    }
     async function moveMedia(id: string, i: number, d: number) {
       const list = [...(mediaByVariant.get(id) ?? [])];
       if (!list[i + d]) return;
       [list[i], list[i + d]] = [list[i + d], list[i]];
       await reorderMedia(list.map((m) => m.asset_id));
       await loadMediaFor([id]);
-    }
-    async function zipMedia(id: string) {
-      const list = mediaByVariant.get(id) ?? [];
-      if (!list.length) { toast('ยังไม่มีรูปให้ดาวน์โหลด', 'error'); return; }
-      toast(`กำลังรวม ${list.length} รูป…`);
-      const files: Record<string, Uint8Array> = {};
-      for (const [i, m] of list.entries()) {
-        if (!m.url) continue;
-        const buf = new Uint8Array(await (await fetch(m.url)).arrayBuffer());
-        const ext = (m.storage_path ?? '').split('.').pop() || 'png';
-        files[`${String(i + 1).padStart(2, '0')}.${ext}`] = buf;
-      }
-      const blob = new Blob([zipSync(files, { level: 0 })], { type: 'application/zip' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob); a.download = `${id}.zip`; a.click(); URL.revokeObjectURL(a.href);
     }
 
     // ---------- แก้ชื่อไอเดียในที่ (2026-09-08 · ✏️ → input · Enter บันทึก · Esc ยกเลิก) ----------
@@ -1086,7 +1048,6 @@ import AppNav from '../../components/app/AppNav.astro';
               await reorderMedia(rest.map((x) => x.asset_id));
               toast('เอารูปออกแล้ว'); await loadMediaFor([el.dataset.v!]); break;
             }
-            case 'm-zip': await zipMedia(el.dataset.v!); break;
             case 'snap': {
               snapPubId = el.dataset.pub!;
               $('wr-snap-sub').textContent = el.dataset.label ?? '';

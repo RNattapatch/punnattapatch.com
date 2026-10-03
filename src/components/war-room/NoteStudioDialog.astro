@@ -39,8 +39,12 @@
     <footer class="flex flex-wrap items-center gap-2 border-t border-base-300 px-4 py-3">
       <span id="ns-dirty" class="text-xs opacity-60"></span>
       <span id="ns-status" class="text-xs" role="status" aria-live="polite"></span>
-      <button id="ns-save" class="btn btn-sm btn-ghost ml-auto tap-44">💾 บันทึก</button>
-      <button id="ns-render" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);">🖨 Render รูปจริง</button>
+      <span class="ml-auto flex flex-wrap items-center justify-end gap-2">
+        <button id="ns-zip" type="button" class="btn btn-sm btn-ghost tap-44" disabled>⬇️ ดาวน์โหลด .zip</button>
+        <span id="ns-drive" class="contents"></span>
+        <button id="ns-save" class="btn btn-sm btn-ghost tap-44">💾 บันทึก</button>
+        <button id="ns-render" class="btn btn-sm text-white tap-44" style="background-color:var(--color-brand-coral);">🖨 Render รูปจริง</button>
+      </span>
     </footer>
   </div>
 </dialog>

@@ -1,5 +1,8 @@
 /**
- * Content Center — ปุ่ม "📁 เปิดใน Drive" ของแต่ละ variant (regression · 2026-10-03)
+ * Content Center — ปุ่ม "📁 เปิดใน Drive" + "⬇️ .zip" ใน footer ของ Note Studio (regression · 2026-10-03)
+ *
+ * รอบ 2 (คุณปันขอ): ย้าย .zip / Drive จากการ์ด variant ไปข้างปุ่ม 💾 บันทึก ใน Note Studio
+ * เพราะในการ์ดปุ่มเบียดกันจนกด "อัปรูป" แล้วไปโดน .zip · การ์ดเหลือแค่ อัปรูป (ต้องเปิดหน้าเลือกไฟล์)
  *
  * ทำไมต้องมี: คุณปันต้องไล่หาโฟลเดอร์ชุดรูปใน Google Drive เอง · worker บนมินิจด drive_folder_id
  * ของโฟลเดอร์ <batch> ไว้ใน media_assets แล้ว ปุ่มนี้ต้องพาไปโฟลเดอร์ "ชุดล่าสุด" คลิกเดียว
@@ -105,57 +108,79 @@ await page.addInitScript(([ref, token]) => {
 }, [REF, jwt()]);
 await page.goto(`${BASE}/app/content`, { waitUntil: 'domcontentloaded' });
 await page.waitForSelector('[data-card="variant"]', { timeout: 60000 });
-// เปิด drawer ของ idea แล้วรอให้รูปโหลดเสร็จ (ช่องนับรูปถูกเติม หรือขึ้น "ยังไม่มีรูป")
-async function open(cid) {
+// เปิด drawer ของ idea → เปิด Note Studio ของ variant → รอให้รายการรูปที่ render แล้วโหลดเสร็จ
+async function open(cid, code = 'CR') {
+  await page.evaluate(() => { const d = document.getElementById('ns-dialog'); if (d?.open) d.close(); });
   await page.evaluate((vid) => document.querySelector(`[data-card="variant"][data-v="${vid}"]`)?.click(), `${cid}-CR`);
-  await page.waitForFunction((vid) => {
-    const box = document.querySelector(`[data-media-for="${vid}"]`);
-    return box && !box.textContent.includes('กำลังโหลด');
-  }, `${cid}-CR`, { timeout: 8000 }).catch(() => {});
+  await page.waitForSelector(`[data-action="note-studio"][data-v="${cid}-${code}"]`, { timeout: 8000 });
+  await page.click(`[data-action="note-studio"][data-v="${cid}-${code}"]`);
+  await page.waitForFunction(() => { const t = document.getElementById('ns-rendered')?.textContent ?? ''; return t.trim() !== '' && !t.includes('กำลังโหลด'); }, null, { timeout: 8000 }).catch(() => {});
+  page.once('dialog', (d) => d.accept());   // ร่างใหม่ยังไม่บันทึก → ปิดแล้วถาม confirm
 }
-const ctl = (vid) => page.$eval(`[data-drive-for="${vid}"]`, (el) => {
+const ctl = () => page.$eval('#ns-drive', (el) => {
   const c = el.firstElementChild;
   return c ? { tag: c.tagName, href: c.getAttribute('href'), target: c.getAttribute('target'), rel: c.getAttribute('rel'),
     text: c.textContent.trim(), aria: c.getAttribute('aria-label'), disabled: c.hasAttribute('disabled') } : null;
 }).catch(() => 'missing');
 
-console.log('\n📁 Content Center — ปุ่มเปิดใน Drive\n');
+console.log('\n📁 Content Center — ปุ่มเปิดใน Drive / .zip ใน Note Studio\n');
 
-await open(CIDS.A);
-const ar = await ctl(`${CIDS.A}-AR`);
+// การ์ด variant เหลือแค่ อัปรูป และกดแล้วต้องเปิดหน้าเลือกไฟล์ ไม่ใช่ดาวน์โหลด
+await page.evaluate((vid) => document.querySelector(`[data-card="variant"][data-v="${vid}"]`)?.click(), `${CIDS.A}-CR`);
+await page.waitForSelector(`[data-upload="${CIDS.A}-CR"]`, { attached: true, timeout: 8000 });
+check(!(await page.$('[data-action="m-zip"], [data-drive-for]')), 'การ์ด variant ไม่มีปุ่ม .zip / Drive แล้ว');
+const picked = await Promise.race([
+  page.waitForEvent('filechooser', { timeout: 4000 }).then(() => 'filechooser'),
+  page.waitForEvent('download', { timeout: 4000 }).then(() => 'download'),
+  page.click(`label:has([data-upload="${CIDS.A}-CR"])`).then(() => new Promise((r) => setTimeout(() => r('nothing'), 4000))),
+]).catch((e) => `err ${e.message}`);
+check(picked === 'filechooser', `กด อัปรูป → เปิดหน้าเลือกไฟล์ (${picked})`);
+
+await open(CIDS.A, 'AR');
+const ar = await ctl();
 check(ar?.tag === 'A' && ar.href === `https://drive.google.com/drive/folders/${AR_FOLDER}`, `ขึ้นครบ → ลิงก์โฟลเดอร์ (${ar?.href})`);
 check(ar?.target === '_blank' && /noopener/.test(ar?.rel ?? ''), 'เปิดแท็บใหม่ + rel=noopener');
 check(ar?.text === '📁 เปิดใน Drive' && !!ar?.aria, `ป้าย "📁 เปิดใน Drive" + aria-label (${ar?.aria})`);
 
-const cr = await ctl(`${CIDS.A}-CR`);
+await open(CIDS.A);
+const cr = await ctl();
+check(await page.$eval('#ns-drive', (el) => !!el.closest('footer')?.querySelector('#ns-save')), 'ปุ่ม Drive อยู่ footer เดียวกับ 💾 บันทึก');
 check(cr?.tag === 'BUTTON' && cr.disabled, 'ชุดใหม่สุดยังไม่ขึ้น Drive → ปุ่มกดไม่ได้');
 check(/ขึ้น Drive ราว \d{1,2}:\d{2}/.test(cr?.text ?? ''), `บอกเวลาโดยประมาณ (${cr?.text})`);
 check(!(cr?.href ?? '').includes(OLD_FOLDER), 'ไม่เอาโฟลเดอร์รูปอัปเองชุดเก่ามาแทนชุด render ใหม่');
 check(!!cr?.aria && cr.aria.includes('30 นาที'), 'aria-label อธิบายว่าทำไมยังกดไม่ได้');
 
 await open(CIDS.B);
-const xr = await ctl(`${CIDS.B}-CR`);
+const xr = await ctl();
+const zip = await page.$eval('#ns-zip', (b) => ({ disabled: b.disabled, aria: b.getAttribute('aria-label') }));
+check(!zip.disabled && /12 ใบ/.test(zip.aria) && /ต้นฉบับอยู่ใน Drive/.test(zip.aria), `ปุ่ม .zip กดได้ + บอกว่าใบที่ขึ้น Drive ได้พรีวิว (${zip.aria})`);
+const dl = await Promise.all([page.waitForEvent('download', { timeout: 8000 }).catch(() => null), page.click('#ns-zip')]);
+check(dl[0]?.suggestedFilename() === `${CIDS.B}-CR.zip`, `กด .zip → ดาวน์โหลด ${dl[0]?.suggestedFilename()}`);
 check(xr?.href === `https://drive.google.com/drive/folders/${XR_FOLDER}` && xr.text.includes('6/12'), `ขึ้นบางใบ → ลิงก์โฟลเดอร์ + 6/12 (${xr?.text})`);
 
 await open(CIDS.C);
-const fr = await ctl(`${CIDS.C}-CR`);
+const fr = await ctl();
 check(fr?.href === `https://drive.google.com/file/d/${FR_FILE}/view`, `มีแค่ id ไฟล์ → fallback เปิดไฟล์ (${fr?.href})`);
 
 await open(CIDS.D);
-check(await ctl(`${CIDS.D}-CR`) === null, 'ไม่มีรูป → ไม่มีปุ่ม');
+check(await ctl() === null, 'ไม่มีรูป → ไม่มีปุ่ม Drive');
+check(await page.$eval('#ns-zip', (b) => b.disabled), 'ไม่มีรูป → ปุ่ม .zip กดไม่ได้');
 await open(CIDS.E);
-const br = await ctl(`${CIDS.E}-CR`);
+const br = await ctl();
 check(br?.tag === 'BUTTON' && br.disabled && !br.href, `id แปลก → ไม่ทำลิงก์ (${br?.text})`);
 
-check(await page.$$eval('[data-drive-for] a, [data-drive-for] button', (els) => els.every((e) => e.classList.contains('tap-44'))), 'ทุกปุ่มขนาดแตะ 44px (tap-44)');
+check(await page.$$eval('#ns-drive > *, #ns-zip', (els) => els.length >= 2 && els.every((e) => e.classList.contains('tap-44'))), 'ปุ่มใน footer ขนาดแตะ 44px (tap-44)');
 check(!errors.length, `ไม่มี JS error/alert (${errors.join(' | ') || '-'})`);
 
-await open(CIDS.B);   // ป้ายยาวสุด (📁 เปิดใน Drive 6/12)
+if (process.env.SHOT_DESKTOP) {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await open(CIDS.B);
+  await page.screenshot({ path: process.env.SHOT_DESKTOP });
+}
 await page.setViewportSize({ width: 375, height: 812 });
-const overflow = await page.evaluate(() => [...document.querySelectorAll('[data-drive-for]')].some((el) => {
-  const card = el.closest('article'); return card && card.scrollWidth > card.clientWidth + 1;
-}));
-check(!overflow, 'จอมือถือ 375px — การ์ด variant ไม่ล้นแนวนอน');
+await open(CIDS.A);   // ป้ายยาวสุด (⏳ ขึ้น Drive ราว HH:MM น.)
+const overflow = await page.$eval('#ns-dialog footer', (f) => f.scrollWidth > f.clientWidth + 1);
+check(!overflow, 'จอมือถือ 375px — footer ของ Note Studio ไม่ล้นแนวนอน');
 await page.screenshot({ path: process.env.SHOT || '/tmp/drive-folder-button.png', fullPage: false });
 
 await browser.close();
