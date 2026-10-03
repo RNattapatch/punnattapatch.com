@@ -113,6 +113,35 @@ behind Google login **before any HTML/JS loads**. Free for ≤50 users.
 > Result: two independent gates — Cloudflare Access (the person) + Supabase RLS via
 > Google ID token (row-level data). Defense in depth.
 
+### Step E2 — also lock the `pages.dev` hostnames (added 2026-10-03)
+
+The Access app above covers **only** `app.punnattapatch.com`. Every Pages project is
+also served on `<project>.pages.dev`, `<hash>.<project>.pages.dev` (every deployment,
+kept forever) and `<branch>.<project>.pages.dev` — none of which go through that app.
+Until 2026-10-03 the full private-app HTML/JS was downloadable there (all 271 app
+deployments, plus 18 old marketing deployments from direct uploads that still
+contained `/app/*`).
+
+Fix in place: a second self-hosted Access app **`pages.dev lockdown (app + marketing
+previews)`** (id `46cebf3f-1154-4da0-b318-f405a2f67cd0`), reusing the same reusable
+policy **`Owner access`** and the Google IdP, with destinations:
+
+- `punnattapatch-app.pages.dev`
+- `*.punnattapatch-app.pages.dev`
+- `*.punnattapatch-marketing.pages.dev` (previews + old deployments; the production
+  alias `punnattapatch-marketing.pages.dev` stays public — it mirrors the public site)
+
+Never remove these destinations. Any new Pages project that serves private code needs
+its `pages.dev` names added here too.
+
+**Post-deploy check** (in addition to the custom-domain checks):
+
+```bash
+curl -s -o /dev/null -w "%{http_code} %{redirect_url}\n" https://punnattapatch-app.pages.dev/dashboard        # 302 → *.cloudflareaccess.com
+curl -s -o /dev/null -w "%{http_code} %{redirect_url}\n" https://<hash>.punnattapatch-app.pages.dev/dashboard # 302 → *.cloudflareaccess.com
+curl -s -o /dev/null -w "%{http_code}\n" https://punnattapatch-marketing.pages.dev/app/dashboard               # 404
+```
+
 ---
 
 ## Step F — DNS cutover (the only live-affecting step; instant rollback)
