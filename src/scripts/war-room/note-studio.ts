@@ -25,7 +25,7 @@ async function loadAvatar() {
     avatarData = await new Promise<string>((ok, bad) => { const r = new FileReader(); r.onload = () => ok(String(r.result)); r.onerror = bad; r.readAsDataURL(blob); });
   } catch (e) { console.warn('Note Studio: โหลดรูปโปรไฟล์ไม่ได้', e); }
 }
-const TYPE_LABEL: Record<string, string> = { hook: 'ปก', content: 'เนื้อ', cta: 'ปิดท้าย' };
+const TYPE_LABEL: Record<string, string> = { hook: 'ปก', content: 'เนื้อ', cta: 'ปิดท้าย', follow: 'ปิดท้าย · ปุ่มติดตาม' };
 
 let deps: Deps;
 let variant: Variant | null = null;
@@ -67,7 +67,7 @@ function renderList() {
       <div class="flex flex-wrap items-center gap-2">
         <button data-ns="select" data-i="${i}" class="font-display text-sm font-bold tap-44 px-1" aria-label="ดูพรีวิวใบที่ ${i + 1}">ใบ ${i + 1}</button>
         <select data-ns="type" data-i="${i}" class="select select-bordered select-xs" aria-label="ชนิดใบที่ ${i + 1}">
-          ${['hook', 'content', 'cta'].map((t) => `<option value="${t}" ${s.type === t ? 'selected' : ''}>${TYPE_LABEL[t]}</option>`).join('')}
+          ${['hook', 'content', 'cta', 'follow'].map((t) => `<option value="${t}" ${s.type === t ? 'selected' : ''}>${TYPE_LABEL[t]}</option>`).join('')}
         </select>
         <span class="text-xs ${small ? 'text-error font-semibold' : 'opacity-60'}">${px}px</span>
         <span class="ml-auto flex gap-1">
@@ -101,7 +101,7 @@ function renderPreview() {
     frame.style.transform = `scale(${w / 1080})`; frame.style.transformOrigin = 'top left';
     (frame.parentElement as HTMLElement).style.height = `${(H * w) / 1080}px`;
   });
-  const isFollow = all[current].type === 'follow';
+  const isFollow = current >= spec.slides.length;   // เฉพาะหน้า Follow ที่ต่อท้ายให้เอง · ใบติดตามที่เขียนเองแก้ได้ตามปกติ
   $('ns-pos').textContent = `ใบ ${current + 1} / ${all.length}${isFollow ? ' · หน้า Follow (ใส่ให้อัตโนมัติ)' : ''}`;
   ($('ns-prev') as HTMLButtonElement).disabled = current === 0;
   ($('ns-next') as HTMLButtonElement).disabled = current >= all.length - 1;

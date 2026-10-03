@@ -143,6 +143,27 @@ async function studioAvatar(opts) {
   check(missing.startsWith('data:image/svg+xml'), `รูปหาย (404 HTML) → ใช้วงกลมสำรอง ไม่แปลง HTML เป็นรูป (${missing.slice(0, 24)}…)`);
 }
 
+// ── 3b. ใบปิดท้ายแบบปุ่มติดตาม (follow) ต้องเปิดใน Note Studio ได้ ไม่โดนเปลี่ยนชนิด (2026-10-03) ──
+{
+  VARIANTS[0].visual_spec = { ratio: '4:5', mobile: true, follow: false, slides: [
+    { type: 'hook', text: 'ปกทดสอบ\n<mark>บรรทัดสอง</mark>' },
+    { type: 'follow', text: 'อยากได้แบบนี้อีก\nกด<mark>ติดตาม</mark>ไว้ได้เลยครับ' },
+  ] };
+  const { page, ctx } = await openPage();
+  await page.evaluate((vid) => document.querySelector(`[data-card="variant"][data-v="${vid}"]`)?.click(), `${CID}-CR`);
+  await page.waitForSelector('[data-action="note-studio"]', { timeout: 8000 });
+  await page.click('[data-action="note-studio"]');
+  await page.waitForSelector('select[data-ns="type"][data-i="1"]', { timeout: 8000 });
+  check(await page.$eval('select[data-ns="type"][data-i="1"]', (el) => el.value) === 'follow', 'ใบติดตามที่เขียนเองยังเป็นชนิด follow ใน dropdown');
+  await page.click('[data-ns="select"][data-i="1"]');
+  await page.waitForFunction(() => (document.getElementById('ns-frame')?.getAttribute('srcdoc') ?? '').includes('follow-btn'), null, { timeout: 8000 }).catch(() => {});
+  check((await page.$eval('#ns-frame', (f) => f.getAttribute('srcdoc'))).includes('follow-btn'), 'พรีวิวใบติดตามมีปุ่ม + ติดตาม');
+  check(!(await page.$eval('#ns-pos', (el) => el.textContent)).includes('ใส่ให้อัตโนมัติ'), 'ใบติดตามที่เขียนเองไม่ถูกป้ายว่าใส่ให้อัตโนมัติ');
+  check(await page.$$eval('select[data-ns="type"]', (n) => n.length) === 2, 'follow: false → ไม่มีหน้า Follow อัตโนมัติซ้อน (2 ใบในรายการ)');
+  VARIANTS[0].visual_spec = null;
+  await ctx.close();
+}
+
 // ── 4. ไฟล์ใน public/ ที่หน้า app ใช้ ต้องอยู่ใน KEEP_ASSETS ของ prune-for-app ──
 {
   const prune = readFileSync('scripts/prune-for-app.mjs', 'utf8');
