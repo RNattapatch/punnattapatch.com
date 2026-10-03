@@ -314,6 +314,8 @@ export interface MediaAsset {
   asset_status: string;
   drive_path: string | null;
   drive_file_id: string | null; // ต้นฉบับย้ายเข้า Google Drive แล้ว (worker บนมินิ) · storage_path = พรีวิว JPEG 1080
+  drive_folder_id: string | null; // โฟลเดอร์ชุด render ใน Drive (worker จดตอน archive/relocate · 2026-10-03)
+  created_at: string;
   width: number | null;
   height: number | null;
   url?: string; // signed URL (อายุ 1 ชม.) — เติมตอนโหลด
@@ -335,6 +337,34 @@ export async function listMedia(variantIds: string[]): Promise<MediaAsset[]> {
     for (const r of rows) if (r.storage_path) r.url = byPath.get(r.storage_path) ?? undefined;
   }
   return rows;
+}
+
+// ปุ่ม "📁 เปิดใน Drive" (2026-10-03) — worker ย้ายต้นฉบับที่อายุเกิน 30 นาทีขึ้น Drive รอบละ 10 นาที
+export const DRIVE_ARCHIVE_DELAY_MIN = 40;
+const DRIVE_ID = /^[\w-]{10,128}$/;
+
+export type DriveLink =
+  | { state: 'none' }
+  | { state: 'pending'; readyBy: Date; total: number }
+  | { state: 'ready'; kind: 'folder' | 'file'; href: string; inDrive: number; total: number };
+
+/** ลิงก์ Drive ของชุดรูปล่าสุดของ variant: ชุด render ใหม่สุด (Note Studio/agent) · ไม่มีชุด render = รูปที่อัปเอง
+ *  มีโฟลเดอร์ → เปิดโฟลเดอร์ · มีแค่ไฟล์ (ยังหา id โฟลเดอร์ไม่ได้) → เปิดไฟล์แรก · ยังไม่ขึ้น Drive → pending */
+export function driveLinkFor(list: MediaAsset[]): DriveLink {
+  const rendered = list.filter((m) => m.source !== 'upload' && m.render_batch);
+  let group = list;
+  if (rendered.length) {
+    const latest = rendered.reduce((a, b) => (Date.parse(b.created_at) > Date.parse(a.created_at) ? b : a)).render_batch;
+    group = rendered.filter((m) => m.render_batch === latest);
+  }
+  if (!group.length) return { state: 'none' };
+  const inDrive = group.filter((m) => m.drive_file_id).length;
+  const folder = group.find((m) => m.drive_folder_id && DRIVE_ID.test(m.drive_folder_id))?.drive_folder_id;
+  if (folder) return { state: 'ready', kind: 'folder', href: `https://drive.google.com/drive/folders/${encodeURIComponent(folder)}`, inDrive, total: group.length };
+  const file = group.find((m) => m.drive_file_id && DRIVE_ID.test(m.drive_file_id))?.drive_file_id;
+  if (file) return { state: 'ready', kind: 'file', href: `https://drive.google.com/file/d/${encodeURIComponent(file)}/view`, inDrive, total: group.length };
+  const newest = Math.max(...group.map((m) => Date.parse(m.created_at) || 0));
+  return { state: 'pending', readyBy: new Date(newest + DRIVE_ARCHIVE_DELAY_MIN * 60_000), total: group.length };
 }
 
 /** อัปโหลดรูปเอง (ลากวาง) — ต่อท้ายลำดับเดิม */
