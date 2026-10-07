@@ -196,10 +196,57 @@ const caseLogoNames: Record<string, string> = {
     </div>
   </section>
 
+  <section class="border-b border-[#c9c2b2] bg-sand px-6 py-14 md:py-20" aria-labelledby="university-teaching">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">University</p>
+      <h2 id="university-teaching" class="mt-3 max-w-4xl font-display text-3xl font-bold text-navy md:text-5xl">งานสอนในมหาวิทยาลัย</h2>
+      <div class="mt-10 grid gap-5 md:grid-cols-2">
+        {proof.teaching.map((item) => (
+          <article class="case-row flex flex-col overflow-hidden rounded-2xl border border-[#c9c2b2] bg-surface">
+            <div class="relative aspect-[16/10] bg-white">
+              {item.image ? (
+                <>
+                  <img src={item.image} alt={item.alt} width="1200" height="1200" loading="lazy" decoding="async" class="h-full w-full object-cover object-[50%_62%]" />
+                  <img src={item.logoSrc} alt="" width="160" height="80" loading="lazy" decoding="async" class="absolute bottom-3 left-3 h-12 w-auto max-w-[45%] rounded-lg bg-white object-contain px-2 py-1" />
+                </>
+              ) : (
+                <div class="flex h-full items-center justify-center border-b border-[#ece7dc] p-10">
+                  <img src={item.logoSrc} alt={item.alt} width="320" height="160" loading="lazy" decoding="async" class="max-h-28 w-full object-contain" />
+                </div>
+              )}
+            </div>
+            <div class="p-6 md:p-7">
+              <p class="text-xs font-bold uppercase tracking-[0.14em] text-cyan">{item.kicker}</p>
+              <h3 class="mt-2 font-display text-2xl font-bold text-navy">{item.name}</h3>
+              <p class="mt-3 leading-7 text-warm-ink/75">{item.detail}</p>
+              {item.topic && <p class="mt-2 font-display text-lg font-bold text-coral">“{item.topic}”</p>}
+              <p class="mt-3 text-sm text-warm-ink/60">{item.date}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <section class="border-b border-[#c9c2b2] bg-surface px-6 py-14 md:py-20" aria-labelledby="futureskill">
     <div class="mx-auto max-w-6xl rounded-[2rem] border border-[#c9c2b2] bg-navy p-8 text-ivory shadow-[8px_10px_0_rgba(221,65,85,0.16)] md:p-12">
-      <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#68d2dc]">{proof.futureSkill.badge}</p>
-      <h2 id="futureskill" class="mt-4 max-w-4xl font-display text-3xl font-bold md:text-5xl">{proof.futureSkill.title}</h2>
+      <div class="grid gap-6 md:grid-cols-[1fr_auto] md:items-start">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#68d2dc]">{proof.futureSkill.badge}</p>
+          <h2 id="futureskill" class="mt-4 max-w-4xl font-display text-3xl font-bold md:text-5xl">{proof.futureSkill.instructor.headline}</h2>
+          <p class="mt-5 max-w-3xl text-lg leading-8 text-ivory/80">{proof.futureSkill.instructor.summary}</p>
+          <ul class="mt-5 flex flex-wrap gap-2" aria-label="Academy ที่สอน">
+            {proof.futureSkill.instructor.academies.map((academy) => (
+              <li class="rounded-full border border-[#68d2dc]/40 bg-[#68d2dc]/10 px-4 py-1.5 text-sm font-semibold text-[#8ee7ee]">{academy}</li>
+            ))}
+          </ul>
+          <p class="mt-5 max-w-3xl text-sm leading-7 text-ivory/65">{proof.futureSkill.instructor.pairedProof}</p>
+        </div>
+        <div class="flex h-24 w-40 items-center justify-center rounded-2xl bg-white p-4">
+          <img src="/logos/clients/futureskill.png" alt="FutureSkill" width="160" height="80" loading="lazy" decoding="async" class="h-full w-full object-contain" />
+        </div>
+      </div>
+      <h3 class="mt-12 border-t border-white/15 pt-10 font-display text-2xl font-bold md:text-3xl">{proof.futureSkill.title}</h3>
       <p class="mt-6 max-w-4xl text-lg leading-8 text-ivory/75">{proof.futureSkill.summary}</p>
       <ul class="mt-8 grid gap-3 text-sm leading-6 text-ivory/75 md:grid-cols-2">
         {proof.futureSkill.details.map((detail) => (

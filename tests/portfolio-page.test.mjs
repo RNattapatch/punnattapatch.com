@@ -33,3 +33,17 @@ test('synced web data keeps the confirmed claims and exclusions', () => {
     assert.equal(publicText.includes(forbidden), false, `web public content must exclude ${forbidden}`);
   }
 });
+
+test('portfolio shows FutureSkill Instructor 2026 and university teaching', () => {
+  const data = JSON.parse(readFileSync(dataPath, 'utf8')).public;
+  const page = readFileSync(pagePath, 'utf8');
+  assert.equal(data.futureSkill.badge, 'FutureSkill Instructor 2026');
+  assert.ok(data.futureSkill.instructor.pairedProof, 'instructor credential must carry paired proof');
+  assert.match(page, /proof\.futureSkill\.instructor\.pairedProof/);
+  assert.deepEqual(data.teaching.map((item) => item.slug), ['ramkhamhaeng', 'tni']);
+  assert.match(page, /proof\.teaching\.map/);
+  for (const item of data.teaching) {
+    assert.equal(existsSync(resolve(root, 'public', item.logoSrc.slice(1))), true, `${item.logoSrc} must exist`);
+    if (item.image) assert.equal(existsSync(resolve(root, 'public', item.image.slice(1))), true, `${item.image} must exist`);
+  }
+});

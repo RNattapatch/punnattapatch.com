@@ -2,7 +2,7 @@
   "meta": {
     "title": "ผลงาน ปัน ณัฐพัชร์",
     "subtitle": "อบรม วางระบบ และสร้าง AI Agent จากโจทย์ธุรกิจจริง",
-    "asOf": "11 กันยายน 2026",
+    "asOf": "8 ตุลาคม 2026",
     "owner": "ปัน ณัฐพัชร์",
     "handle": "@pun_nattapatch"
   },
@@ -25,7 +25,8 @@
     "courseTitle": "สร้าง AI Sales Agent บน LINE OA ด้วย Claude Code",
     "courseUrl": "https://futureskill.co/course/detail/6030",
     "recordingDates": "14 และ 17 สิงหาคม 2026",
-    "duration": "4 EP รวมประมาณ 3 ชั่วโมง 46 นาที"
+    "duration": "4 EP รวมประมาณ 3 ชั่วโมง 46 นาที",
+    "instructor": "FutureSkill Instructor 2026"
   },
   "relationshipOrigins": {
     "summary": "งาน organic และการแนะนำจากคนรู้จัก",
@@ -79,6 +80,14 @@
         "detail": "ทีมโรงแรม ฟาร์ม ร้านอาหาร และงานหลังบ้าน"
       }
     ],
+    "credentialStrip": {
+      "lead": "สอนจากระบบที่ใช้ทำงานจริงทุกวัน",
+      "items": [
+        "FutureSkill Instructor 2026",
+        "วิทยากร ป.โท ม.รามคำแหง",
+        "สอนคลาส AI กับ TNI"
+      ]
+    },
     "trainingCases": [
       {
         "slug": "scenery",
@@ -196,8 +205,43 @@
       "pdfImage": "nissan-stage.jpg",
       "alt": "เวที Nissan Sales Manager Seminar 2026"
     },
+    "teaching": [
+      {
+        "slug": "ramkhamhaeng",
+        "name": "มหาวิทยาลัยรามคำแหง",
+        "kicker": "Guest Lecture · ปริญญาโท",
+        "detail": "บรรยายให้นักศึกษาปริญญาโท คณะเศรษฐศาสตร์",
+        "topic": "Rethink Business in the Age of Agentic AI",
+        "date": "13 กันยายน 2026",
+        "pdfImage": "teaching-ram-lecture.jpg",
+        "logo": "ramkhamhaeng.png",
+        "alt": "สไลด์เปิดคลาส Rethink Business in the Age of Agentic AI ในห้องบรรยาย ม.รามคำแหง",
+        "logoSrc": "/logos/clients/ramkhamhaeng.png",
+        "image": "/testimonial/2026-10/ram-lecture.jpg"
+      },
+      {
+        "slug": "tni",
+        "name": "สถาบันเทคโนโลยีไทย-ญี่ปุ่น (TNI)",
+        "kicker": "University · ร่วมกับ FutureSkill for Business",
+        "detail": "สอนคลาส AI ร่วมกับ FutureSkill for Business",
+        "date": "2026",
+        "logo": "tni.png",
+        "alt": "TNI สถาบันเทคโนโลยีไทย-ญี่ปุ่น",
+        "logoSrc": "/logos/clients/tni.png"
+      }
+    ],
     "futureSkill": {
-      "badge": "FutureSkill Future Expert",
+      "badge": "FutureSkill Instructor 2026",
+      "instructor": {
+        "headline": "ผู้สอน FutureSkill ปี 2026",
+        "summary": "ผ่านรอบคัดเลือกผู้สอนของ FutureSkill ด้วยการสอนจริง (Instructor Recruitment 2026 สาย Future Expert) และสอนใน 3 Academy",
+        "academies": [
+          "AI Academy",
+          "Digital Business Academy",
+          "Sales & Customer Academy"
+        ],
+        "pairedProof": "หลักคิดที่สอนมาจากระบบที่ผมใช้ทำงานจริงในธุรกิจตัวเองทุกวัน และจากการคัดเรซูเม่กว่า 1,000 ใบ สัมภาษณ์คนเข้าทีมกว่า 100 คน"
+      },
       "title": "สร้าง AI Sales Agent บน LINE OA ด้วย Claude Code",
       "summary": "คลาส 4 EP ที่พาผู้เรียนสร้างระบบตอบแชต คัดกรองลูกค้า ออกใบเสนอราคา และส่งต่อให้คนดูแลต่อ โดยใช้ร้านบ้านโซฟาเป็นโจทย์เดโมทั้งคลาส",
       "details": [
@@ -278,11 +322,11 @@
         "src": "/logos/clients/futureskill.png"
       },
       {
-        "name": "มหาวิทยาลัยรามคำแหง",
+        "name": "ม.รามคำแหง",
         "src": "/logos/clients/ramkhamhaeng.png"
       },
       {
-        "name": "สถาบันเทคโนโลยีไทย-ญี่ปุ่น (TNI)",
+        "name": "TNI ไทย-ญี่ปุ่น",
         "src": "/logos/clients/tni.png"
       },
       {
@@ -348,6 +392,34 @@
       {
         "name": "MEET MÉ",
         "src": "/logos/clients/meetme-bkk.png"
+      }
+    ],
+    "recentWork": [
+      {
+        "kicker": "สอนคลาส",
+        "title": "คลาส AI ที่ ม.รามคำแหง",
+        "pdfImage": "recent-ram-class.jpg",
+        "alt": "ปัน ณัฐพัชร์ เซลฟี่กับนักศึกษา ม.รามคำแหง"
+      },
+      {
+        "kicker": "In-House",
+        "title": "คลาส AI ให้ทีม UD Clinic",
+        "pdfImage": "recent-ud-clinic-class.jpg",
+        "alt": "ปัน ณัฐพัชร์ กับทีม UD Clinic หลังจบคลาส"
+      },
+      {
+        "kicker": "คลาสออนไลน์",
+        "title": "ถ่ายคลาสออนไลน์กับ FutureSkill",
+        "pdfImage": "recent-futureskill-studio.jpg",
+        "alt": "ปัน ณัฐพัชร์ กับทีมงานในสตูดิโอ FutureSkill"
+      },
+      {
+        "kicker": "Consulting",
+        "title": "วางระบบให้กานต์ชนกคลินิก และแบรนด์ MEET MÉ",
+        "pdfImage": "recent-kanchanok-meetme-consult.jpg",
+        "alt": "ปัน ณัฐพัชร์ กับทีมกานต์ชนกคลินิกและ MEET MÉ",
+        "insetImage": "recent-kanchanok-meetme-consult-talk.jpg",
+        "insetAlt": "ปัน ณัฐพัชร์ อธิบายเครื่องมือ AI ให้ทีมกานต์ชนกคลินิก"
       }
     ],
     "relationshipNote": "รายชื่อบางส่วนมาจากงาน organic และการแนะนำจากคนรู้จัก จึงแสดงในฐานะองค์กรหรือแบรนด์ที่เคยร่วมงาน ไม่ได้นับเป็นดีลใน CRM",
