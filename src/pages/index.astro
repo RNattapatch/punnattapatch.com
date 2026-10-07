@@ -5,7 +5,7 @@ import Manifesto from '../components/Manifesto.astro';
 import ProofSystems from '../components/proof/ProofSystems.astro';
 import ProofStats from '../components/proof/ProofStats.astro';
 import { SITE } from '../data/site';
-import { fmtPrice } from '../data/pricing.mjs';
+import { fmtPrice, CATALOG } from '../data/pricing.mjs';
 import ceoPhoto from '../assets/pun-ceo-1.jpg';
 
 // หน้าแรก 2 ทาง (ล็อก 2026-10-07) — SSOT: claude-code-pun-nattapatch/wiki/pages/strategy-sales-team-x-ai-agent-modular-pack-2026-10.md
@@ -15,6 +15,9 @@ import ceoPhoto from '../assets/pun-ceo-1.jpg';
 const title = 'ปั้นทีมขาย × AI Office ฝ่ายขาย · ปัน ณัฐพัชร์';
 const description = 'ทีมขายที่ยอดไม่นิ่ง ติดอยู่ 2 ที่ คือคนในทีม กับงานซ้ำที่กินวันเขาหมด · ปัน ณัฐพัชร์ ช่วยเจ้าของ SME ปั้นทีมขาย และวาง AI Office ให้ทั้งทีมใช้ได้จริง';
 const QUIZ_HREF = '/team-check';
+// ค่าตัวรายวันเดียวกัน ไม่ว่าจะสอนหรือวางระบบ (ปันเคาะ 2026-10-08) · ครบรอบ = 2 วัน คำนวณจาก catalog ห้ามพิมพ์ตัวเลข
+const DAY = fmtPrice('daily-sales-consulting');
+const FULL_ROUND = `฿${(CATALOG['daily-sales-consulting'].amount * 2).toLocaleString('en-US')}`;
 
 const paths = [
   {
@@ -75,14 +78,14 @@ const ways = [
   {
     name: 'สอนทีม',
     line: 'คลาส 1 วันที่ออฟฟิศคุณ ทีมกลับไปทำเองเป็น',
-    detail: `เริ่มที่ ${fmtPrice('inhouse-a')} ต่อวัน ราคาเดียวทั้งทีมไม่เกิน 20 คน`,
+    detail: `${fmtPrice('inhouse-a')} ต่อวัน ค่าตัวเดียวกับวางระบบ · ทั้งทีมไม่เกิน 20 คน`,
     href: '/services',
     cta: 'ดูคลาสทั้งหมด',
   },
   {
     name: 'ทำให้',
-    line: 'ผมเข้าไปวางให้ทั้งทีมใช้ 1–2 สัปดาห์ เข้าบริษัท 2 ครั้ง',
-    detail: 'เลือกเริ่มเรื่องที่ทีมติดที่สุด ราคาตามจำนวนเรื่อง แจ้งในคอล 20 นาทีก่อนตัดสินใจ',
+    line: 'ผมเข้าไปวางระบบให้ทั้งทีมใช้ วันละไม่เกิน 2 เรื่อง',
+    detail: `วางระบบ 1 วัน ${DAY} · แบบครบรอบ 2 วัน ${FULL_ROUND} (วันที่ 2 ภายใน 14 วัน + ดูแลต่อ 30 วัน)`,
     href: QUIZ_HREF,
     cta: 'เช็คก่อนว่าควรเริ่มเรื่องไหน',
   },
@@ -96,10 +99,10 @@ const ways = [
 ];
 
 const round = [
-  ['ครั้งที่ 1 · เช้า', 'คุยกับเจ้าของและคนที่ทำงานนั้นจริง จดตัวเลขตั้งต้น และตกลงกันว่าแบบไหนเรียกว่าใช้ได้'],
-  ['ครั้งที่ 1 · บ่าย', 'ลงระบบพื้นฐานที่เตรียมไว้แล้วให้ทีมเริ่มใช้วันนั้นเลย'],
+  ['วันที่ 1 · เช้า', 'คุยกับเจ้าของและคนที่ทำงานนั้นจริง จดตัวเลขตั้งต้น และตกลงกันว่าแบบไหนเรียกว่าใช้ได้'],
+  ['วันที่ 1 · บ่าย', 'ลงระบบพื้นฐานที่เตรียมไว้แล้วให้ทีมเริ่มใช้วันนั้นเลย'],
   ['1–2 สัปดาห์', 'ทีมใช้กับงานจริง ผมปรับให้เข้ากับวิธีทำงานของบริษัทคุณ'],
-  ['ครั้งที่ 2', 'ส่งฉบับที่ปรับแล้ว ลองกับงานจริงด้วยกัน สอนทีม แล้วคุยว่าเรื่องถัดไปคืออะไร'],
+  ['วันที่ 2', 'ส่งฉบับที่ปรับแล้ว ลองกับงานจริงด้วยกัน สอนทีม แล้วคุยว่าเรื่องถัดไปคืออะไร'],
 ];
 
 // ทางเดินลูกค้าที่อยู่ยาว — ไม่ระบุชื่อจนกว่าคุณปันขออนุญาตแล้ว (ปันเคาะ 2026-10-07)
@@ -294,7 +297,7 @@ const recentWork = [
       </div>
 
       <div class="mt-14 rounded-2xl border border-[#c9c2b2] bg-ivory p-6 md:p-8">
-        <h3 class="font-display text-2xl font-bold text-navy">แบบ "ทำให้" 1 รอบ ใช้เวลา 1–2 สัปดาห์</h3>
+        <h3 class="font-display text-2xl font-bold text-navy">แบบวางระบบครบรอบ 2 วัน ใช้เวลา 1–2 สัปดาห์</h3>
         <ol class="mt-6 grid gap-5 md:grid-cols-4">
           {round.map(([when, what], index) => (
             <li class="rounded-xl border border-[#c9c2b2] bg-surface p-5">
