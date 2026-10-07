@@ -262,9 +262,12 @@ const description =
     textEl.textContent = q.text;
     answersDiv.innerHTML = '';
 
-    const labels = isProfile ? ['ก', 'ข', 'ค', 'ง', 'จ'] : ['ไม่ตรง', 'ตรงบ้าง', 'ตรงมาก'];
+    // ข้ออาการไม่มี choices ในข้อมูล — ใช้สเกลเดียวกันทุกข้อ (ค่าที่เก็บ = คะแนน 0–2) · แสดง "ตรงมาก" ก่อน
+    const options: Array<[number, string]> = isProfile
+      ? PROFILE_QUESTIONS[qIdx].choices.map((choice, ci) => [ci, choice] as [number, string])
+      : [[2, 'ตรงมาก'], [1, 'ตรงบ้าง'], [0, 'ไม่ตรง']];
 
-    q.choices.forEach((choice, ci) => {
+    options.forEach(([ci, choice]) => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'answer-btn block w-full rounded-xl border-2 border-base-content/10 p-4 text-left transition-all hover:border-secondary/50 hover:bg-base-200/40';
