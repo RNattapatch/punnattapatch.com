@@ -10,7 +10,6 @@ const routes = {
   T2: 'services/online-to-sales.html',
   T3: 'services/t3-sales-back-office.html',
   C1: 'services/daily-consulting.html',
-  I1: 'services/dashboard-build.html',
 };
 
 test('every Product page separates Coral booking actions from LINE-green actions', async () => {

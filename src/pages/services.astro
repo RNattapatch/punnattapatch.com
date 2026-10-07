@@ -48,8 +48,8 @@ const faqs = [
     a: 'T1 เน้นจิตวิทยาการตัดสินใจ คำถาม การต่อรอง และซ้อมดีลกับ AI Sales Coach, T2 เน้นเส้นทางจาก Content และ Ads ไปสู่ Lead นัดหมายและยอดขาย, ส่วน T3 เน้น Report, Dashboard และข้อมูลที่ช่วยให้หัวหน้าเห็นดีลค้าง เลือกจากงานที่ทีมต้องทำให้ดีขึ้นก่อนครับ',
   },
   {
-    q: 'Training, Consulting และ Implementation ต่างกันอย่างไร',
-    a: 'Training พัฒนาความสามารถของทีมผ่าน Workshop, C1 Consulting ช่วยคิดและออกแบบทางออกหนึ่งเรื่องต่อวัน, ส่วน I1 Implementation คือทีมผมลงมือสร้าง Sales Dashboard และ Report ให้พร้อมใช้กับงานจริง',
+    q: 'สอนทีม กับให้ผมวางระบบให้ ต่างกันอย่างไร',
+    a: 'สอนทีมคือทีมคุณเรียนใน Workshop แล้วกลับไปทำเอง ส่วน C1 คือผมเข้าไปวางระบบกับทีม วันละไม่เกิน 2 เรื่อง ค่าตัวต่อวันเท่ากัน ถ้าอยากให้ทดสอบกับงานจริงและดูแลต่อ ให้เลือกแบบครบรอบ 2 วัน',
   },
   {
     q: 'ควรมีใครเข้าร่วม และรับผู้เรียนกี่คน',
@@ -76,7 +76,7 @@ const faqs = [
     a: 'หลังยืนยัน Scope และวันที่ว่าง ผมจะออกเอกสารให้ตรวจสอบ การจองสมบูรณ์เมื่อดำเนินการตามเงื่อนไขในใบเสนอราคาเรียบร้อย จึงควรเผื่อเวลาสำหรับเตรียมข้อมูลและผู้เข้าร่วมก่อนวันจริง',
   },
   {
-    q: 'ยังไม่แน่ใจว่าควรเลือก T1, T2, T3, C1 หรือ I1 ทำอย่างไร',
+    q: 'ยังไม่แน่ใจว่าควรเลือก T1, T2, T3 หรือ C1 ทำอย่างไร',
     a: 'เริ่มจากเล่าอาการที่เกิดในทีมทาง LINE ได้เลยครับ ผมจะช่วยแยกว่าเป็นช่องว่างด้านทักษะ การออกแบบวิธีทำงาน หรือการสร้างระบบ แล้วแนะนำทางเลือกที่เล็กพอจะเริ่มและตรงกับผลลัพธ์ที่สุด',
   },
 ] as const;
@@ -253,12 +253,13 @@ const faqs = [
         <div class="max-w-3xl">
           <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">Consulting & Implementation</p>
           <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">ถ้าอบรมอย่างเดียวยังไม่พอ ผมเข้าไปวางระบบกับทีมให้</h2>
-          <p class="mt-4 leading-7 text-[#625C53]">C1 ใช้เมื่อมีโจทย์สำคัญหนึ่งเรื่องที่ต้องออกแบบทางออก ส่วน I1 ใช้เมื่อทีมต้องการ Production System สำหรับ Dashboard และ Report</p>
+          <p class="mt-4 leading-7 text-[#625C53]">เลือกเรื่องที่ทีมติดได้ 2 เรื่องต่อวัน เช้าเก็บโจทย์ บ่ายลงระบบพื้นฐานให้ทีมเริ่มใช้ ถ้าอยากให้ทดสอบกับงานจริงและดูแลต่อ 30 วัน เลือกแบบครบรอบ 2 วัน</p>
         </div>
 
         <div class="mt-10 grid min-w-0 gap-6 lg:grid-cols-2">
           <div class="relative min-w-0">
             <span id="package-a" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
+            <span id="offer-i1" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
             <OfferCard offer={getOffer('C1')} image={OFFER_ASSET_BY_CODE.C1} priceLabel={priceFor('C1')} />
           </div>
         </div>
@@ -299,9 +300,9 @@ const faqs = [
             <img src="/services/team-group.jpg" alt="ปันถ่ายภาพร่วมกับทีมผู้เรียนหลังจบคลาส In-house" width="1200" height="900" loading="lazy" decoding="async" class="aspect-[4/3] w-full object-cover" />
             <figcaption class="p-5"><strong class="text-navy">In-house / T1</strong><p class="mt-2 text-sm leading-6 text-[#625C53]">ทีมใช้เคสจริงฝึกเหตุผลซื้อ การต่อรอง และ Role-play เพื่อให้หัวหน้ากลับไปโค้ชด้วยภาษาเดียวกัน</p></figcaption>
           </figure>
-          <figure data-proof-for="T3 I1" class="min-w-0 overflow-hidden rounded-[1.5rem] border border-sand-deep bg-surface">
+          <figure data-proof-for="T3 C1" class="min-w-0 overflow-hidden rounded-[1.5rem] border border-sand-deep bg-surface">
             <img src="/proof/02-command-charts.jpg" alt="หน้าจอ Dashboard สำหรับติดตาม Pipeline รายงาน และงานที่ต้องติดตาม" width="1280" height="720" loading="lazy" decoding="async" class="aspect-[4/3] w-full object-cover" />
-            <figcaption class="p-5"><strong class="text-navy">Report & Dashboard / T3 + I1</strong><p class="mt-2 text-sm leading-6 text-[#625C53]">ตัวอย่างระบบที่ทำให้ข้อมูล Pipeline กลายเป็นภาพรวมและรายการงานที่ทีมต้องติดตาม</p></figcaption>
+            <figcaption class="p-5"><strong class="text-navy">Report & Dashboard / T3 + C1</strong><p class="mt-2 text-sm leading-6 text-[#625C53]">ตัวอย่างระบบที่ทำให้ข้อมูล Pipeline กลายเป็นภาพรวมและรายการงานที่ทีมต้องติดตาม</p></figcaption>
           </figure>
         </div>
 

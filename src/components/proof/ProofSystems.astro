@@ -138,17 +138,17 @@ const remaining = PROOF_SYSTEMS.length - shown.length;
     <div class="mt-16 rounded-2xl bg-navy p-7 text-ivory/85 md:mt-24 md:p-12">
       <h3 class="max-w-2xl font-display text-2xl font-bold leading-snug text-ivory md:text-3xl">
         {context === 'consult'
-          ? 'วัน Consult ไม่ได้สร้างทั้งห้าระบบให้เสร็จในวันเดียวครับ'
+          ? 'วันแรกไม่ได้สร้างทั้งห้าระบบให้เสร็จในวันเดียวครับ'
           : 'อ่านมาถึงตรงนี้ ถ้าคุณกำลังคิดว่า "อยากได้ระบบพวกนี้" — ผมอยากให้คุณคิดใหม่'}
       </h3>
       {context === 'consult' ? (
         <>
           <p class="mt-5 max-w-3xl leading-relaxed">
-            วัน Consult ช่วยเลือกจุดเริ่มและทำ Blueprint ของ Primary Outcome เดียวให้ชัด เราจะระบุว่าข้อมูลมาจากไหน
+            เราเลือก 2 เรื่องเป็นจุดเริ่ม แล้วลงระบบพื้นฐานของ 2 เรื่องนั้นให้ทีมใช้ เราจะระบุว่าข้อมูลมาจากไหน
             ใครรับผิดชอบ จุดไหนให้ระบบช่วย และจุดไหนต้องให้คนกดยืนยัน
           </p>
           <p class="mt-3 max-w-3xl leading-relaxed">
-            ถ้าต้อง Build ต่อ คุณจะเห็น Scope ก่อนลงทุน และรู้ว่าทีมต้องรับช่วงอะไรหลังระบบเปิดใช้
+            เรื่องถัดไปค่อยเพิ่มทีละรอบ คุณจะเห็นตัวเลขของรอบก่อนทุกครั้งก่อนตัดสินใจลงทุนต่อ
           </p>
         </>
       ) : (
@@ -181,7 +181,7 @@ const remaining = PROOF_SYSTEMS.length - shown.length;
 
       <p class="mt-8 border-t border-ivory/15 pt-6 font-display text-xl font-bold text-ivory md:text-2xl">
         {context === 'consult'
-          ? 'สิ่งที่คุณถือกลับคือจุดเริ่มที่ชัด และแผน 30 วันที่ทีมเดินต่อได้'
+          ? 'สิ่งที่คุณได้คือระบบพื้นฐานที่ทีมเริ่มใช้แล้ว และเกณฑ์ที่วัดกันได้ว่าใช้ได้จริงไหม'
           : 'นี่คือสิ่งที่ผมขาย — ไม่ใช่โปรแกรม'}
       </p>
     </div>

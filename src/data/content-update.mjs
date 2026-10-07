@@ -1,5 +1,5 @@
 // ป้าย "อัปเดตเนื้อหา" ที่แปะบนกล่อง Offer ของทุก service (คุณปันสั่ง 2026-09-05)
-// แก้ที่นี่ที่เดียว → T1/T2/T3/T4 (OfferStack), C1/I1 (InvestmentBlock) และ
+// แก้ที่นี่ที่เดียว → T1/T2/T3/T4 (OfferStack), C1 (InvestmentBlock) และ
 // **การ์ด Flex ของบอท LINE** เปลี่ยนตาม — บอทอ่านผ่าน catalog.json (scripts/gen-catalog.mjs)
 //
 // ทำไมเป็น .mjs: gen-catalog.mjs รันด้วย node ตรงๆ ไม่ผ่าน Vite จึง import .ts ไม่ได้

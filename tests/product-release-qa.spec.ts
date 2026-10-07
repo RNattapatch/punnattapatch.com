@@ -23,7 +23,6 @@ const routes = [
   { code: 'T2', path: '/services/online-to-sales', schema: 'Course' },
   { code: 'T3', path: '/services/t3-sales-back-office', schema: 'Course' },
   { code: 'C1', path: '/services/daily-consulting', schema: 'Service' },
-  { code: 'I1', path: '/services/dashboard-build', schema: 'Service' },
 ] as const;
 const viewports = [
   { name: 'desktop-1440x900', width: 1440, height: 900 },
