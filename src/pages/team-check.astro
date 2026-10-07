@@ -2,9 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../data/site';
 
-const title = 'เช็คทีมขายของคุณใน 2 นาที · แนะนำเรื่องที่ควรเริ่ม';
+const title = 'เช็คทีมขายคุณติดทางไหน — ฟรี 2 นาที';
 const description =
-  'แบบทดสอบเร็วไม่บังคับกรอกข้อมูล รู้ได้ทันที ว่าทีมขายติดเรื่องไหนมากที่สุด ควรเริ่มจากบริการใหน';
+  'ตอบ 15 ข้อสั้นๆ แล้วรู้ว่าควรเริ่มเรื่องไหนก่อน ไม่ต้องกรอกข้อมูลติดต่อ';
 ---
 
 <BaseLayout
@@ -24,27 +24,21 @@ const description =
   <!-- ===== INTRO SECTION ===== -->
   <section id="sec-intro" class="quiz-section px-4 py-16 lg:px-8">
     <div class="mx-auto max-w-3xl">
-      <p class="text-xs font-bold uppercase tracking-widest text-secondary">2 นาทีทำแบบทดสอบ</p>
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">เช็คทีมขาย 2 นาที</p>
       <h1 class="mt-3 font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl">
-        เช็คทีมขายของคุณใน 2 นาที
+        ทีมขายคุณติดทางไหน
       </h1>
       <p class="mt-5 max-w-2xl text-lg text-base-content/75">
-        ไม่บังคับกรอกข้อมูล เพียง 15 คำถามเร็ว ได้ผลทันที ว่าทีมขายติดเรื่องไหนมากที่สุด
-        ควรเริ่มแก้จากบริการไหน แบบไหน
+        ตอบ 15 ข้อสั้นๆ แล้วรู้ว่าควรเริ่มเรื่องไหนก่อน ไม่ต้องกรอกข้อมูลติดต่อครับ
       </p>
 
-      <div class="mt-10 space-y-4 rounded-2xl border border-base-content/10 bg-base-200/30 p-6">
-        <h2 class="font-display text-xl font-bold">เริ่มทดสอบ</h2>
-        <p class="text-sm text-base-content/70">
-          ใช้เวลา 2 นาที · ไม่ต้องสมัครสมาชิก · ได้ผลทันที
-        </p>
-
+      <div class="mt-10 rounded-2xl border border-base-content/10 bg-base-200/30 p-6">
         <button
           id="btn-start"
           type="button"
           class="btn btn-lg w-full bg-secondary text-secondary-content shadow-xl shadow-secondary/30 transition-all hover:scale-[1.01] hover:bg-secondary/90"
         >
-          เริ่มเลย →
+          เริ่มเช็ค →
         </button>
       </div>
     </div>
@@ -56,7 +50,7 @@ const description =
       <!-- Progress -->
       <div class="sticky top-0 z-20 -mx-4 border-b border-base-content/10 bg-base-100/95 px-4 py-3 backdrop-blur-lg lg:-mx-8 lg:px-8">
         <div class="flex items-center justify-between text-sm">
-          <span id="progress-text" class="font-medium text-base-content">ตอบแล้ว 0 / 15 ข้อ</span>
+          <span id="progress-text" class="font-medium text-base-content">ข้อ 1 / 15</span>
           <span id="progress-pct" class="font-display font-bold text-secondary">0%</span>
         </div>
         <div class="mt-2 h-2 overflow-hidden rounded-full bg-base-200">
@@ -69,25 +63,33 @@ const description =
         </div>
       </div>
 
-      <div id="questions-container" class="mt-8 space-y-6">
-        {/* Questions rendered by client script */}
-      </div>
+      <div class="mt-12 space-y-8">
+        <!-- Current question card -->
+        <article id="current-question" class="rounded-3xl border-2 border-base-content/10 p-8 md:p-12">
+          <h2 id="q-text" class="font-display text-2xl font-bold leading-snug"></h2>
+          <div id="q-answers" class="mt-8 space-y-3">
+            {/* Answer buttons rendered by script */}
+          </div>
+        </article>
 
-      <button
-        id="btn-submit"
-        type="button"
-        disabled
-        class="btn btn-lg mt-10 w-full bg-secondary text-secondary-content shadow-xl shadow-secondary/30 transition-all hover:scale-[1.01] hover:bg-secondary/90 disabled:cursor-not-allowed disabled:bg-base-200 disabled:text-base-content/40 disabled:shadow-none"
-      >
-        คำนวณผล →
-      </button>
+        <!-- Navigation -->
+        <div class="flex gap-3">
+          <button
+            id="btn-back"
+            type="button"
+            class="btn btn-outline flex-1"
+          >
+            ← ย้อนกลับ
+          </button>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- ===== RESULT SECTION ===== -->
   <section id="sec-result" class="quiz-section hidden px-4 py-16 lg:px-8">
     <div class="mx-auto max-w-3xl">
-      <p class="text-xs font-bold uppercase tracking-widest text-secondary">ผลการทดสอบ</p>
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">ผลเช็คทีมขาย</p>
       <h2 id="result-heading" class="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
         {/* "ทีมคุณติด {path} · เริ่มที่เรื่อง {topic}" */}
       </h2>
@@ -110,34 +112,33 @@ const description =
             <p id="result-topic-after" class="mt-1 text-base leading-relaxed text-base-content/85"></p>
           </div>
         </div>
+      </div>
 
-        <div class="mt-6 flex flex-wrap gap-2">
-          <a
-            id="result-learn-link"
-            href="#"
-            class="btn btn-sm btn-ghost border border-base-content/25 text-sm"
-          >
-            ดูคลาส →
-          </a>
-          <a
-            id="result-line-btn"
-            href="https://lin.ee/ioSnSUG"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn btn-sm bg-green-500 text-white hover:bg-green-600"
-            data-cta-event="team-check-line-primary"
-          >
-            ส่งผลใน LINE
-          </a>
+      <!-- Second topic (if score >= 2) -->
+      <div id="result-secondary-card" class="mt-6 hidden rounded-2xl border border-base-content/10 p-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-base-content/60">เรื่องถัดไปที่ควรดู</p>
+        <h4 id="result-secondary-name" class="mt-2 font-display text-xl font-bold"></h4>
+        <p id="result-secondary-current" class="mt-2 text-sm text-base-content/75"></p>
+      </div>
+
+      <!-- Score bars grouped by path -->
+      <div class="mt-10 rounded-2xl border border-base-content/10 bg-base-100 p-6">
+        <h4 class="font-display text-lg font-bold">คะแนนแต่ละเรื่อง</h4>
+
+        <div class="mt-6">
+          <h5 class="text-sm font-semibold text-base-content/70">ปั้นทีมขาย</h5>
+          <div id="result-scores-team-build" class="mt-3 space-y-3"></div>
+        </div>
+
+        <div class="mt-6">
+          <h5 class="text-sm font-semibold text-base-content/70">AI Office ฝ่ายขาย</h5>
+          <div id="result-scores-ai-office" class="mt-3 space-y-3"></div>
         </div>
       </div>
 
-      <!-- Score bars — all 6 topics -->
-      <div class="mt-10 rounded-2xl border border-base-content/10 bg-base-100 p-6">
-        <h4 class="font-display text-lg font-bold">คะแนนแต่ละเรื่อง</h4>
-        <div id="result-scores" class="mt-5 space-y-3">
-          {/* Populated by client script */}
-        </div>
+      <!-- CTA section — dynamically routed based on P3 -->
+      <div id="result-cta-section" class="mt-10 space-y-4">
+        {/* Populated by script based on P3 answer */}
       </div>
 
       <!-- Next steps numbered list -->
@@ -177,12 +178,9 @@ const description =
   .quiz-section.hidden { display: none !important; }
   .quiz-section:not(.hidden) { display: block; }
 
-  .choice-label:has(input:checked) {
+  .answer-btn.selected {
     border-color: var(--color-secondary) !important;
     background: color-mix(in oklch, var(--color-secondary) 10%, transparent) !important;
-  }
-  .q-card.answered {
-    border-color: color-mix(in oklch, var(--color-secondary) 30%, transparent) !important;
   }
 </style>
 
@@ -200,15 +198,16 @@ const description =
   interface State {
     profileAnswers: Array<number | null>;
     symptomAnswers: Array<number | null>;
+    currentQuestionIdx: number;
   }
 
   let state: State = {
     profileAnswers: new Array(3).fill(null),
     symptomAnswers: new Array(12).fill(null),
+    currentQuestionIdx: 0,
   };
 
-  const TOTAL_QUESTIONS = 15; // 3 profile + 12 symptoms
-  const SYMPTOM_TOTAL_QUESTIONS = 12; // for topic scoring, max 2 per question
+  const TOTAL_QUESTIONS = 15;
   const OA_ID = '011xgvap';
 
   function loadState(): void {
@@ -239,207 +238,91 @@ const description =
   }
 
   function updateProgress(): void {
-    const profile = state.profileAnswers.filter((a) => a !== null).length;
-    const symptom = state.symptomAnswers.filter((a) => a !== null).length;
-    const answered = profile + symptom;
-    const pct = Math.round((answered / TOTAL_QUESTIONS) * 100);
-
+    const qNum = state.currentQuestionIdx + 1;
+    const pct = Math.round((qNum / TOTAL_QUESTIONS) * 100);
     const textEl = document.getElementById('progress-text');
     const pctEl = document.getElementById('progress-pct');
     const fillEl = document.getElementById('progress-fill');
-    const btn = document.getElementById('btn-submit') as HTMLButtonElement | null;
 
-    if (textEl) textEl.textContent = `ตอบแล้ว ${answered} / ${TOTAL_QUESTIONS} ข้อ`;
+    if (textEl) textEl.textContent = `ข้อ ${qNum} / ${TOTAL_QUESTIONS}`;
     if (pctEl) pctEl.textContent = `${pct}%`;
     if (fillEl) fillEl.style.width = `${pct}%`;
-    if (btn) btn.disabled = answered < TOTAL_QUESTIONS;
   }
 
-  function renderQuestions(): void {
-    const container = document.getElementById('questions-container');
-    if (!container) return;
+  function renderCurrentQuestion(): void {
+    const isProfile = state.currentQuestionIdx < 3;
+    const qIdx = isProfile ? state.currentQuestionIdx : state.currentQuestionIdx - 3;
+    const q = isProfile ? PROFILE_QUESTIONS[qIdx] : SYMPTOM_QUESTIONS[qIdx];
 
-    // Profile questions
-    PROFILE_QUESTIONS.forEach((q, idx) => {
-      const card = document.createElement('article');
-      card.className = 'q-card rounded-2xl border border-base-content/10 bg-base-100 p-6';
-      card.id = `q-profile-${idx}`;
-      card.dataset.qIdx = String(idx);
-      card.dataset.type = 'profile';
+    const textEl = document.getElementById('q-text');
+    const answersDiv = document.getElementById('q-answers');
 
-      const label = document.createElement('p');
-      label.className = 'text-xs font-bold uppercase tracking-widest text-secondary';
-      label.textContent = `ข้อที่ ${idx + 1}`;
-      card.appendChild(label);
+    if (!textEl || !answersDiv) return;
 
-      const heading = document.createElement('h3');
-      heading.className = 'mt-2 font-display text-lg font-bold leading-snug';
-      heading.textContent = q.text;
-      card.appendChild(heading);
+    textEl.textContent = q.text;
+    answersDiv.innerHTML = '';
 
-      const choicesDiv = document.createElement('div');
-      choicesDiv.className = 'mt-5 space-y-2';
+    const labels = isProfile ? ['ก', 'ข', 'ค', 'ง', 'จ'] : ['ไม่ตรง', 'ตรงบ้าง', 'ตรงมาก'];
 
-      q.choices.forEach((choice, ci) => {
-        const choiceLabel = document.createElement('label');
-        choiceLabel.className =
-          'choice-label flex cursor-pointer items-start gap-3 rounded-xl border border-base-content/15 p-4 transition hover:border-secondary/50 hover:bg-base-200/40';
-        choiceLabel.dataset.qIdx = String(idx);
-        choiceLabel.dataset.choiceIdx = String(ci);
-        choiceLabel.dataset.type = 'profile';
+    q.choices.forEach((choice, ci) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'answer-btn block w-full rounded-xl border-2 border-base-content/10 p-4 text-left transition-all hover:border-secondary/50 hover:bg-base-200/40';
+      btn.setAttribute('data-choice-idx', String(ci));
+      btn.setAttribute('aria-label', choice);
+      btn.innerHTML = `<span class="font-medium">${choice}</span>`;
 
-        const radio = document.createElement('input');
-        radio.type = 'radio';
-        radio.name = `profile-${idx}`;
-        radio.value = String(ci);
+      // Check if this answer is already selected
+      const currentAnswer = isProfile ? state.profileAnswers[qIdx] : state.symptomAnswers[qIdx];
+      if (currentAnswer === ci) {
+        btn.classList.add('selected');
+      }
 
-        const badge = document.createElement('div');
-        badge.className =
-          'flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-base-200 font-display text-sm font-bold';
-        badge.textContent = String.fromCharCode(65 + ci); // A, B, C, D
+      btn.addEventListener('click', () => {
+        if (isProfile) {
+          state.profileAnswers[qIdx] = ci;
+        } else {
+          state.symptomAnswers[qIdx] = ci;
+        }
+        saveState();
 
-        const text = document.createElement('span');
-        text.className = 'flex-1 text-sm leading-relaxed text-base-content/85';
-        text.textContent = choice;
+        // Visual feedback
+        btn.classList.add('selected');
+        const otherBtns = answersDiv.querySelectorAll('.answer-btn');
+        otherBtns.forEach((b) => {
+          if (b !== btn) b.classList.remove('selected');
+        });
 
-        choiceLabel.appendChild(radio);
-        choiceLabel.appendChild(badge);
-        choiceLabel.appendChild(text);
-        choicesDiv.appendChild(choiceLabel);
+        // Auto-advance after 200ms
+        setTimeout(() => {
+          if (state.currentQuestionIdx < TOTAL_QUESTIONS - 1) {
+            state.currentQuestionIdx++;
+            updateProgress();
+            renderCurrentQuestion();
+          } else {
+            // After Q15, show result directly
+            calculateResult();
+            showSection('sec-result');
+          }
+        }, 200);
       });
 
-      card.appendChild(choicesDiv);
-      container.appendChild(card);
-    });
-
-    // Symptom questions
-    SYMPTOM_QUESTIONS.forEach((q, idx) => {
-      const card = document.createElement('article');
-      card.className = 'q-card rounded-2xl border border-base-content/10 bg-base-100 p-6';
-      card.id = `q-symptom-${idx}`;
-      card.dataset.qIdx = String(idx);
-      card.dataset.type = 'symptom';
-
-      const label = document.createElement('p');
-      label.className = 'text-xs font-bold uppercase tracking-widest text-secondary';
-      label.textContent = `ข้อที่ ${3 + idx + 1}`;
-      card.appendChild(label);
-
-      const heading = document.createElement('h3');
-      heading.className = 'mt-2 font-display text-lg font-bold leading-snug';
-      heading.textContent = q.text;
-      card.appendChild(heading);
-
-      const choicesDiv = document.createElement('div');
-      choicesDiv.className = 'mt-5 space-y-2';
-
-      const levels = ['ไม่ตรง', 'ตรงบ้าง', 'ตรงมาก'];
-      levels.forEach((level, ci) => {
-        const choiceLabel = document.createElement('label');
-        choiceLabel.className =
-          'choice-label flex cursor-pointer items-start gap-3 rounded-xl border border-base-content/15 p-4 transition hover:border-secondary/50 hover:bg-base-200/40';
-        choiceLabel.dataset.qIdx = String(idx);
-        choiceLabel.dataset.choiceIdx = String(ci);
-        choiceLabel.dataset.type = 'symptom';
-
-        const radio = document.createElement('input');
-        radio.type = 'radio';
-        radio.name = `symptom-${idx}`;
-        radio.value = String(ci);
-
-        const badge = document.createElement('div');
-        badge.className =
-          'flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-base-200 font-display text-sm font-bold';
-        badge.textContent = String(ci);
-
-        const text = document.createElement('span');
-        text.className = 'flex-1 text-sm leading-relaxed text-base-content/85';
-        text.textContent = level;
-
-        choiceLabel.appendChild(radio);
-        choiceLabel.appendChild(badge);
-        choiceLabel.appendChild(text);
-        choicesDiv.appendChild(choiceLabel);
-      });
-
-      card.appendChild(choicesDiv);
-      container.appendChild(card);
-    });
-
-    // Restore saved answers
-    loadState();
-    state.profileAnswers.forEach((answer, idx) => {
-      if (answer !== null) {
-        const radio = document.querySelector<HTMLInputElement>(
-          `input[name="profile-${idx}"][value="${answer}"]`
-        );
-        if (radio) {
-          radio.checked = true;
-          document.getElementById(`q-profile-${idx}`)?.classList.add('answered');
-        }
-      }
-    });
-    state.symptomAnswers.forEach((answer, idx) => {
-      if (answer !== null) {
-        const radio = document.querySelector<HTMLInputElement>(
-          `input[name="symptom-${idx}"][value="${answer}"]`
-        );
-        if (radio) {
-          radio.checked = true;
-          document.getElementById(`q-symptom-${idx}`)?.classList.add('answered');
-        }
-      }
+      answersDiv.appendChild(btn);
     });
 
     updateProgress();
   }
 
-  function attachListeners(): void {
-    document.querySelectorAll<HTMLLabelElement>('.choice-label').forEach((label) => {
-      label.addEventListener('click', () => {
-        const type = label.dataset.type;
-        const qIdx = Number(label.dataset.qIdx);
-        const cIdx = Number(label.dataset.choiceIdx);
-        const radio = label.querySelector<HTMLInputElement>('input[type="radio"]');
-
-        if (radio) radio.checked = true;
-
-        if (type === 'profile') {
-          state.profileAnswers[qIdx] = cIdx;
-          document.getElementById(`q-profile-${qIdx}`)?.classList.add('answered');
-        } else if (type === 'symptom') {
-          state.symptomAnswers[qIdx] = cIdx;
-          document.getElementById(`q-symptom-${qIdx}`)?.classList.add('answered');
-        }
-
-        saveState();
-        updateProgress();
-      });
-    });
-
-    document.getElementById('btn-start')?.addEventListener('click', () => {
-      showSection('sec-quiz');
-    });
-
-    document.getElementById('btn-submit')?.addEventListener('click', () => {
-      calculateResult();
-    });
-
-    document.getElementById('btn-reset')?.addEventListener('click', () => {
-      state.profileAnswers.fill(null);
-      state.symptomAnswers.fill(null);
-      saveState();
-      document.querySelectorAll<HTMLInputElement>('input[type="radio"]').forEach((r) => {
-        r.checked = false;
-      });
-      document.querySelectorAll('.q-card').forEach((c) => c.classList.remove('answered'));
+  function goBack(): void {
+    if (state.currentQuestionIdx > 0) {
+      state.currentQuestionIdx--;
       updateProgress();
-      showSection('sec-intro');
-    });
+      renderCurrentQuestion();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   function calculateResult(): void {
-    // Score by topic: 2 symptom questions per topic, max 2 points each = max 4 per topic
     const topicScores: Record<Topic, number> = {
       hiring: 0,
       comp: 0,
@@ -452,7 +335,6 @@ const description =
     state.symptomAnswers.forEach((answer, idx) => {
       if (answer === null) return;
       const topic = SYMPTOM_QUESTIONS[idx].topic;
-      // answer is 0/1/2 (ไม่ตรง/ตรงบ้าง/ตรงมาก)
       topicScores[topic] += answer;
     });
 
@@ -466,7 +348,6 @@ const description =
     } else if (aiOfficeScore > teamBuildScore) {
       mainPath = 'ai-office';
     } else {
-      // Tie: use first topic with highest score
       const allTopics: Topic[] = ['sales', 'lead', 'docs', 'comp', 'hiring', 'content'];
       const firstHighest = allTopics.find((t) => topicScores[t] === Math.max(...allTopics.map((t) => topicScores[t])));
       mainPath = firstHighest && TOPIC_INFO[firstHighest].path ? TOPIC_INFO[firstHighest].path : 'team-build';
@@ -478,7 +359,6 @@ const description =
     let secondTopic: Topic | null = null;
     let secondScore = 0;
 
-    // Sort by score desc, then by priority
     const sorted = Object.entries(topicScores).sort(([t1, s1], [t2, s2]) => {
       if (s1 !== s2) return s2 - s1;
       return topicPriority(t1 as Topic) - topicPriority(t2 as Topic);
@@ -514,41 +394,31 @@ const description =
     const topicNameEl = document.getElementById('result-topic-name');
     const topicCurrentEl = document.getElementById('result-topic-current');
     const topicAfterEl = document.getElementById('result-topic-after');
-    const learnLinkEl = document.getElementById('result-learn-link') as HTMLAnchorElement | null;
 
     if (topicNameEl) topicNameEl.textContent = topicInfo.name;
     if (topicCurrentEl) topicCurrentEl.textContent = topicInfo.current;
     if (topicAfterEl) topicAfterEl.textContent = topicInfo.after;
 
-    if (learnLinkEl && topicInfo.learnLink) {
-      learnLinkEl.href = topicInfo.learnLink;
-      learnLinkEl.style.display = 'inline-block';
-    } else if (learnLinkEl) {
-      learnLinkEl.style.display = 'none';
+    // Render second topic if applicable
+    const secondaryCard = document.getElementById('result-secondary-card');
+    if (secondTopic && secondScore >= 2 && secondaryCard) {
+      secondaryCard.classList.remove('hidden');
+      const secondaryNameEl = document.getElementById('result-secondary-name');
+      const secondaryCurrentEl = document.getElementById('result-secondary-current');
+      if (secondaryNameEl) secondaryNameEl.textContent = TOPIC_INFO[secondTopic].name;
+      if (secondaryCurrentEl) secondaryCurrentEl.textContent = TOPIC_INFO[secondTopic].current;
+    } else if (secondaryCard) {
+      secondaryCard.classList.add('hidden');
     }
 
-    // Render LINE button
-    const lineBtn = document.getElementById('result-line-btn') as HTMLAnchorElement | null;
-    if (lineBtn) {
-      const teamSizeLabel = ['ยังไม่มี ผมขายเอง', '1–2 คน', '3–9 คน', '10–20 คน', 'มากกว่า 20 คน'][p1 ?? 0] || '';
-      const angle = `team-check-${topTopic}`;
-      const keyword = `ผลเช็คทีมขาย: ${mainPath === 'team-build' ? 'ปั้นทีมขาย' : 'AI Office'} · เริ่มที่${topicInfo.name} · ทีม ${teamSizeLabel}`;
-      const isMobileView = isMobile();
-      if (isMobileView) {
-        lineBtn.href = buildLineHref(OA_ID, topicInfo.productCode, angle, keyword);
-      } else {
-        lineBtn.href = 'https://lin.ee/ioSnSUG';
-      }
-    }
-
-    // Render score bars
-    const scoresDiv = document.getElementById('result-scores');
-    if (scoresDiv) {
-      scoresDiv.innerHTML = '';
-      const topics: Topic[] = ['hiring', 'comp', 'lead', 'sales', 'docs', 'content'];
-      topics.forEach((topic) => {
+    // Render score bars grouped by path
+    const scoreBuild = document.getElementById('result-scores-team-build');
+    const scoreAI = document.getElementById('result-scores-ai-office');
+    if (scoreBuild) {
+      scoreBuild.innerHTML = '';
+      (['hiring', 'comp', 'lead'] as const).forEach((topic) => {
         const score = topicScores[topic];
-        const maxScore = 4; // 2 questions × max 2 points
+        const maxScore = 4;
 
         const row = document.createElement('div');
         row.className = 'score-row';
@@ -578,8 +448,167 @@ const description =
         barContainer.appendChild(bar);
         row.appendChild(barContainer);
 
-        scoresDiv.appendChild(row);
+        scoreBuild.appendChild(row);
       });
+    }
+
+    if (scoreAI) {
+      scoreAI.innerHTML = '';
+      (['sales', 'docs', 'content'] as const).forEach((topic) => {
+        const score = topicScores[topic];
+        const maxScore = 4;
+
+        const row = document.createElement('div');
+        row.className = 'score-row';
+
+        const header = document.createElement('div');
+        header.className = 'mb-1 flex items-center justify-between text-sm';
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'font-display font-bold';
+        nameSpan.textContent = TOPIC_INFO[topic].name;
+
+        const scoreSpan = document.createElement('span');
+        scoreSpan.className = 'font-mono text-xs text-base-content/70';
+        scoreSpan.textContent = `${score} / ${maxScore}`;
+
+        header.appendChild(nameSpan);
+        header.appendChild(scoreSpan);
+        row.appendChild(header);
+
+        const barContainer = document.createElement('div');
+        barContainer.className = 'h-3 overflow-hidden rounded-full bg-base-200';
+
+        const bar = document.createElement('div');
+        bar.className = 'h-full bg-secondary transition-all duration-700';
+        bar.style.width = `${(score / maxScore) * 100}%`;
+
+        barContainer.appendChild(bar);
+        row.appendChild(barContainer);
+
+        scoreAI.appendChild(row);
+      });
+    }
+
+    // Render CTA section based on P3
+    const ctaSection = document.getElementById('result-cta-section');
+    if (ctaSection) {
+      ctaSection.innerHTML = '';
+
+      const teamSizeLabel =
+        ['ยังไม่มี ผมขายเอง', '1–2 คน', '3–9 คน', '10–20 คน', 'มากกว่า 20 คน'][p1 ?? 0] || '';
+      const angle = `team-check-${topTopic}`;
+      const pathLabel = mainPath === 'team-build' ? 'ปั้นทีมขาย' : 'AI Office ฝ่ายขาย';
+      const keyword = `ผลเช็คทีมขาย: ${pathLabel} · เริ่มที่${topicInfo.name} · ทีม ${teamSizeLabel}`;
+      const isMobileView = isMobile();
+
+      if (p3 === 0) {
+        // ให้ทีมทำเองเป็น → primary "ดูคลาส" + secondary LINE
+        const div = document.createElement('div');
+        div.className = 'mt-10 space-y-3 rounded-3xl border-2 border-base-content/10 p-8 md:p-10';
+
+        const heading = document.createElement('h3');
+        heading.className = 'font-display text-xl font-bold';
+        heading.textContent = 'ให้ทีมทำเองเป็น';
+        div.appendChild(heading);
+
+        const btnContainer = document.createElement('div');
+        btnContainer.className = 'mt-6 flex flex-col gap-3 sm:flex-row';
+
+        const classBtn = document.createElement('a');
+        classBtn.href = topicInfo.learnLink || '/services/online-to-sales';
+        classBtn.className = 'btn btn-lg flex-1 bg-secondary text-secondary-content';
+        classBtn.setAttribute('data-cta-event', 'team-check-learn-class');
+        classBtn.textContent = 'ดูคลาสที่สอนเรื่องนี้ →';
+
+        const lineBtn = document.createElement('a');
+        lineBtn.href = isMobileView ? buildLineHref(OA_ID, topicInfo.productCode, angle, keyword) : 'https://lin.ee/ioSnSUG';
+        lineBtn.target = '_blank';
+        lineBtn.rel = 'noopener noreferrer';
+        lineBtn.className = 'btn btn-lg flex-1 btn-ghost border-2 border-base-content/25';
+        lineBtn.setAttribute('data-cta-event', 'team-check-line-secondary');
+        lineBtn.textContent = 'ส่งผลใน LINE';
+
+        btnContainer.appendChild(classBtn);
+        btnContainer.appendChild(lineBtn);
+        div.appendChild(btnContainer);
+
+        ctaSection.appendChild(div);
+      } else if (p3 === 1) {
+        // ให้เข้ามาวางให้เลย → primary LINE green + secondary "จองคิวคุยกับผม"
+        const div = document.createElement('div');
+        div.className = 'mt-10 space-y-3 rounded-3xl border-2 border-base-content/10 p-8 md:p-10';
+
+        const heading = document.createElement('h3');
+        heading.className = 'font-display text-xl font-bold';
+        heading.textContent = 'ให้มีคนเข้ามาวางให้เลย';
+        div.appendChild(heading);
+
+        const desc = document.createElement('p');
+        desc.className = 'mt-2 text-base-content/75';
+        desc.textContent = 'ส่งผลเข้า LINE ผมจะตรวจแล้วอ่านจัดแพ็กตามโจทย์คุณเอง';
+        div.appendChild(desc);
+
+        const btnContainer = document.createElement('div');
+        btnContainer.className = 'mt-6 flex flex-col gap-3 sm:flex-row';
+
+        const lineBtn = document.createElement('a');
+        lineBtn.href = isMobileView ? buildLineHref(OA_ID, topicInfo.productCode, angle, keyword) : 'https://lin.ee/ioSnSUG';
+        lineBtn.target = '_blank';
+        lineBtn.rel = 'noopener noreferrer';
+        lineBtn.className = 'btn btn-lg flex-1 bg-green-500 text-white hover:bg-green-600';
+        lineBtn.setAttribute('data-cta-event', 'team-check-line-primary');
+        lineBtn.textContent = 'ส่งผลนี้ให้ปันใน LINE →';
+
+        const bookingBtn = document.createElement('a');
+        bookingBtn.href = '/booking';
+        bookingBtn.className = 'btn btn-lg flex-1 btn-ghost border-2 border-base-content/25';
+        bookingBtn.setAttribute('data-cta-event', 'team-check-booking');
+        bookingBtn.textContent = 'จองคิวคุยกับผม';
+
+        btnContainer.appendChild(lineBtn);
+        btnContainer.appendChild(bookingBtn);
+        div.appendChild(btnContainer);
+
+        ctaSection.appendChild(div);
+      } else {
+        // ยังไม่แน่ใจ → both buttons, LINE first
+        const div = document.createElement('div');
+        div.className = 'mt-10 space-y-3 rounded-3xl border-2 border-base-content/10 p-8 md:p-10';
+
+        const heading = document.createElement('h3');
+        heading.className = 'font-display text-xl font-bold';
+        heading.textContent = 'ยังไม่แน่ใจ';
+        div.appendChild(heading);
+
+        const desc = document.createElement('p');
+        desc.className = 'mt-2 text-base-content/75';
+        desc.textContent = 'ลองทั้งสองวิธี — ส่งผลเข้า LINE หรือจองคิวคุยกับผมเลย';
+        div.appendChild(desc);
+
+        const btnContainer = document.createElement('div');
+        btnContainer.className = 'mt-6 flex flex-col gap-3 sm:flex-row';
+
+        const lineBtn = document.createElement('a');
+        lineBtn.href = isMobileView ? buildLineHref(OA_ID, topicInfo.productCode, angle, keyword) : 'https://lin.ee/ioSnSUG';
+        lineBtn.target = '_blank';
+        lineBtn.rel = 'noopener noreferrer';
+        lineBtn.className = 'btn btn-lg flex-1 bg-green-500 text-white hover:bg-green-600';
+        lineBtn.setAttribute('data-cta-event', 'team-check-line-both');
+        lineBtn.textContent = 'ส่งผลใน LINE';
+
+        const bookingBtn = document.createElement('a');
+        bookingBtn.href = '/booking';
+        bookingBtn.className = 'btn btn-lg flex-1 btn-outline';
+        bookingBtn.setAttribute('data-cta-event', 'team-check-booking-both');
+        bookingBtn.textContent = 'จองคิวคุยกับผม';
+
+        btnContainer.appendChild(lineBtn);
+        btnContainer.appendChild(bookingBtn);
+        div.appendChild(btnContainer);
+
+        ctaSection.appendChild(div);
+      }
     }
 
     // Track event
@@ -590,12 +619,24 @@ const description =
         { path: mainPath, topic: topTopic, team_size: String(p1 ?? 0) }
       );
     }
-
-    showSection('sec-result');
   }
 
   // Initialize
   loadState();
-  renderQuestions();
-  attachListeners();
+  renderCurrentQuestion();
+
+  document.getElementById('btn-start')?.addEventListener('click', () => {
+    state.currentQuestionIdx = 0;
+    showSection('sec-quiz');
+  });
+
+  document.getElementById('btn-back')?.addEventListener('click', goBack);
+
+  document.getElementById('btn-reset')?.addEventListener('click', () => {
+    state.profileAnswers.fill(null);
+    state.symptomAnswers.fill(null);
+    state.currentQuestionIdx = 0;
+    saveState();
+    showSection('sec-intro');
+  });
 </script>
