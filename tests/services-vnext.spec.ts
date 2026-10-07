@@ -260,10 +260,10 @@ test('services catalog has healthy card images and no horizontal overflow at rel
     assert.ok(overflow.scrollWidth <= overflow.clientWidth, `${viewport.width}px viewport must not overflow horizontally`);
 
     const cards = page.locator('[data-offer-code]');
-    assert.equal(await cards.count(), 7, 'all seven catalog offers must render once');
+    assert.equal(await cards.count(), 6, 'all six catalog offers must render once');
     assert.equal(await cards.first().getAttribute('data-offer-code'), 'T2', 'T2 must remain the first catalog card');
     const images = cards.locator('figure > img');
-    assert.equal(await images.count(), 7, 'every catalog offer must render one thumbnail');
+    assert.equal(await images.count(), 6, 'every catalog offer must render one thumbnail');
     for (let index = 0; index < await images.count(); index += 1) {
       const image = images.nth(index);
       await image.scrollIntoViewIfNeeded();
@@ -343,7 +343,7 @@ test('public learning section leads to the live cohort and the external FutureSk
   await page.close();
 });
 
-test('six catalog cards open their canonical detail pages and preserve LINE decision help', async ({ browser }) => {
+test('five catalog cards open their canonical detail pages and preserve LINE decision help', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   page.setDefaultTimeout(5_000);
   const details = [
@@ -352,7 +352,6 @@ test('six catalog cards open their canonical detail pages and preserve LINE deci
     ['T3', '/services/t3-sales-back-office'],
     ['T4', '/services/advance-ai-automation'],
     ['C1', '/services/daily-consulting'],
-    ['I1', '/services/dashboard-build'],
   ];
 
   await page.goto(`${baseURL}/services`);
@@ -465,7 +464,7 @@ test('chooser and legacy hashes resolve to every canonical offer target', async 
   await page.goto(`${baseURL}/services`);
 
   const chooserTargets = await page.locator('#offer-chooser a[href^="#offer-"]').evaluateAll((links) => links.map((link) => link.getAttribute('href')));
-  assert.deepEqual(chooserTargets, ['#offer-t1', '#offer-t2', '#offer-t3', '#offer-t4', '#offer-c1', '#offer-i1', '#offer-a1']);
+  assert.deepEqual(chooserTargets, ['#offer-t1', '#offer-t2', '#offer-t3', '#offer-t4', '#offer-c1', '#offer-a1']);
 
   for (const target of [
     'sales-team-structure',

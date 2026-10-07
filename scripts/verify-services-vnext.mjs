@@ -29,7 +29,7 @@ const detailRouteByCode = {
   T2: '/services/online-to-sales',
   T3: '/services/t3-sales-back-office',
   C1: '/services/daily-consulting',
-  I1: '/services/dashboard-build',
+  T4: '/services/advance-ai-automation',
 };
 
 function builtPagePath(route) {
@@ -99,7 +99,7 @@ function assertPublicBuildContentIntegrity() {
 }
 
 function assertFloatingLineBuildOutput() {
-  const visibleRoutes = ['/', '/services', '/training', '/case-studies/forklift-distributor-5-person-team', '/insights/ai-transformation-sales', '/faq'];
+  const visibleRoutes = ['/', '/services', '/training', '/portfolio', '/insights/ai-transformation-sales', '/faq'];
   for (const route of visibleRoutes) {
     const pagePath = builtPagePath(route);
     assert.ok(existsSync(pagePath), `${route} build output does not exist`);
@@ -228,7 +228,7 @@ function assertServicesPageBuildOutput() {
     previousSectionIndex = sectionIndex;
   }
 
-  const expectedOfferOrder = ['T2', 'T1', 'T3', 'T4', 'C1', 'I1', 'A1'];
+  const expectedOfferOrder = ['T2', 'T1', 'T3', 'T4', 'C1', 'A1'];
   const renderedOfferOrder = [...html.matchAll(/data-offer-code="(T1|T2|T3|T4|C1|I1|A1)"/g)].map((match) => match[1]);
   assert.deepEqual(renderedOfferOrder, expectedOfferOrder, 'services page must render each public offer once in the required order');
 
@@ -313,7 +313,7 @@ function assertServicesPageBuildOutput() {
 
   assert.match(html, /Clinic, Hotel, B2B/, 'T2 must explicitly support lead-based businesses beyond Dealer');
   assert.match(html, /data-service-testimonial[\s\S]*เซลล์เลิกใช้ส่วนลดปิดดีล เปลี่ยนมาคุยเรื่องคุณค่าที่ลูกค้าได้/, 'organisation proof must visibly retain the relevant published sales testimonial');
-  assert.match(html, /href="\/case-studies\/forklift-distributor-5-person-team"/, 'the sales testimonial must link to its published case study');
+  assert.doesNotMatch(html, /href="\/case-studies\//, 'retired case studies must not be linked from services (ef641b8)');
   assert.doesNotMatch(html, /Paid Audit/i, 'Paid Audit must not return to the public services funnel');
 }
 
@@ -335,8 +335,8 @@ function assertServicesSeoBuildOutput() {
 
   assert.equal(nodesOfType('WebPage').length, 1, 'services page must emit one WebPage schema');
   assert.equal(nodesOfType('ItemList').length, 1, 'services page must emit one ItemList schema');
-  assert.equal(nodesOfType('Course').length, 3, 'only T1–T3 may emit Course schema');
-  assert.equal(nodesOfType('Service').length, 2, 'only C1 and I1 may emit Service schema');
+  assert.equal(nodesOfType('Course').length, 4, 'only T1–T4 may emit Course schema');
+  assert.equal(nodesOfType('Service').length, 1, 'only C1 may emit Service schema (I1 closed)');
   assert.equal(nodesOfType('BreadcrumbList').length, 1, 'services page must emit one BreadcrumbList schema');
   assert.equal(nodesOfType('FAQPage').length, 1, 'services page must not duplicate FAQPage schema');
   assert.equal(nodesOfType('Product').length, 0, 'services schema must not expose stale Product pricing');
@@ -352,7 +352,6 @@ function assertServicesSeoBuildOutput() {
     ['T3', 'Course'],
     ['T4', 'Course'],
     ['C1', 'Service'],
-    ['I1', 'Service'],
   ];
   for (const [code, type] of expectedSchemaOffers) {
     const offer = OFFER_BY_CODE[code];
@@ -365,15 +364,14 @@ function assertServicesSeoBuildOutput() {
   }
 
   const itemList = nodesOfType('ItemList')[0];
-  assert.equal(itemList.numberOfItems, 7, 'ItemList must represent all seven visible catalog roles');
-  assert.deepEqual(itemList.itemListElement.map((item) => item.position), [1, 2, 3, 4, 5, 6, 7], 'ItemList positions must be complete and ordered');
+  assert.equal(itemList.numberOfItems, 6, 'ItemList must represent all six visible catalog roles');
+  assert.deepEqual(itemList.itemListElement.map((item) => item.position), [1, 2, 3, 4, 5, 6], 'ItemList positions must be complete and ordered');
   assert.deepEqual(itemList.itemListElement.map((item) => item.item.url), [
     `https://punnattapatch.com${detailRouteByCode.T2}`,
     `https://punnattapatch.com${detailRouteByCode.T1}`,
     `https://punnattapatch.com${detailRouteByCode.T3}`,
     `https://punnattapatch.com${detailRouteByCode.T4}`,
     `https://punnattapatch.com${detailRouteByCode.C1}`,
-    `https://punnattapatch.com${detailRouteByCode.I1}`,
     `${servicesCanonical}#offer-a1`,
   ], 'ItemList must send the five public Products to canonical detail pages and keep A1 on the catalog');
 
@@ -457,12 +455,6 @@ const expected = {
     imageAlt: 'บริการวางระบบฝ่ายขายแบบรายวัน',
     detailHref: '/services/daily-consulting', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดบริการ',
   },
-  I1: {
-    publicName: 'บริการทำ Sales Dashboard + Report อัตโนมัติ',
-    kind: 'implementation', pricingKey: 'daruma-starter', thumbnailFile: 'i1-automated-sales-dashboard.png',
-    imageAlt: 'บริการสร้าง Sales Dashboard และ Report อัตโนมัติ',
-    detailHref: '/services/dashboard-build', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดบริการ',
-  },
   T4: {
     publicName: 'คลาส Advance AI & Business Automation',
     kind: 'training', pricingKey: 't4-ai-workflow-pilot-day', thumbnailFile: 't4-ai-workflow-pilot.png',
@@ -484,8 +476,8 @@ assert.doesNotMatch(
   /\b\d{4,6}\b/,
   'price amounts belong only in src/data/pricing.mjs, never in this verifier',
 );
-assert.equal(SERVICE_OFFERS.length, 7, 'there must be exactly seven public offers');
-assert.deepEqual([...new Set(SERVICE_OFFERS.map((offer) => offer.code))].sort(), Object.keys(expected).sort(), 'seven offer codes must be unique');
+assert.equal(SERVICE_OFFERS.length, 6, 'there must be exactly six public offers');
+assert.deepEqual([...new Set(SERVICE_OFFERS.map((offer) => offer.code))].sort(), Object.keys(expected).sort(), 'six offer codes must be unique');
 
 for (const [code, contract] of Object.entries(expected)) {
   const offer = OFFER_BY_CODE[code];

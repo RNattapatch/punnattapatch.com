@@ -451,7 +451,7 @@ function buildProductDetail() {
   return {
     '@type': 'Service',
     ...common,
-    serviceType: productDetail.serviceType ?? (productDetail.code === 'I1' ? 'Sales System Implementation' : 'Sales Consulting'),
+    serviceType: productDetail.serviceType ?? 'Sales Consulting',
     category: 'Sales Enablement',
     areaServed: { '@type': 'Country', name: 'Thailand' },
   };

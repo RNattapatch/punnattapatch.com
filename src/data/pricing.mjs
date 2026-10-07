@@ -142,18 +142,19 @@ export const CATALOG = {
     // 2026-08-30: C1 canonical key (แผน services-page-product-catalog-line-cta — supersedes การ repurpose
     // key sales-team-structure ใน Product SSOT ฉบับเช้า) · ยุบ "วางโครงสร้างทีมขาย + KPI + ค่าคอม" +
     // "ai-agent-ceo" เข้าเป็น Primary Outcome track ของบริการรายวันตัวเดียว
+    // 2026-10-08: เปิดตัวเลือก 2 แบบ: 1 วัน (เลือก ≤2 เรื่อง) และ ครบรอบ 2 วัน (ทดสอบกับงานจริง + ดูแลต่อ 30 วัน)
     amount: 34900,
     url: '/services/daily-consulting',
     name: 'บริการวางระบบฝ่ายขายแบบรายวัน',
     nameEn: 'Daily Sales System Consulting',
     kind: 'consult',
-    duration: '1 วัน / 1 เรื่องหลัก',
-    headline: 'เลือก 1 ปัญหาขายที่สำคัญที่สุด แล้ววางทางออกให้จบภายใน 1 วัน — Online-to-Sales Journey · โครงทีม+KPI+ค่าคอม · ออกแบบ Report/Dashboard · AI Workflow prototype',
-    audience: 'Owner/CEO ที่รู้ว่าระบบขายติด อยากได้คนเข้าไปช่วยคิดและออกแบบทางออกเรื่องที่สำคัญที่สุดก่อน',
+    duration: '1 วัน · เลือกได้ 2 เรื่อง',
+    headline: 'เลือกเรื่องที่ทีมขายติดได้ 2 เรื่อง เช้าเก็บโจทย์จากตัวเลขจริง บ่ายผมลงระบบพื้นฐานให้ทีมใช้ · มีแบบครบรอบ 2 วันพร้อมดูแลต่อ 30 วัน',
+    audience: 'Owner/CEO ที่มีทีมขาย 3–20 คน รู้ว่าทีมติดเรื่องไหน และอยากให้มีคนเข้าไปวางระบบให้ทั้งทีมใช้',
     status: 'live',
     botQuote: true,
     image: '/services/thumbs/c1-daily-sales-consulting.jpg',
-    note: 'C1 · scope 1 วัน = 1 Customer Journey · 1 ทีม/BU · 1 Primary Outcome + output ที่ตกลงชัด · 4 track: (1) Online-to-Sales Full Journey (2) โครงทีม+KPI+Commission (3) Sales Control/Report/Dashboard design (4) AI Workflow/Agent prototype — track 4 = prototype ไม่ใช่ระบบ production (นั่นคือ daruma-starter/custom build) · หลายปัญหา = ประเมินจำนวนวันรวมใน proposal เดียว ไม่ให้ลูกค้าซื้อ consult หลายรอบ · ไม่แน่ใจเริ่มเรื่องไหน → ทัก LINE ให้ทีมช่วยเลือก',
+    note: 'C1 · 2026-10-08 (ปันเคาะ · ค่าตัวรายวันเดียวกับคลาส): แบบ 1 วัน = เลือก ≤2 เรื่อง · เช้าเก็บโจทย์ บ่ายลงระบบพื้นฐาน · แก้ปัญหาระบบพื้นฐานผ่าน LINE 7 วัน · แบบครบรอบ 2 วัน = วันที่ 2 ภายใน 14 วัน + ทดสอบกับงานจริง + ดูแลต่อ 30 วัน · ราคาครบรอบ = 2 × amount ของ key นี้ · 6 เรื่อง: ปั้นทีมขาย (คัดคนเข้าทีม · เป้าและค่าคอม · หัวหน้าคุมทีม) × AI Office สำหรับฝ่ายขาย (ตอบแชตและตามลูกค้า · เอกสารขาย · คอนเทนต์) · แทน 4 track เดิมและ I1',
   },
   'sales-team-structure': {
     // 2026-08-30 (บ่าย): ถอยเป็น legacy internal — scope กลายเป็น track 2 ของ daily-sales-consulting (C1)
@@ -179,10 +180,10 @@ export const CATALOG = {
     duration: '3 วัน on-site (วางระบบ + UAT + สอนทีมใช้) + ดูแลต่อ 30 วัน',
     headline: 'เปลี่ยนข้อมูลการขายเป็นรายงานประจำวัน รายการติดตาม และ Excel ที่ใช้ต่อได้ — ผู้จัดการไม่ต้องรวบรวมเอง',
     audience: 'Owner/Manager ที่รวม Excel เอง · ข้อมูลกระจายอยู่กับเซลล์แต่ละคน · อยากส่งรายงานต่อทุกวันอัตโนมัติ',
-    status: 'live',
-    botQuote: true,
+    status: 'internal',
+    botQuote: false,
     image: '/services/thumbs/i1-automated-sales-dashboard.jpg',
-    note: 'I1 · rename 2026-08-28 จาก "Daruma Starter" · scope ตาม master §8.5: Master deal register + Daily report + Stale lead/Follow-up list + Excel export + UAT + Training · **I1 คือทีมปันลงมือสร้างระบบ production ให้ · T3 (ai-workshop-advance) คือฝึกทีมลูกค้าเรียนวิธีวางเอง** · outline PDF เดิม (outline-daruma-starter.pdf) scope เก่า — ห้ามส่งจนอัดใหม่',
+    note: 'CLOSED 2026-10-08 (ปันสั่ง) — ใช้ C1 วางระบบครบรอบ 2 วันแทน · ใบเสนอราคาเดิมใช้เงื่อนไขเดิม · I1 · rename 2026-08-28 จาก "Daruma Starter" · scope ตาม master §8.5: Master deal register + Daily report + Stale lead/Follow-up list + Excel export + UAT + Training · **I1 คือทีมปันลงมือสร้างระบบ production ให้ · T3 (ai-workshop-advance) คือฝึกทีมลูกค้าเรียนวิธีวางเอง** · outline PDF เดิม (outline-daruma-starter.pdf) scope เก่า — ห้ามส่งจนอัดใหม่',
   },
   'ai-agent-ceo': {
     // 2026-08-30: ยุบเข้า C1 track 4 — scope "วาง AI Agent 1 workflow ใน 1 วัน"

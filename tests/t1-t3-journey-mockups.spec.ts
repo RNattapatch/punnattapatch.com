@@ -113,7 +113,5 @@ test('T4 keeps its exact approved journey while non-training offers stay on the 
   assert.deepEqual(await page.locator('[data-journey-section]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-journey-section'))), JOURNEY_ORDER);
   await page.goto(`${baseURL}/services/sales-consulting`);
   assert.equal(await page.locator('[data-journey-section]').count(), 0, 'C1 must retain the legacy consulting renderer');
-  await page.goto(`${baseURL}/services/dashboard-build`);
-  assert.equal(await page.locator('[data-journey-section]').count(), 0, 'I1 must retain the legacy implementation renderer');
   await page.close();
 });

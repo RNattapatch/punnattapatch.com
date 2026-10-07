@@ -18,12 +18,12 @@
 
 ### คลาสอบรมสำหรับทีมขาย (In-house on-site เท่านั้น · ไม่มี online · ราคาเดียวทั้งทีมไม่เกิน 20 คน)
 - คลาสจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B — ฿34,900 · 1 วัน · เข้าใจเหตุผลซื้อ 3 ชั้น ฝึกคำถามและการต่อรองโดยไม่รีบลดราคา แล้วสร้าง AI Sales Coach จาก Company Context เพื่อช่วยเตรียม ซ้อม และทบทวนดีล · https://punnattapatch.com/services/t1-sales-skills
-- คลาสอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI — ฿34,900 · 1 วัน · ทีมรายงานภาษาเดียวกัน ผู้จัดการเห็นดีลค้างและงานที่ต้องตาม (เรียนวิธีวางระบบ — งานติดตั้งจริงคือบริการทำ Sales Dashboard) · https://punnattapatch.com/services/t3-sales-back-office
+- คลาสอบรมวางระบบหลังบ้านฝ่ายขาย: Report + Dashboard + AI — ฿34,900 · 1 วัน · ทีมรายงานภาษาเดียวกัน ผู้จัดการเห็นดีลค้างและงานที่ต้องตาม (ทีมเรียนวิธีวางระบบเอง — ถ้าอยากให้ปันเข้าไปวางให้ ดูบริการวางระบบฝ่ายขายแบบรายวัน) · https://punnattapatch.com/services/t3-sales-back-office
 - คลาสเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI — ฿54,900 · 2 วัน + ดูแลต่อ 30 วัน · เปลี่ยนคนดูออนไลน์ให้เป็นแชต นัดหมาย และยอดขาย · มี Vertical Edition เช่น คลาสเพิ่มยอดขายรถจากออนไลน์ (Dealer) ราคาเดียวกัน · https://punnattapatch.com/services/online-to-sales
+- คลาส Advance AI & Business Automation — ฿34,900 · 1 วัน · ทดลอง AI Workflow จากงานจริงของบริษัท ก่อนลงทุนทำระบบจริง · https://punnattapatch.com/services/advance-ai-automation
 
 ### บริการวางระบบฝ่ายขาย
-- บริการวางระบบฝ่ายขายแบบรายวัน — ฿34,900 · 1 วัน / 1 เรื่องหลัก · เลือก 1 ปัญหาขายแล้ววางทางออกให้จบใน 1 วัน (Online-to-Sales Journey · โครงทีม+KPI+ค่าคอม · ออกแบบ Report/Dashboard · AI Workflow prototype) — หลายเรื่องประเมินจำนวนวันรวมใน proposal เดียว · https://punnattapatch.com/services/daily-consulting
-- บริการทำ Sales Dashboard + Report อัตโนมัติ — ฿69,900 · 3 วัน on-site + ดูแลต่อ 30 วัน · Deal register + Daily report + Follow-up list + Excel export + UAT (ทีมปันลงมือสร้างระบบจริงให้) · https://punnattapatch.com/services/dashboard-build
+- บริการวางระบบฝ่ายขายแบบรายวัน — ฿34,900 ต่อวัน (ค่าตัวเท่าวันสอน) · วันละไม่เกิน 2 เรื่อง · เช้าเก็บโจทย์ บ่ายลงระบบพื้นฐานให้ทีมเริ่มใช้ · แบบ 1 วัน ฿34,900 (แก้ปัญหาระบบพื้นฐานผ่าน LINE 7 วัน) หรือแบบครบรอบ 2 วัน คิดค่าตัว 2 วัน (วันที่ 2 ภายใน 14 วัน ทดสอบกับงานจริง ดูแลต่อ 30 วัน) · เรื่องให้เลือก: ปั้นทีมขาย (คัดคนเข้าทีม · เป้าและค่าคอม · หัวหน้าคุมทีม) และ AI Office ฝ่ายขาย (ตอบแชตและตามลูกค้า · เอกสารขาย · คอนเทนต์) · https://punnattapatch.com/services/daily-consulting
 - โปรแกรมยกระดับทักษะและระบบทีมขายด้วย AI (Advance Program: Sales Mastery with AI) — เรียนคลาสหลักแล้วต่อ Guided Implementation 2 วันจนใช้จริง · เสนอผ่าน proposal (ไม่ quote ราคาหน้าเว็บ)
 
 ### Retainer / งานวางระบบใหญ่

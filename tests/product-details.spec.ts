@@ -350,7 +350,8 @@ test('T4 makes the adoption boundary, curriculum, decision CTAs, FAQ, and LINE p
     assert.match(text, new RegExp(boundary), `T4 must publish ${boundary}`);
   }
   assert.match(await page.locator('[data-t4-section="fit"]').innerText(), /ไม่ได้รับประกันว่าจะลดจำนวนคนได้ทันที/, 'T4 must reject an immediate headcount-reduction guarantee');
-  assert.match(text, /Production.*I1|I1.*Production/s, 'T4 must route live production integration to I1');
+  assert.match(text, /ให้ผมเข้าไปวางระบบให้ใน C1/, 'T4 must route done-for-you follow-up work to C1');
+  assert.doesNotMatch(text, /\bI1\b/, 'T4 must not mention the closed I1 service');
   assert.deepEqual(
     await page.locator('[data-decision-cta]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-cta-location'))),
     ['after_proof', 'after_scope', 'after_fit'],
@@ -421,7 +422,7 @@ test('T1 detail page presents the approved sales psychology customer job and fiv
   const boundaryText = await page.locator('main').innerText();
   assert.match(boundaryText, /Human Review/, 'AI Sales Coach must require human review');
   assert.match(boundaryText, /การคุยกับลูกค้า.*อยู่กับเซลล์/, 'AI Sales Coach must not imply autonomous customer contact');
-  assert.match(boundaryText, /CRM หรือ Dashboard production แยกเป็นบริการ Implementation/, 'AI Sales Coach must not be represented as a production CRM or dashboard');
+  assert.match(boundaryText, /ถ้าอยากให้ผมเข้าไปวางระบบให้ทีม.*ให้เริ่ม C1/s, 'T1 must route done-for-you system work to C1 instead of promising it inside the coach');
   assert.equal(await page.locator('[data-product-faq-button]').count(), 8, 'T1 must publish the approved eight FAQs');
   assert.equal(await page.locator('form').count(), 0, 'T1 detail page must not include a form');
   assert.equal(await page.locator('[data-floating-line]').count(), 1, 'T1 must retain exactly one global Floating LINE CTA');
@@ -539,7 +540,7 @@ test('T1 remediation keeps evidence, location-specific LINE actions, and mobile 
   await page.close();
 });
 
-test('C1 daily consulting is one service with four selectable primary-outcome tracks', async ({ browser }) => {
+test('C1 daily consulting is one day-rate service with six selectable topics, two per day', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const catalog = CATALOG['daily-sales-consulting'];
   const response = await page.goto(`${baseURL}/services/daily-consulting`);
@@ -562,37 +563,37 @@ test('C1 daily consulting is one service with four selectable primary-outcome tr
 
   const chooser = page.locator('[data-symptom-chooser]');
   const chooserActions = chooser.locator('a[data-track-chooser]');
-  assert.equal(await chooserActions.count(), 4, 'C1 must offer one symptom-first chooser action per track');
+  assert.equal(await chooserActions.count(), 6, 'C1 must offer one symptom-first chooser action per topic');
   const trackCards = page.locator('[data-scope-item][data-primary-outcome-track]');
-  assert.equal(await trackCards.count(), 4, 'C1 must render exactly four primary-outcome track cards');
+  assert.equal(await trackCards.count(), 6, 'C1 must render exactly six topic cards');
   const targets = await chooserActions.evaluateAll((actions) => actions.map((action) => action.getAttribute('href')));
-  assert.deepEqual(targets, ['#c1-track-funnel', '#c1-track-team', '#c1-track-dashboard', '#c1-track-ai'], 'C1 chooser targets must map to stable track ids');
+  assert.deepEqual(targets, ['#c1-topic-hiring', '#c1-topic-comp', '#c1-topic-lead', '#c1-topic-sales', '#c1-topic-docs', '#c1-topic-content'], 'C1 chooser targets must map to stable topic ids');
   await chooserActions.nth(3).click();
-  assert.equal(new URL(page.url()).hash, '#c1-track-ai', 'choosing a symptom must update the URL hash');
-  assert.equal(await page.evaluate(() => document.activeElement?.id), 'c1-track-ai', 'choosing a symptom must move focus to the chosen track');
+  assert.equal(new URL(page.url()).hash, '#c1-topic-sales', 'choosing a symptom must update the URL hash');
+  assert.equal(await page.evaluate(() => document.activeElement?.id), 'c1-topic-sales', 'choosing a symptom must move focus to the chosen track');
   await page.waitForFunction(() => {
-    const target = document.getElementById('c1-track-ai');
+    const target = document.getElementById('c1-topic-sales');
     if (!target) return false;
     const box = target.getBoundingClientRect();
     return box.top < window.innerHeight && box.bottom > 0;
   });
-  const selectedTrackBox = await page.locator('#c1-track-ai').boundingBox();
+  const selectedTrackBox = await page.locator('#c1-topic-sales').boundingBox();
   assert.ok(selectedTrackBox && selectedTrackBox.y < 900 && selectedTrackBox.y + selectedTrackBox.height > 0, 'chosen track must scroll into the viewport');
 
   assert.equal(await page.locator('[data-detail-block="investment"]').count(), 1, 'C1 must have one investment block');
   assert.equal(await trackCards.locator('[data-contact-cta], [data-track-price], [data-track-checkout]').count(), 0, 'individual C1 tracks must not sell separately');
   const scopeText = await page.locator('[data-detail-block="scope"]').innerText();
-  assert.match(scopeText, /เลือก Track นี้เมื่อ/, 'service tracks must use symptom language, not course labels');
-  assert.match(scopeText, /ทำร่วมกัน/, 'service tracks must use consult action language');
-  assert.match(scopeText, /Output ของวัน/, 'service tracks must use day-output language');
+  assert.match(scopeText, /เลือกเรื่องนี้เมื่อ/, 'C1 topics must use symptom language, not course labels');
+  assert.match(scopeText, /วันแรกทำอะไร/, 'C1 topics must say what happens on day one');
+  assert.match(scopeText, /ใช้ได้เมื่อ/, 'C1 topics must state a usable-when check');
   const boundaryText = await page.locator('[data-detail-block="boundary"]').innerText();
-  assert.match(boundaryText, /หนึ่งวัน.*Primary Outcome/, 'C1 must state one consulting day has one primary outcome');
-  assert.match(boundaryText, /Proposal เดียว/, 'C1 must state connected problems become one proposal');
-  assert.match(boundaryText, /ไม่.*Audit|Audit.*ไม่/, 'C1 must make clear a paid Audit is not required');
-  const aiTrack = page.locator('#c1-track-ai');
-  assert.match(await aiTrack.innerText(), /Prototype/, 'AI track must stop at a prototype');
-  assert.match(await aiTrack.innerText(), /Human review/, 'AI track must retain a human-review boundary');
-  assert.equal(await page.locator('a[href="/services/dashboard-build"]').count(), 1, 'C1 must distinguish a planned production build service');
+  assert.match(boundaryText, /ไม่เกิน 2 เรื่อง/, 'C1 must cap one day at two topics');
+  assert.match(boundaryText, /LINE ให้ 7 วัน/, 'C1 one-day format must state the 7-day LINE fix window');
+  assert.match(boundaryText, new RegExp(`ครบรอบ 2 วัน ฿${(catalog.amount * 2).toLocaleString('en-US')}`), 'C1 full round must be priced at two Catalog day rates');
+  assert.match(boundaryText, /ภายใน 14 วัน.*30 วัน/s, 'C1 full round must state day two within 14 days and 30-day care');
+  const chatTopic = page.locator('#c1-topic-sales');
+  assert.match(await chatTopic.innerText(), /บอกลูกค้าตั้งแต่ประโยคแรกว่าเป็น AI/, 'chat topic must disclose the AI to customers');
+  assert.equal(await page.locator('a[href="/services/dashboard-build"]').count(), 0, 'C1 must not link the closed I1 route');
 
   assert.equal(await page.locator('[data-proof-id="c1-scenery-room"]').count(), 1, 'C1 must show inspectable Scenery work proof');
   assert.equal(await page.locator('[data-proof-id="c1-hfc-journey"]').count(), 1, 'C1 must show the approved HFC training-to-consult proof');
@@ -608,8 +609,8 @@ test('C1 daily consulting is one service with four selectable primary-outcome tr
     '#proof-system-line-agent',
     '#proof-system-news-desk',
   ], 'each outcome preview must map directly to its full system receipt');
-  assert.match(await consultSystems.innerText(), /วัน Consult.*ไม่ได้สร้างทั้งห้าระบบ/, 'C1 must not imply that one consulting day includes five production builds');
-  assert.match(await consultSystems.innerText(), /เลือก.*จุดเริ่ม.*Blueprint/, 'C1 must connect the aspirational proof back to the consulting deliverable');
+  assert.match(await consultSystems.innerText(), /วันแรกไม่ได้สร้างทั้งห้าระบบ/, 'C1 must not imply that one consulting day includes five production builds');
+  assert.match(await consultSystems.innerText(), /เลือก 2 เรื่องเป็นจุดเริ่ม.*ระบบพื้นฐาน/s, 'C1 must connect the aspirational proof back to the two-topic day');
   assert.equal(await consultSystems.locator('img').count(), 10, 'C1 must render every approved redacted receipt from the five-system SSOT');
   assert.equal(await consultSystems.locator('img').evaluateAll((images) => images.every((image) => image.getAttribute('loading') === 'lazy')), true, 'the below-fold five-system proof must stay lazy-loaded');
   assert.equal(await page.getByText('“ปันคุยง่าย เข้าใจสิ่งที่ CEO ต้องการ และหาทางออกให้ได้”', { exact: true }).count(), 1, 'C1 must use the approved bounded client quote');
@@ -627,7 +628,7 @@ test('C1 daily consulting is one service with four selectable primary-outcome tr
   assert.equal(await lineCtas.count(), 5, 'C1 must retain four LINE alternatives plus one system-proof fit CTA');
   assert.deepEqual(await lineCtas.evaluateAll((actions) => actions.map((action) => [action.getAttribute('data-cta-location'), action.getAttribute('data-cta-label')])), [
     ['hero', 'ทัก LINE ให้ผมช่วยดูตัวเลข'],
-    ['after_investment', 'ทัก LINE ให้ผมช่วยเลือก Track'],
+    ['after_investment', 'ทัก LINE ให้ผมช่วยเลือกเรื่อง'],
     ['after_systems', 'ทัก LINE ให้ผมช่วยเลือกจุดเริ่ม'],
     ['after_scope', 'ทัก LINE ส่งรูป Report'],
     ['final', 'ทัก LINE เล่าอาการสั้น ๆ'],
@@ -695,7 +696,7 @@ test('C1 daily consulting is one service with four selectable primary-outcome tr
   await page.close();
 });
 
-test('T3 teaches the team to design a sales back office prototype without promising an I1 production build', async ({ browser }) => {
+test('T3 teaches the team to design a sales back office prototype and points done-for-you work to C1', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const catalog = CATALOG['ai-workshop-advance'];
   const response = await page.goto(`${baseURL}/services/t3-sales-back-office`);
@@ -710,13 +711,14 @@ test('T3 teaches the team to design a sales back office prototype without promis
   const stages = scope.locator('[data-curriculum-step]');
   assert.equal(await stages.count(), 5, 'T3 must render the five approved workshop stages');
   assert.deepEqual(await stages.evaluateAll((items) => items.map((item) => item.getAttribute('data-step'))), ['stage', 'report', 'warn', 'review', 'prototype'], 'T3 curriculum must preserve Stage → Report → Warn → Review → Prototype order');
-  assert.match(await scope.innerText(), /T3 = ทีมคุณเรียนวิธีวางและทำ Prototype.*I1 = ทีมผม Build, UAT และสอนใช้จริง/s, 'T3/I1 distinction must sit next to the curriculum');
+  assert.match(await scope.innerText(), /T3 = ทีมคุณเรียนวิธีวางและทำ Prototype.*C1 = ผมเข้าไปวางระบบให้/s, 'T3/C1 distinction must sit next to the curriculum');
   const investmentText = await page.locator('[data-detail-block="investment"]').innerText();
-  assert.match(investmentText, /T3 = ทีมคุณเรียนวิธีวางและทำ Prototype.*I1 = ทีมผม Build, UAT และสอนใช้จริง/s, 'T3/I1 distinction must repeat next to the price');
-  assert.equal(await page.locator('a[href="/services/dashboard-build"]').count(), 1, 'T3 must link to the live I1 production-build route');
+  assert.match(investmentText, /T3 = ทีมคุณเรียนวิธีวางและทำ Prototype.*C1 = ผมเข้าไปวางระบบให้/s, 'T3/C1 distinction must repeat next to the price');
+  assert.equal(await page.locator('a[href="/services/dashboard-build"]').count(), 0, 'T3 must not link the closed I1 route');
+  assert.ok(await page.locator('a[href="/services/daily-consulting"]').count() >= 1, 'T3 must point done-for-you work to C1');
   assert.match(await page.locator('main').innerText(), /T3 คือทีมคุณเรียนวิธีวางและทำ Prototype เอง/, 'T3 must promise learning and prototype work only');
   assert.deepEqual(await stages.locator('[data-curriculum-output]').allInnerTexts(), ['Stage/Data Dictionary', 'Single-input Reporting Standard', 'Warning Rules + Manager View', 'Weekly Ritual + Manager Coaching Flow', 'Dashboard Prototype + AI Summary Helper'], 'T3 curriculum outputs must stop at workshop artifacts and a prototype');
-  assert.doesNotMatch(await page.locator('[data-detail-block="take-home"]').innerText(), /(?:UAT sign-off|Production handover|Working system)/, 'T3 take-home stack must not include I1 delivery artifacts');
+  assert.doesNotMatch(await page.locator('[data-detail-block="take-home"]').innerText(), /(?:UAT sign-off|Production handover|Working system)/, 'T3 take-home stack must not include production delivery artifacts');
 
   assert.ok(await page.locator('[data-detail-block="proof"] img').count() >= 10, 'T3 must show report, dashboard, client, workshop, and testimonial receipts');
   assert.equal(await page.getByText('อาจารย์ปันสอนถูกใจทีมงานมากครับ', { exact: true }).count(), 1, 'T3 must retain the exact approved workshop receipt');
@@ -769,155 +771,9 @@ test('T3 teaches the team to design a sales back office prototype without promis
   await page.close();
 });
 
-test('I1 dashboard build presents bounded implementation evidence, handover, and LINE conversion', async ({ browser }) => {
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-  const response = await page.goto(`${baseURL}/services/dashboard-build`);
-  const catalog = CATALOG['daruma-starter'];
-  assert.equal(response?.status(), 200, 'I1 route must render');
-  assert.equal(await page.locator('h1').count(), 1, 'I1 must contain exactly one H1');
-  assert.equal(await page.locator('h1').innerText(), catalog.name, 'I1 H1 must resolve from Catalog daruma-starter');
-  assert.equal(await page.getByText(catalog.duration, { exact: true }).count(), 1, 'I1 duration must resolve from Catalog');
-  assert.equal(await page.getByText(fmtPrice('daruma-starter'), { exact: true }).count(), 1, 'I1 price must resolve from Catalog');
-  const heroReceipt = page.locator('[data-hero-activity] img');
-  assert.equal(await heroReceipt.count(), 1, 'I1 Hero must lead with a real system receipt rather than a generic thumbnail');
-  assert.match(await heroReceipt.getAttribute('src') ?? '', /\/proof\/01-command-center\.jpg/, 'I1 Hero receipt must use the approved Command Center evidence');
-  assert.equal(await heroReceipt.evaluate((image) => getComputedStyle(image).objectFit), 'contain', 'I1 Hero must show the complete system receipt without object-cover cropping');
-  assert.deepEqual(
-    await page.locator('[data-detail-block="scope"] [data-scope-item] > p:first-child').allTextContents(),
-    ['Map/Design', 'Build/Test', 'UAT/Train'],
-    'I1 must render the three approved implementation stages in order',
-  );
-  assert.match(await page.locator('[data-detail-block="scope"]').innerText(), new RegExp(catalog.duration.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), 'I1 scope must state the Catalog support duration');
-  const takeHome = page.locator('[data-detail-block="take-home"]');
-  assert.match(await takeHome.innerText(), /ระบบต้องระบุ Owner, Stage และ Next action ได้ แยกข้อมูลไม่ครบได้ Export ใช้ต่อได้ และย้อนกลับไปหา Source ได้ตามขอบเขตที่ตกลงกันครับ/, 'I1 acceptance criteria must sit beside take-home deliverables');
-  const boundary = page.locator('[data-detail-block="boundary"]');
-  const boundaryText = await boundary.innerText();
-  for (const phrase of ['การเชื่อมหลายระบบ', 'Custom AI Agent', 'Logic อนุมัติหลายชั้น', 'Migration ข้อมูลจำนวนมาก', 'Proposal']) {
-    assert.match(boundaryText, new RegExp(phrase), `I1 boundary must make ${phrase} Proposal scope`);
-  }
-  const afterScope = page.locator('[data-product-code="I1"][data-cta-location="after_scope"]').first();
-  assert.ok((await boundary.boundingBox())!.y < (await afterScope.boundingBox())!.y, 'I1 custom scope must appear before the post-scope conversion CTA');
-  assert.match(boundaryText, /T3.*เรียน.*Prototype/, 'I1 must explain that T3 teaches the client team to prototype');
-  assert.match(boundaryText, /I1.*Build.*UAT.*สอนทีมใช้/, 'I1 must explain that Pun’s team builds, runs UAT, and trains users');
-  assert.equal(await page.locator('a[href="/services/t3-sales-back-office"]').count(), 1, 'I1 must link to the canonical T3 route exactly once');
-
-  const approvedProof = [
-    ['i1-command-center', '/proof/01-command-center.jpg'],
-    ['i1-command-charts', '/proof/02-command-charts.jpg'],
-    ['i1-pipeline', '/proof/03-pipeline.jpg'],
-    ['i1-docbot-chat', '/proof/06-docbot-chat.jpg'],
-    ['i1-scenery-uat', '/testimonial/2026-07/scenery/scenery-screen.jpg'],
-  ];
-  assert.equal(await page.locator('[data-detail-block="proof"] [data-proof-id]').count(), approvedProof.length, 'I1 must use exactly the five approved redacted proof assets');
-  for (const [proofId, src] of approvedProof) {
-    const proof = page.locator(`[data-detail-block="proof"] [data-proof-id="${proofId}"]`);
-    assert.equal(await proof.count(), 1, `I1 must expose the stable ${proofId} proof receipt`);
-    const image = proof.locator('img');
-    await image.scrollIntoViewIfNeeded();
-    await image.evaluate(async (element: HTMLImageElement) => {
-      if (!element.complete) await new Promise<void>((resolve) => element.addEventListener('load', () => resolve(), { once: true }));
-      return element.naturalWidth;
-    });
-    assert.match(await image.getAttribute('src') ?? '', new RegExp(src.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${proofId} must use its approved public asset`);
-    assert.ok(await image.getAttribute('alt'), `${proofId} must have descriptive alt text`);
-    assert.ok(await image.getAttribute('width'), `${proofId} must declare width`);
-    assert.ok(await image.getAttribute('height'), `${proofId} must declare height`);
-    assert.equal(await image.getAttribute('loading'), 'lazy', `${proofId} must defer below-fold proof loading; only the Hero receipt may be eager`);
-    assert.ok(await image.evaluate((element: HTMLImageElement) => element.naturalWidth > 0), `${proofId} image must load`);
-  }
-  const proofText = await page.locator('[data-detail-block="proof"]').innerText();
-  assert.match(proofText, /ระบบจริง/, 'I1 proof wall must describe working systems');
-  assert.match(proofText, /ระบบจริง ไม่ใช่ภาพประกอบขายงาน/, 'I1 proof wall must distinguish real system evidence from decorative artwork');
-  assert.doesNotMatch(proofText, /mockup/i, 'I1 proof wall must not describe real evidence as mockups');
-
-  assert.equal(await page.locator('[data-product-faq-button]').count(), 8, 'I1 must publish the approved eight FAQs');
-  assert.equal(await page.locator('form').count(), 0, 'I1 detail page must not include a form');
-  assert.equal(await page.locator('[data-floating-line]').count(), 1, 'I1 must retain exactly one global Floating LINE CTA');
-  const bookingCtas = page.locator('[data-product-code="I1"][data-booking-cta]');
-  assert.equal(await bookingCtas.count(), 4, 'I1 must provide one booking action at each main decision point');
-  assert.equal(await bookingCtas.evaluateAll((actions) => actions.every((action) => action.textContent?.trim() === 'จองคิวรับบริการ')), true, 'every I1 booking action must use the approved label');
-  for (const action of await bookingCtas.all()) {
-    assert.match(await action.getAttribute('href') ?? '', /^\/booking\?package=I1&intent=/, 'every I1 booking action must preserve product attribution');
-    assert.equal(await action.evaluate((element) => getComputedStyle(element).backgroundColor), 'rgb(196, 50, 69)', 'every I1 booking action must use the AA-safe Coral action shade');
-  }
-  const lineCtas = page.locator('[data-product-code="I1"][data-line-cta]');
-  assert.equal(await lineCtas.count(), 4, 'I1 must retain one LINE alternative at each CTA location');
-  assert.deepEqual(await lineCtas.evaluateAll((actions) => actions.map((action) => [action.getAttribute('data-cta-location'), action.getAttribute('data-cta-label')])), [
-    ['hero', 'ขอดูตัวอย่างระบบจริงทาง LINE'],
-    ['after_scope', 'ทัก LINE ขอดู Screenshot เพิ่ม'],
-    ['after_investment', 'ทัก LINE ส่ง Report เดิมมาเช็ก'],
-    ['final', 'ทัก LINE ขอดูระบบจริง'],
-  ], 'I1 CTA journey must preserve every approved LINE alternative');
-  for (const action of await lineCtas.all()) {
-    assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'every I1 CTA must open SITE.social.line');
-    assert.equal(await action.getAttribute('data-cta-keyword'), 'DASHBOARD', 'every I1 CTA must carry the DASHBOARD keyword');
-    const style = await action.evaluate((element) => ({ color: getComputedStyle(element).color, background: getComputedStyle(element).backgroundColor }));
-    assert.equal(style.color, 'rgb(7, 43, 78)', 'every in-flow LINE CTA must use the AA-safe navy foreground');
-    assert.equal(style.background, 'rgb(6, 199, 85)', 'every in-flow LINE CTA must retain LINE green');
-    assert.ok(lineContrastRatio(style.color, style.background) >= 4.5, 'every in-flow LINE CTA must pass AA contrast in its default state');
-  }
-  await lineCtas.first().hover();
-  await page.waitForTimeout(250);
-  const hoverStyle = await lineCtas.first().evaluate((element) => ({ color: getComputedStyle(element).color, background: getComputedStyle(element).backgroundColor }));
-  assert.equal(hoverStyle.background, 'rgb(5, 173, 73)', 'LINE CTA hover state must retain the approved green family');
-  assert.ok(lineContrastRatio(hoverStyle.color, hoverStyle.background) >= 4.5, 'LINE CTA hover state must retain AA text contrast');
-  await lineCtas.first().focus();
-  const focusStyle = await lineCtas.first().evaluate((element) => ({ color: getComputedStyle(element).color, background: getComputedStyle(element).backgroundColor }));
-  assert.ok(lineContrastRatio(focusStyle.color, focusStyle.background) >= 4.5, 'LINE CTA focus state must retain AA text contrast');
-
-  const html = await page.content();
-  const publicText = await page.locator('#main').innerText();
-  assert.doesNotMatch(publicText, /Catalog/i, 'I1 must not expose Catalog authoring placeholders in public text');
-  assert.doesNotMatch(html, /Catalog|outline-daruma-starter\.pdf|Rendering note|Asset notes|07-docbot-pdf|ที่นั่งเหลือ|Early Bird|unlimited changes|ไม่จำกัด.*แก้/i, 'I1 must not expose Catalog authoring notes, stale assets, false urgency, or unlimited changes');
-  const serviceSchema = schemas(html).find((item) => item['@type'] === 'Service');
-  assert.equal(serviceSchema?.name, catalog.name, 'I1 Service schema name must resolve from Catalog');
-  assert.equal(serviceSchema?.url, 'https://punnattapatch.com/services/dashboard-build', 'I1 Service schema must use the canonical route');
-  assert.equal(serviceSchema?.serviceType, 'Sales System Implementation', 'I1 Service schema must identify implementation work exactly');
-  const faqSchema = schemas(html).find((item) => item['@type'] === 'FAQPage');
-  assert.deepEqual(
-    faqSchema?.mainEntity.map((item: { name: string; acceptedAnswer: { text: string } }) => [item.name, item.acceptedAnswer.text]),
-    await page.locator('[data-product-faq-button]').evaluateAll((buttons) => buttons.map((button) => [button.querySelector('span')?.textContent?.trim(), document.getElementById(button.getAttribute('aria-controls') || '')?.textContent?.trim()])),
-    'I1 FAQPage schema must exactly match the eight visible FAQ questions and answers',
-  );
-  const breadcrumbSchema = schemas(html).find((item) => item['@type'] === 'BreadcrumbList');
-  assert.deepEqual(
-    breadcrumbSchema?.itemListElement.map((item: { name: string; item: string }) => [item.name, item.item]),
-    [['บริการ', 'https://punnattapatch.com/services'], [catalog.name, 'https://punnattapatch.com/services/dashboard-build']],
-    'I1 BreadcrumbList must contain the exact service and canonical-page items',
-  );
-  const finalQr = page.locator('[data-final-line-qr]');
-  await finalQr.scrollIntoViewIfNeeded();
-  assert.equal(await finalQr.isVisible(), true, 'desktop I1 final CTA must show the real LINE QR');
-  await page.waitForFunction(() => {
-    const image = document.querySelector<HTMLImageElement>('[data-final-line-qr] img');
-    return Boolean(image?.complete && image.naturalWidth > 0);
-  });
-
-  for (const viewport of [{ width: 1440, height: 900 }, { width: 768, height: 1024 }, { width: 390, height: 844 }]) {
-    await page.setViewportSize(viewport);
-    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), viewport.width, `I1 must not overflow at ${viewport.width}px`);
-    for (const action of await page.locator('[data-product-code="I1"][data-contact-cta]').all()) {
-      await action.scrollIntoViewIfNeeded();
-      const actionBox = await action.boundingBox();
-      const floatingBox = await page.locator('[data-floating-line]').boundingBox();
-      if (actionBox && floatingBox) {
-        const intersects = actionBox.x < floatingBox.x + floatingBox.width
-          && actionBox.x + actionBox.width > floatingBox.x
-          && actionBox.y < floatingBox.y + floatingBox.height
-          && actionBox.y + actionBox.height > floatingBox.y;
-        assert.equal(intersects, false, `floating LINE control must not obstruct I1 ${await action.getAttribute('data-cta-location')} CTA at ${viewport.width}px`);
-      }
-    }
-  }
-  assert.equal(await finalQr.isVisible(), false, 'mobile I1 must hide the desktop-only scan QR');
-  assert.equal(await page.getByText('ทัก LINE แล้วพิมพ์คำว่า “DASHBOARD” พร้อมจำนวนทีม', { exact: true }).isVisible(), true, 'mobile I1 must show the tap instruction');
-  await page.close();
-});
-
-
 test('every service page carries the content-update ribbon with the supported models', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-  for (const route of ['/services/t1-sales-skills', '/services/online-to-sales', '/services/t3-sales-back-office', '/services/advance-ai-automation', '/services/daily-consulting', '/services/dashboard-build']) {
+  for (const route of ['/services/t1-sales-skills', '/services/online-to-sales', '/services/t3-sales-back-office', '/services/advance-ai-automation', '/services/daily-consulting']) {
     await page.goto(`${baseURL}${route}`);
     const ribbon = page.locator('[data-content-update-ribbon]');
     assert.equal(await ribbon.count(), 1, `${route} must show exactly one content-update ribbon`);
