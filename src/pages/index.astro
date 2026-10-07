@@ -1,29 +1,113 @@
 ---
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import DarumaMark from '../components/DarumaMark.astro';
 import Manifesto from '../components/Manifesto.astro';
 import ProofSystems from '../components/proof/ProofSystems.astro';
 import ProofStats from '../components/proof/ProofStats.astro';
 import { SITE } from '../data/site';
-import { fmtPrice, CATALOG } from '../data/pricing.mjs';
+import { fmtPrice } from '../data/pricing.mjs';
 import ceoPhoto from '../assets/pun-ceo-1.jpg';
 
-const title = 'ปั้นทีมขายให้เป็นระบบ × AI Agent และ Claude Code';
-const description = 'ปั้นทีมขาย SME ให้เปลี่ยนจากการพึ่งคนเก่งและความรู้สึก สู่ระบบที่ทำซ้ำ วัดผล และใช้ AI Agent ทำงานจริง';
-const daruma = [
-  ['D', 'Data', 'ข้อมูลบ้านเดียว', 'ลูกค้า/ดีล/ราคา ไม่อยู่ในหัวหรือไลน์ส่วนตัวของใครคนเดียว ("สมองที่สอง")'],
-  ['A', 'AI Agent', 'น้องฝึกงานที่รู้จักบริษัทคุณ', 'งานซ้ำ (เอกสาร·ใบเสนอราคา·follow-up) มี AI รับไป เซลล์เอาเวลาไปอยู่หน้าลูกค้า'],
-  ['R', 'Repeatable', 'ทำซ้ำได้ ไม่วัดดวง', 'ขั้นตอนขายที่ใครทำตามก็ได้ผลใกล้เคียง ยอดไม่ผูกกับพรสวรรค์คนเดียว'],
-  ['U', 'Upskill', 'คนเก่งขึ้นพร้อมระบบ', 'พัฒนาคนบนระบบ ไม่ใช่ให้ระบบแขวนกับคน (พี่เลี้ยงเซลล์ AI · Product Specialist AI)'],
-  ['M', 'Measurable', 'วัดได้ ไม่ใช้ความรู้สึก', 'KPI · Bus Factor · ก่อน/หลัง — ประชุมเถียงกันด้วยตัวเลข'],
-  ['A', 'Actionable', 'ทำทันที ใช้จริงวันจันทร์เช้า', 'ของทุกชิ้นเปิดใช้ได้จริง ไม่จบแค่รู้ (จิตวิญญาณดารุมะ: ล้มแล้วลุกเลย)'],
+// หน้าแรก 2 ทาง (ล็อก 2026-10-07) — SSOT: claude-code-pun-nattapatch/wiki/pages/strategy-sales-team-x-ai-agent-modular-pack-2026-10.md
+// ชื่อฝั่ง AI ใช้คำเดียวกับแอด carousel "AI Office" (ฝ่ายขาย · ฝ่ายเอกสาร · ฝ่ายคอนเทนต์)
+// พัก Daruma + "ขายไม่วัดดวง" ในของที่ลูกค้าเห็น · ไม่มีรับประกันผล ขายด้วยหลักฐาน/ความเชื่อใจ
+// Quiz /team-check สร้างใน branch feat/team-check-quiz · ราคาแพ็ก "ทำให้" / "ดูแลต่อ" ยังไม่เคาะ ห้ามพิมพ์ตัวเลข
+const title = 'ปั้นทีมขาย × AI Office ฝ่ายขาย · ปัน ณัฐพัชร์';
+const description = 'ทีมขายที่ยอดไม่นิ่ง ติดอยู่ 2 ที่ คือคนในทีม กับงานซ้ำที่กินวันเขาหมด · ปัน ณัฐพัชร์ ช่วยเจ้าของ SME ปั้นทีมขาย และวาง AI Office ให้ทั้งทีมใช้ได้จริง';
+const QUIZ_HREF = '/team-check';
+
+const paths = [
+  {
+    id: 'path-team',
+    no: 'ทางที่ 1 · คน',
+    name: 'ปั้นทีมขาย',
+    teaser: 'จ้างมาไม่นานก็ออก · เป้าตั้งจากความรู้สึก · ต้องถามเองทุกเช้า',
+    topics: [
+      {
+        name: 'คัดคน',
+        now: 'จ้างเซลล์มาไม่ถึง 3 เดือนก็ออก สัมภาษณ์ดูดี แต่ทำงานจริงขายไม่ได้',
+        after: 'มี Scorecard ของตำแหน่ง ชุดคำถามสัมภาษณ์ และโจทย์ทดสอบงานจริง AI ช่วยอ่านเรซูเม่เทียบเกณฑ์ก่อนนัด',
+        link: { href: '/ebook-sales-interview', label: 'อ่านวิธีสัมภาษณ์เซลล์ (ฟรี)' },
+      },
+      {
+        name: 'เป้าและค่าคอม',
+        now: 'เป้าตั้งจากยอดปีที่แล้วบวกเพิ่ม เซลล์เลือกขายแต่ของง่าย',
+        after: 'KPI ที่ทั้งทีมเข้าใจตรงกัน และชีตคำนวณค่าคอมจากดีลจริง ลองย้อนหลัง 3 เดือนก่อนใช้',
+        link: { href: '/services/daily-consulting', label: 'ดูวันวางระบบฝ่ายขาย' },
+      },
+      {
+        name: 'หัวหน้าคุมทีม',
+        now: 'ต้องถามเองทุกเช้าว่าดีลไหนถึงไหน ประชุมทุกสัปดาห์แต่ไม่มีอะไรเปลี่ยน',
+        after: 'ประชุมเช้า 15 นาทีจากตัวเลขจริง หัวหน้ารู้ว่าต้องเข้าไปช่วยดีลไหนก่อน คุยรายคนเดือนละครั้ง',
+        link: { href: '/services/t3-sales-back-office', label: 'ดูคลาสหลังบ้านฝ่ายขาย' },
+      },
+    ],
+  },
+  {
+    id: 'path-ai-office',
+    no: 'ทางที่ 2 · งานซ้ำ',
+    name: 'AI Office ฝ่ายขาย',
+    teaser: 'ลูกค้าทักแล้วเงียบ · ใบเสนอราคาช้า · ไม่มีใครทำคอนเทนต์',
+    topics: [
+      {
+        name: 'ฝ่ายขาย',
+        now: 'ลูกค้าทักมาตอนไม่มีใครว่าง เช้ามาเงียบไปแล้ว ส่งใบเสนอราคาแล้วไม่มีใครตาม',
+        after: 'AI ตอบก่อนแล้วจดข้อมูลเข้า CRM เซลล์จดงานผ่าน LINE และรู้ทุกเช้าว่าต้องตามใคร',
+        link: { href: '/services/t1-sales-skills', label: 'ดูคลาสทีมขาย + AI Agent' },
+      },
+      {
+        name: 'ฝ่ายเอกสาร',
+        now: 'ใบเสนอราคาใบละครึ่งชั่วโมง ลูกค้าได้ราคาช้ากว่าเจ้าอื่นหนึ่งวัน',
+        after: 'พิมพ์บรรทัดเดียวจากมือถือ ได้ PDF ให้ตรวจก่อนกดส่ง ใบแจ้งหนี้กับใบเสร็จออกจากที่เดียวกัน',
+        link: { href: '/services/t3-sales-back-office', label: 'ดูคลาสหลังบ้านฝ่ายขาย' },
+      },
+      {
+        name: 'ฝ่ายคอนเทนต์',
+        now: 'รู้ว่าต้องโพสต์ แต่ไม่มีใครมีเวลาทำ โพสต์แล้วก็ไม่ค่อยมีลูกค้าทัก',
+        after: 'AI สืบหัวข้อที่ลูกค้าสนใจแล้วร่างโพสต์ให้ ทีมแค่ตรวจแล้วกดลง',
+        link: { href: '/services/online-to-sales', label: 'ดูคลาสขายออนไลน์' },
+      },
+    ],
+  },
 ];
-const pains = [
-  ['ยอดเดาไม่ได้', 'เดือนนี้ปิดรัว เดือนหน้าเงียบกริบ ทุกดีลเหมือนวัดดวง'],
-  ['ระบบอยู่ในหัวคนเก่งคนเดียว', 'เซลล์เก่งสุดลาออกทีไร ลูกค้าหายไปด้วยทุกที'],
-  ['ข้อมูลกระจายทุกที่', 'ลูกค้า ราคา และดีลอยู่ในไลน์ส่วนตัวกับความจำของแต่ละคน ประชุมทีไรก็เถียงกันด้วยความรู้สึก'],
+
+const ways = [
+  {
+    name: 'สอนทีม',
+    line: 'คลาส 1 วันที่ออฟฟิศคุณ ทีมกลับไปทำเองเป็น',
+    detail: `เริ่มที่ ${fmtPrice('inhouse-a')} ต่อวัน ราคาเดียวทั้งทีมไม่เกิน 20 คน`,
+    href: '/services',
+    cta: 'ดูคลาสทั้งหมด',
+  },
+  {
+    name: 'ทำให้',
+    line: 'ผมเข้าไปวางให้ทั้งทีมใช้ 1–2 สัปดาห์ เข้าบริษัท 2 ครั้ง',
+    detail: 'เลือกเริ่มเรื่องที่ทีมติดที่สุด ราคาตามจำนวนเรื่อง แจ้งในคอล 20 นาทีก่อนตัดสินใจ',
+    href: QUIZ_HREF,
+    cta: 'เช็คก่อนว่าควรเริ่มเรื่องไหน',
+  },
+  {
+    name: 'ดูแลต่อ',
+    line: 'เดือนละ 1 วันเต็ม 09:00–17:00 ที่บริษัทคุณ',
+    detail: 'ดูตัวเลขกับเจ้าของและหัวหน้า โค้ชทีมเรื่องที่ติด ปรับระบบ แล้วเลือกเรื่องถัดไป · เปิดหลังจบรอบแรก',
+    href: SITE.social.line,
+    cta: 'ถามใน LINE',
+  },
 ];
+
+const round = [
+  ['ครั้งที่ 1 · เช้า', 'คุยกับเจ้าของและคนที่ทำงานนั้นจริง จดตัวเลขตั้งต้น และตกลงกันว่าแบบไหนเรียกว่าใช้ได้'],
+  ['ครั้งที่ 1 · บ่าย', 'ลงระบบพื้นฐานที่เตรียมไว้แล้วให้ทีมเริ่มใช้วันนั้นเลย'],
+  ['1–2 สัปดาห์', 'ทีมใช้กับงานจริง ผมปรับให้เข้ากับวิธีทำงานของบริษัทคุณ'],
+  ['ครั้งที่ 2', 'ส่งฉบับที่ปรับแล้ว ลองกับงานจริงด้วยกัน สอนทีม แล้วคุยว่าเรื่องถัดไปคืออะไร'],
+];
+
+// ทางเดินลูกค้าที่อยู่ยาว — ไม่ระบุชื่อจนกว่าคุณปันขออนุญาตแล้ว (ปันเคาะ 2026-10-07)
+const longTerm = {
+  who: 'ธุรกิจแฟชั่นออนไลน์ · ทีม 15 คน',
+  months: '7 เดือนที่ทำงานด้วยกัน',
+  steps: ['วางแผนระบบหลังบ้าน', 'การบ้าน AI ให้ทีม 2 รอบ', 'เวิร์กช็อปทั้งบริษัท', 'KPI ทีมขาย', 'บันไดอาชีพของทีม', 'อบรมรอบใหม่'],
+};
 const clientLogos = [
   { src: '/logos/clients/futureskill.png', alt: 'FutureSkill' },
   { src: '/logos/clients/nissan.png', alt: 'Nissan' },
@@ -75,27 +159,57 @@ const recentWork = [
   schema={{ types: ['WebPage', 'Person'], title, description }}
 >
   <section id="homepage-hero" class="border-b border-[#c9c2b2] bg-ivory px-6 py-12 md:py-20">
-    <div class="mx-auto grid max-w-6xl items-center gap-9 lg:grid-cols-[1.15fr_.85fr]">
+    <div class="mx-auto grid max-w-6xl items-start gap-9 lg:grid-cols-[1.2fr_.8fr]">
       <div class="min-w-0">
         <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ปัน ณัฐพัชร์ · ปั้นทีมขาย × AI Agent</p>
         <h1 class="mt-5 font-display font-bold text-navy">
-          <span class="block text-4xl leading-tight md:text-6xl">เลิกขายแบบพึ่งดวง</span>
-          <span class="mt-3 block text-xl font-semibold leading-snug text-ink/85 md:text-[1.45rem] md:leading-snug">ด้วยระบบการขาย <span class="whitespace-nowrap font-bold text-coral">D.A.R.U.M.A. Framework</span> <span class="whitespace-nowrap">ที่จับต้องได้</span></span>
-          <span class="mt-1 block text-xl font-semibold leading-snug text-ink/85 md:text-[1.45rem] md:leading-snug">และ <span class="font-bold text-navy">AI Agent</span> ที่ลดงานกับเพิ่มยอดขายได้จริง</span>
+          <span class="block text-4xl leading-tight md:text-6xl">ทีมขายที่ยอดไม่นิ่ง<br />ติดอยู่ 2 ที่</span>
         </h1>
-        <p class="mt-5 max-w-2xl text-lg leading-relaxed text-warm-ink/75">ผมปั้นทีมขายจริง และใช้ AI ทำงานขายของตัวเองทุกวัน</p>
-        <p class="mt-2 max-w-2xl leading-relaxed text-warm-ink/65">เริ่มจากข้อมูลและวิธีขายของทีมคุณก่อน แล้วค่อยใช้ AI เป็นแรงเสริม ไม่ใช่เอาเครื่องมือไปวางทับปัญหาเดิม</p>
-        <div class="mt-7 flex flex-wrap gap-3">
-          <a href="/booking" class="btn border-0 bg-coral text-white hover:bg-[#c43245]">จองคิวคุยกับผม</a>
-          <a href="/services" class="btn border-navy bg-transparent text-navy hover:bg-navy hover:text-white">ดูบริการที่เหมาะกับทีมคุณ</a>
+        <p class="mt-5 max-w-2xl text-lg leading-relaxed text-warm-ink/80">คนในทีม กับงานซ้ำที่กินวันเขาหมด · ผมแก้ได้ทั้งสองทาง และใช้ AI ทำงานขายของตัวเองทุกวัน</p>
+
+        <div class="mt-7 grid gap-4 sm:grid-cols-2" aria-label="2 ทางที่ผมช่วยทีมขาย">
+          {paths.map((path, index) => (
+            <a
+              href={`#${path.id}`}
+              class:list={[
+                'group flex flex-col rounded-2xl border-2 p-5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy',
+                index === 0 ? 'border-navy bg-surface hover:bg-sand' : 'border-coral bg-surface hover:bg-coral/10',
+              ]}
+            >
+              <span class:list={['text-xs font-bold uppercase tracking-[0.14em]', index === 0 ? 'text-navy/70' : 'text-coral']}>{path.no}</span>
+              <span class="mt-2 font-display text-2xl font-bold leading-tight text-navy md:text-[1.7rem]">{path.name}</span>
+              <span class="mt-3 flex flex-wrap gap-1.5">
+                {path.topics.map((topic) => (
+                  <span class="rounded-full border border-[#c9c2b2] bg-ivory px-3 py-1 text-sm font-semibold text-navy">{topic.name}</span>
+                ))}
+              </span>
+              <span class="mt-3 text-sm leading-relaxed text-warm-ink/70">ติดที่: {path.teaser}</span>
+              <span class="mt-4 text-sm font-bold text-navy underline decoration-coral/50 decoration-2 underline-offset-4 group-hover:decoration-coral">ดูทางนี้ ↓</span>
+            </a>
+          ))}
         </div>
 
-        <!-- ตัวเลขจากระบบที่ปันใช้เองจริง — ให้ประโยค "ใช้ AI ทำงานขายของตัวเองทุกวัน" ข้างบนมีน้ำหนักใน 2 วินาทีแรก -->
+        <div class="mt-7 flex flex-wrap gap-3">
+          <a href={QUIZ_HREF} data-cta-location="hero-quiz" class="btn min-h-12 border-0 bg-coral text-white hover:bg-[#c43245]">เช็คว่าทีมคุณติดทางไหน · 2 นาที</a>
+          <a
+            href={SITE.social.line}
+            target="_blank"
+            rel="noopener"
+            data-line-cta
+            data-product-code="C1"
+            data-cta-keyword="ปิดยอด"
+            data-cta-location="hero-line"
+            data-cta-label="ทัก LINE เล่าโจทย์"
+            class="btn min-h-12 border-navy bg-transparent text-navy hover:bg-navy hover:text-white"
+          >ทัก LINE เล่าโจทย์</a>
+        </div>
+
+        <!-- ตัวเลขจากระบบที่ปันใช้เองจริง — ให้ประโยค "ใช้ AI ทำงานขายของตัวเองทุกวัน" มีน้ำหนัก -->
         <ProofStats variant="hero" class="mt-8" />
 
         <div class="mt-8 border-t border-[#c9c2b2] pt-5">
-          <p class="text-xs font-bold uppercase tracking-[0.16em] text-warm-ink/60">ดูแลองค์กรชั้นนำและแบรนด์ดัง</p>
-          <div class="homepage-proof-scroll mt-3 flex gap-2 overflow-x-auto pb-1" aria-label="องค์กรที่ไว้ใจให้ปันดูแล">
+          <p class="text-xs font-bold uppercase tracking-[0.16em] text-warm-ink/60">องค์กรที่ใช้บริการผม</p>
+          <div class="homepage-proof-scroll mt-3 flex gap-2 overflow-x-auto pb-1" aria-label="องค์กรที่ใช้บริการปัน">
             {clientLogos.map((logo) => (
               <div class="flex h-16 w-36 shrink-0 items-center justify-center rounded-lg border border-[#c9c2b2] bg-surface p-2">
                 <img src={logo.src} alt={logo.alt} width="160" height="160" loading="lazy" decoding="async" class="h-full w-full object-contain" />
@@ -106,12 +220,12 @@ const recentWork = [
       </div>
       <div class="relative mx-auto w-full max-w-md">
         <figure class="rounded-2xl border border-[#c9c2b2] bg-surface p-3 shadow-[5px_7px_0_rgba(30,27,22,0.09)]">
-          <Image src={ceoPhoto} alt="ปัน ณัฐพัชร์" width={733} height={1100} loading="lazy" class="aspect-[4/5] w-full rounded-xl object-cover object-top" />
-          <figcaption class="px-2 pb-1 pt-4 font-display text-xl font-bold text-navy">ปัน ณัฐพัชร์</figcaption>
+          <Image src={ceoPhoto} alt="ปัน ณัฐพัชร์" width={733} height={1100} loading="eager" class="aspect-[4/5] w-full rounded-xl object-cover object-top" />
+          <figcaption class="px-2 pb-1 pt-4">
+            <span class="block font-display text-xl font-bold text-navy">ปัน ณัฐพัชร์</span>
+            <span class="mt-1 block text-sm text-warm-ink/70">ที่ปรึกษาด้านการปั้นทีมขาย และ AI Agent · ผู้สอน FutureSkill ปี 2026</span>
+          </figcaption>
         </figure>
-        <div class="absolute -left-3 -top-4 rounded-2xl border border-[#c9c2b2] bg-ivory p-3 shadow-[3px_4px_0_rgba(30,27,22,0.08)]">
-          <DarumaMark class="h-auto w-14" />
-        </div>
         <figure class="absolute -bottom-5 -left-4 hidden w-32 rounded-xl border border-[#c9c2b2] bg-surface p-2 shadow-[3px_4px_0_rgba(30,27,22,0.09)] sm:block">
           <img src="/testimonial/2026-05/review-02.jpg" alt={testimonials[1].alt} width="1000" height="1000" loading="lazy" decoding="async" class="aspect-square w-full rounded-lg object-cover" />
           <figcaption class="px-1 pt-2 text-[11px] font-semibold text-navy">เสียงจากลูกค้าจริง</figcaption>
@@ -120,50 +234,85 @@ const recentWork = [
     </div>
   </section>
 
-  <section class="px-6 py-16 md:py-24">
-    <div class="mx-auto max-w-6xl">
-      <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">สิ่งที่เห็นซ้ำในทุกบริษัท</p>
-      <h2 class="mt-3 font-display text-3xl font-bold text-navy md:text-5xl">เจ้าของ SME ส่วนใหญ่เจอ 3 เรื่องนี้</h2>
-      <div class="mt-9 grid gap-5 md:grid-cols-3">
-        {pains.map(([heading, body], index) => (
-          <article class="rounded-2xl border border-[#c9c2b2] bg-surface p-7">
-            <p class="font-display text-4xl font-bold text-coral">0{index + 1}</p>
-            <h3 class="mt-3 font-display text-2xl font-bold text-navy">{heading}</h3>
-            <p class="mt-3 leading-relaxed text-warm-ink/75">{body}</p>
-          </article>
-        ))}
+  {paths.map((path, index) => (
+    <section id={path.id} class:list={['scroll-mt-24 border-b border-[#c9c2b2] px-6 py-16 md:py-24', index === 0 ? 'bg-surface' : 'bg-sand']}>
+      <div class="mx-auto max-w-6xl">
+        <p class:list={['text-xs font-bold uppercase tracking-[0.18em]', index === 0 ? 'text-cyan' : 'text-coral']}>{path.no}</p>
+        <h2 class="mt-3 font-display text-3xl font-bold text-navy md:text-5xl">{path.name}</h2>
+        {index === 0 ? (
+          <p class="mt-4 max-w-3xl leading-relaxed text-warm-ink/75">เรื่องคนแก้ด้วยโปรแกรมอย่างเดียวไม่ได้ ผมเข้าไปนั่งกับเจ้าของและหัวหน้าเอง และเอาเครื่องมือที่ใช้คัดเรซูเม่มา 1,000+ ใบ สัมภาษณ์คนเข้าทีมมา 100+ คน ไปวางให้</p>
+        ) : (
+          <p class="mt-4 max-w-3xl leading-relaxed text-warm-ink/75">ทั้งสามฝ่ายนี้ผมใช้กับงานขายของตัวเองอยู่ทุกวัน · ทั้งทีมใช้ระบบเดียวกัน ทั้งเซลล์ แอดมิน และหัวหน้า · ระบบอยู่ในบัญชี LINE OA และ Google ของบริษัทคุณ</p>
+        )}
+        <div class="mt-10 grid gap-5 md:grid-cols-3">
+          {path.topics.map((topic, topicIndex) => (
+            <article class="flex flex-col rounded-2xl border border-[#c9c2b2] bg-ivory p-6">
+              <p class="font-display text-3xl font-bold text-coral">0{topicIndex + 1}</p>
+              <h3 class="mt-2 font-display text-2xl font-bold text-navy">{topic.name}</h3>
+              <p class="mt-4 text-xs font-bold uppercase tracking-[0.14em] text-warm-ink/55">ตอนนี้</p>
+              <p class="mt-1 leading-relaxed text-warm-ink/80">{topic.now}</p>
+              <p class="mt-4 text-xs font-bold uppercase tracking-[0.14em] text-cyan">หลังวางระบบ</p>
+              <p class="mt-1 leading-relaxed text-navy">{topic.after}</p>
+              <a href={topic.link.href} class="mt-auto pt-6 text-sm font-semibold text-navy underline decoration-coral/50 decoration-2 underline-offset-4 hover:decoration-coral">{topic.link.label} →</a>
+            </article>
+          ))}
+        </div>
+        {index === 1 && (
+          <p class="mt-6 text-sm text-warm-ink/70">อยากเห็นของจริงก่อน <a href="#proof-systems" class="font-semibold text-navy underline decoration-coral/50 decoration-2 underline-offset-4 hover:decoration-coral">ดูระบบที่ผมใช้ทุกวัน ↓</a></p>
+        )}
       </div>
-    </div>
-  </section>
+    </section>
+  ))}
 
-  <section class="border-y border-[#c9c2b2] bg-sand px-6 py-16 md:py-24">
-    <div class="mx-auto max-w-6xl">
-      <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ระบบ D-A-R-U-M-A</p>
-      <h2 class="mt-3 max-w-4xl font-display text-3xl font-bold leading-snug text-navy md:text-5xl">ของที่คุณคิดว่าเรื่องดวง จริงๆ คือเรื่องระบบ</h2>
-      <p class="mt-5 max-w-3xl leading-relaxed text-warm-ink/75">Daruma Framework คือเช็กลิสต์ที่ทำให้ทีมขายล้มแล้วลุกต่อได้เอง ไม่ใช่คำอธิษฐานหรือศัพท์ AI ลอยๆ</p>
-      <div class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {daruma.map(([letter, name, gloss, body]) => (
-          <article class="rounded-2xl border border-[#c9c2b2] bg-surface p-6">
-            <div class="flex items-baseline gap-3"><span class="font-display text-5xl font-bold text-coral">{letter}</span><span class="font-display text-xl font-bold text-navy">{name}</span></div>
-            <p class="mt-4 font-semibold text-navy">{gloss}</p>
-            <p class="mt-2 text-sm leading-relaxed text-warm-ink/75">{body}</p>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="border-y border-[#c9c2b2] bg-coral/10 px-6 py-10">
+  <section class="border-b border-[#c9c2b2] bg-coral/10 px-6 py-10">
     <div class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-5 md:flex-row md:items-center">
-      <div><p class="font-display text-2xl font-bold text-navy">อยากรู้ว่าทีมคุณติดตรงไหน — นัดคุยกับผม ไม่มีค่าใช้จ่าย</p><p class="mt-1 text-sm text-warm-ink/70">เริ่มจากโจทย์จริงของทีมคุณก่อน</p></div>
-      <a href="/booking" class="btn shrink-0 border-0 bg-coral text-white hover:bg-[#c43245]">จองคิวคุยกับผม</a>
+      <div>
+        <p class="font-display text-2xl font-bold text-navy">ยังไม่แน่ใจว่าทีมคุณติดทางไหน</p>
+        <p class="mt-1 text-sm text-warm-ink/70">ตอบ 15 ข้อสั้นๆ แล้วรู้ว่าควรเริ่มเรื่องไหนก่อน</p>
+      </div>
+      <a href={QUIZ_HREF} data-cta-location="band-quiz" class="btn min-h-12 shrink-0 border-0 bg-coral text-white hover:bg-[#c43245]">เช็คทีมขาย 2 นาที</a>
     </div>
   </section>
 
-  <section class="border-y border-[#c9c2b2] bg-sand px-6 py-16 md:py-24">
+  <section class="border-b border-[#c9c2b2] px-6 py-16 md:py-24">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ทำงานกับผมได้ 3 แบบ</p>
+      <h2 class="mt-3 font-display text-3xl font-bold text-navy md:text-5xl">สอนทีม · ทำให้ · ดูแลต่อ</h2>
+      <div class="mt-10 grid gap-5 md:grid-cols-3">
+        {ways.map((way) => (
+          <article class="flex flex-col rounded-2xl border border-[#c9c2b2] bg-surface p-7">
+            <h3 class="font-display text-2xl font-bold text-navy">{way.name}</h3>
+            <p class="mt-3 font-semibold leading-relaxed text-navy">{way.line}</p>
+            <p class="mt-2 text-sm leading-relaxed tabular-nums text-warm-ink/75">{way.detail}</p>
+            {way.href.startsWith('https://lin.ee/') ? (
+              <a href={way.href} target="_blank" rel="noopener" data-line-cta data-product-code="C1" data-cta-keyword="ปิดยอด" data-cta-location="ways-care" data-cta-label={way.cta} class="btn mt-auto min-h-12 w-full border-navy bg-transparent text-navy hover:bg-navy hover:text-white">{way.cta}</a>
+            ) : (
+              <a href={way.href} data-cta-location={`ways-${way.name}`} class="btn mt-auto min-h-12 w-full border-navy bg-transparent text-navy hover:bg-navy hover:text-white">{way.cta}</a>
+            )}
+          </article>
+        ))}
+      </div>
+
+      <div class="mt-14 rounded-2xl border border-[#c9c2b2] bg-ivory p-6 md:p-8">
+        <h3 class="font-display text-2xl font-bold text-navy">แบบ "ทำให้" 1 รอบ ใช้เวลา 1–2 สัปดาห์</h3>
+        <ol class="mt-6 grid gap-5 md:grid-cols-4">
+          {round.map(([when, what], index) => (
+            <li class="rounded-xl border border-[#c9c2b2] bg-surface p-5">
+              <p class="font-display text-3xl font-bold text-coral">{index + 1}</p>
+              <p class="mt-1 font-bold text-navy">{when}</p>
+              <p class="mt-2 text-sm leading-relaxed text-warm-ink/75">{what}</p>
+            </li>
+          ))}
+        </ol>
+        <p class="mt-5 text-sm leading-relaxed text-warm-ink/70">ก่อนวันแรก บริษัทส่งสิทธิ์แอดมิน LINE OA บัญชี Google และข้อมูลตัวอย่างมาก่อน บ่ายวันนั้นทีมจะได้ใช้ระบบจริงเลย</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-b border-[#c9c2b2] bg-sand px-6 py-16 md:py-24">
     <div class="mx-auto max-w-6xl">
       <div class="max-w-3xl">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">องค์กรที่ไว้ใจ</p>
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ใครใช้บริการผม</p>
         <h2 class="mt-3 font-display text-3xl font-bold text-navy md:text-5xl">องค์กรบางส่วนที่ไว้ใจให้ผมดูแล</h2>
       </div>
       <div class="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
@@ -173,6 +322,23 @@ const recentWork = [
           </div>
         ))}
       </div>
+
+      <div class="mt-16 grid gap-8 rounded-2xl border border-[#c9c2b2] bg-surface p-6 md:grid-cols-[.9fr_1.1fr] md:p-8">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">ลูกค้าที่อยู่กับผมนานที่สุด</p>
+          <h3 class="mt-3 font-display text-2xl font-bold leading-snug text-navy md:text-3xl">{longTerm.who}</h3>
+          <p class="mt-2 text-warm-ink/70">{longTerm.months} เริ่มทีละเรื่อง แล้วค่อยเพิ่มเรื่องถัดไปจากตัวเลขของเดือนก่อน</p>
+        </div>
+        <ol class="flex flex-wrap items-center gap-2">
+          {longTerm.steps.map((step, index) => (
+            <li class="flex items-center gap-2">
+              <span class="rounded-full border border-[#c9c2b2] bg-ivory px-3 py-1.5 text-sm font-semibold text-navy">{step}</span>
+              {index < longTerm.steps.length - 1 && <span aria-hidden="true" class="text-coral">→</span>}
+            </li>
+          ))}
+        </ol>
+      </div>
+
       <div class="mt-16 max-w-3xl">
         <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">งานล่าสุด</p>
         <h2 class="mt-3 font-display text-3xl font-bold text-navy md:text-5xl">กันยายน 2026 ผมไปทำอะไรมา</h2>
@@ -220,48 +386,46 @@ const recentWork = [
     </div>
   </section>
 
-  <section class="border-y border-[#c9c2b2] bg-coral/10 px-6 py-10">
-    <div class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-5 md:flex-row md:items-center">
-      <p class="font-display text-2xl font-bold text-navy">ลูกค้าเหล่านี้เริ่มจากนัดคุยครั้งเดียว</p>
-      <a href="/booking" class="btn shrink-0 border-0 bg-coral text-white hover:bg-[#c43245]">จองคิวคุยกับผม</a>
-    </div>
-  </section>
-
-  <!-- โชว์ครบห้าระบบ — section นี้คือชั้น trust/wow ยาวได้ (คุณปันเคาะ 2026-08-24) -->
+  <!-- โชว์ครบห้าระบบที่ปันใช้เอง — ชั้น trust/wow ยาวได้ (คุณปันเคาะ 2026-08-24) -->
   <ProofSystems />
 
-  <section class="border-y border-[#c9c2b2] bg-sand px-6 py-16 md:py-24">
-    <div class="mx-auto max-w-6xl">
-      <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">เส้นทางทำงานร่วมกัน</p>
-      <h2 class="mt-3 font-display text-3xl font-bold text-navy md:text-5xl">เริ่มจากโจทย์ของคุณ</h2>
-      <div class="mt-9 grid gap-6 md:grid-cols-2">
-        <article class="rounded-2xl border border-[#c9c2b2] bg-surface p-7">
-          <h3 class="font-display text-2xl font-bold text-navy">ฝึกทีมให้ใช้เป็น</h3>
-          <p class="mt-2 text-sm text-warm-ink/65">คลาสสด 1 วันที่ออฟฟิศคุณ · ราคาเดียวทั้งทีมไม่เกิน 20 คน</p>
-          <p class="mt-6 font-semibold text-navy">{CATALOG['inhouse-a'].name} · 1 วัน</p>
-          <p class="mt-1 text-sm text-warm-ink/70">เข้าใจเหตุผลซื้อ · ต่อรองไม่รีบลดราคา · ซ้อมดีลกับ AI Sales Coach</p>
-          <p class="mt-2 font-display text-3xl font-bold tabular-nums text-coral">{fmtPrice('inhouse-a')}</p>
-          <p class="mt-6 font-semibold text-navy">{CATALOG['ai-workshop-advance'].name} · 1 วัน</p>
-          <p class="mt-1 text-sm text-warm-ink/70">ทีมรายงานภาษาเดียวกัน — ผู้จัดการเห็นดีลค้างโดยไม่ต้องไล่ถาม</p>
-          <p class="mt-2 font-display text-3xl font-bold tabular-nums text-coral">{fmtPrice('ai-workshop-advance')}</p>
-          <a href="/services/t1-sales-skills" class="btn mt-7 w-full border-0 bg-coral text-white hover:bg-[#c43245]">ดูรายละเอียด</a>
-        </article>
-        <article class="rounded-2xl border border-[#c9c2b2] bg-surface p-7">
-          <h3 class="font-display text-2xl font-bold text-navy">ให้ผมเข้าไปวางระบบให้</h3>
-          <p class="mt-2 text-sm text-warm-ink/65">ที่ปรึกษาถึงที่บริษัท · คิดเป็นรายวันเหมือนกัน</p>
-          <p class="mt-6 font-semibold text-navy">{CATALOG['daily-sales-consulting'].name} · 1 วัน</p>
-          <p class="mt-1 text-sm text-warm-ink/70">เลือก 1 ปัญหาขายที่สำคัญที่สุด — Journey ออนไลน์ถึงปิดการขาย · โครงทีม+KPI+ค่าคอม · ออกแบบ Report/Dashboard · AI Workflow ต้นแบบ — วางทางออกให้จบใน 1 วัน</p>
-          <p class="mt-2 font-display text-3xl font-bold tabular-nums text-coral">{fmtPrice('daily-sales-consulting')}</p>
-          <a href="/services/daily-consulting" class="btn mt-7 w-full border-navy bg-transparent text-navy hover:bg-navy hover:text-white">ดูรายละเอียด</a>
-        </article>
-      </div>
-      <p class="mt-6 rounded-2xl border border-[#c9c2b2] bg-surface p-5 text-warm-ink/80">ถ้าโจทย์ไม่ได้อยู่ที่งานชิ้นเดียว แต่ต้องแก้ทั้งระบบ — มีแบบยกทีมหลายวันและแบบวางระบบ 45 วันด้วยครับ <a href="/services" class="font-semibold text-navy underline decoration-coral/50 decoration-2 underline-offset-4 hover:decoration-coral">ดูที่หน้าบริการ →</a></p>
+  <section class="border-y border-[#c9c2b2] bg-surface px-6 py-16 md:py-20">
+    <div class="mx-auto grid max-w-6xl gap-5 md:grid-cols-2">
+      <article class="rounded-2xl border border-[#c9c2b2] bg-ivory p-7">
+        <h2 class="font-display text-2xl font-bold text-navy">เหมาะกับใคร</h2>
+        <ul class="mt-4 space-y-2 leading-relaxed text-warm-ink/80">
+          <li>เจ้าของที่มีเซลล์ 3–20 คน และยอดยังขึ้นกับว่าวันนั้นใครขยัน</li>
+          <li>ลูกค้าทักเข้ามาทาง LINE หรือโทรเป็นหลัก</li>
+          <li>อยากให้ทั้งทีมใช้วิธีเดียวกัน ไม่ใช่เก่งอยู่คนเดียว</li>
+        </ul>
+      </article>
+      <article class="rounded-2xl border border-[#c9c2b2] bg-ivory p-7">
+        <h2 class="font-display text-2xl font-bold text-navy">ยังไม่ใช่ตอนนี้</h2>
+        <ul class="mt-4 space-y-2 leading-relaxed text-warm-ink/80">
+          <li>ทำธุรกิจคนเดียว อยากได้เครื่องมือช่วยตัวเอง ยังไม่มีทีมขาย</li>
+          <li>อยากได้แค่คำแนะนำ แต่ยังไม่มีคนในบริษัทที่จะใช้ระบบต่อ</li>
+        </ul>
+      </article>
     </div>
   </section>
 
   <Manifesto />
 
-  <section class="px-6 py-16 text-center md:py-24"><DarumaMark class="mx-auto h-auto w-24" /><h2 class="mx-auto mt-6 max-w-3xl font-display text-3xl font-bold leading-snug text-navy md:text-5xl">ยังไม่แน่ใจว่าทีมคุณควรเริ่มตรงไหน — จองคิวคุยกับผมก่อนครับ</h2><div class="mt-8 flex flex-wrap justify-center gap-3"><a href="/booking" class="btn border-0 bg-coral text-white hover:bg-[#c43245]">จองคิวคุยกับผม</a><a href={SITE.social.line} target="_blank" rel="noopener" class="btn border-navy bg-transparent text-navy hover:bg-navy hover:text-white">ทัก LINE</a></div></section>
+  <section class="px-6 py-16 md:py-24">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="font-display text-3xl font-bold leading-snug text-navy md:text-5xl">เริ่มจากเล่าให้ผมฟังว่าทีมติดตรงไหน</h2>
+      <ol class="mx-auto mt-8 grid max-w-2xl gap-3 text-left">
+        <li class="flex gap-4 rounded-2xl border border-[#c9c2b2] bg-surface p-4"><span class="font-display text-2xl font-bold text-coral">1</span><span class="leading-relaxed text-navy">เช็คทีม 2 นาที หรือพิมพ์คำว่า <strong>ปิดยอด</strong> ใน LINE</span></li>
+        <li class="flex gap-4 rounded-2xl border border-[#c9c2b2] bg-surface p-4"><span class="font-display text-2xl font-bold text-coral">2</span><span class="leading-relaxed text-navy">บอก 3 อย่าง: ทีมขายกี่คน · ติดทางไหน · งานไหนกินเวลาทีมที่สุด</span></li>
+        <li class="flex gap-4 rounded-2xl border border-[#c9c2b2] bg-surface p-4"><span class="font-display text-2xl font-bold text-coral">3</span><span class="leading-relaxed text-navy">ผมอ่านและตอบเองครับ</span></li>
+      </ol>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a href={QUIZ_HREF} data-cta-location="final-quiz" class="btn min-h-12 border-0 bg-coral text-white hover:bg-[#c43245]">เช็คทีมขาย 2 นาที</a>
+        <a href={SITE.social.line} target="_blank" rel="noopener" data-line-cta data-product-code="C1" data-cta-keyword="ปิดยอด" data-cta-location="final-line" data-cta-label="ทัก LINE" class="btn min-h-12 border-navy bg-transparent text-navy hover:bg-navy hover:text-white">ทัก LINE</a>
+        <a href="/booking" data-cta-location="final-booking" class="btn min-h-12 border-[#c9c2b2] bg-transparent text-navy hover:bg-sand">จองคิวคุยกับผม</a>
+      </div>
+    </div>
+  </section>
 
 </BaseLayout>
 
