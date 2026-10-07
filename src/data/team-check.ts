@@ -135,7 +135,7 @@ export const TOPIC_INFO: Record<Topic, TopicInfo> = {
     name: 'ฝ่ายคอนเทนต์',
     path: 'ai-office',
     current: 'รู้ว่าต้องโพสต์ แต่ไม่มีใครมีเวลา',
-    after: 'AI สืบหัวข้อ ร่างโพสต์ ตัดคลิป ทีมแค่ตรวจแล้วกดลง',
+    after: 'AI สืบหัวข้อที่ลูกค้าสนใจแล้วร่างโพสต์ให้ ทีมแค่ตรวจแล้วกดลง',
     learnLink: '/services/online-to-sales',
     productCode: 'T2',
   },
