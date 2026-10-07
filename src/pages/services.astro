@@ -25,7 +25,7 @@ const priceFor = (code: OfferCode) => {
   const pricingKey = getOffer(code).pricingKey;
   return pricingKey ? fmtPrice(pricingKey) : undefined;
 };
-const catalogOffers = (['T2', 'T1', 'T3', 'T4', 'C1', 'I1', 'A1'] as const).map(getOffer);
+const catalogOffers = (['T2', 'T1', 'T3', 'T4', 'C1', 'A1'] as const).map(getOffer);
 
 const trustLogos = [
   { src: '/services/nissan.png', alt: 'Nissan' },
@@ -260,10 +260,6 @@ const faqs = [
           <div class="relative min-w-0">
             <span id="package-a" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
             <OfferCard offer={getOffer('C1')} image={OFFER_ASSET_BY_CODE.C1} priceLabel={priceFor('C1')} />
-          </div>
-          <div class="relative min-w-0">
-            <span id="daruma-starter" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
-            <OfferCard offer={getOffer('I1')} image={OFFER_ASSET_BY_CODE.I1} priceLabel={priceFor('I1')} />
           </div>
         </div>
       </div>

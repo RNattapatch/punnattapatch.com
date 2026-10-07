@@ -1,6 +1,6 @@
 import type { ImageMetadata } from 'astro';
 
-export type ProductDetailCode = 'T1' | 'T2' | 'T3' | 'T4' | 'C1' | 'I1' | 'P1';
+export type ProductDetailCode = 'T1' | 'T2' | 'T3' | 'T4' | 'C1' | 'P1';
 
 export interface ProductFaqItem {
   question: string;

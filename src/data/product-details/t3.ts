@@ -210,7 +210,7 @@ export const T3_PRODUCT_DETAIL: ProductDetailPageData = {
     'องค์กรที่ต้องการลดเวลารวม Report และเพิ่มความชัดของ Next action',
   ],
   notFit: 'T3 คือทีมคุณเรียนวิธีวางและทำ Prototype เอง ยังไม่เหมาะกับบริษัทที่ต้องการ CRM/ERP จริง, Data migration, Dashboard production, Integration หรือ Support ระบบต่อเนื่องครับ ถ้าโจทย์อยู่ที่ KPI, Commission หรือโครงทีมให้เริ่ม C1; ถ้าพร้อมใช้ Live data และต้องการ Build production ให้ไป I1',
-  relatedOffer: { href: '/services/dashboard-build', label: 'ไม่มีคนทำต่อ หรืออยากให้ทีมปัน Build, UAT และสอนใช้จริง? ดูบริการ I1' },
+  relatedOffer: { href: '/services/daily-consulting', label: 'อยากให้ผมตัดตอนและทดลองแบบ 2 วันก่อนทีมทำต่อเอง? เลือกตัวเลือกครบรอบ 2 วันที่ C1' },
   bio: [
     'ผมเคยผ่านทั้งงานขาย การหาเซลล์ ตั้ง KPI ค่าคอม Onboarding และโค้ชทีมหน้างาน จึงรู้ว่า Field บน Report สามารถสร้างพฤติกรรมได้ ถ้าวัดผิด ทีมก็วิ่งผิด หรือหาวิธีกรอกให้ผ่านแทนที่จะขยับดีล',
     'ประสบการณ์คัดเรซูเม่มากกว่า 1,000 ใบและสัมภาษณ์คนเข้าทีมมากกว่า 100 คน ทำให้ผมสนใจว่าระบบช่วยให้ Manager เห็นความสามารถและปัญหาของคนอย่างเป็นธรรมได้ยังไง โดยไม่ใช้ AI ตัดสินคนแทนหัวหน้า',

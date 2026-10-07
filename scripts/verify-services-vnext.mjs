@@ -29,7 +29,7 @@ const detailRouteByCode = {
   T2: '/services/online-to-sales',
   T3: '/services/t3-sales-back-office',
   C1: '/services/daily-consulting',
-  I1: '/services/dashboard-build',
+  T4: '/services/advance-ai-automation',
 };
 
 function builtPagePath(route) {
@@ -457,12 +457,6 @@ const expected = {
     imageAlt: 'บริการวางระบบฝ่ายขายแบบรายวัน',
     detailHref: '/services/daily-consulting', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดบริการ',
   },
-  I1: {
-    publicName: 'บริการทำ Sales Dashboard + Report อัตโนมัติ',
-    kind: 'implementation', pricingKey: 'daruma-starter', thumbnailFile: 'i1-automated-sales-dashboard.png',
-    imageAlt: 'บริการสร้าง Sales Dashboard และ Report อัตโนมัติ',
-    detailHref: '/services/dashboard-build', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดบริการ',
-  },
   T4: {
     publicName: 'คลาส Advance AI & Business Automation',
     kind: 'training', pricingKey: 't4-ai-workflow-pilot-day', thumbnailFile: 't4-ai-workflow-pilot.png',
@@ -484,8 +478,8 @@ assert.doesNotMatch(
   /\b\d{4,6}\b/,
   'price amounts belong only in src/data/pricing.mjs, never in this verifier',
 );
-assert.equal(SERVICE_OFFERS.length, 7, 'there must be exactly seven public offers');
-assert.deepEqual([...new Set(SERVICE_OFFERS.map((offer) => offer.code))].sort(), Object.keys(expected).sort(), 'seven offer codes must be unique');
+assert.equal(SERVICE_OFFERS.length, 6, 'there must be exactly six public offers');
+assert.deepEqual([...new Set(SERVICE_OFFERS.map((offer) => offer.code))].sort(), Object.keys(expected).sort(), 'six offer codes must be unique');
 
 for (const [code, contract] of Object.entries(expected)) {
   const offer = OFFER_BY_CODE[code];

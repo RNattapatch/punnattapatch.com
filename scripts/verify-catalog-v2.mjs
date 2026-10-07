@@ -6,15 +6,14 @@ import { readFile } from 'node:fs/promises';
 // "key ที่หน้าเว็บต้องใช้ยังอยู่ครบและ format ถูก" ไม่ใช่ล็อกตัวเลขซ้ำกับ SSOT อีกชุด
 // 2026-08-30 catalog revision: public services resolve pricing keys through
 // service-offers.ts; legacy keys remain in the SSOT for compatibility only.
-const publicOfferKeys = ['inhouse-a', 'ai-workshop-advance', 'tiktok-workshop', 'daily-sales-consulting', 'daruma-starter'];
-const compatibilityKeys = ['tiktok-workshop-regular', 'sales-team-structure', 'ai-agent-ceo'];
+const publicOfferKeys = ['inhouse-a', 'ai-workshop-advance', 'tiktok-workshop', 'daily-sales-consulting'];
+const compatibilityKeys = ['tiktok-workshop-regular', 'sales-team-structure', 'ai-agent-ceo', 'daruma-starter'];
 const requiredKeys = [...publicOfferKeys, ...compatibilityKeys];
 const publicOfferUrls = {
   'inhouse-a': '/services/t1-sales-skills',
   'ai-workshop-advance': '/services/t3-sales-back-office',
   'tiktok-workshop': '/services/online-to-sales',
   'daily-sales-consulting': '/services/daily-consulting',
-  'daruma-starter': '/services/dashboard-build',
 };
 
 for (const key of requiredKeys) {

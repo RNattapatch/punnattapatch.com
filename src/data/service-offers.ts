@@ -1,4 +1,4 @@
-export type OfferCode = 'T1' | 'T2' | 'T3' | 'T4' | 'C1' | 'I1' | 'A1';
+export type OfferCode = 'T1' | 'T2' | 'T3' | 'T4' | 'C1' | 'A1';
 
 export type OfferKind = 'training' | 'consulting' | 'implementation' | 'upgrade';
 
@@ -8,7 +8,6 @@ export type ThumbnailFilename =
   | 't3-sales-back-office-ai.png'
   | 't4-ai-workflow-pilot.png'
   | 'c1-daily-sales-consulting.png'
-  | 'i1-automated-sales-dashboard.png'
   | 'a1-sales-mastery-with-ai.png';
 
 export interface ServiceOffer {
@@ -106,22 +105,6 @@ export const SERVICE_OFFERS: readonly ServiceOffer[] = [
     thumbnailFile: 'c1-daily-sales-consulting.png',
     imageAlt: 'บริการวางระบบฝ่ายขายแบบรายวัน',
     detailHref: '/services/daily-consulting',
-    primaryCtaLabel: 'ดูรายละเอียดบริการ',
-    primaryCtaKind: 'detail',
-  },
-  {
-    code: 'I1',
-    kind: 'implementation',
-    publicName: 'บริการทำ Sales Dashboard + Report อัตโนมัติ',
-    customerJob: 'ให้ทีมปันสร้าง Production System',
-    formatLabel: 'Implementation',
-    outcomeLabel: 'ผู้จัดการเห็นสถานะขายโดยไม่ต้องรวบรวมเอง',
-    description: 'ให้ทีมปันสร้างระบบ Dashboard และ Report ที่ทีมใช้กับงานจริง เพื่อให้ข้อมูลขายถูกส่งต่อและติดตามได้ทุกวัน',
-    bullets: ['รวมข้อมูลดีลไว้ในจุดที่ทีมใช้ร่วมกัน', 'สร้าง Report ที่พร้อมใช้ในรอบการทำงานจริง', 'ส่งมอบพร้อม UAT และสอนทีมใช้'],
-    pricingKey: 'daruma-starter',
-    thumbnailFile: 'i1-automated-sales-dashboard.png',
-    imageAlt: 'บริการสร้าง Sales Dashboard และ Report อัตโนมัติ',
-    detailHref: '/services/dashboard-build',
     primaryCtaLabel: 'ดูรายละเอียดบริการ',
     primaryCtaKind: 'detail',
   },
