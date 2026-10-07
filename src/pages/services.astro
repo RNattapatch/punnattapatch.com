@@ -6,14 +6,17 @@ import OfferChooser from '../components/services/OfferChooser.astro';
 import AdvanceProgramStrip from '../components/services/AdvanceProgramStrip.astro';
 import LineDecisionCTA from '../components/services/LineDecisionCTA.astro';
 import { SITE } from '../data/site';
-import { fmtPrice } from '../data/pricing.mjs';
+import { CATALOG, fmtPrice } from '../data/pricing.mjs';
 import { SERVICE_OFFERS, type OfferCode } from '../data/service-offers';
 import { LINE_QR_IMAGE, OFFER_ASSET_BY_CODE } from '../data/service-offer-assets';
 import p1CourseThumbnail from '../assets/services/product-thumbnails/p1-ai-sales-agent-bootcamp.png';
 
 const title = 'คลาสสำหรับทีมขาย และบริการวางระบบฝ่ายขาย | ปัน ณัฐพัชร์';
-const description = 'Training, Consulting และ Implementation สำหรับทีมขายที่ต้องการเพิ่มยอด วาง Funnel, Follow-up, Report และ Dashboard โดยใช้ AI เป็นตัวช่วยในงานที่เหมาะสม';
+const description = 'คลาสสอนทีมขาย และบริการวางระบบฝ่ายขายแบบรายวัน ค่าตัวต่อวันเท่ากัน เลือกวางระบบปั้นทีมขายหรือ AI Office ฝ่ายขายได้วันละ 2 เรื่อง ให้ทีมเริ่มใช้กับงานจริง';
 const canonical = `${SITE.url}/services`;
+// C1 day rate (ปันเคาะ 2026-10-08): ครบรอบ 2 วัน = 2 × ค่าตัวรายวัน · คำนวณจาก catalog เสมอ
+const C1_DAY = fmtPrice('daily-sales-consulting');
+const C1_FULL_ROUND = `฿${(CATALOG['daily-sales-consulting'].amount * 2).toLocaleString('en-US')}`;
 
 const offerByCode = Object.fromEntries(SERVICE_OFFERS.map((offer) => [offer.code, offer]));
 const getOffer = (code: OfferCode) => {
@@ -61,7 +64,7 @@ const faqs = [
   },
   {
     q: 'อบรมแล้วจะได้ Automation ที่พร้อมใช้ทันทีหรือไม่',
-    a: 'ในคลาสทีมจะได้ Workflow, Template หรือ Prototype ตามขอบเขตคลาส ระบบที่เชื่อมฐานข้อมูล มีสิทธิ์ผู้ใช้ และต้องทำงานอัตโนมัติอย่างเสถียรในระยะยาวเป็นงาน Implementation แยก เพื่อให้มีการทดสอบและส่งมอบที่ชัดเจน',
+    a: 'ในคลาสทีมจะได้ Workflow, Template หรือ Prototype ตามขอบเขตคลาส ถ้าอยากให้ผมเข้าไปวางระบบให้ทีมใช้กับงานจริง เลือกบริการวางระบบฝ่ายขายแบบรายวัน ส่วนระบบที่ต้องเชื่อมหลายฐานข้อมูลและมี SLA ระยะยาว ผมประเมินเป็นขอบเขตแยก',
   },
   {
     q: 'ถ้าข้อมูลอยู่หลายระบบ สามารถเชื่อมทั้งหมดได้ไหม',
@@ -251,7 +254,7 @@ const faqs = [
       <span id="system-services" class="absolute left-0 top-0 scroll-mt-24" aria-hidden="true"></span>
       <div class="mx-auto max-w-[1180px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
         <div class="max-w-3xl">
-          <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">Consulting & Implementation</p>
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-coral">วางระบบฝ่ายขาย · ค่าตัวรายวัน</p>
           <h2 class="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-navy sm:text-4xl">ถ้าอบรมอย่างเดียวยังไม่พอ ผมเข้าไปวางระบบกับทีมให้</h2>
           <p class="mt-4 leading-7 text-[#625C53]">เลือกเรื่องที่ทีมติดได้ 2 เรื่องต่อวัน เช้าเก็บโจทย์ บ่ายลงระบบพื้นฐานให้ทีมเริ่มใช้ ถ้าอยากให้ทดสอบกับงานจริงและดูแลต่อ 30 วัน เลือกแบบครบรอบ 2 วัน</p>
         </div>
@@ -262,6 +265,25 @@ const faqs = [
             <span id="offer-i1" class="absolute -top-24 scroll-mt-24" aria-hidden="true"></span>
             <OfferCard offer={getOffer('C1')} image={OFFER_ASSET_BY_CODE.C1} priceLabel={priceFor('C1')} />
           </div>
+          <aside data-c1-formats aria-labelledby="c1-formats-heading" class="min-w-0 self-start rounded-[1.5rem] border border-sand-deep bg-surface p-6 sm:p-8">
+            <h3 id="c1-formats-heading" class="font-display text-2xl font-bold leading-snug text-navy">2 แบบ ค่าตัวต่อวันเท่ากัน</h3>
+            <ol class="mt-5 grid gap-4">
+              <li class="rounded-2xl border-2 border-coral/50 bg-coral/[0.04] p-5">
+                <p class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1"><strong class="text-lg text-navy">วางระบบครบรอบ 2 วัน</strong><span class="font-display text-2xl font-bold text-coral">{C1_FULL_ROUND}</span></p>
+                <p class="mt-1 text-xs font-bold tracking-[0.12em] text-coral">แบบที่ผมแนะนำ</p>
+                <p class="mt-2 text-sm leading-6 text-[#625C53]">วันแรกลงระบบพื้นฐาน วันที่ 2 ภายใน 14 วัน ทดสอบกับงานจริงตามที่ตกลง แล้วดูแลต่อ 30 วัน</p>
+              </li>
+              <li class="rounded-2xl border border-navy/10 p-5">
+                <p class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1"><strong class="text-lg text-navy">วางระบบ 1 วัน</strong><span class="font-display text-2xl font-bold text-navy">{C1_DAY}</span></p>
+                <p class="mt-2 text-sm leading-6 text-[#625C53]">เช้าเก็บโจทย์ บ่ายลงระบบพื้นฐานให้ทีมเริ่มใช้ แล้วผมแก้ปัญหาของระบบพื้นฐานผ่าน LINE ให้ 7 วัน</p>
+              </li>
+            </ol>
+            <p class="mt-6 font-semibold text-navy">วันละ 2 จาก 6 เรื่องนี้</p>
+            <ul class="mt-3 grid gap-3 text-sm leading-6 text-[#625C53]">
+              <li><span class="font-semibold text-navy">ปั้นทีมขาย</span> · คัดคนเข้าทีม · เป้าและค่าคอม · หัวหน้าคุมทีม</li>
+              <li><span class="font-semibold text-navy">AI Office ฝ่ายขาย</span> · ตอบแชตและตามลูกค้า · เอกสารขาย · คอนเทนต์</li>
+            </ul>
+          </aside>
         </div>
       </div>
     </section>
@@ -339,7 +361,7 @@ const faqs = [
         <LineDecisionCTA
           location="services_final_cta"
           headline="ยังไม่แน่ใจว่าควรเริ่มจากคลาสหรือวางระบบ?"
-          copy="เล่าอาการที่เกิดในทีม จำนวนคน และผลลัพธ์ที่อยากได้ทาง LINE ผมช่วยแยกให้ว่าเรื่องนี้ควรเริ่มจาก Training, Consulting หรือ Implementation"
+          copy="เล่าอาการที่เกิดในทีม จำนวนคน และผลลัพธ์ที่อยากได้ทาง LINE ผมช่วยแยกให้ว่าเรื่องนี้ควรเริ่มจากคลาสสอนทีม หรือให้ผมเข้าไปวางระบบให้"
           lineLabel="ให้ผมช่วยเลือกทาง LINE"
           desktopQr={LINE_QR_IMAGE}
         />

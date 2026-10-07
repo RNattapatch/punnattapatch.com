@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C1 service thumbnail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@500;600;700;800;900&amp;display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.4.7/daisyui.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.14"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --font-body: "Sukhumvit Set", "Noto Sans Thai", sans-serif;
+      --color-pun-navy: #072b4e;
+      --color-pun-coral: #dd4155;
+      --color-pun-ivory: #f7f3ea;
+      --color-pun-gold: #ffcc62;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 1600px; height: 900px; margin: 0; overflow: hidden; }
+    body { font-family: var(--font-body); }
+    .artboard { @apply relative h-[900px] w-[1600px] overflow-hidden bg-pun-navy text-pun-ivory; }
+    /* Photo panel = right side of the approved 2026-09 C1 thumbnail (real photo of Pun) */
+    .photo { @apply absolute right-0 top-0 h-[900px] w-[711px]; }
+    .photo img { @apply block h-full w-full; }
+    .copy { @apply absolute left-[84px] top-[70px] w-[760px]; }
+    .eyebrow { @apply flex items-center gap-4 text-[25px] font-bold tracking-[.14em] text-pun-gold; }
+    .eyebrow::before { content: ""; @apply block h-[8px] w-[42px] bg-pun-gold; }
+    h1 { @apply mt-8 text-[104px] font-extrabold leading-[1.12] tracking-[-.02em]; }
+    h1 em { @apply not-italic text-pun-gold; }
+    .sub { @apply mt-8 max-w-[700px] text-[31px] font-semibold leading-[1.45] text-pun-ivory/90; }
+    .topics { @apply absolute left-[84px] top-[612px] grid w-[760px] gap-3; }
+    .row { @apply flex items-center gap-3; }
+    .row-label { @apply w-[128px] shrink-0 text-[21px] font-bold text-pun-gold; }
+    .chip { @apply rounded-[6px] border-2 border-pun-gold px-4 py-2 text-[22px] font-bold leading-none text-pun-ivory; }
+    .byline { @apply absolute bottom-[42px] left-[84px] flex items-center gap-4 text-[24px] font-bold tracking-[.02em]; }
+    .byline img { @apply h-[56px] w-[56px] rounded-full border-2 border-pun-ivory object-cover; }
+    /* Covers the old badge (x1133–1554, y786–857) completely */
+    .tag { @apply absolute flex items-center justify-center bg-pun-coral text-[27px] font-bold text-white; left: 1080px; top: 780px; width: 478px; height: 82px; }
+  </style>
+</head>
+<body>
+  <main id="c1-thumbnail" class="artboard" data-source-kind="real-portrait-photo">
+    <div class="photo"><img src="./c1-photo-panel.png" alt="" /></div>
+    <section class="copy">
+      <p class="eyebrow" data-fit>วางระบบฝ่ายขาย · C1</p>
+      <h1 data-fit>เลือก <em>2 เรื่อง</em><br />ทีมเริ่มใช้ใน 1 วัน</h1>
+      <p class="sub" data-fit>เช้าเก็บโจทย์จากตัวเลขจริง<br />บ่ายผมลงระบบพื้นฐานให้ทีมใช้</p>
+    </section>
+    <section class="topics">
+      <div class="row" data-fit><span class="row-label">ปั้นทีมขาย</span><span class="chip">คัดคน</span><span class="chip">เป้าและค่าคอม</span><span class="chip">หัวหน้าคุมทีม</span></div>
+      <div class="row" data-fit><span class="row-label">AI Office</span><span class="chip">ตอบแชต</span><span class="chip">เอกสารขาย</span><span class="chip">คอนเทนต์</span></div>
+    </section>
+    <p class="byline" data-fit><img src="../public/pun-avatar.jpg" alt="" />Pun Nattapatch · B2B Sales Consulting</p>
+    <p class="tag" data-fit>เลือกได้ 2 จาก 6 เรื่อง ต่อ 1 วัน</p>
+  </main>
+</body>
+</html>

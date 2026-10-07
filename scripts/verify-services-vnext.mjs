@@ -23,7 +23,7 @@ const llmsFullOutputPath = `${distPath}/llms-full.txt`;
 
 const servicesCanonical = 'https://punnattapatch.com/services';
 const servicesTitle = 'คลาสสำหรับทีมขาย และบริการวางระบบฝ่ายขาย | ปัน ณัฐพัชร์';
-const servicesDescription = 'Training, Consulting และ Implementation สำหรับทีมขายที่ต้องการเพิ่มยอด วาง Funnel, Follow-up, Report และ Dashboard โดยใช้ AI เป็นตัวช่วยในงานที่เหมาะสม';
+const servicesDescription = 'คลาสสอนทีมขาย และบริการวางระบบฝ่ายขายแบบรายวัน ค่าตัวต่อวันเท่ากัน เลือกวางระบบปั้นทีมขายหรือ AI Office ฝ่ายขายได้วันละ 2 เรื่อง ให้ทีมเริ่มใช้กับงานจริง';
 const detailRouteByCode = {
   T1: '/services/t1-sales-skills',
   T2: '/services/online-to-sales',
@@ -323,7 +323,7 @@ function assertServicesSeoBuildOutput() {
   const html = readFileSync(servicesPagePath, 'utf8');
   assert.match(html, new RegExp(`<title>${servicesTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</title>`), 'services title must match the approved title exactly once');
   assert.doesNotMatch(html, new RegExp(`${servicesTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} · ปัน ณัฐพัชร์`), 'services title must not duplicate the site name');
-  assert.match(html, new RegExp(`<meta name="description" content="${servicesDescription.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`), 'meta description must lead with the approved Training, Consulting and Implementation intent');
+  assert.match(html, new RegExp(`<meta name="description" content="${servicesDescription.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`), 'meta description must lead with the approved class + day-rate system intent');
   assert.match(html, new RegExp(`<link rel="canonical" href="${servicesCanonical}"`), 'services canonical must use the clean production URL');
   assert.match(html, new RegExp(`<meta property="og:title" content="${servicesTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`), 'Open Graph title must match the catalog title');
   assert.match(html, new RegExp(`<meta property="og:description" content="${servicesDescription.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`), 'Open Graph description must match the catalog description');
