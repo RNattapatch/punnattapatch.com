@@ -159,13 +159,27 @@ await setRange('input[data-ns="fx"][data-i="2"]', 100);
 await waitDoc('object-position:100% 0%');
 check((await srcdoc()).includes('object-position:100% 0%;transform-origin:100% 0%;transform:scale(1.6)'), 'เลื่อนซ้ายขวา → พรีวิวใช้ style เดียวกับ render.mjs');
 check((await page.$eval('[data-slide="2"] [data-out="zoom"]', (el) => el.textContent)) === '160%', 'ตัวเลขข้างแถบซูมอัปเดต');
+// กล่องข้อความ ชิดบน/กลาง/ชิดล่าง (รูป 4:5 เลื่อนรูปไม่ได้ → ย้ายกล่องแทน)
+const cardTop = async () => {
+  await page.waitForTimeout(150);
+  const f = page.frames().find((fr) => fr.parentFrame() === page.mainFrame());
+  return f.evaluate(() => { const r = document.querySelector('.pc-card').getBoundingClientRect(); return { top: Math.round(r.top), bottom: Math.round(1350 - r.bottom), mid: Math.round(r.top + r.height / 2) }; });
+};
+check(await page.$eval('select[data-ns="card"][data-i="2"]', (el) => el.value) === 'bottom', 'กล่องข้อความเริ่มที่ชิดล่าง');
+check((await cardTop()).bottom === 72, 'ชิดล่าง: กล่องห่างขอบล่าง 72px');
+await page.selectOption('select[data-ns="card"][data-i="2"]', 'top');
+await waitDoc('pc-card pc-top');
+check((await cardTop()).top === 72, 'เลือกชิดบน → กล่องย้ายไปห่างขอบบน 72px จริง');
+await page.selectOption('select[data-ns="card"][data-i="2"]', 'middle');
+await waitDoc('pc-card pc-mid');
+check((await cardTop()).mid === 675, 'เลือกกลาง → กึ่งกลางกล่องอยู่กลางใบ (675px)');
 
 // ── 5. บันทึก → visual_spec มีค่าครบในรูปที่ worker ตรวจ ──
 await page.click('#ns-save');
 await page.waitForFunction(() => document.getElementById('ns-dirty')?.textContent === 'บันทึกแล้ว', null, { timeout: 8000 }).catch(() => {});
 const saved = patches.at(-1)?.visual_spec?.slides ?? [];
 check(saved[2]?.size === 72 && saved[2]?.text === 'หัวข้อ\nเน้น <mark>coral</mark> กับ <mark class="y">เหลือง</mark> นะ', `บันทึก size 72 + markup 2 สี (${JSON.stringify({ size: saved[2]?.size, text: saved[2]?.text })})`);
-check(saved[2]?.photo?.path === up && saved[2]?.photo?.pos === '100% 0%' && saved[2]?.photo?.zoom === 1.6 && !saved[2]?.photo?.src, `บันทึก photo {path, pos, zoom} — ไม่มี src ของเครื่อง (${JSON.stringify(saved[2]?.photo)})`);
+check(saved[2]?.photo?.path === up && saved[2]?.photo?.pos === '100% 0%' && saved[2]?.photo?.zoom === 1.6 && saved[2]?.photo?.card === 'middle' && !saved[2]?.photo?.src, `บันทึก photo {path, pos, zoom} — ไม่มี src ของเครื่อง (${JSON.stringify(saved[2]?.photo)})`);
 check(saved[1]?.photo?.path === SAVED_PHOTO && !saved[1]?.hl && !saved[1]?.size, 'ใบอื่นไม่ถูกแตะ');
 
 // ── 5b. เปิดใหม่ markup กลับเป็น ==/++ ในช่องแก้ ──

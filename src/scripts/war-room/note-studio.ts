@@ -72,6 +72,10 @@ function renderList() {
     const lines = s.text.split('\n').length;
     const photo = s.type !== 'content' ? '' : s.photo
       ? `<span class="flex flex-wrap items-center gap-1">
+          <label class="flex items-center gap-1"><span class="whitespace-nowrap opacity-60">กล่องข้อความ</span>
+            <select data-ns="card" data-i="${i}" class="select select-bordered select-xs w-auto" aria-label="ตำแหน่งกล่องข้อความใบที่ ${i + 1}">
+              ${(['top', 'middle', 'bottom'] as const).map((v) => `<option value="${v}" ${(s.photo!.card ?? 'bottom') === v ? 'selected' : ''}>${{ top: 'ชิดบน', middle: 'กลาง', bottom: 'ชิดล่าง' }[v]}</option>`).join('')}
+            </select></label>
           <span class="whitespace-nowrap opacity-60">รูป</span>
           <label class="btn btn-ghost btn-xs border border-base-300 tap-44">🔄 เปลี่ยนรูป<input type="file" accept="image/jpeg,image/png,image/webp" data-ns="photo" data-i="${i}" class="sr-only"></label>
           <button data-ns="photo-del" data-i="${i}" class="btn btn-ghost btn-xs tap-44" aria-label="เอารูปพื้นหลังใบที่ ${i + 1} ออก">✕ เอารูปออก</button>
@@ -89,7 +93,7 @@ function renderList() {
         ${slider('zoom', 'ซูม', zoomPct, 100, ZOOM_MAX * 100, '%', 'ซูมรูปพื้นหลัง')}
         ${slider('fx', 'ซ้าย ↔ ขวา', fx, 0, 100, '%', 'เลื่อนรูปซ้ายขวา')}
         ${slider('fy', 'บน ↕ ล่าง', fy, 0, 100, '%', 'เลื่อนรูปขึ้นลง')}
-        <p class="opacity-60 sm:col-span-3">รูปแนวนอน/จัตุรัส: ซูมก่อน แล้วค่อยเลื่อนบน↕ล่าง (ซูม 100% รูปเต็มความสูงใบพอดี ไม่มีที่ให้เลื่อนขึ้นลง)</p>
+        <p class="opacity-60 sm:col-span-3">รูปแนวนอน/จัตุรัส: ซูมก่อน แล้วค่อยเลื่อนบน↕ล่าง · รูป 4:5 เลื่อนรูปไม่ได้ → ย้าย "กล่องข้อความ" ไปชิดบน/กลางแทน</p>
       </div>` : '';
     const warn = s.photo && !s.photo.path ? 'รูปนี้มาจากไฟล์ในเครื่อง — กด 🔄 เปลี่ยนรูป เพื่ออัปโหลดก่อน Render'
       : s.photo && lines > 4 ? `ใบรูปควรมีข้อความ ≤4 บรรทัด (ตอนนี้ ${lines}) ไม่งั้นการ์ดสูงจนทับหน้าคนในรูป` : '';
@@ -175,7 +179,8 @@ async function attachPhoto(i: number, f: File) {
   try {
     const path = await uploadStudioPhoto(variant, f);
     photoData.set(path, await toDataUrl(f));
-    spec.slides[i].photo = { path, pos: '50% 0%' };   // รูปใหม่ = เริ่มจากไม่ซูม โฟกัสกลางบน
+    const card = spec.slides[i].photo?.card;   // เปลี่ยนรูป: ตำแหน่งกล่องเดิมยังอยู่
+    spec.slides[i].photo = { path, pos: '50% 0%', ...(card ? { card } : {}) };   // รูปใหม่ = เริ่มจากไม่ซูม โฟกัสกลางบน
     current = i; markDirty(); refreshAll();
     $('ns-status').textContent = '✓ ใส่รูปแล้ว — กดบันทึก/Render ได้เลย';
   } catch (e) {
@@ -332,6 +337,7 @@ export function initNoteStudio(d: Deps) {
         else delete s.photo;   // photo card มีเฉพาะใบเนื้อ
         break;
       // size: เก็บค่าตอน input แล้ว · ห้ามวาดรายการใหม่ตอน change (blur) — คลิกช่องข้อความต่อแล้วโฟกัสหลุด พิมพ์หาย
+      case 'card': if (s.photo) { if (el.value === 'bottom') delete s.photo.card; else s.photo.card = el.value as 'top' | 'middle'; } break;
       case 'photo': { const f = el.files?.[0]; if (f) void attachPhoto(i, f); return; }
       default: return;
     }
