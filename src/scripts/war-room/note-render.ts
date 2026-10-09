@@ -4,13 +4,23 @@
 // ภาพจริงตอนกด "Render" ทำโดย render.mjs บนมินิ (wr_jobs: render_notes) — ไฟล์นี้มีไว้พรีวิวให้ตรงที่สุด
 // ถ้าแก้ดีไซน์ ให้แก้ที่ render.mjs/template-notes.html แล้ว gen ไฟล์นี้ใหม่ (python3 scripts/gen-note-render.py <path นี้> ในรีโปความรู้)
 
-export type NoteSlide = { type: 'hook' | 'content' | 'cta' | 'follow'; text: string; sub?: string };
+export type NoteHl = 'coral' | 'yellow';
+/** photo card (2026-10-09): รูปเต็มใบ + การ์ดขาวลอยล่าง · path = content-media/<CNT>/<variant>/studio-photo/… (อัปผ่าน Note Studio) */
+export type NotePhoto = { path?: string; src?: string; pos?: string };
+export type NoteSlide = {
+  type: 'hook' | 'content' | 'cta' | 'follow'; text: string; sub?: string;
+  size?: number;     // px ทับขนาดอัตโนมัติ (40–140)
+  hl?: NoteHl;       // สีไฮไลต์ ==คำ== · ไม่ใส่ = coral
+  photo?: NotePhoto; // เฉพาะใบเนื้อ
+};
+export const SIZE_MIN = 40;
+export const SIZE_MAX = 140;
 export type NoteSpec = {
   slug: string; skin: 'notes'; group?: string; ratio?: '4:5' | '1:1';
   mobile?: boolean; follow?: boolean; cue?: string; slides: NoteSlide[];
 };
 
-const CSS = "\n  :root {\n    --paper: #f1efe9;        /* พื้นครีม/กระดาษเต็มเฟรม */\n    --paper-edge: #e9e6de;   /* ขอบล่างจางๆ */\n    --ink: #1a1a1a;          /* ดำหมึก */\n    --gray: #8a8a8e;         /* iOS gray (Notes chrome) */\n    --coral: #dd4155;        /* coral แบรนด์ปัน */\n    --hl: rgba(221,65,85,.30); /* highlighter coral (marker tool) */\n    --folder: #e8622a;       /* ส้มโฟลเดอร์ swipe-cue */\n    --blue: #1d9bf0;         /* verified */\n  }\n  * { margin: 0; padding: 0; box-sizing: border-box; }\n  html, body { width: 1080px; height: {{H}}px; overflow: hidden; }\n  body {\n    font-family: \"Sukhumvit Set\", sans-serif;\n    background: var(--paper);\n    color: var(--ink);\n    -webkit-font-smoothing: antialiased;\n  }\n  .page {\n    width: 1080px; height: {{H}}px;\n    display: flex; flex-direction: column;\n    background: linear-gradient(180deg, var(--paper) 78%, var(--paper-edge) 100%);\n  }\n\n  /* ---------- iOS Notes chrome ---------- */\n  .n-top {\n    display: flex; align-items: center; justify-content: space-between;\n    padding: 46px 60px 0;\n    color: var(--gray); font-size: 33px; font-weight: 500;\n  }\n  .n-top .back { display: flex; align-items: center; gap: 6px; }\n  .n-top .back svg { width: 26px; height: 26px; }\n  .n-top .tools { display: flex; align-items: center; gap: 30px; }\n  .n-top .tools svg { width: 40px; height: 40px; }\n\n  .n-bar {\n    margin-top: auto;\n    display: flex; align-items: center; justify-content: space-between;\n    padding: 0 96px 60px;\n  }\n  .n-bar svg { width: 46px; height: 46px; color: var(--gray); }\n\n  /* ---------- author head (avatar+name+handle) — ติดทุกสไลด์ ---------- */\n  .x-head { display: flex; align-items: center; gap: 22px; }\n  .x-head .avatar { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; display: block; }\n  .x-head .name { font-size: 40px; font-weight: 700; display: flex; align-items: center; gap: 10px; }\n  .x-head .name svg { width: 34px; height: 34px; }\n  .x-head .handle { font-size: 31px; color: #333; font-weight: 600; margin-top: 2px; }\n\n  /* ---------- centered content group (header + text ชิดกันระดับสายตา) ---------- */\n  .content {\n    flex: 1;\n    display: flex; flex-direction: column; justify-content: center;\n    gap: 40px; padding: 24px 84px;\n    letter-spacing: -0.005em;\n  }\n\n  /* ---------- body text (follow/cta) ---------- */\n  .body {\n    flex: 1;\n    display: flex; flex-direction: column; justify-content: center;\n    padding: 40px 84px;\n    letter-spacing: -0.005em;\n  }\n  .quote { line-height: 1.5; font-weight: 500; text-wrap: balance; }\n  .quote b { font-weight: 700; }\n  .quote mark { background: linear-gradient(180deg, transparent 8%, var(--hl) 8% 88%, transparent 88%); color: var(--ink); padding: 0 2px; }\n  .q-58 { font-size: 58px; }\n  .q-52 { font-size: 52px; }\n  .q-46 { font-size: 46px; }\n  .q-40 { font-size: 40px; }\n  .hook .quote { font-weight: 600; }\n\n  /* ---------- mobile (opt-in: spec.mobile) · อ่านได้ที่ 390px ---------- */\n  .q-80 { font-size: 80px; } .q-72 { font-size: 72px; } .q-64 { font-size: 64px; }\n  .mobile .quote { line-height: 1.42; }\n  .mobile .content { gap: 48px; padding: 24px 76px; }\n  .mobile .x-head .avatar { width: 112px; height: 112px; }\n  .mobile .x-head .name { font-size: 44px; }\n  .mobile .x-head .handle { font-size: 33px; }\n  .mobile .hook .q-hero { font-size: 108px; font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; }\n  .mobile .hook-sub { font-size: 50px; font-weight: 500; line-height: 1.45; color: #3a3a3e; margin-top: -8px; }\n  .mobile .swipe { font-size: 40px; padding: 26px 46px; }\n  .mobile .n-bar { padding-bottom: 48px; }\n  .mobile .sub { font-size: 44px; }\n  .mobile .follow-btn { font-size: 42px; }\n\n  /* ---------- swipe cue (folder pill) ---------- */\n  .swipe {\n    display: inline-flex; align-items: center; gap: 20px; align-self: center;\n    margin: 0 0 56px; padding: 22px 40px;\n    background: #ffffff; border-radius: 22px;\n    box-shadow: 0 10px 30px rgba(0,0,0,.10);\n    font-size: 34px; font-weight: 700; color: var(--ink);\n  }\n  .swipe svg { width: 46px; height: 46px; }\n\n  /* ---------- follow / cta centered ---------- */\n  .center { text-align: center; align-items: center; }\n  .center .avatar-big { width: 200px; height: 200px; border-radius: 50%; object-fit: cover; display: block; margin: 0 auto 30px; border: 5px solid var(--coral); }\n  .center .name { font-size: 46px; font-weight: 700; }\n  .center .handle { font-size: 32px; color: #333; font-weight: 600; margin: 6px 0 34px; }\n  .sub { font-size: 34px; color: #55555a; margin-top: 26px; line-height: 1.5; }\n  .follow-btn { display: inline-block; margin-top: 40px; font-size: 36px; font-weight: 700; color: #fff; background: var(--coral); padding: 22px 58px; border-radius: 999px; }\n";
+const CSS = "\n  :root {\n    --paper: #f1efe9;        /* พื้นครีม/กระดาษเต็มเฟรม */\n    --paper-edge: #e9e6de;   /* ขอบล่างจางๆ */\n    --ink: #1a1a1a;          /* ดำหมึก */\n    --gray: #8a8a8e;         /* iOS gray (Notes chrome) */\n    --coral: #dd4155;        /* coral แบรนด์ปัน */\n    --hl: rgba(221,65,85,.30); /* highlighter coral (marker tool) */\n    --folder: #e8622a;       /* ส้มโฟลเดอร์ swipe-cue */\n    --blue: #1d9bf0;         /* verified */\n  }\n  * { margin: 0; padding: 0; box-sizing: border-box; }\n  html, body { width: 1080px; height: {{H}}px; overflow: hidden; }\n  body {\n    font-family: \"Sukhumvit Set\", sans-serif;\n    background: var(--paper);\n    color: var(--ink);\n    -webkit-font-smoothing: antialiased;\n  }\n  .page { position: relative;\n    width: 1080px; height: {{H}}px;\n    display: flex; flex-direction: column;\n    background: linear-gradient(180deg, var(--paper) 78%, var(--paper-edge) 100%);\n  }\n\n  /* ---------- iOS Notes chrome ---------- */\n  .n-top {\n    display: flex; align-items: center; justify-content: space-between;\n    padding: 46px 60px 0;\n    color: var(--gray); font-size: 33px; font-weight: 500;\n  }\n  .n-top .back { display: flex; align-items: center; gap: 6px; }\n  .n-top .back svg { width: 26px; height: 26px; }\n  .n-top .tools { display: flex; align-items: center; gap: 30px; }\n  .n-top .tools svg { width: 40px; height: 40px; }\n\n  .n-bar {\n    margin-top: auto;\n    display: flex; align-items: center; justify-content: space-between;\n    padding: 0 96px 60px;\n  }\n  .n-bar svg { width: 46px; height: 46px; color: var(--gray); }\n\n  /* ---------- author head (avatar+name+handle) — ติดทุกสไลด์ ---------- */\n  .x-head { display: flex; align-items: center; gap: 22px; }\n  .x-head .avatar { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; display: block; }\n  .x-head .name { font-size: 40px; font-weight: 700; display: flex; align-items: center; gap: 10px; }\n  .x-head .name svg { width: 34px; height: 34px; }\n  .x-head .handle { font-size: 31px; color: #333; font-weight: 600; margin-top: 2px; }\n\n  /* ---------- centered content group (header + text ชิดกันระดับสายตา) ---------- */\n  .content {\n    flex: 1;\n    display: flex; flex-direction: column; justify-content: center;\n    gap: 40px; padding: 24px 84px;\n    letter-spacing: -0.005em;\n  }\n\n  /* ---------- body text (follow/cta) ---------- */\n  .body {\n    flex: 1;\n    display: flex; flex-direction: column; justify-content: center;\n    padding: 40px 84px;\n    letter-spacing: -0.005em;\n  }\n  .quote { line-height: 1.5; font-weight: 500; text-wrap: balance; }\n  .quote b { font-weight: 700; }\n  .quote mark { background: linear-gradient(180deg, transparent 8%, var(--hl) 8% 88%, transparent 88%); color: var(--ink); padding: 0 2px; }\n  .q-58 { font-size: 58px; }\n  .q-52 { font-size: 52px; }\n  .q-46 { font-size: 46px; }\n  .q-40 { font-size: 40px; }\n  .hook .quote { font-weight: 600; }\n\n  /* ---------- mobile (opt-in: spec.mobile) · อ่านได้ที่ 390px ---------- */\n  .q-80 { font-size: 80px; } .q-72 { font-size: 72px; } .q-64 { font-size: 64px; }\n  .mobile .quote { line-height: 1.42; }\n  .mobile .content { gap: 48px; padding: 24px 76px; }\n  .mobile .x-head .avatar { width: 112px; height: 112px; }\n  .mobile .x-head .name { font-size: 44px; }\n  .mobile .x-head .handle { font-size: 33px; }\n  .mobile .hook .q-hero { font-size: 108px; font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; }\n  .mobile .hook-sub { font-size: 50px; font-weight: 500; line-height: 1.45; color: #3a3a3e; margin-top: -8px; }\n  .mobile .swipe { font-size: 40px; padding: 26px 46px; }\n  .mobile .n-bar { padding-bottom: 48px; }\n  .mobile .sub { font-size: 44px; }\n  .mobile .follow-btn { font-size: 42px; }\n\n  /* ---------- photo card: รูปเต็มใบ + การ์ดขาวลอยล่าง (s.photo) ---------- */\n  .photo-card { background: #d9d9d6; }\n  .photo-card .pc-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; }\n  .photo-card .pc-card {\n    position: absolute; left: 64px; right: 64px; bottom: 72px;\n    display: flex; flex-direction: column; gap: 36px;\n    padding: 52px 60px 58px;\n    background: #fbfcff; border-radius: 44px;\n    box-shadow: 0 24px 60px rgba(0,0,0,.22), 0 2px 8px rgba(0,0,0,.08);\n    letter-spacing: -0.005em;\n  }\n  .photo-card.mobile .pc-card { gap: 34px; }\n\n  /* ---------- ไฮไลต์สีเหลือง · ค่าเริ่มต้น = coral ----------\n     ทีละคำ: <mark class=\"y\"> (Note Studio พิมพ์ ++คำ++ · coral = ==คำ==) ใช้ 2 สีในใบเดียวได้\n     ทั้งใบ: s.hl = \"yellow\" (สเปกเก่า/agent) */\n  .hl-yellow, mark.y { --hl: rgba(255,208,0,.55); }\n\n  /* ---------- swipe cue (folder pill) ---------- */\n  .swipe {\n    display: inline-flex; align-items: center; gap: 20px; align-self: center;\n    margin: 0 0 56px; padding: 22px 40px;\n    background: #ffffff; border-radius: 22px;\n    box-shadow: 0 10px 30px rgba(0,0,0,.10);\n    font-size: 34px; font-weight: 700; color: var(--ink);\n  }\n  .swipe svg { width: 46px; height: 46px; }\n\n  /* ---------- follow / cta centered ---------- */\n  .center { text-align: center; align-items: center; }\n  .center .avatar-big { width: 200px; height: 200px; border-radius: 50%; object-fit: cover; display: block; margin: 0 auto 30px; border: 5px solid var(--coral); }\n  .center .name { font-size: 46px; font-weight: 700; }\n  .center .handle { font-size: 32px; color: #333; font-weight: 600; margin: 6px 0 34px; }\n  .sub { font-size: 34px; color: #55555a; margin-top: 26px; line-height: 1.5; }\n  .follow-btn { display: inline-block; margin-top: 40px; font-size: 36px; font-weight: 700; color: #fff; background: var(--coral); padding: 22px 58px; border-radius: 999px; }\n";
 const NAME = 'ปัน ณัฐพัชร์';
 const HANDLE = '@pun_nattapatch';
 const FOLLOW_TEXT = "สวัสดีครับ ปัน ณัฐพัชร์ เอง\nนักปั้นทีมขาย 100 ล้านที่ใช้ AI เป็นนิดหน่อย\nถ้าคุณอยากรู้วิธีใช้ AI พัฒนาทีมขาย\nเราน่าจะคุยกันรู้เรื่อง กดตามผมไว้เลย";
@@ -49,10 +59,15 @@ export function sizePx(t: string, mobile: boolean): number {
   return Math.min(fit, ceil);
 }
 
-/** แปลงข้อความที่พิมพ์ในช่องแก้ (==คำเน้น==) เป็น markup ของการ์ด (<mark>) */
-export const toMarkup = (s: string) => escapeHtml(s).replace(/==(.+?)==/g, '<mark>$1</mark>');
-/** กลับทาง: <mark>…</mark> → ==…== สำหรับใส่ในช่องแก้ */
-export const toEditable = (s: string) => s.replace(/<mark>(.*?)<\/mark>/g, '==$1==').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+/** แปลงข้อความที่พิมพ์ในช่องแก้เป็น markup ของการ์ด: ==คำ== = ไฮไลต์ coral (<mark>) · ++คำ++ = เหลือง (<mark class="y">) · ใช้ 2 สีในใบเดียวได้ */
+export const toMarkup = (s: string) => escapeHtml(s)
+  .replace(/==(.+?)==/g, '<mark>$1</mark>')
+  .replace(/\+\+(.+?)\+\+/g, '<mark class="y">$1</mark>');
+/** กลับทาง: <mark>…</mark> → ==…== · <mark class="y">…</mark> → ++…++ สำหรับใส่ในช่องแก้ */
+export const toEditable = (s: string) => s
+  .replace(/<mark class="y">(.*?)<\/mark>/g, '++$1++')
+  .replace(/<mark>(.*?)<\/mark>/g, '==$1==')
+  .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 function escapeHtml(s: string) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
 export function withFollow(spec: NoteSpec): NoteSlide[] {
@@ -61,29 +76,41 @@ export function withFollow(spec: NoteSpec): NoteSlide[] {
   return slides;
 }
 
-export function slideDoc(spec: NoteSpec, s: NoteSlide, avatarUrl: string): string {
+/** photoUrl = data URL ของรูปพื้นหลัง (iframe sandbox โหลด URL ตรงไม่ได้) · ไม่มี = พื้นเทา + ป้ายบอก */
+export function slideDoc(spec: NoteSpec, s: NoteSlide, avatarUrl: string, photoUrl = ''): string {
   const MOBILE = spec.mobile === true;
   const H = spec.ratio === '1:1' ? 1080 : 1350;
   const headRow = `<div class="x-head"><img class="avatar" src="${avatarUrl}"><div><div class="name">${NAME} ${V_BADGE}</div><div class="handle">${HANDLE}</div></div></div>`;
-  const q = (t: string) => 'q-' + sizePx(t, MOBILE);
+  // ตรงกับ render.mjs: size ทับคลาสอัตโนมัติ · hl-yellow ที่ .page
+  const style = s.size ? ` style="font-size:${s.size}px"` : '';
+  const q = (t: string) => `<div class="quote ${s.size ? '' : 'q-' + sizePx(t, MOBILE)}"${style}>`;
+  const page = (base: string) => `page${base}${MOBILE ? ' mobile' : ''}${s.hl === 'yellow' ? ' hl-yellow' : ''}`;
   let body = '';
   if (s.type === 'follow' || s.type === 'cta') {
     const btn = s.type === 'follow' ? `<div class="follow-btn">+ ติดตาม ${HANDLE}</div>` : '';
     const sub = s.sub ? `<div class="sub">${br(s.sub)}</div>` : '';
-    body = `<div class="page center${MOBILE ? ' mobile' : ''}"><div class="body center"><img class="avatar-big" src="${avatarUrl}"><div class="name">${NAME}</div><div class="handle">${HANDLE}</div><div class="quote ${q(s.text)}">${br(s.text)}</div>${sub}${btn}</div></div>`;
+    body = `<div class="${page(' center')}"><div class="body center"><img class="avatar-big" src="${avatarUrl}"><div class="name">${NAME}</div><div class="handle">${HANDLE}</div>${q(s.text)}${br(s.text)}</div>${sub}${btn}</div></div>`;
   } else if (s.type === 'hook') {
     const cueTxt = spec.cue != null ? spec.cue : `เลื่อนอ่านต่อ ${IC.arrow}`;
     const swipe = cueTxt === '' ? '' : `<div class="swipe">${cueTxt}</div>`;
     if (MOBILE) {
       const hsub = s.sub ? `<div class="hook-sub">${br(s.sub)}</div>` : '';
-      body = `<div class="page mobile"><div class="content hook">${headRow}<div class="quote q-hero">${br(s.text)}</div>${hsub}</div>${swipe}</div>`;
+      body = `<div class="${page('')}"><div class="content hook">${headRow}<div class="quote q-hero"${style}>${br(s.text)}</div>${hsub}</div>${swipe}</div>`;
     } else {
-      body = `<div class="page"><div class="content hook">${headRow}<div class="quote ${q(s.text)}">${br(s.text)}</div></div>${swipe}</div>`;
+      body = `<div class="${page('')}"><div class="content hook">${headRow}${q(s.text)}${br(s.text)}</div></div>${swipe}</div>`;
     }
   } else {
     const parts = br(s.text).split('<br>');
     const nb = `<b>${parts[0]}</b>` + (parts.length > 1 ? '<br>' + parts.slice(1).join('<br>') : '');
-    body = `<div class="page${MOBILE ? ' mobile' : ''}"><div class="n-top"><span class="back">${IC.back} Notes</span><span class="tools">${IC.share}${IC.more}</span></div><div class="content">${headRow}<div class="quote ${q(s.text)}">${nb}</div></div><div class="n-bar">${IC.check}${IC.cam}${IC.marker}${IC.compose}</div></div>`;
+    if (s.photo) {
+      const pos = s.photo.pos ? ` style="object-position:${s.photo.pos}"` : '';
+      const bg = photoUrl
+        ? `<img class="pc-bg" src="${photoUrl}" alt=""${pos}>`
+        : `<div class="pc-bg" style="display:flex;align-items:center;justify-content:center;font-size:44px;color:#77777c">กำลังโหลดรูป…</div>`;
+      body = `<div class="${page(' photo-card')}">${bg}<div class="pc-card">${headRow}${q(s.text)}${nb}</div></div></div>`;
+    } else {
+      body = `<div class="${page('')}"><div class="n-top"><span class="back">${IC.back} Notes</span><span class="tools">${IC.share}${IC.more}</span></div><div class="content">${headRow}${q(s.text)}${nb}</div></div><div class="n-bar">${IC.check}${IC.cam}${IC.marker}${IC.compose}</div></div>`;
+    }
   }
   return `<!doctype html><html lang="th"><head><meta charset="utf-8"><style>${CSS.replace(/\{\{H\}\}/g, String(H))}</style></head><body>${body}</body></html>`;
 }

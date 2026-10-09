@@ -388,6 +388,26 @@ export async function uploadMedia(v: Variant, files: File[], startOrder: number)
   return n;
 }
 
+/** รูปพื้นหลังของใบ photo card ใน Note Studio (2026-10-09) — เก็บใน bucket เดียวกันแต่ไม่ลง media_assets
+ *  (เป็นวัตถุดิบ ไม่ใช่รูปที่ส่งออก) · worker ตรวจว่า path อยู่ใต้ variant นี้ก่อน render */
+export const STUDIO_PHOTO_MAX_MB = 15;
+export async function uploadStudioPhoto(v: Variant, f: File): Promise<string> {
+  if (!/^image\/(jpeg|png|webp)$/.test(f.type)) throw new Error('ใช้ได้เฉพาะรูป JPG / PNG / WebP');
+  if (f.size > STUDIO_PHOTO_MAX_MB * 1024 * 1024) throw new Error(`รูปใหญ่เกิน ${STUDIO_PHOTO_MAX_MB}MB`);
+  const safe = f.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-').replace(/^[-.]+/, '').slice(-60) || 'photo.jpg';
+  const path = `${v.content_id}/${v.variant_id}/studio-photo/${Date.now()}-${safe}`;
+  const up = await supabase.storage.from(MEDIA_BUCKET).upload(path, f, { contentType: f.type, upsert: false });
+  if (up.error) throw new Error(`อัปโหลดรูปไม่สำเร็จ: ${up.error.message}`);
+  return path;
+}
+
+/** โหลดรูปจาก bucket ส่วนตัวเป็น Blob (พรีวิวใน iframe sandbox ต้องแปลงเป็น data URL เอง) */
+export async function downloadMediaBlob(path: string): Promise<Blob> {
+  const { data, error } = await supabase.storage.from(MEDIA_BUCKET).download(path);
+  if (error || !data) throw new Error(`โหลดรูปไม่ได้: ${error?.message ?? 'ไม่พบไฟล์'}`);
+  return data;
+}
+
 /** บันทึกลำดับใหม่ — ใบแรก = ปก */
 export async function reorderMedia(ids: string[]): Promise<void> {
   for (const [i, id] of ids.entries()) {

@@ -1,9 +1,9 @@
 // Note Studio (2026-10-02) — ทำรูป carousel / รูปเดี่ยว สไตล์ Notes ใน Content Center
 // แก้ข้อความทีละใบ → พรีวิวสดในเบราว์เซอร์ (CSS ชุดเดียวกับ render.mjs) → กด Render
 // → wr_jobs render_notes → มินิทำ PNG จริง → media_assets (bucket ส่วนตัว content-media)
-import { slideDoc, withFollow, sizePx, toMarkup, toEditable, type NoteSpec, type NoteSlide } from './note-render';
+import { slideDoc, withFollow, sizePx, toMarkup, toEditable, SIZE_MIN, SIZE_MAX, type NoteSpec, type NoteSlide } from './note-render';
 import { lintSlides } from './note-lint';
-import { saveVisualSpec, enqueueJob, waitJob, listMedia, type Variant, type MediaAsset } from './data';
+import { saveVisualSpec, enqueueJob, waitJob, listMedia, uploadStudioPhoto, downloadMediaBlob, type Variant, type MediaAsset } from './data';
 import { driveButtonHtml, downloadMediaZip, zipTitle } from './media-actions';
 
 type Deps = { toast: (m: string, k?: 'success' | 'error') => void; onRendered: () => Promise<void> };
@@ -13,6 +13,10 @@ const esc = (s: unknown) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 // iframe พรีวิวเป็น sandbox (origin ทึบ) — โหลดรูปจาก URL ไม่ขึ้น จึงฝังเป็น data URL ครั้งเดียว
 let avatarData = '';
+const toDataUrl = (b: Blob) => new Promise<string>((ok, bad) => { const r = new FileReader(); r.onload = () => ok(String(r.result)); r.onerror = bad; r.readAsDataURL(b); });
+// รูปพื้นหลังของใบ photo card: storage path → data URL (โหลดครั้งเดียวต่อรูป)
+const photoData = new Map<string, string>();
+const POS_LABEL: Record<string, string> = { 'center top': 'บน', 'center center': 'กลาง', 'center bottom': 'ล่าง' };
 // โหลดไม่ได้ → วงกลมเทาแทน (เคยใช้ URL ตรงเป็นสำรอง แต่ iframe sandbox โหลด URL ไม่ได้อยู่ดี ได้แค่ไอคอนรูปแตก)
 const AVATAR_FALLBACK = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><circle cx=".5" cy=".5" r=".5" fill="#d9d6ce"/></svg>');
 const AVATAR = () => avatarData || AVATAR_FALLBACK;
@@ -23,7 +27,7 @@ async function loadAvatar() {
     // ไฟล์หายบนโดเมน app → Cloudflare ตอบหน้า 404 (HTML) · ห้ามแปลง HTML เป็นรูป
     if (!res.ok || !(res.headers.get('content-type') ?? '').startsWith('image/')) throw new Error(`avatar ${res.status}`);
     const blob = await res.blob();
-    avatarData = await new Promise<string>((ok, bad) => { const r = new FileReader(); r.onload = () => ok(String(r.result)); r.onerror = bad; r.readAsDataURL(blob); });
+    avatarData = await toDataUrl(blob);
   } catch (e) { console.warn('Note Studio: โหลดรูปโปรไฟล์ไม่ได้', e); }
 }
 const TYPE_LABEL: Record<string, string> = { hook: 'ปก', content: 'เนื้อ', cta: 'ปิดท้าย', follow: 'ปิดท้าย · ปุ่มติดตาม' };
@@ -62,16 +66,30 @@ function renderList() {
   if (!spec) return;
   const mobile = spec.mobile === true;
   $('ns-slides').innerHTML = spec.slides.map((s, i) => {
-    const px = s.type === 'hook' && mobile ? 108 : sizePx(s.text, mobile);
+    const auto = s.type === 'hook' && mobile ? 108 : sizePx(s.text, mobile);
+    const px = s.size ?? auto;
     const small = s.type !== 'hook' && mobile && px < 64;
     const hasSub = s.type === 'hook' || s.type === 'cta';
+    const lines = s.text.split('\n').length;
+    const photo = s.type !== 'content' ? '' : s.photo
+      ? `<span class="flex flex-wrap items-center gap-1">
+          <span class="whitespace-nowrap opacity-60">รูป</span>
+          <select data-ns="pos" data-i="${i}" class="select select-bordered select-xs w-auto" aria-label="ตำแหน่งรูปพื้นหลังใบที่ ${i + 1}">
+            ${Object.entries(POS_LABEL).map(([v, l]) => `<option value="${v}" ${(s.photo!.pos ?? 'center top') === v ? 'selected' : ''}>ชิด${l}</option>`).join('')}
+          </select>
+          <label class="btn btn-ghost btn-xs border border-base-300 tap-44">🔄 เปลี่ยนรูป<input type="file" accept="image/jpeg,image/png,image/webp" data-ns="photo" data-i="${i}" class="sr-only"></label>
+          <button data-ns="photo-del" data-i="${i}" class="btn btn-ghost btn-xs tap-44" aria-label="เอารูปพื้นหลังใบที่ ${i + 1} ออก">✕ เอารูปออก</button>
+        </span>`
+      : `<label class="btn btn-ghost btn-xs border border-dashed border-base-300 tap-44">📷 ใส่รูปพื้นหลัง (แบบการ์ดลอย)<input type="file" accept="image/jpeg,image/png,image/webp" data-ns="photo" data-i="${i}" class="sr-only"></label>`;
+    const warn = s.photo && !s.photo.path ? 'รูปนี้มาจากไฟล์ในเครื่อง — กด 🔄 เปลี่ยนรูป เพื่ออัปโหลดก่อน Render'
+      : s.photo && lines > 4 ? `ใบรูปควรมีข้อความ ≤4 บรรทัด (ตอนนี้ ${lines}) ไม่งั้นการ์ดสูงจนทับหน้าคนในรูป` : '';
     return `<li class="rounded-xl border ${i === current ? 'border-[var(--color-brand-navy)] ring-2 ring-[var(--color-brand-navy)]/20' : 'border-base-300'} bg-base-100 p-3" data-slide="${i}">
       <div class="flex flex-wrap items-center gap-2">
         <button data-ns="select" data-i="${i}" class="font-display text-sm font-bold tap-44 px-1" aria-label="ดูพรีวิวใบที่ ${i + 1}">ใบ ${i + 1}</button>
         <select data-ns="type" data-i="${i}" class="select select-bordered select-xs" aria-label="ชนิดใบที่ ${i + 1}">
           ${['hook', 'content', 'cta', 'follow'].map((t) => `<option value="${t}" ${s.type === t ? 'selected' : ''}>${TYPE_LABEL[t]}</option>`).join('')}
         </select>
-        <span class="text-xs ${small ? 'text-error font-semibold' : 'opacity-60'}">${px}px</span>
+        <span data-px class="text-xs ${small ? 'text-error font-semibold' : 'opacity-60'}">${px}px</span>
         <span class="ml-auto flex gap-1">
           <button data-ns="up" data-i="${i}" class="btn btn-ghost btn-xs tap-44" aria-label="เลื่อนใบ ${i + 1} ขึ้น" ${i === 0 ? 'disabled' : ''}>▲</button>
           <button data-ns="down" data-i="${i}" class="btn btn-ghost btn-xs tap-44" aria-label="เลื่อนใบ ${i + 1} ลง" ${i === spec!.slides.length - 1 ? 'disabled' : ''}>▼</button>
@@ -82,6 +100,12 @@ function renderList() {
         <span class="sr-only">ข้อความหลักใบที่ ${i + 1}</span>
         <textarea data-ns="text" data-i="${i}" rows="${Math.max(2, s.text.split('\n').length)}" class="textarea textarea-bordered w-full text-base leading-relaxed">${esc(toEditable(s.text))}</textarea>
       </label>
+      <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs">
+        <label class="flex items-center gap-1"><span class="whitespace-nowrap opacity-60">ขนาดตัวอักษร</span>
+          <input data-ns="size" data-i="${i}" type="number" inputmode="numeric" min="${SIZE_MIN}" max="${SIZE_MAX}" step="2" value="${s.size ?? ''}" placeholder="${auto}" class="input input-bordered input-xs w-20" aria-label="ขนาดตัวอักษรใบที่ ${i + 1} (px · เว้นว่าง = อัตโนมัติ ${auto}px)"><span class="whitespace-nowrap opacity-60">px${s.size ? '' : ' (อัตโนมัติ)'}</span></label>
+        ${photo}
+      </div>
+      ${warn ? `<p class="mt-1 text-xs text-error">${warn}</p>` : ''}
       ${hasSub ? `<label class="mt-2 block"><span class="text-xs opacity-60">${s.type === 'hook' ? 'บรรทัดรอง (ใต้หัว)' : 'บรรทัดเล็กด้านล่าง'}</span>
         <textarea data-ns="sub" data-i="${i}" rows="2" class="textarea textarea-bordered textarea-sm w-full">${esc(toEditable(s.sub ?? ''))}</textarea></label>` : ''}
     </li>`;
@@ -95,7 +119,8 @@ function renderPreview() {
   const frame = $('ns-frame') as HTMLIFrameElement;
   const H = spec.ratio === '1:1' ? 1080 : 1350;
   frame.style.aspectRatio = `1080 / ${H}`;
-  frame.srcdoc = slideDoc(spec, all[current], AVATAR());
+  const ph = all[current].photo?.path;
+  frame.srcdoc = slideDoc(spec, all[current], AVATAR(), ph ? photoData.get(ph) ?? '' : '');
   // ย่อ 1080px ให้พอดีกรอบ
   requestAnimationFrame(() => {
     const w = (frame.parentElement as HTMLElement).clientWidth;
@@ -123,6 +148,30 @@ function syncControls() {
 
 function refreshAll() { renderList(); renderPreview(); syncControls(); }
 function markDirty() { dirty = true; $('ns-dirty').textContent = 'ยังไม่บันทึก'; }
+
+/** โหลดรูปพื้นหลังที่ยังไม่มีใน cache (เปิดชิ้นที่บันทึกไว้แล้ว) */
+async function ensurePhotos() {
+  const paths = [...new Set((spec?.slides ?? []).map((s) => s.photo?.path).filter((p): p is string => !!p && !photoData.has(p)))];
+  for (const p of paths) {
+    try { photoData.set(p, await toDataUrl(await downloadMediaBlob(p))); renderPreview(); }
+    catch (e) { deps.toast((e as Error).message, 'error'); }
+  }
+}
+
+async function attachPhoto(i: number, f: File) {
+  if (!variant || !spec) return;
+  $('ns-status').textContent = 'กำลังอัปโหลดรูป…';
+  try {
+    const path = await uploadStudioPhoto(variant, f);
+    photoData.set(path, await toDataUrl(f));
+    spec.slides[i].photo = { path, pos: spec.slides[i].photo?.pos ?? 'center top' };
+    current = i; markDirty(); refreshAll();
+    $('ns-status').textContent = '✓ ใส่รูปแล้ว — กดบันทึก/Render ได้เลย';
+  } catch (e) {
+    $('ns-status').textContent = `⚠️ ${(e as Error).message}`;
+    deps.toast((e as Error).message, 'error');
+  }
+}
 
 async function loadRendered() {
   if (!variant) return;
@@ -154,6 +203,7 @@ export async function openNoteStudio(v: Variant) {
   await loadAvatar();
   refreshAll();
   ($('ns-dialog') as HTMLDialogElement).showModal();
+  void ensurePhotos();
   await loadRendered();
 }
 
@@ -233,25 +283,43 @@ export function initNoteStudio(d: Deps) {
     const i = Number(el.dataset.i);
     if (el.dataset.ns === 'text') spec.slides[i].text = toMarkup(el.value);
     if (el.dataset.ns === 'sub') { const v = el.value.trim(); if (v) spec.slides[i].sub = toMarkup(el.value); else delete spec.slides[i].sub; }
+    if (el.dataset.ns === 'size') {
+      const n = Number(el.value);
+      if (el.value === '') delete spec.slides[i].size;
+      else if (Number.isInteger(n) && n >= SIZE_MIN && n <= SIZE_MAX) spec.slides[i].size = n;
+      else return;   // ยังพิมพ์ไม่จบ (เช่น "7") — รอค่าที่ใช้ได้
+    }
+    if (el.dataset.ns !== 'text' && el.dataset.ns !== 'sub' && el.dataset.ns !== 'size') return;
     current = i; markDirty(); renderPreview();
-    const px = list.querySelector(`[data-slide="${i}"] span.text-xs`);
-    if (px && spec.slides[i].type !== 'hook') px.textContent = `${sizePx(spec.slides[i].text, spec.mobile === true)}px`;
+    const s = spec.slides[i];
+    const px = list.querySelector(`[data-slide="${i}"] [data-px]`);
+    if (px && (s.size || s.type !== 'hook')) px.textContent = `${s.size ?? sizePx(s.text, spec.mobile === true)}px`;
   });
   list.addEventListener('focusin', (e) => {
     const i = Number((e.target as HTMLElement).dataset.i ?? NaN);
     if (!Number.isNaN(i) && i !== current) { current = i; renderPreview(); list.querySelectorAll('li').forEach((li, k) => li.classList.toggle('ring-2', k === i)); }
   });
   list.addEventListener('change', (e) => {
-    const el = e.target as HTMLSelectElement;
-    if (!spec || el.dataset.ns !== 'type') return;
+    const el = e.target as HTMLSelectElement & HTMLInputElement;
+    if (!spec || !el.dataset.ns) return;
     const i = Number(el.dataset.i);
-    spec.slides[i].type = el.value as NoteSlide['type'];
-    if (el.value === 'content') delete spec.slides[i].sub;
-    markDirty(); refreshAll();
+    const s = spec.slides[i];
+    switch (el.dataset.ns) {
+      case 'type':
+        s.type = el.value as NoteSlide['type'];
+        if (el.value === 'content') delete s.sub;
+        else delete s.photo;   // photo card มีเฉพาะใบเนื้อ
+        break;
+      case 'pos': if (s.photo) s.photo.pos = el.value; break;
+      // size: เก็บค่าตอน input แล้ว · ห้ามวาดรายการใหม่ตอน change (blur) — คลิกช่องข้อความต่อแล้วโฟกัสหลุด พิมพ์หาย
+      case 'photo': { const f = el.files?.[0]; if (f) void attachPhoto(i, f); return; }
+      default: return;
+    }
+    current = i; markDirty(); refreshAll();
   });
   const onAction = (e: Event) => {
     const el = (e.target as HTMLElement).closest('[data-ns]') as HTMLElement | null;
-    if (!el || !spec || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') return;
+    if (!el || !spec || ['TEXTAREA', 'SELECT', 'INPUT'].includes(el.tagName)) return;
     const i = Number(el.dataset.i);
     const s = spec.slides;
     switch (el.dataset.ns) {
@@ -259,6 +327,7 @@ export function initNoteStudio(d: Deps) {
       case 'up': [s[i - 1], s[i]] = [s[i], s[i - 1]]; current = i - 1; break;
       case 'down': [s[i + 1], s[i]] = [s[i], s[i + 1]]; current = i + 1; break;
       case 'del': if (!confirm(`ลบใบ ${i + 1}?`)) return; s.splice(i, 1); current = Math.max(0, i - 1); break;
+      case 'photo-del': delete s[i].photo; current = i; break;
       default: return;
     }
     markDirty(); refreshAll();
