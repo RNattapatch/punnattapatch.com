@@ -28,7 +28,7 @@ const routes = [
 ] as const;
 const supportCopy = [
   'ทัก LINE เล่าโจทย์คร่าวๆ ได้เลย',
-  '17–18 ต.ค. 2026 · ฿19,900',
+  'เลื่อนวันเรียน · ประกาศวันใหม่เร็วๆ นี้',
   'ตั้ง Worker บน Cloud ด้วย AI Agent',
   'เลือกจากโจทย์จริงของทีมและองค์กร',
   'Sponsor · Partnership · Speaker',
@@ -352,7 +352,9 @@ test('responsive glance, tap targets, and keyboard order remain usable from 320 
       for (const locator of [
         page.getByText('ปัน ณัฐพัชร์', { exact: true }),
         page.getByRole('heading', { name: 'วันนี้คุณมาหาผมเรื่องไหนครับ?' }),
-        ...routes.map(([label]) => page.getByRole('link', { name: new RegExp(label) })),
+        page.locator('[data-fs-banner]'),
+        // FutureSkill banner (2026-10-09) ดันเส้นทาง 04–05 ลงใต้ fold — ทางหลัก LINE · P1 · FutureSkill ต้องยังเห็นในจอแรก
+        ...routes.slice(0, 3).map(([label]) => page.getByRole('link', { name: new RegExp(label) })),
       ]) {
         const box = await locator.boundingBox();
         assert.ok(box && box.y < viewport.height && box.y + box.height > 0, `${await locator.textContent()} must intersect the first viewport`);
@@ -522,3 +524,25 @@ declare global {
     plausible: (...args: unknown[]) => void;
   }
 }
+
+test('FutureSkill Instructor banner sits under the tagline, paired with daily-use proof, logo on white', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await preparePage(page);
+  const banner = page.locator('[data-fs-banner]');
+  await expect(banner).toBeVisible();
+  await expect(banner).toContainText('FutureSkill Instructor 2026');
+  // moat: credential never stands alone — วง 1 proof must sit in the same block
+  await expect(banner).toContainText('สอนจากระบบที่ผมใช้ทำงานจริงทุกวัน');
+  await expect(banner).toContainText('AI');
+  await expect(banner).toContainText('Digital Business');
+  await expect(banner).toContainText('Sales & Customer');
+  for (const banned of ['รับรอง', 'แต่งตั้ง', 'สอบสอน', 'บนแพลตฟอร์ม', 'คอร์ส']) await expect(banner).not.toContainText(banned);
+  assert.equal(await page.locator('header').evaluate((header) => {
+    const next = header.nextElementSibling;
+    return next?.hasAttribute('data-fs-banner') ?? false;
+  }), true);
+  const logo = banner.getByRole('img', { name: 'FutureSkill' });
+  assert.equal(await logo.evaluate((img) => (img as HTMLImageElement).complete && (img as HTMLImageElement).naturalWidth > 0), true);
+  assert.equal(await logo.evaluate((img) => getComputedStyle(img.parentElement!).backgroundColor), 'rgb(255, 255, 255)');
+  await page.close();
+});
