@@ -1,7 +1,7 @@
 // Note Studio (2026-10-02) — ทำรูป carousel / รูปเดี่ยว สไตล์ Notes ใน Content Center
 // แก้ข้อความทีละใบ → พรีวิวสดในเบราว์เซอร์ (CSS ชุดเดียวกับ render.mjs) → กด Render
 // → wr_jobs render_notes → มินิทำ PNG จริง → media_assets (bucket ส่วนตัว content-media)
-import { slideDoc, withFollow, sizePx, toMarkup, toEditable, SIZE_MIN, SIZE_MAX, type NoteSpec, type NoteSlide } from './note-render';
+import { slideDoc, withFollow, sizePx, toMarkup, toEditable, parsePos, SIZE_MIN, SIZE_MAX, ZOOM_MAX, type NoteSpec, type NoteSlide } from './note-render';
 import { lintSlides } from './note-lint';
 import { saveVisualSpec, enqueueJob, waitJob, listMedia, uploadStudioPhoto, downloadMediaBlob, type Variant, type MediaAsset } from './data';
 import { driveButtonHtml, downloadMediaZip, zipTitle } from './media-actions';
@@ -16,7 +16,6 @@ let avatarData = '';
 const toDataUrl = (b: Blob) => new Promise<string>((ok, bad) => { const r = new FileReader(); r.onload = () => ok(String(r.result)); r.onerror = bad; r.readAsDataURL(b); });
 // รูปพื้นหลังของใบ photo card: storage path → data URL (โหลดครั้งเดียวต่อรูป)
 const photoData = new Map<string, string>();
-const POS_LABEL: Record<string, string> = { 'center top': 'บน', 'center center': 'กลาง', 'center bottom': 'ล่าง' };
 // โหลดไม่ได้ → วงกลมเทาแทน (เคยใช้ URL ตรงเป็นสำรอง แต่ iframe sandbox โหลด URL ไม่ได้อยู่ดี ได้แค่ไอคอนรูปแตก)
 const AVATAR_FALLBACK = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><circle cx=".5" cy=".5" r=".5" fill="#d9d6ce"/></svg>');
 const AVATAR = () => avatarData || AVATAR_FALLBACK;
@@ -74,13 +73,24 @@ function renderList() {
     const photo = s.type !== 'content' ? '' : s.photo
       ? `<span class="flex flex-wrap items-center gap-1">
           <span class="whitespace-nowrap opacity-60">รูป</span>
-          <select data-ns="pos" data-i="${i}" class="select select-bordered select-xs w-auto" aria-label="ตำแหน่งรูปพื้นหลังใบที่ ${i + 1}">
-            ${Object.entries(POS_LABEL).map(([v, l]) => `<option value="${v}" ${(s.photo!.pos ?? 'center top') === v ? 'selected' : ''}>ชิด${l}</option>`).join('')}
-          </select>
           <label class="btn btn-ghost btn-xs border border-base-300 tap-44">🔄 เปลี่ยนรูป<input type="file" accept="image/jpeg,image/png,image/webp" data-ns="photo" data-i="${i}" class="sr-only"></label>
           <button data-ns="photo-del" data-i="${i}" class="btn btn-ghost btn-xs tap-44" aria-label="เอารูปพื้นหลังใบที่ ${i + 1} ออก">✕ เอารูปออก</button>
         </span>`
       : `<label class="btn btn-ghost btn-xs border border-dashed border-base-300 tap-44">📷 ใส่รูปพื้นหลัง (แบบการ์ดลอย)<input type="file" accept="image/jpeg,image/png,image/webp" data-ns="photo" data-i="${i}" class="sr-only"></label>`;
+    // แถบจัดรูป (2026-10-09): ใบ 4:5 กับรูปแนวนอน/จัตุรัส ไม่มีที่ให้เลื่อนแนวตั้ง — "ชิดบน/กลาง/ล่าง" แบบเดิมจึงไม่ขยับ
+    // → ซูม + จุดโฟกัส x/y (ซูมรอบจุดนั้น) ใช้ได้ทุกสัดส่วนรูป
+    const [fx, fy] = s.photo ? parsePos(s.photo.pos) : [50, 0];
+    const zoomPct = Math.round((s.photo?.zoom ?? 1) * 100);
+    const slider = (ns: string, label: string, val: number, min: number, max: number, unit: string, aria: string) =>
+      `<label class="flex min-w-0 items-center gap-2"><span class="w-16 shrink-0 whitespace-nowrap opacity-60">${label}</span>
+        <input data-ns="${ns}" data-i="${i}" type="range" min="${min}" max="${max}" step="${ns === 'zoom' ? 5 : 1}" value="${val}" class="range range-xs min-w-0 flex-1" aria-label="${aria} ใบที่ ${i + 1}">
+        <output data-out="${ns}" class="w-12 shrink-0 text-right tabular-nums opacity-70">${val}${unit}</output></label>`;
+    const adjust = s.photo ? `<div class="mt-2 grid gap-1 rounded-lg bg-base-200/60 px-3 py-2 text-xs sm:grid-cols-3 sm:gap-3">
+        ${slider('zoom', 'ซูม', zoomPct, 100, ZOOM_MAX * 100, '%', 'ซูมรูปพื้นหลัง')}
+        ${slider('fx', 'ซ้าย ↔ ขวา', fx, 0, 100, '%', 'เลื่อนรูปซ้ายขวา')}
+        ${slider('fy', 'บน ↕ ล่าง', fy, 0, 100, '%', 'เลื่อนรูปขึ้นลง')}
+        <p class="opacity-60 sm:col-span-3">รูปแนวนอน/จัตุรัส: ซูมก่อน แล้วค่อยเลื่อนบน↕ล่าง (ซูม 100% รูปเต็มความสูงใบพอดี ไม่มีที่ให้เลื่อนขึ้นลง)</p>
+      </div>` : '';
     const warn = s.photo && !s.photo.path ? 'รูปนี้มาจากไฟล์ในเครื่อง — กด 🔄 เปลี่ยนรูป เพื่ออัปโหลดก่อน Render'
       : s.photo && lines > 4 ? `ใบรูปควรมีข้อความ ≤4 บรรทัด (ตอนนี้ ${lines}) ไม่งั้นการ์ดสูงจนทับหน้าคนในรูป` : '';
     return `<li class="rounded-xl border ${i === current ? 'border-[var(--color-brand-navy)] ring-2 ring-[var(--color-brand-navy)]/20' : 'border-base-300'} bg-base-100 p-3" data-slide="${i}">
@@ -105,6 +115,7 @@ function renderList() {
           <input data-ns="size" data-i="${i}" type="number" inputmode="numeric" min="${SIZE_MIN}" max="${SIZE_MAX}" step="2" value="${s.size ?? ''}" placeholder="${auto}" class="input input-bordered input-xs w-20" aria-label="ขนาดตัวอักษรใบที่ ${i + 1} (px · เว้นว่าง = อัตโนมัติ ${auto}px)"><span class="whitespace-nowrap opacity-60">px${s.size ? '' : ' (อัตโนมัติ)'}</span></label>
         ${photo}
       </div>
+      ${adjust}
       ${warn ? `<p class="mt-1 text-xs text-error">${warn}</p>` : ''}
       ${hasSub ? `<label class="mt-2 block"><span class="text-xs opacity-60">${s.type === 'hook' ? 'บรรทัดรอง (ใต้หัว)' : 'บรรทัดเล็กด้านล่าง'}</span>
         <textarea data-ns="sub" data-i="${i}" rows="2" class="textarea textarea-bordered textarea-sm w-full">${esc(toEditable(s.sub ?? ''))}</textarea></label>` : ''}
@@ -164,7 +175,7 @@ async function attachPhoto(i: number, f: File) {
   try {
     const path = await uploadStudioPhoto(variant, f);
     photoData.set(path, await toDataUrl(f));
-    spec.slides[i].photo = { path, pos: spec.slides[i].photo?.pos ?? 'center top' };
+    spec.slides[i].photo = { path, pos: '50% 0%' };   // รูปใหม่ = เริ่มจากไม่ซูม โฟกัสกลางบน
     current = i; markDirty(); refreshAll();
     $('ns-status').textContent = '✓ ใส่รูปแล้ว — กดบันทึก/Render ได้เลย';
   } catch (e) {
@@ -289,6 +300,16 @@ export function initNoteStudio(d: Deps) {
       else if (Number.isInteger(n) && n >= SIZE_MIN && n <= SIZE_MAX) spec.slides[i].size = n;
       else return;   // ยังพิมพ์ไม่จบ (เช่น "7") — รอค่าที่ใช้ได้
     }
+    if (['zoom', 'fx', 'fy'].includes(el.dataset.ns) && spec.slides[i].photo) {
+      const ph = spec.slides[i].photo!;
+      const v = Number(el.value);
+      if (el.dataset.ns === 'zoom') { if (v > 100) ph.zoom = v / 100; else delete ph.zoom; }
+      else { const [x, y] = parsePos(ph.pos); ph.pos = el.dataset.ns === 'fx' ? `${v}% ${y}%` : `${x}% ${v}%`; }
+      const out = list.querySelector(`[data-slide="${i}"] [data-out="${el.dataset.ns}"]`);
+      if (out) out.textContent = `${v}%`;
+      current = i; markDirty(); renderPreview();
+      return;
+    }
     if (el.dataset.ns !== 'text' && el.dataset.ns !== 'sub' && el.dataset.ns !== 'size') return;
     current = i; markDirty(); renderPreview();
     const s = spec.slides[i];
@@ -310,7 +331,6 @@ export function initNoteStudio(d: Deps) {
         if (el.value === 'content') delete s.sub;
         else delete s.photo;   // photo card มีเฉพาะใบเนื้อ
         break;
-      case 'pos': if (s.photo) s.photo.pos = el.value; break;
       // size: เก็บค่าตอน input แล้ว · ห้ามวาดรายการใหม่ตอน change (blur) — คลิกช่องข้อความต่อแล้วโฟกัสหลุด พิมพ์หาย
       case 'photo': { const f = el.files?.[0]; if (f) void attachPhoto(i, f); return; }
       default: return;

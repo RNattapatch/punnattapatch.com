@@ -90,6 +90,13 @@ await page.waitForSelector('[data-card="variant"]', { timeout: 60000 });
 console.log('\n🎨 Note Studio — ขนาด · สีไฮไลต์ · รูปพื้นหลัง\n');
 
 const srcdoc = () => page.$eval('#ns-frame', (f) => f.getAttribute('srcdoc') ?? '');
+const setRange = (sel, v) => page.$eval(sel, (el, val) => { el.value = String(val); el.dispatchEvent(new Event('input', { bubbles: true })); }, v);
+// ตำแหน่งจริงของรูปพื้นหลังในพรีวิว (px ในหน้า 1080×1350) — วัดว่ารูปขยับจริง ไม่ใช่แค่ style เปลี่ยน
+const bgTop = async () => {
+  await page.waitForTimeout(150);
+  const f = page.frames().find((fr) => fr.parentFrame() === page.mainFrame());
+  return f.evaluate(() => Math.round(document.querySelector('.pc-bg')?.getBoundingClientRect().top ?? NaN));
+};
 const waitDoc = (needle, not = false) => page.waitForFunction(([n, neg]) => {
   const d = document.getElementById('ns-frame')?.getAttribute('srcdoc') ?? '';
   return neg ? !d.includes(n) : d.includes(n);
@@ -106,7 +113,8 @@ await waitDoc('class="pc-bg" src="data:image/png');
 const d1 = await srcdoc();
 check(d1.includes('photo-card') && d1.includes('class="pc-card"'), 'ใบที่มีรูป → พรีวิวเป็น photo card (รูปเต็มใบ + การ์ดลอย)');
 check(d1.includes('class="pc-bg" src="data:image/png'), 'รูปพื้นหลังโหลดจาก bucket แล้วฝังเป็น data URL (iframe sandbox โหลด URL ตรงไม่ได้)');
-check(await page.$eval('select[data-ns="pos"][data-i="1"]', (el) => el.value) === 'center top', 'ตำแหน่งรูปเริ่มที่ "ชิดบน"');
+const sl1 = await page.$$eval('[data-slide="1"] input[type="range"]', (n) => n.map((x) => `${x.dataset.ns}=${x.value}`).join(' '));
+check(sl1 === 'zoom=100 fx=50 fy=0', `สเปกเก่า "center top" → แถบซูม 100% · ซ้ายขวา 50 · บนล่าง 0 (${sl1})`);
 check(!(await page.$('[data-i="0"][data-ns="photo"]')), 'ใบปกไม่มีปุ่มใส่รูป (photo card เฉพาะใบเนื้อ)');
 
 // ── 2. ขนาดตัวอักษร ──
@@ -133,21 +141,31 @@ check(!(await page.$('select[data-ns="hl"]')), 'ไม่มีตัวเล�
 
 // ── 4. อัปรูปพื้นหลังให้ใบ 3 ──
 await page.setInputFiles('input[data-ns="photo"][data-i="2"]', { name: 'My Photo!.png', mimeType: 'image/png', buffer: PNG });
-await page.waitForSelector('select[data-ns="pos"][data-i="2"]', { timeout: 8000 }).catch(() => {});
+await page.waitForSelector('input[data-ns="zoom"][data-i="2"]', { timeout: 8000 }).catch(() => {});
 await waitDoc('class="pc-card"');
 const up = uploads.at(-1) ?? '';
 check(new RegExp(`^${CID}/${VID}/studio-photo/\\d+-my-photo-.png$`).test(up), `อัปขึ้น path ที่ worker รับ (${up})`);
 check((await srcdoc()).includes('class="pc-card"') && (await srcdoc()).includes('<mark class="y">'), 'ใบ 3 กลายเป็น photo card และยังคงไฮไลต์เหลือง');
-await page.selectOption('select[data-ns="pos"][data-i="2"]', 'center center');
-await waitDoc('object-position:center center');
-check((await srcdoc()).includes('object-position:center center'), 'เปลี่ยนตำแหน่งรูปเป็น "ชิดกลาง" → พรีวิวตาม');
+// รูปทดสอบเป็นจัตุรัส บนใบ 4:5 → ไม่มีที่ให้เลื่อนแนวตั้งถ้าไม่ซูม (บั๊กที่คุณปันเจอ: กด "ชิดล่าง" แล้วรูปไม่ขยับ)
+check(await bgTop() === 0, 'รูปใหม่เริ่มที่ซูม 100% ขอบบนชิดใบ');
+await setRange('input[data-ns="fy"][data-i="2"]', 100);
+check(await bgTop() === 0, 'ซูม 100% เลื่อนบนล่างแล้วรูปเต็มความสูงอยู่แล้ว (ไม่มีที่ให้เลื่อน — คำอธิบายใต้แถบบอกให้ซูมก่อน)');
+await setRange('input[data-ns="zoom"][data-i="2"]', 160);
+const zoomedBottom = await bgTop();
+check(zoomedBottom === -810, `ซูม 160% โฟกัสล่าง → รูปเลื่อนขึ้นจริง ขอบบนอยู่ที่ ${zoomedBottom}px (คาด -810)`);
+await setRange('input[data-ns="fy"][data-i="2"]', 0);
+check(await bgTop() === 0, 'โฟกัสบน → รูปกลับมาชิดขอบบน (เห็นส่วนบนของรูป)');
+await setRange('input[data-ns="fx"][data-i="2"]', 100);
+await waitDoc('object-position:100% 0%');
+check((await srcdoc()).includes('object-position:100% 0%;transform-origin:100% 0%;transform:scale(1.6)'), 'เลื่อนซ้ายขวา → พรีวิวใช้ style เดียวกับ render.mjs');
+check((await page.$eval('[data-slide="2"] [data-out="zoom"]', (el) => el.textContent)) === '160%', 'ตัวเลขข้างแถบซูมอัปเดต');
 
 // ── 5. บันทึก → visual_spec มีค่าครบในรูปที่ worker ตรวจ ──
 await page.click('#ns-save');
 await page.waitForFunction(() => document.getElementById('ns-dirty')?.textContent === 'บันทึกแล้ว', null, { timeout: 8000 }).catch(() => {});
 const saved = patches.at(-1)?.visual_spec?.slides ?? [];
 check(saved[2]?.size === 72 && saved[2]?.text === 'หัวข้อ\nเน้น <mark>coral</mark> กับ <mark class="y">เหลือง</mark> นะ', `บันทึก size 72 + markup 2 สี (${JSON.stringify({ size: saved[2]?.size, text: saved[2]?.text })})`);
-check(saved[2]?.photo?.path === up && saved[2]?.photo?.pos === 'center center' && !saved[2]?.photo?.src, 'บันทึก photo {path, pos} — ไม่มี src ของเครื่อง');
+check(saved[2]?.photo?.path === up && saved[2]?.photo?.pos === '100% 0%' && saved[2]?.photo?.zoom === 1.6 && !saved[2]?.photo?.src, `บันทึก photo {path, pos, zoom} — ไม่มี src ของเครื่อง (${JSON.stringify(saved[2]?.photo)})`);
 check(saved[1]?.photo?.path === SAVED_PHOTO && !saved[1]?.hl && !saved[1]?.size, 'ใบอื่นไม่ถูกแตะ');
 
 // ── 5b. เปิดใหม่ markup กลับเป็น ==/++ ในช่องแก้ ──
