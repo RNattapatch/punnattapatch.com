@@ -19,16 +19,26 @@ const contentTypes: Record<string, string> = {
   '.webp': 'image/webp',
 };
 
+// 2026-10-10: /link แบ่งตาม 2 บริการ (คุณปันเคาะ) — ประตูหลัก 2 บาน + ทางของคนที่ยังไม่แน่ใจ 2 ทาง
 const routes = [
-  ['สอบถามหรือจองคิว', 'https://lin.ee/ioSnSUG'],
+  ['คลาสอบรม', 'https://punnattapatch.com/services#core-training'],
+  ['Consult วางระบบ', 'https://punnattapatch.com/services/daily-consulting'],
+  ['เช็คทีมขาย 2 นาที', 'https://punnattapatch.com/team-check'],
+  ['ทักมาเล่าโจทย์ใน LINE', 'https://lin.ee/ioSnSUG'],
+] as const;
+const moreRoutes = [
   ['คลาสออนไลน์บน FutureSkill', 'https://futureskill.co/course/detail/6030'],
-  ['ดูบริการที่ปรึกษาหรือจัดอบรม ทั้งหมด', 'https://punnattapatch.com/services'],
   ['ชวนไปร่วมงาน', 'https://punnattapatch.com/sponsor'],
 ] as const;
+const topics = ['คัดคน', 'เป้าและค่าคอม', 'หัวหน้าคุมทีม', 'ฝ่ายขาย', 'ฝ่ายเอกสาร', 'ฝ่ายคอนเทนต์'] as const;
 const supportCopy = [
-  'ทัก LINE เล่าโจทย์คร่าวๆ ได้เลย',
+  'ผมช่วยทีมขายได้ 2 แบบ',
+  'เหมาะเมื่อ ทีมมีคนแล้ว แต่ยังทำไม่เป็น',
+  'ผมเข้าไปวางระบบให้ทีมใช้กับงานจริง 1–2 วัน',
+  'เหมาะเมื่อ รู้ว่าต้องแก้อะไร แต่ไม่มีใครว่างลงมือ',
+  'รู้ว่าทีมติดเรื่องคน หรือเรื่องระบบ',
+  'เล่าคร่าวๆ ได้เลย',
   'ตั้ง Worker บน Cloud ด้วย AI Agent',
-  'เลือกจากโจทย์จริงของทีมและองค์กร',
   'Sponsor · Partnership · Speaker',
 ] as const;
 const socialLinks = [
@@ -121,17 +131,24 @@ test.afterAll(async () => {
   await new Promise<void>((resolve, reject) => server?.close((error) => error ? reject(error) : resolve()));
 });
 
-test('content and destination contract exposes the four approved routes', async ({ browser }) => {
+test('content and destination contract puts the two services first, then the unsure paths', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   const errors = await preparePage(page);
 
   await expect(page.getByText('ปัน ณัฐพัชร์', { exact: true })).toBeVisible();
   await expect(page.locator('header').getByText('@pun_nattapatch', { exact: true })).toBeVisible();
   await expect(page.getByText('ที่ปรึกษาการปั้นทีมขาย × AI Agent', { exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'วันนี้คุณมาหาผมเรื่องไหนครับ?' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /ให้ทีมเรียนจนทำเป็น/ })).toBeVisible();
   await expect(page.locator('[data-primary-route]')).toHaveCount(4);
-  for (const [label, href] of routes) {
-    await expect(page.getByRole('link', { name: new RegExp(label) })).toHaveAttribute('href', href);
+  for (const [index, [label, href]] of routes.entries()) {
+    const route = page.locator('[data-primary-route]').nth(index);
+    await expect(route).toContainText(label);
+    await expect(route).toHaveAttribute('href', href);
+  }
+  await expect(page.locator('[data-door]')).toHaveCount(2);
+  await expect(page.getByRole('list', { name: 'เรื่องที่เลือกได้' }).getByRole('listitem')).toHaveText([...topics]);
+  for (const [label, href] of moreRoutes) {
+    await expect(page.locator('[data-more-route]', { hasText: label })).toHaveAttribute('href', href);
   }
   const futureSkillRoute = page.getByRole('link', { name: /คลาสออนไลน์บน FutureSkill/ });
   await expect(futureSkillRoute).toHaveAttribute('target', '_blank');
@@ -311,10 +328,10 @@ test('responsive glance, tap targets, and keyboard order remain usable from 320 
     if (viewport.width === 390) {
       for (const locator of [
         page.getByText('ปัน ณัฐพัชร์', { exact: true }),
-        page.getByRole('heading', { name: 'วันนี้คุณมาหาผมเรื่องไหนครับ?' }),
-        page.locator('[data-fs-banner]'),
-        // ถอด P1 แล้ว (2026-10-10) — ทางหลัก LINE · FutureSkill · บริการทั้งหมด ต้องยังเห็นในจอแรก
-        ...routes.slice(0, 3).map(([label]) => page.getByRole('link', { name: new RegExp(label) })),
+        page.getByRole('heading', { level: 1, name: /ให้ทีมเรียนจนทำเป็น/ }),
+        // จอแรกต้องเห็นทั้ง 2 บริการ (คลาสอบรม · Consult วางระบบ)
+        page.locator('[data-door="class"]'),
+        page.locator('[data-door="consult"]'),
       ]) {
         const box = await locator.boundingBox();
         assert.ok(box && box.y < viewport.height && box.y + box.height > 0, `${await locator.textContent()} must intersect the first viewport`);
@@ -440,7 +457,10 @@ test('route analytics preserve real attribution and never invent TikTok', async 
   ]);
 
   for (const [event, expectedName, target, platform] of [
-    ['services', 'link_services_click', 'services', 'services'],
+    ['class', 'link_class_click', 'class', 'services'],
+    ['consult', 'link_consult_click', 'consult', 'services'],
+    ['team-check', 'link_team_check_click', 'team-check', 'quiz'],
+    ['futureskill-course', 'link_futureskill_click', 'course-6030', 'futureskill'],
     ['sponsor', 'link_sponsor_click', 'sponsor', 'sponsor'],
     ['tiktok', 'link_social_click', 'social', 'tiktok'],
     ['instagram', 'link_social_click', 'social', 'instagram'],
@@ -454,6 +474,26 @@ test('route analytics preserve real attribution and never invent TikTok', async 
   }
 });
 
+test('only the LINE route reports a Meta Contact; service doors and the quiz do not', async ({ browser }) => {
+  for (const [event, expected] of [
+    ['line', [['track', 'Contact', { content_name: 'link_hub_line' }]]],
+    ['class', []],
+    ['consult', []],
+    ['team-check', []],
+  ] as const) {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    await preparePage(page);
+    await page.evaluate(() => {
+      window.__fbqEvents = [];
+      window.fbq = (...args) => window.__fbqEvents.push(args);
+      document.addEventListener('click', (click) => click.preventDefault(), true);
+    });
+    await page.locator(`[data-link-event="${event}"]`).click();
+    assert.deepEqual(await page.evaluate(() => window.__fbqEvents), expected, event);
+    await page.close();
+  }
+});
+
 declare global {
   interface Window {
     __linkEvents: unknown[][];
@@ -463,7 +503,7 @@ declare global {
   }
 }
 
-test('FutureSkill Instructor banner sits under the tagline, paired with daily-use proof, logo on white', async ({ browser }) => {
+test('FutureSkill Instructor banner follows the service choices as proof, paired with daily-use proof, logo on white', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   await preparePage(page);
   const banner = page.locator('[data-fs-banner]');
@@ -475,10 +515,9 @@ test('FutureSkill Instructor banner sits under the tagline, paired with daily-us
   await expect(banner).toContainText('Digital Business');
   await expect(banner).toContainText('Sales & Customer');
   for (const banned of ['รับรอง', 'แต่งตั้ง', 'สอบสอน', 'บนแพลตฟอร์ม', 'คอร์ส']) await expect(banner).not.toContainText(banned);
-  assert.equal(await page.locator('header').evaluate((header) => {
-    const next = header.nextElementSibling;
-    return next?.hasAttribute('data-fs-banner') ?? false;
-  }), true);
+  // หลักฐานมาหลังทางเลือก (Why/ทางเลือกก่อน credential) — ทุกประตูหลักต้องมาก่อนแบนเนอร์
+  assert.equal(await banner.evaluate((element) => [...document.querySelectorAll('[data-primary-route]')]
+    .every((route) => route.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING)), true);
   const logo = banner.getByRole('img', { name: 'FutureSkill' });
   assert.equal(await logo.evaluate((img) => (img as HTMLImageElement).complete && (img as HTMLImageElement).naturalWidth > 0), true);
   assert.equal(await logo.evaluate((img) => getComputedStyle(img.parentElement!).backgroundColor), 'rgb(255, 255, 255)');

@@ -4,14 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#F4F1EA" />
-    <title>ปัน ณัฐพัชร์ · บริการ ติดต่อ และผลงาน</title>
-    <meta name="description" content="เลือกทางที่ต้องการ: สอบถามหรือจองคิว ดูบริการที่ปรึกษาหรือจัดอบรม หรือชวนปัน ณัฐพัชร์ไปร่วมงาน" />
+    <title>ปัน ณัฐพัชร์ · คลาสอบรม และ Consult วางระบบทีมขาย</title>
+    <meta name="description" content="ผมช่วยทีมขายได้ 2 แบบ: คลาสอบรมให้ทีมทำเองเป็น หรือ Consult เข้าไปวางระบบให้ทีมใช้กับงานจริง ยังไม่แน่ใจ เช็คทีมขาย 2 นาที หรือทัก LINE เล่าโจทย์" />
     <link rel="canonical" href="https://punnattapatch.com/link/" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta property="og:type" content="profile" />
-    <meta property="og:title" content="ปัน ณัฐพัชร์ · บริการ ติดต่อ และผลงาน" />
-    <meta property="og:description" content="เลือกทางที่ต้องการ: สอบถามหรือจองคิว ดูบริการที่ปรึกษาหรือจัดอบรม หรือชวนไปร่วมงาน" />
+    <meta property="og:title" content="ปัน ณัฐพัชร์ · คลาสอบรม และ Consult วางระบบทีมขาย" />
+    <meta property="og:description" content="ผมช่วยทีมขายได้ 2 แบบ: คลาสอบรมให้ทีมทำเองเป็น หรือ Consult เข้าไปวางระบบให้ทีมใช้กับงานจริง ยังไม่แน่ใจ เช็คทีมขาย 2 นาที หรือทัก LINE เล่าโจทย์" />
     <meta property="og:image" content="https://punnattapatch.com/og-image.jpg" />
     <meta property="og:url" content="https://punnattapatch.com/link/" />
     <meta property="og:locale" content="th_TH" />
@@ -91,6 +91,27 @@
         .paper-route:hover { @apply -translate-y-0.5 bg-[#fffdf8] shadow-[4px_6px_0_rgba(30,27,22,0.11)]; }
         .paper-route:active { @apply translate-y-0.5 scale-[0.988] shadow-[1px_2px_0_rgba(30,27,22,0.10)]; }
         .paper-route:focus-visible { @apply outline-2 outline-offset-4 outline-coral; }
+        .door {
+          @apply relative flex touch-manipulation flex-col gap-3 rounded-[17px] border px-4 pb-4 pt-4 no-underline transition-[transform,box-shadow] duration-150 ease-out;
+        }
+        .door-class { @apply border-navy bg-sheet text-navy shadow-[4px_5px_0_rgba(7,43,78,0.16)]; }
+        .door-consult { @apply border-[#001f3d] bg-navy text-paper shadow-[4px_5px_0_rgba(221,65,85,0.32)]; }
+        .door:hover { @apply -translate-y-0.5; }
+        .door:active { @apply translate-y-0.5 scale-[0.99]; }
+        .door:focus-visible { @apply outline-2 outline-offset-4 outline-coral; }
+        .door-tag { @apply self-start rounded-full px-2.5 py-1 text-[11.5px] font-bold leading-none; }
+        .door-class .door-tag { @apply bg-navy text-paper; }
+        .door-consult .door-tag { @apply bg-coral text-white; }
+        .door-fit { @apply block rounded-[10px] px-3 py-2 text-[13px] font-semibold leading-[1.5]; }
+        .door-class .door-fit { @apply bg-sand text-[#3d3933]; }
+        .door-consult .door-fit { @apply bg-white/10 text-paper; }
+        .topic-chip { @apply rounded-full border border-[#c9c2b2] bg-sheet px-2.5 py-1 text-[12.5px] font-semibold leading-tight text-navy; }
+        .line-route {
+          @apply relative flex min-h-[76px] touch-manipulation items-center gap-3.5 rounded-[15px] border border-[#04a548] bg-line px-4 py-3 text-[#052c18] no-underline shadow-[3px_4px_0_rgba(4,120,56,0.18)] transition-[transform,box-shadow] duration-150 ease-out;
+        }
+        .line-route:hover { @apply -translate-y-0.5; }
+        .line-route:active { @apply translate-y-0.5 scale-[0.988]; }
+        .line-route:focus-visible { @apply outline-2 outline-offset-4 outline-coral; }
         .social-link {
           @apply flex min-h-[72px] touch-manipulation flex-col items-center justify-center gap-1.5 rounded-[11px] border border-white/25 bg-white/[0.07] px-2 text-paper no-underline transition-[transform,background-color] duration-150 ease-out;
         }
@@ -117,7 +138,7 @@
       }
       dialog[data-video-dialog]::backdrop { background: rgba(0, 20, 40, 0.86); }
       @media (prefers-reduced-motion: reduce) {
-        .paper-route, .social-link, .video-note-play { transition: none !important; transform: none !important; }
+        .paper-route, .door, .line-route, .social-link, .video-note-play { transition: none !important; transform: none !important; }
         .trust-marquee { overflow-x: auto; scroll-snap-type: x proximity; }
         .trust-track { transform: none !important; }
         .logo-tile { scroll-snap-align: start; }
@@ -130,21 +151,83 @@
   <body class="min-h-dvh overflow-x-hidden font-body text-ink antialiased">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-coral focus:px-4 focus:py-2 focus:text-white">ข้ามไปยังเนื้อหาหลัก</a>
     <main id="main" class="mx-auto flex min-h-dvh w-full max-w-[560px] flex-col px-5 pb-[max(24px,env(safe-area-inset-bottom))] pt-[max(22px,env(safe-area-inset-top))] sm:px-8 sm:pt-9">
-      <header class="flex flex-col items-center text-center">
-        <div class="relative">
-          <div class="rounded-full border border-[#bdb5a6] bg-sheet p-1 shadow-[2px_3px_0_rgba(30,27,22,0.10)]">
-            <img src="/pun-avatar.jpg" alt="ปัน ณัฐพัชร์" width="640" height="640" loading="eager" decoding="async" class="size-[102px] rounded-full border-2 border-navy object-cover sm:size-[108px]" />
-          </div>
-          <span class="absolute -bottom-1 right-0 grid h-7 min-w-8 rotate-[-6deg] place-items-center border border-coral-dark bg-coral-dark px-1.5 text-[10px] font-bold text-white shadow-[1px_2px_0_rgba(196,50,69,0.22)]" aria-hidden="true">PUN</span>
+      <header class="flex items-center gap-3.5">
+        <div class="shrink-0 rounded-full border border-[#bdb5a6] bg-sheet p-0.5 shadow-[2px_3px_0_rgba(30,27,22,0.10)]">
+          <img src="/pun-avatar.jpg" alt="ปัน ณัฐพัชร์" width="640" height="640" loading="eager" decoding="async" class="size-[60px] rounded-full border-2 border-navy object-cover" />
         </div>
-        <p class="mt-3 font-display text-[29px] font-bold leading-tight tracking-[-0.02em] text-navy sm:text-[32px]">ปัน ณัฐพัชร์</p>
-        <p class="mt-1 text-[13px] font-medium text-[#756e64]">@pun_nattapatch</p>
-        <p class="mt-2 text-[15px] font-semibold leading-snug text-[#36322d] sm:text-[16px]">ที่ปรึกษาการปั้นทีมขาย × AI Agent</p>
+        <div class="min-w-0">
+          <p class="font-display text-[22px] font-bold leading-tight text-navy">ปัน ณัฐพัชร์</p>
+          <p class="mt-0.5 text-[13.5px] font-semibold leading-snug text-[#36322d]">ที่ปรึกษาการปั้นทีมขาย × AI Agent</p>
+          <p class="mt-0.5 text-[12px] font-medium text-[#756e64]">@pun_nattapatch</p>
+        </div>
       </header>
+
+      <section class="mt-6" aria-labelledby="hub-heading">
+        <p class="text-[13px] font-bold leading-tight text-coral-dark">ผมช่วยทีมขายได้ 2 แบบ</p>
+        <h1 id="hub-heading" class="mt-1.5 font-display text-[27px] font-bold leading-[1.32] text-navy sm:text-[33px]">ให้ทีมเรียนจนทำเป็น<br />หรือให้ผมเข้าไปวางให้</h1>
+      </section>
+
+      <nav class="mt-4" aria-label="บริการหลัก 2 แบบ">
+        <ul class="m-0 grid list-none gap-3 p-0">
+          <li>
+            <a href="https://punnattapatch.com/services#core-training" data-primary-route data-door="class" data-link-event="class" data-link-target="class" data-link-platform="services" class="door door-class group">
+              <span class="door-tag">แบบที่ 1</span>
+              <span class="flex items-start justify-between gap-3">
+                <span class="min-w-0">
+                  <span class="block font-display text-[24px] font-bold leading-tight">คลาสอบรม</span>
+                  <span class="mt-1.5 block text-[14px] leading-[1.55] text-[#3d3933]">ผมสอนทีมที่บริษัทคุณ 1 วัน <span class="whitespace-nowrap">ทีมกลับไปทำเองเป็น</span></span>
+                </span>
+                <svg viewBox="0 0 24 24" class="size-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+              </span>
+              <span class="door-fit">เหมาะเมื่อ ทีมมีคนแล้ว แต่ยังทำไม่เป็น</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://punnattapatch.com/services/daily-consulting" data-primary-route data-door="consult" data-link-event="consult" data-link-target="consult" data-link-platform="services" class="door door-consult group">
+              <span class="door-tag">แบบที่ 2</span>
+              <span class="flex items-start justify-between gap-3">
+                <span class="min-w-0">
+                  <span class="block font-display text-[24px] font-bold leading-tight">Consult วางระบบ</span>
+                  <span class="mt-1.5 block text-[14px] leading-[1.55] text-paper/85">ผมเข้าไปวางระบบให้ทีมใช้กับงานจริง 1–2 วัน</span>
+                </span>
+                <svg viewBox="0 0 24 24" class="size-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+              </span>
+              <span class="door-fit">เหมาะเมื่อ รู้ว่าต้องแก้อะไร แต่ไม่มีใครว่างลงมือ</span>
+            </a>
+          </li>
+        </ul>
+        <div class="mt-3.5">
+          <p class="text-[12.5px] font-semibold text-[#6f685e]">ทั้ง 2 แบบ เลือกเรื่องได้ 6 เรื่อง</p>
+          <ul class="m-0 mt-1.5 flex list-none flex-wrap gap-1.5 p-0" aria-label="เรื่องที่เลือกได้">
+            <li class="topic-chip">คัดคน</li>
+            <li class="topic-chip">เป้าและค่าคอม</li>
+            <li class="topic-chip">หัวหน้าคุมทีม</li>
+            <li class="topic-chip">ฝ่ายขาย</li>
+            <li class="topic-chip">ฝ่ายเอกสาร</li>
+            <li class="topic-chip">ฝ่ายคอนเทนต์</li>
+          </ul>
+        </div>
+      </nav>
+
+      <section class="mt-5 rounded-[17px] border border-[#bdb5a6] bg-sheet p-4 shadow-[3px_4px_0_rgba(30,27,22,0.08)]" aria-labelledby="unsure-heading">
+        <h2 id="unsure-heading" class="font-display text-[19px] font-bold leading-snug text-navy">ยังไม่แน่ใจว่าแบบไหน</h2>
+        <div class="mt-3 grid gap-2.5">
+          <a href="https://punnattapatch.com/team-check" data-primary-route data-link-event="team-check" data-link-target="team-check" data-link-platform="quiz" class="paper-route group min-h-[76px]">
+            <span class="grid size-11 shrink-0 place-items-center rounded-[11px] border border-coral/25 bg-coral/10 text-coral-dark" aria-hidden="true"><svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span>
+            <span class="min-w-0 flex-1"><span class="block text-[17px] font-bold leading-tight">เช็คทีมขาย 2 นาที</span><span class="mt-1.5 block text-[12.5px] leading-[1.45] text-[#6f685e]">รู้ว่าทีมติดเรื่องคน หรือเรื่องระบบ</span></span>
+            <svg viewBox="0 0 24 24" class="size-5 shrink-0 text-navy/65" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+          </a>
+          <a href="https://lin.ee/ioSnSUG" target="_blank" rel="noopener me" data-primary-route data-link-event="line" data-link-target="line" data-link-platform="line" class="line-route group">
+            <span class="grid size-11 shrink-0 place-items-center rounded-[11px] bg-white text-[11px] font-extrabold text-[#06c755]" aria-hidden="true">LINE</span>
+            <span class="min-w-0 flex-1"><span class="block text-[17px] font-bold leading-tight">ทักมาเล่าโจทย์ใน LINE</span><span class="mt-1.5 block text-[12.5px] font-medium leading-[1.45] text-[#063d20]">เล่าคร่าวๆ ได้เลย</span></span>
+            <svg viewBox="0 0 24 24" class="size-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+          </a>
+        </div>
+      </section>
 
       <!-- FutureSkill Instructor 2026 — หลักฐานจากคนนอก ห้ามยืนเดี่ยว: บรรทัดคู่วง 1 (ใช้ AI Agent ทำงานจริงทุกวัน) ต้องอยู่ในกล่องเดียวกันเสมอ
            · โลโก้ FutureSkill วางบนพื้นขาวเท่านั้น · wiki/pages/moat-futureskill-instructor-third-party-teaching-proof.md -->
-      <section data-fs-banner aria-label="FutureSkill Instructor 2026" class="fs-banner mt-4 sm:mt-5">
+      <section data-fs-banner aria-label="FutureSkill Instructor 2026" class="fs-banner mt-6">
         <img src="/images/futureskill/instructor-banner-plate.webp" alt="" width="720" height="427" loading="eager" decoding="async" class="fs-plate" />
         <div class="relative flex items-center gap-3 px-4 pt-3.5 sm:gap-3.5 sm:px-5 sm:pt-4">
           <span class="grid size-[54px] shrink-0 max-[359px]:size-[46px] place-items-center rounded-[13px] border border-[#e4dcef] bg-white shadow-[0_3px_10px_rgba(43,10,114,0.12)] sm:size-[60px]"><img src="/images/futureskill/futureskill-mark.webp" alt="FutureSkill" width="160" height="155" class="size-[36px] object-contain max-[359px]:size-[30px] sm:size-[40px]" /></span>
@@ -158,49 +241,6 @@
           <p class="m-0 mt-1 text-[11.5px] font-bold leading-[1.45] text-[#32214b] sm:text-[12.5px]"><span class="mr-1 text-[10px] tracking-[0.12em] text-[#1aa0e8]">3 ACADEMIES</span> AI <span class="text-[#1aa0e8]">•</span> <span class="whitespace-nowrap">Digital Business</span> <span class="whitespace-nowrap"><span class="text-[#1aa0e8]">•</span> Sales &amp; Customer</span></p>
         </div>
       </section>
-
-      <section class="relative mt-5 border-l-2 border-coral/75 pl-4 sm:mt-7 sm:pl-5">
-        <span class="mb-1.5 block text-[10px] font-bold uppercase tracking-[0.13em] text-coral-dark">LINK INDEX / 01</span>
-        <h1 aria-label="วันนี้คุณมาหาผมเรื่องไหนครับ?" class="font-display text-[27px] font-bold leading-[1.28] tracking-[-0.02em] text-navy sm:text-[34px]">วันนี้คุณมาหาผม<br class="sm:hidden" />เรื่องไหนครับ?</h1>
-        <span class="mt-1.5 block h-[5px] w-[124px] rotate-[-1deg] rounded-full bg-coral/80" aria-hidden="true"></span>
-      </section>
-
-      <nav class="mt-5" aria-label="เส้นทางหลัก">
-        <ol class="m-0 list-none space-y-2.5 p-0">
-          <li>
-            <a href="https://lin.ee/ioSnSUG" target="_blank" rel="noopener me" data-primary-route data-link-event="line" data-link-target="line" data-link-platform="line" class="group relative flex min-h-[100px] touch-manipulation items-center gap-3.5 rounded-[15px] border border-[#001f3d] bg-navy px-4 py-3.5 text-paper no-underline shadow-[4px_5px_0_rgba(221,65,85,0.28)] transition-[transform,box-shadow,background-color] duration-150 ease-out hover:-translate-y-0.5 hover:bg-[#0b355b] hover:shadow-[5px_7px_0_rgba(221,65,85,0.32)] active:translate-y-0.5 active:scale-[0.988] active:shadow-[1px_2px_0_rgba(221,65,85,0.25)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-coral">
-              <span class="grid size-11 shrink-0 place-items-center rounded-[11px] bg-line text-[11px] font-extrabold text-[#052c18]" aria-hidden="true">LINE</span>
-              <span class="min-w-0 flex-1"><span class="block text-[18px] font-bold leading-tight sm:text-[19px]">สอบถามหรือจองคิว</span><span class="mt-1.5 block text-[12.5px] leading-[1.45] text-paper/72">ทัก LINE เล่าโจทย์คร่าวๆ ได้เลย</span></span>
-              <svg viewBox="0 0 24 24" class="size-5 shrink-0 text-paper/85" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
-              <span class="absolute -left-2.5 -top-2 rotate-[-5deg] border border-coral-dark bg-coral-dark px-2 py-0.5 text-[9px] font-bold tracking-[0.08em] text-white shadow-[1px_2px_0_rgba(30,27,22,0.12)]">01 · ทางลัด</span>
-            </a>
-          </li>
-          <li>
-            <a href="https://futureskill.co/course/detail/6030" target="_blank" rel="noopener" data-primary-route data-link-event="futureskill-course" data-link-target="course-6030" data-link-platform="futureskill" class="paper-route group">
-              <span class="grid size-11 shrink-0 place-items-center overflow-hidden rounded-[11px] border border-[#7356e8]/25 bg-[#f1edff] p-1.5" aria-hidden="true"><img src="/logos/clients/futureskill.png" alt="" width="160" height="96" loading="eager" decoding="async" class="size-full object-contain" /></span>
-              <span class="min-w-0 flex-1"><span class="block text-[16px] font-bold leading-[1.3] sm:text-[18px]">คลาสออนไลน์บน FutureSkill</span><span class="mt-1.5 block text-[12.5px] leading-[1.45] text-[#6f685e]">ตั้ง Worker บน Cloud ด้วย AI Agent</span></span>
-              <svg viewBox="0 0 24 24" class="size-5 shrink-0 text-navy/65" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
-              <span class="absolute -left-2 top-3 font-display text-[11px] font-bold text-coral-dark" aria-hidden="true">02</span>
-            </a>
-          </li>
-          <li>
-            <a href="https://punnattapatch.com/services" data-primary-route data-link-event="services" data-link-target="services" data-link-platform="services" class="paper-route group">
-              <span class="grid size-11 shrink-0 place-items-center rounded-[11px] border border-navy/20 bg-sand text-navy" aria-hidden="true"><svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
-              <span class="min-w-0 flex-1"><span class="block text-[16px] font-bold leading-[1.3] sm:text-[18px]">ดูบริการที่ปรึกษาหรือจัดอบรม ทั้งหมด</span><span class="mt-1.5 block text-[12.5px] leading-[1.45] text-[#6f685e]">เลือกจากโจทย์จริงของทีมและองค์กร</span></span>
-              <svg viewBox="0 0 24 24" class="size-5 shrink-0 text-navy/65" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
-              <span class="absolute -left-2 top-3 font-display text-[11px] font-bold text-coral-dark" aria-hidden="true">03</span>
-            </a>
-          </li>
-          <li>
-            <a href="https://punnattapatch.com/sponsor" data-primary-route data-link-event="sponsor" data-link-target="sponsor" data-link-platform="sponsor" class="paper-route group">
-              <span class="grid size-11 shrink-0 place-items-center rounded-[11px] border border-coral/25 bg-coral/10 text-coral-dark" aria-hidden="true"><svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17 2 2a2.8 2.8 0 0 0 4-4l-3.1-3.1"/><path d="m13 7-2-2a2.8 2.8 0 0 0-4 4l3.1 3.1"/><path d="m8 12 4-4"/><path d="m16 12-4 4"/></svg></span>
-              <span class="min-w-0 flex-1"><span class="block text-[17px] font-bold leading-tight sm:text-[18px]">ชวนไปร่วมงาน</span><span class="mt-1.5 block text-[11.5px] font-medium leading-[1.45] text-[#6f685e]">Sponsor · Partnership · Speaker</span></span>
-              <svg viewBox="0 0 24 24" class="size-5 shrink-0 text-navy/65" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
-              <span class="absolute -left-2 top-3 font-display text-[11px] font-bold text-coral-dark" aria-hidden="true">04</span>
-            </a>
-          </li>
-        </ol>
-      </nav>
 
       <section data-trust-section class="mt-6 rounded-[18px] border border-[#bdb5a6] bg-sheet p-4 shadow-[4px_5px_0_rgba(30,27,22,0.08)]" aria-labelledby="trust-heading">
         <div class="flex items-end justify-between gap-3">
@@ -304,6 +344,26 @@
         </div>
       </section>
 
+      <nav class="mt-5" aria-labelledby="more-heading">
+        <h2 id="more-heading" class="mb-2.5 font-display text-[16px] font-semibold leading-tight text-navy">ลิงก์อื่นๆ</h2>
+        <ul class="m-0 list-none space-y-2.5 p-0">
+            <li>
+            <a href="https://futureskill.co/course/detail/6030" target="_blank" rel="noopener" data-more-route data-link-event="futureskill-course" data-link-target="course-6030" data-link-platform="futureskill" class="paper-route group">
+              <span class="grid size-11 shrink-0 place-items-center overflow-hidden rounded-[11px] border border-[#7356e8]/25 bg-[#f1edff] p-1.5" aria-hidden="true"><img src="/logos/clients/futureskill.png" alt="" width="160" height="96" loading="eager" decoding="async" class="size-full object-contain" /></span>
+              <span class="min-w-0 flex-1"><span class="block text-[16px] font-bold leading-[1.3] sm:text-[18px]">คลาสออนไลน์บน FutureSkill</span><span class="mt-1.5 block text-[12.5px] leading-[1.45] text-[#6f685e]">ตั้ง Worker บน Cloud ด้วย AI Agent</span></span>
+              <svg viewBox="0 0 24 24" class="size-5 shrink-0 text-navy/65" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+            </a>
+            </li>
+            <li>
+            <a href="https://punnattapatch.com/sponsor" data-more-route data-link-event="sponsor" data-link-target="sponsor" data-link-platform="sponsor" class="paper-route group">
+              <span class="grid size-11 shrink-0 place-items-center rounded-[11px] border border-coral/25 bg-coral/10 text-coral-dark" aria-hidden="true"><svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17 2 2a2.8 2.8 0 0 0 4-4l-3.1-3.1"/><path d="m13 7-2-2a2.8 2.8 0 0 0-4 4l3.1 3.1"/><path d="m8 12 4-4"/><path d="m16 12-4 4"/></svg></span>
+              <span class="min-w-0 flex-1"><span class="block text-[17px] font-bold leading-tight sm:text-[18px]">ชวนไปร่วมงาน</span><span class="mt-1.5 block text-[11.5px] font-medium leading-[1.45] text-[#6f685e]">Sponsor · Partnership · Speaker</span></span>
+              <svg viewBox="0 0 24 24" class="size-5 shrink-0 text-navy/65" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+            </a>
+            </li>
+        </ul>
+      </nav>
+
       <section data-social-section class="mt-5 rounded-[17px] border border-[#001f3d] bg-navy px-4 pb-4 pt-3.5 text-paper shadow-[4px_5px_0_rgba(221,65,85,0.24)]" aria-labelledby="social-heading">
         <div class="mb-3 flex items-center gap-3"><span class="h-px w-7 bg-coral" aria-hidden="true"></span><h2 id="social-heading" class="font-display text-[16px] font-semibold leading-tight sm:text-[17px]">ติดตามผลงานต่างๆได้ทาง</h2></div>
         <div class="grid grid-cols-3 gap-2.5" role="group" aria-label="Social profiles">
@@ -373,7 +433,7 @@
       })();
 
       (function trackRouteClicks() {
-        const eventNames = { line: 'link_line_click', services: 'link_services_click', sponsor: 'link_sponsor_click', 'intro-video': 'link_intro_video_play', tiktok: 'link_social_click', instagram: 'link_social_click', facebook: 'link_social_click' };
+        const eventNames = { line: 'link_line_click', class: 'link_class_click', consult: 'link_consult_click', 'team-check': 'link_team_check_click', 'futureskill-course': 'link_futureskill_click', services: 'link_services_click', sponsor: 'link_sponsor_click', 'intro-video': 'link_intro_video_play', tiktok: 'link_social_click', instagram: 'link_social_click', facebook: 'link_social_click' };
         function sourceName() {
           const current = new URLSearchParams(window.location.search).get('utm_source');
           if (current) return current;
@@ -395,6 +455,10 @@
           const props = { target: link.dataset.linkTarget, platform: link.dataset.linkPlatform, source: sourceName(), path: window.location.pathname };
           try { window.plausible(eventNames[key], { props }); } catch {}
           try { window.plausible('Link Click', { props }); } catch {}
+          // ทัก LINE = Contact (ตรงกับ ContactTracking บนหน้าเว็บหลัก) · ประตูบริการ/quiz เป็นแค่การเปิดหน้า ไม่ยิง Contact
+          if (key === 'line') {
+            try { if (typeof window.fbq === 'function') window.fbq('track', 'Contact', { content_name: 'link_hub_line' }); } catch {}
+          }
         });
       })();
 
