@@ -297,7 +297,7 @@ test('services catalog has healthy card images and no horizontal overflow at rel
   await page.close();
 });
 
-test('public learning section leads to the live cohort and the external FutureSkill class', async ({ browser }) => {
+test('public learning section shows only the external FutureSkill class while P1 is postponed', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   page.setDefaultTimeout(5_000);
   await page.goto(`${baseURL}/services`);
@@ -315,18 +315,12 @@ test('public learning section leads to the live cohort and the external FutureSk
     );
   }), true, 'public learning must appear before the in-house training catalog');
 
+  // P1 ถอดออกจากหน้า /services ระหว่างเลื่อนวันเรียน (คุณปันสั่ง 2026-10-10) — เหลือคลาสออนไลน์บน FutureSkill
   const cards = section.locator('[data-public-course]');
   assert.deepEqual(
     await cards.evaluateAll((elements) => elements.map((element) => element.getAttribute('data-public-course'))),
-    ['P1', 'FUTURESKILL'],
+    ['FUTURESKILL'],
   );
-
-  const cohort = cards.filter({ has: page.getByRole('heading', { name: 'AI Sale Loop System · รุ่นที่ 1' }) });
-  assert.equal(await cohort.getByRole('link', { name: /ดูรายละเอียดคลาสสด/ }).getAttribute('href'), '/services/ai-sales-agent-bootcamp');
-  await assert.doesNotReject(async () => {
-    const price = await cohort.locator('[data-public-course-price]').textContent();
-    assert.match(price ?? '', /฿19,900/);
-  });
 
   const futureSkill = cards.filter({ has: page.getByRole('heading', { name: 'ตั้ง Worker บน Cloud ด้วย AI Agent' }) });
   const futureSkillLink = futureSkill.getByRole('link', { name: /ดูคลาสบน FutureSkill/ });

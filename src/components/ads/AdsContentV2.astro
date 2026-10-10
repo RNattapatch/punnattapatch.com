@@ -278,7 +278,7 @@ const lineIcon = 'M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 8
   </div>
 </section>
 
-{/* The day itself. Daruma circles fill as the day progresses; the last one gets its eyes. */}
+{/* The day itself. Progress circles fill as the day progresses; the last one gets a check (Daruma paused 2026-10-07). */}
 <section class="px-5 py-16 md:py-20">
   <div class="mx-auto max-w-6xl">
     <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">1 วันเต็ม เรียนอะไรบ้าง</p>
@@ -291,8 +291,7 @@ const lineIcon = 'M21.5 11.1c0-4.6-4.8-8.3-10.8-8.3S0 6.5 0 11.1c0 4.1 3.8 7.5 8
           {row.final ? (
             <svg class="mt-1 size-10" viewBox="0 0 40 40" aria-hidden="true">
               <circle cx="20" cy="20" r="16" fill="#dd4155" />
-              <circle cx="14" cy="17" r="2.6" fill="#fff" /><circle cx="26" cy="17" r="2.6" fill="#fff" />
-              <circle cx="14" cy="17" r="1.2" fill="#00162f" /><circle cx="26" cy="17" r="1.2" fill="#00162f" />
+              <path d="M13 20.5 18 25.5 27.5 15" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           ) : (
             <svg class="mt-1 size-10" viewBox="0 0 40 40" aria-hidden="true">

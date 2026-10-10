@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import DarumaMark from '../../components/DarumaMark.astro';
+import SuccessMark from '../../components/SuccessMark.astro';
 import AdsContentV2 from '../../components/ads/AdsContentV2.astro';
 import ProofAdsBlock from '../../components/proof/ProofAdsBlock.astro';
 import AfterHoursField from '../../components/AfterHoursField.astro';
@@ -98,7 +98,7 @@ const content = {
   principleBody: 'คลาสจึงเริ่มจากสินค้า ราคา เงื่อนไข และกติกาการขายของบริษัทคุณเอง ไม่ใช่เริ่มจากท่องจำ prompt แล้ว AI ค่อยเข้ามาช่วยทำสื่อ ร่างข้อความตาม และสรุปงาน ภายใต้กติกาที่ทีมตกลงกันแล้ว',
 
   agendaTitle: 'สองวันเดินจาก "คนดูออนไลน์" ไปหา "ยอดขาย" ทุกช่วงมีชิ้นงานออก',
-  agendaLead: 'วงกลมข้างเวลาคือดารุมะของทีมคุณครับ เราแต้มตาให้มันช่วงท้ายวันที่สอง เมื่อเส้นทางจากโพสต์ถึงยอดขายมีเจ้าของงานครบทุกจุด',
+  agendaLead: 'วงกลมข้างเวลาคือความคืบหน้าของทีมคุณครับ วงสุดท้ายเต็มช่วงท้ายวันที่สอง เมื่อเส้นทางจากโพสต์ถึงยอดขายมีเจ้าของงานครบทุกจุด',
   agenda: [
     { time: 'วันแรก', until: ' · 09:00', heading: 'ขายอะไร ให้ใคร เพราะอะไร', body: 'ไล่เส้นทางลูกค้าจริงตั้งแต่เห็นโพสต์จนถึงวันจ่ายเงิน แล้วเลือกสินค้าและกลุ่มลูกค้าที่คุ้มที่สุดที่จะทำ Campaign ก่อน ไม่หว่านทุกตัวพร้อมกัน', output: 'Customer Journey + FFAB Sheet รายสินค้า' },
     { time: 'วันแรก', until: ' · 10:45', heading: 'ภาพโฆษณาจากสินค้าจริงด้วย AI', body: 'ถ่ายสินค้าและหน้างานจริง แล้วใช้ AI ทำเป็นภาพโพสต์ระดับใช้ยิงแอดได้ ทีละตัวที่เลือกไว้ เซลล์ที่ไม่เคยทำสื่อเลยก็มีชิ้นงานของตัวเอง', output: 'ชุดภาพโพสต์รายสินค้า' },
@@ -107,7 +107,7 @@ const content = {
     { time: 'วันที่สอง', until: ' · 09:00', heading: 'คัดกรองลูกค้าและ Chat script', body: 'วางคำถามคัดกรองว่าใครดูเฉยๆ ใครใกล้ตัดสินใจ แล้วเขียนสคริปต์แชตที่พาไปสู่นัดหมายหรือใบเสนอราคา ไม่ใช่แค่ตอบราคาแล้วจบ', output: 'Chat-to-appointment script' },
     { time: 'วันที่สอง', until: ' · 10:45', heading: 'สมองบริษัท + AI ช่วยร่างข้อความตาม', body: 'รวมสินค้า ราคา เงื่อนไข และกติกาการขายเป็นไฟล์กลาง แล้วให้ AI ช่วยร่างข้อความตามลูกค้าแต่ละสถานการณ์ โดยเซลล์ตรวจก่อนส่งทุกครั้ง', output: 'company-context.md + ชุดข้อความตามลูกค้า' },
     { time: 'วันที่สอง', until: ' · 13:00', heading: 'แชต → นัดหมาย → ใบเสนอราคา → ปิด', body: 'ซ้อมเส้นทางจริงตั้งแต่รับแชตจนถึงวันปิดการขาย กำหนด Marketing-to-Sales handoff ให้ Lead ทุกคนมีเจ้าของ และเงียบเกินเมื่อไหร่หัวหน้าต้องเห็น', output: 'กติกาส่งต่อ + เจ้าของงานทุกจุด' },
-    { time: 'วันที่สอง', until: ' · 15:00', heading: 'Tracking, แผน 14 วัน แล้วแต้มตาดารุมะ', body: 'ตกลงตัวเลขชุดเดียวที่หัวหน้าดูทุกเช้า แล้วปิดด้วย Content plan 14 วันพร้อมชื่อคนรับผิดชอบทุกช่อง', output: 'Tracking sheet + Content plan 14 วัน', final: true },
+    { time: 'วันที่สอง', until: ' · 15:00', heading: 'Tracking กับแผน 14 วัน', body: 'ตกลงตัวเลขชุดเดียวที่หัวหน้าดูทุกเช้า แล้วปิดด้วย Content plan 14 วันพร้อมชื่อคนรับผิดชอบทุกช่อง', output: 'Tracking sheet + Content plan 14 วัน', final: true },
   ],
   nudgeAgenda: 'อ่านตารางแล้วอยากรู้ว่าทีมคุณจะได้ชิ้นงานไหนก่อน? ทักมาถามได้ครับ ผมเล่าให้ฟังทีละช่วง',
 
@@ -270,7 +270,7 @@ const content = {
         </form>
 
         <div id="dealer-ai-success" class="editorial-card hidden p-8 text-center lg:col-start-2" role="status" aria-live="polite">
-          <DarumaMark class="mx-auto h-auto w-20" />
+          <SuccessMark class="mx-auto h-auto w-20" />
           <h2 class="mt-5 font-display text-3xl font-bold text-navy">รับข้อมูลแล้วครับ</h2>
           <p class="mt-3 leading-relaxed text-warm-ink/75">ผมจะอ่านโจทย์ก่อนครับ แล้วทักกลับทาง LINE หรือโทรศัพท์ คุยกันฟรี 15–20 นาที</p>
           <p class="mt-5 border-t border-[#c9c2b2] pt-4 text-sm leading-relaxed text-warm-ink/75">ระหว่างรอผมติดต่อกลับ อ่านหน้านี้ 3 นาทีครับ จะได้รู้จักกันก่อนคุยจริง<br /><a href="/start" class="font-semibold text-cyan underline">รู้จักผมใน 3 นาที →</a></p>

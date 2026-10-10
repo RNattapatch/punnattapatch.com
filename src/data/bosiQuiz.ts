@@ -208,7 +208,7 @@ export const DNA_PROFILES: Record<DnaLetter, DnaProfile> = {
       'ความใจร้อนและต้องการควบคุมทุกอย่างอาจทำให้ความสัมพันธ์ในทีมแตกร้าว',
       'เบื่อหน่ายงานซ้ำๆ (Mundane Tasks) อาจทำให้ละเลยรายละเอียดสำคัญ',
     ],
-    recommendedSlug: 'daruma-transformation',
+    recommendedSlug: 'C1',
     accent: 'sky',
     color: '#7ec8f0',
   },

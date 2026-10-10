@@ -82,6 +82,6 @@ Google Sheets + Apps Script + ตัวเชื่อมงานอัตโ�
 Package ที่ช่วย setup:
 
 - [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office) — setup CRM บน Sheets + 1 automation ในวันเดียว
-- [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — CRM + KPI (ตัววัดผลงาน) + Commission (ค่าคอมมิชชั่น) + ระบบอัตโนมัติ ครบทั้งระบบ
+- [บริการวางระบบฝ่ายขาย แบบครบรอบ 2 วัน](/services/daily-consulting) — วาง CRM กับ KPI (ตัววัดผลงาน) และค่าคอมมิชชั่นให้ทีมใช้ วันละไม่เกิน 2 เรื่อง
 
 อ่านต่อ: [KPI dashboard บน Google Sheets](/faq) | [AI Agent vs chatbot](/faq)

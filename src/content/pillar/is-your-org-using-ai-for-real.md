@@ -116,7 +116,7 @@ readingTimeMinutes: 9
 ## เริ่ม audit องค์กรคุณ
 
 -   [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office) — 1 วัน audit + สร้าง Agent ตัวแรก
--   [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — สร้างระบบการขายอัตโนมัติเต็มรูปแบบทั้งบริษัท
+-   [บริการวางระบบฝ่ายขาย แบบครบรอบ 2 วัน](/services/daily-consulting) — ให้ AI รับงานซ้ำของฝ่ายขาย เริ่มจากเรื่องที่ติดที่สุดก่อน
 -   [BOSI DNA Quiz](/bosi-dna-quiz) — รู้ DNA ทีมก่อนเลือก path
 
 หรือ [กรอกฟอร์ม 3 นาที](/intake-form) ผมอ่านแล้วบอกว่าองค์กรคุณอยู่ระดับไหนและควรเริ่มจากอะไร

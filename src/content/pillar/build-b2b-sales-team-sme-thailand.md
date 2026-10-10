@@ -129,6 +129,6 @@ KPI dashboard (หน้าจอสรุปข้อมูล) พื้นฐ
 ## อยากเริ่มก่อนจ้าง project ใหญ่
 
 - [AI สำหรับงานหลังบ้าน 2026 1 วัน {{price:ai-workshop-advance}}](/services#back-office) — วางระบบ + ได้ AI workflow (ขั้นตอนการทำงาน) ใช้งานจริงใน 1 วัน
-- [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — ระบบขายครบทั้งบริษัทพร้อม KPI dashboard + CRM automation
+- [บริการวางระบบฝ่ายขาย แบบครบรอบ 2 วัน](/services/daily-consulting) — KPI dashboard กับ CRM ที่ส่งงานต่อให้เอง ทีละเรื่อง
 - [BOSI DNA Quiz ฟรี](/bosi-dna-quiz) — รู้ DNA ทีมขายใน 5-10 นาที ก่อนวางระบบ
 - [จองคิวคุย 30 นาที](/booking) — ดูว่าผมเข้ากับ culture ของทีมคุณไหม

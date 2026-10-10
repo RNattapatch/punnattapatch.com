@@ -28,7 +28,7 @@ anonymized: true
 
 **จุดชนวน:** Top performer #3 ลาออกเพราะ commission flat + เจ้านายประกาศจะคงระบบ "เพราะ junior จะน้อยใจ" — เจ้าของรู้ว่าถ้าไม่แก้ ที่เหลือจะตามไป
 
-## สิ่งที่ผมทำให้ (Daruma Sales Transformation · วางระบบขายทั้งบริษัท)
+## สิ่งที่ผมทำให้ (วางระบบขายทั้งบริษัท)
 
 ### Week 1: Discovery + Data Audit
 
@@ -149,6 +149,6 @@ Team bonus = top performer ยอมช่วย junior เพราะมัน
 
 ## อยากได้ผลลัพธ์แบบนี้ไหม?
 
-- [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — Workflow (ขั้นตอนการทำงาน) วางระบบขายทั้งบริษัทแบบเดียวกับลูกค้ารายนี้
+- [บริการวางระบบฝ่ายขาย แบบครบรอบ 2 วัน](/services/daily-consulting) — วาง Workflow (ขั้นตอนการทำงาน) แบบเดียวกับลูกค้ารายนี้ ทีละเรื่อง
 - [คลาสอบรมทักษะการขาย + Follow-up + AI {{price:inhouse-a}}](/services#offer-t1) — ถ้าต้องการฝึกทีมก่อน redesign commission
 - [กรอกฟอร์ม 3 นาที](/intake-form) — ผมอ่านแล้วบอกว่าเคสคุณควรเริ่มที่ตัวเลขเท่าไหร่

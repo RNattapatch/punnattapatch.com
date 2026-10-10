@@ -147,6 +147,6 @@ parentPillar: sales-consulting
 
 ## เริ่มประคอง 4 ล้อ
 
-- [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — เข้ามาช่วยวางระบบ 4 ล้อให้ครบทั้งบริษัทและทำงานลื่นไหล
+- [บริการวางระบบฝ่ายขาย แบบครบรอบ 2 วัน](/services/daily-consulting) — เข้าไปวางล้อที่ติดที่สุดก่อน วันละไม่เกิน 2 เรื่อง
 - [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office) — สอนใช้ AI ลดงานซ้ำๆ ที่ดูดพลังงานเจ้าของ
 - [กรอกฟอร์มประเมิน 3 นาที](/intake-form) — ผมจะอ่านข้อมูลแล้วบอกให้ว่าล้อไหนของคุณกำลังมีปัญหา และควรแก้เรื่องไหนก่อน

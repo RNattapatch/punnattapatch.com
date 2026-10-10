@@ -102,7 +102,7 @@ ROI (ผลตอบแทนการลงทุน): ทุน ฿65,000 ไ�
 
 ## Package ที่เกี่ยวข้อง
 
-- [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation): วาง dealer portal + รอบการ check-in + ระบบติดตาม concentration risk ทั้งระบบ
+- [บริการวางระบบฝ่ายขาย แบบครบรอบ 2 วัน](/services/daily-consulting): วางรอบการ check-in กับดีลเลอร์ และระบบติดตามว่ายอดกระจุกอยู่ที่ใคร (concentration risk)
 - [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office): 1 วัน สอนทำระบบอัปเดต dealer และแจ้งเตือน follow-up อัตโนมัติ
 
 อ่านต่อ: [คู่มือสร้างทีมขาย B2B](/insights/build-b2b-sales-team-sme-thailand) | [เพิ่มพนักงานขายแล้วยอดจะเพิ่มไหม](/faq#add-sales-staff-revenue-not-increase)

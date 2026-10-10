@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import DarumaMark from '../../components/DarumaMark.astro';
+import SuccessMark from '../../components/SuccessMark.astro';
 import AdsContentV2 from '../../components/ads/AdsContentV2.astro';
 import AfterHoursField from '../../components/AfterHoursField.astro';
 import { SITE } from '../../data/site';
@@ -256,7 +256,7 @@ const content = {
         </form>
 
         <div id="dealer-ai-success" class="editorial-card hidden p-8 text-center lg:col-start-2" role="status" aria-live="polite">
-          <DarumaMark class="mx-auto h-auto w-20" />
+          <SuccessMark class="mx-auto h-auto w-20" />
           <h2 class="mt-5 font-display text-3xl font-bold text-navy">รับข้อมูลแล้วครับ</h2>
           <p class="mt-3 leading-relaxed text-warm-ink/75">ผมจะอ่านโจทย์ก่อนครับ แล้วทักกลับทาง LINE หรือโทรศัพท์ คุยกันฟรี 15–20 นาที</p>
           <p class="mt-5 border-t border-[#c9c2b2] pt-4 text-sm leading-relaxed text-warm-ink/75">ระหว่างรอผมติดต่อกลับ อ่านหน้านี้ 3 นาทีครับ จะได้รู้จักกันก่อนคุยจริง<br /><a href="/start" class="font-semibold text-cyan underline">รู้จักผมใน 3 นาที →</a></p>

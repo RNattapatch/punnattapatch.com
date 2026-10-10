@@ -1,0 +1,15 @@
+---
+// เครื่องหมาย "ส่งแล้ว" บนการ์ดหลังส่งฟอร์ม · ใช้แทน DarumaMark (พักแบรนด์ Daruma ในของที่ลูกค้าเห็น ตั้งแต่ 2026-10-07)
+interface Props {
+  class?: string;
+  title?: string;
+}
+
+const { class: className = 'size-16', title = 'ส่งข้อมูลแล้ว' } = Astro.props;
+---
+
+<svg class={className} viewBox="0 0 64 64" role="img" aria-label={title}>
+  <title>{title}</title>
+  <circle cx="32" cy="32" r="30" fill="#dd4155" />
+  <path d="M19 33.5 28 42 45 23" fill="none" stroke="#f4f1ea" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

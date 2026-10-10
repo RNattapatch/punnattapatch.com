@@ -43,7 +43,8 @@ if (services.includes('Public Course') || services.includes('Daruma Score &amp; 
   throw new Error('retired public offer remains');
 }
 
-for (const file of ['src/pages/index.astro', 'src/pages/daruma.astro', 'src/pages/booking.astro']) {
+// src/pages/daruma.astro ถูกถอด 2026-10-10 (พักแบรนด์ Daruma · /daruma → /services 301)
+for (const file of ['src/pages/index.astro', 'src/pages/booking.astro']) {
   const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
   if (source.includes('เช็ค Daruma Score') || source.includes('จองวันตรวจ')) {
     throw new Error(`retired public Score CTA in ${file}`);

@@ -52,6 +52,6 @@ Sheet 2: Dashboard (สร้างขึ้นอัตโนมัติ)
 ## Package ที่เกี่ยวข้อง
 
 - [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office) — สร้าง KPI dashboard + 1 automation ในวันเดียว
-- [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation) — วางระบบ KPI + Commission + automation ครบทั้งบริษัท
+- [บริการวางระบบฝ่ายขาย แบบครบรอบ 2 วัน](/services/daily-consulting) — วาง KPI กับค่าคอม แล้วต่อ dashboard ให้ทีมใช้กับงานจริง
 
 ทั้ง 2 package ส่งมอบ template (ไฟล์ต้นแบบ) Sheets ที่ลูกค้า copy ไปใช้ต่อเองได้ + documentation (เอกสารคู่มือ) + screen recording

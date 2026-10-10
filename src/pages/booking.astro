@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import DarumaMark from '../components/DarumaMark.astro';
+import SuccessMark from '../components/SuccessMark.astro';
 import AfterHoursField from '../components/AfterHoursField.astro';
 import ProofRail from '../components/proof/ProofRail.astro';
 import { SITE } from '../data/site';
@@ -47,7 +47,7 @@ const issues = [
           <p class="font-semibold text-coral">โจทย์ที่คุณกำลังส่ง</p>
           <p class="mt-1">สนใจ <strong data-booking-product-name class="text-navy"></strong> — กรอกข้อมูลด้านล่างได้เลย ผมจะอ่านโดยยึดบริการนี้เป็นจุดตั้งต้นครับ</p>
         </div>
-        <div class="flex items-start justify-between gap-5"><div><h2 class="font-display text-2xl font-bold text-navy">เล่าโจทย์ของคุณสั้นๆ</h2><p class="mt-1 text-sm text-warm-ink/65">กรอกไม่ถึง 2 นาที แล้วผมจะอ่านข้อมูลเพื่อเตรียมคุยให้ตรงเรื่อง</p></div><DarumaMark class="size-12 shrink-0" /></div>
+        <div class="flex items-start justify-between gap-5"><div><h2 class="font-display text-2xl font-bold text-navy">เล่าโจทย์ของคุณสั้นๆ</h2><p class="mt-1 text-sm text-warm-ink/65">กรอกไม่ถึง 2 นาที แล้วผมจะอ่านข้อมูลเพื่อเตรียมคุยให้ตรงเรื่อง</p></div></div>
         <div class="mt-8 space-y-5">
           <div class="grid gap-5 sm:grid-cols-2"><label class="field-label">ชื่อของคุณ<input name="name" required autocomplete="name" autocapitalize="words" enterkeyhint="next" class="field" /></label><label class="field-label">เบอร์โทรติดต่อกลับ<input name="phone" required type="tel" inputmode="tel" autocomplete="tel" pattern={"(\\+66|0)[0-9\\s\\-]{8,12}"} title="กรอกเบอร์โทร เช่น 0812345678" enterkeyhint="next" placeholder="เช่น 0812345678" class="field" /></label></div>
           <label class="field-label">LINE ID <span class="font-normal opacity-60">(ถ้าสะดวกให้ทักไลน์)</span><input name="line" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next" placeholder="เช่น @yourline (ไม่บังคับ)" class="field" /></label>
@@ -68,7 +68,7 @@ const issues = [
 
       <aside class="lg:col-span-5"><h2 class="font-display text-3xl font-bold text-navy">หลังจากกดส่ง เกิดอะไรต่อ</h2><ol class="mt-6 space-y-4">{['ผมทักกลับเพื่อนัดเวลา ภายใน 1 วันทำการ', 'คุยโจทย์ของคุณ 15–20 นาที ผมฟังมากกว่าพูด', 'ได้คำแนะนำเส้นทางที่คุ้มสุด — เริ่มเล็กก็ได้ ยังไม่เริ่มก็ได้'].map((item, index) => <li class="flex gap-4 rounded-2xl border border-[#c9c2b2] bg-surface p-5"><span class="font-display text-4xl font-bold text-coral">{index + 1}</span><p class="pt-1 leading-relaxed text-warm-ink/75">{item}</p></li>)}</ol><p class="mt-6 rounded-2xl border-l-4 border-cyan bg-sand p-5 text-sm leading-relaxed text-warm-ink/80"><strong class="text-navy">คุยก่อนได้ ไม่โดนขาย</strong><br />ถ้าโจทย์ของคุณแก้ได้ด้วยตัวเอง ผมจะบอกวิธีให้กลับไปทำต่อได้เลย ไม่ต้องเสียเงินกับผม</p><ProofRail class="mt-6" /></aside>
     </div>
-    <div id="booking-success" class="mx-auto mt-10 hidden max-w-2xl rounded-2xl border border-coral/40 bg-surface p-8 text-center"><DarumaMark class="mx-auto size-16" /><h2 class="mt-5 font-display text-3xl font-bold text-navy">รับเรื่องแล้ว ขอบคุณครับ</h2><p id="booking-recommendation" class="mt-3 leading-relaxed text-warm-ink/75"></p><a href={SITE.social.line} target="_blank" rel="noopener" class="btn mt-6 border-0 bg-[#06C755] text-white hover:bg-[#05a945]">ทัก LINE OA ต่อ</a><p class="mt-6 border-t border-[#c9c2b2] pt-5 text-sm leading-relaxed text-warm-ink/75">ระหว่างรอผมติดต่อกลับ อ่านหน้านี้ 3 นาทีครับ จะได้รู้จักกันก่อนคุยจริง แล้วคอลแรกของเราจะสั้นลงครึ่งหนึ่ง<br /><a href="/start" class="font-semibold text-cyan underline">รู้จักผมใน 3 นาที →</a></p></div>
+    <div id="booking-success" class="mx-auto mt-10 hidden max-w-2xl rounded-2xl border border-coral/40 bg-surface p-8 text-center"><SuccessMark class="mx-auto size-16" /><h2 class="mt-5 font-display text-3xl font-bold text-navy">รับเรื่องแล้ว ขอบคุณครับ</h2><p id="booking-recommendation" class="mt-3 leading-relaxed text-warm-ink/75"></p><a href={SITE.social.line} target="_blank" rel="noopener" class="btn mt-6 border-0 bg-[#06C755] text-white hover:bg-[#05a945]">ทัก LINE OA ต่อ</a><p class="mt-6 border-t border-[#c9c2b2] pt-5 text-sm leading-relaxed text-warm-ink/75">ระหว่างรอผมติดต่อกลับ อ่านหน้านี้ 3 นาทีครับ จะได้รู้จักกันก่อนคุยจริง แล้วคอลแรกของเราจะสั้นลงครึ่งหนึ่ง<br /><a href="/start" class="font-semibold text-cyan underline">รู้จักผมใน 3 นาที →</a></p></div>
   </section>
 </BaseLayout>
 

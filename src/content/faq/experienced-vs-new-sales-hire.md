@@ -68,7 +68,7 @@ Phase ของลูกค้าตอนนั้น มี playbook ราย
 
 ## Package ที่เกี่ยวข้อง
 
-- [Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation): วาง playbook + script + CRM ทั้งระบบก่อน interview เซลล์
+- [บริการวางระบบฝ่ายขาย แบบครบรอบ 2 วัน](/services/daily-consulting): วาง playbook กับ CRM ให้พร้อมก่อนสัมภาษณ์เซลล์คนใหม่
 - [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office): 1 วันได้ ICP (รูปแบบลูกค้าในอุดมคติ) + objection (ข้อโต้แย้งของลูกค้า) script ใช้ใน interview
 
 อ่านต่อ: [ควรทำ research ก่อนจ้างเซลล์ไหม](/faq#research-market-before-hiring-sales) | [ต้องวางระบบขายก่อนจ้างเซลล์ไหม](/faq#sales-system-before-hiring-sales) | [คู่มือสร้างทีมขาย B2B](/insights/build-b2b-sales-team-sme-thailand)

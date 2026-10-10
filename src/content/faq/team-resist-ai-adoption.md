@@ -58,6 +58,6 @@ tags: [faq, ai-adoption, change-management, team]
 ## บริการที่ช่วยเรื่องการบริหารการเปลี่ยนแปลง (Change Management)
 
 - **[Advance Program: Sales Mastery with AI](/services#offer-a1)** — เรียนและมีคนพาทีมทำต่อจนวิธีทำงานใหม่ถูกนำไปใช้จริง
-- **[Daruma Sales Transformation {{price:daruma-transformation}}](/services#daruma-transformation)** — รวมการบริหารการเปลี่ยนแปลง (change management) ในแพ็คเกจการส่งมอบระบบ (handover package)
+- **[บริการวางระบบฝ่ายขาย แบบครบรอบ 2 วัน](/services/daily-consulting)** — วันที่สองผมกลับไปส่งมอบ ลองกับงานจริง และสอนทีมใช้ด้วยกัน
 
 อ่านต่อ: [AI Agent ต่างจาก chatbot ยังไง](/faq) | [ไม่เก่ง tech ใช้ AI ได้ไหม](/faq)

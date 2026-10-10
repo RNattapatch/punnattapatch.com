@@ -47,6 +47,6 @@ Sales rep (พนักงานขาย) ที่ทำยอดได้ ฿
 
 ## ทำอะไรต่อ
 
-ถ้าคุณยังใช้ระบบ flat percentage หรือคำนวณด้วย Excel ลองดูบริการ [Daruma Sales Transformation](/services#daruma-transformation) ({{price:daruma-transformation}} วางระบบขายทั้งบริษัท) ที่ผมจะเข้าไปออกแบบโครงสร้าง Commission, สร้าง KPI dashboard (หน้าจอสรุปตัววัดผลงาน) และสร้างระบบคำนวณอัตโนมัติให้ทั้งแพ็กเกจ
+ถ้าคุณยังใช้ระบบ flat percentage หรือคำนวณด้วย Excel ลองดู[บริการวางระบบฝ่ายขาย](/services/daily-consulting) ({{price:daily-sales-consulting}} ต่อวัน) ที่ผมจะเข้าไปออกแบบโครงสร้าง Commission กับ KPI dashboard (หน้าจอสรุปตัววัดผลงาน) ให้ทีมคำนวณได้เอง
 
 หรือกรอก [ฟอร์ม 3 นาที](/intake-form) เพื่อให้ผมช่วยประเมินเบื้องต้นว่าเคสของคุณควรออกแบบโครงสร้างค่าคอมมิชชั่นใหม่หรือไม่

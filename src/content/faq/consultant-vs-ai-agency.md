@@ -35,7 +35,7 @@ tags: [faq, consulting, agency, comparison]
 ส่วนของผมจะเป็นราคาเหมาจ่ายต่อโครงการ (fixed-price) และชำระ 100% ล่วงหน้า:
 
 - AI สำหรับงานหลังบ้าน 2026 ราคา {{price:ai-workshop-advance}} (1 วัน ได้ผลงานครบ)
-- Daruma Sales Transformation ราคา {{price:daruma-transformation}} (45 วัน ได้ระบบขายครบทั้งบริษัท)
+- บริการวางระบบฝ่ายขาย ราคา {{price:daily-sales-consulting}} ต่อวัน (วันละไม่เกิน 2 เรื่อง · แบบครบรอบใช้ 2 วัน)
 - คลาสอบรมทักษะการขาย + Follow-up + AI ราคา {{price:inhouse-a}} (1 วัน · ฝึกทีมขาย)
 
 ข้อดีของราคาแบบ fixed-price คือคุณทราบต้นทุนที่แน่นอนตั้งแต่แรก มีขอบเขตงานชัดเจน และไม่มีค่าใช้จ่ายแฝงตามมา

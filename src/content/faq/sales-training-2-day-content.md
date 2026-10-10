@@ -1,6 +1,6 @@
 ---
 title: "Sale Training 2 วัน สอนเนื้อหาอะไรบ้าง"
-description: "Daruma Sales Office Bootcamp 2 วัน ของผมเน้น Value-Based Selling (Day 1) + Consultative Closing (Day 2) ทีมกลับไปปิดด้วยคุณค่าไม่ใช่ส่วนลด มี role-play 3 รอบ + Post-training KPI tracking"
+description: "คลาสอบรมทีมขาย 2 วันของผมเน้น Value-Based Selling (Day 1) + Consultative Closing (Day 2) ทีมกลับไปปิดด้วยคุณค่าไม่ใช่ส่วนลด มี role-play 3 รอบ + Post-training KPI tracking"
 question: "Sale Training 2 วัน สอนเนื้อหาอะไรบ้าง"
 answerSummary: "ตัวอย่างโครงสร้าง 2 วัน: Day 1 Value-Based Selling — JTBD, Pain Discovery, Solution Mapping · Day 2 Consultative Closing — decision, objection handling, role-play และ Post-training KPI tracking"
 lang: th

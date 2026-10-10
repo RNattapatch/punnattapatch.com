@@ -21,14 +21,12 @@ const contentTypes: Record<string, string> = {
 
 const routes = [
   ['สอบถามหรือจองคิว', 'https://lin.ee/ioSnSUG'],
-  ['สมัครคลาสสดสร้างวงจรงานขายด้วย AI Agent 2026', 'https://lin.ee/ioSnSUG'],
   ['คลาสออนไลน์บน FutureSkill', 'https://futureskill.co/course/detail/6030'],
   ['ดูบริการที่ปรึกษาหรือจัดอบรม ทั้งหมด', 'https://punnattapatch.com/services'],
   ['ชวนไปร่วมงาน', 'https://punnattapatch.com/sponsor'],
 ] as const;
 const supportCopy = [
   'ทัก LINE เล่าโจทย์คร่าวๆ ได้เลย',
-  'เลื่อนวันเรียน · ประกาศวันใหม่เร็วๆ นี้',
   'ตั้ง Worker บน Cloud ด้วย AI Agent',
   'เลือกจากโจทย์จริงของทีมและองค์กร',
   'Sponsor · Partnership · Speaker',
@@ -123,7 +121,7 @@ test.afterAll(async () => {
   await new Promise<void>((resolve, reject) => server?.close((error) => error ? reject(error) : resolve()));
 });
 
-test('content and destination contract exposes the five approved routes', async ({ browser }) => {
+test('content and destination contract exposes the four approved routes', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   const errors = await preparePage(page);
 
@@ -131,34 +129,11 @@ test('content and destination contract exposes the five approved routes', async 
   await expect(page.locator('header').getByText('@pun_nattapatch', { exact: true })).toBeVisible();
   await expect(page.getByText('ที่ปรึกษาการปั้นทีมขาย × AI Agent', { exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'วันนี้คุณมาหาผมเรื่องไหนครับ?' })).toBeVisible();
-  await expect(page.locator('[data-primary-route]')).toHaveCount(5);
+  await expect(page.locator('[data-primary-route]')).toHaveCount(4);
   for (const [label, href] of routes) {
     await expect(page.getByRole('link', { name: new RegExp(label) })).toHaveAttribute('href', href);
   }
   const futureSkillRoute = page.getByRole('link', { name: /คลาสออนไลน์บน FutureSkill/ });
-  const p1Route = page.getByRole('link', { name: /สมัครคลาสสดสร้างวงจรงานขายด้วย AI Agent 2026/ });
-  assert.ok(
-    await p1Route.evaluate((link) => link.compareDocumentPosition(document.querySelector('[data-link-event="futureskill-course"]')!) & Node.DOCUMENT_POSITION_FOLLOWING),
-    'P1 must appear immediately before FutureSkill',
-  );
-  await expect(p1Route).toHaveAttribute('data-link-event', 'p1-bootcamp');
-  await expect(p1Route).toHaveAttribute('data-link-target', 'p1-bootcamp');
-  await expect(p1Route).toHaveAttribute('data-link-platform', 'line');
-  await expect(p1Route.locator('[data-p1-urgency]')).toHaveCount(0);
-  await expect(p1Route.getByText('สมัครแล้ว 6/10', { exact: true })).toHaveCount(0);
-  const capacity = page.locator('[data-p1-capacity]');
-  const progress = capacity.getByRole('progressbar', { name: 'ที่นั่งราคา Super Early Bird' });
-  await expect(capacity.getByText('SUPER EARLY BIRD', { exact: true })).toBeVisible();
-  await expect(capacity.getByText('เหลือ 4 ที่นั่ง', { exact: true })).toBeVisible();
-  await expect(progress).toHaveAttribute('aria-valuemin', '0');
-  await expect(progress).toHaveAttribute('aria-valuemax', '10');
-  await expect(progress).toHaveAttribute('aria-valuenow', '6');
-  await expect(progress).toHaveAttribute('aria-valuetext', 'สมัครแล้ว 6 ที่นั่ง เหลือ 4 ที่นั่ง');
-  const [routeBox, capacityBox] = await Promise.all([p1Route.boundingBox(), capacity.boundingBox()]);
-  assert.ok(routeBox && capacityBox, 'P1 route and capacity bar must be measurable');
-  assert.ok(capacityBox.y >= routeBox.y + routeBox.height, 'capacity bar must sit below the P1 button');
-  assert.ok(Math.abs(routeBox.x - capacityBox.x) <= 2, 'capacity bar must align with the P1 button');
-  assert.ok(Math.abs(routeBox.width - capacityBox.width) <= 2, 'capacity bar must match the P1 button width');
   await expect(futureSkillRoute).toHaveAttribute('target', '_blank');
   await expect(futureSkillRoute).toHaveAttribute('rel', 'noopener');
   await expect(futureSkillRoute).toHaveAttribute('data-link-platform', 'futureskill');
@@ -172,21 +147,6 @@ test('content and destination contract exposes the five approved routes', async 
   assert.deepEqual(errors.consoleErrors, []);
   assert.deepEqual(errors.pageErrors, []);
   await page.close();
-});
-
-test('P1 opens LINE with BOOTCAMP and a link-hub attribution tag on mobile', async ({ browser }) => {
-  const context = await browser.newContext({
-    viewport: { width: 390, height: 844 },
-    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148',
-  });
-  const page = await context.newPage();
-  await preparePage(page);
-
-  await expect(page.getByRole('link', { name: /สมัครคลาสสดสร้างวงจรงานขายด้วย AI Agent 2026/ })).toHaveAttribute(
-    'href',
-    'https://line.me/R/oaMessage/@011xgvap/?BOOTCAMP%20%5BP1%2Flink-hub%5D',
-  );
-  await context.close();
 });
 
 test('Trust uses real loaded media and 20 unclipped full-color logos in the approved order', async ({ browser }) => {
@@ -353,7 +313,7 @@ test('responsive glance, tap targets, and keyboard order remain usable from 320 
         page.getByText('ปัน ณัฐพัชร์', { exact: true }),
         page.getByRole('heading', { name: 'วันนี้คุณมาหาผมเรื่องไหนครับ?' }),
         page.locator('[data-fs-banner]'),
-        // FutureSkill banner (2026-10-09) ดันเส้นทาง 04–05 ลงใต้ fold — ทางหลัก LINE · P1 · FutureSkill ต้องยังเห็นในจอแรก
+        // ถอด P1 แล้ว (2026-10-10) — ทางหลัก LINE · FutureSkill · บริการทั้งหมด ต้องยังเห็นในจอแรก
         ...routes.slice(0, 3).map(([label]) => page.getByRole('link', { name: new RegExp(label) })),
       ]) {
         const box = await locator.boundingBox();
@@ -479,12 +439,6 @@ test('route analytics preserve real attribution and never invent TikTok', async 
     ['Link Click', { props: { target: 'line', platform: 'line', source: 'instagram', path: '/link/' } }],
   ]);
 
-  const p1 = await collectClick(browser, '/link/?utm_source=instagram', 'p1-bootcamp');
-  assert.deepEqual(p1, [
-    ['link_p1_bootcamp_click', { props: { target: 'p1-bootcamp', platform: 'line', source: 'instagram', path: '/link/' } }],
-    ['Link Click', { props: { target: 'p1-bootcamp', platform: 'line', source: 'instagram', path: '/link/' } }],
-  ]);
-
   for (const [event, expectedName, target, platform] of [
     ['services', 'link_services_click', 'services', 'services'],
     ['sponsor', 'link_sponsor_click', 'sponsor', 'sponsor'],
@@ -498,22 +452,6 @@ test('route analytics preserve real attribution and never invent TikTok', async 
       ['Link Click', { props: { target, platform, source: 'direct', path: '/link/' } }],
     ]);
   }
-});
-
-test('P1 click records the same Meta conversion used by the P1 sales page', async ({ browser }) => {
-  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-  await preparePage(page);
-  await page.evaluate(() => {
-    window.__fbqEvents = [];
-    window.fbq = (...args) => window.__fbqEvents.push(args);
-    document.addEventListener('click', (click) => click.preventDefault(), true);
-  });
-  await page.locator('[data-link-event="p1-bootcamp"]').click();
-  assert.deepEqual(await page.evaluate(() => window.__fbqEvents), [
-    ['track', 'Contact'],
-    ['trackCustom', 'P1 จองที่นั่ง'],
-  ]);
-  await page.close();
 });
 
 declare global {
