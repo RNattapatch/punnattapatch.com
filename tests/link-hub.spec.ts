@@ -24,7 +24,7 @@ const routes = [
   ['คลาสอบรม', 'https://punnattapatch.com/services#core-training'],
   ['Consult วางระบบ', 'https://punnattapatch.com/services/daily-consulting'],
   ['เช็คทีมขาย 2 นาที', 'https://punnattapatch.com/team-check'],
-  ['ทักมาเล่าโจทย์ใน LINE', 'https://lin.ee/ioSnSUG'],
+  ['ทักผมใน LINE', 'https://lin.ee/ioSnSUG'],
 ] as const;
 const moreRoutes = [
   ['คลาสออนไลน์บน FutureSkill', 'https://futureskill.co/course/detail/6030'],
@@ -36,7 +36,8 @@ const supportCopy = [
   'เหมาะเมื่อ ทีมมีคนแล้ว แต่ยังทำไม่เป็น',
   'เหมาะเมื่อ ลูกค้าทักเข้ามาเยอะ แต่ไม่มีระบบตามให้จบ',
   'รู้ว่าทีมติดเรื่องคน หรือเรื่องระบบ',
-  'เล่าคร่าวๆ ได้เลย',
+  'ติดต่องาน ถามคิว หรือเล่าโจทย์ได้เลยครับ',
+  'ติดต่องาน หรือคุยกับผมโดยตรง',
   'ตั้ง Worker บน Cloud ด้วย AI Agent',
   'Sponsor · Partnership · Speaker',
 ] as const;
