@@ -151,23 +151,42 @@
   <body class="min-h-dvh overflow-x-hidden font-body text-ink antialiased">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-coral focus:px-4 focus:py-2 focus:text-white">ข้ามไปยังเนื้อหาหลัก</a>
     <main id="main" class="mx-auto flex min-h-dvh w-full max-w-[560px] flex-col px-5 pb-[max(24px,env(safe-area-inset-bottom))] pt-[max(22px,env(safe-area-inset-top))] sm:px-8 sm:pt-9">
-      <header class="flex items-center gap-3.5">
-        <div class="shrink-0 rounded-full border border-[#bdb5a6] bg-sheet p-0.5 shadow-[2px_3px_0_rgba(30,27,22,0.10)]">
-          <img src="/pun-avatar.jpg" alt="ปัน ณัฐพัชร์" width="640" height="640" loading="eager" decoding="async" class="size-[60px] rounded-full border-2 border-navy object-cover" />
+      <header class="flex flex-col items-center text-center">
+        <div class="relative">
+          <div class="rounded-full border border-[#bdb5a6] bg-sheet p-1 shadow-[2px_3px_0_rgba(30,27,22,0.10)]">
+            <img src="/pun-avatar.jpg" alt="ปัน ณัฐพัชร์" width="640" height="640" loading="eager" decoding="async" class="size-[102px] rounded-full border-2 border-navy object-cover sm:size-[108px]" />
+          </div>
+          <span class="absolute -bottom-1 right-0 grid h-7 min-w-8 rotate-[-6deg] place-items-center border border-coral-dark bg-coral-dark px-1.5 text-[10px] font-bold text-white shadow-[1px_2px_0_rgba(196,50,69,0.22)]" aria-hidden="true">PUN</span>
         </div>
-        <div class="min-w-0">
-          <p class="font-display text-[22px] font-bold leading-tight text-navy">ปัน ณัฐพัชร์</p>
-          <p class="mt-0.5 text-[13.5px] font-semibold leading-snug text-[#36322d]">ที่ปรึกษาการปั้นทีมขาย × AI Agent</p>
-          <p class="mt-0.5 text-[12px] font-medium text-[#756e64]">@pun_nattapatch</p>
-        </div>
+        <p class="mt-3 font-display text-[29px] font-bold leading-tight tracking-[-0.02em] text-navy sm:text-[32px]">ปัน ณัฐพัชร์</p>
+        <p class="mt-1 text-[13px] font-medium text-[#756e64]">@pun_nattapatch</p>
+        <p class="mt-2 text-[15px] font-semibold leading-snug text-[#36322d] sm:text-[16px]">ที่ปรึกษาการปั้นทีมขาย × AI Agent</p>
       </header>
 
-      <section class="mt-6" aria-labelledby="hub-heading">
-        <p class="text-[13px] font-bold leading-tight text-coral-dark">ผมช่วยทีมขายได้ 2 แบบ</p>
-        <h1 id="hub-heading" class="mt-1.5 font-display text-[27px] font-bold leading-[1.32] text-navy sm:text-[33px]">ให้ทีมเรียนจนทำเป็น<br />หรือให้ผมเข้าไปวางให้</h1>
+      <!-- FutureSkill Instructor 2026 — หลักฐานจากคนนอก ห้ามยืนเดี่ยว: บรรทัดคู่วง 1 (ใช้ AI Agent ทำงานจริงทุกวัน) ต้องอยู่ในกล่องเดียวกันเสมอ
+           · โลโก้ FutureSkill วางบนพื้นขาวเท่านั้น · wiki/pages/moat-futureskill-instructor-third-party-teaching-proof.md -->
+      <section data-fs-banner aria-label="FutureSkill Instructor 2026" class="fs-banner mt-4 sm:mt-5">
+        <img src="/images/futureskill/instructor-banner-plate.webp" alt="" width="720" height="427" loading="eager" decoding="async" class="fs-plate" />
+        <div class="relative flex items-center gap-3 px-4 pt-3.5 sm:gap-3.5 sm:px-5 sm:pt-4">
+          <span class="grid size-[54px] shrink-0 max-[359px]:size-[46px] place-items-center rounded-[13px] border border-[#e4dcef] bg-white shadow-[0_3px_10px_rgba(43,10,114,0.12)] sm:size-[60px]"><img src="/images/futureskill/futureskill-mark.webp" alt="FutureSkill" width="160" height="155" class="size-[36px] object-contain max-[359px]:size-[30px] sm:size-[40px]" /></span>
+          <span class="min-w-0">
+            <span class="fs-title block text-[23px] font-extrabold leading-[1.08] tracking-[-0.02em] max-[359px]:text-[21px] sm:text-[27px]">FutureSkill<br class="sm:hidden" /> Instructor 2026</span>
+            <span class="mt-1 block text-[12px] font-bold leading-snug text-[#2b0a72] max-[359px]:text-[11.5px] sm:text-[13px]"><span class="whitespace-nowrap">ผ่านรอบคัดเลือกผู้สอน</span><wbr /><span class="whitespace-nowrap">ด้วยการสอนจริง</span></span>
+          </span>
+        </div>
+        <div class="relative mt-3 border-t border-[#2b0a72]/10 bg-white/85 px-4 pb-3 pt-2.5 sm:px-5">
+          <p class="m-0 text-[12.5px] font-semibold leading-[1.45] text-[#3b2b50] sm:text-[13.5px]"><span class="whitespace-nowrap font-extrabold text-[#7027d9]">AI Sales Agent</span> · <span class="whitespace-nowrap">สอนจากระบบที่ผมใช้</span><wbr /><span class="whitespace-nowrap">ทำงานจริงทุกวัน</span></p>
+          <p class="m-0 mt-1 text-[11.5px] font-bold leading-[1.45] text-[#32214b] sm:text-[12.5px]"><span class="mr-1 text-[10px] tracking-[0.12em] text-[#1aa0e8]">3 ACADEMIES</span> AI <span class="text-[#1aa0e8]">•</span> <span class="whitespace-nowrap">Digital Business</span> <span class="whitespace-nowrap"><span class="text-[#1aa0e8]">•</span> Sales &amp; Customer</span></p>
+        </div>
       </section>
 
-      <nav class="mt-4" aria-label="บริการหลัก 2 แบบ">
+      <section class="relative mt-5 border-l-2 border-coral/75 pl-4 sm:mt-7 sm:pl-5" aria-labelledby="hub-heading">
+        <span class="mb-1.5 block text-[13px] font-bold leading-tight text-coral-dark">ผมช่วยธุรกิจคุณได้ 2 แบบ</span>
+        <h1 id="hub-heading" aria-label="วันนี้อยากให้ผมช่วยด้านไหนดีครับ?" class="font-display text-[27px] font-bold leading-[1.3] text-navy sm:text-[34px]">วันนี้อยากให้ผม<br class="sm:hidden" />ช่วยด้านไหนดีครับ?</h1>
+        <span class="mt-1.5 block h-[5px] w-[124px] rotate-[-1deg] rounded-full bg-coral/80" aria-hidden="true"></span>
+      </section>
+
+      <nav class="mt-5" aria-label="บริการหลัก 2 แบบ">
         <ul class="m-0 grid list-none gap-3 p-0">
           <li>
             <a href="https://punnattapatch.com/services#core-training" data-primary-route data-door="class" data-link-event="class" data-link-target="class" data-link-platform="services" class="door door-class group">
@@ -222,23 +241,6 @@
             <span class="min-w-0 flex-1"><span class="block text-[17px] font-bold leading-tight">ทักมาเล่าโจทย์ใน LINE</span><span class="mt-1.5 block text-[12.5px] font-medium leading-[1.45] text-[#063d20]">เล่าคร่าวๆ ได้เลย</span></span>
             <svg viewBox="0 0 24 24" class="size-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
           </a>
-        </div>
-      </section>
-
-      <!-- FutureSkill Instructor 2026 — หลักฐานจากคนนอก ห้ามยืนเดี่ยว: บรรทัดคู่วง 1 (ใช้ AI Agent ทำงานจริงทุกวัน) ต้องอยู่ในกล่องเดียวกันเสมอ
-           · โลโก้ FutureSkill วางบนพื้นขาวเท่านั้น · wiki/pages/moat-futureskill-instructor-third-party-teaching-proof.md -->
-      <section data-fs-banner aria-label="FutureSkill Instructor 2026" class="fs-banner mt-6">
-        <img src="/images/futureskill/instructor-banner-plate.webp" alt="" width="720" height="427" loading="eager" decoding="async" class="fs-plate" />
-        <div class="relative flex items-center gap-3 px-4 pt-3.5 sm:gap-3.5 sm:px-5 sm:pt-4">
-          <span class="grid size-[54px] shrink-0 max-[359px]:size-[46px] place-items-center rounded-[13px] border border-[#e4dcef] bg-white shadow-[0_3px_10px_rgba(43,10,114,0.12)] sm:size-[60px]"><img src="/images/futureskill/futureskill-mark.webp" alt="FutureSkill" width="160" height="155" class="size-[36px] object-contain max-[359px]:size-[30px] sm:size-[40px]" /></span>
-          <span class="min-w-0">
-            <span class="fs-title block text-[23px] font-extrabold leading-[1.08] tracking-[-0.02em] max-[359px]:text-[21px] sm:text-[27px]">FutureSkill<br class="sm:hidden" /> Instructor 2026</span>
-            <span class="mt-1 block text-[12px] font-bold leading-snug text-[#2b0a72] max-[359px]:text-[11.5px] sm:text-[13px]"><span class="whitespace-nowrap">ผ่านรอบคัดเลือกผู้สอน</span><wbr /><span class="whitespace-nowrap">ด้วยการสอนจริง</span></span>
-          </span>
-        </div>
-        <div class="relative mt-3 border-t border-[#2b0a72]/10 bg-white/85 px-4 pb-3 pt-2.5 sm:px-5">
-          <p class="m-0 text-[12.5px] font-semibold leading-[1.45] text-[#3b2b50] sm:text-[13.5px]"><span class="whitespace-nowrap font-extrabold text-[#7027d9]">AI Sales Agent</span> · <span class="whitespace-nowrap">สอนจากระบบที่ผมใช้</span><wbr /><span class="whitespace-nowrap">ทำงานจริงทุกวัน</span></p>
-          <p class="m-0 mt-1 text-[11.5px] font-bold leading-[1.45] text-[#32214b] sm:text-[12.5px]"><span class="mr-1 text-[10px] tracking-[0.12em] text-[#1aa0e8]">3 ACADEMIES</span> AI <span class="text-[#1aa0e8]">•</span> <span class="whitespace-nowrap">Digital Business</span> <span class="whitespace-nowrap"><span class="text-[#1aa0e8]">•</span> Sales &amp; Customer</span></p>
         </div>
       </section>
 

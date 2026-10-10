@@ -32,7 +32,7 @@ const moreRoutes = [
 ] as const;
 const topics = ['คัดคน', 'เป้าและค่าคอม', 'หัวหน้าคุมทีม', 'ฝ่ายขาย', 'ฝ่ายเอกสาร', 'ฝ่ายคอนเทนต์'] as const;
 const supportCopy = [
-  'ผมช่วยทีมขายได้ 2 แบบ',
+  'ผมช่วยธุรกิจคุณได้ 2 แบบ',
   'เหมาะเมื่อ ทีมมีคนแล้ว แต่ยังทำไม่เป็น',
   'ผมเข้าไปวางระบบให้ทีมใช้กับงานจริง 1–2 วัน',
   'เหมาะเมื่อ รู้ว่าต้องแก้อะไร แต่ไม่มีใครว่างลงมือ',
@@ -138,7 +138,7 @@ test('content and destination contract puts the two services first, then the uns
   await expect(page.getByText('ปัน ณัฐพัชร์', { exact: true })).toBeVisible();
   await expect(page.locator('header').getByText('@pun_nattapatch', { exact: true })).toBeVisible();
   await expect(page.getByText('ที่ปรึกษาการปั้นทีมขาย × AI Agent', { exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 1, name: /ให้ทีมเรียนจนทำเป็น/ })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /วันนี้อยากให้ผมช่วยด้านไหนดีครับ/ })).toBeVisible();
   await expect(page.locator('[data-primary-route]')).toHaveCount(4);
   for (const [index, [label, href]] of routes.entries()) {
     const route = page.locator('[data-primary-route]').nth(index);
@@ -328,7 +328,7 @@ test('responsive glance, tap targets, and keyboard order remain usable from 320 
     if (viewport.width === 390) {
       for (const locator of [
         page.getByText('ปัน ณัฐพัชร์', { exact: true }),
-        page.getByRole('heading', { level: 1, name: /ให้ทีมเรียนจนทำเป็น/ }),
+        page.getByRole('heading', { level: 1, name: /วันนี้อยากให้ผมช่วยด้านไหนดีครับ/ }),
         // จอแรกต้องเห็นทั้ง 2 บริการ (คลาสอบรม · Consult วางระบบ)
         page.locator('[data-door="class"]'),
         page.locator('[data-door="consult"]'),
@@ -503,7 +503,7 @@ declare global {
   }
 }
 
-test('FutureSkill Instructor banner follows the service choices as proof, paired with daily-use proof, logo on white', async ({ browser }) => {
+test('FutureSkill Instructor banner sits under the tagline, paired with daily-use proof, logo on white', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   await preparePage(page);
   const banner = page.locator('[data-fs-banner]');
@@ -515,9 +515,13 @@ test('FutureSkill Instructor banner follows the service choices as proof, paired
   await expect(banner).toContainText('Digital Business');
   await expect(banner).toContainText('Sales & Customer');
   for (const banned of ['รับรอง', 'แต่งตั้ง', 'สอบสอน', 'บนแพลตฟอร์ม', 'คอร์ส']) await expect(banner).not.toContainText(banned);
-  // หลักฐานมาหลังทางเลือก (Why/ทางเลือกก่อน credential) — ทุกประตูหลักต้องมาก่อนแบนเนอร์
+  // คุณปันขอ 2026-10-10: แบนเนอร์อยู่ใต้ชื่อ/ตำแหน่ง เหนือคำถามและ 2 ประตูบริการ (แบบหน้าเดิม)
+  assert.equal(await page.locator('header').evaluate((header) => {
+    const next = header.nextElementSibling;
+    return next?.hasAttribute('data-fs-banner') ?? false;
+  }), true);
   assert.equal(await banner.evaluate((element) => [...document.querySelectorAll('[data-primary-route]')]
-    .every((route) => route.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING)), true);
+    .every((route) => element.compareDocumentPosition(route) & Node.DOCUMENT_POSITION_FOLLOWING)), true);
   const logo = banner.getByRole('img', { name: 'FutureSkill' });
   assert.equal(await logo.evaluate((img) => (img as HTMLImageElement).complete && (img as HTMLImageElement).naturalWidth > 0), true);
   assert.equal(await logo.evaluate((img) => getComputedStyle(img.parentElement!).backgroundColor), 'rgb(255, 255, 255)');
