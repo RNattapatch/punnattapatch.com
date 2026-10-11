@@ -1,4 +1,4 @@
-// Growth Lab page controller (/app/growth-lab). Ported from the standalone Growth Journey Lab
+// Funnel Lab page controller (/app/funnel-lab · เดิม Growth Lab). Ported from the standalone Growth Journey Lab
 // (public/app.mjs) with: DaisyUI rendering, Supabase workspace sync, and Codex via the Mac mini job queue.
 import { isSameComparisonGroup, objectiveComponentFor, rankAgreement, rankVariants } from './compare.mjs';
 import { applyCsvRecords, parseCsv, toCsv } from './csv.mjs';
@@ -33,7 +33,34 @@ const VERDICT_COPY = {
   ITERATE: 'มีแรงดึงบางกลุ่ม แต่ควรแก้ตัวแปรที่อ่อนที่สุดหนึ่งจุดก่อนเพิ่มงบ',
   KILL: 'ยังไม่คุ้มซื้อ impression รอบนี้ ให้เปลี่ยนแกนข้อความก่อนยิงจริง',
 };
-const CHANNEL_THAI = { meta: 'Meta', 'line-oa': 'LINE OA', email: 'Email', sms: 'SMS', 'sales-call': 'Sales call', website: 'Website', offline: 'Offline' };
+const CHANNEL_THAI = { meta: 'Meta Ads', 'line-oa': 'LINE OA', email: 'อีเมล', sms: 'SMS', 'sales-call': 'โทรขาย', website: 'เว็บไซต์', offline: 'ออฟไลน์' };
+const TOUCHPOINT_THAI = { 'meta-ad': 'แอด', promotion: 'โปรโมชัน', 'line-oa': 'LINE broadcast', 'sales-outreach': 'ทีมขายติดต่อ' };
+const COMP_THAI = { hook: 'ประโยคเปิด', offer: 'ข้อเสนอ', copy: 'เนื้อความ', visual: 'ภาพ / วิธีส่ง' };
+// Plain-Thai verdicts beside SCALE / ITERATE / KILL (thresholds unchanged).
+const VERDICT_THAI = {
+  SCALE: { label: 'นำไปทดสอบจริง', hint: 'ผ่านเกณฑ์คัดเบื้องต้นของตัวคำนวณ' },
+  ITERATE: { label: 'ปรับแล้วลองอีกครั้ง', hint: 'ยังมีส่วนที่คนซื้อใช้ตัดสินใจไม่ได้' },
+  KILL: { label: 'พักข้อความนี้', hint: 'ลองมุมใหม่ก่อนนำไปใช้จริง' },
+  DRAFT: { label: 'ยังไม่ประเมิน', hint: '' },
+};
+const STAGE_THAI = {
+  awareness: 'เริ่มรู้จัก', consideration: 'กำลังพิจารณา', alignment: 'คุยกับคนในบริษัท', proposal: 'ดูสาธิต / ข้อเสนอ', procurement: 'จัดซื้อ', close: 'ตัดสินใจซื้อ', expansion: 'ขยายการใช้งาน',
+  interest: 'เริ่มสนใจ', compare: 'เปรียบเทียบ', purchase: 'ซื้อ', experience: 'ใช้งาน', loyalty: 'ซื้อซ้ำ / แนะนำ',
+  'need-signal': 'มีโจทย์ / ประกาศ RFP', 'requirement-fit': 'ตรงความต้องการ', technical: 'ประเมินเทคนิค', budget: 'อนุมัติงบ', award: 'ประกาศผู้ได้รับงาน', delivery: 'ส่งมอบ',
+};
+const LEGACY_APP_NAME = 'Growth Journey Lab';   // old default — renamed to Funnel Lab on load (2026-10-12)
+
+function compThai(component, channel) {
+  return component === 'visual' && CHANNEL_PROFILES[channel]?.mode === 'delivery' ? 'จังหวะ / วิธีส่ง' : COMP_THAI[component] ?? component;
+}
+
+function stageThai(pack, stageId) {
+  return STAGE_THAI[stageId] ?? pack?.journeyStages.find((stage) => stage.id === stageId)?.label ?? stageId;
+}
+
+function letterFor(index) {
+  return index < 26 ? String.fromCharCode(65 + index) : String(index + 1);
+}
 const ACTUAL_FIELDS = [
   ['date', 'date'], ['spend', 'number'], ['impressions', 'number'], ['clicks', 'number'], ['landingViews', 'number'],
   ['leads', 'number'], ['qualifiedLeads', 'number'], ['purchases', 'number'], ['revenue', 'number'],
@@ -54,6 +81,7 @@ let state;
 let busy = false;
 let draftTimer = 0;
 let selectedPersonaId = '';
+let seatFilter = 'ALL';   // STOP / WATCH / SCROLL / ALL — buyer panel filter, per screen
 // hold = cloud copy could not be opened → never auto-write over it · readOnly = cloud written by a newer page
 // editSeq counts content edits only, so a push clears `dirty` exactly when nothing was edited while it was in flight.
 // holdRev = rev of the unreadable cloud copy (kept separate from rev so every reload re-detects it).
@@ -282,7 +310,7 @@ function enterReadOnly() {
   cloud.readOnly = true;
   clearTimeout(cloud.timer);
   setSyncStatus('🔒 มีเวอร์ชันใหม่กว่า — รีเฟรชหน้า', 'error');
-  announce('ฉบับบนคลาวด์บันทึกจาก Growth Lab เวอร์ชันใหม่กว่า หน้านี้จึงหยุดบันทึกเพื่อไม่ทับข้อมูล — รีเฟรชหน้า (⌘R) แล้วใช้งานต่อได้เลย');
+  announce('ฉบับบนคลาวด์บันทึกจาก Funnel Lab เวอร์ชันใหม่กว่า หน้านี้จึงหยุดบันทึกเพื่อไม่ทับข้อมูล — รีเฟรชหน้า (⌘R) แล้วใช้งานต่อได้เลย');
 }
 
 async function pushCloud() {
@@ -521,23 +549,52 @@ function renderBrand() {
   root.style.setProperty('--gl-accent', accent);
   root.style.setProperty('--gl-accent-ink', inkFor(accent));
   $('#brand-name').textContent = state.workspace.appName;
-  $('#brand-client').textContent = state.workspace.clientName || 'Mar-Tech · Sales-Tech workbench · B2B / B2C / B2G';
-  document.title = state.workspace.clientName ? `${state.workspace.appName} — ${state.workspace.clientName}` : 'Growth Lab — Pun';
+  $('#brand-client').textContent = state.workspace.clientName || 'ข้อความที่ใช่ เริ่มจากเข้าใจคนรับ · B2B / B2C / B2G';
+  document.title = state.workspace.clientName ? `${state.workspace.appName} — ${state.workspace.clientName}` : 'Funnel Lab — Pun';
 }
 
 function renderCreativeList() {
   $('#creative-count').textContent = state.creatives.length;
-  $('#creative-list').innerHTML = state.creatives.map((creative) => {
+  $('#creative-list').innerHTML = state.creatives.map((creative, index) => {
     const evaluation = state.evaluations[creative.id];
     const verdict = evaluation?.verdict ?? 'DRAFT';
     const active = creative.id === state.selectedCreativeId;
-    return `<button type="button" class="${active ? 'gl-card-active' : ''} flex min-w-[11rem] shrink-0 flex-col items-start gap-1 rounded-xl border border-base-300 bg-base-200 p-3 text-left text-sm tap-44 lg:min-w-0" data-creative-id="${escapeHtml(creative.id)}" ${active ? 'aria-current="true"' : ''}>
-      <strong class="line-clamp-2 leading-snug">${escapeHtml(creative.name)}</strong>
-      <span class="text-xs opacity-60">${escapeHtml(CHANNEL_THAI[creative.channel] ?? creative.channel)} · เปลี่ยน ${escapeHtml(creative.changedVariable || '—')}</span>
-      <span class="gl-chip-${verdictTone(verdict)} rounded-full px-2 py-0.5 text-[11px] font-semibold">${verdict}${evaluation ? ` · ${formatNumber(evaluation.stopRate)}%` : ''}</span>
+    return `<button type="button" class="${active ? 'gl-card-active' : ''} flex w-[15rem] shrink-0 flex-col gap-2 rounded-xl border border-base-300 bg-base-100 p-3 text-left text-sm tap-44 lg:w-auto" data-creative-id="${escapeHtml(creative.id)}" ${active ? 'aria-current="true"' : ''}>
+      <span class="flex w-full items-center justify-between gap-2"><span class="grid size-7 place-items-center rounded-md font-display text-sm font-bold ${active ? 'gl-primary' : 'bg-base-300'}">${letterFor(index)}</span><span class="truncate text-[11px] opacity-60">${escapeHtml(CHANNEL_THAI[creative.channel] ?? creative.channel)}</span></span>
+      <strong class="line-clamp-2 font-medium leading-snug">${escapeHtml(creative.hook || creative.name)}</strong>
+      <span class="flex w-full items-center justify-between gap-2"><span class="gl-chip-${verdictTone(verdict)} truncate rounded-full px-2 py-0.5 text-[11px] font-semibold">${escapeHtml(VERDICT_THAI[verdict].label)}</span><span class="text-xs tabular-nums opacity-70">${evaluation ? `${formatNumber(evaluation.stopRate)}%` : ''}</span></span>
     </button>`;
   }).join('');
   requestAnimationFrame(() => revealInRail($('#creative-list'), $('#creative-list [aria-current="true"]')));
+}
+
+// What the recipient actually sees, rendered per channel — the thing being judged sits at the centre of the desk.
+function renderMessage() {
+  const creative = selectedCreative();
+  const pack = selectedPack();
+  const index = state.creatives.findIndex((item) => item.id === creative.id);
+  $('#message-kicker').textContent = `Selected message / ${letterFor(index)}`;
+  $('#message-title').textContent = creative.name;
+  $('#message-chips').innerHTML = [
+    `<span class="badge badge-ghost">${escapeHtml(CHANNEL_THAI[creative.channel] ?? creative.channel)} · ${escapeHtml(TOUCHPOINT_THAI[creative.touchpointType] ?? creative.touchpointType)}</span>`,
+    `<button type="button" class="badge badge-ghost tap-44 hover:badge-neutral" data-view="personas">${escapeHtml(pack.businessModel.toUpperCase())} · ${pack.personas.length} คน ↗</button>`,
+    `<span class="badge badge-ghost">ช่วง: ${escapeHtml(stageThai(pack, creative.journeyStage))}</span>`,
+    `<span class="badge badge-ghost">เปลี่ยน: ${escapeHtml(COMP_THAI[creative.changedVariable] ?? '—')}</span>`,
+  ].join('');
+  const empty = !creative.hook && !creative.primaryText;
+  $('#message-preview').innerHTML = empty
+    ? `<div class="gl-preview p-5 text-sm opacity-80">ยังไม่มีข้อความ — กด <button type="button" class="link" data-action="edit-creative">แก้ข้อความ</button> เพื่อเขียนประโยคเปิด เนื้อความ และข้อเสนอ</div>`
+    : `<div class="gl-preview">
+        <div class="flex items-center justify-between border-b border-base-300 px-4 py-2"><span class="gl-eyebrow">${escapeHtml(CHANNEL_THAI[creative.channel] ?? creative.channel)} · ข้อความที่ผู้รับเห็น</span><span class="text-[10px] opacity-50">ตัวอย่าง</span></div>
+        <div class="p-4 sm:p-5">
+          <p class="mb-2 font-display text-lg font-semibold leading-relaxed sm:text-xl">${escapeHtml(creative.hook)}</p>
+          <p class="whitespace-pre-line text-[13px] leading-relaxed opacity-80">${escapeHtml(creative.primaryText)}</p>
+          <div class="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-base-300 pt-3"><span class="text-xs opacity-70">${escapeHtml(creative.headline)}</span><span class="text-xs font-semibold" style="color:var(--color-brand-coral)">${escapeHtml(creative.cta)} →</span></div>
+        </div>
+      </div>
+      <details class="mt-3 text-xs"><summary class="cursor-pointer py-2 opacity-70">ดูข้อเสนอ และภาพ / วิธีส่ง</summary>
+        <div class="space-y-2 pb-1 opacity-80"><p><b>ข้อเสนอ</b><br>${escapeHtml(creative.offer || '—')}</p><p><b>${escapeHtml(compThai('visual', creative.channel))}</b><br>${escapeHtml(creative.visualDirection || '—')}</p></div>
+      </details>`;
 }
 
 function renderContextControls() {
@@ -547,7 +604,7 @@ function renderContextControls() {
   packSelect.innerHTML = state.personaPacks.map((item) => `<option value="${escapeHtml(item.id)}">${escapeHtml(item.businessModel.toUpperCase())} · ${escapeHtml(item.name)}</option>`).join('');
   packSelect.value = pack.id;
   const stageSelect = $('#journey-stage-select');
-  stageSelect.innerHTML = pack.journeyStages.map((stage) => `<option value="${escapeHtml(stage.id)}">${escapeHtml(stage.label)}</option>`).join('');
+  stageSelect.innerHTML = pack.journeyStages.map((stage) => `<option value="${escapeHtml(stage.id)}">${escapeHtml(stageThai(pack, stage.id))}</option>`).join('');
   stageSelect.value = pack.journeyStages.some((stage) => stage.id === creative.journeyStage) ? creative.journeyStage : pack.journeyStages[0].id;
   $('#persona-count').textContent = pack.personas.length;
   renderBudgets();
@@ -577,48 +634,73 @@ function fillCreativeForm() {
 
 function renderLegend(channel) {
   const verbs = decisionVerbs(channel);
-  $('#decision-legend').innerHTML = [['stop', 'STOP', '#2f7a55'], ['watch', 'WATCH', '#d69e2e'], ['scroll', 'SCROLL', 'var(--color-brand-coral)']]
-    .map(([, key, color]) => `<span class="inline-flex items-center gap-1.5"><i class="gl-dot" style="background:${color}"></i><b>${key}</b><span class="opacity-70">${escapeHtml(verbs[key])}</span></span>`).join('');
+  const evaluation = state.evaluations[selectedCreative().id];
+  const count = (decision) => evaluation?.personaResults.filter((result) => result.decision === decision).length ?? 0;
+  $('#decision-legend').innerHTML = [['STOP', 'gl-stop'], ['WATCH', 'gl-watch'], ['SCROLL', 'gl-scroll']].map(([decision, tone]) =>
+    `<button type="button" class="gl-count rounded-xl border border-base-300 bg-base-100 p-3 text-left tap-44" data-filter="${decision}" aria-pressed="${seatFilter === decision}"><span class="block font-display text-2xl font-semibold tabular-nums ${tone}">${evaluation ? count(decision) : '—'}<span class="ml-1 text-[11px] font-normal opacity-60">คน</span></span><span class="text-[11px] opacity-70">${escapeHtml(verbs[decision])}</span></button>`).join('');
+  $('#filter-all').textContent = seatFilter === 'ALL' ? `ทั้งหมด ${activePersonas().length} คน` : `ดูทั้งหมด ${activePersonas().length} คน`;
 }
 
 function renderDecision() {
   const creative = selectedCreative();
   const evaluation = state.evaluations[creative.id];
   const personas = activePersonas();
-  $('#buyer-panel-label').textContent = `Buyer panel · ${personas.length} ที่นั่ง · ${selectedPack().name}`;
+  $('#buyer-panel-label').textContent = `${personas.length} บทบาทจำลอง · ${selectedPack().name} · กดแต่ละคนเพื่ออ่านเหตุผล`;
+  renderMessage();
   renderLegend(creative.channel);
+  const verbs = decisionVerbs(creative.channel);
   if (!evaluation) {
     $('#evaluation-engine').textContent = 'ยังไม่ประเมิน';
-    $('#decision-summary').innerHTML = `<p class="font-display text-3xl font-bold opacity-40">READY?</p><p class="mt-1 text-sm opacity-70">กรอก Touchpoint แล้วให้ผู้ซื้อจำลองทั้ง ${personas.length} ที่นั่งตัดสินใจ</p>`;
+    $('#decision-summary').innerHTML = `<p class="font-display text-xl font-semibold">พร้อมให้คนซื้อช่วยดู?</p><p class="mt-1 text-sm opacity-80">กดประเมิน แล้วผู้ซื้อจำลองทั้ง ${personas.length} คนจะบอกว่าหยุดดูไหม และเพราะอะไร</p><button type="button" class="btn gl-sheet-action mt-4 w-full tap-44" data-action="evaluate">⚡ ประเมินข้อความนี้</button>`;
     $('#component-bars').innerHTML = '';
     $('#hypothesis-card').innerHTML = '';
-    $('#persona-panel').innerHTML = personas.map((persona, index) => personaCell(persona, index, null)).join('');
-    return;
+  } else {
+    const engine = String(evaluation.engine);
+    const copy = VERDICT_THAI[evaluation.verdict];
+    const stopCount = evaluation.personaResults.filter((result) => result.decision === 'STOP').length;
+    const when = evaluation.evaluatedAt && !evaluation.evaluatedAt.startsWith('1970') ? new Date(evaluation.evaluatedAt).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }) : '';
+    $('#evaluation-engine').textContent = engine.startsWith('codex') ? 'CODEX · มินิ' : engine.startsWith('jev') ? 'JEV' : 'LOCAL';
+    $('#decision-summary').innerHTML = `<p class="gl-eyebrow" style="opacity:.7">คำแนะนำจากผลจำลอง</p>
+      <p class="mt-1 font-display text-2xl font-bold leading-snug">${escapeHtml(copy.label)}</p>
+      <p class="text-xs opacity-75">${evaluation.verdict} · ${escapeHtml(copy.hint)}${when ? ` · ${escapeHtml(when)}` : ''}</p>
+      <div class="gl-rule mt-4 flex gap-5 border-y py-4">
+        <div><strong class="font-display text-4xl font-bold leading-none tabular-nums">${formatNumber(evaluation.stopRate)}<span class="text-lg">%</span></strong><p class="mt-2 text-xs opacity-80">${escapeHtml(verbs.STOP)} · ${stopCount}/${personas.length} คน</p></div>
+        <div class="gl-rule border-l pl-5"><strong class="font-display text-2xl font-semibold tabular-nums">${formatNumber(evaluation.averageScore, 1)}</strong><p class="mt-2 text-xs opacity-80">คะแนนเฉลี่ย / 100</p></div>
+      </div>
+      <p class="mt-3 text-xs opacity-80">${VERDICT_COPY[evaluation.verdict]}</p>`;
+    $('#component-bars').innerHTML = `<p class="gl-eyebrow" style="opacity:.7">อะไรดี / อะไรต้องแก้</p>` + Object.entries(evaluation.componentScores).map(([key, value]) => {
+      const pct = Math.max(0, Math.min(100, Number(value)));
+      const weak = key === evaluation.weakestComponent;
+      const label = compThai(key, creative.channel);
+      return `<div><div class="mb-1 flex justify-between text-xs"><span>${escapeHtml(label)}${weak ? ' <span class="gl-weak-text font-semibold">· ควรแก้ก่อน</span>' : ''}</span><b class="tabular-nums">${formatNumber(value)}</b></div><div class="gl-bar ${weak ? 'gl-weak' : ''}" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}" aria-label="${escapeHtml(label)}"><span style="width:${pct}%"></span></div></div>`;
+    }).join('');
+    const hypothesis = evaluation.nextHypothesis ?? { changedVariable: evaluation.weakestComponent, instruction: 'สร้างข้อความใหม่โดยเปลี่ยนเฉพาะส่วนที่อ่อนที่สุด', keepFixed: [] };
+    const keep = (hypothesis.keepFixed ?? []).map((key) => compThai(key, creative.channel)).join(' · ');
+    $('#hypothesis-card').innerHTML = `<div class="gl-rule mt-4 border-t pt-4"><p class="gl-eyebrow" style="opacity:.7">ทดลองรอบถัดไป</p><h3 class="mt-1 font-semibold">เปลี่ยนเฉพาะ${escapeHtml(compThai(hypothesis.changedVariable, creative.channel))}</h3><p class="mt-1 text-[13px] leading-relaxed">${escapeHtml(hypothesis.instruction)}</p>${keep ? `<p class="mt-2 text-[11px] opacity-70">คง ${escapeHtml(keep)} ไว้</p>` : ''}<button type="button" class="btn gl-sheet-action mt-3 w-full tap-44" data-action="duplicate">สร้างข้อความทดสอบข้อนี้ →</button></div>`;
   }
-  const engine = String(evaluation.engine);
-  $('#evaluation-engine').textContent = engine.startsWith('codex') ? 'CODEX · มินิ' : engine.startsWith('jev') ? 'JEV' : 'LOCAL';
-  const segments = Object.entries(evaluation.segmentScores).sort(([, left], [, right]) => right - left);
-  const when = evaluation.evaluatedAt && !evaluation.evaluatedAt.startsWith('1970') ? ` · ${new Date(evaluation.evaluatedAt).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' })}` : '';
-  $('#decision-summary').innerHTML = `<div class="flex items-end justify-between gap-3"><p class="gl-${verdictTone(evaluation.verdict)} font-display text-4xl font-bold leading-none">${evaluation.verdict}</p><p class="text-right"><span class="font-display text-3xl font-bold leading-none">${formatNumber(evaluation.stopRate)}%</span><br><span class="text-[11px] font-semibold uppercase tracking-wider opacity-60">Stop rate</span></p></div>
-    <p class="mt-2 text-sm">${VERDICT_COPY[evaluation.verdict]} คะแนนเฉลี่ย ${formatNumber(evaluation.averageScore, 1)}/100<span class="opacity-60">${when}</span></p>
-    <div class="mt-2 flex flex-wrap gap-1" aria-label="คะแนนแยกตามกลุ่ม">${segments.map(([segment, score]) => `<span class="badge badge-ghost badge-sm">${escapeHtml(segment)} <b class="ml-1">${formatNumber(score)}</b></span>`).join('')}</div>`;
-  $('#component-bars').innerHTML = Object.entries(evaluation.componentScores).map(([key, value]) => {
-    const pct = Math.max(0, Math.min(100, Number(value)));
-    return `<div class="grid grid-cols-[minmax(0,9.5rem)_1fr_2.25rem] items-center gap-2 text-sm"><span class="truncate ${key === evaluation.weakestComponent ? 'font-semibold' : ''}">${escapeHtml(componentLabel(key, creative.channel))}</span><div class="gl-bar ${key === evaluation.weakestComponent ? 'gl-weak' : ''}" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}" aria-label="${escapeHtml(componentLabel(key, creative.channel))}"><span style="width:${pct}%"></span></div><output class="text-right tabular-nums">${formatNumber(value)}</output></div>`;
-  }).join('');
-  const hypothesis = evaluation.nextHypothesis ?? { changedVariable: evaluation.weakestComponent, instruction: 'สร้าง variant ใหม่โดยเปลี่ยนเฉพาะองค์ประกอบที่อ่อนที่สุด' };
-  $('#hypothesis-card').innerHTML = `<div class="rounded-xl border border-base-300 bg-base-100 p-3"><p class="gl-eyebrow">ทดสอบต่อ · เปลี่ยนแค่ ${escapeHtml(componentLabel(hypothesis.changedVariable, creative.channel) ?? hypothesis.changedVariable)}</p><p class="mt-1 text-sm">${escapeHtml(hypothesis.instruction)}</p><button type="button" class="btn btn-xs mt-2 tap-44" data-action="duplicate">⧉ สร้าง variant ทดสอบข้อนี้</button></div>`;
-  const resultMap = new Map(evaluation.personaResults.map((result) => [result.personaId, result]));
-  $('#persona-panel').innerHTML = personas.map((persona, index) => personaCell(persona, index, resultMap.get(persona.id))).join('');
+  renderSeats();
 }
 
-function personaCell(persona, index, result) {
+function renderSeats() {
+  const creative = selectedCreative();
+  const evaluation = state.evaluations[creative.id];
+  const resultMap = new Map((evaluation?.personaResults ?? []).map((result) => [result.personaId, result]));
+  const seats = activePersonas().map((persona, index) => ({ persona, index, result: resultMap.get(persona.id) }))
+    .filter(({ result }) => seatFilter === 'ALL' || result?.decision === seatFilter);
+  $('#persona-panel').innerHTML = seats.length
+    ? seats.map(({ persona, index, result }) => personaCell(persona, index, result, creative.channel)).join('')
+    : `<div class="col-span-full rounded-xl bg-base-100 p-4 text-sm opacity-80">ไม่มีผู้ซื้อในกลุ่มนี้ <button type="button" class="link" data-filter="ALL">ดูทั้งหมด</button></div>`;
+}
+
+function personaCell(persona, index, result, channel) {
   const decision = result?.decision ?? 'PENDING';
-  return `<button type="button" class="gl-seat gl-seat-${decisionTone(decision)} flex flex-col items-start gap-0.5 rounded-xl bg-base-100 p-2.5 text-left tap-44" data-persona-id="${escapeHtml(persona.id)}" aria-label="ที่นั่ง ${index + 1} ${escapeHtml(persona.name)} ${decision}">
-    <span class="w-full truncate text-[10px] font-semibold uppercase tracking-wider opacity-55">Seat ${String(index + 1).padStart(2, '0')} · ${escapeHtml(persona.segment)}</span>
+  const verbs = decisionVerbs(channel);
+  const label = result ? verbs[decision] : 'ยังไม่ประเมิน';
+  return `<button type="button" class="gl-seat gl-seat-${decisionTone(decision)} flex min-w-0 flex-col items-start gap-0.5 rounded-xl bg-base-100 p-2.5 text-left tap-44" data-persona-id="${escapeHtml(persona.id)}" aria-label="ที่นั่ง ${index + 1} ${escapeHtml(persona.name)} ${escapeHtml(label)}">
+    <span class="w-full truncate text-[10px] font-semibold opacity-55">${String(index + 1).padStart(2, '0')} · ${escapeHtml(persona.segment)}</span>
     <span class="w-full truncate text-sm font-semibold">${escapeHtml(persona.name)}</span>
     <span class="w-full truncate text-xs opacity-70">${escapeHtml(persona.role)}</span>
-    <span class="text-xs font-semibold">${decision}${result ? ` · ${formatNumber(result.score)}` : ''}</span>
+    <span class="flex w-full items-center justify-between gap-1 text-xs"><span class="truncate font-semibold gl-${decisionTone(decision) === 'pending' ? '' : decisionTone(decision)}">${escapeHtml(label)}</span>${result ? `<b class="tabular-nums">${formatNumber(result.score)}</b>` : ''}</span>
   </button>`;
 }
 
@@ -892,9 +974,9 @@ function queueDraftSave(event) {
       renderDecision();
       renderCreativeList();
       announce('ข้อความเปลี่ยนแล้ว — กดประเมินใหม่เพื่อไม่ตัดสินจากคะแนนเก่า');
-    } else if (['name', 'channel', 'changedVariable'].includes(event.target.name)) {
-      renderCreativeList();
-      renderLegend(selectedCreative().channel);
+    } else {
+      renderMessage();   // the preview behind the editor follows every keystroke
+      if (['name', 'hook', 'channel', 'changedVariable'].includes(event.target.name)) { renderCreativeList(); renderLegend(selectedCreative().channel); }
     }
     clearTimeout(draftTimer);
     draftTimer = window.setTimeout(() => { draftTimer = 0; persist(); }, 300);
@@ -910,6 +992,7 @@ function validateCreative(creative) {
   const input = $('#creative-form').elements[missing];
   const label = input.closest('label')?.querySelector('.label-text')?.childNodes[0]?.textContent?.trim() ?? missing;
   $('#creative-error').textContent = `กรอก ${label} ก่อนประเมิน`;
+  openEditor();
   input.focus();
   return false;
 }
@@ -927,7 +1010,8 @@ function evaluateLocal(creative = creativeFromForm()) {
   state = updateCreativeDraft(state, creative);
   state.selectedPersonaPackId = pack.id;
   const evaluation = storeLocalBaseline(creative, pack);
-  persist(`ประเมินครบ ${pack.personas.length} ที่นั่งแล้ว: ${evaluation.verdict} · Stop ${formatNumber(evaluation.stopRate)}%`);
+  persist(`ประเมินครบ ${pack.personas.length} คนแล้ว: ${VERDICT_THAI[evaluation.verdict].label} · ${decisionVerbs(creative.channel).STOP} ${formatNumber(evaluation.stopRate)}%`);
+  closeEditor();
   renderAll();
   revealDecision();
 }
@@ -1065,6 +1149,18 @@ async function resumeCodexJobs() {
   }
 }
 
+function openEditor(focusField = null) {
+  const dialog = $('#editor-dialog');
+  if (!dialog.open) dialog.showModal();
+  if (focusField) $('#creative-form').elements[focusField]?.focus();
+}
+
+function closeEditor() {
+  flushDraftSave();
+  const dialog = $('#editor-dialog');
+  if (dialog.open) dialog.close();
+}
+
 function newId(prefix) {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
 }
@@ -1075,23 +1171,24 @@ function duplicateCreative() {
   const now = new Date().toISOString();
   const evaluation = state.evaluations[source.id];
   const changedVariable = evaluation?.nextHypothesis?.changedVariable ?? source.changedVariable;
-  state.creatives.push({ ...source, id, name: `${source.name} — ทดสอบ ${changedVariable}`, changedVariable, createdAt: now, updatedAt: now });
+  state.creatives.push({ ...source, id, name: `${source.name} — ทดสอบ${COMP_THAI[changedVariable] ?? changedVariable}`, changedVariable, createdAt: now, updatedAt: now });
   state.selectedCreativeId = id;
-  persist(`สร้าง Variant สำเนาแล้ว — เปลี่ยนเฉพาะ ${changedVariable} เพื่อให้เทียบผลได้`);
+  persist(`สร้างข้อความทดลองแล้ว — เปลี่ยนเฉพาะ${COMP_THAI[changedVariable] ?? changedVariable} ส่วนอื่นคงเดิม จะได้เทียบผลได้`);
   state.activeView = 'workbench';
   renderAll();
-  $('#creative-form').elements[changedVariable === 'visual' ? 'visualDirection' : changedVariable === 'copy' ? 'primaryText' : changedVariable]?.focus();
+  openEditor(changedVariable === 'visual' ? 'visualDirection' : changedVariable === 'copy' ? 'primaryText' : changedVariable);
 }
 
 function newCreative() {
   const source = selectedCreative();
   const id = newId('creative');
   const now = new Date().toISOString();
-  state.creatives.push({ ...source, id, name: `Variant ${state.creatives.length + 1}`, hook: '', primaryText: '', headline: '', offer: '', cta: '', visualDirection: '', createdAt: now, updatedAt: now });
+  state.creatives.push({ ...source, id, name: `ข้อความ ${letterFor(state.creatives.length)}`, hook: '', primaryText: '', headline: '', offer: '', cta: '', visualDirection: '', createdAt: now, updatedAt: now });
   state.selectedCreativeId = id;
-  persist('สร้าง Variant เปล่าแล้ว');
+  state.activeView = 'workbench';
+  persist('สร้างข้อความใหม่แล้ว — เขียนแล้วกดบันทึกแล้วประเมิน');
   renderAll();
-  $('#creative-form').elements.hook.focus();
+  openEditor('hook');
 }
 
 // ---------- persona packs ----------
@@ -1292,12 +1389,12 @@ async function importCsv(file) {
 
 function exportCsv() {
   const rows = state.creatives.map((creative) => ({ creative, evaluation: state.evaluations[creative.id], actual: state.actuals[creative.id] ?? { creativeId: creative.id } }));
-  download(`growth-lab-${new Date().toISOString().slice(0, 10)}.csv`, `﻿${toCsv(rows)}`, 'text/csv;charset=utf-8');
+  download(`funnel-lab-${new Date().toISOString().slice(0, 10)}.csv`, `﻿${toCsv(rows)}`, 'text/csv;charset=utf-8');
   announce('ส่งออก CSV แล้ว');
 }
 
 function backupJson() {
-  download(`growth-lab-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(state, null, 2), 'application/json');
+  download(`funnel-lab-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(state, null, 2), 'application/json');
   announce('Backup workspace แล้ว — ไฟล์ไม่มี API key หรือ credential');
 }
 
@@ -1307,16 +1404,21 @@ function onClick(event) {
   const viewButton = event.target.closest('[data-view]');
   if (viewButton) { flushDraftSave(); switchView(viewButton.dataset.view); return; }
   const creativeButton = event.target.closest('[data-creative-id]');
-  if (creativeButton) { flushDraftSave(); state.selectedCreativeId = creativeButton.dataset.creativeId; persistView(); renderAll(); return; }
+  if (creativeButton) { flushDraftSave(); seatFilter = 'ALL'; state.selectedCreativeId = creativeButton.dataset.creativeId; persistView(); renderAll(); return; }
   const packButton = event.target.closest('[data-pack-id]');
   if (packButton) { state.selectedPersonaPackId = packButton.dataset.packId; selectedPersonaId = ''; persistView(); renderPackBuilder(); renderPersonaDirectory(); return; }
   const personaEditButton = event.target.closest('[data-edit-persona-id]');
   if (personaEditButton) { selectedPersonaId = personaEditButton.dataset.editPersonaId; renderPackBuilder(); return; }
   const personaButton = event.target.closest('[data-persona-id]');
   if (personaButton) { openPersona(personaButton.dataset.personaId); return; }
+  const filterButton = event.target.closest('[data-filter]');
+  if (filterButton) { seatFilter = filterButton.dataset.filter === seatFilter ? 'ALL' : filterButton.dataset.filter; renderLegend(selectedCreative().channel); renderSeats(); return; }
   const action = event.target.closest('[data-action]')?.dataset.action;
   if (!action) return;
-  if (action === 'duplicate') duplicateCreative();
+  if (action === 'evaluate') evaluateLocal();
+  else if (action === 'edit-creative') openEditor('hook');
+  else if (action === 'close-editor') closeEditor();
+  else if (action === 'duplicate') duplicateCreative();
   else if (action === 'new-creative') newCreative();
   else if (action === 'evaluate-provider') void evaluateCodex();
   else if (action === 'clone-pack') clonePackForClient(false);
@@ -1364,7 +1466,7 @@ function wire() {
     state.selectedPersonaPackId = pack.id;
     const form = $('#creative-form');
     form.elements.businessModel.value = pack.businessModel;
-    $('#journey-stage-select').innerHTML = pack.journeyStages.map((stage) => `<option value="${escapeHtml(stage.id)}">${escapeHtml(stage.label)}</option>`).join('');
+    $('#journey-stage-select').innerHTML = pack.journeyStages.map((stage) => `<option value="${escapeHtml(stage.id)}">${escapeHtml(stageThai(pack, stage.id))}</option>`).join('');
     form.elements.journeyStage.value = pack.journeyStages[0].id;
     queueDraftSave(event);
     renderDecision();
@@ -1402,5 +1504,7 @@ export async function boot() {
   if (local.notice) announce(local.notice);
   setSyncStatus('☁️ กำลังเช็คฉบับบนคลาวด์…');
   await syncFromCloud('boot');
+  // Renamed 2026-10-12: a workspace still carrying the old default name becomes "Funnel Lab" (a custom white-label name is kept).
+  if (state.workspace.appName === LEGACY_APP_NAME) { commitLocal({ ...state, workspace: { ...state.workspace, appName: 'Funnel Lab' } }); renderBrand(); }
   await resumeCodexJobs();
 }

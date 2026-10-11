@@ -30,7 +30,7 @@ async function open(browser, viewport, theme) {
   page.on('pageerror', (error) => errors.push(`pageerror: ${error.message}`));
   page.on('console', (message) => { if (message.type() === 'error' && !/401|Failed to load resource/u.test(message.text())) errors.push(`console: ${message.text()}`); });
   page.on('dialog', (dialog) => dialog.dismiss());
-  await page.goto(`${BASE}/growth-lab.html`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}/funnel-lab.html`, { waitUntil: 'networkidle' });
   await page.waitForSelector('#creative-list [data-creative-id]', { state: 'attached', timeout: 15_000 });
   return { context, page, errors };
 }
@@ -42,7 +42,9 @@ try {
   // ---------- desktop walk-through ----------
   const { context, page, errors } = await open(browser, { width: 1440, height: 900 });
   check(await page.locator('#growth-lab-app').isVisible(), 'gate reveals the lab');
-  check(await page.locator('.app-tab-active').textContent().then((text) => text.includes('Growth Lab')), 'nav marks Growth Lab active');
+  check(await page.locator('.app-tab-active').textContent().then((text) => text.includes('Funnel Lab')), 'nav marks Funnel Lab active');
+  check((await page.locator('#brand-name').textContent()).includes('Funnel Lab'), 'workspace shows the new name');
+  check(await page.locator('#message-preview').textContent().then((text) => text.includes('เจ้าของ SME')), 'selected message is previewed at the centre of the desk');
   const tabBox = await page.locator('.app-tab-active').boundingBox();
   check(Boolean(tabBox) && tabBox.x + tabBox.width <= 1440, 'active nav tab is on screen');
   await page.waitForFunction(() => /ออฟไลน์|ยังไม่ขึ้นคลาวด์/u.test(document.getElementById('sync-status').textContent), null, { timeout: 15_000 });
@@ -54,6 +56,8 @@ try {
   await page.screenshot({ path: join(OUT, 'desktop-workbench-b2b.png'), fullPage: true });
 
   // B2C promotion over SMS → channel-aware labels and a fresh evaluation
+  await page.click('[data-action="edit-creative"] >> nth=0');
+  await page.waitForSelector('#editor-dialog[open]');
   await page.selectOption('#persona-pack-select', 'thai-b2c-growth-panel');
   await page.selectOption('select[name="touchpointType"]', 'promotion');
   await page.selectOption('select[name="channel"]', 'sms');
@@ -61,10 +65,19 @@ try {
     name: 'SMS — โปร 1 แถม 1', hook: 'ผิวแห้ง? เซรั่ม 1 แถม 1', primaryText: 'รีวิวจริง 2,000 คน', headline: '590.- ถึง 31 ต.ค.',
     offer: 'ส่งฟรี รับประกันคืนเงิน 30 วัน', cta: 'กด bit.ly/serum', visualDirection: 'ส่งศุกร์ 19:00 น. ใส่ชื่อลูกค้า',
   })) await page.fill(`#creative-form [name="${name}"]`, value);
-  await page.click('[data-action="evaluate"]');
+  check((await page.locator('#message-preview').textContent()).includes('ผิวแห้ง? เซรั่ม 1 แถม 1'), 'preview follows typing in the editor');
+  await page.click('#creative-form button[type="submit"]');
+  await page.waitForSelector('#editor-dialog:not([open])');
+  await page.waitForTimeout(500);   // let the modal fade finish before screenshots
+  check(await page.locator('#editor-dialog').isVisible() === false, 'saving the editor evaluates and closes it');
   await page.waitForSelector('#component-bars > div');
   check((await page.locator('#persona-panel button').count()) === 8, 'B2C panel shows 8 seats');
-  check((await page.locator('#component-bars').textContent()).includes('Delivery'), 'SMS shows Delivery instead of Visual');
+  check((await page.locator('#component-bars').textContent()).includes('จังหวะ / วิธีส่ง'), 'SMS scores delivery instead of visual');
+  await page.click('[data-filter="STOP"]');
+  const stopCount = Number((await page.locator('[data-filter="STOP"]').textContent()).match(/\d+/)?.[0] ?? -1);
+  check((await page.locator('#persona-panel button').count()) === stopCount, 'STOP count filters the buyer seats');
+  await page.click('[data-filter="STOP"]');
+  check((await page.locator('#persona-panel button').count()) === 8, 'tapping the active filter shows everyone again');
   check((await page.locator('#decision-legend').textContent()).includes('ลบทิ้ง'), 'SMS legend uses SMS wording');
   check((await page.locator('#hook-budget').textContent()).includes('/70'), 'hook budget follows the SMS limit');
   check(!(await page.locator('#decision-summary').textContent()).includes('1970'), 'evaluation time is real');
@@ -76,10 +89,11 @@ try {
   await page.screenshot({ path: join(OUT, 'desktop-persona-dialog.png') });
   await page.keyboard.press('Escape');
 
-  await page.click('[data-action="duplicate"] >> nth=0');
-  check((await page.locator('#creative-list [data-creative-id]').count()) === 3, 'duplicate adds a variant');
+  await page.click('#hypothesis-card [data-action="duplicate"]');
+  check((await page.locator('#creative-list [data-creative-id]').count()) === 3, 'next-experiment button adds a variant');
+  check(await page.locator('#editor-dialog[open]').count() === 1, 'and opens the editor on the field to change');
   await page.fill('#creative-form [name="hook"]', 'ผิวแห้งลอก? 1 แถม 1 วันนี้');
-  await page.click('[data-action="evaluate"]');
+  await page.click('#creative-form button[type="submit"]');
 
   await page.click('.gl-tab[data-view="compare"]'); await page.waitForTimeout(400);  // let the tab colour transition settle before screenshots
   check((await page.locator('#compare-content tbody tr').count()) === 2, 'compare ranks the two SMS variants only');
@@ -122,6 +136,8 @@ try {
   for (const [label, viewport, theme] of [['mobile', { width: 390, height: 844 }, null], ['mobile-dark', { width: 390, height: 844 }, 'pundark'], ['tablet', { width: 768, height: 1024 }, null]]) {
     const run = await open(browser, viewport, theme);
     check(await overflow(run.page) <= 0, `${label}: no horizontal page scroll`);
+    const card = await run.page.locator('#creative-list [aria-current="true"]').boundingBox();
+    check(Boolean(card) && card.x >= 0 && card.x + card.width <= viewport.width, `${label}: selected message card fits on screen`);
     await run.page.screenshot({ path: join(OUT, `${label}-top.png`) });
     await run.page.click('[data-action="evaluate"]');
     await run.page.waitForTimeout(700);

@@ -209,7 +209,7 @@ export function personasForState(state) {
 }
 
 function workspaceDefaults() {
-  return { appName: 'Growth Journey Lab', clientName: '', accentColor: '#072b4e', preferredProvider: 'local' };
+  return { appName: 'Funnel Lab', clientName: '', accentColor: '#072b4e', preferredProvider: 'local' };
 }
 
 function addLegacyPackRevisions(state) {

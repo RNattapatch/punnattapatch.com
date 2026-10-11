@@ -69,6 +69,9 @@ const redirects = [
   '/war-room  /content  301',
   '/app/newsroom  /intel  301',
   '/newsroom  /intel  301',
+  // 2026-10-12 Growth Lab → Funnel Lab
+  '/app/growth-lab  /funnel-lab  301',
+  '/growth-lab  /funnel-lab  301',
   '/app/*  /:splat  302',
 ];
 let hasIndex = true;

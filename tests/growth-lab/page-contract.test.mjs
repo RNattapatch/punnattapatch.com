@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 
 import { buildCodexArgs, parseFeatureList } from '../../src/scripts/growth-lab/codex-args.mjs';
 
-const page = readFileSync(new URL('../../src/pages/app/growth-lab.astro', import.meta.url), 'utf8');
+const page = readFileSync(new URL('../../src/pages/app/funnel-lab.astro', import.meta.url), 'utf8');
 const ui = readFileSync(new URL('../../src/scripts/growth-lab/ui.mjs', import.meta.url), 'utf8');
 const nav = readFileSync(new URL('../../src/components/app/AppNav.astro', import.meta.url), 'utf8');
 const jobs = readFileSync(new URL('../../src/scripts/war-room/data.ts', import.meta.url), 'utf8');
@@ -17,6 +17,7 @@ const migration = readFileSync(new URL('../../supabase/migrations/202610110001_g
 const pageIds = new Set([...page.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]));
 // Ids created at runtime inside rendered templates (not static markup).
 const RUNTIME_IDS = new Set(['actual-error', 'persona-dialog-title', 'server-copies']);
+// Note: ids inside the editor <dialog> are static markup too (dialog content stays in the DOM while closed).
 
 test('every #id the controller queries exists in the page', () => {
   const used = new Set([...ui.matchAll(/\$\('#([a-z0-9-]+)/g)].map((match) => match[1]));
@@ -35,10 +36,14 @@ test('each view tab maps to a screen section and the gate reveals the app contai
   assert.match(page, /classList\.contains\('hidden'\)\) start\(\)/, 'boots even if the gate fired before this module loaded');
 });
 
-test('Growth Lab is in the shared app nav (appended, existing tab order untouched)', () => {
-  assert.match(nav, /'growth-lab'/);
+test('Funnel Lab is in the shared app nav (appended, existing tab order untouched) and the old URL redirects', () => {
+  assert.match(nav, /'funnel-lab'/);
+  const prune = readFileSync(new URL('../../scripts/prune-for-app.mjs', import.meta.url), 'utf8');
+  assert.match(prune, /'\/app\/growth-lab  \/funnel-lab  301'/);
+  assert.match(prune, /'\/growth-lab  \/funnel-lab  301'/);
+  assert.ok(prune.indexOf('/growth-lab  /funnel-lab') < prune.indexOf("'/app/*  /:splat  302'"), 'redirects come before the /app/* rule');
   const ids = [...nav.matchAll(/\{ id: '([a-z-]+)', href:/g)].map((match) => match[1]);
-  assert.deepEqual(ids, ['crm', 'content', 'news-desk', 'intel', 'audience', 'chat', 'docs', 'messenger', 'growth-lab']);
+  assert.deepEqual(ids, ['crm', 'content', 'news-desk', 'intel', 'audience', 'chat', 'docs', 'messenger', 'funnel-lab']);
 });
 
 test('growth_eval is a known job type in the browser and allowed by the database constraint', () => {
@@ -106,4 +111,14 @@ test('results sync outside the core row and size limits are surfaced, not retrie
   const catchUp = ui.slice(ui.indexOf('async function catchUpInherited()'), ui.indexOf('async function syncFromCloud('));
   assert.ok(catchUp.indexOf("cloud.commitSeq !== cloud.inheritCommitSeq || draftTimer) return;") > catchUp.indexOf('setTimeout(resolve, 1_500)'), 'after the wait, own edits block the catch-up');
   assert.doesNotMatch(cloudTs, /updated_at: new Date\(\)/, 'result rows are stamped by the server clock');
+});
+
+test('desk layout: editor lives in a dialog, buyer filter and decision sheet are wired', () => {
+  assert.match(page, /<dialog id="editor-dialog"[\s\S]*<form id="creative-form"/, 'the full form opens on demand');
+  for (const action of ['evaluate', 'edit-creative', 'close-editor', 'new-creative', 'evaluate-provider']) assert.match(page + ui, new RegExp(`data-action="${action}"`), action);
+  assert.match(ui, /action === 'evaluate'\) evaluateLocal\(\)/);
+  assert.match(ui, /data-filter="\$\{decision\}"/, 'STOP / WATCH / SCROLL counts filter the seats');
+  assert.match(page, /class="gl-sheet /, 'decision sheet');
+  assert.doesNotMatch(page, /type="submit" data-action=/, 'the dialog submit has no data-action (would evaluate twice)');
+  assert.match(ui, /LEGACY_APP_NAME = 'Growth Journey Lab'/);
 });
