@@ -20,7 +20,7 @@
  *   before.mp4 + before-poster.jpg (poster = 1.5 s)
  *     source: ~/work/tad-clip-run/บาร์บีคิว กระทะดำ.MP4  (raw iPhone clip, HEVC 1440×2560 60 fps, 107.53 s)
  *     window: 2.5–8.5 s (phrase 1 starts at 2.51 s; the false start 0.96–1.93 s is before the window)
- *   after.mp4 + after-poster.jpg (poster = 4.0 s: "26 สาขา" stat card + face circle + karaoke sub)
+ *   after.mp4 + after-poster.jpg (poster = 1.0 s: Pexels plate + "ขอโทษ หรือ ปิดร้านหนี?" card + karaoke sub; also the hero "after" image)
  *     source: ~/work/tad-clip-run/tad-clip-บาร์บีคิว กระทะดำ/final.mp4  (kit output, H.264 1080×1920 60 fps, 71.88 s)
  *     window: 0.0–6.0 s (raw 2.51 s = final 0.0). Inserts in this window: Pexels 4629216
  *             (Pexels License, ads OK, labelled "ภาพจำลอง" by the kit) + the kit's own stat card.
@@ -28,7 +28,10 @@
  *     -c:v libx264 -preset slow -crf 21 -profile:v high -pix_fmt yuv420p
  *     -af "loudnorm=I=-16:TP=-1.5:LRA=11" -c:a aac -b:a 96k -movflags +faststart
  *     → before.mp4 1.65 MB · after.mp4 1.30 MB (Pages limit 25 MB/file, spec target ≤ 20 MB)
- *   og.jpg: 1200×630, both posters on sand + headline (libass, Sarabun); re-render when the pair changes.
+ *   og-v2.jpg: 1200×630, problem headline + both posters (neuro gate: passes the 216 px glance test).
+ *     source: scripts/og/tad-clip-og.html (Prompt from the kit's assets/fonts — swap FONTS for that folder),
+ *     rendered with Chrome --headless=new --window-size=1200,630 --screenshot. New file name on every
+ *     change so FB / LINE link previews fetch it again.
  *   DEMO.stat numbers: roughcut-review.md of that run ("ตัด 19 ท่อน จาก 57 วลี · 107.6 → 71.8 วินาที");
  *   ffprobe: raw 107.53 s → final 71.88 s. When the gym clip replaces this pair, re-measure DEMO.stat.
  */
@@ -43,7 +46,7 @@ export const META = {
   title: 'แจกชุดตัดคลิปฟรี ตัดเทคซ้ำกับใส่ซับไทยให้ในแชทเดียว',
   description:
     'ลากคลิปพูดหน้ากล้องเข้าแชท พิมพ์ “ตัดคลิป” ตอบคำถามสั้นๆ รอบเดียว ได้ MP4 ที่ตัดเทคซ้ำแล้ว มีซับไทยแบบคาราโอเกะ จะแทรกภาพ มีม หรือเสียงเอฟเฟกต์ก็เลือกได้ จ่ายแค่ค่า Claude แบบเสียเงินที่ใช้อยู่ ไม่มีค่ารายเดือนอื่นเพิ่ม ใช้ได้ทั้ง Mac และ Windows',
-  ogImage: `${MEDIA}/og.jpg`,
+  ogImage: `${MEDIA}/og-v2.jpg`,
   breadcrumb: 'ชุดตัดคลิปฟรี',
 };
 
@@ -57,7 +60,9 @@ export const HERO = {
     [{ t: 'ต้องแลกด้วย' }, { t: 'การนั่งตัดทั้งคืน', accent: true }],
     [{ t: 'หรือไม่ก็' }, { t: 'ค่าแอปทุกเดือน' }],
   ],
-  sub: 'คลิปถัดไปไม่ต้องนั่งตัดเอง และไม่ต้องสมัครแอปตัด\u2060คลิปรายเดือนเพิ่ม ชุดนี้แจกฟรี',
+  sub: 'คลิปถัดไป ลากเข้าแชทแล้วพิมพ์ว่า “ตัด\u2060คลิป” ได้คลิปที่ตัดเทคซ้ำออกแล้ว มีซับไทยครบ ไม่ต้องนั่งตัดเอง ไม่ต้องสมัครแอปรายเดือน ชุด\u2060นี้\u2060แจก\u2060ฟรี',
+  // First-frame contrast (neuro gate): the same clip raw vs. after the kit, shown in the hero.
+  pairLabel: 'คลิปเดียวกัน ก่อนและหลังตัดด้วยชุดนี้',
   skipLink: 'รู้เรื่องแล้ว ขอลิงก์เลย',
 };
 
@@ -86,6 +91,7 @@ export const DEMO = {
     label: 'ก่อน',
     src: `${MEDIA}/before.mp4`,
     poster: `${MEDIA}/before-poster.jpg`,
+    posterAlt: 'คลิปดิบจากมือถือ ผู้พูดหน้ากล้อง ยังไม่มีซับ ไม่มีภาพประกอบ',
     alt: 'คลิปดิบจากมือถือ ผู้พูดหน้ากล้อง ยังไม่มีซับและภาพประกอบ',
     caption: 'คลิปดิบจากมือถือ ยังไม่มีซับ ไม่มีภาพ\u2060ประกอบ',
     sound: 'เสียงคลิปก่อน',
@@ -94,6 +100,7 @@ export const DEMO = {
     label: 'หลัง',
     src: `${MEDIA}/after.mp4`,
     poster: `${MEDIA}/after-poster.jpg`,
+    posterAlt: 'คลิปหลังตัด ครึ่งบนเป็นภาพปิ้งย่าง มีการ์ดคำถาม ขอโทษ หรือ ปิดร้านหนี ครึ่งล่างเป็นผู้พูดพร้อมซับไทยแบบคาราโอเกะ',
     alt: 'ช่วงเดียวกันหลังตัดด้วยชุดนี้ ครึ่งบนเป็นภาพปิ้งย่างติดป้ายภาพจำลอง มีซับคาราโอเกะ แล้วต่อด้วยการ์ด 26 สาขา กับหน้าผู้พูดในวงกลม',
     caption: 'ช่วงเดียวกันหลังตัดด้วยชุดนี้ มีซับคาราโอเกะ กับภาพและการ์ดตัวเลขแทรกตามคำพูด',
     sound: 'เสียงคลิปหลัง',
@@ -138,9 +145,48 @@ export const TOOLS = {
 
 export const CTA = {
   heading: 'เอาไปลองกับคลิปถัดไปของคุณ',
-  button: 'เอาไปใช้ฟรีบน GitHub',
-  note: 'ติดตั้งผ่านแอป Claude บนคอม ทั้ง Mac และ Windows คู่มือติดตั้งทีละขั้นอยู่ในหน้า\u00a0GitHub',
-  mobileNote: 'เปิดจากมือถืออยู่? ส่งลิงก์หน้านี้เข้าแชทตัวเองไว้ก่อน แล้วค่อยเปิดบนคอม',
+  button: 'รับ skill ไปใช้ฟรีบน GitHub',
+  note: 'หน้า GitHub มีคู่มือติดตั้งแยก Mac กับ Windows ทีละขั้น และที่แจ้งปัญหาถ้าติดตรงไหน',
+  mobileNote: 'เปิดจากมือถืออยู่? ส่งลิงก์หน้านี้เข้าแชทตัวเองไว้ก่อน แล้วค่อยทำบนคอม',
+  // Social value prop (neuro gate): a reason to forward, offered after the value is on the page.
+  shareLabel: 'ส่งให้เพื่อนที่ทำคลิปเองใน LINE',
+  shareText: 'ชุดตัดคลิปฟรี ลากคลิปเข้าแชทแล้วพิมพ์ว่า “ตัดคลิป” ได้คลิปที่ตัดเทคแล้วพร้อมซับไทย',
+};
+
+/**
+ * Install steps for people who have never opened GitHub. Copy buttons put the exact text on the
+ * clipboard. The first copy on a page view counts as the same "took the kit" signal as the GitHub
+ * button (TadClipGithubClick, same event_id to CAPI) because many visitors will install from here
+ * and never open GitHub. Flow matches the kit's docs/01-install-mac.md §2.
+ */
+export const INSTALL = {
+  heading: 'ไม่เคยใช้ GitHub ก็ติดตั้งได้ ทำตาม 4 ขั้นนี้',
+  windowsNote: 'ใช้ Windows: ก่อนขั้นที่ 1 ให้ลงโปรแกรม Git\u00a0for\u00a0Windows (ฟรี จาก git-scm.com) ครั้งเดียว กด Next ตามค่าเดิมได้เลย แล้วปิดเปิดแอป Claude ใหม่',
+  copyLabel: 'คัดลอก',
+  copiedLabel: 'คัดลอกแล้ว',
+  steps: [
+    {
+      title: 'เปิดแอป Claude บนคอม แล้วกดแท็บ Code',
+      detail: 'ยังไม่มีแอป โหลดได้ที่ claude.ai/download ต้องใช้ Claude แบบเสียเงิน (Pro ขึ้นไป) ถ้าแอปถามว่าจะให้ทำงานที่ไหน เลือกเครื่องนี้ (Local)',
+    },
+    {
+      title: 'คัดลอกชื่อนี้ไปเพิ่มเป็น plugin',
+      code: 'RNattapatch/tad-clip',
+      detail: 'กดปุ่ม + ข้างช่องพิมพ์ เลือก Plugins แล้วกด Add plugin วางชื่อที่คัดลอกมา แล้วเลือก Install for you',
+      fallback: 'ไม่เจอเมนู Plugins? คัดลอก 2 บรรทัดนี้ไปวางในช่องแชท ทีละบรรทัด',
+      fallbackCode: ['/plugin marketplace add RNattapatch/tad-clip', '/plugin install tad-clip@pun-nattapatch'],
+    },
+    {
+      title: 'พิมพ์ประโยคนี้ในแชท',
+      code: 'ติดตั้ง tad-clip',
+      detail: 'Claude จะบอกก่อนว่าจะลงโปรแกรมอะไร ใช้พื้นที่เท่าไร แล้วลงให้เอง ครั้งแรกใช้เวลาราว 10–30\u00a0นาที ขึ้นกับความเร็วเน็ต',
+    },
+    {
+      title: 'ลากคลิปเข้าแชท แล้วพิมพ์',
+      code: 'ตัดคลิป',
+      detail: 'ตอบคำถามสั้นๆ รอบเดียว แล้วรอรับไฟล์ MP4',
+    },
+  ],
 };
 
 export const TEAM = {
@@ -161,7 +207,7 @@ export const FAQS = [
   },
   {
     q: 'เครื่องต้องแรงแค่ไหน',
-    a: 'RAM 8\u00a0GB กับพื้นที่ว่าง 15\u00a0GB ก็พอ ไม่ต้องมีการ์ดจอแยก ถ้าเครื่องมีการ์ดจอ NVIDIA ชุดนี้จะใช้ให้เองเพื่อถอดเสียงเร็วขึ้น ถ้าเครื่องช้าหรือ RAM 8\u00a0GB พอดี ตอนติดตั้งเลือกโมเดลถอดเสียงตัวเบาได้ ความแม่นลดลงนิดหน่อย แลกกับเครื่องไม่ค้าง',
+    a: 'RAM 8\u00a0GB กับพื้นที่ว่าง 15\u00a0GB ก็พอ ไม่ต้องมีการ์ดจอแยก ถ้าเครื่องมีการ์ดจอ NVIDIA ชุดนี้จะใช้ให้เองเพื่อถอดเสียงเร็วขึ้น ตัวถอดเสียงใช้รุ่นใหญ่ (large-v3) ทุกเครื่อง เพราะรุ่นเล็กฟังภาษาไทยพลาดเยอะ เครื่อง RAM 8\u00a0GB ใช้ได้ แค่ปิดโปรแกรมอื่นก่อนถอดเสียง และรอนานขึ้น',
   },
   {
     q: 'มีมกับเสียงเอฟเฟกต์ ติดลิขสิทธิ์ไหม',
