@@ -30,7 +30,7 @@
  *     -c:v libx264 -preset slow -crf 21 -profile:v high -pix_fmt yuv420p
  *     -af "loudnorm=I=-16:TP=-1.5:LRA=11" -c:a aac -b:a 96k -movflags +faststart
  *     → before.mp4 1.65 MB · after.mp4 1.30 MB (Pages limit 25 MB/file, spec target ≤ 20 MB)
- *   og-v2.jpg: 1200×630, problem headline + both posters (neuro gate: passes the 216 px glance test).
+ *   og-v3.jpg: 1200×630, problem headline + both posters (neuro gate: passes the 216 px glance test).
  *     source: scripts/og/tad-clip-og.html (Prompt from the kit's assets/fonts — swap FONTS for that folder),
  *     rendered with Chrome --headless=new --window-size=1200,630 --screenshot. New file name on every
  *     change so FB / LINE link previews fetch it again.
@@ -45,17 +45,17 @@ export const FREE_CLICK_BEACON_URL = 'https://form-hook.punnattapatch.com/webhoo
 const MEDIA = '/free/tad-clip';
 
 export const META = {
-  title: 'แจกชุดตัดคลิปฟรี ตัดเทคซ้ำกับใส่ซับไทยให้ในแชทเดียว',
+  title: 'แจก Skill ตัดคลิปฟรีสำหรับ Claude Code ตัดเทคซ้ำ ใส่ซับไทยในแชทเดียว',
   description:
-    'ลากคลิปพูดหน้ากล้องเข้าแชท พิมพ์ “ตัดคลิป” ตอบคำถามสั้นๆ รอบเดียว ได้ MP4 ที่ตัดเทคซ้ำแล้ว มีซับไทยแบบคาราโอเกะ จะแทรกภาพ มีม หรือเสียงเอฟเฟกต์ก็เลือกได้ จ่ายแค่ค่า Claude แบบเสียเงินที่ใช้อยู่ ไม่มีค่ารายเดือนอื่นเพิ่ม ใช้ได้ทั้ง Mac และ Windows',
-  ogImage: `${MEDIA}/og-v2.jpg`,
+    'Skill ฟรีสำหรับ Claude Code ลากคลิปพูดหน้ากล้องเข้าแชท พิมพ์ “ตัดคลิป” ตอบคำถามสั้นๆ รอบเดียว ได้ MP4 ที่ตัดเทคซ้ำแล้ว มีซับไทยแบบคาราโอเกะ จะแทรกภาพ มีม หรือเสียงเอฟเฟกต์ก็เลือกได้ จ่ายแค่ค่า Claude แบบเสียเงินที่ใช้อยู่ ไม่มีค่ารายเดือนอื่นเพิ่ม ใช้ได้ทั้ง Mac และ Windows',
+  ogImage: `${MEDIA}/og-v3.jpg`,
   breadcrumb: 'ชุดตัดคลิปฟรี',
 };
 
 export const HERO = {
-  eyebrow: 'แจกฟรี · ชุดตัด\u2060คลิปพูดหน้ากล้อง',
+  eyebrow: 'แจกฟรี · Skill ตัด\u2060คลิปสำหรับ Claude\u00a0Code',
   // Speech bubble next to Clawd: people who typed "ตัดคลิป" under the reel see at once that this is the Claude kit.
-  clawdSays: 'มาถูกที่แล้ว ชุดตัด\u2060คลิปที่ทำงานใน Claude อยู่หน้านี้',
+  clawdSays: 'มาถูกที่แล้ว Skill Claude ตัด\u2060คลิปเองอยู่หน้านี้ฮะ',
   // H1 = the reader's belief, said the way they would say it:
   // "คลิปพูดหน้ากล้องจะดูดี ต้องแลกด้วยการนั่งตัดทั้งคืน หรือไม่ก็ค่าแอปทุกเดือน"
   // Split into phrases so Thai lines only break between phrases; `accent` gets the hand underline.
@@ -64,7 +64,7 @@ export const HERO = {
     [{ t: 'ต้องแลกด้วย' }, { t: 'การนั่งตัดทั้งคืน', accent: true }],
     [{ t: 'หรือไม่ก็' }, { t: 'ค่าแอปทุกเดือน' }],
   ],
-  sub: 'คลิปถัดไป ลากเข้าแชทแล้วพิมพ์ว่า “ตัด\u2060คลิป” ได้คลิปที่ตัดเทคซ้ำออกแล้ว มีซับไทยครบ ไม่ต้องนั่งตัดเอง ไม่ต้องสมัครแอปรายเดือน ชุด\u2060นี้\u2060แจก\u2060ฟรี',
+  sub: 'คลิปถัดไป ลากเข้าแชทใน Claude\u00a0Code แล้วพิมพ์ว่า “ตัด\u2060คลิป” ได้คลิปที่ตัดเทคซ้ำออกแล้ว มีซับไทยครบ ไม่ต้องนั่งตัดเอง ไม่ต้องสมัครแอปรายเดือน ชุด\u2060นี้\u2060แจก\u2060ฟรี',
   // First-frame contrast (neuro gate): the same clip raw vs. after the kit, shown in the hero.
   pairLabel: 'คลิปเดียวกัน ก่อนและหลังตัดด้วยชุดนี้',
   skipLink: 'รู้เรื่องแล้ว ขอลิงก์เลย',
@@ -118,7 +118,7 @@ export const NEEDS = {
   heading: 'ต้องมีอะไร ไม่ต้องจ่ายอะไร',
   haveTitle: 'ต้องมี',
   have: [
-    'Claude แบบเสียเงิน (Pro ขึ้นไป) ใช้ผ่านแอป Claude บนคอม',
+    'Claude Code ใช้ผ่านแท็บ Code ในแอป Claude บนคอม มากับ Claude แบบเสียเงิน (Pro ขึ้นไป)',
     'คอม Mac (แนะนำชิป Apple) หรือ Windows 10/11 แบบ 64\u2011bit',
     'ถ้าใช้ Windows ลงโปรแกรม Git\u00a0for\u00a0Windows (ฟรี จาก git-scm.com) ไว้ก่อนครั้งเดียว',
     'RAM 8\u00a0GB และพื้นที่ว่าง 15\u00a0GB',
@@ -166,12 +166,19 @@ export const CTA = {
  */
 export const INSTALL = {
   heading: 'ไม่เคยใช้ GitHub ก็ติดตั้งได้ ให้ Claude ติดตั้งให้เอง',
+  // PDF source: output/docs/claude-code-setup-guide-2026-10/ in the knowledge repo (HTML → Chrome print-to-pdf).
+  guide: {
+    lead: 'ยังไม่เคยติดตั้ง Claude Code?',
+    label: 'โหลดคู่มือติดตั้ง Claude Code (PDF ฟรี)',
+    note: 'ทีละขั้นทั้ง Windows และ Mac ลง Git, Node.js และแอป Claude จนพร้อมใช้ แล้วค่อยกลับมาทำ 4 ขั้นนี้',
+    href: `${MEDIA}/claude-code-setup-guide.pdf`,
+  },
   windowsNote: 'ใช้ Windows: ก่อนขั้นที่ 1 ให้ลงโปรแกรม Git\u00a0for\u00a0Windows (ฟรี จาก git-scm.com) ครั้งเดียว กด Next ตามค่าเดิมได้เลย แล้วปิดเปิดแอป Claude ใหม่',
   copyLabel: 'คัดลอก',
   copiedLabel: 'คัดลอกแล้ว',
   steps: [
     {
-      title: 'เปิดแอป Claude บนคอม แล้วกดแท็บ Code',
+      title: 'เปิด Claude Code (แท็บ Code ในแอป Claude บนคอม)',
       detail: 'ยังไม่มีแอป โหลดได้ที่ claude.ai/download ต้องใช้ Claude แบบเสียเงิน (Pro ขึ้นไป) ถ้าแอปถามว่าจะให้ทำงานที่ไหน เลือกเครื่องนี้ (Local)',
     },
     {
@@ -234,6 +241,10 @@ export const ABOUT = {
 };
 
 export const FAQS = [
+  {
+    q: 'ยังไม่เคยใช้ Claude Code เลย เริ่มยังไง',
+    a: 'ชุดนี้เป็น Skill ของ Claude Code ต้องใช้ผ่านแท็บ Code ในแอป Claude บนคอม (มากับ Claude แบบเสียเงิน Pro ขึ้นไป) ถ้ายังไม่เคยติดตั้ง โหลดคู่มือติดตั้ง Claude Code แบบ PDF ในกล่องติดตั้งด้านบน มีทีละขั้นทั้ง Windows และ Mac',
+  },
   {
     q: 'ใช้กับ Windows ได้ไหม',
     a: 'ได้ครับ ใช้กับ Windows 10 และ 11 แบบ 64\u2011bit ก่อนลงชุดนี้ให้ลงโปรแกรม Git\u00a0for\u00a0Windows (ฟรี จาก git-scm.com) ไว้ครั้งเดียว ตัวชุดติดตั้งได้โดยไม่ต้องใช้สิทธิ์แอ\u2060ด\u2060มิน ทุกครั้งที่แก้โค้ด ชุดนี้ถูกทดสอบอัตโนมัติบนเครื่อง Windows ของ GitHub ส่วนเครื่องที่ผมใช้เองเป็น Mac ถ้าเจออาการแปลกบน Windows แจ้งได้ในแท็บ Issues ของหน้า GitHub ฟีเจอร์ตัดพื้นหลังคนออกบน Windows เป็นตัวเสริมที่ต้องโหลดเพิ่มราว 2\u00a0GB ไม่ลงก็ยังได้คลิปครบ',

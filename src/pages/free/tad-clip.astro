@@ -301,6 +301,21 @@ const codeBox = 'min-w-0 flex-1 whitespace-pre-wrap [overflow-wrap:anywhere] rou
         <div class="relative mx-auto mt-12 max-w-2xl rounded-2xl border-2 border-navy bg-ivory p-5 text-left sm:p-7">
           <Clawd size={60} pose="wave" class="absolute -top-8 right-5" />
           <h3 class="pr-16 font-display text-xl font-bold text-navy sm:text-2xl">{INSTALL.heading}</h3>
+          <div class="mt-4 rounded-xl border-2 border-[#D97757] bg-surface px-4 py-3">
+            <p class="font-semibold text-navy">{INSTALL.guide.lead}</p>
+            <a
+              href={INSTALL.guide.href}
+              target="_blank"
+              rel="noopener"
+              data-tadclip-guide
+              class="mt-2 inline-flex min-h-11 items-center gap-2 rounded-full bg-navy px-5 font-bold text-white transition-transform hover:bg-coral active:scale-[0.97] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy motion-reduce:transition-none"
+            >
+              <Icon name="document-text" size={18} />
+              {INSTALL.guide.label}
+              <span class="sr-only">(เปิดในแท็บใหม่)</span>
+            </a>
+            <p class="mt-2 text-sm leading-6 text-warm-ink/80">{INSTALL.guide.note}</p>
+          </div>
           <p class="mt-3 rounded-xl bg-sand px-4 py-3 text-sm leading-6 text-warm-ink">
             {gitParts(INSTALL.windowsNote).map((part, i) => (
               <Fragment>
@@ -591,6 +606,17 @@ const codeBox = 'min-w-0 flex-1 whitespace-pre-wrap [overflow-wrap:anywhere] rou
   }
   document.addEventListener('click', onGithubClick);
   document.addEventListener('auxclick', onGithubClick);
+
+  // setup-guide PDF: browser pixels only (interest signal, kept out of the TadClipGithubClick audience)
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element) || !event.target.closest('a[data-tadclip-guide]')) return;
+    try {
+      w.fbq?.('trackCustom', 'TadClipSetupGuide', { content_name: TAD_CLIP_SLUG });
+    } catch {}
+    try {
+      w.ttq?.track?.('Download', { content_id: `${TAD_CLIP_SLUG}-setup-guide` });
+    } catch {}
+  });
 
   // ── copy buttons in the install steps ──
   let copiedOnce = false;
