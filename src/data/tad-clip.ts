@@ -14,28 +14,23 @@
  * (moat rule needs a paired real-use proof in the same block; left out on purpose).
  *
  * ── Before/after media (public/free/tad-clip/) ─────────────────────────────────
- * Placeholder pair until the gym clip exists; swap the files and the captions below.
- *   before.mp4 + before-poster.jpg (poster = 3.0 s, "เทค 2" label visible)
- *     source: ~/Documents/content/05-oct-26/7D35BDF2-DDA7-4F57-9340-CBEAF532D5C4.MP4
- *             (owner's raw iPhone clip, HEVC 1440×2560 60 fps, 107.53 s)
- *     window: 34.6–40.6 s → "…ใช้กระทะรุ่นนี้" then "เพื่อตรวจสอบ" said 3 times
- *             (take 1 35.35–36.06 · take 2 36.86–37.88 · take 3 38.75–40.24, from silencedetect)
- *     burned-in labels "เทค 1/2/3" (libass, Prompt font from the tad-clip kit) so the
- *     retake reads with the sound off.
- *   after.mp4 + after-poster.jpg (poster = 5.6 s, flow card fully built)
- *     source: ~/repo/claude-code-pun-nattapatch-mac-mini/output/content/reel/visual/
- *             bbq-black-pan/out-final-2k/bbq-black-pan-final-2k.mp4 (final reel, 71.88 s)
- *     window: 22.4–28.4 s → face + karaoke sub, then the "แบรนด์รีบทำ…" flow card.
- *             Chosen because it has no third-party photo/footage/meme
- *             (assets/CREDITS.md of that reel: none are licensed for ads).
- *   encode (both): ffmpeg -ss <start> -t 6 -i <src> -vf "scale=720:1280:out_range=tv,fps=30[,subtitles=…]"
+ * Kit output: a fresh session ran the plugin's "ตัดคลิป" skill end to end on the owner's raw
+ * BBQ clip (unattended "ทำรวดเดียว" mode, ~30 min wall-clock on a Mac mini M4).
+ * Both sides show the same sentences ("ถ้าลูกค้ารุมด่าร้านคุณ … เลือกปิด 26 สาขา").
+ *   before.mp4 + before-poster.jpg (poster = 1.5 s)
+ *     source: ~/work/tad-clip-run/บาร์บีคิว กระทะดำ.MP4  (raw iPhone clip, HEVC 1440×2560 60 fps, 107.53 s)
+ *     window: 2.5–8.5 s (phrase 1 starts at 2.51 s; the false start 0.96–1.93 s is before the window)
+ *   after.mp4 + after-poster.jpg (poster = 4.0 s: "26 สาขา" stat card + face circle + karaoke sub)
+ *     source: ~/work/tad-clip-run/tad-clip-บาร์บีคิว กระทะดำ/final.mp4  (kit output, H.264 1080×1920 60 fps, 71.88 s)
+ *     window: 0.0–6.0 s (raw 2.51 s = final 0.0). Inserts in this window: Pexels 4629216
+ *             (Pexels License, ads OK, labelled "ภาพจำลอง" by the kit) + the kit's own stat card.
+ *   encode (both): ffmpeg -ss <start> -t 6 -i <src> -vf "scale=720:1280:out_range=tv,fps=30"
  *     -c:v libx264 -preset slow -crf 21 -profile:v high -pix_fmt yuv420p
  *     -af "loudnorm=I=-16:TP=-1.5:LRA=11" -c:a aac -b:a 96k -movflags +faststart
- *     → before.mp4 1.6 MB · after.mp4 0.9 MB (Pages limit 25 MB/file, spec target ≤ 20 MB)
- *   og.jpg: 1200×630, both posters on sand + headline (libass, Sarabun) · re-render it with the new pair.
- *   Numbers in DEMO.stat come from the same pair: raw 107.53 s → final 71.88 s,
- *   19 phrases dropped (output/content/reel/visual/bbq-black-pan/roughcut-drops.json).
- *   When the gym clip replaces this pair, re-measure and rewrite DEMO.stat + DEMO.disclosure.
+ *     → before.mp4 1.65 MB · after.mp4 1.30 MB (Pages limit 25 MB/file, spec target ≤ 20 MB)
+ *   og.jpg: 1200×630, both posters on sand + headline (libass, Sarabun); re-render when the pair changes.
+ *   DEMO.stat numbers: roughcut-review.md of that run ("ตัด 19 ท่อน จาก 57 วลี · 107.6 → 71.8 วินาที");
+ *   ffprobe: raw 107.53 s → final 71.88 s. When the gym clip replaces this pair, re-measure DEMO.stat.
  */
 
 export const TAD_CLIP_SLUG = 'tad-clip';
@@ -47,7 +42,7 @@ const MEDIA = '/free/tad-clip';
 export const META = {
   title: 'แจกชุดตัดคลิปฟรี ตัดเทคซ้ำกับใส่ซับไทยให้ในแชทเดียว',
   description:
-    'ลากคลิปพูดหน้ากล้องเข้าแชท พิมพ์ “ตัดคลิป” ได้ MP4 ที่ตัดเทคซ้ำแล้ว มีซับไทยแบบคาราโอเกะ ภาพ มีม และเสียงเอฟเฟกต์ จ่ายแค่ค่า Claude แบบเสียเงินที่ใช้อยู่ ไม่มีค่ารายเดือนอื่นเพิ่ม ใช้ได้ทั้ง Mac และ Windows',
+    'ลากคลิปพูดหน้ากล้องเข้าแชท พิมพ์ “ตัดคลิป” ตอบคำถามสั้นๆ รอบเดียว ได้ MP4 ที่ตัดเทคซ้ำแล้ว มีซับไทยแบบคาราโอเกะ จะแทรกภาพ มีม หรือเสียงเอฟเฟกต์ก็เลือกได้ จ่ายแค่ค่า Claude แบบเสียเงินที่ใช้อยู่ ไม่มีค่ารายเดือนอื่นเพิ่ม ใช้ได้ทั้ง Mac และ Windows',
   ogImage: `${MEDIA}/og.jpg`,
   breadcrumb: 'ชุดตัดคลิปฟรี',
 };
@@ -86,27 +81,26 @@ export const MECHANISM = {
 };
 
 export const DEMO = {
-  heading: 'ก่อนกับหลัง จากคลิปของผมเอง',
+  heading: 'ก่อนกับหลัง ตัดด้วยชุดนี้',
   before: {
     label: 'ก่อน',
     src: `${MEDIA}/before.mp4`,
     poster: `${MEDIA}/before-poster.jpg`,
-    alt: 'คลิปดิบ ผู้พูดเริ่มประโยค “เพื่อตรวจสอบ” ใหม่ 3 รอบ มีป้ายเทค 1 ถึงเทค 3',
-    caption: 'คลิปดิบจากมือถือ ประโยคเดียวพูด 3 รอบกว่าจะจบ',
+    alt: 'คลิปดิบจากมือถือ ผู้พูดหน้ากล้อง ยังไม่มีซับและภาพประกอบ',
+    caption: 'คลิปดิบจากมือถือ ยังไม่มีซับ ไม่มีภาพ\u2060ประกอบ',
     sound: 'เสียงคลิปก่อน',
   },
   after: {
     label: 'หลัง',
     src: `${MEDIA}/after.mp4`,
     poster: `${MEDIA}/after-poster.jpg`,
-    alt: 'คลิปที่ตัดแล้ว เหลือประโยคเดียว มีซับคาราโอเกะ และผัง ออกมาขอโทษ ปิด 26 สาขา ตรวจสอบและแก้ไข ขึ้นทีละกล่อง',
-    caption: 'เหลือรอบที่พูดจบ มีซับคาราโอเกะ กับผังที่ขึ้นตามเสียงพูด',
+    alt: 'ช่วงเดียวกันหลังตัดด้วยชุดนี้ ครึ่งบนเป็นภาพปิ้งย่างติดป้ายภาพจำลอง มีซับคาราโอเกะ แล้วต่อด้วยการ์ด 26 สาขา กับหน้าผู้พูดในวงกลม',
+    caption: 'ช่วงเดียวกันหลังตัดด้วยชุดนี้ มีซับคาราโอเกะ กับภาพและการ์ดตัวเลขแทรกตามคำพูด',
     sound: 'เสียงคลิปหลัง',
   },
-  stat: 'ทั้งคลิปจาก 1 นาที 47 วินาที เหลือ 1 นาที 12 วินาที ตัดทิ้ง 19 ท่อน',
-  // Disclosure stays inside the stat card at body contrast until kit-rendered files replace this pair.
-  disclosure:
-    'ตัวอย่างนี้ตัดด้วยระบบที่ผมใช้กับคลิปตัวเอง ซึ่งเป็นต้นฉบับของชุดนี้ ป้าย “เทค 1–3” ผมใส่เพิ่มให้ดูรู้เรื่องตอนปิดเสียง',
+  stat: 'ตัดด้วยชุดนี้ จากคลิปดิบของผม 108\u00a0วินาที เหลือ 72\u00a0วินาที ตัด\u2060ทิ้ง 19\u00a0ท่อน',
+  // Same run's wall-clock + the reenactment label the kit added itself (both facts from that run).
+  note: 'ตอบคำถามแล้วปล่อยเครื่องทำเองรวดเดียวราว 30\u00a0นาที บน Mac mini M4 ส่วนป้าย “ภาพ\u2060จำลอง · Pexels” บนภาพปิ้ง\u2060ย่าง ชุดนี้ใส่ให้เอง เพราะเป็นภาพ\u2060ประกอบ ไม่ใช่ร้านจริง',
 };
 
 export const NEEDS = {
@@ -131,7 +125,7 @@ export const TOOLS = {
   intro: 'ทุกตัวฟรี และเกือบทั้งหมดทำงานในเครื่องคุณ ยกเว้น Claude ที่คุณจ่ายอยู่แล้ว',
   items: [
     { name: 'Claude Code', does: 'อ่านคำพูดทั้งคลิปแล้วเลือกเทคที่พูดจบ ตรวจคำผิดในซับให้ด้วย' },
-    { name: 'faster-whisper (large-v3)', does: 'ถอดเสียงพูดไทยในเครื่อง ได้เวลาทีละคำ' },
+    { name: 'whisper (ตัวถอดเสียงฟรี)', does: 'ถอดเสียงพูดไทยในเครื่อง ได้เวลาทีละคำ' },
     { name: 'PyThaiNLP', does: 'ตัดคำไทยให้ซับขึ้นบรรทัดใหม่โดยไม่ขาดกลางคำ' },
     { name: 'ffmpeg + libass', does: 'ตัดต่อ ใส่ซับ ผสมเสียง แล้วเรนเดอร์เป็น MP4' },
     { name: 'Chrome / Edge', does: 'วาดการ์ดข้อความกับกราฟิกที่ขยับได้' },
@@ -177,3 +171,7 @@ export const FAQS = [
     a: 'จ่ายค่า Claude แบบเสียเงิน (Pro ขึ้นไป) ตัวเดียว ชุดนี้กับโปรแกรมข้างในฟรีทั้งหมด ไม่มี API key ไม่มีค่ารายเดือนเพิ่มจากค่า Claude แต่ละคลิปจะใช้โควตา Claude ของคุณ คลิปยาวใช้มากกว่าคลิปสั้น จะตัดคลิปของตัวเองหรือรับจ้างตัดให้ลูกค้าก็ได้ ที่ห้ามคือเอาชุดนี้ไปขายต่อหรือทำเป็นบริการเก็บเงินรายเดือน',
   },
 ];
+
+/** Plain text for JSON-LD / metadata: drop word joiners, turn NBSP and non-breaking hyphens back into normal characters. */
+export const plainText = (text: string): string =>
+  text.replace(/\u2060/g, '').replace(/\u00a0/g, ' ').replace(/\u2011/g, '-');

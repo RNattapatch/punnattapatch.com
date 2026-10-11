@@ -28,6 +28,7 @@ import {
   CTA,
   TEAM,
   FAQS,
+  plainText,
 } from '../../data/tad-clip';
 
 const canonical = `${SITE.url}/free/tad-clip`;
@@ -54,7 +55,7 @@ const h2 = 'font-display text-2xl font-bold text-navy sm:text-3xl';
       { name: 'หน้าแรก', url: SITE.url },
       { name: META.breadcrumb, url: canonical },
     ],
-    faq: FAQS.map((f) => ({ question: f.q, answer: f.a })),
+    faq: FAQS.map((f) => ({ question: plainText(f.q), answer: plainText(f.a) })),
   }}
 >
   <div class="min-w-0 overflow-x-clip bg-ivory">
@@ -181,7 +182,7 @@ const h2 = 'font-display text-2xl font-bold text-navy sm:text-3xl';
           <div class="mt-8 md:mt-0">
             <div class="rounded-2xl border border-[#c9c2b2] bg-surface p-5">
               <p class="font-semibold leading-7 text-navy">{DEMO.stat}</p>
-              <p class="mt-3 leading-7 text-warm-ink/80">{DEMO.disclosure}</p>
+              <p class="mt-3 leading-7 text-warm-ink/80">{DEMO.note}</p>
             </div>
           </div>
         </div>
