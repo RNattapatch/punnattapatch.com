@@ -904,7 +904,7 @@ import AppNav from '../../components/app/AppNav.astro';
               ${j.kind === 'identity' && j.status === 'done' ? (j.target_id
                 ? `<button class="btn btn-outline btn-xs" data-goto-target="${esc(j.target_id)}">เปิดแฟ้ม</button>`
                 : `<button class="btn btn-xs text-white" style="background-color:var(--color-brand-navy);" data-show-found="${esc(j.id)}">ดูผลที่เจอ</button>`) : ''}
-              ${failedStatus(j.status) ? `<button class="btn btn-outline btn-xs" data-retry="${esc(j.id)}">Retry</button><button class="btn btn-xs text-white" style="background-color:var(--color-brand-navy);" data-fix="${esc(j.id)}" title="ส่งงานนี้พร้อม error ให้ Agent บนมินิไล่หาสาเหตุและแก้">🛠 ส่งให้ Agent แก้</button>` : ''}
+              ${failedStatus(j.status) ? `<button class="btn btn-outline btn-xs" data-retry="${esc(j.id)}">Retry</button><button class="btn btn-xs text-white" style="background-color:var(--color-brand-navy);" data-fix="${esc(j.id)}" title="ส่ง id งานนี้ให้ Agent บนมินิไปอ่าน error เองแล้วไล่หาสาเหตุ/แก้">🛠 ส่งให้ Agent แก้</button>` : ''}
               <button class="btn btn-ghost btn-xs text-error" data-delete-job="${esc(j.id)}" aria-label="ลบงานนี้ออกจากคิว">ลบ</button>
             </div>
           </td></tr>`; }).join('')
@@ -1033,7 +1033,7 @@ import AppNav from '../../components/app/AppNav.astro';
           const tname = targets.find((t) => t.id === job.target_id)?.name;
           if (!confirm(`ส่งงานนี้ให้ Agent บนมินิไล่หาสาเหตุและแก้?\n${job.lane || job.kind} · ${tname || job.target}`)) return;
           (fix as HTMLButtonElement).disabled = true;
-          void askAgentToFix(job, tname).then(() => toast('ส่งให้ Agent บนมินิแล้ว — ตอบกลับทาง Telegram')).catch((e) => { (fix as HTMLButtonElement).disabled = false; oops(e); });
+          void askAgentToFix(job).then(() => toast('ส่งให้ Agent บนมินิแล้ว — ตอบกลับทาง Telegram')).catch((e) => { (fix as HTMLButtonElement).disabled = false; oops(e); });
           return;
         }
         const delJob = el.closest('[data-delete-job]') as HTMLElement | null;

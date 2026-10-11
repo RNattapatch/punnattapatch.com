@@ -8,6 +8,7 @@
 
 import { supabase } from '../dashboard/supabase';
 import { CARD_COLUMNS_WITH_VERDICT, type NewsroomItem, type NewsroomJob } from '../newsroom/data';
+import { buildFixRequest } from './fix-request';
 
 const fail = (error: { message: string } | null) => {
   if (error) throw new Error(error.message);
@@ -405,20 +406,10 @@ export async function coverUrls(paths: (string | null | undefined)[]): Promise<M
 }
 
 // ---------- ส่งงานที่พังให้ Agent บนมินิแก้ (poller ยิงเข้า tmux ของ claude-bot) ----------
+// ข้อความสร้างใน fix-request.ts — ส่งแค่ id ห้ามฝัง error/target/ชื่อแฟ้ม (ของที่คนนอกคุมได้) ดูเหตุผลในไฟล์นั้น
 
-export async function askAgentToFix(job: NewsroomJob, targetName?: string): Promise<void> {
-  const lane = job.lane || job.kind;
-  const body = [
-    `tech: งานสืบใน Intel Warroom ล้ม ช่วยหาสาเหตุและแก้ให้ที`,
-    `เป้าหมาย: ${targetName || '(ไม่ผูกแฟ้ม)'} · เลน: ${lane} · target: ${job.target}`,
-    `job id: ${job.id}${job.scout_job_id ? ` · scout job: ${job.scout_job_id}` : ''} · ลองแล้ว ${(job.attempts ?? 0)} ครั้ง`,
-    `error: ${job.error ?? '(ไม่มีข้อความ error)'}`,
-    `ทำ: อ่าน ~/scout/scout.log + ~/newsroom/publisher.log ของ job นี้ → บอกสาเหตุ → ถ้าแก้ที่โค้ดได้ให้แก้ในรีโป mac-mini-ops แล้ว deploy + retry งานนี้ให้ · ถ้าแก้ไม่ได้ให้ตอบว่าติดอะไรและต้องให้คุณปันทำอะไร`,
-  ].join('\n');
-  const { error } = await supabase.from('agent_requests').insert({
-    kind: 'fix_bug', title: `แก้บั๊ก: ${lane} · ${targetName || job.target}`.slice(0, 90),
-    body, source: 'intel-warroom', job_id: job.id, target_id: job.target_id ?? null,
-  });
+export async function askAgentToFix(job: NewsroomJob): Promise<void> {
+  const { error } = await supabase.from('agent_requests').insert(buildFixRequest(job));
   fail(error);
 }
 
