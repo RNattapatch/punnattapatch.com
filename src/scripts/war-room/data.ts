@@ -240,7 +240,8 @@ export async function addSnapshot(publication_id: string, metrics: SnapshotInput
 
 // rewrite_reel (2026-09-08): Intel Warroom → "เกลาเป็น version ผม" — payload {item_id, theme, pillar, hook_style, length, cta_keyword}
 // render_notes (2026-10-02): Note Studio → payload {variant_id} · worker อ่าน visual_spec จาก DB แล้ว render.mjs → media_assets
-export type JobType = 'render_card' | 'ai_improve' | 'publish' | 'rewrite_copy' | 'render_text_card' | 'rewrite_reel' | 'render_notes';
+// growth_eval (2026-10-11): Growth Lab → "ประเมินลึกด้วย Codex" — payload {creative, pack} · result {evaluation, journey}
+export type JobType = 'render_card' | 'ai_improve' | 'publish' | 'rewrite_copy' | 'render_text_card' | 'rewrite_reel' | 'render_notes' | 'growth_eval';
 export interface WrJob {
   id: string;
   job_type: JobType;
