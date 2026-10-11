@@ -1,6 +1,6 @@
 import { personaPackRevision } from './persona-packs.mjs';
 
-const CHANNELS = new Set(['meta', 'line-oa', 'email', 'sms', 'sales-call', 'website', 'offline']);
+const CHANNELS = new Set(['meta', 'line-oa', 'email', 'sms', 'sales-call', 'website', 'offline', 'tiktok', 'instagram', 'facebook']);
 
 const PLAYBOOKS = Object.freeze({
   b2b: Object.freeze([
@@ -49,9 +49,13 @@ const CHANNEL_STAGE_FIT = Object.freeze({
   'sales-call': Object.freeze({ early: -0.01, mid: 0.02, late: 0.03 }),
   website: Object.freeze({ early: 0.005, mid: 0.015, late: 0 }),
   offline: Object.freeze({ early: 0.01, mid: 0, late: -0.01 }),
+  // Organic feeds earn attention cheaply and rarely carry a decision on their own.
+  tiktok: Object.freeze({ early: 0.03, mid: -0.005, late: -0.04 }),
+  instagram: Object.freeze({ early: 0.025, mid: 0.005, late: -0.03 }),
+  facebook: Object.freeze({ early: 0.02, mid: 0.005, late: -0.025 }),
 });
 
-const CHANNEL_THAI = Object.freeze({ meta: 'Meta', 'line-oa': 'LINE OA', email: 'Email', sms: 'SMS', 'sales-call': 'Sales call', website: 'Website', offline: 'Offline' });
+const CHANNEL_THAI = Object.freeze({ meta: 'Meta', 'line-oa': 'LINE OA', email: 'Email', sms: 'SMS', 'sales-call': 'Sales call', website: 'Website', offline: 'Offline', tiktok: 'TikTok', instagram: 'Instagram', facebook: 'Facebook' });
 
 function phaseOf(index, total) {
   const position = total < 2 ? 0 : index / (total - 1);

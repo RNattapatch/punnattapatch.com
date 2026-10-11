@@ -184,3 +184,85 @@ export async function listRecentCodexJobs(sinceIso: string): Promise<CodexJob[]>
   if (error) throw new Error(error.message);
   return ((data as unknown as CodexJob[]) ?? []).reverse();   // newest 20, applied oldest → newest
 }
+
+// ---------- "ของจริง": real touchpoints + CRM outcomes (2026-10-12) ----------
+// Rows are written on the Mac mini (mac-mini-ops/funnel-lab/load_signals.py + services/funnel_signals_worker.mjs);
+// the page reads the compact columns for the list and loads one full panel only when a row is opened.
+export interface SignalRow {
+  id: string;
+  source: 'own_ad' | 'own_organic' | 'competitor';
+  platform: string;
+  url: string | null;
+  title: string | null;
+  owner: string | null;
+  published_at: string | null;
+  format: string | null;
+  thumb_path: string | null;
+  metrics: Record<string, unknown>;
+  attribution: Record<string, number>;
+  intent_stage: string | null;
+  eval_summary: Record<string, any> | null;
+  local_summary: Record<string, any> | null;
+  pack_revision: string | null;
+  engine: string | null;
+  evaluated_at: string | null;
+  eval_error: string | null;
+  eval_requested_at: string | null;
+}
+
+const SIGNAL_LIST = 'id, source, platform, url, title, owner, published_at, format, thumb_path, metrics, attribution, intent_stage, eval_summary, local_summary, pack_revision, engine, evaluated_at, eval_error, eval_requested_at';
+
+export async function listSignals(): Promise<SignalRow[]> {
+  const rows: SignalRow[] = [];
+  for (let from = 0; ; from += 500) {
+    // id as tiebreaker: many ads share a date, and pages must not overlap or skip rows
+    const { data, error } = await supabase.from('funnel_lab_signals').select(SIGNAL_LIST).order('published_at', { ascending: false, nullsFirst: false }).order('id').range(from, from + 499);
+    if (error) throw new Error(error.message);
+    rows.push(...((data as SignalRow[]) ?? []));
+    if (!data || data.length < 500) return rows;
+  }
+}
+
+export async function fetchSignalDetail(id: string): Promise<{ creative: Record<string, string>; evaluation: Record<string, any> | null; transcript: string | null; metrics_history: unknown[] } | null> {
+  const { data, error } = await supabase.from('funnel_lab_signals').select('creative, evaluation, transcript, metrics_history').eq('id', id).maybeSingle();
+  if (error) throw new Error(error.message);
+  return (data as any) ?? null;
+}
+
+/** Ask the mini to (re)run the Codex panel. ids = null → every row not evaluated with this pack revision. */
+export async function requestSignalEvaluation(ids: string[] | null, packRevision: string): Promise<number> {
+  let query = supabase.from('funnel_lab_signals').update({ eval_requested_at: new Date().toISOString() });
+  query = ids ? query.in('id', ids) : query.or(`pack_revision.is.null,pack_revision.neq.${packRevision},eval_error.not.is.null`);
+  const { data, error } = await query.select('id');
+  if (error) throw new Error(error.message);
+  return data?.length ?? 0;
+}
+
+export async function listChannelFunnel(): Promise<Record<string, any>[]> {
+  const { data, error } = await supabase.from('funnel_lab_channel_funnel').select('*');
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
+export async function listPersonaFunnel(packId: string): Promise<Record<string, any>[]> {
+  const { data, error } = await supabase.from('funnel_lab_persona_funnel').select('*').eq('pack_id', packId);
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
+export async function listCompanyFactsSummary(): Promise<Record<string, any>[]> {
+  const { data, error } = await supabase.from('lead_company_facts').select('lead_id, matched, size_band, revenue_thb, sales_team_est, form_vs_reality, confidence');
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
+/** Signed URLs for many thumbnails in one request (private bucket). */
+export async function signedThumbUrls(paths: string[]): Promise<Record<string, string>> {
+  const out: Record<string, string> = {};
+  for (let start = 0; start < paths.length; start += 100) {
+    const { data, error } = await supabase.storage.from(MEDIA_BUCKET).createSignedUrls(paths.slice(start, start + 100), 3600);
+    if (error) throw new Error(error.message);
+    for (const item of data ?? []) if (item.path && item.signedUrl) out[item.path] = item.signedUrl;
+  }
+  return out;
+}

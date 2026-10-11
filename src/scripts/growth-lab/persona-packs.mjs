@@ -5,6 +5,9 @@ const BUSINESS_MODELS = new Set(['b2b', 'b2c', 'b2g']);
 const COMPONENTS = ['hook', 'offer', 'copy', 'visual'];
 const DEFAULT_WEIGHTS = Object.freeze({ hook: 0.32, offer: 0.29, copy: 0.23, visual: 0.16 });
 export const MAX_PERSONA_PACK_BYTES = 256_000;
+// 60 (was 30, 2026-10-12): a pack mined from the real CRM needs more seats than a generic panel. Codex time grows
+// linearly with seats (~5 s each), so the cap stays finite.
+export const MAX_PERSONAS = 60;
 
 const PACK_KEYS = new Set(['schemaVersion', 'kind', 'id', 'name', 'businessModel', 'industry', 'product', 'primaryOutcome', 'kpis', 'journeyStages', 'personas']);
 const STAGE_KEYS = new Set(['id', 'label']);
@@ -172,7 +175,7 @@ export function validatePersonaPack(pack) {
     const ids = pack.journeyStages.map((item) => item?.id);
     if (new Set(ids).size !== ids.length || !pack.journeyStages.every((item) => hasOnlyKeys(item, STAGE_KEYS) && isSafeId(item.id) && shortString(item.label))) errors.push('journeyStages');
   }
-  if (!Array.isArray(pack?.personas) || pack.personas.length < 3 || pack.personas.length > 30) errors.push('personas');
+  if (!Array.isArray(pack?.personas) || pack.personas.length < 3 || pack.personas.length > MAX_PERSONAS) errors.push('personas');
   else {
     const ids = pack.personas.map((item) => item?.id);
     if (new Set(ids).size !== ids.length || !pack.personas.every(validPersona)) errors.push('personas');

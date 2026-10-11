@@ -7,7 +7,9 @@
 
 // Bump when the saved state shape changes in a way older pages cannot read. Older open tabs then go
 // read-only instead of writing an older shape over newer data.
-export const DATA_VERSION = 2;
+// 3 (2026-10-12): packs may hold up to 60 personas and touchpoints may be organic TikTok/IG/FB posts — a v2 page
+// would drop both as invalid, so it must stop writing.
+export const DATA_VERSION = 3;
 
 // Fields that only describe what this screen is looking at. They are kept per device and never make the
 // workspace "dirty", so tapping a tab on the iPhone cannot conflict with an edit on the MacBook.

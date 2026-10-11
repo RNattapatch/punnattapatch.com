@@ -5,13 +5,14 @@ import { applyCsvRecords, parseCsv, toCsv } from './csv.mjs';
 import { CHANNEL_PROFILES, componentLabel, decisionVerbs, evaluateCreative } from './engine-local.mjs';
 import { predictJourney } from './journey.mjs';
 import { calculateMetrics, calibrate, validateActual } from './metrics.mjs';
-import { BUILT_IN_PACKS, MAX_PERSONA_PACK_BYTES, clonePersonaPack, exportPersonaPack, importPersonaPack, personaPackRevision, personasForState, validatePersonaPack } from './persona-packs.mjs';
+import { BUILT_IN_PACKS, MAX_PERSONA_PACK_BYTES, MAX_PERSONAS, clonePersonaPack, exportPersonaPack, importPersonaPack, personaPackRevision, personasForState, validatePersonaPack } from './persona-packs.mjs';
 import { updateCreativeDraft, validateState } from './storage.mjs';
 import { codexJobVerdict, contentRevision, coreFingerprint, coreOf, DATA_VERSION, decideSync, mergeResults, outranks, pendingResultUploads, wantedResultKeys, withLocalUi } from './sync.mjs';
 import { checkUpload, mediaKind, mediaPath } from './media.mjs';
 import { copyMedia, mediaExists, signedMediaUrl, uploadMedia } from './cloud.ts';
 import { enqueueCodexEvaluation, fetchResults, fetchServerCopy, fetchWorkspace, keepCopyOnServer, listRecentCodexJobs, listResultStamps, listServerCopies, readCodexJob, saveWorkspace, upsertResults } from './cloud.ts';
 import { seedState } from './seed.mjs';
+import { handleRealityAction, initReality, renderReality } from './reality-ui.mjs';
 
 // One envelope {v, rev, dirty, state}: the state and the cloud rev it is based on are always written together.
 const LOCAL_KEY = 'pun.growthLab.workspace.v2';
@@ -35,8 +36,8 @@ const VERDICT_COPY = {
   ITERATE: 'มีแรงดึงบางกลุ่ม แต่ควรแก้ตัวแปรที่อ่อนที่สุดหนึ่งจุดก่อนเพิ่มงบ',
   KILL: 'ยังไม่คุ้มซื้อ impression รอบนี้ ให้เปลี่ยนแกนข้อความก่อนยิงจริง',
 };
-const CHANNEL_THAI = { meta: 'Meta Ads', 'line-oa': 'LINE OA', email: 'อีเมล', sms: 'SMS', 'sales-call': 'โทรขาย', website: 'เว็บไซต์', offline: 'ออฟไลน์' };
-const TOUCHPOINT_THAI = { 'meta-ad': 'แอด', promotion: 'โปรโมชัน', 'line-oa': 'LINE broadcast', 'sales-outreach': 'ทีมขายติดต่อ' };
+const CHANNEL_THAI = { meta: 'Meta Ads', 'line-oa': 'LINE OA', email: 'อีเมล', sms: 'SMS', 'sales-call': 'โทรขาย', website: 'เว็บไซต์', offline: 'ออฟไลน์', tiktok: 'TikTok', instagram: 'Instagram', facebook: 'Facebook' };
+const TOUCHPOINT_THAI = { 'meta-ad': 'แอด', promotion: 'โปรโมชัน', 'line-oa': 'LINE broadcast', 'sales-outreach': 'ทีมขายติดต่อ', 'organic-post': 'โพสต์/คลิปปกติ' };
 const COMP_THAI = { hook: 'ประโยคเปิด', offer: 'ข้อเสนอ', copy: 'เนื้อความ', visual: 'ภาพ / วิธีส่ง' };
 // Plain-Thai verdicts beside SCALE / ITERATE / KILL (thresholds unchanged).
 const VERDICT_THAI = {
@@ -1034,6 +1035,7 @@ function switchView(view, shouldPersist = true) {
   if (view === 'compare') renderCompare();
   if (view === 'journey') renderJourney();
   if (view === 'results') { renderActualForm(); renderCalibration(); }
+  if (view === 'reality') void renderReality();
   if (view === 'personas') { renderPackBuilder(); renderPersonaDirectory(); }
   if (view === 'settings') renderSettings();
   if (shouldPersist) persistView();
@@ -1299,6 +1301,24 @@ async function duplicateCreative() {
   openEditor(changedVariable === 'visual' ? 'visualDirection' : changedVariable === 'copy' ? 'primaryText' : changedVariable);
 }
 
+// "ของจริง" → โต๊ะทดลอง: a real ad / clip becomes a new touchpoint to iterate on (text only; its media stays on the mini).
+function importCreative(source) {
+  const pack = state.personaPacks.find((item) => item.id === source.personaPackId) ?? selectedPack();
+  const id = newId('creative');
+  const now = new Date().toISOString();
+  const fields = ['name', 'campaign', 'objective', 'changedVariable', 'format', 'touchpointType', 'channel', 'hook', 'primaryText', 'headline', 'offer', 'cta', 'visualDirection'];
+  const creative = { ...selectedCreative(), ...Object.fromEntries(fields.filter((field) => typeof source[field] === 'string').map((field) => [field, source[field].slice(0, 20_000)])) };
+  delete creative.media;
+  Object.assign(creative, { id, personaPackId: pack.id, businessModel: pack.businessModel, createdAt: now, updatedAt: now, name: `จากของจริง: ${String(source.name ?? '').slice(0, 120)}` });
+  creative.journeyStage = pack.journeyStages.some((stage) => stage.id === source.journeyStage) ? source.journeyStage : pack.journeyStages[0].id;
+  state.creatives.push(creative);
+  state.selectedCreativeId = id;
+  state.selectedPersonaPackId = pack.id;
+  persist('คัดลอกไปโต๊ะทดลองแล้ว — ปรับข้อความแล้วกดประเมินเทียบกับตัวจริงได้เลย');
+  switchView('workbench');
+  renderAll();
+}
+
 function newCreative() {
   const source = selectedCreative();
   const id = newId('creative');
@@ -1371,7 +1391,7 @@ function savePersona(event) {
 
 function addPersona() {
   const pack = structuredClone(workspacePack());
-  if (pack.personas.length >= 30) { announce('Persona Pack มีได้สูงสุด 30 personas'); return; }
+  if (pack.personas.length >= MAX_PERSONAS) { announce(`Persona Pack มีได้สูงสุด ${MAX_PERSONAS} personas`); return; }
   const source = pack.personas.find((item) => item.id === selectedPersonaId) ?? pack.personas[0];
   const id = newId('persona');
   pack.personas.push({ ...structuredClone(source), id, name: 'Persona ใหม่', role: 'ระบุบทบาท', keywords: ['เป้าหมาย'], pains: ['ปัญหาหลัก'], outcomes: ['ผลลัพธ์ที่ต้องการ'], objections: ['ข้อกังวลหลัก'] });
@@ -1536,6 +1556,7 @@ function onClick(event) {
   if (filterButton) { seatFilter = filterButton.dataset.filter === seatFilter ? 'ALL' : filterButton.dataset.filter; renderLegend(selectedCreative().channel); renderSeats(); return; }
   const action = event.target.closest('[data-action]')?.dataset.action;
   if (!action) return;
+  if (action.startsWith('reality-')) { void handleRealityAction(action).catch((error) => announce(`ทำไม่สำเร็จ: ${error.message}`)); return; }
   if (action === 'evaluate') evaluateLocal();
   else if (action === 'edit-creative') openEditor('hook');
   else if (action === 'close-editor') closeEditor();
@@ -1623,6 +1644,9 @@ export async function boot() {
   cloud.archiveNext = Boolean(local.archiveNext);
   cloud.syncedResults = local.syncedResults ?? {};
   wire();
+  // "ประเมินใหม่" compares with the pack as the mini sees it (the cloud copy) — only offer it when this page is in sync.
+  const cloudInSync = () => !cloud.dirty && !cloud.hold && !cloud.readOnly && !cloud.tooLarge && !cloud.offline && cloud.rev !== null;
+  initReality({ getState: () => state, escapeHtml, announce, importCreative, personaPackRevision, cloudInSync });
   renderAll();
   if (local.notice) announce(local.notice);
   setSyncStatus('☁️ กำลังเช็คฉบับบนคลาวด์…');

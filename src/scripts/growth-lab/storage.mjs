@@ -2,7 +2,7 @@ import { seedState } from './seed.mjs';
 import { validateActual } from './metrics.mjs';
 import { isSafeId } from './ids.mjs';
 import { isMedia } from './media.mjs';
-import { createWorkspaceDefaults, migrateStateV1, personaPackRevision, validatePersonaPack } from './persona-packs.mjs';
+import { createWorkspaceDefaults, migrateStateV1, personaPackRevision, validatePersonaPack, MAX_PERSONAS } from './persona-packs.mjs';
 import { validateJourneyForecast } from './journey.mjs';
 
 export const STORAGE_KEY = 'pun.metaPersonaLab.v1';
@@ -12,13 +12,13 @@ function clone(value) {
   return structuredClone(value);
 }
 
-const VIEWS = new Set(['workbench', 'compare', 'journey', 'results', 'personas', 'settings']);
+const VIEWS = new Set(['workbench', 'compare', 'journey', 'results', 'reality', 'personas', 'settings']);
 const VERDICTS = new Set(['SCALE', 'ITERATE', 'KILL']);
 const DECISIONS = new Set(['STOP', 'WATCH', 'SCROLL']);
 const COMPONENTS = ['hook', 'offer', 'copy', 'visual'];
 const SCORING_FIELDS = ['hook', 'primaryText', 'headline', 'offer', 'cta', 'visualDirection', 'touchpointType', 'channel', 'businessModel', 'journeyStage', 'personaPackId'];
-const TOUCHPOINT_TYPES = new Set(['meta-ad', 'promotion', 'line-oa', 'sales-outreach']);
-const CHANNELS = new Set(['meta', 'line-oa', 'email', 'sms', 'sales-call', 'website', 'offline']);
+const TOUCHPOINT_TYPES = new Set(['meta-ad', 'promotion', 'line-oa', 'sales-outreach', 'organic-post']);
+const CHANNELS = new Set(['meta', 'line-oa', 'email', 'sms', 'sales-call', 'website', 'offline', 'tiktok', 'instagram', 'facebook']);
 const BUSINESS_MODELS = new Set(['b2b', 'b2c', 'b2g']);
 const PROVIDERS = new Set(['local', 'codex', 'jev']);
 
@@ -58,7 +58,7 @@ function isEvaluation(evaluation, creative, pack) {
   if (!COMPONENTS.includes(evaluation.weakestComponent) || !isPlainObject(evaluation.componentScores)) return false;
   if (!COMPONENTS.every((key) => finiteScore(evaluation.componentScores[key]))) return false;
   if (!isPlainObject(evaluation.segmentScores) || !Object.values(evaluation.segmentScores).every(finiteScore)) return false;
-  if (!Array.isArray(evaluation.personaResults) || evaluation.personaResults.length < 1 || evaluation.personaResults.length > 30) return false;
+  if (!Array.isArray(evaluation.personaResults) || evaluation.personaResults.length < 1 || evaluation.personaResults.length > MAX_PERSONAS) return false;
   const personaIds = new Set();
   for (const result of evaluation.personaResults) {
     if (!isPlainObject(result) || typeof result.personaId !== 'string' || personaIds.has(result.personaId)) return false;

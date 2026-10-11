@@ -9,6 +9,7 @@ import { buildCodexArgs, parseFeatureList } from '../../src/scripts/growth-lab/c
 
 const page = readFileSync(new URL('../../src/pages/app/funnel-lab.astro', import.meta.url), 'utf8');
 const ui = readFileSync(new URL('../../src/scripts/growth-lab/ui.mjs', import.meta.url), 'utf8');
+const realityUi = readFileSync(new URL('../../src/scripts/growth-lab/reality-ui.mjs', import.meta.url), 'utf8');
 const nav = readFileSync(new URL('../../src/components/app/AppNav.astro', import.meta.url), 'utf8');
 const jobs = readFileSync(new URL('../../src/scripts/war-room/data.ts', import.meta.url), 'utf8');
 const cloudTs = readFileSync(new URL('../../src/scripts/growth-lab/cloud.ts', import.meta.url), 'utf8');
@@ -134,4 +135,19 @@ test('media: file field in the editor, routed job type, preview allowed by CSP',
   assert.doesNotMatch(ui + cloudTs, /removeMedia/, 'the page never deletes files (the mini sweeps unreferenced ones)');
   assert.match(ui, /if \(media && !\(await mediaExists\(media\.path\)\)\)/, 'a missing file is caught before queueing Codex');
   assert.match(ui, /creative\.media && engine !== 'codex-media'/, 'only a media-aware result hides the "not seen yet" note');
+});
+
+test('ของจริง: every id the reality screen reads exists, its actions are routed, and the view is a valid saved view', async () => {
+  const used = new Set([...realityUi.matchAll(/\$\('#([a-z0-9-]+)/g)].map((match) => match[1]));
+  assert.deepEqual([...used].filter((id) => !pageIds.has(id)), []);
+  assert.ok(used.size >= 12);
+  for (const action of ['reality-refresh', 'reality-reevaluate', 'reality-more', 'reality-to-workbench']) assert.match(page + realityUi, new RegExp(`data-action="${action}"`), action);
+  assert.match(ui, /action\.startsWith\('reality-'\)/);
+  assert.match(page, /data-view="reality"/);
+  assert.match(realityUi, /\^https\?/, 'only http(s) links are rendered from stored URLs');
+  assert.match(realityUi, /if \(!ctx\.cloudInSync\(\)\)/, 're-evaluate waits until the pack the mini sees is this one');
+  assert.doesNotMatch(realityUi, /result\.decision\.toLowerCase/, 'decisions map through a fixed class table');
+  const { validateState } = await import('../../src/scripts/growth-lab/storage.mjs');
+  const { seedState } = await import('../../src/scripts/growth-lab/seed.mjs');
+  assert.equal(validateState({ ...seedState(), activeView: 'reality' }).state.activeView, 'reality');
 });

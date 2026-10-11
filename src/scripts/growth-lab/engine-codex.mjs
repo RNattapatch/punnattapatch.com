@@ -1,10 +1,10 @@
 import { buildNextHypothesis } from './engine-local.mjs';
 import { validateJourneyForecast } from './journey.mjs';
-import { personaPackRevision } from './persona-packs.mjs';
+import { personaPackRevision, MAX_PERSONAS } from './persona-packs.mjs';
 
 const COMPONENTS = Object.freeze(['hook', 'offer', 'copy', 'visual']);
 const DECISIONS = new Set(['STOP', 'WATCH', 'SCROLL']);
-const CHANNELS = ['meta', 'line-oa', 'email', 'sms', 'sales-call', 'website', 'offline'];
+const CHANNELS = ['meta', 'line-oa', 'email', 'sms', 'sales-call', 'website', 'offline', 'tiktok', 'instagram', 'facebook'];
 
 const strictObject = (properties, required = Object.keys(properties)) => ({ type: 'object', additionalProperties: false, properties, required });
 const shortText = { type: 'string', minLength: 1, maxLength: 4000 };
@@ -33,12 +33,12 @@ const stageForecastSchema = strictObject({
 });
 
 export const CODEX_OUTPUT_SCHEMA = Object.freeze(strictObject({
-  personaResults: { type: 'array', items: personaResultSchema, minItems: 3, maxItems: 30 },
+  personaResults: { type: 'array', items: personaResultSchema, minItems: 3, maxItems: MAX_PERSONAS },
   journey: strictObject({
     confidence: percent,
     assumptions: { type: 'array', items: shortText, minItems: 1, maxItems: 10 },
     stageForecasts: { type: 'array', items: stageForecastSchema, minItems: 3, maxItems: 12 },
-    personaPaths: { type: 'array', items: personaPathSchema, minItems: 3, maxItems: 30 },
+    personaPaths: { type: 'array', items: personaPathSchema, minItems: 3, maxItems: MAX_PERSONAS },
     strategy: strictObject({
       bottleneckStage: { type: 'string' },
       priorityPersonaIds: { type: 'array', items: { type: 'string' }, minItems: 1, maxItems: 10 },
@@ -49,7 +49,7 @@ export const CODEX_OUTPUT_SCHEMA = Object.freeze(strictObject({
 
 /**
  * Schema for one specific pack: exactly one result and one path per persona (ids as an enum) and exactly one forecast
- * per journey stage. Structured output then cannot drop or invent personas — a static 3–30 range let Codex return a
+ * per journey stage. Structured output then cannot drop or invent personas — a static 3–N range let Codex return a
  * partial panel now and then (seen 2026-10-12 on a video run).
  */
 export function codexOutputSchema(pack) {
@@ -111,6 +111,7 @@ export function buildCodexPrompt(creative, pack, personas) {
     'Treat the forecast as directional. State assumptions and do not claim observed or guaranteed behavior.',
     'Scores must reflect relevance, clarity, credibility, action value, evidence, risk, and decision role.',
     'Judge the message the way it is consumed on its channel: Meta and offline are glanced at; LINE OA and SMS are short (an SMS segment is about 70 Thai characters and has no visual, so the visual component means delivery timing, length and personalization); email is opened or not on its subject line (headline); a sales call is spoken and must earn the next question.',
+    'TikTok, Instagram and Facebook organic posts (touchpointType organic-post) are swiped past in a vertical feed: the first frame and the first spoken line or on-screen text decide in about 2 seconds whether the persona stays. Nobody paid to reach them, so judge whether they would stop, watch to the end, save or share, or follow — and whether the post moves them closer to buying, not only whether it entertains.',
     'Judge it for its journey stage: early stages buy attention, late stages buy a decision and need proof, scope and price.',
     'Use the vocabulary of the pack business model (B2B buying committee, B2C consumer, or B2G public-sector procurement); do not reward B2B owner language in a B2C or B2G message.',
     'Stages before touchpoint.journeyStage are already behind the persona: give them probability 100 and dropOff 0, and pick bottlenecks from the touchpoint stage onward.',

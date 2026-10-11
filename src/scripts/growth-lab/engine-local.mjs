@@ -13,6 +13,10 @@ export const CHANNEL_PROFILES = Object.freeze({
   'sales-call': Object.freeze({ hookMax: 120, bodyMax: 900, mode: 'delivery', weights: { hook: 1.1, offer: 1, copy: 1.25, visual: 0.35 } }),
   website: Object.freeze({ hookMax: 90, bodyMax: 1500, mode: 'visual', weights: { hook: 1.1, offer: 1.05, copy: 1.1, visual: 0.95 } }),
   offline: Object.freeze({ hookMax: 40, bodyMax: 250, mode: 'visual', weights: { hook: 1.2, offer: 1.1, copy: 0.7, visual: 1.25 } }),
+  // Organic short video / feed posts: the first line (spoken or on screen) is the hook, the script is the body.
+  tiktok: Object.freeze({ hookMax: 60, bodyMax: 2200, mode: 'visual', weights: { hook: 1.3, offer: 0.8, copy: 1, visual: 1.2 } }),
+  instagram: Object.freeze({ hookMax: 80, bodyMax: 2200, mode: 'visual', weights: { hook: 1.2, offer: 0.9, copy: 0.95, visual: 1.25 } }),
+  facebook: Object.freeze({ hookMax: 125, bodyMax: 2000, mode: 'visual', weights: { hook: 1.15, offer: 0.95, copy: 1, visual: 1.1 } }),
 });
 
 const TOUCHPOINT_PROFILES = Object.freeze({
@@ -20,6 +24,7 @@ const TOUCHPOINT_PROFILES = Object.freeze({
   promotion: Object.freeze({ hook: 1, offer: 1.3, copy: 0.9, visual: 0.95 }),
   'line-oa': Object.freeze({ hook: 1, offer: 1.1, copy: 1.1, visual: 0.9 }),
   'sales-outreach': Object.freeze({ hook: 1.1, offer: 0.95, copy: 1.25, visual: 0.6 }),
+  'organic-post': Object.freeze({ hook: 1.15, offer: 0.8, copy: 1.05, visual: 1.1 }),
 });
 
 // Early stages buy attention, late stages buy a decision.
@@ -56,6 +61,9 @@ const CHANNEL_VERBS = Object.freeze({
   'sales-call': { STOP: 'ยอมคุยต่อ', WATCH: 'ฟังแต่ขอข้อมูลก่อน', SCROLL: 'ขอวางสาย' },
   website: { STOP: 'อ่านต่อ', WATCH: 'ไล่ดูแต่ยังไม่กด', SCROLL: 'ออกจากหน้า' },
   offline: { STOP: 'หยุดดู', WATCH: 'มองแต่ไม่เข้าไป', SCROLL: 'เดินผ่าน' },
+  tiktok: { STOP: 'ดูจนจบ', WATCH: 'ดูไม่กี่วิแล้วปัด', SCROLL: 'ปัดทิ้งทันที' },
+  instagram: { STOP: 'หยุดดูจนจบ', WATCH: 'ดูครึ่งๆ แล้วปัด', SCROLL: 'ปัดผ่าน' },
+  facebook: { STOP: 'หยุดอ่าน/ดู', WATCH: 'ชะงักแต่ยังลังเล', SCROLL: 'เลื่อนผ่าน' },
 });
 
 export function decisionVerbs(channel) {
