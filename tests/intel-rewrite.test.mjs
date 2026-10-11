@@ -107,6 +107,7 @@ async function open(path, { scripts = [], jobStatus = ['running', 'done'] } = {}
   });
   const page = await ctx.newPage();
   await page.addInitScript(([ref, token]) => {
+    if (window !== window.top) return;   // iframe พรีวิว Note Studio ใน /app/content เป็น sandbox — แตะ localStorage ไม่ได้
     localStorage.setItem(`sb-${ref}-auth-token`, JSON.stringify({
       access_token: token, token_type: 'bearer', expires_in: 999999, expires_at: Math.floor(Date.now() / 1000) + 999999, refresh_token: 'r',
       user: { id: 'test-user', aud: 'authenticated', role: 'authenticated', email: 'test@example.com' },
