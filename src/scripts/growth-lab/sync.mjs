@@ -24,7 +24,11 @@ export function stableStringify(value) {
 
 /** Key-order independent fingerprint of what was evaluated (jsonb reorders keys, so plain JSON.stringify is not stable). */
 export function contentRevision(creative) {
-  return stableStringify(Object.fromEntries(SCORING_FIELDS.map((field) => [field, String(creative?.[field] ?? '')])));
+  const fields = Object.fromEntries(SCORING_FIELDS.map((field) => [field, String(creative?.[field] ?? '')]));
+  // The attached image/video is scored too: its sha256 joins the fingerprint (only when present, so revisions of
+  // text-only touchpoints made before media existed stay valid).
+  if (creative?.media?.sha256) fields.media = creative.media.sha256;
+  return stableStringify(fields);
 }
 
 /**
@@ -69,6 +73,8 @@ export function codexJobVerdict(job, state, packRevisionOf) {
   const creative = state.creatives.find((item) => item.id === sent.id);
   if (!creative) return { apply: false, reason: 'missing' };
   if (contentRevision(creative) !== contentRevision(sent)) return { apply: false, reason: 'edited' };
+  // A result for a touchpoint with an image/video counts only if Codex actually saw the file.
+  if (sent.media && evaluation.engine !== 'codex-media') return { apply: false, reason: 'needs-media' };
   const pack = state.personaPacks.find((item) => item.id === creative.personaPackId);
   if (!pack || packRevisionOf(pack) !== evaluation.personaPackRevision) return { apply: false, reason: 'pack-changed' };
   const current = state.evaluations[creative.id];

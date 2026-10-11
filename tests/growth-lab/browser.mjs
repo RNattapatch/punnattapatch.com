@@ -66,6 +66,14 @@ try {
     offer: 'ส่งฟรี รับประกันคืนเงิน 30 วัน', cta: 'กด bit.ly/serum', visualDirection: 'ส่งศุกร์ 19:00 น. ใส่ชื่อลูกค้า',
   })) await page.fill(`#creative-form [name="${name}"]`, value);
   check((await page.locator('#message-preview').textContent()).includes('ผิวแห้ง? เซรั่ม 1 แถม 1'), 'preview follows typing in the editor');
+  // Media field: wrong type is refused locally; a real image tries to upload (offline here → clear message, nothing breaks).
+  await page.setInputFiles('#media-input', { name: 'note.gif', mimeType: 'image/gif', buffer: Buffer.from('GIF89a') });
+  check((await page.locator('#media-status').textContent()).includes('รองรับเฉพาะ'), 'unsupported media type is refused with a reason');
+  const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64');
+  await page.setInputFiles('#media-input', { name: 'promo.png', mimeType: 'image/png', buffer: png });
+  await page.waitForFunction(() => /อัปโหลดไม่สำเร็จ/u.test(document.getElementById('notice').textContent), null, { timeout: 15_000 });
+  check(true, 'a failed upload is reported and the touchpoint keeps its text');
+  check((await page.locator('#creative-form [name="hook"]').inputValue()).includes('ผิวแห้ง'), 'form content survived the failed upload');
   await page.click('#creative-form button[type="submit"]');
   await page.waitForSelector('#editor-dialog:not([open])');
   await page.waitForTimeout(500);   // let the modal fade finish before screenshots

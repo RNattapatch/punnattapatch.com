@@ -74,7 +74,7 @@ import AppNav from '../../components/app/AppNav.astro';
             <tbody id="wr-queue"></tbody>
           </table>
         </div>
-        <p class="text-xs opacity-60">worker บน Mac mini หยิบทีละงานทุก 12 วินาที · Codex ใช้ 2-10 นาทีต่องาน · ปิดหน้านี้ได้ งานไม่หยุด · งานที่วิ่งเกิน 20 นาที = ผิดปกติ ให้พิมพ์ใน Telegram ว่า <code>scout: status</code> หรือสั่ง <code>launchctl kickstart -k gui/$(id -u)/com.pun.wrjobs-worker</code> บนมินิ</p>
+        <p class="text-xs opacity-60">worker บน Mac mini หยิบทีละงานทุก 12 วินาที · Codex ใช้ 2-10 นาทีต่องาน · ปิดหน้านี้ได้ งานไม่หยุด · งานที่วิ่งเกิน 20 นาที = ผิดปกติ ให้พิมพ์ใน Telegram ว่า <code>scout: status</code> หรือสั่ง <code>launchctl kickstart -k gui/$(id -u)/com.pun.wrjobs-worker</code> บนมินิ · งานรูป/คลิปของ Funnel Lab (🎞) วิ่งที่ worker แยก <code>com.pun.funnel-media-worker</code></p>
       </section>
 
       <!-- ============ LIST VIEW ============ -->
@@ -657,7 +657,7 @@ import AppNav from '../../components/app/AppNav.astro';
     const JOB_LABEL: Record<string, string> = {
       ai_improve: '✨ เกลาบท (Script Studio)', rewrite_reel: '✍️ version ผม (Intel Warroom)',
       rewrite_copy: '✍️ เขียนข่าวใหม่ (News Desk)', render_text_card: '🖼 การ์ดตัวอักษร', render_card: '🎨 การ์ดซีน AI', publish: '🚀 โพสต์',
-      growth_eval: '🧭 ประเมินข้อความ (Funnel Lab)',
+      growth_eval: '🧭 ประเมินข้อความ (Funnel Lab)', funnel_media_eval: '🎞 ประเมินรูป/คลิป (Funnel Lab)',
     };
     const STALL_MS = 20 * 60_000;
     const mmss = (ms: number) => `${Math.floor(ms / 60_000)}:${String(Math.floor((ms % 60_000) / 1000)).padStart(2, '0')}`;
@@ -689,7 +689,7 @@ import AppNav from '../../components/app/AppNav.astro';
         const it = itemTitles.get(id);
         return { text: String(p.theme ?? '—'), sub: it?.title ? `จากการ์ด: ${it.title}` : (id ? `การ์ด ${id.slice(0, 8)}…` : ''), href: id ? `/app/intel?item=${encodeURIComponent(id)}` : null, variantId: null };
       }
-      if (j.job_type === 'growth_eval') {
+      if (j.job_type === 'growth_eval' || j.job_type === 'funnel_media_eval') {
         const c = (p.creative ?? {}) as { name?: string; channel?: string };
         const pk = (p.pack ?? {}) as { name?: string };
         return { text: String(c.name ?? 'Touchpoint'), sub: [pk.name, c.channel].filter(Boolean).join(' · '), href: '/app/funnel-lab', variantId: null };
@@ -712,7 +712,7 @@ import AppNav from '../../components/app/AppNav.astro';
       if (stalled.length || workerSilent) {
         health.className = 'rounded-2xl border border-error/50 bg-error/10 px-4 py-3 text-sm';
         health.innerHTML = stalled.length
-          ? `⚠️ <b>งานวิ่งนานผิดปกติ ${stalled.length} งาน</b> (เกิน 20 นาที) — Codex/worker บนมินิอาจค้าง · ลองรอถึง 25 นาทีแล้วกด "ลองใหม่" หรือสั่ง kickstart worker`
+          ? `⚠️ <b>งานวิ่งนานผิดปกติ ${stalled.length} งาน</b> (เกิน 20 นาที) — Codex/worker บนมินิอาจค้าง · ลองรอถึง 25 นาทีแล้วกด "ลองใหม่" หรือสั่ง kickstart worker${stalled.some((j) => j.job_type === 'funnel_media_eval') ? ' (งาน 🎞 Funnel Lab → <code>com.pun.funnel-media-worker</code>)' : ''}`
           : `⚠️ <b>มีงานรอคิว ${queued.length} งาน แต่ worker ยังไม่หยิบ</b> เกิน 1 นาที — worker บนมินิอาจไม่ทำงาน · พิมพ์ใน Telegram: <code>scout: status</code>`;
       } else {
         health.className = 'rounded-2xl border border-base-300 bg-base-200/60 px-4 py-3 text-sm';

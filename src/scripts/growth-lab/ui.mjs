@@ -8,6 +8,8 @@ import { calculateMetrics, calibrate, validateActual } from './metrics.mjs';
 import { BUILT_IN_PACKS, MAX_PERSONA_PACK_BYTES, clonePersonaPack, exportPersonaPack, importPersonaPack, personaPackRevision, personasForState, validatePersonaPack } from './persona-packs.mjs';
 import { updateCreativeDraft, validateState } from './storage.mjs';
 import { codexJobVerdict, contentRevision, coreFingerprint, coreOf, DATA_VERSION, decideSync, mergeResults, outranks, pendingResultUploads, wantedResultKeys, withLocalUi } from './sync.mjs';
+import { checkUpload, mediaKind, mediaPath } from './media.mjs';
+import { copyMedia, mediaExists, signedMediaUrl, uploadMedia } from './cloud.ts';
 import { enqueueCodexEvaluation, fetchResults, fetchServerCopy, fetchWorkspace, keepCopyOnServer, listRecentCodexJobs, listResultStamps, listServerCopies, readCodexJob, saveWorkspace, upsertResults } from './cloud.ts';
 import { seedState } from './seed.mjs';
 
@@ -81,7 +83,9 @@ let state;
 let busy = false;
 let draftTimer = 0;
 let selectedPersonaId = '';
-let seatFilter = 'ALL';   // STOP / WATCH / SCROLL / ALL — buyer panel filter, per screen
+let seatFilter = 'ALL';
+let mediaBusy = false;
+const signedUrls = new Map();   // path → { url, at } (signed URLs live 1 h; reuse for 50 min)   // STOP / WATCH / SCROLL / ALL — buyer panel filter, per screen
 // hold = cloud copy could not be opened → never auto-write over it · readOnly = cloud written by a newer page
 // editSeq counts content edits only, so a push clears `dirty` exactly when nothing was edited while it was in flight.
 // holdRev = rev of the unreadable cloud copy (kept separate from rev so every reload re-detects it).
@@ -581,20 +585,109 @@ function renderMessage() {
     `<span class="badge badge-ghost">ช่วง: ${escapeHtml(stageThai(pack, creative.journeyStage))}</span>`,
     `<span class="badge badge-ghost">เปลี่ยน: ${escapeHtml(COMP_THAI[creative.changedVariable] ?? '—')}</span>`,
   ].join('');
-  const empty = !creative.hook && !creative.primaryText;
+  const empty = !creative.hook && !creative.primaryText && !creative.media;
   $('#message-preview').innerHTML = empty
     ? `<div class="gl-preview p-5 text-sm opacity-80">ยังไม่มีข้อความ — กด <button type="button" class="link" data-action="edit-creative">แก้ข้อความ</button> เพื่อเขียนประโยคเปิด เนื้อความ และข้อเสนอ</div>`
     : `<div class="gl-preview">
         <div class="flex items-center justify-between border-b border-base-300 px-4 py-2"><span class="gl-eyebrow">${escapeHtml(CHANNEL_THAI[creative.channel] ?? creative.channel)} · ข้อความที่ผู้รับเห็น</span><span class="text-[10px] opacity-50">ตัวอย่าง</span></div>
+        ${creative.media ? `<div class="border-b border-base-300 bg-base-300/40 p-3" id="media-preview" data-media-path="${escapeHtml(creative.media.path)}"><p class="text-xs opacity-60">กำลังโหลด${creative.media.kind === 'video' ? 'วิดีโอ' : 'รูป'}…</p></div>` : ''}
         <div class="p-4 sm:p-5">
           <p class="mb-2 font-display text-lg font-semibold leading-relaxed sm:text-xl">${escapeHtml(creative.hook)}</p>
           <p class="whitespace-pre-line text-[13px] leading-relaxed opacity-80">${escapeHtml(creative.primaryText)}</p>
           <div class="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-base-300 pt-3"><span class="text-xs opacity-70">${escapeHtml(creative.headline)}</span><span class="text-xs font-semibold" style="color:var(--color-brand-coral)">${escapeHtml(creative.cta)} →</span></div>
         </div>
       </div>
+      ${creative.media ? `<p class="mt-2 text-xs opacity-70">📎 ${escapeHtml(creative.media.name)} · ${formatNumber(creative.media.size / 1024 / 1024, 1)} MB${creative.media.durationSec ? ` · ${formatNumber(creative.media.durationSec, 1)} วิ` : ''}</p>` : ''}
       <details class="mt-3 text-xs"><summary class="cursor-pointer py-2 opacity-70">ดูข้อเสนอ และภาพ / วิธีส่ง</summary>
         <div class="space-y-2 pb-1 opacity-80"><p><b>ข้อเสนอ</b><br>${escapeHtml(creative.offer || '—')}</p><p><b>${escapeHtml(compThai('visual', creative.channel))}</b><br>${escapeHtml(creative.visualDirection || '—')}</p></div>
       </details>`;
+  if (creative.media) void showMediaPreview(creative.media);
+  renderMediaField(creative);
+}
+
+async function mediaUrl(path) {
+  const cached = signedUrls.get(path);
+  if (cached && Date.now() - cached.at < 50 * 60_000) return cached.url;
+  const url = await signedMediaUrl(path);
+  signedUrls.set(path, { url, at: Date.now() });
+  return url;
+}
+
+async function showMediaPreview(media) {
+  try {
+    const url = await mediaUrl(media.path);
+    const node = $('#media-preview');
+    if (!node || node.dataset.mediaPath !== media.path) return;   // another touchpoint got selected meanwhile
+    node.innerHTML = media.kind === 'video'
+      ? `<video class="mx-auto max-h-[22rem] w-full rounded-lg bg-black" controls preload="metadata" playsinline src="${escapeHtml(url)}" aria-label="${escapeHtml(media.name)}"></video>`
+      : `<img class="mx-auto max-h-[22rem] w-auto rounded-lg object-contain" src="${escapeHtml(url)}" alt="${escapeHtml(`รูปที่แนบ: ${media.name}`)}" loading="lazy">`;
+  } catch (error) {
+    const node = $('#media-preview');
+    if (node && node.dataset.mediaPath === media.path) node.innerHTML = `<p class="text-xs opacity-70">โหลดตัวอย่างไม่ได้ (${escapeHtml(error.message)}) — ถ้าไฟล์ไม่อยู่ในคลังแล้ว ตอนกด Codex ระบบจะแจ้งและให้แนบใหม่</p>`;
+  }
+}
+
+function renderMediaField(creative) {
+  if (mediaBusy) return;
+  $('#media-remove').hidden = !creative.media;
+  $('#media-status').textContent = creative.media
+    ? `📎 ${creative.media.name} (${creative.media.kind === 'video' ? 'วิดีโอ' : 'รูป'} · ${formatNumber(creative.media.size / 1024 / 1024, 1)} MB) — เปลี่ยนไฟล์ = ต้องประเมินใหม่`
+    : 'ยังไม่มีไฟล์ — ประเมินจากข้อความอย่างเดียว';
+}
+
+async function sha256Hex(blob) {
+  const digest = await crypto.subtle.digest('SHA-256', await blob.arrayBuffer());
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+function videoDuration(file) {
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file);
+    const video = document.createElement('video');
+    const done = (value) => { URL.revokeObjectURL(url); resolve(value); };
+    const timer = setTimeout(() => done(undefined), 8_000);
+    video.preload = 'metadata';
+    video.onloadedmetadata = () => { clearTimeout(timer); done(Number.isFinite(video.duration) ? Math.round(video.duration * 10) / 10 : undefined); };
+    video.onerror = () => { clearTimeout(timer); done(undefined); };
+    video.src = url;
+  });
+}
+
+// Replaced/removed files are NOT deleted from here: the cloud copy, history, backups, another tab or a queued job may
+// still point at them. funnel_media_worker sweeps files that nothing references any more (after 7 days).
+
+async function attachMedia(file) {
+  const problem = checkUpload(file);
+  if (problem) { $('#media-status').textContent = `⚠️ ${problem}`; return; }
+  const creative = selectedCreative();
+  mediaBusy = true;
+  $('#media-status').textContent = `กำลังเตรียมไฟล์ ${file.name}…`;
+  try {
+    const sha256 = await sha256Hex(file);
+    const durationSec = mediaKind(file.type) === 'video' ? await videoDuration(file) : undefined;
+    const path = mediaPath(creative.id, sha256, file.type);
+    $('#media-status').textContent = `กำลังอัปโหลด ${formatNumber(file.size / 1024 / 1024, 1)} MB…`;
+    await uploadMedia(path, file, file.type);
+    const current = state.creatives.find((item) => item.id === creative.id);
+    if (!current) return;
+    const media = { kind: mediaKind(file.type), path, sha256, mime: file.type, size: file.size, name: file.name.slice(0, 200), ...(durationSec !== undefined ? { durationSec } : {}) };
+    state = updateCreativeDraft(state, { ...current, media, updatedAt: new Date().toISOString() });
+    persist(`แนบ${media.kind === 'video' ? 'วิดีโอ' : 'รูป'}แล้ว — กด "ให้ Codex ดู${media.kind === 'video' ? 'คลิป' : 'รูป'}จริง" เพื่อให้ผู้ซื้อจำลองดูไฟล์จริง`);
+  } catch (error) {
+    announce(`อัปโหลดไม่สำเร็จ: ${error.message} — ข้อความเดิมยังอยู่`);
+  } finally {
+    mediaBusy = false;
+    renderAll();
+  }
+}
+
+function detachMedia() {
+  const creative = selectedCreative();
+  if (!creative.media) return;
+  const { media, ...rest } = creative;
+  state = updateCreativeDraft(state, { ...rest, updatedAt: new Date().toISOString() });
+  persist('เอาไฟล์ออกแล้ว — ประเมินจากข้อความอย่างเดียว');
+  renderAll();
 }
 
 function renderContextControls() {
@@ -659,7 +752,7 @@ function renderDecision() {
     const copy = VERDICT_THAI[evaluation.verdict];
     const stopCount = evaluation.personaResults.filter((result) => result.decision === 'STOP').length;
     const when = evaluation.evaluatedAt && !evaluation.evaluatedAt.startsWith('1970') ? new Date(evaluation.evaluatedAt).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }) : '';
-    $('#evaluation-engine').textContent = engine.startsWith('codex') ? 'CODEX · มินิ' : engine.startsWith('jev') ? 'JEV' : 'LOCAL';
+    $('#evaluation-engine').textContent = engine === 'codex-media' ? 'CODEX · ดูไฟล์จริง' : engine.startsWith('codex') ? 'CODEX · มินิ' : engine.startsWith('jev') ? 'JEV' : 'LOCAL';
     $('#decision-summary').innerHTML = `<p class="gl-eyebrow" style="opacity:.7">คำแนะนำจากผลจำลอง</p>
       <p class="mt-1 font-display text-2xl font-bold leading-snug">${escapeHtml(copy.label)}</p>
       <p class="text-xs opacity-75">${evaluation.verdict} · ${escapeHtml(copy.hint)}${when ? ` · ${escapeHtml(when)}` : ''}</p>
@@ -667,7 +760,8 @@ function renderDecision() {
         <div><strong class="font-display text-4xl font-bold leading-none tabular-nums">${formatNumber(evaluation.stopRate)}<span class="text-lg">%</span></strong><p class="mt-2 text-xs opacity-80">${escapeHtml(verbs.STOP)} · ${stopCount}/${personas.length} คน</p></div>
         <div class="gl-rule border-l pl-5"><strong class="font-display text-2xl font-semibold tabular-nums">${formatNumber(evaluation.averageScore, 1)}</strong><p class="mt-2 text-xs opacity-80">คะแนนเฉลี่ย / 100</p></div>
       </div>
-      <p class="mt-3 text-xs opacity-80">${VERDICT_COPY[evaluation.verdict]}</p>`;
+      <p class="mt-3 text-xs opacity-80">${VERDICT_COPY[evaluation.verdict]}</p>
+      ${creative.media && engine !== 'codex-media' ? `<p class="gl-rule mt-3 rounded-lg border p-2 text-xs">⚡ ผลนี้ดูจากข้อความ ยังไม่ได้ดู${creative.media.kind === 'video' ? 'คลิป' : 'รูป'}จริง — กด "ให้ Codex ดู${creative.media.kind === 'video' ? 'คลิป' : 'รูป'}จริง" ด้านล่าง</p>` : ''}`;
     $('#component-bars').innerHTML = `<p class="gl-eyebrow" style="opacity:.7">อะไรดี / อะไรต้องแก้</p>` + Object.entries(evaluation.componentScores).map(([key, value]) => {
       const pct = Math.max(0, Math.min(100, Number(value)));
       const weak = key === evaluation.weakestComponent;
@@ -918,7 +1012,9 @@ function renderProviderButton(label = '') {
   const pending = pendingFor(selectedCreative()?.id);
   button.disabled = busy || Boolean(pending);
   if (label) { button.textContent = label; return; }
-  button.textContent = pending ? `⏳ Codex กำลังประเมิน ${mmss(Math.round((Date.now() - pending[1].startedAt) / 1000))}` : '🧠 ประเมินลึกด้วย Codex (มินิ)';
+  const media = selectedCreative()?.media;
+  button.textContent = pending ? `⏳ Codex กำลัง${media ? 'ดูไฟล์และ' : ''}ประเมิน ${mmss(Math.round((Date.now() - pending[1].startedAt) / 1000))}`
+    : media ? `🧠 ให้ Codex ดู${media.kind === 'video' ? 'คลิป' : 'รูป'}จริง (มินิ)` : '🧠 ประเมินลึกด้วย Codex (มินิ)';
 }
 
 function renderAll() {
@@ -1037,6 +1133,16 @@ async function evaluateCodex() {
   busy = true;
   renderProviderButton('⏳ กำลังส่งเข้าคิว…');
   try {
+    const media = selectedCreative().media;
+    if (media && !(await mediaExists(media.path))) {
+      // The reference outlived its file (old backup, swept file): say so instead of letting the worker fail later.
+      const { media: missing, ...rest } = selectedCreative();
+      state = updateCreativeDraft(state, { ...rest, updatedAt: new Date().toISOString() });
+      persist(`ไม่พบไฟล์ ${missing.name} ในคลังแล้ว จึงเอาออกจากข้อความนี้ — แนบไฟล์ใหม่ที่ "แก้ข้อความ" แล้วกดอีกครั้ง`);
+      busy = false;
+      renderAll();
+      return;
+    }
     // The job payload is the exact content evaluated; the result is matched back against it, not against this tab's memory.
     const jobId = await enqueueCodexEvaluation(selectedCreative(), pack);
     savePendingJobs({ ...pendingJobs(), [jobId]: { creativeId: creative.id, startedAt: Date.now() } });
@@ -1103,6 +1209,7 @@ function withDecided(source, jobId) {
 
 const SKIP_COPY = {
   superseded: 'มีผล Codex ที่ใหม่กว่าของ Touchpoint นี้อยู่แล้ว จึงไม่ใช้ผลรอบก่อน',
+  'needs-media': 'ผล Codex รอบนี้ไม่ได้ดูรูป/คลิปที่แนบ จึงไม่ใช้ — กด "ให้ Codex ดูไฟล์จริง" อีกครั้ง',
   edited: 'ทิ้งผล Codex เพราะข้อความถูกแก้ระหว่างรอ — กดประเมินใหม่ได้เลย',
   'pack-changed': 'ทิ้งผล Codex เพราะ Persona Pack ถูกแก้ระหว่างรอ — กดประเมินใหม่ได้เลย',
   missing: 'ผล Codex กลับมาแต่ Touchpoint นั้นถูกลบไปแล้ว',
@@ -1165,13 +1272,26 @@ function newId(prefix) {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
 }
 
-function duplicateCreative() {
+async function duplicateCreative() {
   const source = creativeFromForm();
   const id = newId('creative');
-  const now = new Date().toISOString();
   const evaluation = state.evaluations[source.id];
   const changedVariable = evaluation?.nextHypothesis?.changedVariable ?? source.changedVariable;
-  state.creatives.push({ ...source, id, name: `${source.name} — ทดสอบ${COMP_THAI[changedVariable] ?? changedVariable}`, changedVariable, createdAt: now, updatedAt: now });
+  const { media: sourceMedia, ...sourceRest } = source;
+  let media;
+  if (sourceMedia) {
+    // Copy the file into the new touchpoint's folder first, so the duplicate never exists half-made.
+    announce('กำลังคัดลอกไฟล์ไปข้อความใหม่…');
+    try {
+      const path = mediaPath(id, sourceMedia.sha256, sourceMedia.mime);
+      await copyMedia(sourceMedia.path, path);
+      media = { ...sourceMedia, path };
+    } catch (error) {
+      announce(`คัดลอกไฟล์ไม่สำเร็จ (${error.message}) — สร้างข้อความใหม่โดยไม่มีไฟล์ แนบใหม่ได้ที่ "แก้ข้อความ"`);
+    }
+  }
+  const now = new Date().toISOString();
+  state.creatives.push({ ...sourceRest, ...(media ? { media } : {}), id, name: `${source.name} — ทดสอบ${COMP_THAI[changedVariable] ?? changedVariable}`, changedVariable, createdAt: now, updatedAt: now });
   state.selectedCreativeId = id;
   persist(`สร้างข้อความทดลองแล้ว — เปลี่ยนเฉพาะ${COMP_THAI[changedVariable] ?? changedVariable} ส่วนอื่นคงเดิม จะได้เทียบผลได้`);
   state.activeView = 'workbench';
@@ -1183,7 +1303,8 @@ function newCreative() {
   const source = selectedCreative();
   const id = newId('creative');
   const now = new Date().toISOString();
-  state.creatives.push({ ...source, id, name: `ข้อความ ${letterFor(state.creatives.length)}`, hook: '', primaryText: '', headline: '', offer: '', cta: '', visualDirection: '', createdAt: now, updatedAt: now });
+  const { media, ...sourceRest } = source;
+  state.creatives.push({ ...sourceRest, id, name: `ข้อความ ${letterFor(state.creatives.length)}`, hook: '', primaryText: '', headline: '', offer: '', cta: '', visualDirection: '', createdAt: now, updatedAt: now });
   state.selectedCreativeId = id;
   state.activeView = 'workbench';
   persist('สร้างข้อความใหม่แล้ว — เขียนแล้วกดบันทึกแล้วประเมิน');
@@ -1418,7 +1539,8 @@ function onClick(event) {
   if (action === 'evaluate') evaluateLocal();
   else if (action === 'edit-creative') openEditor('hook');
   else if (action === 'close-editor') closeEditor();
-  else if (action === 'duplicate') duplicateCreative();
+  else if (action === 'remove-media') detachMedia();
+  else if (action === 'duplicate') { if (!mediaBusy) { mediaBusy = true; void duplicateCreative().finally(() => { mediaBusy = false; }); } }
   else if (action === 'new-creative') newCreative();
   else if (action === 'evaluate-provider') void evaluateCodex();
   else if (action === 'clone-pack') clonePackForClient(false);
@@ -1458,7 +1580,8 @@ function onClick(event) {
 function wire() {
   document.getElementById('growth-lab-app').addEventListener('click', onClick);
   $('#creative-form').addEventListener('submit', (event) => { event.preventDefault(); evaluateLocal(); });
-  $('#creative-form').addEventListener('input', queueDraftSave);
+  $('#creative-form').addEventListener('input', (event) => { if (event.target.id !== 'media-input') queueDraftSave(event); });
+  $('#media-input').addEventListener('change', (event) => { const file = event.target.files[0]; event.target.value = ''; if (file && !mediaBusy) void attachMedia(file); });
   $('#creative-form').addEventListener('change', (event) => {
     if (event.target.name !== 'personaPackId') return;
     const pack = state.personaPacks.find((item) => item.id === event.target.value);

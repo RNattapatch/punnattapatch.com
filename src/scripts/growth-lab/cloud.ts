@@ -3,6 +3,7 @@
 import { supabase } from '../dashboard/supabase';
 import { enqueueJob } from '../war-room/data';
 import { DATA_VERSION } from './sync.mjs';
+import { MEDIA_BUCKET } from './media.mjs';
 
 export const WORKSPACE_ID = 'default';
 const TABLE = 'growth_lab_workspaces';
@@ -135,8 +136,35 @@ export async function upsertResults(rows: ResultRow[]): Promise<ResultStamp[]> {
   return (data as ResultStamp[]) ?? [];
 }
 
-export async function enqueueCodexEvaluation(creative: unknown, pack: unknown): Promise<string> {
-  return enqueueJob('growth_eval', { creative, pack });
+/** Text-only → growth_eval (main worker) · with an image/video → funnel_media_eval (funnel_media_worker on the mini). */
+export async function enqueueCodexEvaluation(creative: { media?: unknown }, pack: unknown): Promise<string> {
+  return enqueueJob(creative.media ? 'funnel_media_eval' : 'growth_eval', { creative, pack });
+}
+
+// ---------- media files (private bucket funnel-lab-media, owner-only RLS) ----------
+export async function uploadMedia(path: string, file: Blob, contentType: string): Promise<void> {
+  const { error } = await supabase.storage.from(MEDIA_BUCKET).upload(path, file, { upsert: true, contentType, cacheControl: '3600' });
+  if (error) throw new Error(error.message);
+}
+
+export async function copyMedia(from: string, to: string): Promise<void> {
+  const { error } = await supabase.storage.from(MEDIA_BUCKET).copy(from, to);
+  if (error && !/exists/i.test(error.message)) throw new Error(error.message);
+}
+
+/** True when the object is in the bucket (a reference can outlive its file, e.g. after restoring an old backup). */
+export async function mediaExists(path: string): Promise<boolean> {
+  const slash = path.lastIndexOf('/');
+  const { data, error } = await supabase.storage.from(MEDIA_BUCKET).list(path.slice(0, slash), { search: path.slice(slash + 1), limit: 1 });
+  if (error) throw new Error(error.message);
+  return (data ?? []).some((item) => item.name === path.slice(slash + 1));
+}
+
+/** Short-lived URL for showing the file on this page (the bucket itself is private). */
+export async function signedMediaUrl(path: string): Promise<string> {
+  const { data, error } = await supabase.storage.from(MEDIA_BUCKET).createSignedUrl(path, 3600);
+  if (error || !data?.signedUrl) throw new Error(error?.message ?? 'ขอ URL ไฟล์ไม่ได้');
+  return data.signedUrl;
 }
 
 const JOB_COLUMNS = 'id, status, error, created_at, finished_at, creative:payload->creative, result';
@@ -151,7 +179,7 @@ export async function readCodexJob(jobId: string): Promise<CodexJob | null> {
 /** Recently finished Codex evaluations — picks up results whose tab was closed or that were retried from the Content Center queue. */
 export async function listRecentCodexJobs(sinceIso: string): Promise<CodexJob[]> {
   const { data, error } = await supabase.from('wr_jobs').select(JOB_COLUMNS)
-    .eq('job_type', 'growth_eval').eq('status', 'done').gte('finished_at', sinceIso)
+    .in('job_type', ['growth_eval', 'funnel_media_eval']).eq('status', 'done').gte('finished_at', sinceIso)
     .order('finished_at', { ascending: false }).limit(20);
   if (error) throw new Error(error.message);
   return ((data as unknown as CodexJob[]) ?? []).reverse();   // newest 20, applied oldest → newest

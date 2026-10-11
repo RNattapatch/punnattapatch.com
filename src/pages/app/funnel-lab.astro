@@ -152,7 +152,7 @@ import AppNav from '../../components/app/AppNav.astro';
             <div class="mt-4 space-y-3" id="component-bars"></div>
             <div id="hypothesis-card"></div>
             <button class="btn btn-sm gl-sheet-quiet mt-4 w-full tap-44" type="button" id="provider-button" data-action="evaluate-provider">🧠 ประเมินลึกด้วย Codex (มินิ)</button>
-            <p class="mt-2 text-[11px] leading-relaxed opacity-70" id="provider-note">Codex ส่งเข้าคิว Mac mini ราว 1–4 นาที ปิดแท็บได้ กลับมาจะรับผลต่อเอง · ผู้ซื้อทั้งหมดเป็นแบบจำลอง ผลจริงจาก Ads / LINE / ทีมขายคือคำตอบสุดท้าย</p>
+            <p class="mt-2 text-[11px] leading-relaxed opacity-70" id="provider-note">Codex ส่งเข้าคิว Mac mini ราว 1–4 นาที (มีวิดีโอ 2–6 นาที) ปิดแท็บได้ กลับมาจะรับผลต่อเอง · ผู้ซื้อทั้งหมดเป็นแบบจำลอง ผลจริงจาก Ads / LINE / ทีมขายคือคำตอบสุดท้าย</p>
           </aside>
 
           <!-- 02 มุมมองผู้ซื้อ -->
@@ -339,6 +339,14 @@ import AppNav from '../../components/app/AppNav.astro';
           <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">ข้อเสนอ / โปรโมชัน</span><textarea class="textarea textarea-bordered w-full text-sm" name="offer" rows="2" required></textarea></label>
           <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">คำชวน (CTA)</span><input class="input input-bordered input-sm w-full" name="cta" required></label>
           <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">ภาพ / วิธีส่ง <span class="font-normal opacity-60">ภาพ เวลาส่ง รูปแบบ หรือสิ่งที่เห็นก่อน</span></span><textarea class="textarea textarea-bordered w-full text-sm" name="visualDirection" rows="2" required></textarea></label>
+          <fieldset class="rounded-xl border border-base-300 p-3">
+            <legend class="px-1 text-xs font-semibold">รูป / วิดีโอจริง <span class="font-normal opacity-60">ให้ Codex ดูไฟล์จริงแทนคำบรรยาย · JPG PNG WebP MP4 MOV WebM ≤ 50 MB</span></legend>
+            <div class="flex flex-wrap items-center gap-2">
+              <label class="btn btn-sm relative tap-44" for="media-input">📎 เลือกไฟล์<input id="media-input" class="gl-file" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm"></label>
+              <button type="button" class="btn btn-sm btn-ghost tap-44" data-action="remove-media" id="media-remove" hidden>✕ เอาไฟล์ออก</button>
+              <span class="min-w-0 flex-1 text-xs opacity-80" id="media-status" role="status" aria-live="polite">ยังไม่มีไฟล์ — ประเมินจากข้อความอย่างเดียว</span>
+            </div>
+          </fieldset>
           <p class="min-h-[1.25rem] text-sm text-error" id="creative-error" role="alert"></p>
           <div class="flex flex-col gap-2 sm:flex-row">
             <button class="gl-primary btn btn-sm flex-1 tap-44" type="submit">⚡ บันทึกแล้วประเมิน</button>

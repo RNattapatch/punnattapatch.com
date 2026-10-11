@@ -1,6 +1,7 @@
 import { seedState } from './seed.mjs';
 import { validateActual } from './metrics.mjs';
 import { isSafeId } from './ids.mjs';
+import { isMedia } from './media.mjs';
 import { createWorkspaceDefaults, migrateStateV1, personaPackRevision, validatePersonaPack } from './persona-packs.mjs';
 import { validateJourneyForecast } from './journey.mjs';
 
@@ -35,7 +36,8 @@ function isCreative(creative) {
     typeof creative.name === 'string' && creative.name.length <= 500 &&
     TOUCHPOINT_TYPES.has(creative.touchpointType) && CHANNELS.has(creative.channel) && BUSINESS_MODELS.has(creative.businessModel) &&
     isSafeId(creative.personaPackId) && isSafeId(creative.journeyStage) &&
-    SCORING_FIELDS.every((field) => typeof creative[field] === 'string' && creative[field].length <= 20_000);
+    SCORING_FIELDS.every((field) => typeof creative[field] === 'string' && creative[field].length <= 20_000) &&
+    isMedia(creative.media, creative.id);
 }
 
 function isWorkspace(workspace) {
@@ -102,7 +104,7 @@ export function updateCreativeDraft(currentState, draft) {
   if (index < 0 || !isCreative(draft)) throw new TypeError('draft creative ไม่ถูกต้อง');
   const previous = state.creatives[index];
   state.creatives[index] = clone(draft);
-  if (SCORING_FIELDS.some((field) => previous[field] !== draft[field])) {
+  if (SCORING_FIELDS.some((field) => previous[field] !== draft[field]) || (previous.media?.sha256 ?? '') !== (draft.media?.sha256 ?? '')) {
     delete state.evaluations[draft.id];
     delete state.journeys[draft.id];
   }
@@ -127,7 +129,10 @@ function sanitize(candidate) {
   const packs = Array.isArray(value.personaPacks) ? value.personaPacks : [];
   if (packs.length && Array.isArray(value.creatives)) {
     const seen = new Set();
-    value.creatives = value.creatives.filter((creative) => isPlainObject(creative) && isSafeId(creative.id) && !seen.has(creative.id) && seen.add(creative.id)).map((creative) => {
+    value.creatives = value.creatives.filter((creative) => isPlainObject(creative) && isSafeId(creative.id) && !seen.has(creative.id) && seen.add(creative.id)).map((input) => {
+      // A broken media reference never costs the touchpoint: drop the reference, keep the text.
+      let creative = input;
+      if (!isMedia(input.media, input.id)) { const { media, ...rest } = input; creative = rest; dropped += 1; }
       let pack = packs.find((item) => item.id === creative.personaPackId);
       if (!pack) { pack = packs.find((item) => item.businessModel === creative.businessModel) ?? packs[0]; dropped += 1; }
       const stageOk = pack.journeyStages.some((stage) => stage.id === creative.journeyStage);

@@ -16,7 +16,7 @@ const migration = readFileSync(new URL('../../supabase/migrations/202610110001_g
 
 const pageIds = new Set([...page.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]));
 // Ids created at runtime inside rendered templates (not static markup).
-const RUNTIME_IDS = new Set(['actual-error', 'persona-dialog-title', 'server-copies']);
+const RUNTIME_IDS = new Set(['actual-error', 'persona-dialog-title', 'server-copies', 'media-preview']);
 // Note: ids inside the editor <dialog> are static markup too (dialog content stays in the DOM while closed).
 
 test('every #id the controller queries exists in the page', () => {
@@ -121,4 +121,17 @@ test('desk layout: editor lives in a dialog, buyer filter and decision sheet are
   assert.match(page, /class="gl-sheet /, 'decision sheet');
   assert.doesNotMatch(page, /type="submit" data-action=/, 'the dialog submit has no data-action (would evaluate twice)');
   assert.match(ui, /LEGACY_APP_NAME = 'Growth Journey Lab'/);
+});
+
+test('media: file field in the editor, routed job type, preview allowed by CSP', () => {
+  const headers = readFileSync(new URL('../../public/_headers.app', import.meta.url), 'utf8');
+  assert.match(page, /id="media-input"[^>]*accept="image\/jpeg,image\/png,image\/webp,video\/mp4,video\/quicktime,video\/webm"/);
+  assert.match(cloudTs, /creative\.media \? 'funnel_media_eval' : 'growth_eval'/);
+  assert.match(cloudTs, /\.in\('job_type', \['growth_eval', 'funnel_media_eval'\]\)/, 'results of media jobs are picked up after a closed tab too');
+  assert.match(jobs, /'funnel_media_eval'/);
+  assert.match(headers, /media-src 'self' blob: https:\/\/yykocvhorgcgzaluuldn\.supabase\.co/);
+  assert.match(ui, /await copyMedia\(sourceMedia\.path, path\)/, 'a duplicate copies the file into its own folder before it exists');
+  assert.doesNotMatch(ui + cloudTs, /removeMedia/, 'the page never deletes files (the mini sweeps unreferenced ones)');
+  assert.match(ui, /if \(media && !\(await mediaExists\(media\.path\)\)\)/, 'a missing file is caught before queueing Codex');
+  assert.match(ui, /creative\.media && engine !== 'codex-media'/, 'only a media-aware result hides the "not seen yet" note');
 });

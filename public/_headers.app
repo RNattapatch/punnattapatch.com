@@ -10,6 +10,8 @@
 # 2026-09-23: added https://graph.facebook.com — Messenger Console (/messenger) calls the Graph API
 # from the browser with the admin's own token (Meta App Review round 2). Login is a top-level
 # redirect to www.facebook.com, so no Facebook SDK script/frame origins are needed.
+# 2026-10-12: added media-src for the Supabase storage origin — Funnel Lab previews uploaded videos via a
+# short-lived signed URL from the private funnel-lab-media bucket (images already pass img-src https:).
 # Cloudflare Access sits in front of this at the edge (Google login before any
 # HTML loads) — these headers are defense-in-depth behind that gate.
 #
@@ -19,7 +21,7 @@
 # popup/FedCM flow keeps working.
 
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https:; connect-src 'self' https://yykocvhorgcgzaluuldn.supabase.co https://doc-api.punnattapatch.com https://accounts.google.com https://oauth2.googleapis.com https://script.google.com https://script.googleusercontent.com https://graph.facebook.com; frame-src https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https:; connect-src 'self' https://yykocvhorgcgzaluuldn.supabase.co https://doc-api.punnattapatch.com https://accounts.google.com https://oauth2.googleapis.com https://script.google.com https://script.googleusercontent.com https://graph.facebook.com; media-src 'self' blob: https://yykocvhorgcgzaluuldn.supabase.co; frame-src https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
