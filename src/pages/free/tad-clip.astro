@@ -39,6 +39,10 @@ const demoClips = [
 // one container for every section so left edges line up on desktop
 const wrap = 'mx-auto w-full max-w-4xl px-5 sm:px-8';
 const h2 = 'font-display text-2xl font-bold text-navy sm:text-3xl';
+// "git-scm.com" in copy becomes a link that never wraps at its hyphen (Windows prerequisite)
+const GIT_SITE = 'git-scm.com';
+const gitParts = (text: string) => text.split(GIT_SITE);
+const gitLink = 'whitespace-nowrap font-semibold text-navy underline underline-offset-2 hover:text-coral';
 ---
 
 <BaseLayout
@@ -201,7 +205,14 @@ const h2 = 'font-display text-2xl font-bold text-navy sm:text-3xl';
                 NEEDS.have.map((item) => (
                   <li class="flex gap-3 leading-7 text-warm-ink">
                     <Icon name="check-circle" size={22} class="mt-0.5 shrink-0 text-navy" />
-                    <span>{item}</span>
+                    <span>
+                      {gitParts(item).map((part, i) => (
+                        <Fragment>
+                          {i > 0 && <a href="https://git-scm.com" target="_blank" rel="noopener" class={gitLink}>{GIT_SITE}</a>}
+                          {part}
+                        </Fragment>
+                      ))}
+                    </span>
                   </li>
                 ))
               }
@@ -295,7 +306,14 @@ const h2 = 'font-display text-2xl font-bold text-navy sm:text-3xl';
                   <span class="shrink-0 font-body text-2xl font-normal leading-none text-coral transition-transform group-open:rotate-45 motion-reduce:transition-none" aria-hidden="true">+</span>
                 </summary>
                 <div class="border-t border-sand-deep px-5 pb-5 pt-4 leading-7 text-warm-ink/85">
-                  <p>{faq.a}</p>
+                  <p>
+                    {gitParts(faq.a).map((part, i) => (
+                      <Fragment>
+                        {i > 0 && <a href="https://git-scm.com" target="_blank" rel="noopener" class={gitLink}>{GIT_SITE}</a>}
+                        {part}
+                      </Fragment>
+                    ))}
+                  </p>
                 </div>
               </details>
             ))
