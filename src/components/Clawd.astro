@@ -1,0 +1,89 @@
+---
+/**
+ * Clawd — Claude Code's pixel mascot, redrawn from the terminal logo (" ▐▛███▜▌ / ▝▜█████▛▘ /   ▘▘ ▝▝ ").
+ * Each terminal quadrant is one 1×2 cell, so the SVG grid is 18×10. Inline SVG: crisp at any size,
+ * no request. Decorative by default (aria-hidden); pass `label` when the mascot carries meaning.
+ *
+ * Poses: idle · scissors (holds scissors, for "cutting" moments) · sleepy (zzz, for the pain points)
+ * · wave (right arm up). `bob` adds a 2-step idle hop that turns off under prefers-reduced-motion.
+ */
+interface Props {
+  size?: number; // rendered width in px (height follows the 18:10 grid, plus room for props)
+  pose?: 'idle' | 'scissors' | 'sleepy' | 'wave';
+  bob?: boolean;
+  label?: string;
+  class?: string;
+}
+const { size = 64, pose = 'idle', bob = false, label, class: className = '' } = Astro.props;
+
+const BODY = '#D97757'; // Claude terracotta
+const EYE = '#1E1B16';
+
+// [x, y] cells (1 wide × 2 tall). Rows from the logo: y0 top, y1 eyes, y2 arms, y3 lower body, y4 legs.
+const cells: Array<[number, number]> = [];
+for (let x = 3; x <= 14; x++) cells.push([x, 0]);
+for (const x of [3, 4, 6, 7, 8, 9, 10, 11, 13, 14]) cells.push([x, 1]);
+const leftArm = pose === 'wave' ? [] : [1, 2];
+const rightArm = pose === 'wave' ? [] : [15, 16];
+for (let x = 3; x <= 14; x++) cells.push([x, 2]);
+for (const x of [...leftArm, ...rightArm]) cells.push([x, 2]);
+for (let x = 3; x <= 14; x++) cells.push([x, 3]);
+for (const x of [4, 6, 11, 13]) cells.push([x, 4]);
+// raised right arm for the wave: shoulder cell, then the arm straight up
+const waveCells: Array<[number, number]> = pose === 'wave' ? [[1, 2], [2, 2], [15, 2], [16, 1], [16, 0]] : [];
+// sleepy: eyes closed, so the eye holes are filled with body colour and get a lid line on top
+const lidFill: Array<[number, number]> = pose === 'sleepy' ? [[5, 1], [12, 1]] : [];
+const eyes: Array<[number, number]> = pose === 'sleepy' ? [] : [[5, 1], [12, 1]];
+
+// viewBox leaves room on the right/top for scissors and zzz
+const vbW = pose === 'scissors' ? 24 : pose === 'sleepy' ? 22 : 18;
+const vbY = pose === 'sleepy' ? -4 : 0;
+const vbH = 10 - vbY;
+const height = Math.round((size * vbH) / vbW);
+---
+
+<svg
+  viewBox={`0 ${vbY} ${vbW} ${vbH}`}
+  width={size}
+  height={height}
+  shape-rendering="crispEdges"
+  class:list={['clawd inline-block shrink-0', bob && 'clawd-bob', className]}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  focusable="false"
+>
+  <g fill={BODY}>
+    {[...cells, ...waveCells, ...lidFill].map(([x, y]) => <rect x={x} y={y * 2} width="1.02" height="2.02" />)}
+  </g>
+  <g fill={EYE}>
+    {eyes.map(([x, y]) => <rect x={x} y={y * 2} width="1" height="2" />)}
+  </g>
+  {pose === 'sleepy' && (
+    <g>
+      <rect x="5" y="2.8" width="1" height="0.6" fill={EYE} />
+      <rect x="12" y="2.8" width="1" height="0.6" fill={EYE} />
+      <text x="17" y="0" font-size="3.4" font-weight="700" fill="#5E6B7A" font-family="ui-monospace, monospace">z</text>
+      <text x="19.4" y="-2.2" font-size="2.6" font-weight="700" fill="#5E6B7A" font-family="ui-monospace, monospace">z</text>
+    </g>
+  )}
+  {pose === 'scissors' && (
+    <g stroke="#2B3A4A" stroke-width="0.55" fill="none" stroke-linecap="round">
+      <circle cx="18.6" cy="3.2" r="1.1" />
+      <circle cx="18.6" cy="6.6" r="1.1" />
+      <path d="M19.5 3.8 L23.4 6.4 M19.5 6 L23.4 3.4" />
+    </g>
+  )}
+</svg>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .clawd-bob {
+      animation: clawd-hop 1.4s steps(2, jump-none) infinite;
+    }
+  }
+  @keyframes clawd-hop {
+    from { transform: translateY(0); }
+    to { transform: translateY(-3px); }
+  }
+</style>

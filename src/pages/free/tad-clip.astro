@@ -13,6 +13,8 @@
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import LineDecisionCTA from '../../components/services/LineDecisionCTA.astro';
+import Clawd from '../../components/Clawd.astro';
+import { CLIENT_LOGOS } from '../../data/product-details/client-logos';
 import Icon from '../../components/Icon.astro';
 import { SITE } from '../../data/site';
 import { LINE_QR_IMAGE } from '../../data/service-offer-assets';
@@ -27,7 +29,7 @@ import {
   TOOLS,
   CTA,
   INSTALL,
-  TEAM,
+  ABOUT,
   FAQS,
   plainText,
 } from '../../data/tad-clip';
@@ -46,7 +48,7 @@ const gitParts = (text: string) => text.split(GIT_SITE);
 const gitLink = 'whitespace-nowrap font-semibold text-navy underline underline-offset-2 hover:text-coral';
 const shareUrl = `https://line.me/R/share?text=${encodeURIComponent(`${CTA.shareText}\n${canonical}?utm_source=line&utm_medium=share&utm_campaign=tad-clip`)}`;
 const copyBtn = 'inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border border-navy bg-surface px-4 text-sm font-semibold text-navy transition-transform active:scale-95 hover:bg-navy hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy motion-reduce:transition-none';
-const codeBox = 'min-w-0 flex-1 break-all rounded-lg bg-navy-deep px-3 py-2.5 font-mono text-[0.95rem] text-white';
+const codeBox = 'min-w-0 flex-1 whitespace-pre-wrap [overflow-wrap:anywhere] rounded-lg bg-navy-deep px-3 py-2.5 font-mono text-[0.95rem] text-white';
 ---
 
 <BaseLayout
@@ -71,7 +73,13 @@ const codeBox = 'min-w-0 flex-1 break-all rounded-lg bg-navy-deep px-3 py-2.5 fo
     <section id="tc-hero" class="border-b border-sand-deep bg-surface">
       <div class={`${wrap} pb-14 pt-12 sm:pb-20 sm:pt-16 md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,17rem)] md:items-center md:gap-10`}>
         <div>
-        <p class="text-sm font-bold text-coral">{HERO.eyebrow}</p>
+        <div class="flex items-end gap-3">
+          <Clawd size={64} pose="wave" bob label="Clawd มาสคอตของ Claude" />
+          <p class="relative mb-2 rounded-2xl rounded-bl-sm border-2 border-[#D97757] bg-surface px-3.5 py-2 text-sm font-semibold leading-6 text-navy sm:text-base">
+            {HERO.clawdSays}
+          </p>
+        </div>
+        <p class="mt-5 text-sm font-bold text-coral">{HERO.eyebrow}</p>
         <h1 class="mt-4 max-w-3xl font-display text-[2.1rem] font-bold leading-[1.22] text-navy text-balance sm:text-5xl sm:leading-[1.18]">
           {
             HERO.belief.map((group, gi) => (
@@ -111,7 +119,10 @@ const codeBox = 'min-w-0 flex-1 break-all rounded-lg bg-navy-deep px-3 py-2.5 fo
     {/* 2 · three pains, in the creator's own words */}
     <section aria-labelledby="tc-pains-h" class="py-14 sm:py-20">
       <div class={wrap}>
-        <h2 id="tc-pains-h" class={h2}>{PAINS.heading}</h2>
+        <div class="flex items-end justify-between gap-4">
+          <h2 id="tc-pains-h" class={h2}>{PAINS.heading}</h2>
+          <Clawd size={72} pose="sleepy" />
+        </div>
         <ul class="mt-8 grid gap-4 md:grid-cols-3">
           {
             PAINS.quotes.map((quote) => (
@@ -141,12 +152,15 @@ const codeBox = 'min-w-0 flex-1 break-all rounded-lg bg-navy-deep px-3 py-2.5 fo
               </span>
               <p class="mt-2 font-semibold">{MECHANISM.prompt}</p>
             </div>
+            <div class="flex items-end gap-2">
+            <Clawd size={40} pose="scissors" class="mb-1" />
             <div class="w-fit max-w-[85%] rounded-2xl rounded-bl-sm border border-[#c9c2b2] bg-ivory px-4 py-3">
               <span class="inline-flex items-center gap-2 rounded-lg border-2 border-coral bg-surface px-2.5 py-1.5 text-sm font-semibold text-navy">
                 <Icon name="check-circle" size={16} class="text-coral" />
                 {MECHANISM.fileOut}
                 <span class="font-normal text-warm-ink/70">{MECHANISM.fileOutNote}</span>
               </span>
+            </div>
             </div>
           </div>
         </div>
@@ -203,7 +217,8 @@ const codeBox = 'min-w-0 flex-1 break-all rounded-lg bg-navy-deep px-3 py-2.5 fo
             }
           </div>
           <div class="mt-8 md:mt-0">
-            <div class="rounded-2xl border border-[#c9c2b2] bg-surface p-5">
+            <div class="relative rounded-2xl border border-[#c9c2b2] bg-surface p-5 pt-8">
+              <Clawd size={56} pose="scissors" class="absolute -top-6 right-4" />
               <p class="font-semibold leading-7 text-navy">{DEMO.stat}</p>
               <p class="mt-3 leading-7 text-warm-ink/80">{DEMO.note}</p>
             </div>
@@ -273,6 +288,7 @@ const codeBox = 'min-w-0 flex-1 break-all rounded-lg bg-navy-deep px-3 py-2.5 fo
         </dl>
         <p class="mt-6 leading-7 text-warm-ink/80">{TOOLS.proof}</p>
         <p class="mt-2 text-sm text-warm-ink/70">{TOOLS.credit}</p>
+        <p class="mt-1 text-xs text-warm-ink/60">{TOOLS.trademark}</p>
       </div>
     </section>
 
@@ -282,8 +298,9 @@ const codeBox = 'min-w-0 flex-1 break-all rounded-lg bg-navy-deep px-3 py-2.5 fo
         <h2 id="tc-get-h" class="font-display text-3xl font-bold text-navy sm:text-4xl">{CTA.heading}</h2>
 
         {/* install steps for non-technical visitors; copy buttons are wired in the script below */}
-        <div class="mx-auto mt-8 max-w-2xl rounded-2xl border-2 border-navy bg-ivory p-5 text-left sm:p-7">
-          <h3 class="font-display text-xl font-bold text-navy sm:text-2xl">{INSTALL.heading}</h3>
+        <div class="relative mx-auto mt-12 max-w-2xl rounded-2xl border-2 border-navy bg-ivory p-5 text-left sm:p-7">
+          <Clawd size={60} pose="wave" class="absolute -top-8 right-5" />
+          <h3 class="pr-16 font-display text-xl font-bold text-navy sm:text-2xl">{INSTALL.heading}</h3>
           <p class="mt-3 rounded-xl bg-sand px-4 py-3 text-sm leading-6 text-warm-ink">
             {gitParts(INSTALL.windowsNote).map((part, i) => (
               <Fragment>
@@ -300,9 +317,9 @@ const codeBox = 'min-w-0 flex-1 break-all rounded-lg bg-navy-deep px-3 py-2.5 fo
                   <div class="min-w-0 flex-1">
                     <p class="font-semibold leading-7 text-navy"><span class="sr-only">ขั้นที่ {i + 1}: </span>{step.title}</p>
                     {step.code && (
-                      <div class="mt-2 flex items-center gap-2">
-                        <code class={codeBox}>{step.code}</code>
-                        <button type="button" class={copyBtn} data-copy={step.code} data-copied-label={INSTALL.copiedLabel} aria-label={`${INSTALL.copyLabel} ${step.code}`}>{INSTALL.copyLabel}</button>
+                      <div class:list={['mt-2 flex gap-2', step.code.includes('\n') ? 'flex-col items-end' : 'items-center']}>
+                        <code class:list={[codeBox, step.code.includes('\n') && 'w-full text-sm leading-6']}>{step.code}</code>
+                        <button type="button" class={copyBtn} data-copy={step.code} data-copied-label={INSTALL.copiedLabel} aria-label={`${INSTALL.copyLabel} ${'copyName' in step && step.copyName ? step.copyName : step.code}`}>{INSTALL.copyLabel}</button>
                       </div>
                     )}
                     <p class="mt-2 leading-7 text-warm-ink/85">{step.detail}</p>
@@ -354,19 +371,66 @@ const codeBox = 'min-w-0 flex-1 break-all rounded-lg bg-navy-deep px-3 py-2.5 fo
       </div>
     </section>
 
-    {/* 8 · secondary CTA — LINE, "เล่าโจทย์มา" */}
-    <div class="py-14 sm:py-20">
-      <div class={`${wrap} [&_p.uppercase]:tracking-normal`}>
-        <LineDecisionCTA
-          location={TEAM.location}
-          headline={TEAM.headline}
-          copy={TEAM.copy}
-          lineLabel={TEAM.lineLabel}
-          eyebrow={TEAM.eyebrow}
-          desktopQr={LINE_QR_IMAGE}
-        />
+    {/* 8 · who made this + LINE CTA ("เล่าโจทย์มา") */}
+    <section aria-labelledby="tc-about-h" class="py-14 sm:py-20">
+      <div class={wrap}>
+        <div class="rounded-[1.75rem] border border-[#c9c2b2] bg-surface p-5 paper-shadow sm:p-9">
+          <div class="flex items-center gap-4">
+            <img src="/pun-avatar.jpg" alt="" width="72" height="72" loading="lazy" decoding="async" class="size-16 shrink-0 rounded-full border-2 border-sand-deep object-cover sm:size-[72px]" />
+            <div class="min-w-0">
+              <p class="text-sm font-bold text-coral">{ABOUT.eyebrow}</p>
+              <h2 id="tc-about-h" class="font-display text-2xl font-bold leading-tight text-navy sm:text-3xl">
+                {ABOUT.name} <span class="whitespace-nowrap text-lg font-semibold text-warm-ink/70 sm:text-xl">{ABOUT.handle}</span>
+              </h2>
+              <p class="mt-1 font-semibold text-navy">{ABOUT.role}</p>
+            </div>
+          </div>
+          <p class="mt-6 max-w-3xl text-lg leading-8 text-warm-ink">{ABOUT.intro}</p>
+          <div class="mt-5 grid gap-4 md:grid-cols-2">
+            {
+              ABOUT.tracks.map((track) => (
+                <div class="rounded-2xl border border-[#c9c2b2] bg-ivory p-5">
+                  <h3 class="font-display text-xl font-bold text-navy">{track.title}</h3>
+                  <p class="mt-2 leading-7 text-warm-ink/85">{track.text}</p>
+                </div>
+              ))
+            }
+          </div>
+
+          {/* FutureSkill Instructor 2026 — never on its own: the caption carries the daily-AI-use proof (moat rule) */}
+          <figure class="mt-8">
+            <picture>
+              <source media="(max-width: 767px)" srcset="/images/futureskill/futureskill-instructor-web-banner-mobile.webp" type="image/webp" width="1080" height="1080" />
+              <source srcset="/images/futureskill/futureskill-instructor-web-banner-desktop.webp" type="image/webp" width="1600" height="600" />
+              <img src="/images/futureskill/futureskill-instructor-web-banner-desktop.png" alt={ABOUT.bannerAlt} width="1600" height="600" loading="lazy" decoding="async" class="h-auto w-full rounded-2xl border border-[#c9c2b2]" />
+            </picture>
+            <figcaption class="mt-3 leading-7 text-warm-ink/75">{ABOUT.bannerCaption}</figcaption>
+          </figure>
+
+          <h3 class="mt-8 font-display text-lg font-bold text-navy">{ABOUT.logosHeading}</h3>
+          <ul class="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
+            {
+              CLIENT_LOGOS.slice(0, ABOUT.logoCount).map((logo) => (
+                <li class="flex aspect-[3/2] items-center justify-center rounded-xl border border-[#e2dccf] bg-white p-2">
+                  <img src={logo.src} alt={logo.alt} width="160" height="106" loading="lazy" decoding="async" class="max-h-full w-full object-contain" />
+                </li>
+              ))
+            }
+          </ul>
+
+          <div class="mt-8 [&_p.uppercase]:tracking-normal">
+            <LineDecisionCTA
+              location={ABOUT.location}
+              headline={ABOUT.ctaHeadline}
+              copy={ABOUT.ctaCopy}
+              lineLabel={ABOUT.lineLabel}
+              eyebrow="คุยต่อใน LINE"
+              desktopQr={LINE_QR_IMAGE}
+            />
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
 
     {/* 9 · FAQ */}
     <section id="faq" aria-labelledby="tc-faq-h" class="scroll-mt-20 border-t border-sand-deep bg-sand py-14 sm:py-20">
@@ -420,7 +484,7 @@ const codeBox = 'min-w-0 flex-1 break-all rounded-lg bg-navy-deep px-3 py-2.5 fo
   </div>
 
   {/* LINE buttons on this page open the chat prefilled with "<keyword> [WEB]" on phones (src/scripts/line-prefill.ts) */}
-  <div data-line-close data-line-keyword={TEAM.lineKeyword} hidden></div>
+  <div data-line-close data-line-keyword={ABOUT.lineKeyword} hidden></div>
 </BaseLayout>
 
 <script>

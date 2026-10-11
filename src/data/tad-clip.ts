@@ -9,9 +9,11 @@
  *
  * Copy order follows CLAUDE.md "Ads & Sales Copy": belief line → 3 pains in the
  * creator's own words → mechanism in 1 sentence → before/after → need / don't pay →
- * tool names as proof (never the headline) → GitHub CTA → "เล่าโจทย์มา" LINE CTA → FAQ.
- * Rules: say "คลาส" (never the old word for course, see CLAUDE.md) · no price of any paid service · no FutureSkill line
- * (moat rule needs a paired real-use proof in the same block; left out on purpose).
+ * tool names as proof (never the headline) → GitHub CTA + install steps → about Pun + "เล่าโจทย์มา" LINE CTA → FAQ.
+ * Rules: say "คลาส" (never the old word for course, see CLAUDE.md) · no price of any paid service · the FutureSkill
+ * banner lives only inside ABOUT, captioned with the daily-AI-use proof (moat rule: never on its own).
+ * Clawd (src/components/Clawd.astro) is Claude Code's mascot: it marks "this is the Claude kit"; TOOLS.trademark says
+ * the kit is not made with Anthropic.
  *
  * ── Before/after media (public/free/tad-clip/) ─────────────────────────────────
  * Kit output: a fresh session ran the plugin's "ตัดคลิป" skill end to end on the owner's raw
@@ -52,6 +54,8 @@ export const META = {
 
 export const HERO = {
   eyebrow: 'แจกฟรี · ชุดตัด\u2060คลิปพูดหน้ากล้อง',
+  // Speech bubble next to Clawd: people who typed "ตัดคลิป" under the reel see at once that this is the Claude kit.
+  clawdSays: 'มาถูกที่แล้ว ชุดตัด\u2060คลิปที่ทำงานใน Claude อยู่หน้านี้',
   // H1 = the reader's belief, said the way they would say it:
   // "คลิปพูดหน้ากล้องจะดูดี ต้องแลกด้วยการนั่งตัดทั้งคืน หรือไม่ก็ค่าแอปทุกเดือน"
   // Split into phrases so Thai lines only break between phrases; `accent` gets the hand underline.
@@ -141,6 +145,7 @@ export const TOOLS = {
   ],
   proof: 'โค้ดทั้งหมดเปิดให้อ่านบน GitHub และถูกทดสอบอัตโนมัติบนทั้ง Mac และ Windows ทุกครั้งที่แก้',
   credit: 'ทำโดย ปัน ณัฐพัชร์ (@pun_nattapatch)',
+  trademark: 'Claude และตัวมาสคอต Clawd เป็นของ Anthropic ชุดนี้ผมทำเอง ไม่ได้ทำร่วมกับ Anthropic',
 };
 
 export const CTA = {
@@ -160,7 +165,7 @@ export const CTA = {
  * and never open GitHub. Flow matches the kit's docs/01-install-mac.md §2.
  */
 export const INSTALL = {
-  heading: 'ไม่เคยใช้ GitHub ก็ติดตั้งได้ ทำตาม 4 ขั้นนี้',
+  heading: 'ไม่เคยใช้ GitHub ก็ติดตั้งได้ ให้ Claude ติดตั้งให้เอง',
   windowsNote: 'ใช้ Windows: ก่อนขั้นที่ 1 ให้ลงโปรแกรม Git\u00a0for\u00a0Windows (ฟรี จาก git-scm.com) ครั้งเดียว กด Next ตามค่าเดิมได้เลย แล้วปิดเปิดแอป Claude ใหม่',
   copyLabel: 'คัดลอก',
   copiedLabel: 'คัดลอกแล้ว',
@@ -170,16 +175,25 @@ export const INSTALL = {
       detail: 'ยังไม่มีแอป โหลดได้ที่ claude.ai/download ต้องใช้ Claude แบบเสียเงิน (Pro ขึ้นไป) ถ้าแอปถามว่าจะให้ทำงานที่ไหน เลือกเครื่องนี้ (Local)',
     },
     {
-      title: 'คัดลอกชื่อนี้ไปเพิ่มเป็น plugin',
-      code: 'RNattapatch/tad-clip',
-      detail: 'กดปุ่ม + ข้างช่องพิมพ์ เลือก Plugins แล้วกด Add plugin วางชื่อที่คัดลอกมา แล้วเลือก Install for you',
-      fallback: 'ไม่เจอเมนู Plugins? คัดลอก 2 บรรทัดนี้ไปวางในช่องแชท ทีละบรรทัด',
-      fallbackCode: ['/plugin marketplace add RNattapatch/tad-clip', '/plugin install tad-clip@pun-nattapatch'],
+      title: 'คัดลอกข้อความนี้ไปวางในแชท แล้วกด Enter',
+      // Tested 2026-10-11 in fresh sessions: this prompt, and even the bare repo URL, both end with the plugin
+      // installed. CLAUDE_CODE_EXECPATH covers app-only users who have no `claude` command on PATH.
+      code: [
+        'ช่วยติดตั้ง plugin tad-clip จาก https://github.com/RNattapatch/tad-clip ให้หน่อย',
+        'รัน 2 คำสั่งนี้ทีละคำสั่ง ถ้าเครื่องไม่มีคำสั่ง claude ให้ใช้ไฟล์ในตัวแปร CLAUDE_CODE_EXECPATH แทน',
+        'claude plugin marketplace add RNattapatch/tad-clip',
+        'claude plugin install tad-clip@pun-nattapatch',
+        'เสร็จแล้วบอกฉันว่าต้องทำอะไรต่อ',
+      ].join('\n'),
+      copyName: 'ข้อความติดตั้ง',
+      detail: 'Claude จะติดตั้ง plugin ให้เอง ถ้าขึ้นหน้าต่างขออนุญาตรันคำสั่ง กด Allow',
+      fallback: 'อยากกดเองผ่านเมนู? กดปุ่ม + ข้างช่องพิมพ์ เลือก Plugins แล้วกด Add plugin วางชื่อนี้ แล้วเลือก Install for you',
+      fallbackCode: ['RNattapatch/tad-clip'],
     },
     {
-      title: 'พิมพ์ประโยคนี้ในแชท',
+      title: 'เปิดแชทใหม่ แล้วพิมพ์',
       code: 'ติดตั้ง tad-clip',
-      detail: 'Claude จะบอกก่อนว่าจะลงโปรแกรมอะไร ใช้พื้นที่เท่าไร แล้วลงให้เอง ครั้งแรกใช้เวลาราว 10–30\u00a0นาที ขึ้นกับความเร็วเน็ต',
+      detail: 'plugin จะโหลดในแชทใหม่ Claude บอกก่อนว่าจะลงโปรแกรมอะไร ใช้พื้นที่เท่าไร แล้วลงให้เอง ครั้งแรกใช้เวลาราว 10–30\u00a0นาที ขึ้นกับความเร็วเน็ต',
     },
     {
       title: 'ลากคลิปเข้าแชท แล้วพิมพ์',
@@ -189,15 +203,34 @@ export const INSTALL = {
   ],
 };
 
-export const TEAM = {
-  location: 'tad_clip_team',
-  headline: 'อยากให้ทีมคอนเทนต์ทั้งทีมใช้แบบนี้?',
-  copy: 'เล่าโจทย์มาใน LINE ว่าทีมมีกี่คน ทำคลิปลงช่องไหน สัปดาห์ละกี่คลิป และขั้นไหนกินเวลาที่สุด ผมอ่านเองแล้วตอบว่าควรเริ่มตรงไหน',
-  lineLabel: 'เล่าโจทย์มา',
-  eyebrow: 'คุยต่อใน LINE',
+
+/**
+ * Short "who made this" box under the install steps. Offer names follow the locked 2-track offer
+ * (ปั้นทีมขาย × AI Office ฝ่ายขาย, CLAUDE.md 2026-10-07) — no prices, no guarantees, no Daruma.
+ * Logos: the site-wide CLIENT_LOGOS set (already public on every class LP).
+ */
+export const ABOUT = {
+  location: 'tad_clip_about',
+  eyebrow: 'คนทำชุดนี้',
+  name: 'ปัน ณัฐพัชร์',
+  handle: '@pun_nattapatch',
+  role: 'ปั้นทีมขาย × AI',
+  intro:
+    'ผมช่วยเจ้าของธุรกิจให้ทีมขายปิดงานได้เอง โดยเจ้าของไม่ต้องลงไปช่วยทุกดีล ทำ 2 ส่วนคู่กัน',
+  tracks: [
+    { title: 'ปั้นทีมขาย', text: 'คัดคนเข้าทีม วางเป้ากับค่าคอม และพาหัวหน้าให้คุมทีมเองได้ ผมสัมภาษณ์คนเข้าทีมมาแล้ว 100+\u00a0คน คัดเรซูเม่ 1,000+\u00a0ใบ' },
+    { title: 'AI Office ฝ่ายขาย', text: 'ให้ AI รับงานซ้ำของฝ่ายขาย ฝ่ายเอกสาร และฝ่ายคอนเทนต์ ชุดตัด\u2060คลิปหน้านี้ก็เป็นหนึ่งในระบบที่ผมใช้กับงานตัวเองทุกสัปดาห์' },
+  ],
+  bannerAlt: 'ปัน ณัฐพัชร์ FutureSkill Instructor ประจำปี 2026 ใน AI Academy, Digital Business Academy และ Sales & Customer Academy',
+  bannerCaption: 'ผมสอนกับ FutureSkill เรื่อง AI กับงานขาย และใช้ AI Agent ทำงานขายของตัวเองทุกวัน',
+  logosHeading: 'ตัวอย่างลูกค้าและองค์กรที่เคยทำงานด้วย',
+  logoCount: 12,
+  ctaHeadline: 'อยากคุยกับผม หรือให้ผมไปช่วยธุรกิจคุณ ทักมาเลย',
+  ctaCopy: 'แอด LINE แล้วเล่าโจทย์มาสั้นๆ ว่าธุรกิจขายอะไร ทีมขายกี่คน ตอนนี้ติดตรงไหน ผมอ่านเองแล้วตอบว่าควรเริ่มตรงไหน',
+  lineLabel: 'แอด LINE แล้วเล่าโจทย์มา',
   // [data-line-close] keyword → mobile LINE opens with "<keyword> [WEB]" (src/scripts/line-prefill.ts).
-  // 31 chars, so it stays above the LINE bot's freebie maxLen (25) and can't trigger the "ตัดคลิป" card.
-  lineKeyword: 'อยากให้ทีมคอนเทนต์ใช้ชุดตัดคลิป',
+  // Longer than the LINE bot's freebie maxLen (25), so it can't trigger the "ตัดคลิป" card.
+  lineKeyword: 'อยากคุยเรื่องทีมขายกับ AI จากหน้าตัดคลิป',
 };
 
 export const FAQS = [
