@@ -657,6 +657,7 @@ import AppNav from '../../components/app/AppNav.astro';
     const JOB_LABEL: Record<string, string> = {
       ai_improve: '✨ เกลาบท (Script Studio)', rewrite_reel: '✍️ version ผม (Intel Warroom)',
       rewrite_copy: '✍️ เขียนข่าวใหม่ (News Desk)', render_text_card: '🖼 การ์ดตัวอักษร', render_card: '🎨 การ์ดซีน AI', publish: '🚀 โพสต์',
+      growth_eval: '🧭 ประเมินข้อความ (Growth Lab)',
     };
     const STALL_MS = 20 * 60_000;
     const mmss = (ms: number) => `${Math.floor(ms / 60_000)}:${String(Math.floor((ms % 60_000) / 1000)).padStart(2, '0')}`;
@@ -687,6 +688,11 @@ import AppNav from '../../components/app/AppNav.astro';
         const id = String(p.item_id ?? '');
         const it = itemTitles.get(id);
         return { text: String(p.theme ?? '—'), sub: it?.title ? `จากการ์ด: ${it.title}` : (id ? `การ์ด ${id.slice(0, 8)}…` : ''), href: id ? `/app/intel?item=${encodeURIComponent(id)}` : null, variantId: null };
+      }
+      if (j.job_type === 'growth_eval') {
+        const c = (p.creative ?? {}) as { name?: string; channel?: string };
+        const pk = (p.pack ?? {}) as { name?: string };
+        return { text: String(c.name ?? 'Touchpoint'), sub: [pk.name, c.channel].filter(Boolean).join(' · '), href: '/app/growth-lab', variantId: null };
       }
       const cid = String(p.candidate_id ?? '');
       return { text: cid ? `ข่าว ${cid.slice(0, 8)}…` : '—', sub: '', href: '/app/news-desk', variantId: null };

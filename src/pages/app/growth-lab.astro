@@ -1,0 +1,344 @@
+---
+// Growth Journey Lab — ทดสอบข้อความ/ข้อเสนอ/touchpoint กับ persona จำลองก่อนยิงจริง แล้วคาดการณ์ Customer Journey
+// (2026-10-11 · Codex สร้างเป็นแอปเดี่ยว → Claude QC แล้วแก้ก่อนย้ายเข้า app hub)
+//
+// ทำไมมีหน้านี้: ก่อนใส่งบแอด/ส่ง LINE OA/โทรหาลูกค้า อยากรู้ว่า "ข้อความนี้พาใครไปต่อได้บ้าง" แบบเร็วและถูก
+// แล้วเอาผลจริงมาเทียบ (Results) เพื่อจูน Persona Pack รอบถัดไป · ใช้ได้ทั้ง B2B / B2C / B2G
+//
+// สิ่งที่แก้จากรุ่น Codex (QC 2026-10-11): ตัวให้คะแนน Local ไม่ดูช่องทาง/ประเภท touchpoint/stage/B2B-B2C-B2G เลย
+// (Meta Ad = SMS = Sales call คะแนนเท่ากันเป๊ะ · แอด B2C ดีๆ โดน KILL) · เวลาประเมินเป็นปี 1970 · ผลเก่า 1 ตัว
+// ล้าง workspace ทิ้งทั้งก้อน · ปุ่ม Codex พังบน codex-cli 0.147 · รายละเอียด: tests/growth-lab/engine-context.test.mjs
+//
+// ข้อมูล: workspace ทั้งก้อนอยู่ Supabase growth_lab_workspaces (แถว 'default' · RLS is_owner) + สำเนาใน localStorage
+//   → เปิดจาก MacBook/iPhone เห็นชุดเดียวกัน · ออฟไลน์ก็ทำงานต่อได้ แล้วซิงก์ทีหลัง
+// Codex: ปุ่ม "ประเมินด้วย Codex (มินิ)" → wr_jobs.growth_eval → wrjobs_worker.mjs บนมินิรัน codex exec แบบปิดเครื่องมือ
+//   (read-only · ไม่มี shell/browser/plugin) → ผลกลับมาที่แถว job · ระหว่างรอปิดแท็บได้ กลับมาเปิดใหม่จะรับผลต่อเอง
+// Logic ทั้งหมด (pure) อยู่ src/scripts/growth-lab/*.mjs · เทสต์ tests/growth-lab/
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
+import AppNav from '../../components/app/AppNav.astro';
+---
+<DashboardLayout title="Growth Lab — Pun">
+  <script is:inline async src="https://accounts.google.com/gsi/client"></script>
+  <WarRoomGate appId="growth-lab-app" title="Growth Journey Lab" icon="🧭" event="growth-lab:authed" />
+
+  <style is:global>
+    #growth-lab-app { --gl-accent: var(--color-brand-navy); --gl-accent-ink: #fff; }
+    #growth-lab-app .gl-eyebrow { font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; opacity: .55; }
+    #growth-lab-app .gl-tab[aria-current="page"], #growth-lab-app .gl-tab[aria-current="page"]:hover { --btn-bg: var(--gl-accent); --btn-fg: var(--gl-accent-ink); --btn-border: var(--gl-accent); background: var(--gl-accent); color: var(--gl-accent-ink); }
+    #growth-lab-app .gl-primary { --btn-bg: var(--gl-accent); --btn-fg: var(--gl-accent-ink); --btn-border: var(--gl-accent); background: var(--gl-accent); border-color: var(--gl-accent); color: var(--gl-accent-ink); }
+    #growth-lab-app .gl-primary:hover { filter: brightness(1.08); }
+    #growth-lab-app .gl-card-active { outline: 2px solid var(--gl-accent); outline-offset: -2px; background: var(--color-base-100); }
+    #growth-lab-app .gl-scale { color: #2f7a55; }
+    #growth-lab-app .gl-iterate { color: #b7791f; }
+    #growth-lab-app .gl-kill { color: var(--color-brand-coral); }
+    #growth-lab-app .gl-chip-scale { background: color-mix(in oklab, #2f7a55 16%, transparent); color: #2f7a55; }
+    #growth-lab-app .gl-chip-iterate { background: color-mix(in oklab, #b7791f 18%, transparent); color: #9a6418; }
+    #growth-lab-app .gl-chip-kill { background: color-mix(in oklab, var(--color-brand-coral) 16%, transparent); color: var(--color-brand-coral-dark); }
+    #growth-lab-app .gl-chip-draft { background: var(--color-base-300); }
+    #growth-lab-app .gl-seat { border: 1px solid var(--color-base-300); border-left-width: 4px; }
+    #growth-lab-app .gl-seat-stop { border-left-color: #2f7a55; }
+    #growth-lab-app .gl-seat-watch { border-left-color: #d69e2e; }
+    #growth-lab-app .gl-seat-scroll { border-left-color: var(--color-brand-coral); }
+    #growth-lab-app .gl-seat-pending { border-left-color: var(--color-base-300); }
+    #growth-lab-app .gl-dot { display: inline-block; width: .55rem; height: .55rem; border-radius: 999px; }
+    #growth-lab-app .gl-bar { height: .5rem; border-radius: 999px; background: var(--color-base-300); overflow: hidden; }
+    #growth-lab-app .gl-bar > span { display: block; height: 100%; border-radius: inherit; background: var(--gl-accent); }
+    #growth-lab-app .gl-weak > span { background: var(--color-brand-coral); }
+    #growth-lab-app .gl-stage-bottleneck { outline: 2px solid var(--color-brand-coral); outline-offset: -2px; }
+    #growth-lab-app .gl-stage-passed { opacity: .55; }
+    #growth-lab-app .gl-rail::-webkit-scrollbar, #growth-lab-app .gl-tabs::-webkit-scrollbar { display: none; }
+    #growth-lab-app .gl-rail, #growth-lab-app .gl-tabs { scrollbar-width: none; }
+    #growth-lab-app input[type="file"].gl-file { position: absolute; inline-size: 1px; block-size: 1px; opacity: 0; pointer-events: none; }
+    #growth-lab-app label:has(> input.gl-file:focus-visible) { outline: 2px solid var(--color-brand-coral); outline-offset: 2px; }
+    @media (prefers-reduced-motion: no-preference) { #growth-lab-app .gl-bar > span { transition: width 240ms ease; } }
+  </style>
+
+  <div id="growth-lab-app" class="hidden min-h-dvh bg-base-100">
+    <AppNav app="growth-lab" />
+
+    <!-- Lab header: ชื่อ workspace (white-label) + สถานะซิงก์ + แท็บมุมมอง -->
+    <div class="border-b border-base-300 bg-base-100">
+      <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
+        <div class="min-w-0 flex-1">
+          <p class="truncate font-display text-base font-semibold leading-tight" id="brand-name">Growth Journey Lab</p>
+          <p class="truncate text-xs opacity-60" id="brand-client">Mar-Tech · Sales-Tech workbench</p>
+        </div>
+        <span id="sync-status" class="badge badge-ghost badge-sm whitespace-nowrap" role="status" aria-live="polite">กำลังโหลด…</span>
+        <nav class="gl-tabs -mx-4 flex w-full gap-1 overflow-x-auto px-4 sm:mx-0 sm:w-auto sm:px-0" aria-label="มุมมองของ Growth Lab">
+          <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="workbench" aria-current="page">🧪 Workbench</button>
+          <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="compare">🏁 Compare</button>
+          <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="journey">🛤 Journey</button>
+          <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="results">📈 Results</button>
+          <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="personas">👥 Personas <span class="badge badge-sm" id="persona-count">0</span></button>
+          <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="settings" aria-label="Settings">⚙️</button>
+        </nav>
+      </div>
+    </div>
+
+    <main class="mx-auto max-w-7xl px-4 py-4">
+      <div id="notice" class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 rounded-2xl px-4 py-2.5 text-sm text-white" style="background-color:var(--color-brand-navy);" role="status" aria-live="polite" hidden>
+        <span id="notice-text" class="min-w-0 flex-1"></span>
+        <button type="button" id="notice-action" class="btn btn-xs border-0 bg-white text-[color:var(--color-brand-navy)] tap-44" hidden></button>
+      </div>
+
+      <!-- ===================== WORKBENCH ===================== -->
+      <section id="view-workbench" data-screen="workbench" aria-labelledby="workbench-title" class="space-y-4">
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p class="gl-eyebrow">Touchpoint workbench</p>
+            <h1 id="workbench-title" class="font-display text-xl font-semibold sm:text-2xl">ข้อความนี้พาใครไปต่อได้บ้าง?</h1>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button class="btn btn-sm tap-44" data-action="duplicate">⧉ Duplicate</button>
+            <button class="btn btn-sm tap-44" data-action="new-creative">+ New variant</button>
+          </div>
+        </div>
+
+        <div class="grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)_340px]">
+          <!-- รายการ touchpoint -->
+          <aside class="min-w-0 space-y-2" aria-label="Touchpoint ในแคมเปญ">
+            <div class="flex items-center justify-between gl-eyebrow"><span>Touchpoints</span><span id="creative-count">0</span></div>
+            <div id="creative-list" class="gl-rail -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0"></div>
+            <div class="flex flex-wrap gap-x-3 gap-y-1 pt-1 text-xs">
+              <button class="link link-hover tap-44" data-action="backup-json">↓ Backup JSON</button>
+              <label class="link link-hover relative flex items-center tap-44" for="json-restore">↑ Restore JSON<input id="json-restore" class="gl-file" type="file" accept="application/json,.json"></label>
+            </div>
+          </aside>
+
+          <!-- ฟอร์มข้อความ -->
+          <section class="card min-w-0 border border-base-300 bg-base-200" aria-labelledby="editor-title">
+            <div class="card-body gap-3 p-4">
+              <div class="flex items-start justify-between gap-2">
+                <div><p class="gl-eyebrow">Message input</p><h2 id="editor-title" class="font-display font-semibold">บริบท ข้อความ และข้อเสนอ</h2></div>
+                <span class="badge badge-ghost badge-sm" id="save-state">บันทึกแล้ว</span>
+              </div>
+              <form id="creative-form" class="space-y-3" novalidate>
+                <div class="grid gap-3 sm:grid-cols-2">
+                  <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Persona Pack</span><select class="select select-bordered select-sm w-full" name="personaPackId" id="persona-pack-select"></select></label>
+                  <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Business <span class="font-normal opacity-60">กำหนดโดย Persona Pack</span></span><select class="select select-bordered select-sm w-full" name="businessModel" aria-label="Business model" disabled><option value="b2b">B2B</option><option value="b2c">B2C</option><option value="b2g">B2G</option></select></label>
+                  <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Touchpoint</span><select class="select select-bordered select-sm w-full" name="touchpointType"><option value="meta-ad">Meta Ad</option><option value="promotion">Promotion</option><option value="line-oa">LINE OA Broadcast</option><option value="sales-outreach">Sales Outreach</option></select></label>
+                  <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Channel</span><select class="select select-bordered select-sm w-full" name="channel"><option value="meta">Meta</option><option value="line-oa">LINE OA</option><option value="email">Email</option><option value="sms">SMS</option><option value="sales-call">Sales call</option><option value="website">Website</option><option value="offline">Offline</option></select></label>
+                  <label class="form-control sm:col-span-2"><span class="label-text mb-1 text-xs font-semibold">Journey stage <span class="font-normal opacity-60">จุดที่ส่งข้อความนี้ — stage ก่อนหน้าถือว่าผ่านแล้ว</span></span><select class="select select-bordered select-sm w-full" name="journeyStage" id="journey-stage-select"></select></label>
+                </div>
+                <div class="grid gap-3 sm:grid-cols-2">
+                  <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">ชื่อ Touchpoint / Variant</span><input class="input input-bordered input-sm w-full" name="name" required maxlength="500"></label>
+                  <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">ตัวแปรที่เปลี่ยน</span><select class="select select-bordered select-sm w-full" name="changedVariable"><option value="hook">Hook</option><option value="offer">Offer</option><option value="copy">Copy</option><option value="visual">Visual / Delivery</option></select></label>
+                </div>
+                <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Opener / Hook <span class="font-normal opacity-60">สิ่งแรกที่คนรับสารเห็น</span> <span class="font-normal opacity-60" id="hook-budget"></span></span><textarea class="textarea textarea-bordered w-full text-sm" name="hook" rows="2" required></textarea></label>
+                <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Message Body <span class="font-normal opacity-60" id="body-budget"></span></span><textarea class="textarea textarea-bordered w-full text-sm" name="primaryText" rows="4" required></textarea></label>
+                <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Headline / Subject</span><input class="input input-bordered input-sm w-full" name="headline" required></label>
+                <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Offer / Promotion</span><textarea class="textarea textarea-bordered w-full text-sm" name="offer" rows="2" required></textarea></label>
+                <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">CTA</span><input class="input input-bordered input-sm w-full" name="cta" required></label>
+                <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Visual / Delivery Context <span class="font-normal opacity-60">ภาพ เวลาส่ง รูปแบบ หรือสิ่งที่เห็นก่อน</span></span><textarea class="textarea textarea-bordered w-full text-sm" name="visualDirection" rows="2" required></textarea></label>
+                <p class="min-h-[1.25rem] text-sm text-error" id="creative-error" role="alert"></p>
+                <div class="flex flex-col gap-2 sm:flex-row">
+                  <button class="gl-primary btn btn-sm flex-1 tap-44" type="submit" data-action="evaluate">⚡ ประเมินทันที (Local)</button>
+                  <button class="btn btn-sm flex-1 border-base-300 bg-base-100 tap-44" type="button" id="provider-button" data-action="evaluate-provider">🧠 ประเมินลึกด้วย Codex (มินิ)</button>
+                </div>
+                <p class="text-xs opacity-60" id="provider-note">Local ประเมินในเบราว์เซอร์ทันที ไม่ส่งข้อมูลออก · Codex ส่งเข้าคิว Mac mini ใช้เวลาราว 1–4 นาที (ปิดแท็บได้ กลับมาจะรับผลต่อเอง)</p>
+              </form>
+            </div>
+          </section>
+
+          <!-- ผลตัดสิน -->
+          <section class="card min-w-0 scroll-mt-20 self-start border border-base-300 bg-base-200 lg:sticky lg:top-20" aria-labelledby="decision-title">
+            <div class="card-body gap-3 p-4">
+              <div class="flex items-center justify-between gap-2"><p class="gl-eyebrow" id="decision-title">Decision brief · สัญญาณก่อนใช้งานจริง</p><span class="badge badge-sm shrink-0 whitespace-nowrap" id="evaluation-engine">LOCAL</span></div>
+              <div id="decision-summary"></div>
+              <div class="space-y-2" id="component-bars"></div>
+              <div id="hypothesis-card"></div>
+              <p class="text-xs opacity-60">ผลจำลองใช้คัดและตั้งสมมติฐาน ไม่ใช่การรับประกันพฤติกรรม — ผลจริงจาก Ads, LINE, CRM หรือทีมขายคือคำตอบสุดท้าย</p>
+            </div>
+          </section>
+        </div>
+
+        <section class="card border border-base-300 bg-base-200" aria-labelledby="persona-panel-title">
+          <div class="card-body gap-3 p-4">
+            <div class="flex flex-wrap items-end justify-between gap-2">
+              <div><p class="gl-eyebrow" id="buyer-panel-label">Buyer panel</p><h2 id="persona-panel-title" class="font-display font-semibold">ใครหยุด ใครลังเล ใครผ่านไป</h2></div>
+              <div class="flex flex-wrap gap-3 text-xs" id="decision-legend"></div>
+            </div>
+            <div id="persona-panel" class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5"></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- ===================== COMPARE ===================== -->
+      <section id="view-compare" data-screen="compare" aria-labelledby="compare-title" class="space-y-4" hidden>
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div><p class="gl-eyebrow">Variant ranking</p><h1 id="compare-title" class="font-display text-xl font-semibold sm:text-2xl">เลือกตัวชนะก่อนลงงบ</h1></div>
+          <button class="gl-primary btn btn-sm tap-44" data-view="workbench">กลับไปสร้าง Variant</button>
+        </div>
+        <div id="compare-content"></div>
+      </section>
+
+      <!-- ===================== JOURNEY ===================== -->
+      <section id="view-journey" data-screen="journey" aria-labelledby="journey-title" class="space-y-4" hidden>
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div><p class="gl-eyebrow">Directional forecast</p><h1 id="journey-title" class="font-display text-xl font-semibold sm:text-2xl">Customer Journey หลังรับสาร</h1></div>
+          <button class="gl-primary btn btn-sm tap-44" data-view="workbench">กลับไปปรับ Touchpoint</button>
+        </div>
+        <section id="journey-summary" class="grid gap-3 sm:grid-cols-3"></section>
+        <section aria-labelledby="journey-rail-title" class="space-y-2">
+          <div><p class="gl-eyebrow">Journey rail</p><h2 id="journey-rail-title" class="font-display font-semibold">โอกาสผ่านแต่ละ Stage และจุดหลุด</h2></div>
+          <div id="journey-rail" class="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2"></div>
+        </section>
+        <section class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div class="min-w-0 space-y-2">
+            <div><p class="gl-eyebrow">Persona paths</p><h2 class="font-display font-semibold">ใครติดตรงไหน</h2></div>
+            <div id="journey-persona-table" class="overflow-x-auto rounded-2xl border border-base-300 bg-base-200"></div>
+          </div>
+          <aside class="space-y-2">
+            <div><p class="gl-eyebrow">Assumptions</p><h2 class="font-display font-semibold">ความมั่นใจและข้อจำกัด</h2></div>
+            <div id="journey-assumptions" class="card border border-base-300 bg-base-200"></div>
+          </aside>
+        </section>
+      </section>
+
+      <!-- ===================== RESULTS ===================== -->
+      <section id="view-results" data-screen="results" aria-labelledby="results-title" class="space-y-4" hidden>
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div><p class="gl-eyebrow">Ground truth</p><h1 id="results-title" class="font-display text-xl font-semibold sm:text-2xl">เทียบคำทำนายกับผลจริงตามช่องทาง</h1></div>
+          <div class="flex flex-wrap gap-2">
+            <button class="btn btn-sm tap-44" data-action="export-csv">↓ Export CSV</button>
+            <label class="btn btn-sm relative tap-44" for="csv-import">↑ Import CSV<input id="csv-import" class="gl-file" type="file" accept="text/csv,.csv"></label>
+          </div>
+        </div>
+        <div class="grid gap-4 lg:grid-cols-2">
+          <section class="card border border-base-300 bg-base-200"><div class="card-body gap-3 p-4">
+            <div><p class="gl-eyebrow">Actual input · <span id="actual-context">CHANNEL</span></p><h2 class="font-display font-semibold">ผลลัพธ์จริงตามช่องทาง</h2></div>
+            <form id="actual-results-form" class="space-y-3" novalidate></form>
+          </div></section>
+          <section class="card border border-base-300 bg-base-200" aria-labelledby="metrics-title"><div class="card-body gap-3 p-4">
+            <div><p class="gl-eyebrow">Calibration</p><h2 id="metrics-title" class="font-display font-semibold">Prediction ↔ Actual</h2></div>
+            <div id="calibration-content"></div>
+          </div></section>
+        </div>
+        <div class="text-sm" id="import-report" aria-live="polite"></div>
+      </section>
+
+      <!-- ===================== PERSONAS ===================== -->
+      <section id="view-personas" data-screen="personas" aria-labelledby="personas-title" class="space-y-4" hidden>
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div><p class="gl-eyebrow">Persona pack library</p><h1 id="personas-title" class="font-display text-xl font-semibold sm:text-2xl">มุมมองผู้ซื้อที่ตรงกับ Business Unit</h1></div>
+          <div class="flex flex-wrap gap-2">
+            <button class="btn btn-sm tap-44" data-action="clone-pack">⧉ Clone pack</button>
+            <button class="btn btn-sm tap-44" data-action="new-pack">+ New pack</button>
+            <button class="btn btn-sm tap-44" data-action="export-pack">↓ Export pack</button>
+            <label class="btn btn-sm relative tap-44" for="persona-pack-import">↑ Import pack<input id="persona-pack-import" class="gl-file" type="file" accept="application/json,.json,.persona-pack.json"></label>
+          </div>
+        </div>
+        <div class="grid gap-4 lg:grid-cols-[240px_minmax(0,1fr)]">
+          <aside class="min-w-0 space-y-2">
+            <div class="flex items-center justify-between gl-eyebrow"><span>Pack library</span><span id="pack-count">0</span></div>
+            <div id="pack-library" class="gl-rail -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0"></div>
+          </aside>
+          <section class="card min-w-0 border border-base-300 bg-base-200"><div class="card-body gap-4 p-4">
+            <form id="pack-form" class="space-y-3">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div><p class="gl-eyebrow">Business context</p><h2 class="font-display font-semibold">Pack strategy</h2></div>
+                <button class="gl-primary btn btn-sm tap-44" type="submit">Save pack</button>
+              </div>
+              <p class="text-xs opacity-60" id="pack-builtin-note" hidden>นี่คือ pack ตั้งต้น — กด Clone pack ก่อนปรับให้ลูกค้า จะได้ไม่แตะต้นฉบับ</p>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Pack name</span><input class="input input-bordered input-sm w-full" name="name" required maxlength="500"></label>
+                <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Business model</span><select class="select select-bordered select-sm w-full" name="businessModel"><option value="b2b">B2B</option><option value="b2c">B2C</option><option value="b2g">B2G</option></select></label>
+                <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Industry</span><input class="input input-bordered input-sm w-full" name="industry" required maxlength="500"></label>
+                <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Product / Service</span><input class="input input-bordered input-sm w-full" name="product" required maxlength="500"></label>
+                <label class="form-control sm:col-span-2"><span class="label-text mb-1 text-xs font-semibold">Primary outcome</span><textarea class="textarea textarea-bordered w-full text-sm" name="primaryOutcome" rows="2" required maxlength="2000"></textarea></label>
+                <label class="form-control sm:col-span-2"><span class="label-text mb-1 text-xs font-semibold">KPIs <span class="font-normal opacity-60">คั่นด้วย comma</span></span><input class="input input-bordered input-sm w-full" name="kpis" required></label>
+              </div>
+            </form>
+            <div class="flex flex-wrap items-center justify-between gap-2 border-t border-base-300 pt-4">
+              <div><p class="gl-eyebrow">Persona builder</p><h2 class="font-display font-semibold">รายละเอียดผู้ตัดสินใจ</h2></div>
+              <div class="flex flex-wrap gap-2">
+                <button class="btn btn-sm tap-44" data-action="add-persona">+ Add persona</button>
+                <button class="btn btn-sm btn-outline btn-error tap-44" data-action="remove-persona">Remove persona</button>
+              </div>
+            </div>
+            <div class="grid gap-4 md:grid-cols-[200px_minmax(0,1fr)]">
+              <div id="persona-editor-list" class="gl-rail -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:max-h-[34rem] md:flex-col md:overflow-y-auto md:px-0"></div>
+              <form id="persona-editor" class="space-y-3">
+                <input name="id" type="hidden">
+                <div class="grid gap-3 sm:grid-cols-2">
+                  <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">ชื่อ</span><input class="input input-bordered input-sm w-full" name="name" required maxlength="500"></label>
+                  <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">บทบาท</span><input class="input input-bordered input-sm w-full" name="role" required maxlength="500"></label>
+                  <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Segment</span><input class="input input-bordered input-sm w-full" name="segment" required maxlength="500"></label>
+                  <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Decision role</span><select class="select select-bordered select-sm w-full" name="decisionRole"><option value="buyer">Buyer</option><option value="approver">Approver</option><option value="gatekeeper">Gatekeeper</option><option value="influencer">Influencer</option><option value="user">User</option></select></label>
+                  <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Awareness</span><input class="input input-bordered input-sm w-full" name="awareness" required maxlength="500"></label>
+                  <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Threshold (0–100)</span><input class="input input-bordered input-sm w-full" name="threshold" type="number" inputmode="numeric" min="0" max="100" required></label>
+                  <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Risk 1–5 <span class="font-normal opacity-60">1 = กลัวเสี่ยงมาก</span></span><input class="input input-bordered input-sm w-full" name="risk" type="number" inputmode="numeric" min="1" max="5" required></label>
+                  <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Price sensitivity 1–5</span><input class="input input-bordered input-sm w-full" name="priceSensitivity" type="number" inputmode="numeric" min="1" max="5" required></label>
+                  <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Evidence need 1–5</span><input class="input input-bordered input-sm w-full" name="evidenceNeed" type="number" inputmode="numeric" min="1" max="5" required></label>
+                  <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Urgency 1–5</span><input class="input input-bordered input-sm w-full" name="urgency" type="number" inputmode="numeric" min="1" max="5" required></label>
+                  <label class="form-control sm:col-span-2"><span class="label-text mb-1 text-xs font-semibold">Pains <span class="font-normal opacity-60">คั่นด้วย comma</span></span><textarea class="textarea textarea-bordered w-full text-sm" name="pains" rows="2"></textarea></label>
+                  <label class="form-control sm:col-span-2"><span class="label-text mb-1 text-xs font-semibold">Desired outcomes</span><textarea class="textarea textarea-bordered w-full text-sm" name="outcomes" rows="2"></textarea></label>
+                  <label class="form-control sm:col-span-2"><span class="label-text mb-1 text-xs font-semibold">Keywords <span class="font-normal opacity-60">คำที่ถ้าเห็นในข้อความแล้วเขาหยุด</span></span><textarea class="textarea textarea-bordered w-full text-sm" name="keywords" rows="2"></textarea></label>
+                  <label class="form-control sm:col-span-2"><span class="label-text mb-1 text-xs font-semibold">Objections</span><textarea class="textarea textarea-bordered w-full text-sm" name="objections" rows="2"></textarea></label>
+                  <fieldset class="grid grid-cols-2 gap-3 rounded-xl border border-base-300 p-3 sm:col-span-2 sm:grid-cols-4">
+                    <legend class="px-1 text-xs font-semibold">Weights (รวมกันต้องเท่ากับ 1) · <span id="weight-total">1.00</span></legend>
+                    <label class="form-control"><span class="label-text mb-1 text-xs">Hook</span><input class="input input-bordered input-sm w-full" name="weightHook" type="number" inputmode="decimal" min="0" max="1" step="0.01"></label>
+                    <label class="form-control"><span class="label-text mb-1 text-xs">Offer</span><input class="input input-bordered input-sm w-full" name="weightOffer" type="number" inputmode="decimal" min="0" max="1" step="0.01"></label>
+                    <label class="form-control"><span class="label-text mb-1 text-xs">Copy</span><input class="input input-bordered input-sm w-full" name="weightCopy" type="number" inputmode="decimal" min="0" max="1" step="0.01"></label>
+                    <label class="form-control"><span class="label-text mb-1 text-xs">Visual</span><input class="input input-bordered input-sm w-full" name="weightVisual" type="number" inputmode="decimal" min="0" max="1" step="0.01"></label>
+                  </fieldset>
+                </div>
+                <p class="min-h-[1.25rem] text-sm text-error" id="persona-editor-error" role="alert"></p>
+                <button class="gl-primary btn btn-sm tap-44" type="submit">Save persona</button>
+              </form>
+            </div>
+          </div></section>
+        </div>
+        <p class="text-sm opacity-70">แต่ละที่นั่งใช้บทบาท ความเสี่ยง หลักฐานที่ต้องการ และเกณฑ์ตัดสินใจ ไม่ใช่ demographic ลอยๆ</p>
+        <div id="persona-directory" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
+      </section>
+
+      <!-- ===================== SETTINGS ===================== -->
+      <section id="view-settings" data-screen="settings" aria-labelledby="settings-title" class="space-y-4" hidden>
+        <div><p class="gl-eyebrow">Client-ready controls</p><h1 id="settings-title" class="font-display text-xl font-semibold sm:text-2xl">ชื่อ workspace ข้อมูล และการซิงก์</h1></div>
+        <div class="grid gap-4 lg:grid-cols-2">
+          <form id="settings-form" class="card border border-base-300 bg-base-200"><div class="card-body gap-3 p-4">
+            <div><p class="gl-eyebrow">White-label</p><h2 class="font-display font-semibold">Workspace identity <span class="text-xs font-normal opacity-60">ใช้ตอนแชร์จอให้ลูกค้า</span></h2></div>
+            <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">ชื่อแอป</span><input class="input input-bordered input-sm w-full" name="appName" required maxlength="120"></label>
+            <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">ชื่อลูกค้า / Business Unit</span><input class="input input-bordered input-sm w-full" name="clientName" maxlength="200"></label>
+            <label class="form-control"><span class="label-text mb-1 text-xs font-semibold">Accent color</span><input class="h-10 w-24 cursor-pointer rounded-lg border border-base-300 bg-base-100" name="accentColor" type="color" required></label>
+            <input type="hidden" name="preferredProvider" value="local">
+            <p class="min-h-[1.25rem] text-sm text-error" id="settings-error" role="alert"></p>
+            <button class="gl-primary btn btn-sm self-start tap-44" type="submit">Save settings</button>
+          </div></form>
+          <aside id="privacy-summary" class="card border border-base-300 bg-base-200"></aside>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="persona-dialog" class="modal" aria-labelledby="persona-dialog-title">
+      <div class="modal-box max-w-lg">
+        <form method="dialog"><button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 tap-44" aria-label="ปิด">✕</button></form>
+        <div id="persona-dialog-content"></div>
+      </div>
+      <form method="dialog" class="modal-backdrop"><button aria-label="ปิด">close</button></form>
+    </dialog>
+    <dialog id="confirm-remove-dialog" class="modal" aria-labelledby="confirm-remove-title">
+      <div class="modal-box max-w-md">
+        <p class="gl-eyebrow">ยืนยันการลบ</p>
+        <h2 id="confirm-remove-title" class="font-display text-lg font-semibold">ลบ <span id="confirm-persona-name">persona นี้</span>?</h2>
+        <p class="mt-2 text-sm opacity-70">การลบมีผลกับ Persona Pack นี้ และผลประเมินของ Touchpoint ที่ใช้ pack นี้จะถูกล้างเพื่อให้ประเมินใหม่</p>
+        <div class="modal-action">
+          <button class="btn btn-sm tap-44" data-action="cancel-remove-persona">ยกเลิก</button>
+          <button class="btn btn-sm btn-error tap-44" data-action="confirm-remove-persona">ลบ persona</button>
+        </div>
+      </div>
+    </dialog>
+  </div>
+
+  <script>
+    import { boot } from '../../scripts/growth-lab/ui.mjs';
+    // The gate may restore the session and fire its event before this module finishes loading
+    // (all module scripts race on their imports) — so also boot if the app is already revealed.
+    let booted = false;
+    const start = () => { if (!booted) { booted = true; void boot(); } };
+    document.addEventListener('growth-lab:authed', start, { once: true });
+    if (!document.getElementById('growth-lab-app')?.classList.contains('hidden')) start();
+  </script>
+</DashboardLayout>

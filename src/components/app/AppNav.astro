@@ -13,7 +13,7 @@
 //   app            id ของแอปที่กำลังอยู่ (ทำแท็บนั้นเป็น active)
 //   menuToggleFor  id ของ checkbox drawer — ถ้ามี จะโชว์ปุ่ม hamburger บนจอเล็ก (CRM ใช้)
 // slot (default)   ปุ่มเฉพาะหน้า เช่น ⟳ · + Add Lead · Board/List
-type AppId = 'crm' | 'content' | 'news-desk' | 'intel' | 'audience' | 'chat' | 'docs' | 'messenger';
+type AppId = 'crm' | 'content' | 'news-desk' | 'intel' | 'audience' | 'chat' | 'docs' | 'messenger' | 'growth-lab';
 
 interface Props {
   app: AppId;
@@ -36,6 +36,8 @@ const APPS: { id: AppId; href: string; icon: string; label: string }[] = [
   { id: 'docs', href: '/app/docs', icon: '📁', label: 'Doc Center' },
   // 2026-09-23 Messenger Console — หน้าจอของแอป chat-bot-n8n (ต่อเพจ + ตอบลูกค้า FB เอง) · ทำขึ้นสำหรับ Meta App Review รอบ 2
   { id: 'messenger', href: '/app/messenger', icon: '✉️', label: 'Messenger' },
+  // 2026-10-11 Growth Lab — ทดสอบข้อความ/touchpoint กับ persona จำลองก่อนยิงจริง · ต่อท้ายสุดเพื่อไม่ขยับตำแหน่งแท็บเดิมที่มือจำแล้ว
+  { id: 'growth-lab', href: '/app/growth-lab', icon: '🧭', label: 'Growth Lab' },
 ];
 ---
 <header class="app-nav sticky top-0 z-30 border-b border-base-300 bg-base-200">
@@ -122,6 +124,14 @@ const APPS: { id: AppId; href: string; icon: string; label: string }[] = [
   document.getElementById('app-logout')?.addEventListener('click', () => {
     void supabase.auth.signOut().finally(() => location.reload());
   });
+
+  // แท็บเยอะกว่าความกว้างจอ (9 ห้อง · 2026-10-11) → เลื่อนแถบให้เห็นแท็บที่อยู่เสมอ ไม่งั้นห้องท้ายๆ ไม่รู้ว่าอยู่ห้องไหน
+  const activeTab = document.querySelector<HTMLElement>('.app-tab-active');
+  const tabStrip = activeTab?.closest<HTMLElement>('.app-tabs');
+  if (activeTab && tabStrip && tabStrip.scrollWidth > tabStrip.clientWidth) {
+    const overflowRight = activeTab.getBoundingClientRect().right - tabStrip.getBoundingClientRect().right;
+    if (overflowRight > 0) tabStrip.scrollLeft += overflowRight + 16;
+  }
 
   // ธีมสว่าง/มืด — คีย์เดียวกับที่ DashboardLayout อ่านตอนโหลด จึงติดไปทุกแอป
   const themeBtn = document.getElementById('app-theme');
