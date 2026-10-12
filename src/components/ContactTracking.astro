@@ -8,24 +8,35 @@
       const cta = event.target.closest('[data-contact-cta]');
       if (!(cta instanceof HTMLAnchorElement)) return;
 
+      // 2026-10-12: Contact = เปิดช่องคุย (LINE) เท่านั้น · ปุ่มที่พาไปฟอร์ม (/booking หรือ #ฟอร์มในหน้า)
+      // ยิง FormStart แทน — เดิมทั้งสองแบบยิง Contact จนแคมเปญแยกไม่ออก (wiki framework-lp-cta-form-first-consult-2026-10)
+      // จัดประเภทจาก href ตอนคลิก เพราะ line-prefill.ts เปลี่ยน href บนมือถือได้ (เช่นหน้า P1 ปุ่มจองกลายเป็น LINE)
+      const url = new URL(cta.href, window.location.href);
+      const hashTarget = url.hash && url.pathname === window.location.pathname ? document.getElementById(url.hash.slice(1)) : null;
+      const isLine = url.protocol === 'line:' || /(^|\.)(lin\.ee|line\.me)$/.test(url.hostname);
+      const isForm = !isLine && (url.pathname.startsWith('/booking') || !!hashTarget?.matches('form, :has(form)'));
+      const eventName = isForm ? 'FormStart' : 'Contact';
+
       const props = {
         cta_location: cta.dataset.ctaLocation || 'unknown',
         page_path: window.location.pathname,
         product_code: cta.dataset.productCode || 'none',
-        cta_label: cta.dataset.ctaLabel || cta.textContent?.trim() || 'Contact',
+        cta_label: cta.dataset.ctaLabel || cta.textContent?.trim() || eventName,
+        cta_dest: isLine ? 'line' : isForm ? 'form' : 'other',
       };
 
       try {
-        window.plausible?.('Contact', { props });
+        window.plausible?.(eventName, { props });
       } catch {}
       try {
-        window.fbq?.('track', 'Contact', { content_name: props.cta_location, content_ids: [props.product_code] });
+        if (isForm) window.fbq?.('trackCustom', 'FormStart', { content_name: props.cta_location, content_ids: [props.product_code] });
+        else window.fbq?.('track', 'Contact', { content_name: props.cta_location, content_ids: [props.product_code] });
         // 2026-09-12 (แบบ อ.เบิร์ด): ปุ่มที่ประกาศ data-cta-event ยิง event ชื่อตามปุ่มเพิ่ม
         // เพื่อให้ปันตั้ง Custom Conversion แยก "จองที่นั่ง" ออกจาก "ถามก่อน" ได้ใน Events Manager
         if (cta.dataset.ctaEvent) window.fbq?.('trackCustom', cta.dataset.ctaEvent, { content_ids: [props.product_code], cta_location: props.cta_location });
       } catch {}
       try {
-        window.ttq?.track?.('Contact', props);
+        window.ttq?.track?.(isForm ? 'ClickButton' : 'Contact', props);
       } catch {}
     });
   })();

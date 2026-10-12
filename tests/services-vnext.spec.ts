@@ -188,6 +188,32 @@ test('floating control is safe-area aware, keyboard accessible, and exposes its 
   await page.close();
 });
 
+test('a CTA that leads to the form fires FormStart, not Contact', async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  page.setDefaultTimeout(5_000);
+  await page.goto(`${baseURL}/services/daily-consulting`);
+  const formCta = page.locator('a[data-contact-cta][href*="/booking"]:visible').first();
+  await formCta.waitFor();
+
+  await page.evaluate(() => {
+    window.__contactCalls = { plausible: [], fbq: [], ttq: [] };
+    window.plausible = (...args) => window.__contactCalls.plausible.push(args);
+    window.fbq = (...args) => window.__contactCalls.fbq.push(args);
+    window.ttq = { track: (...args) => window.__contactCalls.ttq.push(args) };
+    document.addEventListener('click', (event) => event.preventDefault(), { once: true });
+  });
+  await formCta.click();
+  const calls = await page.evaluate(() => window.__contactCalls);
+  assert.equal(calls.plausible[0]?.[0], 'FormStart');
+  assert.equal(calls.plausible[0]?.[1]?.props?.cta_dest, 'form');
+  assert.equal(calls.fbq[0]?.[0], 'trackCustom');
+  assert.equal(calls.fbq[0]?.[1], 'FormStart');
+  assert.ok(!calls.fbq.some((c) => c[0] === 'track' && c[1] === 'Contact'), 'form CTA must not fire Contact');
+  assert.equal(calls.ttq[0]?.[0], 'ClickButton');
+
+  await page.close();
+});
+
 test('one click derives Contact props once per provider and provider failures do not block later providers or navigation', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   page.setDefaultTimeout(5_000);
@@ -208,6 +234,7 @@ test('one click derives Contact props once per provider and provider failures do
     page_path: '/services',
     product_code: 'none',
     cta_label: 'ทัก LINE · ให้ผมช่วยเลือก',
+    cta_dest: 'line',
   };
   assert.deepEqual(calls.plausible, [['Contact', { props }]]);
   assert.deepEqual(calls.fbq, [['track', 'Contact', { content_name: 'floating_line', content_ids: ['none'] }]]);
