@@ -3,7 +3,8 @@
 // → wr_jobs render_notes → มินิทำ PNG จริง → media_assets (bucket ส่วนตัว content-media)
 import { slideDoc, withFollow, sizePx, toMarkup, toEditable, parsePos, SIZE_MIN, SIZE_MAX, ZOOM_MAX, type NoteSpec, type NoteSlide } from './note-render';
 import { lintSlides } from './note-lint';
-import { saveVisualSpec, enqueueJob, waitJob, listMedia, uploadStudioPhoto, downloadMediaBlob, type Variant, type MediaAsset } from './data';
+import { saveVisualSpec, enqueueJob, waitJob, listMedia, uploadStudioPhoto, downloadMediaBlob, saveStudioRender, type Variant, type MediaAsset } from './data';
+import { canRasterInBrowser, rasterSlide } from './note-raster';
 import { driveButtonHtml, downloadMediaZip, zipTitle } from './media-actions';
 
 type Deps = { toast: (m: string, k?: 'success' | 'error') => void; onRendered: () => Promise<void> };
@@ -231,6 +232,32 @@ async function save(silent = false) {
   if (!silent) deps.toast('บันทึกสไลด์แล้ว');
 }
 
+/** วาดรูปจริงในเบราว์เซอร์แล้วอัปเข้า bucket เอง (2026-10-12) — ไม่ต้องรอคิว Mac mini ที่มีงานอื่นต่อแถวอยู่
+ *  คืน null = เบราว์เซอร์นี้/ชิ้นนี้ทำเองไม่ได้ → ให้มินิทำแทน (มินิเหลือแค่งานย้ายต้นฉบับขึ้น Drive) */
+async function renderInBrowser(v: Variant, s: NoteSpec): Promise<number | null> {
+  if (!canRasterInBrowser()) return null;
+  if (!avatarData) return null;   // รูปโปรไฟล์โหลดไม่ขึ้น — วาดเองจะได้วงกลมเทา
+  if (s.slides.some((sl) => sl.photo && !sl.photo.path)) return null;   // รูปจากไฟล์ในเครื่อง agent — ให้มินิตอบ error เดิม
+  await ensurePhotos();
+  if (s.slides.some((sl) => sl.photo?.path && !photoData.has(sl.photo.path))) return null;
+  const all = withFollow(s);
+  const H = s.ratio === '1:1' ? 1080 : 1350;
+  const pngs: Blob[] = [];
+  for (const [i, sl] of all.entries()) {
+    $('ns-status').textContent = `กำลังวาดรูป ใบ ${i + 1}/${all.length}…`;
+    pngs.push(await rasterSlide(slideDoc(s, sl, AVATAR(), sl.photo?.path ? photoData.get(sl.photo.path) ?? '' : ''), H));
+  }
+  $('ns-status').textContent = `กำลังอัปโหลด ${pngs.length} ใบ…`;
+  return saveStudioRender(v, pngs, s.ratio ?? '4:5');
+}
+
+async function renderOnMini(v: Variant): Promise<number> {
+  const id = await enqueueJob('render_notes', { variant_id: v.variant_id });
+  $('ns-status').textContent = 'ส่งให้ Mac mini แล้ว…';
+  const job = await waitJob(id, { intervalMs: 4000, onTick: (sec) => { $('ns-status').textContent = `Mac mini กำลังทำรูป… ${sec} วิ`; } });
+  return (job.result as { count?: number } | null)?.count ?? 0;
+}
+
 async function render() {
   if (!variant || !spec || busy) return;
   const reds = lintSlides(spec.slides, spec.mobile === true).filter((w) => w.level === 'red');
@@ -238,15 +265,17 @@ async function render() {
   busy = true;
   const btn = $('ns-render') as HTMLButtonElement;
   btn.disabled = true;
+  const v = variant;
   try {
     await save(true);
-    const id = await enqueueJob('render_notes', { variant_id: variant.variant_id });
-    $('ns-status').textContent = 'ส่งให้ Mac mini แล้ว…';
-    const job = await waitJob(id, { intervalMs: 4000, onTick: (s) => { $('ns-status').textContent = `Mac mini กำลังทำรูป… ${s} วิ`; } });
-    const n = (job.result as { count?: number } | null)?.count ?? 0;
-    $('ns-status').textContent = `✓ ได้รูป ${n} ใบ — อยู่ในชิ้นงานนี้แล้ว`;
+    let n: number | null = null;
+    try { n = await renderInBrowser(v, structuredClone(spec)); }
+    catch (e) { console.warn('Note Studio: วาดในเบราว์เซอร์ไม่สำเร็จ → ให้ Mac mini ทำแทน', e); }
+    const where = n == null ? 'Mac mini' : 'เบราว์เซอร์';
+    if (n == null) n = await renderOnMini(v);
+    $('ns-status').textContent = `✓ ได้รูป ${n} ใบ (${where}) — อยู่ในชิ้นงานนี้แล้ว · ขึ้น Drive เองใน ~40 นาที`;
     deps.toast(`Render เสร็จ ${n} ใบ`);
-    await loadRendered();
+    if (variant === v) await loadRendered();
     await deps.onRendered();
   } catch (e) {
     $('ns-status').textContent = `⚠️ ${(e as Error).message}`;

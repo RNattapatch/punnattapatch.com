@@ -410,6 +410,36 @@ export async function downloadMediaBlob(path: string): Promise<Blob> {
   return data;
 }
 
+/** ชุดรูปที่ Note Studio วาดในเบราว์เซอร์ (2026-10-12) — เขียนแถวรูปแบบเดียวกับ handleRenderNotes ของ worker บนมินิ
+ *  (source note_studio · render_batch studio-<เวลา> · <CNT>/<variant>/<batch>/slide-NN.png) เพื่อให้ archive sweep
+ *  ของมินิส่งต้นฉบับขึ้น Drive ต่อได้เหมือนเดิม · อัปไฟล์ครบก่อนค่อยเก็บชุดเก่าเข้ากรุ — อัปพังกลางทางชุดเดิมยังอยู่ */
+export async function saveStudioRender(v: Variant, pngs: Blob[], ratio: '4:5' | '1:1' = '4:5'): Promise<number> {
+  if (!pngs.length) throw new Error('ไม่มีรูปให้บันทึก');
+  const batch = `studio-${new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14)}`;
+  const rows = [];
+  for (const [i, png] of pngs.entries()) {
+    const path = `${v.content_id}/${v.variant_id}/${batch}/slide-${String(i + 1).padStart(2, '0')}.png`;
+    const up = await supabase.storage.from(MEDIA_BUCKET).upload(path, png, { contentType: 'image/png', upsert: true });
+    if (up.error) throw new Error(`อัปโหลดใบ ${i + 1} ไม่สำเร็จ: ${up.error.message}`);
+    rows.push({
+      content_id: v.content_id, variant_id: v.variant_id, asset_type: 'carousel_png', storage_path: path,
+      source: 'note_studio', render_batch: batch, sort_order: i, is_cover: i === 0, asset_status: 'exported',
+      width: 2160, height: ratio === '1:1' ? 2160 : 2700, bytes: png.size,
+    });
+  }
+  // ชุด render เก่าเข้ากรุ (ไม่ลบไฟล์) → ใส่ชุดใหม่ → รูปที่อัปเองต่อท้าย
+  await q(() => supabase.from('media_assets').update({ asset_status: 'archived', is_cover: false })
+    .eq('variant_id', v.variant_id).in('source', ['note_studio', 'agent']).neq('asset_status', 'archived'));
+  await q(() => supabase.from('media_assets').insert(rows));
+  const ups = (await q(() => supabase.from('media_assets').select('asset_id')
+    .eq('variant_id', v.variant_id).eq('source', 'upload').neq('asset_status', 'archived')
+    .order('sort_order', { ascending: true }))) as { asset_id: string }[];
+  for (const [j, u] of ups.entries()) {
+    await q(() => supabase.from('media_assets').update({ sort_order: rows.length + j, is_cover: false }).eq('asset_id', u.asset_id));
+  }
+  return rows.length;
+}
+
 /** บันทึกลำดับใหม่ — ใบแรก = ปก */
 export async function reorderMedia(ids: string[]): Promise<void> {
   for (const [i, id] of ids.entries()) {
