@@ -138,7 +138,7 @@ test('pick view: chosen probability, clamped scores, and the Codex disagreement'
   };
   const view = pickView(pick, ['base', 'final']);
   assert.equal(view.chosenPct, 70);
-  assert.equal(view.segmentThai, 'พร้อมซื้อ');
+  assert.equal(view.segmentThai, 'ลูกค้าที่จ่ายแล้ว');
   assert.equal(view.agree, false);
   assert.equal(view.codexPick, 'base');
   assert.equal(view.worst, 'base');
@@ -287,4 +287,25 @@ test('the reader of this tab only uses supabase reads (no writes) and the cloud 
   const block = cloudTs.slice(cloudTs.indexOf('// ---------- "ทดสอบบอท"'));
   assert.doesNotMatch(block, /\.(insert|update|upsert|delete)\(/);
   assert.match(botsimUi, /from '.\/cloud\.ts'/);
+});
+
+test("ขอดูก่อน is neutral: no ดีสุด mark even when the counts differ", () => {
+  const runs = [
+    { label: "a", ran_at: "2026-10-12T09:00:00Z", partial: false, summary: { buyers: 34, deferred: 18 } },
+    { label: "b", ran_at: "2026-10-12T10:00:00Z", partial: false, summary: { buyers: 34, deferred: 21 } },
+  ];
+  const row = overviewTable(splitRuns(runs).full).rows.find((r) => r.key === "deferred");
+  assert.equal(row.cells.filter((cell) => cell.best).length, 0);
+});
+
+test("runs follow summary.order (bot version) before ran_at", () => {
+  const runs = [
+    { label: "new", ran_at: "2026-10-12T09:06:27Z", partial: false, summary: { order: 2 } },
+    { label: "base2", ran_at: "2026-10-12T09:54:00Z", partial: false, summary: { order: 1 } },
+    { label: "base", ran_at: "2026-10-12T09:06:47Z", partial: false, summary: { order: 0 } },
+    { label: "trial", ran_at: "2026-10-12T08:52:00Z", partial: true, summary: { order: 108 } },
+  ];
+  const { full, partial } = splitRuns(runs);
+  assert.deepEqual(full.map((r) => r.label), ["base", "base2", "new"]);
+  assert.deepEqual(partial.map((r) => r.label), ["trial"]);
 });

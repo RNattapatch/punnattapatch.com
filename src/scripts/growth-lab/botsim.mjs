@@ -4,17 +4,19 @@
 // Counts in a full run cover buyer personas only (segment ≠ off), so `buyers` is the denominator.
 
 export const SEGMENT_ORDER = Object.freeze(['buy', 'near', 'warm', 'off']);
-export const SEGMENT_THAI = Object.freeze({ buy: 'พร้อมซื้อ', near: 'ใกล้ซื้อ', warm: 'อุ่น', off: 'ไม่ใช่ผู้ซื้อ' });
+// ตรงกับกลุ่มใน pack pun-crm-2026-10 (id ขึ้นต้นด้วยกลุ่ม) · ห้ามใช้ อุ่น/ร้อน/เย็น (คุณปันไม่ชอบ)
+export const SEGMENT_THAI = Object.freeze({ buy: 'ลูกค้าที่จ่ายแล้ว', near: 'ใกล้ซื้อ', warm: 'สนใจ ยังไม่ซื้อ', off: 'ไม่ใช่ผู้ซื้อ' });
 export const OUTCOME_THAI = Object.freeze({ dropped: 'หลุดกลางทาง', closed: 'ลูกค้าจบเอง', max_turns: 'ครบรอบสูงสุด', sim_error: 'จำลองไม่สำเร็จ' });
 export const ACTION_THAI = Object.freeze({ reply: 'ตอบต่อ', give_phone: 'ให้เบอร์', pick_time: 'เลือกเวลา', refuse_phone: 'ไม่ให้เบอร์', silent: 'เงียบ', done: 'จบ' });
 export const DISCOVERY_THAI = Object.freeze({ business: 'ธุรกิจ', product: 'สินค้า/บริการ', customers: 'ลูกค้ากลุ่มไหน', sales_way: 'ขายยังไง' });
 export const CHANNEL_THAI = Object.freeze({ line: 'LINE Call', phone: 'โทรศัพท์' });
 
-// Rows of the overview table, in the order Pun reads them. `lowerIsBetter` marks the two counts where less is good.
+// Rows of the overview table, in the order Pun reads them. `lowerIsBetter` marks the two counts where less is good;
+// `neutral` rows get no "ดีสุด" mark (more "ขอดูก่อน" is not better, and fewer is not either — it trades with ได้เบอร์/หลุด).
 export const OVERVIEW_ROWS = Object.freeze([
   { key: 'gave_phone', label: 'ได้เบอร์', base: 'buyers' },
   { key: 'phone_and_time', label: 'ได้เบอร์ + เวลาโทร', base: 'buyers' },
-  { key: 'deferred', label: 'ขอดูก่อน', base: 'buyers' },
+  { key: 'deferred', label: 'ขอดูก่อน', base: 'buyers', neutral: true },
   { key: 'dropped', label: 'หลุดกลางทาง', base: 'buyers', lowerIsBetter: true },
   { key: 'discovery_full', label: 'รู้จักธุรกิจครบ 4 เรื่อง', base: 'buyers' },
   { key: 'savvy_avg', label: 'ไหวพริบ', kind: 'avg', scale: '1–5' },
@@ -61,9 +63,10 @@ export function clampScore(value) {
   return s === null ? null : clamp(s, 0, 4);
 }
 
-/** Full runs and trial (partial) runs, each oldest first. */
+/** Full runs and trial (partial) runs. Order = summary.order (bot version order set by persona-pick.mjs), then oldest first. */
 export function splitRuns(runs = []) {
-  const sorted = [...runs].sort((a, b) => (Date.parse(a.ran_at) - Date.parse(b.ran_at)) || String(a.label).localeCompare(String(b.label)));
+  const order = (run) => (Number.isFinite(run.summary?.order) ? run.summary.order : 1e9);
+  const sorted = [...runs].sort((a, b) => (order(a) - order(b)) || (Date.parse(a.ran_at) - Date.parse(b.ran_at)) || String(a.label).localeCompare(String(b.label)));
   return { full: sorted.filter((run) => !run.partial), partial: sorted.filter((run) => run.partial) };
 }
 
@@ -113,7 +116,7 @@ export function overviewTable(fullRuns = []) {
     const cells = fullRuns.map((run) => cellOf(run.summary ?? {}, row));
     const values = cells.map((cell) => cell.compare).filter((value) => value !== null);
     const distinct = new Set(values).size > 1;
-    const best = distinct ? (row.lowerIsBetter ? Math.min(...values) : Math.max(...values)) : null;
+    const best = distinct && !row.neutral ? (row.lowerIsBetter ? Math.min(...values) : Math.max(...values)) : null;
     return {
       key: row.key,
       label: row.label,
