@@ -1,0 +1,27 @@
+---
+// แถบ "FutureSkill Instructor 2026" — วางใต้ section รูปคุณปันทุกหน้า service / LP
+// ถ้อยคำล็อกตาม wiki/pages/moat-futureskill-instructor-third-party-teaching-proof.md (ข้อ 3 + 8)
+//   ✅ "ผมสอนกับ FutureSkill เรื่อง AI กับงานขาย" · "ผ่านรอบคัดเลือกด้วยการสอนจริง"
+//   ⛔ ห้าม "รับรอง/แต่งตั้ง/อันดับ 1" · "สอบสอน" · "บนแพลตฟอร์ม" · "15 นาที"
+// โลโก้ FutureSkill ต้องอยู่บนพื้นขาว/งาช้างเสมอ (อย่าวางบน navy) — เลยทำเป็น section พื้นขาวของตัวเอง
+// ห้ามยืนเดี่ยว: บรรทัดที่ 2 คู่หลักฐานวง 1 (ใช้ AI Agent ทำงานขายจริงทุกวัน) — ตรงกับ caption banner หน้าแรก
+interface Props {
+  /** surface behind the banner strip; 'white' follows a navy section, 'ivory' follows a white one */
+  tone?: 'white' | 'ivory';
+}
+const { tone = 'white' } = Astro.props;
+---
+
+<section data-futureskill-banner aria-label="FutureSkill Instructor 2026" class:list={['px-5 py-6 sm:py-8', tone === 'ivory' ? 'bg-[#f4f1ea]' : 'bg-white']}>
+  <div class="mx-auto flex max-w-6xl flex-col gap-4 rounded-2xl border border-[#c9c2b2] bg-[#fbf9f4] px-5 py-5 shadow-[4px_6px_0_rgba(30,27,22,0.07)] sm:flex-row sm:items-center sm:gap-6 sm:px-7">
+    <div class="flex shrink-0 items-center gap-4">
+      <img src="/logos/futureskill-logo.png" width="640" height="456" alt="FutureSkill" loading="lazy" decoding="async" class="h-11 w-auto sm:h-12" />
+      <span aria-hidden="true" class="h-9 w-px bg-[#c9c2b2]"></span>
+      <p class="text-sm font-bold uppercase leading-tight tracking-[0.14em] text-navy">Instructor<br /><span class="text-coral">2026</span></p>
+    </div>
+    <div class="min-w-0 sm:border-l sm:border-[#c9c2b2] sm:pl-6">
+      <p class="text-balance font-display text-xl font-bold leading-snug text-navy sm:text-2xl">ผมสอนกับ FutureSkill เรื่อง AI กับงานขาย</p>
+      <p class="mt-1 text-[0.95rem] leading-relaxed text-navy/70">ผ่านรอบคัดเลือกด้วยการสอนจริง และใช้ AI Agent ทำงานขายของตัวเองทุกวัน</p>
+    </div>
+  </div>
+</section>

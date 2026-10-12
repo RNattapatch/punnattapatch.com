@@ -39,6 +39,7 @@ import SystemShowcase from './SystemShowcase.astro';
 import PublicCohortNotice from './PublicCohortNotice.astro';
 import LeakHero from './LeakHero.astro';
 import LeakOffer from './LeakOffer.astro';
+import FutureSkillBanner from '../../FutureSkillBanner.astro';
 
 interface Props { data: ProductDetailPageData; }
 const { data } = Astro.props;
@@ -80,6 +81,7 @@ const cohort = data.publicCohort;
 
     <div data-t4-section={data.code === 'T4' ? 'logos' : undefined} data-journey-section="logos" data-detail-block="authority">
       <InstructorCard authority={data.authority} heading={data.sections?.authority?.heading ?? 'สอนจากประสบการณ์ขาย โค้ชทีม และสร้าง AI Workflow ใช้งานจริง'} compact />
+      <FutureSkillBanner />
       <ClientLogoWall items={data.clientLogos} />
     </div>
 
@@ -170,6 +172,7 @@ const cohort = data.publicCohort;
     {data.bonusCards?.enabled && <BonusCardStack {...data.bonusCards} />}
     <!-- ใต้ Offer: ใครสอน + เคยทำกับใครมาแล้ว (คุณปันสั่ง 2026-09-02 หลังคู่แข่งเริ่มยิงแอดชนตรงๆ) · T4 journey มีของตัวเองด้านบน -->
     <div data-detail-block="instructor"><InstructorBio paragraphs={data.bio} heading={data.sections?.bio?.heading} eyebrow={data.sections?.bio?.eyebrow} /></div>
+    <FutureSkillBanner />
     <ClientLogoWall items={data.clientLogos ?? CLIENT_LOGOS} />
     {chapters[3] && <ProductChapterGate chapter={chapters[3]} />}
     <div data-detail-block="fit"><FitBlock fit={data.fit} notFit={data.notFit} heading={data.sections?.fit?.heading} relatedOffer={data.relatedOffer} /></div>
