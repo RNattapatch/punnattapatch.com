@@ -37,3 +37,7 @@ output/
 
 # screenshots จาก tests (SHOTS=1) — ของชั่วคราว
 tests/shots/
+
+# unlazy gate ledgers + rollback log (scripts/deploy-gates.template.md)
+.unlazy/
+.unlazy-hook-state.json
