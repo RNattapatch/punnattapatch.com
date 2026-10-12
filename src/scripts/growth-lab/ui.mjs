@@ -13,6 +13,7 @@ import { copyMedia, mediaExists, signedMediaUrl, uploadMedia } from './cloud.ts'
 import { enqueueCodexEvaluation, fetchResults, fetchServerCopy, fetchWorkspace, keepCopyOnServer, listRecentCodexJobs, listResultStamps, listServerCopies, readCodexJob, saveWorkspace, upsertResults } from './cloud.ts';
 import { seedState } from './seed.mjs';
 import { handleRealityAction, initReality, renderReality } from './reality-ui.mjs';
+import { handleBotsimAction, initBotsim, renderBotsim } from './botsim-ui.mjs';
 
 // One envelope {v, rev, dirty, state}: the state and the cloud rev it is based on are always written together.
 const LOCAL_KEY = 'pun.growthLab.workspace.v2';
@@ -1036,6 +1037,7 @@ function switchView(view, shouldPersist = true) {
   if (view === 'journey') renderJourney();
   if (view === 'results') { renderActualForm(); renderCalibration(); }
   if (view === 'reality') void renderReality();
+  if (view === 'botsim') void renderBotsim();
   if (view === 'personas') { renderPackBuilder(); renderPersonaDirectory(); }
   if (view === 'settings') renderSettings();
   if (shouldPersist) persistView();
@@ -1557,6 +1559,7 @@ function onClick(event) {
   const action = event.target.closest('[data-action]')?.dataset.action;
   if (!action) return;
   if (action.startsWith('reality-')) { void handleRealityAction(action).catch((error) => announce(`ทำไม่สำเร็จ: ${error.message}`)); return; }
+  if (action.startsWith('botsim-')) { void handleBotsimAction(action).catch((error) => announce(`ทำไม่สำเร็จ: ${error.message}`)); return; }
   if (action === 'evaluate') evaluateLocal();
   else if (action === 'edit-creative') openEditor('hook');
   else if (action === 'close-editor') closeEditor();
@@ -1647,6 +1650,7 @@ export async function boot() {
   // "ประเมินใหม่" compares with the pack as the mini sees it (the cloud copy) — only offer it when this page is in sync.
   const cloudInSync = () => !cloud.dirty && !cloud.hold && !cloud.readOnly && !cloud.tooLarge && !cloud.offline && cloud.rev !== null;
   initReality({ getState: () => state, escapeHtml, announce, importCreative, personaPackRevision, cloudInSync });
+  initBotsim({ escapeHtml, announce });
   renderAll();
   if (local.notice) announce(local.notice);
   setSyncStatus('☁️ กำลังเช็คฉบับบนคลาวด์…');

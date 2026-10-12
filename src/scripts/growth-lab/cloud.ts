@@ -266,3 +266,93 @@ export async function signedThumbUrls(paths: string[]): Promise<Record<string, s
   }
   return out;
 }
+
+// ---------- "ทดสอบบอท": LINE bot vs persona results (2026-10-13) ----------
+// Written on the Mac mini (persona-sim → funnel_lab_bot_runs / _convos · persona-pick → funnel_lab_bot_pick_runs / _picks). Read-only here.
+// Runs and picks are small and load up front; a transcript loads only when someone opens it.
+export interface BotRun {
+  label: string;
+  pack_id: string;
+  ran_at: string;
+  sim_model: string | null;
+  judge_model: string | null;
+  persona_count: number;
+  partial: boolean;
+  version_note: string | null;
+  summary: Record<string, any>;
+}
+
+export interface BotPickRun {
+  id: string;
+  pack_id: string;
+  picker_model: string;
+  reason_model: string | null;
+  run_labels: string[];
+  ran_at: string;
+  cost_usd: number | null;
+  summary: Record<string, any>;
+}
+
+export interface BotPick {
+  pick_run_id: string;
+  persona_id: string;
+  persona_name: string | null;
+  segment: string | null;
+  chosen_label: string | null;
+  probs: Record<string, number>;
+  scores: Record<string, number>;
+  reasoning: Record<string, any> | null;
+}
+
+/** One persona in one run, without the transcript (cheap list for selects). */
+export interface BotConvoIndex {
+  run_label: string;
+  persona_id: string;
+  persona_name: string | null;
+  segment: string | null;
+  outcome: string | null;
+  gave_phone: boolean;
+  booked: boolean;
+}
+
+export interface BotConvo extends BotConvoIndex {
+  entry: string | null;
+  opener: string | null;
+  turns: { role: 'bot' | 'customer'; text: string; action?: string }[];
+  thoughts: { turn: number | string; interest?: number; action?: string; thought?: string }[];
+  lead: Record<string, any> | null;
+  judge: Record<string, any> | null;
+}
+
+export async function listBotRuns(): Promise<BotRun[]> {
+  const { data, error } = await supabase.from('funnel_lab_bot_runs').select('*').order('ran_at', { ascending: true });
+  if (error) throw new Error(error.message);
+  return (data as BotRun[]) ?? [];
+}
+
+export async function listBotPickRuns(): Promise<BotPickRun[]> {
+  const { data, error } = await supabase.from('funnel_lab_bot_pick_runs').select('*').order('ran_at', { ascending: false });
+  if (error) throw new Error(error.message);
+  return (data as BotPickRun[]) ?? [];
+}
+
+export async function listBotPicks(pickRunId: string): Promise<BotPick[]> {
+  const { data, error } = await supabase.from('funnel_lab_bot_picks').select('*').eq('pick_run_id', pickRunId).order('persona_id');
+  if (error) throw new Error(error.message);
+  return (data as BotPick[]) ?? [];
+}
+
+export async function listBotConvoIndex(runLabel: string): Promise<BotConvoIndex[]> {
+  const { data, error } = await supabase.from('funnel_lab_bot_convos')
+    .select('run_label, persona_id, persona_name, segment, outcome, gave_phone, booked')
+    .eq('run_label', runLabel).order('persona_id');
+  if (error) throw new Error(error.message);
+  return (data as BotConvoIndex[]) ?? [];
+}
+
+export async function fetchBotConvo(runLabel: string, personaId: string): Promise<BotConvo | null> {
+  const { data, error } = await supabase.from('funnel_lab_bot_convos').select('*')
+    .eq('run_label', runLabel).eq('persona_id', personaId).maybeSingle();
+  if (error) throw new Error(error.message);
+  return (data as BotConvo | null) ?? null;
+}

@@ -92,6 +92,7 @@ import AppNav from '../../components/app/AppNav.astro';
           <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="journey">เส้นทางซื้อ</button>
           <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="results">ผลจริง</button>
           <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="reality">ของจริง</button>
+          <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="botsim">ทดสอบบอท</button>
           <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="personas">กลุ่มผู้ซื้อ <span class="badge badge-sm" id="persona-count">0</span></button>
           <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="settings" aria-label="ตั้งค่า">⚙️</button>
         </nav>
@@ -301,6 +302,75 @@ import AppNav from '../../components/app/AppNav.astro';
       </section>
 
       <!-- ===================== PERSONAS ===================== -->
+      <!-- ===================== ทดสอบบอท (2026-10-13) =====================
+           บอท LINE OA คุยกับ persona จำลอง (persona-sim) → jev เลือกรอบที่ persona ชอบ → Codex อธิบาย (persona-pick)
+           ข้อมูลจาก funnel_lab_bot_* (อ่านอย่างเดียว · ไม่มีข้อมูลลูกค้าจริง) · logic อยู่ botsim.mjs · หน้าจออยู่ botsim-ui.mjs -->
+      <section id="view-botsim" data-screen="botsim" aria-labelledby="botsim-title" class="space-y-4" hidden>
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div class="min-w-0">
+            <p class="gl-eyebrow">ทดสอบบอท · LINE OA × persona จำลอง</p>
+            <h1 id="botsim-title" class="font-display text-xl font-semibold sm:text-2xl">บอท LINE คุยกับ persona แล้วไปถึงไหน</h1>
+            <p class="text-sm opacity-70" id="botsim-meta" aria-live="polite">กำลังโหลด…</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button class="btn btn-sm tap-44" data-action="botsim-refresh">โหลดใหม่</button>
+          </div>
+        </div>
+
+        <section class="gl-panel p-4" aria-labelledby="botsim-overview-title">
+          <p class="gl-eyebrow"><span class="gl-step">01</span>ภาพรวมทุกรอบ</p>
+          <h2 id="botsim-overview-title" class="font-display font-semibold">แต่ละเวอร์ชันของบอทไปถึงไหนกับ persona ผู้ซื้อ</h2>
+          <p class="mt-1 text-xs opacity-60">นับเฉพาะ persona ผู้ซื้อ (ไม่รวมกลุ่มไม่ใช่ผู้ซื้อ) · ตัวหารคือจำนวนผู้ซื้อ · ค่าที่ดีคือมากกว่า ยกเว้น "หลุดกลางทาง" และ "แนะนำตัวซ้ำ" ที่น้อยกว่าดี</p>
+          <div id="botsim-overview" class="mt-3"></div>
+          <div id="botsim-partial" class="mt-4"></div>
+        </section>
+
+        <section class="gl-panel p-4" aria-labelledby="botsim-pick-title">
+          <p class="gl-eyebrow"><span class="gl-step">02</span>persona เลือกคุยกับแบบไหน</p>
+          <h2 id="botsim-pick-title" class="font-display font-semibold">persona อยากคุยต่อกับบอทเวอร์ชันไหน</h2>
+          <p class="mt-1 text-xs opacity-70">jev เป็นคนเลือกอย่างเดียว · Codex เป็นคนอธิบายเหตุผล · ทั้งสองเป็นโมเดล ไม่ใช่ลูกค้าจริง</p>
+          <div class="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+            <div id="botsim-sheet" class="gl-sheet rounded-2xl p-5"></div>
+            <div class="min-w-0 space-y-5">
+              <div id="botsim-pick-meta"></div>
+              <div id="botsim-bars" class="space-y-5"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="gl-panel p-4" aria-labelledby="botsim-people-title">
+          <div class="flex flex-wrap items-end justify-between gap-3">
+            <div><p class="gl-eyebrow"><span class="gl-step">03</span>รายคน</p><h2 id="botsim-people-title" class="font-display font-semibold">persona ทีละคน เลือกอะไร และเพราะอะไร</h2></div>
+            <label class="form-control"><span class="label-text text-xs">กลุ่ม</span>
+              <select id="botsim-segment" class="select select-bordered select-sm tap-44" aria-label="กรองตามกลุ่ม"></select></label>
+          </div>
+          <ul id="botsim-picks" class="mt-3 divide-y divide-base-300" aria-label="persona และแชทที่เลือก"></ul>
+        </section>
+
+        <section class="gl-panel p-4" aria-labelledby="botsim-viewer-title">
+          <p class="gl-eyebrow"><span class="gl-step">04</span>ดูบทสนทนาทั้งหมด</p>
+          <h2 id="botsim-viewer-title" class="font-display font-semibold">เปิดบทสนทนาของ persona ในรอบไหนก็ได้</h2>
+          <div class="mt-3 flex flex-wrap items-end gap-3">
+            <label class="form-control"><span class="label-text text-xs">รอบ</span>
+              <select id="botsim-view-run" class="select select-bordered select-sm tap-44 max-w-full"></select></label>
+            <label class="form-control min-w-0"><span class="label-text text-xs">persona</span>
+              <select id="botsim-view-persona" class="select select-bordered select-sm tap-44 max-w-full"></select></label>
+          </div>
+          <div id="botsim-transcript" class="mt-4"></div>
+        </section>
+
+        <dialog id="botsim-dialog" class="modal" aria-labelledby="botsim-dialog-title">
+          <div class="modal-box max-w-5xl">
+            <div class="flex items-start justify-between gap-3">
+              <h2 id="botsim-dialog-title" class="font-display text-lg font-semibold">persona</h2>
+              <form method="dialog"><button class="btn btn-sm btn-ghost tap-44" aria-label="ปิด">✕</button></form>
+            </div>
+            <div id="botsim-dialog-body" class="mt-3 space-y-4"></div>
+          </div>
+          <form method="dialog" class="modal-backdrop"><button aria-label="ปิด">close</button></form>
+        </dialog>
+      </section>
+
       <section id="view-personas" data-screen="personas" aria-labelledby="personas-title" class="space-y-4" hidden>
         <div class="flex flex-wrap items-end justify-between gap-3">
           <div><p class="gl-eyebrow">Persona pack library</p><h1 id="personas-title" class="font-display text-xl font-semibold sm:text-2xl">กลุ่มผู้ซื้อที่ตรงกับ Business Unit</h1></div>
