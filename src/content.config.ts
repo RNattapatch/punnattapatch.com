@@ -33,6 +33,7 @@ const cluster = defineCollection({
   schema: commonFrontmatter.extend({
     parentPillar: z.string(),
     readingTimeMinutes: z.number().optional(),
+    heroImage: z.string().optional(),
   }),
 });
 

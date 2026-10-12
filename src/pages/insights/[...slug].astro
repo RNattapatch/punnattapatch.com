@@ -46,7 +46,11 @@ const related = [...allPillars, ...allClusters]
   })
   .slice(0, 3);
 
-const ogImage = (data as { heroImage?: string }).heroImage ?? `${SITE.url}/og-image.jpg`;
+// og:image must be absolute — heroImage in frontmatter is a site-relative path
+const heroImage = (data as { heroImage?: string }).heroImage;
+const ogImage = heroImage
+  ? (heroImage.startsWith('http') ? heroImage : `${SITE.url}${heroImage}`)
+  : `${SITE.url}/og-image.jpg`;
 ---
 
 <BaseLayout
