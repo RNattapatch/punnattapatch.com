@@ -126,7 +126,9 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   // WEB-T2-SYSTEM-01: Bonus 08 ขึ้นพร้อม system chapter เท่านั้น — สองก้อนต้องเปิด/ปิดพร้อมกันเสมอ
   const hasSystemChapter = (await page.locator('[data-detail-block="system"]').count()) === 1;
   assert.equal(await page.locator('[data-bonus-value-card]').count(), hasSystemChapter ? 8 : 7, 'T2 must publish Bonus 6 + Certificate (+ Bonus 08 only with the system chapter)');
-  assert.equal(await page.locator('form').count(), 0, 'T2 detail page must not include a form');
+  // 2026-10-12: คุณปันสั่งเปลี่ยน T2 จากปิดผ่าน LINE เป็นฟอร์ม 2 ขั้นในหน้า (framework-lp-cta-form-first-consult-2026-10)
+  assert.equal(await page.locator('form').count(), 1, 'T2 detail page must include exactly one lead form');
+  assert.equal(await page.locator('form[data-lead-form][data-steps="3"]').count(), 1, 'T2 lead form must be the two-step form (up to 3 topics)');
   assert.equal(await page.locator('[data-hero-activity]').count(), 1, 'T2 Hero must lead with one real workshop activity photo');
   assert.equal(await page.locator('[data-hero-activity] img').getAttribute('loading'), 'eager', 'T2 Hero activity photo must be ready at first glance');
   assert.equal(await page.locator('[data-hero-step]').count(), 3, 'T2 Hero must break the learning journey into three scannable decision cards');
@@ -558,8 +560,12 @@ test('C1 daily consulting is one day-rate service with six selectable topics, tw
   await leak.locator('[data-leak-calc] summary').click();
   await leak.locator('[data-leak-input="team"]').fill('16');
   assert.match(await leak.locator('[data-leak-gap]').innerText(), /2,904 ชั่วโมง/, 'C1 calculator must recompute from the buyer\'s own numbers');
-  assert.equal(await page.getByText(catalog.duration, { exact: true }).count(), 1, 'C1 duration must resolve from the Catalog');
-  assert.equal(await page.getByText(fmtPrice('daily-sales-consulting'), { exact: true }).count(), 1, 'C1 price must resolve from the Catalog');
+  // ราคา/ระยะเวลาโผล่ 2 ที่: ส่วนเนื้อหาหน้า + บล็อกราคาข้างฟอร์ม 2 ขั้น (2026-10-12) · ทั้งคู่ต้องมาจาก Catalog
+  assert.equal(await page.getByText(catalog.duration, { exact: true }).count(), 2, 'C1 duration appears in the page body and in the form price block');
+  assert.equal(await page.getByText(fmtPrice('daily-sales-consulting'), { exact: true }).count(), 2, 'C1 price appears in the page body and in the form price block');
+  assert.equal(await page.locator('[data-lead-form-section] [data-offer-block]').getByText(fmtPrice('daily-sales-consulting'), { exact: true }).count(), 1, 'C1 form price block must show the Catalog price');
+  assert.equal(await page.locator('form[data-lead-form][data-steps="2"]').count(), 1, 'C1 lead form lets the buyer pick at most 2 topics (1 day = 2 topics)');
+
 
   const chooser = page.locator('[data-symptom-chooser]');
   const chooserActions = chooser.locator('a[data-track-chooser]');
@@ -615,7 +621,7 @@ test('C1 daily consulting is one day-rate service with six selectable topics, tw
   assert.equal(await consultSystems.locator('img').evaluateAll((images) => images.every((image) => image.getAttribute('loading') === 'lazy')), true, 'the below-fold five-system proof must stay lazy-loaded');
   assert.equal(await page.getByText('“ปันคุยง่าย เข้าใจสิ่งที่ CEO ต้องการ และหาทางออกให้ได้”', { exact: true }).count(), 1, 'C1 must use the approved bounded client quote');
   assert.equal(await page.locator('[data-product-faq-button]').count(), 8, 'C1 must publish the approved eight FAQs');
-  assert.equal(await page.locator('form').count(), 0, 'C1 detail page must not include a form');
+  assert.equal(await page.locator('form').count(), 1, 'C1 detail page must include exactly one lead form (C1 switched from chat ads to form 2026-10-12)');
   assert.equal(await page.locator('[data-floating-line]').count(), 1, 'C1 must retain exactly one global Floating LINE CTA');
   const bookingCtas = page.locator('[data-product-code="C1"][data-booking-cta]');
   assert.equal(await bookingCtas.count(), 4, 'C1 must provide one booking action at each main decision point');

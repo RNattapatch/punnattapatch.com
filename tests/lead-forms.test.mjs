@@ -360,6 +360,60 @@ for (const [label, landing, hop] of [
   }
 }
 
+// ══════ ฟอร์ม 2 ขั้นในหน้าสินค้า (2026-10-12 · framework-lp-cta-form-first-consult-2026-10) ══════
+// ขั้น 1 กดเลือกเรื่องที่ติด + ขนาดทีม + บทบาท → ขั้น 2 ชื่อ + เบอร์ + ยินยอม
+// ต้องเช็ค: เลือกเกินกำหนดไม่ได้ · ข้ามขั้น 1 ไม่ได้ · payload มี source/team_size/position/problems/utm ครบ
+for (const c of [
+  { label: 'C1 (เลือกได้ 2 เรื่อง)', path: '/services/daily-consulting', source: 'lp-c1-daily-consulting', pick: [0, 3], max: 2 },
+  { label: 'T4 (เลือก 1 เรื่อง)', path: '/services/advance-ai-automation', source: 'lp-t4-advance-ai-automation', pick: [1], max: 1 },
+  { label: 'T2 (เลือกได้ 3 เรื่อง)', path: '/services/online-to-sales', source: 'lp-t2-online-to-sales', pick: [0, 2], max: 3 },
+]) {
+  console.log(`\n[9] ฟอร์ม 2 ขั้น — ${c.label}`);
+  const ctx = await browser.newContext({ ...devices['iPhone 13'] });
+  await sealContext(ctx);
+  const page = await ctx.newPage();
+  let sent = null;
+  await page.route(N8N, async (r) => { sent = JSON.parse(r.request().postData() || '{}'); await r.fulfill({ status: 200, body: '{"ok":true}' }); });
+  await page.goto(`${BASE}${c.path}?utm_source=facebook&utm_medium=paid&utm_campaign=2610-two-step-test&utm_content=ad-a&fbclid=TESTFBCLID9`, { waitUntil: 'domcontentloaded' });
+  const form = page.locator('[data-lead-form-section] form[data-steps]');
+  await form.waitFor({ state: 'attached', timeout: 8000 });
+  check(await form.getAttribute('data-steps') === String(c.max), `data-steps = ${c.max}`);
+  check(await form.locator('[data-step="2"]').isHidden(), 'เปิดมาเห็นแค่ขั้น 1');
+
+  await form.locator('[data-step-next]').click();
+  check(await form.locator('[data-step="2"]').isHidden(), 'ยังไม่เลือกอะไร กดถัดไปแล้วไม่ข้ามไปขั้น 2');
+  check(((await form.locator('[data-step-error]').textContent()) || '').includes('ยังไม่ได้เลือก'), 'บอกว่ายังไม่ได้เลือกอะไร');
+
+  const topics = form.locator('input[name="topic"]');
+  for (const i of c.pick) await topics.nth(i).check({ force: true });
+  if (c.max === 2) {
+    await topics.nth(5).check({ force: true }).catch(() => {});
+    check(await topics.nth(5).isChecked() === false, 'ติ๊กเรื่องที่ 3 ไม่ได้ (วันเดียวไม่เกิน 2 เรื่อง)');
+  }
+  await form.locator('input[name="team_size"]').nth(2).check({ force: true });
+  await form.locator('input[name="position"]').nth(0).check({ force: true });
+  await form.locator('[data-step-next]').click();
+  check(await form.locator('[data-step="2"]').isVisible(), 'เลือกครบแล้วไปขั้น 2');
+
+  await form.locator('input[name="name"]').fill('ทดสอบ ระบบ');
+  await form.locator('input[name="phone"]').fill('0812345678');
+  await form.locator('input[name="consent"]').check({ force: true });
+  await form.locator('[data-lead-submit]').click();
+  for (let i = 0; i < 12 && sent === null; i++) await page.waitForTimeout(400);
+
+  check(sent?.source === c.source, `source = "${sent?.source}"`);
+  check(sent?.team_size === '6–20 คน', `team_size ถึง payload (${sent?.team_size})`);
+  check(sent?.position === 'เจ้าของ / ผู้บริหาร', 'position (บทบาท) ถึง payload');
+  check(sent?.tier === 'HOT' && sent?.lead_temp === 'hot', 'เจ้าของ/ผู้บริหาร = HOT');
+  check((sent?.problems || '').split(' · ').length === c.pick.length, `เรื่องที่เลือก ${c.pick.length} ข้อ รวมใน problems (${sent?.problems})`);
+  check(!('topic' in (sent || {})), 'ไม่ส่ง key topic ดิบ (รวมเป็นข้อความแล้ว)');
+  check(sent?.utm_campaign === '2610-two-step-test' && sent?.fbclid === 'TESTFBCLID9', 'utm + fbclid ถึง payload');
+  check(/^PN-\d{12}-[A-Z0-9]{4}$/.test(sent?._meta?.reference || ''), 'มี reference (eventID ให้ Meta dedupe)');
+  await page.waitForURL(/\/thank-you/, { timeout: 5000 }).catch(() => {});
+  check(/\/thank-you/.test(page.url()), 'ส่งแล้วไปหน้า /thank-you');
+  await ctx.close();
+}
+
 // ══════ bosi quiz — ของฟรี ต้องไม่แตะท่อ lead ══════
 // เปลี่ยน 2026-08-17: quiz ย้ายไป /webhook/free-material (Audience Center)
 // assertion ที่สำคัญที่สุดคือ "ห้ามยิงเข้า intake-form-v2" — ถ้ากลับไปยิงเมื่อไหร่

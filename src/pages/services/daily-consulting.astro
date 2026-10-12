@@ -1,14 +1,45 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductDetailLayout from '../../components/services/detail/ProductDetailLayout.astro';
+import ProductLeadForm from '../../components/forms/ProductLeadForm.astro';
+import { CATALOG } from '../../data/pricing.mjs';
 import { resolveProductDetailCatalog } from '../../data/product-details/catalog';
 import { C1_PRODUCT_DETAIL } from '../../data/product-details/c1';
 import { SITE } from '../../data/site';
 
 const catalog = resolveProductDetailCatalog(C1_PRODUCT_DETAIL.pricingKey);
 const canonical = `${SITE.url}${C1_PRODUCT_DETAIL.route}`;
+// ราคาครบรอบ = 2 × ค่าตัวรายวัน (คุณปันเคาะ 2026-10-08) · คำนวณจาก catalog ห้ามพิมพ์ตัวเลข
+const fullRound = `฿${(CATALOG['daily-sales-consulting'].amount * 2).toLocaleString('en-US')} · วันที่ 2 ภายใน 14 วัน ทดสอบกับงานจริง + ดูแลต่อ 30 วัน`;
 ---
 
 <BaseLayout title={C1_PRODUCT_DETAIL.seo.title} description={C1_PRODUCT_DETAIL.seo.description} canonical={canonical} ogImage={`${SITE.url}${catalog.image}`} schema={{ types: ['WebPage', 'FAQPage', 'BreadcrumbList', 'ProductDetail'], title: C1_PRODUCT_DETAIL.seo.title, description: C1_PRODUCT_DETAIL.seo.description, url: canonical, faq: C1_PRODUCT_DETAIL.faq, breadcrumbs: [{ name: 'บริการ', url: `${SITE.url}/services` }, { name: catalog.name, url: canonical }], productDetail: { code: C1_PRODUCT_DETAIL.code, kind: C1_PRODUCT_DETAIL.kind, serviceType: C1_PRODUCT_DETAIL.serviceType, name: catalog.name, description: C1_PRODUCT_DETAIL.seo.description, url: canonical, duration: catalog.duration } }}>
   <ProductDetailLayout data={C1_PRODUCT_DETAIL} />
+  {/* 2026-10-12 · C1 เปลี่ยนจากแอดทักแชทเป็นฟอร์ม (คุณปันสั่ง) · ปุ่มจองบนหน้าเลื่อนลงมาที่นี่แทนการไป /booking */}
+  <ProductLeadForm
+    code={C1_PRODUCT_DETAIL.code}
+    source="lp-c1-daily-consulting"
+    bookingType="daily-sales-consulting"
+    eventPrefix="c1_daily_consulting"
+    eyebrow="เลือก 2 เรื่อง แล้วคุยกันก่อน"
+    heading="ทีมขายติดเรื่องไหน เลือกมาได้ 2 เรื่อง"
+    intro="วันเดียวผมลงระบบได้ไม่เกิน 2 เรื่อง เลือกเรื่องที่เจ็บที่สุดไว้ แล้วทิ้งชื่อกับเบอร์ครับ ผมติดต่อกลับภายในวันทำการเดียวกัน คุยกันไม่เกิน 15 นาทีว่า 2 เรื่องนี้ใช่จุดที่ควรเริ่มไหม ถ้าตรงกัน ผมออกใบเสนอราคาให้ในวันที่คุย"
+    topicLegend="ตอนนี้ทีมขายเจอเรื่องไหนอยู่"
+    topicMax={2}
+    topics={[
+      { value: 'c1-topic-hiring', label: 'จ้างเซลล์มาไม่นานก็ออก' },
+      { value: 'c1-topic-comp', label: 'เป้าตั้งจากความรู้สึก เซลล์เลือกขายแต่ของง่าย' },
+      { value: 'c1-topic-lead', label: 'ต้องถามเองทุกเช้าว่าดีลไหนถึงไหน' },
+      { value: 'c1-topic-sales', label: 'ลูกค้าทักแล้วเงียบ ส่งราคาแล้วไม่มีใครตาม' },
+      { value: 'c1-topic-docs', label: 'ใบเสนอราคาใบละครึ่งชั่วโมง' },
+      { value: 'c1-topic-content', label: 'รู้ว่าต้องโพสต์ แต่ไม่มีใครมีเวลา' },
+    ]}
+    priceKey="daily-sales-consulting"
+    priceFormat="ผมเข้าไปที่บริษัทคุณ 1 วัน · เช้าเก็บโจทย์จากตัวเลขจริง บ่ายลงระบบพื้นฐานให้ทีมใช้"
+    priceExtra={fullRound}
+    notFor="ยังไม่เหมาะถ้าทีมขายยังไม่ถึง 3 คน หรือยังไม่มีสินค้าที่ขายอยู่จริง"
+    lineUrl={SITE.social.line}
+    lineLabel="ทัก LINE ส่งตัวเลขหรือรูป Report ให้ผมดูก่อน"
+    lineNote="ยังไม่อยากกรอกฟอร์ม? ส่งตัวเลขคร่าวๆ มาใน LINE ก่อนก็ได้ครับ"
+  />
 </BaseLayout>

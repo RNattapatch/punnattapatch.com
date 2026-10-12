@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductDetailLayout from '../../components/services/detail/ProductDetailLayout.astro';
+import ProductLeadForm from '../../components/forms/ProductLeadForm.astro';
 import { resolveProductDetailCatalog } from '../../data/product-details/catalog';
 import { T2_PRODUCT_DETAIL } from '../../data/product-details/t2';
 import { SITE } from '../../data/site';
@@ -11,4 +12,25 @@ const canonical = `${SITE.url}${T2_PRODUCT_DETAIL.route}`;
 
 <BaseLayout title={T2_PRODUCT_DETAIL.seo.title} description={T2_PRODUCT_DETAIL.seo.description} canonical={canonical} ogImage={`${SITE.url}${catalog.image}`} schema={{ types: ['WebPage', 'FAQPage', 'BreadcrumbList', 'ProductDetail'], title: T2_PRODUCT_DETAIL.seo.title, description: T2_PRODUCT_DETAIL.seo.description, url: canonical, faq: T2_PRODUCT_DETAIL.faq, breadcrumbs: [{ name: 'บริการ', url: `${SITE.url}/services` }, { name: catalog.name, url: canonical }], productDetail: { code: T2_PRODUCT_DETAIL.code, kind: T2_PRODUCT_DETAIL.kind, name: catalog.name, description: T2_PRODUCT_DETAIL.seo.description, url: canonical, duration: catalog.duration } }}>
   <ProductDetailLayout data={T2_PRODUCT_DETAIL} />
+  {/* 2026-10-12 · ฟอร์ม 2 ขั้นในหน้า (เดิมต้องกดไป /booking 10 ช่อง) */}
+  <ProductLeadForm
+    code={T2_PRODUCT_DETAIL.code}
+    source="lp-t2-online-to-sales"
+    bookingType="tiktok-workshop"
+    eventPrefix="t2_online_to_sales"
+    eyebrow="เล่าโจทย์ก่อน แล้วค่อยนัดวันเรียน"
+    heading="ทีมขายติดตรงไหนกับการหาลูกค้าออนไลน์"
+    intro="กดเลือกสิ่งที่ทีมเจอ แล้วทิ้งชื่อกับเบอร์ไว้ครับ ผมติดต่อกลับภายในวันทำการเดียวกัน คุยกันไม่เกิน 15 นาทีว่าทีมคุณติดที่คอนเทนต์หรือที่แอด และควรเริ่มตรงไหน พร้อมส่ง Class Outline ให้เปิดดูกับทีม"
+    topicLegend="ทีมขายเจอเรื่องไหนบ้าง"
+    topicMax={3}
+    topics={[
+      { value: 't2-silent', label: 'โพสต์ไปแล้วเงียบ ไม่มีใครทักมาถาม' },
+      { value: 't2-ideas', label: 'พรุ่งนี้จะโพสต์อะไร ยังคิดไม่ออก' },
+      { value: 't2-ads', label: 'ยิงแอดไปก็ได้แต่คนดู ไม่มีใครถามราคา' },
+    ]}
+    priceKey="tiktok-workshop"
+    notFor="ยังไม่เหมาะถ้าอยากจ้างทีมภายนอกยิงแอดหรือทำคอนเทนต์รายเดือนให้"
+    lineUrl={SITE.social.line}
+    lineLabel="ทัก LINE ถามผมสั้นๆ ก่อน"
+  />
 </BaseLayout>

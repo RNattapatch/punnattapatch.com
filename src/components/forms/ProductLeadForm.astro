@@ -17,6 +17,10 @@
  */
 import AfterHoursField from '../AfterHoursField.astro';
 import SuccessMark from '../SuccessMark.astro';
+import { CATALOG, fmtPrice } from '../../data/pricing.mjs';
+
+/** ตัวเลือกขั้นที่ 1 ของฟอร์ม 2 ขั้น — ใช้คำที่เจ้าของพูดเอง ไม่ใช่ชื่อบริการ */
+interface StepTopic { value: string; label: string; }
 
 interface Props {
   /** รหัสสินค้า เช่น T4 — ใช้เป็น content_ids ของ pixel */
@@ -39,6 +43,22 @@ interface Props {
   lineLabel?: string;
   lineNote?: string;
   id?: string;
+  /**
+   * 2026-10-12 · ฟอร์ม 2 ขั้น (wiki framework-lp-cta-form-first-consult-2026-10)
+   * ขั้น 1 = กดเลือกเรื่องที่ติด + ขนาดทีม + บทบาท · ขั้น 2 = ชื่อ + เบอร์ + ยินยอม
+   * ไม่ส่ง topics = ฟอร์มขั้นเดียวแบบเดิม (หน้า /ads/* ยังใช้แบบนั้น)
+   */
+  topics?: StepTopic[];
+  topicLegend?: string;
+  /** เลือกได้กี่เรื่อง · C1 = 2 (1 วันลงระบบได้ไม่เกิน 2 เรื่อง) */
+  topicMax?: number;
+  /** key ใน pricing.mjs — แสดงบล็อกราคาข้างฟอร์ม (ห้ามพิมพ์ตัวเลขเอง) */
+  priceKey?: string;
+  priceFormat?: string;
+  /** บรรทัดราคาทางเลือก เช่น แบบครบรอบ 2 วัน (ส่งข้อความที่คำนวณจาก CATALOG มาแล้ว) */
+  priceExtra?: string;
+  notFor?: string;
+  quizUrl?: string;
 }
 
 const {
@@ -56,7 +76,24 @@ const {
   lineLabel = 'ทัก LINE ถามผมสั้นๆ ก่อน',
   lineNote = 'ยังไม่อยากกรอกฟอร์ม? ทักไลน์มาถามผมสั้นๆ ก่อนก็ได้ครับ',
   id = 'product-lead-form',
+  topics,
+  topicLegend = 'ทีมขายติดเรื่องไหนอยู่ครับ',
+  topicMax = 1,
+  priceKey,
+  priceFormat = 'In-house ที่บริษัทคุณ · ราคาเดียวทั้งทีม ไม่เกิน 20 คน',
+  priceExtra,
+  notFor,
+  quizUrl = '/team-check',
 } = Astro.props;
+
+const steps = Array.isArray(topics) && topics.length > 0;
+const entry = priceKey ? CATALOG[priceKey] : undefined;
+const price = priceKey ? fmtPrice(priceKey) : '';
+// ราคาห้ามเป็นบรรทัดสุดท้าย (memory price-never-last-line) → ต่อด้วยตัวเลขต่อหัวที่คำนวณจาก catalog
+const perHead = entry ? `฿${Math.round(entry.amount / 10).toLocaleString('en-US')}` : '';
+const topicType = topicMax > 1 ? 'checkbox' : 'radio';
+const TEAM_SIZES = ['ไม่มี / 1–2 คน', '3–5 คน', '6–20 คน', 'มากกว่า 20 คน'];
+const ROLES = ['เจ้าของ / ผู้บริหาร', 'หัวหน้าฝ่ายขาย', 'พนักงาน / ทีมงาน'];
 ---
 
 <section id={id} class="scroll-mt-20 bg-ivory px-6 py-16 md:py-24" data-lead-form-section>
@@ -65,6 +102,20 @@ const {
       <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">{eyebrow}</p>
       <h2 class="mt-3 font-display text-3xl font-bold leading-tight text-navy md:text-5xl">{heading}</h2>
       <p class="mt-5 leading-relaxed text-warm-ink/75">{intro}</p>
+      {entry && (
+        <div class="offer-block mt-8 rounded-2xl border border-[#c9c2b2] bg-white/60 p-5" data-offer-block>
+          <p class="text-xs font-bold uppercase tracking-[0.14em] text-warm-ink/60">รายละเอียดและค่าบริการ</p>
+          <dl class="mt-3 grid gap-2 text-sm">
+            <div class="offer-row"><dt>รูปแบบ</dt><dd>{priceFormat}</dd></div>
+            <div class="offer-row"><dt>ระยะเวลา</dt><dd>{entry.duration}</dd></div>
+            <div class="offer-row"><dt>ค่าบริการ</dt><dd><span class="text-lg font-bold text-navy tabular-nums">{price}</span></dd></div>
+            {priceExtra && <div class="offer-row"><dt>แบบครบรอบ</dt><dd>{priceExtra}</dd></div>}
+          </dl>
+          <p class="mt-3 text-sm leading-relaxed text-warm-ink/75">ทีม 10 คน เฉลี่ยคนละ <span class="tabular-nums">{perHead}</span> · ออกใบเสนอราคาในนามบริษัทได้</p>
+          {notFor && <p class="mt-2 text-sm leading-relaxed text-warm-ink/65">{notFor}</p>}
+          <p class="mt-3 text-sm leading-relaxed text-warm-ink/75">ยังไม่แน่ใจว่าทีมติดเรื่องไหน? <a href={quizUrl} class="font-semibold text-cyan underline" data-quiz-link>ลองเช็คทีมขาย 2 นาที</a> ไม่ต้องกรอกข้อมูลติดต่อ</p>
+        </div>
+      )}
     </div>
 
     <form
@@ -76,8 +127,61 @@ const {
       data-booking-type={bookingType}
       data-event-prefix={eventPrefix}
       data-industry={industry}
+      data-steps={steps ? String(topicMax) : undefined}
     >
       <input name="honeypot-name" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true" />
+      {steps && (
+        <div class="space-y-6" data-step="1">
+          <p class="step-count" aria-live="polite">ขั้นที่ 1 จาก 2 · กดเลือก ไม่ต้องพิมพ์</p>
+          <fieldset class="field-label">
+            <legend class="mb-2">{topicLegend}{topicMax > 1 && <span class="font-normal text-warm-ink/60"> (เลือกได้ไม่เกิน {topicMax} เรื่อง)</span>}</legend>
+            <div class="grid gap-2.5">
+              {topics!.map((t) => (
+                <label class="choice"><input type={topicType} name="topic" value={t.value} data-label={t.label} class="accent-coral" /><span>{t.label}</span></label>
+              ))}
+              <label class="choice"><input type={topicType} name="topic" value="unsure" data-label="ยังไม่แน่ใจ อยากให้ช่วยดู" class="accent-coral" /><span>ยังไม่แน่ใจ อยากให้ช่วยดู</span></label>
+            </div>
+            <p class="quiz-hint hidden text-sm font-normal text-warm-ink/75" data-quiz-hint>ไปต่อได้เลยครับ เดี๋ยวผมช่วยดูตอนคุย หรือ <a href={quizUrl} class="font-semibold text-cyan underline" data-quiz-link>เช็คทีมขาย 2 นาทีก่อน</a></p>
+          </fieldset>
+          <fieldset class="field-label">
+            <legend class="mb-2">ทีมขายมีกี่คน</legend>
+            <div class="grid grid-cols-2 gap-2.5">
+              {TEAM_SIZES.map((v) => (<label class="choice"><input type="radio" name="team_size" value={v} required class="accent-coral" /><span>{v}</span></label>))}
+            </div>
+          </fieldset>
+          <fieldset class="field-label">
+            <legend class="mb-2">คุณดูแลส่วนไหน</legend>
+            <div class="grid gap-2.5 sm:grid-cols-3">
+              {ROLES.map((v) => (<label class="choice"><input type="radio" name="position" value={v} required class="accent-coral" /><span>{v}</span></label>))}
+            </div>
+          </fieldset>
+          <p data-step-error class="hidden rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error" role="alert" aria-live="polite"></p>
+          <button type="button" data-step-next class="btn min-h-11 w-full border-0 bg-coral py-4 text-base text-white hover:bg-[#c43245]">ถัดไป · เหลือชื่อกับเบอร์</button>
+        </div>
+      )}
+      {steps && (
+        <div class="space-y-5" data-step="2">
+          <div class="flex items-center justify-between gap-3">
+            <p class="step-count" aria-live="polite">ขั้นที่ 2 จาก 2</p>
+            <button type="button" data-step-back class="text-sm font-semibold text-cyan underline">← แก้คำตอบ</button>
+          </div>
+          <label class="field-label">ชื่อของคุณ<input name="name" required autocomplete="name" autocapitalize="words" enterkeyhint="next" class="field" aria-label="ชื่อของคุณ" /></label>
+          <label class="field-label">เบอร์โทรมือถือ<input name="phone" type="tel" required inputmode="tel" autocomplete="tel" enterkeyhint="next" pattern={"[0-9\\(\\)\\+\\-\\s]{9,15}"} class="field" placeholder="เช่น 0812345678" aria-label="เบอร์โทรมือถือ" /></label>
+          <label class="field-label">ชื่อบริษัท <span class="font-normal text-warm-ink/55">(ถ้ามี)</span><input name="business" autocomplete="organization" enterkeyhint="done" class="field" placeholder="เช่น บริษัท ตัวอย่าง จำกัด" aria-label="ชื่อบริษัท" /></label>
+          <input data-attr="utm_source" name="utm_source" type="hidden" />
+          <input data-attr="utm_medium" name="utm_medium" type="hidden" />
+          <input data-attr="utm_campaign" name="utm_campaign" type="hidden" />
+          <input data-attr="utm_content" name="utm_content" type="hidden" />
+          <input data-attr="utm_term" name="utm_term" type="hidden" />
+          <input data-attr="fbclid" name="fbclid" type="hidden" />
+          <input data-attr="ttclid" name="ttclid" type="hidden" />
+          <label class="flex cursor-pointer items-start gap-3 pt-1"><input name="consent" type="checkbox" required class="checkbox mt-0.5" aria-label="ยินยอมให้ติดต่อกลับตามนโยบายความเป็นส่วนตัว" /><span class="text-sm leading-relaxed text-warm-ink/75">ยินยอมให้ติดต่อกลับตาม <a href="/privacy" class="font-semibold text-cyan underline">นโยบายความเป็นส่วนตัว</a></span></label>
+          <p class="text-sm leading-relaxed text-warm-ink/70">ผมอ่านเองแล้วติดต่อกลับภายในวันทำการเดียวกัน คุยกันไม่เกิน 15 นาทีว่าควรเริ่มเรื่องไหน</p>
+          <p data-lead-error class="hidden rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error" role="alert" aria-live="polite"></p>
+          <button data-lead-submit type="submit" class="btn min-h-11 w-full border-0 bg-coral py-4 text-base text-white hover:bg-[#c43245]" aria-label="ส่งโจทย์ให้ผม">ส่งโจทย์ให้ผม</button>
+        </div>
+      )}
+      {!steps && (
       <div class="space-y-5">
         <label class="field-label">ชื่อของคุณ<input name="name" required autocomplete="name" class="field" aria-label="ชื่อของคุณ" /></label>
         <label class="field-label">ชื่อบริษัท<input name="business" required autocomplete="organization" class="field" placeholder="เช่น บริษัท ตัวอย่าง จำกัด" aria-label="ชื่อบริษัท" /></label>
@@ -113,6 +217,7 @@ const {
         <p data-lead-error class="hidden rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error" role="alert" aria-live="polite"></p>
         <button data-lead-submit type="submit" class="btn min-h-11 w-full border-0 bg-coral py-4 text-base text-white hover:bg-[#c43245]" aria-label="ส่งข้อมูล">ส่งข้อมูล</button>
       </div>
+      )}
     </form>
 
     <div data-lead-success class="editorial-card hidden p-8 text-center lg:col-start-2" role="status" aria-live="polite">
@@ -151,7 +256,20 @@ const {
   .field { width: 100%; border: 1px solid var(--pun-border); border-radius: .75rem; background: var(--pun-ivory); color: var(--pun-ink); padding: .75rem 1rem; min-height: 44px; }
   .field:focus { border-color: var(--pun-coral); outline: 2px solid color-mix(in oklch, var(--pun-coral) 25%, transparent); outline-offset: 2px; }
   .line-button { min-height: 44px; }
-  @media (prefers-reduced-motion: reduce) { .line-button { transition: none; } }
+  .step-count { color: color-mix(in oklch, var(--pun-ink) 60%, transparent); font-size: .85rem; font-weight: 600; }
+  .choice { display: flex; align-items: flex-start; gap: .65rem; min-height: 44px; cursor: pointer; border: 1px solid #c9c2b2; border-radius: .75rem; background: var(--pun-ivory); padding: .7rem .9rem; font-weight: 500; line-height: 1.5; transition: border-color .15s, background .15s, box-shadow .15s; }
+  .choice input { margin-top: .3rem; flex: none; }
+  .choice:has(input:checked) { border-color: var(--pun-coral); background: color-mix(in oklch, var(--pun-coral) 7%, transparent); box-shadow: inset 0 0 0 1px var(--pun-coral); }
+  .choice { touch-action: manipulation; }
+  .choice:active { transform: scale(.98); }
+  [data-step-back]:active { opacity: .6; }
+  .offer-row { display: grid; grid-template-columns: 5.5rem 1fr; gap: .75rem; align-items: baseline; }
+  .offer-row dt { color: color-mix(in oklch, var(--pun-ink) 60%, transparent); }
+  .offer-row dd { color: var(--pun-ink); line-height: 1.55; }
+  [data-steps].js-steps [data-step="2"], [data-steps].js-steps.on-step-2 [data-step="1"] { display: none; }
+  [data-steps].js-steps.on-step-2 [data-step="2"] { display: block; }
+  /* ลดการเคลื่อนไหว = ตัดการเดินทาง แต่เก็บ "กดติดแล้ว" ไว้ (apple-refinement ข้อ 2) */
+  @media (prefers-reduced-motion: reduce) { .line-button { transition: none; } .choice { transition-duration: 100ms !important; } }
 </style>
 
 <script>
@@ -189,6 +307,61 @@ const {
     return `PN-${stamp}-${rand}`;
   }
 
+  /**
+   * ฟอร์ม 2 ขั้น · ขั้น 1 กดเลือก 3 ข้อ แล้วค่อยขอชื่อกับเบอร์ (ช่องที่คนหลุดมากที่สุดไว้ท้าย)
+   * ไม่มี JS → class js-steps ไม่ถูกใส่ ทั้ง 2 ขั้นโชว์พร้อมกันเหมือนฟอร์มปกติ
+   */
+  function bindSteps(form: HTMLFormElement, max: number, code: string) {
+    const topicInputs = [...form.querySelectorAll<HTMLInputElement>('input[name="topic"]')];
+    const hint = form.querySelector('[data-quiz-hint]') as HTMLElement | null;
+    const stepError = form.querySelector('[data-step-error]') as HTMLElement | null;
+    const next = form.querySelector('[data-step-next]') as HTMLButtonElement | null;
+    const back = form.querySelector('[data-step-back]') as HTMLButtonElement | null;
+    let step1Sent = false;
+    form.classList.add('js-steps');
+
+    const showError = (msg: string) => { if (stepError) { stepError.textContent = msg; stepError.classList.toggle('hidden', !msg); } };
+
+    topicInputs.forEach((input) => input.addEventListener('change', () => {
+      const checked = topicInputs.filter((el) => el.checked);
+      if (max > 1 && checked.length > max) {
+        input.checked = false;
+        showError(`เลือกได้ไม่เกิน ${max} เรื่องครับ วันเดียวผมลงระบบได้ไม่เกิน ${max} เรื่อง เรื่องที่เหลือค่อยคุยกันตอนโทร`);
+        return;
+      }
+      showError('');
+      hint?.classList.toggle('hidden', !topicInputs.some((el) => el.checked && el.value === 'unsure'));
+    }));
+
+    next?.addEventListener('click', () => {
+      const topics = topicInputs.filter((el) => el.checked);
+      const team = form.querySelector<HTMLInputElement>('input[name="team_size"]:checked');
+      const role = form.querySelector<HTMLInputElement>('input[name="position"]:checked');
+      const missing = [!topics.length && 'เรื่องที่ติด', !team && 'จำนวนทีมขาย', !role && 'ส่วนที่คุณดูแล'].filter(Boolean);
+      if (missing.length) {
+        showError(`ยังไม่ได้เลือก${missing.join(' · ')}ครับ`);
+        (topics.length ? (team ? form.querySelector('input[name="position"]') : form.querySelector('input[name="team_size"]')) : topicInputs[0] as HTMLElement | null)?.focus();
+        return;
+      }
+      showError('');
+      form.classList.add('on-step-2');
+      // เว้นที่ให้แถบเมนูที่ติดบนจอ (สูง ~70px) ไม่งั้นหัวขั้นที่ 2 หลบอยู่ใต้เมนู
+      window.scrollTo({ top: form.getBoundingClientRect().top + window.scrollY - 88, behavior: 'auto' });
+      (form.querySelector('input[name="name"]') as HTMLInputElement | null)?.focus({ preventScroll: true });
+      if (!step1Sent) {
+        step1Sent = true;
+        const props = { content_ids: [code], topics: topics.map((el) => el.value).join(','), team_size: team!.value, role: role!.value };
+        try { pageWindow.fbq?.('trackCustom', 'FormStep1', props); } catch {}
+        try { (window as Window & { plausible?: (...a: unknown[]) => void }).plausible?.('FormStep1', { props }); } catch {}
+      }
+    });
+
+    back?.addEventListener('click', () => {
+      form.classList.remove('on-step-2');
+      topicInputs[0]?.focus();
+    });
+  }
+
   function bind(form: HTMLFormElement) {
     const section = form.closest('[data-lead-form-section]') as HTMLElement | null;
     const success = section?.querySelector('[data-lead-success]') as HTMLElement | null;
@@ -201,6 +374,8 @@ const {
     const industry = form.dataset.industry || '';
     const viewEvent = `${prefix}_form`;
     const leadEvent = `${prefix}_booking`;
+    const steps = Number(form.dataset.steps || 0);
+    if (steps) bindSteps(form, steps, code);
 
     const query = new URLSearchParams(window.location.search);
     const stored = pageWindow.pnAttribution || {};
@@ -235,20 +410,36 @@ const {
         return;
       }
 
-      const payload = Object.fromEntries(new FormData(form).entries());
+      const formData = new FormData(form);
+      const payload: Record<string, unknown> = Object.fromEntries(formData.entries());
+      if (steps) {
+        // ฟอร์ม 2 ขั้น: เรื่องที่ติดเลือกได้หลายข้อ (FormData.entries เก็บแค่ตัวท้าย) → รวมเป็นข้อความเดียว
+        const topics = [...form.querySelectorAll<HTMLInputElement>('input[name="topic"]:checked')].map((el) => el.dataset.label || el.value);
+        const summary = topics.join(' · ');
+        delete payload.topic;
+        Object.assign(payload, {
+          intent: 'booking',
+          sales_issue: summary,
+          comment_detail: `เรื่องที่อยากแก้: ${summary} · ทีมขาย: ${payload.team_size || '-'} · ดูแล: ${payload.position || '-'}`,
+        });
+      }
       const intentLabel = payload.intent === 'booking' ? 'ขอนัดจองคิว' : 'คุยเบื้องต้นก่อน';
       // รหัสอ้างอิงตัวเดียว ใช้ทั้งใน payload · เป็น eventID ให้ Meta dedupe · และส่งต่อไป /thank-you
       const reference = makeFormReference();
       Object.assign(payload, {
         phone: phoneRaw,
-        lead_temp: payload.intent === 'booking' ? 'hot' : 'warm',
+        lead_temp: steps
+          ? (String(payload.position || '').startsWith('เจ้าของ') ? 'hot' : 'warm')
+          : payload.intent === 'booking' ? 'hot' : 'warm',
         // Compatibility aliases for the shared intake-form-v2 flow + submit_lead RPC
         // (it reads company/tier/problems/comment, not the raw field names).
         company: payload.business || '',
         industry,
-        tier: payload.intent === 'booking' ? 'HOT' : 'WARM',
+        tier: steps
+          ? (String(payload.position || '').startsWith('เจ้าของ') ? 'HOT' : 'WARM')
+          : payload.intent === 'booking' ? 'HOT' : 'WARM',
         problems: (payload.sales_issue as string) || '',
-        comment: [intentLabel, payload.sales_issue].filter(Boolean).join(' — '),
+        comment: steps ? String(payload.comment_detail || '') : [intentLabel, payload.sales_issue].filter(Boolean).join(' — '),
         source,
         source_page: window.location.pathname.replace(/^\//, ''),
         booking_type: bookingType,
@@ -263,6 +454,7 @@ const {
           fbc: fbCookie('_fbc'),
         },
       });
+      delete payload.comment_detail;
       foldAfterHours(payload as Record<string, unknown>);
 
       // ตาข่ายในหน้าเดิม — ใช้เมื่อ redirect ไป /thank-you ไม่ทำงาน
@@ -323,7 +515,7 @@ const {
           return;
         }
         if (error) { error.textContent = 'ระบบรับข้อมูลขัดข้องชั่วคราว — ข้อมูลยังไม่ถึงผม กรุณาลองใหม่ หรือแอด LINE เพื่อส่งโจทย์ให้ผม'; error.classList.remove('hidden'); }
-        if (submit) { submit.disabled = false; submit.textContent = 'ส่งข้อมูล'; }
+        if (submit) { submit.disabled = false; submit.textContent = steps ? 'ส่งโจทย์ให้ผม' : 'ส่งข้อมูล'; }
       }
     });
   }
