@@ -620,21 +620,24 @@ test('C1 daily consulting is one day-rate service with six selectable topics, tw
   assert.equal(await page.locator('[data-proof-id="c1-scenery-room"]').count(), 1, 'C1 must show inspectable Scenery work proof');
   assert.equal(await page.locator('[data-proof-id="c1-hfc-journey"]').count(), 1, 'C1 must show the approved HFC training-to-consult proof');
   assert.equal(await page.locator('[data-proof-id="c1-system-receipt"]').count(), 0, 'C1 must not repeat the Command Center as a small proof card');
+  // 2026-10-14: บล็อก Business OS เฉพาะหน้า Consult — ภาพใหญ่ก่อน แล้ว 5 ระบบเรียงตามที่ลูกค้า Consult เลือก
+  // (memory voc-consult-clients-love-systems · wiki audit-closing-funnel-loop-grandma-test-2026-10 §5.3)
   const consultSystems = page.locator('[data-consult-proof-systems]');
-  assert.equal(await consultSystems.count(), 1, 'C1 must reuse the five-system proof experience in a consult-specific context');
-  assert.equal(await consultSystems.locator('[data-proof-system-card]').count(), 5, 'C1 must show all five systems that Pun uses in the business');
-  assert.equal(await consultSystems.locator('[data-consult-outcome]').count(), 5, 'C1 must make five owner-life outcomes glanceable before the full evidence');
-  assert.deepEqual(await consultSystems.locator('[data-consult-outcome]').evaluateAll((items) => items.map((item) => item.getAttribute('href'))), [
-    '#proof-system-command-center',
-    '#proof-system-doc-bot',
-    '#proof-system-night-scout',
-    '#proof-system-line-agent',
-    '#proof-system-news-desk',
-  ], 'each outcome preview must map directly to its full system receipt');
+  assert.equal(await consultSystems.count(), 1, 'C1 must carry one consult-specific proof block');
+  assert.match(await consultSystems.locator('h2').innerText(), /ข้อมูลทั้งธุรกิจอยู่ที่เดียว แล้ว AI หลายตัวทำงานบนนั้น/, 'C1 proof must open with the Business OS picture');
+  assert.equal(await consultSystems.locator('[data-consult-hub]').count(), 1, 'C1 proof must show the one-data-hub screen before the systems');
+  assert.deepEqual(
+    await consultSystems.locator('[data-consult-system]').evaluateAll((items) => items.map((item) => item.getAttribute('data-consult-system'))),
+    ['clip-scout', 'funnel-lab', 'line-crm', 'doc-bot', 'clip-cut'],
+    'C1 must order the five systems by what Consult clients picked',
+  );
+  assert.equal(await consultSystems.locator('[data-client-favourite]').count(), 2, 'only the two systems Consult clients liked most carry the badge');
+  assert.equal(await consultSystems.locator('[data-consult-system-more]').count(), 5, 'every system must keep its detail behind one tap');
+  assert.doesNotMatch(await consultSystems.innerText(), /ลีด|Persona|persona|Daruma|D\.A\.R\.U\.M\.A/, 'C1 proof copy must follow the locked wording rules');
   assert.match(await consultSystems.innerText(), /วันแรกไม่ได้สร้างทั้งห้าระบบ/, 'C1 must not imply that one consulting day includes five production builds');
   assert.match(await consultSystems.innerText(), /เลือก 2 เรื่องเป็นจุดเริ่ม.*ระบบพื้นฐาน/s, 'C1 must connect the aspirational proof back to the two-topic day');
-  assert.equal(await consultSystems.locator('img').count(), 10, 'C1 must render every approved redacted receipt from the five-system SSOT');
-  assert.equal(await consultSystems.locator('img').evaluateAll((images) => images.every((image) => image.getAttribute('loading') === 'lazy')), true, 'the below-fold five-system proof must stay lazy-loaded');
+  assert.ok((await consultSystems.evaluate((element) => element.getBoundingClientRect().height)) < 4500, 'C1 proof block must stay short (was 9,500px on mobile before 2026-10-14)');
+  assert.equal(await consultSystems.locator('img').evaluateAll((images) => images.every((image) => image.getAttribute('loading') === 'lazy')), true, 'the below-fold proof must stay lazy-loaded');
   assert.equal(await page.getByText('“ปันคุยง่าย เข้าใจสิ่งที่ CEO ต้องการ และหาทางออกให้ได้”', { exact: true }).count(), 1, 'C1 must use the approved bounded client quote');
   assert.equal(await page.locator('[data-product-faq-button]').count(), 8, 'C1 must publish the approved eight FAQs');
   assert.equal(await page.locator('form').count(), 1, 'C1 detail page must include exactly one lead form (C1 switched from chat ads to form 2026-10-12)');

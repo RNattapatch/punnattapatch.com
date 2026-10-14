@@ -20,7 +20,7 @@ import DetailLineCTA from './DetailLineCTA.astro';
 import ClientLogoWall from './ClientLogoWall.astro';
 import { CLIENT_LOGOS } from '../../../data/product-details/client-logos';
 import DecisionCTA from './DecisionCTA.astro';
-import ProofSystems from '../../proof/ProofSystems.astro';
+import ConsultBusinessOS from '../../proof/ConsultBusinessOS.astro';
 import ProductChapterMap from './ProductChapterMap.astro';
 import ProductChapterGate from './ProductChapterGate.astro';
 import JourneyHero from './JourneyHero.astro';
@@ -157,7 +157,7 @@ const cohort = data.publicCohort;
     {chapters[0] && <ProductChapterGate chapter={chapters[0]} />}
     <div data-detail-block="authority"><AuthoritySnapshot items={data.authority} {...data.sections?.authority} /></div>
     <div data-detail-block="proof"><ProofWall items={data.proof} testimonials={data.testimonials} {...data.sections?.proof} /></div>
-    {data.code === 'C1' && <div data-detail-block="consult-systems"><ProofSystems context="consult" /></div>}
+    {data.code === 'C1' && <div data-detail-block="consult-systems"><ConsultBusinessOS /></div>}
     {afterProofCta && <DecisionCTA code={data.code} keyword={data.cta.keyword} cta={afterProofCta} />}
     {chapters[1] && <ProductChapterGate chapter={chapters[1]} />}
     <div data-detail-block="pain"><PainChecklist items={data.pains} {...data.sections?.pain} /></div>
