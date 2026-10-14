@@ -71,7 +71,7 @@ export const T4_PRODUCT_DETAIL: ProductDetailPageData = {
   showPriceInHero: true,
   hero: {
     eyebrow: 'คลาสที่บริษัทคุณ · 1 วัน',
-    headline: 'สอนทีมคุณให้ AI ช่วยทำงานซ้ำ',
+    headline: 'คลาสสอนทีมขายของคุณ ให้ใช้ AI ทำงานแทนคน ลดงานซ้ำ',
     customerJob: 'ลูกค้าทักแล้วเงียบ · ใบเสนอราคาช้า · ไม่มีใครทำโพสต์ เลือกมา 1 เรื่องที่ทีมทำซ้ำทุกวัน',
     supportingCopy: [
       'จบวันทีมได้ผู้ช่วย AI ตัวแรกที่สร้างเองในห้อง พร้อมแผนใช้ต่อ 30 วัน',

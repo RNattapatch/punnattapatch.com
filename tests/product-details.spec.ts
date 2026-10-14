@@ -94,7 +94,7 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   const response = await page.goto(`${baseURL}/services/online-to-sales`);
   assert.equal(response?.status(), 200, 'T2 route must render');
   // 2026-10-14 audit ด่านคุณยาย: H1 = พาดหัวภาษาบ้านๆ · ชื่อคลาสจาก Catalog ย่อลงเป็นบรรทัดเหนือราคา
-  assert.equal(await page.locator('h1').innerText(), 'ทีมขายของคุณโพสต์เอง แล้วมีลูกค้าทักเข้ามา', 'T2 H1 must lead with the plain-words outcome');
+  assert.equal(await page.locator('h1').innerText(), 'คลาสสอนทีมขายสร้าง Content ด้วย AI ให้ขายได้ และสอนการวางกลยุทธ์ Content ด้วย AI', 'T2 H1 must lead with the plain-words outcome');
   assert.equal(await page.locator('[data-hero-product-name]').innerText(), 'คลาสเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI', 'T2 hero must still name the class from the Catalog');
   // ปันเคาะ 2026-09-05 ค่ำ: T2 = Content + Ads + Warroom (ไม่ใช่ Online-to-Sales Flow เรื่องแชต/คัด Lead) — ภาษาบ้านๆ: โพสต์ · โฆษณา · ระบบดูคู่แข่ง
   assert.equal(
@@ -283,7 +283,7 @@ test('T4 Hero explains the product, price, next action, and real activity at fir
   assert.equal(response?.status(), 200, 'T4 route must render');
   assert.equal(await page.locator('h1').count(), 1, 'T4 must contain exactly one H1');
   // 2026-10-14 audit ด่านคุณยาย: H1 = พาดหัวภาษาบ้านๆ · ชื่อคลาสจาก Catalog ย่อลงเป็นบรรทัดเหนือราคา
-  assert.equal(await page.locator('h1').innerText(), 'สอนทีมคุณให้ AI ช่วยทำงานซ้ำ', 'T4 H1 must lead with the plain-words outcome');
+  assert.equal(await page.locator('h1').innerText(), 'คลาสสอนทีมขายของคุณ ให้ใช้ AI ทำงานแทนคน ลดงานซ้ำ', 'T4 H1 must lead with the plain-words outcome');
   assert.equal(await page.locator('[data-hero-product-name]').innerText(), catalog.name, 'T4 hero must still name the class from the approved Catalog key');
   assert.equal(
     await page.getByText('ลูกค้าทักแล้วเงียบ · ใบเสนอราคาช้า · ไม่มีใครทำโพสต์ เลือกมา 1 เรื่องที่ทีมทำซ้ำทุกวัน', { exact: true }).count(),
