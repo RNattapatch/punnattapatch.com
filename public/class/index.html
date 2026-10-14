@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Class Room</title>
+  <meta name="description" content="ผนังโพสต์อิทบนจอ + ใบแผนลงมือ A4 ที่กรอกบนจอได้ · บันทึกเป็นรูป PNG · พิมพ์หรือเซฟ PDF" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗒️</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <!--
+    Class Room (สกิล /class-design) — 2 หน้าในไฟล์เดียว
+      1) ผนังโพสต์อิท: เปิดบนจอ · พิมพ์โพสต์อิท 3 สี · ลากเข้าโซน · โหวตจุด · ย้ายไป "มีทางแล้ว ✓" พร้อมชื่อเครื่องมือ · โหมดอ่านใบที่จุดมากสุด
+      2) แผนลงมือ A4: กรอกบนจอได้ทีละคน · พิมพ์/เซฟ PDF ทีละคนหรือทุกคน · พิมพ์ใบเปล่า · บันทึกรูป PNG
+    วิธีใช้: คัดลอกไฟล์นี้ไป clients/<slug>/training/class-room-<slug>-<session>.html แล้วแก้เฉพาะ CONFIG ด้านล่าง
+    ข้อมูลเก็บในเบราว์เซอร์เครื่องนี้เท่านั้น (localStorage) ไม่ส่งไปไหน · ย้ายเครื่อง = ปุ่ม "สำรอง" แล้ว "นำเข้า" ไฟล์ JSON
+    เปิดได้ทั้ง Safari และ Chrome · ปุ่ม "บันทึกรูป" ต้องมีเน็ต (โหลด html2canvas จาก jsdelivr) · พิมพ์/PDF ใช้ได้แบบไม่มีเน็ต
+    ไม่ใช้ Tailwind runtime เพราะ CSP ของ punnattapatch.com บล็อก (ไม่มี unsafe-eval) · ใช้ DaisyUI CSS + CSS ในไฟล์ · ขึ้นเว็บที่ public/class/ ของรีโปเว็บ
+  -->
+  <style id="app-css">
+    :root { --navy:#072B4E; --coral:#DD4155; --sand:#F4EFE6; --ink:#1F2A37; --muted:#637083; --line:#C9BFAE; --bg:#EEEAE2;
+      --c1:#1E5A8C; --c2:#6B4C9A; --c3:#C0396B; --c4:#C2671B; --c5:#2E7D5B; --done:#2E7D5B; }
+    * { box-sizing:border-box; }
+    html, body { margin:0; background:var(--bg); color:var(--ink); font-family:"Sukhumvit Set","Sarabun","Prompt",sans-serif; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    button { font-family:inherit; }
+    .topbar { position:sticky; top:0; z-index:20; background:#fff; border-bottom:1px solid #DDD6C8; padding:8px 16px; display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; }
+    .topbar h1 { margin:0; font-size:17px; font-weight:800; color:var(--navy); }
+    .topbar .sub { font-size:12.5px; color:var(--muted); }
+    .tabs2 { display:flex; gap:4px; background:#F1EEE8; padding:3px; border-radius:10px; }
+    .tabs2 button { border:0; background:transparent; padding:6px 14px; border-radius:8px; font-weight:700; font-size:14px; color:var(--muted); cursor:pointer; }
+    .tabs2 button[aria-selected="true"] { background:#fff; color:var(--navy); box-shadow:0 1px 2px rgba(0,0,0,.12); }
+    .spacer { flex:1; }
+    .tools { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+    .view { padding:14px 16px 40px; }
+    [hidden] { display:none !important; }
+    /* the few utility classes the dialog uses — no Tailwind runtime (punnattapatch.com CSP blocks it) */
+    .block { display:block; } .flex { display:flex; } .gap-2 { gap:8px; } .mt-1 { margin-top:4px; } .mt-3 { margin-top:12px; } .w-full { width:100%; } .w-28 { width:7rem; }
+    .text-sm { font-size:14px; } .text-lg { font-size:18px; } .font-bold { font-weight:700; } .text-error { color:#C72C41; }
+
+    /* ---------- add bar ---------- */
+    .addbar { display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:stretch; background:#fff; border-radius:14px; padding:10px; margin-bottom:12px; }
+    .colors { display:flex; gap:6px; }
+    .colorbtn { width:150px; border:2px solid transparent; border-radius:10px; padding:6px 8px; text-align:left; font-size:12.5px; line-height:1.3; cursor:pointer; color:#2B2B2B; }
+    .colorbtn b { display:block; font-size:13px; }
+    .colorbtn[aria-pressed="true"] { border-color:var(--navy); box-shadow:0 0 0 2px #fff inset; }
+    .addbar textarea { width:100%; min-height:62px; resize:vertical; border:1.5px solid #D6D0C4; border-radius:10px; padding:8px 10px; font:inherit; font-size:17px; }
+    .addbar textarea:focus { outline:2px solid var(--navy); outline-offset:1px; }
+    .statusbar { display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; font-size:14px; color:var(--muted); margin:0 2px 10px; }
+    .statusbar b { color:var(--navy); font-size:16px; }
+    .mode-on { background:#FFF2C6; color:#6A4B00; border-radius:8px; padding:3px 10px; font-weight:700; }
+
+    /* ---------- board (capture area: hex colors only) ---------- */
+    .capture { background:var(--bg); padding:4px; }
+    .cap-head { display:none; align-items:baseline; justify-content:space-between; margin:4px 4px 10px; }
+    .cap-head h2 { margin:0; font-size:22px; color:var(--navy); font-weight:800; }
+    .cap-head span { color:var(--muted); font-size:14px; }
+    .capturing .cap-head { display:flex; }
+    .board { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+    .col { background:#fff; border-radius:14px; display:flex; flex-direction:column; min-height:210px; border:2px solid transparent; }
+    .col.drop { border-color:var(--navy); background:#F7FAFD; }
+    .col-h { display:flex; align-items:center; gap:8px; padding:9px 12px; border-radius:12px 12px 0 0; color:#fff; }
+    .col-h .num { font-size:20px; font-weight:800; min-width:18px; }
+    .col-h .nm { font-weight:800; font-size:15.5px; flex:1; line-height:1.2; }
+    .col-h .cnt { font-size:12.5px; font-weight:700; background:rgba(255,255,255,.25); border-radius:20px; padding:1px 8px; }
+    .col.inbox .col-h { background:#8A8172; }
+    .col.park .col-h { background:#637083; }
+    .col.done { border:2.5px dashed var(--done); background:#F3FAF6; }
+    .col.done .col-h { background:var(--done); }
+    .col.folded .nm { letter-spacing:.2em; opacity:.75; }
+    .notes { padding:10px; display:flex; flex-wrap:wrap; gap:10px; align-content:flex-start; flex:1; }
+    .note { display:block; width:100%; position:relative; border-radius:4px; padding:10px 11px 8px; box-shadow:0 2px 0 rgba(0,0,0,.08), 0 3px 8px rgba(0,0,0,.07); cursor:grab; touch-action:none; user-select:none; -webkit-user-select:none; }
+    .note:nth-child(3n+1) { transform:rotate(-.6deg); } .note:nth-child(3n+2) { transform:rotate(.5deg); }
+    .note .txt { font-size:16.5px; font-weight:600; line-height:1.35; white-space:pre-wrap; word-break:break-word; color:#232323; }
+    .note .meta { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:6px; min-height:18px; }
+    .dots { display:flex; gap:3px; }
+    .dot { width:13px; height:13px; border-radius:50%; background:var(--coral); }
+    .chip { font-size:12px; font-weight:800; border-radius:6px; padding:1px 6px; color:#fff; }
+    .chip.tool { background:var(--done); }
+    .acts { margin-left:auto; display:flex; gap:3px; opacity:0; transition:opacity .12s; }
+    .note:hover .acts, .note:focus-within .acts { opacity:1; }
+    .acts button { border:0; background:rgba(255,255,255,.75); border-radius:6px; font-size:12px; font-weight:700; padding:2px 6px; cursor:pointer; color:#333; }
+    .note.is-top { outline:3px solid var(--coral); outline-offset:2px; }
+    .ghost { position:fixed; z-index:50; pointer-events:none; width:240px; opacity:.92; transform:rotate(2deg); }
+    .empty { color:#A39C8F; font-size:13px; padding:4px 2px; }
+
+    /* ---------- read overlay ---------- */
+    .reader { position:fixed; inset:0; z-index:60; background:#031526; color:#fff; display:flex; flex-direction:column; padding:32px 48px; gap:18px; overflow:auto; }
+    .reader h2 { margin:0; font-size:20px; color:#9FB3C8; font-weight:700; }
+    .reader .item { display:flex; gap:18px; align-items:flex-start; }
+    .reader .sw { width:18px; height:54px; border-radius:3px; flex:none; }
+    .reader .rq { font-size:34px; font-weight:800; line-height:1.3; }
+    .reader .rn { font-size:15px; color:#FFB3BD; font-weight:700; margin-top:4px; }
+    .reader .close { position:absolute; right:24px; top:20px; }
+
+    /* ---------- plan (A4) ---------- */
+    .people { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:10px; }
+    .pill { border:1.5px solid #D6D0C4; background:#fff; border-radius:20px; padding:5px 12px; font-weight:700; font-size:14px; cursor:pointer; color:var(--ink); }
+    .pill[aria-pressed="true"] { background:var(--navy); color:#fff; border-color:var(--navy); }
+    .sheet-wrap { transform-origin:top left; }
+    .sheet-wrap .sheet { margin-bottom:10mm; box-shadow:0 2px 10px rgba(0,0,0,.08); }
+    /* ===== notebook sheet · shared by class-room + action-plan (redesign 2026-10-13) ===== */
+    .sheet.nb { width:297mm; height:210mm; position:relative; overflow:hidden; display:flex; flex-direction:column; gap:3.5mm;
+      padding:9mm 11mm 8mm 27mm; color:#1F2A37; background-color:#FCFBF7;
+      background-image:linear-gradient(#E3E9F0 5%, transparent 5%), linear-gradient(90deg, #E3E9F0 5%, transparent 5%);
+      background-size:5mm 5mm; }
+    .sheet.nb::before { content:""; position:absolute; left:21mm; top:0; bottom:0; width:.5mm; background:#EBA6AF; }
+    .holes { position:absolute; left:6.5mm; top:0; bottom:0; display:flex; flex-direction:column; justify-content:space-evenly; }
+    .holes i { display:block; width:6.5mm; height:6.5mm; border-radius:50%; background:#E4DFD4; box-shadow:inset 0 .6mm 1mm rgba(0,0,0,.28); }
+    .nb-top { display:flex; align-items:flex-end; justify-content:space-between; gap:8mm; }
+    .nb-top > div:first-child { flex:1; min-width:0; }
+    .nb-brand { font-size:10pt; font-weight:700; color:#DD4155; }
+    .nb-title { display:inline; margin:0; font-size:26pt; font-weight:800; color:#072B4E; line-height:1.3; padding:0 1.5mm;
+      background:linear-gradient(transparent 55%, #FFE58A 55%, #FFE58A 90%, transparent 90%); }
+    .nb-sub { font-size:11.5pt; margin-top:1mm; color:#334155; }
+    .nb-fields { display:grid; grid-template-columns:50mm 70mm 38mm; gap:4mm; font-size:11pt; }
+    .nb-fields > div { display:flex; gap:2mm; align-items:flex-end; min-height:8mm; padding-bottom:.8mm; border-bottom:.35mm solid #072B4E; white-space:nowrap; overflow:hidden; }
+    .nb-fields b { color:#072B4E; }
+    .nb-grid { flex:1; min-height:0; display:grid; grid-template-columns:repeat(6, 1fr); grid-auto-rows:1fr; gap:5mm 7mm; }
+    .nb-sec { display:flex; flex-direction:column; gap:1.5mm; min-height:0; }
+    .tape { align-self:flex-start; display:inline-flex; gap:2.2mm; align-items:baseline; padding:1mm 3.5mm 1.2mm; font-size:12.5pt; font-weight:800; color:#1F2A37; transform:rotate(-1.2deg); box-shadow:0 .3mm .8mm rgba(0,0,0,.1); }
+    .nb-sec:nth-child(even) .tape { transform:rotate(.9deg); }
+    .nb-hint { font-size:10pt; line-height:1.3; color:#5B6676; }
+    .slots { flex:1; min-height:0; display:flex; flex-direction:column; gap:1.5mm; }
+    .wide .slots { display:grid; grid-template-columns:repeat(3, 1fr); gap:6mm; }
+    .slot { flex:1; min-height:9mm; display:flex; flex-direction:column; }
+    .slot.num { flex-direction:row; gap:2mm; }
+    .slot.num > b { font-size:12pt; line-height:7.9mm; }
+    .slot .lab { font-size:10pt; font-weight:700; }
+    .lines { flex:1; min-height:7.9mm; display:flex; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='30' viewBox='0 0 8 30' preserveAspectRatio='none'%3E%3Crect y='28.8' width='8' height='1.2' fill='%239FB0C2'/%3E%3C/svg%3E"); background-size:100% 7.9mm; background-repeat:repeat-y; }
+    .lines .ed { flex:1; line-height:7.9mm; font-size:11.5pt; }
+    .nb-bottom { display:grid; grid-template-columns:1fr 80mm; gap:8mm; align-items:stretch; }
+    .nb-bottom.solo { grid-template-columns:1fr; }
+    .sticky { position:relative; display:grid; grid-template-columns:1fr 62mm; gap:6mm; padding:3.5mm 5mm; background:#FFE58A; transform:rotate(-.6deg); box-shadow:0 .8mm 2mm rgba(0,0,0,.16); }
+    .sticky::before { content:""; position:absolute; top:-2.5mm; left:42%; width:26mm; height:6mm; background:rgba(255,255,255,.6); transform:rotate(-2deg); box-shadow:0 .2mm .6mm rgba(0,0,0,.08); }
+    .sticky h3 { margin:0; font-size:15pt; font-weight:800; color:#072B4E; }
+    .sticky p { margin:.3mm 0 1mm; font-size:10pt; color:#4A3F12; }
+    .sticky .lines { min-height:15.8mm; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='30' viewBox='0 0 8 30' preserveAspectRatio='none'%3E%3Crect y='28.8' width='8' height='1.2' fill='%23B39A2E'/%3E%3C/svg%3E"); }
+    .sticky .lines .ed { font-weight:700; font-size:12.5pt; }
+    .sticky .sign { display:flex; flex-direction:column; justify-content:space-around; font-size:10pt; }
+    .sticky .sign > div { display:flex; gap:2mm; align-items:flex-end; border-bottom:.3mm solid #8F7A22; padding-bottom:.8mm; min-height:8mm; }
+    .sticky .sign span { white-space:nowrap; color:#4A3F12; }
+    .clip { position:relative; background:#fff; border:.4mm dashed #DD4155; border-radius:1.5mm; padding:3.5mm 4mm 3mm; font-size:9.8pt; line-height:1.4; }
+    .clip b { color:#DD4155; display:block; font-size:10.5pt; }
+    .clip .cut { position:absolute; top:-3.3mm; left:3mm; background:#FCFBF7; color:#DD4155; font-size:11pt; padding:0 1mm; line-height:1.2; }
+    .ed { outline:none; white-space:pre-wrap; word-break:break-word; color:#123A6B; min-height:7.9mm; }
+    .ed:focus { background:rgba(255,229,138,.35); }
+    .inline-ed { flex:1; min-width:10mm; outline:none; color:#123A6B; }
+    .ed:empty::before, .inline-ed:empty::before { content:attr(data-ph); color:#B7AFA2; }
+    /* recap page */
+    .nb .recap { flex:1; min-height:0; display:grid; grid-template-columns:1.15fr 1fr 1fr; grid-template-rows:auto auto; gap:5mm 5mm; padding-top:1.5mm; }
+    .nb .card { position:relative; display:block; background:#fff; border:0; border-radius:1mm; padding:4.5mm 4mm 2.5mm; font-size:10.3pt; line-height:1.34; overflow:hidden; box-shadow:0 .5mm 1.6mm rgba(0,0,0,.14); }
+    .nb .card:nth-child(odd) { transform:rotate(-.35deg); } .nb .card:nth-child(even) { transform:rotate(.4deg); }
+    .nb .card::before { content:""; position:absolute; top:0; left:50%; width:24mm; height:3.6mm; margin-left:-12mm; background:#BFE3F5; opacity:.85; }
+    .nb .card:nth-child(3n+2)::before { background:#F9C6D6; } .nb .card:nth-child(3n)::before { background:#CDEBD6; }
+    .nb .card h3 { font-size:13.5pt; font-weight:800; color:#072B4E; margin:0 0 1.5mm; }
+    .nb .card h3 .k { color:#DD4155; margin-right:1.5mm; }
+    .nb .card ol, .nb .card ul { margin:0; padding-left:5mm; } .nb .card ol { list-style:decimal; } .nb .card ul { list-style:disc; }
+    .nb .card li { margin:.6mm 0; }
+    .nb .card table { width:100%; border-collapse:collapse; font-size:10.2pt; }
+    .nb .card td { border-top:.25mm dashed #D5CDBE; padding:.9mm 1mm; vertical-align:top; }
+    .nb .card td:first-child { font-weight:700; white-space:nowrap; color:#072B4E; }
+    .nb .tk { margin-top:2mm; padding:1.5mm 0 0; border-top:.3mm dashed #C9BFAE; border-radius:0; background:none; color:#072B4E; font-weight:800; font-size:10.6pt; }
+    .nb .q { font-style:normal; color:#1E5A8C; background:linear-gradient(transparent 62%, #FFF0B3 62%); border-radius:0; padding:0 .5mm; }
+    .nb .blank { display:inline-block; min-width:38mm; border-bottom:.3mm dashed #8A8172; }
+    .nb .score { display:flex; flex-wrap:wrap; gap:5mm; align-items:center; padding:2.5mm 4mm; border:.45mm dashed #072B4E; border-radius:2mm; background:#fff; color:#072B4E; font-size:11.5pt; }
+    .nb .score b { font-size:13pt; }
+    .nb .score span::before { content:"☐ "; color:#DD4155; }
+    #print-area { display:none; }
+    .fluid .sheet.nb { width:auto; height:auto; padding:6mm 5mm 6mm 16mm; }
+    .fluid .sheet.nb::before { left:11mm; } .fluid .holes { left:2.5mm; }
+    .fluid .nb-top { flex-direction:column; align-items:stretch; }
+    .fluid .nb-fields, .fluid .nb-grid, .fluid .wide .slots, .fluid .nb-bottom, .fluid .sticky, .fluid .nb .recap { grid-template-columns:1fr; }
+    .fluid .nb-grid { grid-auto-rows:auto; }
+    .fluid .nb-sec { grid-column:auto !important; }
+    .fluid .slot { min-height:16mm; }
+    .fluid .lines .ed { font-size:16px; }
+
+    @media (max-width: 760px) {
+      .addbar { grid-template-columns:1fr; } .colors { flex-wrap:wrap; } .colorbtn { width:auto; flex:1; min-width:120px; }
+      .board { grid-template-columns:1fr 1fr; }
+    }
+    @page { size: A4 landscape; margin: 0; }
+    @media print {
+      html, body { background:#fff; }
+      .no-print, .topbar, .view { display:none !important; }
+      #print-area { display:block; }
+      #print-area .sheet { margin:0; box-shadow:none; page-break-after:always; break-after:page; }
+      #print-area .sheet:last-child { page-break-after:auto; break-after:auto; }
+      #print-area .wallprint { padding:8mm; }
+      #print-area .wallprint .cap-head { display:flex; }
+      #print-area .wallprint .board { grid-template-columns:repeat(4,1fr); gap:3mm; }
+      #print-area .wallprint .col { min-height:0; break-inside:avoid; }
+      #print-area .wallprint .note { box-shadow:none; border:1px solid rgba(0,0,0,.12); transform:none; }
+      #print-area .acts { display:none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar no-print">
+    <div>
+      <h1 id="hd-title"></h1>
+      <div class="sub" id="hd-sub"></div>
+    </div>
+    <div class="tabs2" role="tablist" aria-label="เลือกหน้า">
+      <button role="tab" id="tab-wall" aria-selected="true" aria-controls="wall-view">ผนังโพสต์อิท</button>
+      <button role="tab" id="tab-plan" aria-selected="false" aria-controls="plan-view">แผนลงมือ A4</button>
+    </div>
+    <div class="spacer"></div>
+    <div class="tools">
+      <button class="btn btn-sm" id="btn-backup" aria-label="สำรองข้อมูลเป็นไฟล์ JSON">สำรอง</button>
+      <label class="btn btn-sm" aria-label="นำเข้าไฟล์สำรอง">นำเข้า<input type="file" id="inp-import" accept="application/json" hidden /></label>
+      <button class="btn btn-sm" id="btn-full" aria-label="เต็มจอ">เต็มจอ</button>
+    </div>
+  </header>
+
+  <!-- ================= WALL ================= -->
+  <section class="view" id="wall-view" role="tabpanel" aria-labelledby="tab-wall">
+    <form class="addbar no-print" id="addform" autocomplete="off">
+      <div class="colors" id="colors" role="group" aria-label="เลือกสีโพสต์อิท"></div>
+      <textarea id="add-text" aria-label="ข้อความโพสต์อิท" placeholder="พิมพ์ 1 เรื่องต่อ 1 แผ่น แล้วกด Enter (Shift+Enter = ขึ้นบรรทัดใหม่)"></textarea>
+      <button class="btn btn-primary" type="submit" style="height:auto">แปะ</button>
+    </form>
+    <div class="statusbar no-print">
+      <span>ทั้งหมด <b id="st-all">0</b> ใบ</span>
+      <span>มีทางแล้ว <b id="st-done">0</b></span>
+      <span>ที่จอดรถ <b id="st-park">0</b></span>
+      <span id="st-mode" class="mode-on" hidden>โหมดโหวต: คลิกโพสต์อิท = +1 จุด · Shift+คลิก = −1</span>
+      <span class="spacer"></span>
+      <button class="btn btn-sm" id="btn-zones" aria-pressed="false">เปิดหัวโซน</button>
+      <button class="btn btn-sm" id="btn-vote" aria-pressed="false">โหมดโหวต</button>
+      <button class="btn btn-sm" id="btn-sort" aria-pressed="false">เรียงตามจุด</button>
+      <button class="btn btn-sm" id="btn-read">อ่านใบที่จุดมากสุด</button>
+      <button class="btn btn-sm btn-neutral" id="btn-wall-png">บันทึกรูป</button>
+      <button class="btn btn-sm btn-neutral" id="btn-wall-print">พิมพ์ / PDF</button>
+      <button class="btn btn-sm btn-ghost text-error" id="btn-clear">ล้างผนัง</button>
+    </div>
+    <div class="capture" id="wall-capture">
+      <div class="cap-head"><h2 id="cap-title"></h2><span id="cap-meta"></span></div>
+      <div class="board" id="board"></div>
+    </div>
+    <p class="no-print" style="color:var(--muted);font-size:13px;margin-top:14px">ลากโพสต์อิทไปวางในโซน · ดับเบิลคลิกเพื่อแก้ · ลากไป "มีทางแล้ว ✓" แล้วจะถามชื่อเครื่องมือ · ข้อมูลอยู่ในเบราว์เซอร์เครื่องนี้เท่านั้น</p>
+  </section>
+
+  <!-- ================= PLAN ================= -->
+  <section class="view" id="plan-view" role="tabpanel" aria-labelledby="tab-plan" hidden>
+    <div class="people no-print">
+      <span style="font-weight:700;color:var(--muted);font-size:14px">ใบของ</span>
+      <span id="people" style="display:contents"></span>
+      <button class="btn btn-sm" id="btn-add-person">+ เพิ่มคน</button>
+      <span class="spacer" style="flex:1"></span>
+      <label class="no-print" style="font-size:13.5px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="chk-recap" checked /> รวมหน้า 2 การ์ดสรุป</label>
+      <button class="btn btn-sm btn-neutral" id="btn-plan-png">บันทึกรูป</button>
+      <button class="btn btn-sm btn-neutral" id="btn-plan-print">พิมพ์ / PDF ใบนี้</button>
+      <button class="btn btn-sm" id="btn-plan-all">พิมพ์ทุกคน</button>
+      <button class="btn btn-sm" id="btn-plan-blank">พิมพ์ใบเปล่า</button>
+      <button class="btn btn-sm btn-ghost text-error" id="btn-del-person">ลบใบนี้</button>
+    </div>
+    <div id="sheet-host"></div>
+  </section>
+
+  <div id="print-area"></div>
+  <div class="reader no-print" id="reader" hidden role="dialog" aria-modal="true" aria-label="อ่านโพสต์อิทที่จุดมากสุด"></div>
+
+  <dialog id="dlg" class="modal">
+    <form method="dialog" class="modal-box" id="dlg-form" style="max-width:560px">
+      <h3 class="font-bold text-lg" id="dlg-title">แก้โพสต์อิท</h3>
+      <label class="block mt-3 text-sm font-bold" for="dlg-text">ข้อความ</label>
+      <textarea id="dlg-text" class="textarea w-full mt-1" rows="3"></textarea>
+      <div class="mt-3 text-sm font-bold">สี</div>
+      <div id="dlg-colors" class="flex gap-2 mt-1" role="radiogroup" aria-label="สี"></div>
+      <label class="block mt-3 text-sm font-bold" for="dlg-zone">อยู่โซน</label>
+      <select id="dlg-zone" class="select w-full mt-1"></select>
+      <label class="block mt-3 text-sm font-bold" for="dlg-tool">ชื่อเครื่องมือที่ใช้แก้ (เมื่อย้ายไป "มีทางแล้ว")</label>
+      <input id="dlg-tool" class="input w-full mt-1" placeholder='เช่น "บันได ขั้น 3"' />
+      <label class="block mt-3 text-sm font-bold" for="dlg-dots">จุดโหวต</label>
+      <input id="dlg-dots" type="number" min="0" class="input w-28 mt-1" />
+      <div class="modal-action">
+        <button class="btn btn-ghost text-error" value="delete" id="dlg-del">ลบใบนี้</button>
+        <span style="flex:1"></span>
+        <button class="btn" value="cancel">ยกเลิก</button>
+        <button class="btn btn-primary" value="save">บันทึก</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    // ===== CONFIG — แก้ส่วนนี้ส่วนเดียว =====
+    const CONFIG = {
+      id: "class-room-web",                 // ห้ามซ้ำกันระหว่างคลาส (ใช้เป็นที่เก็บข้อมูลในเบราว์เซอร์ + ชื่อไฟล์)
+      brand: "ปัน ณัฐพัชร์ · @pun_nattapatch",
+      className: "ผนังโพสต์อิท + แผนลงมือ",
+      date: "",
+      wall: {
+        title: "เสียงหน้างาน",
+        dotsPerPerson: 3,
+        stickies: [
+          { key: "pink", color: "#F9C6D6", label: "ชมพู", prompt: "ลูกค้าแบบไหน หรือข้อความแบบไหน ที่ฉันไม่รู้จะตอบยังไง" },
+          { key: "yellow", color: "#FFE58A", label: "เหลือง", prompt: "ตอนไหนที่ลูกค้าหลุดไป ทั้งที่เกือบได้แล้ว" },
+          { key: "blue", color: "#BFE3F5", label: "ฟ้า", prompt: "อะไรที่ทำให้ฉันช้าหรือพลาด ที่ไม่ใช่ความผิดของลูกค้า" },
+        ],
+        zones: [
+          { id: "z1", num: "1", name: "โซน 1", color: "#1E5A8C" },
+          { id: "z2", num: "2", name: "โซน 2", color: "#6B4C9A" },
+          { id: "z3", num: "3", name: "โซน 3", color: "#C0396B" },
+        ],
+        inbox: "ยังไม่จัดโซน", parking: "ที่จอดรถ", done: "มีทางแล้ว ✓",
+      },
+      plan: {
+        title: "แผนลงมือของฉัน",
+        subtitle: "เปลี่ยนสิ่งที่เรียนวันนี้ ให้เห็นในงานจริง",
+        followUpLabel: "ถึงวันติดตามผล",
+        columns: [
+          { title: "สิ่งที่ได้วันนี้", hint: "3 อย่างที่จำได้โดยไม่ต้องเปิดสไลด์", slots: ["1", "2", "3"] },
+          { title: "ท่าที่จะใช้", hint: "3 ท่า", slots: ["1", "2", "3"] },
+          { title: "7 วันแรก", hint: "ท่าที่จะลองก่อน 1 ท่า", slots: ["ท่าที่จะลองก่อน", "ใช้ตอนไหน"] },
+          { title: "__FOLLOWUP__", hint: "ต้องชี้ให้ดูในงานจริงได้", slots: ["เป้าของฉัน", "สิ่งที่จะทำทุกวัน", "หลักฐานที่จะเอามาโชว์"] },
+          { title: "สิ่งที่จะเปลี่ยน", hint: "ถ้าทำครบ จะต่างจากวันนี้ยังไง", slots: ["ในตัวฉัน", "ในทีม / ในงาน"] },
+        ],
+        commitTitle: "คำมั่นของฉัน",
+        commitHint: "1 อย่างที่จะเริ่มพรุ่งนี้ ตอนไหน",
+        bring: "",
+        recapHtml: "",
+      },
+    };
+    // ===== END CONFIG =====
+
+    // ---------- state ----------
+    const KEY = "class-room:" + CONFIG.id;
+    const W = CONFIG.wall, P = CONFIG.plan;
+    const ZONES = [{ id: "inbox", name: W.inbox, cls: "inbox" }, ...W.zones.map((z) => ({ ...z, cls: "zone" })), { id: "park", name: W.parking, cls: "park" }, { id: "done", name: W.done, cls: "done" }];
+    const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3);
+    const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    let S = { notes: [], zonesOpen: false, vote: false, sort: false, color: W.stickies[0].key, people: [], current: null };
+    try { const raw = localStorage.getItem(KEY); if (raw) S = { ...S, ...JSON.parse(raw) }; } catch (e) {}
+    if (!S.people.length) { const p = { id: uid(), name: "", f: {} }; S.people.push(p); S.current = p.id; }
+    const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+    const stickyColor = (k) => (W.stickies.find((x) => x.key === k) || W.stickies[0]).color;
+    const zoneOf = (id) => ZONES.find((z) => z.id === id) || ZONES[0];
+    const stamp = () => new Date().toISOString().slice(0, 10);
+
+    document.title = `${CONFIG.className} · Class Room`;
+    document.getElementById("hd-title").textContent = CONFIG.className;
+    document.getElementById("hd-sub").textContent = [CONFIG.brand, CONFIG.date].filter(Boolean).join(" · ");
+    document.getElementById("cap-title").textContent = `${W.title} · ${CONFIG.className}`;
+
+    // ---------- tabs ----------
+    const tabs = { wall: document.getElementById("tab-wall"), plan: document.getElementById("tab-plan") };
+    function showTab(t) {
+      for (const k in tabs) { tabs[k].setAttribute("aria-selected", String(k === t)); document.getElementById(k + "-view").hidden = k !== t; }
+      if (t === "plan") renderPlan();
+      try { sessionStorage.setItem(KEY + ":tab", t); } catch (e) {}
+    }
+    tabs.wall.onclick = () => showTab("wall");
+    tabs.plan.onclick = () => showTab("plan");
+
+    // ---------- wall ----------
+    const colorsEl = document.getElementById("colors");
+    function renderColors() {
+      colorsEl.innerHTML = W.stickies.map((s) => `<button type="button" class="colorbtn" data-k="${s.key}" aria-pressed="${S.color === s.key}" style="background:${s.color}"><b>${esc(s.label)}</b>${esc(s.prompt)}</button>`).join("");
+      colorsEl.querySelectorAll(".colorbtn").forEach((b) => (b.onclick = () => { S.color = b.dataset.k; save(); renderColors(); document.getElementById("add-text").focus(); }));
+    }
+    const addText = document.getElementById("add-text");
+    document.getElementById("addform").onsubmit = (e) => {
+      e.preventDefault();
+      const t = addText.value.trim();
+      if (!t) return;
+      S.notes.push({ id: uid(), color: S.color, text: t, zone: "inbox", dots: 0, tool: "", from: "", t: Date.now() });
+      addText.value = ""; save(); renderBoard(); addText.focus();
+    };
+    addText.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); document.getElementById("addform").requestSubmit(); } });
+
+    function noteHtml(n) {
+      const from = n.zone === "done" && n.from ? zoneOf(n.from) : null;
+      return `<div class="note" data-id="${n.id}" tabindex="0" style="background:${stickyColor(n.color)}" aria-label="${esc(n.text)} · ${n.dots} จุด">
+        <div class="txt">${esc(n.text)}</div>
+        <div class="meta">
+          ${n.dots ? `<span class="dots" aria-hidden="true">${"<span class=dot></span>".repeat(Math.min(n.dots, 12))}</span>${n.dots > 12 ? `<b>+${n.dots - 12}</b>` : ""}` : ""}
+          ${from && from.color ? `<span class="chip" style="background:${from.color}">${esc(from.num || "")}</span>` : ""}
+          ${n.tool ? `<span class="chip tool">✓ ${esc(n.tool)}</span>` : ""}
+          <span class="acts no-export"><button data-act="up" aria-label="เพิ่มจุด">+●</button><button data-act="down" aria-label="ลดจุด">−●</button><button data-act="edit" aria-label="แก้">แก้</button></span>
+        </div></div>`;
+    }
+    function boardHtml(forPrint) {
+      return ZONES.map((z) => {
+        let list = S.notes.filter((n) => n.zone === z.id);
+        if (S.sort) list = [...list].sort((a, b) => b.dots - a.dots || a.t - b.t);
+        const folded = !S.zonesOpen && (z.cls === "zone" || z.cls === "park");
+        const name = folded ? "••••••" : z.name;
+        const bg = z.color ? `style="background:${z.color}"` : "";
+        if (forPrint && !list.length && z.id === "inbox") return "";
+        return `<div class="col ${z.cls}${folded ? " folded" : ""}" data-zone="${z.id}">
+          <div class="col-h" ${bg}>${z.num ? `<span class="num">${esc(z.num)}</span>` : ""}<span class="nm">${esc(name)}</span><span class="cnt">${list.length}</span></div>
+          <div class="notes">${list.length ? list.map(noteHtml).join("") : `<div class="empty">ลากโพสต์อิทมาวาง</div>`}</div></div>`;
+      }).join("");
+    }
+    function renderBoard() {
+      const board = document.getElementById("board");
+      board.innerHTML = boardHtml(false);
+      const maxDots = Math.max(0, ...S.notes.map((n) => n.dots));
+      if (maxDots > 0) board.querySelectorAll(".note").forEach((el) => { const n = S.notes.find((x) => x.id === el.dataset.id); if (n && n.dots === maxDots) el.classList.add("is-top"); });
+      document.getElementById("st-all").textContent = S.notes.length;
+      document.getElementById("st-done").textContent = S.notes.filter((n) => n.zone === "done").length;
+      document.getElementById("st-park").textContent = S.notes.filter((n) => n.zone === "park").length;
+      document.getElementById("cap-meta").textContent = `${nbToday()} · ทั้งหมด ${S.notes.length} ใบ · มีทางแล้ว ${S.notes.filter((n) => n.zone === "done").length} · ที่จอดรถ ${S.notes.filter((n) => n.zone === "park").length}`;
+      const tog = (id, on) => document.getElementById(id).setAttribute("aria-pressed", String(on));
+      tog("btn-zones", S.zonesOpen); tog("btn-vote", S.vote); tog("btn-sort", S.sort);
+      document.getElementById("btn-zones").textContent = S.zonesOpen ? "พับหัวโซน" : "เปิดหัวโซน";
+      document.getElementById("st-mode").hidden = !S.vote;
+      document.getElementById("btn-vote").classList.toggle("btn-warning", S.vote);
+    }
+    const bump = (id, d) => { const n = S.notes.find((x) => x.id === id); if (!n) return; n.dots = Math.max(0, n.dots + d); save(); renderBoard(); };
+    function moveNote(id, zone) {
+      const n = S.notes.find((x) => x.id === id); if (!n || n.zone === zone) return;
+      if (zone === "done") { n.from = n.zone; n.zone = "done"; save(); renderBoard(); openEdit(id, true); return; }
+      n.zone = zone; save(); renderBoard();
+    }
+
+    // pointer drag (mouse + touch + pen)
+    let drag = null;
+    const board = document.getElementById("board");
+    board.addEventListener("pointerdown", (e) => {
+      const note = e.target.closest(".note");
+      if (!note || e.target.closest("button") || e.button > 0) return;
+      drag = { id: note.dataset.id, x: e.clientX, y: e.clientY, el: note, ghost: null, shift: e.shiftKey };
+    });
+    window.addEventListener("pointermove", (e) => {
+      if (!drag) return;
+      if (!drag.ghost && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 6) {
+        drag.ghost = drag.el.cloneNode(true); drag.ghost.classList.add("ghost"); document.body.appendChild(drag.ghost);
+        drag.el.style.opacity = ".35";
+      }
+      if (drag.ghost) {
+        drag.ghost.style.left = e.clientX - 40 + "px"; drag.ghost.style.top = e.clientY - 20 + "px";
+        board.querySelectorAll(".col.drop").forEach((c) => c.classList.remove("drop"));
+        drag.ghost.style.display = "none";
+        const under = document.elementFromPoint(e.clientX, e.clientY)?.closest(".col");
+        drag.ghost.style.display = "";
+        under?.classList.add("drop");
+        if (e.clientY < 70) window.scrollBy(0, -12); else if (e.clientY > innerHeight - 50) window.scrollBy(0, 12);
+      }
+    });
+    window.addEventListener("pointerup", (e) => {
+      if (!drag) return;
+      const d = drag; drag = null;
+      board.querySelectorAll(".col.drop").forEach((c) => c.classList.remove("drop"));
+      if (d.ghost) {
+        d.ghost.style.display = "none";
+        const col = document.elementFromPoint(e.clientX, e.clientY)?.closest(".col");
+        d.ghost.remove(); d.el.style.opacity = "";
+        if (col) moveNote(d.id, col.dataset.zone);
+      } else if (S.vote) bump(d.id, d.shift ? -1 : 1);
+    });
+    window.addEventListener("pointercancel", () => { if (drag?.ghost) { drag.ghost.remove(); drag.el.style.opacity = ""; } drag = null; });
+    board.addEventListener("click", (e) => {
+      const b = e.target.closest("button[data-act]"); if (!b) return;
+      const id = b.closest(".note").dataset.id;
+      if (b.dataset.act === "up") bump(id, 1); else if (b.dataset.act === "down") bump(id, -1); else openEdit(id);
+    });
+    board.addEventListener("dblclick", (e) => { const n = e.target.closest(".note"); if (n && !S.vote) openEdit(n.dataset.id); });
+    board.addEventListener("keydown", (e) => {
+      const n = e.target.closest?.(".note"); if (!n) return;
+      if (e.key === "Enter") { e.preventDefault(); openEdit(n.dataset.id); }
+      if (e.key === "+" || e.key === "=") bump(n.dataset.id, 1);
+      if (e.key === "-") bump(n.dataset.id, -1);
+    });
+
+    // edit dialog
+    const dlg = document.getElementById("dlg");
+    let editing = null, dlgColor = null;
+    document.getElementById("dlg-zone").innerHTML = ZONES.map((z) => `<option value="${z.id}">${esc(z.num ? z.num + " · " : "")}${esc(z.name)}</option>`).join("");
+    function paintDlgColors() {
+      document.getElementById("dlg-colors").innerHTML = W.stickies.map((s) => `<button type="button" role="radio" aria-checked="${dlgColor === s.key}" data-k="${s.key}" class="btn btn-sm" style="background:${s.color};${dlgColor === s.key ? "outline:2px solid #072B4E" : ""}">${esc(s.label)}</button>`).join("");
+      document.querySelectorAll("#dlg-colors button").forEach((b) => (b.onclick = () => { dlgColor = b.dataset.k; paintDlgColors(); }));
+    }
+    function openEdit(id, focusTool) {
+      const n = S.notes.find((x) => x.id === id); if (!n) return;
+      editing = id; dlgColor = n.color;
+      document.getElementById("dlg-title").textContent = focusTool ? "มีทางแล้ว ✓ · ใช้เครื่องมืออะไรแก้?" : "แก้โพสต์อิท";
+      document.getElementById("dlg-text").value = n.text;
+      document.getElementById("dlg-zone").value = n.zone;
+      document.getElementById("dlg-tool").value = n.tool || "";
+      document.getElementById("dlg-dots").value = n.dots;
+      paintDlgColors(); dlg.showModal();
+      setTimeout(() => document.getElementById(focusTool ? "dlg-tool" : "dlg-text").focus(), 30);
+    }
+    dlg.addEventListener("close", () => {
+      const n = S.notes.find((x) => x.id === editing); editing = null; if (!n) return;
+      if (dlg.returnValue === "delete") { if (confirm("ลบโพสต์อิทใบนี้?")) S.notes = S.notes.filter((x) => x !== n); }
+      else if (dlg.returnValue === "save") {
+        n.text = document.getElementById("dlg-text").value.trim() || n.text;
+        n.color = dlgColor;
+        const z = document.getElementById("dlg-zone").value;
+        if (z === "done" && n.zone !== "done") n.from = n.zone;
+        n.zone = z;
+        n.tool = document.getElementById("dlg-tool").value.trim();
+        n.dots = Math.max(0, parseInt(document.getElementById("dlg-dots").value, 10) || 0);
+      }
+      save(); renderBoard();
+    });
+
+    document.getElementById("btn-zones").onclick = () => { S.zonesOpen = !S.zonesOpen; save(); renderBoard(); };
+    document.getElementById("btn-vote").onclick = () => { S.vote = !S.vote; save(); renderBoard(); };
+    document.getElementById("btn-sort").onclick = () => { S.sort = !S.sort; save(); renderBoard(); };
+    document.getElementById("btn-clear").onclick = () => {
+      if (!S.notes.length) return;
+      if (confirm(`ล้างโพสต์อิททั้ง ${S.notes.length} ใบ? (กด "สำรอง" ก่อนถ้ายังอยากเก็บไว้)`)) { S.notes = []; save(); renderBoard(); }
+    };
+
+    // read overlay: top-voted, verbatim
+    const reader = document.getElementById("reader");
+    document.getElementById("btn-read").onclick = () => {
+      const top = [...S.notes].filter((n) => n.dots > 0).sort((a, b) => b.dots - a.dots || a.t - b.t).slice(0, 5);
+      reader.innerHTML = `<button class="btn close" id="rd-close">ปิด (Esc)</button><h2>ที่ผมได้ยินจากผนัง · ${top.length ? "ใบที่จุดมากสุด" : "ยังไม่มีใบไหนได้จุด"}</h2>` +
+        top.map((n) => `<div class="item"><div class="sw" style="background:${stickyColor(n.color)}"></div><div><div class="rq">“${esc(n.text)}”</div><div class="rn">${n.dots} จุด · ${esc(zoneOf(n.zone).name)}</div></div></div>`).join("");
+      reader.hidden = false; document.getElementById("rd-close").onclick = () => (reader.hidden = true); document.getElementById("rd-close").focus();
+    };
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !reader.hidden) reader.hidden = true; });
+    document.getElementById("btn-full").onclick = () => { if (document.fullscreenElement) document.exitFullscreen?.(); else document.documentElement.requestFullscreen?.(); };
+
+    // ---------- export helpers ----------
+    async function toPng(el, name) {
+      if (!window.html2canvas) { alert("บันทึกรูปต้องใช้อินเทอร์เน็ต (โหลดตัวแปลงรูปไม่ได้) · ใช้ปุ่ม พิมพ์ / PDF แทนได้"); return; }
+      el.classList.add("capturing");
+      try {
+        const canvas = await html2canvas(el, {
+          scale: 2, backgroundColor: "#EEEAE2", useCORS: true,
+          ignoreElements: (n) => n.classList?.contains("no-export"),
+          // DaisyUI/Tailwind use oklch(); html2canvas cannot parse it → keep only this file's own CSS in the clone
+          onclone: (doc) => { doc.querySelectorAll('link[rel="stylesheet"], style').forEach((s) => { if (s.id !== "app-css") s.remove(); }); doc.querySelectorAll(".sheet-wrap").forEach((w) => (w.style.zoom = "1")); },
+        });
+        const a = document.createElement("a");
+        a.download = name; a.href = canvas.toDataURL("image/png"); document.body.appendChild(a); a.click(); a.remove();
+      } catch (err) { alert("บันทึกรูปไม่สำเร็จ: " + err.message + " · ใช้ปุ่ม พิมพ์ / PDF แทนได้"); }
+      finally { el.classList.remove("capturing"); }
+    }
+    function printWith(html) {
+      document.getElementById("print-area").innerHTML = html;
+      setTimeout(() => window.print(), 60);
+    }
+    window.addEventListener("afterprint", () => (document.getElementById("print-area").innerHTML = ""));
+
+    document.getElementById("btn-wall-png").onclick = () => toPng(document.getElementById("wall-capture"), `${CONFIG.id}-wall-${stamp()}.png`);
+    document.getElementById("btn-wall-print").onclick = () => printWith(`<div class="wallprint"><div class="cap-head"><h2>${esc(W.title)} · ${esc(CONFIG.className)}</h2><span>${esc(document.getElementById("cap-meta").textContent)}</span></div><div class="board">${boardHtml(true)}</div></div>`);
+
+    // ---------- plan (A4) ----------
+    const person = () => S.people.find((p) => p.id === S.current) || S.people[0];
+    const edField = (p, key, ph, cls = "ed", def = "") => `<div class="${cls}" contenteditable="${p ? "true" : "false"}" data-key="${key}" data-ph="${esc(ph || "")}">${esc(p ? p.f[key] || def : def)}</div>`;
+    // ===== notebook sheet · shared by class-room + action-plan (redesign 2026-10-13) =====
+    const NB_TAPE = ["#BFE3F5", "#E2D4F5", "#F9C6D6", "#FFD8A8", "#CDEBD6"];
+    const NB_INK = ["#1E5A8C", "#6B4C9A", "#C0396B", "#B4581A", "#2E7D5B"];
+    const nbEsc = (s) => String(s ?? "").replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+    const NB_HOLES = `<div class="holes" aria-hidden="true"><i></i><i></i><i></i></div>`;
+    // date = the day the page is opened (Thai Buddhist calendar, e.g. "14 ต.ค. 2569") unless someone typed another one
+    const nbToday = () => new Date().toLocaleDateString("th-TH", { day: "numeric", month: "short", year: "numeric" });
+    // c = { brand, className, date, plan } · field(key, placeholder, inline) returns the writable area HTML
+    function nbSheet(c, field) {
+      const P = c.plan;
+      const spans = P.columns.length === 5 ? [2, 2, 2, 4, 2] : P.columns.map(() => 2);
+      const secs = P.columns.map((col, i) => {
+        const title = col.title === "__FOLLOWUP__" ? P.followUpLabel : col.title;
+        const k = i % NB_TAPE.length;
+        const slots = col.slots.map((s, j) => /^\d+$/.test(s)
+          ? `<div class="slot num"><b style="color:${NB_INK[k]}">${nbEsc(s)}.</b><div class="lines">${field(`c${i}s${j}`)}</div></div>`
+          : `<div class="slot"><span class="lab" style="color:${NB_INK[k]}">${nbEsc(s)}</span><div class="lines">${field(`c${i}s${j}`)}</div></div>`).join("");
+        return `<section class="nb-sec${spans[i] >= 4 ? " wide" : ""}" style="grid-column:span ${spans[i]}">
+          <span class="tape" style="background:${NB_TAPE[k]}"><span style="color:${NB_INK[k]}">${i + 1}</span>${nbEsc(title)}</span>
+          <div class="nb-hint">${nbEsc(col.hint)}</div><div class="slots">${slots}</div></section>`;
+      }).join("");
+      return `<article class="sheet nb">${NB_HOLES}
+        <header class="nb-top"><div><div class="nb-brand">${nbEsc(c.brand)}</div><h1 class="nb-title">${nbEsc(P.title)}</h1><div class="nb-sub">${nbEsc(P.subtitle)}</div></div>
+          <div class="nb-fields"><div><b>ชื่อ</b>${field("name", "พิมพ์ชื่อ", true)}</div><div><b>คลาส</b>${field("cls", "พิมพ์ชื่อคลาส", true)}</div><div><b>วันที่</b>${field("date", "", true, nbToday())}</div></div></header>
+        <div class="nb-grid">${secs}</div>
+        <div class="nb-bottom${P.bring ? "" : " solo"}">
+          <div class="sticky"><div><h3>${nbEsc(P.commitTitle)}</h3><p>${nbEsc(P.commitHint)}</p><div class="lines">${field("commit")}</div></div>
+            <div class="sign"><div><span>ลงชื่อ</span>${field("sign", "", true)}</div><div><span>คู่หูที่จะช่วยเตือน</span>${field("buddy", "", true)}</div></div></div>
+          ${P.bring ? `<div class="clip"><span class="cut" aria-hidden="true">✂</span>${P.bring}</div>` : ""}
+        </div></article>`;
+    }
+    function nbRecap(c) {
+      if (!c.plan.recapHtml) return "";
+      return `<article class="sheet nb">${NB_HOLES}<header class="nb-top"><div><div class="nb-brand">${nbEsc(c.brand)}</div><h1 class="nb-title">สรุป 1 หน้า · ติดไว้ข้างจอ</h1></div>
+        <div class="nb-fields" style="grid-template-columns:auto"><div><b>วันที่</b> ${nbEsc(nbToday())}</div></div></header>${c.plan.recapHtml}</article>`;
+    }
+    const sheetHtml = (p) => nbSheet(CONFIG, (key, ph, inline, def) => edField(p, key, ph, inline ? "inline-ed" : "ed", def));
+    const recapHtml = () => nbRecap(CONFIG);
+    const withRecap = () => document.getElementById("chk-recap").checked && P.recapHtml;
+
+    function fitSheets() {
+      const host = document.getElementById("sheet-host");
+      const wrap = host.querySelector(".sheet-wrap"); if (!wrap) return;
+      const px = 297 * 96 / 25.4; // A4 landscape width in CSS px
+      const narrow = host.clientWidth < 760; // phone: stack the sheet so people can type; print still uses A4
+      wrap.classList.toggle("fluid", narrow);
+      wrap.style.zoom = narrow ? "1" : String(Math.min(1, (host.clientWidth - 4) / px));
+    }
+    window.addEventListener("resize", fitSheets);
+    function renderPlan() {
+      const pe = document.getElementById("people");
+      pe.innerHTML = S.people.map((p, i) => `<button class="pill" aria-pressed="${p.id === S.current}" data-id="${p.id}">${esc(p.f.name || p.name || "คนที่ " + (i + 1))}</button>`).join("");
+      pe.querySelectorAll(".pill").forEach((b) => (b.onclick = () => { S.current = b.dataset.id; save(); renderPlan(); }));
+      const p = person();
+      document.getElementById("sheet-host").innerHTML = `<div class="sheet-wrap" id="plan-capture">${sheetHtml(p)}${withRecap() ? recapHtml() : ""}</div>`;
+      document.querySelectorAll("#sheet-host [contenteditable=true]").forEach((el) => {
+        el.addEventListener("input", () => { p.f[el.dataset.key] = el.innerText.replace(/\n$/, ""); save(); if (el.dataset.key === "name") { const pill = pe.querySelector(`[data-id="${p.id}"]`); if (pill) pill.textContent = p.f.name || "คนใหม่"; } });
+        el.addEventListener("paste", (e) => { e.preventDefault(); document.execCommand("insertText", false, (e.clipboardData || window.clipboardData).getData("text")); });
+      });
+      fitSheets();
+    }
+    document.getElementById("chk-recap").onchange = renderPlan;
+    document.getElementById("btn-add-person").onclick = () => { const p = { id: uid(), name: "", f: {} }; S.people.push(p); S.current = p.id; save(); renderPlan(); setTimeout(() => document.querySelector('#sheet-host [data-key="name"]')?.focus(), 30); };
+    document.getElementById("btn-del-person").onclick = () => {
+      const p = person();
+      if (!confirm(`ลบใบของ "${p.f.name || "คนนี้"}"?`)) return;
+      S.people = S.people.filter((x) => x !== p);
+      if (!S.people.length) S.people.push({ id: uid(), name: "", f: {} });
+      S.current = S.people[0].id; save(); renderPlan();
+    };
+    const fileName = (p) => `${CONFIG.id}-plan-${(p.f.name || "no-name").replace(/[^\p{L}\p{M}\p{N}_-]+/gu, "_")}-${stamp()}.png`;
+    document.getElementById("btn-plan-png").onclick = () => toPng(document.getElementById("plan-capture"), fileName(person()));
+    document.getElementById("btn-plan-print").onclick = () => printWith(sheetHtml(person()) + (withRecap() ? recapHtml() : ""));
+    document.getElementById("btn-plan-all").onclick = () => printWith(S.people.map((p) => sheetHtml(p) + (withRecap() ? recapHtml() : "")).join(""));
+    document.getElementById("btn-plan-blank").onclick = () => printWith(sheetHtml(null) + (withRecap() ? recapHtml() : ""));
+
+    // ---------- backup / import ----------
+    document.getElementById("btn-backup").onclick = () => {
+      const blob = new Blob([JSON.stringify({ id: CONFIG.id, saved: new Date().toISOString(), data: S }, null, 2)], { type: "application/json" });
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `${CONFIG.id}-backup-${stamp()}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    };
+    document.getElementById("inp-import").onchange = async (e) => {
+      const f = e.target.files[0]; if (!f) return;
+      try {
+        const j = JSON.parse(await f.text());
+        if (j.id && j.id !== CONFIG.id && !confirm(`ไฟล์นี้มาจากคลาส "${j.id}" ไม่ใช่ "${CONFIG.id}" นำเข้าทับเลยไหม?`)) return;
+        if (!confirm("นำเข้าแล้วข้อมูลบนเครื่องนี้จะถูกแทนที่ ตกลงไหม?")) return;
+        S = { ...S, ...(j.data || j) }; save(); renderBoard(); renderPlan();
+      } catch (err) { alert("อ่านไฟล์ไม่ได้: " + err.message); }
+      e.target.value = "";
+    };
+
+    renderColors(); renderBoard();
+    let startTab = "wall"; try { startTab = sessionStorage.getItem(KEY + ":tab") || "wall"; } catch (e) {}
+    showTab(startTab);
+  </script>
+</body>
+</html>

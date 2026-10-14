@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Farevefarm Action Plan</title>
+  <meta name="description" content="ใบแผนลงมือ + การ์ดสรุป 1 หน้า คลาสทีม Chat Admin Farevefarm 14 ต.ค. 2569" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" />
+  <!--
+    วิธีใช้ (สกิล /class-design):
+    1. คัดลอกไฟล์นี้ไปไว้ที่ clients/<slug>/training/action-plan-<slug>.html
+    2. แก้เฉพาะ CONFIG ด้านล่าง (ชื่อคลาส · วันที่ · คำถามแต่ละช่อง · ของที่ต้องเอามาวันติดตามผล · หน้าสรุป)
+    3. เปิดด้วย Chrome/Safari บน Mac (ฟอนต์ Sukhumvit Set) → พิมพ์ A4 แนวนอน · ขอบ "ไม่มี" หรือ "ค่าเริ่มต้น"
+    หน้าตาแบบสมุดตาราง (ออกแบบใหม่ 2026-10-13) ใช้โค้ดชุดเดียวกับ class-room-template.html (ส่วน notebook sheet) · แก้หน้าตาต้องแก้ทั้ง 2 ไฟล์
+  -->
+  <style>
+    :root { --navy:#072B4E; --coral:#DD4155; --ink:#1F2A37; }
+    @page { size: A4 landscape; margin: 0; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #E9E4DA; color: var(--ink);
+      font-family: "Sukhumvit Set", "Sarabun", "Prompt", sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .sheet.nb { margin: 10mm auto; page-break-after: always; break-after: page; }
+    .sheet.nb:last-child { page-break-after: auto; break-after: auto; }
+    @media print { html, body { background: #fff; } .sheet.nb { margin: 0; } .no-print { display: none !important; } }
+    .toolbar { position: fixed; right: 12px; top: 12px; z-index: 5; }
+    /* ===== notebook sheet · shared by class-room + action-plan (redesign 2026-10-13) ===== */
+    .sheet.nb { width:297mm; height:210mm; position:relative; overflow:hidden; display:flex; flex-direction:column; gap:3.5mm;
+      padding:9mm 11mm 8mm 27mm; color:#1F2A37; background-color:#FCFBF7;
+      background-image:linear-gradient(#E3E9F0 5%, transparent 5%), linear-gradient(90deg, #E3E9F0 5%, transparent 5%);
+      background-size:5mm 5mm; }
+    .sheet.nb::before { content:""; position:absolute; left:21mm; top:0; bottom:0; width:.5mm; background:#EBA6AF; }
+    .holes { position:absolute; left:6.5mm; top:0; bottom:0; display:flex; flex-direction:column; justify-content:space-evenly; }
+    .holes i { display:block; width:6.5mm; height:6.5mm; border-radius:50%; background:#E4DFD4; box-shadow:inset 0 .6mm 1mm rgba(0,0,0,.28); }
+    .nb-top { display:flex; align-items:flex-end; justify-content:space-between; gap:8mm; }
+    .nb-top > div:first-child { flex:1; min-width:0; }
+    .nb-brand { font-size:10pt; font-weight:700; color:#DD4155; }
+    .nb-title { display:inline; margin:0; font-size:26pt; font-weight:800; color:#072B4E; line-height:1.3; padding:0 1.5mm;
+      background:linear-gradient(transparent 55%, #FFE58A 55%, #FFE58A 90%, transparent 90%); }
+    .nb-sub { font-size:11.5pt; margin-top:1mm; color:#334155; }
+    .nb-fields { display:grid; grid-template-columns:50mm 70mm 38mm; gap:4mm; font-size:11pt; }
+    .nb-fields > div { display:flex; gap:2mm; align-items:flex-end; min-height:8mm; padding-bottom:.8mm; border-bottom:.35mm solid #072B4E; white-space:nowrap; overflow:hidden; }
+    .nb-fields b { color:#072B4E; }
+    .nb-grid { flex:1; min-height:0; display:grid; grid-template-columns:repeat(6, 1fr); grid-auto-rows:1fr; gap:5mm 7mm; }
+    .nb-sec { display:flex; flex-direction:column; gap:1.5mm; min-height:0; }
+    .tape { align-self:flex-start; display:inline-flex; gap:2.2mm; align-items:baseline; padding:1mm 3.5mm 1.2mm; font-size:12.5pt; font-weight:800; color:#1F2A37; transform:rotate(-1.2deg); box-shadow:0 .3mm .8mm rgba(0,0,0,.1); }
+    .nb-sec:nth-child(even) .tape { transform:rotate(.9deg); }
+    .nb-hint { font-size:10pt; line-height:1.3; color:#5B6676; }
+    .slots { flex:1; min-height:0; display:flex; flex-direction:column; gap:1.5mm; }
+    .wide .slots { display:grid; grid-template-columns:repeat(3, 1fr); gap:6mm; }
+    .slot { flex:1; min-height:9mm; display:flex; flex-direction:column; }
+    .slot.num { flex-direction:row; gap:2mm; }
+    .slot.num > b { font-size:12pt; line-height:7.9mm; }
+    .slot .lab { font-size:10pt; font-weight:700; }
+    .lines { flex:1; min-height:7.9mm; display:flex; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='30' viewBox='0 0 8 30' preserveAspectRatio='none'%3E%3Crect y='28.8' width='8' height='1.2' fill='%239FB0C2'/%3E%3C/svg%3E"); background-size:100% 7.9mm; background-repeat:repeat-y; }
+    .lines .ed { flex:1; line-height:7.9mm; font-size:11.5pt; }
+    .nb-bottom { display:grid; grid-template-columns:1fr 80mm; gap:8mm; align-items:stretch; }
+    .nb-bottom.solo { grid-template-columns:1fr; }
+    .sticky { position:relative; display:grid; grid-template-columns:1fr 62mm; gap:6mm; padding:3.5mm 5mm; background:#FFE58A; transform:rotate(-.6deg); box-shadow:0 .8mm 2mm rgba(0,0,0,.16); }
+    .sticky::before { content:""; position:absolute; top:-2.5mm; left:42%; width:26mm; height:6mm; background:rgba(255,255,255,.6); transform:rotate(-2deg); box-shadow:0 .2mm .6mm rgba(0,0,0,.08); }
+    .sticky h3 { margin:0; font-size:15pt; font-weight:800; color:#072B4E; }
+    .sticky p { margin:.3mm 0 1mm; font-size:10pt; color:#4A3F12; }
+    .sticky .lines { min-height:15.8mm; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='30' viewBox='0 0 8 30' preserveAspectRatio='none'%3E%3Crect y='28.8' width='8' height='1.2' fill='%23B39A2E'/%3E%3C/svg%3E"); }
+    .sticky .lines .ed { font-weight:700; font-size:12.5pt; }
+    .sticky .sign { display:flex; flex-direction:column; justify-content:space-around; font-size:10pt; }
+    .sticky .sign > div { display:flex; gap:2mm; align-items:flex-end; border-bottom:.3mm solid #8F7A22; padding-bottom:.8mm; min-height:8mm; }
+    .sticky .sign span { white-space:nowrap; color:#4A3F12; }
+    .clip { position:relative; background:#fff; border:.4mm dashed #DD4155; border-radius:1.5mm; padding:3.5mm 4mm 3mm; font-size:9.8pt; line-height:1.4; }
+    .clip b { color:#DD4155; display:block; font-size:10.5pt; }
+    .clip .cut { position:absolute; top:-3.3mm; left:3mm; background:#FCFBF7; color:#DD4155; font-size:11pt; padding:0 1mm; line-height:1.2; }
+    .ed { outline:none; white-space:pre-wrap; word-break:break-word; color:#123A6B; min-height:7.9mm; }
+    .ed:focus { background:rgba(255,229,138,.35); }
+    .inline-ed { flex:1; min-width:10mm; outline:none; color:#123A6B; }
+    .ed:empty::before, .inline-ed:empty::before { content:attr(data-ph); color:#B7AFA2; }
+    /* recap page */
+    .nb .recap { flex:1; min-height:0; display:grid; grid-template-columns:1.15fr 1fr 1fr; grid-template-rows:auto auto; gap:5mm 5mm; padding-top:1.5mm; }
+    .nb .card { position:relative; display:block; background:#fff; border:0; border-radius:1mm; padding:4.5mm 4mm 2.5mm; font-size:10.3pt; line-height:1.34; overflow:hidden; box-shadow:0 .5mm 1.6mm rgba(0,0,0,.14); }
+    .nb .card:nth-child(odd) { transform:rotate(-.35deg); } .nb .card:nth-child(even) { transform:rotate(.4deg); }
+    .nb .card::before { content:""; position:absolute; top:0; left:50%; width:24mm; height:3.6mm; margin-left:-12mm; background:#BFE3F5; opacity:.85; }
+    .nb .card:nth-child(3n+2)::before { background:#F9C6D6; } .nb .card:nth-child(3n)::before { background:#CDEBD6; }
+    .nb .card h3 { font-size:13.5pt; font-weight:800; color:#072B4E; margin:0 0 1.5mm; }
+    .nb .card h3 .k { color:#DD4155; margin-right:1.5mm; }
+    .nb .card ol, .nb .card ul { margin:0; padding-left:5mm; } .nb .card ol { list-style:decimal; } .nb .card ul { list-style:disc; }
+    .nb .card li { margin:.6mm 0; }
+    .nb .card table { width:100%; border-collapse:collapse; font-size:10.2pt; }
+    .nb .card td { border-top:.25mm dashed #D5CDBE; padding:.9mm 1mm; vertical-align:top; }
+    .nb .card td:first-child { font-weight:700; white-space:nowrap; color:#072B4E; }
+    .nb .tk { margin-top:2mm; padding:1.5mm 0 0; border-top:.3mm dashed #C9BFAE; border-radius:0; background:none; color:#072B4E; font-weight:800; font-size:10.6pt; }
+    .nb .q { font-style:normal; color:#1E5A8C; background:linear-gradient(transparent 62%, #FFF0B3 62%); border-radius:0; padding:0 .5mm; }
+    .nb .blank { display:inline-block; min-width:38mm; border-bottom:.3mm dashed #8A8172; }
+    .nb .score { display:flex; flex-wrap:wrap; gap:5mm; align-items:center; padding:2.5mm 4mm; border:.45mm dashed #072B4E; border-radius:2mm; background:#fff; color:#072B4E; font-size:11.5pt; }
+    .nb .score b { font-size:13pt; }
+    .nb .score span::before { content:"☐ "; color:#DD4155; }
+  </style>
+</head>
+<body>
+  <div class="toolbar no-print"><button class="btn btn-sm btn-primary" onclick="window.print()">พิมพ์ (A4 แนวนอน)</button></div>
+  <main id="root"></main>
+
+  <script>
+    // ===== CONFIG — แก้ส่วนนี้ส่วนเดียว =====
+    const CONFIG = {
+      brand: "ปัน ณัฐพัชร์ · Farevefarm · ทีม Chat Admin",
+      title: "แผนลงมือของฉัน",
+      subtitle: "เปลี่ยนสิ่งที่เรียนวันนี้ ให้เห็นในแชทจริงก่อนวันอบรมครั้งที่ 2",
+      className: "จิตวิทยาการขาย ทีม Chat Admin",
+      date: "14 ต.ค. 2569",
+      followUpLabel: "ถึงวันอบรมครั้งที่ 2",
+      columns: [
+        { title: "สิ่งที่ได้วันนี้", hint: "3 อย่างที่จำได้โดยไม่ต้องเปิดสไลด์", slots: ["1", "2", "3"] },
+        { title: "ท่าที่จะใช้ในแชท", hint: "3 ท่า · ใช้กับลูกค้าแบบไหน (ไว · เทียบร้าน · ตามของ · ต่อราคา · เกรงใจ)", slots: ["1", "2", "3"] },
+        { title: "7 วันแรก", hint: "ท่าที่จะลองก่อน 1 ท่า · ใช้กะไหน กับลูกค้าแบบไหน", slots: ["ท่าที่จะลองก่อน", "ใช้ตอนไหน / กับลูกค้าแบบไหน"] },
+        { title: "__FOLLOWUP__", hint: "ภายใน 28 พ.ย. 2569 · ต้องชี้ให้ดูในแชทได้", slots: ["เป้าของฉัน", "สิ่งที่จะทำทุกวัน", "แชทไหนจะเอามาโชว์ว่าได้ผล"] },
+        { title: "สิ่งที่จะเปลี่ยน", hint: "ถ้าทำครบ ฉันกับทีมจะต่างจากวันนี้ยังไง", slots: ["ในตัวฉัน", "ในทีม / ในงาน"] },
+      ],
+      commitTitle: "คำมั่นของฉัน",
+      commitHint: "1 อย่างที่จะเริ่มพรุ่งนี้ ตอนไหน",
+      bring: "<b>วันอบรมครั้งที่ 2 เอามาด้วย</b> แคปแชทก่อน / หลัง 2 คู่ (ปิดชื่อและเบอร์ลูกค้า) · เรื่องที่ปิดได้ 1 เรื่อง เขียนแบบคลังท่าทีม (สถานการณ์ · ลูกค้าพูด · เราตอบ · ทำไมได้ผล) · การทบทวนดูภาพรวมทีม ไม่ใช่ให้คะแนนรายคน",
+      recapHtml: `<div class="recap">
+  <section class="card" style="grid-row: span 2">
+    <h3><span class="k">1</span>อ่านลูกค้าจาก 3 ข้อความแรก</h3>
+    <table>
+      <tr><td>ตัดสินใจไว</td><td>ตอบมี/ไม่มี + ราคา + วิธีจ่าย ในฟองเดียว · อย่าถามเยอะ</td></tr>
+      <tr><td>ถามเยอะ เทียบร้าน</td><td>ตอบเร็ว · บอกสิ่งที่ร้านเรามี (ตรวจของแท้ · เปลี่ยน/คืนตามนโยบาย) · ถามว่าจะตัดสินใจเมื่อไหร่</td></tr>
+      <tr><td>ตามของ</td><td>ลง Wishlist ต่อหน้าลูกค้า · บอกว่าจะแจ้งเมื่อไหร่ · เสนอตัวที่มีตอนนี้ 1 ตัว</td></tr>
+      <tr><td>ต่อราคา</td><td>ใช้บันไดข้อ 3 · ให้แล้วต้องได้อะไรกลับ</td></tr>
+      <tr><td>เกรงใจ</td><td>ให้ทางเลือก 2 ข้อ · "ไม่เอาก็ไม่เป็นไรนะคะ" · ไม่ปิดการขายด้วยความเกรงใจ</td></tr>
+    </table>
+    <h3 style="margin-top:3mm"><span class="k">2</span>ถามก่อนเสนอ 3 ข้อ</h3>
+    <ol>
+      <li>ใช้กับอะไร · <i class="q">"ใช้ทุกวัน หรือใช้ออกงานคะ"</i></li>
+      <li>ชอบแบบไหน · <i class="q">"ชอบใส่พอดีเท้า หรือเหลือปลายนิดนึงคะ"</i></li>
+      <li>รับทางเลือกได้ไหม · <i class="q">"ถ้าเจอมือสองสภาพสวยมาก สนใจดูด้วยไหมคะ"</i></li>
+    </ol>
+    <div style="margin-top:1.5mm">ถามทีละข้อ · ให้ตัวเลือก · AI ช่วยหาข้อมูลรุ่นได้ แต่ไม่เดาใจลูกค้าแทนเรา</div>
+  <div class="tk">★ อ่าน 3 ข้อความแรกก่อน แล้วค่อยเลือกท่า · ถามว่าใช้กับอะไรก่อน แล้วค่อยเสนอ 2–3 ทาง</div>
+  </section>
+  <section class="card">
+    <h3><span class="k">3</span>บันไดแทนส่วนลด</h3>
+    <ol>
+      <li>ทางเลือกสินค้า (มือสองสภาพสวย · สีใกล้เคียง · รอล็อตหน้า)</li>
+      <li>บริการ (ตามนโยบายร้าน) <span class="blank"></span></li>
+      <li>วิธีจ่าย (โอน = ไม่มีค่าธรรมเนียมบัตร)</li>
+      <li>ส่วนลดในกรอบ <span class="blank" style="min-width:24mm"></span> แลกกับ โอนวันนี้ / 2 ชิ้น</li>
+    </ol>
+    <div style="margin-top:1.5mm">พูดว่า <i class="q">"ได้ค่ะ ถ้า…"</i> แทน <i class="q">"ไม่ได้ค่ะ"</i></div>
+  <div class="tk">★ ให้อะไร ต้องได้อะไรกลับ</div>
+  </section>
+  <section class="card">
+    <h3><span class="k">4</span>เร็วแต่ไม่พลาด</h3>
+    <div><b>เช็ค 5 วินาทีก่อนกดส่ง</b> ลูกค้าถูกคน · รุ่น/สี/ไซส์ · ราคา + ค่าธรรมเนียม · เงื่อนไขพรี/คืน · ขั้นต่อไป</div>
+    <div style="margin-top:1.5mm"><b>ถือสายแบบบอกเวลา</b> (แก้เวลาให้ทำได้จริง)</div>
+    <ul>
+      <li><i class="q">"ขอเช็คให้ชัวร์ภายใน 20 นาทีนะคะ เดี๋ยวกลับมาพร้อมรูปและราคาค่ะ"</i></li>
+      <li><i class="q">"รุ่นนี้เป็นพรีค่ะ ขอเช็คราคากับต้นทางก่อน แจ้งภายในวันนี้นะคะ"</i></li>
+    </ul>
+    <div style="margin-top:1mm"><b>ลูกค้าไม่พอใจ</b> ขอโทษก่อน → ถามรายละเอียด → บอกว่าจะทำอะไร ภายในกี่โมง · <b>ถามซ้ำ</b> = ยังไม่มั่นใจ ถามว่ากังวลเรื่องไหน</div>
+  <div class="tk">★ รอได้ ถ้ารู้ว่ารอถึงกี่โมง · ผิดครั้งเดียว ลูกค้าจำนาน</div>
+  </section>
+  <section class="card">
+    <h3><span class="k">5</span>หาของเจอ ต้องหาลูกค้าเจอ</h3>
+    <div><b>Keyword ทีม</b> #แบรนด์-รุ่น-สี-ไซส์ <span class="blank" style="min-width:30mm"></span></div>
+    <div style="margin-top:1mm"><b>Wishlist</b> 1 แถว = ลูกค้า 1 คน ขอ 1 ชิ้น · ช่องทาง · ชื่อ/ID · keyword · ผู้รับเคส · ทักครั้งถัดไป (+ ช่องที่ทีมเพิ่ม)</div>
+    <div style="margin-top:1mm"><b>เจ้าของเคส</b> ใครรับ ถือจนปิดหรือปล่อย · หมดกะเขียนส่งต่อ <span class="blank" style="min-width:20mm"></span></div>
+  <div class="tk">★ ของเข้าแล้ว ต้องหาคนขอให้เจอใน 60 วินาที</div>
+  </section>
+  <section class="card">
+    <h3><span class="k">6</span>หาข้อมูลพรี 3 ขั้น</h3>
+    <ol>
+      <li>เว็บแบรนด์ / โค้ดสินค้า</li>
+      <li>คลังทีม + ถามเพื่อน ไม่เกิน 10 นาที</li>
+      <li>ส่งคุณอีฟ พร้อมสิ่งที่หามาแล้ว</li>
+    </ol>
+    <h3 style="margin-top:3mm"><span class="k">7</span>ทักตาม</h3>
+    <div><b>ลูกค้าเงียบ</b> ไม่เกิน 3 ครั้ง วันที่ <span class="blank" style="min-width:8mm"></span> · <span class="blank" style="min-width:8mm"></span> · <span class="blank" style="min-width:8mm"></span> (ร่าง 1 · 3 · 7)<br>ถามว่าติดเรื่องไหน → ส่งของใหม่ 1 อย่าง → ปิดห้อง + ชวนลง Wishlist</div>
+    <div style="margin-top:1mm"><b>ของเข้า</b> แจ้งพร้อมรูป + ราคา + เก็บให้ถึงกี่โมง · เลยเวลา ส่งต่อคนถัดไป และบอกคนแรก</div>
+  </section>
+</div>
+<div class="score"><b>แชทที่ดี 4 ข้อ</b><span>① ถามก่อนเสนอ</span><span>② เสนอทางเลือกก่อนลด</span><span>③ ให้แล้วได้อะไรกลับ</span><span>④ จบด้วยขั้นต่อไปที่มีเวลา</span></div>`,
+    };
+    // ===== END CONFIG =====
+
+    // ===== notebook sheet · shared by class-room + action-plan (redesign 2026-10-13) =====
+    const NB_TAPE = ["#BFE3F5", "#E2D4F5", "#F9C6D6", "#FFD8A8", "#CDEBD6"];
+    const NB_INK = ["#1E5A8C", "#6B4C9A", "#C0396B", "#B4581A", "#2E7D5B"];
+    const nbEsc = (s) => String(s ?? "").replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+    const NB_HOLES = `<div class="holes" aria-hidden="true"><i></i><i></i><i></i></div>`;
+    // date = the day the page is opened (Thai Buddhist calendar, e.g. "14 ต.ค. 2569") unless someone typed another one
+    const nbToday = () => new Date().toLocaleDateString("th-TH", { day: "numeric", month: "short", year: "numeric" });
+    // c = { brand, className, date, plan } · field(key, placeholder, inline) returns the writable area HTML
+    function nbSheet(c, field) {
+      const P = c.plan;
+      const spans = P.columns.length === 5 ? [2, 2, 2, 4, 2] : P.columns.map(() => 2);
+      const secs = P.columns.map((col, i) => {
+        const title = col.title === "__FOLLOWUP__" ? P.followUpLabel : col.title;
+        const k = i % NB_TAPE.length;
+        const slots = col.slots.map((s, j) => /^\d+$/.test(s)
+          ? `<div class="slot num"><b style="color:${NB_INK[k]}">${nbEsc(s)}.</b><div class="lines">${field(`c${i}s${j}`)}</div></div>`
+          : `<div class="slot"><span class="lab" style="color:${NB_INK[k]}">${nbEsc(s)}</span><div class="lines">${field(`c${i}s${j}`)}</div></div>`).join("");
+        return `<section class="nb-sec${spans[i] >= 4 ? " wide" : ""}" style="grid-column:span ${spans[i]}">
+          <span class="tape" style="background:${NB_TAPE[k]}"><span style="color:${NB_INK[k]}">${i + 1}</span>${nbEsc(title)}</span>
+          <div class="nb-hint">${nbEsc(col.hint)}</div><div class="slots">${slots}</div></section>`;
+      }).join("");
+      return `<article class="sheet nb">${NB_HOLES}
+        <header class="nb-top"><div><div class="nb-brand">${nbEsc(c.brand)}</div><h1 class="nb-title">${nbEsc(P.title)}</h1><div class="nb-sub">${nbEsc(P.subtitle)}</div></div>
+          <div class="nb-fields"><div><b>ชื่อ</b>${field("name", "พิมพ์ชื่อ", true)}</div><div><b>คลาส</b>${field("cls", "พิมพ์ชื่อคลาส", true)}</div><div><b>วันที่</b>${field("date", "", true, nbToday())}</div></div></header>
+        <div class="nb-grid">${secs}</div>
+        <div class="nb-bottom${P.bring ? "" : " solo"}">
+          <div class="sticky"><div><h3>${nbEsc(P.commitTitle)}</h3><p>${nbEsc(P.commitHint)}</p><div class="lines">${field("commit")}</div></div>
+            <div class="sign"><div><span>ลงชื่อ</span>${field("sign", "", true)}</div><div><span>คู่หูที่จะช่วยเตือน</span>${field("buddy", "", true)}</div></div></div>
+          ${P.bring ? `<div class="clip"><span class="cut" aria-hidden="true">✂</span>${P.bring}</div>` : ""}
+        </div></article>`;
+    }
+    function nbRecap(c) {
+      if (!c.plan.recapHtml) return "";
+      return `<article class="sheet nb">${NB_HOLES}<header class="nb-top"><div><div class="nb-brand">${nbEsc(c.brand)}</div><h1 class="nb-title">สรุป 1 หน้า · ติดไว้ข้างจอ</h1></div>
+        <div class="nb-fields" style="grid-template-columns:auto"><div><b>วันที่</b> ${nbEsc(nbToday())}</div></div></header>${c.plan.recapHtml}</article>`;
+    }
+    const blank = (key, ph, inline, def = "") => `<div class="${inline ? "inline-ed" : "ed"}">${nbEsc(def)}</div>`;
+    const C2 = { brand: CONFIG.brand, className: CONFIG.className, date: CONFIG.date, plan: CONFIG };
+    document.getElementById("root").innerHTML = nbSheet(C2, blank) + nbRecap(C2);
+  </script>
+</body>
+</html>
