@@ -578,7 +578,7 @@ test('C1 daily consulting is one day-rate service with six selectable topics, tw
   assert.match(await leak.locator('[data-leak-gap]').innerText(), /2,904 ชั่วโมง/, 'C1 calculator must recompute from the buyer\'s own numbers');
   // ราคา/ระยะเวลาโผล่ 2 ที่: ส่วนเนื้อหาหน้า + บล็อกราคาข้างฟอร์ม 2 ขั้น (2026-10-12) · ทั้งคู่ต้องมาจาก Catalog
   assert.equal(await page.getByText(catalog.duration, { exact: true }).count(), 2, 'C1 duration appears in the page body and in the form price block');
-  assert.equal(await page.getByText(fmtPrice('daily-sales-consulting'), { exact: true }).count(), 2, 'C1 price appears in the page body and in the form price block');
+  assert.equal(await page.getByText(fmtPrice('daily-sales-consulting'), { exact: true }).count(), 3, 'C1 price appears in the hero decision card, the page body and the form price block');
   assert.equal(await page.locator('[data-lead-form-section] [data-offer-block]').getByText(fmtPrice('daily-sales-consulting'), { exact: true }).count(), 1, 'C1 form price block must show the Catalog price');
   assert.equal(await page.locator('form[data-lead-form][data-steps="2"]').count(), 1, 'C1 lead form lets the buyer pick at most 2 topics (1 day = 2 topics)');
 
