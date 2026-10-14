@@ -1,6 +1,7 @@
 ---
 import type { ProductWhyMe, ProductDetailCode } from '../../../data/product-details/types';
 import JourneyCTA from './JourneyCTA.astro';
+import { FORM_CTA_LABEL, isFormFirst } from '../../../data/product-details/cta-policy';
 interface Props { data: ProductWhyMe; code: ProductDetailCode; keyword: string; price: string; amount?: number; bonusTotal?: number; }
 const { data, code, keyword, price, amount, bonusTotal } = Astro.props;
 const fmt = (n: number) => `฿${n.toLocaleString('en-US')}`;
@@ -24,7 +25,7 @@ const fill = (text: string) => text.replaceAll('{{price}}', price).replaceAll('{
       ))}
     </div>
     <div class="mt-8 flex justify-center">
-      <JourneyCTA code={code} location="why_me" keyword={keyword} primary="จองคิวรับบริการ" primaryIntent="book_training" secondary={`ทัก LINE พิมพ์ “${keyword}”`} secondaryIntent="workflow_fit" />
+      <JourneyCTA code={code} location="why_me" keyword={keyword} primary={isFormFirst(code) ? FORM_CTA_LABEL : 'จองคิวรับบริการ'} primaryIntent="book_training" secondary={`ทัก LINE พิมพ์ “${keyword}”`} secondaryIntent="workflow_fit" />
     </div>
   </div>
 </section>

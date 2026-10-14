@@ -13,13 +13,13 @@ import { P1_PRODUCT_DETAIL } from '../data/product-details/p1';
 const HUB_PRODUCTS = [T1_PRODUCT_DETAIL, T2_PRODUCT_DETAIL, T3_PRODUCT_DETAIL, T4_PRODUCT_DETAIL, C1_PRODUCT_DETAIL, P1_PRODUCT_DETAIL];
 import { SITE } from '../data/site';
 
-const title = 'ขอบคุณที่กรอกแบบประเมิน';
+const title = 'ได้โจทย์แล้วครับ';
 const description =
-  'รับเรื่องแล้ว ผมอ่านเองภายในวันทำการเดียวกัน — ขั้นตอนถัดไปคือโทรคุยหรือ online meeting ไม่เกิน 15 นาที ทาง LINE พร้อมรหัสอ้างอิง';
+  'ได้โจทย์แล้ว ผมอ่านเองแล้วโทรกลับภายในวันนี้ คุย 15 นาที ไม่มีค่าใช้จ่าย';
 ---
 
 <BaseLayout title={title} description={description} noindex={true}>
-  <section class="px-4 py-24">
+  <section class="px-4 py-16 md:py-24">
     <div class="mx-auto max-w-xl text-center">
       <div
         class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-success text-5xl text-success-content"
@@ -29,56 +29,46 @@ const description =
       </div>
 
       <h1 id="thankyou-heading" class="mt-6 font-display text-3xl font-bold text-base-content md:text-4xl">
-        บันทึกแบบประเมินเรียบร้อย
+        บันทึกแบบประเมินแล้วครับ
       </h1>
 
+      {/* audit ด่านคุณยาย 2026-10-14: หน้านี้ให้ทำอย่างเดียว = บอกเวลารับสาย · ไม่บอกว่า "จองแล้ว" เพราะลูกค้าแค่ทิ้งเบอร์ */}
       <p class="mt-5 text-lg leading-relaxed text-base-content/80">
-        ขั้นตอนสุดท้าย — <strong class="text-secondary">ทักหาผมใน LINE</strong>
-        พร้อมแนบ Reference ด้านล่าง
+        ผมอ่านเอง แล้วโทรกลับภายในวันนี้ ส่วนใหญ่ช่วงเย็น
+        <strong class="text-base-content">คุย 15 นาที ไม่มีค่าใช้จ่าย</strong>
+        ว่าทีมคุณควรเริ่มเรื่องไหน และควรสอนทีมหรือให้ผมเข้าไปทำให้
       </p>
 
-      <div class="mt-8">
-        <span class="text-xs uppercase tracking-widest text-base-content/50">Reference</span>
-        <div class="mt-2">
-          <code
-            id="ref-display"
-            class="inline-block rounded-lg bg-base-200 px-6 py-3 font-mono text-xl font-bold text-base-content"
-          >—</code>
+      <div class="mt-8 rounded-2xl border border-[#c9c2b2] bg-white p-6">
+        <p class="font-display text-xl font-bold text-base-content">สะดวกรับสายช่วงไหน กดบอกผมได้เลย</p>
+        <div class="mt-4 grid gap-3 sm:grid-cols-3">
+          {['เย็นนี้', 'พรุ่งนี้เช้า', 'พรุ่งนี้บ่าย'].map((slot) => (
+            <a
+              href={SITE.social.line}
+              target="_blank"
+              rel="noopener"
+              data-contact-cta
+              data-call-slot={slot}
+              data-cta-location="thankyou_call_slot"
+              data-cta-intent="call_time"
+              data-cta-label={`สะดวกรับสาย${slot}`}
+              data-cta-keyword={`สะดวกรับสาย${slot}`}
+              class="btn min-h-12 border-0 bg-[#c43245] text-base text-white hover:bg-[#ad293a] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral"
+            >{slot}</a>
+          ))}
         </div>
+        <p class="mt-3 text-sm leading-6 text-base-content/70">กดแล้ว LINE จะเปิดพร้อมข้อความกับรหัสของคุณ แค่กดส่งครับ · บนคอมพิวเตอร์ สแกน QR แล้วพิมพ์ช่วงเวลาที่สะดวก</p>
+        <p class="mt-3 text-xs text-base-content/55">รหัสของคุณ <code id="ref-display" class="rounded bg-base-200 px-2 py-0.5 font-mono font-bold text-base-content">—</code></p>
       </div>
 
-      <div class="mt-8 flex flex-wrap justify-center gap-3">
-        <a
-          href={SITE.social.line}
-          rel="noopener"
-          target="_blank"
-          class="btn btn-lg gap-2 border-none font-bold text-white shadow-lg hover:opacity-90 active:opacity-80"
-          style="background: #06C755;"
-        >
-          <img src="/line-logo.png" alt="" class="h-6 w-6 shrink-0" aria-hidden="true" />
-          ทักใน LINE OA →
-        </a>
-        <button id="copy-ref" type="button" class="btn btn-lg btn-outline">
-          คัดลอก Reference
-        </button>
-      </div>
-
-      <div class="mt-10 rounded-2xl border border-secondary/30 bg-secondary/5 p-6 text-left">
-        <p class="flex items-center gap-2 font-display text-base font-bold text-base-content">
-          <span aria-hidden="true">🤝</span> สิ่งที่จะเกิดขึ้นต่อจากนี้
-        </p>
-        <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-base-content/80">
-          <li id="thankyou-read-line">ผมอ่านแบบประเมินของคุณเอง ไม่ใช่ทีมงาน ไม่ใช่ AI ตอบแทน</li>
-          <li>ตอบภายในวันทำการเดียวกัน (กลางวันผมมักอยู่หน้างานลูกค้า จึงตอบช่วงเย็นครับ)</li>
-          <li>
-            <strong>โทรคุย หรือ online meeting ไม่เกิน 15 นาที</strong>
-            คุยกันสั้นๆ ว่าโจทย์ของคุณตรงกับบริการไหน
-          </li>
-          <li>
-            <strong>ถ้าตรงและข้อมูลครบ เราสรุปขอบเขต ราคา และวันเริ่มได้ในรอบเดียว</strong>
-            ถ้าไม่ตรง ผมบอกตรงๆ และแนะนำทางที่เหมาะกว่าให้
-          </li>
+      <div class="mt-8 rounded-2xl border border-secondary/30 bg-secondary/5 p-6 text-left">
+        <p class="font-display text-base font-bold text-base-content">จากนี้ไปเป็นแบบนี้ครับ</p>
+        <ol class="mt-3 space-y-2 text-sm leading-relaxed text-base-content/80">
+          <li id="thankyou-read-line">① ผมโทรคุย 15 นาที ฟังโจทย์ แล้วบอกว่าควรสอนทีม หรือให้ผมเข้าไปทำให้ ใช้กี่วัน</li>
+          <li>② ถ้าตรงกัน ผมส่งใบเสนอราคาให้ในวันที่คุย ถ้าไม่ตรง ผมบอกตรงๆ</li>
+          <li>③ ชำระก่อนเริ่มงาน แล้วนัดวันที่ผมเข้าไปบริษัทคุณ</li>
         </ol>
+        <p class="mt-3 text-sm text-base-content/65">ยังไม่ได้จองอะไรนะครับ คุยกันก่อน</p>
       </div>
 
       <div class="mt-12 rounded-2xl bg-primary p-7 text-left text-primary-content shadow-lg">
@@ -124,28 +114,17 @@ const description =
 
       if (formType === 'booking') {
         const heading = document.getElementById('thankyou-heading');
-        if (heading) heading.textContent = 'รับเรื่องจองคิวแล้วครับ';
-        const readLine = document.getElementById('thankyou-read-line');
-        if (readLine) readLine.textContent = 'ผมอ่านโจทย์ของคุณเอง ไม่ใช่ทีมงาน ไม่ใช่ AI ตอบแทน';
-        document.title = 'ขอบคุณที่จองคิว · ปัน ณัฐพัชร์';
+        if (heading) heading.textContent = 'ได้โจทย์กับเบอร์แล้วครับ';
+        document.title = 'ได้โจทย์แล้ว · ปัน ณัฐพัชร์';
       }
 
-      const copyBtn = document.getElementById('copy-ref');
-      if (copyBtn) {
-        copyBtn.addEventListener('click', async () => {
-          if (ref === '—') return;
-          try {
-            await navigator.clipboard.writeText(ref);
-            const orig = copyBtn.textContent;
-            copyBtn.textContent = 'คัดลอกแล้ว ✓';
-            setTimeout(() => {
-              copyBtn.textContent = orig;
-            }, 2000);
-          } catch {
-            /* clipboard blocked — user can still highlight + copy */
-          }
-        });
-      }
+      // ปุ่มเลือกเวลารับสาย → LINE เปิดพร้อม "สะดวกรับสาย<ช่วง> รหัส <ref> [รหัสสินค้า]"
+      // LinePrefill (module script · รันหลังสคริปต์นี้) อ่าน data-cta-keyword + data-product-code ไปสร้างลิงก์ oaMessage บนมือถือ
+      document.querySelectorAll('[data-call-slot]').forEach((a) => {
+        const slot = a.getAttribute('data-call-slot');
+        a.setAttribute('data-cta-keyword', ref !== '—' ? `สะดวกรับสาย${slot} รหัส ${ref}` : `สะดวกรับสาย${slot}`);
+        if (packageCode) a.setAttribute('data-product-code', packageCode.toUpperCase());
+      });
 
       // Collect attribution from URL for conversion event payloads
       const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];

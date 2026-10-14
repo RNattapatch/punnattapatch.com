@@ -93,12 +93,14 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const response = await page.goto(`${baseURL}/services/online-to-sales`);
   assert.equal(response?.status(), 200, 'T2 route must render');
-  assert.equal(await page.locator('h1').innerText(), 'คลาสเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI', 'T2 H1 must resolve from the Catalog');
-  // ปันเคาะ 2026-09-05 ค่ำ: T2 = Content + Ads + Warroom (ไม่ใช่ Online-to-Sales Flow เรื่องแชต/คัด Lead)
+  // 2026-10-14 audit ด่านคุณยาย: H1 = พาดหัวภาษาบ้านๆ · ชื่อคลาสจาก Catalog ย่อลงเป็นบรรทัดเหนือราคา
+  assert.equal(await page.locator('h1').innerText(), 'ทีมขายของคุณโพสต์เอง แล้วมีลูกค้าทักเข้ามา', 'T2 H1 must lead with the plain-words outcome');
+  assert.equal(await page.locator('[data-hero-product-name]').innerText(), 'คลาสเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI', 'T2 hero must still name the class from the Catalog');
+  // ปันเคาะ 2026-09-05 ค่ำ: T2 = Content + Ads + Warroom (ไม่ใช่ Online-to-Sales Flow เรื่องแชต/คัด Lead) — ภาษาบ้านๆ: โพสต์ · โฆษณา · ระบบดูคู่แข่ง
   assert.equal(
-    await page.getByText('ให้เซลล์และทีมการตลาดหาลูกค้าใหม่จากออนไลน์ได้เอง ด้วย Content, Ads และระบบ AI ที่ติดตั้งบนเครื่องบริษัท', { exact: true }).count(),
+    await page.getByText('ผมสอนทีมขายกับทีมการตลาดทำโพสต์ ทำโฆษณา และติดตั้งระบบที่ตีสามไปดูคู่แข่งแล้วร่างโพสต์ไว้ให้ทุกเช้า', { exact: true }).count(),
     1,
-    'T2 Hero must state the Content + Ads + Warroom customer job exactly',
+    'T2 Hero must state the content + ads + competitor-watch customer job exactly',
   );
   assert.deepEqual(
     await page.locator('[data-why-now-item] > p:last-child').allTextContents(),
@@ -155,8 +157,10 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   assert.equal(await page.locator('[data-cta-location="final"][data-booking-cta]').count(), 1, 'final CTA must expose one Coral booking action');
   assert.equal(await page.locator('[data-cta-location="final"][data-line-cta]').count(), 1, 'final CTA must retain one LINE alternative');
   assert.equal(await page.locator('[data-cta-location="hero"][data-cta-intent="suitability"]').count(), 1, 'Hero suitability action must have a distinct analytics intent');
+  // 2026-10-14 ฟอร์มก่อน: T2 มีปุ่มหลักเดียว = ฟอร์ม · ทุกลิงก์ LINE เป็นตัวหนังสือขีดเส้นใต้สีเขียว LINE ไม่ใช่ปุ่มทึบ
   for (const action of await page.locator('[data-line-cta]').all()) {
-    assert.equal(await action.evaluate((element) => getComputedStyle(element).backgroundColor), 'rgb(6, 199, 85)', 'every CTA that opens LINE must use LINE green');
+    assert.equal(await action.evaluate((element) => getComputedStyle(element).textDecorationColor), 'rgb(6, 199, 85)', 'every T2 LINE link must keep the LINE green underline');
+    assert.equal(await action.evaluate((element) => getComputedStyle(element).backgroundColor), 'rgba(0, 0, 0, 0)', 'no T2 LINE link may compete as a filled button');
   }
   for (const action of await page.locator('[data-booking-cta]').all()) {
     assert.equal(await action.evaluate((element) => getComputedStyle(element).backgroundColor), 'rgb(196, 50, 69)', 'every CTA that opens booking must use the AA-safe Coral action shade');
@@ -164,8 +168,9 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   for (const location of ['hero', 'final']) {
     const secondaryAction = page.locator(`[data-cta-location="${location}"][data-line-cta]`);
     const style = await secondaryAction.evaluate((element) => ({ color: getComputedStyle(element).color, background: getComputedStyle(element).backgroundColor }));
-    assert.equal(style.color, 'rgb(7, 43, 78)', `${location} secondary LINE CTA must use the AA-safe navy foreground`);
-    assert.ok(lineContrastRatio(style.color, style.background) >= 4.5, `${location} secondary LINE CTA must maintain AA text contrast`);
+    // hero + final อยู่บนพื้นกรมท่า → ลิงก์ LINE เป็นตัวหนังสือขาว · วัด contrast กับพื้น navy ของ section (ลิงก์ไม่มีพื้นของตัวเองแล้ว)
+    assert.equal(style.color, 'rgb(255, 255, 255)', `${location} secondary LINE link must be white on the navy section`);
+    assert.ok(lineContrastRatio(style.color, 'rgb(7, 43, 78)') >= 4.5, `${location} secondary LINE link must maintain AA text contrast on navy`);
   }
   const lineActions = page.locator('[data-line-cta]');
   for (const action of await lineActions.all()) assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'all detail actions must use SITE.social.line');
@@ -277,21 +282,24 @@ test('T4 Hero explains the product, price, next action, and real activity at fir
   const catalog = CATALOG['t4-ai-workflow-pilot-day'];
   assert.equal(response?.status(), 200, 'T4 route must render');
   assert.equal(await page.locator('h1').count(), 1, 'T4 must contain exactly one H1');
-  assert.equal(await page.locator('h1').innerText(), catalog.name, 'T4 H1 must resolve from the approved Catalog key');
+  // 2026-10-14 audit ด่านคุณยาย: H1 = พาดหัวภาษาบ้านๆ · ชื่อคลาสจาก Catalog ย่อลงเป็นบรรทัดเหนือราคา
+  assert.equal(await page.locator('h1').innerText(), 'สอนทีมคุณให้ AI ช่วยทำงานซ้ำ', 'T4 H1 must lead with the plain-words outcome');
+  assert.equal(await page.locator('[data-hero-product-name]').innerText(), catalog.name, 'T4 hero must still name the class from the approved Catalog key');
   assert.equal(
-    await page.getByText('สอนทีมคุณให้ใช้ AI Agent ทำงานเอกสารจุกจิกแทนคนเก่ง', { exact: true }).count(),
+    await page.getByText('ลูกค้าทักแล้วเงียบ · ใบเสนอราคาช้า · ไม่มีใครทำโพสต์ เลือกมา 1 เรื่องที่ทีมทำซ้ำทุกวัน', { exact: true }).count(),
     1,
-    'T4 Hero must state the approved adoption outcome exactly',
+    'T4 Hero must name the repeat-work problems in the owner\'s words',
   );
   assert.match(await page.locator('[data-hero-price]').innerText(), new RegExp(fmtPrice('t4-ai-workflow-pilot-day')), 'T4 Hero must render its Catalog price at build time');
-  assert.match(await page.locator('[data-hero-price]').innerText(), /1 วัน · 1 Workflow/, 'T4 Hero must expose the one-day, one-workflow boundary beside price');
-  assert.equal(await page.locator('[data-cta-location="hero"][data-booking-cta]').innerText(), 'จองคิวรับบริการ', 'T4 Hero must lead with the approved booking label');
+  assert.match(await page.locator('[data-hero-price]').innerText(), /1 วัน · งานซ้ำ 1 เรื่อง/, 'T4 Hero must expose the one-day, one-task boundary beside price');
+  assert.equal(await page.locator('[data-cta-location="hero"][data-booking-cta]').innerText(), 'เล่าโจทย์ทีมขายให้ปันฟัง', 'T4 Hero must lead with the form-first label (framework 2026-10-12 ข้อ 6)');
   assert.equal(await page.locator('[data-cta-location="hero"][data-line-cta]').count(), 1, 'T4 Hero must retain a direct LINE action');
   assert.equal(
     await page.getByText('1 เดือนผมรับอบรมจำกัดแค่ 10 องค์กร สงวนสิทธิให้องค์กรที่ชำระค่าบริการและคิวก่อน', { exact: true }).count(),
-    2,
-    'the approved capacity note must appear at the Hero and Investment decision points',
+    1,
+    'the approved capacity note must appear at the Investment decision point (hero now carries the next step instead)',
   );
+  assert.match(await page.locator('[data-t4-section="hero"]').innerText(), /ขั้นต่อไป: ผมโทรกลับภายในวันนี้ ส่วนใหญ่ช่วงเย็น คุย 15 นาที ไม่มีค่าใช้จ่าย/, 'T4 Hero must state the one next step (audit 2026-10-14)');
   assert.match(await page.locator('[data-hero-activity] img').getAttribute('src') ?? '', /\/lp\/inhouse\/office-session\.jpg$/, 'T4 Hero must show the approved real office session');
   assert.equal(await page.locator('[data-hero-activity] img').getAttribute('loading'), 'eager', 'T4 Hero activity must load eagerly');
   assert.doesNotMatch(await page.content(), /fetch\([^)]*catalog\.json|src=["'][^"']*(?:generated|ai-gen)/i, 'T4 must not fetch price at runtime or use generated people imagery');
@@ -348,11 +356,12 @@ test('T4 makes the adoption boundary, curriculum, decision CTAs, FAQ, and LINE p
     'T4 curriculum must follow Choose → Map → Build → Guardrail → Adopt',
   );
   const text = await page.locator('main').innerText();
-  for (const boundary of ['1 Workflow', 'AI Agent Working Prototype', 'Data Safety', 'Human Review', '30-Day Adoption Plan']) {
+  for (const boundary of ['งานซ้ำ 1 เรื่อง', 'ผู้ช่วย AI ตัวแรก', 'ตรงไหนคนต้องตรวจ', 'ปิดชื่อลูกค้า', 'แผนใช้ต่อ 30 วัน']) {
     assert.match(text, new RegExp(boundary), `T4 must publish ${boundary}`);
   }
   assert.match(await page.locator('[data-t4-section="fit"]').innerText(), /ไม่ได้รับประกันว่าจะลดจำนวนคนได้ทันที/, 'T4 must reject an immediate headcount-reduction guarantee');
-  assert.match(text, /ให้ผมเข้าไปวางระบบให้ใน C1/, 'T4 must route done-for-you follow-up work to C1');
+  assert.match(text, /ให้ผมเข้าไปวางระบบให้/, 'T4 must route done-for-you follow-up work to C1');
+  assert.doesNotMatch(text, /Process owner|Working Prototype|Guardrail/, 'T4 must not fall back to the jargon the grandma test rejected');
   assert.doesNotMatch(text, /\bI1\b/, 'T4 must not mention the closed I1 service');
   assert.deepEqual(
     await page.locator('[data-decision-cta]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-cta-location'))),
@@ -362,7 +371,8 @@ test('T4 makes the adoption boundary, curriculum, decision CTAs, FAQ, and LINE p
   assert.ok(await page.locator('[data-line-cta]').count() >= 7, 'T4 must keep a LINE action available at seven or more decision points');
   for (const action of await page.locator('[data-line-cta]').all()) {
     assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'every T4 LINE action must use SITE.social.line');
-    assert.equal(await action.evaluate((element) => getComputedStyle(element).backgroundColor), 'rgb(6, 199, 85)', 'every T4 LINE action must use LINE green');
+    assert.equal(await action.evaluate((element) => getComputedStyle(element).textDecorationColor), 'rgb(6, 199, 85)', 'every T4 LINE link must keep the LINE green underline (form-first page)');
+    assert.equal(await action.evaluate((element) => getComputedStyle(element).backgroundColor), 'rgba(0, 0, 0, 0)', 'no T4 LINE link may compete as a filled button');
     assert.ok(await action.getAttribute('aria-label'), 'every T4 LINE action must have an accessible label');
   }
   assert.equal(await page.locator('[data-product-faq-button]').count(), 8, 'T4 must restore eight decision FAQs');
@@ -624,8 +634,8 @@ test('C1 daily consulting is one day-rate service with six selectable topics, tw
   assert.equal(await page.locator('form').count(), 1, 'C1 detail page must include exactly one lead form (C1 switched from chat ads to form 2026-10-12)');
   assert.equal(await page.locator('[data-floating-line]').count(), 1, 'C1 must retain exactly one global Floating LINE CTA');
   const bookingCtas = page.locator('[data-product-code="C1"][data-booking-cta]');
-  assert.equal(await bookingCtas.count(), 4, 'C1 must provide one booking action at each main decision point');
-  assert.equal(await bookingCtas.evaluateAll((actions) => actions.every((action) => action.textContent?.trim() === 'จองคิวรับบริการ')), true, 'every C1 booking action must use the approved label');
+  assert.equal(await bookingCtas.count(), 5, 'C1 must provide one booking action at each main decision point (hero · after scope · after systems · after investment · final)');
+  assert.equal(await bookingCtas.evaluateAll((actions) => actions.every((action) => action.textContent?.trim() === 'เล่าโจทย์ทีมขายให้ปันฟัง')), true, 'every C1 booking action must use the form-first label');
   for (const action of await bookingCtas.all()) {
     assert.match(await action.getAttribute('href') ?? '', /^\/booking\?package=C1&intent=/, 'every C1 booking action must preserve product attribution');
     assert.equal(await action.evaluate((element) => getComputedStyle(element).backgroundColor), 'rgb(196, 50, 69)', 'every C1 booking action must use the AA-safe Coral action shade');
@@ -633,11 +643,11 @@ test('C1 daily consulting is one day-rate service with six selectable topics, tw
   const lineCtas = page.locator('[data-product-code="C1"][data-line-cta]');
   assert.equal(await lineCtas.count(), 5, 'C1 must retain four LINE alternatives plus one system-proof fit CTA');
   assert.deepEqual(await lineCtas.evaluateAll((actions) => actions.map((action) => [action.getAttribute('data-cta-location'), action.getAttribute('data-cta-label')])), [
-    ['hero', 'ทัก LINE ให้ผมช่วยดูตัวเลข'],
-    ['after_investment', 'ทัก LINE ให้ผมช่วยเลือกเรื่อง'],
-    ['after_systems', 'ทัก LINE ให้ผมช่วยเลือกจุดเริ่ม'],
-    ['after_scope', 'ทัก LINE ส่งรูป Report'],
-    ['final', 'ทัก LINE เล่าอาการสั้น ๆ'],
+    ['hero', 'หรือทัก LINE ส่งตัวเลขให้ผมดู'],
+    ['after_investment', 'หรือทัก LINE ให้ผมช่วยเลือกเรื่อง'],
+    ['after_systems', 'หรือทัก LINE ให้ผมช่วยเลือกจุดเริ่ม'],
+    ['after_scope', 'หรือทัก LINE ส่งรูปรายงาน'],
+    ['final', 'หรือทัก LINE เล่าอาการสั้น ๆ'],
   ], 'C1 CTA journey must preserve every approved LINE alternative');
   for (const action of await lineCtas.all()) {
     assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'every C1 CTA must open SITE.social.line');

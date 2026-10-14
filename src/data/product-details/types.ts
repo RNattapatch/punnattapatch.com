@@ -378,6 +378,8 @@ export interface ProductDetailPageData {
   serviceType?: 'Sales Consulting' | 'Sales System Implementation';
   hero: {
     eyebrow: string;
+    /** พาดหัวภาษาบ้านๆ (H1) — ตั้งแล้วชื่อคลาสจะย่อลงเป็นบรรทัดเล็กเหนือราคา (audit ด่านคุณยาย 2026-10-14) */
+    headline?: string;
     customerJob: string;
     supportingCopy: string[];
     microcopy?: string;

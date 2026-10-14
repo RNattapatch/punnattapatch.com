@@ -6,6 +6,7 @@ import { fmtPrice } from '../../../data/pricing.mjs';
 import { SITE } from '../../../data/site';
 import type { ProductDetailCode, ProductSystemSection, SystemShot } from '../../../data/product-details/types';
 import GoldenPathFlow from './GoldenPathFlow.astro';
+import { FORM_CTA_LABEL, isFormFirst, lineLinkClass } from '../../../data/product-details/cta-policy';
 import HandoffTimeline from './HandoffTimeline.astro';
 
 // `part` แยก chapter ออกเป็น 3 จุดบนหน้า ตามหน้าที่ของแต่ละบล็อก (คุณปันเคาะลำดับ 2026-09-05)
@@ -22,10 +23,15 @@ const srcOf = (shot: SystemShot) => ('publicSrc' in shot.image ? shot.image.publ
 const openerShot = usable(data.opener.shot);
 const valueRef = fmtPrice(data.value.valueRefKey);
 // ทั้งสองปุ่มเป็น LINE จริง — คลิปเดินระบบยังไม่ปล่อยสาธารณะ จึงไม่มีปุ่มที่กดแล้วไม่เกิดอะไร
-const ctaActions = [
-  { label: data.cta.lineLabel, intent: data.cta.lineIntent },
-  { label: data.cta.secondaryLabel, intent: 'system_walkthrough_video' },
-];
+// หน้าฟอร์มก่อน (T2): ปุ่มหลัก = ฟอร์มในหน้า · LINE เหลือเป็นลิงก์ตัวหนังสือ (audit 2026-10-14)
+const formFirst = isFormFirst(code);
+const ctaActions = formFirst
+  ? [{ label: data.cta.secondaryLabel, intent: 'system_walkthrough_video' }]
+  : [
+    { label: data.cta.lineLabel, intent: data.cta.lineIntent },
+    { label: data.cta.secondaryLabel, intent: 'system_walkthrough_video' },
+  ];
+const lineClass = formFirst ? lineLinkClass(false) : 'btn min-h-12 w-full border-0 bg-[#06C755] px-6 text-[#072B4E] shadow-sm hover:bg-[#05ad49] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral sm:w-auto';
 ---
 
 {part === 'teaser' && data.teaser && (
@@ -213,6 +219,9 @@ const ctaActions = [
           <p class="mt-3 text-sm leading-6 text-navy/60">{data.cta.secondaryNote}</p>
         </div>
         <div data-cta-location="system_chapter" class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:mt-0 lg:justify-end">
+          {formFirst && (
+            <a href={`/booking?package=${encodeURIComponent(code)}&intent=${encodeURIComponent(data.cta.lineIntent)}`} data-booking-cta data-contact-cta data-product-code={code} data-cta-location="system_chapter" data-cta-intent={data.cta.lineIntent} data-cta-label={FORM_CTA_LABEL} class="btn min-h-12 w-full border-0 bg-[#c43245] px-6 text-white shadow-sm hover:bg-[#ad293a] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral sm:w-auto">{FORM_CTA_LABEL}</a>
+          )}
           {ctaActions.map((action) => (
             <a
               href={SITE.social.line}
@@ -226,7 +235,8 @@ const ctaActions = [
               data-cta-intent={action.intent}
               data-cta-keyword={keyword}
               data-cta-label={action.label}
-              class="btn min-h-12 w-full border-0 bg-[#06C755] px-6 text-[#072B4E] shadow-sm hover:bg-[#05ad49] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral sm:w-auto"
+              data-line-as-link={formFirst ? true : undefined}
+              class={lineClass}
             >{action.label}</a>
           ))}
         </div>

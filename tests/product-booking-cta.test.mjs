@@ -27,9 +27,18 @@ test('every Product page separates Coral booking actions from LINE-green actions
       assert.doesNotMatch(tag, /lin\.ee/, `${code} booking CTA must not open LINE`);
     }
 
+    // 2026-10-14 (audit ด่านคุณยาย + framework ฟอร์มก่อน): หน้าที่มีฟอร์มในหน้า (T2 · T4 · C1) มีปุ่มหลักเดียว = ฟอร์ม
+    // LINE เหลือเป็นลิงก์ตัวหนังสือขีดเส้นใต้สีเขียว LINE · หน้าที่ไม่มีฟอร์ม (T1 · T3) ยังเป็นปุ่มเขียว
+    const formFirst = ['T2', 'T4', 'C1'].includes(code);
     for (const tag of lineLinks) {
       assert.match(tag, /href="https:\/\/lin\.ee\/ioSnSUG"/, `${code} LINE CTA must use the real LINE destination`);
-      assert.match(tag, /bg-\[#06c755\]/i, `${code} LINE CTA must use LINE green`);
+      if (formFirst) {
+        assert.match(tag, /data-line-as-link/, `${code} LINE CTA must render as a text link on a form-first page`);
+        assert.match(tag, /decoration-\[#06c755\]/i, `${code} LINE text link must keep the LINE green underline`);
+        assert.doesNotMatch(tag, /\sbg-\[#06c755\]/i, `${code} LINE text link must not compete as a filled button`);
+      } else {
+        assert.match(tag, /bg-\[#06c755\]/i, `${code} LINE CTA must use LINE green`);
+      }
       assert.doesNotMatch(tag, /class="[^"]*\sbg-\[#c43245\]/i, `${code} LINE CTA must not look like the booking action`);
     }
   }

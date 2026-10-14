@@ -37,6 +37,8 @@ const {
 const Heading = headingLevel;
 const shown = PROOF_SYSTEMS.slice(0, limit);
 const remaining = PROOF_SYSTEMS.length - shown.length;
+import { FORM_CTA_LABEL, lineLinkClass } from '../../data/product-details/cta-policy';
+import { SITE } from '../../data/site';
 ---
 
 <section
@@ -194,18 +196,14 @@ const remaining = PROOF_SYSTEMS.length - shown.length;
       </h3>
       <p class="mt-4 leading-relaxed text-warm-ink/75">
         {context === 'consult'
-          ? 'เล่าอาการที่คุณต้องไล่ตามอยู่ตอนนี้ให้ผมฟัง ผมจะช่วยแยกว่าควรเริ่มจาก Funnel ทีมขาย Dashboard หรือ AI Workflow'
-          : 'คุยกัน 15–20 นาที ผมจะบอกตรง ๆ ว่าธุรกิจคุณควรเริ่มที่งานไหน และงานไหนที่ยังไม่ควรแตะ AI ตอนนี้ ถ้าคุยแล้วผมคิดว่ายังไม่ถึงเวลา ผมจะบอกคุณแบบนั้น'}
+          ? 'เล่าอาการที่คุณต้องไล่ตามอยู่ตอนนี้ให้ผมฟัง ผมจะช่วยแยกว่าควรเริ่มจากเรื่องคนในทีมขาย หรือเรื่องงานซ้ำที่ให้ AI ช่วยได้'
+          : 'คุยกัน 15 นาที ผมจะบอกตรง ๆ ว่าธุรกิจคุณควรเริ่มที่งานไหน และงานไหนที่ยังไม่ควรแตะ AI ตอนนี้ ถ้าคุยแล้วผมคิดว่ายังไม่ถึงเวลา ผมจะบอกคุณแบบนั้น'}
       </p>
       {context === 'consult' ? (
-        <div class="mt-7 flex justify-center">
-          <LineCta
-            label="ทัก LINE ให้ผมช่วยเลือกจุดเริ่ม"
-            productCode="C1"
-            location="after_systems"
-            intent="track_selection"
-            keyword="CONSULT"
-          />
+        <div class="mt-7 flex flex-col items-center gap-3">
+          {/* หน้า C1 มีฟอร์มในหน้า → ปุ่มหลักเดียว = ฟอร์ม (คลิกแล้วเลื่อนลงฟอร์ม) · LINE เป็นลิงก์ตัวหนังสือ */}
+          <a href={`/booking?package=C1&intent=track_selection`} data-booking-cta data-contact-cta data-product-code="C1" data-cta-location="after_systems" data-cta-intent="track_selection" data-cta-label={FORM_CTA_LABEL} class="btn min-h-12 border-0 bg-[#c43245] px-6 text-white hover:bg-[#ad293a] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral">{FORM_CTA_LABEL}</a>
+          <a href={SITE.social.line} target="_blank" rel="noopener" data-line-cta data-contact-cta data-product-code="C1" data-cta-location="after_systems" data-cta-intent="track_selection" data-cta-keyword="CONSULT" data-cta-label="หรือทัก LINE ให้ผมช่วยเลือกจุดเริ่ม" data-line-as-link class={lineLinkClass(false)}>หรือทัก LINE ให้ผมช่วยเลือกจุดเริ่ม</a>
         </div>
       ) : (
         <>
@@ -213,7 +211,7 @@ const remaining = PROOF_SYSTEMS.length - shown.length;
             <a href="/booking" class="btn border-0 bg-coral text-white hover:bg-[#c43245]">จองคิวคุยกับผม</a>
             <LineCta label="ทัก LINE ถามก่อนก็ได้" />
           </div>
-          <p class="mt-4 text-sm text-muted">15–20 นาที · ไม่มีการขายในสาย · ถ้ายังไม่เหมาะ ผมจะบอก</p>
+          <p class="mt-4 text-sm text-muted">15 นาที · ไม่มีการขายในสาย · ถ้ายังไม่เหมาะ ผมจะบอก</p>
         </>
       )}
     </div>

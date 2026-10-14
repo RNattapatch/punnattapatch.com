@@ -11,6 +11,7 @@ import wrIntelFile from '../../assets/services/proof/wr-intel-file.png';
 import wrIntelLibrary from '../../assets/services/proof/wr-intel-library.png';
 import type { ProductBonusCard, ProductBonusValueItem, ProductDetailPageData, ProductFaqItem, ProductSystemSection } from './types';
 import { journeyInstructor, publicImage } from './shared-journey';
+import { FORM_CTA_LABEL, NEXT_STEP_CALL } from './cta-policy';
 
 import { CLIENT_LOGOS } from './client-logos';
 
@@ -319,29 +320,30 @@ export const T2_PRODUCT_DETAIL: ProductDetailPageData = {
   route: '/services/online-to-sales',
   kind: 'course',
   journey: {
-    heroMeta: '2 วัน · ดูแลต่อ 30 วัน',
-    capacityNote: 'ผมรับไม่เกิน 10 องค์กรต่อเดือน เพื่ออ่านสินค้า ช่องทาง Content และ Ads เดิมของบริษัทก่อน Workshop',
+    heroMeta: '2 วัน · ทั้งทีม · ผมดูแลต่อ 30 วัน',
+    capacityNote: `ขั้นต่อไป: ${NEXT_STEP_CALL} ว่าทีมคุณควรเริ่มจากโพสต์แบบไหน`,
     offerMeta: '1 องค์กร · 2 วัน · Content + Ads + Warroom',
     offerBody: 'ให้เซลล์และทีมการตลาดหาลูกค้าใหม่จากออนไลน์ได้เอง ตั้งแต่หลักคิดการทำ Content สำหรับคนขาย การทำช่อง Funnel Content 3 ชั้น รูปแบบ Ads ทั้ง 3 แบบ ไปจนถึงช่องทางรับลูกค้า และระบบสืบคู่แข่ง-ข่าวที่ติดตั้งบนเครื่องบริษัท',
-    whyNow: { eyebrow: 'Why now', heading: 'เซลล์ขายเป็นอยู่แล้ว แต่ลูกค้าใหม่ไม่เข้ามา เพราะไม่มีใครถนัดทำ Content', labels: ['โพสต์แล้วเงียบ ไม่มีคนทัก', 'คิดไม่ออกว่าจะโพสต์อะไรต่อ', 'ยิงแอดได้แต่คนดู', 'คู่แข่งขยับก่อนทุกที'] },
-    curriculum: { eyebrow: 'Content + Ads + Warroom journey', media: { afterStep: 2, image: publicImage('/lp/inhouse/class-full.jpg', 1600, 1200), alt: 'เซลล์และทีมการตลาดลงมือทำ Content ของบริษัทตัวเองใน Workshop', eyebrow: 'Make it in the room', heading: 'ชิ้นแรกต้องเสร็จในห้อง ไม่ใช่กลับไปทำเอง', copy: 'ทีมเลือกหัวข้อจากคำถามลูกค้าจริง ร่างด้วยระบบ แล้วทำออกมาเป็น Reel หรือ Carousel ที่โพสต์ได้จริงก่อนออกจากห้อง' } },
-    finalEyebrow: 'Start with one piece of content that brings a lead',
+    whyNow: { eyebrow: 'ทำไมต้องตอนนี้', heading: 'เซลล์ขายเป็นอยู่แล้ว แต่ลูกค้าใหม่ไม่เข้ามา เพราะไม่มีใครถนัดทำ Content', labels: ['โพสต์แล้วเงียบ ไม่มีคนทัก', 'คิดไม่ออกว่าจะโพสต์อะไรต่อ', 'ยิงแอดได้แต่คนดู', 'คู่แข่งขยับก่อนทุกที'] },
+    curriculum: { eyebrow: 'วันอบรม 2 วัน', media: { afterStep: 2, image: publicImage('/lp/inhouse/class-full.jpg', 1600, 1200), alt: 'เซลล์และทีมการตลาดลงมือทำ Content ของบริษัทตัวเองใน Workshop', eyebrow: 'Make it in the room', heading: 'ชิ้นแรกต้องเสร็จในห้อง ไม่ใช่กลับไปทำเอง', copy: 'ทีมเลือกหัวข้อจากคำถามลูกค้าจริง ร่างด้วยระบบ แล้วทำออกมาเป็น Reel หรือ Carousel ที่โพสต์ได้จริงก่อนออกจากห้อง' } },
+    finalEyebrow: 'เริ่มจากโพสต์ชิ้นแรกที่มีคนทัก',
   },
   showPriceInHero: true,
   hero: {
-    eyebrow: 'IN-HOUSE WORKSHOP · CONTENT + ADS + WARROOM',
-    customerJob: 'ให้เซลล์และทีมการตลาดหาลูกค้าใหม่จากออนไลน์ได้เอง ด้วย Content, Ads และระบบ AI ที่ติดตั้งบนเครื่องบริษัท',
-    supportingCopy: [],
+    eyebrow: 'คลาสที่บริษัทคุณ · 2 วัน',
+    headline: 'ทีมขายของคุณโพสต์เอง แล้วมีลูกค้าทักเข้ามา',
+    customerJob: 'ผมสอนทีมขายกับทีมการตลาดทำโพสต์ ทำโฆษณา และติดตั้งระบบที่ตีสามไปดูคู่แข่งแล้วร่างโพสต์ไว้ให้ทุกเช้า',
+    supportingCopy: ['ทีมได้กลับไป: โพสต์หรือคลิปชิ้นแรกที่ทำเสร็จในห้อง · โฆษณา 3 แบบพร้อมแผนลองยิง 14 วัน · ระบบดูคู่แข่งตัวเดียวกับที่ผมใช้'],
     steps: [
-      { label: '01 · Content', title: 'Content ที่คนขายทำเองได้ และพาลูกค้าที่ใช่เข้ามา', body: 'หลักคิดการทำช่อง Funnel 3 ชั้น และสัดส่วนคอนเทนต์สร้างตัวตนกับคอนเทนต์ขาย' },
-      { label: '02 · Ads', title: 'Ads 3 รูปแบบที่ทีมทำเองได้ในห้อง', body: 'รูปเดียว หลายรูป และคลิปสั้น พร้อมโครงทดสอบว่าแบบไหนได้คนทัก' },
-      { label: '03 · Warroom', title: 'ระบบสืบคู่แข่งและข่าว ติดตั้งบนเครื่องบริษัท', body: 'ทีมกลับไปเปิดใช้ได้วันจันทร์ถัดไป ไม่ต้องเริ่มจากหน้าจอเปล่าอีก' },
+      { label: '01 · โพสต์', title: 'โพสต์ที่คนขายทำเองได้ และพาลูกค้าที่ใช่เข้ามา', body: 'แยกให้ออกว่าโพสต์แบบไหนให้คนรู้จัก แบบไหนให้คนทักมาซื้อ' },
+      { label: '02 · โฆษณา', title: 'โฆษณา 3 แบบที่ทีมทำเองได้ในห้อง', body: 'รูปเดียว หลายรูป และคลิปสั้น พร้อมวิธีลองว่าแบบไหนได้คนทัก' },
+      { label: '03 · ระบบดูคู่แข่ง', title: 'ระบบดูคู่แข่งและข่าว ติดตั้งบนเครื่องบริษัท', body: 'ทีมกลับไปเปิดใช้ได้วันจันทร์ถัดไป ไม่ต้องเริ่มจากหน้าจอเปล่าอีก' },
     ],
-    badges: ['In-house ที่บริษัทคุณ', 'ทีมขาย + การตลาด 5–20 คน', 'ใช้โจทย์จริงของบริษัท', ...(SHOW_SYSTEM_SECTION ? ['ระบบพร้อมใช้ก่อนวันเรียน'] : [])],
+    badges: ['ที่บริษัทคุณ', 'ทีมขาย + การตลาด 5–20 คน', 'ใช้โจทย์จริงของบริษัท', ...(SHOW_SYSTEM_SECTION ? ['ระบบพร้อมใช้ก่อนวันเรียน'] : [])],
     visual: {
       image: t2WorkshopCompany,
       alt: 'ปัน ณัฐพัชร์ยืนกับทีมผู้เข้าร่วม In-house Workshop ในห้องอบรม',
-      label: 'IN-HOUSE WORKSHOP · ทีมจริง',
+      label: 'ห้องอบรมจริง · ทีมจริง',
       caption: 'ทีมขาย + การตลาด ลงมือกับโจทย์จริงของบริษัท',
     },
   },
@@ -390,8 +392,8 @@ export const T2_PRODUCT_DETAIL: ProductDetailPageData = {
       body: 'ทักมาคุยกับผมได้เลยครับ ผมจัดรูปแบบให้เหมาะกับจำนวนคนและหน้างานของบริษัทให้เอง',
       variant: 'navy',
       actions: [
-        { kind: 'booking', label: 'จองคิวรับบริการ', intent: 'large_team' },
-        { kind: 'line', label: 'ทัก LINE', intent: 'general_question' },
+        { kind: 'booking', label: FORM_CTA_LABEL, intent: 'large_team' },
+        { kind: 'line', label: 'หรือทัก LINE', intent: 'general_question' },
       ],
     },
   ],
@@ -489,12 +491,12 @@ export const T2_PRODUCT_DETAIL: ProductDetailPageData = {
     ...(SHOW_SYSTEM_SECTION ? SYSTEM_FAQ : []),
   ],
   cta: {
-    primary: 'จองคิวรับบริการ',
-    secondary: 'ทัก LINE รับรายละเอียด',
+    primary: FORM_CTA_LABEL,
+    secondary: 'หรือทัก LINE รับรายละเอียด',
     secondaryIntent: 'fit_check',
-    heroSecondary: 'ทัก LINE เช็กความเหมาะสม',
+    heroSecondary: 'หรือทัก LINE ก่อนก็ได้',
     heroSecondaryIntent: 'suitability',
-    finalSecondary: 'ทัก LINE พร้อมจำนวนทีม',
+    finalSecondary: 'หรือทัก LINE พร้อมจำนวนทีม',
     finalSecondaryIntent: 'fit_check',
     finalCaption: 'สแกน QR แล้วพิมพ์คำว่า “ONLINE SALES” พร้อมจำนวนทีม',
     finalMobileInstruction: 'ทัก LINE แล้วพิมพ์คำว่า “ONLINE SALES” พร้อมจำนวนทีม',
@@ -507,10 +509,10 @@ export const T2_PRODUCT_DETAIL: ProductDetailPageData = {
     proof: { heading: 'ของที่ผมอยากให้คุณดูก่อน คือทีมกลับไปทำต่อได้หรือเปล่า', intro: 'คำว่าคลาสสนุกฟังแล้วดีครับ แต่สำหรับงาน In-house ผมดูต่อถึงวันรุ่งขึ้นว่า ทีมเปิดงานเดิมแล้วทำต่อเองได้มั้ย และผู้บริหารเห็นทางต่อยอดจากห้องเรียนหรือเปล่า' },
     pain: { heading: 'ลูกค้าใหม่ไม่เข้ามา เพราะไม่มีใครในทีมถนัดทำ Content', close: 'ทีมคุณอาจขายเก่งอยู่แล้ว จุดติดคือไม่มีของให้ลูกค้าใหม่หยุดดู และคนที่พอทำได้ก็ทำคนเดียวจนไม่ทัน' },
     reasons: { heading: 'Content ที่ได้ลูกค้า ต้องเริ่มจากหลักคิด ทำชิ้นจริง และมีระบบรองรับ' },
-    scope: { heading: 'จากเซลล์ที่รอลูกค้า ไปสู่ทีมที่ทำเครื่องมือหาลูกค้าเองได้', intro: `เริ่มจากหลักคิดว่าช่องนี้พูดกับใคร แล้วลงมือทำ Content, Ads และหน้ารวมช่องทางของบริษัทให้เสร็จในห้อง${SHOW_SYSTEM_SECTION ? ` · ช่วงท้าย ทีมจะติดตั้ง ${N} เข้ากับข้อมูลบริษัท แล้วเดินงาน 1 วันให้ครบก่อนออกจากห้อง` : ''}`, ctaHeading: 'อยากรู้ว่าทีมคุณควรเริ่มจากชิ้นไหน ทัก LINE มาคุยก่อนได้' },
-    takeHome: { heading: 'ของที่ทีมใช้ต่อหลัง Workshop', close: 'ช่วงดูแล 30 วันอยู่ใน Main program ตาม Catalog เพื่อช่วยให้ทีมเอาของที่ทำในห้องไปโพสต์และยิงจริง ไม่ใช่ของแถมแยกต่างหาก' },
+    scope: { heading: 'จากเซลล์ที่รอลูกค้า ไปสู่ทีมที่ทำเครื่องมือหาลูกค้าเองได้', intro: `เริ่มจากหลักคิดว่าช่องนี้พูดกับใคร แล้วลงมือทำ Content, Ads และหน้ารวมช่องทางของบริษัทให้เสร็จในห้อง${SHOW_SYSTEM_SECTION ? ` · ช่วงท้าย ทีมจะติดตั้ง ${N} เข้ากับข้อมูลบริษัท แล้วเดินงาน 1 วันให้ครบก่อนออกจากห้อง` : ''}`, ctaHeading: 'อยากรู้ว่าทีมคุณควรเริ่มจากชิ้นไหน เล่าโจทย์ให้ผมฟังก่อนได้' },
+    takeHome: { heading: 'ของที่ทีมใช้ต่อหลังอบรม', close: 'ช่วงดูแล 30 วันรวมอยู่ในค่าอบรมแล้ว เพื่อช่วยให้ทีมเอาของที่ทำในห้องไปโพสต์และยิงโฆษณาจริง' },
     fit: { heading: 'เหมาะกับบริษัทที่ขายเป็นแล้ว แต่ยังไม่มีเครื่องมือหาลูกค้าใหม่จากออนไลน์' },
     investment: { eyebrow: 'ราคาเดียวสำหรับทีม' },
-    final: { heading: 'ก่อนจ้างใครทำ Content ให้ ลองดูว่าทีมคุณทำเองได้ไหม ถ้ามีหลักคิด ตัวอย่าง และระบบรองรับ', copy: 'ทัก LINE แล้วพิมพ์ “ONLINE SALES” พร้อมจำนวนทีม บอกว่าขายอะไร ใช้ช่องทางไหนอยู่ และตอนนี้ทำคอนเทนต์ได้กี่ชิ้นต่อสัปดาห์ ผมจะช่วยเช็กความเหมาะสมก่อนออกใบเสนอราคาครับ' },
+    final: { heading: 'ก่อนจ้างใครทำ Content ให้ ลองดูว่าทีมคุณทำเองได้ไหม ถ้ามีหลักคิด ตัวอย่าง และระบบรองรับ', copy: `บอกในฟอร์มด้านล่างว่าทีมติดตรงไหน แล้วทิ้งเบอร์ไว้ครับ ${NEXT_STEP_CALL} ว่าทีมคุณควรเริ่มจากโพสต์แบบไหน ก่อนส่งใบเสนอราคา` },
   },
 };

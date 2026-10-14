@@ -1,10 +1,11 @@
 ---
 import type { ProductDetailPageData, ProductJourneyPresentation, PublicProofImage } from '../../../data/product-details/types';
 import JourneyCTA from './JourneyCTA.astro';
+import { FORM_CTA_LABEL, isFormFirst } from '../../../data/product-details/cta-policy';
 
 interface Props { data: ProductDetailPageData; journey: ProductJourneyPresentation; name: string; price: string; duration: string; primaryLabel?: string; primaryIntent?: string; }
 // T1–T4 book a service slot; a public ticket books a seat. Default keeps the in-house wording untouched.
-const { data, journey, name, price, primaryLabel = 'จองคิวรับบริการ', primaryIntent = 'book_training' } = Astro.props;
+const { data, journey, name, price, primaryLabel = isFormFirst(data.code) ? FORM_CTA_LABEL : 'จองคิวรับบริการ', primaryIntent = 'book_training' } = Astro.props;
 const visual = data.hero.visual;
 const visualImage = visual?.image;
 const src = visualImage && 'publicSrc' in visualImage ? visualImage.publicSrc : visualImage?.src;
@@ -19,10 +20,11 @@ const sectionId = `${data.code.toLowerCase()}-hero-heading`;
   <div class="mx-auto grid max-w-7xl gap-7 px-5 py-7 sm:py-12 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:gap-12 lg:py-20">
     <div class="min-w-0">
       <p class="text-[11px] font-bold uppercase tracking-[.23em] text-coral sm:text-xs">{data.hero.eyebrow}</p>
-      <h1 id={sectionId} class="mt-3 text-balance font-display text-[2.35rem] font-bold leading-[1.02] sm:mt-5 sm:text-5xl lg:text-[4.25rem]">{name}</h1>
+      <h1 id={sectionId} class="mt-3 text-balance font-display text-[2.35rem] font-bold leading-[1.1] sm:mt-5 sm:text-5xl lg:text-[4.25rem]">{data.hero.headline ?? name}</h1>
       <p class="mt-4 max-w-3xl text-balance text-xl font-bold leading-8 text-white sm:mt-6 sm:text-2xl sm:leading-9">{data.hero.customerJob}</p>
       <p class="mt-2 text-[15px] font-semibold leading-6 text-white/75 sm:mt-3 sm:text-base">{data.hero.supportingCopy[0]}</p>
-      <div data-hero-price class="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1 sm:mt-6">
+      {data.hero.headline && <p data-hero-product-name class="mt-4 text-sm font-semibold text-white/70 sm:mt-6">{name}</p>}
+      <div data-hero-price class:list={['flex flex-wrap items-baseline gap-x-3 gap-y-1', data.hero.headline ? 'mt-1' : 'mt-4 sm:mt-6']}>
         <span class="font-display text-4xl font-bold text-[#ff677a] sm:text-5xl">{price}</span>
         <span class="text-sm font-semibold text-white/75">{journey.heroMeta}</span>
       </div>
@@ -35,6 +37,7 @@ const sectionId = `${data.code.toLowerCase()}-hero-heading`;
           primaryIntent={primaryIntent}
           secondary={data.cta.heroSecondary ?? data.cta.secondary}
           secondaryIntent={data.cta.heroSecondaryIntent ?? data.cta.secondaryIntent}
+          inverse
         />
       </div>
       <p class="mt-3 max-w-2xl text-xs leading-5 text-white/65 sm:text-sm sm:leading-6">{journey.capacityNote}</p>

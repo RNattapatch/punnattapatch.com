@@ -124,7 +124,7 @@ const cohort = data.publicCohort;
       <InvestmentBlock name={catalog.name} price={catalog.price} amount={catalog.amount} regularPrice={catalog.regularPrice} eyebrow={data.sections?.investment?.eyebrow} ribbon={false} {...data.investment} />
       {cohort && <div class="mx-auto mb-7 max-w-5xl px-5"><PublicCohortNotice cohort={cohort} price={catalog.price} placement="investment" /></div>}
       <div class="mx-auto max-w-5xl px-5">
-        <JourneyCTA code={data.code} location="after_investment" keyword={data.cta.keyword} primary={investmentLineCta?.primary ?? 'จองคิวรับบริการ'} primaryIntent={investmentLineCta?.primaryIntent ?? 'book_training'} secondary={investmentLineCta?.secondary ?? 'ทัก LINE เช็กคิวว่าง'} secondaryIntent={investmentLineCta?.secondaryIntent ?? 'availability'} />
+        <JourneyCTA code={data.code} location="after_investment" keyword={data.cta.keyword} primary={investmentLineCta?.primary ?? data.cta.primary} primaryIntent={investmentLineCta?.primaryIntent ?? 'book_training'} secondary={investmentLineCta?.secondary ?? 'ทัก LINE เช็กคิวว่าง'} secondaryIntent={investmentLineCta?.secondaryIntent ?? 'availability'} />
       </div>
     </div>
 
@@ -135,7 +135,7 @@ const cohort = data.publicCohort;
         <p class="text-xs font-bold uppercase tracking-[.2em] text-coral">{data.journey.finalEyebrow}</p>
         <h2 class="mt-3 max-w-4xl text-balance font-display text-3xl font-bold sm:text-5xl">{data.sections?.final?.heading}</h2>
         <p class="mt-4 max-w-2xl leading-7 text-white/75">{data.sections?.final?.copy}</p>
-        <div class="mt-7"><JourneyCTA code={data.code} location="final" keyword={data.cta.keyword} primary={finalLineCta.primary} primaryIntent={finalLineCta.primaryIntent} secondary={finalLineCta.secondary} secondaryIntent={finalLineCta.secondaryIntent} /></div>
+        <div class="mt-7"><JourneyCTA code={data.code} location="final" keyword={data.cta.keyword} primary={finalLineCta.primary} primaryIntent={finalLineCta.primaryIntent} secondary={finalLineCta.secondary} secondaryIntent={finalLineCta.secondaryIntent} inverse /></div>
         <a data-detail-chooser-link href="/services#offer-chooser" class="mt-5 inline-flex min-h-11 items-center font-semibold text-white underline decoration-coral decoration-2 underline-offset-4 transition-colors hover:text-coral focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-coral">ยังไม่แน่ใจ? กลับไปเลือกจากอาการของทีม</a>
         <div class="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center">
           <figure data-final-line-qr class="hidden rounded-2xl bg-white p-2 sm:block"><Image src={LINE_QR_IMAGE} alt="QR code สำหรับเพิ่มเพื่อน LINE ของปัน ณัฐพัชร์" width={120} height={120} class="size-30" /></figure>

@@ -1,6 +1,7 @@
 import t1HfcTraining from '../../assets/services/proof/t1-hfc-training.jpg';
 import { CATALOG } from '../pricing.mjs';
 import type { ProductDetailPageData } from './types';
+import { FORM_CTA_LABEL, NEXT_STEP_CALL } from './cta-policy';
 
 // 2026-10-08 ปันเคาะ: ค่าตัวรายวันเดียวกับคลาส · วางระบบ 1 วันเลือกได้ 2 เรื่อง · แบบครบรอบ = 2 วัน (คำนวณจาก catalog ห้ามพิมพ์ตัวเลข)
 // SSOT: claude-code-pun-nattapatch/wiki/pages/strategy-sales-team-x-ai-agent-modular-pack-2026-10.md §7a
@@ -15,7 +16,7 @@ export const C1_PRODUCT_DETAIL: ProductDetailPageData = {
   // 2026-09-30 ปันสั่ง: พาดตัวเลขได้เลย + ทำมือต่อ vs AI Agent ที่ 1/6/12 เดือน + Offer ใต้ hero
   // ตัวเลขทุกตัวคำนวณจาก LEAK_DEFAULTS ใน src/scripts/leak-calc.ts และลูกค้าเปลี่ยนเป็นเลขตัวเองได้
   leakHero: {
-    eyebrow: 'C1 · วางระบบทีมขาย × AI Office · เริ่มจากตัวเลขจริง',
+    eyebrow: 'ผมเข้าไปทำให้ที่บริษัทคุณ · 1 วัน',
     headline: 'งานซ้ำของทีมขาย [[{team} คน]] กินเงินเดือน[[ปีละ {yearBaht} บาท]]',
     exampleNote: 'ตัวอย่างจากทีมขาย {team} คน ที่ตอบแชตซ้ำ ทำใบเสนอราคา และรวมรายงาน คนละ {hours} ชั่วโมงต่อวัน เงินเดือนเฉลี่ย {salary} บาท ลองเปลี่ยนเป็นตัวเลขทีมคุณได้ที่กราฟครับ',
     promise: 'วันเดียวในบริษัทคุณ เราเลือกเรื่องที่ทีมติดได้ 2 เรื่อง ช่วงเช้าวัดจากข้อมูลจริงว่ากินเวลาและเงินเท่าไหร่ ช่วงบ่ายผมลงระบบพื้นฐานให้ทีมเริ่มใช้',
@@ -42,7 +43,7 @@ export const C1_PRODUCT_DETAIL: ProductDetailPageData = {
       'ทีมขายที่ยอดไม่นิ่งมักติดอยู่ 2 ที่ครับ คนในทีม กับงานซ้ำที่กินวันเขาหมด วันนี้จึงไม่เริ่มจากการเลือก Tool เราเลือกเรื่องที่เจ็บที่สุด 2 เรื่อง ช่วงเช้าคุยกับคนที่ทำงานนั้นจริง ช่วงบ่ายผมลงระบบพื้นฐานให้ทีมเริ่มใช้',
       `ถ้าอยากให้ระบบเข้ากับงานจริงก่อนส่งมอบ เลือกแบบครบรอบ 2 วัน ${FULL_ROUND} ผมกลับไปวันที่ 2 ภายใน 14 วัน ทดสอบกับงานจริงตามที่ตกลง สอนทีม แล้วดูแลต่ออีก 30 วัน`,
     ],
-    microcopy: 'ยังไม่ต้องตั้งชื่อปัญหาให้ถูกครับ ส่งตัวเลขคร่าวๆ หรือรูป Report มาใน LINE แล้วผมช่วยดูว่าควรเริ่ม 2 เรื่องไหน',
+    microcopy: `ยังไม่ต้องตั้งชื่อปัญหาให้ถูกครับ เล่าอาการมาก็พอ · ขั้นต่อไป: ${NEXT_STEP_CALL} ว่าควรเริ่ม 2 เรื่องไหน`,
     badges: ['1 วัน เลือกได้ 2 เรื่อง', `แบบครบรอบ 2 วัน ${FULL_ROUND}`, 'ค่าตัวเดียวกับคลาส 1 วัน'],
   },
   authority: [
@@ -185,18 +186,18 @@ export const C1_PRODUCT_DETAIL: ProductDetailPageData = {
     { question: 'ชำระเงินและล็อกวันอย่างไร?', answer: 'ชำระค่าบริการ 100% ก่อนวันแรกเพื่อยืนยันคิวครับ หากมีค่าเดินทางนอกพื้นที่มาตรฐาน จะแจ้งก่อนล็อกวัน' },
   ],
   cta: {
-    primary: 'จองคิวรับบริการ',
-    secondary: 'ให้ผมช่วยเลือกเรื่อง ฟรี',
-    heroSecondary: 'ทัก LINE ให้ผมช่วยดูตัวเลข',
-    finalSecondary: 'ส่งอาการมาให้ช่วยเลือกเรื่อง',
+    primary: FORM_CTA_LABEL,
+    secondary: 'หรือทัก LINE ให้ผมช่วยเลือกเรื่อง',
+    heroSecondary: 'หรือทัก LINE ส่งตัวเลขให้ผมดู',
+    finalSecondary: 'หรือทัก LINE เล่าอาการ',
     finalCaption: 'สแกน QR แล้วพิมพ์คำว่า “CONSULT” พร้อมอาการที่ทีมกำลังติด',
     finalMobileInstruction: 'ทัก LINE แล้วพิมพ์คำว่า “CONSULT” พร้อมอาการที่ทีมกำลังติด',
     finalMicrocopy: 'ยังไม่ต้องสรุปปัญหาให้สมบูรณ์ครับ เล่าอาการหน้างานที่เห็นอยู่ก่อนก็พอ',
     keyword: 'CONSULT',
     locations: {
-      afterScope: { primary: 'จองคิวรับบริการ', primaryIntent: 'track_selection', secondary: 'ทัก LINE ส่งรูป Report', secondaryIntent: 'symptom_share' },
-      afterInvestment: { primary: 'จองคิวรับบริการ', primaryIntent: 'consult_booking', secondary: 'ทัก LINE ให้ผมช่วยเลือกเรื่อง', secondaryIntent: 'track_selection' },
-      final: { primary: 'จองคิวรับบริการ', primaryIntent: 'consult_enquiry', secondary: 'ทัก LINE เล่าอาการสั้น ๆ', secondaryIntent: 'symptom_share' },
+      afterScope: { primary: FORM_CTA_LABEL, primaryIntent: 'track_selection', secondary: 'หรือทัก LINE ส่งรูปรายงาน', secondaryIntent: 'symptom_share' },
+      afterInvestment: { primary: FORM_CTA_LABEL, primaryIntent: 'consult_booking', secondary: 'หรือทัก LINE ให้ผมช่วยเลือกเรื่อง', secondaryIntent: 'track_selection' },
+      final: { primary: FORM_CTA_LABEL, primaryIntent: 'consult_enquiry', secondary: 'หรือทัก LINE เล่าอาการสั้น ๆ', secondaryIntent: 'symptom_share' },
     },
   },
   seo: {
@@ -210,9 +211,9 @@ export const C1_PRODUCT_DETAIL: ProductDetailPageData = {
     reasons: { heading: 'เพราะทีมควรได้ใช้ของจริงตั้งแต่วันแรก ไม่ใช่รอโครงการยาว' },
     scope: { heading: 'เลือกได้ 2 จาก 6 เรื่อง', intro: 'ลองอ่านจากอาการก่อนครับ คุณไม่ต้องรู้ศัพท์ว่าเรื่องของตัวเองอยู่ด้านไหน', ctaHeading: 'อ่านแล้วยังไม่แน่ใจว่าควรเริ่มเรื่องไหน?' },
     takeHome: { heading: 'สิ่งที่ได้ ขึ้นอยู่กับแบบที่เลือก', close: 'เป้าหมายคือหลังผมกลับ ทีมใช้ระบบต่อได้เอง และคนดูแลรู้ว่าต้องทำอะไรต่อ โดยไม่ต้องรอประชุมรอบใหม่ครับ' },
-    fit: { heading: 'เหมาะกับ Owner ที่มีทีมขาย และพร้อมให้คนในทีมรับช่วงต่อ' },
-    bio: { eyebrow: 'Consultant', heading: 'ผมมองปัญหาขายทั้งจากมุมเซลล์ หัวหน้า และเจ้าของ' },
+    fit: { heading: 'เหมาะกับเจ้าของที่มีทีมขาย และพร้อมให้คนในทีมรับช่วงต่อ' },
+    bio: { eyebrow: 'ที่ปรึกษา', heading: 'ผมมองปัญหาขายทั้งจากมุมเซลล์ หัวหน้า และเจ้าของ' },
     investment: { eyebrow: 'วางระบบ 1 วัน · เลือกได้ 2 เรื่อง' },
-    final: { heading: 'ทีมขายของคุณติดเรื่องไหนอยู่?', copy: 'ทัก LINE พร้อมคำว่า CONSULT แล้วเล่าอาการที่เห็นอยู่ได้เลยครับ ผมจะช่วยดูว่าควรเริ่ม 2 เรื่องไหน และควรเลือกแบบ 1 วันหรือครบรอบ ถ้าไม่ตรงกับบริการนี้ก็จะบอกตรงๆ' },
+    final: { heading: 'ทีมขายของคุณติดเรื่องไหนอยู่?', copy: `กดเลือกเรื่องที่ทีมติดในฟอร์มด้านล่าง แล้วทิ้งเบอร์ไว้ครับ ${NEXT_STEP_CALL} ว่าควรเริ่ม 2 เรื่องไหน และควรเลือกแบบ 1 วันหรือครบรอบ ถ้าไม่ตรงกับบริการนี้ผมบอกตรงๆ` },
   },
 };

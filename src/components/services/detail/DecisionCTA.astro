@@ -1,6 +1,7 @@
 ---
 import { SITE } from '../../../data/site';
 import type { ProductDetailCode, ProductDecisionCta } from '../../../data/product-details/types';
+import { isFormFirst, lineLinkClass } from '../../../data/product-details/cta-policy';
 
 interface Props {
   code: ProductDetailCode;
@@ -16,6 +17,9 @@ const sectionClass = cta.variant === 'navy'
   : cta.variant === 'sand'
     ? 'bg-[#f4f1ea] text-navy'
     : 'bg-white text-navy';
+// หน้าฟอร์มก่อน (T2 · T4 · C1): ปุ่มหลักเดียว = ฟอร์ม · LINE เป็นลิงก์ตัวหนังสือ
+const lineAsLink = isFormFirst(code);
+const lineClass = lineAsLink ? lineLinkClass(isInverse) : 'btn min-h-12 border-0 bg-[#06C755] px-6 text-[#072B4E] hover:bg-[#05ad49]';
 const bookingHref = (intent: string) => `/booking?package=${encodeURIComponent(code)}&intent=${encodeURIComponent(intent)}`;
 ---
 
@@ -59,7 +63,8 @@ const bookingHref = (intent: string) => `/booking?package=${encodeURIComponent(c
             data-cta-intent={action.intent}
             data-cta-keyword={keyword}
             data-cta-label={action.label}
-            class="btn min-h-12 border-0 bg-[#06C755] px-6 text-[#072B4E] hover:bg-[#05ad49]"
+            data-line-as-link={lineAsLink ? true : undefined}
+            class={lineClass}
           >{action.label}</a>
         ) : action.available && action.href ? (
           <a
