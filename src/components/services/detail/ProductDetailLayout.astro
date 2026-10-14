@@ -151,7 +151,7 @@ const cohort = data.publicCohort;
 ) : (
   <>
     {data.leakHero
-      ? <><LeakHero data={data} /><LeakOffer data={data} name={catalog.name} price={catalog.price} duration={catalog.duration} /></>
+      ? <><LeakHero data={data} price={catalog.price} /><LeakOffer data={data} name={catalog.name} price={catalog.price} duration={catalog.duration} /></>
       : <div data-detail-block="hero"><ProductHero data={data} name={catalog.name} duration={catalog.duration} price={catalog.price} /></div>}
     {chapters.length > 0 && <ProductChapterMap chapters={chapters} />}
     {chapters[0] && <ProductChapterGate chapter={chapters[0]} />}

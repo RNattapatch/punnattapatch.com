@@ -94,13 +94,15 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   const response = await page.goto(`${baseURL}/services/online-to-sales`);
   assert.equal(response?.status(), 200, 'T2 route must render');
   // 2026-10-14 audit ด่านคุณยาย: H1 = พาดหัวภาษาบ้านๆ · ชื่อคลาสจาก Catalog ย่อลงเป็นบรรทัดเหนือราคา
-  assert.equal(await page.locator('h1').innerText(), 'คลาสสอนทีมขายสร้าง Content ด้วย AI ให้ขายได้ และสอนการวางกลยุทธ์ Content ด้วย AI', 'T2 H1 must lead with the plain-words outcome');
+  // ท่อนท้าย "และสอนการวางกลยุทธ์…" อยู่ใน H1 เดียวกันแต่ตัวเล็กกว่า (hero focus 2026-10-14) → เทียบแบบรวมช่องว่าง
+  assert.equal((await page.locator('h1').innerText()).replace(/\s+/g, ' ').trim(), 'คลาสสอนทีมขายสร้าง Content ด้วย AI ให้ขายได้ และสอนการวางกลยุทธ์ Content ด้วย AI', 'T2 H1 must carry Pun\'s headline wording');
+  assert.equal(await page.locator('[data-hero-highlight]').innerText(), 'สร้าง Content ด้วย AI ให้ขายได้', 'T2 hero must highlight one promise only');
   assert.equal(await page.locator('[data-hero-product-name]').innerText(), 'คลาสเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI', 'T2 hero must still name the class from the Catalog');
   // ปันเคาะ 2026-09-05 ค่ำ: T2 = Content + Ads + Warroom (ไม่ใช่ Online-to-Sales Flow เรื่องแชต/คัด Lead) — ภาษาบ้านๆ: โพสต์ · โฆษณา · ระบบดูคู่แข่ง
-  assert.equal(
-    await page.getByText('ผมสอนทีมขายกับทีมการตลาดทำโพสต์ ทำโฆษณา และติดตั้งระบบที่ตีสามไปดูคู่แข่งแล้วร่างโพสต์ไว้ให้ทุกเช้า', { exact: true }).count(),
-    1,
-    'T2 Hero must state the content + ads + competitor-watch customer job exactly',
+  assert.match(
+    await page.locator('[data-hero-outcome]').innerText(),
+    /โพสต์ชิ้นแรก โฆษณา 3 แบบ และระบบดูคู่แข่งที่ร่างโพสต์ไว้ให้ทุกเช้า/,
+    'T2 Hero must state the content + ads + competitor-watch outcome',
   );
   assert.deepEqual(
     await page.locator('[data-why-now-item] > p:last-child').allTextContents(),
@@ -168,9 +170,10 @@ test('T2 detail page uses Catalog identity, real LINE conversion, and proof that
   for (const location of ['hero', 'final']) {
     const secondaryAction = page.locator(`[data-cta-location="${location}"][data-line-cta]`);
     const style = await secondaryAction.evaluate((element) => ({ color: getComputedStyle(element).color, background: getComputedStyle(element).backgroundColor }));
-    // hero + final อยู่บนพื้นกรมท่า → ลิงก์ LINE เป็นตัวหนังสือขาว · วัด contrast กับพื้น navy ของ section (ลิงก์ไม่มีพื้นของตัวเองแล้ว)
-    assert.equal(style.color, 'rgb(255, 255, 255)', `${location} secondary LINE link must be white on the navy section`);
-    assert.ok(lineContrastRatio(style.color, 'rgb(7, 43, 78)') >= 4.5, `${location} secondary LINE link must maintain AA text contrast on navy`);
+    // hero (2026-10-14) อยู่ในการ์ดขาว → ลิงก์สีกรมท่าบนขาว · final อยู่บนพื้นกรมท่า → ลิงก์ขาวบนกรมท่า
+    const [fg, bg] = location === 'hero' ? ['rgb(7, 43, 78)', 'rgb(255, 255, 255)'] : ['rgb(255, 255, 255)', 'rgb(7, 43, 78)'];
+    assert.equal(style.color, fg, `${location} secondary LINE link must use the AA-safe foreground for its surface`);
+    assert.ok(lineContrastRatio(style.color, bg) >= 4.5, `${location} secondary LINE link must maintain AA text contrast`);
   }
   const lineActions = page.locator('[data-line-cta]');
   for (const action of await lineActions.all()) assert.equal(await action.getAttribute('href'), 'https://lin.ee/ioSnSUG', 'all detail actions must use SITE.social.line');
@@ -285,11 +288,14 @@ test('T4 Hero explains the product, price, next action, and real activity at fir
   // 2026-10-14 audit ด่านคุณยาย: H1 = พาดหัวภาษาบ้านๆ · ชื่อคลาสจาก Catalog ย่อลงเป็นบรรทัดเหนือราคา
   assert.equal(await page.locator('h1').innerText(), 'คลาสสอนทีมขายของคุณ ให้ใช้ AI ทำงานแทนคน ลดงานซ้ำ', 'T4 H1 must lead with the plain-words outcome');
   assert.equal(await page.locator('[data-hero-product-name]').innerText(), catalog.name, 'T4 hero must still name the class from the approved Catalog key');
-  assert.equal(
-    await page.getByText('ลูกค้าทักแล้วเงียบ · ใบเสนอราคาช้า · ไม่มีใครทำโพสต์ เลือกมา 1 เรื่องที่ทีมทำซ้ำทุกวัน', { exact: true }).count(),
-    1,
+  // hero focus (2026-10-14): ปัญหาเป็นชิป ✗ ด้วยคำเจ้าของ · วลีเดียวที่เน้นสี coral · ราคา + ปุ่มอยู่ในการ์ดขาว
+  assert.deepEqual(
+    (await page.locator('[data-hero-pains] li').allInnerTexts()).map((text) => text.replace('✗', '').trim()),
+    ['ลูกค้าทักแล้วเงียบ', 'ใบเสนอราคาช้า', 'ไม่มีใครทำโพสต์'],
     'T4 Hero must name the repeat-work problems in the owner\'s words',
   );
+  assert.equal(await page.locator('[data-hero-highlight]').innerText(), 'ให้ใช้ AI ทำงานแทนคน', 'T4 hero must highlight one promise only');
+  assert.equal(await page.locator('[data-hero-decision] [data-booking-cta]').count(), 1, 'T4 hero decision card must hold the single primary action');
   assert.match(await page.locator('[data-hero-price]').innerText(), new RegExp(fmtPrice('t4-ai-workflow-pilot-day')), 'T4 Hero must render its Catalog price at build time');
   assert.match(await page.locator('[data-hero-price]').innerText(), /1 วัน · งานซ้ำ 1 เรื่อง/, 'T4 Hero must expose the one-day, one-task boundary beside price');
   assert.equal(await page.locator('[data-cta-location="hero"][data-booking-cta]').innerText(), 'เล่าโจทย์ทีมขายให้ปันฟัง', 'T4 Hero must lead with the form-first label (framework 2026-10-12 ข้อ 6)');
@@ -572,7 +578,7 @@ test('C1 daily consulting is one day-rate service with six selectable topics, tw
   assert.match(await leak.locator('[data-leak-gap]').innerText(), /2,904 ชั่วโมง/, 'C1 calculator must recompute from the buyer\'s own numbers');
   // ราคา/ระยะเวลาโผล่ 2 ที่: ส่วนเนื้อหาหน้า + บล็อกราคาข้างฟอร์ม 2 ขั้น (2026-10-12) · ทั้งคู่ต้องมาจาก Catalog
   assert.equal(await page.getByText(catalog.duration, { exact: true }).count(), 2, 'C1 duration appears in the page body and in the form price block');
-  assert.equal(await page.getByText(fmtPrice('daily-sales-consulting'), { exact: true }).count(), 2, 'C1 price appears in the page body and in the form price block');
+  assert.equal(await page.getByText(fmtPrice('daily-sales-consulting'), { exact: true }).count(), 3, 'C1 price appears in the hero decision card, the page body and the form price block');
   assert.equal(await page.locator('[data-lead-form-section] [data-offer-block]').getByText(fmtPrice('daily-sales-consulting'), { exact: true }).count(), 1, 'C1 form price block must show the Catalog price');
   assert.equal(await page.locator('form[data-lead-form][data-steps="2"]').count(), 1, 'C1 lead form lets the buyer pick at most 2 topics (1 day = 2 topics)');
 

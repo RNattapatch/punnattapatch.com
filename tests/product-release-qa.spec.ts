@@ -132,9 +132,14 @@ for (const route of routes) {
       assert.notEqual(bookingStyle.outline, 'none', `${route.code} booking CTA must retain a visible focus outline`);
 
       const line = page.locator('[data-line-cta]').first();
+      // หน้าฟอร์มก่อน (2026-10-14): ลิงก์ LINE ไม่มีพื้นของตัวเอง → วัดกับพื้นของกล่องที่ล้อมอยู่จริง
       const lineStyle = await line.evaluate((element) => {
         const style = getComputedStyle(element);
-        return { background: style.backgroundColor, color: style.color };
+        let node: Element | null = element;
+        let background = style.backgroundColor;
+        while (node && /rgba\(0, 0, 0, 0\)|transparent/.test(getComputedStyle(node).backgroundColor)) node = node.parentElement;
+        if (node) background = getComputedStyle(node).backgroundColor;
+        return { background, color: style.color };
       });
       assert.ok(contrastRatio(lineStyle.color, lineStyle.background) >= 4.5, `${route.code} LINE CTA must pass WCAG AA contrast`);
 

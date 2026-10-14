@@ -380,6 +380,16 @@ export interface ProductDetailPageData {
     eyebrow: string;
     /** พาดหัวภาษาบ้านๆ (H1) — ตั้งแล้วชื่อคลาสจะย่อลงเป็นบรรทัดเล็กเหนือราคา (audit ด่านคุณยาย 2026-10-14) */
     headline?: string;
+    /** คำใน headline ที่ต้องเด่นที่สุด (ปากกาเน้นสี coral) — ต้องเป็นส่วนหนึ่งของ headline ตรงตัว */
+    highlight?: string;
+    /** ส่วนท้ายของพาดหัว (ยังอยู่ใน H1) แต่ตัวเล็กกว่า — ให้คำสัญญาหลักเด่นเรื่องเดียว */
+    headlineTail?: string;
+    /** hero แบบ focus (2026-10-14 · creative-director + neuro gate): ป้ายเหนือชิปปัญหา */
+    painLabel?: string;
+    /** ปัญหา 2–3 ข้อด้วยคำเจ้าของ แสดงเป็นชิป ✗ (Contrast: สภาพตอนนี้) */
+    pains?: string[];
+    /** ผลหลังเรียน 1 บรรทัด แสดงเป็น ✓ (Contrast: สภาพหลังใช้) */
+    outcome?: string;
     customerJob: string;
     supportingCopy: string[];
     microcopy?: string;
