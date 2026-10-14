@@ -11,7 +11,7 @@
 import { CONSULT_HUB, CONSULT_SYSTEMS } from '../../data/consultSystems';
 import { PROOF_THINKING_STEPS } from '../../data/proofSystems';
 import ProofShot from './ProofShot.astro';
-import { FORM_CTA_LABEL, lineLinkClass } from '../../data/product-details/cta-policy';
+import { FORM_CTA_LABEL, NEXT_STEP_CALL, lineLinkClass } from '../../data/product-details/cta-policy';
 import { SITE } from '../../data/site';
 
 const MARKS = ['①', '②', '③', '④', '⑤'];
@@ -127,6 +127,7 @@ const portrait = (frame: string) => frame !== 'browser';
         <a href={`/booking?package=C1&intent=track_selection`} data-booking-cta data-contact-cta data-product-code="C1" data-cta-location="after_systems" data-cta-intent="track_selection" data-cta-label={FORM_CTA_LABEL} class="btn min-h-12 w-full border-0 bg-[#c43245] px-6 text-white hover:bg-[#ad293a] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral sm:w-auto">{FORM_CTA_LABEL}</a>
         <a href={SITE.social.line} target="_blank" rel="noopener" data-line-cta data-contact-cta data-product-code="C1" data-cta-location="after_systems" data-cta-intent="track_selection" data-cta-keyword="CONSULT" data-cta-label="หรือทัก LINE ให้ผมช่วยเลือกจุดเริ่ม" data-line-as-link class={lineLinkClass(true)}>หรือทัก LINE ให้ผมช่วยเลือกจุดเริ่ม</a>
       </div>
+      <p data-consult-os-next-step class="mt-3 text-sm leading-6 text-ivory/75">ขั้นต่อไป: {NEXT_STEP_CALL} เพื่อเลือก 2 เรื่องแรกที่ทีมควรเริ่ม แล้วผมส่งใบเสนอราคาให้ในวันที่คุย</p>
     </div>
   </div>
 </section>
