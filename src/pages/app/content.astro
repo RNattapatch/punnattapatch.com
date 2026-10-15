@@ -52,6 +52,23 @@ import AppNav from '../../components/app/AppNav.astro';
         </div>
         <div id="wr-quick-similar" class="mb-3 hidden rounded-xl border p-3 text-sm" style="border-color:var(--color-brand-coral);"></div>
 
+        <!-- Format filter (tag) + sort (2026-10-15) -->
+        <div class="mb-3 flex flex-wrap items-center gap-2">
+          <div id="wr-fmt-filter" role="group" aria-label="กรองตามฟอร์แมต" class="flex flex-wrap gap-1.5"></div>
+          <label class="ml-auto flex items-center gap-2 text-sm">
+            <span class="opacity-60">เรียง</span>
+            <select id="wr-board-sort" class="select select-bordered select-sm rounded-full" aria-label="เรียงการ์ด">
+              <option value="stale">ค้างนานสุดก่อน</option>
+              <option value="newest">วันที่ ใหม่ → เก่า</option>
+              <option value="oldest">วันที่ เก่า → ใหม่</option>
+              <option value="id_asc">หมายเลข ID น้อย → มาก</option>
+              <option value="id_desc">หมายเลข ID มาก → น้อย</option>
+              <option value="custom">✋ Custom (ลากเรียงเอง)</option>
+            </select>
+          </label>
+        </div>
+        <p id="wr-custom-hint" class="mb-3 hidden text-xs opacity-60">✋ ลากการ์ดขึ้น-ลงในคอลัมน์ได้เลย หรือกด ↑ ↓ บนการ์ด · ลำดับบันทึกใน database เห็นตรงกันทั้ง MacBook และมือถือ</p>
+
         <!-- Columns -->
         <div id="wr-board" class="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-3"></div>
       </section>
@@ -230,7 +247,7 @@ import AppNav from '../../components/app/AppNav.astro';
     import {
       FORMAT_CODES, PLATFORMS,
       listIdeas, listVariants, listPublications, snapshotPubIds, findSimilar,
-      createIdea, updateIdea, createVariant, updateVariant, addPublication,
+      createIdea, updateIdea, createVariant, updateVariant, reorderVariants, reorderIdeas, addPublication,
       setDecision, addSnapshot, buildVariantMarkdown, downloadText, copyText,
       enqueueJob, waitJob, listWrJobs, retryWrJob, deleteWrJob,
       listMedia, uploadMedia, reorderMedia, archiveMedia, type MediaAsset,
@@ -253,6 +270,20 @@ import AppNav from '../../components/app/AppNav.astro';
     let filter = 'all';
     let search = '';
     let boardSearch = '';
+    // Board sort + format filter (2026-10-15) — จำค่าที่เลือกไว้ในเครื่อง (สะดวกเฉยๆ ไม่ใช่ข้อมูลสำคัญ)
+    type BoardSort = 'stale' | 'newest' | 'oldest' | 'id_asc' | 'id_desc' | 'custom';
+    const BOARD_SORTS: BoardSort[] = ['stale', 'newest', 'oldest', 'id_asc', 'id_desc', 'custom'];
+    const PREFS_KEY = 'wr-board-prefs';
+    let boardSort: BoardSort = 'stale';
+    let fmtFilter = new Set<FormatCode>();
+    try {
+      const saved = JSON.parse(localStorage.getItem(PREFS_KEY) ?? '{}');
+      if (BOARD_SORTS.includes(saved.sort)) boardSort = saved.sort;
+      if (Array.isArray(saved.fmt)) fmtFilter = new Set(saved.fmt.filter((c: string) => c in FORMAT_CODES));
+    } catch { /* private window / blocked storage → ค่าเริ่มต้น */ }
+    const saveBoardPrefs = () => {
+      try { localStorage.setItem(PREFS_KEY, JSON.stringify({ sort: boardSort, fmt: [...fmtFilter] })); } catch { /* ignore */ }
+    };
     let view: 'board' | 'list' | 'queue' | 'campaign' = 'board';
     // คิวงาน AI (wr_jobs) — badge นับงานที่รอ/กำลังทำ · ตารางเต็มเมื่อเปิดมุมมองคิว
     let wrJobs: WrJob[] = [];
@@ -343,11 +374,13 @@ import AppNav from '../../components/app/AppNav.astro';
 
     // ---------- Kanban board ----------
     const titleOf = (cid: string) => ideas.find((i) => i.content_id === cid)?.title ?? cid;
-    function matchesBoard(v: Variant): boolean {
+    const fmtOf = (v: Variant) => v.variant_id.slice(-2) as FormatCode;
+    function matchesSearch(v: Variant): boolean {
       if (!boardSearch) return true;
       const q = boardSearch.toLowerCase();
       return `${v.content_id} ${v.variant_id} ${v.working_title ?? ''} ${titleOf(v.content_id)}`.toLowerCase().includes(q);
     }
+    const matchesBoard = (v: Variant) => matchesSearch(v) && (!fmtFilter.size || fmtFilter.has(fmtOf(v)));
     function matchesBoardIdea(i: Idea): boolean {
       if (!boardSearch) return true;
       const q = boardSearch.toLowerCase();
@@ -365,6 +398,45 @@ import AppNav from '../../components/app/AppNav.astro';
     };
     const siblingsOf = (v: Variant) =>
       variants.filter((x) => x.content_id === v.content_id && x.variant_id !== v.variant_id);
+
+    // ---------- sort ----------
+    const ts = (iso: string) => new Date(iso).getTime();
+    // rank ว่าง (ยังไม่เคยลาก) ไปท้ายคอลัมน์ แล้วเรียงใหม่ → เก่า
+    const rankCmp = (a: { board_rank?: number | null }, b: { board_rank?: number | null }) =>
+      a.board_rank == null ? (b.board_rank == null ? 0 : 1) : b.board_rank == null ? -1 : a.board_rank - b.board_rank;
+    function sortVariants(vs: Variant[], key: BoardSort = boardSort): Variant[] {
+      switch (key) {
+        case 'newest':  return vs.sort((a, b) => ts(b.created_at) - ts(a.created_at));
+        case 'oldest':  return vs.sort((a, b) => ts(a.created_at) - ts(b.created_at));
+        case 'id_asc':  return vs.sort((a, b) => a.variant_id.localeCompare(b.variant_id));
+        case 'id_desc': return vs.sort((a, b) => b.variant_id.localeCompare(a.variant_id));
+        case 'custom':  return vs.sort((a, b) => rankCmp(a, b) || ts(b.created_at) - ts(a.created_at));
+        default:        return vs.sort((a, b) => ts(a.status_changed_at) - ts(b.status_changed_at));   // ค้างนานสุดก่อน
+      }
+    }
+    function sortIdeas(is: Idea[], key: BoardSort = boardSort): Idea[] {
+      switch (key) {
+        case 'oldest':  return is.sort((a, b) => ts(a.created_at) - ts(b.created_at));
+        case 'id_asc':  return is.sort((a, b) => a.content_id.localeCompare(b.content_id));
+        case 'id_desc': return is.sort((a, b) => b.content_id.localeCompare(a.content_id));
+        case 'custom':  return is.sort((a, b) => rankCmp(a, b) || ts(b.created_at) - ts(a.created_at));
+        default:        return is.sort((a, b) => ts(b.created_at) - ts(a.created_at));   // ไอเดียไม่มีสถานะค้าง → ใหม่สุดก่อน
+      }
+    }
+    // ทั้งคอลัมน์ (ไม่สนตัวกรอง/ค้นหา) ตามลำดับ Custom — ใช้ตอนบันทึกลำดับ การ์ดที่ถูกซ่อนจะได้ไม่เสียที่
+    const columnVariants = (key: string) => {
+      const c = COLUMNS.find((x) => x.key === key);
+      return c ? sortVariants(variants.filter((v) => c.statuses.includes(v.variant_status)), 'custom') : [];
+    };
+    const backlogIdeas = () => {
+      const withVariant = new Set(variants.map((v) => v.content_id));
+      return ideas.filter((i) => !withVariant.has(i.content_id) && !['archived', 'published', 'repurpose_candidate'].includes(i.idea_status));
+    };
+    const moveBtns = (attr: string, id: string) => boardSort !== 'custom' ? '' :
+      `<span class="flex gap-0.5">
+        <button data-action="move-up" ${attr}="${esc(id)}" class="btn btn-ghost btn-xs h-6 min-h-6 px-1.5 pointer-coarse:h-10 pointer-coarse:min-h-10 pointer-coarse:px-3" aria-label="เลื่อนการ์ดขึ้น">↑</button>
+        <button data-action="move-down" ${attr}="${esc(id)}" class="btn btn-ghost btn-xs h-6 min-h-6 px-1.5 pointer-coarse:h-10 pointer-coarse:min-h-10 pointer-coarse:px-3" aria-label="เลื่อนการ์ดลง">↓</button>
+      </span>`;
 
     function variantCard(v: Variant): string {
       const meta: any = fmtMeta(v.variant_id);
@@ -386,6 +458,7 @@ import AppNav from '../../components/app/AppNav.astro';
         <div class="mt-1.5 flex items-center justify-between gap-2">
           <span class="text-[11px] ${stale ? 'font-semibold text-error' : 'opacity-50'}">${stale ? `⏳ ค้าง ${age} วัน` : (age ? `${age} วัน` : 'วันนี้')}</span>
           ${vPubs.length ? `<span class="text-[11px] opacity-60">${vPubs.map((p) => esc(p.platform)).slice(0, 3).join(' · ')}</span>` : ''}
+          ${moveBtns('data-move-v', v.variant_id)}
         </div>
         ${sibHint}
       </article>`;
@@ -393,11 +466,11 @@ import AppNav from '../../components/app/AppNav.astro';
 
     function ideaCard(i: Idea): string {
       const acid = i.acid_test === 'passed' ? '✅' : i.acid_test === 'failed' ? '🔴' : '🧪';
-      return `<article data-card="idea" data-cid="${esc(i.content_id)}"
+      return `<article data-card="idea" data-cid="${esc(i.content_id)}" ${boardSort === 'custom' ? 'draggable="true"' : ''}
         class="wr-card cursor-pointer rounded-xl border border-dashed border-base-300 bg-base-100 p-2.5 shadow-sm transition hover:border-[color:var(--color-brand-coral)] hover:shadow-md">
         <div class="flex items-center justify-between gap-2">
           <span class="text-xs" aria-hidden="true" title="acid test">${acid}</span>
-          <span class="font-mono text-[10px] opacity-50">${esc(i.content_id.replace('CNT-', ''))}</span>
+          <span class="flex items-center gap-1">${moveBtns('data-move-cid', i.content_id)}<span class="font-mono text-[10px] opacity-50">${esc(i.content_id.replace('CNT-', ''))}</span></span>
         </div>
         <p class="mt-1 line-clamp-2 text-sm font-medium leading-snug">${esc(i.title)}</p>
         <button data-action="quick-produce" data-cid="${esc(i.content_id)}" class="btn btn-xs mt-2 w-full tap-44">+ เริ่มผลิต</button>
@@ -405,7 +478,7 @@ import AppNav from '../../components/app/AppNav.astro';
     }
 
     function column(key: string, icon: string, label: string, count: number, cardsHtml: string, dropStatus?: string): string {
-      return `<section data-col="${dropStatus ?? ''}" class="wr-col flex w-[78vw] max-w-[300px] shrink-0 snap-start flex-col rounded-2xl border border-base-300 bg-base-200/60 sm:w-72">
+      return `<section data-col="${dropStatus ?? ''}" data-colkey="${key}" class="wr-col flex w-[78vw] max-w-[300px] shrink-0 snap-start flex-col rounded-2xl border border-base-300 bg-base-200/60 sm:w-72">
         <header class="flex items-center justify-between gap-2 px-3 py-2.5">
           <span class="flex items-center gap-1.5 font-display text-sm font-bold"><span aria-hidden="true">${icon}</span> ${label}</span>
           <span class="badge badge-sm tabular-nums">${count}</span>
@@ -416,21 +489,80 @@ import AppNav from '../../components/app/AppNav.astro';
       </section>`;
     }
 
+    function renderFmtFilter() {
+      const searched = variants.filter(matchesSearch);
+      const chip = (code: FormatCode | '', label: string, n: number, on: boolean) => {
+        const color = code ? FMT_COLOR[code] ?? 'var(--color-brand-navy)' : 'var(--color-brand-navy)';
+        return `<button type="button" data-fmt="${code}" aria-pressed="${on}"
+          class="btn btn-sm h-9 min-h-9 pointer-coarse:h-11 pointer-coarse:min-h-11 gap-1.5 rounded-full border px-3 font-medium ${on ? 'text-white' : 'border-base-300 bg-base-100'}"
+          style="${on ? `background-color:${color};border-color:${color};` : ''}">
+          ${code ? `<span aria-hidden="true" class="h-2 w-2 rounded-full" style="background-color:${on ? 'white' : color};"></span>` : ''}${esc(label)}
+          <span class="tabular-nums ${on ? 'opacity-80' : 'opacity-50'}">${n}</span>
+        </button>`;
+      };
+      $('wr-fmt-filter').innerHTML = chip('', 'ทั้งหมด', searched.length, fmtFilter.size === 0) +
+        (Object.keys(FORMAT_CODES) as FormatCode[])
+          .map((code) => chip(code, FORMAT_CODES[code].label, searched.filter((v) => fmtOf(v) === code).length, fmtFilter.has(code)))
+          .join('');
+      ($('wr-board-sort') as HTMLSelectElement).value = boardSort;
+      $('wr-custom-hint').classList.toggle('hidden', boardSort !== 'custom');
+    }
+
     function renderBoard() {
+      renderFmtFilter();
       // Ideas backlog = ideas with no variant yet, not archived/published.
-      const withVariant = new Set(variants.map((v) => v.content_id));
-      const backlog = ideas
-        .filter((i) => !withVariant.has(i.content_id) && !['archived', 'published', 'repurpose_candidate'].includes(i.idea_status))
-        .filter(matchesBoardIdea);
+      // ไอเดียยังไม่มีฟอร์แมต → ตอนกรองฟอร์แมตซ่อนทั้งช่อง (มือถือจะได้ไม่เสียจอทั้งช่องให้ช่องว่าง)
+      const backlog = sortIdeas(backlogIdeas().filter(matchesBoardIdea));
 
       const cols = COLUMNS.map((c) => {
-        const vs = variants.filter((v) => c.statuses.includes(v.variant_status)).filter(matchesBoard)
-          .sort((a, b) => daysAgo(b.status_changed_at) - daysAgo(a.status_changed_at));
+        const vs = sortVariants(variants.filter((v) => c.statuses.includes(v.variant_status)).filter(matchesBoard));
         return column(c.key, c.icon, c.label, vs.length, vs.map(variantCard).join(''), c.primary);
       }).join('');
 
       $('wr-board').innerHTML =
-        column('ideas', '💡', 'Ideas', backlog.length, backlog.map(ideaCard).join('')) + cols;
+        (fmtFilter.size ? '' : column('ideas', '💡', 'Ideas', backlog.length, backlog.map(ideaCard).join(''))) + cols;
+    }
+
+    // ---------- custom order ----------
+    // ย้ายการ์ด `id` ไปไว้ก่อน `beforeId` (null = ท้ายสุดของที่มองเห็น) แล้วบันทึกทั้งคอลัมน์
+    // visibleIds = ลำดับที่มองเห็นอยู่ (หลังกรอง) — ใช้หาตำแหน่งในลิสต์เต็มที่รวมการ์ดที่ถูกซ่อน
+    function placeIn(full: string[], id: string, beforeId: string | null, visibleIds: string[]): string[] {
+      const rest = full.filter((x) => x !== id);
+      let at = beforeId ? rest.indexOf(beforeId) : -1;
+      if (at < 0) {
+        const lastVisible = [...visibleIds].reverse().find((x) => x !== id && rest.includes(x));
+        at = lastVisible ? rest.indexOf(lastVisible) + 1 : rest.length;
+      }
+      rest.splice(at, 0, id);
+      return rest;
+    }
+    let reordering = false;
+    async function saveOrder(kind: 'variant' | 'idea', ids: string[]) {
+      // อัปเดตในเครื่องก่อนให้การ์ดขยับทันที แล้วค่อยยิง database
+      const rank = new Map(ids.map((x, n) => [x, n + 1]));
+      if (kind === 'variant') variants.forEach((v) => { if (rank.has(v.variant_id)) v.board_rank = rank.get(v.variant_id); });
+      else ideas.forEach((i) => { if (rank.has(i.content_id)) i.board_rank = rank.get(i.content_id); });
+      renderBoard();
+      reordering = true;
+      try { await (kind === 'variant' ? reorderVariants(ids) : reorderIdeas(ids)); }
+      catch (err) { oops(err); await refresh(); }
+      finally { reordering = false; }
+    }
+    function visibleIdsIn(colKey: string, attr: 'v' | 'cid'): string[] {
+      const col = $('wr-board').querySelector(`.wr-col[data-colkey="${colKey}"]`);
+      return col ? [...col.querySelectorAll<HTMLElement>('[data-card]')].map((el) => el.dataset[attr]!) : [];
+    }
+    function nudge(kind: 'variant' | 'idea', id: string, dir: -1 | 1) {
+      if (reordering) return;
+      const colKey = kind === 'idea' ? 'ideas' : colOf(variants.find((v) => v.variant_id === id)!.variant_status)!.key;
+      const vis = visibleIdsIn(colKey, kind === 'idea' ? 'cid' : 'v');
+      const n = vis.indexOf(id);
+      const to = n + dir;
+      if (n < 0 || to < 0 || to >= vis.length) return;
+      const full = kind === 'idea' ? sortIdeas(backlogIdeas(), 'custom').map((i) => i.content_id) : columnVariants(colKey).map((v) => v.variant_id);
+      // ขึ้น = ไปก่อนใบที่อยู่เหนือ · ลง = ไปก่อนใบที่ถัดจากใบล่าง (หรือท้ายสุด)
+      const beforeId = dir < 0 ? vis[to] : vis[to + 1] ?? null;
+      void saveOrder(kind, placeIn(full, id, beforeId, vis));
     }
 
     // ---------- Ideas list (List view) ----------
@@ -930,6 +1062,22 @@ import AppNav from '../../components/app/AppNav.astro';
       $('wr-quick-idea').addEventListener('keydown', (e) => { if ((e as KeyboardEvent).key === 'Enter') { e.preventDefault(); void saveIdea(false, 'quick'); } });
       $('wr-board-search').addEventListener('input', (e) => { boardSearch = (e.target as HTMLInputElement).value.trim(); renderBoard(); });
 
+      // Format filter chips (เลือกได้หลายอัน · "ทั้งหมด" = ล้าง) + sort
+      $('wr-fmt-filter').addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest('button[data-fmt]') as HTMLButtonElement | null;
+        if (!b) return;
+        const code = b.dataset.fmt as FormatCode | '';
+        if (!code) fmtFilter.clear();
+        else if (fmtFilter.has(code)) fmtFilter.delete(code);
+        else fmtFilter.add(code);
+        if (fmtFilter.size === Object.keys(FORMAT_CODES).length) fmtFilter.clear();   // เลือกครบทุกอัน = ทั้งหมด
+        saveBoardPrefs(); renderBoard();
+      });
+      $('wr-board-sort').addEventListener('change', (e) => {
+        boardSort = (e.target as HTMLSelectElement).value as BoardSort;
+        saveBoardPrefs(); renderBoard();
+      });
+
       // Full capture (list view)
       $('wr-idea-save').addEventListener('click', () => void saveIdea(false, 'list'));
       $('wr-search').addEventListener('input', (e) => { search = (e.target as HTMLInputElement).value; renderList(); });
@@ -949,6 +1097,14 @@ import AppNav from '../../components/app/AppNav.astro';
 
       // Board interactions (click card → drawer; quick-produce)
       $('wr-board').addEventListener('click', (e) => void (async () => {
+        const mv = (e.target as HTMLElement).closest('[data-action="move-up"],[data-action="move-down"]') as HTMLElement | null;
+        if (mv) {
+          e.stopPropagation();
+          const dir = mv.dataset.action === 'move-up' ? -1 : 1;
+          if (mv.dataset.moveV) nudge('variant', mv.dataset.moveV, dir);
+          else if (mv.dataset.moveCid) nudge('idea', mv.dataset.moveCid, dir);
+          return;
+        }
         const produce = (e.target as HTMLElement).closest('[data-action="quick-produce"]') as HTMLElement | null;
         if (produce) {
           e.stopPropagation();
@@ -968,50 +1124,112 @@ import AppNav from '../../components/app/AppNav.astro';
       // การลากอะไรก็ได้ครั้งถัดไป (ข้อความในการ์ดไอเดีย ไฟล์จาก Finder) ทำให้การ์ด "ใบเก่า"
       // เด้งไปโผล่ช่องใหม่ทั้งที่ไม่ได้สั่ง = อาการการ์ดซ้ำ/การ์ดโผล่เอง
       const DRAG_MIME = 'application/x-wr-variant';
+      const IDEA_MIME = 'application/x-wr-idea';     // ลากเรียงไอเดีย (เฉพาะโหมด Custom · อยู่ในช่อง Ideas เท่านั้น)
       let dragVid: string | null = null;
+      let dragCid: string | null = null;
       let moving = false;
-      const clearDropHint = () => $('wr-board').querySelectorAll('.wr-col')
-        .forEach((c) => c.classList.remove('ring-2', 'ring-[color:var(--color-brand-coral)]'));
+      const clearDropHint = () => {
+        $('wr-board').querySelectorAll('.wr-col')
+          .forEach((c) => c.classList.remove('ring-2', 'ring-[color:var(--color-brand-coral)]'));
+        $('wr-board').querySelectorAll<HTMLElement>('[data-card]').forEach((c) => { c.style.boxShadow = ''; });
+      };
+      // การ์ดที่จะไปวาง "ก่อน" ตามตำแหน่งเมาส์ (null = ท้ายคอลัมน์)
+      const cardBefore = (col: HTMLElement, y: number, skip: string | null): HTMLElement | null => {
+        const cards = [...col.querySelectorAll<HTMLElement>('[data-card]')].filter((c) => (c.dataset.v ?? c.dataset.cid) !== skip);
+        return cards.find((c) => { const r = c.getBoundingClientRect(); return y < r.top + r.height / 2; }) ?? null;
+      };
+      const showInsert = (col: HTMLElement, y: number, skip: string | null) => {
+        col.querySelectorAll<HTMLElement>('[data-card]').forEach((c) => { c.style.boxShadow = ''; });
+        const before = cardBefore(col, y, skip);
+        const cards = [...col.querySelectorAll<HTMLElement>('[data-card]')].filter((c) => (c.dataset.v ?? c.dataset.cid) !== skip);
+        if (before) before.style.boxShadow = '0 -3px 0 0 var(--color-brand-coral)';
+        else if (cards.length) cards[cards.length - 1].style.boxShadow = '0 3px 0 0 var(--color-brand-coral)';
+      };
 
       $('wr-board').addEventListener('dragstart', (e) => {
-        const card = (e.target as HTMLElement).closest('[data-card="variant"]') as HTMLElement | null;
-        dragVid = card?.dataset.v ?? null;   // ลากอย่างอื่น (เช่น ข้อความในการ์ดไอเดีย) = ไม่ใช่การย้าย
-        if (!card || !dragVid) return;
+        const card = (e.target as HTMLElement).closest('[data-card]') as HTMLElement | null;
+        dragVid = card?.dataset.card === 'variant' ? card.dataset.v ?? null : null;   // ลากอย่างอื่น (เช่น ข้อความ) = ไม่ใช่การย้าย
+        dragCid = card?.dataset.card === 'idea' && boardSort === 'custom' ? card.dataset.cid ?? null : null;
+        const id = dragVid ?? dragCid;
+        if (!card || !id) return;
         card.classList.add('opacity-40');
         const dt = (e as DragEvent).dataTransfer!;
         dt.effectAllowed = 'move';
-        dt.setData(DRAG_MIME, dragVid);
-        dt.setData('text/plain', dragVid);
+        dt.setData(dragVid ? DRAG_MIME : IDEA_MIME, id);
+        dt.setData('text/plain', id);
       });
       $('wr-board').addEventListener('dragend', () => {
-        dragVid = null;
+        dragVid = null; dragCid = null;
         $('wr-board').querySelectorAll('[data-card]').forEach((c) => c.classList.remove('opacity-40'));
         clearDropHint();
       });
       $('wr-board').addEventListener('dragover', (e) => {
-        const col = (e.target as HTMLElement).closest('.wr-col[data-col]') as HTMLElement | null;
-        const mine = dragVid || (e as DragEvent).dataTransfer?.types.includes(DRAG_MIME);
-        if (!col || !col.dataset.col || !mine) return;   // ของนอกบอร์ดไม่รับ
+        const de = e as DragEvent;
+        const col = (e.target as HTMLElement).closest('.wr-col') as HTMLElement | null;
+        if (!col) return;
+        const isVariant = dragVid || de.dataTransfer?.types.includes(DRAG_MIME);
+        const isIdea = dragCid || de.dataTransfer?.types.includes(IDEA_MIME);
+        const ok = (isVariant && col.dataset.col) || (isIdea && col.dataset.colkey === 'ideas' && boardSort === 'custom');
+        if (!ok) return;                                  // ของนอกบอร์ดไม่รับ
         e.preventDefault();
-        (e as DragEvent).dataTransfer!.dropEffect = 'move';
+        de.dataTransfer!.dropEffect = 'move';
         $('wr-board').querySelectorAll('.wr-col').forEach((c) => c.classList.toggle('ring-2', c === col));
         col.classList.add('ring-[color:var(--color-brand-coral)]');
+        if (boardSort === 'custom') showInsert(col, de.clientY, dragVid ?? dragCid);
       });
       $('wr-board').addEventListener('drop', (e) => {
-        const col = (e.target as HTMLElement).closest('.wr-col[data-col]') as HTMLElement | null;
-        const vid = (e as DragEvent).dataTransfer?.getData(DRAG_MIME) || dragVid;
+        const de = e as DragEvent;
+        const col = (e.target as HTMLElement).closest('.wr-col') as HTMLElement | null;
+        const vid = de.dataTransfer?.getData(DRAG_MIME) || dragVid;
+        const cid = de.dataTransfer?.getData(IDEA_MIME) || dragCid;
+        const before = col && boardSort === 'custom' ? cardBefore(col, de.clientY, vid || cid) : null;
         clearDropHint();
-        dragVid = null;
-        if (!col || !col.dataset.col || !vid) return;
+        dragVid = null; dragCid = null;
+        if (!col) return;
+
+        // ไอเดีย: เรียงในช่อง Ideas เท่านั้น
+        if (cid && !vid) {
+          if (col.dataset.colkey !== 'ideas' || boardSort !== 'custom') return;
+          e.preventDefault();
+          if (reordering) return;
+          const full = sortIdeas(backlogIdeas(), 'custom').map((i) => i.content_id);
+          void saveOrder('idea', placeIn(full, cid, before?.dataset.cid ?? null, visibleIdsIn('ideas', 'cid')));
+          return;
+        }
+
+        if (!col.dataset.col || !vid) return;
         e.preventDefault();
-        if (moving) return;                              // ปล่อยรัวสองที = ยิงซ้ำ
+        if (moving || reordering) return;                 // ปล่อยรัวสองที = ยิงซ้ำ
         const v = variants.find((x) => x.variant_id === vid);
         const target = col.dataset.col as VariantStatus;
-        if (!v || v.variant_status === target || colOf(v.variant_status)?.key === COLUMNS.find((c) => c.primary === target)?.key) return;
+        const targetKey = col.dataset.colkey!;
+        if (!v) return;
+        const sameCol = colOf(v.variant_status)?.key === targetKey;
+
+        if (boardSort !== 'custom') {
+          if (sameCol) { toast('อยากเรียงเอง เลือก "เรียง → ✋ Custom" ก่อนครับ'); return; }
+          moving = true;
+          void (async () => {
+            try { await updateVariant(vid, { variant_status: target }); toast(`ย้าย ${vid.replace('CNT-', '')} → ${col.dataset.col}`); await refresh(); }
+            catch (err) { oops(err); }
+            finally { moving = false; }
+          })();
+          return;
+        }
+
+        // Custom: วางตรงตำแหน่งที่ปล่อย (ย้ายคอลัมน์ด้วยถ้าปล่อยข้ามช่อง)
+        const visible = visibleIdsIn(targetKey, 'v');
+        const order = placeIn(columnVariants(targetKey).map((x) => x.variant_id), vid, before?.dataset.v ?? null, visible);
         moving = true;
         void (async () => {
-          try { await updateVariant(vid, { variant_status: target }); toast(`ย้าย ${vid.replace('CNT-', '')} → ${col.dataset.col}`); await refresh(); }
-          catch (err) { oops(err); }
+          try {
+            if (!sameCol) {
+              await updateVariant(vid, { variant_status: target });
+              v.variant_status = target; v.status_changed_at = new Date().toISOString();
+            }
+            await saveOrder('variant', order);
+            if (!sameCol) { toast(`ย้าย ${vid.replace('CNT-', '')} → ${col.dataset.col}`); await refresh(); }
+          } catch (err) { oops(err); await refresh(); }
           finally { moving = false; }
         })();
       });

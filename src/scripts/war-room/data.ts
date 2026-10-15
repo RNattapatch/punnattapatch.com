@@ -34,6 +34,8 @@ export interface Idea {
   created_at: string;
   // หมวดตามธง v1.4 (2026-10-02): ปั้นทีมขาย · ถอดรหัสคนซื้อ · AI รับงานซ้ำ · bonus · me
   pillar_v14?: PillarV14 | null;
+  // ลำดับในคอลัมน์ตอนเรียงแบบ Custom (ลากเรียงเอง · 2026-10-15) — null = ยังไม่เคยลาก
+  board_rank?: number | null;
 }
 
 export type PillarV14 = 'team' | 'buyer' | 'ai' | 'bonus' | 'me';
@@ -56,6 +58,7 @@ export interface Variant {
   ai_result_at: string | null;
   // Note Studio (2026-10-02): สเปกรูปแบบ Notes (carousel/รูปเดี่ยว) — render จริงบนมินิ
   visual_spec?: import('./note-render').NoteSpec | null;
+  board_rank?: number | null;
 }
 
 export interface Publication {
@@ -211,6 +214,14 @@ export async function updateVariant(variant_id: string, patch: Partial<Variant>)
   // Every status change stamps status_changed_at — the stale-alert clock.
   const stamped = patch.variant_status ? { ...patch, status_changed_at: new Date().toISOString() } : patch;
   await q(() => supabase.from('content_variants').update(stamped).eq('variant_id', variant_id));
+}
+
+// Custom order (ลากเรียงเอง): renumber a whole column in one call — RLS (is_owner) still applies.
+export async function reorderVariants(ids: string[]): Promise<void> {
+  await q(() => supabase.rpc('content_variants_reorder', { p_ids: ids }));
+}
+export async function reorderIdeas(ids: string[]): Promise<void> {
+  await q(() => supabase.rpc('content_items_reorder', { p_ids: ids }));
 }
 
 export async function addPublication(
