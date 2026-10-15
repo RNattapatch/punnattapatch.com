@@ -13,18 +13,19 @@
 </section>
 
 <script>
-  import { subscribe, dashboardLeads, openLead } from '../../scripts/dashboard/store';
+  import { subscribe, dashboardLeads, openLead, setLeadStatus, toast } from '../../scripts/dashboard/store';
   import type { LeadUi } from '../../scripts/dashboard/adapter';
   import { markName } from '../../scripts/after-hours';
   import { classifySource } from '../../scripts/dashboard/lead-source';
 
-  const STAGES: { key: string; label: string; color: string }[] = [
-    { key: 'new',         label: 'New Lead',      color: 'var(--color-pun-cyan)' },
-    { key: 'discovery',   label: 'Discovery',     color: 'var(--color-warning)' },
-    { key: 'site_visit',  label: 'Site Visit',    color: 'var(--color-info)' },
-    { key: 'proposal',    label: 'Proposal Sent', color: 'var(--color-pun-violet)' },
-    { key: 'won',         label: 'Won ✓',         color: 'var(--color-success)' },
-    { key: 'lost',        label: 'Lost / Out',    color: 'var(--color-error)' },
+  // status = ค่าที่ส่งเข้า setLeadStatus (ตัวเดียวกับ dropdown "Pipeline Stage" ใน drawer)
+  const STAGES: { key: string; label: string; color: string; status: string }[] = [
+    { key: 'new',         label: 'New Lead',      color: 'var(--color-pun-cyan)',   status: 'New' },
+    { key: 'discovery',   label: 'Discovery',     color: 'var(--color-warning)',    status: 'Discovery Call' },
+    { key: 'site_visit',  label: 'Site Visit',    color: 'var(--color-info)',       status: 'Site Visit' },
+    { key: 'proposal',    label: 'Proposal Sent', color: 'var(--color-pun-violet)', status: 'Proposal Sent' },
+    { key: 'won',         label: 'Won ✓',         color: 'var(--color-success)',    status: 'won' },
+    { key: 'lost',        label: 'Lost / Out',    color: 'var(--color-error)',      status: 'lost' },
   ];
 
   function stageOf(l: LeadUi): string {
@@ -58,9 +59,16 @@
     return '';
   }
 
-  function makeCard(lead: LeadUi, stageColor: string): HTMLButtonElement {
-    const card = document.createElement('button');
-    card.className = 'text-left w-full bg-base-100 border border-base-300 rounded-2xl p-3 hover:border-base-content/30 transition-colors cursor-pointer';
+  // <article> ไม่ใช่ <button> — Firefox ไม่ยิง dragstart บนปุ่ม
+  function makeCard(lead: LeadUi, stageColor: string): HTMLElement {
+    const id = String(lead.lead_id || '');
+    const card = document.createElement('article');
+    card.className = 'text-left w-full bg-base-100 border border-base-300 rounded-2xl p-3 hover:border-base-content/30 transition-colors cursor-grab active:cursor-grabbing select-none';
+    card.draggable = true;
+    card.dataset.lead = id;
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.title = 'กดเพื่อเปิด · ลากไปช่องอื่นเพื่อเปลี่ยน stage';
 
     const topRow = document.createElement('div');
     topRow.className = 'flex justify-between items-start mb-1 gap-1';
@@ -97,7 +105,10 @@
     bottomRow.append(left, amount);
 
     card.append(topRow, company, bottomRow);
-    card.addEventListener('click', () => void openLead(String(lead.lead_id || '')));
+    card.addEventListener('click', () => void openLead(id));
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); void openLead(id); }
+    });
     return card;
   }
 
@@ -118,7 +129,8 @@
     board.replaceChildren();
     STAGES.forEach((stage) => {
       const col = document.createElement('div');
-      col.className = 'w-56 bg-base-200 rounded-2xl p-3 flex flex-col gap-2 border border-base-300';
+      col.className = 'kb-col w-56 bg-base-200 rounded-2xl p-3 flex flex-col gap-2 border border-base-300 transition-shadow';
+      col.dataset.stage = stage.key;
 
       const header = document.createElement('div');
       header.className = 'flex items-center justify-between px-1 mb-1';
@@ -149,6 +161,72 @@
       board.appendChild(col);
     });
   }
+
+  // ── Drag-drop: การ์ด → คอลัมน์ ────────────────────────────────────────────
+  // ทำแบบเดียวกับบอร์ด Content Center (fix 8ae5617): id เดินทางกับ dataTransfer +
+  // ล้าง state ที่ dragend เสมอ + ไม่รับ drag ที่ไม่ได้เริ่มจากการ์ด + กันปล่อยรัว
+  const DRAG_MIME = 'application/x-crm-lead';
+  let dragId: string | null = null;
+  let moving = false;
+  const board = document.getElementById('kanban-board');
+  const clearHint = () => board?.querySelectorAll('.kb-col')
+    .forEach((c) => c.classList.remove('ring-2', 'ring-base-content/40'));
+
+  board?.addEventListener('dragstart', (e) => {
+    const card = (e.target as HTMLElement).closest<HTMLElement>('[data-lead]');
+    dragId = card?.dataset.lead || null;
+    if (!card || !dragId || !e.dataTransfer) return;
+    card.classList.add('opacity-40');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData(DRAG_MIME, dragId);
+    e.dataTransfer.setData('text/plain', dragId);
+  });
+  board?.addEventListener('dragend', () => {
+    dragId = null;
+    board.querySelectorAll('[data-lead]').forEach((c) => c.classList.remove('opacity-40'));
+    clearHint();
+  });
+  board?.addEventListener('dragover', (e) => {
+    const col = (e.target as HTMLElement).closest<HTMLElement>('.kb-col');
+    const mine = dragId || e.dataTransfer?.types.includes(DRAG_MIME);
+    if (!col || !mine) return;
+    e.preventDefault();
+    if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+    board.querySelectorAll('.kb-col').forEach((c) => {
+      c.classList.toggle('ring-2', c === col);
+      c.classList.toggle('ring-base-content/40', c === col);
+    });
+  });
+  board?.addEventListener('drop', (e) => {
+    const col = (e.target as HTMLElement).closest<HTMLElement>('.kb-col');
+    const id = e.dataTransfer?.getData(DRAG_MIME) || dragId;
+    clearHint();
+    dragId = null;
+    if (!col || !id) return;
+    e.preventDefault();
+    if (moving) return;
+    const stage = STAGES.find((s) => s.key === col.dataset.stage);
+    const lead = dashboardLeads().find((l) => String(l.lead_id || '') === id);
+    if (!stage || !lead || stageOf(lead) === stage.key) return;
+
+    moving = true;
+    const card = board.querySelector<HTMLElement>(`[data-lead="${CSS.escape(id)}"]`);
+    card?.classList.add('opacity-40', 'pointer-events-none');
+    void (async () => {
+      try {
+        await setLeadStatus(id, stage.status);
+        // Lost ต้องใส่เหตุผลใน drawer — เปิดให้เลยจะได้ไม่ลืม
+        const saved = dashboardLeads().find((l) => String(l.lead_id || '') === id);
+        if (stage.key === 'lost' && saved && stageOf(saved) === 'lost') {
+          toast('ย้ายไป Lost แล้ว — เลือกเหตุผลใน drawer ได้เลย', 'info');
+          void openLead(id);
+        }
+      } finally {
+        moving = false;
+        render();   // ถ้าบันทึกไม่ผ่าน การ์ดกลับที่เดิม ไม่ค้างจาง
+      }
+    })();
+  });
 
   render();
   subscribe(render);

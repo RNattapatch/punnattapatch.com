@@ -366,7 +366,8 @@ function mergeIntoLeadList(lead: LeadUi): void {
 export async function patchLead(leadId: string, fields: Partial<LeadUi>): Promise<void> {
   try {
     const res = await updateLead(leadId, fields);
-    state.selectedLead = res.lead;
+    // Kanban drag saves leads that aren't open in the drawer — don't hijack the selection.
+    if (state.selectedLeadId === leadId) state.selectedLead = res.lead;
     mergeIntoLeadList(res.lead);
     notify();
     if (res.dropped_fields && res.dropped_fields.length) {
