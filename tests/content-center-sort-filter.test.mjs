@@ -46,6 +46,9 @@ const VARIANTS = [
   mkVariant(E, 'recorded',        '2026-09-09T00:00:00Z', '2026-09-11T00:00:00Z'),
 ];
 
+// A (Reel) ลงไปนานแล้วยังไม่มี snapshot → นับใน Analytics due
+const PUBS = [{ publication_id: 'p1', variant_id: A, platform: 'tiktok', post_url: null, published_at: '2026-09-01T00:00:00Z', status: 'posted' }];
+
 const jwt = () => {
   const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64url');
   return `${b64({ alg: 'HS256', typ: 'JWT' })}.${b64({ sub: 'test-user', role: 'authenticated', exp: 4102444800 })}.sig`;
@@ -77,6 +80,7 @@ async function openBoard({ prefs } = {}) {
     if (url.includes('/content_variants') && req.method() === 'PATCH') { calls.patch.push({ url, body: req.postDataJSON() }); return json([]); }
     if (url.includes('/content_items')) return json(IDEAS);
     if (url.includes('/content_variants')) return json(VARIANTS);
+    if (url.includes('/publications')) return json(PUBS);
     return json([]);
   });
   const page = await ctx.newPage();
@@ -163,6 +167,25 @@ console.log('\n📋 Content Center — เรียง + กรอง + Custom\n
   check(await page.$('.wr-col[data-colkey="ideas"]') !== null, 'กด "ทั้งหมด" → ช่อง Ideas กลับมา');
   await page.fill('#wr-board-search', '004');
   check((await page.textContent(chipCR)).includes('1'), 'จำนวนบน chip นับตามคำค้นด้วย (004 → Carousel 1 ใบ)');
+  await ctx.close();
+}
+
+// ── 2b. กล่องตัวเลข + แถบเตือนค้าง นับตามตัวกรอง ───────────────────────────
+{
+  const { page, ctx } = await openBoard();
+  const pills = () => page.$$eval('#wr-stats article', (n) => n.map((x) => Number(x.querySelector('.font-display').textContent)));
+  check(eq(await pills(), [2, 1, 0, 1]), `ไม่กรอง → ยอดรวม ${(await pills()).join('/')} (ควรเป็น 2/1/0/1)`);
+  check(await page.isHidden('#wr-stats-scope'), 'ไม่กรอง → ไม่มีบรรทัดบอกขอบเขต');
+  check((await page.textContent('#wr-stale')).includes(E), 'แถบเตือนค้างชี้ E (Carousel ค้าง recorded)');
+  await page.click('#wr-fmt-filter [data-fmt="CR"]');
+  check(eq(await pills(), [0, 1, 0, 0]), `กรอง Carousel → ${(await pills()).join('/')} (ควรเป็น 0/1/0/0)`);
+  check((await page.textContent('#wr-stats-scope')).includes('Carousel'), 'บอกว่าตัวเลขนับเฉพาะ Carousel');
+  await page.click('#wr-fmt-filter [data-fmt="CR"]');
+  await page.click('#wr-fmt-filter [data-fmt="RL"]');
+  check(eq(await pills(), [2, 0, 0, 1]), `กรอง Reel → ${(await pills()).join('/')} (ควรเป็น 2/0/0/1)`);
+  check(await page.isHidden('#wr-stale'), 'กรอง Reel → ไม่มี Reel ค้าง แถบเตือนซ่อน');
+  await page.click('#wr-fmt-filter [data-fmt=""]');
+  check(eq(await pills(), [2, 1, 0, 1]), 'กด "ทั้งหมด" → ยอดรวมกลับมา');
   await ctx.close();
 }
 

@@ -31,6 +31,7 @@ import AppNav from '../../components/app/AppNav.astro';
       <!-- Pipeline stat pills -->
       <section aria-label="สถานะการผลิต" class="-mx-4 overflow-x-auto px-4">
         <div id="wr-stats" class="flex min-w-max gap-2 sm:grid sm:min-w-0 sm:grid-cols-4"></div>
+        <p id="wr-stats-scope" class="mt-1.5 hidden text-xs opacity-60" role="status"></p>
       </section>
       <div id="wr-stale" class="hidden rounded-2xl px-4 py-2.5 text-sm text-white" style="background-color:var(--color-brand-navy);" role="status"></div>
 
@@ -332,10 +333,12 @@ import AppNav from '../../components/app/AppNav.astro';
     }
 
     // ---------- stat pills ----------
-    function bucket(status: VariantStatus[]) { return variants.filter((v) => status.includes(v.variant_status)); }
+    // กล่องตัวเลข + แถบเตือนค้าง นับตามตัวกรองฟอร์แมตเดียวกับบอร์ด (variant_id ลงท้ายด้วยรหัสฟอร์แมต)
+    const inFmt = (variantId: string) => !fmtFilter.size || fmtFilter.has(variantId.slice(-2) as FormatCode);
+    function bucket(status: VariantStatus[]) { return variants.filter((v) => status.includes(v.variant_status) && inFmt(v.variant_id)); }
     function analyticsDue(): Publication[] {
       const cutoff = Date.now() - 48 * 3600e3;
-      return pubs.filter((p) => p.status === 'posted' && p.published_at
+      return pubs.filter((p) => p.status === 'posted' && p.published_at && inFmt(p.variant_id)
         && new Date(p.published_at).getTime() < cutoff && !snapIds.has(p.publication_id));
     }
     function statPill(icon: string, n: number, label: string, sub: string, hot: boolean) {
@@ -359,6 +362,11 @@ import AppNav from '../../components/app/AppNav.astro';
         statPill('✂️', recorded.length, 'ถ่ายแล้วยังไม่ตัด', oldest(recorded), true) +
         statPill('📤', edited.length, 'ตัดแล้วยังไม่ลง', oldest(edited), true) +
         statPill('📊', due.length, 'Analytics due', 'ลงแล้วเกิน 48 ชม.', false);
+      const scopeEl = $('wr-stats-scope');
+      scopeEl.classList.toggle('hidden', !fmtFilter.size);
+      scopeEl.textContent = fmtFilter.size
+        ? `นับเฉพาะ ${[...fmtFilter].map((c) => FORMAT_CODES[c].label).join(' · ')} — กด "ทั้งหมด" เพื่อดูยอดรวม`
+        : '';
 
       const stale = [...recorded, ...edited].filter((v) => daysAgo(v.status_changed_at) >= 3)
         .sort((a, b) => daysAgo(b.status_changed_at) - daysAgo(a.status_changed_at))[0];
@@ -1071,7 +1079,7 @@ import AppNav from '../../components/app/AppNav.astro';
         else if (fmtFilter.has(code)) fmtFilter.delete(code);
         else fmtFilter.add(code);
         if (fmtFilter.size === Object.keys(FORMAT_CODES).length) fmtFilter.clear();   // เลือกครบทุกอัน = ทั้งหมด
-        saveBoardPrefs(); renderBoard();
+        saveBoardPrefs(); renderStats(); renderBoard();
       });
       $('wr-board-sort').addEventListener('change', (e) => {
         boardSort = (e.target as HTMLSelectElement).value as BoardSort;
