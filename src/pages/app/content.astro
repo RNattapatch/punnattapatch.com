@@ -333,12 +333,14 @@ import AppNav from '../../components/app/AppNav.astro';
     }
 
     // ---------- stat pills ----------
-    // กล่องตัวเลข + แถบเตือนค้าง นับตามตัวกรองฟอร์แมตเดียวกับบอร์ด (variant_id ลงท้ายด้วยรหัสฟอร์แมต)
+    // กล่องตัวเลข + แถบเตือนค้าง นับตามตัวกรองฟอร์แมต + คำค้นเดียวกับบอร์ด (variant_id ลงท้ายด้วยรหัสฟอร์แมต)
     const inFmt = (variantId: string) => !fmtFilter.size || fmtFilter.has(variantId.slice(-2) as FormatCode);
-    function bucket(status: VariantStatus[]) { return variants.filter((v) => status.includes(v.variant_status) && inFmt(v.variant_id)); }
+    const inScope = (v: Variant | undefined) => !!v && inFmt(v.variant_id) && matchesSearch(v);
+    function bucket(status: VariantStatus[]) { return variants.filter((v) => status.includes(v.variant_status) && inScope(v)); }
     function analyticsDue(): Publication[] {
       const cutoff = Date.now() - 48 * 3600e3;
-      return pubs.filter((p) => p.status === 'posted' && p.published_at && inFmt(p.variant_id)
+      return pubs.filter((p) => p.status === 'posted' && p.published_at
+        && (boardSearch ? inScope(variants.find((v) => v.variant_id === p.variant_id)) : inFmt(p.variant_id))
         && new Date(p.published_at).getTime() < cutoff && !snapIds.has(p.publication_id));
     }
     function statPill(icon: string, n: number, label: string, sub: string, hot: boolean) {
@@ -363,10 +365,13 @@ import AppNav from '../../components/app/AppNav.astro';
         statPill('📤', edited.length, 'ตัดแล้วยังไม่ลง', oldest(edited), true) +
         statPill('📊', due.length, 'Analytics due', 'ลงแล้วเกิน 48 ชม.', false);
       const scopeEl = $('wr-stats-scope');
-      scopeEl.classList.toggle('hidden', !fmtFilter.size);
-      scopeEl.textContent = fmtFilter.size
-        ? `นับเฉพาะ ${[...fmtFilter].map((c) => FORMAT_CODES[c].label).join(' · ')} — กด "ทั้งหมด" เพื่อดูยอดรวม`
-        : '';
+      const scope = [
+        ...(fmtFilter.size ? [[...fmtFilter].map((c) => FORMAT_CODES[c].label).join(' · ')] : []),
+        ...(boardSearch ? [`ที่ค้นว่า "${boardSearch}"`] : []),
+      ];
+      const reset = [...(fmtFilter.size ? ['กด "ทั้งหมด"'] : []), ...(boardSearch ? ['ล้างช่องค้นหา'] : [])].join(' และ ');
+      scopeEl.classList.toggle('hidden', !scope.length);
+      scopeEl.textContent = scope.length ? `นับเฉพาะ ${scope.join(' ')} — ${reset} เพื่อดูยอดรวม` : '';
 
       const stale = [...recorded, ...edited].filter((v) => daysAgo(v.status_changed_at) >= 3)
         .sort((a, b) => daysAgo(b.status_changed_at) - daysAgo(a.status_changed_at))[0];
@@ -1068,7 +1073,7 @@ import AppNav from '../../components/app/AppNav.astro';
       // Quick capture
       $('wr-quick-save').addEventListener('click', () => void saveIdea(false, 'quick'));
       $('wr-quick-idea').addEventListener('keydown', (e) => { if ((e as KeyboardEvent).key === 'Enter') { e.preventDefault(); void saveIdea(false, 'quick'); } });
-      $('wr-board-search').addEventListener('input', (e) => { boardSearch = (e.target as HTMLInputElement).value.trim(); renderBoard(); });
+      $('wr-board-search').addEventListener('input', (e) => { boardSearch = (e.target as HTMLInputElement).value.trim(); renderStats(); renderBoard(); });
 
       // Format filter chips (เลือกได้หลายอัน · "ทั้งหมด" = ล้าง) + sort
       $('wr-fmt-filter').addEventListener('click', (e) => {

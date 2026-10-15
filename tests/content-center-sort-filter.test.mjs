@@ -186,6 +186,20 @@ console.log('\n📋 Content Center — เรียง + กรอง + Custom\n
   check(await page.isHidden('#wr-stale'), 'กรอง Reel → ไม่มี Reel ค้าง แถบเตือนซ่อน');
   await page.click('#wr-fmt-filter [data-fmt=""]');
   check(eq(await pills(), [2, 1, 0, 1]), 'กด "ทั้งหมด" → ยอดรวมกลับมา');
+  // คำค้น: 004 = C (Reel ready) · D (Article draft) · E (Carousel recorded)
+  await page.fill('#wr-board-search', '004');
+  check(eq(await pills(), [1, 1, 0, 0]), `ค้น "004" → ${(await pills()).join('/')} (ควรเป็น 1/1/0/0 · A ที่รอ analytics ไม่ตรงคำค้น)`);
+  check((await page.textContent('#wr-stats-scope')).includes('"004"'), 'บอกว่าตัวเลขนับเฉพาะที่ค้นว่า "004"');
+  await page.click('#wr-fmt-filter [data-fmt="CR"]');
+  check(eq(await pills(), [0, 1, 0, 0]), `ค้น "004" + Carousel → ${(await pills()).join('/')} (ควรเป็น 0/1/0/0)`);
+  const scope = await page.textContent('#wr-stats-scope');
+  check(scope.includes('Carousel') && scope.includes('"004"') && scope.includes('ล้างช่องค้นหา'), `บรรทัดขอบเขตบอกทั้งฟอร์แมตและคำค้น → "${scope}"`);
+  await page.fill('#wr-board-search', '001');
+  check((await page.textContent('#wr-stale')).length === 0 || await page.isHidden('#wr-stale'), 'ค้น "001" + Carousel → ไม่มีการ์ดค้าง แถบเตือนซ่อน');
+  await page.click('#wr-fmt-filter [data-fmt=""]');
+  check(eq(await pills(), [1, 0, 0, 1]), `ค้น "001" อย่างเดียว → ${(await pills()).join('/')} (ควรเป็น 1/0/0/1 · A รอ analytics)`);
+  await page.fill('#wr-board-search', '');
+  check(eq(await pills(), [2, 1, 0, 1]) && await page.isHidden('#wr-stats-scope'), 'ล้างคำค้น → ยอดรวมกลับมา บรรทัดขอบเขตหาย');
   await ctx.close();
 }
 
