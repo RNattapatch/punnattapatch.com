@@ -69,6 +69,11 @@ import AppNav from '../../components/app/AppNav.astro';
     #growth-lab-app .gl-sheet-action { --btn-bg: var(--sheet-ink); --btn-fg: var(--sheet-bg); --btn-border: var(--sheet-ink); background: var(--sheet-ink); color: var(--sheet-bg); border-color: var(--sheet-ink); }
     #growth-lab-app .gl-sheet-quiet { --btn-bg: transparent; --btn-fg: var(--sheet-ink); --btn-border: var(--sheet-rule); background: transparent; color: var(--sheet-ink); border-color: var(--sheet-rule); }
     #growth-lab-app .gl-sheet .badge { background: transparent; color: inherit; border-color: var(--sheet-rule); }
+    /* ผลย้อนหลัง: ป้ายนับคำตัดสินบนแผ่นคำตัดสิน — สีทึบอ่านออกทั้งแผ่นกรมท่า (สว่าง) และแผ่นกระดาษ (มืด) */
+    #growth-lab-app .gl-sheet .gl-tally { border: 0; color: #172937; background: #e4ddd0; }
+    #growth-lab-app .gl-sheet .gl-tally[data-tone="scale"] { background: #9fdcb4; }
+    #growth-lab-app .gl-sheet .gl-tally[data-tone="iterate"] { background: #f2cd7e; }
+    #growth-lab-app .gl-sheet .gl-tally[data-tone="kill"] { background: #f5a8a8; }
     #growth-lab-app .gl-preview { border: 1px solid var(--color-base-300); background: var(--color-base-100); border-radius: .75rem; overflow: hidden; }
     #growth-lab-app .gl-count[aria-pressed="true"] { outline: 2px solid var(--gl-accent); outline-offset: -2px; }
     #growth-lab-app .gl-stop { color: #2f7a55; } #growth-lab-app .gl-watch { color: #b7791f; } #growth-lab-app .gl-scroll { color: var(--color-brand-coral); }
@@ -87,7 +92,8 @@ import AppNav from '../../components/app/AppNav.astro';
         </div>
         <span id="sync-status" class="badge badge-ghost badge-sm whitespace-nowrap" role="status" aria-live="polite">กำลังโหลด…</span>
         <nav class="gl-tabs -mx-4 flex w-full gap-1 overflow-x-auto px-4 sm:mx-0 sm:w-auto sm:px-0" aria-label="มุมมองของ Funnel Lab">
-          <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="workbench" aria-current="page">โต๊ะทดลอง</button>
+          <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="history" aria-current="page">📋 ผลย้อนหลัง</button>
+          <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="workbench">โต๊ะทดลอง</button>
           <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="compare">เทียบข้อความ</button>
           <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="journey">เส้นทางซื้อ</button>
           <button class="gl-tab btn btn-sm rounded-full border-0 btn-ghost tap-44" data-view="results">ผลจริง</button>
@@ -105,10 +111,39 @@ import AppNav from '../../components/app/AppNav.astro';
         <button type="button" id="notice-action" class="btn btn-xs border-0 bg-white text-[color:var(--color-brand-navy)] tap-44" hidden></button>
       </div>
 
+      <!-- ===================== HISTORY · ผลย้อนหลัง (2026-10-17 · หน้าแรกของ Funnel Lab) =====================
+           ทุกรอบรีวิวที่รันบนมินิ (carousel · แผน reel · เทียบ A/B) → "ใบตัดสิน": คำตัดสิน 1 บรรทัด → ใช้ตัวไหน / แก้อะไรก่อน /
+           รั่วตรงไหน → รายชิ้น → ตารางคะแนน → รายงานเต็ม · ข้อมูล funnel_lab_review_runs (publish_review.mjs บนมินิ)
+           logic อยู่ history.mjs · หน้าจออยู่ history-ui.mjs -->
+      <section id="view-history" data-screen="history" aria-labelledby="history-title" class="space-y-4" hidden>
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p class="gl-eyebrow">ผลย้อนหลัง · รีวิวที่รันบนมินิ</p>
+            <h1 id="history-title" class="font-display text-xl font-semibold sm:text-2xl">รอบที่แล้วบอกให้ทำอะไร</h1>
+            <p class="text-sm opacity-70" id="history-meta" aria-live="polite">กำลังโหลด…</p>
+          </div>
+          <button type="button" class="btn btn-sm tap-44" data-hist="refresh">โหลดใหม่</button>
+        </div>
+        <div class="grid items-start gap-4 lg:grid-cols-[300px_minmax(0,1fr)] 3xl:grid-cols-[360px_minmax(0,1fr)]">
+          <aside class="gl-panel p-3 lg:sticky lg:top-4" aria-label="รายการรอบรีวิว">
+            <label class="input input-sm input-bordered flex w-full items-center gap-2">
+              <span aria-hidden="true">🔎</span>
+              <input id="history-search" type="search" class="grow" placeholder="ค้นหาชื่อรอบ / คำในสรุป" aria-label="ค้นหารอบรีวิว" autocomplete="off" />
+            </label>
+            <div id="history-kinds" class="mt-2 flex flex-wrap gap-1" role="group" aria-label="กรองตามประเภท"></div>
+            <label class="mt-2 block lg:hidden"><span class="sr-only">เลือกรอบรีวิว</span>
+              <select id="history-select" class="select select-bordered select-sm w-full"></select>
+            </label>
+            <ol id="history-list" class="mt-2 hidden max-h-[calc(100dvh-14rem)] space-y-1 overflow-y-auto lg:block" aria-label="รอบรีวิว ใหม่สุดก่อน"></ol>
+          </aside>
+          <article id="history-detail" class="min-w-0 space-y-4" aria-live="polite"></article>
+        </div>
+      </section>
+
       <!-- ===================== WORKBENCH · โต๊ะทดลอง (layout จาก UX mock ของ Codex 2026-10-11) =====================
            01 ข้อความทดลอง → 02 มุมมองผู้ซื้อ → 03 ข้อสรุป · ฟอร์มละเอียดเปิดใน dialog เมื่อกด "แก้ข้อความ"
            มือถือเรียง: ข้อความ → ข้อสรุป → ผู้ซื้อ -->
-      <section id="view-workbench" data-screen="workbench" aria-labelledby="workbench-title">
+      <section id="view-workbench" data-screen="workbench" aria-labelledby="workbench-title" hidden>
         <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
           <div>
             <p class="gl-eyebrow">Test / Learn / Refine</p>

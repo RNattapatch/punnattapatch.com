@@ -356,3 +356,33 @@ export async function fetchBotConvo(runLabel: string, personaId: string): Promis
   if (error) throw new Error(error.message);
   return (data as BotConvo | null) ?? null;
 }
+
+// ---------- "ผลย้อนหลัง": review runs published from the mini by publish_review.mjs (2026-10-17) ----------
+export interface ReviewRunStub {
+  slug: string; kind: string; title: string; ran_at: string; headline: string | null;
+  tally: Record<string, number> | null; item_count: number | null;
+}
+export interface ReviewRun extends Omit<ReviewRunStub, 'tally' | 'item_count'> {
+  summary: { label: string; items: { ref?: string; text: string }[] }[];
+  sections: { title: string; intro: string; glossary: string; items: Record<string, any>[] }[];
+  scores: { title: string; head: string[]; rows: string[][] } | null;
+  meta: Record<string, any>;
+  covers: Record<string, string>;
+  report_md: string;
+  published_at: string;
+}
+
+/** Light list for the history rail — the heavy columns (sections · report_md) load per run. */
+export async function listReviewRuns(): Promise<ReviewRunStub[]> {
+  const { data, error } = await supabase.from('funnel_lab_review_runs')
+    .select('slug, kind, title, ran_at, headline, tally:meta->tally, item_count:meta->item_count')
+    .order('ran_at', { ascending: false });
+  if (error) throw new Error(error.message);
+  return (data as unknown as ReviewRunStub[]) ?? [];
+}
+
+export async function fetchReviewRun(slug: string): Promise<ReviewRun | null> {
+  const { data, error } = await supabase.from('funnel_lab_review_runs').select('*').eq('slug', slug).maybeSingle();
+  if (error) throw new Error(error.message);
+  return (data as ReviewRun) ?? null;
+}

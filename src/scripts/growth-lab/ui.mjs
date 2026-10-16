@@ -14,6 +14,7 @@ import { enqueueCodexEvaluation, fetchResults, fetchServerCopy, fetchWorkspace, 
 import { seedState } from './seed.mjs';
 import { handleRealityAction, initReality, renderReality } from './reality-ui.mjs';
 import { handleBotsimAction, initBotsim, renderBotsim } from './botsim-ui.mjs';
+import { initHistory, renderHistory } from './history-ui.mjs';
 
 // One envelope {v, rev, dirty, state}: the state and the cloud rev it is based on are always written together.
 const LOCAL_KEY = 'pun.growthLab.workspace.v2';
@@ -1038,6 +1039,7 @@ function switchView(view, shouldPersist = true) {
   if (view === 'results') { renderActualForm(); renderCalibration(); }
   if (view === 'reality') void renderReality();
   if (view === 'botsim') void renderBotsim();
+  if (view === 'history') void renderHistory();
   if (view === 'personas') { renderPackBuilder(); renderPersonaDirectory(); }
   if (view === 'settings') renderSettings();
   if (shouldPersist) persistView();
@@ -1651,6 +1653,9 @@ export async function boot() {
   const cloudInSync = () => !cloud.dirty && !cloud.hold && !cloud.readOnly && !cloud.tooLarge && !cloud.offline && cloud.rev !== null;
   initReality({ getState: () => state, escapeHtml, announce, importCreative, personaPackRevision, cloudInSync });
   initBotsim({ escapeHtml, announce });
+  initHistory({ escapeHtml, announce });
+  // Land on the answer: "ผลย้อนหลัง" opens first every visit (2026-10-17) — the tabs still remember the view within a visit.
+  state.activeView = 'history';
   renderAll();
   if (local.notice) announce(local.notice);
   setSyncStatus('☁️ กำลังเช็คฉบับบนคลาวด์…');

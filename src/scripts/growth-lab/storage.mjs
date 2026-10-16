@@ -12,7 +12,7 @@ function clone(value) {
   return structuredClone(value);
 }
 
-const VIEWS = new Set(['workbench', 'compare', 'journey', 'results', 'reality', 'botsim', 'personas', 'settings']);
+const VIEWS = new Set(['history', 'workbench', 'compare', 'journey', 'results', 'reality', 'botsim', 'personas', 'settings']);
 const VERDICTS = new Set(['SCALE', 'ITERATE', 'KILL']);
 const DECISIONS = new Set(['STOP', 'WATCH', 'SCROLL']);
 const COMPONENTS = ['hook', 'offer', 'copy', 'visual'];
