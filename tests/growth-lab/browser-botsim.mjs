@@ -2,13 +2,13 @@
 // Supabase REST calls are answered from the fixture, so nothing is sent anywhere and nothing is written.
 //   pnpm build && node scripts/prune-for-app.mjs
 //   python3 -m http.server 4373 --bind 127.0.0.1 --directory dist-app &
-//   BASE=http://127.0.0.1:4373 OUT=/tmp/botsim-shots node tests/growth-lab/browser-botsim.mjs
+//   BASE=http://127.0.0.1:4373 OUT=/tmp/botsim-shots [CHANNEL=chrome] node tests/growth-lab/browser-botsim.mjs
 import { chromium } from 'playwright';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { DATA_VERSION } from '../../src/scripts/growth-lab/sync.mjs';
-import { overviewTable, splitRuns } from '../../src/scripts/growth-lab/botsim.mjs';
+import { botVerdict, overviewTable, splitRuns } from '../../src/scripts/growth-lab/botsim.mjs';
 import { seedState } from '../../src/scripts/growth-lab/seed.mjs';
 import { FULL_LABELS, makeFixture } from './botsim-fixture.mjs';
 
@@ -67,7 +67,7 @@ async function openTab(page) {
   await page.waitForFunction(() => /รอบเต็ม/u.test(document.getElementById('botsim-meta')?.textContent ?? ''), null, { timeout: 15_000 });
 }
 
-const browser = await chromium.launch();
+const browser = await chromium.launch(process.env.CHANNEL ? { channel: process.env.CHANNEL } : {});   // CHANNEL=chrome = use the installed Chrome
 const fixture = makeFixture();
 try {
   for (const [label, viewport] of [['desktop', { width: 1440, height: 900 }], ['mobile', { width: 390, height: 844 }]]) {
@@ -81,7 +81,29 @@ try {
     await page.goto(`${BASE}/funnel-lab.html`, { waitUntil: 'networkidle' });
     await openTab(page);
     const meta = await page.locator('#botsim-meta').textContent();
-    check(meta.includes(`รอบเต็ม ${FULL_LABELS.length} รอบ`) && meta.includes(`รอบละ ${fixture.personas.length} persona`), `${label}: header counts the full runs and personas (${meta.trim()})`);
+    check(meta.includes(`รอบเต็ม ${FULL_LABELS.length} รอบ`) && meta.includes(`ลูกค้าจำลองรอบละ ${fixture.personas.length} คน`), `${label}: header counts the full runs and personas (${meta.trim()})`);
+
+    // Verdict first: the one-line answer sits above everything else, then the three answer blocks
+    const verdict = botVerdict(splitRuns(fixture.runs).full, fixture.pickRuns[0]);
+    check((await page.locator('#botsim-verdict [data-botsim-headline]').textContent()).trim() === verdict.headline, `${label}: verdict headline on the sheet (${verdict.headline})`);
+    const order = await page.evaluate(() => ['botsim-verdict', 'botsim-answers', 'botsim-overview-title'].map((id) => document.getElementById(id).getBoundingClientRect().top));
+    check(order[0] < order[1] && order[1] < order[2], `${label}: verdict, then answers, then the version list`);
+    const answers = await page.locator('#botsim-answers [data-botsim-answer]').allTextContents();
+    check(answers.length === 3 && ['ใช้เวอร์ชันไหน', 'แก้อะไรต่อ', 'ลูกค้าหลุดตรงไหน'].every((title, i) => answers[i].includes(title)), `${label}: three answer blocks in order`);
+    check(answers[1].includes(fixture.pickRuns[0].summary.codex.next[0]), `${label}: what to fix starts with the explainer's first step`);
+    check((await page.locator('#botsim-answers [data-botsim-leak] [role="img"]').count()) === verdict.leak.bars.length, `${label}: where customers stop has one bar per count`);
+    const sheetText = (await page.locator('#botsim-verdict').textContent()) + answers.join(' ');
+    check(!/persona|jev|Codex|ตัวหาร/u.test(sheetText), `${label}: no model jargon on the verdict sheet`);
+    check((await page.locator('#botsim-versions li[aria-current="true"]').count()) === 1, `${label}: the kept version is marked in the version list`);
+    check((await page.locator('#botsim-versions li[aria-current="true"]').textContent()).includes(verdict.keeper.label), `${label}: the marked row is ${verdict.keeper.label}`);
+    check(!(await page.locator('#botsim-overview table').isVisible()), `${label}: the full matrix starts folded`);
+    await page.context().grantPermissions(['clipboard-read', 'clipboard-write']).catch(() => {});
+    await page.click('#botsim-verdict [data-botsim-copy]');
+    const clip = await page.evaluate(() => navigator.clipboard.readText().catch(() => ''));
+    check(clip.includes(verdict.headline) && clip.includes('แก้อะไรต่อ:'), `${label}: copy puts the verdict + fixes on the clipboard`);
+    await page.locator('#view-botsim').screenshot({ path: join(OUT, `botsim-${label}-verdict.png`) });
+    await page.click('#botsim-overview-title ~ details > summary');
+    check(await page.locator('#botsim-overview table').isVisible(), `${label}: the full matrix opens`);
 
     const headers = await page.locator('#botsim-overview thead th').count();
     check(headers === FULL_LABELS.length + 1, `${label}: one column per full run in ran_at order (${headers - 1})`);
@@ -91,7 +113,7 @@ try {
     check((await page.locator('#botsim-partial li').count()) === 3, `${label}: three trial runs in their own list`);
     check((await page.locator('#botsim-sheet').textContent()).includes(fixture.pickRuns[0].summary.codex.headline), `${label}: Codex headline on the summary sheet`);
     check((await page.locator('#botsim-bars [role="img"]').count()) === FULL_LABELS.length * 2, `${label}: wins and scores bars for every run`);
-    check((await page.locator('#botsim-pick-meta').textContent()).includes('Codex เห็นด้วยกับ jev'), `${label}: picker, reasoner, cost and agreement shown`);
+    check((await page.locator('#botsim-pick-meta').textContent()).includes('ผู้อธิบายเห็นด้วยกับผู้เลือก'), `${label}: picker, reasoner, cost and agreement shown`);
 
     check((await page.locator('#botsim-picks [data-botsim-persona]').count()) === 37, `${label}: all 37 personas listed`);
     await page.selectOption('#botsim-segment', 'buy');
@@ -149,6 +171,7 @@ try {
   check((await emptyPage.locator('#botsim-picks').textContent()).includes('ยังไม่มีผลการเลือก'), 'empty: the per-persona list says no picks yet');
   check((await emptyPage.locator('#botsim-sheet').textContent()).includes('ยังไม่มีผลการเลือก'), 'empty: the summary sheet says no picks yet');
   check((await emptyPage.locator('#botsim-overview tbody tr').count()) === 11, 'empty: the overview still renders from the runs');
+  check(/ได้เบอร์มากสุด/u.test(await emptyPage.locator('#botsim-verdict').textContent()), 'empty: without picks the verdict falls back to phones');
   await empty.close();
 } finally {
   await browser.close();

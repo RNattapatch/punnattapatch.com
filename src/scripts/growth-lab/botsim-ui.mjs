@@ -1,11 +1,12 @@
 // Funnel Lab "ทดสอบบอท" screen (2026-10-13). Shows what persona-sim and persona-pick wrote (funnel_lab_bot_*):
-//   01 every full run side by side (+ trial runs)   02 which chat each persona liked (jev picks, Codex explains)
+//   ใบตัดสิน (2026-10-17) one-line verdict + ใช้เวอร์ชันไหน / แก้อะไรต่อ / ลูกค้าหลุดตรงไหน
+//   01 one compact row per version, the full 11-metric matrix (+ trial runs) folded in a <details>   02 which chat each persona liked (jev picks, Codex explains)
 //   03 one row per persona → dialog with reasoning and the chosen + worst chats   04 any transcript on demand
 // Numbers, labels and the transcript order live in botsim.mjs (pure, tested); this file fetches and renders only.
 import {
-  ACTION_THAI, OUTCOME_THAI, SEGMENT_ORDER, SEGMENT_THAI, discoveryChecklist, filterPicks, interleaveTranscript, latestPickRun,
+  ACTION_THAI, OUTCOME_THAI, SEGMENT_ORDER, SEGMENT_THAI, botVerdict, botsimBrief, discoveryChecklist, filterPicks, interleaveTranscript, latestPickRun,
   leadFacts, orderLabels, outcomeLabel, overviewTable, partialRows, pickRunView, pickView, resultTone, runOptions, segmentCounts,
-  splitRuns,
+  splitRuns, versionRows,
 } from './botsim.mjs';
 import { fetchBotConvo, listBotConvoIndex, listBotPicks, listBotPickRuns, listBotRuns } from './cloud.ts';
 
@@ -45,6 +46,12 @@ function pickLabels() {
 
 export function initBotsim(context) {
   ctx = context;
+  $('#botsim-verdict')?.addEventListener('click', (event) => {
+    if (!event.target.closest('[data-botsim-copy]') || !data) return;
+    void navigator.clipboard.writeText(botsimBrief(botVerdict(data.full, data.pickRun)))
+      .then(() => ctx.announce('คัดลอกคำตัดสิน + สิ่งที่ต้องแก้แล้ว — วางให้คนแก้บอทได้เลย'))
+      .catch(() => ctx.announce('คัดลอกไม่ได้ — เบราว์เซอร์ไม่อนุญาต'));
+  });
   $('#botsim-segment')?.addEventListener('change', renderPicks);
   $('#botsim-picks')?.addEventListener('click', (event) => {
     const row = event.target.closest('[data-botsim-persona]');
@@ -92,7 +99,11 @@ export async function renderBotsim(force = false) {
 
 function renderAll() {
   const { full, partial, pickRun, picks } = data;
-  $('#botsim-meta').textContent = `รอบเต็ม ${full.length} รอบ · รอบละ ${full[0]?.persona_count ?? '–'} persona · รอบทดลอง ${partial.length} รอบ · ผลเลือกล่าสุด ${pickRun ? dateTh(pickRun.ran_at) : 'ยังไม่มี'} · ${picks.length} คน`;
+  $('#botsim-meta').textContent = `รอบเต็ม ${full.length} รอบ · ลูกค้าจำลองรอบละ ${full[0]?.persona_count ?? '–'} คน · รอบทดลอง ${partial.length} รอบ · ผลเลือกล่าสุด ${pickRun ? dateTh(pickRun.ran_at) : 'ยังไม่มี'} · ${picks.length} คน`;
+  const verdict = botVerdict(full, pickRun);
+  renderVerdict(verdict);
+  renderAnswers(verdict);
+  renderVersions(verdict);
   renderOverview();
   renderPartial();
   renderSheet();
@@ -103,7 +114,79 @@ function renderAll() {
   renderViewerControls();
 }
 
-// ---------- 01 overview ----------
+// ---------- ใบตัดสิน ----------
+const TALLY_TONE = (tone) => (['scale', 'iterate', 'kill'].includes(tone) ? tone : 'draft');
+const signed = (n) => (n > 0 ? `+${n}` : String(n));
+
+function renderVerdict(verdict) {
+  const box = $('#botsim-verdict');
+  if (!verdict) {
+    box.innerHTML = '<p class="gl-eyebrow">คำตัดสิน</p><p class="mt-1 font-display text-xl font-semibold">ยังไม่มีรอบทดสอบแบบเต็ม</p><p class="mt-1 text-sm opacity-80">รันทดสอบบอทบนมินิครบทุกคนแล้ว คำตัดสินจะขึ้นที่นี่เอง</p>';
+    return;
+  }
+  const { keeper, vsPrev, cautions } = verdict;
+  const chips = vsPrev ? vsPrev.changes.map((c) => `<span class="gl-tally badge badge-lg font-semibold" data-tone="${TALLY_TONE(c.tone)}">${esc(c.label)} ${c.from}→${c.to} <span class="ml-1 tabular-nums opacity-70">(${signed(c.delta)})</span></span>`).join('') : '';
+  box.innerHTML = `<p class="gl-eyebrow">คำตัดสิน · ใช้บอทเวอร์ชันไหน</p>
+    <p class="mt-1 max-w-5xl font-display text-xl font-semibold leading-snug sm:text-2xl 3xl:max-w-none 3xl:text-3xl" data-botsim-headline>${esc(verdict.headline)}</p>
+    ${keeper.note ? `<p class="mt-2 max-w-5xl text-sm opacity-80"><b>${esc(keeper.label)}</b> คือ ${esc(keeper.note)}</p>` : ''}
+    ${vsPrev ? `<p class="mt-4 text-xs font-semibold opacity-80">เทียบเวอร์ชันก่อนหน้า (${esc(vsPrev.label)}${vsPrev.note ? ` · ${esc(vsPrev.note)}` : ''})</p><div class="mt-1.5 flex flex-wrap gap-2">${chips}</div>` : '<p class="mt-4 text-xs opacity-80">มีเวอร์ชันเดียว ยังไม่มีอะไรให้เทียบ</p>'}
+    ${cautions.length ? `<ul class="mt-3 max-w-5xl space-y-1 text-sm">${cautions.map((c) => `<li class="gl-weak-text">⚠︎ ${esc(c)}</li>`).join('')}</ul>` : ''}
+    <div class="mt-4 flex flex-wrap gap-2"><button type="button" class="gl-sheet-action btn btn-sm tap-44" data-botsim-copy>📋 คัดลอกคำตัดสิน + สิ่งที่ต้องแก้</button></div>`;
+}
+
+function answerBlock({ icon, title, heading, tone, items, limit = 5, extra = '' }) {
+  const shown = items.slice(0, limit);
+  return `<section class="gl-panel h-full p-4" aria-label="${esc(title)}" data-botsim-answer>
+    <p class="gl-eyebrow">${icon} ${esc(title)}</p>
+    <h3 class="font-display text-base font-semibold leading-snug ${tone}">${esc(heading)}</h3>
+    ${extra}
+    ${shown.length ? `<ol class="mt-2 space-y-2 text-sm leading-relaxed">${shown.map((item, i) => `<li class="flex gap-2"><span class="mt-0.5 shrink-0 font-semibold opacity-50">${i + 1}.</span><span class="min-w-0">${esc(item)}</span></li>`).join('')}</ol>` : ''}
+    ${items.length > limit ? `<p class="mt-2 text-xs opacity-60">+ อีก ${items.length - limit} ข้อ — กดคัดลอกคำตัดสินเพื่อดูครบ</p>` : ''}
+  </section>`;
+}
+
+function renderAnswers(verdict) {
+  const box = $('#botsim-answers');
+  if (!verdict) { box.innerHTML = ''; return; }
+  const { keeper, leak } = verdict;
+  const bars = leak.bars.map((bar) => `<li class="grid grid-cols-[minmax(0,11rem)_minmax(0,1fr)_4.5rem] items-center gap-2 text-sm">
+      <span class="leading-snug ${bar.stop ? 'font-semibold' : ''}">${esc(bar.label)}</span>
+      <span class="gl-bar ${bar.stop ? '[&>span]:!bg-[var(--color-brand-coral)]' : ''}" role="img" aria-label="${esc(bar.label)} ${bar.n} จาก ${leak.buyers ?? '–'} คน"><span style="width:${bar.pct ?? 0}%"></span></span>
+      <span class="text-right tabular-nums">${bar.n}<span class="text-xs opacity-60">/${leak.buyers ?? '–'}</span></span></li>`).join('');
+  box.innerHTML = [
+    answerBlock({ icon: '✅', title: 'ใช้เวอร์ชันไหน', heading: `ใช้ ${keeper.label}`, tone: 'gl-scale', items: verdict.pick,
+      extra: keeper.note ? `<p class="mt-1 text-xs opacity-70">${esc(keeper.note)}</p>` : '' }),
+    answerBlock({ icon: '🛠', title: 'แก้อะไรต่อ', heading: verdict.fix.length ? `${verdict.fix.length} ข้อ ก่อนทำเวอร์ชันถัดไป` : 'ยังไม่มีข้อแนะนำ', tone: 'gl-iterate', items: verdict.fix }),
+    answerBlock({ icon: '⚠️', title: 'ลูกค้าหลุดตรงไหน', heading: leak.headline, tone: 'gl-kill', items: leak.segments,
+      extra: `<p class="mt-2 text-xs opacity-60">ของ ${esc(keeper.label)} · จากผู้ซื้อ ${leak.buyers ?? '–'} คน</p><ul class="mt-2 space-y-2" data-botsim-leak>${bars}</ul>${leak.segments.length ? '<p class="mt-3 text-xs font-semibold opacity-80">กลุ่มที่ชอบเวอร์ชันอื่นมากกว่า</p>' : ''}` }),
+  ].join('');
+}
+
+// Full literal class names so Tailwind sees them (a class assembled from a template string never gets generated).
+const VERSION_GRID = Object.freeze({
+  picks: 'md:grid-cols-[minmax(12rem,22rem)_minmax(8rem,1fr)_4.5rem_4.5rem_6rem]',
+  plain: 'md:grid-cols-[minmax(12rem,22rem)_minmax(8rem,1fr)_4.5rem_4.5rem]',
+});
+
+function renderVersions(verdict) {
+  const rows = versionRows(data.full, data.pickRun, verdict?.keeper.label ?? '');
+  const list = $('#botsim-versions');
+  if (!rows.length) { list.innerHTML = '<li class="text-sm opacity-70">ยังไม่มีรอบทดสอบแบบเต็ม</li>'; return; }
+  const picks = rows.some((row) => row.wins !== null);
+  const grid = picks ? VERSION_GRID.picks : VERSION_GRID.plain;
+  list.innerHTML = `<li class="hidden gap-x-3 px-2 text-xs opacity-60 md:grid ${grid}" aria-hidden="true">
+      <span>เวอร์ชัน</span><span>ได้เบอร์ (แถบยาวสุด = มากสุด)</span><span class="text-right">ได้เบอร์</span><span class="text-right">หลุด</span>${picks ? '<span class="text-right">ลูกค้าเลือก</span>' : ''}</li>
+    ${rows.map((row) => `<li class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 rounded-xl px-2 py-2 ${grid} ${row.keeper ? 'gl-card-active' : ''}" ${row.keeper ? 'aria-current="true"' : ''}>
+      <span class="min-w-0"><b class="text-sm">${esc(row.label)}</b>${row.keeper ? ' <span class="badge badge-sm gl-chip-scale border-0">ใช้ตัวนี้</span>' : ''}<span class="block truncate text-xs opacity-70" title="${esc(row.note)}">${esc(row.note || '—')}</span></span>
+      <span class="gl-bar col-span-2 md:col-span-1 md:col-start-2 md:row-start-1" role="img" aria-label="${esc(row.label)} ได้เบอร์ ${row.phones ?? 'ไม่มีข้อมูล'} จาก ${row.buyers ?? '–'} คน"><span style="width:${row.phonesWidth}%"></span></span>
+      <span class="col-start-2 row-start-1 text-right text-sm tabular-nums md:col-start-auto md:row-start-auto"><span class="md:hidden opacity-60">เบอร์ </span>${row.phones ?? '–'}<span class="text-xs opacity-60">/${row.buyers ?? '–'}</span></span>
+      <span class="hidden text-right text-sm tabular-nums md:block">${row.dropped ?? '–'}</span>
+      ${picks ? `<span class="hidden text-right text-sm tabular-nums md:block">${row.wins ?? '–'}</span>` : ''}
+      <span class="col-span-2 text-xs opacity-70 md:hidden">หลุดกลางทาง ${row.dropped ?? '–'} คน${picks ? ` · ลูกค้าจำลองเลือก ${row.wins ?? '–'} คน` : ''}</span>
+    </li>`).join('')}`;
+}
+
+// ---------- 01 overview (full matrix, folded) ----------
 function renderOverview() {
   const table = overviewTable(data.full);
   if (!table.columns.length) { $('#botsim-overview').innerHTML = '<p class="text-sm opacity-70">ยังไม่มีรอบทดสอบแบบเต็ม</p>'; return; }
@@ -127,7 +210,7 @@ const cellText = (row, key) => row.cells.find((cell) => cell.key === key)?.text 
 
 function renderPartial() {
   const rows = partialRows(data.partial);
-  $('#botsim-partial').innerHTML = rows.length ? `<h3 class="text-sm font-semibold">รอบทดลอง · persona 1 คน (ไม่นับในตารางรวม)</h3>
+  $('#botsim-partial').innerHTML = rows.length ? `<h3 class="text-sm font-semibold">รอบทดลอง · ลูกค้าจำลอง 1 คน (ไม่นับในตารางรวม)</h3>
     <ul class="mt-2 divide-y divide-base-300">${rows.map((row) => `<li class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 py-2 text-sm">
       <span><strong>${esc(row.label)}</strong> <span class="opacity-70">${esc(row.note || '—')}</span></span>
       <span class="text-xs opacity-70">${esc(dateTh(row.ranAt))} · ได้เบอร์ ${esc(cellText(row, 'gave_phone'))} · หลุด ${esc(cellText(row, 'dropped'))}</span></li>`).join('')}</ul>` : '';
@@ -137,13 +220,13 @@ function renderPartial() {
 function renderSheet() {
   const sheet = $('#botsim-sheet');
   if (!data.pickRun) {
-    sheet.innerHTML = '<p class="gl-eyebrow">สรุปจาก Codex</p><p class="mt-1 font-display text-lg font-semibold">ยังไม่มีผลการเลือก</p><p class="mt-1 text-sm opacity-80">ผลจะขึ้นเมื่อ jev เลือกเสร็จ และ Codex อธิบายเหตุผลเสร็จ</p>';
+    sheet.innerHTML = '<p class="gl-eyebrow">สรุปเหตุผลที่ลูกค้าจำลองเลือก</p><p class="mt-1 font-display text-lg font-semibold">ยังไม่มีผลการเลือก</p><p class="mt-1 text-sm opacity-80">ผลจะขึ้นเมื่อ AI ที่สวมบทลูกค้าเลือกแชทเสร็จ และอธิบายเหตุผลเสร็จ</p>';
     return;
   }
   const view = pickRunView(data.pickRun, pickLabels());
   const list = (items) => items.map((item) => `<li>${esc(item)}</li>`).join('');
-  sheet.innerHTML = `<p class="gl-eyebrow">สรุปจาก Codex</p>
-    <p class="mt-1 font-display text-lg font-semibold leading-snug">${esc(view.headline || 'Codex ยังไม่ได้เขียนหัวข้อสรุป')}</p>
+  sheet.innerHTML = `<p class="gl-eyebrow">สรุปเหตุผลที่ลูกค้าจำลองเลือก</p>
+    <p class="mt-1 font-display text-lg font-semibold leading-snug">${esc(view.headline || 'ยังไม่มีหัวข้อสรุป')}</p>
     <h3 class="gl-eyebrow mt-4">สิ่งที่เห็น</h3>
     <ul class="mt-1 list-disc space-y-1 pl-5 text-sm leading-relaxed">${list(view.findings) || '<li class="opacity-70">ยังไม่มี</li>'}</ul>
     <h3 class="gl-eyebrow mt-4">ขั้นต่อไป</h3>
@@ -156,12 +239,12 @@ function renderPickMeta() {
   const view = pickRunView(data.pickRun, pickLabels());
   const cell = (label, value) => `<div class="min-w-0"><dt class="gl-eyebrow">${esc(label)}</dt><dd class="break-words font-semibold">${value}</dd></div>`;
   box.innerHTML = `<dl class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
-    ${cell('ผู้เลือก (jev)', esc(view.pickerModel || '–'))}
-    ${cell('ผู้อธิบาย (Codex)', esc(view.reasonModel || '–'))}
+    ${cell('AI ที่สวมบทลูกค้า', esc(view.pickerModel || '–'))}
+    ${cell('AI ที่อธิบายเหตุผล', esc(view.reasonModel || '–'))}
     ${cell('เลือกเมื่อ', esc(dateTh(view.ranAt)))}
     ${cell('ค่าโมเดล', view.costUsd === null ? '–' : `$${fmt(view.costUsd, 2)}`)}
-    ${cell('Codex เห็นด้วยกับ jev', view.agreePct === null ? '–' : `${view.agreePct}%`)}
-    ${cell('จำนวนผู้เลือก', `${fmt(data.picks.length)} คน`)}</dl>`;
+    ${cell('ผู้อธิบายเห็นด้วยกับผู้เลือก', view.agreePct === null ? '–' : `${view.agreePct}%`)}
+    ${cell('ลูกค้าจำลองที่เลือก', `${fmt(data.picks.length)} คน`)}</dl>`;
 }
 
 function renderBars() {
@@ -171,17 +254,17 @@ function renderBars() {
   const width = (value, max) => (max > 0 ? Math.round((value / max) * 100) : 0);
   const winRows = view.wins.map((win) => `<li class="grid grid-cols-[6.5rem_minmax(0,1fr)_2.5rem] items-center gap-2 text-sm">
       <span class="truncate">${esc(win.label)}</span>
-      <span class="gl-bar" role="img" aria-label="${esc(win.label)} ชนะ ${win.n} คน"><span style="width:${width(win.n, view.maxWins)}%"></span></span>
+      <span class="gl-bar" role="img" aria-label="${esc(win.label)} ลูกค้าจำลองเลือก ${win.n} คน"><span style="width:${width(win.n, view.maxWins)}%"></span></span>
       <span class="text-right tabular-nums">${fmt(win.n)}</span></li>`).join('');
   const scoreRows = view.scores.map((item) => `<li class="grid grid-cols-[6.5rem_minmax(0,1fr)_3rem] items-center gap-2 text-sm">
       <span class="truncate">${esc(item.label)}</span>
       <span class="gl-bar" role="img" aria-label="${esc(item.label)} คะแนนเฉลี่ย ${item.score === null ? 'ไม่มีข้อมูล' : fmt(item.score, 2)} จาก 4"><span style="width:${item.pct ?? 0}%"></span></span>
       <span class="text-right tabular-nums">${item.score === null ? '–' : `${fmt(item.score, 2)}/4`}</span></li>`).join('');
-  const segments = view.bySegment.length ? `<div class="overflow-x-auto"><table class="table table-xs mt-2"><caption class="text-left text-xs font-semibold opacity-80">ชนะแยกตามกลุ่ม</caption>
+  const segments = view.bySegment.length ? `<div class="overflow-x-auto"><table class="table table-xs mt-2"><caption class="text-left text-xs font-semibold opacity-80">เลือกแยกตามกลุ่มลูกค้า</caption>
       <thead><tr><th scope="col">กลุ่ม</th>${view.wins.map((win) => `<th scope="col" class="text-right">${esc(win.label)}</th>`).join('')}</tr></thead>
       <tbody>${view.bySegment.map((row) => `<tr><th scope="row" class="font-normal">${esc(row.label)}</th>${row.counts.map((count) => `<td class="text-right tabular-nums">${fmt(count)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : '';
-  box.innerHTML = `<div><p class="text-sm font-semibold">ชนะรอบละกี่คน <span class="text-xs font-normal opacity-60">(รวม ${fmt(view.totalWins)} คน)</span></p><ul class="mt-2 space-y-1.5">${winRows}</ul></div>
-    <div><p class="text-sm font-semibold">คะแนนเฉลี่ยของแต่ละรอบ <span class="text-xs font-normal opacity-60">(0–4)</span></p><ul class="mt-2 space-y-1.5">${scoreRows}</ul></div>
+  box.innerHTML = `<div><p class="text-sm font-semibold">แต่ละเวอร์ชันมีลูกค้าจำลองเลือกกี่คน <span class="text-xs font-normal opacity-60">(รวม ${fmt(view.totalWins)} คน)</span></p><ul class="mt-2 space-y-1.5">${winRows}</ul></div>
+    <div><p class="text-sm font-semibold">คะแนนเฉลี่ยของแต่ละเวอร์ชัน <span class="text-xs font-normal opacity-60">(0–4)</span></p><ul class="mt-2 space-y-1.5">${scoreRows}</ul></div>
     ${segments}`;
 }
 
@@ -195,13 +278,13 @@ function renderSegmentOptions() {
 }
 
 function agreeBadge(view) {
-  return view.agree === false ? `<span class="badge badge-sm gl-chip-iterate border-0">Codex เลือก ${esc(view.codexPick ?? 'ต่างออกไป')}</span>` : '';
+  return view.agree === false ? `<span class="badge badge-sm gl-chip-iterate border-0">ผู้อธิบายว่า ${esc(view.codexPick ?? 'แชทอื่น')} ดีกว่า</span>` : '';
 }
 
 function renderPicks() {
   const list = $('#botsim-picks');
   if (!data.picks.length) {
-    list.innerHTML = '<li class="py-4 text-sm"><p class="font-semibold">ยังไม่มีผลการเลือก</p><p class="mt-1 opacity-70">ผลรายคนจะขึ้นเมื่อ jev เลือกเสร็จ</p></li>';
+    list.innerHTML = '<li class="py-4 text-sm"><p class="font-semibold">ยังไม่มีผลการเลือก</p><p class="mt-1 opacity-70">ผลรายคนจะขึ้นเมื่อลูกค้าจำลองเลือกเสร็จ</p></li>';
     return;
   }
   const labels = pickLabels();
@@ -213,7 +296,7 @@ function renderPicks() {
         <span class="badge badge-sm ${SEGMENT_CHIP[view.segment] ?? 'gl-chip-draft'} border-0">${esc(view.segmentThai)}</span>
         <span class="text-xs">เลือก <strong>${esc(view.chosen ?? '–')}</strong>${view.chosenPct === null ? '' : ` ${view.chosenPct}%`}</span>${agreeBadge(view)}</span>
       <span class="line-clamp-2 text-xs opacity-75">${esc(view.why || '—')}</span></button></li>`;
-  }).join('') || '<li class="py-4 text-sm opacity-70">ไม่มี persona ในกลุ่มนี้</li>';
+  }).join('') || '<li class="py-4 text-sm opacity-70">ไม่มีลูกค้าจำลองในกลุ่มนี้</li>';
 }
 
 async function openPick(personaId, trigger) {
@@ -236,7 +319,7 @@ function dialogHtml(view, labels) {
   const reasons = [['เหตุผล', view.why], ['เทียบกับแชทที่แย่สุด', view.vsWorst], ['บทเรียน', view.lesson]]
     .filter(([, body]) => body)
     .map(([heading, body]) => `<div><p class="gl-eyebrow">${heading}</p><p class="mt-1 text-sm leading-relaxed">${esc(body)}</p></div>`).join('')
-    || '<p class="text-sm opacity-70">Codex ยังไม่ได้อธิบายรายคนนี้</p>';
+    || '<p class="text-sm opacity-70">ยังไม่มีคำอธิบายของคนนี้</p>';
   const strip = view.scores.map((item) => `<li class="grid grid-cols-[7.5rem_minmax(0,1fr)_3.5rem] items-center gap-2 text-xs">
       <span class="truncate ${item.label === view.chosen ? 'font-semibold' : ''}">${esc(item.label)}${item.label === view.chosen ? ' (เลือก)' : ''}</span>
       <span class="gl-bar" role="img" aria-label="${esc(item.label)} ${item.score === null ? 'ไม่มีคะแนน' : `${fmt(item.score, 1)} จาก 4`}"><span style="width:${item.pct ?? 0}%"></span></span>
@@ -261,7 +344,7 @@ function sideShell(side, title, run, labels) {
         <label class="form-control"><span class="label-text text-xs">รอบ</span>
           <select class="select select-bordered select-sm tap-44" data-botsim-side-run aria-label="รอบของ${title}">${options}</select></label>
       </div>
-      <div data-botsim-side-body class="mt-3 text-sm opacity-70">${run ? 'กำลังโหลดบทสนทนา…' : 'Codex ไม่ได้ระบุแชทที่แย่สุดของ persona นี้ เลือกรอบเองได้'}</div>
+      <div data-botsim-side-body class="mt-3 text-sm opacity-70">${run ? 'กำลังโหลดบทสนทนา…' : 'ยังไม่ได้ระบุแชทที่แย่สุดของคนนี้ เลือกรอบเองได้'}</div>
     </section>`;
 }
 
@@ -277,7 +360,7 @@ async function loadSide(side) {
   try {
     const row = await convo(run, persona);
     if (side.dataset.seq !== seq || dialogPersona !== persona) return;
-    body.innerHTML = row ? convoHtml(row) : `<p>รอบ ${esc(run)} ไม่มีบทสนทนาของ persona นี้</p>`;
+    body.innerHTML = row ? convoHtml(row) : `<p>รอบ ${esc(run)} ไม่มีบทสนทนาของคนนี้</p>`;
   } catch (error) {
     if (side.dataset.seq === seq) body.innerHTML = `<p>โหลดบทสนทนาไม่ได้: ${esc(error.message)}</p>`;
   }
@@ -308,7 +391,7 @@ async function loadViewerPersonas() {
     select.value = rows.some((row) => row.persona_id === keep) ? keep : (rows[0]?.persona_id ?? '');
   } catch (error) {
     select.innerHTML = '';
-    $('#botsim-transcript').innerHTML = `<p class="text-sm">โหลดรายชื่อ persona ไม่ได้: ${esc(error.message)}</p>`;
+    $('#botsim-transcript').innerHTML = `<p class="text-sm">โหลดรายชื่อลูกค้าจำลองไม่ได้: ${esc(error.message)}</p>`;
     return;
   } finally {
     select.disabled = false;

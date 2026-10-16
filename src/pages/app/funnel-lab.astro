@@ -343,8 +343,8 @@ import AppNav from '../../components/app/AppNav.astro';
       <section id="view-botsim" data-screen="botsim" aria-labelledby="botsim-title" class="space-y-4" hidden>
         <div class="flex flex-wrap items-end justify-between gap-3">
           <div class="min-w-0">
-            <p class="gl-eyebrow">ทดสอบบอท · LINE OA × persona จำลอง</p>
-            <h1 id="botsim-title" class="font-display text-xl font-semibold sm:text-2xl">บอท LINE คุยกับ persona แล้วไปถึงไหน</h1>
+            <p class="gl-eyebrow">ทดสอบบอท · LINE OA × ลูกค้าจำลอง</p>
+            <h1 id="botsim-title" class="font-display text-xl font-semibold sm:text-2xl">บอท LINE เวอร์ชันไหนได้เบอร์ลูกค้ามากสุด</h1>
             <p class="text-sm opacity-70" id="botsim-meta" aria-live="polite">กำลังโหลด…</p>
           </div>
           <div class="flex flex-wrap gap-2">
@@ -352,20 +352,29 @@ import AppNav from '../../components/app/AppNav.astro';
           </div>
         </div>
 
+        <!-- ใบตัดสิน (2026-10-17): คำตอบก่อน ตัวเลขทีหลัง — ใช้เวอร์ชันไหน / แก้อะไรต่อ / ลูกค้าหลุดตรงไหน · logic: botVerdict() ใน botsim.mjs -->
+        <section id="botsim-verdict" class="gl-sheet rounded-2xl p-5 sm:p-6" aria-label="คำตัดสิน"></section>
+        <div id="botsim-answers" class="grid items-start gap-3 md:grid-cols-2 xl:grid-cols-3"></div>
+
         <section class="gl-panel p-4" aria-labelledby="botsim-overview-title">
-          <p class="gl-eyebrow"><span class="gl-step">01</span>ภาพรวมทุกรอบ</p>
-          <h2 id="botsim-overview-title" class="font-display font-semibold">แต่ละเวอร์ชันของบอทไปถึงไหนกับ persona ผู้ซื้อ</h2>
-          <p class="mt-1 text-xs opacity-60">นับเฉพาะ persona ผู้ซื้อ (ไม่รวมกลุ่มไม่ใช่ผู้ซื้อ) · ตัวหารคือจำนวนผู้ซื้อ · ค่าที่ดีคือมากกว่า ยกเว้น "หลุดกลางทาง" และ "แนะนำตัวซ้ำ" ที่น้อยกว่าดี · "ขอดูก่อน" ไม่ตัดสินดีสุด (แลกกับได้เบอร์และหลุด)</p>
-          <div id="botsim-overview" class="mt-3"></div>
-          <div id="botsim-partial" class="mt-4"></div>
+          <p class="gl-eyebrow"><span class="gl-step">01</span>ทุกเวอร์ชันเทียบกัน</p>
+          <h2 id="botsim-overview-title" class="font-display font-semibold">บอทแต่ละเวอร์ชันได้เบอร์กี่คน หลุดกี่คน</h2>
+          <p class="mt-1 text-xs opacity-60">นับเฉพาะลูกค้าจำลองที่เป็นผู้ซื้อ · เรียงจากเวอร์ชันแรกไปล่าสุด · ต่างกันไม่เกิน 2 คนอาจเป็นความบังเอิญ</p>
+          <ol id="botsim-versions" class="mt-3 space-y-1" aria-label="บอทแต่ละเวอร์ชัน"></ol>
+          <details class="mt-4 rounded-xl border border-base-300 p-3">
+            <summary class="cursor-pointer select-none text-sm font-semibold tap-44">ดูตัวเลขครบ 11 ข้อ ทุกเวอร์ชัน</summary>
+            <p class="mt-2 text-xs opacity-60">ช่องบนคือจำนวนคน / จำนวนผู้ซื้อทั้งหมด · มากกว่าดี ยกเว้น "หลุดกลางทาง" และ "แนะนำตัวซ้ำ" ที่น้อยกว่าดี · "ขอดูก่อน" ไม่ติดป้ายดีสุด (มากขึ้นไม่ได้แปลว่าดีหรือแย่)</p>
+            <div id="botsim-overview" class="mt-3"></div>
+            <div id="botsim-partial" class="mt-4"></div>
+          </details>
         </section>
 
         <section class="gl-panel p-4" aria-labelledby="botsim-pick-title">
-          <p class="gl-eyebrow"><span class="gl-step">02</span>persona เลือกคุยกับแบบไหน</p>
-          <h2 id="botsim-pick-title" class="font-display font-semibold">persona อยากคุยต่อกับบอทเวอร์ชันไหน</h2>
-          <p class="mt-1 text-xs opacity-70">jev เป็นคนเลือกอย่างเดียว · Codex เป็นคนอธิบายเหตุผล · ทั้งสองเป็นโมเดล ไม่ใช่ลูกค้าจริง · jev อ่านทั้งแชทรวมคำตอบของลูกค้าจำลอง จึงเอียงไปทางแชทที่ลูกค้าจำลองตอบรับดีอยู่แล้ว</p>
+          <p class="gl-eyebrow"><span class="gl-step">02</span>ลูกค้าจำลองเลือกคุยกับแบบไหน</p>
+          <h2 id="botsim-pick-title" class="font-display font-semibold">ลูกค้าจำลองอยากคุยต่อกับบอทเวอร์ชันไหน</h2>
+          <p class="mt-1 text-xs opacity-70">AI ตัวหนึ่งสวมบทลูกค้าแต่ละคนแล้วเลือกแชทที่อยากคุยต่อ · อีกตัวอ่านแล้วอธิบายเหตุผล · ทั้งคู่ไม่ใช่ลูกค้าจริง และผู้เลือกเห็นคำตอบของลูกค้าจำลองด้วย จึงเอียงไปทางแชทที่ลูกค้าตอบรับดีอยู่แล้ว</p>
           <div class="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
-            <div id="botsim-sheet" class="gl-sheet self-start rounded-2xl p-5"></div>
+            <div id="botsim-sheet" class="self-start rounded-2xl border border-base-300 bg-base-100 p-5"></div>
             <div class="min-w-0 space-y-5">
               <div id="botsim-pick-meta"></div>
               <div id="botsim-bars" class="space-y-5"></div>
@@ -375,20 +384,20 @@ import AppNav from '../../components/app/AppNav.astro';
 
         <section class="gl-panel p-4" aria-labelledby="botsim-people-title">
           <div class="flex flex-wrap items-end justify-between gap-3">
-            <div><p class="gl-eyebrow"><span class="gl-step">03</span>รายคน</p><h2 id="botsim-people-title" class="font-display font-semibold">persona ทีละคน เลือกอะไร และเพราะอะไร</h2></div>
+            <div><p class="gl-eyebrow"><span class="gl-step">03</span>รายคน</p><h2 id="botsim-people-title" class="font-display font-semibold">ลูกค้าจำลองทีละคน เลือกอะไร และเพราะอะไร</h2></div>
             <label class="form-control"><span class="label-text text-xs">กลุ่ม</span>
               <select id="botsim-segment" class="select select-bordered select-sm tap-44" aria-label="กรองตามกลุ่ม"></select></label>
           </div>
-          <ul id="botsim-picks" class="mt-3 divide-y divide-base-300" aria-label="persona และแชทที่เลือก"></ul>
+          <ul id="botsim-picks" class="mt-3 divide-y divide-base-300" aria-label="ลูกค้าจำลองและแชทที่เลือก"></ul>
         </section>
 
         <section class="gl-panel p-4" aria-labelledby="botsim-viewer-title">
           <p class="gl-eyebrow"><span class="gl-step">04</span>ดูบทสนทนาทั้งหมด</p>
-          <h2 id="botsim-viewer-title" class="font-display font-semibold">เปิดบทสนทนาของ persona ในรอบไหนก็ได้</h2>
+          <h2 id="botsim-viewer-title" class="font-display font-semibold">เปิดบทสนทนาของลูกค้าจำลองคนไหน รอบไหนก็ได้</h2>
           <div class="mt-3 flex flex-wrap items-end gap-3">
             <label class="form-control"><span class="label-text text-xs">รอบ</span>
               <select id="botsim-view-run" class="select select-bordered select-sm tap-44 max-w-full"></select></label>
-            <label class="form-control min-w-0"><span class="label-text text-xs">persona</span>
+            <label class="form-control min-w-0"><span class="label-text text-xs">ลูกค้าจำลอง</span>
               <select id="botsim-view-persona" class="select select-bordered select-sm tap-44 max-w-full"></select></label>
           </div>
           <div id="botsim-transcript" class="mt-4"></div>
@@ -397,7 +406,7 @@ import AppNav from '../../components/app/AppNav.astro';
         <dialog id="botsim-dialog" class="modal" aria-labelledby="botsim-dialog-title">
           <div class="modal-box max-w-5xl">
             <div class="flex items-start justify-between gap-3">
-              <h2 id="botsim-dialog-title" class="font-display text-lg font-semibold">persona</h2>
+              <h2 id="botsim-dialog-title" class="font-display text-lg font-semibold">ลูกค้าจำลอง</h2>
               <form method="dialog"><button class="btn btn-sm btn-ghost tap-44" aria-label="ปิด">✕</button></form>
             </div>
             <div id="botsim-dialog-body" class="mt-3 space-y-4"></div>

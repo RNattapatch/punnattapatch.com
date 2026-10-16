@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 import {
-  OVERVIEW_ROWS, clampScore, discoveryChecklist, filterPicks, interleaveTranscript, latestPickRun, leadFacts, orderLabels, outcomeLabel,
+  NOISE_PEOPLE, OVERVIEW_ROWS, botVerdict, botsimBrief, clampScore, countChange, versionRows, discoveryChecklist, filterPicks, interleaveTranscript, latestPickRun, leadFacts, orderLabels, outcomeLabel,
   overviewTable, parseThoughtTurn, partialRows, pct, pickRunView, pickView, probPct, resultTone, runOptions, segmentCounts, splitRuns,
 } from '../../src/scripts/growth-lab/botsim.mjs';
 import { FULL_LABELS, makeFixture } from './botsim-fixture.mjs';
@@ -308,4 +308,103 @@ test("runs follow summary.order (bot version) before ran_at", () => {
   const { full, partial } = splitRuns(runs);
   assert.deepEqual(full.map((r) => r.label), ["base", "base2", "new"]);
   assert.deepEqual(partial.map((r) => r.label), ["trial"]);
+});
+
+// ---------- ใบตัดสิน ----------
+const vRun = (label, order, over = {}) => ({ label, ran_at: '2026-10-12T09:00:00Z', version_note: `note ${label}`, partial: false,
+  summary: { order, buyers: 34, gave_phone: 10, phone_and_time: 9, deferred: 19, dropped: 4, discovery_full: 20, intro_repeat: 2, ...over } });
+const vRuns = () => splitRuns([
+  vRun('base', 0, { gave_phone: 10, dropped: 4, discovery_full: 10, intro_repeat: 35 }),
+  vRun('base2', 1, { gave_phone: 9, dropped: 3, discovery_full: 10, intro_repeat: 33 }),
+  vRun('new', 2, { gave_phone: 10, discovery_full: 26 }),
+  vRun('new4b', 3, { gave_phone: 8, dropped: 4, phone_and_time: 7 }),
+  vRun('final', 4, { gave_phone: 10, dropped: 2, discovery_full: 22 }),
+]).full;
+const vPick = (over = {}) => ({ summary: {
+  wins: { base: 4, base2: 2, new: 7, new4b: 4, final: 10 },
+  codex: { next: ['  ส่งสรุปหนึ่งหน้าก่อนขอเบอร์  ', ''] },
+  by_segment: { buy: { base: 1, base2: 1, new: 3, new4b: 1, final: 1 }, near: { base: 2, new: 1, final: 5 }, off: { new4b: 1 } },
+  ...over } });
+
+test('verdict: the version the customers picked most is kept, in people not percentages', () => {
+  const v = botVerdict(vRuns(), vPick());
+  assert.equal(v.basis, 'picks');
+  assert.equal(v.keeper.label, 'final');
+  assert.equal(v.headline, 'ใช้ final ต่อ — ลูกค้าจำลองเลือกคุยต่อมากสุด 10 จาก 27 คน · ได้เบอร์ 10 จาก 34 คน');
+  assert.doesNotMatch(v.headline + v.pick.join(' ') + v.leak.headline, /%|persona|jev|Codex|ตัวหาร/u, 'owner words only');
+  assert.deepEqual(v.margin, { label: 'new', wins: 7, lead: 3 });
+  assert.match(v.pick[0], /อันดับ 2 คือ new 7 คน/);
+  assert.match(v.pick[2], /หลุดกลางทาง 2 คน \(น้อยสุด\)/);
+});
+
+test('verdict: compares with the previous version and the first one, and flags gaps within the noise', () => {
+  const v = botVerdict(vRuns(), vPick());
+  assert.equal(v.vsPrev.label, 'new4b');
+  const phones = v.vsPrev.changes.find((c) => c.key === 'gave_phone');
+  assert.deepEqual([phones.from, phones.to, phones.delta, phones.noise, phones.tone], [8, 10, 2, true, 'draft']);
+  assert.equal(v.vsBase.label, 'base');
+  assert.equal(v.vsBase.changes.find((c) => c.key === 'discovery_full').tone, 'scale', '10→22 is a real gain');
+  assert.ok(v.cautions.some((c) => c.includes('ไม่เกิน 2 คนทุกข้อ')), 'every change vs new4b is ≤2 people');
+  assert.ok(!v.cautions.some((c) => c.includes('นำอันดับ 2')), 'a 3-person lead is not flagged');
+});
+
+test('count change: fewer drops is good, more is bad, and ≤ NOISE_PEOPLE stays neutral', () => {
+  const a = { summary: { dropped: 2, gave_phone: 15 } };
+  const b = { summary: { dropped: 9, gave_phone: 10 } };
+  assert.equal(countChange('dropped', a, b).tone, 'scale');
+  assert.equal(countChange('dropped', b, a).tone, 'kill');
+  assert.equal(countChange('gave_phone', a, b).tone, 'scale');
+  assert.equal(countChange('gave_phone', { summary: { gave_phone: 10 + NOISE_PEOPLE } }, b).tone, 'draft');
+  assert.equal(countChange('gave_phone', a, { summary: {} }), null);
+});
+
+test('verdict: what to fix = cleaned explainer steps, then counts another version clearly does better', () => {
+  const v = botVerdict(vRuns(), vPick());
+  assert.equal(v.fix[0], 'ส่งสรุปหนึ่งหน้าก่อนขอเบอร์');
+  assert.ok(v.fix.includes('รู้จักธุรกิจครบ 4 เรื่อง: new ทำได้ 26 คน · final ได้ 22 คน'), v.fix.join(' | '));
+  assert.ok(!v.fix.some((f) => f.startsWith('ได้เบอร์')), 'no one beats final on phones by more than the noise');
+});
+
+test('verdict: where customers stop — the biggest stop, and buyer groups that liked another version (never ไม่ใช่ผู้ซื้อ)', () => {
+  const v = botVerdict(vRuns(), vPick());
+  assert.equal(v.leak.headline, 'ติดที่ "ขอดูก่อน ยังไม่ให้เบอร์" มากสุด — 19 จาก 34 คน');
+  assert.deepEqual(v.leak.bars.map((b) => [b.key, b.n, b.pct]), [['gave_phone', 10, 29], ['deferred', 19, 56], ['dropped', 2, 6], ['discovery_full', 22, 65]]);
+  assert.deepEqual(v.leak.segments, ['ลูกค้าที่จ่ายแล้ว (7 คน): ชอบ new 3 คน · final ได้แค่ 1 คน']);
+});
+
+test('verdict without picks: most phones, then fewest drops, then the newer version; a thin lead is flagged', () => {
+  const runs = splitRuns([vRun('a', 0, { gave_phone: 11, dropped: 5 }), vRun('b', 1, { gave_phone: 11, dropped: 2 }), vRun('c', 2, { gave_phone: 11, dropped: 2 })]).full;
+  const v = botVerdict(runs, null);
+  assert.equal(v.basis, 'numbers');
+  assert.equal(v.keeper.label, 'c', 'tie on phones and drops goes to the newer version');
+  assert.match(v.headline, /^ใช้ c ต่อ — ได้เบอร์มากสุด 11 จาก 34 คน · หลุดกลางทาง 2 คน$/u);
+  assert.ok(v.cautions.some((c) => c.includes('นำอันดับ 2 (b) แค่ 0 คน')));
+  assert.deepEqual(v.leak.segments, []);
+  assert.equal(botVerdict([], null), null);
+});
+
+test('verdict: a lone version has nothing to compare; a version with no drops says so', () => {
+  const v = botVerdict(splitRuns([vRun('only', 0, { dropped: 0, deferred: 0 })]).full, null);
+  assert.equal(v.vsPrev, null);
+  assert.equal(v.vsBase, null);
+  assert.equal(v.margin, null);
+  assert.equal(v.leak.headline, 'ไม่มีลูกค้าหลุดในรอบนี้');
+});
+
+test('verdict on the fixture runs and the brief to paste', () => {
+  const { runs, pickRuns } = makeFixture();
+  const v = botVerdict(splitRuns(runs).full, pickRuns[0]);
+  assert.ok(FULL_LABELS.includes(v.keeper.label));
+  const brief = botsimBrief(v);
+  assert.ok(brief.startsWith('Funnel Lab · ทดสอบบอท LINE'));
+  assert.ok(brief.includes(v.headline) && brief.includes('ลูกค้าหลุดตรงไหน:'));
+  assert.equal(botsimBrief(null), '');
+});
+
+test('version rows: one per full run, phones bar relative to the best, keeper marked', () => {
+  const rows = versionRows(vRuns(), vPick(), 'final');
+  assert.deepEqual(rows.map((r) => r.label), ['base', 'base2', 'new', 'new4b', 'final']);
+  assert.deepEqual(rows.find((r) => r.label === 'new4b'), { label: 'new4b', note: 'note new4b', keeper: false, buyers: 34, phones: 8, phonesWidth: 80, dropped: 4, wins: 4 });
+  assert.equal(rows.filter((r) => r.keeper).length, 1);
+  assert.equal(versionRows(vRuns(), null, '')[0].wins, null);
 });
