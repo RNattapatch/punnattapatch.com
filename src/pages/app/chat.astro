@@ -38,7 +38,7 @@ import AppNav from '../../components/app/AppNav.astro';
       <button id="chat-refresh" class="btn btn-ghost btn-sm tap-44" aria-label="รีเฟรช Chat Center" title="รีเฟรช">⟳</button>
     </AppNav>
 
-    <main class="mx-auto max-w-7xl space-y-4 px-4 py-4">
+    <main class="mx-auto max-w-7xl 3xl:max-w-none space-y-4 px-4 py-4">
       <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 class="font-display text-xl font-bold">💬 Chat Center</h1>
@@ -335,7 +335,7 @@ import AppNav from '../../components/app/AppNav.astro';
           </div>
           <div class="flex gap-2"><button class="btn btn-sm tap-44" data-sync-all>ขอดึงตัวเลขทั้งหมด</button><button class="btn btn-primary btn-sm tap-44" data-add-asset>+ เพิ่มชิ้นงาน</button></div>
         </div>
-        ${rows.length ? `<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">${rows.map((row: AssetRow) => {
+        ${rows.length ? `<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 3xl:grid-cols-5">${rows.map((row: AssetRow) => {
           const m = row.metrics || {};
           const stale = m.as_of ? '' : ' (ยังไม่ระบุวันที่)';
           return `<article class="rounded-2xl border border-base-300 bg-base-200 p-3 ${row.status === 'active' ? '' : 'opacity-60'}">

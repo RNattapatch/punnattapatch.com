@@ -17,7 +17,7 @@ import AppNav from '../../components/app/AppNav.astro';
   <div id="war-room-app" class="hidden min-h-dvh bg-base-100">
     <AppNav app="content" />
 
-    <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 pt-3">
+    <div class="mx-auto flex max-w-7xl 3xl:max-w-none items-center justify-between gap-3 px-4 pt-3">
       <p id="wr-date" class="text-sm opacity-60"></p>
       <div role="tablist" aria-label="มุมมอง" class="join rounded-full border border-base-300 p-0.5">
         <button id="wr-view-board" role="tab" aria-selected="true" class="join-item btn btn-sm rounded-full border-0 text-white tap-44" style="background-color:var(--color-brand-navy);">🗂 Board</button>
@@ -27,7 +27,7 @@ import AppNav from '../../components/app/AppNav.astro';
       </div>
     </div>
 
-    <div class="mx-auto max-w-7xl px-4 py-4 space-y-4">
+    <div class="mx-auto max-w-7xl 3xl:max-w-none px-4 py-4 space-y-4">
       <!-- Pipeline stat pills -->
       <section aria-label="สถานะการผลิต" class="-mx-4 overflow-x-auto px-4">
         <div id="wr-stats" class="flex min-w-max gap-2 sm:grid sm:min-w-0 sm:grid-cols-4"></div>
@@ -491,7 +491,7 @@ import AppNav from '../../components/app/AppNav.astro';
     }
 
     function column(key: string, icon: string, label: string, count: number, cardsHtml: string, dropStatus?: string): string {
-      return `<section data-col="${dropStatus ?? ''}" data-colkey="${key}" class="wr-col flex w-[78vw] max-w-[300px] shrink-0 snap-start flex-col rounded-2xl border border-base-300 bg-base-200/60 sm:w-72">
+      return `<section data-col="${dropStatus ?? ''}" data-colkey="${key}" class="wr-col flex w-[78vw] max-w-[300px] shrink-0 snap-start flex-col rounded-2xl border border-base-300 bg-base-200/60 sm:w-72 3xl:w-0 3xl:min-w-72 3xl:max-w-none 3xl:grow">
         <header class="flex items-center justify-between gap-2 px-3 py-2.5">
           <span class="flex items-center gap-1.5 font-display text-sm font-bold"><span aria-hidden="true">${icon}</span> ${label}</span>
           <span class="badge badge-sm tabular-nums">${count}</span>

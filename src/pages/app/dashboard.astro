@@ -41,7 +41,7 @@ import Toast from '../../components/dashboard/Toast.astro';
           <CrmActions />
         </AppNav>
 
-        <main class="flex-1 p-4 lg:p-6 max-w-7xl w-full mx-auto space-y-6 pb-32 lg:pb-8">
+        <main class="flex-1 p-4 lg:p-6 max-w-7xl 3xl:max-w-none w-full mx-auto space-y-6 pb-32 lg:pb-8">
           <TabBar />
 
           <!-- Hero banner (command center) -->
@@ -66,11 +66,9 @@ import Toast from '../../components/dashboard/Toast.astro';
             <LeadGlanceBanner />
 
             <!-- Charts row -->
-            <section class="grid gap-3 md:grid-cols-2 mb-4">
+            <section class="grid gap-3 md:grid-cols-2 3xl:grid-cols-4 mb-4">
               <PipelineDonut />
               <IndustryBar />
-            </section>
-            <section class="grid gap-3 md:grid-cols-2 mb-4">
               <SalesTrend />
               <SourceDonut />
             </section>

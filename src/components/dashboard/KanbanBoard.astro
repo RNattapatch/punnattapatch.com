@@ -7,7 +7,7 @@
   </div>
 
   <div class="overflow-x-auto pb-2 -mx-3 px-3">
-    <div id="kanban-board" class="flex gap-3 min-w-max">
+    <div id="kanban-board" class="flex gap-3 min-w-max 3xl:min-w-0">
     </div>
   </div>
 </section>
@@ -129,7 +129,7 @@
     board.replaceChildren();
     STAGES.forEach((stage) => {
       const col = document.createElement('div');
-      col.className = 'kb-col w-56 bg-base-200 rounded-2xl p-3 flex flex-col gap-2 border border-base-300 transition-shadow';
+      col.className = 'kb-col w-56 3xl:w-0 3xl:min-w-56 3xl:grow bg-base-200 rounded-2xl p-3 flex flex-col gap-2 border border-base-300 transition-shadow';
       col.dataset.stage = stage.key;
 
       const header = document.createElement('div');

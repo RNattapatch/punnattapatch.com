@@ -17,7 +17,7 @@ import AppNav from '../../components/app/AppNav.astro';
   <div id="audience-app" class="hidden min-h-dvh bg-base-100">
     <AppNav app="audience" />
 
-    <div class="mx-auto max-w-7xl space-y-4 px-4 py-4">
+    <div class="mx-auto max-w-7xl 3xl:max-w-none space-y-4 px-4 py-4">
       <p class="text-sm opacity-60">คนที่หยิบของฟรี — ยังไม่ใช่ lead · ในกองนี้มีใครที่ควรทักจริงบ้าง</p>
 
       <!-- KPI — วัดว่าของฟรี "ทำงาน" ไหม ไม่ใช่แค่มีคนเล่นเยอะ -->
@@ -80,7 +80,7 @@ import AppNav from '../../components/app/AppNav.astro';
             <h2 class="font-display font-bold">🏢 บริษัทที่มีคนหยิบหลายคน</h2>
             <p class="text-xs opacity-60">ทั้งออฟฟิศส่งต่อกันเล่น = บริษัทนั้นกำลังสนใจ — มองทีละคนจะไม่เห็น</p>
           </div>
-          <div id="au-companies" class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3"></div>
+          <div id="au-companies" class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 3xl:grid-cols-5"></div>
         </div>
       </section>
 

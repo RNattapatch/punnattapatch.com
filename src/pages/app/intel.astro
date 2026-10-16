@@ -18,7 +18,7 @@ import AppNav from '../../components/app/AppNav.astro';
       <button id="nr-refresh" class="btn btn-ghost btn-sm tap-44" aria-label="รีเฟรช">⟳</button>
     </AppNav>
 
-    <main class="mx-auto max-w-7xl px-4 pb-24 pt-4">
+    <main class="mx-auto max-w-7xl 3xl:max-w-none px-4 pb-24 pt-4">
       <div class="mb-4 flex flex-wrap items-center gap-2">
         <div role="tablist" class="tabs tabs-box grid grid-cols-3 bg-base-200">
           <a role="tab" class="tab tab-active" data-tab="targets">🎯 เป้าหมาย <span class="badge badge-ghost badge-sm ml-1" id="it-count">0</span></a>
@@ -90,7 +90,7 @@ import AppNav from '../../components/app/AppNav.astro';
           </select>
         </div>
         <p id="nr-status" class="mb-3 text-sm opacity-60" aria-live="polite">กำลังโหลดคลัง…</p>
-        <div id="nr-cards" class="grid grid-cols-2 gap-3 md:grid-cols-4"></div>
+        <div id="nr-cards" class="grid grid-cols-2 gap-3 md:grid-cols-4 3xl:grid-cols-6"></div>
       </section>
 
       <!-- ============ คิว ============ -->
@@ -457,7 +457,7 @@ import AppNav from '../../components/app/AppNav.astro';
           <div class="grid gap-1.5">${(t.triggers ?? []).length ? (t.triggers ?? []).map((x, i) => `<div class="grid grid-cols-[22px_1fr_auto] items-start gap-2 rounded-xl border ${x.fired_at ? 'border-warning bg-warning/10' : 'border-base-300 bg-base-200'} p-2.5 text-sm"><span>${x.fired_at ? '⚠️' : '○'}</span><span>${esc(x.text)}<div class="text-xs opacity-50">เช็คคำ: ${esc((x.keywords ?? []).join(', ') || '—')}</div></span>${x.fired_at ? `<button class="btn btn-ghost btn-xs" data-ack="${i}" title="รับทราบ — ปิดธง">ดังเมื่อ ${esc(fmtDate(x.fired_at))} · ปิดธง</button>` : '<span class="text-xs opacity-50">ยังไม่ดัง</span>'}</div>`).join('') : '<p class="text-sm opacity-60">ยังไม่ตั้ง — กด "แก้ไข" เขียน "ถ้าเขา… | คำที่เช็ค" ระบบจะเช็ครายงานใหม่ทุกชิ้นให้</p>'}</div></div>
         <div id="it-trend" class="hidden border-b border-base-300 p-4"></div>
         <div class="border-b border-base-300 p-4"><h3 class="mb-2 text-xs font-bold uppercase tracking-wide opacity-60">เส้นเวลา — รอบล่าสุด</h3><div id="it-timeline" class="grid gap-2"><p class="text-sm opacity-60">กำลังโหลด…</p></div></div>
-        <div class="p-4"><div class="mb-2 flex flex-wrap items-baseline gap-2"><h3 class="text-xs font-bold uppercase tracking-wide opacity-60">คอนเทนต์ที่สืบมาแล้ว</h3><span id="it-gallery-count" class="text-xs opacity-50"></span></div><div id="it-gallery-filter" class="mb-3 flex flex-wrap gap-1"></div><div id="it-gallery" class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"></div></div>`;
+        <div class="p-4"><div class="mb-2 flex flex-wrap items-baseline gap-2"><h3 class="text-xs font-bold uppercase tracking-wide opacity-60">คอนเทนต์ที่สืบมาแล้ว</h3><span id="it-gallery-count" class="text-xs opacity-50"></span></div><div id="it-gallery-filter" class="mb-3 flex flex-wrap gap-1"></div><div id="it-gallery" class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 3xl:grid-cols-6"></div></div>`;
       $('it-scout-now').addEventListener('click', () => openRunner(t, lanes));
       $('it-edit-open').addEventListener('click', () => openEdit(t));
       document.getElementById('it-back')?.addEventListener('click', () => $('it-wrap').classList.remove('showfile'));

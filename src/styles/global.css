@@ -104,6 +104,9 @@
    ============================================================================= */
 
 @theme {
+  /* Ultrawide / big monitors (≥1920px) — app pages drop the 1280px cap here */
+  --breakpoint-3xl: 120rem;
+
   --font-display: "Trirong", "Noto Serif", serif;
   --font-body: "Sarabun", "IBM Plex Sans Thai", sans-serif;
   /* Map Tailwind's font-serif / font-sans to match the mockup verbatim */
