@@ -610,7 +610,8 @@ test('C1 daily consulting is one day-rate service with six selectable topics, tw
   assert.match(scopeText, /ใช้ได้เมื่อ/, 'C1 topics must state a usable-when check');
   const boundaryText = await page.locator('[data-detail-block="boundary"]').innerText();
   assert.match(boundaryText, /ไม่เกิน 2 เรื่อง/, 'C1 must cap one day at two topics');
-  assert.match(boundaryText, /LINE ให้ 7 วัน/, 'C1 one-day format must state the 7-day LINE fix window');
+  assert.match(boundaryText, /ดูแลออนไลน์ผ่าน LINE ให้ 30 วัน/, 'C1 one-day format must state the 30-day online LINE support window');
+  assert.match(boundaryText, /ไม่รวมการออกแบบหรือวางระบบนอกเหนือจากที่ตกลงกัน/, 'C1 one-day support must exclude new design or setup beyond the agreed scope');
   assert.match(boundaryText, new RegExp(`ครบรอบ 2 วัน ฿${(catalog.amount * 2).toLocaleString('en-US')}`), 'C1 full round must be priced at two Catalog day rates');
   assert.match(boundaryText, /ภายใน 14 วัน.*30 วัน/s, 'C1 full round must state day two within 14 days and 30-day care');
   const chatTopic = page.locator('#c1-topic-sales');
