@@ -267,5 +267,32 @@ const shouldShowFloatingLine = showFloatingLine && !hideFloatingLine && !isFloat
         } catch { /* defensive: ViewContent tracking must never break page */ }
       })();
     </script>
+
+    <!--
+      Meta Pixel · บทความ /insights/* (เพิ่ม 2026-10-18 สำหรับบทความที่ยิงจาก LINE OA แล้วทำแอดต่อ)
+      ViewContent ตอนเปิดหน้า + ArticleRead (custom) เมื่อเลื่อนอ่านถึง 60% ของหน้า
+      content_ids = slug ของบทความ → ตั้ง Custom Audience "คนที่อ่านบทความนี้จริง" ได้จาก ArticleRead
+    -->
+    <script is:inline>
+      (function () {
+        try {
+          const match = window.location.pathname.match(/^\/insights\/([a-z0-9-]+)\/?$/i);
+          if (!match || typeof window.fbq !== 'function') return;
+          const slug = match[1];
+          window.fbq('track', 'ViewContent', { content_name: `${slug.replace(/-/g, '_')}_article`, content_ids: [slug], content_type: 'article' });
+
+          let sent = false;
+          const onScroll = () => {
+            const doc = document.documentElement;
+            const max = doc.scrollHeight - window.innerHeight;
+            if (sent || max <= 0 || window.scrollY / max < 0.6) return;
+            sent = true;
+            window.removeEventListener('scroll', onScroll);
+            window.fbq('trackCustom', 'ArticleRead', { content_ids: [slug], content_type: 'article' });
+          };
+          window.addEventListener('scroll', onScroll, { passive: true });
+        } catch { /* defensive: article tracking must never break page */ }
+      })();
+    </script>
   </body>
 </html>
