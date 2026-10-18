@@ -7,6 +7,7 @@
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import NoteStudioDialog from '../../components/war-room/NoteStudioDialog.astro';
 import CampaignView from '../../components/war-room/CampaignView.astro';
+import LineView from '../../components/war-room/LineView.astro';
 import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
 import AppNav from '../../components/app/AppNav.astro';
 ---
@@ -17,13 +18,15 @@ import AppNav from '../../components/app/AppNav.astro';
   <div id="war-room-app" class="hidden min-h-dvh bg-base-100">
     <AppNav app="content" />
 
-    <div class="mx-auto flex max-w-7xl 3xl:max-w-none items-center justify-between gap-3 px-4 pt-3">
+    <div class="mx-auto flex max-w-7xl 3xl:max-w-none flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 pt-3">
       <p id="wr-date" class="text-sm opacity-60"></p>
-      <div role="tablist" aria-label="มุมมอง" class="join rounded-full border border-base-300 p-0.5">
+      <!-- 5 มุมมองแล้ว (2026-10-18 เพิ่ม 📣 LINE) — มือถือแคบให้เลื่อนในแถบ ไม่ดันหน้าล้น -->
+      <div role="tablist" aria-label="มุมมอง" class="join max-w-full overflow-x-auto rounded-full border border-base-300 p-0.5 [&>button]:shrink-0">
         <button id="wr-view-board" role="tab" aria-selected="true" class="join-item btn btn-sm rounded-full border-0 text-white tap-44" style="background-color:var(--color-brand-navy);">🗂 Board</button>
         <button id="wr-view-list" role="tab" aria-selected="false" class="join-item btn btn-sm rounded-full border-0 btn-ghost tap-44">📋 List</button>
         <button id="wr-view-queue" role="tab" aria-selected="false" class="join-item btn btn-sm rounded-full border-0 btn-ghost tap-44">⏳ คิว <span id="wr-queue-badge" class="badge badge-warning badge-sm ml-1 hidden">0</span></button>
         <button id="wr-view-campaign" role="tab" aria-selected="false" class="join-item btn btn-sm rounded-full border-0 btn-ghost tap-44">🎯 แคมเปญ</button>
+        <button id="wr-view-line" role="tab" aria-selected="false" class="join-item btn btn-sm rounded-full border-0 btn-ghost tap-44">📣 LINE</button>
       </div>
     </div>
 
@@ -36,6 +39,7 @@ import AppNav from '../../components/app/AppNav.astro';
       <div id="wr-stale" class="hidden rounded-2xl px-4 py-2.5 text-sm text-white" style="background-color:var(--color-brand-navy);" role="status"></div>
 
       <CampaignView />
+      <LineView />
 
       <!-- ============ BOARD VIEW ============ -->
       <section id="wr-board-view" aria-label="Kanban pipeline">
@@ -252,6 +256,7 @@ import AppNav from '../../components/app/AppNav.astro';
       setDecision, addSnapshot, buildVariantMarkdown, downloadText, copyText,
       enqueueJob, waitJob, listWrJobs, retryWrJob, deleteWrJob,
       listMedia, uploadMedia, reorderMedia, archiveMedia, type MediaAsset,
+      listLineRounds, lineRoundImages, lineImageDownloadUrl, updateLineRound,
       listCampaigns, listCampaignItems, updateCampaignItem, addCampaignItems, deleteCampaignItem, createCampaign, updateCampaign,
       PILLAR_V14_LABEL, type PillarV14,
       type Idea, type Variant, type Publication, type FormatCode,
@@ -261,6 +266,7 @@ import AppNav from '../../components/app/AppNav.astro';
     import { supabase, getSupabaseSession } from '../../scripts/dashboard/supabase';
     import { initNoteStudio, openNoteStudio } from '../../scripts/war-room/note-studio';
     import { initCampaigns, loadCampaigns, openCampaign } from '../../scripts/war-room/campaigns';
+    import { initLineView, loadLineRounds, openLineRound, showLineVariant } from '../../scripts/war-room/line-library';
 
     // ---------- state ----------
     let ideas: Idea[] = [];
@@ -285,7 +291,7 @@ import AppNav from '../../components/app/AppNav.astro';
     const saveBoardPrefs = () => {
       try { localStorage.setItem(PREFS_KEY, JSON.stringify({ sort: boardSort, fmt: [...fmtFilter] })); } catch { /* ignore */ }
     };
-    let view: 'board' | 'list' | 'queue' | 'campaign' = 'board';
+    let view: 'board' | 'list' | 'queue' | 'campaign' | 'line' = 'board';
     // คิวงาน AI (wr_jobs) — badge นับงานที่รอ/กำลังทำ · ตารางเต็มเมื่อเปิดมุมมองคิว
     let wrJobs: WrJob[] = [];
     let itemTitles = new Map<string, { title: string | null; source_url: string | null }>();
@@ -391,7 +397,8 @@ import AppNav from '../../components/app/AppNav.astro';
     function matchesSearch(v: Variant): boolean {
       if (!boardSearch) return true;
       const q = boardSearch.toLowerCase();
-      return `${v.content_id} ${v.variant_id} ${v.working_title ?? ''} ${titleOf(v.content_id)}`.toLowerCase().includes(q);
+      // ค้นเนื้อบท/ข้อความด้วย (2026-10-18) — จำได้แค่ประโยคในแคปชัน/บทพูดก็หาเจอ
+      return `${v.content_id} ${v.variant_id} ${v.working_title ?? ''} ${titleOf(v.content_id)} ${v.ai_result ?? ''} ${v.script_draft ?? ''}`.toLowerCase().includes(q);
     }
     const matchesBoard = (v: Variant) => matchesSearch(v) && (!fmtFilter.size || fmtFilter.has(fmtOf(v)));
     function matchesBoardIdea(i: Idea): boolean {
@@ -655,6 +662,10 @@ import AppNav from '../../components/app/AppNav.astro';
             </div>
             <ol data-media-for="${esc(v.variant_id)}" class="mt-1 grid grid-cols-4 gap-1" aria-label="ลำดับรูป ใบแรก = ปก"><li class="col-span-4 text-xs opacity-50">กำลังโหลด…</li></ol>
             <button data-action="note-studio" data-v="${esc(v.variant_id)}" class="btn btn-xs mt-2 w-full text-white tap-44" style="background-color:var(--color-brand-navy);">🎨 Note Studio — ทำ/แก้รูป</button>
+          </div>` : v.format === 'line_broadcast' ? `<div class="rounded-lg bg-base-200/70 p-2">
+            <span class="text-xs font-semibold">📣 รูปทุกรอบ <span data-media-count="${esc(v.variant_id)}" class="font-normal opacity-60"></span></span>
+            <ol data-media-for="${esc(v.variant_id)}" class="mt-1 grid grid-cols-4 gap-1" aria-label="รูป broadcast ทุกรอบ"><li class="col-span-4 text-xs opacity-50">กำลังโหลด…</li></ol>
+            <button data-action="open-line" data-v="${esc(v.variant_id)}" class="btn btn-xs mt-2 w-full text-white tap-44" style="background-color:var(--color-brand-navy);">📣 เปิดในแท็บ LINE (ข้อความ + ส่งแล้ว)</button>
           </div>` : ''}
           ${pubRows}
           ${platOpts ? `<div class="flex gap-1">
@@ -700,7 +711,7 @@ import AppNav from '../../components/app/AppNav.astro';
         ${idea.acid_test !== 'passed' ? `<p class="mt-2 rounded-lg bg-warning/20 px-3 py-2 text-xs">🧪 Triage Gate: ถามก่อนถ่าย — "ตัดหน้า/ชื่อปันออก คนดูยังได้ของกลับบ้านไหม?" ผ่านแล้วตั้ง acid: passed ก่อนเข้า weekly plan</p>` : ''}
         <h3 class="mt-4 font-display text-sm font-bold">Variants <span class="font-normal opacity-50">(format เท่านั้น — platform บันทึกตอนลงจริง)</span></h3>
         <div class="mt-2 grid gap-2 sm:grid-cols-2">${variantCards}</div>`;
-      void loadMediaFor(vs.filter((v) => v.format === 'carousel' || v.format === 'article').map((v) => v.variant_id));
+      void loadMediaFor(vs.filter((v) => v.format === 'carousel' || v.format === 'article' || v.format === 'line_broadcast').map((v) => v.variant_id));
     }
 
     // ---------- รูปของ post/carousel (2026-10-02) ----------
@@ -775,17 +786,20 @@ import AppNav from '../../components/app/AppNav.astro';
     }
 
     // ---------- view toggle ----------
-    function setView(v: 'board' | 'list' | 'queue' | 'campaign') {
+    function setView(v: 'board' | 'list' | 'queue' | 'campaign' | 'line') {
       view = v;
       $('wr-board-view').classList.toggle('hidden', v !== 'board');
       $('wr-list-view').classList.toggle('hidden', v !== 'list');
       $('wr-queue-view').classList.toggle('hidden', v !== 'queue');
       $('wr-campaign-view').classList.toggle('hidden', v !== 'campaign');
-      // แถบสถิติ/แบนเนอร์ค้างเป็นของมุมผลิต — ในหน้าแคมเปญซ่อนให้โล่ง
-      $('wr-stats').parentElement!.classList.toggle('hidden', v === 'campaign');
+      $('wr-line-view').classList.toggle('hidden', v !== 'line');
+      // แถบสถิติ/แบนเนอร์ค้างเป็นของมุมผลิต — ในหน้าแคมเปญ/LINE ซ่อนให้โล่ง
+      $('wr-stats').parentElement!.classList.toggle('hidden', v === 'campaign' || v === 'line');
       if (v === 'campaign') void loadCampaigns().catch(oops);
       else if (location.hash.startsWith('#campaign')) history.replaceState(null, '', location.pathname);
-      for (const [id, key] of [['wr-view-board', 'board'], ['wr-view-list', 'list'], ['wr-view-queue', 'queue'], ['wr-view-campaign', 'campaign']] as const) {
+      if (v === 'line') { if (!location.hash.startsWith('#line')) history.replaceState(null, '', '#line'); void loadLineRounds().catch(oops); }
+      else if (location.hash.startsWith('#line')) history.replaceState(null, '', location.pathname);
+      for (const [id, key] of [['wr-view-board', 'board'], ['wr-view-list', 'list'], ['wr-view-queue', 'queue'], ['wr-view-campaign', 'campaign'], ['wr-view-line', 'line']] as const) {
         const el = $(id), on = v === key;
         el.setAttribute('aria-selected', String(on));
         el.classList.toggle('btn-ghost', !on);
@@ -1047,6 +1061,7 @@ import AppNav from '../../components/app/AppNav.astro';
       $('wr-view-list').addEventListener('click', () => setView('list'));
       $('wr-view-queue').addEventListener('click', () => setView('queue'));
       $('wr-view-campaign').addEventListener('click', () => { openCampaign(null); setView('campaign'); });
+      $('wr-view-line').addEventListener('click', () => setView('line'));
       $('wr-queue-refresh').addEventListener('click', () => void loadQueue().then(() => toast('รีเฟรชคิวแล้ว')).catch(oops));
       $('wr-queue-filter').addEventListener('click', (e) => {
         const b = (e.target as HTMLElement).closest('button[data-qf]') as HTMLButtonElement | null;
@@ -1274,6 +1289,7 @@ import AppNav from '../../components/app/AppNav.astro';
             case 'copy-id': await copyText(el.dataset.v!); toast(`คัดลอก ${el.dataset.v}`); break;
             case 'create-variant': await createVariant(idea, el.dataset.code as FormatCode); toast('สร้าง variant แล้ว'); await refresh(); break;
             case 'studio': openStudio(el.dataset.v!); break;
+            case 'open-line': closeDrawer(); setView('line'); showLineVariant(el.dataset.v!); break;
             case 'note-studio': { const v = variants.find((x) => x.variant_id === el.dataset.v); if (v) await openNoteStudio(v); break; }
             case 'm-left': await moveMedia(el.dataset.v!, Number(el.dataset.i), -1); break;
             case 'm-right': await moveMedia(el.dataset.v!, Number(el.dataset.i), 1); break;
@@ -1392,10 +1408,19 @@ import AppNav from '../../components/app/AppNav.astro';
         openDrawer: (cid) => openDrawer(cid),
         toast,
       });
+      initLineView({
+        api: { listLineRounds, lineRoundImages, lineImageDownloadUrl, updateLineRound },
+        data: () => ({ ideas, variants }),
+        openDrawer: (cid) => { setView('board'); openDrawer(cid); },
+        toast,
+      });
       const camp = location.hash.match(/^#campaign=(.+)$/);
       if (camp || location.hash === '#campaigns') openCampaign(camp ? decodeURIComponent(camp[1]) : null);
-      setView(location.hash === '#queue' ? 'queue' : camp || location.hash === '#campaigns' ? 'campaign' : 'board');
+      const line = location.hash.match(/^#line(?:=(.+))?$/);
+      if (line?.[1]) openLineRound(decodeURIComponent(line[1]));
+      setView(location.hash === '#queue' ? 'queue' : camp || location.hash === '#campaigns' ? 'campaign' : line ? 'line' : 'board');
       try { await refresh(); } catch (e) { oops(e); }
+      if (view === 'line') void loadLineRounds().catch(oops);   // การ์ดได้ชื่อไอเดียหลังโหลดบอร์ดเสร็จ
       void loadQueue().catch(() => {});   // badge ⏳ บนปุ่มมุมมอง — รู้ตั้งแต่เปิดหน้าว่ามีงาน AI กำลังวิ่ง
     }
     document.addEventListener('war-room:authed', () => void boot());

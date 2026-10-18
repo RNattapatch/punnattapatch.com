@@ -320,7 +320,7 @@ export interface MediaAsset {
   variant_id: string | null;
   asset_type: string;
   storage_path: string | null;
-  source: 'upload' | 'note_studio' | 'agent' | null;
+  source: 'upload' | 'note_studio' | 'agent' | 'broadcast' | null;
   render_batch: string | null;
   sort_order: number;
   is_cover: boolean;
@@ -568,4 +568,62 @@ export function downloadText(filename: string, text: string): void {
 
 export async function copyText(text: string): Promise<void> {
   await navigator.clipboard.writeText(text);
+}
+
+// ---------- 📣 LINE Broadcast Library (line_rounds · 2026-10-18) ----------
+// 1 แถว = 1 รอบส่ง (รูป + ข้อความ 1 bubble) ใต้ variant -LN · agent ลงด้วย broadcast.py register บนมินิ
+// spec: รีโปความรู้ docs/superpowers/specs/2026-10-18-line-broadcast-library-design.md
+
+export type LineRoundStatus = 'draft' | 'ready' | 'sent' | 'skipped' | 'unknown';
+export interface LineRound {
+  round_id: string;
+  variant_id: string;
+  round_code: string;
+  role: 'main' | 'alternate';
+  text_body: string;
+  text_units: number | null;
+  image_asset_id: string | null;
+  link_url: string | null;
+  utm_campaign: string | null;
+  status: LineRoundStatus;
+  planned_at: string | null;
+  sent_at: string | null;
+  source_path: string | null;
+  edited_in_app: boolean;
+  created_at: string;
+  updated_at: string;
+}
+export interface LineRoundImage { url?: string; storage_path: string | null; drive_file_id: string | null; width: number | null; height: number | null }
+
+export async function listLineRounds(): Promise<LineRound[]> {
+  return (await q(() => supabase.from('line_rounds').select('*')
+    .order('created_at', { ascending: false }).limit(2000))) as LineRound[];
+}
+
+/** รูปของแต่ละรอบ (asset_id → signed URL 1 ชม.) — ดึงตรงตาม image_asset_id ไม่สนว่าเก็บเข้ากรุหรือยัง */
+export async function lineRoundImages(assetIds: string[]): Promise<Map<string, LineRoundImage>> {
+  const out = new Map<string, LineRoundImage>();
+  const ids = [...new Set(assetIds.filter(Boolean))];
+  if (!ids.length) return out;
+  const rows = (await q(() => supabase.from('media_assets')
+    .select('asset_id,storage_path,drive_file_id,width,height').in('asset_id', ids))) as (LineRoundImage & { asset_id: string })[];
+  const paths = rows.map((r) => r.storage_path).filter(Boolean) as string[];
+  const signed = new Map<string, string>();
+  if (paths.length) {
+    const { data } = await supabase.storage.from(MEDIA_BUCKET).createSignedUrls(paths, 3600);
+    for (const d of data ?? []) if (d.path && d.signedUrl) signed.set(d.path, d.signedUrl);
+  }
+  for (const r of rows) out.set(r.asset_id, { ...r, url: r.storage_path ? signed.get(r.storage_path) : undefined });
+  return out;
+}
+
+/** ลิงก์โหลดรูปแบบบังคับดาวน์โหลด (ชื่อไฟล์อ่านรู้เรื่อง) */
+export async function lineImageDownloadUrl(path: string, filename: string): Promise<string> {
+  const { data, error } = await supabase.storage.from(MEDIA_BUCKET).createSignedUrl(path, 600, { download: filename });
+  if (error || !data) throw new Error(`สร้างลิงก์โหลดรูปไม่ได้: ${error?.message ?? 'ไม่พบไฟล์'}`);
+  return data.signedUrl;
+}
+
+export async function updateLineRound(id: string, patch: Partial<LineRound>): Promise<void> {
+  await q(() => supabase.from('line_rounds').update(patch).eq('round_id', id));
 }

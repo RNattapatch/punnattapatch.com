@@ -1,0 +1,40 @@
+---
+// แท็บ "📣 LINE" ใน Content Center (2026-10-18) — คลังรูป + ข้อความ broadcast LINE OA · logic อยู่ src/scripts/war-room/line-library.ts
+// แบบ: docs/superpowers/specs/2026-10-18-line-broadcast-library-design.md (รีโปความรู้)
+---
+<section id="wr-line-view" class="hidden space-y-3" aria-label="LINE Broadcast">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <h2 class="font-display text-xl font-bold">📣 LINE Broadcast</h2>
+      <p class="text-sm opacity-70">รูปกับข้อความคู่กัน · กดการ์ดเพื่อคัดลอกข้อความ โหลดรูป ไปวางใน OA Manager แล้วกด ✅ ส่งแล้ว</p>
+    </div>
+    <button id="ln-refresh" class="btn btn-ghost btn-sm tap-44" aria-label="รีเฟรชคลัง LINE">⟳ รีเฟรช</button>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-2">
+    <label class="flex min-w-[220px] flex-1 items-center gap-2 rounded-full border border-base-300 bg-base-200 px-3 focus-within:border-[color:var(--color-brand-coral)]">
+      <span aria-hidden="true" class="opacity-50">🔍</span>
+      <input id="ln-search" type="search" class="input input-ghost flex-1 border-0 px-0 focus:outline-none" placeholder="ค้นจากข้อความ พาดหัว หรือ CNT…" aria-label="ค้นหาในคลัง LINE" autocomplete="off" />
+    </label>
+    <select id="ln-month" class="select select-bordered select-sm rounded-full" aria-label="กรองตามเดือน">
+      <option value="">ทุกเดือน</option>
+    </select>
+  </div>
+  <div id="ln-filter" role="group" aria-label="กรองตามสถานะ" class="flex flex-wrap gap-1.5"></div>
+
+  <div id="ln-grid" class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4" aria-live="polite">
+    <p class="col-span-full text-sm opacity-60">กำลังโหลด…</p>
+  </div>
+  <p class="text-xs opacity-60">agent ลงของใหม่ให้ด้วย <code>broadcast.py register</code> บน Mac mini · ข้อความที่แก้ในหน้านี้ agent จะไม่เขียนทับ</p>
+
+  <dialog id="ln-dialog" class="modal" aria-labelledby="ln-d-title">
+    <div class="modal-box w-11/12 max-w-4xl p-0">
+      <div class="flex items-center justify-between gap-2 border-b border-base-300 px-4 py-3">
+        <h3 id="ln-d-title" class="min-w-0 truncate font-display font-bold"></h3>
+        <form method="dialog"><button class="btn btn-ghost btn-sm tap-44" aria-label="ปิด">✕</button></form>
+      </div>
+      <div id="ln-d-body" class="grid gap-4 p-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]"></div>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button aria-label="ปิด">close</button></form>
+  </dialog>
+</section>
