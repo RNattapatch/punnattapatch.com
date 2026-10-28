@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../data/site';
+import { META_APP } from '../../data/meta-app';
+
+const title = `ข้อกำหนดการใช้บริการ ${META_APP.name} โดย ${SITE.nameTh}`;
+const description = `ข้อกำหนดการใช้บริการ ${META_APP.name} สำหรับธุรกิจที่เชื่อมเพจ Facebook และบัญชี Instagram`;
+---
+
+<!-- noindex: หน้ากฎหมายของแอป Meta ต้องเปิดได้จากลิงก์สาธารณะ (Terms of Service URL ของแอป) แต่ไม่ต้องติดค้นหา -->
+<BaseLayout title={title} description={description} noindex hideFloatingLine schema={{ types: ['WebPage'], title, description }}>
+  <section class="px-6 py-16 md:py-24">
+    <nav aria-label="Language" class="mx-auto mb-8 flex max-w-3xl gap-6 text-sm font-semibold text-cyan">
+      <a href="#th" class="underline-offset-4 hover:underline">ภาษาไทย</a>
+      <a href="#en" class="underline-offset-4 hover:underline">English version</a>
+    </nav>
+
+    <article class="prose prose-lg mx-auto max-w-3xl prose-headings:font-display prose-headings:text-navy prose-p:text-warm-ink/80 prose-li:text-warm-ink/80">
+      <section id="th" lang="th">
+        <p class="text-sm font-semibold text-cyan">อัปเดตล่าสุด {META_APP.updatedTh}</p>
+        <h1>ข้อกำหนดการใช้บริการ {META_APP.name}</h1>
+        <p>ข้อกำหนดนี้เป็นข้อตกลงระหว่างธุรกิจที่ใช้บริการ {META_APP.name} กับปัน ณัฐพัชร์ ผู้ให้บริการ ซึ่งตั้งอยู่ที่กรุงเทพฯ ประเทศไทย การเชื่อมเพจ Facebook หรือบัญชี Instagram เข้ากับบริการ หรือการใช้งานกล่องข้อความและเครื่องมือโพสต์ของบริการ ถือว่าธุรกิจยอมรับข้อกำหนดนี้แล้ว</p>
+
+        <h2>บริการที่ให้</h2>
+        <ol>
+          <li>รับและตอบข้อความที่ลูกค้าส่งเข้าเพจ Facebook หรือบัญชี Instagram ที่เชื่อมไว้ ผ่านกล่องข้อความเดียว ทั้งด้วยผู้ช่วย AI และทีมงานของธุรกิจ พร้อมระบบส่งต่อให้คนรับช่วงต่อ</li>
+          <li>ร่าง อนุมัติ และตั้งเวลาโพสต์ให้เพจหรือบัญชี Instagram ของธุรกิจ</li>
+          <li>อ่านคอมเมนต์ใต้โพสต์ ซึ่งเป็นตัวเลือกเสริมที่ธุรกิจต้องเปิดเอง</li>
+        </ol>
+
+        <h2>การใช้งานที่ยอมรับได้</h2>
+        <p>ธุรกิจต้องใช้บริการตามกฎหมายไทย และต้องปฏิบัติตาม Meta Platform Terms นโยบาย Messenger Platform และนโยบายการส่งข้อความของ Instagram ทั้งหมด ซึ่งรวมถึงกรอบ 24 ชั่วโมงหลังลูกค้าส่งข้อความล่าสุด ธุรกิจจะส่งข้อความนอกกรอบนี้ได้เฉพาะรูปแบบที่ Meta อนุญาตเท่านั้น</p>
+        <p>ธุรกิจต้องไม่ใช้บริการเพื่อ</p>
+        <ul>
+          <li>ส่งสแปม หรือข้อความโฆษณาที่ลูกค้าไม่ได้ให้ความยินยอม</li>
+          <li>หลอกลวง หลอกให้โอนเงิน หรือขอข้อมูลลับ เช่น รหัสผ่านและเลขบัตร</li>
+          <li>เก็บข้อมูลลูกค้าโดยไม่แจ้งวัตถุประสงค์ หรือเก็บเกินกว่าที่จำเป็น</li>
+          <li>เผยแพร่เนื้อหาที่ผิดกฎหมาย หรือละเมิดสิทธิของผู้อื่น</li>
+          <li>พยายามเข้าถึงระบบ ข้อมูลของธุรกิจอื่น หรือทำให้บริการขัดข้อง</li>
+        </ul>
+        <p>ธุรกิจต้องไม่ให้ AI แอบอ้างว่าเป็นคน และต้องรับผิดชอบเมื่อส่งคำตอบ ไม่ว่าจะเขียนโดยคนหรือ AI ที่ธุรกิจอนุมัติหรือเปิดให้ตอบอัตโนมัติ</p>
+
+        <h2>ความรับผิดชอบเรื่องเนื้อหา</h2>
+        <p>ธุรกิจเป็นผู้รับผิดชอบต่อเนื้อหาทั้งหมดที่โพสต์ อัปโหลด หรือส่งผ่านบริการ รวมถึงคำตอบที่ส่งให้ลูกค้า ปัน ณัฐพัชร์ ไม่ได้ตรวจทานทุกข้อความ และไม่รับผิดชอบต่อสิ่งที่ธุรกิจหรือ AI ส่งออกไปในนามของธุรกิจ</p>
+
+        <h2>ค่าบริการและการชำระเงิน</h2>
+        <p>ค่าบริการต้องชำระเต็มจำนวนก่อนเริ่มงานทุกครั้ง ไม่มีข้อยกเว้น หากมีเงื่อนไขการคืนเงิน ให้เป็นไปตามที่ระบุในใบเสนอราคาหรือข้อตกลงการให้บริการที่ทั้งสองฝ่ายยืนยันกันเป็นลายลักษณ์อักษร</p>
+
+        <h2>การให้บริการตามสภาพ</h2>
+        <p>เราให้บริการตามสภาพที่เป็นอยู่ (as is) บริการขึ้นอยู่กับความพร้อมใช้งานและนโยบายของ Meta ซึ่งอาจเปลี่ยนแปลงหรือระงับได้ เราไม่รับประกันว่าบริการจะไม่ขัดข้อง หรือธุรกิจจะได้ยอดขายหรือผลลัพธ์ตามที่คาดไว้ และความรับผิดของเราจำกัดเท่าที่กฎหมายไทยอนุญาต</p>
+
+        <h2>การยกเลิกและการลบข้อมูล</h2>
+        <p>ธุรกิจยกเลิกการเชื่อมต่อได้ทุกเมื่อ โดยลบแอปออกจาก Facebook หรือแจ้งเราทางอีเมล เมื่อยกเลิก เราลบ token ทันที และลบข้อมูลของธุรกิจภายใน 30 วัน ตามนโยบายความเป็นส่วนตัวที่ <a href="/hub/privacy">หน้านโยบายความเป็นส่วนตัว</a></p>
+
+        <h2>กฎหมายที่ใช้บังคับ</h2>
+        <p>ข้อกำหนดนี้อยู่ภายใต้กฎหมายไทย และให้ศาลในประเทศไทยมีเขตอำนาจพิจารณาข้อพิพาท</p>
+
+        <h2>ติดต่อเรา</h2>
+        <p>ปัน ณัฐพัชร์ กรุงเทพฯ ประเทศไทย<br />อีเมล <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+      </section>
+
+      <section id="en" lang="en">
+        <p class="text-sm font-semibold text-cyan">Last updated {META_APP.updatedEn}</p>
+        <h2>{META_APP.name}: Terms of Service</h2>
+        <p>These terms are an agreement between the business that uses {META_APP.name} and Pun Nattapatch, the service provider, based in Bangkok, Thailand. By connecting a Facebook Page or an Instagram professional account to the service, or by using the inbox and publishing tools, the business accepts these terms.</p>
+
+        <h3>What the service provides</h3>
+        <ol>
+          <li>Receiving and replying to messages sent to the connected Facebook Page or Instagram professional account in one inbox, using an AI assistant and the business's own staff, with handoff from the AI to a person.</li>
+          <li>Drafting, approving, and scheduling posts for the business's Facebook Page or Instagram account.</li>
+          <li>Reading comments on posts. This is optional and the business must turn it on.</li>
+        </ol>
+
+        <h3>Acceptable use</h3>
+        <p>The business must use the service in line with Thai law and must follow the Meta Platform Terms, the Messenger Platform policies, and Instagram's messaging policies. This includes the 24-hour window that starts when a customer last sent a message. Outside that window, the business may send messages only in the formats that Meta allows.</p>
+        <p>The business must not use the service to:</p>
+        <ul>
+          <li>Send spam, or promotional messages that the customer has not agreed to receive.</li>
+          <li>Deceive people, ask them to transfer money, or ask for secrets such as passwords or card numbers.</li>
+          <li>Collect customer data without telling them why, or collect more than it needs.</li>
+          <li>Publish content that is unlawful or that infringes other people's rights.</li>
+          <li>Try to access another business's data or systems, or to disrupt the service.</li>
+        </ul>
+        <p>The business must not let an AI assistant claim to be a human. The business is responsible for every reply sent in its name, whether a person wrote it or an AI wrote it and the business approved it or allowed automatic replies.</p>
+
+        <h3>Responsibility for content</h3>
+        <p>The business is responsible for all content it posts, uploads, or sends through the service, including the replies sent to its customers. Pun Nattapatch does not review every message and is not responsible for what the business or the AI sends on the business's behalf.</p>
+
+        <h3>Fees and payment</h3>
+        <p>Fees must be paid in full before work starts, every time, with no exceptions. If there are refund conditions, they follow the quotation or service agreement that both parties confirm in writing.</p>
+
+        <h3>Service provided as is</h3>
+        <p>The service is provided as is. It depends on Meta's platform, its availability, and its policies, which can change or be suspended. We do not guarantee that the service will be free of interruptions, or that the business will reach any particular sales or engagement result. Our liability is limited to the extent that Thai law allows.</p>
+
+        <h3>Ending the service and deleting data</h3>
+        <p>The business can disconnect at any time by removing the app from Facebook or by emailing us. When a business disconnects, we delete its tokens immediately and delete its data within 30 days, as described in the <a href="/hub/privacy">privacy policy</a>.</p>
+
+        <h3>Governing law</h3>
+        <p>These terms are governed by the laws of Thailand. The courts of Thailand have jurisdiction over any dispute.</p>
+
+        <h3>Contact</h3>
+        <p>Pun Nattapatch, Bangkok, Thailand<br />Email <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+      </section>
+    </article>
+  </section>
+</BaseLayout>
