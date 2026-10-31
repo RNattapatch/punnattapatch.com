@@ -32,6 +32,8 @@ export const SITE = {
     // LINE OA basic ID (ตัวเดียวกับ line.me/R/ti/p/@011xgvap ที่ใช้ในหน้า /link) — ใช้สร้างลิงก์
     // เปิดแชตพร้อมข้อความ (oaMessage) ให้ปุ่ม LINE ทุกปุ่ม ดู src/scripts/line-prefill.ts
     lineOaId: '@011xgvap',
+    // WhatsApp ส่วนตัวคุณปัน (เบอร์เดียวกับ phone ใน sponsor.astro) — สำหรับคนที่ไม่ใช้ LINE
+    whatsapp: 'https://wa.me/66629544455',
   },
   nav: [
     { label: 'หน้าหลัก', href: '/' },
