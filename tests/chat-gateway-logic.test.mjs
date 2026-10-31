@@ -1,0 +1,74 @@
+/**
+ * Chat Single Gateway — rules that must not drift: unread · hold · filters · draft limits · tags · send gate · outbox display
+ * Usage: node tests/chat-gateway-logic.test.mjs
+ */
+import {
+  CHANNEL_META, isUnread, holdUntil, filterContacts, fmtWhen, checkDraft, parseTags, canSend, heartbeatAge, quotaText,
+  visibleOutbox, displayName, initialOf, MAX_MESSAGE,
+} from '../src/scripts/gateway/logic.ts';
+
+let pass = 0, fail = 0;
+const check = (c, m) => { c ? (pass++, console.log(`  ✅ ${m}`)) : (fail++, console.log(`  ❌ ${m}`)); };
+
+const NOW = Date.parse('2026-11-01T05:00:00Z');
+const U = 'U' + 'b'.repeat(32);
+const c = (o = {}) => ({ id: 'c1', channel: 'line', external_id: U, display_name: 'คุณเอ', picture_url: null, lead_id: null, tags: [], last_message_at: '2026-11-01T04:00:00Z', last_in_at: '2026-11-01T04:00:00Z', last_preview: 'สนใจคลาส', last_read_at: null, bot_hold_until: null, ...o });
+const alive = { heartbeat: new Date(NOW - 10_000).toISOString(), bot_mode: 'guard', quota: { type: 'limited', limit: 15000, used: 12 } };
+
+console.log('\n📨 Chat Single Gateway logic\n');
+
+// unread
+check(isUnread(c()), 'never read + customer wrote = unread');
+check(!isUnread(c({ last_read_at: '2026-11-01T04:30:00Z' })), 'read after last inbound = read');
+check(isUnread(c({ last_read_at: '2026-11-01T03:00:00Z' })), 'new inbound after reading = unread again');
+check(!isUnread(c({ last_in_at: null })), 'no inbound = never unread');
+
+// hold
+check(holdUntil(c({ bot_hold_until: '2026-11-01T06:00:00Z' }), NOW) instanceof Date, 'future hold is active');
+check(holdUntil(c({ bot_hold_until: '2026-11-01T04:00:00Z' }), NOW) === null, 'expired hold is ignored');
+
+// filters
+const list = [c({ id: 'a' }), c({ id: 'b', last_read_at: '2026-11-01T04:30:00Z', lead_id: 'L1', tags: ['ร้อน'] }), c({ id: 'h', last_read_at: '2026-11-01T04:30:00Z', bot_hold_until: '2026-11-01T06:00:00Z', display_name: 'Anna' })];
+check(filterContacts(list, 'unread', '', NOW).map((x) => x.id).join() === 'a', 'view unread');
+check(filterContacts(list, 'held', '', NOW).map((x) => x.id).join() === 'h', 'view held');
+check(filterContacts(list, 'crm', '', NOW).map((x) => x.id).join() === 'b', 'view in CRM');
+check(filterContacts(list, 'all', 'ร้อน', NOW).map((x) => x.id).join() === 'b', 'search matches tags');
+check(filterContacts(list, 'all', 'anna', NOW).map((x) => x.id).join() === 'h', 'search is case-insensitive on names');
+
+// time (Bangkok)
+check(fmtWhen('2026-11-01T04:00:00Z', new Date(NOW)).includes('11'), 'same Bangkok day shows clock (11:00)');
+check(fmtWhen('2026-10-31T04:00:00Z', new Date(NOW)) === 'เมื่อวาน', 'previous Bangkok day = เมื่อวาน');
+check(fmtWhen(null) === '', 'no time = empty');
+
+// draft
+check(checkDraft('  สวัสดีครับ  ').ok && checkDraft('  สวัสดีครับ  ').body === 'สวัสดีครับ', 'draft is trimmed');
+check(!checkDraft('   ').ok, 'blank draft refused');
+check(!checkDraft('x'.repeat(MAX_MESSAGE + 1)).ok, 'over 2000 chars refused (DB check matches)');
+check(checkDraft('x'.repeat(MAX_MESSAGE)).ok, 'exactly 2000 chars allowed');
+
+// tags
+check(JSON.stringify(parseTags('ร้อน, in-house ,ร้อน,,  รอ  ใบเสนอราคา ')) === JSON.stringify(['ร้อน', 'in-house', 'รอ ใบเสนอราคา']), 'tags trimmed, deduped, spaces collapsed');
+check(parseTags(Array.from({ length: 30 }, (_, i) => `t${i}`).join(',')).length === 20, 'max 20 tags (DB check matches)');
+check(parseTags('x'.repeat(50))[0].length === 30, 'tag capped at 30 chars');
+
+// send gate — the UI must not let a message sit silently in the queue
+check(canSend(alive, c(), NOW).ok, 'alive mini + LINE customer who wrote = can send');
+check(!canSend(alive, null, NOW).ok, 'no chat selected = cannot send');
+check(!canSend({ ...alive, heartbeat: new Date(NOW - 5 * 60_000).toISOString() }, c(), NOW).ok, 'stale heartbeat blocks send');
+check(!canSend(null, c(), NOW).ok, 'no status yet blocks send');
+check(!canSend({ ...alive, send_off: true }, c(), NOW).ok, 'gw_send_off blocks send');
+check(!canSend(alive, c({ last_in_at: null }), NOW).ok, 'cannot cold-message someone who never wrote');
+check(!canSend(alive, c({ channel: 'messenger' }), NOW).ok, 'Messenger not sendable in phase 1');
+check(heartbeatAge(alive, NOW) === 10_000, 'heartbeat age in ms');
+
+// misc
+check(quotaText(alive).includes('12') && quotaText(alive).includes('15,000'), 'quota text shows used / limit');
+check(quotaText(null) === 'ยังไม่รู้โควตา push', 'quota unknown');
+check(visibleOutbox([{ kind: 'text', status: 'sent' }, { kind: 'text', status: 'failed' }, { kind: 'hold', status: 'pending' }, { kind: 'text', status: 'pending' }]).length === 2, 'outbox shows only unsent/failed text');
+check(displayName(c({ display_name: null })) === 'ลูกค้า LINE', 'fallback name');
+check(initialOf(c({ display_name: 'คุณเอ' })) === 'อ', 'initial skips คุณ and the leading vowel');
+check(initialOf(c({ display_name: 'anna' })) === 'A', 'latin initial uppercased');
+check(/^#[0-9a-f]{6}$/.test(CHANNEL_META.line.accent) && CHANNEL_META.line.accent !== CHANNEL_META.messenger.accent, 'each channel has its own accent');
+
+console.log(`\n${pass} passed, ${fail} failed\n`);
+if (fail) process.exit(1);

@@ -1,0 +1,115 @@
+// Chat Single Gateway — pure rules for /app/gateway (no DOM, no network → tests/chat-gateway-logic.test.mjs)
+// Spec: claude-code repo → docs/superpowers/specs/2026-11-01-chat-single-gateway-phase1.md
+
+export type Channel = 'line' | 'messenger';
+export type Dir = 'in' | 'bot' | 'staff' | 'note';
+
+export interface Contact {
+  id: string; channel: Channel; external_id: string; display_name: string | null; picture_url: string | null;
+  lead_id: string | null; tags: string[]; last_message_at: string | null; last_in_at: string | null;
+  last_preview: string | null; last_read_at: string | null; bot_hold_until: string | null;
+}
+export interface Message { id: number; contact_id: string; dir: Dir; body: string; ts: string; created_by: string | null }
+export interface OutboxRow {
+  id: string; contact_id: string; kind: 'text' | 'hold' | 'release'; body: string | null; status: 'pending' | 'sending' | 'sent' | 'failed';
+  error: string | null; created_at: string; client_request_id: string;
+}
+export interface GatewayStatus {
+  bot_mode?: string; holds?: number; send_off?: boolean; heartbeat?: string;
+  quota?: { type?: string; limit?: number | null; used?: number | null } | null;
+}
+
+// Accent per channel: `accent` carries white text at ≥4.5:1 · `tint`/`ink` = light chip pair · `wash` = thread background.
+// The open chat recolours the inbox so you always know where a reply goes.
+export const CHANNEL_META: Record<Channel, { label: string; short: string; accent: string; tint: string; ink: string; wash: string }> = {
+  line: { label: 'LINE', short: 'LINE', accent: '#06803c', tint: '#e3f6ea', ink: '#05622f', wash: '#f1faf4' },
+  messenger: { label: 'Messenger', short: 'FB', accent: '#1b5fd6', tint: '#e7eefc', ink: '#1747a6', wash: '#f2f6fd' },
+};
+
+export const MAX_MESSAGE = 2000;
+export const STALE_HEARTBEAT_MS = 2 * 60_000;
+
+export const isUnread = (c: Contact) => !!c.last_in_at && (!c.last_read_at || c.last_in_at > c.last_read_at);
+
+export function holdUntil(c: Contact, now = Date.now()): Date | null {
+  if (!c.bot_hold_until) return null;
+  const d = new Date(c.bot_hold_until);
+  return d.getTime() > now ? d : null;
+}
+
+export type View = 'all' | 'unread' | 'held' | 'crm';
+export function filterContacts(list: Contact[], view: View, q: string, now = Date.now()): Contact[] {
+  const needle = q.trim().toLowerCase();
+  return list.filter((c) => {
+    if (view === 'unread' && !isUnread(c)) return false;
+    if (view === 'held' && !holdUntil(c, now)) return false;
+    if (view === 'crm' && !c.lead_id) return false;
+    if (!needle) return true;
+    return [c.display_name, c.last_preview, ...(c.tags || [])].some((s) => (s || '').toLowerCase().includes(needle));
+  });
+}
+
+const TZ = 'Asia/Bangkok';
+const dayKey = (d: Date) => d.toLocaleDateString('en-CA', { timeZone: TZ });
+export function fmtWhen(iso: string | null, now = new Date()): string {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (dayKey(d) === dayKey(now)) return d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', timeZone: TZ });
+  if (dayKey(d) === dayKey(new Date(now.getTime() - 86_400_000))) return 'เมื่อวาน';
+  return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', timeZone: TZ });
+}
+export const fmtClock = (iso: string) => new Date(iso).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', timeZone: TZ });
+
+export function checkDraft(text: string): { ok: true; body: string } | { ok: false; error: string } {
+  const body = text.trim();
+  if (!body) return { ok: false, error: 'ยังไม่ได้พิมพ์ข้อความ' };
+  if (body.length > MAX_MESSAGE) return { ok: false, error: `ยาวเกิน ${MAX_MESSAGE.toLocaleString()} ตัวอักษร (ตอนนี้ ${body.length.toLocaleString()})` };
+  return { ok: true, body };
+}
+
+export function parseTags(input: string): string[] {
+  const out: string[] = [];
+  for (const raw of input.split(/[,\n]/)) {
+    const t = raw.trim().replace(/\s+/g, ' ').slice(0, 30);
+    if (t && !out.includes(t)) out.push(t);
+  }
+  return out.slice(0, 20);
+}
+
+export function heartbeatAge(s: GatewayStatus | null, now = Date.now()): number | null {
+  if (!s?.heartbeat) return null;
+  return now - new Date(s.heartbeat).getTime();
+}
+// ส่งได้เมื่อมินิยังเต้นอยู่และไม่ได้ปิดการส่งไว้ — ไม่งั้นคำสั่งจะค้างในคิวโดยที่คุณปันไม่รู้
+export function canSend(s: GatewayStatus | null, c: Contact | null, now = Date.now()): { ok: boolean; why: string } {
+  if (!c) return { ok: false, why: 'เลือกแชทก่อน' };
+  if (c.channel !== 'line') return { ok: false, why: 'ช่องทางนี้ยังตอบจากหน้านี้ไม่ได้ (phase 1 = LINE)' };
+  if (!c.last_in_at) return { ok: false, why: 'ลูกค้ายังไม่เคยทักมา ส่งก่อนไม่ได้' };
+  const age = heartbeatAge(s, now);
+  if (age === null || age > STALE_HEARTBEAT_MS) return { ok: false, why: 'มินิไม่ตอบ ข้อความจะยังไม่ออก · ตอบในแอป LINE OA ไปก่อน' };
+  if (s?.send_off) return { ok: false, why: 'ปิดการส่งไว้ที่มินิ (gw_send_off)' };
+  return { ok: true, why: '' };
+}
+
+export const BOT_MODE_LABEL: Record<string, string> = {
+  off: 'บอทพัก คุณปันตอบเองทั้งร้าน',
+  shadow: 'บอทแค่ร่าง ไม่ส่งจริง (shadow)',
+  review: 'บอทร่าง รอคุณปันอนุมัติใน Telegram (review)',
+  guard: 'บอทตอบเอง (guard)',
+};
+
+export function quotaText(s: GatewayStatus | null): string {
+  const q = s?.quota;
+  if (!q) return 'ยังไม่รู้โควตา push';
+  if (q.type === 'none') return `push เดือนนี้ ${Number(q.used ?? 0).toLocaleString()} ข้อความ (ไม่จำกัด)`;
+  return `push เดือนนี้ ${Number(q.used ?? 0).toLocaleString()} / ${Number(q.limit ?? 0).toLocaleString()}`;
+}
+
+export const OUTBOX_LABEL: Record<OutboxRow['status'], string> = { pending: 'รอคิว', sending: 'กำลังส่ง', sent: 'ส่งแล้ว', failed: 'ส่งไม่ออก' };
+
+// ข้อความที่ส่งแล้วจะกลับมาเป็นแถว staff จาก mirror ภายในไม่กี่วินาที → โชว์จาก outbox เฉพาะที่ยังไม่ออก/ออกไม่ได้
+export const visibleOutbox = (rows: OutboxRow[]) => rows.filter((r) => r.kind === 'text' && r.status !== 'sent');
+
+export const displayName = (c: Contact) => c.display_name || 'ลูกค้า LINE';
+// ข้ามคำนำหน้า "คุณ" และสระหน้า เ แ โ ใ ไ ไม่งั้นชื่อ "คุณเอ" ได้ตัวย่อเป็นสระ
+export const initialOf = (c: Contact) => (displayName(c).replace(/^คุณ/, '').trim().replace(/^[เแโใไ]/, '').charAt(0) || '?').toUpperCase();

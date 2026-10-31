@@ -1,0 +1,458 @@
+---
+// Chat Single Gateway — inbox เดียวที่คุณปันตอบแชทลูกค้าได้จากเว็บ (phase 1 = LINE OA · 2026-11-01)
+//
+// ทำไมต้องมีหน้านี้: แชท LINE อยู่ในแอป OA Manager · ความจำบอทอยู่ไฟล์บนมินิ · ข้อมูลลูกค้าอยู่ CRM →
+// ตอบลูกค้า 1 คนต้องเปิด 3 ที่ และบอทไม่รู้ว่าคุณปันตอบไปแล้ว · หน้านี้รวมแชท + สถานะบอทต่อคน + การ์ด CRM ไว้จอเดียว
+// และตอบจากที่นี่ = บอทรู้ (ข้อความเข้าความจำบอท + บอทพักคนนี้ให้อัตโนมัติ)
+//
+// ภาพที่ใช้: ห้องแชทแบบ LINE OA (ซ้ายรายชื่อ · กลางบทสนทนา · ขวาแผงควบคุม) และ "สีของช่องทาง" ย้อมทั้งจอ
+// (แถบบน · ปุ่มส่ง · กรอบช่องพิมพ์ · bubble) ให้รู้ตัวทุกครั้งว่าคำตอบออกทางไหน — ตอนนี้มีแค่ LINE แต่ระบบสีพร้อมช่องอื่น
+//
+// ข้อความไม่ได้ส่งจากเบราว์เซอร์: เขียนคำสั่งลง gw_outbox แล้ว gateway-sync บนมินิเป็นคนส่ง (token LINE อยู่ที่มินิที่เดียว)
+// Spec: claude-code repo → docs/superpowers/specs/2026-11-01-chat-single-gateway-phase1.md
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
+import AppNav from '../../components/app/AppNav.astro';
+---
+<DashboardLayout title="Chat Single Gateway — Pun">
+  <script is:inline async src="https://accounts.google.com/gsi/client"></script>
+  <WarRoomGate appId="gw-app" title="Chat Single Gateway" icon="💬" event="gateway:authed" />
+
+  <style is:global>
+    /* is:global — แถว/bubble สร้างตอน runtime · style scoped ของ Astro ไปไม่ถึง */
+    #gw-app { --gw-accent: #06803c; --gw-tint: #e3f6ea; --gw-ink: #05622f; --gw-wash: #f1faf4; }
+    [data-theme="pundark"] #gw-app { --gw-wash: color-mix(in srgb, var(--gw-accent) 8%, transparent); --gw-tint: color-mix(in srgb, var(--gw-accent) 22%, transparent); --gw-ink: #c8f0d6; }
+    .gw-shell { display: grid; grid-template-columns: minmax(0, 1fr); height: calc(100dvh - 3.5rem); }
+    @media (min-width: 1024px) { .gw-shell { grid-template-columns: 320px minmax(0, 1fr); } }
+    @media (min-width: 1280px) { .gw-shell { grid-template-columns: 320px minmax(0, 1fr) 360px; } }
+    @media (max-width: 1023px) { .gw-shell { height: auto; } .gw-col { max-height: none !important; } }
+    .gw-col { min-height: 0; overflow-y: auto; }
+    .gw-row { width: 100%; display: flex; gap: .75rem; align-items: flex-start; padding: .7rem .9rem; text-align: left; border-bottom: 1px solid color-mix(in srgb, currentColor 8%, transparent); }
+    .gw-row[aria-current="true"] { background: var(--gw-wash); box-shadow: inset 4px 0 0 var(--gw-accent); }
+    .gw-avatar { position: relative; flex: none; width: 2.75rem; height: 2.75rem; border-radius: 999px; display: grid; place-items: center; font-weight: 700; background: var(--gw-tint); color: var(--gw-ink); overflow: hidden; }
+    .gw-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .gw-badge { position: absolute; right: -4px; bottom: -3px; font-size: 9px; font-weight: 700; padding: 1px 4px; border-radius: 5px; border: 2px solid var(--color-base-100, #fff); color: #fff; }
+    .gw-thread { background: var(--gw-wash); }
+    .gw-msg { max-width: min(76%, 38rem); padding: .55rem .85rem; border-radius: 1rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .gw-in { align-self: flex-start; background: var(--color-base-100, #fff); border: 1px solid color-mix(in srgb, currentColor 12%, transparent); }
+    .gw-bot { align-self: flex-end; background: var(--gw-tint); color: inherit; }
+    .gw-staff { align-self: flex-end; background: var(--gw-accent); color: #fff; }
+    .gw-note { align-self: flex-end; background: #fff6d6; color: #4a3c0c; border: 1px dashed #d9b84a; }
+    .gw-pending { opacity: .7; }
+    .gw-failed { align-self: flex-end; background: #fde8eb; color: #8a1c2c; border: 1px solid #f3b6c0; }
+    .gw-meta { font-size: .7rem; opacity: .75; margin-bottom: .15rem; }
+    .gw-day { align-self: center; font-size: .72rem; opacity: .6; padding: .15rem .6rem; }
+    .gw-accent-btn { background: var(--gw-accent) !important; border-color: var(--gw-accent) !important; color: #fff !important; }
+    .gw-topbar { height: 4px; background: var(--gw-accent); }
+    .gw-tab[aria-selected="true"] { border-bottom-color: var(--gw-accent); color: var(--gw-ink); font-weight: 600; }
+    .gw-tab { border-bottom: 3px solid transparent; min-height: 44px; }
+  </style>
+
+  <div id="gw-app" class="hidden min-h-dvh bg-base-100">
+    <AppNav app="gateway">
+      <span id="gw-health" class="badge badge-ghost my-auto hidden sm:inline-flex" role="status">…</span>
+      <button id="gw-refresh" class="btn btn-ghost btn-sm tap-44 my-auto" aria-label="รีเฟรช" title="รีเฟรช">⟳</button>
+    </AppNav>
+
+    <div class="gw-shell">
+      <!-- ซ้าย: รายชื่อแชท -->
+      <section class="gw-col border-r border-base-300" aria-label="แชททั้งหมด">
+        <div class="sticky top-0 z-10 space-y-2 border-b border-base-300 bg-base-100 p-3">
+          <div class="flex items-baseline justify-between">
+            <h1 class="font-display text-lg font-bold">💬 แชทลูกค้า</h1>
+            <span id="gw-count" class="text-xs opacity-60"></span>
+          </div>
+          <label class="input input-sm w-full">
+            <span class="sr-only">ค้นหาชื่อ ข้อความ หรือแท็ก</span>
+            <input id="gw-q" type="search" placeholder="ค้นชื่อ ข้อความ แท็ก" autocomplete="off" />
+          </label>
+          <div id="gw-views" class="flex flex-wrap gap-1" role="tablist" aria-label="กรองแชท">
+            <button class="btn btn-xs tap-44" role="tab" data-view="all" aria-selected="true">ทั้งหมด</button>
+            <button class="btn btn-xs tap-44" role="tab" data-view="unread" aria-selected="false">ยังไม่อ่าน</button>
+            <button class="btn btn-xs tap-44" role="tab" data-view="held" aria-selected="false">พักบอทอยู่</button>
+            <button class="btn btn-xs tap-44" role="tab" data-view="crm" aria-selected="false">อยู่ใน CRM</button>
+          </div>
+        </div>
+        <ul id="gw-list" class="list-none p-0 m-0"></ul>
+      </section>
+
+      <!-- กลาง: บทสนทนา -->
+      <section class="gw-col flex min-w-0 flex-col" aria-label="บทสนทนา" style="overflow: hidden;">
+        <div class="gw-topbar" aria-hidden="true"></div>
+        <header class="flex flex-wrap items-center gap-3 border-b border-base-300 bg-base-100 px-4 py-2">
+          <div id="gw-head-avatar" class="gw-avatar" aria-hidden="true"></div>
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <h2 id="gw-head-name" class="font-display text-base font-bold">เลือกแชททางซ้าย</h2>
+              <span id="gw-head-channel" class="badge badge-sm hidden text-white" style="background: var(--gw-accent);"></span>
+            </div>
+            <p id="gw-head-sub" class="text-xs" style="color: var(--gw-ink);"></p>
+          </div>
+        </header>
+        <div id="gw-thread" class="gw-thread flex flex-1 flex-col gap-2 overflow-y-auto p-4" style="min-height: 18rem;" aria-live="polite"></div>
+        <form id="gw-compose" class="space-y-2 border-t-[3px] bg-base-100 p-3" style="border-top-color: var(--gw-accent);">
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <div class="join" role="group" aria-label="ประเภทข้อความ">
+              <button type="button" id="gw-mode-reply" class="btn btn-xs join-item tap-44 gw-accent-btn" aria-pressed="true">ตอบลูกค้า</button>
+              <button type="button" id="gw-mode-note" class="btn btn-xs join-item tap-44" aria-pressed="false">โน้ตภายใน</button>
+            </div>
+            <span id="gw-quota" class="opacity-70"></span>
+          </div>
+          <label class="block">
+            <span id="gw-compose-label" class="mb-1 block text-xs opacity-70">ข้อความถึงลูกค้า · ออกทาง LINE</span>
+            <textarea id="gw-text" class="textarea w-full" rows="3" maxlength="2000" style="border-color: var(--gw-accent);" placeholder="พิมพ์ข้อความ · ⌘/Ctrl + Enter เพื่อส่ง"></textarea>
+          </label>
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <p id="gw-send-why" class="text-xs text-warning-content/80" role="status"></p>
+            <button id="gw-send" type="submit" class="btn btn-sm tap-44 gw-accent-btn">ส่งทาง LINE</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ขวา: บอท + ลูกค้า -->
+      <aside class="gw-col border-l border-base-300 bg-base-100" aria-label="บอทและข้อมูลลูกค้า">
+        <div class="flex border-b border-base-300 px-2" role="tablist" aria-label="แผงขวา">
+          <button id="gw-tab-bot" class="gw-tab flex-1" role="tab" aria-selected="true" aria-controls="gw-pane-bot">🤖 บอท</button>
+          <button id="gw-tab-cust" class="gw-tab flex-1" role="tab" aria-selected="false" aria-controls="gw-pane-cust">👤 ลูกค้า</button>
+        </div>
+
+        <div id="gw-pane-bot" role="tabpanel" class="space-y-4 p-4">
+          <div class="rounded-box bg-base-200 p-3 text-sm">
+            <p class="text-xs uppercase tracking-wide opacity-60">โหมดบอททั้งร้าน</p>
+            <p id="gw-botmode" class="font-semibold">…</p>
+            <p class="mt-1 text-xs opacity-70">เปลี่ยนโหมดทั้งร้านใน Telegram เหมือนเดิม · หน้านี้คุมทีละคน</p>
+          </div>
+          <div class="space-y-2">
+            <p class="text-xs uppercase tracking-wide opacity-60">บอทกับลูกค้าคนนี้</p>
+            <p id="gw-hold" class="text-sm">เลือกแชทก่อน</p>
+            <div class="flex flex-wrap gap-2">
+              <button id="gw-hold-60" class="btn btn-sm tap-44" disabled>พักบอท 1 ชม.</button>
+              <button id="gw-hold-day" class="btn btn-sm tap-44" disabled>พักบอท 1 วัน</button>
+              <button id="gw-release" class="btn btn-sm btn-outline tap-44" disabled>ให้บอทตอบต่อ</button>
+            </div>
+            <p class="text-xs opacity-70">ตอบจากหน้านี้ = ข้อความเข้าความจำบอท และบอทพักคนนี้ให้เอง 30 นาที</p>
+          </div>
+          <div class="rounded-box border border-base-300 p-3 text-xs opacity-80">
+            <p class="font-semibold">โควตา LINE</p>
+            <p id="gw-quota-detail">…</p>
+            <p class="mt-1">ตอบจากหน้านี้ใช้ push (กินโควตา) · ตอบในแอป LINE OA Manager ไม่กินโควตา</p>
+          </div>
+        </div>
+
+        <div id="gw-pane-cust" role="tabpanel" class="hidden space-y-4 p-4">
+          <div>
+            <p id="gw-cust-name" class="font-display text-base font-bold">เลือกแชทก่อน</p>
+            <p id="gw-cust-id" class="font-mono text-xs opacity-60"></p>
+          </div>
+          <div id="gw-lead" class="rounded-box bg-base-200 p-3 text-sm"></div>
+          <div class="space-y-2">
+            <label for="gw-tags" class="text-xs uppercase tracking-wide opacity-60">แท็ก (คั่นด้วยจุลภาค)</label>
+            <div id="gw-tag-chips" class="flex flex-wrap gap-1"></div>
+            <div class="flex gap-2">
+              <input id="gw-tags" class="input input-sm flex-1" placeholder="เช่น ร้อน, in-house, รอใบเสนอราคา" disabled />
+              <button id="gw-tags-save" class="btn btn-sm tap-44" disabled>บันทึก</button>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <p class="text-xs uppercase tracking-wide opacity-60">โน้ตภายใน (ลูกค้าไม่เห็น)</p>
+            <div id="gw-notes" class="space-y-2"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="toast toast-end z-50"><div id="gw-toast" class="alert hidden" role="status"></div></div>
+  </div>
+
+  <script>
+    import { loadContacts, loadThread, loadStatus, loadLead, queue, addNote, saveTags, markRead, type LeadCard } from '../../scripts/gateway/data';
+    import {
+      CHANNEL_META, BOT_MODE_LABEL, OUTBOX_LABEL, MAX_MESSAGE, isUnread, holdUntil, filterContacts, fmtWhen, fmtClock, checkDraft, parseTags,
+      canSend, heartbeatAge, quotaText, visibleOutbox, displayName, initialOf,
+      type Contact, type Message, type OutboxRow, type GatewayStatus, type View,
+    } from '../../scripts/gateway/logic';
+
+    const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector(sel) as T;
+    // ข้อความลูกค้าเป็นข้อมูลไม่น่าไว้ใจ → สร้าง DOM ด้วย textContent เท่านั้น ไม่มี innerHTML กับข้อมูลจากแชท
+    function h<K extends keyof HTMLElementTagNameMap>(tag: K, props: Record<string, string> = {}, ...kids: (Node | string | null)[]): HTMLElementTagNameMap[K] {
+      const el = document.createElement(tag);
+      for (const [k, v] of Object.entries(props)) k === 'class' ? (el.className = v) : el.setAttribute(k, v);
+      for (const k of kids) if (k !== null) el.append(k);
+      return el;
+    }
+
+    let toastTimer: number | undefined;
+    function toast(msg: string, kind: 'success' | 'error' = 'success') {
+      const el = $('#gw-toast');
+      el.className = `alert text-sm shadow-lg ${kind === 'error' ? 'alert-error' : 'alert-success'}`;
+      el.textContent = msg;
+      window.clearTimeout(toastTimer); toastTimer = window.setTimeout(() => el.classList.add('hidden'), 3500);
+    }
+    const oops = (e: unknown) => toast((e as Error).message || 'ผิดพลาด ลองใหม่', 'error');
+
+    const state = {
+      contacts: [] as Contact[], status: null as GatewayStatus | null, view: 'all' as View, q: '',
+      sel: null as string | null, messages: [] as Message[], outbox: [] as OutboxRow[], lead: null as LeadCard | null,
+      mode: 'reply' as 'reply' | 'note', busy: false, lastThreadSig: '',
+    };
+    const current = () => state.contacts.find((c) => c.id === state.sel) || null;
+
+    function applyAccent(c: Contact | null) {
+      const m = CHANNEL_META[c?.channel || 'line'];
+      const app = $('#gw-app');
+      app.style.setProperty('--gw-accent', m.accent);
+      if (document.documentElement.dataset.theme !== 'pundark') {
+        app.style.setProperty('--gw-tint', m.tint); app.style.setProperty('--gw-ink', m.ink); app.style.setProperty('--gw-wash', m.wash);
+      }
+    }
+
+    function avatar(c: Contact, withBadge: boolean) {
+      const m = CHANNEL_META[c.channel];
+      const el = h('span', { class: 'gw-avatar', 'aria-hidden': 'true', style: `background:${m.tint};color:${m.ink}` });
+      if (c.picture_url) el.append(h('img', { src: c.picture_url, alt: '', loading: 'lazy', referrerpolicy: 'no-referrer' }));
+      else el.append(initialOf(c));
+      if (withBadge) el.append(h('span', { class: 'gw-badge', style: `background:${m.accent}` }, m.short));
+      return el;
+    }
+
+    // ---------- list ----------
+    function renderList() {
+      const list = filterContacts(state.contacts, state.view, state.q);
+      $('#gw-count').textContent = `${list.length} แชท · ยังไม่อ่าน ${state.contacts.filter(isUnread).length}`;
+      const ul = $('#gw-list');
+      ul.replaceChildren(...list.map((c) => {
+        const unread = isUnread(c) && c.id !== state.sel;
+        const held = holdUntil(c);
+        const btn = h('button', { type: 'button', class: 'gw-row', 'aria-current': String(c.id === state.sel), 'data-id': c.id },
+          avatar(c, true),
+          h('span', { class: 'min-w-0 flex-1' },
+            h('span', { class: 'flex items-baseline gap-2' },
+              h('span', { class: `flex-1 truncate ${unread ? 'font-bold' : 'font-semibold'}` }, displayName(c)),
+              h('span', { class: 'text-xs opacity-60' }, fmtWhen(c.last_message_at))),
+            h('span', { class: 'flex items-center gap-2' },
+              h('span', { class: 'flex-1 truncate text-sm opacity-75' }, c.last_preview || ''),
+              unread ? h('span', { class: 'badge badge-xs text-white', style: `background:${CHANNEL_META[c.channel].accent}`, 'aria-label': 'ยังไม่อ่าน' }, 'ใหม่') : null),
+            h('span', { class: 'mt-1 flex flex-wrap gap-1' },
+              held ? h('span', { class: 'badge badge-xs badge-warning' }, `พักบอทถึง ${fmtClock(held.toISOString())}`) : null,
+              c.lead_id ? h('span', { class: 'badge badge-xs badge-ghost' }, 'CRM') : null,
+              ...(c.tags || []).slice(0, 3).map((t) => h('span', { class: 'badge badge-xs badge-outline' }, t)))));
+        return h('li', {}, btn);
+      }));
+      if (!list.length) ul.append(h('li', { class: 'p-6 text-center text-sm opacity-60' }, state.contacts.length ? 'ไม่มีแชทตรงเงื่อนไข' : 'ยังไม่มีแชท · รอมินิซิงก์'));
+    }
+
+    // ---------- thread ----------
+    function renderThread() {
+      const c = current();
+      applyAccent(c);
+      const box = $('#gw-thread');
+      if (!c) { box.replaceChildren(h('p', { class: 'm-auto text-sm opacity-60' }, 'เลือกแชทจากรายชื่อทางซ้าย')); return; }
+      const m = CHANNEL_META[c.channel];
+      $('#gw-head-avatar').replaceChildren(...Array.from(avatar(c, false).childNodes));
+      $('#gw-head-name').textContent = displayName(c);
+      const chip = $('#gw-head-channel'); chip.textContent = `via ${m.label}`; chip.classList.remove('hidden');
+      const held = holdUntil(c);
+      $('#gw-head-sub').textContent = held ? `บอทพักคนนี้ถึง ${fmtClock(held.toISOString())} · คุณปันคุยเอง` : `ตอบแล้วออกทาง ${m.label}`;
+
+      const atBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
+      const nodes: Node[] = [];
+      let lastDay = '';
+      for (const msg of state.messages) {
+        const day = new Date(msg.ts).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Bangkok' });
+        if (day !== lastDay) { nodes.push(h('div', { class: 'gw-day' }, day)); lastDay = day; }
+        const who = msg.dir === 'in' ? displayName(c) : msg.dir === 'bot' ? `บอท · ${m.label}` : msg.dir === 'staff' ? `คุณปัน · ส่งทาง ${m.label}` : `โน้ตภายใน · ${msg.created_by || 'คุณปัน'} · ลูกค้าไม่เห็น`;
+        nodes.push(h('div', { class: `gw-msg gw-${msg.dir}` }, h('div', { class: 'gw-meta' }, `${who} · ${fmtClock(msg.ts)}`), msg.body));
+      }
+      for (const o of visibleOutbox(state.outbox)) {
+        const failed = o.status === 'failed';
+        nodes.push(h('div', { class: `gw-msg ${failed ? 'gw-failed' : 'gw-staff gw-pending'}` },
+          h('div', { class: 'gw-meta' }, `${OUTBOX_LABEL[o.status]}${failed && o.error ? ` · ${o.error}` : ''} · ${fmtClock(o.created_at)}`), o.body || ''));
+      }
+      if (!nodes.length) nodes.push(h('p', { class: 'm-auto text-sm opacity-60' }, 'ยังไม่มีข้อความ'));
+      box.replaceChildren(...nodes);
+      if (atBottom || state.busy) box.scrollTop = box.scrollHeight;
+    }
+
+    // ---------- right panel ----------
+    function renderSide() {
+      const c = current(), s = state.status;
+      $('#gw-botmode').textContent = s?.bot_mode ? BOT_MODE_LABEL[s.bot_mode] || s.bot_mode : 'ยังไม่รู้ (มินิยังไม่รายงาน)';
+      $('#gw-quota-detail').textContent = quotaText(s);
+      $('#gw-quota').textContent = quotaText(s);
+      const age = heartbeatAge(s);
+      const health = $('#gw-health');
+      const ok = age !== null && age < 120_000;
+      health.textContent = ok ? '● มินิเชื่อมอยู่' : age === null ? '● มินิยังไม่รายงาน' : `● มินิเงียบ ${Math.round(age / 60_000)} นาที`;
+      health.className = `badge my-auto hidden sm:inline-flex ${ok ? 'badge-success' : 'badge-error'}`;
+
+      const send = canSend(s, c);
+      const note = state.mode === 'note';
+      const chLabel = CHANNEL_META[c?.channel || 'line'].label;
+      $('#gw-compose-label').textContent = note ? 'โน้ตภายใน · เก็บไว้กับลูกค้าคนนี้ ลูกค้าไม่เห็น' : `ข้อความถึงลูกค้า · ออกทาง ${chLabel}`;
+      $('#gw-send').textContent = note ? 'บันทึกโน้ต' : `ส่งทาง ${chLabel}`;
+      $<HTMLButtonElement>('#gw-send').disabled = !c || (!note && !send.ok);
+      $('#gw-send-why').textContent = note ? '' : send.why;
+      for (const id of ['#gw-hold-60', '#gw-hold-day', '#gw-release', '#gw-tags', '#gw-tags-save']) $<HTMLButtonElement>(id).disabled = !c;
+      if (!c) return;
+      const held = holdUntil(c);
+      $('#gw-hold').textContent = held ? `พักอยู่ถึง ${fmtClock(held.toISOString())} · บอทไม่ตอบคนนี้` : 'บอทตอบคนนี้ได้ตามโหมดทั้งร้าน';
+      $<HTMLButtonElement>('#gw-release').disabled = !held;
+
+      $('#gw-cust-name').textContent = displayName(c);
+      $('#gw-cust-id').textContent = `${CHANNEL_META[c.channel].label} · ${c.external_id.slice(0, 6)}…${c.external_id.slice(-4)}`;
+      const lead = state.lead;
+      const leadBox = $('#gw-lead');
+      if (!c.lead_id) leadBox.replaceChildren(h('p', { class: 'opacity-70' }, 'ยังไม่ผูกกับ CRM · ผูกอัตโนมัติเมื่อบอทเก็บข้อมูลลูกค้าคนนี้ได้'));
+      else if (!lead) leadBox.replaceChildren(h('p', { class: 'opacity-70' }, 'กำลังโหลดข้อมูล CRM…'));
+      else leadBox.replaceChildren(
+        h('p', { class: 'text-xs uppercase tracking-wide opacity-60' }, 'CRM'),
+        h('p', { class: 'font-semibold' }, [lead.full_name || lead.nickname, lead.company_name].filter(Boolean).join(' · ') || '—'),
+        h('p', {}, `Stage: ${lead.pipeline_status || '—'}`),
+        h('p', {}, `ขั้นต่อไป: ${lead.next_action || '— (ยังไม่มี · ผิดกติกา Funnel v2)'}`),
+        h('p', { class: lead.next_action_due ? '' : 'text-error' }, `กำหนด: ${lead.next_action_due || 'ไม่มีวัน'}`),
+        h('a', { href: '/app/dashboard', class: 'link text-xs' }, 'เปิด CRM'));
+      $('#gw-tag-chips').replaceChildren(...(c.tags || []).map((t) => h('span', { class: 'badge badge-outline' }, t)));
+      const tagInput = $<HTMLInputElement>('#gw-tags');
+      if (document.activeElement !== tagInput) tagInput.value = (c.tags || []).join(', ');
+      const notes = state.messages.filter((m) => m.dir === 'note');
+      $('#gw-notes').replaceChildren(...(notes.length ? notes.slice(-10).reverse().map((n) =>
+        h('div', { class: 'gw-msg gw-note', style: 'max-width:100%' }, h('div', { class: 'gw-meta' }, `${n.created_by || 'คุณปัน'} · ${fmtWhen(n.ts)}`), n.body))
+        : [h('p', { class: 'text-xs opacity-60' }, 'ยังไม่มีโน้ต · กด "โน้ตภายใน" ใต้แชทเพื่อเขียน')]));
+    }
+
+    function renderAll() { renderList(); renderThread(); renderSide(); }
+
+    // ---------- loading ----------
+    async function refreshList() {
+      const [contacts, status] = await Promise.all([loadContacts(), loadStatus()]);
+      state.contacts = contacts; state.status = status;
+    }
+    let demo: null | { threads: Record<string, { messages: Message[]; outbox: OutboxRow[] }> } = null;
+    async function refreshThread() {
+      const c = current();
+      if (!c) return;
+      const t = demo ? demo.threads[c.id] : await loadThread(c.id);
+      const sig = `${t.messages.length}:${t.messages.at(-1)?.id}:${t.outbox.map((o) => o.status).join('')}`;
+      state.messages = t.messages; state.outbox = t.outbox;
+      if (sig !== state.lastThreadSig) { state.lastThreadSig = sig; renderThread(); }
+    }
+
+    async function select(id: string) {
+      state.sel = id; state.messages = []; state.outbox = []; state.lead = null; state.lastThreadSig = '';
+      renderAll();
+      const c = current();
+      try {
+        await refreshThread();
+        if (c && isUnread(c)) { if (!demo) await markRead(c.id); c.last_read_at = new Date().toISOString(); }
+        if (c?.lead_id) state.lead = demo ? { id: c.lead_id, full_name: 'คุณเอ', nickname: null, company_name: 'บริษัทตัวอย่าง', pipeline_status: 'Discovery Call', next_action: 'โทรคุยโจทย์', next_action_due: null, phone: null } : await loadLead(c.lead_id);
+        renderAll();
+        $('#gw-thread').scrollTop = $('#gw-thread').scrollHeight;
+        if (window.innerWidth < 1024) $('#gw-thread').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (e) { oops(e); }
+    }
+
+    let polling = false;
+    async function poll() {
+      if (polling || document.hidden || demo) return;
+      polling = true;
+      try { await refreshList(); await refreshThread(); renderList(); renderSide(); }
+      catch (e) { console.error('[gateway] poll', e); }
+      finally { polling = false; }
+    }
+
+    // ---------- actions ----------
+    function setMode(mode: 'reply' | 'note') {
+      state.mode = mode;
+      const reply = mode === 'reply';
+      $('#gw-mode-reply').setAttribute('aria-pressed', String(reply)); $('#gw-mode-reply').classList.toggle('gw-accent-btn', reply);
+      $('#gw-mode-note').setAttribute('aria-pressed', String(!reply)); $('#gw-mode-note').classList.toggle('btn-warning', !reply);
+      $('#gw-send').classList.toggle('gw-accent-btn', reply); $('#gw-send').classList.toggle('btn-warning', !reply);
+      renderSide();
+    }
+
+    async function submit() {
+      const c = current();
+      if (!c || state.busy) return;
+      const ta = $<HTMLTextAreaElement>('#gw-text');
+      const d = checkDraft(ta.value);
+      if (!d.ok) { toast(d.error, 'error'); return; }
+      state.busy = true; $<HTMLButtonElement>('#gw-send').disabled = true;
+      try {
+        if (state.mode === 'note') { await addNote(c.id, d.body); toast('บันทึกโน้ตแล้ว'); }
+        else {
+          const why = canSend(state.status, c);
+          if (!why.ok) { toast(why.why, 'error'); return; }
+          await queue(c.id, { kind: 'text', body: d.body }, crypto.randomUUID());
+          toast('เข้าคิวแล้ว มินิจะส่งภายในไม่กี่วินาที');
+        }
+        ta.value = '';
+        await refreshThread(); renderThread(); renderSide();
+      } catch (e) { oops(e); }
+      finally { state.busy = false; renderSide(); }
+    }
+
+    async function botCommand(kind: 'hold' | 'release', minutes?: number) {
+      const c = current();
+      if (!c) return;
+      try {
+        await queue(c.id, kind === 'hold' ? { kind, hold_minutes: minutes } : { kind }, crypto.randomUUID());
+        toast(kind === 'hold' ? 'สั่งพักบอทแล้ว' : 'สั่งให้บอทตอบต่อแล้ว');
+        window.setTimeout(() => void poll(), 4000);
+      } catch (e) { oops(e); }
+    }
+
+    function wire() {
+      $('#gw-list').addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest('button[data-id]');
+        if (b) void select(b.getAttribute('data-id')!);
+      });
+      $('#gw-q').addEventListener('input', (e) => { state.q = (e.target as HTMLInputElement).value; renderList(); });
+      $('#gw-views').addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest('button[data-view]');
+        if (!b) return;
+        state.view = b.getAttribute('data-view') as View;
+        $('#gw-views').querySelectorAll('button').forEach((x) => x.setAttribute('aria-selected', String(x === b)));
+        renderList();
+      });
+      $('#gw-compose').addEventListener('submit', (e) => { e.preventDefault(); void submit(); });
+      $('#gw-text').addEventListener('keydown', (e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); void submit(); } });
+      $('#gw-text').setAttribute('maxlength', String(MAX_MESSAGE));
+      $('#gw-mode-reply').addEventListener('click', () => setMode('reply'));
+      $('#gw-mode-note').addEventListener('click', () => setMode('note'));
+      $('#gw-hold-60').addEventListener('click', () => void botCommand('hold', 60));
+      $('#gw-hold-day').addEventListener('click', () => void botCommand('hold', 1440));
+      $('#gw-release').addEventListener('click', () => void botCommand('release'));
+      $('#gw-tags-save').addEventListener('click', async () => {
+        const c = current(); if (!c) return;
+        try { const tags = parseTags($<HTMLInputElement>('#gw-tags').value); await saveTags(c.id, tags); c.tags = tags; renderAll(); toast('บันทึกแท็กแล้ว'); }
+        catch (e) { oops(e); }
+      });
+      const tabs = [['#gw-tab-bot', '#gw-pane-bot'], ['#gw-tab-cust', '#gw-pane-cust']] as const;
+      for (const [tab, pane] of tabs) $(tab).addEventListener('click', () => {
+        for (const [t2, p2] of tabs) { $(t2).setAttribute('aria-selected', String(t2 === tab)); $(p2).classList.toggle('hidden', p2 !== pane); }
+      });
+      $('#gw-refresh').addEventListener('click', () => void poll());
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) void poll(); });
+    }
+
+    async function boot() {
+      wire();
+      try { await refreshList(); renderAll(); }
+      catch (e) { oops(e); }
+      window.setInterval(() => void poll(), 5000);
+    }
+    document.addEventListener('gateway:authed', () => void boot(), { once: true });
+
+    // DEV ONLY: `astro dev` + ?demo = fixture data without signing in · import.meta.env.DEV is false in the production build, so this block and demo.ts are dropped
+    if (import.meta.env.DEV && new URLSearchParams(location.search).has('demo')) {
+      void import('../../scripts/gateway/demo').then((d) => {
+        demo = { threads: d.DEMO_THREADS };
+        document.getElementById('wr-gate')?.classList.add('hidden');
+        $('#gw-app').classList.remove('hidden');
+        wire();
+        state.contacts = d.DEMO_CONTACTS; state.status = d.DEMO_STATUS;
+        renderAll();
+      });
+    }
+  </script>
+</DashboardLayout>
