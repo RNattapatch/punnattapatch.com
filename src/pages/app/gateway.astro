@@ -51,6 +51,14 @@ import AppNav from '../../components/app/AppNav.astro';
     .gw-row[data-blocked="1"] { opacity: .5; }
     .gw-thumbs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4rem; }
     .gw-thumbs img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: .5rem; }
+    .gw-drop { position: absolute; inset: 0; z-index: 20; display: grid; place-items: center; background: color-mix(in srgb, var(--gw-accent) 14%, transparent); border: 3px dashed var(--gw-accent); border-radius: .75rem; font-weight: 600; color: var(--gw-ink); pointer-events: none; }
+    .gw-drop.hidden { display: none; } /* .gw-drop's display:grid loads after Tailwind's .hidden and would win */
+    .gw-chip { position: relative; display: flex; align-items: center; gap: .5rem; max-width: 220px; padding: .3rem .5rem; border: 1px solid color-mix(in srgb, currentColor 15%, transparent); border-radius: .6rem; font-size: .8rem; }
+    .gw-chip img { width: 40px; height: 40px; object-fit: cover; border-radius: .4rem; }
+    .gw-stk { display: grid; place-items: center; aspect-ratio: 1; border-radius: .5rem; }
+    .gw-stk:hover, .gw-stk:focus-visible { background: color-mix(in srgb, var(--gw-accent) 12%, transparent); }
+    .gw-stk img { width: 100%; height: 100%; object-fit: contain; }
+    .gw-stktab[aria-selected="true"] { background: color-mix(in srgb, var(--gw-accent) 18%, transparent); }
   </style>
 
   <div id="gw-app" class="hidden min-h-dvh bg-base-100">
@@ -86,7 +94,8 @@ import AppNav from '../../components/app/AppNav.astro';
       </section>
 
       <!-- กลาง: บทสนทนา -->
-      <section class="gw-col flex min-w-0 flex-col" aria-label="บทสนทนา" style="overflow: hidden;">
+      <section id="gw-convo" class="gw-col relative flex min-w-0 flex-col" aria-label="บทสนทนา" style="overflow: hidden;">
+        <div id="gw-drop" class="gw-drop hidden" aria-hidden="true"><span>วางรูปหรือไฟล์ตรงนี้เพื่อแนบ</span></div>
         <div class="gw-topbar" aria-hidden="true"></div>
         <header class="flex flex-wrap items-center gap-3 border-b border-base-300 bg-base-100 px-4 py-2">
           <div id="gw-head-avatar" class="gw-avatar" aria-hidden="true"></div>
@@ -105,8 +114,16 @@ import AppNav from '../../components/app/AppNav.astro';
               <button type="button" id="gw-mode-reply" class="btn btn-xs join-item tap-44 gw-accent-btn" aria-pressed="true">ตอบลูกค้า</button>
               <button type="button" id="gw-mode-note" class="btn btn-xs join-item tap-44" aria-pressed="false">โน้ตภายใน</button>
             </div>
+            <button type="button" id="gw-sticker-btn" class="btn btn-xs tap-44" aria-expanded="false" aria-controls="gw-sticker-panel">😊 สติกเกอร์</button>
+            <label id="gw-attach-btn" class="btn btn-xs tap-44">📎 แนบรูป/ไฟล์<input id="gw-attach" type="file" multiple class="sr-only" /></label>
             <span id="gw-quota" class="opacity-70"></span>
           </div>
+          <div id="gw-sticker-panel" class="hidden space-y-2 rounded-box border border-base-300 bg-base-100 p-2" role="dialog" aria-label="เลือกสติกเกอร์">
+            <div id="gw-sticker-tabs" class="flex gap-1 overflow-x-auto pb-1" role="tablist" aria-label="ชุดสติกเกอร์"></div>
+            <div id="gw-sticker-grid" class="grid max-h-56 grid-cols-6 gap-1 overflow-y-auto sm:grid-cols-8"></div>
+            <p class="text-xs opacity-60">กดแล้วส่งทันที · LINE ให้บอทส่งได้เฉพาะสติกเกอร์ชุดทางการเหล่านี้</p>
+          </div>
+          <div id="gw-pending" class="flex flex-wrap gap-2" aria-live="polite"></div>
           <label class="block">
             <span id="gw-compose-label" class="mb-1 block text-xs opacity-70">ข้อความถึงลูกค้า · ออกทาง LINE</span>
             <textarea id="gw-text" class="textarea w-full" rows="3" maxlength="2000" style="border-color: var(--gw-accent);" placeholder="พิมพ์ข้อความ · ⌘/Ctrl + Enter เพื่อส่ง"></textarea>
@@ -195,11 +212,12 @@ import AppNav from '../../components/app/AppNav.astro';
 
   <script>
     import { onAuthed } from '../../scripts/dashboard/on-authed';
-    import { loadContacts, loadThread, loadStatus, loadLead, queue, queueMode, addNote, saveTags, markRead, loadFiles, signUrls, uploadFile, deleteUpload, type LeadCard } from '../../scripts/gateway/data';
+    import { loadContacts, loadThread, loadStatus, loadLead, queue, queueMode, addNote, saveTags, markRead, loadFiles, signUrls, uploadFile, deleteUpload, uploadOutgoing, type LeadCard } from '../../scripts/gateway/data';
     import {
       CHANNEL_META, BOT_MODE_LABEL, OUTBOX_LABEL, MAX_MESSAGE, isUnread, holdUntil, filterContacts, fmtWhen, fmtClock, checkDraft, parseTags,
       canSend, heartbeatAge, quotaText, visibleOutbox, displayName, initialOf, foldMediaEchoes,
       BOT_MODES, fmtSize, checkUpload, isImage, pathsToSign, mapsUrl,
+      STICKER_PACKS, stickerUrl, stickersOf, MAX_ATTACH, attachKind, checkAttach, canDeleteFile,
       type Contact, type Message, type OutboxRow, type GatewayStatus, type View, type FileRow,
     } from '../../scripts/gateway/logic';
 
@@ -226,6 +244,7 @@ import AppNav from '../../components/app/AppNav.astro';
       sel: null as string | null, messages: [] as Message[], outbox: [] as OutboxRow[], lead: null as LeadCard | null,
       mode: 'reply' as 'reply' | 'note', busy: false, lastThreadSig: '',
       files: [] as FileRow[], urls: new Map<string, { url: string; exp: number }>(), hideBlocked: true,
+      pending: [] as { file: File; url: string | null }[], stickerPack: 0,
     };
     try { state.hideBlocked = localStorage.getItem('gw-hide-blocked') !== '0'; } catch { /* private mode: keep default */ }
     const urlFor = (p?: string) => (p ? state.urls.get(p)?.url : undefined);
@@ -301,7 +320,7 @@ import AppNav from '../../components/app/AppNav.astro';
         const who = msg.dir === 'in' ? displayName(c) : msg.dir === 'bot' ? `บอท · ${m.label}` : msg.dir === 'staff' ? `คุณปัน · ส่งทาง ${m.label}` : `โน้ตภายใน · ${msg.created_by || 'คุณปัน'} · ลูกค้าไม่เห็น`;
         const meta = h('div', { class: 'gw-meta' }, `${who} · ${fmtClock(msg.ts)}`);
         if (msg.kind === 'sticker' && msg.media?.sticker_url) {
-          nodes.push(h('div', { class: 'flex flex-col', style: 'align-self:flex-start' }, meta,
+          nodes.push(h('div', { class: 'flex flex-col', style: `align-self:${msg.dir === 'staff' ? 'flex-end' : 'flex-start'}` }, meta,
             h('img', { class: 'gw-sticker', src: msg.media.sticker_url, alt: msg.body, loading: 'lazy', referrerpolicy: 'no-referrer' })));
           continue;
         }
@@ -343,7 +362,7 @@ import AppNav from '../../components/app/AppNav.astro';
       if (!c) { box.replaceChildren(); return; }
       if (!state.files.length) { box.replaceChildren(h('p', { class: 'text-xs opacity-60' }, 'ยังไม่มีไฟล์')); return; }
       const imgs = state.files.filter((f) => isImage(f.mime));
-      const rows = state.files.filter((f) => !isImage(f.mime) || f.source === 'upload');
+      const rows = state.files.filter((f) => !isImage(f.mime) || canDeleteFile(f));
       const nodes: Node[] = [];
       if (imgs.length) nodes.push(h('div', { class: 'gw-thumbs' }, ...imgs.slice(0, 30).map((f) => {
         const u = urlFor(f.path);
@@ -352,8 +371,8 @@ import AppNav from '../../components/app/AppNav.astro';
       })));
       for (const f of rows) nodes.push(h('div', { class: 'flex items-center gap-2 text-sm' },
         h('a', { href: urlFor(f.path) || '#', target: '_blank', rel: 'noopener noreferrer', class: 'link min-w-0 flex-1 truncate' }, `📎 ${f.name}`),
-        h('span', { class: 'shrink-0 text-xs opacity-60' }, [fmtSize(f.size_bytes), f.source === 'chat' ? 'จากแชท' : 'แนบเอง', fmtWhen(f.created_at)].filter(Boolean).join(' · ')),
-        f.source === 'upload' ? h('button', { type: 'button', class: 'btn btn-ghost btn-xs tap-44', 'data-del': f.id, 'aria-label': `ลบไฟล์ ${f.name}` }, 'ลบ') : null));
+        h('span', { class: 'shrink-0 text-xs opacity-60' }, [fmtSize(f.size_bytes), f.source === 'chat' ? 'จากแชท' : canDeleteFile(f) ? 'แนบเอง' : 'ส่งให้ลูกค้า', fmtWhen(f.created_at)].filter(Boolean).join(' · ')),
+        canDeleteFile(f) ? h('button', { type: 'button', class: 'btn btn-ghost btn-xs tap-44', 'data-del': f.id, 'aria-label': `ลบไฟล์ ${f.name}` }, 'ลบ') : null));
       box.replaceChildren(...nodes);
     }
 
@@ -380,7 +399,13 @@ import AppNav from '../../components/app/AppNav.astro';
       const chLabel = CHANNEL_META[c?.channel || 'line'].label;
       $('#gw-compose-label').textContent = note ? 'โน้ตภายใน · เก็บไว้กับลูกค้าคนนี้ ลูกค้าไม่เห็น' : `ข้อความถึงลูกค้า · ออกทาง ${chLabel}`;
       $('#gw-send').textContent = note ? 'บันทึกโน้ต' : `ส่งทาง ${chLabel}`;
-      $<HTMLButtonElement>('#gw-send').disabled = !c || (!note && !send.ok);
+      $<HTMLButtonElement>('#gw-send').disabled = !c || state.busy || (!note && !send.ok);
+      const isLine = c?.channel === 'line';
+      $<HTMLButtonElement>('#gw-sticker-btn').disabled = !c || note || !isLine || !send.ok;
+      $('#gw-sticker-btn').title = !isLine ? 'สติกเกอร์ของช่องทางนี้ยังไม่รองรับ' : note ? 'โหมดโน้ตภายในส่งสติกเกอร์ไม่ได้' : '';
+      $<HTMLInputElement>('#gw-attach').disabled = !c;
+      $('#gw-attach-btn').classList.toggle('btn-disabled', !c);
+      $('#gw-attach-btn').firstChild!.textContent = note ? '📎 แนบเข้าตู้ลูกค้า' : '📎 แนบรูป/ไฟล์';
       $('#gw-send-why').textContent = note ? '' : send.why;
       for (const id of ['#gw-hold-60', '#gw-hold-day', '#gw-release', '#gw-tags', '#gw-tags-save']) $<HTMLButtonElement>(id).disabled = !c;
       if (!c) return;
@@ -437,6 +462,8 @@ import AppNav from '../../components/app/AppNav.astro';
     }
 
     async function select(id: string) {
+      if (state.pending.length && state.sel !== id) clearPending(); // never send one customer's draft attachments to another
+      $('#gw-sticker-panel').classList.add('hidden');
       state.sel = id; state.messages = []; state.outbox = []; state.files = []; state.lead = null; state.lastThreadSig = '';
       renderAll();
       const c = current();
@@ -469,25 +496,93 @@ import AppNav from '../../components/app/AppNav.astro';
       renderSide();
     }
 
+    // ---------- pending attachments (📎 · drag & drop · paste) ----------
+    function renderPending() {
+      $('#gw-pending').replaceChildren(...state.pending.map((p, i) => h('div', { class: 'gw-chip' },
+        p.url ? h('img', { src: p.url, alt: '' }) : h('span', { 'aria-hidden': 'true' }, '📎'),
+        h('span', { class: 'min-w-0 truncate' }, `${p.file.name || 'ไฟล์'} · ${fmtSize(p.file.size)}`),
+        h('button', { type: 'button', class: 'btn btn-ghost btn-xs', 'data-unpend': String(i), 'aria-label': `เอา ${p.file.name} ออก` }, '✕'))));
+      renderSide();
+    }
+    function addFiles(list: FileList | File[] | null | undefined) {
+      if (!current()) { toast('เลือกแชทก่อนแนบไฟล์', 'error'); return; }
+      for (const f of Array.from(list || [])) {
+        const bad = checkAttach(f, state.pending.length);
+        if (bad) { toast(bad, 'error'); if (state.pending.length >= MAX_ATTACH) break; continue; }
+        state.pending.push({ file: f, url: attachKind(f) === 'image' ? URL.createObjectURL(f) : null });
+      }
+      renderPending();
+    }
+    function clearPending() {
+      for (const p of state.pending) if (p.url) URL.revokeObjectURL(p.url);
+      state.pending = [];
+      renderPending();
+    }
+
     async function submit() {
       const c = current();
       if (!c || state.busy) return;
       const ta = $<HTMLTextAreaElement>('#gw-text');
-      const d = checkDraft(ta.value);
-      if (!d.ok) { toast(d.error, 'error'); return; }
+      const files = state.pending.map((p) => p.file);
+      const text = ta.value.trim();
+      if (!files.length) { const d = checkDraft(ta.value); if (!d.ok) { toast(d.error, 'error'); return; } }
+      else if (text.length > MAX_MESSAGE) { toast(`คำบรรยายยาวเกิน ${MAX_MESSAGE.toLocaleString()} ตัวอักษร`, 'error'); return; }
+      const note = state.mode === 'note';
+      if (!note) { const why = canSend(state.status, c); if (!why.ok) { toast(why.why, 'error'); return; } }
       state.busy = true; $<HTMLButtonElement>('#gw-send').disabled = true;
       try {
-        if (state.mode === 'note') { await addNote(c.id, d.body); toast('บันทึกโน้ตแล้ว'); }
-        else {
-          const why = canSend(state.status, c);
-          if (!why.ok) { toast(why.why, 'error'); return; }
-          await queue(c.id, { kind: 'text', body: d.body }, crypto.randomUUID());
+        if (note) {
+          // note mode: files go to this customer's cabinet only, nothing is sent
+          for (const f of files) await uploadFile(c.id, f);
+          if (text) await addNote(c.id, text);
+          toast(files.length ? `เก็บ ${files.length} ไฟล์เข้าตู้ลูกค้าแล้ว` : 'บันทึกโน้ตแล้ว');
+        } else if (files.length) {
+          toast(`กำลังอัปโหลด ${files.length} ไฟล์…`);
+          const items = [];
+          for (const f of files) items.push(await uploadOutgoing(c.id, f));
+          await queue(c.id, { kind: 'media', body: text || undefined, payload: items }, crypto.randomUUID());
+          toast('เข้าคิวแล้ว มินิจะส่งภายในไม่กี่วินาที');
+        } else {
+          await queue(c.id, { kind: 'text', body: text }, crypto.randomUUID());
           toast('เข้าคิวแล้ว มินิจะส่งภายในไม่กี่วินาที');
         }
         ta.value = '';
+        clearPending();
+        state.lastThreadSig = '';
         await refreshThread(); renderThread(); renderSide();
       } catch (e) { oops(e); }
       finally { state.busy = false; renderSide(); }
+    }
+
+    // ---------- stickers (LINE: official sendable packs only) ----------
+    function renderStickers() {
+      $('#gw-sticker-tabs').replaceChildren(...STICKER_PACKS.map((pk, i) => h('button', {
+        type: 'button', class: 'gw-stktab btn btn-ghost btn-sm h-12 w-12 shrink-0 p-1', role: 'tab', 'data-pack': String(i),
+        'aria-selected': String(i === state.stickerPack), 'aria-label': `ชุดสติกเกอร์ ${i + 1}`,
+      }, h('img', { src: stickerUrl(pk[1]), alt: '', loading: 'lazy', referrerpolicy: 'no-referrer', class: 'h-full w-full object-contain' }))));
+      const pk = STICKER_PACKS[state.stickerPack];
+      $('#gw-sticker-grid').replaceChildren(...stickersOf(pk).map((id) => h('button', {
+        type: 'button', class: 'gw-stk', 'data-stk': `${pk[0]}:${id}`, 'aria-label': `ส่งสติกเกอร์ ${id}`,
+      }, h('img', { src: stickerUrl(id), alt: '', loading: 'lazy', referrerpolicy: 'no-referrer' }))));
+    }
+    function toggleStickers(open?: boolean) {
+      const panel = $('#gw-sticker-panel');
+      const show = open ?? panel.classList.contains('hidden');
+      panel.classList.toggle('hidden', !show);
+      $('#gw-sticker-btn').setAttribute('aria-expanded', String(show));
+      if (show && !$('#gw-sticker-grid').childElementCount) renderStickers();
+    }
+    async function sendSticker(packageId: number, stickerId: number) {
+      const c = current();
+      if (!c) return;
+      const why = canSend(state.status, c);
+      if (!why.ok) { toast(why.why, 'error'); return; }
+      try {
+        await queue(c.id, { kind: 'sticker', payload: { packageId, stickerId } }, crypto.randomUUID());
+        toggleStickers(false);
+        toast('ส่งสติกเกอร์เข้าคิวแล้ว');
+        window.setTimeout(() => void poll(), 4000);
+      } catch (e) { oops(e); }
     }
 
     async function botCommand(kind: 'hold' | 'release', minutes?: number) {
@@ -531,6 +626,40 @@ import AppNav from '../../components/app/AppNav.astro';
         for (const [t2, p2] of tabs) { $(t2).setAttribute('aria-selected', String(t2 === tab)); $(p2).classList.toggle('hidden', p2 !== pane); }
       });
       $('#gw-refresh').addEventListener('click', () => void poll());
+      $('#gw-attach').addEventListener('change', (e) => { const i = e.target as HTMLInputElement; addFiles(i.files); i.value = ''; });
+      $('#gw-pending').addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest('button[data-unpend]');
+        if (!b) return;
+        const [p] = state.pending.splice(Number(b.getAttribute('data-unpend')), 1);
+        if (p?.url) URL.revokeObjectURL(p.url);
+        renderPending();
+      });
+      $('#gw-text').addEventListener('paste', (e) => {
+        const files = Array.from((e as ClipboardEvent).clipboardData?.files || []);
+        if (files.length) { e.preventDefault(); addFiles(files); }
+      });
+      // drag & drop anywhere on the conversation column
+      const convo = $('#gw-convo'), drop = $('#gw-drop');
+      let depth = 0;
+      const hasFiles = (e: DragEvent) => Array.from(e.dataTransfer?.types || []).includes('Files');
+      convo.addEventListener('dragenter', (e) => { if (!hasFiles(e)) return; e.preventDefault(); depth++; drop.classList.remove('hidden'); });
+      convo.addEventListener('dragover', (e) => { if (!hasFiles(e)) return; e.preventDefault(); e.dataTransfer!.dropEffect = 'copy'; });
+      convo.addEventListener('dragleave', () => { depth = Math.max(0, depth - 1); if (!depth) drop.classList.add('hidden'); });
+      convo.addEventListener('drop', (e) => { if (!hasFiles(e)) return; e.preventDefault(); depth = 0; drop.classList.add('hidden'); addFiles(e.dataTransfer?.files); $('#gw-text').focus(); });
+      $('#gw-sticker-btn').addEventListener('click', () => toggleStickers());
+      $('#gw-sticker-tabs').addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest('button[data-pack]');
+        if (!b) return;
+        state.stickerPack = Number(b.getAttribute('data-pack'));
+        renderStickers();
+      });
+      $('#gw-sticker-grid').addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest('button[data-stk]');
+        if (!b) return;
+        const [pk, id] = b.getAttribute('data-stk')!.split(':').map(Number);
+        void sendSticker(pk, id);
+      });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#gw-sticker-panel').classList.contains('hidden')) toggleStickers(false); });
       const hb = $<HTMLInputElement>('#gw-hide-blocked');
       hb.checked = state.hideBlocked;
       hb.addEventListener('change', () => { state.hideBlocked = hb.checked; try { localStorage.setItem('gw-hide-blocked', hb.checked ? '1' : '0'); } catch { /* ignore */ } renderList(); });

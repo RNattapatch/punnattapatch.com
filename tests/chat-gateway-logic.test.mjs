@@ -5,7 +5,7 @@
 import {
   CHANNEL_META, isUnread, holdUntil, filterContacts, fmtWhen, checkDraft, parseTags, canSend, heartbeatAge, quotaText,
   visibleOutbox, displayName, initialOf, MAX_MESSAGE,
-  foldMediaEchoes, BOT_MODES, fmtSize, checkUpload, safeName, uploadPath, isImage, pathsToSign, mapsUrl, MAX_UPLOAD_BYTES,
+  foldMediaEchoes, STICKER_PACKS, stickersOf, stickerUrl, attachKind, checkAttach, outPath, extOfName, canDeleteFile, MAX_ATTACH, BOT_MODES, fmtSize, checkUpload, safeName, uploadPath, isImage, pathsToSign, mapsUrl, MAX_UPLOAD_BYTES,
 } from '../src/scripts/gateway/logic.ts';
 
 let pass = 0, fail = 0;
@@ -113,6 +113,25 @@ check(BOT_MODES.map((m) => m.id).join() === 'off,shadow,review,guard', 'mode but
   const failedRead = [M(15, '2026-11-01T03:00:00Z', 'in', 'image', '[รูป]'), M(16, '2026-11-01T03:00:20Z', 'in', 'text', '[ส่งรูป 1 รูป: อ่านรูปไม่สำเร็จ]')];
   const ff = foldMediaEchoes(failedRead);
   check(ff.length === 1 && ff[0].caption === 'อ่านรูปไม่สำเร็จ', 'failed photo read becomes a caption too');
+}
+
+// round 3: sending stickers + attachments
+check(STICKER_PACKS.reduce((n, p) => n + stickersOf(p).length, 0) === 456, 'sticker picker = 456 LINE-sendable stickers (same table as the mini)');
+check(stickersOf([446, 1988, 2027])[39] === 2027 && stickersOf([446, 1988, 2027]).length === 40, 'pack expands to its exact range');
+check(stickerUrl(52002734).endsWith('/sticker/52002734/android/sticker.png'), 'sticker image url');
+check(attachKind({ type: 'image/png' }) === 'image' && attachKind({ type: 'image/heic' }) === 'file' && attachKind({ type: 'application/pdf' }) === 'file', 'HEIC/PDF go as file links, browser-readable images as LINE images');
+check(checkAttach({ name: 'a.jpg', size: 10 }, MAX_ATTACH) !== null, 'max 4 attachments (LINE push = 5 messages incl. caption)');
+check(checkAttach({ name: 'a.jpg', size: 10 }, 0) === null, 'attachment ok');
+check(outPath('C1', 'ab12', 'JPG') === 'upload/C1/out-ab12.jpg', 'outgoing path is ASCII, under the RLS upload/<contact>/ rule');
+check(outPath('C1', 'x', '../../') === 'upload/C1/out-x.bin', 'junk extension cannot escape the path');
+check(extOfName('สัญญา.PDF') === 'pdf' && extOfName('noext') === 'bin', 'extension from name');
+check(canDeleteFile({ source: 'upload', note: null }) && !canDeleteFile({ source: 'upload', note: 'ส่งให้ลูกค้าทางแชท' }) && !canDeleteFile({ source: 'chat', note: null }), 'sent files and chat files are evidence: no delete');
+{
+  const S = (id, ts, kind, body) => ({ id, contact_id: 'c', dir: 'staff', kind, body, ts, created_by: null, media: kind === 'text' ? null : { path: 'x' } });
+  const sent = [S(1, '2026-11-01T05:34:01.000Z', 'sticker', '[สติกเกอร์]'), S(2, '2026-11-01T05:34:01.500Z', 'text', '[ส่งสติกเกอร์]'),
+    S(3, '2026-11-01T05:34:33.000Z', 'image', '[รูป]'), S(4, '2026-11-01T05:34:33.001Z', 'file', '[ไฟล์: a.pdf]'),
+    S(5, '2026-11-01T05:34:33.500Z', 'text', '[ส่งรูป 1 รูป] [ส่งไฟล์ a.pdf]'), S(6, '2026-11-01T05:34:33.600Z', 'text', 'ทดสอบส่งรูป')];
+  check(foldMediaEchoes(sent).map((m) => m.id).join() === '1,3,4,6', 'staff echo lines fold into the sent attachments, caption stays');
 }
 
 console.log(`\n${pass} passed, ${fail} failed\n`);

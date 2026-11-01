@@ -14,7 +14,9 @@ export type Kind = 'text' | 'image' | 'video' | 'audio' | 'file' | 'sticker' | '
 // media: path = private storage object (signed URL) · url = customer's https link · sticker_url = LINE public sticker PNG
 export interface Media { path?: string; url?: string; sticker_url?: string; mime?: string; size?: number | null; name?: string | null; duration?: number | null; lat?: number; lng?: number; title?: string | null; address?: string | null; error?: string }
 export interface Message { id: number; contact_id: string; dir: Dir; body: string; ts: string; created_by: string | null; kind?: Kind; media?: Media | null }
-export interface FileRow { id: string; contact_id: string; source: 'chat' | 'upload'; path: string; name: string; mime: string | null; size_bytes: number | null; created_at: string; created_by: string | null }
+export interface FileRow { id: string; contact_id: string; source: 'chat' | 'upload'; path: string; name: string; mime: string | null; size_bytes: number | null; created_at: string; created_by: string | null; note?: string | null }
+// A file Pun already sent is evidence too: deleting it would break the chat image and the customer's link.
+export const canDeleteFile = (f: FileRow) => f.source === 'upload' && !(f.note || '').startsWith('ส่งให้ลูกค้า');
 export interface OutboxRow {
   id: string; contact_id: string; kind: 'text' | 'hold' | 'release'; body: string | null; status: 'pending' | 'sending' | 'sent' | 'failed';
   error: string | null; created_at: string; client_request_id: string;
@@ -167,14 +169,18 @@ const IMG_NOTE = /^\[(?:ลูกค้าส่งรูปมา \d+ รูป
 export function foldMediaEchoes(msgs: Message[], windowMs = 120_000): ShownMessage[] {
   const out: ShownMessage[] = [];
   for (const m of msgs) {
-    const note = m.dir === 'in' && (!m.kind || m.kind === 'text') && m.body.startsWith('[') ? (IMG_NOTE.test(m.body) ? 'image' : m.body.startsWith('[ส่ง') ? 'other' : null) : null;
+    const isText = !m.kind || m.kind === 'text';
+    const note = m.dir === 'in' && isText && m.body.startsWith('[') ? (IMG_NOTE.test(m.body) ? 'image' : m.body.startsWith('[ส่ง') ? 'other' : null)
+      : m.dir === 'staff' && isText && m.body.startsWith('[ส่ง') ? 'staff' : null; // gateway-sync's memory line for what Pun sent
     let folded = false;
     if (note) {
       const t = Date.parse(m.ts);
       for (let i = out.length - 1; i >= 0; i--) {
         const p = out[i];
         if (t - Date.parse(p.ts) > windowMs) break;
-        if (p.dir !== 'in' || !p.kind || p.kind === 'text' || p.caption !== undefined) continue;
+        if (!p.kind || p.kind === 'text' || p.caption !== undefined) continue;
+        if (note === 'staff') { if (p.dir !== 'staff') continue; p.caption = ''; folded = true; break; }
+        if (p.dir !== 'in') continue;
         if (note === 'image' ? p.kind !== 'image' : p.kind === 'image') continue;
         if (note === 'image') p.caption = m.body.replace(IMG_NOTE, '').replace(/\]$/, '').trim() || 'บอทอ่านรูปนี้ไม่สำเร็จ';
         else p.caption = '';
@@ -186,3 +192,27 @@ export function foldMediaEchoes(msgs: Message[], windowMs = 120_000): ShownMessa
   }
   return out;
 }
+
+// ---------- sending stickers + attachments ----------
+// LINE lets bots send only these stickers: [packageId, firstStickerId, lastStickerId]. All 456 ids checked with LINE's
+// validate endpoint on 2026-11-01. Same table on the Mac mini (gateway-lib.mjs STICKER_PACKS) — it re-checks every send.
+export const STICKER_PACKS: [number, number, number][] = [
+  [11537, 52002734, 52002773], [11538, 51626494, 51626533], [11539, 52114110, 52114149], [446, 1988, 2027], [789, 10855, 10894],
+  [1070, 17839, 17878], [6136, 10551376, 10551399], [6325, 10979904, 10979927], [6359, 11069848, 11069871], [6362, 11087920, 11087943],
+  [6370, 11088016, 11088039], [6632, 11825374, 11825397], [8515, 16581242, 16581265], [8522, 16581266, 16581289], [8525, 16581290, 16581313],
+];
+export const stickerUrl = (id: number) => `https://stickershop.line-scdn.net/stickershop/v1/sticker/${id}/android/sticker.png`;
+export const stickersOf = ([, a, b]: [number, number, number]) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+
+export const MAX_ATTACH = 4; // LINE push = 5 messages: up to 4 attachments + the caption
+const SENDABLE_IMAGE = /^image\/(jpeg|png|webp|gif|bmp)$/; // what the browser can redraw as JPEG; HEIC etc. go as a file link
+export const attachKind = (f: { type: string }): 'image' | 'file' => (SENDABLE_IMAGE.test(f.type) ? 'image' : 'file');
+
+export function checkAttach(f: { name: string; size: number }, already: number): string | null {
+  if (already >= MAX_ATTACH) return `แนบได้ครั้งละ ${MAX_ATTACH} ไฟล์`;
+  return checkUpload(f);
+}
+
+// Outgoing objects get ASCII-only names: LINE fetches them by URL, and Thai in a URL path is a needless risk.
+export const outPath = (contactId: string, id: string, ext: string) => `upload/${contactId}/out-${id}.${ext.replace(/[^a-z0-9]/gi, '').toLowerCase().slice(0, 8) || 'bin'}`;
+export const extOfName = (name: string) => /\.([A-Za-z0-9]{1,8})$/.exec(name || '')?.[1]?.toLowerCase() || 'bin';
