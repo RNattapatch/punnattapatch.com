@@ -157,3 +157,32 @@ export function pathsToSign(messages: Message[], files: FileRow[], have: (p: str
 }
 
 export const mapsUrl = (lat: number, lng: number) => `https://www.google.com/maps?q=${encodeURIComponent(`${lat},${lng}`)}`;
+
+// ---------- fold the bot's attachment notes into the attachment ----------
+// The bot also writes its own line per attachment ("[ส่งสติกเกอร์ (…)]", "[ส่งไฟล์]") — a second bubble right after the real one.
+// Photos get "[ลูกค้าส่งรูปมา N รูป — ในรูป …]", the AI's reading of the photo: keep it, as a caption under the image.
+// Only folds when the real attachment row sits just before it, so history from before attachments were tracked stays as it was.
+export type ShownMessage = Message & { caption?: string };
+const IMG_NOTE = /^\[(?:ลูกค้าส่งรูปมา \d+ รูป(?: — )?|ส่งรูป \d+ รูป: )/;
+export function foldMediaEchoes(msgs: Message[], windowMs = 120_000): ShownMessage[] {
+  const out: ShownMessage[] = [];
+  for (const m of msgs) {
+    const note = m.dir === 'in' && (!m.kind || m.kind === 'text') && m.body.startsWith('[') ? (IMG_NOTE.test(m.body) ? 'image' : m.body.startsWith('[ส่ง') ? 'other' : null) : null;
+    let folded = false;
+    if (note) {
+      const t = Date.parse(m.ts);
+      for (let i = out.length - 1; i >= 0; i--) {
+        const p = out[i];
+        if (t - Date.parse(p.ts) > windowMs) break;
+        if (p.dir !== 'in' || !p.kind || p.kind === 'text' || p.caption !== undefined) continue;
+        if (note === 'image' ? p.kind !== 'image' : p.kind === 'image') continue;
+        if (note === 'image') p.caption = m.body.replace(IMG_NOTE, '').replace(/\]$/, '').trim() || 'บอทอ่านรูปนี้ไม่สำเร็จ';
+        else p.caption = '';
+        folded = true;
+        break;
+      }
+    }
+    if (!folded) out.push({ ...m });
+  }
+  return out;
+}

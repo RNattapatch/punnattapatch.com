@@ -5,7 +5,7 @@
 import {
   CHANNEL_META, isUnread, holdUntil, filterContacts, fmtWhen, checkDraft, parseTags, canSend, heartbeatAge, quotaText,
   visibleOutbox, displayName, initialOf, MAX_MESSAGE,
-  BOT_MODES, fmtSize, checkUpload, safeName, uploadPath, isImage, pathsToSign, mapsUrl, MAX_UPLOAD_BYTES,
+  foldMediaEchoes, BOT_MODES, fmtSize, checkUpload, safeName, uploadPath, isImage, pathsToSign, mapsUrl, MAX_UPLOAD_BYTES,
 } from '../src/scripts/gateway/logic.ts';
 
 let pass = 0, fail = 0;
@@ -87,6 +87,33 @@ const sigMsgs = [{ media: { path: 'line/u/1.jpg' } }, { media: { sticker_url: 'h
 check(JSON.stringify(pathsToSign(sigMsgs, [{ path: 'upload/c/a.pdf' }, { path: 'line/u/2.png' }], (p) => p === 'line/u/2.png')) === JSON.stringify(['line/u/1.jpg', 'upload/c/a.pdf']), 'sign only storage paths not cached, deduped');
 check(mapsUrl(13.73, 100.58) === 'https://www.google.com/maps?q=13.73%2C100.58', 'maps link');
 check(BOT_MODES.map((m) => m.id).join() === 'off,shadow,review,guard', 'mode buttons = the bot\'s 4 modes (DB check matches)');
+
+// fold the bot's own attachment notes (sequence copied from Pun's real test 2026-11-01 10:50)
+{
+  const M = (id, ts, dir, kind, body) => ({ id, contact_id: 'c', dir, kind, body, ts, created_by: null, media: kind === 'text' ? null : { path: 'x' } });
+  const real = [
+    M(1, '2026-11-01T03:50:01Z', 'in', 'sticker', '[สติกเกอร์: Rushing, Crisis, omw]'),
+    M(2, '2026-11-01T03:50:02Z', 'in', 'text', '[ส่งสติกเกอร์ (Rushing/Crisis/omw)]'),
+    M(3, '2026-11-01T03:50:02Z', 'bot', 'text', '[ทักกลับ + ปุ่มคีย์เวิร์ด]'),
+    M(4, '2026-11-01T03:50:11Z', 'in', 'image', '[รูป]'),
+    M(5, '2026-11-01T03:50:25Z', 'in', 'file', '[ไฟล์: payin.pdf]'),
+    M(6, '2026-11-01T03:50:26Z', 'in', 'text', '[ส่งไฟล์]'),
+    M(7, '2026-11-01T03:50:35Z', 'in', 'text', '[ลูกค้าส่งรูปมา 1 รูป — ในรูป (photo): คนยิ้มถือหมอน]'),
+  ];
+  const f = foldMediaEchoes(real);
+  check(f.map((m) => m.id).join() === '1,3,4,5', 'sticker/file echoes and the photo note are folded away');
+  check(f.find((m) => m.id === 4).caption === 'ในรูป (photo): คนยิ้มถือหมอน', 'photo note becomes the image caption (prefix stripped)');
+  check(real.length === 7 && real[3].caption === undefined, 'input array is not mutated');
+  const old = [M(9, '2026-10-20T01:00:00Z', 'in', 'text', '[ส่งสติกเกอร์ (ok)]'), M(10, '2026-10-20T01:00:05Z', 'in', 'text', '[ลูกค้าส่งรูปมา 2 รูป — ในรูป: ...]')];
+  check(foldMediaEchoes(old).length === 2, 'history before attachments were tracked stays visible');
+  const far = [M(11, '2026-11-01T03:00:00Z', 'in', 'image', '[รูป]'), M(12, '2026-11-01T03:10:00Z', 'in', 'text', '[ลูกค้าส่งรูปมา 1 รูป — x]')];
+  check(foldMediaEchoes(far).length === 2, 'notes more than 2 minutes after are not folded');
+  const plain = [M(13, '2026-11-01T03:00:00Z', 'in', 'image', '[รูป]'), M(14, '2026-11-01T03:00:05Z', 'in', 'text', '[ส่งมาให้ดูครับ] ราคาเท่าไหร่')];
+  check(foldMediaEchoes(plain).length === 2, 'a customer text after a photo is never folded into the photo');
+  const failedRead = [M(15, '2026-11-01T03:00:00Z', 'in', 'image', '[รูป]'), M(16, '2026-11-01T03:00:20Z', 'in', 'text', '[ส่งรูป 1 รูป: อ่านรูปไม่สำเร็จ]')];
+  const ff = foldMediaEchoes(failedRead);
+  check(ff.length === 1 && ff[0].caption === 'อ่านรูปไม่สำเร็จ', 'failed photo read becomes a caption too');
+}
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
 if (fail) process.exit(1);

@@ -194,10 +194,11 @@ import AppNav from '../../components/app/AppNav.astro';
   </div>
 
   <script>
+    import { getSupabaseSession } from '../../scripts/dashboard/supabase';
     import { loadContacts, loadThread, loadStatus, loadLead, queue, queueMode, addNote, saveTags, markRead, loadFiles, signUrls, uploadFile, deleteUpload, type LeadCard } from '../../scripts/gateway/data';
     import {
       CHANNEL_META, BOT_MODE_LABEL, OUTBOX_LABEL, MAX_MESSAGE, isUnread, holdUntil, filterContacts, fmtWhen, fmtClock, checkDraft, parseTags,
-      canSend, heartbeatAge, quotaText, visibleOutbox, displayName, initialOf,
+      canSend, heartbeatAge, quotaText, visibleOutbox, displayName, initialOf, foldMediaEchoes,
       BOT_MODES, fmtSize, checkUpload, isImage, pathsToSign, mapsUrl,
       type Contact, type Message, type OutboxRow, type GatewayStatus, type View, type FileRow,
     } from '../../scripts/gateway/logic';
@@ -294,7 +295,7 @@ import AppNav from '../../components/app/AppNav.astro';
       const atBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
       const nodes: Node[] = [];
       let lastDay = '';
-      for (const msg of state.messages) {
+      for (const msg of foldMediaEchoes(state.messages)) {
         const day = new Date(msg.ts).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Bangkok' });
         if (day !== lastDay) { nodes.push(h('div', { class: 'gw-day' }, day)); lastDay = day; }
         const who = msg.dir === 'in' ? displayName(c) : msg.dir === 'bot' ? `บอท · ${m.label}` : msg.dir === 'staff' ? `คุณปัน · ส่งทาง ${m.label}` : `โน้ตภายใน · ${msg.created_by || 'คุณปัน'} · ลูกค้าไม่เห็น`;
@@ -305,7 +306,8 @@ import AppNav from '../../components/app/AppNav.astro';
           continue;
         }
         const media = mediaNode(msg);
-        nodes.push(h('div', { class: `gw-msg gw-${msg.dir}` }, meta, ...(media ? [media] : [msg.body])));
+        const caption = msg.caption ? h('span', { class: 'mt-1 block text-xs opacity-70' }, `บอทอ่านรูปนี้ว่า: ${msg.caption}`) : null;
+        nodes.push(h('div', { class: `gw-msg gw-${msg.dir}` }, meta, ...(media ? [media] : [msg.body]), caption));
       }
       for (const o of visibleOutbox(state.outbox)) {
         const failed = o.status === 'failed';
@@ -572,12 +574,19 @@ import AppNav from '../../components/app/AppNav.astro';
       catch (e) { oops(e); }
       window.setInterval(() => void poll(), 5000);
     }
-    document.addEventListener('gateway:authed', () => void boot(), { once: true });
+    // The gate announces sign-in as soon as it finds a saved session. If this module loads after that moment
+    // (it did after the 2026-11-01 attachments release made the bundle bigger), the event is missed and the page
+    // never loads any data. So also check the session ourselves; `start` makes double-boot impossible.
+    let booted = false;
+    const start = () => { if (booted) return; booted = true; void boot(); };
+    document.addEventListener('gateway:authed', start);
+    void getSupabaseSession().then((s) => { if (s) start(); });
 
     // DEV ONLY: `astro dev` + ?demo = fixture data without signing in · import.meta.env.DEV is false in the production build, so this block and demo.ts are dropped
     if (import.meta.env.DEV && new URLSearchParams(location.search).has('demo')) {
       void import('../../scripts/gateway/demo').then((d) => {
         demo = { threads: d.DEMO_THREADS, files: d.DEMO_FILES, urls: d.DEMO_URLS };
+        booted = true;
         document.getElementById('wr-gate')?.classList.add('hidden');
         $('#gw-app').classList.remove('hidden');
         wire();
