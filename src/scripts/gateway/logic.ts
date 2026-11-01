@@ -1,7 +1,7 @@
 // Chat Single Gateway — pure rules for /app/gateway (no DOM, no network → tests/chat-gateway-logic.test.mjs)
 // Spec: claude-code repo → docs/superpowers/specs/2026-11-01-chat-single-gateway-phase1.md
 
-export type Channel = 'line' | 'messenger';
+export type Channel = 'line' | 'messenger' | 'whatsapp';
 export type Dir = 'in' | 'bot' | 'staff' | 'note';
 
 export interface Contact {
@@ -31,10 +31,12 @@ export interface GatewayStatus {
 export const CHANNEL_META: Record<Channel, { label: string; short: string; accent: string; tint: string; ink: string; wash: string }> = {
   line: { label: 'LINE', short: 'LINE', accent: '#06803c', tint: '#e3f6ea', ink: '#05622f', wash: '#f1faf4' },
   messenger: { label: 'Messenger', short: 'FB', accent: '#1b5fd6', tint: '#e7eefc', ink: '#1747a6', wash: '#f2f6fd' },
+  whatsapp: { label: 'WhatsApp', short: 'WA', accent: '#0a6f68', tint: '#dff3f1', ink: '#08524d', wash: '#f0f8f7' },
 };
 
 export const MAX_MESSAGE = 2000;
 export const STALE_HEARTBEAT_MS = 2 * 60_000;
+export const WA_WINDOW_MS = 23.5 * 3600 * 1000; // same margin as the mini (gateway-lib.mjs)
 
 // คนที่บล็อก OA ไปแล้วตอบไม่ได้ จึงไม่นับเป็นงานค้าง
 export const isUnread = (c: Contact) => !c.blocked && !!c.last_in_at && (!c.last_read_at || c.last_in_at > c.last_read_at);
@@ -92,8 +94,10 @@ export function heartbeatAge(s: GatewayStatus | null, now = Date.now()): number 
 // ส่งได้เมื่อมินิยังเต้นอยู่และไม่ได้ปิดการส่งไว้ — ไม่งั้นคำสั่งจะค้างในคิวโดยที่คุณปันไม่รู้
 export function canSend(s: GatewayStatus | null, c: Contact | null, now = Date.now()): { ok: boolean; why: string } {
   if (!c) return { ok: false, why: 'เลือกแชทก่อน' };
-  if (c.channel !== 'line') return { ok: false, why: 'ช่องทางนี้ยังตอบจากหน้านี้ไม่ได้ (phase 1 = LINE)' };
+  if (c.channel !== 'line' && c.channel !== 'whatsapp') return { ok: false, why: 'ช่องทางนี้ยังตอบจากหน้านี้ไม่ได้ (รอแอป Meta)' };
   if (!c.last_in_at) return { ok: false, why: 'ลูกค้ายังไม่เคยทักมา ส่งก่อนไม่ได้' };
+  // WhatsApp: free-form replies only within 24h of the customer's last message (after that Meta requires a paid template)
+  if (c.channel === 'whatsapp' && now - Date.parse(c.last_in_at) > WA_WINDOW_MS) return { ok: false, why: 'WhatsApp: เกิน 24 ชม. หลังลูกค้าทักล่าสุด ตอบได้ด้วย template ที่ Meta อนุมัติเท่านั้น' };
   const age = heartbeatAge(s, now);
   if (age === null || age > STALE_HEARTBEAT_MS) return { ok: false, why: 'มินิไม่ตอบ ข้อความจะยังไม่ออก · ตอบในแอป LINE OA ไปก่อน' };
   if (s?.send_off) return { ok: false, why: 'ปิดการส่งไว้ที่มินิ (gw_send_off)' };

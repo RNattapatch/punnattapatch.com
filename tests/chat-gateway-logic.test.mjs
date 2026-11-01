@@ -134,5 +134,10 @@ check(canDeleteFile({ source: 'upload', note: null }) && !canDeleteFile({ source
   check(foldMediaEchoes(sent).map((m) => m.id).join() === '1,3,4,6', 'staff echo lines fold into the sent attachments, caption stays');
 }
 
+// WhatsApp (round 4)
+check(canSend(alive, c({ channel: 'whatsapp', external_id: 'wa_66812345678' }), NOW).ok, 'WhatsApp reply allowed inside 24h');
+check(!canSend(alive, c({ channel: 'whatsapp', external_id: 'wa_66812345678', last_in_at: new Date(NOW - 25 * 3600_000).toISOString() }), NOW).ok, 'WhatsApp blocked after 24h (template only)');
+check(CHANNEL_META.whatsapp.accent !== CHANNEL_META.line.accent && CHANNEL_META.whatsapp.short === 'WA', 'WhatsApp has its own teal accent');
+
 console.log(`\n${pass} passed, ${fail} failed\n`);
 if (fail) process.exit(1);

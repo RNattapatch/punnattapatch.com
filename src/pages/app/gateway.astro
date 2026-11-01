@@ -403,8 +403,10 @@ import AppNav from '../../components/app/AppNav.astro';
       const isLine = c?.channel === 'line';
       $<HTMLButtonElement>('#gw-sticker-btn').disabled = !c || note || !isLine || !send.ok;
       $('#gw-sticker-btn').title = !isLine ? 'สติกเกอร์ของช่องทางนี้ยังไม่รองรับ' : note ? 'โหมดโน้ตภายในส่งสติกเกอร์ไม่ได้' : '';
-      $<HTMLInputElement>('#gw-attach').disabled = !c;
-      $('#gw-attach-btn').classList.toggle('btn-disabled', !c);
+      const attachOff = !c || (!note && !isLine); // sending files is LINE-only for now; note mode files go to the cabinet on any channel
+      $<HTMLInputElement>('#gw-attach').disabled = attachOff;
+      $('#gw-attach-btn').classList.toggle('btn-disabled', attachOff);
+      $('#gw-attach-btn').title = c && !note && !isLine ? 'ส่งไฟล์ทางช่องนี้ยังไม่รองรับ · สลับเป็นโน้ตภายในเพื่อเก็บเข้าตู้ลูกค้าได้' : '';
       $('#gw-attach-btn').firstChild!.textContent = note ? '📎 แนบเข้าตู้ลูกค้า' : '📎 แนบรูป/ไฟล์';
       $('#gw-send-why').textContent = note ? '' : send.why;
       for (const id of ['#gw-hold-60', '#gw-hold-day', '#gw-release', '#gw-tags', '#gw-tags-save']) $<HTMLButtonElement>(id).disabled = !c;
