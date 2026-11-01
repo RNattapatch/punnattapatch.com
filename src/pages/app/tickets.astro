@@ -1,0 +1,401 @@
+---
+// Ticket Center — เคสลูกค้าที่แจ้งผ่านบอท LINE ในกลุ่ม/อีเมล และงานที่ส่งให้ Claude · Codex · agent อื่นทำต่อ (2026-11-01)
+//
+// ทำไมต้องมีหน้านี้: เครื่องบนมินิ (ticket-desk) คัดแยก แก้ เทสต์ รีวิวเองแล้ว สิ่งที่เหลือของคุณปันคือ "ตัดสิน"
+// หน้านี้จึงเรียงเคสที่ต้องตัดสินขึ้นก่อน และให้เห็นว่าแต่ละเคสอยู่ขั้นไหน ใครทำ (Claude/Codex/sandbox) นานเท่าไร
+// แท็บงานส่งต่อ = Task Packet ใน handoffs/active ที่ Next Owner เป็น agent ตัวไหน · แท็บ agent ล่าสุด = log จริงของ agent-run
+//
+// หน้านี้ไม่รันอะไรเอง: อ่านกระจก td_* และเขียนคำสั่ง pending ลง td_actions · desk-sync บนมินิเช็คซ้ำแล้วทำ
+// runbook: claude-code repo → mac-mini-ops/ticket-desk/README.md
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
+import AppNav from '../../components/app/AppNav.astro';
+---
+<DashboardLayout title="Ticket Center — Pun">
+  <script is:inline async src="https://accounts.google.com/gsi/client"></script>
+  <WarRoomGate appId="tc-app" title="Ticket Center" icon="🎫" event="tickets:authed" />
+
+  <style is:global>
+    /* is:global — แถวและการ์ดสร้างตอน runtime · style scoped ของ Astro ไปไม่ถึง */
+    #tc-app { --tc-accent: #4338ca; --tc-tint: #eef0ff; --tc-ink: #312e81; }
+    [data-theme="pundark"] #tc-app { --tc-tint: color-mix(in srgb, var(--tc-accent) 22%, transparent); --tc-ink: #c7d2fe; }
+    .tc-shell { display: grid; grid-template-columns: minmax(0, 1fr); }
+    .tc-shell.hidden { display: none; } /* this sheet loads after Tailwind, so .tc-shell's grid would beat .hidden (same trap as .gw-drop) */
+    @media (min-width: 1024px) { .tc-shell { grid-template-columns: 360px minmax(0, 1fr); height: calc(100dvh - 3.5rem - 3rem); } .tc-col { overflow-y: auto; min-height: 0; } }
+    .tc-tab { border-bottom: 3px solid transparent; min-height: 44px; padding: 0 .9rem; white-space: nowrap; }
+    .tc-tab[aria-selected="true"] { border-bottom-color: var(--tc-accent); color: var(--tc-ink); font-weight: 600; }
+    .tc-row { width: 100%; display: block; text-align: left; padding: .7rem .9rem; border-bottom: 1px solid color-mix(in srgb, currentColor 8%, transparent); }
+    .tc-row[aria-current="true"] { background: var(--tc-tint); box-shadow: inset 4px 0 0 var(--tc-accent); }
+    .tc-steps { display: flex; flex-wrap: wrap; gap: .35rem; }
+    .tc-step { display: flex; flex-direction: column; min-width: 6.5rem; padding: .45rem .6rem; border-radius: .6rem; font-size: .78rem; border: 1px solid color-mix(in srgb, currentColor 12%, transparent); }
+    .tc-step[data-state="done"] { background: #e8f7ee; border-color: #9bd8b3; color: #14532d; }
+    .tc-step[data-state="now"] { background: var(--tc-tint); border-color: var(--tc-accent); color: var(--tc-ink); }
+    .tc-step[data-state="fail"] { background: #fde8eb; border-color: #f3b6c0; color: #8a1c2c; }
+    .tc-step[data-state="todo"] { opacity: .55; }
+    .tc-step[data-state="skip"] { opacity: .3; text-decoration: line-through; }
+    .tc-step[data-state="now"] .tc-dot { animation: tc-pulse 1.4s ease-in-out infinite; }
+    @keyframes tc-pulse { 50% { opacity: .25; } }
+    @media (prefers-reduced-motion: reduce) { .tc-step[data-state="now"] .tc-dot { animation: none; } }
+    .tc-quote { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--color-base-200, #f4f4f5); border-radius: .75rem; padding: .75rem .9rem; }
+    .tc-pre { white-space: pre-wrap; overflow-wrap: anywhere; font-family: ui-monospace, Menlo, monospace; font-size: .75rem; max-height: 14rem; overflow-y: auto; }
+    .tc-accent-btn { background: var(--tc-accent) !important; border-color: var(--tc-accent) !important; color: #fff !important; }
+  </style>
+
+  <div id="tc-app" class="hidden min-h-dvh bg-base-100">
+    <AppNav app="tickets">
+      <span id="tc-health" class="badge badge-ghost my-auto hidden sm:inline-flex" role="status">…</span>
+      <button id="tc-refresh" class="btn btn-ghost btn-sm tap-44 my-auto" aria-label="รีเฟรช" title="รีเฟรช">⟳</button>
+    </AppNav>
+
+    <div class="flex overflow-x-auto border-b border-base-300 px-2" role="tablist" aria-label="Ticket Center">
+      <button class="tc-tab" role="tab" data-tab="tickets" aria-selected="true" aria-controls="tc-pane-tickets">🎫 เคสลูกค้า <span id="tc-decide-count" class="badge badge-warning badge-sm hidden"></span></button>
+      <button class="tc-tab" role="tab" data-tab="tasks" aria-selected="false" aria-controls="tc-pane-tasks">🔁 งานส่งต่อ agent</button>
+      <button class="tc-tab" role="tab" data-tab="runs" aria-selected="false" aria-controls="tc-pane-runs">🤖 agent ล่าสุด</button>
+      <button class="tc-tab" role="tab" data-tab="channels" aria-selected="false" aria-controls="tc-pane-channels">📮 ช่องทาง</button>
+    </div>
+
+    <!-- เคสลูกค้า -->
+    <div id="tc-pane-tickets" role="tabpanel" class="tc-shell">
+      <section class="tc-col border-r border-base-300" aria-label="รายการเคส">
+        <div class="sticky top-0 z-10 space-y-2 border-b border-base-300 bg-base-100 p-3">
+          <label class="input input-sm w-full">
+            <span class="sr-only">ค้นเลขที่ หัวข้อ ลูกค้า</span>
+            <input id="tc-q" type="search" placeholder="ค้นเลขที่ หัวข้อ ลูกค้า" autocomplete="off" />
+          </label>
+          <div id="tc-views" class="flex flex-wrap gap-1" role="tablist" aria-label="กรองเคส"></div>
+        </div>
+        <ul id="tc-list" class="m-0 list-none p-0"></ul>
+      </section>
+      <section id="tc-detail" class="tc-col min-w-0 p-4 lg:p-6" aria-label="รายละเอียดเคส" aria-live="polite">
+        <p class="opacity-60">เลือกเคสทางซ้าย</p>
+      </section>
+    </div>
+
+    <!-- งานส่งต่อ agent (Task Packet) -->
+    <div id="tc-pane-tasks" role="tabpanel" class="hidden p-4 lg:p-6">
+      <p class="mb-4 text-sm opacity-70">Task Packet ใน <code>handoffs/active</code> ที่ยังไม่ปิด จัดตาม Next Owner · อัปเดตจากมินิทุกนาที</p>
+      <div id="tc-tasks" class="grid gap-4 md:grid-cols-2 xl:grid-cols-4"></div>
+    </div>
+
+    <!-- agent ล่าสุด -->
+    <div id="tc-pane-runs" role="tabpanel" class="hidden p-4 lg:p-6">
+      <p class="mb-4 text-sm opacity-70">ทุกงานที่มินิส่งให้ Claude หรือ Codex (agent-run) ย้อนหลัง 14 วัน · ป้ายสำรอง = ตัวหลักล่มแล้วสายสำรองรับแทน</p>
+      <div class="overflow-x-auto">
+        <table class="table table-sm">
+          <thead><tr><th>เวลา</th><th>งาน</th><th>ใครทำ</th><th>ผล</th><th>ใช้เวลา</th></tr></thead>
+          <tbody id="tc-runs"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ช่องทาง -->
+    <div id="tc-pane-channels" role="tabpanel" class="hidden space-y-6 p-4 lg:p-6">
+      <div id="tc-channel-status" class="flex flex-wrap gap-2"></div>
+      <div>
+        <h2 class="font-display text-lg font-bold">กลุ่ม LINE ที่บอทอยู่</h2>
+        <p class="mb-3 text-sm opacity-70">ดึงบอทเข้ากลุ่มลูกค้าแล้ว ผูกกลุ่มกับระบบที่นี่ บอทถึงจะเริ่มรับแจ้งปัญหาในกลุ่มนั้น</p>
+        <div id="tc-groups" class="space-y-2"></div>
+      </div>
+      <div>
+        <h2 class="font-display text-lg font-bold">ระบบลูกค้าในทะเบียน</h2>
+        <p class="mb-3 text-sm opacity-70">เพิ่ม/แก้ระบบ อีเมลที่รับ และคำสั่งเทสต์ ทำที่ <code>~/Library/PunOps/ticket-desk/projects.json</code> บนมินิ (คำสั่ง shell ไม่ขึ้นเว็บ)</p>
+        <div id="tc-projects" class="grid gap-3 md:grid-cols-2"></div>
+      </div>
+    </div>
+
+    <div class="toast toast-end z-50"><div id="tc-toast" class="alert hidden" role="status"></div></div>
+  </div>
+
+  <script>
+    import { onAuthed } from '../../scripts/dashboard/on-authed';
+    import { loadTickets, loadActions, loadBoard, queueAction } from '../../scripts/tickets/data';
+    import {
+      VIEWS, ACTION_LABEL, OWNER_LABEL, MAIL_LABEL, PROVIDER_LABEL, statusMeta, filterTickets, countBy, timeline, fmtMs, fmtWhen,
+      stuckMinutes, allowed, checkNote, deskHealth, groupTasks, groupRows, isGroupId, jobLabel,
+      type Ticket, type Action, type Task, type AgentRun, type Project, type DeskStatus, type GroupInfo, type View, type ActionKind, type Owner,
+    } from '../../scripts/tickets/logic';
+
+    const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector(sel) as T;
+    // ข้อความลูกค้าเป็นข้อมูลไม่น่าไว้ใจ → สร้าง DOM ด้วย textContent เท่านั้น ไม่มี innerHTML กับข้อมูลจาก td_*
+    function h<K extends keyof HTMLElementTagNameMap>(tag: K, props: Record<string, string> = {}, ...kids: (Node | string | null | false | undefined)[]): HTMLElementTagNameMap[K] {
+      const el = document.createElement(tag);
+      for (const [k, v] of Object.entries(props)) k === 'class' ? (el.className = v) : el.setAttribute(k, v);
+      for (const k of kids) if (k !== null && k !== false && k !== undefined) el.append(k);
+      return el;
+    }
+    let toastTimer: number | undefined;
+    function toast(msg: string, kind: 'success' | 'error' = 'success') {
+      const el = $('#tc-toast');
+      el.className = `alert text-sm shadow-lg ${kind === 'error' ? 'alert-error' : 'alert-success'}`;
+      el.textContent = msg;
+      window.clearTimeout(toastTimer); toastTimer = window.setTimeout(() => el.classList.add('hidden'), 3500);
+    }
+    const oops = (e: unknown) => toast((e as Error).message || 'ผิดพลาด ลองใหม่', 'error');
+
+    const state = {
+      tickets: [] as Ticket[], actions: [] as Action[], tasks: [] as Task[], runs: [] as AgentRun[], projects: [] as Project[],
+      desk: null as DeskStatus | null, groups: {} as Record<string, GroupInfo>,
+      view: 'decide' as View, q: '', selected: (location.hash.match(/TK-\d{6}-[0-9a-f]{6}/) || [''])[0], tab: 'tickets',
+      requestIds: {} as Record<string, string>, lastSig: '',
+    };
+    const current = () => state.tickets.find((t) => t.id === state.selected) || null;
+    // 1 คำสั่งที่กำลังกรอก = 1 request id · ส่งสำเร็จแล้วค่อยออก id ใหม่
+    const requestId = (key: string) => (state.requestIds[key] ||= crypto.randomUUID());
+
+    // ------------------------------------------------------------------ เคสลูกค้า
+
+    function renderViews() {
+      const counts = countBy(state.tickets);
+      $('#tc-views').replaceChildren(...VIEWS.map((v) => h('button', {
+        class: `btn btn-xs tap-44 ${state.view === v.id ? 'tc-accent-btn' : ''}`, role: 'tab', 'data-view': v.id, 'aria-selected': String(state.view === v.id),
+      }, v.label, v.id !== 'all' && counts[v.id as keyof typeof counts] ? ` ${counts[v.id as keyof typeof counts]}` : '')));
+      const n = counts.decide || 0;
+      const badge = $('#tc-decide-count');
+      badge.textContent = String(n);
+      badge.classList.toggle('hidden', !n);
+    }
+
+    function renderList() {
+      const list = filterTickets(state.tickets, state.view, state.q);
+      $('#tc-list').replaceChildren(...(list.length ? list.map((t) => {
+        const m = statusMeta(t.status);
+        const stuck = stuckMinutes(t);
+        return h('li', {}, h('button', { class: 'tc-row', 'data-id': t.id, 'aria-current': String(t.id === state.selected) },
+          h('div', { class: 'flex items-center justify-between gap-2' },
+            h('span', { class: `badge badge-sm ${m.tone}` }, m.label),
+            h('span', { class: 'text-xs opacity-60' }, fmtWhen(t.updated_at))),
+          h('p', { class: 'mt-1 font-semibold leading-snug' }, t.urgency === 'urgent' ? '🔴 ' : '', t.title),
+          h('p', { class: 'text-xs opacity-70' }, [t.client, t.system_name].filter(Boolean).join(' · '), ` · ${t.source === 'line' ? 'LINE' : t.source === 'email' ? 'อีเมล' : t.source}`),
+          stuck ? h('p', { class: 'text-xs text-error' }, `⚠️ ค้างขั้นนี้ ${stuck} นาที`) : null));
+      }) : [h('li', { class: 'p-6 text-center text-sm opacity-60' }, state.view === 'decide' ? 'ไม่มีอะไรรอคุณปันตัดสิน 🎉' : 'ไม่มีเคสในมุมนี้')]));
+    }
+
+    const section = (title: string, ...kids: (Node | string | null | false | undefined)[]) =>
+      h('section', { class: 'space-y-2' }, h('h3', { class: 'text-xs font-semibold uppercase tracking-wide opacity-60' }, title), ...kids);
+
+    function renderDetail() {
+      const t = current();
+      const box = $('#tc-detail');
+      if (!t) { box.replaceChildren(h('p', { class: 'opacity-60' }, 'เลือกเคสทางซ้าย')); return; }
+      const m = statusMeta(t.status);
+      const d = t.data || {};
+      const steps = timeline(t);
+      const acts = allowed(t);
+
+      const header = h('header', { class: 'space-y-1' },
+        h('p', { class: 'font-mono text-xs opacity-60' }, t.id, d.branch ? ` · branch ${d.branch}` : ''),
+        h('h2', { class: 'font-display text-xl font-bold leading-snug' }, t.urgency === 'urgent' ? '🔴 ' : '', t.title),
+        h('div', { class: 'flex flex-wrap items-center gap-2 text-sm' },
+          h('span', { class: `badge ${m.tone}` }, m.label),
+          h('span', { class: 'opacity-70' }, [t.client, t.system_name].filter(Boolean).join(' · ')),
+          h('span', { class: 'opacity-70' }, `แจ้งโดย ${t.reporter || '-'} ทาง ${d.origin?.type === 'email' ? `อีเมล ${d.origin.from || ''}` : d.origin?.group ? `LINE กลุ่ม ${d.origin.group}` : t.source}`),
+          h('span', { class: 'opacity-60' }, `เข้ามา ${fmtWhen(t.created_at)}`)));
+
+      const stepEls = h('div', { class: 'tc-steps', role: 'list', 'aria-label': 'ความคืบหน้า' }, ...steps.map((s) => h('div', { class: 'tc-step', role: 'listitem', 'data-state': s.state },
+        h('span', { class: 'font-semibold' }, h('span', { class: 'tc-dot', 'aria-hidden': 'true' }, s.state === 'done' ? '✓ ' : s.state === 'fail' ? '✕ ' : s.state === 'now' ? '● ' : '○ '), s.label),
+        s.who || s.ms != null ? h('span', { class: 'opacity-80' }, [s.who, fmtMs(s.ms)].filter(Boolean).join(' · ')) : null,
+        h('span', { class: 'sr-only' }, { done: 'เสร็จ', now: 'กำลังทำ', fail: 'ไม่ผ่าน', todo: 'ยังไม่ถึง', skip: 'ข้าม' }[s.state]))));
+
+      const stuck = stuckMinutes(t);
+      const actions = acts.length ? h('form', { id: 'tc-act', class: 'space-y-2 rounded-box border border-base-300 p-3' },
+        h('label', { class: 'block' },
+          h('span', { class: 'mb-1 block text-xs opacity-70' }, 'โน้ตถึงเครื่อง (ใช้กับ "ให้เครื่องทำใหม่" · เครื่องถือเป็นคำสั่งของคุณปัน ลูกค้าไม่เห็น)'),
+          h('textarea', { id: 'tc-note', class: 'textarea w-full', rows: '2', maxlength: '2000', placeholder: 'เช่น ต้นเหตุอยู่ที่ pos.mjs ไม่ใช่ receipt.mjs · ห้ามแตะหน้าพิมพ์ใบเสร็จ' })),
+        h('div', { class: 'flex flex-wrap gap-2' }, ...acts.map((k) => h('button', {
+          type: 'button', 'data-act': k,
+          class: `btn btn-sm tap-44 ${k === 'approve' ? 'tc-accent-btn' : k === 'decline' || k === 'close' ? 'btn-outline' : ''}`,
+        }, ACTION_LABEL[k]))),
+        t.status === 'awaiting_approval' && d.guard?.flags?.length ? h('p', { class: 'text-xs text-warning' }, `⚠️ มีธง: ${d.guard.flags.join(' ')} อ่านก่อนกดอนุมัติ`) : null) : null;
+
+      const spec = d.spec;
+      box.replaceChildren(h('div', { class: 'mx-auto max-w-4xl space-y-6' },
+        header,
+        stuck ? h('div', { role: 'alert', class: 'alert alert-warning text-sm' }, `ค้างขั้นนี้ ${stuck} นาทีแล้ว เช็ค worker บนมินิ (tail ~/logs/ticket-desk-worker.log)`) : null,
+        section('ความคืบหน้า', stepEls),
+        actions,
+        section('ลูกค้าเล่า', h('div', { class: 'tc-quote' }, d.what_happened || ''),
+          ...(d.replies || []).map((r) => h('div', { class: 'tc-quote' }, h('span', { class: 'block text-xs opacity-60' }, `ตอบเพิ่ม ${fmtWhen(r.at)}`), r.text)),
+          d.images ? h('p', { class: 'text-xs opacity-70' }, `📎 รูปหน้าจอ ${d.images} รูป (เก็บบนมินิ ส่งให้ agent ดูแล้ว)`) : null),
+        spec ? section('Claude คัดแยก', h('div', { class: 'space-y-1 text-sm' },
+          h('p', {}, h('b', {}, 'อาการ: '), spec.summary),
+          spec.repro ? h('p', {}, h('b', {}, 'ทำซ้ำ: '), spec.repro) : null,
+          h('p', { class: 'opacity-70' }, `ประเภท ${spec.kind} · ความเสี่ยง ${spec.risk} · ${spec.clear ? 'ข้อมูลพอ' : 'ข้อมูลยังไม่พอ'}`),
+          spec.acceptance?.length ? h('ol', { class: 'list-decimal pl-5' }, ...spec.acceptance.map((a) => h('li', {}, a))) : null,
+          spec.questions?.length ? h('p', {}, h('b', {}, 'ถามลูกค้า: '), spec.questions.join(' / ')) : null)) : null,
+        d.fix_summary ? section('Codex แก้', h('div', { class: 'tc-quote text-sm' }, d.fix_summary),
+          d.guard ? h('p', { class: 'text-xs opacity-70' }, `${d.guard.files.join(', ')} (${d.guard.lines} บรรทัด)`) : null) : null,
+        d.tests ? section(`เทสต์ใน sandbox ${d.tests.ok ? '✓ ผ่าน' : '✕ ไม่ผ่าน'}`, h('pre', { class: 'tc-pre rounded-box bg-base-200 p-3' }, d.tests.tail)) : null,
+        d.review ? section('Claude รีวิว', h('p', { class: 'text-sm' }, `${d.review.verdict === 'ship' ? 'ให้ขึ้น' : 'ให้รอ'} · ความเสี่ยง ${d.review.risk} · ${d.review.notes}`),
+          d.review.client_message ? h('div', { class: 'tc-quote text-sm' }, h('span', { class: 'block text-xs opacity-60' }, 'ข้อความที่จะส่งลูกค้าเมื่อขึ้นระบบ'), d.review.client_message) : null) : null,
+        (d.pun_notes || []).length ? section('โน้ตของคุณปัน', ...(d.pun_notes || []).map((n) => h('p', { class: 'text-sm' }, `${fmtWhen(n.at)} · ${n.text}`))) : null,
+        section('ประวัติ', h('ul', { class: 'space-y-1 text-sm' },
+          ...[...(d.history || [])].reverse().map((x) => h('li', {}, h('span', { class: 'opacity-60' }, `${fmtWhen(x.at)} `), statusMeta(x.status).label, x.note ? h('span', { class: 'opacity-70' }, ` · ${x.note}`) : null)),
+          ...state.actions.map((a) => h('li', { class: 'text-xs opacity-70' }, `${fmtWhen(a.created_at)} คำสั่ง ${ACTION_LABEL[a.kind] || a.kind}: ${a.status === 'pending' ? 'รอมินิรับ…' : a.result || a.status}`)))),
+      ));
+    }
+
+    async function act(kind: ActionKind) {
+      const t = current();
+      if (!t) return;
+      const note = ($('#tc-note') as HTMLTextAreaElement)?.value || '';
+      const bad = checkNote(note, kind);
+      if (bad) { toast(bad, 'error'); return; }
+      if (kind === 'approve' && !window.confirm(`อนุมัติขึ้นระบบจริงของ ${t.client || t.project}?\nเครื่องจะรัน ship_cmd ภายใน 1 นาที`)) return;
+      const key = `${t.id}:${kind}`;
+      try {
+        await queueAction(kind, t.id, note, {}, requestId(key));
+        delete state.requestIds[key];
+        toast(`ส่งคำสั่ง "${ACTION_LABEL[kind]}" แล้ว มินิรับภายในไม่กี่วินาที`);
+        window.setTimeout(() => void refresh(true), 4000);
+      } catch (e) { oops(e); }
+    }
+
+    // ------------------------------------------------------------------ แท็บอื่น
+
+    function renderTasks() {
+      const g = groupTasks(state.tasks);
+      $('#tc-tasks').replaceChildren(...(['pun', 'claude', 'codex', 'other'] as Owner[]).map((o) => h('section', { class: 'space-y-2' },
+        h('h2', { class: 'font-display font-bold' }, `${OWNER_LABEL[o]} `, h('span', { class: 'badge badge-sm' }, String(g[o].length))),
+        ...(g[o].length ? g[o].map((t) => h('article', { class: 'rounded-box border border-base-300 p-3 text-sm' },
+          h('p', { class: 'font-mono text-xs opacity-60' }, t.id),
+          h('p', { class: 'font-semibold leading-snug' }, t.title || t.id),
+          h('p', { class: 'text-xs opacity-80' }, t.status || 'ไม่ระบุสถานะ'),
+          h('p', { class: 'text-xs opacity-60' }, `${t.current_owner ? `ถืออยู่: ${t.current_owner} · ` : ''}แก้ล่าสุด ${fmtWhen(t.updated_at)}`)))
+          : [h('p', { class: 'text-sm opacity-60' }, 'ไม่มีงานค้าง')]))));
+    }
+
+    function renderRuns() {
+      $('#tc-runs').replaceChildren(...state.runs.map((r) => h('tr', {},
+        h('td', { class: 'whitespace-nowrap' }, fmtWhen(r.ts)),
+        h('td', {}, jobLabel(r.job)),
+        h('td', {}, r.provider ? PROVIDER_LABEL[r.provider] || r.provider : '-', r.degraded ? h('span', { class: 'badge badge-warning badge-xs ml-1' }, 'สำรอง') : null),
+        h('td', {}, r.ok ? '✓' : h('span', { class: 'text-error' }, `✕ ${r.attempts || ''}`)),
+        h('td', { class: 'whitespace-nowrap' }, fmtMs(r.ms)))));
+    }
+
+    function renderChannels() {
+      const st = state.desk;
+      const health = deskHealth(st);
+      $('#tc-channel-status').replaceChildren(
+        h('span', { class: `badge ${health.ok ? 'badge-success' : 'badge-warning'}` }, health.text),
+        h('span', { class: `badge ${st?.line ? 'badge-success' : 'badge-ghost'}` }, st?.line ? 'บอท LINE พร้อม' : 'บอท LINE ยังไม่ใส่ token'),
+        h('span', { class: `badge ${st?.mail === 'on' ? 'badge-success' : 'badge-ghost'}` }, MAIL_LABEL[st?.mail || 'unknown'] || st?.mail || ''));
+      const rows = groupRows(state.groups, state.projects);
+      $('#tc-groups').replaceChildren(...(rows.length ? rows.map((g) => {
+        const sel = h('select', { class: 'select select-sm', 'aria-label': `ผูกกลุ่ม ${g.name || g.id} กับระบบ`, 'data-group': g.id },
+          h('option', { value: '' }, 'เลือกระบบ…'), ...state.projects.map((p) => {
+            const o = h('option', { value: p.slug }, `${p.client || ''} ${p.name || p.slug}`.trim());
+            if (p.slug === g.project) o.setAttribute('selected', '');
+            return o;
+          }));
+        return h('div', { class: 'flex flex-wrap items-center gap-3 rounded-box border border-base-300 p-3' },
+          h('div', { class: 'min-w-0 flex-1' }, h('p', { class: 'font-semibold' }, g.name || 'กลุ่มไม่มีชื่อ'), h('p', { class: 'text-xs opacity-60' }, g.project ? `ผูกกับ ${g.project}` : '⚠️ ยังไม่ผูก บอทจะยังไม่รับเรื่อง')),
+          sel, h('button', { class: 'btn btn-sm tap-44', type: 'button', 'data-bind': g.id }, 'บันทึก'));
+      }) : [h('p', { class: 'text-sm opacity-60' }, 'ยังไม่มีกลุ่ม ดึงบอทเข้ากลุ่มลูกค้าใน LINE ก่อน แล้วกลุ่มจะขึ้นที่นี่เอง')]));
+      $('#tc-projects').replaceChildren(...state.projects.map((p) => h('article', { class: 'rounded-box border border-base-300 p-3 text-sm' },
+        h('p', { class: 'font-semibold' }, `${p.client || ''} · ${p.name || p.slug}`),
+        h('p', { class: 'font-mono text-xs opacity-60' }, p.slug),
+        h('p', { class: 'text-xs' }, `กลุ่ม LINE ${p.line_groups.length} · อีเมล ${p.emails.join(', ') || '-'}`),
+        h('p', { class: 'text-xs' }, `${p.has_tests ? '✓ มีคำสั่งเทสต์' : '⚠️ ไม่มีเทสต์ เครื่องพิสูจน์ไม่ได้ว่าแก้ถูก'} · ${p.auto_ship ? 'ขึ้นระบบเองได้' : 'ต้องคุณปันอนุมัติ'}`))));
+    }
+
+    function renderHealth() {
+      const hl = deskHealth(state.desk);
+      const el = $('#tc-health');
+      el.className = `badge my-auto hidden sm:inline-flex ${hl.ok ? 'badge-success' : 'badge-warning'}`;
+      el.textContent = hl.text;
+    }
+
+    function renderAll() {
+      renderViews(); renderList(); renderDetail(); renderHealth();
+      if (state.tab === 'tasks') renderTasks();
+      if (state.tab === 'runs') renderRuns();
+      if (state.tab === 'channels') renderChannels();
+    }
+
+    async function refresh(force = false) {
+      const [tickets, board] = await Promise.all([loadTickets(), loadBoard()]);
+      Object.assign(state, { tickets, ...board });
+      if (state.selected) state.actions = await loadActions(state.selected);
+      // ไม่วาดใหม่ถ้าไม่มีอะไรเปลี่ยน — ไม่งั้นโน้ตที่กำลังพิมพ์หาย
+      const sig = JSON.stringify([tickets.map((t) => t.updated_at), state.actions.map((a) => a.status), board.desk?.at, board.runs[0]?.id, board.tasks.length, state.tab]);
+      if (!force && sig === state.lastSig) return;
+      state.lastSig = sig;
+      const typing = ($('#tc-note') as HTMLTextAreaElement | null)?.value || '';
+      renderAll();
+      const note = $('#tc-note') as HTMLTextAreaElement | null;
+      if (note && typing) note.value = typing;
+    }
+
+    async function select(id: string) {
+      state.selected = id;
+      history.replaceState(null, '', `#${id}`);
+      state.actions = await loadActions(id).catch(() => []);
+      renderList(); renderDetail();
+      if (window.innerWidth < 1024) $('#tc-detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function wire() {
+      $('#tc-list').addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest('button[data-id]');
+        if (b) void select(b.getAttribute('data-id')!);
+      });
+      $('#tc-views').addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest('button[data-view]');
+        if (!b) return;
+        state.view = b.getAttribute('data-view') as View;
+        renderViews(); renderList();
+      });
+      $('#tc-q').addEventListener('input', (e) => { state.q = (e.target as HTMLInputElement).value; renderList(); });
+      $('#tc-detail').addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest('button[data-act]');
+        if (b) void act(b.getAttribute('data-act') as ActionKind);
+      });
+      document.querySelectorAll<HTMLButtonElement>('.tc-tab').forEach((tab) => tab.addEventListener('click', () => {
+        state.tab = tab.dataset.tab!;
+        document.querySelectorAll<HTMLButtonElement>('.tc-tab').forEach((x) => {
+          x.setAttribute('aria-selected', String(x === tab));
+          $(`#tc-pane-${x.dataset.tab}`).classList.toggle('hidden', x !== tab);
+        });
+        renderAll();
+      }));
+      $('#tc-groups').addEventListener('click', async (e) => {
+        const b = (e.target as HTMLElement).closest('button[data-bind]');
+        if (!b) return;
+        const gid = b.getAttribute('data-bind')!;
+        const slug = ($(`select[data-group="${gid}"]`) as HTMLSelectElement).value;
+        if (!slug || !isGroupId(gid)) { toast('เลือกระบบก่อน', 'error'); return; }
+        try {
+          await queueAction('bind_group', null, '', { group_id: gid, project: slug }, requestId(`bind:${gid}:${slug}`));
+          toast('ส่งคำสั่งผูกกลุ่มแล้ว'); window.setTimeout(() => void refresh(true), 65_000);
+        } catch (err) { oops(err); }
+      });
+      $('#tc-refresh').addEventListener('click', () => void refresh(true).catch(oops));
+      window.addEventListener('hashchange', () => { const id = (location.hash.match(/TK-\d{6}-[0-9a-f]{6}/) || [''])[0]; if (id && id !== state.selected) void select(id); });
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) void refresh().catch(() => {}); });
+    }
+
+    async function boot() {
+      wire();
+      try {
+        await refresh(true);
+        // ลิงก์จาก Telegram (#TK-…) เปิดเคสตรงๆ แม้อยู่นอกมุมที่กรองไว้
+        if (state.selected && !filterTickets(state.tickets, state.view).some((t) => t.id === state.selected)) { state.view = 'all'; renderAll(); }
+      } catch (e) { oops(e); }
+      window.setInterval(() => void refresh().catch(() => {}), 8000);
+    }
+    onAuthed('tc-app', 'tickets:authed', boot);
+
+    // DEV ONLY: `astro dev` + ?demo = fixture data without signing in · import.meta.env.DEV is false in the production build, so this block and demo.ts are dropped
+    if (import.meta.env.DEV && new URLSearchParams(location.search).has('demo')) {
+      void import('../../scripts/tickets/demo').then((d) => {
+        document.getElementById('wr-gate')?.classList.add('hidden');
+        $('#tc-app').classList.remove('hidden');
+        wire();
+        Object.assign(state, { tickets: d.DEMO_TICKETS, tasks: d.DEMO_TASKS, runs: d.DEMO_RUNS, projects: d.DEMO_PROJECTS, desk: d.DEMO_DESK, groups: d.DEMO_GROUPS });
+        state.selected ||= d.DEMO_TICKETS[0].id;
+        renderAll();
+      });
+    }
+  </script>
+</DashboardLayout>
