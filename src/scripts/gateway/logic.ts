@@ -35,14 +35,15 @@ export const CHANNEL_META: Record<Channel, { label: string; short: string; accen
 };
 
 // Each channel's own inbox. Replies typed in LINE OA Manager chat never count toward the push quota.
-// These ids are public account ids, not secrets. LINE OA Manager uses its own account id (from the chat.line.biz URL),
-// not the bot userId from GET /v2/bot/info — the bot id gives "ไม่มีบัญชีนี้" (2026-11-01).
+// OA Manager's chat ids are NOT Messaging API userIds (คุณมิสซา: API Ud1c2b43… vs OA chat U3d9cad…, 2026-11-02) and there is
+// no documented mapping, so LINE opens the account's chat list and the page copies the customer's name for its search box.
+// Ids below are public account ids, not secrets; the LINE one comes from the chat.line.biz URL (not GET /v2/bot/info).
 const LINE_OA_CHAT_ACCOUNT = 'U54ca0fc58b4946d9966c4ed143fc97b8';
 const FB_PAGE_ID = '841096959096494';
-export function nativeInbox(c: Contact | null): { href: string; label: string; hint: string } | null {
-  if (c?.channel === 'line' && /^U[0-9a-f]{32}$/.test(c.external_id))
-    return { href: `https://chat.line.biz/${LINE_OA_CHAT_ACCOUNT}/chat/${c.external_id}`, label: 'ตอบใน LINE OA · ไม่กินโควตา',
-      hint: 'เปิดแชทคนนี้ใน LINE OA Manager แล้วพักบอท 1 ชม. ให้อัตโนมัติ · ข้อความที่ตอบในนั้นไม่ขึ้นในหน้านี้' };
+export function nativeInbox(c: Contact | null): { href: string; label: string; hint: string; copy?: string } | null {
+  if (c?.channel === 'line')
+    return { href: `https://chat.line.biz/${LINE_OA_CHAT_ACCOUNT}`, label: 'ตอบใน LINE OA · ไม่กินโควตา', copy: c.display_name || undefined,
+      hint: 'เปิดแชททั้งหมดใน LINE OA Manager · คัดลอกชื่อลูกค้าให้แล้ว วางในช่องค้นหา · พักบอทคนนี้ 1 ชม. ให้อัตโนมัติ · ข้อความที่ตอบในนั้นไม่ขึ้นในหน้านี้' };
   if (c?.channel === 'messenger' && /^\d{5,20}$/.test(c.external_id))
     return { href: `https://business.facebook.com/latest/inbox/messenger?asset_id=${FB_PAGE_ID}&selected_item_id=${c.external_id}`, label: 'ตอบใน Business Suite',
       hint: 'เปิดกล่องข้อความเพจใน Meta Business Suite · ข้อความที่ตอบในนั้นไม่ขึ้นในหน้านี้' };
