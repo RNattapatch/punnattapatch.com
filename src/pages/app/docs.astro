@@ -193,6 +193,7 @@ import AppNav from '../../components/app/AppNav.astro';
   </div>
 
   <script>
+    import { onAuthed } from '../../scripts/dashboard/on-authed';
     import { loadAll, uploadDoc, openUrl, updateDoc, archiveDoc, restoreDoc, hardDeleteDoc, confirmDoc, previewUrls, downloadText, MAX_UPLOAD_BYTES } from '../../scripts/docs/data';
     import { getSupabaseSession } from '../../scripts/dashboard/supabase';
     import {
@@ -532,7 +533,7 @@ import AppNav from '../../components/app/AppNav.astro';
       if (lead && (state.leads.some((l) => l.id === lead) || lead === '__none')) openFolder(lead);
       if (location.hash === '#tax') setView('tax'); else if (location.hash === '#kinds') setView('kinds'); else if (location.hash === '#archive') setView('archive');
     }
-    document.addEventListener('docs:authed', () => void boot());
+    onAuthed('docs-app', 'docs:authed', boot); // boots even if the gate fired before this module loaded
     void (async () => { if (await getSupabaseSession()) void boot(); })();
   </script>
 </DashboardLayout>

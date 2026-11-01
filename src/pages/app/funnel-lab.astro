@@ -571,11 +571,7 @@ import AppNav from '../../components/app/AppNav.astro';
 
   <script>
     import { boot } from '../../scripts/growth-lab/ui.mjs';
-    // The gate may restore the session and fire its event before this module finishes loading
-    // (all module scripts race on their imports) — so also boot if the app is already revealed.
-    let booted = false;
-    const start = () => { if (!booted) { booted = true; void boot(); } };
-    document.addEventListener('growth-lab:authed', start, { once: true });
-    if (!document.getElementById('growth-lab-app')?.classList.contains('hidden')) start();
+    import { onAuthed } from '../../scripts/dashboard/on-authed';
+    onAuthed('growth-lab-app', 'growth-lab:authed', boot);
   </script>
 </DashboardLayout>

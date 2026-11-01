@@ -96,6 +96,7 @@ import AppNav from '../../components/app/AppNav.astro';
   </div>
 
   <script>
+    import { onAuthed } from '../../scripts/dashboard/on-authed';
     import { loadAll, saveSnippet, saveKeyword, type OfferRow, type SnippetRow, type KeywordRow, type PublishRow, type PublishVersionRow, type DeclaredRef , requestPublish, rollbackTo, type KeywordStatRow, type ContextRow, saveContext, createContext, deleteContext, createOffer, saveOffer, deleteOffer, createSnippet, deleteSnippet, type AssetRow, loadAssets, createAsset, saveAsset, deleteAsset, uploadThumb, signThumb, requestMetricSync } from '../../scripts/chat/data';
     import { renderTokens, validateSnippet, keywordConflicts, type CatalogLike } from '../../scripts/chat/logic';
     import { getSupabaseSession } from '../../scripts/dashboard/supabase';
@@ -720,7 +721,7 @@ import AppNav from '../../components/app/AppNav.astro';
       if (booted) return; booted = true; bind();
       try { await reload(); const hash = location.hash.slice(1) as View; if (['snippets','keywords','publish'].includes(hash)) setView(hash); } catch (error) { oops(error); }
     }
-    document.addEventListener('chat:authed', () => void boot());
+    onAuthed('chat-app', 'chat:authed', boot); // boots even if the gate fired before this module loaded
     void (async () => { if (await getSupabaseSession()) void boot(); })();
   </script>
 </DashboardLayout>

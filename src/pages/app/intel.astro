@@ -203,6 +203,7 @@ import AppNav from '../../components/app/AppNav.astro';
   </style>
 
   <script>
+    import { onAuthed } from '../../scripts/dashboard/on-authed';
     import {
       listItems, getItem, signedUrl, listJobs, createJob, retryJob, deleteItem, deleteJob, updateItem, PLATFORMS, PLATFORM_LABEL as NR_PLATFORM, KIND_LABEL,
       listScripts, updateScript, deleteScript, hasTranscript, suggestedTheme, PILLAR_LABEL, HOOK_STYLE_LABEL, LENGTH_LABEL,
@@ -1082,7 +1083,7 @@ import AppNav from '../../components/app/AppNav.astro';
     if (import.meta.env.DEV) (window as any).__intelRenderGallery = (items: NewsroomItem[]) => void renderGallery(items);
     if (import.meta.env.DEV) (window as any).__intelRenderJobs = (rows: NewsroomJob[]) => { jobs = rows; renderJobs(); };
     if (import.meta.env.DEV) (window as any).__intelInject = (rows: IntelTarget[]) => { booted || wire(); booted = true; targets = rows; renderChips(); renderList(); renderSignals(); cur = rows[0]?.id ?? null; void renderFile(); };
-    document.addEventListener('intel:authed', () => void boot());
+    onAuthed('intel-app', 'intel:authed', boot); // boots even if the gate fired before this module loaded
     void (async () => { if (await getSupabaseSession()) void boot(); })();
   </script>
 </DashboardLayout>

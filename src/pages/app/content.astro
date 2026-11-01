@@ -249,6 +249,7 @@ import AppNav from '../../components/app/AppNav.astro';
   </div>
 
   <script>
+    import { onAuthed } from '../../scripts/dashboard/on-authed';
     import {
       FORMAT_CODES, PLATFORMS,
       listIdeas, listVariants, listPublications, snapshotPubIds, findSimilar,
@@ -1423,7 +1424,7 @@ import AppNav from '../../components/app/AppNav.astro';
       if (view === 'line') void loadLineRounds().catch(oops);   // การ์ดได้ชื่อไอเดียหลังโหลดบอร์ดเสร็จ
       void loadQueue().catch(() => {});   // badge ⏳ บนปุ่มมุมมอง — รู้ตั้งแต่เปิดหน้าว่ามีงาน AI กำลังวิ่ง
     }
-    document.addEventListener('war-room:authed', () => void boot());
+    onAuthed('war-room-app', 'war-room:authed', boot); // boots even if the gate fired before this module loaded
     void (async () => { if (await getSupabaseSession()) void boot(); })();
   </script>
 </DashboardLayout>

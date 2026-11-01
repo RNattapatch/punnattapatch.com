@@ -128,6 +128,7 @@ import AppNav from '../../components/app/AppNav.astro';
   </div>
 
   <script>
+    import { onAuthed } from '../../scripts/dashboard/on-authed';
     import {
       listAudience, listClaims, listAssetStats, listCompanies, updatePerson, promote,
       summarize, assetLabel, explainHeat, DNA_NAMES,
@@ -433,7 +434,7 @@ import AppNav from '../../components/app/AppNav.astro';
       wire();
       try { await refresh(); } catch (e) { oops(e); }
     }
-    document.addEventListener('audience:authed', () => void boot());
+    onAuthed('audience-app', 'audience:authed', boot); // boots even if the gate fired before this module loaded
     void (async () => { if (await getSupabaseSession()) void boot(); })();
   </script>
 </DashboardLayout>
