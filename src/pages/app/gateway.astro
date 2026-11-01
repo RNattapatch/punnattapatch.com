@@ -46,6 +46,11 @@ import AppNav from '../../components/app/AppNav.astro';
     .gw-topbar { height: 4px; background: var(--gw-accent); }
     .gw-tab[aria-selected="true"] { border-bottom-color: var(--gw-accent); color: var(--gw-ink); font-weight: 600; }
     .gw-tab { border-bottom: 3px solid transparent; min-height: 44px; }
+    .gw-media { display: block; max-width: min(260px, 100%); max-height: 320px; border-radius: .75rem; object-fit: cover; background: color-mix(in srgb, currentColor 6%, transparent); }
+    .gw-sticker { align-self: flex-start; width: 120px; height: 120px; object-fit: contain; }
+    .gw-row[data-blocked="1"] { opacity: .5; }
+    .gw-thumbs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4rem; }
+    .gw-thumbs img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: .5rem; }
   </style>
 
   <div id="gw-app" class="hidden min-h-dvh bg-base-100">
@@ -72,6 +77,10 @@ import AppNav from '../../components/app/AppNav.astro';
             <button class="btn btn-xs tap-44" role="tab" data-view="held" aria-selected="false">พักบอทอยู่</button>
             <button class="btn btn-xs tap-44" role="tab" data-view="crm" aria-selected="false">อยู่ใน CRM</button>
           </div>
+          <label class="flex cursor-pointer items-center gap-2 text-xs opacity-80">
+            <input id="gw-hide-blocked" type="checkbox" class="checkbox checkbox-xs" checked />
+            ซ่อนคนที่บล็อก OA ไปแล้ว <span id="gw-blocked-count" class="opacity-60"></span>
+          </label>
         </div>
         <ul id="gw-list" class="list-none p-0 m-0"></ul>
       </section>
@@ -117,10 +126,15 @@ import AppNav from '../../components/app/AppNav.astro';
         </div>
 
         <div id="gw-pane-bot" role="tabpanel" class="space-y-4 p-4">
-          <div class="rounded-box bg-base-200 p-3 text-sm">
+          <div class="space-y-2 rounded-box bg-base-200 p-3 text-sm">
             <p class="text-xs uppercase tracking-wide opacity-60">โหมดบอททั้งร้าน</p>
             <p id="gw-botmode" class="font-semibold">…</p>
-            <p class="mt-1 text-xs opacity-70">เปลี่ยนโหมดทั้งร้านใน Telegram เหมือนเดิม · หน้านี้คุมทีละคน</p>
+            <div id="gw-modes" class="join w-full" role="group" aria-label="เปลี่ยนโหมดบอททั้งร้าน"></div>
+            <label class="flex cursor-pointer items-center gap-2 text-xs">
+              <input id="gw-auto" type="checkbox" class="toggle toggle-xs" />
+              ตามเวลาทำการ (จ–ศ 9:00–18:00 คุณปันตอบ · นอกเวลาบอทเฝ้า)
+            </label>
+            <p class="text-xs opacity-70">ปุ่มนี้ = คำสั่งเดียวกับใน Telegram · มีผลกับลูกค้าทุกคน</p>
           </div>
           <div class="space-y-2">
             <p class="text-xs uppercase tracking-wide opacity-60">บอทกับลูกค้าคนนี้</p>
@@ -131,6 +145,10 @@ import AppNav from '../../components/app/AppNav.astro';
               <button id="gw-release" class="btn btn-sm btn-outline tap-44" disabled>ให้บอทตอบต่อ</button>
             </div>
             <p class="text-xs opacity-70">ตอบจากหน้านี้ = ข้อความเข้าความจำบอท และบอทพักคนนี้ให้เอง 30 นาที</p>
+          </div>
+          <div class="space-y-1">
+            <p class="text-xs uppercase tracking-wide opacity-60">สิ่งที่บอทจำเกี่ยวกับคนนี้</p>
+            <ul id="gw-botnotes" class="list-disc space-y-1 pl-4 text-sm"></ul>
           </div>
           <div class="rounded-box border border-base-300 p-3 text-xs opacity-80">
             <p class="font-semibold">โควตา LINE</p>
@@ -154,6 +172,17 @@ import AppNav from '../../components/app/AppNav.astro';
             </div>
           </div>
           <div class="space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-xs uppercase tracking-wide opacity-60">ไฟล์ของลูกค้า <span id="gw-files-count"></span></p>
+              <label class="btn btn-xs tap-44" aria-disabled="true" id="gw-upload-label">
+                แนบไฟล์
+                <input id="gw-upload" type="file" multiple class="sr-only" disabled />
+              </label>
+            </div>
+            <p class="text-xs opacity-60">รูป/ไฟล์ที่ลูกค้าส่งในแชทเข้ามาเองอัตโนมัติ · แนบเพิ่มได้ เช่น สัญญา ใบเสนอราคา (ไม่เกิน 25 MB ต่อไฟล์)</p>
+            <div id="gw-files" class="space-y-2"></div>
+          </div>
+          <div class="space-y-2">
             <p class="text-xs uppercase tracking-wide opacity-60">โน้ตภายใน (ลูกค้าไม่เห็น)</p>
             <div id="gw-notes" class="space-y-2"></div>
           </div>
@@ -165,11 +194,12 @@ import AppNav from '../../components/app/AppNav.astro';
   </div>
 
   <script>
-    import { loadContacts, loadThread, loadStatus, loadLead, queue, addNote, saveTags, markRead, type LeadCard } from '../../scripts/gateway/data';
+    import { loadContacts, loadThread, loadStatus, loadLead, queue, queueMode, addNote, saveTags, markRead, loadFiles, signUrls, uploadFile, deleteUpload, type LeadCard } from '../../scripts/gateway/data';
     import {
       CHANNEL_META, BOT_MODE_LABEL, OUTBOX_LABEL, MAX_MESSAGE, isUnread, holdUntil, filterContacts, fmtWhen, fmtClock, checkDraft, parseTags,
       canSend, heartbeatAge, quotaText, visibleOutbox, displayName, initialOf,
-      type Contact, type Message, type OutboxRow, type GatewayStatus, type View,
+      BOT_MODES, fmtSize, checkUpload, isImage, pathsToSign, mapsUrl,
+      type Contact, type Message, type OutboxRow, type GatewayStatus, type View, type FileRow,
     } from '../../scripts/gateway/logic';
 
     const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector(sel) as T;
@@ -194,7 +224,11 @@ import AppNav from '../../components/app/AppNav.astro';
       contacts: [] as Contact[], status: null as GatewayStatus | null, view: 'all' as View, q: '',
       sel: null as string | null, messages: [] as Message[], outbox: [] as OutboxRow[], lead: null as LeadCard | null,
       mode: 'reply' as 'reply' | 'note', busy: false, lastThreadSig: '',
+      files: [] as FileRow[], urls: new Map<string, { url: string; exp: number }>(), hideBlocked: true,
     };
+    try { state.hideBlocked = localStorage.getItem('gw-hide-blocked') !== '0'; } catch { /* private mode: keep default */ }
+    const urlFor = (p?: string) => (p ? state.urls.get(p)?.url : undefined);
+    const fresh = (p: string) => (state.urls.get(p)?.exp ?? 0) > Date.now() + 60_000;
     const current = () => state.contacts.find((c) => c.id === state.sel) || null;
 
     function applyAccent(c: Contact | null) {
@@ -217,13 +251,15 @@ import AppNav from '../../components/app/AppNav.astro';
 
     // ---------- list ----------
     function renderList() {
-      const list = filterContacts(state.contacts, state.view, state.q);
+      const list = filterContacts(state.contacts, state.view, state.q, Date.now(), state.hideBlocked);
       $('#gw-count').textContent = `${list.length} แชท · ยังไม่อ่าน ${state.contacts.filter(isUnread).length}`;
+      const blocked = state.contacts.filter((c) => c.blocked).length;
+      $('#gw-blocked-count').textContent = blocked ? `(${blocked})` : '';
       const ul = $('#gw-list');
       ul.replaceChildren(...list.map((c) => {
         const unread = isUnread(c) && c.id !== state.sel;
         const held = holdUntil(c);
-        const btn = h('button', { type: 'button', class: 'gw-row', 'aria-current': String(c.id === state.sel), 'data-id': c.id },
+        const btn = h('button', { type: 'button', class: 'gw-row', 'aria-current': String(c.id === state.sel), 'data-id': c.id, 'data-blocked': c.blocked ? '1' : '0' },
           avatar(c, true),
           h('span', { class: 'min-w-0 flex-1' },
             h('span', { class: 'flex items-baseline gap-2' },
@@ -233,6 +269,7 @@ import AppNav from '../../components/app/AppNav.astro';
               h('span', { class: 'flex-1 truncate text-sm opacity-75' }, c.last_preview || ''),
               unread ? h('span', { class: 'badge badge-xs text-white', style: `background:${CHANNEL_META[c.channel].accent}`, 'aria-label': 'ยังไม่อ่าน' }, 'ใหม่') : null),
             h('span', { class: 'mt-1 flex flex-wrap gap-1' },
+              c.blocked ? h('span', { class: 'badge badge-xs badge-ghost' }, 'บล็อก OA แล้ว') : null,
               held ? h('span', { class: 'badge badge-xs badge-warning' }, `พักบอทถึง ${fmtClock(held.toISOString())}`) : null,
               c.lead_id ? h('span', { class: 'badge badge-xs badge-ghost' }, 'CRM') : null,
               ...(c.tags || []).slice(0, 3).map((t) => h('span', { class: 'badge badge-xs badge-outline' }, t)))));
@@ -261,7 +298,14 @@ import AppNav from '../../components/app/AppNav.astro';
         const day = new Date(msg.ts).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Bangkok' });
         if (day !== lastDay) { nodes.push(h('div', { class: 'gw-day' }, day)); lastDay = day; }
         const who = msg.dir === 'in' ? displayName(c) : msg.dir === 'bot' ? `บอท · ${m.label}` : msg.dir === 'staff' ? `คุณปัน · ส่งทาง ${m.label}` : `โน้ตภายใน · ${msg.created_by || 'คุณปัน'} · ลูกค้าไม่เห็น`;
-        nodes.push(h('div', { class: `gw-msg gw-${msg.dir}` }, h('div', { class: 'gw-meta' }, `${who} · ${fmtClock(msg.ts)}`), msg.body));
+        const meta = h('div', { class: 'gw-meta' }, `${who} · ${fmtClock(msg.ts)}`);
+        if (msg.kind === 'sticker' && msg.media?.sticker_url) {
+          nodes.push(h('div', { class: 'flex flex-col', style: 'align-self:flex-start' }, meta,
+            h('img', { class: 'gw-sticker', src: msg.media.sticker_url, alt: msg.body, loading: 'lazy', referrerpolicy: 'no-referrer' })));
+          continue;
+        }
+        const media = mediaNode(msg);
+        nodes.push(h('div', { class: `gw-msg gw-${msg.dir}` }, meta, ...(media ? [media] : [msg.body])));
       }
       for (const o of visibleOutbox(state.outbox)) {
         const failed = o.status === 'failed';
@@ -273,10 +317,54 @@ import AppNav from '../../components/app/AppNav.astro';
       if (atBottom || state.busy) box.scrollTop = box.scrollHeight;
     }
 
+    // รูป/วิดีโอ/เสียง/ไฟล์/ตำแหน่ง ในบับเบิล · ไฟล์ในบัคเก็ตส่วนตัวเปิดด้วย signed URL (1 ชม.) · ลิงก์ภายนอกผ่านการกรอง https ที่มินิแล้ว
+    function mediaNode(msg: Message): Node | null {
+      const md = msg.media;
+      if (!md || !msg.kind || msg.kind === 'text') return null;
+      if (md.error) return h('span', {}, msg.body, h('span', { class: 'mt-1 block text-xs text-error' }, md.error));
+      if (msg.kind === 'location' && md.lat != null && md.lng != null)
+        return h('a', { href: mapsUrl(md.lat, md.lng), target: '_blank', rel: 'noopener noreferrer', class: 'link' }, `📍 ${md.title || md.address || 'เปิดแผนที่'}`);
+      const src = md.url || urlFor(md.path);
+      if (!src) return h('span', { class: 'text-xs opacity-60' }, `${msg.body} · กำลังโหลด…`);
+      if (msg.kind === 'image')
+        return h('a', { href: src, target: '_blank', rel: 'noopener noreferrer', 'aria-label': 'เปิดรูปเต็ม' }, h('img', { class: 'gw-media', src, alt: 'รูปจากลูกค้า', loading: 'lazy', referrerpolicy: 'no-referrer' }));
+      if (msg.kind === 'video' && md.path) return h('video', { class: 'gw-media', src, controls: '', preload: 'metadata' });
+      if (msg.kind === 'audio' && md.path) return h('audio', { src, controls: '', preload: 'metadata' });
+      return h('a', { href: src, target: '_blank', rel: 'noopener noreferrer', class: 'link' }, `📎 ${md.name || msg.body} ${fmtSize(md.size)}`.trim());
+    }
+
+    function renderFiles() {
+      const c = current(), box = $('#gw-files');
+      $('#gw-files-count').textContent = state.files.length ? `(${state.files.length})` : '';
+      const up = $<HTMLInputElement>('#gw-upload');
+      up.disabled = !c; $('#gw-upload-label').setAttribute('aria-disabled', String(!c));
+      if (!c) { box.replaceChildren(); return; }
+      if (!state.files.length) { box.replaceChildren(h('p', { class: 'text-xs opacity-60' }, 'ยังไม่มีไฟล์')); return; }
+      const imgs = state.files.filter((f) => isImage(f.mime));
+      const rows = state.files.filter((f) => !isImage(f.mime) || f.source === 'upload');
+      const nodes: Node[] = [];
+      if (imgs.length) nodes.push(h('div', { class: 'gw-thumbs' }, ...imgs.slice(0, 30).map((f) => {
+        const u = urlFor(f.path);
+        return u ? h('a', { href: u, target: '_blank', rel: 'noopener noreferrer', title: `${f.name} · ${fmtWhen(f.created_at)}` }, h('img', { src: u, alt: f.name, loading: 'lazy' }))
+          : h('span', { class: 'skeleton aspect-square', 'aria-label': 'กำลังโหลดรูป' });
+      })));
+      for (const f of rows) nodes.push(h('div', { class: 'flex items-center gap-2 text-sm' },
+        h('a', { href: urlFor(f.path) || '#', target: '_blank', rel: 'noopener noreferrer', class: 'link min-w-0 flex-1 truncate' }, `📎 ${f.name}`),
+        h('span', { class: 'shrink-0 text-xs opacity-60' }, [fmtSize(f.size_bytes), f.source === 'chat' ? 'จากแชท' : 'แนบเอง', fmtWhen(f.created_at)].filter(Boolean).join(' · ')),
+        f.source === 'upload' ? h('button', { type: 'button', class: 'btn btn-ghost btn-xs tap-44', 'data-del': f.id, 'aria-label': `ลบไฟล์ ${f.name}` }, 'ลบ') : null));
+      box.replaceChildren(...nodes);
+    }
+
     // ---------- right panel ----------
     function renderSide() {
       const c = current(), s = state.status;
-      $('#gw-botmode').textContent = s?.bot_mode ? BOT_MODE_LABEL[s.bot_mode] || s.bot_mode : 'ยังไม่รู้ (มินิยังไม่รายงาน)';
+      $('#gw-botmode').textContent = s?.bot_mode ? `${BOT_MODE_LABEL[s.bot_mode] || s.bot_mode}${s.office_auto ? ' · ตามเวลาทำการ' : ''}` : 'ยังไม่รู้ (มินิยังไม่รายงาน)';
+      $('#gw-modes').replaceChildren(...BOT_MODES.map((m) => {
+        const on = !s?.office_auto && s?.bot_mode === m.id;
+        return h('button', { type: 'button', class: `btn btn-xs join-item tap-44 flex-1 ${on ? 'btn-neutral' : ''}`, 'data-mode': m.id, 'aria-pressed': String(on) }, m.label);
+      }));
+      const auto = $<HTMLInputElement>('#gw-auto');
+      if (document.activeElement !== auto) auto.checked = !!s?.office_auto;
       $('#gw-quota-detail').textContent = quotaText(s);
       $('#gw-quota').textContent = quotaText(s);
       const age = heartbeatAge(s);
@@ -298,6 +386,9 @@ import AppNav from '../../components/app/AppNav.astro';
       $('#gw-hold').textContent = held ? `พักอยู่ถึง ${fmtClock(held.toISOString())} · บอทไม่ตอบคนนี้` : 'บอทตอบคนนี้ได้ตามโหมดทั้งร้าน';
       $<HTMLButtonElement>('#gw-release').disabled = !held;
 
+      const notesBot = c.bot_notes || [];
+      $('#gw-botnotes').replaceChildren(...(notesBot.length ? notesBot.slice().reverse().map((n) => h('li', {}, n))
+        : [h('li', { class: 'list-none -ml-4 text-xs opacity-60' }, 'บอทยังไม่ได้จดอะไรเกี่ยวกับคนนี้')]));
       $('#gw-cust-name').textContent = displayName(c);
       $('#gw-cust-id').textContent = `${CHANNEL_META[c.channel].label} · ${c.external_id.slice(0, 6)}…${c.external_id.slice(-4)}`;
       const lead = state.lead;
@@ -320,25 +411,31 @@ import AppNav from '../../components/app/AppNav.astro';
         : [h('p', { class: 'text-xs opacity-60' }, 'ยังไม่มีโน้ต · กด "โน้ตภายใน" ใต้แชทเพื่อเขียน')]));
     }
 
-    function renderAll() { renderList(); renderThread(); renderSide(); }
+    function renderAll() { renderList(); renderThread(); renderSide(); renderFiles(); }
 
     // ---------- loading ----------
     async function refreshList() {
       const [contacts, status] = await Promise.all([loadContacts(), loadStatus()]);
       state.contacts = contacts; state.status = status;
     }
-    let demo: null | { threads: Record<string, { messages: Message[]; outbox: OutboxRow[] }> } = null;
+    let demo: null | { threads: Record<string, { messages: Message[]; outbox: OutboxRow[] }>; files: Record<string, FileRow[]>; urls: Record<string, string> } = null;
     async function refreshThread() {
       const c = current();
       if (!c) return;
-      const t = demo ? demo.threads[c.id] : await loadThread(c.id);
-      const sig = `${t.messages.length}:${t.messages.at(-1)?.id}:${t.outbox.map((o) => o.status).join('')}`;
-      state.messages = t.messages; state.outbox = t.outbox;
-      if (sig !== state.lastThreadSig) { state.lastThreadSig = sig; renderThread(); }
+      const [t, files] = demo ? [demo.threads[c.id], demo.files[c.id] || []] : await Promise.all([loadThread(c.id), loadFiles(c.id)]);
+      if (state.sel !== c.id) return; // user switched chats while loading
+      const need = pathsToSign(t.messages, files, fresh);
+      if (need.length) {
+        const signed = demo ? new Map(need.map((p) => [p, demo!.urls[p] || ''])) : await signUrls(need);
+        for (const [p, url] of signed) if (url) state.urls.set(p, { url, exp: Date.now() + 3500_000 });
+      }
+      const sig = `${t.messages.length}:${t.messages.at(-1)?.id}:${t.outbox.map((o) => o.status).join('')}:${files.length}:${need.length}`;
+      state.messages = t.messages; state.outbox = t.outbox; state.files = files;
+      if (sig !== state.lastThreadSig) { state.lastThreadSig = sig; renderThread(); renderFiles(); }
     }
 
     async function select(id: string) {
-      state.sel = id; state.messages = []; state.outbox = []; state.lead = null; state.lastThreadSig = '';
+      state.sel = id; state.messages = []; state.outbox = []; state.files = []; state.lead = null; state.lastThreadSig = '';
       renderAll();
       const c = current();
       try {
@@ -432,6 +529,40 @@ import AppNav from '../../components/app/AppNav.astro';
         for (const [t2, p2] of tabs) { $(t2).setAttribute('aria-selected', String(t2 === tab)); $(p2).classList.toggle('hidden', p2 !== pane); }
       });
       $('#gw-refresh').addEventListener('click', () => void poll());
+      const hb = $<HTMLInputElement>('#gw-hide-blocked');
+      hb.checked = state.hideBlocked;
+      hb.addEventListener('change', () => { state.hideBlocked = hb.checked; try { localStorage.setItem('gw-hide-blocked', hb.checked ? '1' : '0'); } catch { /* ignore */ } renderList(); });
+      $('#gw-modes').addEventListener('click', async (e) => {
+        const b = (e.target as HTMLElement).closest('button[data-mode]');
+        if (!b) return;
+        const m = BOT_MODES.find((x) => x.id === b.getAttribute('data-mode'))!;
+        if (!window.confirm(`เปลี่ยนโหมดบอททั้งร้านเป็น "${m.label}"?\nมีผลกับลูกค้าทุกคนทันที`)) return;
+        try { await queueMode(m.id, crypto.randomUUID()); toast(`สั่งเปลี่ยนเป็น "${m.label}" แล้ว`); window.setTimeout(() => void poll(), 4000); } catch (err) { oops(err); }
+      });
+      $('#gw-auto').addEventListener('change', async (e) => {
+        const on = (e.target as HTMLInputElement).checked;
+        if (!window.confirm(on ? 'เปิดโหมดตามเวลาทำการ? (ในเวลา = คุณปันตอบ · นอกเวลา = บอทเฝ้า)' : 'ปิดโหมดตามเวลาทำการ? (กลับไปใช้โหมดที่ตั้งเอง)')) { (e.target as HTMLInputElement).checked = !on; return; }
+        try { await queueMode(on ? 'auto_on' : 'auto_off', crypto.randomUUID()); toast('สั่งแล้ว'); window.setTimeout(() => void poll(), 4000); } catch (err) { oops(err); }
+      });
+      $('#gw-upload').addEventListener('change', async (e) => {
+        const input = e.target as HTMLInputElement;
+        const c = current(); const picked = Array.from(input.files || []);
+        input.value = '';
+        if (!c || !picked.length) return;
+        for (const f of picked) {
+          const bad = checkUpload(f);
+          if (bad) { toast(bad, 'error'); continue; }
+          try { await uploadFile(c.id, f); toast(`แนบ ${f.name} แล้ว`); } catch (err) { oops(err); }
+        }
+        state.lastThreadSig = ''; await refreshThread();
+      });
+      $('#gw-files').addEventListener('click', async (e) => {
+        const b = (e.target as HTMLElement).closest('button[data-del]');
+        if (!b) return;
+        const f = state.files.find((x) => x.id === b.getAttribute('data-del'));
+        if (!f || !window.confirm(`ลบไฟล์ "${f.name}"? ลบแล้วกู้คืนไม่ได้`)) return;
+        try { await deleteUpload(f); toast('ลบแล้ว'); state.lastThreadSig = ''; await refreshThread(); } catch (err) { oops(err); }
+      });
       document.addEventListener('visibilitychange', () => { if (!document.hidden) void poll(); });
     }
 
@@ -446,7 +577,7 @@ import AppNav from '../../components/app/AppNav.astro';
     // DEV ONLY: `astro dev` + ?demo = fixture data without signing in · import.meta.env.DEV is false in the production build, so this block and demo.ts are dropped
     if (import.meta.env.DEV && new URLSearchParams(location.search).has('demo')) {
       void import('../../scripts/gateway/demo').then((d) => {
-        demo = { threads: d.DEMO_THREADS };
+        demo = { threads: d.DEMO_THREADS, files: d.DEMO_FILES, urls: d.DEMO_URLS };
         document.getElementById('wr-gate')?.classList.add('hidden');
         $('#gw-app').classList.remove('hidden');
         wire();

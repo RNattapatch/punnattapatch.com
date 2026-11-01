@@ -8,14 +8,19 @@ export interface Contact {
   id: string; channel: Channel; external_id: string; display_name: string | null; picture_url: string | null;
   lead_id: string | null; tags: string[]; last_message_at: string | null; last_in_at: string | null;
   last_preview: string | null; last_read_at: string | null; bot_hold_until: string | null;
+  bot_notes?: string[]; blocked?: boolean;
 }
-export interface Message { id: number; contact_id: string; dir: Dir; body: string; ts: string; created_by: string | null }
+export type Kind = 'text' | 'image' | 'video' | 'audio' | 'file' | 'sticker' | 'location';
+// media: path = private storage object (signed URL) · url = customer's https link · sticker_url = LINE public sticker PNG
+export interface Media { path?: string; url?: string; sticker_url?: string; mime?: string; size?: number | null; name?: string | null; duration?: number | null; lat?: number; lng?: number; title?: string | null; address?: string | null; error?: string }
+export interface Message { id: number; contact_id: string; dir: Dir; body: string; ts: string; created_by: string | null; kind?: Kind; media?: Media | null }
+export interface FileRow { id: string; contact_id: string; source: 'chat' | 'upload'; path: string; name: string; mime: string | null; size_bytes: number | null; created_at: string; created_by: string | null }
 export interface OutboxRow {
   id: string; contact_id: string; kind: 'text' | 'hold' | 'release'; body: string | null; status: 'pending' | 'sending' | 'sent' | 'failed';
   error: string | null; created_at: string; client_request_id: string;
 }
 export interface GatewayStatus {
-  bot_mode?: string; holds?: number; send_off?: boolean; heartbeat?: string;
+  bot_mode?: string; office_auto?: boolean; holds?: number; send_off?: boolean; heartbeat?: string;
   quota?: { type?: string; limit?: number | null; used?: number | null } | null;
 }
 
@@ -29,7 +34,8 @@ export const CHANNEL_META: Record<Channel, { label: string; short: string; accen
 export const MAX_MESSAGE = 2000;
 export const STALE_HEARTBEAT_MS = 2 * 60_000;
 
-export const isUnread = (c: Contact) => !!c.last_in_at && (!c.last_read_at || c.last_in_at > c.last_read_at);
+// คนที่บล็อก OA ไปแล้วตอบไม่ได้ จึงไม่นับเป็นงานค้าง
+export const isUnread = (c: Contact) => !c.blocked && !!c.last_in_at && (!c.last_read_at || c.last_in_at > c.last_read_at);
 
 export function holdUntil(c: Contact, now = Date.now()): Date | null {
   if (!c.bot_hold_until) return null;
@@ -38,9 +44,10 @@ export function holdUntil(c: Contact, now = Date.now()): Date | null {
 }
 
 export type View = 'all' | 'unread' | 'held' | 'crm';
-export function filterContacts(list: Contact[], view: View, q: string, now = Date.now()): Contact[] {
+export function filterContacts(list: Contact[], view: View, q: string, now = Date.now(), hideBlocked = false): Contact[] {
   const needle = q.trim().toLowerCase();
   return list.filter((c) => {
+    if (hideBlocked && c.blocked) return false;
     if (view === 'unread' && !isUnread(c)) return false;
     if (view === 'held' && !holdUntil(c, now)) return false;
     if (view === 'crm' && !c.lead_id) return false;
@@ -113,3 +120,40 @@ export const visibleOutbox = (rows: OutboxRow[]) => rows.filter((r) => r.kind ==
 export const displayName = (c: Contact) => c.display_name || 'ลูกค้า LINE';
 // ข้ามคำนำหน้า "คุณ" และสระหน้า เ แ โ ใ ไ ไม่งั้นชื่อ "คุณเอ" ได้ตัวย่อเป็นสระ
 export const initialOf = (c: Contact) => (displayName(c).replace(/^คุณ/, '').trim().replace(/^[เแโใไ]/, '').charAt(0) || '?').toUpperCase();
+
+// ---------- store-wide bot mode (same 4 modes as the Telegram commands) ----------
+export const BOT_MODES: { id: 'off' | 'shadow' | 'review' | 'guard'; label: string }[] = [
+  { id: 'off', label: 'พัก' }, { id: 'shadow', label: 'ร่างเงียบ' }, { id: 'review', label: 'รออนุมัติ' }, { id: 'guard', label: 'ตอบเอง' },
+];
+
+// ---------- files ----------
+export const MAX_UPLOAD_BYTES = 25 * 1024 * 1024; // same cap as the bucket and gw_files.size_bytes
+
+export function fmtSize(n: number | null | undefined): string {
+  if (!n && n !== 0) return '';
+  if (n < 1024) return `${n} B`;
+  if (n < 1024 * 1024) return `${Math.round(n / 1024)} KB`;
+  return `${(n / 1024 / 1024).toFixed(1)} MB`;
+}
+
+export function checkUpload(f: { name: string; size: number }): string | null {
+  if (!f.size) return `${f.name}: ไฟล์ว่าง`;
+  if (f.size > MAX_UPLOAD_BYTES) return `${f.name}: ใหญ่เกิน 25 MB`;
+  return null;
+}
+
+// Thai vowels and tone marks are Unicode marks (\p{M}) — keep them, or "สัญญา" turns into "ส_ญญา"
+export const safeName = (s: string) => String(s || '').normalize('NFC').replace(/[^\p{L}\p{M}\p{N}._-]+/gu, '_').replace(/^[._]+/, '').slice(0, 80) || 'file';
+export const uploadPath = (contactId: string, id: string, name: string) => `upload/${contactId}/${id}-${safeName(name)}`;
+
+export const isImage = (mime: string | null | undefined) => /^image\//.test(mime || '');
+
+// storage paths in a thread + file list that still need a signed URL
+export function pathsToSign(messages: Message[], files: FileRow[], have: (p: string) => boolean): string[] {
+  const out = new Set<string>();
+  for (const m of messages) if (m.media?.path && !have(m.media.path)) out.add(m.media.path);
+  for (const f of files) if (!have(f.path)) out.add(f.path);
+  return [...out];
+}
+
+export const mapsUrl = (lat: number, lng: number) => `https://www.google.com/maps?q=${encodeURIComponent(`${lat},${lng}`)}`;

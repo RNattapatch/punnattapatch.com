@@ -5,6 +5,7 @@
 import {
   CHANNEL_META, isUnread, holdUntil, filterContacts, fmtWhen, checkDraft, parseTags, canSend, heartbeatAge, quotaText,
   visibleOutbox, displayName, initialOf, MAX_MESSAGE,
+  BOT_MODES, fmtSize, checkUpload, safeName, uploadPath, isImage, pathsToSign, mapsUrl, MAX_UPLOAD_BYTES,
 } from '../src/scripts/gateway/logic.ts';
 
 let pass = 0, fail = 0;
@@ -69,6 +70,23 @@ check(displayName(c({ display_name: null })) === 'ลูกค้า LINE', 'fal
 check(initialOf(c({ display_name: 'คุณเอ' })) === 'อ', 'initial skips คุณ and the leading vowel');
 check(initialOf(c({ display_name: 'anna' })) === 'A', 'latin initial uppercased');
 check(/^#[0-9a-f]{6}$/.test(CHANNEL_META.line.accent) && CHANNEL_META.line.accent !== CHANNEL_META.messenger.accent, 'each channel has its own accent');
+
+// round 2: attachments · files · blocked · modes
+check(!isUnread(c({ blocked: true })), 'blocked customer never counts as unread');
+check(filterContacts([c({ id: 'x', blocked: true }), c({ id: 'y' })], 'all', '', NOW, true).map((x) => x.id).join() === 'y', 'hide blocked filter');
+check(filterContacts([c({ id: 'x', blocked: true }), c({ id: 'y' })], 'all', '', NOW, false).length === 2, 'show blocked when toggle off');
+check(fmtSize(512) === '512 B' && fmtSize(2048) === '2 KB' && fmtSize(5 * 1024 * 1024) === '5.0 MB' && fmtSize(null) === '', 'file sizes');
+check(checkUpload({ name: 'a.pdf', size: 10 }) === null, 'normal upload ok');
+check(/ว่าง/.test(checkUpload({ name: 'a.pdf', size: 0 })), 'empty upload refused');
+check(/25 MB/.test(checkUpload({ name: 'big.mov', size: MAX_UPLOAD_BYTES + 1 })), 'over 25 MB refused (bucket cap matches)');
+check(safeName('สัญญา เช่า.pdf') === 'สัญญา_เช่า.pdf', 'Thai file names keep vowels and tone marks');
+check(safeName('../../etc/passwd') === 'etc_passwd', 'no path traversal in names');
+check(uploadPath('C1', 'ab12', 'ใบเสนอราคา.pdf') === 'upload/C1/ab12-ใบเสนอราคา.pdf', 'upload path matches the RLS rule upload/<contact>/');
+check(isImage('image/png') && !isImage('application/pdf') && !isImage(null), 'image mime detection');
+const sigMsgs = [{ media: { path: 'line/u/1.jpg' } }, { media: { sticker_url: 'https://x' } }, { media: null }, { media: { path: 'line/u/1.jpg' } }];
+check(JSON.stringify(pathsToSign(sigMsgs, [{ path: 'upload/c/a.pdf' }, { path: 'line/u/2.png' }], (p) => p === 'line/u/2.png')) === JSON.stringify(['line/u/1.jpg', 'upload/c/a.pdf']), 'sign only storage paths not cached, deduped');
+check(mapsUrl(13.73, 100.58) === 'https://www.google.com/maps?q=13.73%2C100.58', 'maps link');
+check(BOT_MODES.map((m) => m.id).join() === 'off,shadow,review,guard', 'mode buttons = the bot\'s 4 modes (DB check matches)');
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
 if (fail) process.exit(1);
