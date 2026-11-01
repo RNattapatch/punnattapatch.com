@@ -140,7 +140,7 @@ check(!canSend(alive, c({ channel: 'whatsapp', external_id: 'wa_66812345678', la
 check(CHANNEL_META.whatsapp.accent !== CHANNEL_META.line.accent && CHANNEL_META.whatsapp.short === 'WA', 'WhatsApp has its own teal accent');
 
 const lineU = 'U' + 'ab12'.repeat(8);
-check(nativeInbox(c({ channel: 'line', external_id: lineU }))?.href === `https://chat.line.biz/U3382081f87b7943218f22b1abd865a86/chat/${lineU}`, 'LINE opens this customer in OA Manager chat (free reply)');
+check(nativeInbox(c({ channel: 'line', external_id: lineU }))?.href === `https://chat.line.biz/U54ca0fc58b4946d9966c4ed143fc97b8/chat/${lineU}`, 'LINE opens this customer in OA Manager chat (free reply)');
 check(nativeInbox(c({ channel: 'line', external_id: 'U../evil' })) === null, 'LINE link refuses a malformed user id');
 check(nativeInbox(c({ channel: 'messenger', external_id: '2468013579' }))?.href.startsWith('https://business.facebook.com/latest/inbox/messenger?asset_id=841096959096494&selected_item_id=2468013579'), 'Messenger opens the page inbox in Business Suite');
 check(nativeInbox(c({ channel: 'whatsapp', external_id: 'wa_66812345678' })) === null && nativeInbox(null) === null, 'WhatsApp and no chat: no outside inbox');
