@@ -106,6 +106,7 @@ import AppNav from '../../components/app/AppNav.astro';
             </div>
             <p id="gw-head-sub" class="text-xs" style="color: var(--gw-ink);"></p>
           </div>
+          <a id="gw-native" class="btn btn-sm tap-44 hidden" target="_blank" rel="noopener noreferrer" style="border-color: var(--gw-accent); color: var(--gw-ink);"></a>
         </header>
         <div id="gw-thread" class="gw-thread flex flex-1 flex-col gap-2 overflow-y-auto p-4" style="min-height: 18rem;" aria-live="polite"></div>
         <form id="gw-compose" class="space-y-2 border-t-[3px] bg-base-100 p-3" style="border-top-color: var(--gw-accent);">
@@ -216,7 +217,7 @@ import AppNav from '../../components/app/AppNav.astro';
     import {
       CHANNEL_META, BOT_MODE_LABEL, OUTBOX_LABEL, MAX_MESSAGE, isUnread, holdUntil, filterContacts, fmtWhen, fmtClock, checkDraft, parseTags,
       canSend, heartbeatAge, quotaText, visibleOutbox, displayName, initialOf, foldMediaEchoes,
-      BOT_MODES, fmtSize, checkUpload, isImage, pathsToSign, mapsUrl,
+      BOT_MODES, fmtSize, checkUpload, isImage, pathsToSign, mapsUrl, nativeInbox,
       STICKER_PACKS, stickerUrl, stickersOf, MAX_ATTACH, attachKind, checkAttach, canDeleteFile,
       type Contact, type Message, type OutboxRow, type GatewayStatus, type View, type FileRow,
     } from '../../scripts/gateway/logic';
@@ -303,6 +304,9 @@ import AppNav from '../../components/app/AppNav.astro';
       const c = current();
       applyAccent(c);
       const box = $('#gw-thread');
+      const nat = nativeInbox(c), link = $<HTMLAnchorElement>('#gw-native');
+      link.classList.toggle('hidden', !nat);
+      if (nat) { link.href = nat.href; link.textContent = `${nat.label} ↗`; link.title = nat.hint; link.setAttribute('aria-label', `${nat.label} (เปิดแท็บใหม่) · ${nat.hint}`); }
       if (!c) { box.replaceChildren(h('p', { class: 'm-auto text-sm opacity-60' }, 'เลือกแชทจากรายชื่อทางซ้าย')); return; }
       const m = CHANNEL_META[c.channel];
       $('#gw-head-avatar').replaceChildren(...Array.from(avatar(c, false).childNodes));
@@ -616,6 +620,8 @@ import AppNav from '../../components/app/AppNav.astro';
       $('#gw-mode-reply').addEventListener('click', () => setMode('reply'));
       $('#gw-mode-note').addEventListener('click', () => setMode('note'));
       $('#gw-hold-60').addEventListener('click', () => void botCommand('hold', 60));
+      // answering in the LINE OA app: park the bot first so it doesn't reply over Pun (Messenger bot ignores holds)
+      $('#gw-native').addEventListener('click', () => { const c = current(); if (c?.channel === 'line' && !holdUntil(c)) void botCommand('hold', 60); });
       $('#gw-hold-day').addEventListener('click', () => void botCommand('hold', 1440));
       $('#gw-release').addEventListener('click', () => void botCommand('release'));
       $('#gw-tags-save').addEventListener('click', async () => {

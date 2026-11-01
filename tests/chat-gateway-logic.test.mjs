@@ -4,7 +4,7 @@
  */
 import {
   CHANNEL_META, isUnread, holdUntil, filterContacts, fmtWhen, checkDraft, parseTags, canSend, heartbeatAge, quotaText,
-  visibleOutbox, displayName, initialOf, MAX_MESSAGE,
+  visibleOutbox, displayName, initialOf, MAX_MESSAGE, nativeInbox,
   foldMediaEchoes, STICKER_PACKS, stickersOf, stickerUrl, attachKind, checkAttach, outPath, extOfName, canDeleteFile, MAX_ATTACH, BOT_MODES, fmtSize, checkUpload, safeName, uploadPath, isImage, pathsToSign, mapsUrl, MAX_UPLOAD_BYTES,
 } from '../src/scripts/gateway/logic.ts';
 
@@ -138,6 +138,12 @@ check(canDeleteFile({ source: 'upload', note: null }) && !canDeleteFile({ source
 check(canSend(alive, c({ channel: 'whatsapp', external_id: 'wa_66812345678' }), NOW).ok, 'WhatsApp reply allowed inside 24h');
 check(!canSend(alive, c({ channel: 'whatsapp', external_id: 'wa_66812345678', last_in_at: new Date(NOW - 25 * 3600_000).toISOString() }), NOW).ok, 'WhatsApp blocked after 24h (template only)');
 check(CHANNEL_META.whatsapp.accent !== CHANNEL_META.line.accent && CHANNEL_META.whatsapp.short === 'WA', 'WhatsApp has its own teal accent');
+
+const lineU = 'U' + 'ab12'.repeat(8);
+check(nativeInbox(c({ channel: 'line', external_id: lineU }))?.href === `https://chat.line.biz/U3382081f87b7943218f22b1abd865a86/chat/${lineU}`, 'LINE opens this customer in OA Manager chat (free reply)');
+check(nativeInbox(c({ channel: 'line', external_id: 'U../evil' })) === null, 'LINE link refuses a malformed user id');
+check(nativeInbox(c({ channel: 'messenger', external_id: '2468013579' }))?.href.startsWith('https://business.facebook.com/latest/inbox/messenger?asset_id=841096959096494&selected_item_id=2468013579'), 'Messenger opens the page inbox in Business Suite');
+check(nativeInbox(c({ channel: 'whatsapp', external_id: 'wa_66812345678' })) === null && nativeInbox(null) === null, 'WhatsApp and no chat: no outside inbox');
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
 if (fail) process.exit(1);
