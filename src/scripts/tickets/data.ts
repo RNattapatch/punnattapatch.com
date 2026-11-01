@@ -2,7 +2,7 @@
 // The browser never runs anything: it reads the td_* mirror and writes pending rows into td_actions,
 // which desk-sync on the Mac mini validates and applies (migration 202611010004).
 import { supabase, getSupabaseSession } from '../dashboard/supabase';
-import type { Ticket, Action, Task, AgentRun, Project, DeskStatus, GroupInfo, ActionKind } from './logic';
+import type { Ticket, Action, Task, AgentRun, Project, DeskStatus, GroupInfo, ActionKind, Stranger } from './logic';
 
 async function who(): Promise<string> {
   const session = await getSupabaseSession();
@@ -27,7 +27,7 @@ export async function loadActions(ticketId: string): Promise<Action[]> {
   return (data || []) as Action[];
 }
 
-export async function loadBoard(): Promise<{ tasks: Task[]; runs: AgentRun[]; projects: Project[]; desk: DeskStatus | null; groups: Record<string, GroupInfo> }> {
+export async function loadBoard(): Promise<{ tasks: Task[]; runs: AgentRun[]; projects: Project[]; desk: DeskStatus | null; groups: Record<string, GroupInfo>; strangers: Stranger[] }> {
   const [t, r, p, s] = await Promise.all([
     supabase.from('td_tasks').select('id,title,status,current_owner,next_owner,path,updated_at').limit(500),
     supabase.from('td_agent_runs').select('id,ts,job,provider,ok,degraded,ms,attempts').order('ts', { ascending: false }).limit(150),
@@ -39,6 +39,7 @@ export async function loadBoard(): Promise<{ tasks: Task[]; runs: AgentRun[]; pr
   return {
     tasks: (t.data || []) as Task[], runs: (r.data || []) as AgentRun[], projects: (p.data || []) as Project[],
     desk: (st.desk as DeskStatus) || null, groups: (st.groups as Record<string, GroupInfo>) || {},
+    strangers: ((st.mail_strangers as { list?: Stranger[] })?.list) || [],
   };
 }
 

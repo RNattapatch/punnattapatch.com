@@ -97,6 +97,11 @@ import AppNav from '../../components/app/AppNav.astro';
         <div id="tc-groups" class="space-y-2"></div>
       </div>
       <div>
+        <h2 class="font-display text-lg font-bold">อีเมลจากคนนอกทะเบียน</h2>
+        <p class="mb-3 text-sm opacity-70">ส่งมาที่ support@punnattapatch.com แต่ไม่อยู่ใน <code>emails</code> ของระบบไหน เครื่องไม่เปิดเคสและไม่เก็บเนื้อเมล ถ้าเป็นลูกค้าจริง เพิ่มที่อยู่ในทะเบียนบนมินิแล้วให้เขาส่งใหม่</p>
+        <ul id="tc-strangers" class="space-y-1 text-sm"></ul>
+      </div>
+      <div>
         <h2 class="font-display text-lg font-bold">ระบบลูกค้าในทะเบียน</h2>
         <p class="mb-3 text-sm opacity-70">เพิ่ม/แก้ระบบ อีเมลที่รับ และคำสั่งเทสต์ ทำที่ <code>~/Library/PunOps/ticket-desk/projects.json</code> บนมินิ (คำสั่ง shell ไม่ขึ้นเว็บ)</p>
         <div id="tc-projects" class="grid gap-3 md:grid-cols-2"></div>
@@ -112,7 +117,7 @@ import AppNav from '../../components/app/AppNav.astro';
     import {
       VIEWS, ACTION_LABEL, OWNER_LABEL, MAIL_LABEL, PROVIDER_LABEL, statusMeta, filterTickets, countBy, timeline, fmtMs, fmtWhen,
       stuckMinutes, allowed, checkNote, deskHealth, groupTasks, groupRows, isGroupId, jobLabel,
-      type Ticket, type Action, type Task, type AgentRun, type Project, type DeskStatus, type GroupInfo, type View, type ActionKind, type Owner,
+      type Ticket, type Action, type Task, type AgentRun, type Project, type DeskStatus, type GroupInfo, type View, type ActionKind, type Owner, type Stranger,
     } from '../../scripts/tickets/logic';
 
     const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector(sel) as T;
@@ -134,7 +139,7 @@ import AppNav from '../../components/app/AppNav.astro';
 
     const state = {
       tickets: [] as Ticket[], actions: [] as Action[], tasks: [] as Task[], runs: [] as AgentRun[], projects: [] as Project[],
-      desk: null as DeskStatus | null, groups: {} as Record<string, GroupInfo>,
+      desk: null as DeskStatus | null, groups: {} as Record<string, GroupInfo>, strangers: [] as Stranger[],
       view: 'decide' as View, q: '', selected: (location.hash.match(/TK-\d{6}-[0-9a-f]{6}/) || [''])[0], tab: 'tickets',
       requestIds: {} as Record<string, string>, lastSig: '',
     };
@@ -279,7 +284,7 @@ import AppNav from '../../components/app/AppNav.astro';
       $('#tc-channel-status').replaceChildren(
         h('span', { class: `badge ${health.ok ? 'badge-success' : 'badge-warning'}` }, health.text),
         h('span', { class: `badge ${st?.line ? 'badge-success' : 'badge-ghost'}` }, st?.line ? 'บอท LINE พร้อม' : 'บอท LINE ยังไม่ใส่ token'),
-        h('span', { class: `badge ${st?.mail === 'on' ? 'badge-success' : 'badge-ghost'}` }, MAIL_LABEL[st?.mail || 'unknown'] || st?.mail || ''));
+        h('span', { class: `badge ${st?.mail === 'on' ? 'badge-success' : st?.mail === 'error' ? 'badge-warning' : 'badge-ghost'}` }, MAIL_LABEL[st?.mail || 'unknown'] || st?.mail || ''));
       const rows = groupRows(state.groups, state.projects);
       $('#tc-groups').replaceChildren(...(rows.length ? rows.map((g) => {
         const sel = h('select', { class: 'select select-sm', 'aria-label': `ผูกกลุ่ม ${g.name || g.id} กับระบบ`, 'data-group': g.id },
@@ -292,6 +297,9 @@ import AppNav from '../../components/app/AppNav.astro';
           h('div', { class: 'min-w-0 flex-1' }, h('p', { class: 'font-semibold' }, g.name || 'กลุ่มไม่มีชื่อ'), h('p', { class: 'text-xs opacity-60' }, g.project ? `ผูกกับ ${g.project}` : '⚠️ ยังไม่ผูก บอทจะยังไม่รับเรื่อง')),
           sel, h('button', { class: 'btn btn-sm tap-44', type: 'button', 'data-bind': g.id }, 'บันทึก'));
       }) : [h('p', { class: 'text-sm opacity-60' }, 'ยังไม่มีกลุ่ม ดึงบอทเข้ากลุ่มลูกค้าใน LINE ก่อน แล้วกลุ่มจะขึ้นที่นี่เอง')]));
+      $('#tc-strangers').replaceChildren(...(state.strangers.length ? state.strangers.map((x) => h('li', {},
+        h('span', { class: 'opacity-60' }, `${fmtWhen(x.at)} `), x.from, h('span', { class: 'opacity-70' }, ` · ${x.subject || '(ไม่มีหัวเรื่อง)'}`)))
+        : [h('li', { class: 'opacity-60' }, 'ไม่มี')]));
       $('#tc-projects').replaceChildren(...state.projects.map((p) => h('article', { class: 'rounded-box border border-base-300 p-3 text-sm' },
         h('p', { class: 'font-semibold' }, `${p.client || ''} · ${p.name || p.slug}`),
         h('p', { class: 'font-mono text-xs opacity-60' }, p.slug),
@@ -392,7 +400,7 @@ import AppNav from '../../components/app/AppNav.astro';
         document.getElementById('wr-gate')?.classList.add('hidden');
         $('#tc-app').classList.remove('hidden');
         wire();
-        Object.assign(state, { tickets: d.DEMO_TICKETS, tasks: d.DEMO_TASKS, runs: d.DEMO_RUNS, projects: d.DEMO_PROJECTS, desk: d.DEMO_DESK, groups: d.DEMO_GROUPS });
+        Object.assign(state, { tickets: d.DEMO_TICKETS, tasks: d.DEMO_TASKS, runs: d.DEMO_RUNS, projects: d.DEMO_PROJECTS, desk: d.DEMO_DESK, groups: d.DEMO_GROUPS, strangers: d.DEMO_STRANGERS });
         state.selected ||= d.DEMO_TICKETS[0].id;
         renderAll();
       });

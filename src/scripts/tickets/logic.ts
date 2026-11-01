@@ -157,7 +157,8 @@ export function deskHealth(st: DeskStatus | null, now = Date.now()): { ok: boole
   if (!st.worker) return { ok: false, text: 'worker ไม่ทำงาน' };
   return { ok: true, text: `มินิปกติ · คิว ${st.queue}` };
 }
-export const MAIL_LABEL: Record<string, string> = { on: 'อีเมลเปิด', not_configured: 'อีเมลยังไม่ตั้งค่า', no_senders: 'อีเมล: ยังไม่มีผู้ส่งในทะเบียน', error: 'อีเมลมีปัญหา', unknown: 'อีเมล …' };
+export const MAIL_LABEL: Record<string, string> = { on: 'support@ พร้อม', not_configured: 'support@ ยังไม่ตั้งค่า', error: 'support@ ส่งไม่ออก (เปิด Email Sending หรือยัง?)', unknown: 'อีเมล …' };
+export interface Stranger { from: string; subject: string; at: string }
 
 export type Owner = 'claude' | 'codex' | 'pun' | 'other';
 export const OWNER_LABEL: Record<Owner, string> = { pun: 'รอคุณปัน', claude: 'Claude', codex: 'Codex', other: 'Agent อื่น' };

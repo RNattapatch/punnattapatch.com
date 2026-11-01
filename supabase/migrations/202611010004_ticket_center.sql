@@ -119,3 +119,11 @@ revoke all on public.td_tickets, public.td_actions, public.td_inbox, public.td_p
 -- LINE ส่ง event ซ้ำได้ (redelivery) — webhookEventId เดียว = แถวเดียว
 alter table public.td_inbox add column if not exists eid text generated always as (event->>'eid') stored;
 create unique index if not exists td_inbox_eid on public.td_inbox (eid);
+
+-- อีเมล support@punnattapatch.com (Cloudflare Email Routing → worker ticket-mail) เข้าคิวเดียวกับ LINE
+alter table public.td_inbox drop constraint if exists td_inbox_source_check;
+alter table public.td_inbox add constraint td_inbox_source_check check (source in ('line', 'email'));
+-- รูปที่ลูกค้าแนบอีเมล · ส่วนตัว (ไม่มี policy = มีแค่ service role ของ worker/มินิที่แตะได้)
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('ticket-media', 'ticket-media', false, 10485760, array['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
+on conflict (id) do nothing;

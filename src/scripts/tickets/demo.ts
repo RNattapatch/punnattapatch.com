@@ -1,5 +1,5 @@
 // DEV ONLY fixture for `astro dev` + /app/tickets?demo — dropped from the production build (import.meta.env.DEV guard in the page)
-import type { Ticket, Task, AgentRun, Project, DeskStatus, GroupInfo } from './logic';
+import type { Ticket, Task, AgentRun, Project, DeskStatus, GroupInfo, Stranger } from './logic';
 
 const ago = (m: number) => new Date(Date.now() - m * 60_000).toISOString();
 const hist = (...s: [string, number][]) => s.map(([status, m]) => ({ at: ago(m), status }));
@@ -62,7 +62,8 @@ export const DEMO_PROJECTS: Project[] = [
   { slug: 'demo-pos', client: 'ร้านตัวอย่าง', name: 'POS หน้าร้าน', line_groups: [{ id: 'C' + 'a'.repeat(32), name: 'ทีม POS ร้านตัวอย่าง' }], emails: ['owner@shop.co.th'], auto_ship: false, has_tests: true },
   { slug: 'crm-k', client: 'บริษัท เค', name: 'CRM ฝ่ายขาย', line_groups: [], emails: ['*@k.co.th'], auto_ship: false, has_tests: false },
 ];
-export const DEMO_DESK: DeskStatus = { at: ago(0.5), line: true, mail: 'not_configured', worker: true, worker_off: false, queue: 1 };
+export const DEMO_DESK: DeskStatus = { at: ago(0.5), line: true, mail: 'error', worker: true, worker_off: false, queue: 1 };
+export const DEMO_STRANGERS: Stranger[] = [{ from: 'stranger@random.invalid', subject: 'ขายบริการ SEO ราคาถูก', at: ago(20) }];
 export const DEMO_GROUPS: Record<string, GroupInfo> = {
   ['C' + 'a'.repeat(32)]: { name: 'ทีม POS ร้านตัวอย่าง', joined_at: ago(3000) },
   ['C' + 'b'.repeat(32)]: { name: 'บริษัท เค x คุณปัน', joined_at: ago(30) },
