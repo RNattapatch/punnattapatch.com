@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>The Advisor Academy Class Room</title>
+  <meta name="description" content="การ์ดปัญหา ทางแก้ เป้าหมาย และการ์ดลูกค้าแต่ละแบบ บนจอ สำหรับ Sales Training Part 1 The Advisor Academy" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗂️</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <!--
+    Class Room ของคลาสคุณกิ๊ฟ (Part 1 · 3 พ.ย. 2569) · แบบเดียวกับ class-room-farevefarm-day1.html
+    แท็บ 1 การ์ด ปัญหา → ทางแก้ → เป้าหมาย: ช่วงแรกใส่ปัญหากับเป้าหมาย · ทางแก้เติมระหว่างคลาส (ติดป้ายช่วงให้อัตโนมัติ)
+    แท็บ 2 ลูกค้าแต่ละแบบ (persona): ช่องตรงกับสไลด์ช่วงที่ 7 · กลุ่มเล่า คุณปันพิมพ์
+    คุณปันเปิดบนโน้ตบุ๊กต่อจอ · ผู้เรียนพูด คุณปันพิมพ์
+    ข้อมูลอยู่ในเบราว์เซอร์เครื่องนี้เท่านั้น (localStorage) ไม่ส่งไปไหน · ย้ายเครื่อง = ปุ่ม สำรอง แล้ว นำเข้า
+    ไม่ใช้ Tailwind runtime (CSP ของ punnattapatch.com บล็อก ถ้าจะขึ้นเว็บที่ /class/) · DaisyUI CSS + CSS ในไฟล์
+  -->
+  <style id="app-css">
+    :root { --navy:#072B4E; --coral:#DD4155; --ink:#1F2A37; --muted:#637083; --bg:#EEF1F5; --fs:1;
+      --p-bg:#FBEAEC; --p-ink:#8E1F2F; --f-bg:#EAF1F8; --f-ink:#0E3A63; --g-bg:#E9F5EF; --g-ink:#1F5E43; }
+    * { box-sizing:border-box; }
+    html, body { margin:0; background:var(--bg); color:var(--ink); font-family:"Sukhumvit Set","Sarabun","Prompt",sans-serif; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    html { -webkit-text-size-adjust:100%; }
+    button, input, textarea, select { font-family:inherit; }
+    button, .btn, select, summary { touch-action:manipulation; }
+    [hidden] { display:none !important; }
+    .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+    .topbar { position:sticky; top:0; z-index:20; background:#fff; border-bottom:1px solid #D9DFE7; padding:8px 16px; display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; }
+    .topbar h1 { margin:0; font-size:18px; font-weight:800; color:var(--navy); }
+    .topbar .sub { font-size:13px; color:var(--muted); }
+    .tabs2 { display:flex; gap:4px; background:#E7ECF2; padding:3px; border-radius:10px; }
+    .tabs2 button { border:0; background:transparent; padding:6px 14px; border-radius:8px; font-weight:700; font-size:14px; color:var(--muted); cursor:pointer; }
+    .tabs2 button[aria-selected="true"] { background:#fff; color:var(--navy); box-shadow:0 1px 2px rgba(0,0,0,.12); }
+    .spacer { flex:1; }
+    .tools { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+    .tools label.sec { display:flex; gap:6px; align-items:center; font-size:14px; font-weight:700; color:var(--navy); }
+    .tools select { font-size:14px; padding:4px 8px; border:1.5px solid #CBD3DD; border-radius:8px; background:#fff; }
+    main { padding:14px 16px 40px; max-width:1500px; margin:0 auto; }
+
+    /* forms */
+    .addbar { display:grid; gap:10px; background:#fff; border-radius:14px; padding:12px; margin-bottom:10px; }
+    .addbar.cards { grid-template-columns:1fr 1fr auto; }
+    .addbar.personas { grid-template-columns:repeat(4, 1fr); }
+    .addbar label { display:block; font-size:14px; font-weight:800; margin-bottom:4px; color:var(--navy); }
+    .addbar .lp { color:var(--p-ink); } .addbar .lg { color:var(--g-ink); }
+    .addbar textarea, .addbar input, .addbar select, dialog textarea, dialog input, dialog select { width:100%; border:1.5px solid #CBD3DD; border-radius:10px; padding:8px 10px; font-size:17px; background:#fff; }
+    .addbar textarea { min-height:70px; resize:vertical; }
+    .addbar textarea:focus, .addbar input:focus, .addbar select:focus, .addfix input:focus { outline:2px solid var(--navy); outline-offset:1px; }
+    .addbar .side { display:flex; flex-direction:column; gap:8px; justify-content:flex-end; min-width:180px; }
+    .addbar .wide { grid-column:span 2; }
+    .addbar .submitrow { grid-column:1 / -1; display:flex; gap:12px; align-items:center; justify-content:flex-end; }
+    .hint { font-size:13px; color:var(--muted); margin:0 2px 12px; }
+    .statusbar { display:flex; flex-wrap:wrap; gap:6px 18px; font-size:15px; color:var(--muted); margin:0 2px 12px; }
+    .statusbar b { color:var(--navy); font-size:18px; }
+    .err { color:#C72C41; font-size:13px; font-weight:700; }
+
+    /* capture areas: hex colours only, html2canvas cannot read oklch */
+    .capture { background:var(--bg); padding:4px; }
+    .cap-head { display:none; align-items:baseline; justify-content:space-between; margin:4px 4px 12px; }
+    .cap-head h2 { margin:0; font-size:24px; color:var(--navy); font-weight:800; }
+    .cap-head span { color:var(--muted); font-size:14px; }
+    .capturing .cap-head { display:flex; }
+    .capturing .no-export { display:none !important; }
+    .empty { background:#fff; border:2px dashed #CBD3DD; border-radius:16px; padding:40px; text-align:center; color:var(--muted); font-size:calc(20px * var(--fs)); }
+
+    /* problem → fix → goal */
+    .board { display:flex; flex-direction:column; gap:12px; }
+    .card { display:grid; grid-template-columns:44px 1fr 28px 1.25fr 28px 1fr; gap:10px; align-items:stretch; background:#fff; border-radius:16px; padding:12px; box-shadow:0 1px 3px rgba(7,43,78,.08); transition:opacity .2s; }
+    .card.dim, .pcard.dim { opacity:.3; }
+    .num { display:flex; flex-direction:column; align-items:center; gap:6px; }
+    button.n { width:40px; height:40px; border-radius:50%; border:0; background:var(--navy); color:#fff; font-weight:800; font-size:17px; cursor:pointer; flex:none; }
+    button.n[aria-pressed="true"] { background:var(--coral); }
+    .mini { border:0; background:transparent; color:var(--muted); font-size:13px; cursor:pointer; padding:2px 6px; border-radius:6px; }
+    .mini:hover { background:#EEF1F5; color:var(--navy); }
+    .seg { border-radius:12px; padding:10px 14px; min-width:0; }
+    .seg h3 { margin:0 0 6px; font-size:calc(14px * var(--fs)); font-weight:800; }
+    .seg p { margin:0; font-size:calc(21px * var(--fs)); line-height:1.45; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .seg .who { display:inline-block; margin-top:8px; font-size:calc(13px * var(--fs)); font-weight:700; background:#fff; border-radius:999px; padding:2px 10px; }
+    .prob { background:var(--p-bg); color:var(--p-ink); } .prob p { color:#3A1016; }
+    .fix { background:var(--f-bg); color:var(--f-ink); } .fix p, .fix li { color:#0B2540; }
+    .goal { background:var(--g-bg); color:var(--g-ink); } .goal p { color:#123A29; }
+    .arrow { display:flex; align-items:center; justify-content:center; color:#9AA6B4; font-size:26px; font-weight:800; }
+    .fix ol { margin:0; padding-left:1.3em; display:grid; gap:6px; }
+    .fix li { font-size:calc(20px * var(--fs)); line-height:1.4; overflow-wrap:anywhere; }
+    .fix li .chip { display:inline-block; font-size:calc(12px * var(--fs)); font-weight:800; color:var(--f-ink); background:#fff; border-radius:999px; padding:1px 8px; margin-left:6px; vertical-align:middle; }
+    .fix li .x { border:0; background:transparent; color:#7A8796; cursor:pointer; font-size:16px; margin-left:4px; border-radius:6px; padding:0 4px; }
+    .fix li .x:hover { color:#C72C41; background:#fff; }
+    .fix .none { color:#6B7F95; font-size:calc(17px * var(--fs)); font-style:italic; }
+    .addfix { display:flex; gap:6px; margin-top:8px; }
+    .addfix input { flex:1; min-width:0; border:1.5px solid #B9C7D6; border-radius:8px; padding:6px 10px; font-size:16px; background:#fff; }
+
+    /* persona cards */
+    .pgrid { display:grid; grid-template-columns:repeat(auto-fill, minmax(440px, 1fr)); gap:12px; }
+    .pcard { background:#fff; border-radius:16px; padding:14px 16px; box-shadow:0 1px 3px rgba(7,43,78,.08); display:grid; gap:10px; align-content:start; transition:opacity .2s; }
+    .pcard .ph { display:flex; gap:10px; align-items:center; }
+    .pcard .ph h3 { margin:0; flex:1; font-size:calc(24px * var(--fs)); color:var(--navy); font-weight:800; overflow-wrap:anywhere; }
+    .quote { background:var(--p-bg); color:#3A1016; border-radius:12px; padding:8px 12px; font-size:calc(19px * var(--fs)); line-height:1.45; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .pf { display:grid; grid-template-columns:auto 1fr; gap:6px 12px; font-size:calc(18px * var(--fs)); line-height:1.4; }
+    .pf dt { font-weight:800; color:var(--f-ink); font-size:calc(14px * var(--fs)); padding-top:3px; }
+    .pf dd { margin:0; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .pf dd.blank { color:#9AA6B4; font-style:italic; }
+    .endway { display:inline-block; background:var(--g-bg); color:var(--g-ink); border-radius:999px; padding:2px 12px; font-weight:800; font-size:calc(15px * var(--fs)); }
+
+    dialog { border:0; border-radius:16px; padding:20px; width:min(720px, 94vw); }
+    dialog::backdrop { background:rgba(7,43,78,.45); }
+    dialog h2 { margin:0 0 12px; color:var(--navy); font-size:20px; }
+    dialog label { display:block; font-weight:800; font-size:14px; margin:10px 0 4px; color:var(--navy); }
+    dialog .row { display:flex; gap:8px; justify-content:flex-end; margin-top:16px; }
+
+    @media (max-width: 900px) {
+      .addbar.cards, .addbar.personas { grid-template-columns:1fr; }
+      .addbar .wide { grid-column:auto; }
+      .card { grid-template-columns:1fr; }
+      .num { flex-direction:row; }
+      .arrow { transform:rotate(90deg); height:20px; }
+      .pgrid { grid-template-columns:1fr; }
+    }
+    /* phones: header scrolls away, big tap targets, 16px+ inputs so iOS never zooms */
+    @media (max-width: 700px) {
+      .topbar { position:static; padding:10px 12px; gap:10px; padding-left:max(12px, env(safe-area-inset-left)); padding-right:max(12px, env(safe-area-inset-right)); }
+      .topbar > div:first-child { width:100%; }
+      .topbar h1 { font-size:17px; }
+      .tabs2 { width:100%; }
+      .tabs2 button { flex:1; padding:10px 6px; font-size:15px; min-height:44px; }
+      .spacer, .desk { display:none !important; }
+      .tools { width:100%; }
+      .tools label.sec { width:100%; font-size:15px; }
+      .tools select { flex:1; font-size:16px; min-height:44px; }
+      .tools .btn { flex:1; min-height:44px; font-size:15px; }
+      main { padding:12px 12px calc(32px + env(safe-area-inset-bottom)); padding-left:max(12px, env(safe-area-inset-left)); padding-right:max(12px, env(safe-area-inset-right)); }
+      .addbar { padding:12px; }
+      .addbar textarea, .addbar input, .addbar select, dialog textarea, dialog input, dialog select, .addfix input { font-size:16px; min-height:44px; }
+      .addbar .btn, .submitrow .btn { min-height:48px; width:100%; font-size:17px; }
+      .submitrow { flex-direction:column-reverse; align-items:stretch; }
+      .card { padding:10px; gap:8px; }
+      .num { justify-content:flex-start; gap:4px; }
+      button.n { width:44px; height:44px; }
+      .mini { min-height:44px; min-width:52px; font-size:15px; }
+      .seg p { font-size:calc(19px * var(--fs)); }
+      .fix li { font-size:calc(18px * var(--fs)); }
+      .fix li .x { min-width:36px; min-height:36px; font-size:18px; }
+      .addfix input { padding:10px 12px; }
+      .pcard { padding:12px; }
+      .pcard .ph h3 { font-size:calc(21px * var(--fs)); }
+      .pf { grid-template-columns:1fr; gap:2px; }
+      .pf dt { padding-top:8px; }
+      .statusbar { font-size:14px; align-items:center; }
+      .statusbar .btn { min-height:40px; margin-left:auto; }
+      dialog { padding:16px; width:100vw; max-width:100vw; max-height:92dvh; margin:auto 0 0; border-radius:16px 16px 0 0; }
+      dialog .row .btn { flex:1; min-height:48px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .card, .pcard { transition:none; } }
+    .btn:active, button.n:active, .mini:active { transform:scale(.97); }
+    @media print {
+      @page { size:A4 landscape; margin:10mm; }
+      html, body { background:#fff; }
+      .topbar, .addbar, .hint, .statusbar, .no-export, dialog { display:none !important; }
+      main { padding:0; max-width:none; }
+      .cap-head { display:flex; }
+      .card, .pcard { break-inside:avoid; box-shadow:none; border:1px solid #D9DFE7; }
+      .card.dim, .pcard.dim { opacity:1; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1 id="hd-title">Sales Training Part 1 Class Room</h1>
+      <div class="sub" id="hd-sub"></div>
+    </div>
+    <div class="tabs2" role="tablist" aria-label="เลือกหน้า">
+      <button role="tab" id="tab-cards" aria-controls="view-cards" aria-selected="true">ปัญหา ทางแก้ เป้าหมาย</button>
+      <button role="tab" id="tab-personas" aria-controls="view-personas" aria-selected="false">ลูกค้าแต่ละแบบ</button>
+    </div>
+    <div class="spacer"></div>
+    <div class="tools">
+      <label class="sec" for="sel-sec">ตอนนี้อยู่ <select id="sel-sec"></select></label>
+      <button class="btn btn-sm desk" id="btn-fs-down" aria-label="ตัวอักษรเล็กลง">A−</button>
+      <button class="btn btn-sm desk" id="btn-fs-up" aria-label="ตัวอักษรใหญ่ขึ้น">A+</button>
+      <button class="btn btn-sm desk" id="btn-full">เต็มจอ</button>
+      <button class="btn btn-sm btn-neutral" id="btn-png">บันทึกรูป</button>
+      <button class="btn btn-sm btn-neutral desk" id="btn-print">พิมพ์ / PDF</button>
+      <button class="btn btn-sm" id="btn-backup">สำรอง</button>
+      <label class="btn btn-sm" for="inp-import">นำเข้า</label>
+      <input type="file" id="inp-import" accept="application/json,.json" hidden />
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== tab 1: problem → fix → goal ===== -->
+    <section id="view-cards" role="tabpanel" aria-labelledby="tab-cards">
+      <form class="addbar cards" id="addform" aria-label="เพิ่มการ์ดใหม่">
+        <div>
+          <label class="lp" for="in-prob">ปัญหาที่เจอในแชท</label>
+          <textarea id="in-prob" placeholder="เช่น คุณแม่ถามราคาแล้วเงียบไป 3 วัน"></textarea>
+        </div>
+        <div>
+          <label class="lg" for="in-goal">อยากให้เป็นแบบไหน (เป้าหมาย)</label>
+          <textarea id="in-goal" placeholder="เช่น คุยต่อจนได้วันนัดคุยพร้อมคุณพ่อ"></textarea>
+        </div>
+        <div class="side">
+          <label for="in-who" style="font-size:13px;color:#637083">ใครเล่า (ไม่ใส่ก็ได้)</label>
+          <input id="in-who" autocomplete="off" enterkeyhint="next" placeholder="เช่น ทีมแชท LINE" />
+          <button class="btn btn-primary" type="submit">เพิ่มการ์ด</button>
+          <div class="err" id="add-err" role="alert"></div>
+        </div>
+      </form>
+      <p class="hint">ช่วงแรกใส่แค่ปัญหากับเป้าหมายก่อน ส่วนทางแก้เราจะค่อยๆ เติมระหว่างคลาส พิมพ์ในช่องทางแก้ของการ์ดแล้วกด Enter ระบบจะติดป้ายช่วงที่เลือกไว้ด้านบนให้เอง กด Cmd + Enter เพื่อเพิ่มการ์ดได้เลย</p>
+      <div class="statusbar" aria-live="polite">
+        <span>การ์ด <b id="st-cards">0</b></span>
+        <span>มีทางแก้แล้ว <b id="st-solved">0</b></span>
+        <span>ทางแก้ทั้งหมด <b id="st-fixes">0</b></span>
+        <button class="btn btn-xs btn-ghost" id="btn-clear-cards">ล้างการ์ดทั้งหมด</button>
+      </div>
+      <div class="capture" id="capture-cards">
+        <div class="cap-head"><h2 id="cap-title-cards"></h2><span class="cap-meta"></span></div>
+        <div class="board" id="board"></div>
+      </div>
+    </section>
+
+    <!-- ===== tab 2: personas ===== -->
+    <section id="view-personas" role="tabpanel" aria-labelledby="tab-personas" hidden>
+      <form class="addbar personas" id="pform" aria-label="เพิ่มลูกค้าแบบใหม่">
+        <div>
+          <label for="p-name">ชื่อเล่นของลูกค้าแบบนี้</label>
+          <input id="p-name" autocomplete="off" enterkeyhint="next" placeholder="เช่น คุณแม่สอบใกล้" />
+        </div>
+        <div class="wide">
+          <label for="p-quote">มักพิมพ์มาว่า (ประโยคจริงจากแชท)</label>
+          <input id="p-quote" autocomplete="off" enterkeyhint="next" placeholder="เช่น สอบอีก 2 เดือน ตอนนี้เริ่มยังทันไหมคะ" />
+        </div>
+        <div>
+          <label for="p-who">ใครคุย ใครจ่าย</label>
+          <input id="p-who" autocomplete="off" enterkeyhint="next" placeholder="เช่น แม่คุย พ่อจ่าย" />
+        </div>
+        <div class="wide">
+          <label for="p-job">จ้างเราไปทำอะไร</label>
+          <textarea id="p-job" placeholder="เมื่อ ___ ฉันอยาก ___ เพื่อจะได้ ___"></textarea>
+        </div>
+        <div class="wide">
+          <label for="p-fear">กลัวอะไร</label>
+          <textarea id="p-fear" placeholder="เช่น จ่ายแล้วลูกไม่ขึ้น เหมือนที่เก่า"></textarea>
+        </div>
+        <div class="wide">
+          <label for="p-ask">ต้องถามอะไรก่อนเสนอ</label>
+          <textarea id="p-ask" placeholder="เช่น รอบก่อนติดตรงไหนคะ"></textarea>
+        </div>
+        <div>
+          <label for="p-end">ควรจบแชทด้วยทางไหน</label>
+          <select id="p-end"></select>
+        </div>
+        <div>
+          <label for="p-proof">มาจากแชทไหน กี่ราย</label>
+          <input id="p-proof" autocomplete="off" enterkeyhint="next" placeholder="เช่น 3 ราย เดือนนี้" />
+        </div>
+        <div class="submitrow">
+          <div class="err" id="p-err" role="alert"></div>
+          <button class="btn btn-primary" type="submit">เพิ่มลูกค้าแบบนี้</button>
+        </div>
+      </form>
+      <p class="hint">ใส่แค่ชื่อเล่นกับประโยคจริงก่อนก็ได้ ช่องอื่นค่อยเติมทีหลังด้วยปุ่ม แก้ บนการ์ด ทุกการ์ดเซฟในเครื่องนี้ทันที</p>
+      <div class="statusbar" aria-live="polite">
+        <span>ลูกค้าทั้งหมด <b id="st-personas">0</b> แบบ</span>
+        <span>กรอกครบทุกช่อง <b id="st-complete">0</b></span>
+        <button class="btn btn-xs btn-ghost" id="btn-clear-personas">ล้างลูกค้าทั้งหมด</button>
+      </div>
+      <div class="capture" id="capture-personas">
+        <div class="cap-head"><h2 id="cap-title-personas"></h2><span class="cap-meta"></span></div>
+        <div class="pgrid" id="pboard"></div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="dlg" aria-labelledby="dlg-title">
+    <form method="dialog" id="dlg-form">
+      <h2 id="dlg-title">แก้การ์ด</h2>
+      <label for="dlg-prob">ปัญหา</label>
+      <textarea id="dlg-prob" rows="3"></textarea>
+      <label for="dlg-goal">เป้าหมาย</label>
+      <textarea id="dlg-goal" rows="3"></textarea>
+      <label for="dlg-who">ใครเล่า</label>
+      <input id="dlg-who" />
+      <div class="err" id="dlg-err" role="alert"></div>
+      <div class="row">
+        <button class="btn" value="cancel" formnovalidate>ยกเลิก</button>
+        <button class="btn btn-primary" value="ok">บันทึก</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="pdlg" aria-labelledby="pdlg-title">
+    <form method="dialog" id="pdlg-form">
+      <h2 id="pdlg-title">แก้ลูกค้าแบบนี้</h2>
+      <div id="pdlg-fields"></div>
+      <div class="err" id="pdlg-err" role="alert"></div>
+      <div class="row">
+        <button class="btn" value="cancel" formnovalidate>ยกเลิก</button>
+        <button class="btn btn-primary" value="ok">บันทึก</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    // ===== CONFIG =====
+    const CONFIG = {
+      id: "advisor-part1-2026-11-03",
+      className: "Sales Training Part 1",
+      brand: "The Advisor Academy  |  ปัน ณัฐพัชร์",
+      date: "3 พ.ย. 2569",
+      // ช่วงตาม class plan · ทางแก้ที่เติมจะติดป้ายช่วงที่เลือกอยู่
+      sections: ["ช่วง 1 ทำไมคนเราถึงซื้อ", "ช่วง 2 ปัญหาที่เจอจริง", "ช่วง 3 แชทเดินไปถึงการตัดสินใจ", "ช่วง 4 ซื้อหรือเลื่อนเพราะอะไร", "ช่วง 5 ข้อความแรกจากแอด", "ช่วง 6 ถามให้ผู้ปกครองเล่า", "ช่วง 7 ลูกค้าแต่ละแบบ", "ช่วง 8 ใช้พรุ่งนี้"],
+      endWays: ["ยังไม่เลือก", "1 ตกลงเรียน", "2 นัดคุยพร้อมคนตัดสินใจ", "3 ก้าวเล็กที่ได้ลองจริง", "4 พักไว้ แต่มีวันกลับมาคุย"],
+      // persona fields in the same order as the slide in section 7
+      pfields: [
+        { k: "name", label: "ชื่อเล่น" }, { k: "quote", label: "มักพิมพ์มาว่า" }, { k: "who", label: "ใครคุย ใครจ่าย" },
+        { k: "job", label: "จ้างเราไปทำอะไร", long: true }, { k: "fear", label: "กลัวอะไร", long: true },
+        { k: "ask", label: "ต้องถามอะไรก่อนเสนอ", long: true }, { k: "end", label: "ควรจบแชทด้วยทางไหน", select: true }, { k: "proof", label: "มาจากแชทไหน กี่ราย" },
+      ],
+    };
+    // ===== END CONFIG =====
+
+    const KEY = "class-room:" + CONFIG.id;
+    let S = { cards: [], personas: [], sec: 1, fs: 1, focus: null, pfocus: null, tab: "cards" };
+    try { const raw = localStorage.getItem(KEY); if (raw) S = { ...S, ...JSON.parse(raw) }; } catch (e) {}
+    const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+    const uid = () => Math.random().toString(36).slice(2, 9);
+    const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const stamp = () => new Date().toISOString().slice(0, 16).replace(/[:T]/g, "-");
+    const $ = (id) => document.getElementById(id);
+    const endOptions = (sel) => CONFIG.endWays.map((w, i) => `<option value="${i}"${String(i) === String(sel ?? 0) ? " selected" : ""}>${esc(w)}</option>`).join("");
+
+    document.title = `${CONFIG.className} Class Room`;
+    $("hd-title").textContent = `${CONFIG.className} Class Room`;
+    $("hd-sub").textContent = `${CONFIG.brand}  |  ${CONFIG.date}`;
+    $("cap-title-cards").textContent = `ปัญหา ทางแก้ เป้าหมาย  |  ${CONFIG.className}`;
+    $("cap-title-personas").textContent = `ลูกค้าแต่ละแบบของทีม  |  ${CONFIG.className}`;
+    $("sel-sec").innerHTML = CONFIG.sections.map((s, i) => `<option value="${i + 1}">${esc(s)}</option>`).join("");
+    $("p-end").innerHTML = endOptions(0);
+
+    function applyPrefs() {
+      document.documentElement.style.setProperty("--fs", S.fs);
+      $("sel-sec").value = String(S.sec);
+    }
+    function showTab(t) {
+      S.tab = t; save();
+      $("tab-cards").setAttribute("aria-selected", t === "cards"); $("tab-personas").setAttribute("aria-selected", t === "personas");
+      $("view-cards").hidden = t !== "cards"; $("view-personas").hidden = t !== "personas";
+    }
+    $("tab-cards").onclick = () => showTab("cards");
+    $("tab-personas").onclick = () => showTab("personas");
+    const metaLine = (n, unit) => `${CONFIG.brand}  |  ${CONFIG.date}  |  ${n} ${unit}`;
+
+    // ---------- tab 1 ----------
+    function renderCards() {
+      const cards = S.cards;
+      $("st-cards").textContent = cards.length;
+      $("st-solved").textContent = cards.filter((c) => c.fixes.length).length;
+      $("st-fixes").textContent = cards.reduce((a, c) => a + c.fixes.length, 0);
+      document.querySelector("#capture-cards .cap-meta").textContent = metaLine(cards.length, "การ์ด");
+      if (!cards.length) {
+        $("board").innerHTML = `<div class="empty">ยังไม่มีการ์ดครับ ให้ทีมเล่าปัญหาที่เจอในแชท กับสิ่งที่อยากให้เป็น แล้วพิมพ์ในช่องด้านบน</div>`;
+        return;
+      }
+      $("board").innerHTML = cards.map((c, i) => {
+        const fixes = c.fixes.length
+          ? `<ol>${c.fixes.map((f) => `<li>${esc(f.text)}<span class="chip">ช่วง ${f.sec}</span><button class="x no-export" data-act="delfix" data-card="${c.id}" data-fix="${f.id}" aria-label="ลบทางแก้นี้">✕</button></li>`).join("")}</ol>`
+          : `<p class="none">ยังไม่มี ค่อยๆ เติมระหว่างคลาส</p>`;
+        return `<article class="card${S.focus && S.focus !== c.id ? " dim" : ""}" aria-label="การ์ดที่ ${i + 1}">
+          <div class="num">
+            <button class="n" data-act="focus" data-card="${c.id}" aria-pressed="${S.focus === c.id}" aria-label="โฟกัสการ์ดที่ ${i + 1}">${i + 1}</button>
+            <button class="mini no-export" data-act="edit" data-card="${c.id}" aria-label="แก้การ์ดที่ ${i + 1}">แก้</button>
+            <button class="mini no-export" data-act="del" data-card="${c.id}" aria-label="ลบการ์ดที่ ${i + 1}">ลบ</button>
+          </div>
+          <section class="seg prob"><h3>ปัญหา</h3><p>${esc(c.problem)}</p>${c.who ? `<span class="who">${esc(c.who)}</span>` : ""}</section>
+          <div class="arrow" aria-hidden="true">→</div>
+          <section class="seg fix"><h3>ทางแก้</h3>${fixes}
+            <form class="addfix no-export" data-card="${c.id}"><label class="sr-only" for="fx-${c.id}">เติมทางแก้ของการ์ดที่ ${i + 1}</label><input id="fx-${c.id}" placeholder="พิมพ์ทางแก้ แล้วกด Enter" autocomplete="off" enterkeyhint="done" /></form>
+          </section>
+          <div class="arrow" aria-hidden="true">→</div>
+          <section class="seg goal"><h3>เป้าหมาย</h3><p>${esc(c.goal || "ยังไม่ได้ใส่")}</p></section>
+        </article>`;
+      }).join("");
+    }
+
+    $("addform").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const problem = $("in-prob").value.trim(), goal = $("in-goal").value.trim(), who = $("in-who").value.trim();
+      if (!problem) { $("add-err").textContent = "ใส่ปัญหาก่อนครับ"; $("in-prob").focus(); return; }
+      $("add-err").textContent = "";
+      S.cards.push({ id: uid(), problem, goal, who, fixes: [], t: Date.now() });
+      save(); renderCards();
+      $("in-prob").value = ""; $("in-goal").value = ""; $("in-who").value = "";
+      $("in-prob").focus();
+    });
+    $("in-prob").addEventListener("input", () => ($("add-err").textContent = ""));
+    ["in-prob", "in-goal", "in-who"].forEach((id) => $(id).addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); $("addform").requestSubmit(); }
+    }));
+    $("board").addEventListener("click", (e) => {
+      const b = e.target.closest("button[data-act]"); if (!b) return;
+      const card = S.cards.find((c) => c.id === b.dataset.card); if (!card) return;
+      if (b.dataset.act === "edit") return openEdit(card);
+      if (b.dataset.act === "focus") S.focus = S.focus === card.id ? null : card.id;
+      if (b.dataset.act === "del") { if (!confirm("ลบการ์ดนี้ทั้งใบ?")) return; S.cards = S.cards.filter((c) => c !== card); if (S.focus === card.id) S.focus = null; }
+      if (b.dataset.act === "delfix") card.fixes = card.fixes.filter((f) => f.id !== b.dataset.fix);
+      save(); renderCards();
+    });
+    $("board").addEventListener("submit", (e) => {
+      const f = e.target.closest("form.addfix"); if (!f) return;
+      e.preventDefault();
+      const text = f.querySelector("input").value.trim(); if (!text) return;
+      const card = S.cards.find((c) => c.id === f.dataset.card); if (!card) return;
+      card.fixes.push({ id: uid(), text, sec: S.sec });
+      save(); renderCards();
+      $("fx-" + card.id)?.focus();
+    });
+
+    // edit card: save on submit (synchronous), so the board is updated before the dialog closes
+    let editing = null;
+    function openEdit(card) {
+      editing = card;
+      $("dlg-prob").value = card.problem; $("dlg-goal").value = card.goal; $("dlg-who").value = card.who || ""; $("dlg-err").textContent = "";
+      $("dlg").showModal(); $("dlg-prob").focus();
+    }
+    $("dlg-form").addEventListener("submit", (e) => {
+      if (e.submitter?.value !== "ok" || !editing) return;
+      if (!$("dlg-prob").value.trim()) { e.preventDefault(); $("dlg-err").textContent = "ปัญหาว่างไม่ได้ครับ"; $("dlg-prob").focus(); return; }
+      editing.problem = $("dlg-prob").value.trim(); editing.goal = $("dlg-goal").value.trim(); editing.who = $("dlg-who").value.trim();
+      save(); renderCards();
+    });
+    $("dlg-prob").addEventListener("input", () => ($("dlg-err").textContent = ""));
+    $("dlg").addEventListener("close", () => (editing = null));
+    $("btn-clear-cards").onclick = () => { if (!S.cards.length || !confirm("ล้างการ์ดปัญหาทั้งหมดบนเครื่องนี้? กด สำรอง ก่อนถ้ายังอยากเก็บไว้")) return; S.cards = []; S.focus = null; save(); renderCards(); };
+
+    // ---------- tab 2: personas ----------
+    const filled = (p) => CONFIG.pfields.every((f) => (f.select ? Number(p[f.k]) > 0 : String(p[f.k] || "").trim()));
+    function renderPersonas() {
+      const ps = S.personas;
+      $("st-personas").textContent = ps.length;
+      $("st-complete").textContent = ps.filter(filled).length;
+      document.querySelector("#capture-personas .cap-meta").textContent = metaLine(ps.length, "แบบ");
+      if (!ps.length) {
+        $("pboard").innerHTML = `<div class="empty" style="grid-column:1/-1">ยังไม่มีลูกค้าแบบไหนครับ ให้ทีมอ่านประโยคจริงจากแชท แล้วช่วยกันตั้งชื่อเล่น</div>`;
+        return;
+      }
+      $("pboard").innerHTML = ps.map((p, i) => {
+        const dd = (k) => (String(p[k] || "").trim() ? `<dd>${esc(p[k])}</dd>` : `<dd class="blank">ยังไม่ได้ใส่</dd>`);
+        const end = Number(p.end) > 0 ? `<dd><span class="endway">${esc(CONFIG.endWays[p.end])}</span></dd>` : `<dd class="blank">ยังไม่ได้เลือก</dd>`;
+        return `<article class="pcard${S.pfocus && S.pfocus !== p.id ? " dim" : ""}" aria-label="ลูกค้าแบบที่ ${i + 1}">
+          <div class="ph"><button class="n" data-act="focus" data-p="${p.id}" aria-pressed="${S.pfocus === p.id}" aria-label="โฟกัสลูกค้าแบบที่ ${i + 1}">${i + 1}</button><h3>${esc(p.name || "ยังไม่ตั้งชื่อ")}</h3>
+            <button class="mini no-export" data-act="edit" data-p="${p.id}" aria-label="แก้ลูกค้าแบบที่ ${i + 1}">แก้</button><button class="mini no-export" data-act="del" data-p="${p.id}" aria-label="ลบลูกค้าแบบที่ ${i + 1}">ลบ</button></div>
+          ${String(p.quote || "").trim() ? `<div class="quote">“${esc(p.quote)}”</div>` : ""}
+          <dl class="pf"><dt>ใครคุย ใครจ่าย</dt>${dd("who")}<dt>จ้างเราไปทำอะไร</dt>${dd("job")}<dt>กลัวอะไร</dt>${dd("fear")}<dt>ถามอะไรก่อนเสนอ</dt>${dd("ask")}<dt>จบแชทด้วย</dt>${end}<dt>มาจากแชท</dt>${dd("proof")}</dl>
+        </article>`;
+      }).join("");
+    }
+    $("pform").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const p = { id: uid(), t: Date.now() };
+      CONFIG.pfields.forEach((f) => (p[f.k] = f.select ? Number($("p-" + f.k).value) : $("p-" + f.k).value.trim()));
+      if (!p.name && !p.quote) { $("p-err").textContent = "ใส่ชื่อเล่นหรือประโยคจริงอย่างน้อย 1 ช่องครับ"; $("p-name").focus(); return; }
+      $("p-err").textContent = "";
+      S.personas.push(p); save(); renderPersonas();
+      $("pform").reset(); $("p-end").innerHTML = endOptions(0); $("p-name").focus();
+    });
+    ["p-name", "p-quote"].forEach((id) => $(id).addEventListener("input", () => ($("p-err").textContent = "")));
+    $("pboard").addEventListener("click", (e) => {
+      const b = e.target.closest("button[data-act]"); if (!b) return;
+      const p = S.personas.find((x) => x.id === b.dataset.p); if (!p) return;
+      if (b.dataset.act === "edit") return openPEdit(p);
+      if (b.dataset.act === "focus") S.pfocus = S.pfocus === p.id ? null : p.id;
+      if (b.dataset.act === "del") { if (!confirm(`ลบ "${p.name || "ลูกค้าแบบนี้"}"?`)) return; S.personas = S.personas.filter((x) => x !== p); if (S.pfocus === p.id) S.pfocus = null; }
+      save(); renderPersonas();
+    });
+    let pediting = null;
+    function openPEdit(p) {
+      pediting = p;
+      $("pdlg-fields").innerHTML = CONFIG.pfields.map((f) => `<label for="pe-${f.k}">${esc(f.label)}</label>` + (f.select
+        ? `<select id="pe-${f.k}">${endOptions(p[f.k])}</select>`
+        : f.long ? `<textarea id="pe-${f.k}" rows="2">${esc(p[f.k] || "")}</textarea>` : `<input id="pe-${f.k}" value="${esc(p[f.k] || "")}" />`)).join("");
+      $("pdlg-err").textContent = "";
+      $("pdlg").showModal(); $("pe-name").focus();
+    }
+    $("pdlg-form").addEventListener("submit", (e) => {
+      if (e.submitter?.value !== "ok" || !pediting) return;
+      if (!$("pe-name").value.trim() && !$("pe-quote").value.trim()) { e.preventDefault(); $("pdlg-err").textContent = "ใส่ชื่อเล่นหรือประโยคจริงอย่างน้อย 1 ช่องครับ"; return; }
+      CONFIG.pfields.forEach((f) => (pediting[f.k] = f.select ? Number($("pe-" + f.k).value) : $("pe-" + f.k).value.trim()));
+      save(); renderPersonas();
+    });
+    $("pdlg").addEventListener("close", () => (pediting = null));
+    $("btn-clear-personas").onclick = () => { if (!S.personas.length || !confirm("ล้างลูกค้าทุกแบบบนเครื่องนี้? กด สำรอง ก่อนถ้ายังอยากเก็บไว้")) return; S.personas = []; S.pfocus = null; save(); renderPersonas(); };
+
+    // ---------- toolbar ----------
+    const renderAll = () => { renderCards(); renderPersonas(); };
+    $("sel-sec").onchange = (e) => { S.sec = Number(e.target.value); save(); };
+    $("btn-fs-up").onclick = () => { S.fs = Math.min(1.8, +(S.fs + 0.1).toFixed(2)); save(); applyPrefs(); };
+    $("btn-fs-down").onclick = () => { S.fs = Math.max(0.7, +(S.fs - 0.1).toFixed(2)); save(); applyPrefs(); };
+    $("btn-full").onclick = () => { if (document.fullscreenElement) document.exitFullscreen?.(); else document.documentElement.requestFullscreen?.(); };
+    $("btn-print").onclick = () => window.print();
+    $("btn-png").onclick = async () => {
+      if (!window.html2canvas) { alert("บันทึกรูปต้องใช้อินเทอร์เน็ต ใช้ปุ่ม พิมพ์ / PDF แทนได้"); return; }
+      const el = $(S.tab === "personas" ? "capture-personas" : "capture-cards"), prev = [S.focus, S.pfocus];
+      S.focus = null; S.pfocus = null; renderAll(); el.classList.add("capturing");
+      try {
+        const canvas = await html2canvas(el, { scale: 2, backgroundColor: "#EEF1F5", useCORS: true,
+          // DaisyUI uses oklch() which html2canvas cannot parse, so the clone keeps only this file's CSS
+          onclone: (doc) => doc.querySelectorAll('link[rel="stylesheet"], style').forEach((s) => { if (s.id !== "app-css") s.remove(); }) });
+        const a = document.createElement("a"); a.download = `${CONFIG.id}-${S.tab}-${stamp()}.png`; a.href = canvas.toDataURL("image/png"); document.body.appendChild(a); a.click(); a.remove();
+      } catch (err) { alert("บันทึกรูปไม่สำเร็จ: " + err.message + " ใช้ปุ่ม พิมพ์ / PDF แทนได้"); }
+      finally { el.classList.remove("capturing"); [S.focus, S.pfocus] = prev; renderAll(); }
+    };
+    $("btn-backup").onclick = () => {
+      const blob = new Blob([JSON.stringify({ id: CONFIG.id, saved: new Date().toISOString(), data: S }, null, 2)], { type: "application/json" });
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `${CONFIG.id}-backup-${stamp()}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    };
+    $("inp-import").onchange = async (e) => {
+      const f = e.target.files[0]; if (!f) return;
+      try {
+        const j = JSON.parse(await f.text()), data = j.data || j;
+        if (!Array.isArray(data.cards) && !Array.isArray(data.personas)) throw new Error("ไม่มีการ์ดหรือลูกค้าในไฟล์");
+        if (j.id && j.id !== CONFIG.id && !confirm(`ไฟล์นี้มาจาก "${j.id}" ไม่ใช่คลาสนี้ นำเข้าเลยไหม?`)) return;
+        if (!confirm("นำเข้าแล้วข้อมูลบนเครื่องนี้จะถูกแทนที่ ตกลงไหม?")) return;
+        S = { ...S, cards: [], personas: [], ...data }; save(); applyPrefs(); renderAll(); showTab(S.tab);
+      } catch (err) { alert("อ่านไฟล์ไม่ได้: " + err.message); }
+      e.target.value = "";
+    };
+
+    applyPrefs(); renderAll(); showTab(S.tab || "cards");
+  </script>
+</body>
+</html>
