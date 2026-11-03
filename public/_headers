@@ -21,3 +21,7 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   Cross-Origin-Opener-Policy: same-origin
+
+# class handouts: the slide PDF has no <meta robots>, so keep it out of search here
+/class/the-advisor-academy/slides.pdf
+  X-Robots-Tag: noindex, nofollow
