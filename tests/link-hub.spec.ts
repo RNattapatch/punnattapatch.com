@@ -38,7 +38,7 @@ const socialLinks = [
 ] as const;
 const logoOrder = [
   'FutureSkill', 'Nissan', 'มหาวิทยาลัยรามคำแหง', 'สถาบันเทคโนโลยีไทย-ญี่ปุ่น (TNI)', 'Ving', 'GPX', 'Zontes', 'Lambretta', 'Royal Enfield', 'Scenery Farm',
-  'Home Plus', 'UD Clinic', 'Kanchanok Clinic', 'MEET MÉ', 'NSS Scrap', 'Fareve Farm', 'FarmSuk', 'Business Boy', 'AES', 'HFC Healthfoods',
+  'Home Plus', 'UD Clinic', 'Kanchanok Clinic', 'MEET MÉ', 'The Advisor Academy', 'NSS Scrap', 'Fareve Farm', 'FarmSuk', 'Business Boy', 'AES', 'HFC Healthfoods',
 ] as const;
 
 let server: Server | undefined;
@@ -149,7 +149,7 @@ test('content and destination contract exposes the four approved routes', async 
   await page.close();
 });
 
-test('Trust uses real loaded media and 20 unclipped full-color logos in the approved order', async ({ browser }) => {
+test('Trust uses real loaded media and 21 unclipped full-color logos in the approved order', async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 768, height: 1024 } });
   await preparePage(page);
   await expect(page.getByRole('heading', { name: 'เคยทำงานร่วมกับทีมเหล่านี้' })).toBeVisible();
@@ -161,9 +161,9 @@ test('Trust uses real loaded media and 20 unclipped full-color logos in the appr
   }
 
   const originalLogos = page.locator('.logo-run:not(.marquee-copy) .logo-tile img');
-  await expect(originalLogos).toHaveCount(20);
+  await expect(originalLogos).toHaveCount(21);
   assert.deepEqual(await originalLogos.evaluateAll((images) => images.map((image) => image.getAttribute('alt'))), [...logoOrder]);
-  for (let index = 0; index < 20; index += 1) {
+  for (let index = 0; index < 21; index += 1) {
     const logo = originalLogos.nth(index);
     const before = await logo.evaluate((image: HTMLImageElement) => ({
       loaded: image.complete && image.naturalWidth > 0,

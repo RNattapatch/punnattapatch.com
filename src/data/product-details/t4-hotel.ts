@@ -30,6 +30,7 @@ const HOTEL_CLIENT_LOGOS: ClientLogo[] = [
   { src: '/logos/clients/ud-clinic.jpg', alt: 'UD Clinic' },
   { src: '/logos/clients/kanchanok-clinic.jpg', alt: 'Kanchanok Clinic' },
   { src: '/logos/clients/meetme-bkk.png', alt: 'MEET MÉ' },
+  { src: '/logos/clients/the-advisor-academy.png', alt: 'The Advisor Academy' },
 ];
 
 export const T4_HOTEL_EDITION: ProductDetailPageData = {
