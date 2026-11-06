@@ -5,104 +5,141 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow" />
   <title>แผนลงมือ Schake</title>
-  <meta name="description" content="กรอกสิ่งที่ได้จากคลาส AI สำหรับ Sales Office และแผนลงมือ บนมือถือ ทีม Schake Thailand" />
-  <meta name="theme-color" content="#072B4E" />
+  <meta name="description" content="แผนลงมือของฉัน หลังคลาส AI สำหรับ Sales Office ทีม Schake Thailand กรอกบนมือถือ" />
+  <meta name="theme-color" content="#0060B0" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700;800&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <!--
-    Workshop ปิดคลาส Schake (ชาเก้) 7 พ.ย. 2569 ดัดแปลงจากหน้าการบ้านคลาสคุณกิ๊ฟ
-    (clients/the-advisor-academy/sales-training/homework-part1-the-advisor-academy.html)
-    ผู้เรียนสแกน QR จากสไลด์ กรอกบนมือถือ แล้วเปิดแท็บ พูด 1 นาที ลุกขึ้นพูดทีละคน
-    ข้อมูลอยู่ในเบราว์เซอร์เครื่องนี้เท่านั้น (localStorage) ไม่ส่งไปไหน บันทึกรูป = PNG ส่งเข้ากลุ่ม LINE ได้
+    Workshop ปิดคลาส Schake (ชาเก้) 7 พ.ย. 2569
+    โครงตาม My Learning Action Plan ของ FutureSkill แบบเดียวกับการบ้านคลาสคุณอีฟ (Farevefarm 14 ต.ค.):
+      01 สิ่งที่ได้เรียนรู้ 3, 02 สิ่งที่จะนำไปใช้ 3, 03 7 วันแรก, 04 แผน 30 วัน, 05 สิ่งที่จะเปลี่ยน, คำมั่น 1 อย่างที่จะเริ่มพรุ่งนี้
+      ต้นแบบ: wiki/raw/assets/futureskill-class-guideline-2026-10/05-my-learning-action-plan.png
+    ผู้เรียนสแกน QR จากสไลด์ กรอกบนมือถือ แล้วเปิดแท็บ พูด 1 นาที ตอนลุกขึ้นพูด
+    ข้อมูลอยู่ในเบราว์เซอร์เครื่องนี้เท่านั้น (localStorage) ไม่ส่งไปไหน, บันทึกรูป = ใบแนวนอนหน้าตาแบบต้นแบบ ส่งเข้ากลุ่ม LINE ได้
     ไม่ใช้ Tailwind runtime (CSP ของ /class/ ไม่มี unsafe-eval) และ html2canvas อ่านสี oklch ไม่ได้ จึงใช้ CSS hex ล้วน
     deploy: คัดลอกโฟลเดอร์นี้ไปที่ public/class/schake/ ในรีโปเว็บ
   -->
   <style>
-    :root { --navy:#072B4E; --coral:#DD4155; --ink:#1F2A37; --muted:#637083; --bg:#F4F1EA; --line:#D7DDE5; }
+    :root { --indigo:#0A4A8A; --pink:#C80008; --ink:#1F2A37; --muted:#5F6B7A; --bg:#F4F7FB; --line:#D8E1EC; }
     * { box-sizing:border-box; }
     html { -webkit-text-size-adjust:100%; }
     html, body { margin:0; background:var(--bg); color:var(--ink); font-family:"Sukhumvit Set","Sarabun","Prompt",sans-serif; }
     button, input, textarea { font-family:inherit; }
     button { touch-action:manipulation; cursor:pointer; }
     [hidden] { display:none !important; }
-    .topbar { background:var(--navy); color:#fff; padding:14px 16px 12px; padding-top:max(14px, env(safe-area-inset-top)); }
-    .brandrow { display:flex; align-items:center; gap:10px; }
-    .logo { background:#fff; border-radius:10px; padding:5px 10px; display:inline-flex; }
-    .logo img { height:22px; width:auto; display:block; }
-    .topbar .brand { font-size:13px; color:#C9D6E3; }
-    .topbar h1 { margin:8px 0 10px; font-size:24px; font-weight:800; }
-    .tabs2 { display:flex; gap:4px; background:rgba(255,255,255,.12); padding:3px; border-radius:12px; max-width:560px; }
-    .tabs2 button { flex:1; border:0; background:transparent; color:#DCE6F0; padding:10px 6px; min-height:44px; border-radius:9px; font-weight:700; font-size:15px; }
-    .tabs2 button[aria-selected="true"] { background:#fff; color:var(--navy); }
+    svg.ic { width:30px; height:30px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex:none; }
+
+    .topbar { background:#fff; border-bottom:1px solid var(--line); padding:12px 16px 12px; padding-top:max(12px, env(safe-area-inset-top)); }
+    .brandrow { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .brandrow img { height:24px; width:auto; display:block; }
+    .brand { font-size:13px; color:var(--muted); }
+    .ttl { margin:10px 0 2px; font-family:"Prompt","Sukhumvit Set",sans-serif; font-size:30px; font-weight:800; line-height:1.15; letter-spacing:-.2px; }
+    .ttl .a { color:var(--indigo); } .ttl .b { color:#0060B0; } .ttl .c { color:var(--pink); }
+    .tag { display:inline-block; margin:4px 0 12px; background:#E3EEF9; color:var(--indigo); border-radius:999px; padding:5px 14px; font-weight:700; font-size:14px; }
+    .tabs2 { display:flex; gap:4px; background:#E3EEF9; padding:3px; border-radius:12px; max-width:560px; }
+    .tabs2 button { flex:1; border:0; background:transparent; color:var(--muted); padding:10px 6px; min-height:44px; border-radius:9px; font-weight:700; font-size:15px; }
+    .tabs2 button[aria-selected="true"] { background:#fff; color:var(--indigo); box-shadow:0 1px 3px rgba(0,96,176,.18); }
     main { max-width:720px; margin:0 auto; padding:14px 14px calc(120px + env(safe-area-inset-bottom)); padding-left:max(14px, env(safe-area-inset-left)); padding-right:max(14px, env(safe-area-inset-right)); }
     .note { background:#fff; border-radius:14px; padding:12px 14px; font-size:15px; line-height:1.5; color:var(--muted); margin:0 0 12px; }
-    .box { background:#fff; border-radius:16px; padding:14px; margin-bottom:12px; box-shadow:0 1px 3px rgba(7,43,78,.08); }
-    label { display:block; font-weight:800; font-size:15px; color:var(--navy); margin:10px 0 5px; }
-    .box > label:first-child { margin-top:0; }
-    input, textarea { width:100%; border:1.5px solid #C9D1DB; border-radius:12px; padding:10px 12px; font-size:17px; line-height:1.45; background:#fff; color:#123A6B; min-height:48px; }
+
+    .meta { background:#fff; border:1.5px solid var(--line); border-radius:16px; padding:12px 14px; margin-bottom:14px; display:grid; gap:8px; }
+    .meta .row { display:flex; gap:10px; align-items:center; font-size:15px; }
+    .meta .row b { color:var(--indigo); min-width:52px; }
+    .meta .row span { color:var(--ink); }
+    label { display:block; font-weight:700; font-size:14px; margin:0 0 5px; }
+    input, textarea { width:100%; border:1.5px solid #C9D6E6; border-radius:12px; padding:10px 12px; font-size:17px; line-height:1.45; background:#fff; color:#0B2C55; min-height:48px; }
     textarea { resize:none; overflow:hidden; display:block; }
-    input:focus, textarea:focus { outline:2px solid var(--navy); outline-offset:1px; border-color:var(--navy); }
-    ::placeholder { color:#A5AEB9; }
-    .sec { position:relative; padding-top:28px; }
-    .tape { position:absolute; top:-9px; left:14px; display:inline-flex; gap:8px; align-items:center; padding:5px 12px; border-radius:6px; font-weight:800; font-size:15px; color:var(--navy); }
-    .tape span { font-size:18px; }
-    .hint { font-size:14px; color:var(--muted); margin:6px 0 2px; line-height:1.45; }
-    .sticky { background:#FFE58A; border-radius:6px; padding:16px 14px; margin:18px 0 12px; box-shadow:0 2px 6px rgba(0,0,0,.14); }
-    .sticky h2 { margin:0; font-size:20px; color:var(--navy); }
-    .sticky .hint { color:#5C4E14; }
-    .sticky label { color:#4A3F12; }
-    .sticky input, .sticky textarea { border-color:#C9B25A; }
-    .clip { background:#fff; border:2px dashed var(--coral); border-radius:12px; padding:12px 14px; font-size:15px; line-height:1.5; margin-bottom:12px; }
-    .clip b { display:block; color:var(--coral); font-size:16px; margin-bottom:2px; }
+    input:focus, textarea:focus { outline:2px solid var(--indigo); outline-offset:1px; }
+    ::placeholder { color:#A9AEC2; }
+
+    /* one coloured column of the plan */
+    .col { border-radius:22px; padding:16px 14px 6px; margin-bottom:14px; border:1.5px solid transparent; }
+    .col .hd { display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+    .badge { width:46px; height:46px; border-radius:50%; color:#fff; font-family:"Prompt",sans-serif; font-weight:800; font-size:18px; display:flex; align-items:center; justify-content:center; flex:none; box-shadow:0 0 0 4px rgba(255,255,255,.85); }
+    .col .en { font-family:"Prompt",sans-serif; font-size:11.5px; font-weight:700; letter-spacing:.8px; opacity:.85; }
+    .col h2 { margin:0; font-family:"Prompt","Sukhumvit Set",sans-serif; font-size:21px; font-weight:800; line-height:1.2; }
+    .col .sub { font-size:14.5px; color:var(--ink); margin:6px 0 10px; line-height:1.45; }
+    .slot { margin-bottom:12px; }
+    .slot.num { display:flex; gap:8px; align-items:flex-start; }
+    .slot.num .n { width:28px; height:28px; margin-top:10px; border-radius:50%; color:#fff; font-weight:800; font-size:14px; display:flex; align-items:center; justify-content:center; flex:none; }
+    .pill { display:inline-block; border-radius:8px; padding:3px 10px; font-weight:700; font-size:14px; margin-bottom:5px; }
+
+    .commit { display:flex; gap:12px; align-items:flex-start; background:#FDECEC; border:1.5px solid #F5C6C8; border-radius:22px; padding:16px 14px; margin:4px 0 14px; }
+    .rocket { width:52px; height:52px; border-radius:50%; background:#C80008; color:#fff; display:flex; align-items:center; justify-content:center; flex:none; }
+    .commit .body { flex:1; min-width:0; }
+    .commit h2 { margin:0; font-family:"Prompt",sans-serif; font-size:21px; color:#9E0007; font-weight:800; }
+    .commit .sub { font-size:14.5px; color:#5A2A2C; margin:2px 0 8px; }
+    .commit textarea { border-color:#F0B3B6; }
+    .clip { background:#fff; border:2px dashed #0060B0; border-radius:14px; padding:12px 14px; font-size:15px; line-height:1.5; margin-bottom:12px; }
+    .clip b { display:block; color:#0A4A8A; font-size:16px; margin-bottom:2px; }
+
     .actions { position:fixed; left:0; right:0; bottom:0; z-index:10; background:rgba(255,255,255,.96); border-top:1px solid var(--line); padding:10px 14px calc(10px + env(safe-area-inset-bottom)); display:flex; justify-content:center; }
     .actions .in { display:flex; gap:8px; width:100%; max-width:720px; }
-    .btn { flex:1; border:1.5px solid var(--navy); background:#fff; color:var(--navy); border-radius:12px; min-height:48px; padding:8px 10px; font-size:16px; font-weight:800; }
-    .btn.primary { background:var(--navy); color:#fff; }
+    .btn { flex:1; border:1.5px solid var(--indigo); background:#fff; color:var(--indigo); border-radius:12px; min-height:48px; padding:8px 10px; font-size:16px; font-weight:800; }
+    .btn.primary { background:var(--indigo); color:#fff; }
     .btn:active { transform:scale(.98); }
     .btn:disabled { opacity:.6; }
     .link { display:block; margin:14px auto 0; border:0; background:transparent; color:var(--muted); text-decoration:underline; font-size:14px; min-height:44px; padding:8px 12px; }
-    #msg { min-height:22px; text-align:center; font-weight:700; color:#2E7D5B; font-size:15px; margin:8px 0 0; }
+    #msg { min-height:22px; text-align:center; font-weight:700; color:#17703F; font-size:15px; margin:8px 0 0; }
     #msg.bad { color:#C72C41; }
 
     /* speak tab: big text to read aloud while standing */
-    #v-speak .script { background:#fff; border-radius:16px; padding:18px 16px; box-shadow:0 1px 3px rgba(7,43,78,.08); }
-    #v-speak .line { font-size:22px; line-height:1.55; margin:0 0 12px; color:var(--ink); }
-    #v-speak .line b { color:var(--navy); }
-    #v-speak .line .gap { color:#B7BFC9; }
+    #v-speak .script { background:#fff; border-radius:18px; padding:18px 16px; box-shadow:0 1px 3px rgba(0,96,176,.1); }
+    #v-speak .line { font-size:22px; line-height:1.55; margin:0 0 12px; }
+    #v-speak .line b { color:var(--indigo); }
+    #v-speak .line .gap { color:#B7BBCB; }
     .timer { display:flex; align-items:center; gap:12px; margin:14px 0 0; }
-    .timer .t { font-size:40px; font-weight:800; color:var(--navy); min-width:96px; font-variant-numeric:tabular-nums; }
-    .timer .t.end { color:var(--coral); }
+    .timer .t { font-size:40px; font-weight:800; color:var(--indigo); min-width:96px; font-variant-numeric:tabular-nums; }
+    .timer .t.end { color:#C80008; }
 
     /* recap tab */
-    .card { background:#fff; border-radius:14px; padding:16px 14px 12px; font-size:16px; line-height:1.55; box-shadow:0 1px 3px rgba(7,43,78,.08); border-top:6px solid #BFE3F5; margin-bottom:12px; }
-    .card:nth-child(2) { border-top-color:#F9C6D6; } .card:nth-child(3) { border-top-color:#CDEBD6; } .card:nth-child(4) { border-top-color:#FFD8A8; }
-    .card h3 { font-size:19px; color:var(--navy); margin:0 0 6px; }
-    .card h3 .k { color:var(--coral); margin-right:6px; }
+    .card { background:#fff; border-radius:16px; padding:16px 14px 12px; font-size:16px; line-height:1.55; box-shadow:0 1px 3px rgba(0,96,176,.1); border-top:6px solid #0060B0; margin-bottom:12px; }
+    .card h3 { font-size:19px; color:var(--indigo); margin:0 0 6px; }
+    .card h3 .k { margin-right:6px; }
     .card ol { margin:4px 0; padding-left:22px; } .card li { margin:4px 0; }
-    .card .tk { margin-top:10px; padding-top:8px; border-top:1px dashed #C9BFAE; color:var(--navy); font-weight:800; }
+    .card .tk { margin-top:10px; padding-top:8px; border-top:1px dashed #CFD3E3; color:var(--indigo); font-weight:800; }
 
-    /* picture that "บันทึกรูป" saves: built from the answers, off screen, hex colours only */
-    #export { position:fixed; left:-10000px; top:0; width:1080px; background:#FCFBF7; padding:56px 60px; color:#1F2A37; font-family:"Sukhumvit Set","Sarabun","Prompt",sans-serif; }
-    #export .top { display:flex; justify-content:space-between; align-items:center; }
-    #export .top img { height:56px; }
-    #export .eb { font-size:24px; color:#5B6878; }
-    #export h1 { font-size:54px; color:#072B4E; margin:10px 0 4px; }
-    #export .who { font-size:28px; color:#DD4155; font-weight:700; margin-bottom:26px; }
-    #export .s { background:#fff; border-radius:18px; padding:22px 26px; margin-bottom:18px; border-left:12px solid #BFE3F5; }
-    #export .s h2 { margin:0 0 8px; font-size:30px; color:#072B4E; }
-    #export .s p { margin:6px 0; font-size:26px; line-height:1.45; white-space:pre-wrap; }
-    #export .s p i { font-style:normal; color:#5B6878; font-size:22px; }
-    #export .c { background:#FFE58A; border-radius:10px; padding:24px 28px; margin-top:22px; font-size:28px; line-height:1.5; }
-    #export .c h2 { margin:0 0 6px; font-size:32px; color:#072B4E; }
-    #export .ft { margin-top:22px; font-size:20px; color:#8A93A0; }
+    /* the landscape sheet that "บันทึกรูป" saves: same look as the FutureSkill sheet, off screen, hex colours only */
+    #export { position:fixed; left:-10000px; top:0; width:1800px; background:#F7FAFD; padding:44px 40px 40px; color:#1F2A37; font-family:"Sukhumvit Set","Sarabun","Prompt",sans-serif; }
+    #export .top { display:flex; justify-content:space-between; align-items:flex-start; gap:30px; margin-bottom:30px; }
+    #export .ttl { margin:0; font-size:66px; }
+    #export .tag { font-size:24px; padding:6px 22px; margin:10px 0 0 4px; }
+    #export .fields { display:grid; grid-template-columns:1.2fr 1.6fr .9fr; gap:0; background:#E9F1FA; border-radius:22px; padding:20px 24px; font-size:22px; min-width:900px; align-items:end; }
+    #export .fields > div { padding:0 18px; border-left:2px solid #C9D9EB; }
+    #export .fields > div:first-child { border-left:0; padding-left:0; }
+    #export .fields b { display:block; color:#0060B0; font-size:19px; }
+    #export .fields span { display:block; border-bottom:2px solid #A9BFD8; padding:4px 0 6px; min-height:42px; font-weight:700; color:#0B2C55; }
+    #export .logo { display:flex; justify-content:flex-end; margin-bottom:14px; }
+    #export .logo img { height:46px; }
+    #export .grid { display:grid; grid-template-columns:repeat(5, 1fr); gap:18px; }
+    #export .xc { border-radius:30px; padding:0 18px 20px; display:flex; flex-direction:column; align-items:stretch; }
+    #export .xc .badge { width:96px; height:96px; font-size:32px; margin:-44px auto 10px; box-shadow:none; border:7px solid #fff; }
+    #export .xc .ico { display:flex; justify-content:center; }
+    #export .xc .ico svg { width:56px; height:56px; }
+    #export .xc h2 { text-align:center; font-size:31px; margin:8px 0 2px; }
+    #export .xc .en { text-align:center; font-size:15px; }
+    #export .xc .sub { text-align:center; font-size:20px; margin:8px 0 14px; min-height:56px; }
+    #export .xs { background:#fff; border-radius:16px; border:2px solid #E1E8F1; padding:10px 14px 12px; margin-bottom:12px; font-size:21px; line-height:1.4; flex:1; white-space:pre-wrap; word-break:break-word; }
+    #export .xs .pill { font-size:18px; margin:0 0 6px; }
+    #export .xs .n { display:inline-flex; width:32px; height:32px; border-radius:50%; color:#fff; font-weight:800; font-size:17px; align-items:center; justify-content:center; margin:0 0 6px; }
+    #export .xs .v { min-height:58px; }
+    #export .xs .v.empty { color:#C3CEDB; }
+    #export .xcm { margin-top:26px; display:flex; align-items:center; gap:24px; background:#FDECEC; border-radius:30px; padding:20px 26px; }
+    #export .xcm .rocket { width:96px; height:96px; }
+    #export .xcm .rocket svg { width:50px; height:50px; }
+    #export .xcm h2 { margin:0; font-family:"Prompt",sans-serif; font-size:34px; color:#9E0007; }
+    #export .xcm .sub { font-size:21px; color:#5A2A2C; }
+    #export .xcm .v { flex:1; background:#fff; border:2px solid #F0B3B6; border-radius:20px; padding:18px 22px; font-size:26px; font-weight:700; color:#0B2C55; min-height:84px; white-space:pre-wrap; }
+    #export .ft { margin-top:18px; font-size:18px; color:#8A8FA6; display:flex; justify-content:space-between; }
   </style>
 </head>
 <body>
   <header class="topbar">
-    <div class="brandrow"><span class="logo"><img src="logo-schake.png" alt="Schake" /></span><span class="brand" id="brand"></span></div>
-    <h1 id="title"></h1>
+    <div class="brandrow"><span class="brand" id="brand"></span><img src="logo-schake.png" alt="Schake" /></div>
+    <h1 class="ttl"><span class="a">แผนลงมือ</span><span class="b">ของ</span><span class="c">ฉัน</span></h1>
+    <span class="tag" id="tag"></span>
     <div class="tabs2" role="tablist" aria-label="เลือกหน้า">
       <button role="tab" id="tab-plan" aria-selected="true" aria-controls="v-plan">กรอกแผน</button>
       <button role="tab" id="tab-speak" aria-selected="false" aria-controls="v-speak">พูด 1 นาที</button>
@@ -113,14 +150,20 @@
   <main>
     <section id="v-plan" role="tabpanel" aria-labelledby="tab-plan">
       <p class="note" id="sub"></p>
-      <div class="box"><label for="f-name">ชื่อของฉัน</label><input id="f-name" data-k="name" autocomplete="name" enterkeyhint="next" placeholder="พิมพ์ชื่อ" /></div>
+      <div class="meta">
+        <div><label for="f-name" style="color:#0060B0">ชื่อ</label><input id="f-name" data-k="name" autocomplete="name" enterkeyhint="next" placeholder="พิมพ์ชื่อของคุณ" /></div>
+        <div class="row"><b>คลาส</b><span id="m-class"></span></div>
+        <div class="row"><b>วันที่</b><span id="m-date"></span></div>
+      </div>
       <div id="secs"></div>
-      <div class="sticky">
-        <h2>คำมั่นของฉัน</h2>
-        <div class="hint">เขียนให้เจาะจงที่สุด ถ้าเจอแบบนี้ จะทำแบบนั้น</div>
-        <label for="f-cif">ตั้งแต่พรุ่งนี้ ถ้า</label><textarea id="f-cif" data-k="cIf" rows="1" placeholder="เช่น ลูกค้าขอใบเสนอราคาทาง LINE"></textarea>
-        <label for="f-cthen">ฉันจะ</label><textarea id="f-cthen" data-k="cThen" rows="1" placeholder="เช่น เปิด Agent ใบเสนอราคาก่อนพิมพ์เอง"></textarea>
-        <label for="f-buddy">คู่ที่จะช่วยเตือน</label><input id="f-buddy" data-k="buddy" enterkeyhint="done" placeholder="ชื่อคู่ของฉันวันนี้" />
+      <div class="commit">
+        <div class="rocket" id="rk"></div>
+        <div class="body">
+          <h2>คำมั่นของฉัน</h2>
+          <div class="sub" id="commit-sub"></div>
+          <label for="f-commit" class="sr" style="position:absolute;left:-9999px">คำมั่นของฉัน</label>
+          <textarea id="f-commit" data-k="commit" rows="2" placeholder="เช่น พรุ่งนี้เช้า ทำใบเสนอราคาใบแรกจากแม่แบบ แล้วให้คู่ตรวจ"></textarea>
+        </div>
       </div>
       <div class="clip" id="bring"></div>
       <p id="msg" role="status" aria-live="polite"></p>
@@ -146,17 +189,19 @@
     // ===== CONFIG =====
     const CONFIG = {
       brand: "ปัน ณัฐพัชร์  |  Schake Thailand",
-      title: "สิ่งที่ได้ และแผนลงมือของฉัน",
+      tagline: "เปลี่ยนสิ่งที่เรียน ให้เป็นการลงมือ",
       className: "คลาสสด AI สำหรับ Sales Office",
       date: "7 พ.ย. 2569",
       subtitle: "กรอก 5 ช่องกับคำมั่น 1 ข้อ แล้วเปิดแท็บ พูด 1 นาที ตอนถึงตาเรา",
+      // 5 columns = FutureSkill My Learning Action Plan, same order and same boxes
       columns: [
-        { title: "สิ่งที่ได้วันนี้", hint: "3 อย่างที่จำได้โดยไม่ต้องเปิดสไลด์", slots: ["1", "2", "3"] },
-        { title: "งานแรกที่จะให้ AI ช่วย", hint: "งานซ้ำของฉัน 1 งาน ที่เริ่มได้พรุ่งนี้", slots: ["งาน", "ใช้ Agent แม่แบบ หรือ Skill ตัวไหน", "ข้อมูลที่ต้องเตรียม"] },
-        { title: "7 วันแรก", hint: "ลองให้ครบก่อนตัดสินว่าใช้ได้ไหม", slots: ["สิ่งที่จะลองทำก่อน", "เริ่มวันไหน"] },
-        { title: "ครบ 30 วัน", hint: "ตัวเลขที่ชี้ให้หัวหน้าดูได้", slots: ["ตัวเลขที่จะวัด", "ตอนนี้ใช้เวลาเท่าไหร่", "เป้าหลังใช้ AI"] },
-        { title: "กติกาที่ฉันจะรักษา", hint: "ดูการ์ดไฟจราจรข้อมูลบนโต๊ะ", slots: ["ข้อมูลที่ฉันจะไม่วางลง AI", "สิ่งที่ฉันจะตรวจก่อนส่งทุกครั้ง"] },
+        { t: "สิ่งที่ได้เรียนรู้", en: "MY KEY LEARNINGS", sub: "3 อย่างที่ได้จากวันนี้", icon: "bulb", slots: ["1", "2", "3"], ph: "เช่น AI ตอบผิดเพราะไม่รู้ข้อมูลบริษัทเรา" },
+        { t: "สิ่งที่จะนำไปใช้", en: "MY APPLICATION", sub: "3 อย่างที่จะเอาไปใช้กับงานของฉัน", icon: "target", slots: ["1", "2", "3"], ph: "เช่น ทำใบเสนอราคาจากแม่แบบ" },
+        { t: "7 วันแรก", en: "MY FIRST 7 DAYS", sub: "ลงมือเล็กๆ ให้เห็นผลในสัปดาห์แรก", icon: "calendar", slots: ["สิ่งที่จะทำ", "ใช้ที่ไหน ใช้อย่างไร"] },
+        { t: "แผน 30 วัน", en: "MY 30-DAY PLAN", sub: "ครบเดือน ต้องชี้ให้หัวหน้าดูได้", icon: "chart", slots: ["เป้าหมาย", "สิ่งที่จะทำ", "รู้ได้อย่างไรว่าได้ผล"] },
+        { t: "สิ่งที่จะเปลี่ยน", en: "MY EXPECTED CHANGE", sub: "ถ้าทำครบ จะต่างจากวันนี้ยังไง", icon: "userstar", slots: ["ในตัวฉัน", "ในงานของฉัน"] },
       ],
+      commitSub: "1 อย่างที่จะเริ่มพรุ่งนี้",
       bring: "<b>ก่อนแยกย้าย</b> กด บันทึกรูป แล้วส่งเข้ากลุ่ม LINE ของทีม หัวหน้าจะได้เห็นแผนของทุกคน ครบ 30 วันเอารูปนี้มาเทียบกับตัวเลขจริงตอนเช็คอินกับผม",
       recap: [
         { t: "Mindset กับ Context", items: ["AI เหมือนน้องฝึกงานที่รู้ทุกอย่าง แต่ไม่รู้จักบริษัทเรา", "งาน 3 แบบ: AI เตรียมได้ AI ทำแต่คนอนุมัติ คนรับผิดชอบเอง", "AI Agent มี 4 ชิ้น: สมอง ใบงาน คู่มือ ปลั๊ก"], tk: "ทุกคนใช้ AI รุ่นเดียวกัน ผลต่างกันที่ข้อมูลที่เราป้อน" },
@@ -167,24 +212,55 @@
     };
     // ===== END CONFIG =====
 
-    const KEY = "class-plan:schake-2026-11-07";
-    const TAPE = ["#BFE3F5", "#E2D4F5", "#F9C6D6", "#FFD8A8", "#CDEBD6"];
+    const KEY = "class-plan:schake-2026-11-07-fs";
+    // 5 column colours like the FutureSkill sheet, tuned to the Schake logo (blue #0060B0, red #C80008): main, dark text, column tint, border, pill
+    const PAL = [
+      { m: "#0060B0", d: "#0A4A8A", t: "#E8F1FA", b: "#C7DCF0", p: "#D3E4F5" },
+      { m: "#1E8FD6", d: "#11679E", t: "#E8F5FC", b: "#C3E3F5", p: "#D1EAF8" },
+      { m: "#C80008", d: "#9E0007", t: "#FDECEC", b: "#F5C6C8", p: "#F9D6D7" },
+      { m: "#E08A00", d: "#9C5F00", t: "#FEF4E3", b: "#F6DCAE", p: "#FAE6C2" },
+      { m: "#1E8A5A", d: "#146140", t: "#E8F6EF", b: "#C2E5D3", p: "#D2ECDF" },
+    ];
+    const ICON = {
+      bulb: '<path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/><path d="M12 6v1M7.5 8.5l.7.7M16.5 8.5l-.7.7"/>',
+      target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/><path d="M17 7l4-4M18 3h3v3"/>',
+      calendar: '<rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/>',
+      chart: '<path d="M4 20V14M9 20V10M14 20V12M19 20V6"/><path d="M4 10l5-4 4 3 7-6M16 3h4v4"/>',
+      userstar: '<circle cx="10" cy="7" r="4"/><path d="M2.5 21v-1.5A6.5 6.5 0 0 1 12 14"/><path d="M18 13.5l1.4 2.9 3.1.4-2.3 2.2.6 3.1-2.8-1.5-2.8 1.5.6-3.1-2.3-2.2 3.1-.4z"/>',
+      rocket: '<path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.1-.1-2.9a2.2 2.2 0 0 0-2.9-.1z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.9A12.9 12.9 0 0 1 22 2c0 2.7-.8 7.5-6 11a22.4 22.4 0 0 1-4 2z"/><path d="M9 12H4s.6-3 2-4c1.6-1.1 5 0 5 0M12 15v5s3-.6 4-2c1.1-1.6 0-5 0-5"/>',
+    };
+    const svg = (k) => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
     const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
     const $ = (id) => document.getElementById(id);
+    const two = (i) => String(i + 1).padStart(2, "0");
     const slotLabel = (s) => (/^\d+$/.test(s) ? `อย่างที่ ${s}` : s);
 
     let S = {};
     try { S = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) {}
     const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
 
-    $("brand").textContent = `${CONFIG.brand}  |  ${CONFIG.date}`;
-    $("title").textContent = CONFIG.title;
+    $("brand").textContent = CONFIG.brand;
+    $("tag").textContent = CONFIG.tagline;
     $("sub").textContent = `${CONFIG.subtitle} ระบบจำคำตอบไว้ในมือถือเครื่องนี้เอง ไม่ส่งไปไหน`;
+    $("m-class").textContent = CONFIG.className;
+    $("m-date").textContent = CONFIG.date;
+    $("commit-sub").textContent = CONFIG.commitSub;
+    $("rk").innerHTML = svg("rocket");
     $("bring").innerHTML = CONFIG.bring;
-    $("secs").innerHTML = CONFIG.columns.map((c, i) => `<div class="box sec"><span class="tape" style="background:${TAPE[i % TAPE.length]}"><span>${i + 1}</span>${esc(c.title)}</span>
-      <div class="hint">${esc(c.hint)}</div>
-      ${c.slots.map((s, j) => `<label for="f-c${i}s${j}">${esc(slotLabel(s))}</label><textarea id="f-c${i}s${j}" data-k="c${i}s${j}" rows="1"></textarea>`).join("")}</div>`).join("");
-    $("v-recap").innerHTML = CONFIG.recap.map((r, i) => `<section class="card"><h3><span class="k">${i + 1}</span>${esc(r.t)}</h3><ol>${r.items.map((x) => `<li>${esc(x)}</li>`).join("")}</ol><div class="tk">${esc(r.tk)}</div></section>`).join("");
+    $("secs").innerHTML = CONFIG.columns.map((c, i) => {
+      const p = PAL[i];
+      const slots = c.slots.map((s, j) => {
+        const id = `f-c${i}s${j}`, ph = c.ph ? ` placeholder="${esc(j === 0 ? c.ph : "")}"` : "";
+        return /^\d+$/.test(s)
+          ? `<div class="slot num"><span class="n" style="background:${p.m}" aria-hidden="true">${s}</span><div style="flex:1"><label for="${id}" style="position:absolute;left:-9999px">${esc(c.t)} อย่างที่ ${s}</label><textarea id="${id}" data-k="c${i}s${j}" rows="1" style="border-color:${p.b}"${ph}></textarea></div></div>`
+          : `<div class="slot"><label for="${id}" class="pill" style="background:${p.p};color:${p.d}">${esc(s)}</label><textarea id="${id}" data-k="c${i}s${j}" rows="2" style="border-color:${p.b}"></textarea></div>`;
+      }).join("");
+      return `<section class="col" style="background:${p.t};border-color:${p.b}">
+        <div class="hd"><span class="badge" style="background:${p.m}">${two(i)}</span><span style="color:${p.m}">${svg(c.icon)}</span>
+          <div><div class="en" style="color:${p.d}">${esc(c.en)}</div><h2 style="color:${p.d}">${esc(c.t)}</h2></div></div>
+        <div class="sub">${esc(c.sub)}</div>${slots}</section>`;
+    }).join("");
+    $("v-recap").innerHTML = CONFIG.recap.map((r, i) => `<section class="card" style="border-top-color:${PAL[i].m}"><h3><span class="k" style="color:${PAL[i].m}">${two(i)}</span>${esc(r.t)}</h3><ol>${r.items.map((x) => `<li>${esc(x)}</li>`).join("")}</ol><div class="tk">${esc(r.tk)}</div></section>`).join("");
 
     const grow = (el) => { if (el.tagName === "TEXTAREA") { el.style.height = "auto"; el.style.height = el.scrollHeight + 2 + "px"; } };
     const fields = [...document.querySelectorAll("[data-k]")];
@@ -194,10 +270,10 @@
       $("script").innerHTML = [
         `ชื่อ ${g("name")}`,
         `สิ่งที่ได้วันนี้คือ ${g("c0s0")}`,
-        `งานแรกที่จะให้ AI ช่วยคือ ${g("c1s0")}`,
-        `ตั้งแต่พรุ่งนี้ ถ้า ${g("cIf")} ฉันจะ ${g("cThen")}`,
-        `ครบ 30 วัน จะวัดจาก ${g("c3s0")}`,
-        `คนที่จะช่วยเตือนคือ ${g("buddy")}`,
+        `สิ่งที่จะเอาไปใช้กับงานคือ ${g("c1s0")}`,
+        `7 วันแรก ฉันจะ ${g("c2s0")}`,
+        `ครบ 30 วัน เป้าของฉันคือ ${g("c3s0")} รู้ได้จาก ${g("c3s2")}`,
+        `คำมั่นของฉัน พรุ่งนี้จะเริ่ม ${g("commit")}`,
       ].map((l) => `<p class="line">${l}</p>`).join("");
     }
     fields.forEach((el) => {
@@ -229,14 +305,13 @@
     const empty = () => !fields.some((el) => val(el.dataset.k));
 
     function asText() {
-      const out = [`${CONFIG.title}  ${val("name")}`.trim(), `${CONFIG.className}  Schake Thailand  ${CONFIG.date}`, ""];
+      const out = [`แผนลงมือของฉัน  ${val("name")}`.trim(), `${CONFIG.className}  Schake Thailand  ${CONFIG.date}`, ""];
       CONFIG.columns.forEach((c, i) => {
-        out.push(`${i + 1}. ${c.title}`);
+        out.push(`${two(i)} ${c.t}`);
         c.slots.forEach((s, j) => { const v = val(`c${i}s${j}`); if (v) out.push(`   ${slotLabel(s)}: ${v}`); });
         out.push("");
       });
-      out.push(`คำมั่นของฉัน: ตั้งแต่พรุ่งนี้ ถ้า ${val("cIf") || "______"} ฉันจะ ${val("cThen") || "______"}`);
-      if (val("buddy")) out.push(`คู่ที่จะช่วยเตือน: ${val("buddy")}`);
+      out.push(`คำมั่นของฉัน (${CONFIG.commitSub}): ${val("commit") || "______"}`);
       return out.join("\n");
     }
 
@@ -248,25 +323,38 @@
       say("คัดลอกแล้ว วางในแชทได้เลย");
     });
 
+    function buildSheet() {
+      const v = (k) => (val(k) ? `<div class="v">${esc(val(k))}</div>` : '<div class="v empty">&nbsp;</div>');
+      return `<div class="top">
+          <div><h1 class="ttl"><span class="a">แผนลงมือ</span><span class="b">ของ</span><span class="c">ฉัน</span></h1><span class="tag">${esc(CONFIG.tagline)}</span></div>
+          <div><div class="logo"><img src="logo-schake.png" alt="Schake" /></div>
+            <div class="fields"><div><b>ชื่อ</b><span>${esc(val("name")) || "&nbsp;"}</span></div><div><b>คลาส</b><span>${esc(CONFIG.className)}</span></div><div><b>วันที่</b><span>${esc(CONFIG.date)}</span></div></div></div>
+        </div>
+        <div class="grid">${CONFIG.columns.map((c, i) => { const p = PAL[i]; return `<section class="xc" style="background:${p.t};margin-top:30px">
+          <span class="badge" style="background:${p.m}">${two(i)}</span>
+          <div class="ico" style="color:${p.m}">${svg(c.icon)}</div>
+          <h2 style="color:${p.d}">${esc(c.t)}</h2><div class="en" style="color:${p.d}">${esc(c.en)}</div>
+          <div class="sub">${esc(c.sub)}</div>
+          ${c.slots.map((s, j) => `<div class="xs" style="border-color:${p.b}">${/^\d+$/.test(s) ? `<span class="n" style="background:${p.m}">${s}</span>` : `<div class="pill" style="background:${p.p};color:${p.d}">${esc(s)}</div>`}${v(`c${i}s${j}`)}</div>`).join("")}
+        </section>`; }).join("")}</div>
+        <div class="xcm"><div class="rocket">${svg("rocket")}</div><div><h2>คำมั่นของฉัน</h2><div class="sub">${esc(CONFIG.commitSub)}</div></div><div class="v">${esc(val("commit")) || "&nbsp;"}</div></div>
+        <div class="ft"><span>${esc(CONFIG.className)}  Schake Thailand</span><span>ปัน ณัฐพัชร์  @pun_nattapatch</span></div>`;
+    }
+
     $("b-img").addEventListener("click", async () => {
       if (empty()) return say("ยังไม่ได้กรอกอะไรเลยครับ", true);
       if (!window.html2canvas) return say("บันทึกรูปต้องต่อเน็ตครับ ลองกด คัดลอกข้อความ แทน", true);
       const btn = $("b-img"); btn.disabled = true; say("กำลังทำรูป...");
       const ex = $("export");
-      ex.innerHTML = `<div class="top"><div class="eb">${esc(CONFIG.className)}  |  ${esc(CONFIG.date)}</div><img src="logo-schake.png" alt="Schake" /></div>
-        <h1>${esc(CONFIG.title)}</h1><div class="who">${esc(val("name") || " ")}</div>
-        ${CONFIG.columns.map((c, i) => `<div class="s" style="border-left-color:${TAPE[i % TAPE.length]}"><h2>${i + 1}  ${esc(c.title)}</h2>
-          ${c.slots.map((s, j) => `<p><i>${esc(slotLabel(s))}</i><br>${esc(val(`c${i}s${j}`) || "......")}</p>`).join("")}</div>`).join("")}
-        <div class="c"><h2>คำมั่นของฉัน</h2>ตั้งแต่พรุ่งนี้ ถ้า <b>${esc(val("cIf") || "......")}</b><br>ฉันจะ <b>${esc(val("cThen") || "......")}</b>${val("buddy") ? `<br>คู่ที่จะช่วยเตือน ${esc(val("buddy"))}` : ""}</div>
-        <div class="ft">ปัน ณัฐพัชร์  @pun_nattapatch</div>`;
+      ex.innerHTML = buildSheet();
       try {
         if (document.fonts) await document.fonts.ready;
-        const canvas = await html2canvas(ex, { scale: 1, backgroundColor: "#FCFBF7", logging: false, useCORS: true });
+        const canvas = await html2canvas(ex, { scale: 1, backgroundColor: "#F7FAFD", logging: false, useCORS: true });
         const blob = await new Promise((r) => canvas.toBlob(r, "image/png"));
         const name = `แผนลงมือ-${val("name") || "ของฉัน"}.png`;
         const file = new File([blob], name, { type: "image/png" });
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          try { await navigator.share({ files: [file], title: CONFIG.title }); say("ส่งรูปแล้ว"); }
+          try { await navigator.share({ files: [file], title: "แผนลงมือของฉัน" }); say("ส่งรูปแล้ว"); }
           catch (e) { say(e.name === "AbortError" ? "" : "ส่งรูปไม่สำเร็จ ลองอีกครั้งครับ", e.name !== "AbortError"); }
         } else {
           const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
@@ -282,5 +370,6 @@
       S = {}; save(); fields.forEach((el) => { el.value = ""; grow(el); }); say("ล้างแล้ว");
     });
   </script>
+
 </body>
 </html>
