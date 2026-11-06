@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>แผนลงมือ Schake</title>
+  <meta name="description" content="กรอกสิ่งที่ได้จากคลาส AI สำหรับ Sales Office และแผนลงมือ บนมือถือ ทีม Schake Thailand" />
+  <meta name="theme-color" content="#072B4E" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <!--
+    Workshop ปิดคลาส Schake (ชาเก้) 7 พ.ย. 2569 ดัดแปลงจากหน้าการบ้านคลาสคุณกิ๊ฟ
+    (clients/the-advisor-academy/sales-training/homework-part1-the-advisor-academy.html)
+    ผู้เรียนสแกน QR จากสไลด์ กรอกบนมือถือ แล้วเปิดแท็บ พูด 1 นาที ลุกขึ้นพูดทีละคน
+    ข้อมูลอยู่ในเบราว์เซอร์เครื่องนี้เท่านั้น (localStorage) ไม่ส่งไปไหน บันทึกรูป = PNG ส่งเข้ากลุ่ม LINE ได้
+    ไม่ใช้ Tailwind runtime (CSP ของ /class/ ไม่มี unsafe-eval) และ html2canvas อ่านสี oklch ไม่ได้ จึงใช้ CSS hex ล้วน
+    deploy: คัดลอกโฟลเดอร์นี้ไปที่ public/class/schake/ ในรีโปเว็บ
+  -->
+  <style>
+    :root { --navy:#072B4E; --coral:#DD4155; --ink:#1F2A37; --muted:#637083; --bg:#F4F1EA; --line:#D7DDE5; }
+    * { box-sizing:border-box; }
+    html { -webkit-text-size-adjust:100%; }
+    html, body { margin:0; background:var(--bg); color:var(--ink); font-family:"Sukhumvit Set","Sarabun","Prompt",sans-serif; }
+    button, input, textarea { font-family:inherit; }
+    button { touch-action:manipulation; cursor:pointer; }
+    [hidden] { display:none !important; }
+    .topbar { background:var(--navy); color:#fff; padding:14px 16px 12px; padding-top:max(14px, env(safe-area-inset-top)); }
+    .brandrow { display:flex; align-items:center; gap:10px; }
+    .logo { background:#fff; border-radius:10px; padding:5px 10px; display:inline-flex; }
+    .logo img { height:22px; width:auto; display:block; }
+    .topbar .brand { font-size:13px; color:#C9D6E3; }
+    .topbar h1 { margin:8px 0 10px; font-size:24px; font-weight:800; }
+    .tabs2 { display:flex; gap:4px; background:rgba(255,255,255,.12); padding:3px; border-radius:12px; max-width:560px; }
+    .tabs2 button { flex:1; border:0; background:transparent; color:#DCE6F0; padding:10px 6px; min-height:44px; border-radius:9px; font-weight:700; font-size:15px; }
+    .tabs2 button[aria-selected="true"] { background:#fff; color:var(--navy); }
+    main { max-width:720px; margin:0 auto; padding:14px 14px calc(120px + env(safe-area-inset-bottom)); padding-left:max(14px, env(safe-area-inset-left)); padding-right:max(14px, env(safe-area-inset-right)); }
+    .note { background:#fff; border-radius:14px; padding:12px 14px; font-size:15px; line-height:1.5; color:var(--muted); margin:0 0 12px; }
+    .box { background:#fff; border-radius:16px; padding:14px; margin-bottom:12px; box-shadow:0 1px 3px rgba(7,43,78,.08); }
+    label { display:block; font-weight:800; font-size:15px; color:var(--navy); margin:10px 0 5px; }
+    .box > label:first-child { margin-top:0; }
+    input, textarea { width:100%; border:1.5px solid #C9D1DB; border-radius:12px; padding:10px 12px; font-size:17px; line-height:1.45; background:#fff; color:#123A6B; min-height:48px; }
+    textarea { resize:none; overflow:hidden; display:block; }
+    input:focus, textarea:focus { outline:2px solid var(--navy); outline-offset:1px; border-color:var(--navy); }
+    ::placeholder { color:#A5AEB9; }
+    .sec { position:relative; padding-top:28px; }
+    .tape { position:absolute; top:-9px; left:14px; display:inline-flex; gap:8px; align-items:center; padding:5px 12px; border-radius:6px; font-weight:800; font-size:15px; color:var(--navy); }
+    .tape span { font-size:18px; }
+    .hint { font-size:14px; color:var(--muted); margin:6px 0 2px; line-height:1.45; }
+    .sticky { background:#FFE58A; border-radius:6px; padding:16px 14px; margin:18px 0 12px; box-shadow:0 2px 6px rgba(0,0,0,.14); }
+    .sticky h2 { margin:0; font-size:20px; color:var(--navy); }
+    .sticky .hint { color:#5C4E14; }
+    .sticky label { color:#4A3F12; }
+    .sticky input, .sticky textarea { border-color:#C9B25A; }
+    .clip { background:#fff; border:2px dashed var(--coral); border-radius:12px; padding:12px 14px; font-size:15px; line-height:1.5; margin-bottom:12px; }
+    .clip b { display:block; color:var(--coral); font-size:16px; margin-bottom:2px; }
+    .actions { position:fixed; left:0; right:0; bottom:0; z-index:10; background:rgba(255,255,255,.96); border-top:1px solid var(--line); padding:10px 14px calc(10px + env(safe-area-inset-bottom)); display:flex; justify-content:center; }
+    .actions .in { display:flex; gap:8px; width:100%; max-width:720px; }
+    .btn { flex:1; border:1.5px solid var(--navy); background:#fff; color:var(--navy); border-radius:12px; min-height:48px; padding:8px 10px; font-size:16px; font-weight:800; }
+    .btn.primary { background:var(--navy); color:#fff; }
+    .btn:active { transform:scale(.98); }
+    .btn:disabled { opacity:.6; }
+    .link { display:block; margin:14px auto 0; border:0; background:transparent; color:var(--muted); text-decoration:underline; font-size:14px; min-height:44px; padding:8px 12px; }
+    #msg { min-height:22px; text-align:center; font-weight:700; color:#2E7D5B; font-size:15px; margin:8px 0 0; }
+    #msg.bad { color:#C72C41; }
+
+    /* speak tab: big text to read aloud while standing */
+    #v-speak .script { background:#fff; border-radius:16px; padding:18px 16px; box-shadow:0 1px 3px rgba(7,43,78,.08); }
+    #v-speak .line { font-size:22px; line-height:1.55; margin:0 0 12px; color:var(--ink); }
+    #v-speak .line b { color:var(--navy); }
+    #v-speak .line .gap { color:#B7BFC9; }
+    .timer { display:flex; align-items:center; gap:12px; margin:14px 0 0; }
+    .timer .t { font-size:40px; font-weight:800; color:var(--navy); min-width:96px; font-variant-numeric:tabular-nums; }
+    .timer .t.end { color:var(--coral); }
+
+    /* recap tab */
+    .card { background:#fff; border-radius:14px; padding:16px 14px 12px; font-size:16px; line-height:1.55; box-shadow:0 1px 3px rgba(7,43,78,.08); border-top:6px solid #BFE3F5; margin-bottom:12px; }
+    .card:nth-child(2) { border-top-color:#F9C6D6; } .card:nth-child(3) { border-top-color:#CDEBD6; } .card:nth-child(4) { border-top-color:#FFD8A8; }
+    .card h3 { font-size:19px; color:var(--navy); margin:0 0 6px; }
+    .card h3 .k { color:var(--coral); margin-right:6px; }
+    .card ol { margin:4px 0; padding-left:22px; } .card li { margin:4px 0; }
+    .card .tk { margin-top:10px; padding-top:8px; border-top:1px dashed #C9BFAE; color:var(--navy); font-weight:800; }
+
+    /* picture that "บันทึกรูป" saves: built from the answers, off screen, hex colours only */
+    #export { position:fixed; left:-10000px; top:0; width:1080px; background:#FCFBF7; padding:56px 60px; color:#1F2A37; font-family:"Sukhumvit Set","Sarabun","Prompt",sans-serif; }
+    #export .top { display:flex; justify-content:space-between; align-items:center; }
+    #export .top img { height:56px; }
+    #export .eb { font-size:24px; color:#5B6878; }
+    #export h1 { font-size:54px; color:#072B4E; margin:10px 0 4px; }
+    #export .who { font-size:28px; color:#DD4155; font-weight:700; margin-bottom:26px; }
+    #export .s { background:#fff; border-radius:18px; padding:22px 26px; margin-bottom:18px; border-left:12px solid #BFE3F5; }
+    #export .s h2 { margin:0 0 8px; font-size:30px; color:#072B4E; }
+    #export .s p { margin:6px 0; font-size:26px; line-height:1.45; white-space:pre-wrap; }
+    #export .s p i { font-style:normal; color:#5B6878; font-size:22px; }
+    #export .c { background:#FFE58A; border-radius:10px; padding:24px 28px; margin-top:22px; font-size:28px; line-height:1.5; }
+    #export .c h2 { margin:0 0 6px; font-size:32px; color:#072B4E; }
+    #export .ft { margin-top:22px; font-size:20px; color:#8A93A0; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brandrow"><span class="logo"><img src="logo-schake.png" alt="Schake" /></span><span class="brand" id="brand"></span></div>
+    <h1 id="title"></h1>
+    <div class="tabs2" role="tablist" aria-label="เลือกหน้า">
+      <button role="tab" id="tab-plan" aria-selected="true" aria-controls="v-plan">กรอกแผน</button>
+      <button role="tab" id="tab-speak" aria-selected="false" aria-controls="v-speak">พูด 1 นาที</button>
+      <button role="tab" id="tab-recap" aria-selected="false" aria-controls="v-recap">สรุปวันนี้</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="v-plan" role="tabpanel" aria-labelledby="tab-plan">
+      <p class="note" id="sub"></p>
+      <div class="box"><label for="f-name">ชื่อของฉัน</label><input id="f-name" data-k="name" autocomplete="name" enterkeyhint="next" placeholder="พิมพ์ชื่อ" /></div>
+      <div id="secs"></div>
+      <div class="sticky">
+        <h2>คำมั่นของฉัน</h2>
+        <div class="hint">เขียนให้เจาะจงที่สุด ถ้าเจอแบบนี้ จะทำแบบนั้น</div>
+        <label for="f-cif">ตั้งแต่พรุ่งนี้ ถ้า</label><textarea id="f-cif" data-k="cIf" rows="1" placeholder="เช่น ลูกค้าขอใบเสนอราคาทาง LINE"></textarea>
+        <label for="f-cthen">ฉันจะ</label><textarea id="f-cthen" data-k="cThen" rows="1" placeholder="เช่น เปิด Agent ใบเสนอราคาก่อนพิมพ์เอง"></textarea>
+        <label for="f-buddy">คู่ที่จะช่วยเตือน</label><input id="f-buddy" data-k="buddy" enterkeyhint="done" placeholder="ชื่อคู่ของฉันวันนี้" />
+      </div>
+      <div class="clip" id="bring"></div>
+      <p id="msg" role="status" aria-live="polite"></p>
+      <button type="button" class="link" id="b-clear">ล้างคำตอบทั้งหมด</button>
+    </section>
+
+    <section id="v-speak" role="tabpanel" aria-labelledby="tab-speak" hidden>
+      <p class="note">ถึงตาเรา ลุกขึ้นยืน แล้วอ่านตามนี้ได้เลย ช่องที่ยังเป็นจุดคือช่องที่ยังไม่ได้กรอก</p>
+      <div class="script" id="script"></div>
+      <div class="timer"><span class="t" id="t">1:00</span><button type="button" class="btn" id="b-timer">เริ่มจับเวลา 1 นาที</button></div>
+    </section>
+
+    <section id="v-recap" role="tabpanel" aria-labelledby="tab-recap" hidden></section>
+  </main>
+
+  <div class="actions" id="actions"><div class="in">
+    <button type="button" class="btn primary" id="b-img">บันทึกรูป</button>
+    <button type="button" class="btn" id="b-copy">คัดลอกข้อความ</button>
+  </div></div>
+  <div id="export" aria-hidden="true"></div>
+
+  <script>
+    // ===== CONFIG =====
+    const CONFIG = {
+      brand: "ปัน ณัฐพัชร์  |  Schake Thailand",
+      title: "สิ่งที่ได้ และแผนลงมือของฉัน",
+      className: "คลาสสด AI สำหรับ Sales Office",
+      date: "7 พ.ย. 2569",
+      subtitle: "กรอก 5 ช่องกับคำมั่น 1 ข้อ แล้วเปิดแท็บ พูด 1 นาที ตอนถึงตาเรา",
+      columns: [
+        { title: "สิ่งที่ได้วันนี้", hint: "3 อย่างที่จำได้โดยไม่ต้องเปิดสไลด์", slots: ["1", "2", "3"] },
+        { title: "งานแรกที่จะให้ AI ช่วย", hint: "งานซ้ำของฉัน 1 งาน ที่เริ่มได้พรุ่งนี้", slots: ["งาน", "ใช้ Agent แม่แบบ หรือ Skill ตัวไหน", "ข้อมูลที่ต้องเตรียม"] },
+        { title: "7 วันแรก", hint: "ลองให้ครบก่อนตัดสินว่าใช้ได้ไหม", slots: ["สิ่งที่จะลองทำก่อน", "เริ่มวันไหน"] },
+        { title: "ครบ 30 วัน", hint: "ตัวเลขที่ชี้ให้หัวหน้าดูได้", slots: ["ตัวเลขที่จะวัด", "ตอนนี้ใช้เวลาเท่าไหร่", "เป้าหลังใช้ AI"] },
+        { title: "กติกาที่ฉันจะรักษา", hint: "ดูการ์ดไฟจราจรข้อมูลบนโต๊ะ", slots: ["ข้อมูลที่ฉันจะไม่วางลง AI", "สิ่งที่ฉันจะตรวจก่อนส่งทุกครั้ง"] },
+      ],
+      bring: "<b>ก่อนแยกย้าย</b> กด บันทึกรูป แล้วส่งเข้ากลุ่ม LINE ของทีม หัวหน้าจะได้เห็นแผนของทุกคน ครบ 30 วันเอารูปนี้มาเทียบกับตัวเลขจริงตอนเช็คอินกับผม",
+      recap: [
+        { t: "Mindset กับ Context", items: ["AI เหมือนน้องฝึกงานที่รู้ทุกอย่าง แต่ไม่รู้จักบริษัทเรา", "งาน 3 แบบ: AI เตรียมได้ AI ทำแต่คนอนุมัติ คนรับผิดชอบเอง", "AI Agent มี 4 ชิ้น: สมอง ใบงาน คู่มือ ปลั๊ก"], tk: "ทุกคนใช้ AI รุ่นเดียวกัน ผลต่างกันที่ข้อมูลที่เราป้อน" },
+        { t: "สมองที่สอง กับ AI ตอบคำถาม", items: ["คลังที่ AI หาเจอ: ชื่อไฟล์ขึ้นต้นด้วยรหัสสินค้า INDEX.md AGENTS.md file-path.md", "AI ตอบคำถามบริษัทได้ ต้องมีข้อมูล คำสั่งประจำ และชุดคำถามทดสอบ 10 ข้อ", "ทุกตัวเลขบอกที่มา ไม่พบให้ตอบว่าไม่พบ"], tk: "คำตอบที่ไม่บอกว่ามาจากไหน อย่าเอาไปตัดสินใจ" },
+        { t: "แผนที่งาน กับ Agent ประจำตัว", items: ["แผนที่งาน 5 ช่อง คือร่างของ Skill", "AI กรอกข้อมูล แม่แบบคิดเลข แล้วดูกล่องสีเหลืองก่อนส่ง", "ผิดตรงไหน แก้ที่ไฟล์ อย่าแก้ผลลัพธ์ด้วยมือ"], tk: "AI ทำถูก 1 ครั้งยังไม่พอ ต้องถูกทุกครั้ง" },
+        { t: "ข้อมูลปลอดภัย กับแผน 30 วัน", items: ["เขียววางได้ เหลืองเช็กก่อน แดงห้ามวาง", "API key คือกุญแจ ห้ามวางในแชท ห้ามใส่ในไฟล์ที่แชร์", "วันที่ 14 และ 30 เลือก ขยาย ปรับ หรือหยุด จากตัวเลข"], tk: "ถ้าไม่แน่ใจ ให้หยุดและถามหัวหน้าก่อน" },
+      ],
+    };
+    // ===== END CONFIG =====
+
+    const KEY = "class-plan:schake-2026-11-07";
+    const TAPE = ["#BFE3F5", "#E2D4F5", "#F9C6D6", "#FFD8A8", "#CDEBD6"];
+    const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+    const $ = (id) => document.getElementById(id);
+    const slotLabel = (s) => (/^\d+$/.test(s) ? `อย่างที่ ${s}` : s);
+
+    let S = {};
+    try { S = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) {}
+    const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+
+    $("brand").textContent = `${CONFIG.brand}  |  ${CONFIG.date}`;
+    $("title").textContent = CONFIG.title;
+    $("sub").textContent = `${CONFIG.subtitle} ระบบจำคำตอบไว้ในมือถือเครื่องนี้เอง ไม่ส่งไปไหน`;
+    $("bring").innerHTML = CONFIG.bring;
+    $("secs").innerHTML = CONFIG.columns.map((c, i) => `<div class="box sec"><span class="tape" style="background:${TAPE[i % TAPE.length]}"><span>${i + 1}</span>${esc(c.title)}</span>
+      <div class="hint">${esc(c.hint)}</div>
+      ${c.slots.map((s, j) => `<label for="f-c${i}s${j}">${esc(slotLabel(s))}</label><textarea id="f-c${i}s${j}" data-k="c${i}s${j}" rows="1"></textarea>`).join("")}</div>`).join("");
+    $("v-recap").innerHTML = CONFIG.recap.map((r, i) => `<section class="card"><h3><span class="k">${i + 1}</span>${esc(r.t)}</h3><ol>${r.items.map((x) => `<li>${esc(x)}</li>`).join("")}</ol><div class="tk">${esc(r.tk)}</div></section>`).join("");
+
+    const grow = (el) => { if (el.tagName === "TEXTAREA") { el.style.height = "auto"; el.style.height = el.scrollHeight + 2 + "px"; } };
+    const fields = [...document.querySelectorAll("[data-k]")];
+    const val = (k) => (S[k] || "").trim();
+    const g = (k) => (val(k) ? `<b>${esc(val(k))}</b>` : '<span class="gap">......</span>');
+    function renderScript() {
+      $("script").innerHTML = [
+        `ชื่อ ${g("name")}`,
+        `สิ่งที่ได้วันนี้คือ ${g("c0s0")}`,
+        `งานแรกที่จะให้ AI ช่วยคือ ${g("c1s0")}`,
+        `ตั้งแต่พรุ่งนี้ ถ้า ${g("cIf")} ฉันจะ ${g("cThen")}`,
+        `ครบ 30 วัน จะวัดจาก ${g("c3s0")}`,
+        `คนที่จะช่วยเตือนคือ ${g("buddy")}`,
+      ].map((l) => `<p class="line">${l}</p>`).join("");
+    }
+    fields.forEach((el) => {
+      el.value = S[el.dataset.k] || "";
+      el.addEventListener("input", () => { S[el.dataset.k] = el.value; save(); grow(el); });
+    });
+    const growAll = () => fields.forEach(grow);
+    requestAnimationFrame(growAll);
+    window.addEventListener("resize", growAll);
+
+    const tabs = [["tab-plan", "v-plan"], ["tab-speak", "v-speak"], ["tab-recap", "v-recap"]];
+    tabs.forEach(([t, v]) => $(t).addEventListener("click", () => {
+      tabs.forEach(([t2, v2]) => { $(t2).setAttribute("aria-selected", t2 === t); $(v2).hidden = v2 !== v; });
+      $("actions").hidden = v !== "v-plan";
+      if (v === "v-plan") requestAnimationFrame(growAll);
+      if (v === "v-speak") renderScript();
+      window.scrollTo(0, 0);
+    }));
+
+    // 1-minute timer for the stand-up talk
+    let timer = null;
+    $("b-timer").addEventListener("click", () => {
+      clearInterval(timer); let left = 60; const t = $("t"); t.classList.remove("end"); t.textContent = "1:00";
+      $("b-timer").textContent = "เริ่มใหม่";
+      timer = setInterval(() => { left -= 1; t.textContent = `0:${String(Math.max(left, 0)).padStart(2, "0")}`; if (left <= 0) { clearInterval(timer); t.classList.add("end"); t.textContent = "หมดเวลา"; } }, 1000);
+    });
+
+    const say = (t, bad) => { $("msg").textContent = t; $("msg").className = bad ? "bad" : ""; };
+    const empty = () => !fields.some((el) => val(el.dataset.k));
+
+    function asText() {
+      const out = [`${CONFIG.title}  ${val("name")}`.trim(), `${CONFIG.className}  Schake Thailand  ${CONFIG.date}`, ""];
+      CONFIG.columns.forEach((c, i) => {
+        out.push(`${i + 1}. ${c.title}`);
+        c.slots.forEach((s, j) => { const v = val(`c${i}s${j}`); if (v) out.push(`   ${slotLabel(s)}: ${v}`); });
+        out.push("");
+      });
+      out.push(`คำมั่นของฉัน: ตั้งแต่พรุ่งนี้ ถ้า ${val("cIf") || "______"} ฉันจะ ${val("cThen") || "______"}`);
+      if (val("buddy")) out.push(`คู่ที่จะช่วยเตือน: ${val("buddy")}`);
+      return out.join("\n");
+    }
+
+    $("b-copy").addEventListener("click", async () => {
+      if (empty()) return say("ยังไม่ได้กรอกอะไรเลยครับ", true);
+      const t = asText();
+      try { await navigator.clipboard.writeText(t); }
+      catch (e) { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
+      say("คัดลอกแล้ว วางในแชทได้เลย");
+    });
+
+    $("b-img").addEventListener("click", async () => {
+      if (empty()) return say("ยังไม่ได้กรอกอะไรเลยครับ", true);
+      if (!window.html2canvas) return say("บันทึกรูปต้องต่อเน็ตครับ ลองกด คัดลอกข้อความ แทน", true);
+      const btn = $("b-img"); btn.disabled = true; say("กำลังทำรูป...");
+      const ex = $("export");
+      ex.innerHTML = `<div class="top"><div class="eb">${esc(CONFIG.className)}  |  ${esc(CONFIG.date)}</div><img src="logo-schake.png" alt="Schake" /></div>
+        <h1>${esc(CONFIG.title)}</h1><div class="who">${esc(val("name") || " ")}</div>
+        ${CONFIG.columns.map((c, i) => `<div class="s" style="border-left-color:${TAPE[i % TAPE.length]}"><h2>${i + 1}  ${esc(c.title)}</h2>
+          ${c.slots.map((s, j) => `<p><i>${esc(slotLabel(s))}</i><br>${esc(val(`c${i}s${j}`) || "......")}</p>`).join("")}</div>`).join("")}
+        <div class="c"><h2>คำมั่นของฉัน</h2>ตั้งแต่พรุ่งนี้ ถ้า <b>${esc(val("cIf") || "......")}</b><br>ฉันจะ <b>${esc(val("cThen") || "......")}</b>${val("buddy") ? `<br>คู่ที่จะช่วยเตือน ${esc(val("buddy"))}` : ""}</div>
+        <div class="ft">ปัน ณัฐพัชร์  @pun_nattapatch</div>`;
+      try {
+        if (document.fonts) await document.fonts.ready;
+        const canvas = await html2canvas(ex, { scale: 1, backgroundColor: "#FCFBF7", logging: false, useCORS: true });
+        const blob = await new Promise((r) => canvas.toBlob(r, "image/png"));
+        const name = `แผนลงมือ-${val("name") || "ของฉัน"}.png`;
+        const file = new File([blob], name, { type: "image/png" });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try { await navigator.share({ files: [file], title: CONFIG.title }); say("ส่งรูปแล้ว"); }
+          catch (e) { say(e.name === "AbortError" ? "" : "ส่งรูปไม่สำเร็จ ลองอีกครั้งครับ", e.name !== "AbortError"); }
+        } else {
+          const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+          document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+          say("บันทึกรูปแล้ว");
+        }
+      } catch (e) { say("ทำรูปไม่สำเร็จ ลองกด คัดลอกข้อความ แทนครับ", true); }
+      btn.disabled = false;
+    });
+
+    $("b-clear").addEventListener("click", () => {
+      if (empty() || !confirm("ล้างคำตอบทั้งหมดในเครื่องนี้ใช่ไหมครับ")) return;
+      S = {}; save(); fields.forEach((el) => { el.value = ""; grow(el); }); say("ล้างแล้ว");
+    });
+  </script>
+</body>
+</html>
