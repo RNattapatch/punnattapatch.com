@@ -25,3 +25,5 @@
 # class handouts: the slide PDF has no <meta robots>, so keep it out of search here
 /class/the-advisor-academy/slides.pdf
   X-Robots-Tag: noindex, nofollow
+/class/schake/slides.pdf
+  X-Robots-Tag: noindex, nofollow
