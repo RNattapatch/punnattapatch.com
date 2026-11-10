@@ -47,7 +47,8 @@ export default defineConfig({
         !page.includes('/case-studies') && // 2026-09-30 ถอดเคส → 302 ไป /portfolio
         !page.includes('/app/') && // private app hub → app.punnattapatch.com (pruned from marketing)
         !page.endsWith('/app') && // private app hub launcher — noindex
-        !page.endsWith('/privacy'), // legal page — noindex; reachable via footer + direct link only
+        !page.endsWith('/privacy') && // legal page — noindex; reachable via footer + direct link only
+        !page.includes('/hub/'), // Meta app legal pages (privacy · terms · data-deletion) — noindex
       // Per-URL priority + changefreq so crawlers grasp information
       // hierarchy: revenue pages (home, services, booking, quiz) rank
       // highest, insights/FAQ next, secondary last.

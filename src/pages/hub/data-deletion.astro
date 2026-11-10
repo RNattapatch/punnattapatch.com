@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../data/site';
+import { META_APP } from '../../data/meta-app';
+
+const title = `วิธีลบข้อมูลของ ${META_APP.name} โดย ${SITE.nameTh}`;
+const description = `ขั้นตอนการขอลบข้อมูลส่วนบุคคลที่เกี่ยวข้องกับ ${META_APP.name} ทั้งจาก Facebook และจากการทักข้อความหาธุรกิจ`;
+---
+
+<!-- noindex: หน้านี้คือ Data Deletion Instructions URL ของแอป Meta ต้องเปิดได้จากลิงก์สาธารณะ แต่ไม่ต้องติดค้นหา -->
+<BaseLayout title={title} description={description} noindex hideFloatingLine schema={{ types: ['WebPage'], title, description }}>
+  <section class="px-6 py-16 md:py-24">
+    <nav aria-label="Language" class="mx-auto mb-8 flex max-w-3xl gap-6 text-sm font-semibold text-cyan">
+      <a href="#th" class="underline-offset-4 hover:underline">ภาษาไทย</a>
+      <a href="#en" class="underline-offset-4 hover:underline">English version</a>
+    </nav>
+
+    <article class="mx-auto max-w-3xl text-lg leading-relaxed text-warm-ink/80 [&_h1]:font-display [&_h1]:text-navy [&_h1]:text-3xl [&_h1]:md:text-4xl [&_h1]:font-bold [&_h1]:mt-2 [&_h1]:mb-6 [&_h2]:font-display [&_h2]:text-navy [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:mt-10 [&_h2]:mb-3 [&_h3]:font-display [&_h3]:text-navy [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:mb-4 [&_ul]:list-disc [&_ol]:list-decimal [&_ul]:pl-6 [&_ol]:pl-6 [&_ul]:mb-4 [&_ol]:mb-4 [&_li]:mb-2 [&_a]:text-navy [&_a]:underline [&_strong]:text-navy">
+      <section id="th" lang="th">
+        <p class="text-sm font-semibold text-cyan">อัปเดตล่าสุด {META_APP.updatedTh}</p>
+        <h1>วิธีลบข้อมูลของ {META_APP.name}</h1>
+        <p>หน้านี้อธิบายวิธีขอลบข้อมูลส่วนบุคคลที่เกี่ยวข้องกับ {META_APP.name} ทำได้สามทาง เลือกทางที่ตรงกับความสัมพันธ์ของคุณกับบริการ ถ้าไม่แน่ใจ ให้เริ่มจากทางที่ 1 หรือส่งอีเมลมาได้เลย</p>
+
+        <h2>ทางที่ 1: คุณทักข้อความหาธุรกิจ</h2>
+        <p>ธุรกิจที่คุณทักเข้าไปคือผู้ควบคุมข้อมูลของคุณ จึงเป็นผู้ลบข้อมูลในบทสนทนานั้นเป็นหลัก</p>
+        <ol>
+          <li>ติดต่อธุรกิจนั้นโดยตรงผ่าน Messenger หรือ Instagram หรือช่องทางอื่นที่ธุรกิจแจ้งไว้</li>
+          <li>บอกว่าต้องการให้ลบข้อมูลทั้งหมดของคุณ</li>
+          <li>หากไม่รู้ช่องทางติดต่อธุรกิจ ส่งอีเมลมาที่ <a href={`mailto:${SITE.email}`}>{SITE.email}</a> เราจะส่งคำขอของคุณให้ธุรกิจที่เกี่ยวข้อง และแจ้งผลกลับไปที่อีเมลของคุณ</li>
+        </ol>
+
+        <h2>ทางที่ 2: คุณเคยล็อกอิน Facebook และเชื่อมแอปนี้</h2>
+        <p>ทางนี้ใช้กับผู้ดูแลหรือทีมงานที่เคยล็อกอินด้วย Facebook ผ่านแอปนี้ ไม่ได้ใช้กับลูกค้าที่เพียงแค่ทักข้อความหาเพจ</p>
+        <ol>
+          <li>เปิด Facebook กดรูปโปรไฟล์ แล้วเลือก การตั้งค่าและความเป็นส่วนตัว และ การตั้งค่า</li>
+          <li>เลือก แอปและเว็บไซต์ (Apps and Websites)</li>
+          <li>หาแอป {META_APP.name} แล้วกด ลบ (Remove) และยืนยัน</li>
+          <li>Facebook จะส่งคำขอลบข้อมูลมาที่ระบบของเราโดยอัตโนมัติ ระบบจะลบ token ของคุณทันที และลบข้อมูลที่เกี่ยวข้องกับบัญชี Facebook ของคุณ เช่น รหัสผู้ใช้และชื่อ ภายใน 30 วัน</li>
+          <li>ระบบจะออกรหัสยืนยันการลบ (confirmation code) ให้คุณ จดรหัสนี้ไว้</li>
+          <li>ตรวจสอบสถานะได้ที่ลิงก์ <code>{META_APP.deletionStatusUrl}?code=รหัสยืนยันของคุณ</code> หน้านี้จะแสดงสถานะของคำขอที่ตรงกับรหัสนั้น</li>
+        </ol>
+        <p>การลบแอปไม่ได้ลบข้อความที่คุณเคยทักกับธุรกิจ หากต้องการให้ลบข้อความ ให้ทำตามทางที่ 1</p>
+
+        <h2>ทางที่ 3: ส่งอีเมล</h2>
+        <p>ส่งอีเมลมาที่ <a href={`mailto:${SITE.email}`}>{SITE.email}</a> ใส่หัวข้อว่า "ขอลบข้อมูล" และระบุข้อมูลต่อไปนี้เพื่อให้เราค้นหาข้อมูลของคุณได้</p>
+        <ul>
+          <li>ชื่อที่ใช้ในบัญชี Facebook หรือ Instagram หรือชื่อที่แสดงในแชท</li>
+          <li>ชื่อเพจหรือบัญชี Instagram ของธุรกิจที่คุณติดต่อ</li>
+          <li>วันโดยประมาณที่ติดต่อกัน</li>
+        </ul>
+        <p>เราจะตอบรับคำขอภายในระยะเวลาที่ PDPA กำหนด และดำเนินการลบข้อมูลภายใน 30 วันนับจากวันที่ยืนยันตัวตนได้</p>
+
+        <h2>ข้อมูลที่อาจยังเหลืออยู่</h2>
+        <p>ข้อความที่ผ่านไป 90 วันจะถูกลบออกจากระบบโดยอัตโนมัติอยู่แล้ว ข้อมูลที่กฎหมายกำหนดให้ต้องเก็บไว้ เราจะเก็บเท่าที่กฎหมายกำหนดเท่านั้น และจะแจ้งให้คุณทราบหากมีข้อมูลประเภทนั้น</p>
+
+        <h2>ติดต่อเรา</h2>
+        <p>ปัน ณัฐพัชร์ กรุงเทพฯ ประเทศไทย<br />อีเมล <a href={`mailto:${SITE.email}`}>{SITE.email}</a><br />นโยบายความเป็นส่วนตัวฉบับเต็ม <a href="/hub/privacy">/hub/privacy</a></p>
+      </section>
+
+      <section id="en" lang="en">
+        <p class="text-sm font-semibold text-cyan">Last updated {META_APP.updatedEn}</p>
+        <h2>How to delete your data from {META_APP.name}</h2>
+        <p>This page explains how to request deletion of personal data connected with {META_APP.name}. There are three ways to do it. Choose the one that matches your relationship with the service. If you are not sure, start with option 1, or email us directly.</p>
+
+        <h3>Option 1: You messaged a business</h3>
+        <p>The business you messaged is the controller of your data, so it leads the deletion of that conversation.</p>
+        <ol>
+          <li>Contact that business directly through Messenger, Instagram, or another channel it has provided.</li>
+          <li>Tell the business that you want all of your data deleted.</li>
+          <li>If you do not know how to reach the business, email <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. We will pass your request to the business concerned and send you the result by email.</li>
+        </ol>
+
+        <h3>Option 2: You signed in with Facebook and connected this app</h3>
+        <p>This option applies to administrators and team members who signed in with Facebook through this app. It does not apply to customers who only messaged a Facebook Page.</p>
+        <ol>
+          <li>Open Facebook, tap your profile picture, then choose Settings and privacy, then Settings.</li>
+          <li>Choose Apps and Websites.</li>
+          <li>Find {META_APP.name}, then select Remove and confirm.</li>
+          <li>Facebook sends a data deletion request to our system automatically. We delete your tokens immediately and delete the data linked to your Facebook account, such as your user ID and name, within 30 days.</li>
+          <li>Our system issues you a confirmation code. Keep this code.</li>
+          <li>To check the status, open <code>{META_APP.deletionStatusUrl}?code=YOUR_CONFIRMATION_CODE</code>. The page shows the status of the request that matches that code.</li>
+        </ol>
+        <p>Removing the app does not delete the messages you exchanged with a business. To delete those messages, use Option 1.</p>
+
+        <h3>Option 3: Email us</h3>
+        <p>Email <a href={`mailto:${SITE.email}`}>{SITE.email}</a> with the subject "Data deletion request" and include the following so we can find your data.</p>
+        <ul>
+          <li>The name on your Facebook or Instagram account, or the name shown in the chat.</li>
+          <li>The name of the Facebook Page or Instagram account of the business you contacted.</li>
+          <li>The approximate date of your last contact.</li>
+        </ul>
+        <p>We will acknowledge your request within the time the PDPA requires, and we will delete the data within 30 days after we have confirmed your identity.</p>
+
+        <h3>Data that may remain</h3>
+        <p>Messages are deleted automatically 90 days after they were sent. If the law requires us to keep certain data, we keep only what the law requires, and we will tell you if that applies to your request.</p>
+
+        <h3>Contact us</h3>
+        <p>Pun Nattapatch, Bangkok, Thailand<br />Email <a href={`mailto:${SITE.email}`}>{SITE.email}</a><br />Full privacy policy: <a href="/hub/privacy">/hub/privacy</a></p>
+      </section>
+    </article>
+  </section>
+</BaseLayout>
