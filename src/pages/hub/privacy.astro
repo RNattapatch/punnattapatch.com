@@ -20,7 +20,7 @@ const description = `นโยบายความเป็นส่วนต�
       <section id="th" lang="th">
         <p class="text-sm font-semibold text-cyan">อัปเดตล่าสุด {META_APP.updatedTh}</p>
         <h1>นโยบายความเป็นส่วนตัวของบริการ {META_APP.name}</h1>
-        <p>{META_APP.name} เป็นบริการที่ช่วยให้ธุรกิจรับและตอบข้อความจาก Facebook Messenger, Instagram และ WhatsApp ในกล่องข้อความเดียว รวมถึงร่าง อนุมัติ และตั้งเวลาโพสต์ให้เพจและบัญชี Instagram ของธุรกิจนั้น หน้านี้อธิบายว่าเราเก็บ ใช้ และดูแลข้อมูลส่วนบุคคลอย่างไรในบริการนี้ ผู้ให้บริการคือ ปัน ณัฐพัชร์ ตั้งอยู่ที่กรุงเทพฯ ประเทศไทย</p>
+        <p>{META_APP.name} เป็นบริการที่ช่วยให้ธุรกิจรับและตอบข้อความจาก Facebook Messenger, Instagram และ WhatsApp ในกล่องข้อความเดียว รวมถึงร่าง อนุมัติ และตั้งเวลาโพสต์ให้เพจและบัญชี Instagram ของธุรกิจนั้น ดูสถิติของโพสต์ และตอบความคิดเห็นบนโพสต์ของธุรกิจ หน้านี้อธิบายว่าเราเก็บ ใช้ และดูแลข้อมูลส่วนบุคคลอย่างไรในบริการนี้ ผู้ให้บริการคือ ปัน ณัฐพัชร์ ตั้งอยู่ที่กรุงเทพฯ ประเทศไทย</p>
 
         <h2>ใครเป็นผู้รับผิดชอบข้อมูล</h2>
         <p>ธุรกิจที่เชื่อมเพจ Facebook หรือบัญชี Instagram เข้ากับบริการ คือ ผู้ควบคุมข้อมูลส่วนบุคคล ของคนที่ทักข้อความเข้ามาหาธุรกิจนั้น ธุรกิจเป็นผู้ตัดสินใจว่าจะเก็บข้อมูลไปทำอะไร และเป็นผู้ตอบคำขอของลูกค้าเป็นหลัก</p>
@@ -28,14 +28,15 @@ const description = `นโยบายความเป็นส่วนต�
         <p>เพจ Pun Nattapatch ของปันเองไม่ได้อยู่ในบริการนี้ นโยบายความเป็นส่วนตัวของเพจนั้นอยู่ที่ <a href="/privacy">หน้านโยบายความเป็นส่วนตัวหลัก</a></p>
 
         <h2>ข้อมูลที่บริการเก็บ</h2>
-        <p>เราเก็บเฉพาะข้อมูลที่จำเป็นต่อการทำงาน แบ่งเป็นสองกลุ่ม</p>
+        <p>เราเก็บเฉพาะข้อมูลที่จำเป็นต่อการทำงาน แบ่งเป็นสามกลุ่ม</p>
         <h3>ข้อมูลของธุรกิจและทีมงาน</h3>
         <ul>
           <li>รหัสและชื่อของเพจ Facebook และบัญชี Instagram professional ที่เชื่อมไว้</li>
           <li>รหัสบัญชี WhatsApp Business และเบอร์โทรศัพท์ของธุรกิจ ถ้าธุรกิจเชื่อม WhatsApp ไว้</li>
           <li>Page access token ที่ถูกเข้ารหัสไว้ในระบบ และไม่แสดงในเบราว์เซอร์ของผู้ใช้</li>
           <li>รหัสผู้ใช้ Facebook และชื่อของผู้ดูแลที่เข้าสู่ระบบด้วย Facebook Login for Business</li>
-          <li>ข้อความของโพสต์ที่ร่างไว้ ลิงก์รูปภาพที่ขึ้นต้นด้วย https และเวลาที่ตั้งไว้ให้เผยแพร่ ซึ่งทีมธุรกิจสร้างขึ้นในบริการ</li>
+          <li>ข้อความของโพสต์ที่ร่างไว้ รูปภาพและวิดีโอที่ทีมธุรกิจอัปโหลดเพื่อโพสต์ (หรือลิงก์รูปภาพที่ขึ้นต้นด้วย https) และเวลาที่ตั้งไว้ให้เผยแพร่</li>
+          <li>สถิติของโพสต์ที่เผยแพร่ผ่านบริการ เช่น ยอดเข้าชม จำนวนคนที่เห็น และการมีส่วนร่วม ระบบดึงตัวเลขรวมเหล่านี้จาก Meta มาแสดงตอนเปิดดูเท่านั้น และไม่ได้บันทึกเก็บไว้</li>
         </ul>
         <h3>ข้อมูลของคนที่ทักข้อความถึงธุรกิจ</h3>
         <ul>
@@ -44,17 +45,24 @@ const description = `นโยบายความเป็นส่วนต�
           <li>ชื่อที่แสดงบนโปรไฟล์</li>
           <li>เนื้อหาข้อความที่ส่งเข้ามา คำตอบที่ส่งกลับ และเวลาที่ส่ง</li>
         </ul>
+        <h3>ข้อมูลของคนที่แสดงความคิดเห็นบนโพสต์ของธุรกิจ</h3>
+        <ul>
+          <li>รหัสความคิดเห็น รหัสผู้ใช้ และชื่อหรือชื่อผู้ใช้ที่แสดงอยู่กับความคิดเห็นนั้น</li>
+          <li>ข้อความของความคิดเห็น เวลาที่แสดงความคิดเห็น และคำตอบที่ธุรกิจตอบกลับต่อสาธารณะ</li>
+        </ul>
 
         <h2>ผู้ช่วย AI ที่ตอบข้อความ</h2>
         <p>บางข้อความอาจถูกตอบโดยผู้ช่วย AI ที่ทำงานอัตโนมัติ ผู้ช่วยจะแจ้งว่าตัวเองเป็นระบบอัตโนมัติ และจะไม่แอบอ้างเป็นคน หากลูกค้าอยากคุยกับคนจริง พิมพ์บอกในแชทได้ทุกเวลา แล้วทีมธุรกิจจะเข้ามาตอบแทน</p>
         <p>ธุรกิจเลือกได้ว่าจะให้ AI ทำงานแบบไหน คือปิด AI ทั้งหมด ให้ AI เขียนร่างแล้วรอให้คนอนุมัติก่อนส่ง หรือให้ตอบอัตโนมัติ</p>
-        <p>เมื่อ AI ต้องเขียนคำตอบ ข้อความของลูกค้าจะถูกส่งไปยังผู้ให้บริการโมเดล AI ผ่าน OpenRouter เพื่อสร้างคำตอบนั้นเพียงครั้งเดียว ข้อมูลนี้ไม่ถูกนำไปใช้ฝึกโมเดลสาธารณะ</p>
+        <p>สำหรับความคิดเห็นบนโพสต์ของธุรกิจ ผู้ดูแลเพจเลือกได้ว่าจะปิด AI ให้ AI เขียนคำตอบให้ทีมตรวจก่อนส่ง หรือให้ AI ตอบต่อสาธารณะเอง คำตอบจะใช้เฉพาะข้อมูลที่ธุรกิจใส่ไว้ จะไม่ถามหรือเปิดเผยข้อมูลส่วนตัว และจะชวนให้ทักข้อความส่วนตัวเมื่อเป็นเรื่องเฉพาะตัว</p>
+        <p>เมื่อ AI ต้องเขียนคำตอบ ข้อความของลูกค้าหรือความคิดเห็นนั้นจะถูกส่งไปยังผู้ให้บริการโมเดล AI ผ่าน OpenRouter เพื่อสร้างคำตอบนั้นเพียงครั้งเดียว ข้อมูลนี้ไม่ถูกนำไปใช้ฝึกโมเดลสาธารณะ</p>
 
         <h2>เราใช้ข้อมูลเพื่ออะไร</h2>
         <ul>
           <li>ส่งข้อความตอบกลับผ่าน Messenger, Instagram และ WhatsApp ภายในกรอบเวลาที่ Meta อนุญาต และส่งข้อความแม่แบบที่ Meta อนุมัติแล้วให้เฉพาะคนที่เคยทักธุรกิจมาก่อน</li>
           <li>ให้ทีมธุรกิจอ่าน ตอบ และรับงานต่อจาก AI ได้ในกล่องข้อความเดียว</li>
-          <li>ร่าง อนุมัติ และตั้งเวลาโพสต์ให้เพจหรือบัญชี Instagram ของธุรกิจ</li>
+          <li>ร่าง อนุมัติ และตั้งเวลาโพสต์ให้เพจหรือบัญชี Instagram ของธุรกิจ และแสดงสถิติของโพสต์เหล่านั้นให้ธุรกิจดู</li>
+          <li>แสดงความคิดเห็นบนโพสต์ของธุรกิจ และให้ทีมหรือ AI ตามที่ธุรกิจเลือกตอบกลับต่อสาธารณะ</li>
           <li>ยืนยันตัวผู้ดูแล และควบคุมว่าใครเข้าถึงข้อมูลของธุรกิจใดได้บ้าง</li>
         </ul>
         <p>เราไม่ขายข้อมูลส่วนบุคคล และไม่นำไปใช้โฆษณาของบุคคลที่สาม นอกจากผู้ให้บริการช่วงต่อที่ระบุไว้ด้านล่าง ซึ่งได้รับข้อมูลเท่าที่จำเป็นต่อการทำงานของบริการ</p>
@@ -62,13 +70,14 @@ const description = `นโยบายความเป็นส่วนต�
         <h2>ผู้ให้บริการช่วงต่อ</h2>
         <ol>
           <li>Meta Platforms, Inc. เจ้าของ Facebook, Messenger, Instagram และ WhatsApp ใช้เป็นช่องทางรับส่งข้อความและโพสต์</li>
-          <li>Cloudflare, Inc. ใช้เป็นที่โฮสต์ระบบและฐานข้อมูลของบริการ ข้อมูลอาจถูกจัดเก็บหรือประมวลผลในประเทศอื่นนอกประเทศไทย</li>
+          <li>Cloudflare, Inc. ใช้เป็นที่โฮสต์ระบบ ฐานข้อมูล และไฟล์รูปภาพหรือวิดีโอที่อัปโหลดเพื่อโพสต์ ข้อมูลอาจถูกจัดเก็บหรือประมวลผลในประเทศอื่นนอกประเทศไทย</li>
           <li>OpenRouter และผู้ให้บริการโมเดล AI ที่ OpenRouter เชื่อมต่อให้ ใช้เฉพาะตอนสร้างคำตอบ ตามที่อธิบายไว้ข้างต้น</li>
         </ol>
 
         <h2>ระยะเวลาเก็บข้อมูล</h2>
         <ul>
-          <li>เนื้อหาข้อความ เก็บ 90 วันนับจากวันที่ส่ง แล้วลบออกจากระบบโดยอัตโนมัติ</li>
+          <li>เนื้อหาข้อความและความคิดเห็น เก็บ 90 วันนับจากวันที่ได้รับ แล้วลบออกจากระบบโดยอัตโนมัติ</li>
+          <li>รูปภาพและวิดีโอที่อัปโหลดเพื่อโพสต์ เก็บ 90 วันนับจากวันที่อัปโหลด แล้วลบออกโดยอัตโนมัติ เมื่อโพสต์เผยแพร่แล้ว สำเนาบน Facebook หรือ Instagram อยู่ภายใต้การดูแลของ Meta</li>
           <li>ข้อมูลบัญชีและโพสต์ เก็บตลอดช่วงที่ธุรกิจยังเชื่อมต่ออยู่กับบริการ</li>
           <li>เมื่อธุรกิจยกเลิกการเชื่อมต่อแอป (deauthorize) เราลบ token ทันที และลบข้อมูลทั้งหมดของธุรกิจนั้นภายใน 30 วัน</li>
         </ul>
@@ -104,7 +113,7 @@ const description = `นโยบายความเป็นส่วนต�
       <section id="en" lang="en">
         <p class="text-sm font-semibold text-cyan">Last updated {META_APP.updatedEn}</p>
         <h2>{META_APP.name}: Privacy Policy</h2>
-        <p>{META_APP.name} helps businesses receive and reply to messages from Facebook Messenger, Instagram and WhatsApp in one inbox. It also lets a business draft, approve, and schedule posts for its own Facebook Page and Instagram professional account. This page explains what personal data we process in the service, why we process it, and how we protect it. The service is operated by Pun Nattapatch in Bangkok, Thailand.</p>
+        <p>{META_APP.name} helps businesses receive and reply to messages from Facebook Messenger, Instagram and WhatsApp in one inbox. It also lets a business draft, approve, and schedule posts for its own Facebook Page and Instagram professional account, see how those posts perform, and reply to comments on them. This page explains what personal data we process in the service, why we process it, and how we protect it. The service is operated by Pun Nattapatch in Bangkok, Thailand.</p>
 
         <h3>Who is responsible for the data</h3>
         <p>A business that connects its Facebook Page or Instagram professional account to the service is the data controller for the personal data of people who message that business. The business decides what it collects and why, and it responds to those people's requests first.</p>
@@ -112,14 +121,15 @@ const description = `นโยบายความเป็นส่วนต�
         <p>Pun Nattapatch's own Facebook Page is not part of this service. Its privacy notice is on the <a href="/privacy">main privacy policy page</a>.</p>
 
         <h3>Data we process</h3>
-        <p>We process only what the service needs. The data falls into two groups.</p>
+        <p>We process only what the service needs. The data falls into three groups.</p>
         <h4>Business and team data</h4>
         <ul>
           <li>The ID and name of each connected Facebook Page and Instagram professional account.</li>
           <li>The WhatsApp Business Account ID and the business phone number, if the business connects WhatsApp.</li>
           <li>Page access tokens. They are encrypted at rest and are never shown in the browser.</li>
           <li>The Facebook user ID and name of the administrator who signs in with Facebook Login for Business.</li>
-          <li>Post text, links to images (https), and scheduled publishing times that the business team creates.</li>
+          <li>Post text, images and videos that the business team uploads for its posts (or links to images starting with https), and scheduled publishing times.</li>
+          <li>Statistics of posts published through the service, such as views, people reached and engagement. These are totals read from Meta only when the business opens them, and we do not store them.</li>
         </ul>
         <h4>Data about people who message a business</h4>
         <ul>
@@ -128,17 +138,24 @@ const description = `นโยบายความเป็นส่วนต�
           <li>The display name shown on the person's profile.</li>
           <li>The content of messages, including replies sent back by the AI assistant or by staff, and the time each message was sent.</li>
         </ul>
+        <h4>Data about people who comment on a business's posts</h4>
+        <ul>
+          <li>The comment ID, the commenter's ID, and the name or username shown with the comment.</li>
+          <li>The comment text, its time, and the public reply the business sent.</li>
+        </ul>
 
         <h3>AI assistant</h3>
         <p>Some replies are written by an AI assistant that runs automatically. The assistant tells people that it is automated and does not pretend to be a human. Anyone can ask for a human at any time by saying so in the chat, and the business's staff will take over.</p>
         <p>Each business chooses one mode: AI off, draft only (staff approve each reply before it is sent), or automatic replies.</p>
-        <p>When the AI needs to write a reply, the content of the message is sent to an AI model provider reached through OpenRouter, only to generate that reply. This data is not used to train public AI models.</p>
+        <p>For comments on the business's own posts, the Page administrator chooses: AI off, AI suggestions that staff check before sending, or AI public replies. These replies use only the information the business entered, never ask for or reveal personal details, and invite people to send a private message about anything personal.</p>
+        <p>When the AI needs to write a reply, the content of the message or comment is sent to an AI model provider reached through OpenRouter, only to generate that reply. This data is not used to train public AI models.</p>
 
         <h3>How we use the data</h3>
         <ul>
           <li>To send replies through Messenger, Instagram and WhatsApp within the time limits that Meta allows, and to send Meta-approved message templates only to people who contacted the business before.</li>
           <li>To let the business team read, reply to, and take over conversations from the AI in one inbox.</li>
-          <li>To draft, approve, and schedule posts for the business's Page or Instagram account.</li>
+          <li>To draft, approve, and schedule posts for the business's Page or Instagram account, and to show the business how those posts perform.</li>
+          <li>To show comments on the business's own posts and let its staff, or the AI if the business chose it, reply publicly.</li>
           <li>To confirm who the administrators are and to control who can access each business's data.</li>
         </ul>
         <p>We do not sell personal data, and we do not use it for a third party's advertising. Apart from the sub-processors listed below, we do not share it. Each sub-processor receives only what it needs to run its part of the service.</p>
@@ -146,13 +163,14 @@ const description = `นโยบายความเป็นส่วนต�
         <h3>Sub-processors</h3>
         <ol>
           <li>Meta Platforms, Inc., the owner of Facebook, Messenger, Instagram, and WhatsApp. It is the channel through which messages and posts are sent and received.</li>
-          <li>Cloudflare, Inc., which hosts the application and its database. Data may be stored or processed in countries outside Thailand.</li>
+          <li>Cloudflare, Inc., which hosts the application, its database, and the images and videos uploaded for posts. Data may be stored or processed in countries outside Thailand.</li>
           <li>OpenRouter, and the AI model providers that OpenRouter connects us to. They receive message content only when a reply is generated, as described above.</li>
         </ol>
 
         <h3>How long we keep data</h3>
         <ul>
-          <li>Message content is kept for 90 days from the day it was sent and is then deleted automatically.</li>
+          <li>Message and comment content is kept for 90 days from the day we received it and is then deleted automatically.</li>
+          <li>Images and videos uploaded for posts are kept for 90 days from upload and are then deleted automatically. Once a post is published, the copy on Facebook or Instagram is held by Meta.</li>
           <li>Account and post data is kept for as long as the business stays connected to the service.</li>
           <li>When a business disconnects the app (deauthorize), we delete its tokens immediately and delete all of that business's data within 30 days.</li>
         </ul>
