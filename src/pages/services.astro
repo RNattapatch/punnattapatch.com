@@ -34,6 +34,8 @@ const trustLogos = [
   { src: '/services/futureskill.png', alt: 'FutureSkill' },
   { src: '/services/ramkhamhaeng.png', alt: 'มหาวิทยาลัยรามคำแหง' },
   { src: '/services/tni.png', alt: 'สถาบันเทคโนโลยีไทย-ญี่ปุ่น (TNI)' },
+  { src: '/services/bangkok-university.png', alt: 'มหาวิทยาลัยกรุงเทพ' },
+  { src: '/services/denla-kindergarten.png', alt: 'โรงเรียนอนุบาลเด่นหล้า เพชรเกษม' },
   { src: '/services/royal-enfield.jpg', alt: 'Royal Enfield' },
   { src: '/services/gpx.jpg', alt: 'GPX' },
   { src: '/services/lambretta.png', alt: 'Lambretta' },
@@ -143,7 +145,7 @@ const faqs = [
     <section id="services-proof-strip" aria-labelledby="proof-strip-heading" class="border-b border-sand-deep bg-sand">
       <div class="mx-auto max-w-[1180px] px-5 py-8 sm:px-8 lg:px-10">
         <h2 id="proof-strip-heading" class="text-center text-sm font-semibold text-navy">องค์กรที่เคยเชิญไปสอน อบรม และทำงานกับทีม</h2>
-        <div class="mx-auto mt-5 grid max-w-4xl grid-cols-2 gap-3 sm:grid-cols-4">
+        <div class="mx-auto mt-5 grid max-w-5xl grid-cols-2 gap-3 sm:grid-cols-5">
           {trustLogos.map((logo) => (
             <div class="flex h-24 min-w-0 items-center justify-center rounded-xl border border-navy/10 bg-surface p-3 sm:h-28">
               <img src={logo.src} alt={logo.alt} width="160" height="96" loading="lazy" decoding="async" class="h-full w-full object-contain" />

@@ -7,6 +7,8 @@ export const CLIENT_LOGOS: ClientLogo[] = [
   { src: '/logos/clients/futureskill.png', alt: 'FutureSkill' },
   { src: '/logos/clients/ramkhamhaeng.png', alt: 'มหาวิทยาลัยรามคำแหง' },
   { src: '/logos/clients/tni.png', alt: 'สถาบันเทคโนโลยีไทย-ญี่ปุ่น (TNI)' },
+  { src: '/logos/clients/bangkok-university.png', alt: 'มหาวิทยาลัยกรุงเทพ' },
+  { src: '/logos/clients/denla-kindergarten.png', alt: 'โรงเรียนอนุบาลเด่นหล้า เพชรเกษม' },
   { src: '/logos/clients/ving.png', alt: 'V!NG' },
   { src: '/logos/clients/gpx.jpg', alt: 'GPX' },
   { src: '/logos/clients/royal-enfield.jpg', alt: 'Royal Enfield' },

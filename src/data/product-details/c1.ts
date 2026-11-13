@@ -52,7 +52,7 @@ export const C1_PRODUCT_DETAIL: ProductDetailPageData = {
     'อดีต Sales Engineer และ Instructor ฝั่ง Dealer',
     'คัดเรซูเม่ 1,000+ ใบ · สัมภาษณ์คนเข้าทีม 100+ คน',
     'วางงานตั้งแต่ KPI/Commission ถึง Dashboard และ AI Workflow',
-    'อบรมและวางระบบร่วมกับ 23 องค์กร',
+    'อบรมและวางระบบร่วมกับ 25 องค์กร',
   ],
   proof: [
     {
