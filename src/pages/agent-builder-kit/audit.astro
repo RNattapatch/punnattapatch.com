@@ -24,8 +24,7 @@ const rules = [
     check: 'ทีมงาน full-time มีกี่คน?',
     rules: [
       { result: '< 5 คน', verdict: 'solo mode (Kit ใช้ได้แต่ ROI ต่ำ)', pass: false },
-      { result: '5-20 คน', verdict: 'sweet spot · ไฟเขียว', pass: true },
-      { result: '> 20 คน', verdict: 'ใช้ได้แต่ต้อง enterprise path (consulting แทน Kit เดี่ยว)', pass: 'partial' },
+      { result: '5 คนขึ้นไป', verdict: 'ไฟเขียว', pass: true },
     ],
   },
   {
