@@ -11,7 +11,7 @@ checkGate:
   - "คุณมี n8n instance (cloud หรือ self-host) ที่ login ได้ใช่มั้ย?"
   - "คุณเข้าใจว่า n8n automation = deterministic (no LLM in critical path ถ้าเป็นไปได้) ต่างจาก agent = judgment-based ใช่มั้ย?"
 workedExample:
-  industry: "Manufacturing SME (40 employees · 80M revenue · ขายอะไหล่รถบรรทุก)"
+  industry: "Manufacturing company (40 employees · 80M revenue · ขายอะไหล่รถบรรทุก)"
   scenario: "เจ้าของมี 5 agent task heavy · 3 ใน 5 = repetitive (lead routing / invoice reminder / daily KPI dump) · ต้องการตัดสินว่าอันไหนควรย้ายไป n8n · อันไหนยังให้ agent ทำต่อ"
   inputs: "list 5 heavy task + audit from P4-01 + n8n instance URL + sample data ของแต่ละ task"
   output: "./output/automation/gate-matrix-<YYYY-MM>.md — 5-row table × 4 criteria (frequency / time saved / risk / maintainability) + verdict (n8n / keep agent / hybrid) + สำหรับ task ที่ผ่าน gate: n8n workflow spec (trigger / nodes / credential / error handling)"
@@ -86,7 +86,7 @@ Step 6 — Save
 ./output/automation/gate-matrix-<YYYY-MM>.md + spec พร้อม build + build priority order
 
 ## Worked Example
-**Industry:** Manufacturing SME (40 employees · 80M revenue · อะไหล่รถบรรทุก)
+**Industry:** Manufacturing company (40 employees · 80M revenue · อะไหล่รถบรรทุก)
 **Scenario:** 5 heavy task · 3 repetitive · ต้องการ gate
 **Inputs:** audit P4-01 + 5 task list + n8n URL + sample data
 **Output:** gate-matrix-2026-04.md · 3 task → n8n · 1 → keep agent · 1 → hybrid · spec 4 workflow

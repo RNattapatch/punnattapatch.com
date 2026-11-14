@@ -11,7 +11,7 @@ checkGate:
   - "คุณมี proposal 3 ฉบับที่ปิดดีล closed-won (text หรือ docx) พร้อมจะ paste/upload ใช่มั้ย?"
   - "คุณรู้ proposal format ของคุณ: docx / pdf / Notion / web · เลือก 1 ใช่มั้ย?"
 workedExample:
-  industry: "Service-based SME (15 employees · ฿35M revenue · บริษัท digital marketing agency)"
+  industry: "Service-based company (15 employees · ฿35M revenue · บริษัท digital marketing agency)"
   scenario: "เจ้าของ agency มี proposal 3 ฉบับที่ปิดดีล 200k+ · อยากให้ agent เขียนใหม่ tone เดียวกัน · ลด time-to-proposal จาก 2 วันเหลือ 2 ชม."
   inputs: "./claude.md + 3 proposal ฉบับ closed-won + format choice (docx)"
   output: "./agents/sales/proposal-writer.md + ./agents/sales/proposal-samples/ (3 ไฟล์ที่ paste มา) + voice-fingerprint extracted"
@@ -73,7 +73,7 @@ Step 3 — สร้าง agent file
 3 sample files saved + voice fingerprint 8 bullet (ผ่านการ confirm) + ./agents/sales/proposal-writer.md พร้อมใช้
 
 ## Worked Example
-**Industry:** Service-based SME (15 employees · ฿35M revenue · digital marketing agency)
+**Industry:** Service-based company (15 employees · ฿35M revenue · digital marketing agency)
 **Scenario:** มี proposal 3 ฉบับ closed-won 200k+ · อยากลด time-to-proposal
 **Inputs:** ./claude.md + 3 proposal text + format=docx
 **Output:** 3 samples saved + 8-bullet fingerprint + proposal-writer.md ~180 บรรทัด

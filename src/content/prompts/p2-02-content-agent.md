@@ -11,7 +11,7 @@ checkGate:
   - "คุณมี ./agents/sales/sale-team-leader.md จาก P2-01 แล้วใช่มั้ย? (เป็น sibling reference)"
   - "คุณรู้ platform ที่จะโพสต์: FB / IG / TikTok / LinkedIn ใช่มั้ย? (อย่างน้อย 1)"
 workedExample:
-  industry: "Service-based SME (15 employees · ฿35M revenue · บริษัท digital marketing agency)"
+  industry: "Service-based company (15 employees · ฿35M revenue · บริษัท digital marketing agency)"
   scenario: "เจ้าของ agency ต้องโพสต์ content เองทุกสัปดาห์ · ไม่อยากจ้าง content writer · ต้องการ agent ช่วย draft ที่ tone ตรงตน"
   inputs: "./claude.md + skill-build-agent-team.md + รายการ platform ที่ใช้ (เช่น FB + IG + LinkedIn)"
   output: "./agents/content/content-team-leader.md (~140 บรรทัด) ที่ถาม brief 5 ข้อก่อน draft + เขียนตาม Voice"
@@ -59,7 +59,7 @@ published: 2026-04-22
 ./agents/content/content-team-leader.md ใหม่ + summary 4 บรรทัด + smoke test command
 
 ## Worked Example
-**Industry:** Service-based SME (15 employees · ฿35M revenue · digital marketing agency)
+**Industry:** Service-based company (15 employees · ฿35M revenue · digital marketing agency)
 **Scenario:** เจ้าของ agency โพสต์เองทุกสัปดาห์ · อยากได้ agent ช่วย draft
 **Inputs:** ./claude.md + ./agents/sales/sale-team-leader.md + platform list (FB + IG + LinkedIn)
 **Output:** ./agents/content/content-team-leader.md ~140 บรรทัด + Brief intake 5 ข้อ

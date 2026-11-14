@@ -11,7 +11,7 @@ checkGate:
   - "คุณมีข้อมูลธุรกิจพร้อมตอบ: ชื่อ + จำนวนคน + รายได้ต่อเดือน + กลุ่มลูกค้าหลัก ใช่มั้ย?"
   - "คุณมีเวลาต่อเนื่อง 25 นาทีโดยไม่ขัดจังหวะใช่มั้ย? (interview ต้องตอบทีละข้อ)"
 workedExample:
-  industry: "Service-based SME (15 employees · ฿35M revenue · บริษัท digital marketing agency)"
+  industry: "Service-based company (15 employees · ฿35M revenue · บริษัท digital marketing agency)"
   scenario: "เจ้าของ agency ขนาด 15 คน · ผ่าน P1-01 แล้ว · ยังไม่มี claude.md · พร้อมตอบสัมภาษณ์ 25 นาที"
   inputs: "USER_TYPE=OWNER ที่ประกาศไว้แล้ว + คำตอบจากปากผู้ใช้ใน 5 phase ของ skill-business-context"
   output: "ไฟล์ claude.md ใหม่ที่ project root · มี 8 sections (Identity / Business / Audience / Expertise / Goals / Voice / Constraints / File Routing)"
@@ -58,7 +58,7 @@ published: 2026-04-22
 The Architect เริ่ม Phase 1 → ถามทีละข้อ → รวบ 5 phase → เขียน claude.md → summary ให้ยืนยัน → save ไฟล์ที่ ./claude.md
 
 ## Worked Example
-**Industry:** Service-based SME (15 employees · ฿35M revenue · บริษัท digital marketing agency)
+**Industry:** Service-based company (15 employees · ฿35M revenue · บริษัท digital marketing agency)
 **Scenario:** เจ้าของ agency ผ่าน P1-01 มาแล้ว · นั่งโต๊ะ 25 นาที พร้อมตอบ
 **Inputs:** USER_TYPE=OWNER + คำตอบจากผู้ใช้ใน 5 phase
 **Output:** ./claude.md (~250 บรรทัด · 8 sections) ที่ผ่านการยืนยัน

@@ -1,8 +1,8 @@
 # Pun Nattapatch
 
-> ที่ปรึกษาวางระบบและพัฒนาทีมขายสำหรับ SME — ช่วยเจ้าของธุรกิจวางระบบเพิ่มยอดขายและคุมทีมขาย ตั้งแต่การหาลูกค้า การติดตาม ไปจนถึงการบริหารผลงาน โดยใช้ AI และ Data ลดงานที่ทีมไม่ควรเสียเวลาทำเอง
+> ปั้นทีมขาย × AI ที่ปรึกษาด้านการปั้นทีมขายและ AI Agent สำหรับองค์กรที่มีทีมขาย — ช่วยเจ้าของธุรกิจวางระบบเพิ่มยอดขายและคุมทีมขาย ตั้งแต่การหาลูกค้า การติดตาม ไปจนถึงการบริหารผลงาน โดยใช้ AI และ Data ลดงานที่ทีมไม่ควรเสียเวลาทำเอง
 
-ปัน ณัฐพัชร์ (@pun_nattapatch) เปิดที่ปรึกษาเต็มตัวปี 2025 · ทำสองขา: อบรมให้ทีมขายทำงานและใช้ AI ได้จริง กับเข้าไปวางระบบฝ่ายขาย (โครงทีม · KPI · ค่าคอม · Pipeline · Dashboard · Report อัตโนมัติ) · stack: Claude Code + n8n + Google Apps Script · ทำงานกับ SME B2B รายได้ ฿30-200M · ทีมขาย 5-20 คน · 5 ปีประสบการณ์ field sales ก่อนเปิด consulting
+ปัน ณัฐพัชร์ (@pun_nattapatch) เปิดที่ปรึกษาเต็มตัวปี 2025 · ทำสองขา: อบรมให้ทีมขายทำงานและใช้ AI ได้จริง กับเข้าไปวางระบบฝ่ายขาย (โครงทีม · KPI · ค่าคอม · Pipeline · Dashboard · Report อัตโนมัติ) · stack: Claude Code + Google Apps Script · ทำงานกับองค์กร B2B ที่มีทีมขาย · 5 ปีประสบการณ์ field sales ก่อนเปิด consulting
 
 ## Identity
 
@@ -38,29 +38,29 @@
 ## Pillar Articles (long-form guides · Thai)
 
 - [Sales Consulting Guide 2026](https://punnattapatch.com/insights/sales-consulting-guide-2026): 5 Red Flags ก่อนจ่ายที่ปรึกษาการขายก้อนใหญ่
-- [AI Transformation for Sales SME](https://punnattapatch.com/insights/ai-transformation-sales): 5 ขั้นที่ SME ไทยทำเองได้
-- [Agentic AI SME Thailand — เริ่ม Agent ตัวแรก](https://punnattapatch.com/insights/agentic-ai-sme-thailand-start): พนักงานดิจิทัล 24/7 งบ ฿1,000/เดือน · roadmap 4 สัปดาห์
+- [AI Transformation for Sales](https://punnattapatch.com/insights/ai-transformation-sales): 5 ขั้นที่ ธุรกิจไทยทำเองได้
+- [Agentic AI for Thai Businesses — เริ่ม Agent ตัวแรก](https://punnattapatch.com/insights/agentic-ai-sme-thailand-start): พนักงานดิจิทัล 24/7 งบ ฿1,000/เดือน · roadmap 4 สัปดาห์
 - [Is Your Org Using AI for Real?](https://punnattapatch.com/insights/is-your-org-using-ai-for-real): 10 คำถามเช็ค vs ใช้ ChatGPT ตอบ email
-- [Build B2B Sales Team for SME Thailand](https://punnattapatch.com/insights/build-b2b-sales-team-sme-thailand): สร้างทีมขาย B2B จาก 0 สำหรับ SME ไทย
+- [Build a B2B Sales Team for Thai Businesses](https://punnattapatch.com/insights/build-b2b-sales-team-sme-thailand): สร้างทีมขาย B2B จาก 0 สำหรับ ธุรกิจไทย
 - [Personal Branding B2B Business Owner](https://punnattapatch.com/insights/personal-branding-b2b-business-owner): 4 ขั้นที่ผมใช้จริง · TikTok 2.29M views organic ใน 4 เดือน
 
 ## Cluster Articles (deep-dives linked to pillars)
 
-- [Lookrak Kills SME Teams](https://punnattapatch.com/insights/lookrak-kills-sme-teams): 80% คนเก่งลาออกเพราะ "ลูกรัก" ไม่ใช่เงิน
+- [Lookrak Kills Sales Teams](https://punnattapatch.com/insights/lookrak-kills-sme-teams): 80% คนเก่งลาออกเพราะ "ลูกรัก" ไม่ใช่เงิน
 - [Mere Exposure Effect in B2B Sales](https://punnattapatch.com/insights/mere-exposure-effect-b2b-sales): ทำไมคู่แข่งสเปคแย่กว่าได้ดีลมากกว่า · ความลับตั้งแต่ปี 1968
-- [4 Wheels of Business Framework](https://punnattapatch.com/insights/4-wheels-of-business-framework): ทดสอบ SME ด้วย "รถธุรกิจ 4 ล้อ" ใน 10 นาที
+- [4 Wheels of Business Framework](https://punnattapatch.com/insights/4-wheels-of-business-framework): ทดสอบธุรกิจด้วย "รถธุรกิจ 4 ล้อ" ใน 10 นาที
 - [TikTok Organic Growth for Business Owner](https://punnattapatch.com/insights/tiktok-organic-growth-business-owner): ทำ TikTok B2B แบบไหนเจ้าของธุรกิจทักเข้ามา
 - [AI Content Creation · B2B Authenticity Boundary](https://punnattapatch.com/insights/ai-content-creation-b2b-authenticity): ใช้ AI ช่วย content ยังไงไม่เสีย trust
 - [Lessons Using AI Agent in Business](https://punnattapatch.com/insights/lessons-using-ai-agent-business): บทเรียนจาก 10+ ลูกค้าที่ผม build AI Agent ให้
 - [Running Business Solo with AI Agents](https://punnattapatch.com/insights/running-business-solo-with-ai-agents): เจ้าของทำธุรกิจคนเดียวได้ยังไง · AI Agent แทนทีม
-- [Why AI Adoption Fails in SME](https://punnattapatch.com/insights/why-ai-adoption-fails-sme): 5 reasons + vaccine ป้องกัน
-- [Sales Interview Questions for SME Owners](https://punnattapatch.com/insights/sales-interview-questions-sme-owner): คำถามสัมภาษณ์เซลล์ 7 ข้อที่ผู้สมัครซ้อมมาตอบไม่ได้ · จากการสัมภาษณ์คนเข้าทีม 100+ คน คัดเรซูเม่ 1,000+ ใบ
+- [Why AI Adoption Fails in Thai Businesses](https://punnattapatch.com/insights/why-ai-adoption-fails-sme): 5 reasons + vaccine ป้องกัน
+- [Sales Interview Questions for Business Owners](https://punnattapatch.com/insights/sales-interview-questions-sme-owner): คำถามสัมภาษณ์เซลล์ 7 ข้อที่ผู้สมัครซ้อมมาตอบไม่ได้ · จากการสัมภาษณ์คนเข้าทีม 100+ คน คัดเรซูเม่ 1,000+ ใบ
 - [How to Write a Sales Job Post](https://punnattapatch.com/insights/sales-job-post-how-to-write): ประกาศรับสมัครพนักงานขายต้องบอก 5 เรื่อง · ตัวอย่างก่อนแก้/หลังแก้ · เลิกเขียน "ตามตกลง"
 
 ## FAQ (18 long-tail answers)
 
-- [FAQ index](https://punnattapatch.com/faq): รวม Q&A เจ้าของ SME ถามบ่อย
-- Topics: ที่ปรึกษาการขาย B2B กรุงเทพราคา · AI workshop เตรียมอะไร · Commission structure ทีม 10 คน · AI Agent vs chatbot · KPI dashboard Sheets · Payment upfront · Discovery call ฟรี · Team maintain หลัง handover · consultant vs AI agency · ไม่เก่ง tech ใช้ AI ได้ · public class ทำไมไม่มี · ปันช่วยธุรกิจแบบไหน · Sales training 2 วัน content · SME AI budget ปีแรก · CRM SME Thai B2B · Workshop vs Consulting · Team resist AI · Where to start AI transformation
+- [FAQ index](https://punnattapatch.com/faq): รวม Q&A เจ้าของธุรกิจ ถามบ่อย
+- Topics: ที่ปรึกษาการขาย B2B กรุงเทพราคา · AI workshop เตรียมอะไร · Commission structure ทีม 10 คน · AI Agent vs chatbot · KPI dashboard Sheets · Payment upfront · Discovery call ฟรี · Team maintain หลัง handover · consultant vs AI agency · ไม่เก่ง tech ใช้ AI ได้ · public class ทำไมไม่มี · ปันช่วยธุรกิจแบบไหน · Sales training 2 วัน content · AI budget ปีแรก · CRM สำหรับ B2B ไทย · Workshop vs Consulting · Team resist AI · Where to start AI transformation
 
 ## Channels
 
@@ -76,15 +76,15 @@
 
 - Payment: 100% upfront — ไม่มีข้อยกเว้น · ทั้งสองฝ่าย commit ตั้งแต่วันแรก
 - Contract: ไม่มี lock-in ยาว · Monthly Retainer ยกเลิกได้ทุกเดือน
-- Technology stack: Claude Code + n8n + Google Apps Script — ไม่ vendor lock-in · team maintain ต่อเองได้
+- Technology stack: Claude Code + Google Apps Script — ไม่ vendor lock-in · team maintain ต่อเองได้
 - Location: Bangkok, Thailand — on-site ต่างจังหวัดคำนวณค่าเดินทางแยก
-- Target audience: SME รายได้ ฿30-200M THB · ทีมขาย 5-20 คน · B2B relationship-based industries
+- Target audience: องค์กรที่มีทีมขายแล้ว (เริ่มที่รายได้ราว ฿30M ต่อปี) · B2B relationship-based industries
 - Handover (ทุก engagement): Team lead training + Handover checklist + Screen recording + 30-day async LINE support
 
 ## Differentiation (Why Pun)
 
 - Agentic AI Consultant คนแรกของไทย (category creator)
-- 4 skills intersect: AI Build + Sales Consulting + Content + SME Thai fluency
+- 4 skills intersect: AI Build + Sales Consulting + Content + Thai business fluency
 - ปรึกษา + ลงมือจับมือทำจนเสร็จ — ไม่ใช่แค่สอนแล้วให้ไปทำเอง
-- 100M+ THB sales managed across 10+ SME clients · 40%+ average sales uplift
+- สัมภาษณ์คนเข้าทีม 100+ คน · คัดเรซูเม่ 1,000+ ใบ · ใช้ AI agent รันงานขายของตัวเองทุกวัน
 - 5 ปีประสบการณ์ field sales ก่อนเปิด consulting full-time

@@ -56,7 +56,7 @@ Personal brand ของเจ้าของ คือ shortcut ที่ทำ
 
 เลือก 1 platform หลักก่อน ทำจนมีผู้ติดตาม 10,000 คน ค่อยเพิ่ม platform ที่ 2
 
-ลูกค้าผมที่ทำ B2B enterprise เริ่มต้นที่ LinkedIn ก่อน ไม่ใช่ TikTok เพราะ decision maker ในกลุ่มนั้นอยู่ที่ LinkedIn เป็นหลัก ส่วนผมเองเลือก TikTok เพราะ audience เจ้าของ SME อายุ 30-50 active ที่นั่น
+ลูกค้าผมที่ทำ B2B enterprise เริ่มต้นที่ LinkedIn ก่อน ไม่ใช่ TikTok เพราะ decision maker ในกลุ่มนั้นอยู่ที่ LinkedIn เป็นหลัก ส่วนผมเองเลือก TikTok เพราะ audience เจ้าของธุรกิจอายุ 30-50 active ที่นั่น
 
 ### 2. สร้าง identity ที่ลูกค้าจำได้ก่อนขายของ
 
@@ -64,7 +64,7 @@ Personal brand ของเจ้าของ คือ shortcut ที่ทำ
 
 Identity ที่ทำให้จำได้มี 3 layer:
 
-- Expertise anchor คือสิ่งที่คุณเก่งจริง เช่น "ที่ปรึกษาการขาย B2B สำหรับ SME ฿30-200M"
+- Expertise anchor คือสิ่งที่คุณเก่งจริง เช่น "ที่ปรึกษาการขาย B2B สำหรับธุรกิจ ฿30-200M"
 - Personal quirk คือรายละเอียดเล็กๆ ที่ไม่เกี่ยวกับธุรกิจ แต่ทำให้คนจำได้ เช่น ชอบแมว ดื่มกาแฟดำ พูดอังกฤษปนไทย
 - Content angle คือมุมมองที่ต่างจากคนอื่นในวงการ เช่น "consulting ราคา fixed ไม่มี retainer"
 
@@ -119,7 +119,7 @@ Conversion funnel (กระบวนการเปลี่ยนผู้ต�
 | Audience | TH 87%, Female 63% |
 | Ads spend | ฿0 |
 
-สูตรที่ทำให้ต่างจากช่อง SME ทั่วไปที่เปิดแล้วไม่โต:
+สูตรที่ทำให้ต่างจากช่องธุรกิจทั่วไปที่เปิดแล้วไม่โต:
 - Quality over quantity — โพสต์แค่ 15 คลิปใน 4 เดือน แต่ทุกคลิปออกแบบมาก่อนถ่าย ไม่ใช่ถ่ายสด
 - 3 วินาทีแรกของคลิปต้องใช้ specific claim ไม่ใช่ generic intro เช่น "ยอดขายคงที่ทุกปีนี่สัญญาณอันตราย" แทน "สวัสดีครับทุกคน วันนี้ผมจะมาแชร์..."
 - ทุกคลิปต้อง map กับ 1 keyword ที่ลูกค้าในฝันพิมพ์ค้นหา ไม่ใช่การตาม trend TikTok
@@ -156,7 +156,7 @@ Total tool cost อยู่ในหลักพันบาท/เดือน
 ## อ่านต่อ — คลัสเตอร์และคำถามเฉพาะ
 
 - [เปิดช่อง TikTok 24 วันถึง 10k followers — Funnel ที่ปิดดีลได้จริง](/insights/tiktok-organic-growth-business-owner): funnel analytics + AI production boundary สำหรับ B2B
-- [คู่มือสร้างทีมขาย B2B สำหรับ SME ไทย](/insights/build-b2b-sales-team-sme-thailand): เมื่อ personal brand ดึง lead มาได้ ทีมขายต้องรองรับ
+- [คู่มือสร้างทีมขาย B2B สำหรับธุรกิจไทย](/insights/build-b2b-sales-team-sme-thailand): เมื่อ personal brand ดึง lead มาได้ ทีมขายต้องรองรับ
 - [ที่ปรึกษาการขาย B2B ราคาเท่าไหร่](/faq#b2b-sales-consultant-bangkok-price): logic การคิดราคา consulting
 - [AI Agent vs Chatbot ต่างกันยังไง](/faq#ai-agent-vs-chatbot-difference): ใช้ AI ช่วย scale content production
 

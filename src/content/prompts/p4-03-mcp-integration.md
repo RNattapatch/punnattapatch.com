@@ -11,7 +11,7 @@ checkGate:
   - "คุณรู้ว่า MCP token cost สูง (~18,000 token/MCP/message) ใช่มั้ย? — บังคับ MCP hygiene (เปิดเฉพาะที่ใช้)"
   - "คุณมี agent ใน ./agents/ ที่จะใช้ MCP นี้อยู่แล้วใช่มั้ย? (ถ้ายังไม่มี ต้อง spawn ก่อนผ่าน P2-06)"
 workedExample:
-  industry: "Service-based SME (15 employees · 35M revenue · digital marketing agency)"
+  industry: "Service-based company (15 employees · 35M revenue · digital marketing agency)"
   scenario: "Agency ใช้ Notion เป็น client workspace · ต้องการให้ content agent อ่าน brief + เขียน draft กลับ Notion โดยตรง · ไม่ต้อง copy-paste"
   inputs: "Notion API credential + list 3 use case (อ่าน brief / update status / เขียน draft) + content agent ที่จะใช้ MCP"
   output: "./mcp/notion-config.md (config + credential placement) + updated ./agents/content/<agent>.md (เพิ่ม MCP section + safety rule) + smoke test prompt 3 ตัว"
@@ -91,7 +91,7 @@ Step 6 — Rollback plan
 ./mcp/<tool>-config.md + updated agent file + claude.md MCP Hygiene entry + 3 smoke test ที่ pass + rollback plan
 
 ## Worked Example
-**Industry:** Service-based SME (15 employees · 35M revenue · digital marketing agency)
+**Industry:** Service-based company (15 employees · 35M revenue · digital marketing agency)
 **Scenario:** ใช้ Notion เป็น client workspace · ต้องการ agent อ่าน/เขียนตรง
 **Inputs:** Notion credential + 3 use case + content agent
 **Output:** notion-config.md + content agent อัปเดต + claude.md MCP Hygiene + 3 smoke test pass

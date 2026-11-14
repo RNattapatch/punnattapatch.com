@@ -1,15 +1,15 @@
 ---
-title: "AI Agent ต่างจาก chatbot ยังไง SME ไทยควรเลือกตัวไหน"
-description: "AI Agent ทำงานหลายขั้นตอนเชื่อมกับ data จริง — chatbot แค่ตอบคำถามจาก FAQ ธุรกิจ SME ที่ต้องการลดงาน manual เลือก AI Agent"
-question: "AI Agent ต่างจาก chatbot ยังไง SME ไทยควรเลือกตัวไหน"
-answerSummary: "Chatbot เหมาะสำหรับตอบ FAQ ส่วน AI Agent ทำงานซับซ้อน ตัดสินใจเอง เชื่อม database/email/spreadsheet เพื่อ automate report/follow-up ให้ SME"
+title: "AI Agent ต่างจาก chatbot ยังไง ธุรกิจไทยควรเลือกตัวไหน"
+description: "AI Agent ทำงานหลายขั้นตอนเชื่อมกับ data จริง — chatbot แค่ตอบคำถามจาก FAQ ธุรกิจที่ต้องการลดงาน manual เลือก AI Agent"
+question: "AI Agent ต่างจาก chatbot ยังไง ธุรกิจไทยควรเลือกตัวไหน"
+answerSummary: "Chatbot เหมาะสำหรับตอบ FAQ ส่วน AI Agent ทำงานซับซ้อน ตัดสินใจเอง เชื่อม database/email/spreadsheet เพื่อ automate report/follow-up ให้ธุรกิจ"
 lang: th
 published: 2026-04-18
 draft: false
 tags: [faq, ai-agent, chatbot, automation, comparison]
 ---
 
-คำตอบสั้น: Chatbot ใช้สำหรับคุยตอบคำถาม ส่วน AI Agent ออกแบบมาเพื่อลงมือทำงานจริง ธุรกิจ SME ที่อยากลดงาน manual ควรเลือกใช้ AI Agent
+คำตอบสั้น: Chatbot ใช้สำหรับคุยตอบคำถาม ส่วน AI Agent ออกแบบมาเพื่อลงมือทำงานจริง ธุรกิจที่อยากลดงาน manual ควรเลือกใช้ AI Agent
 
 ## Chatbot ทำอะไรได้
 
@@ -34,7 +34,7 @@ tags: [faq, ai-agent, chatbot, automation, comparison]
 
 Chatbot ทำแบบนี้ไม่ได้ เพราะทำได้แค่ตอบว่า "ขอราคาได้ที่เบอร์โทร" แล้วก็จบ
 
-## SME ไทยควรเลือกอะไร
+## ธุรกิจไทยควรเลือกอะไร
 
 **เลือก Chatbot ถ้า:**
 - ต้องการระบบตอบคำถาม FAQ บนหน้าเว็บเท่านั้น
@@ -47,7 +47,7 @@ Chatbot ทำแบบนี้ไม่ได้ เพราะทำได�
 - ต้องการระบบ Automation ที่สามารถตัดสินใจและส่งต่องานได้เอง
 - มีงบประมาณสำหรับสร้างระบบเริ่มต้น 30,000-65,000 บาท และดูแลต่อเองโดยใช้ Google Sheets
 
-## Stack (ชุดเครื่องมือ) ที่ผมแนะนำสำหรับ SME ไทย
+## Stack (ชุดเครื่องมือ) ที่ผมแนะนำสำหรับธุรกิจไทย
 
 - ใช้ Claude Code เพื่อสร้าง Logic การทำงาน
 - ใช้ตัวเชื่อมงานอัตโนมัติแบบลาก-วางจัดการ workflow (ขั้นตอนการทำงาน) ทั้งหมด ไม่ต้องเขียนโค้ด

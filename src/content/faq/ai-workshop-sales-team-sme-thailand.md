@@ -1,7 +1,7 @@
 ---
-title: "AI workshop สำหรับทีมขาย SME ไทยต้องเตรียมอะไรบ้าง"
-description: "AI workshop ทีมขาย SME ไทย 1 วัน ต้องเตรียม 4 อย่าง: Google Workspace access, data 3 เดือนย้อนหลัง, 2-3 workflow จริง และ commitment 6-7 ชั่วโมงจากทีม — ไม่ต้องเก่ง tech มาก่อน"
-question: "AI workshop สำหรับทีมขาย SME ไทยต้องเตรียมอะไรบ้าง"
+title: "AI workshop สำหรับทีมขายของธุรกิจไทยต้องเตรียมอะไรบ้าง"
+description: "AI workshop ทีมขายของธุรกิจไทย 1 วัน ต้องเตรียม 4 อย่าง: Google Workspace access, data 3 เดือนย้อนหลัง, 2-3 workflow จริง และ commitment 6-7 ชั่วโมงจากทีม — ไม่ต้องเก่ง tech มาก่อน"
+question: "AI workshop สำหรับทีมขายของธุรกิจไทยต้องเตรียมอะไรบ้าง"
 answerSummary: "เตรียม 4 อย่าง: Google account ของบริษัท, data workflow 3 เดือนย้อนหลัง, ตัวอย่าง 2-3 งานซ้ำที่อยาก automate และทีม 5-10 คนเข้าร่วม 6-7 ชั่วโมง workshop วันเดียวได้ AI tool 1 ตัวใช้งานจริง"
 lang: th
 published: 2026-04-18

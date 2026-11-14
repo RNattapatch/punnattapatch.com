@@ -1,6 +1,6 @@
 ---
 title: "เริ่ม AI Transformation ฝ่ายขายควรเริ่มจากไหน"
-description: "5-step roadmap เริ่ม AI Transformation ฝ่ายขายสำหรับ SME ไทย เริ่มจาก audit งาน manual ของทีม ไม่ใช่ซื้อ ChatGPT Team ก่อน"
+description: "5-step roadmap เริ่ม AI Transformation ฝ่ายขายสำหรับธุรกิจไทย เริ่มจาก audit งาน manual ของทีม ไม่ใช่ซื้อ ChatGPT Team ก่อน"
 question: "เริ่ม AI Transformation ฝ่ายขายควรเริ่มจากไหน"
 answerSummary: "Audit งาน manual ของทีมขายก่อนซื้อ tool. เลือก 1 workflow ROI ชัดสุด build ใน 2 สัปดาห์ วัดผลแล้วขยาย. ห้ามซื้อ enterprise AI platform ถ้ายังไม่ audit."
 lang: th
@@ -9,7 +9,7 @@ draft: false
 tags: [faq, ai, transformation, roadmap, getting-started]
 ---
 
-คำถามนี้เจอบ่อยที่สุด เจ้าของ SME 80% ที่ผมคุยมามักกระโดดข้าม Step 1 (audit) ตรงไป Step 4 (ซื้อ tool) ผลคือทีมไม่ใช้
+คำถามนี้เจอบ่อยที่สุด เจ้าของธุรกิจ 80% ที่ผมคุยมามักกระโดดข้าม Step 1 (audit) ตรงไป Step 4 (ซื้อ tool) ผลคือทีมไม่ใช้
 
 ## ลำดับที่ถูกต้อง
 
@@ -42,7 +42,7 @@ tags: [faq, ai, transformation, roadmap, getting-started]
 - ทีมต้องเห็นผลลัพธ์ได้ทันที (visible win)
 - หากระบบใหม่มีปัญหา ต้องย้อนกลับไปทำงานแบบเดิมได้ (reversible)
 
-3 wedges ที่ผมแนะนำสำหรับ SME ที่ขาย B2B:
+3 wedges ที่ผมแนะนำสำหรับธุรกิจที่ขาย B2B:
 1. สร้างใบเสนอราคา (Quote/Proposal) ฉบับร่างอัตโนมัติ สำหรับงานที่ทีมมักเสียเวลาพิมพ์รายละเอียดซ้ำๆ AI สามารถดึง template มาตรฐานและปรับแก้ข้อมูลเบื้องต้นตาม context ของลูกค้าแต่ละรายได้
 2. จัดตาราง Follow-up ลูกค้าอัตโนมัติ เพื่อแก้ปัญหาทีมลืมติดตามลูกค้า โดยให้ AI คอย track สถานะ, ส่ง reminder, และร่างข้อความสำหรับ follow-up ให้
 3. คัดกรองคุณภาพ Lead (Lead qualification) เพื่อลดเวลาที่ทีมต้องเสียไปกับ Lead ที่ไม่มีคุณภาพ โดยให้ AI ช่วยให้คะแนน (scoring) ตามเกณฑ์ที่กำหนดไว้ล่วงหน้า
@@ -85,7 +85,7 @@ tags: [faq, ai, transformation, roadmap, getting-started]
 
 ❌ บอกทีมว่า "AI จะมาทำงานแทน ใครไม่ใช้จะตกงาน" เพราะจะสร้างแรงต่อต้านและทำให้ไม่มีใครอยากใช้ระบบใหม่
 
-## Budget realistic สำหรับ SME
+## Budget realistic สำหรับธุรกิจ
 
 | Stage | Investment | Time |
 |---|---|---|

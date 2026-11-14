@@ -11,7 +11,7 @@ checkGate:
   - "คุณรู้ชื่อ agent ที่จะเรียก (filename ไม่รวม .md) ใช่มั้ย?"
   - "คุณเข้าใจว่า @agent ใน prompt = บอก Claude Code ให้ใช้ context จาก agent file นั้นเป็น primary system prompt ใช่มั้ย?"
 workedExample:
-  industry: "Service-based SME (15 employees · 35M revenue · digital marketing agency)"
+  industry: "Service-based company (15 employees · 35M revenue · digital marketing agency)"
   scenario: "เจ้าของ agency มี 3 agent (sale / content / personal-secretary) · ต้องการสั่งงานทั้ง 3 รูปแบบใน 1 วันโดยไม่พิมพ์ context ซ้ำ"
   inputs: "agent files พร้อมใช้ + 3 task ตัวอย่าง (lead เข้ามาใหม่ · plan content สัปดาห์ · ส่งต่อให้ sale ตาม secretary)"
   output: "3 prompt template พร้อม fill-in-the-blank — ใช้ได้ทุกวัน"
@@ -81,7 +81,7 @@ Variant 3 — Agent handoff (sequential)
 อธิบาย 3 variant ชัด + template fill-in-the-blank + 3 task ตัวอย่างที่ตรงกับธุรกิจ (จาก claude.md)
 
 ## Worked Example
-**Industry:** Service-based SME (15 employees · 35M revenue · digital marketing agency)
+**Industry:** Service-based company (15 employees · 35M revenue · digital marketing agency)
 **Scenario:** มี 3 agent · เบื่อพิมพ์ context · ต้องการ shortcut
 **Inputs:** sale + content + secretary agent files + claude.md
 **Output:** 3 variant template + 3 task ตัวอย่าง (lead intake / weekly plan / handoff)

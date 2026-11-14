@@ -1,5 +1,5 @@
 ---
-title: "AI เพิ่มยอดขายได้จริงหรือแค่กระแส? 5 ขั้นที่ SME ไทยทำเองได้"
+title: "AI เพิ่มยอดขายได้จริงหรือแค่กระแส? 5 ขั้นที่ธุรกิจไทยทำเองได้"
 description: "ซื้อ ChatGPT ให้ทีม 20 คน เดือนสามเหลือคนใช้จริง 3 คน — ปัญหาอยู่ที่ขั้นตอน ไม่ใช่ tool บทความนี้มี 5 ขั้น + budget realistic ฿100-150k ปีแรก + pitfall 4 ข้อที่ทำให้ล้ม"
 lang: th
 published: 2026-04-18
@@ -82,7 +82,7 @@ AI assist ได้ 70% เช่น "ลูกค้านี้ส่งโป
 2. Lead Qualifier ลูกค้าใหม่กรอกฟอร์ม AI scoring เป็น HOT/WARM/COLD ตามเกณฑ์ที่ตั้งไว้ แจ้งทีมเฉพาะ HOT ลดเวลาเซลล์ที่เสียกับ lead (รายชื่อลูกค้าที่สนใจ) ที่ไม่ qualify
 3. Follow-up Scheduler ดึงจาก Sheet ลูกค้า + last contact date AI track และส่ง reminder พร้อม draft message ลูกค้าที่เงียบ ทีมไม่ลืมตามใคร
 
-Stack (ชุดเครื่องมือ) ที่ใช้บ่อยใน Thai SME:
+Stack (ชุดเครื่องมือ) ที่ใช้บ่อยใน Thai businesses:
 
 - Google Sheets (data layer ที่คน non-tech ใช้เป็น)
 - Apps Script (สำหรับ logic ง่ายๆ และตั้งเวลาทำงาน)
@@ -111,7 +111,7 @@ Setup time ปกติใช้เวลา 2-3 สัปดาห์สำห�
 3. ผูกกับ vendor (คู่ค้าที่ขายระบบ) ที่ export (ส่งออกข้อมูล) data ออกไม่ได้ ทำให้ติดกับ platform เดิมจนย้ายออกไปไหนไม่ได้
 4. ไม่วัด baseline (ค่าตั้งต้น) ก่อนเริ่ม พอทำเสร็จไม่มีตัวเลขเทียบ ทำให้ ROI ไม่ชัด และ project อาจโดน kill
 
-## Realistic Budget สำหรับ SME
+## Realistic Budget สำหรับธุรกิจ
 
 | Stage | Investment | Time |
 |---|---|---|
@@ -123,10 +123,10 @@ Setup time ปกติใช้เวลา 2-3 สัปดาห์สำห�
 Total Year 1 ประมาณ ฿100,000-150,000 + tool cost ปกติจะคืนทุนใน 2-4 เดือน ถ้าเลือก wedge ถูก
 
 
-## อ่านต่อ — คำถามที่เจ้าของ SME ถามบ่อย
+## อ่านต่อ — คำถามที่เจ้าของธุรกิจถามบ่อย
 
 - [AI Agent ต่างจาก chatbot ยังไง](/faq) — ตัวอย่างจริงจากลูกค้า + stack ที่แนะนำ
-- [AI workshop SME ไทยต้องเตรียมอะไรบ้าง](/faq) — 4 สิ่งที่ต้องเตรียมก่อนวัน workshop
+- [AI workshop ธุรกิจไทยต้องเตรียมอะไรบ้าง](/faq) — 4 สิ่งที่ต้องเตรียมก่อนวัน workshop
 - [ไม่เก่ง tech เริ่มใช้ AI ได้ไหม](/faq) — เคส Forklift 5 คนใช้ AI ลด report 2 ชม. → 15 นาที
 - [KPI (ตัววัดผลงาน) dashboard (หน้าจอสรุปข้อมูล) บน Google Sheets](/faq) — ทำไมไม่ต้องซื้อ enterprise BI license
 

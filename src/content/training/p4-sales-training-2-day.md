@@ -12,7 +12,7 @@ headlineAccent: "กดราคาเพื่อปิดดีล"
 headlineTail: "เป็นขายด้วยคุณค่า · ใน 2 วัน"
 subhead: "2 วันเต็ม 12 ชม. · Value Selling + Consultative Closing + Sales Psychology · ทีม ≤12 คน · Role-play 3 รอบ + AI Role-play Bot 24 ชม. · Post-training KPI tracking 30 วัน"
 hook: "เปลี่ยนทีมจากปิดดีลด้วยส่วนลดเป็นปิดด้วยคุณค่า ใน 2 วัน"
-audience: "เจ้าของ SME + sales manager + ทีมขายที่ยังปิดดีลด้วยการลดราคา · อยากเปลี่ยนทีมให้ขายด้วย value + psychology"
+audience: "เจ้าของธุรกิจ + sales manager + ทีมขายที่ยังปิดดีลด้วยการลดราคา · อยากเปลี่ยนทีมให้ขายด้วย value + psychology"
 duration: "2 วัน (Sat-Sun · 12 ชั่วโมงรวม)"
 format: onsite
 pains:

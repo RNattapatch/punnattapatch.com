@@ -104,7 +104,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       },
     ],
     audience: [
-      'SME B2B ทีมขาย 5-20 คน ที่เจ้าของอยากให้ทีมใช้ AI ลดงานซ้ำ',
+      'ธุรกิจ B2B ทีมขาย 5-20 คน ที่เจ้าของอยากให้ทีมใช้ AI ลดงานซ้ำ',
       'ทีมที่เคยซื้อคลาสออนไลน์แล้วไม่ได้ implement ต่อ',
       'เจ้าของที่อยากเห็น AI รันจริง ก่อนตัดสินใจลงทุนก้อนใหญ่',
     ],
@@ -190,7 +190,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
             desc: 'เน้นเรื่องการเพิ่มประสิทธิภาพส่วนบุคคล (Personal Productivity) แต่ไม่ได้สอนวิธีสร้างระบบที่ทั้งทีมขายสามารถใช้ร่วมกันได้ ซึ่งเป็นหัวใจสำคัญของงานขาย B2B',
           },
         ],
-        position: 'Workshop ของผมเติมช่องว่างนี้: AI Workshop สำหรับทีมขาย B2B ของ SME ไทยโดยเฉพาะ ที่เน้นสร้างระบบที่ใช้ได้จริง ไม่ใช่แค่ความรู้ลอยๆ',
+        position: 'Workshop ของผมเติมช่องว่างนี้: AI Workshop สำหรับทีมขาย B2B ของธุรกิจไทยโดยเฉพาะ ที่เน้นสร้างระบบที่ใช้ได้จริง ไม่ใช่แค่ความรู้ลอยๆ',
       },
       pointOfParity: [
         'Workshop เน้นลงมือทำจริง ไม่ใช่นั่งฟังบรรยายอย่างเดียว',
@@ -264,7 +264,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
     headlineAccent: 'สร้างลูกค้า B2B',
     headlineTail: 'ด้วยคอนเทนต์ TikTok ที่ปิดการขายได้',
     subhead:
-      'Workshop 1 วัน ที่บริษัทลูกค้า — เจ้าของ SME ถ่ายคลิปเองได้ 3 คลิปในวันนั้น พร้อมปฏิทินคอนเทนต์ 30 วัน + Trust Framework (กรอบสร้างความน่าเชื่อถือ) + ชุดเทมเพลตสคริปต์',
+      'Workshop 1 วัน ที่บริษัทลูกค้า — เจ้าของธุรกิจถ่ายคลิปเองได้ 3 คลิปในวันนั้น พร้อมปฏิทินคอนเทนต์ 30 วัน + Trust Framework (กรอบสร้างความน่าเชื่อถือ) + ชุดเทมเพลตสคริปต์',
     pains: [
       {
         emoji: '👀',
@@ -279,11 +279,11 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       {
         emoji: '🤷',
         title: 'TikTok สำหรับ B2B เหรอ',
-        body: 'คิดว่า TikTok สำหรับเด็กๆ ไม่เหมาะกับ SME B2B — จริงๆ แล้ว SME ไทยสาย B2B ใช้ TikTok หาคู่ค้ากันอยู่แล้ว',
+        body: 'คิดว่า TikTok สำหรับเด็กๆ ไม่เหมาะกับธุรกิจ B2B — จริงๆ แล้ว ธุรกิจไทยสาย B2B ใช้ TikTok หาคู่ค้ากันอยู่แล้ว',
       },
     ],
     audience: [
-      'เจ้าของ SME B2B ที่อยากสร้างลูกค้าผ่านคอนเทนต์ แต่ไม่รู้วิธี',
+      'เจ้าของธุรกิจ B2B ที่อยากสร้างลูกค้าผ่านคอนเทนต์ แต่ไม่รู้วิธี',
       'ธุรกิจที่จ้างเอเจนซี่แล้วไม่ได้ผลลัพธ์',
       'คนที่อยากลองทำเอง แต่ต้องมีคนช่วยจับมือสอนในวันแรก',
     ],
@@ -314,7 +314,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
       eyebrow: 'Why Me · Trust Content TikTok',
       headline: 'ทำจริงจน 2.29M views organic · ไม่ใช่แค่สอนทฤษฎี',
       marketGap: {
-        intro: 'ตลาด TikTok coach / content agency / growth course มีเยอะ แต่ยังไม่มีใครเจาะ TikTok for B2B Sales SME ที่ขายด้วย trust · ผมทำจริงจนช่องตัวเองได้ 2.29M views organic ใน 4 เดือน · ไม่ใช่ theory',
+        intro: 'ตลาด TikTok coach / content agency / growth course มีเยอะ แต่ส่วนใหญ่ไม่ได้เจาะ TikTok for B2B Sales ที่ขายด้วย trust · ผมทำจริงจนช่องตัวเองได้ 2.29M views organic ใน 4 เดือน · ไม่ใช่ theory',
         segments: [
           {
             name: 'Creator Agency',
@@ -329,7 +329,7 @@ export const SERVICE_DETAILS: Record<string, ServiceDetail> = {
             desc: 'เน้น personal branding สำหรับ creator / influencer · ไม่ใช่ B2B sales funnel end-to-end · ไม่รู้วิธีปิดดีลผ่าน DM',
           },
         ],
-        position: 'ยังไม่มีใครเจาะ TikTok for B2B Sales SME · ผมทำจริงจนได้ 2.29M views · 140K likes · 15 posts ใน 4 เดือนโดยไม่ยิง ads · workshop นี้ถ่ายทอดสูตรเดียวกันให้คุณ',
+        position: 'ผมเจาะ TikTok for B2B Sales · ผมทำจริงจนได้ 2.29M views · 140K likes · 15 posts ใน 4 เดือนโดยไม่ยิง ads · workshop นี้ถ่ายทอดสูตรเดียวกันให้คุณ',
       },
       pointOfParity: [
         'Hands-on shoot 3 clips จริงในห้อง · feedback ทันทีทุกคลิป',

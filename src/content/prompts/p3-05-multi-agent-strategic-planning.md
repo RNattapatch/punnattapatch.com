@@ -11,7 +11,7 @@ checkGate:
   - "คุณมี ./output/strategy/ folder + เดือนก่อนหน้าจริง (ผล จริง vs target) พร้อม paste ใช่มั้ย?"
   - "คุณรู้ business goal Q ปัจจุบัน + 1 strategic question ที่อยากให้ทีมตอบ ใช่มั้ย?"
 workedExample:
-  industry: "Service-based SME (15 employees · 35M revenue · digital marketing agency)"
+  industry: "Service-based company (15 employees · 35M revenue · digital marketing agency)"
   scenario: "เจ้าของ agency ทำ planning meeting รายเดือนกับ dept head 3 คน · ใช้เวลา 4 ชม. + เอกสาร 5 ฉบับกระจาย · อยาก compress + structured"
   inputs: "orchestrator + 3 dept head agent + Q goal + 1 strategic question (เช่น 'จะ retain client เพิ่ม 20% ทำยังไง') + เดือนก่อน actual vs target"
   output: "./output/strategy/2026-04-strategy.md — 1 ฉบับ · 6 section: Q recap / cross-functional analysis (ทุก head ตอบ) / 3 strategic option / 1 recommended option + reason / 30-day execution plan / risk + mitigation"
@@ -86,7 +86,7 @@ Output สุดท้าย:
 ./output/strategy/<YYYY-MM>-strategy.md ที่มี 6 section ครบ + 1 weekly metric ที่ track ได้
 
 ## Worked Example
-**Industry:** Service-based SME (15 employees · 35M revenue · digital marketing agency)
+**Industry:** Service-based company (15 employees · 35M revenue · digital marketing agency)
 **Scenario:** Planning meeting 4 ชม./เดือน · เอกสารกระจาย · ต้องการ compress
 **Inputs:** orchestrator + 3 dept head + Q goal + strategic question + เดือนก่อน actual
 **Output:** 2026-04-strategy.md · 6 section · 1 weekly KPI · weekly milestone 4 week

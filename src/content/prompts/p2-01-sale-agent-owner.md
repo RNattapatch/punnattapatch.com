@@ -11,7 +11,7 @@ checkGate:
   - "USER_TYPE ของคุณคือ OWNER ใช่มั้ย? (template นี้ออกแบบสำหรับเจ้าของธุรกิจ)"
   - "คุณมี skill-build-agent-team.md อยู่ใน project folder ใช่มั้ย?"
 workedExample:
-  industry: "Manufacturing SME (40 employees · ฿80M revenue · ขายอะไหล่รถบรรทุก)"
+  industry: "Manufacturing company (40 employees · ฿80M revenue · ขายอะไหล่รถบรรทุก)"
   scenario: "เจ้าของโรงงานอะไหล่ผ่าน claude.md เสร็จ · อยากได้ agent ที่ช่วยจัดการ pipeline + เขียน follow-up ลูกค้า + draft proposal"
   inputs: "./claude.md + skill-build-agent-team.md (มี OWNER template) + prompt ข้างล่าง"
   output: "ไฟล์ ./agents/sales/sale-team-leader.md (~150 บรรทัด) ที่ inherit context จาก claude.md + พร้อมเรียกผ่าน @sale-team-leader"
@@ -59,7 +59,7 @@ published: 2026-04-22
 ไฟล์ ./agents/sales/sale-team-leader.md ใหม่ + summary 4 บรรทัด + smoke test command ที่เรียก @sale-team-leader ดูว่า inherit context ถูก
 
 ## Worked Example
-**Industry:** Manufacturing SME (40 employees · ฿80M revenue · ขายอะไหล่รถบรรทุก)
+**Industry:** Manufacturing company (40 employees · ฿80M revenue · ขายอะไหล่รถบรรทุก)
 **Scenario:** เจ้าของโรงงาน · มี claude.md พร้อม · อยากได้ Sale Agent ตัวแรก
 **Inputs:** ./claude.md + skill-build-agent-team.md (OWNER template)
 **Output:** ./agents/sales/sale-team-leader.md (~150 บรรทัด) + 1 TODO รอ CRM URL จาก P2-04

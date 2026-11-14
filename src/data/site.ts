@@ -58,7 +58,7 @@ export const BRAND_COLORS = {
 
 // Public Catalog v2.1 lineup (class names locked 2026-08-06).
 // Naming formula: คลาสสด AI สำหรับ[แผนก] [ปี] · (English Brand Tag) + subtitle 3 outcomes.
-// Thai leads, English follows — SME owners search the department, not "AI Agent".
+// Thai leads, English follows — business owners search the department, not "AI Agent".
 // Mapping old → new: output/docs/course-name-mapping-2026-08.md (in the agent repo).
 // Public Class stays off-web — design still undecided as of 2026-08-06.
 export const SERVICES = [
@@ -179,7 +179,7 @@ export const MILESTONES = {
     quarter: 'Q1 2026',
     icon: '✓',
     items: [
-      '3 client wins (B2B SME ฿30-200M)',
+      '3 client wins (B2B ฿30-200M)',
       '1 in-house workshop run',
       '12 agents deployed in client teams',
     ],

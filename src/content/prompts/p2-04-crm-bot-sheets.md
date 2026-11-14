@@ -11,7 +11,7 @@ checkGate:
   - "Sheet นี้ตั้ง share permission เป็น 'anyone with link can view' หรือคุณ setup Apps Script/Service account แล้วใช่มั้ย?"
   - "คุณรู้ว่า column ปัจจุบันมีอะไรบ้าง: ชื่อ / phone / status / notes / ฯลฯ ใช่มั้ย?"
 workedExample:
-  industry: "Manufacturing SME (40 employees · ฿80M revenue · ขายอะไหล่รถบรรทุก)"
+  industry: "Manufacturing company (40 employees · ฿80M revenue · ขายอะไหล่รถบรรทุก)"
   scenario: "เจ้าของโรงงานเก็บลูกค้าใน Google Sheet 200+ rows · พนักงาน sales 4 คน update มือ · อยากให้ agent อ่าน + append แทน"
   inputs: "./claude.md + Google Sheet ID + รายการ column ปัจจุบัน + skill-build-agent-team.md"
   output: "./agents/sales/crm-bot.md + ./agents/sales/crm-bot.config.json (เก็บ Sheet ID + column map) · เรียกผ่าน @crm-bot"
@@ -73,7 +73,7 @@ published: 2026-04-22
 2 ไฟล์ใหม่ (config.json + crm-bot.md) + sample test response ที่ cite row number
 
 ## Worked Example
-**Industry:** Manufacturing SME (40 employees · ฿80M revenue · ขายอะไหล่รถบรรทุก)
+**Industry:** Manufacturing company (40 employees · ฿80M revenue · ขายอะไหล่รถบรรทุก)
 **Scenario:** Sheet 200+ rows · sales 4 คน update มือ · อยากให้ agent ดูแล
 **Inputs:** ./claude.md + Sheet ID + 5 columns (ชื่อ/phone/status/last-contact/notes) + access via csv-export
 **Output:** crm-bot.config.json + crm-bot.md (~120 บรรทัด) + 4 commands พร้อม

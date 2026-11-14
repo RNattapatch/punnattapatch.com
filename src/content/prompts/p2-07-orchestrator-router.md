@@ -11,7 +11,7 @@ checkGate:
   - "คุณเคยเจอ pain ว่า 'ไม่รู้จะเรียก agent ไหน' หรือ 'เรียกผิด agent' ใช่มั้ย?"
   - "คุณ list หน้าที่ของ agent แต่ละตัวได้ใน 1 ประโยคใช่มั้ย? (ถ้าไม่ได้ revise agent file ก่อน)"
 workedExample:
-  industry: "Manufacturing SME (40 employees · ฿80M revenue · ขายอะไหล่รถบรรทุก)"
+  industry: "Manufacturing company (40 employees · ฿80M revenue · ขายอะไหล่รถบรรทุก)"
   scenario: "เจ้าของโรงงานมี 5 agent: sale / content / secretary / crm-bot / proposal-writer · พนักงานเริ่มเรียกผิด agent · อยากได้ single entry point"
   inputs: "./claude.md + ทุกไฟล์ใน ./agents/ + รายการ task ตัวอย่างที่เคยเรียกผิด"
   output: "./agents/orchestrator.md + routing table 12 patterns + fallback rule + escalation rule"
@@ -73,7 +73,7 @@ Step 4 — สร้าง file
 Inventory table + Routing table 10-15 row + 3 edge case rules + ./agents/orchestrator.md + 5 smoke tests
 
 ## Worked Example
-**Industry:** Manufacturing SME (40 employees · ฿80M revenue · ขายอะไหล่รถบรรทุก)
+**Industry:** Manufacturing company (40 employees · ฿80M revenue · ขายอะไหล่รถบรรทุก)
 **Scenario:** มี 5 agent · พนักงานเรียกผิด · ต้องการ entry point
 **Inputs:** ./agents/ ทุกไฟล์ + รายการ task ที่เคยเรียกผิด
 **Output:** orchestrator.md + 12-row routing table + log file pattern

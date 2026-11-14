@@ -1,6 +1,6 @@
 ---
 title: "10 คำถามเช็คว่าองค์กรใช้ AI เป็นจริง หรือแค่ใช้ ChatGPT ตอบ email"
-description: "90% ของ SME ไทยคิดว่าตัวเองใช้ AI เป็นแล้ว — ความจริงคือแค่ Casual User ไม่ใช่ Commander บทความนี้มี 10 คำถาม diagnosis + 4-tier maturity + roadmap 6 เดือนขยับระดับ"
+description: "90% ของธุรกิจไทยคิดว่าตัวเองใช้ AI เป็นแล้ว — ความจริงคือแค่ Casual User ไม่ใช่ Commander บทความนี้มี 10 คำถาม diagnosis + 4-tier maturity + roadmap 6 เดือนขยับระดับ"
 lang: th
 published: 2026-04-18
 draft: false
@@ -29,7 +29,7 @@ readingTimeMinutes: 9
 -   ตอบ **"ใช่"** 1-3 ข้อ → ระดับ **Operator** (มี AI workflow บ้างแต่ไม่เป็นระบบ)
 -   ตอบ **"ใช่"** 0 ข้อ → ระดับ **Commander** (AI เป็นระบบ บริหารจัดการ agent ได้)
 
-จากประสบการณ์ผม SME ไทย 90% อยู่ระดับ Beginner หรือ Casual — ทั้งที่เจ้าของคิดว่า "เราก็ใช้ ChatGPT แล้ว"
+จากประสบการณ์ผม ธุรกิจไทย 90% อยู่ระดับ Beginner หรือ Casual — ทั้งที่เจ้าของคิดว่า "เราก็ใช้ ChatGPT แล้ว"
 
 ## ทำไมแค่ใช้ ChatGPT ยังไม่ใช่ "ใช้ AI เป็น"
 
@@ -58,7 +58,7 @@ readingTimeMinutes: 9
 ### เดือน 1-2: Casual → Operator
 
 -   สร้าง prompt library 10-15 ตัว สำหรับงานที่ทำบ่อย
--   เขียน "คัมภีร์บริษัท" ซึ่งเป็น master context doc (ดู [Pillar: Agentic AI SME start](/insights/agentic-ai-sme-thailand-start))
+-   เขียน "คัมภีร์บริษัท" ซึ่งเป็น master context doc (ดู [Pillar: เริ่ม Agentic AI ในธุรกิจ](/insights/agentic-ai-sme-thailand-start))
 -   ลองเชื่อม AI กับ Google Workspace ผ่าน Apps Script 1-2 กรณีการใช้งาน (use case)
 
 ### เดือน 3-4: Operator → Early Commander
@@ -107,11 +107,11 @@ readingTimeMinutes: 9
 
 ## อ่านต่อ
 
--   [Pillar: Agentic AI สำหรับ SME ไทย: เริ่มสร้าง Agent ตัวแรก](/insights/agentic-ai-sme-thailand-start) — ทำต่อจากบทความนี้
--   [Pillar: AI Transformation for Sales SME](/insights/ai-transformation-sales) — วิธีประยุกต์ใช้ AI กับทีมขาย
+-   [Pillar: Agentic AI สำหรับธุรกิจไทย: เริ่มสร้าง Agent ตัวแรก](/insights/agentic-ai-sme-thailand-start) — ทำต่อจากบทความนี้
+-   [Pillar: AI Transformation for Sales](/insights/ai-transformation-sales) — วิธีประยุกต์ใช้ AI กับทีมขาย
 -   [AI Agent ต่างจาก chatbot ยังไง](/faq)
 -   [ทีมขายไม่อยากใช้ AI กลัวตกงาน](/faq) — 3 action สำหรับเจ้าของ
--   [SME ไทยควรลงทุน AI เท่าไหร่ปีแรก](/faq)
+-   [ธุรกิจไทยควรลงทุน AI เท่าไหร่ปีแรก](/faq)
 
 ## เริ่ม audit องค์กรคุณ
 

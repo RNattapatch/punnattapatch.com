@@ -10,9 +10,9 @@ accent: coral
 headline: "ทีมขาย 5-20 คน แต่ยอด"
 headlineAccent: "80% มาจากเจ้าของคนเดียว"
 headlineTail: "วางระบบให้ทีมวิ่งเอง ใน 2 weekends"
-subhead: "2 weekends + 1-week break + graduation dinner · 8 ที่นั่ง · รับเฉพาะเจ้าของ SME ที่ scale จาก 5 → 20 คน · ออกมาพร้อม 5 ระบบ (Recruit/Onboard/Manage/Coach/Retain) implement หน้างานได้ทันที"
+subhead: "2 weekends + 1-week break + graduation dinner · 8 ที่นั่ง · รับเฉพาะเจ้าของธุรกิจที่ scale จาก 5 → 20 คน · ออกมาพร้อม 5 ระบบ (Recruit/Onboard/Manage/Coach/Retain) implement หน้างานได้ทันที"
 hook: "ได้ 5 ระบบ Recruit → Onboard → Manage → Coach → Retain ครบวงจร implement ได้ทันที"
-audience: "เจ้าของ SME + Sales Director ที่มีทีม 5-20 คน + ยังไม่มีระบบ end-to-end จาก recruit ถึง retain"
+audience: "เจ้าของธุรกิจ + Sales Director ที่มีทีม 5-20 คน + ยังไม่มีระบบ end-to-end จาก recruit ถึง retain"
 duration: "2 weekends + 1-week break (รวม 3 วันที่ห้อง + graduation dinner)"
 format: onsite
 pains:
@@ -33,14 +33,14 @@ pains:
     body: "ทีมปิดดีลเล็กได้ · แต่ดีลที่สำคัญเกินล้านต้องเรียกเจ้าของเสมอ · ถ้าเจ้าของไม่ว่าง = ดีลหาย หรือลูกค้ารอจนใจเย็นหาย · เจ้าของลาพักก็ไม่ได้"
   - emoji: "🏗"
     title: "อยากวางระบบ · ไม่รู้จะเริ่มตรงไหน"
-    body: "เคยอ่าน playbook ต่างประเทศ ดู YouTube · ฟังแล้วเข้าใจ แต่พอ implement กับธุรกิจตัวเองไปไม่เป็น · ไม่มีใครบอกว่า SME ไทย 5-20 คน ควรเริ่มจากระบบไหน ต่อเข้ากันอย่างไร"
+    body: "เคยอ่าน playbook ต่างประเทศ ดู YouTube · ฟังแล้วเข้าใจ แต่พอ implement กับธุรกิจตัวเองไปไม่เป็น · ไม่มีใครบอกว่าธุรกิจไทย 5-20 คน ควรเริ่มจากระบบไหน ต่อเข้ากันอย่างไร"
 gallery:
   - src: "/advance-ai-course/gallery1.JPG"
-    alt: "บรรยากาศ workshop · เจ้าของ SME ประชุมวางระบบทีมขาย"
+    alt: "บรรยากาศ workshop · เจ้าของธุรกิจประชุมวางระบบทีมขาย"
   - src: "/advance-ai-course/gallery7.JPG"
     alt: "Peer learning · แลกเปลี่ยน case study ข้ามอุตสาหกรรม"
   - src: "/advance-ai-course/IMG_5218.JPG"
-    alt: "ปัน ณัฐพัชร์ coach เจ้าของ SME วางระบบทีมขาย"
+    alt: "ปัน ณัฐพัชร์ coach เจ้าของธุรกิจวางระบบทีมขาย"
 seats:
   total: 8
   founding: 8
@@ -60,7 +60,7 @@ outcomes:
   - "Onboarding 30-60-90 playbook — new hire พร้อมปิดดีลใน 60 วัน"
   - "KPI + Commission structure — ทีมรู้เป้าชัด · เซลล์ motivated · ไม่ต้อง push manual"
   - "1:1 Coaching rhythm + PIP framework — manager รู้จะ coach/fire ยังไง"
-  - "Graduation dinner — network กับเจ้าของ SME 7 รายอื่น · peer advisory ต่อไปตลอดชีพ"
+  - "Graduation dinner — network กับเจ้าของธุรกิจ 7 รายอื่น · peer advisory ต่อไปตลอดชีพ"
 syllabus:
   - title: "Weekend 1 — Build the Team (Sat + Sun Day 1)"
     body: "Interview Framework (10 คำถาม scorecard) · Onboarding 30-60-90 day plan · Sales Playbook design · Role Architecture (junior/senior/lead/manager) — เอา output ไป implement ใน 1 สัปดาห์ break"
@@ -100,7 +100,7 @@ faq:
   - q: "2 weekends จะได้ 5 ระบบครบจริงเหรอ?"
     a: "ได้ครบถ้า commit ทุก session · แต่ต้องทำ pre-work (Team Audit Worksheet) ล่วงหน้า 1 สัปดาห์ + homework break week + share case จริงในห้อง · ถ้า skip session หรือไม่ทำ homework = ไม่มี output · peer learning format ต้องพร้อมเปิดเผย data ในห้อง"
   - q: "Graduation dinner จำเป็นไหม?"
-    a: "Optional แต่แนะนำมากๆ — network กับ SME owner 7 ราย + peer advisory post-program · ตัวโปรแกรมหลัง graduation คือ alumni community"
+    a: "Optional แต่แนะนำมากๆ — network กับธุรกิจ owner 7 ราย + peer advisory post-program · ตัวโปรแกรมหลัง graduation คือ alumni community"
   - q: "หลังจบ alumni มีอะไรต่อ?"
     a: "4 reunion/ปี ฟรี · priority Inner Circle Lifetime Early Bird (฿14,900) · Tier 2 Agentic AI Transformation 15% off ถ้าอยากติดตั้งระบบทั้งองค์กร"
   - q: "ราคา Early Bird กับราคาปกติต่างกันยังไง?"
@@ -109,7 +109,7 @@ faq:
 
 ## ทำไม P5 ต่างจาก sales training ทั่วไป
 
-ตลาดแยก sales training, HR consulting และ recruitment agency เป็น 3 บริการจาก 3 ที่ ต้องใช้งบ 3 ส่วน แต่ไม่มีใครเชื่อมทั้งระบบเข้าด้วยกัน P5 รวม 5 ขั้นตอนสำคัญ (Recruit → Onboard → Manage → Coach → Retain) เสริมด้วย AI Tools เป็นระบบเดียวที่ออกแบบมาสำหรับ SME ไทยซึ่งกำลังขยายทีมจาก 5 เป็น 20 คนโดยเฉพาะ
+ตลาดแยก sales training, HR consulting และ recruitment agency เป็น 3 บริการจาก 3 ที่ ต้องใช้งบ 3 ส่วน แต่ไม่มีใครเชื่อมทั้งระบบเข้าด้วยกัน P5 รวม 5 ขั้นตอนสำคัญ (Recruit → Onboard → Manage → Coach → Retain) เสริมด้วย AI Tools เป็นระบบเดียวที่ออกแบบมาสำหรับธุรกิจไทยซึ่งกำลังขยายทีมจาก 5 เป็น 20 คนโดยเฉพาะ
 
 โปรแกรมถูกออกแบบเป็น 2 สุดสัปดาห์ มีช่วงพัก 1 สัปดาห์ ไม่ใช่การอบรม 2 วันติดกัน เพราะเฟรมเวิร์กการจัดการที่ไม่ได้นำไปใช้จริงจะถูกลืมในสองสัปดาห์ ช่วงพักนี้เปิดโอกาสให้ทีมเอาสิ่งที่เรียนใน Weekend 1 ไปใช้หน้างาน เก็บปัญหาจริง แล้วกลับมาคุยกันใน Weekend 2 ทุกคนจึงมีกรณีศึกษาของตัวเองมาแลกเปลี่ยนกับเพื่อนในคลาส
 
@@ -152,7 +152,7 @@ faq:
 - พิธีมอบเข็มกลัดสำหรับ Public Class #1
 - กิจกรรม commitment ritual เพื่อสร้างความรับผิดชอบร่วมกันในช่วง 90 วันหลังจบโปรแกรม
 
-Dinner เป็นส่วนหนึ่งของโปรแกรมซึ่งบังคับเข้าร่วม ไม่ใช่กิจกรรมเสริม เจ้าของ SME ทั้ง 8 คนในห้องจะได้สร้างเครือข่ายที่ปรึกษา (peer advisory network) ที่ช่วยเหลือกันต่อไปหลังจบคลาส
+Dinner เป็นส่วนหนึ่งของโปรแกรมซึ่งบังคับเข้าร่วม ไม่ใช่กิจกรรมเสริม เจ้าของธุรกิจทั้ง 8 คนในห้องจะได้สร้างเครือข่ายที่ปรึกษา (peer advisory network) ที่ช่วยเหลือกันต่อไปหลังจบคลาส
 
 ## Venue + Format
 

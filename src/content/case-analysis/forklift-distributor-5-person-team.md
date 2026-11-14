@@ -108,7 +108,7 @@ anonymized: true
 ## อ่านต่อ
 
 - [Pillar: AI Transformation for Sales](/insights/ai-transformation-sales) — 5 ขั้นที่ลูกค้ารายนี้ผ่าน
-- [Pillar: Agentic AI SME Start](/insights/agentic-ai-sme-thailand-start) — วิธีเริ่ม Agent ตัวแรก (เหมือนที่เริ่มกับลูกค้ารายนี้)
+- [Pillar: เริ่ม Agentic AI ในธุรกิจ](/insights/agentic-ai-sme-thailand-start) — วิธีเริ่ม Agent ตัวแรก (เหมือนที่เริ่มกับลูกค้ารายนี้)
 - [Commission structure ทีม 10 คน](/faq) — 3-tier formula ที่ใช้วางให้ลูกค้ารายนี้
 - [KPI dashboard บน Google Sheets](/faq) — ตัว dashboard ที่ build ให้
 

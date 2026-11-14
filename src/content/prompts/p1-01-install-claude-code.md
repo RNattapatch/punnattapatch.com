@@ -11,8 +11,8 @@ checkGate:
   - "คุณสร้าง project folder ใหม่สำหรับธุรกิจคุณแล้วใช่มั้ย?"
   - "คุณวาง 5 .md setup files (README + the-architect + skill-business-context + skill-build-agent-team + skill-prompt-library) ใน project folder แล้วใช่มั้ย?"
 workedExample:
-  industry: "Manufacturing SME (40 employees · ฿80M revenue · ขายอะไหล่รถบรรทุก)"
-  scenario: "เจ้าของ Manufacturing SME เพิ่งดาวน์โหลด Claude Code + วาง 5 setup files เสร็จ · ยังไม่เคยใช้ Claude Code มาก่อน"
+  industry: "Manufacturing company (40 employees · ฿80M revenue · ขายอะไหล่รถบรรทุก)"
+  scenario: "เจ้าของ Manufacturing ธุรกิจ เพิ่งดาวน์โหลด Claude Code + วาง 5 setup files เสร็จ · ยังไม่เคยใช้ Claude Code มาก่อน"
   inputs: "5 setup files ใน project folder (ยังไม่มี claude.md) + prompt ข้างล่าง"
   output: "The Architect แนะนำตัว + ถาม 2-persona detection + รอคุณตอบ 1 หรือ 2 → route ไป skill-business-context"
   timeSaved: "ถ้าเริ่มเองโดยไม่มี Kit: 30 นาทีงงกับ Claude Code + 2 ชม.ลองผิดลองถูก · ใช้ prompt นี้ 3 นาทีเริ่มได้เลย"
@@ -51,7 +51,7 @@ published: 2026-04-22
 The Architect ยืนยันว่าอ่าน 5 ไฟล์ครบ → แนะนำตัว → ถาม 2-persona detection → รอคำตอบ → ประกาศ USER_TYPE → route ไป skill-business-context
 
 ## Worked Example
-**Industry:** Manufacturing SME (40 employees · ฿80M revenue · ขายอะไหล่รถบรรทุก)
+**Industry:** Manufacturing company (40 employees · ฿80M revenue · ขายอะไหล่รถบรรทุก)
 **Scenario:** เจ้าของบริษัทเพิ่งเริ่มใช้ Claude Code · วาง 5 setup files เสร็จ 2 นาทีที่แล้ว · ยังไม่ได้สร้าง claude.md
 **Inputs:** 5 setup files ใน project folder + prompt ข้างบน
 **Output:** The Architect ตอบ 4 บรรทัด · รอ user ตอบ "1" · ประกาศ USER_TYPE=OWNER · บอก "พิมพ์ 'เริ่มสร้าง claude.md ได้เลย'"

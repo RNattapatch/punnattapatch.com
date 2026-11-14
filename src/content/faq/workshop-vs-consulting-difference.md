@@ -1,15 +1,15 @@
 ---
-title: "Workshop กับ Consulting ต่างกันยังไง เจ้าของ SME ควรเลือกตัวไหน"
-description: "Workshop = วันเดียวจบ เรียนรู้ + build ของจริงในห้อง · Consulting = หลายเดือนวางระบบยาว SME ที่ยังไม่เคยลองควร workshop ก่อน ถ้าผ่านค่อยต่อ consulting"
-question: "Workshop กับ Consulting ต่างกันยังไง เจ้าของ SME ควรเลือกตัวไหน"
-answerSummary: "Workshop คือ 1-2 วันจบ เน้น hands-on build ของจริงให้ทีม · Consulting คือ 1-3 เดือน วางระบบครบวงจร SME ที่ยังไม่เคยลองที่ปรึกษาควรเริ่ม workshop ก่อน ถ้าผ่านค่อยต่อ consulting ไม่ควรจ่าย consulting ก้อนใหญ่ก่อนดูวิธีทำงานจริงของที่ปรึกษา"
+title: "Workshop กับ Consulting ต่างกันยังไง เจ้าของธุรกิจควรเลือกตัวไหน"
+description: "Workshop = วันเดียวจบ เรียนรู้ + build ของจริงในห้อง · Consulting = หลายเดือนวางระบบยาวธุรกิจที่ยังไม่เคยลองควร workshop ก่อน ถ้าผ่านค่อยต่อ consulting"
+question: "Workshop กับ Consulting ต่างกันยังไง เจ้าของธุรกิจควรเลือกตัวไหน"
+answerSummary: "Workshop คือ 1-2 วันจบ เน้น hands-on build ของจริงให้ทีม · Consulting คือ 1-3 เดือน วางระบบครบวงจร ธุรกิจที่ยังไม่เคยลองที่ปรึกษาควรเริ่ม workshop ก่อน ถ้าผ่านค่อยต่อ consulting ไม่ควรจ่าย consulting ก้อนใหญ่ก่อนดูวิธีทำงานจริงของที่ปรึกษา"
 lang: th
 published: 2026-04-18
 draft: false
 tags: [faq, workshop, consulting, comparison, decision]
 ---
 
-Workshop เป็นแบบลงมือทำ จบใน 1 วัน ส่วน Consulting เป็นโปรเจกต์ระยะยาวเพื่อวางระบบ SME ส่วนใหญ่ควรเริ่มจาก Workshop เพื่อทดลองและดูวิธีการทำงานของที่ปรึกษาก่อน
+Workshop เป็นแบบลงมือทำ จบใน 1 วัน ส่วน Consulting เป็นโปรเจกต์ระยะยาวเพื่อวางระบบธุรกิจส่วนใหญ่ควรเริ่มจาก Workshop เพื่อทดลองและดูวิธีการทำงานของที่ปรึกษาก่อน
 
 ## Workshop (1-2 วัน)
 
@@ -40,7 +40,7 @@ Workshop เป็นแบบลงมือทำ จบใน 1 วัน ส
 | Deliverable (สิ่งที่ส่งมอบ) | 1 tool ใช้ทันที | ระบบครบ + documentation (เอกสารประกอบ) |
 | เหมาะกับ | ลองของก่อน | ลงทุนเต็มตัว |
 
-## เจ้าของ SME ควรเลือกอะไร
+## เจ้าของธุรกิจควรเลือกอะไร
 
 **เลือก Workshop ถ้า:**
 - ยังไม่เคยจ้างที่ปรึกษาการขายและ AI มาก่อน
@@ -54,7 +54,7 @@ Workshop เป็นแบบลงมือทำ จบใน 1 วัน ส
 - ทีมมีขนาด 10-20 คนและต้องการออกแบบ KPI และ Commission ใหม่
 - มีงบประมาณตั้งแต่ {{price:daily-sales-consulting}} ขึ้นไป และมีเวลาให้โปรเจกต์หลายสัปดาห์
 
-## Path ที่ผมแนะนำสำหรับ SME ส่วนใหญ่
+## Path ที่ผมแนะนำสำหรับธุรกิจส่วนใหญ่
 
 1. เริ่มจาก [AI สำหรับงานหลังบ้าน 2026 {{price:ai-workshop-advance}}](/services#back-office) 1 วัน
 2. ถ้าอยากให้ระบบไม่ตายหลัง workshop → เริ่มจาก [บริการวางระบบฝ่ายขายแบบรายวัน {{price:daily-sales-consulting}}](/services/daily-consulting) หรือถ้าอยากให้ผมกลับไปเช็คกับงานจริงอีกรอบ → [แบบครบรอบ 2 วัน](/services/daily-consulting) (วันที่สองภายใน 14 วัน)

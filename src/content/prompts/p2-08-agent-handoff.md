@@ -11,7 +11,7 @@ checkGate:
   - "คุณมี agent อย่างน้อย 2 ตัวที่ต้องส่งงานต่อกันบ่อย (เช่น content → sale, crm → proposal) ใช่มั้ย?"
   - "คุณยอมรับว่า direct handoff bypass orchestrator (จะต้อง trade-off กับ logging) ใช่มั้ย?"
 workedExample:
-  industry: "Service-based SME (15 employees · ฿35M revenue · บริษัท digital marketing agency)"
+  industry: "Service-based company (15 employees · ฿35M revenue · บริษัท digital marketing agency)"
   scenario: "ทีม agent ของ agency: content-team-leader draft post → ต้องส่งให้ sale-team-leader ดูว่าตรงกับ pitch ลูกค้ามั้ย · ผ่าน orchestrator ทุกรอบช้า"
   inputs: "./agents/orchestrator.md + 2 agent ที่ handoff บ่อย + sample task ที่ต้องส่งต่อ"
   output: "Handoff protocol .md + update 2 agent files + format ของ context bundle (JSON-like header) + handoff log"
@@ -91,7 +91,7 @@ Step 6 — Smoke test
 List 3 pair ที่ approve + context bundle format + 2 agent file updates + orchestrator update + handoff log file + smoke test ที่เดินครบ
 
 ## Worked Example
-**Industry:** Service-based SME (15 employees · ฿35M revenue · digital marketing agency)
+**Industry:** Service-based company (15 employees · ฿35M revenue · digital marketing agency)
 **Scenario:** content-team-leader → sale-team-leader handoff บ่อย · ผ่าน orchestrator ช้า
 **Inputs:** _routing-log.md + 2 agent files + sample task
 **Output:** 1 pair approved + bundle format + 2 file updates + smoke test เดินครบ

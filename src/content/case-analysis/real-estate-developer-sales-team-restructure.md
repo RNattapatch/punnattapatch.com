@@ -110,7 +110,7 @@ anonymized: true
 - Top performer ไม่ออก = ไม่เสีย relationship กับลูกค้าเก่า (2 คนใน 3 ที่ออกเคยชวนลูกค้าไปเจ้าอื่น)
 - Opportunity cost ที่ประหยัดได้: ~฿5M ของ revenue ปีที่ 2 ที่จะไม่ได้ถ้าเสียคนอีก
 
-## Lessons สำหรับ SME ธุรกิจอสังหา / B2B อื่น
+## Lessons สำหรับธุรกิจอสังหา / B2B อื่น
 
 **1. Flat commission = ระเบิดเวลา**
 ทุกอุตสาหกรรมที่ deal size ต่างกันมากๆ (เช่น อสังหา B2B manufacturing) ห้ามใช้ flat — top performer จะ burn out (หมดไฟ) แล้วออก
@@ -144,7 +144,7 @@ Team bonus = top performer ยอมช่วย junior เพราะมัน
 ## อ่านต่อ
 
 - [Pillar: Sales Consulting Guide 2026](/insights/sales-consulting-guide-2026) — วิธีเลือกที่ปรึกษาแบบที่ลูกค้ารายนี้เลือกผม
-- [Cluster: 'ลูกรัก' ทำ SME เสียคนเก่ง](/insights/lookrak-kills-sme-teams) — ถ้าระบบไม่ fair ทีมจะลาออก (case นี้เป็นตัวอย่างชัด)
+- [Cluster: 'ลูกรัก' ทำบริษัทเสียคนเก่ง](/insights/lookrak-kills-sme-teams) — ถ้าระบบไม่ fair ทีมจะลาออก (case นี้เป็นตัวอย่างชัด)
 - [Commission structure ทีม 10 คน](/faq) — formula แบบเดียวกับที่ใช้กับลูกค้ารายนี้ (ปรับตาม deal size)
 
 ## อยากได้ผลลัพธ์แบบนี้ไหม?

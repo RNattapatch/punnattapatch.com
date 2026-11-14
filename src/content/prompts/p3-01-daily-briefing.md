@@ -11,7 +11,7 @@ checkGate:
   - "คุณมี ./logs/ folder ที่เก็บ daily log เมื่อวาน (text file หรือ md) ใช่มั้ย? (ถ้าไม่มี secretary จะ skip step นั้น)"
   - "คุณมี calendar input — Google Calendar export หรือ paste meeting list ของวันนี้ — พร้อมใช่มั้ย?"
 workedExample:
-  industry: "Manufacturing SME (40 employees · 80M revenue · ขายอะไหล่รถบรรทุก)"
+  industry: "Manufacturing company (40 employees · 80M revenue · ขายอะไหล่รถบรรทุก)"
   scenario: "เจ้าของโรงงานเปิดวันด้วย backlog 30+ unread message · 3 meeting + 5 follow-up ค้าง · อยากรู้ใน 60 วินาทีว่าวันนี้ต้องโฟกัสอะไร"
   inputs: "personal-secretary.md + ./logs/2026-04-21.md (เมื่อวาน) + paste calendar 3 meeting วันนี้ + รายการ 5 deal ที่ pending"
   output: "5-bullet briefing: 1) priority deal ที่ค้างนานสุด 2) meeting prep ที่ต้องทำก่อนบ่าย 3) decision pending จากเมื่อวาน 4) blocker ที่ต้องแก้ก่อน 5) win เล็กที่ฉลองได้"
@@ -73,7 +73,7 @@ Calendar วันนี้ + deal pending ของผม:
 5-bullet markdown briefing ความยาว 150-200 คำ + คำแนะนำเวลา (เช้า/บ่าย/defer) · actionable ทุก item
 
 ## Worked Example
-**Industry:** Manufacturing SME (40 employees · 80M revenue · อะไหล่รถบรรทุก)
+**Industry:** Manufacturing company (40 employees · 80M revenue · อะไหล่รถบรรทุก)
 **Scenario:** Backlog 30+ message · 3 meeting + 5 follow-up ค้าง · ต้อง context-switch กลับมาทำงาน
 **Inputs:** personal-secretary.md + log เมื่อวาน + calendar paste + 5 deal pending
 **Output:** 5-bullet briefing 180 คำ · จัดเวลาเช้า/บ่าย/defer · ใช้เวลาอ่าน 45 วินาที

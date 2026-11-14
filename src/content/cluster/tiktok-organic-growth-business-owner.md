@@ -25,7 +25,7 @@ readingTimeMinutes: 8
 | Profile visit rate | 0.99% | ของ total views (key funnel metric) |
 | Share rate | 1.55% | ของ total views |
 | Engagement rate | 7.9% | (like + comment + share) / views |
-| Audience | TH 87%, Female 63% | target เจ้าของ SME ไทย |
+| Audience | TH 87%, Female 63% | target เจ้าของธุรกิจไทย |
 | Ads spend | ฿0 | organic ทั้งหมด |
 
 ตัวเลขเหล่านี้ไม่ใช่ `vanity metric (ตัวเลขสวยๆ ที่ไม่สร้างรายได้)` แต่เป็น leading indicator ของ funnel ที่ปิดดีลได้
@@ -63,7 +63,7 @@ Layer 1-3 วัดได้จาก TikTok Studio. Layer 4-6 ต้อง trac
 - Layer 3 คือ value ที่เขาได้จากการดูคลิปล้วนๆ (ยังไม่เกี่ยวกับการซื้อของ)
 
 ตัวอย่างช่องผม
-- Layer 1: เจ้าของธุรกิจ SME ฿30-200M ที่อยากได้ `inbound lead (ลูกค้าที่สนใจที่ทักเข้ามาเอง)`
+- Layer 1: เจ้าของธุรกิจ ฿30-200M ที่อยากได้ `inbound lead (ลูกค้าที่สนใจที่ทักเข้ามาเอง)`
 - Layer 2: pain คือยอดคงที่ ทีมขายไม่มีระบบ `commission (ค่าคอมมิชชั่น)` ไม่แฟร์
 - Layer 3: value คือ framework ที่เอาไป test ในทีมได้เลย ไม่ต้องจ้าง `consultant (ที่ปรึกษา)`
 
@@ -166,7 +166,7 @@ B2B selling คือ trust economy. ลูกค้าเลือกคนท�
 
 ช่องผมเองใช้ Claude API draft script จาก bullet note + keyword research ก่อนถ่าย 80% ของ workflow แต่ทุกคลิปถ่ายด้วย iPhone + ring light ฿800 เสียงจริง หน้าจริง
 
-## 5 ข้อผิดพลาดที่เจ้าของ SME ทำตอนเปิดช่องใหม่
+## 5 ข้อผิดพลาดที่เจ้าของธุรกิจทำตอนเปิดช่องใหม่
 
 1. เปิดช่องแล้ว `copy (ลอกเลียน)` คนดังโดยตรง ไม่มี `identity (ตัวตน)` ของตัวเอง
 2. โพสต์ขายของตั้งแต่คลิปแรก algorithm ไม่ push คนไม่ follow
@@ -186,4 +186,4 @@ B2B selling คือ trust economy. ลูกค้าเลือกคนท�
 
 [จองคิว Workshop →](/services/online-to-sales) · [จองคิวคุย 30 นาทีฟรีก่อนตัดสินใจ →](/booking)
 
-อ่านต่อ: [Personal Branding เจ้าของธุรกิจ B2B 2026](/insights/personal-branding-b2b-business-owner) | [คู่มือสร้างทีมขาย B2B สำหรับ SME ไทย](/insights/build-b2b-sales-team-sme-thailand) | [AI Agent vs Chatbot ต่างกันยังไง](/faq#ai-agent-vs-chatbot-difference)
+อ่านต่อ: [Personal Branding เจ้าของธุรกิจ B2B 2026](/insights/personal-branding-b2b-business-owner) | [คู่มือสร้างทีมขาย B2B สำหรับธุรกิจไทย](/insights/build-b2b-sales-team-sme-thailand) | [AI Agent vs Chatbot ต่างกันยังไง](/faq#ai-agent-vs-chatbot-difference)

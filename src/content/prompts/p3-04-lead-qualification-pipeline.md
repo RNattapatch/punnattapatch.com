@@ -11,7 +11,7 @@ checkGate:
   - "คุณมี ./agents/sales/sale-team-leader.md จาก P2-01 แล้วใช่มั้ย?"
   - "คุณรู้ next-step ที่ใช้บ่อย (เช่น discovery call / send case study / referral nurture / decline politely) — list ไว้ใน claude.md หรือยัง?"
 workedExample:
-  industry: "Manufacturing SME (40 employees · 80M revenue · ขายอะไหล่รถบรรทุก)"
+  industry: "Manufacturing company (40 employees · 80M revenue · ขายอะไหล่รถบรรทุก)"
   scenario: "เจ้าของได้ lead จาก 5 ช่องทาง/สัปดาห์ · เคย qualify เอง 15 นาที/lead · บางครั้งคุยลูกค้าที่ไม่ fit ICP เลยเสียเวลา 2 ชม./คน"
   inputs: "raw lead text (paste 1 lead จากการ chat ใน LINE) + claude.md ICP section + sale-team-leader.md"
   output: "Verdict (qualified / not / borderline) + 3 reason ที่ map กับ ICP criteria + next-step recommendation 1 อัน + draft message 3-4 บรรทัดสำหรับ next-step"
@@ -84,7 +84,7 @@ Step 6 — Draft message
 6-field extract + ICP match table + verdict + 3 reason + 1 next-step + draft message · พร้อม handoff CRM
 
 ## Worked Example
-**Industry:** Manufacturing SME (40 employees · 80M revenue · อะไหล่รถบรรทุก)
+**Industry:** Manufacturing company (40 employees · 80M revenue · อะไหล่รถบรรทุก)
 **Scenario:** Lead 5/สัปดาห์ · เสียเวลากับลูกค้า not-fit
 **Inputs:** raw chat lead + claude.md ICP + sale agent
 **Output:** verdict "Borderline" + 3 reason quote ICP + next-step "discovery 20-min" + draft 3-line message
