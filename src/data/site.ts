@@ -7,9 +7,9 @@ export const SITE = {
   url: 'https://punnattapatch.com',
   name: 'Pun Nattapatch',
   nameTh: 'ปัน ณัฐพัชร์',
-  titleDefault: 'Pun Nattapatch | ที่ปรึกษาวางระบบและพัฒนาทีมขาย B2B สำหรับ SME',
+  titleDefault: 'Pun Nattapatch | ปั้นทีมขาย × AI สำหรับองค์กรที่มีทีมขาย',
   description:
-    'ช่วย SME วางโครงทีมขาย KPI ค่าคอม Funnel Report Dashboard และ AI workflow ให้คนในทีมทำงานด้วยระบบเดียวกัน',
+    'ช่วยองค์กรที่มีทีมขาย วางโครงทีมขาย KPI ค่าคอม Funnel Report Dashboard และ AI workflow ให้คนในทีมทำงานด้วยระบบเดียวกัน',
   locale: 'th_TH',
   twitter: '@punnattapatch',
   // Public contact address — used on /privacy for PDPA + Meta data-deletion requests.
@@ -18,7 +18,7 @@ export const SITE = {
     name: 'Pun Nattapatch',
     nameTh: 'ปัน ณัฐพัชร์',
     handle: '@pun_nattapatch',
-    jobTitle: 'ที่ปรึกษาวางระบบและพัฒนาทีมขาย B2B สำหรับ SME',
+    jobTitle: 'ที่ปรึกษาด้านการปั้นทีมขายและ AI Agent',
     city: 'Bangkok',
     country: 'TH',
   },
@@ -122,7 +122,7 @@ export const SERVICES = [
     priceLabel: `${fmtPrice('daruma-transformation')} / 45 วัน`,
     duration: '45 วัน',
     format: 'On-site + online',
-    audience: 'เจ้าของ SME ที่อยากแก้ระบบขายทั้งทีม ไม่ใช่แค่จัดวันอบรม',
+    audience: 'เจ้าของธุรกิจที่อยากแก้ระบบขายทั้งทีม ไม่ใช่แค่จัดวันอบรม',
     outcome: [
       'ดูข้อมูล จัดแนวหัวหน้า และฝึกทีม',
       'ติดตั้งระบบจริง 1 ระบบ',
@@ -163,8 +163,8 @@ export const PROOF_STATS = [
  */
 export const PUN_CORE_BIO = [
   { stat: '5 ปี', body: 'ฟิลด์ sales B2B · ปิดดีลด้วยมือตัวเอง · ไม่ใช่ academic trainer' },
-  { stat: '฿100M+', body: 'มูลค่าธุรกิจลูกค้า SME 10+ ราย (฿30-200M) ที่ผมดูแลตั้งแต่ 2025' },
-  { stat: '2.29M', body: 'TikTok views organic · proof ว่าเจ้าของ SME ฟังผม · ไม่ใช่ทฤษฎีในตำรา' },
+  { stat: '100+', body: 'คนที่ผมสัมภาษณ์เข้าทีมเอง และเรซูเม่อีก 1,000+ ใบที่ผมคัดเอง' },
+  { stat: '2.29M', body: 'TikTok views organic · proof ว่าเจ้าของธุรกิจฟังผม · ไม่ใช่ทฤษฎีในตำรา' },
 ] as const;
 
 /**
@@ -201,7 +201,7 @@ export const MILESTONES = {
     items: [
       'Inner Circle gated rollout',
       '฿1M MRR target',
-      'Build ฿100M sales-team SOP handed to first 3 clients',
+      'Build sales-team SOP handed to first 3 clients',
     ],
   },
 } as const;
