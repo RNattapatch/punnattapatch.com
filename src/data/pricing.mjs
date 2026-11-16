@@ -41,8 +41,8 @@ export const CATALOG = {
   'inhouse-a': {
     amount: 34900,
     url: '/services/t1-sales-skills',
-    name: 'คลาสจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B',
-    nameEn: 'B2B Sales Psychology + AI Agent',
+    name: 'Sales Psychology : ขายดีด้วยจิตวิทยาการขายแบบที่ปรึกษา',
+    nameEn: 'Sales Psychology: Consultative Selling',
     kind: 'inhouse',
     duration: '1 วัน',
     headline: 'เข้าใจเหตุผลซื้อ · ถามและต่อรองได้ดีขึ้น · ซ้อมดีลกับ AI Agent · Follow-up โดยไม่รีบลดราคา',
@@ -51,7 +51,7 @@ export const CATALOG = {
     botQuote: true,
     image: '/services/thumbs/t1-sales-skill-ai.jpg',
     outlineUrl: 'https://punnattapatch.com/services/outlines/t1-sales-psychology-ai-agent.pdf',
-    note: 'T1 · ราคาเดียวทั้งทีมไม่เกิน 20 คน · reposition 2026-08-30 เป็น Sales Psychology + AI Agent · เข้าใจคนก่อน แล้วค่อยฝึก AI เป็น Sales Coach จาก Company Context · Agent ไม่ใช่ production bot และไม่คุยกับลูกค้าแทนมนุษย์',
+    note: 'T1 · ราคาเดียวทั้งทีมไม่เกิน 20 คน · rename 2026-11-16 ชื่อมาตรฐาน "Sales Psychology : ขายดีด้วยจิตวิทยาการขายแบบที่ปรึกษา" (เดิม "คลาสจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B") · reposition 2026-08-30 เป็น Sales Psychology + AI Agent · เข้าใจคนก่อน แล้วค่อยฝึก AI เป็น Sales Coach จาก Company Context · Agent ไม่ใช่ production bot และไม่คุยกับลูกค้าแทนมนุษย์',
   },
   'ai-workshop-advance': {
     amount: 34900,

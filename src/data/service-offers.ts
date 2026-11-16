@@ -31,7 +31,7 @@ export const SERVICE_OFFERS: readonly ServiceOffer[] = [
   {
     code: 'T1',
     kind: 'training',
-    publicName: 'คลาสจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B',
+    publicName: 'Sales Psychology : ขายดีด้วยจิตวิทยาการขายแบบที่ปรึกษา',
     customerJob: 'เข้าใจเหตุผลซื้อและต่อรองเป็น',
     formatLabel: 'Training · 1 day',
     outcomeLabel: 'เข้าใจคน ปิดดีลเป็น และไม่รีบลดราคา',
@@ -39,7 +39,7 @@ export const SERVICE_OFFERS: readonly ServiceOffer[] = [
     bullets: ['แยกเหตุผลซื้อ Functional · Emotional · Social', 'ต่อรองและรับข้อโต้แย้งโดยรักษาคุณค่า', 'ซ้อมดีลกับ AI Agent จาก Company Context'],
     pricingKey: 'inhouse-a',
     thumbnailFile: 't1-sales-skill-ai.png',
-    imageAlt: 'คลาสจิตวิทยาการขายและ AI Agent สำหรับทีมขาย B2B',
+    imageAlt: 'คลาส Sales Psychology ขายดีด้วยจิตวิทยาการขายแบบที่ปรึกษา',
     detailHref: '/services/t1-sales-skills',
     primaryCtaLabel: 'ดูรายละเอียดคลาส',
     primaryCtaKind: 'detail',

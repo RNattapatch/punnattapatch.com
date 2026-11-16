@@ -12,7 +12,7 @@
 // เพื่อให้บอทตอบการ์ด + คำถามคัดทันที · แต่ละปุ่มติด data-cta-event ให้ ContactTracking ยิง fbq ชื่อตามปุ่ม
 
 export const COURSE_LABEL: Record<string, string> = {
-  T1: 'คลาสจิตวิทยาการขาย + AI Agent',
+  T1: 'Sales Psychology : ขายดีด้วยจิตวิทยาการขายแบบที่ปรึกษา',
   T2: 'คลาสเพิ่มยอดขายจากออนไลน์ด้วย Content + Ads + AI',
   T3: 'คลาสวางระบบหลังบ้านฝ่ายขาย',
   T4: 'คลาส Advance AI & Business Automation',

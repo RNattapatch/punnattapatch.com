@@ -432,9 +432,9 @@ function assertServicesSeoBuildOutput() {
 
 const expected = {
   T1: {
-    publicName: 'คลาสจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B',
+    publicName: 'Sales Psychology : ขายดีด้วยจิตวิทยาการขายแบบที่ปรึกษา',
     kind: 'training', pricingKey: 'inhouse-a', thumbnailFile: 't1-sales-skill-ai.png',
-    imageAlt: 'คลาสจิตวิทยาการขายและ AI Agent สำหรับทีมขาย B2B',
+    imageAlt: 'คลาส Sales Psychology ขายดีด้วยจิตวิทยาการขายแบบที่ปรึกษา',
     detailHref: '/services/t1-sales-skills', primaryCtaKind: 'detail', primaryCtaLabel: 'ดูรายละเอียดคลาส',
   },
   T2: {

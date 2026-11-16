@@ -214,7 +214,7 @@ export const T1_PRODUCT_DETAIL: ProductDetailPageData = {
     },
   },
   seo: {
-    title: 'คลาสจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B',
+    title: 'Sales Psychology : ขายดีด้วยจิตวิทยาการขายแบบที่ปรึกษา',
     description: 'เข้าใจเหตุผลซื้อ ถามและต่อรองได้ดีขึ้น ซ้อมดีลกับ AI Agent และ Follow-up โดยไม่รีบลดราคา',
   },
   sections: {

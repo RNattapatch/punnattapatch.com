@@ -41,8 +41,8 @@
   "packages": [
     {
       "key": "inhouse-a",
-      "name": "คลาสจิตวิทยาการขาย + AI Agent สำหรับทีมขาย B2B",
-      "name_en": "B2B Sales Psychology + AI Agent",
+      "name": "Sales Psychology : ขายดีด้วยจิตวิทยาการขายแบบที่ปรึกษา",
+      "name_en": "Sales Psychology: Consultative Selling",
       "kind": "inhouse",
       "duration": "1 วัน",
       "headline": "เข้าใจเหตุผลซื้อ · ถามและต่อรองได้ดีขึ้น · ซ้อมดีลกับ AI Agent · Follow-up โดยไม่รีบลดราคา",
