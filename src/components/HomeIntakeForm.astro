@@ -307,7 +307,9 @@ const painPointOptions = [
     const ctrl = new AbortController();
     const kill = setTimeout(() => ctrl.abort(), timeoutMs);
     try {
-      const flat = { ...payload, ...(payload._meta || {}), source_page: payload._meta?.path };
+      // fallback_reason switches on DB trigger trg_notify_fallback_lead → the only Telegram card when form-hook is down
+      // (define:vars script can't import — keep equal to FALLBACK_REASON in src/scripts/lead-fallback.ts)
+      const flat = { ...payload, ...(payload._meta || {}), source_page: payload._meta?.path, fallback_reason: 'form-hook-unreachable' };
       const res = await fetch(SUPABASE_FALLBACK_RPC, {
         method: 'POST',
         headers: {

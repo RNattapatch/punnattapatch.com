@@ -258,6 +258,8 @@ for (const [label, landing, hop] of [
     check(!!sb.headers.apikey, 'ส่ง apikey header');
     check((sb.headers.authorization || '').startsWith('Bearer '), 'ส่ง Bearer token');
     check(sb.body.payload?.name === 'ทดสอบ ระบบ', 'ข้อมูลใน fallback ครบ');
+    // without it DB trigger trg_notify_fallback_lead stays silent = lead lands with no Telegram card (fixed 2026-11-16)
+    check(sb.body.payload?.fallback_reason === 'form-hook-unreachable', 'ติดธง fallback_reason → trigger ส่งการ์ด Telegram');
   }
   await ctx.close();
 }

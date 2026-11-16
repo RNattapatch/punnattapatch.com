@@ -593,6 +593,7 @@ const budgets = [
    */
 
   import { foldAfterHours } from '../scripts/after-hours';
+  import { FALLBACK_REASON } from '../scripts/lead-fallback';
 
   interface IntakePayload {
     [key: string]: unknown;
@@ -670,7 +671,8 @@ const budgets = [
     const kill = setTimeout(() => ctrl.abort(), timeoutMs);
     try {
       // flatten _meta into the payload so submit_lead sees source_page/utm/etc.
-      const flat = { ...payload, ...(payload._meta || {}), source_page: payload._meta?.path };
+      // fallback_reason switches on DB trigger trg_notify_fallback_lead → the only Telegram card when form-hook is down
+      const flat = { ...payload, ...(payload._meta || {}), source_page: payload._meta?.path, fallback_reason: FALLBACK_REASON };
       const res = await fetch(SUPABASE_FALLBACK_RPC, {
         method: 'POST',
         headers: {
