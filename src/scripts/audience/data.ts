@@ -83,6 +83,7 @@ export interface CompanyCluster {
 export const ASSET_LABELS: Record<string, string> = {
   'bosi-quiz': '🧬 BOSI Quiz',
   'ebook-sales-interview': '📕 E-Book 67 คำถามสัมภาษณ์เซลล์',
+  'sales-team-kit': '🧰 ชุดเริ่มปั้นทีมขาย 8 ไฟล์',
 };
 export const assetLabel = (slug: string): string => ASSET_LABELS[slug] ?? `📦 ${slug}`;
 

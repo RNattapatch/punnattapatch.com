@@ -1,0 +1,509 @@
+---
+/**
+ * Lead magnet LP: ชุดเริ่มปั้นทีมขาย 8 ไฟล์ (JD · คำถามสัมภาษณ์ · สัญญา · ข้อบังคับ · ค่าคอม · On-boarding · ประเมินทดลองงาน · KPI)
+ * ไฟล์ต้นทาง + generator: claude-code repo → output/docs/sales-team-setup-kit/ (README มีแผนที่ไฟล์)
+ *
+ * ⚠️ ไม่พึ่ง Mac mini เลย: ฟอร์มเขียนตรงเข้า Supabase RPC submit_audience (ของฟรี = audience ไม่ใช่ lead)
+ * หน้าเว็บ + ไฟล์อยู่บน Cloudflare Pages · ฐานข้อมูลอยู่บน Supabase → เน็ตบ้านล่มก็ยังเก็บรายชื่อได้
+ * ฝั่งมินิ (/webhook/free-material) ทำแค่ submit_audience เหมือนกัน จึงไม่มีอะไรหายเมื่อไม่ผ่านมินิ
+ * ⚠️ ข้อความที่ลูกค้าเห็นในหน้านี้ห้ามมี จุดกลาง ขีดยาว หรือ bullet (กฎเขียนของคุณปัน)
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../data/site';
+import LineAskCta from '../../components/LineAskCta.astro';
+
+const title = 'ชุดเริ่มปั้นทีมขาย 8 ไฟล์ ฟรี โดยปัน ณัฐพัชร์';
+const description =
+  'JD เซลล์ 5 แบบ คำถามสัมภาษณ์ 67 ข้อ สัญญาจ้าง ข้อบังคับการทำงาน ไฟล์คำนวณค่าคอม แผน On-boarding 30 วัน ใบประเมินทดลองงาน และไฟล์ KPI ทีมขาย แก้ได้ทุกช่อง ดาวน์โหลดฟรี';
+
+const files = [
+  'JD พนักงานขาย 5 แบบ',
+  'คำถามสัมภาษณ์เซลล์ 67 ข้อ',
+  'สัญญาจ้างพนักงานขาย',
+  'ข้อบังคับเกี่ยวกับการทำงาน',
+  'ไฟล์คำนวณค่าคอมขั้นบันได',
+  'แผน On-boarding เซลล์ใหม่ 30 วัน',
+  'ใบประเมินทดลองงาน 30 60 90 วัน',
+  'ไฟล์ KPI ทีมขาย',
+];
+
+const phases = [
+  {
+    when: 'ก่อนรับสมัคร',
+    items: [
+      {
+        name: 'JD พนักงานขาย 5 แบบ',
+        kind: 'Word',
+        text: 'เซลล์โชว์รูม เซลล์ภาคสนาม เซลล์ตอบแชท เซลล์โทรนัดหมาย และหัวหน้าทีมขาย แต่ละแบบมีหน้าที่ สัดส่วนเวลา ตัวชี้วัด และข้อความประกาศรับสมัครที่เอาไปลงได้เลย',
+      },
+      {
+        name: 'คำถามสัมภาษณ์เซลล์ 67 ข้อ',
+        kind: 'E-Book',
+        text: 'ทุกข้อมีเหตุผลกำกับว่ากำลังวัดอะไร เจ้าของจะฟังออกว่าคำตอบไหนมาจากสิ่งที่ผู้สมัครเคยทำจริง',
+      },
+    ],
+  },
+  {
+    when: 'วันเซ็นสัญญา',
+    items: [
+      {
+        name: 'สัญญาจ้างพนักงานขาย',
+        kind: 'Word',
+        text: 'สัญญาเขียนเรื่องที่สัญญาทั่วไปไม่มี เช่น ข้อมูลลูกค้าเป็นของบริษัท เซลล์ห้ามรับเงินลูกค้าเข้าบัญชีส่วนตัว และต้องส่งคืน LINE ที่ใช้คุยกับลูกค้าตอนลาออก',
+      },
+      {
+        name: 'ข้อบังคับเกี่ยวกับการทำงาน',
+        kind: 'Word',
+        text: 'บริษัทที่มีลูกจ้างตั้งแต่ 10 คนขึ้นไปต้องมีตามกฎหมาย ฉบับนี้ยาว 47 หน้า เจ้าของกรอกชื่อบริษัทแล้วประกาศใช้ได้',
+      },
+      {
+        name: 'ไฟล์คำนวณค่าคอมขั้นบันได',
+        kind: 'Excel และ Google Sheets',
+        text: 'เจ้าของเลือกวิธีคิดได้ 3 แบบ กรอกยอดขายครั้งเดียวแล้วเห็นค่าคอมของทุกคน พร้อมเห็นว่าแต่ละคนขาดอีกเท่าไหร่ถึงขั้นถัดไป',
+      },
+    ],
+  },
+  {
+    when: '30 วันแรก',
+    items: [
+      {
+        name: 'แผน On-boarding เซลล์ใหม่ 30 วัน',
+        kind: 'Word',
+        text: 'แผนนี้มีตารางรายวันของสัปดาห์แรก สถานการณ์ที่ต้องซ้อม 6 แบบ และรายการ 10 ข้อที่เซลล์ต้องผ่านก่อนได้ดูแลลูกค้าคนเดียว',
+      },
+    ],
+  },
+  {
+    when: 'ครบ 30 60 และ 90 วัน',
+    items: [
+      {
+        name: 'ใบประเมินทดลองงาน 30 60 90 วัน',
+        kind: 'Word',
+        text: 'รอบแรกหัวหน้าดูวินัย รอบสองดูคุณภาพของลูกค้าและดีล แล้วรอบสามถึงตัดสินจากยอดจริง ทุกรอบให้เซลล์เซ็นรับทราบ',
+      },
+    ],
+  },
+  {
+    when: 'ทุกเดือน',
+    items: [
+      {
+        name: 'ไฟล์ KPI ทีมขาย',
+        kind: 'Excel และ Google Sheets',
+        text: 'ไฟล์นี้วัดทั้งผลงานขายและกิจกรรมการขาย โดยแยกตามแบบเซลล์ เซลล์ตอบแชทจึงไม่โดนหักคะแนนเพราะไม่ได้ออกไปเยี่ยมลูกค้า',
+      },
+    ],
+  },
+];
+
+const differences = [
+  {
+    head: 'ประเมินทดลองงาน 3 รอบ ไม่ไล่คนเก่งออกวันสุดท้าย',
+    body: 'เจ้าของส่วนใหญ่รอประเมินทีเดียวตอนครบ 90 วัน คนเก่งเลยไม่เคยรู้ว่าต้องปรับอะไร ใบประเมินในชุดนี้จึงแบ่งเป็น 3 รอบ และแต่ละรอบดูคนละเรื่องครับ',
+  },
+  {
+    head: 'แก้ค่ามาตรฐานช่องเดียว ขั้นบันไดขยับตามทั้งหมด',
+    body: 'ไฟล์ KPI ตั้งยอดขายไว้เดือนละ 1,000,000 บาทเป็นค่ากลาง พอเจ้าของแก้เป็นตัวเลขของบริษัท ขั้น 70% 120% และ 150% ก็คิดใหม่ให้ทันที',
+  },
+  {
+    head: 'สัญญาเขียนให้ตรงกับกฎหมายแรงงาน',
+    body: 'สัญญาจ้างหลายฉบับยังเขียนว่าเลิกจ้างช่วงทดลองงานได้ทันทีโดยไม่ต้องบอกกล่าว แต่กฎหมายให้บอกล่วงหน้า 1 รอบการจ่ายค่าจ้าง สัญญาในชุดนี้เขียนให้ถูก และวางวันประเมินให้จบก่อนวันที่ 120',
+  },
+];
+
+const faqs = [
+  {
+    q: 'ฟรีจริงไหม',
+    a: 'ฟรีจริงครับ คุณกรอกชื่อกับช่องทางติดต่อแล้วดาวน์โหลดได้ทันทีในหน้าถัดไป ไม่ต้องรออีเมล และผมไม่โทรตื๊อ',
+  },
+  {
+    q: 'ใช้กับ Google Sheets ได้ไหม',
+    a: 'ได้ครับ ไฟล์ค่าคอมกับไฟล์ KPI มีฉบับ Google Sheets แยกไว้ให้ คุณอัปโหลดเข้า Google Drive แล้วเปิดด้วย Google Sheets ได้เลย',
+  },
+  {
+    q: 'สัญญากับข้อบังคับเอาไปใช้ได้เลยไหม',
+    a: 'คุณใช้เป็นแบบตั้งต้นได้เลยครับ แต่แต่ละธุรกิจมีเงื่อนไขไม่เหมือนกัน ก่อนให้พนักงานเซ็นหรือประกาศใช้ ให้ HR หรือทนายของบริษัทตรวจอีกรอบ',
+  },
+  {
+    q: 'บริษัทมีเซลล์คนเดียวใช้ได้ไหม',
+    a: 'ได้ครับ บริษัทที่เพิ่งรับเซลล์คนแรกได้ประโยชน์มากที่สุด เพราะวางระบบตั้งแต่คนแรกง่ายกว่ามาแก้ตอนทีมใหญ่แล้ว',
+  },
+  {
+    q: 'ข้อมูลที่กรอกเอาไปทำอะไร',
+    a: 'ผมเก็บไว้ในระบบของผมเองเพื่อส่งเนื้อหาที่เกี่ยวข้อง และติดต่อกลับเฉพาะเมื่อคุณขอ ผมไม่ขายต่อ และคุณแจ้งลบได้ตลอดเวลา รายละเอียดอยู่ในหน้านโยบายความเป็นส่วนตัว',
+  },
+  {
+    q: 'อยากให้ช่วยปรับให้ตรงกับธุรกิจ ทำยังไง',
+    a: 'ทักมาเล่าโจทย์ใน LINE ได้เลยครับ บอกว่าทีมขายตอนนี้มีกี่คน ขายอะไร และติดตรงไหน แล้วผมจะบอกตรงๆ ว่าควรเริ่มจากไฟล์ไหนก่อน',
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  hideFloatingLine={true}
+  schema={{
+    types: ['WebPage', 'FAQPage', 'BreadcrumbList'],
+    title,
+    description,
+    breadcrumbs: [
+      { name: 'หน้าแรก', url: SITE.url },
+      { name: 'ชุดเริ่มปั้นทีมขาย', url: `${SITE.url}/sales-team-kit` },
+    ],
+    faq: faqs.map((f) => ({ question: f.q, answer: f.a })),
+  }}
+>
+  {/* HERO: เปิดด้วยสิ่งที่เจ้าของเจอเอง (คำพูดคุณปันจากคลิป EP7) ไม่เปิดด้วยชื่อของ */}
+  <section class="border-b border-base-content/10 px-4 pb-14 pt-10 md:pt-16 lg:px-8">
+    <div class="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-[1.1fr_.9fr]">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest text-secondary">ของฟรี 8 ไฟล์ แก้ได้ทุกช่อง</p>
+        <h1 class="mt-4 font-display text-4xl font-black leading-[1.12] tracking-tight text-balance md:text-5xl">
+          ก่อนรับเซลล์คนต่อไป<br />
+          <span class="text-secondary">เตรียมของให้เขา<span class="whitespace-nowrap">ครบ 8 อย่าง</span></span>
+        </h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-base-content/80">
+          เซลล์ใหม่ที่ไม่มีใครเตรียมตัวให้ พอไปเจอลูกค้าก็ตอบอะไรไม่ได้ กลับมาก็ท้อ
+          บางคนอยู่ไม่ถึง 3 วันก็ลาออกครับ
+        </p>
+        <p class="mt-4 max-w-xl text-lg leading-relaxed text-base-content/80">
+          ชุดนี้รวมเอกสารที่ผมใช้วางทีมขายให้ลูกค้าจริง ผมตัดชื่อกับตัวเลขของลูกค้าออกแล้ว
+          เจ้าของเปิดแก้ใช้กับบริษัทตัวเองได้ทันที
+        </p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <a
+            href="#form"
+            class="btn btn-lg border-none bg-secondary text-secondary-content hover:bg-secondary/90"
+          >
+            รับชุดนี้ฟรี
+          </a>
+          <p class="text-sm text-base-content/60">ไฟล์ Word และ Excel มีฉบับ Google Sheets ให้ด้วย</p>
+        </div>
+      </div>
+
+      <ol class="rounded-3xl border border-base-content/10 bg-base-100 p-6 shadow-sm md:p-8" aria-label="ไฟล์ในชุด">
+        {
+          files.map((f, i) => (
+            <li class="flex items-center gap-4 border-b border-base-content/10 py-3 last:border-none">
+              <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-secondary/10 font-display font-black text-secondary tabular-nums">
+                {i + 1}
+              </span>
+              <span class="font-bold leading-snug">{f}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  {/* ใช้ตามลำดับ: จัดของตามช่วงชีวิตของเซลล์ เจ้าของจะรู้ว่าเปิดไฟล์ไหนก่อน */}
+  <section class="px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-5xl">
+      <h2 class="font-display text-3xl font-black leading-tight md:text-4xl">ใช้ตามลำดับนี้</h2>
+      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-base-content/75">
+        ไฟล์ทั้ง 8 ตัวเรียงตามช่วงที่เจ้าของต้องใช้ ตั้งแต่ก่อนรับสมัครจนเซลล์ผ่านทดลองงาน
+      </p>
+      <div class="mt-10 space-y-10">
+        {
+          phases.map((ph, i) => (
+            <div class="grid gap-4 md:grid-cols-[200px_1fr]">
+              <div>
+                <p class="font-display text-sm font-bold text-secondary tabular-nums">ช่วงที่ {i + 1}</p>
+                <p class="mt-1 font-display text-xl font-black leading-tight">{ph.when}</p>
+              </div>
+              <div class="grid gap-4 sm:grid-cols-2">
+                {ph.items.map((it) => (
+                  <div class="rounded-2xl border border-base-content/10 bg-base-100 p-6">
+                    <p class="text-xs font-bold uppercase tracking-wider text-base-content/50">{it.kind}</p>
+                    <p class="mt-2 font-display text-lg font-bold leading-snug">{it.name}</p>
+                    <p class="mt-2 leading-[1.85] text-base-content/75">{it.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* 3 เรื่องที่ต่าง: หลักฐานว่าไม่ใช่เทมเพลตที่หาได้ทั่วไป */}
+  <section class="bg-base-200/40 px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-5xl">
+      <h2 class="font-display text-3xl font-black leading-tight md:text-4xl">3 เรื่องที่เทมเพลตทั่วไปไม่มี</h2>
+      <div class="mt-8 grid gap-5 md:grid-cols-3">
+        {
+          differences.map((d) => (
+            <div class="rounded-2xl border border-base-content/10 bg-base-100 p-6">
+              <p class="font-display text-lg font-bold leading-snug">{d.head}</p>
+              <p class="mt-3 leading-[1.85] text-base-content/75">{d.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* ใครทำ: outcome ก่อน หลักฐานวง 2 แล้วค่อย FutureSkill (กฎ moat ห้ามยืนเดี่ยว) */}
+  <section class="px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="font-display text-3xl font-black leading-tight md:text-4xl">ใครทำชุดนี้</h2>
+      <p class="mt-5 text-lg leading-[1.9] text-base-content/85">
+        ผม ปัน ณัฐพัชร์ ผมช่วยเจ้าของธุรกิจปั้นทีมขาย × AI ตั้งแต่คัดคน วางเป้าและค่าคอม
+        ไปจนถึงให้ AI รับงานซ้ำของทีม ก่อนหน้านี้ผมสัมภาษณ์ผู้สมัครมาแล้วกว่า 1,000 คน
+        และปีนี้ผมเป็นผู้สอน FutureSkill ปี 2026 ด้วยครับ
+      </p>
+      <LineAskCta variant="card" class="mt-8" />
+    </div>
+  </section>
+
+  <section class="px-4 pb-16 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="font-display text-3xl font-black leading-tight md:text-4xl">คำถามที่มักถูกถาม</h2>
+      <div class="mt-8 space-y-3">
+        {
+          faqs.map((f, i) => (
+            <details class="group rounded-2xl border border-base-content/10 bg-base-100 p-5" open={i === 0}>
+              <summary class="cursor-pointer list-none font-display text-lg font-bold marker:content-none">
+                <span class="flex items-start justify-between gap-4">
+                  {f.q}
+                  <span
+                    class="mt-1 shrink-0 text-secondary transition-transform duration-200 group-open:rotate-45"
+                    aria-hidden="true"
+                  >
+                    +
+                  </span>
+                </span>
+              </summary>
+              <p class="mt-3 leading-[1.9] text-base-content/80">
+                {f.a}
+                {f.q.includes('ข้อมูลที่กรอก') && (
+                  <a class="link ml-1 text-secondary" href="/privacy">
+                    อ่านนโยบาย
+                  </a>
+                )}
+              </p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* FORM: ท้ายสุดหลัง FAQ เหมือนหน้า e-book · ส่งแล้วไปหน้าดาวน์โหลดเสมอ แม้บันทึกไม่สำเร็จ */}
+  <section id="form" class="scroll-mt-8 bg-base-200/40 px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-xl">
+      <p class="text-xs font-bold uppercase tracking-widest text-secondary">ขั้นตอนสุดท้าย</p>
+      <h2 class="mt-3 font-display text-3xl font-black leading-tight md:text-4xl">กรอกเพื่อดาวน์โหลดทั้งชุด</h2>
+      <p class="mt-4 leading-relaxed text-base-content/75">กดส่งแล้วดาวน์โหลดได้ทันทีในหน้าถัดไป ไม่ต้องรออีเมล</p>
+
+      <form id="kit-form" class="mt-8 space-y-5" novalidate>
+        <div>
+          <label class="block text-sm font-bold" for="kt-name">ชื่อ นามสกุล <span class="text-secondary">*</span></label>
+          <input
+            id="kt-name"
+            name="name"
+            type="text"
+            required
+            autocomplete="name"
+            enterkeyhint="next"
+            class="input mt-2 w-full border-base-content/20 bg-base-100"
+            placeholder="ชื่อที่ให้ผมเรียก"
+          />
+          <p id="kt-name-err" class="mt-1 hidden text-sm text-secondary">กรอกชื่อด้วยครับ</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold" for="kt-contact">
+            เบอร์โทร LINE ID หรืออีเมล <span class="text-secondary">*</span>
+          </label>
+          <input
+            id="kt-contact"
+            name="contact"
+            type="text"
+            required
+            enterkeyhint="next"
+            class="input mt-2 w-full border-base-content/20 bg-base-100"
+            placeholder="ช่องทางที่สะดวกให้ติดต่อกลับ"
+          />
+          <p id="kt-contact-err" class="mt-1 hidden text-sm text-secondary">ใส่ช่องทางติดต่ออย่างน้อยหนึ่งอย่างครับ</p>
+        </div>
+
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label class="block text-sm font-bold" for="kt-company">ชื่อบริษัท</label>
+            <input
+              id="kt-company"
+              name="company"
+              type="text"
+              autocomplete="organization"
+              class="input mt-2 w-full border-base-content/20 bg-base-100"
+              placeholder="ไม่บังคับ"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-bold" for="kt-team">ทีมขายตอนนี้มีกี่คน</label>
+            <select id="kt-team" name="team_size" class="select mt-2 w-full border-base-content/20 bg-base-100">
+              <option value="">ไม่บังคับ</option>
+              <option>ยังไม่มีเซลล์</option>
+              <option>1 ถึง 4 คน</option>
+              <option>5 ถึง 20 คน</option>
+              <option>มากกว่า 20 คน</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold" for="kt-problem">ตอนนี้เจอปัญหาอะไรกับทีมขาย</label>
+          <textarea
+            id="kt-problem"
+            name="problem"
+            rows="3"
+            class="textarea mt-2 w-full border-base-content/20 bg-base-100"
+            placeholder="ไม่บังคับ แต่ถ้าเขียนมา ผมอ่านเองทุกข้อความ"></textarea>
+        </div>
+
+        <label class="flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-base-content/75">
+          <input id="kt-consent" name="consent" type="checkbox" class="checkbox checkbox-sm mt-0.5" />
+          <span id="kt-consent-text">ยินดีให้ปันส่งเนื้อหาเรื่องปั้นทีมขาย และติดต่อกลับทาง LINE หรือโทรศัพท์</span>
+        </label>
+
+        <button
+          type="submit"
+          id="kt-submit"
+          class="btn btn-lg w-full border-none bg-secondary text-secondary-content hover:bg-secondary/90"
+        >
+          ดาวน์โหลดชุดเริ่มปั้นทีมขาย
+        </button>
+
+        <p class="text-center text-sm text-base-content/60">
+          ฟรี ไม่มีค่าใช้จ่าย ข้อมูลใช้ติดต่อกลับเท่านั้น ไม่ขายต่อ
+          <a class="link ml-1" href="/privacy">นโยบายความเป็นส่วนตัว</a>
+        </p>
+      </form>
+
+      <div class="mt-8 flex items-center gap-4 text-sm text-base-content/45">
+        <span class="h-px flex-1 bg-base-content/15"></span>ยังไม่อยากกรอก<span class="h-px flex-1 bg-base-content/15"
+        ></span>
+      </div>
+      <LineAskCta
+        class="mt-6 items-center"
+        label="ทักไลน์มาเล่าโจทย์ทีมขาย"
+        note="ถามได้ว่าธุรกิจคุณควรเริ่มจากไฟล์ไหน ผมตอบเอง"
+      />
+    </div>
+  </section>
+
+  <div
+    id="sticky-cta"
+    class="fixed inset-x-0 bottom-0 z-30 border-t border-base-content/10 bg-base-100/95 px-4 py-3 backdrop-blur transition-transform duration-200 md:hidden"
+    style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom))"
+  >
+    <a href="#form" class="btn w-full border-none bg-secondary text-secondary-content hover:bg-secondary/90">
+      รับชุดนี้ฟรี
+    </a>
+  </div>
+</BaseLayout>
+
+<script>
+  import { submitAudience, makeReference } from '../../scripts/lead-fallback';
+
+  const ASSET_SLUG = 'sales-team-kit';
+  const form = document.getElementById('kit-form') as HTMLFormElement | null;
+  const submitBtn = document.getElementById('kt-submit') as HTMLButtonElement | null;
+  const val = (id: string): string =>
+    ((document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null)?.value ?? '').trim();
+
+  function fieldError(id: string, errId: string, bad: boolean): void {
+    const input = document.getElementById(id);
+    const err = document.getElementById(errId);
+    if (!input || !err) return;
+    err.classList.toggle('hidden', !bad);
+    input.setAttribute('aria-invalid', bad ? 'true' : 'false');
+    if (bad) input.setAttribute('aria-describedby', errId);
+    else input.removeAttribute('aria-describedby');
+  }
+  for (const [id, errId] of [
+    ['kt-name', 'kt-name-err'],
+    ['kt-contact', 'kt-contact-err'],
+  ]) {
+    document.getElementById(id)?.addEventListener('input', (ev) => {
+      if ((ev.target as HTMLInputElement).value.trim()) fieldError(id, errId, false);
+    });
+  }
+
+  /** submit_audience แยก phone/email/line เองไม่ได้จากช่องเดียว → แยกให้ก่อนส่ง (เบอร์ใช้เป็นกุญแจกันซ้ำ) */
+  function splitContact(c: string): Record<string, string> {
+    if (c.includes('@') && /\S+@\S+\.\S+/.test(c)) return { email: c };
+    if (/^[+0-9][0-9\s-]{7,}$/.test(c)) return { phone: c };
+    return { line: c.replace(/^@/, '') };
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = val('kt-name');
+    const contact = val('kt-contact');
+    fieldError('kt-name', 'kt-name-err', !name);
+    fieldError('kt-contact', 'kt-contact-err', !contact);
+    if (!name) return document.getElementById('kt-name')?.focus();
+    if (!contact) return document.getElementById('kt-contact')?.focus();
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังเตรียมไฟล์…';
+    }
+
+    const params = new URLSearchParams(location.search);
+    const reference = makeReference('KIT');
+    const consent = (document.getElementById('kt-consent') as HTMLInputElement | null)?.checked ?? false;
+    const payload: Record<string, unknown> = {
+      lead_kind: 'audience',
+      asset_slug: ASSET_SLUG,
+      source_page: 'sales-team-kit',
+      name,
+      contact,
+      ...splitContact(contact),
+      company: val('kt-company'),
+      team_size: val('kt-team'),
+      own_words: val('kt-problem'),
+      // ส่งเฉพาะตอนติ๊ก: consent=false จะไปทับ consent=true เดิมของคนที่เคยยินยอมไว้
+      ...(consent ? { consent: true, consent_text: document.getElementById('kt-consent-text')?.textContent ?? '' } : {}),
+      referrer: document.referrer || '',
+      // submit_audience อ่าน utm จากชั้นบนสุด (ไม่ใช่ใน _meta)
+      utm_source: params.get('utm_source') || '',
+      utm_medium: params.get('utm_medium') || '',
+      utm_campaign: params.get('utm_campaign') || '',
+      utm_content: params.get('utm_content') || '',
+      utm_term: params.get('utm_term') || '',
+      _meta: {
+        reference,
+        submitted_at: new Date().toISOString(),
+        path: location.pathname,
+        fbclid: params.get('fbclid') || '',
+        user_agent: navigator.userAgent,
+      },
+    };
+
+    // ท่อเดียวคือ Supabase ตรง (ไม่ผ่านมินิ) · พลาดครั้งแรกลองซ้ำอีกครั้ง
+    let saved = await submitAudience(payload);
+    if (!saved) saved = await submitAudience(payload);
+    if (!saved) console.error('[kit-form] submit_audience failed twice', reference);
+
+    if (typeof (window as unknown as { fbq?: unknown }).fbq === 'function') {
+      (window as unknown as { fbq: (...a: unknown[]) => void }).fbq('trackCustom', 'FreeKitDownload', {
+        content_name: ASSET_SLUG,
+      });
+    }
+
+    // ดาวน์โหลดคือสัญญาที่ให้ไว้ ต้องได้ของแม้บันทึกไม่สำเร็จ
+    location.href = `/sales-team-kit/thank-you?ref=${encodeURIComponent(reference)}`;
+  });
+
+  const bar = document.getElementById('sticky-cta');
+  const formSection = document.getElementById('form');
+  if (bar && formSection && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => bar.classList.toggle('translate-y-full', entry.isIntersecting), {
+      threshold: 0.1,
+    }).observe(formSection);
+  }
+</script>

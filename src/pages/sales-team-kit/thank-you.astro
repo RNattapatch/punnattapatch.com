@@ -1,0 +1,147 @@
+---
+/**
+ * หน้ารับของ: เปิดหลังกรอกฟอร์มที่ /sales-team-kit
+ * สัญญาคือ "กรอกแล้วได้ของทันที" → ปุ่มดาวน์โหลดทั้งชุดต้องมาก่อนทุกอย่าง
+ * ไฟล์อยู่ใน public/downloads/sales-team-kit/ (static บน Cloudflare Pages ไม่พึ่งมินิ)
+ * ปุ่มไฟล์เดี่ยวโผล่เฉพาะไฟล์ที่มีอยู่จริงตอน build กันลิงก์เสีย
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LineAskCta from '../../components/LineAskCta.astro';
+
+const DIR = '/downloads/sales-team-kit';
+const exists = (url: string) => fs.existsSync(path.join(process.cwd(), 'public', url.replace(/^\//, '')));
+
+const groups = [
+  {
+    when: 'ก่อนรับสมัคร',
+    files: [
+      { name: 'JD พนักงานขาย 5 แบบ', file: '01-jd-sales-5-roles.docx', kind: 'Word' },
+      { name: 'คำถามสัมภาษณ์เซลล์ 67 ข้อ', href: '/downloads/ebook-stop-hiring-wrong-sales.html', kind: 'เปิดอ่าน' },
+    ],
+  },
+  {
+    when: 'วันเซ็นสัญญา',
+    files: [
+      { name: 'สัญญาจ้างพนักงานขาย', file: '02-sales-employment-contract.docx', kind: 'Word' },
+      { name: 'ข้อบังคับเกี่ยวกับการทำงาน', file: '03-work-rules-template.docx', kind: 'Word' },
+      { name: 'ไฟล์คำนวณค่าคอมขั้นบันได', file: '04-commission-ladder.xlsx', kind: 'Excel', sheets: '04-commission-ladder-google-sheets.xlsx' },
+    ],
+  },
+  {
+    when: '30 วันแรก',
+    files: [{ name: 'แผน On-boarding เซลล์ใหม่ 30 วัน', file: '05-onboarding-30-days.docx', kind: 'Word' }],
+  },
+  {
+    when: 'ครบ 30 60 และ 90 วัน',
+    files: [{ name: 'ใบประเมินทดลองงาน 30 60 90 วัน', file: '06-probation-review-30-60-90.docx', kind: 'Word' }],
+  },
+  {
+    when: 'ทุกเดือน',
+    files: [{ name: 'ไฟล์ KPI ทีมขาย', file: '07-sales-kpi-scorecard.xlsx', kind: 'Excel', sheets: '07-sales-kpi-scorecard-google-sheets.xlsx' }],
+  },
+].map((g) => ({
+  ...g,
+  files: g.files.filter((f) => ('href' in f && f.href) || exists(`${DIR}/${f.file}`)),
+}));
+
+const ZIP = `${DIR}/sales-team-setup-kit.zip`;
+const title = 'ชุดเริ่มปั้นทีมขายพร้อมดาวน์โหลดแล้ว';
+const description = 'ดาวน์โหลดไฟล์ทั้ง 8 ตัวได้ทันที';
+---
+
+<BaseLayout title={title} description={description} noindex={true} hideFloatingLine={true}>
+  <section class="px-4 py-16 lg:px-8">
+    <div class="mx-auto max-w-2xl">
+      <div
+        class="mx-auto flex size-16 items-center justify-center rounded-full bg-secondary text-3xl text-secondary-content"
+        aria-hidden="true"
+      >
+        ✓
+      </div>
+      <h1 class="mt-6 text-center font-display text-3xl font-black leading-tight md:text-4xl">ชุดเริ่มปั้นทีมขายพร้อมแล้ว</h1>
+      <p class="mt-4 text-center text-lg leading-relaxed text-base-content/80">
+        ไฟล์ทั้งหมดแก้ได้ทุกช่อง ใส่ชื่อบริษัทแล้วใช้ได้เลยครับ
+      </p>
+
+      <div class="mt-8 flex flex-col items-center gap-3">
+        {
+          exists(ZIP) && (
+            <a
+              href={ZIP}
+              download="ชุดเริ่มปั้นทีมขาย.zip"
+              class="btn btn-lg border-none bg-secondary text-secondary-content hover:bg-secondary/90"
+            >
+              ดาวน์โหลดทั้งชุด (ZIP)
+            </a>
+          )
+        }
+        <p class="text-center text-sm text-base-content/60">หรือเลือกโหลดทีละไฟล์ตามช่วงที่ใช้ด้านล่าง</p>
+      </div>
+
+      <p id="ref-line" class="mt-4 hidden text-center text-sm text-base-content/50">
+        รหัสอ้างอิง <span id="ref-code" class="font-mono"></span>
+      </p>
+
+      <div class="mt-12 space-y-8">
+        {
+          groups.map((g) => (
+            <div>
+              <p class="font-display text-sm font-bold text-secondary">{g.when}</p>
+              <ul class="mt-3 space-y-3">
+                {g.files.map((f) => (
+                  <li class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-base-content/10 bg-base-100 p-4">
+                    <span class="font-bold leading-snug">{f.name}</span>
+                    <span class="flex flex-wrap gap-2">
+                      {'href' in f && f.href ? (
+                        <a href={f.href} target="_blank" rel="noopener" class="btn btn-sm btn-outline">
+                          {f.kind}
+                        </a>
+                      ) : (
+                        <a href={`${DIR}/${f.file}`} download={`${f.name}.${f.file.split('.').pop()}`} class="btn btn-sm btn-outline">
+                          {f.kind}
+                        </a>
+                      )}
+                      {'sheets' in f && f.sheets && (
+                        <a href={`${DIR}/${f.sheets}`} download={`${f.name} (Google Sheets).xlsx`} class="btn btn-sm btn-ghost">
+                          Google Sheets
+                        </a>
+                      )}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="mt-14 border-t border-base-content/10 pt-10">
+        <h2 class="font-display text-2xl font-black leading-tight">เริ่มจากไฟล์ไหนดี</h2>
+        <p class="mt-3 leading-relaxed text-base-content/75">
+          ถ้าคุณกำลังจะรับเซลล์เดือนนี้ ให้เริ่มจาก JD กับคำถามสัมภาษณ์ก่อน แต่ถ้ามีเซลล์อยู่แล้ว
+          ให้เริ่มจากไฟล์ KPI กับไฟล์ค่าคอม เพราะเซลล์จะรู้ทันทีว่าถูกวัดด้วยอะไรและทำยอดเท่าไหร่ได้เท่าไหร่ครับ
+        </p>
+        <LineAskCta
+          variant="card"
+          class="mt-6"
+          label="ทักไลน์มาเล่าโจทย์ทีมขาย"
+          note="บอกว่าทีมมีกี่คน ขายอะไร และติดตรงไหน ผมจะบอกตรงๆ ว่าควรเริ่มจากอะไรก่อน"
+        />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const ref = new URLSearchParams(location.search).get('ref');
+  if (ref) {
+    const code = document.getElementById('ref-code');
+    const line = document.getElementById('ref-line');
+    if (code && line) {
+      code.textContent = ref;
+      line.classList.remove('hidden');
+    }
+  }
+</script>

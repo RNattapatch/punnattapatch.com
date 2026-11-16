@@ -70,3 +70,12 @@ export function submitAudienceFallback(
 ): Promise<boolean> {
   return callRpc('submit_audience', { ...payload, fallback_reason: FALLBACK_REASON }, timeoutMs);
 }
+
+/**
+ * ของฟรีที่ไม่ต้องใช้มินิเลย — เขียนตรงเข้า submit_audience เป็นท่อหลัก
+ * (ฝั่งมินิทำแค่ submit_audience เหมือนกัน ไม่มี Telegram/CAPI สำหรับของฟรี จึงไม่มีอะไรหาย)
+ * เน็ตบ้านล่ม มินิดับ หน้านี้ยังเก็บรายชื่อได้ เพราะทั้งหน้าเว็บและฐานข้อมูลอยู่บนคลาวด์
+ */
+export function submitAudience(payload: Record<string, unknown>, timeoutMs = 8000): Promise<boolean> {
+  return callRpc('submit_audience', payload, timeoutMs);
+}
