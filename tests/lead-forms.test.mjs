@@ -1,9 +1,9 @@
 /**
  * Lead pipeline regression test — ฟอร์มที่ live จริงเท่านั้น
  *
- * ทำไมต้องมี: ฟอร์มพวกนี้คือท่อรับ lead เข้า n8n (+ Supabase fallback ใน /intake-form)
+ * ทำไมต้องมี: ฟอร์มพวกนี้คือท่อรับ lead เข้า form-hook (+ Supabase fallback)
  * ถ้า payload เพี้ยนแม้แต่ key เดียว lead จะหายเงียบโดยไม่มีใครรู้ทั้งสองฝั่ง
- * รันทุกครั้งที่แตะ booking.astro / intake-form.astro / after-hours.ts
+ * รันทุกครั้งที่แตะ booking.astro / thank-you.astro / after-hours.ts / lead-fallback.ts
  *
  * ⚠️ ทุก request ถูก intercept — ไม่มีอะไรวิ่งไป n8n/Supabase production จริง
  * (ยืนยันด้วย assertion "ไม่มี request หลุดออกนอกเครื่อง" ท้ายไฟล์)
@@ -261,39 +261,32 @@ for (const [label, landing, hop] of [
   await ctx.close();
 }
 
-// ═══════════════════════════════════════════ /intake-form — มี Supabase fallback
+// ═════════ /intake-form เดิม → /booking (2026-11-17) · ?source= ต้องไปถึง lead · หน้าขอบคุณพูดตามทางเริ่ม ═════════
 {
-  console.log('\n[3] /intake-form — n8n ล่ม → Supabase fallback รับช่วง');
+  console.log('\n[3] /booking?source= (ลิงก์เดิมของ /intake-form) + /thank-you ตามทางเริ่ม');
+  const { readFileSync, existsSync } = await import('node:fs');
+  const redirects = readFileSync(new URL('../public/_redirects', import.meta.url), 'utf8');
+  check(/^\/intake-form \/booking 301$/m.test(redirects) && /^\/intake-form\/ \/booking 301$/m.test(redirects), '_redirects ส่ง /intake-form (ทั้งมีและไม่มี /) ไป /booking แบบ 301');
+  check(!existsSync(new URL('../src/pages/intake-form.astro', import.meta.url)), 'ลบหน้า intake-form แล้ว (ไม่งั้น CF เสิร์ฟหน้าเก่าแทน redirect)');
+
   const ctx = await browser.newContext();
   await sealContext(ctx);
   const page = await ctx.newPage();
-  let sb = null;
-  await page.route(N8N, (r) => r.fulfill({ status: 500, body: 'boom' }));
-  await page.route(SUPABASE, async (r) => {
-    sb = { body: JSON.parse(r.request().postData() || '{}'), headers: r.request().headers() };
-    await r.fulfill({ status: 200, body: '{"ok":true}' });
-  });
-
-  await page.goto(`${BASE}/intake-form`, { waitUntil: 'domcontentloaded' });
-  const invalid3 = await fillAllRequired(page, 'form', {
-    name: 'ทดสอบ ระบบ', email: 'test@example.com', phone: '0812345678', company: 'บจก. ทดสอบ',
-  });
-  check(invalid3.length === 0, `กรอก required ครบทุกช่อง${invalid3.length ? ` (ค้าง: ${invalid3})` : ''}`);
-  await page.click('button[type="submit"]');
-  await page.waitForTimeout(2000);
-
-  check(sb !== null, 'fallback ยิงไป Supabase RPC submit_lead');
-  if (sb) {
-    check(!!sb.body.payload, 'ห่อด้วย { payload: … } ตามที่ RPC ต้องการ');
-    check(!!sb.headers.apikey, 'ส่ง apikey header');
-    check((sb.headers.authorization || '').startsWith('Bearer '), 'ส่ง Bearer token');
-    check(sb.body.payload?.name === 'ทดสอบ ระบบ', 'ข้อมูลใน fallback ครบ');
-    // without it DB trigger trg_notify_fallback_lead stays silent = lead lands with no Telegram card (fixed 2026-11-16)
-    check(sb.body.payload?.fallback_reason === 'form-hook-unreachable', 'ติดธง fallback_reason → trigger ส่งการ์ด Telegram');
-  }
+  let sent = null;
+  await page.route(N8N, async (r) => { sent = JSON.parse(r.request().postData() || '{}'); await r.fulfill({ status: 200, body: '{"ok":true}' }); });
+  await page.goto(`${BASE}/booking?source=kit-thankyou`, { waitUntil: 'domcontentloaded' });
+  await walkBooking(page, { track: 'solo', size: '', timeline: 1 });
+  await fillAllRequired(page, '#booking-form', { name: 'ทดสอบ ระบบ', phone: '0812345678', company: 'บจก. ทดสอบ' });
+  await page.click('#booking-submit');
+  await page.waitForURL(/\/thank-you/, { timeout: 8000 }).catch(() => {});
+  check(sent?.entry_source === 'kit-thankyou' && /ที่มา: kit-thankyou/.test(sent?.comment || ''), `ที่มาจากลิงก์ภายในติดไปกับ lead (ได้ "${sent?.entry_source}")`);
+  check(sent?.source === 'website-booking', 'source หลักยังเป็น website-booking (production gate ใช้)');
+  const ty = new URL(page.url());
+  check(ty.searchParams.get('start') === 'free', `พก start ไป /thank-you (ได้ "${ty.searchParams.get('start')}")`);
+  check((await page.locator('#thankyou-read-line').textContent() || '').includes('คลาสฟรีออนไลน์'), 'หน้าขอบคุณบรรทัดแรกพูดเรื่องคลาสฟรี ตรงกับที่ลูกค้าเลือก');
+  check((await page.locator('#thankyou-heading').textContent() || '').includes('ลงชื่อคลาสฟรี'), 'หัวข้อหน้าขอบคุณเปลี่ยนเป็นลงชื่อคลาสฟรี');
   await ctx.close();
 }
-
 
 // ═════════════ /booking — ถามทีละข้อ: เส้นทางแนะนำ + กันกดข้าม (เพิ่ม 2026-11-17) ═════════════
 {
@@ -373,11 +366,6 @@ for (const [label, landing, hop] of [
   check((await at('#booking-form [name="phone"]', 'inputmode')) === 'tel', 'booking: phone → inputmode=tel (แป้นตัวเลข)');
   check((await at('#booking-form [name="phone"]', 'required')) !== null, 'booking: phone บังคับกรอก');
 
-  await page.goto(`${BASE}/intake-form`, { waitUntil: 'domcontentloaded' });
-  check((await at('#phone', 'inputmode')) === 'tel', 'intake: phone → inputmode=tel');
-  check((await at('#email', 'inputmode')) === 'email', 'intake: email → inputmode=email');
-  check((await at('#company', 'autocomplete')) === 'organization', 'intake: company → organization');
-  check((await at('#line', 'autocorrect')) === 'off', 'intake: LINE ID → ปิด autocorrect');
 
   const btn = await page.evaluate(() => {
     const b = document.querySelector('.btn') || document.querySelector('.cta-btn');

@@ -66,7 +66,7 @@ Given a Thai pillar article, generate a JSON object with these keys:
    Format per reel follows Yapmaxxing: Hook → Tension → Payoff, with SHORT and LONG sentences mixed.
 
 2. fb_posts (array of 2 objects):
-   Each has: title (Thai, ≤80 chars), hook (opening 2-3 lines that create tension or specific claim), body (300-500 Thai words — deep dive, specific numbers, real client examples mentioned in source), cta (1-2 lines ending with action — link to /intake-form or /booking or /services)
+   Each has: title (Thai, ≤80 chars), hook (opening 2-3 lines that create tension or specific claim), body (300-500 Thai words — deep dive, specific numbers, real client examples mentioned in source), cta (1-2 lines ending with action — link to /booking or /services)
    Voice: Pun writes "ผม" first-person, practitioner not educator, specific numbers, no AI padding.
 
 3. carousel (1 object):

@@ -97,7 +97,7 @@ const description =
       const refNode = document.getElementById('ref-display');
       if (refNode) refNode.textContent = ref;
 
-      // หน้านี้รับสองทาง — แบบประเมิน (/intake-form) กับจองคิว (/booking)
+      // หน้านี้รับสองทาง — แบบประเมิน (/intake-form เดิม · 301 ไป /booking แล้วตั้งแต่ 2026-11-17) กับจองคิว (/booking)
       // สลับคำที่พูดถึง "แบบประเมิน" ให้ตรงกับสิ่งที่เขาเพิ่งกรอกจริง
       const formType = params.get('type') === 'booking' ? 'booking' : 'intake_form';
       // 2026-09-02: content_name รายคลาสเมื่อมาจากหน้า product (booking?package=T4 → thank-you?package=T4)
@@ -116,6 +116,16 @@ const description =
         const heading = document.getElementById('thankyou-heading');
         if (heading) heading.textContent = 'ได้โจทย์กับเบอร์แล้วครับ';
         document.title = 'ได้โจทย์แล้ว · ปัน ณัฐพัชร์';
+        // ?start= = ทางเริ่มที่ลูกค้าเลือกในข้อ 5 ของ /booking → บรรทัดแรกพูดตรงกับที่เขาเลือก
+        const START_LINE = {
+          class: '① ผมโทรคุย 15 นาที ฟังโจทย์ แล้วบอกว่าคลาสไหนตรงกับทีมคุณ และรอบไหนเรียนได้',
+          system: '① ผมโทรคุย 15 นาที เพื่อช่วยคุณเลือกระบบไม่เกิน 2 เรื่องที่ควรวางในวันแรก',
+          free: '① ผมลงชื่อคุณไว้แล้ว และจะแจ้งวันคลาสฟรีออนไลน์รอบแรกให้ทันทีที่เปิด',
+        };
+        const start = params.get('start') || '';
+        const readLine = document.getElementById('thankyou-read-line');
+        if (readLine && Object.prototype.hasOwnProperty.call(START_LINE, start)) readLine.textContent = START_LINE[start];
+        if (start === 'free' && heading) heading.textContent = 'ลงชื่อคลาสฟรีให้แล้วครับ';
       }
 
       // ปุ่มเลือกเวลารับสาย → LINE เปิดพร้อม "สะดวกรับสาย<ช่วง> รหัส <ref> [รหัสสินค้า]"

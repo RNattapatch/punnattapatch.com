@@ -174,6 +174,8 @@ body ดิบของ webhook มาเติม `after_hours_ok` (yes/no/'') 
 - ตัดออกจากฟอร์ม: `line` · `business`/`industry` · `budget` (คุณปันสั่งเก็บแค่ชื่อ บริษัท ตำแหน่ง เบอร์)
 - `required` มีได้เฉพาะขั้นสุดท้าย ขั้นอื่นเช็คด้วย JS (ช่อง required ที่ซ่อนอยู่ทำให้ `reportValidity()` ล้มเงียบ)
 - fallback ใช้ `submitLeadFallback` จาก `src/scripts/lead-fallback.ts` แล้ว (เดิม booking มีสำเนาของตัวเอง + `fallback_reason: 'n8n-unreachable'`)
+- `/intake-form` (ฟอร์มยาวเดิม) ถูกลบ · `public/_redirects` ส่ง 301 ไป `/booking` (query ติดไปด้วย) · `?source=` เก็บเป็น `entry_source` + บรรทัด `ที่มา:` ใน comment · ช่องที่หายไปพร้อมหน้าเก่า: `email` และคำถาม "เจอผมจากไหน" (`ai_source_note`)
+- หลังส่ง booking พก `start=<start_path>` ไป `/thank-you` ให้บรรทัดแรกพูดตรงกับทางที่เลือก
 
 ## 📞 ฟอร์ม /booking แยกช่องเบอร์/LINE แล้ว (2026-08-12) · ⚠️ LINE ถูกตัดออก 2026-11-17 ดูหัวข้อบน
 

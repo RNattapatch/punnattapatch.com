@@ -67,7 +67,7 @@ export default defineConfig({
           // หน้าหลักฐาน — ตอบคำถาม "AI Agent ทำอะไรได้บ้างในธุรกิจไทย" ให้ AI search หยิบไปตอบ
           item.priority = 0.8;
           item.changefreq = 'monthly';
-        } else if (p === '/booking' || p === '/intake-form') {
+        } else if (p === '/booking') {
           item.priority = 0.8;
           item.changefreq = 'monthly';
         } else if (p.startsWith('/insights/')) {

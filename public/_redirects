@@ -26,3 +26,6 @@
 # 2026-09-30: ถอด 3 case study (ตัวเลขไม่มีที่มา) → ชี้ไปหน้าผลงานที่พิสูจน์ได้ · 302 เพราะจะเปิดคืนเมื่อมีเคสที่ยืนยันแล้ว
 /case-studies /portfolio 302
 /case-studies/* /portfolio 302
+# 2026-11-17: ฟอร์มยาว /intake-form → ฟอร์มถามทีละข้อ /booking (ท่อ lead เดียว) · ?source= ไปต่อ (booking เก็บเป็น entry_source)
+/intake-form /booking 301
+/intake-form/ /booking 301

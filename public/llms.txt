@@ -9,8 +9,7 @@
 - [About](https://punnattapatch.com/about): ตัวตน · expertise 4 หมวด · หลักการทำงาน · credentials · BOSI DNA framework
 - [Services](https://punnattapatch.com/services): คลาสอบรมสำหรับทีมขาย 3 ตัว + บริการวางระบบฝ่ายขาย 3 ตัว
 - [BOSI DNA Quiz](https://punnattapatch.com/bosi-dna-quiz): แบบทดสอบ Entrepreneurial DNA 10 ข้อ · 5-10 นาที · รู้จุดแข็ง/จุดบอดทีมขายก่อนวางระบบ
-- [Intake Form](https://punnattapatch.com/intake-form): แบบประเมินปัญหาทีมขาย 3 นาที
-- [Booking](https://punnattapatch.com/booking): จอง package + preferred date + contact ครบที่เดียว
+- [Booking](https://punnattapatch.com/booking): เล่าโจทย์ทีมขายทีละข้อไม่ถึง 2 นาที รับคำแนะนำทางเริ่ม (คลาส · วางระบบ 1 วัน · คลาสฟรีออนไลน์) แล้วค่อยใส่ข้อมูลติดต่อ
 - [Portfolio](https://punnattapatch.com/portfolio): ผลงานอบรม วางระบบ และ AI Agent ที่พิสูจน์ได้ (ภาพงานจริง · ระบบที่ใช้อยู่)
 - [Proof — ระบบที่ปันใช้เองทุกวัน](https://punnattapatch.com/proof): ห้าระบบ AI Agent ที่ปันสร้างเองและใช้จริงในธุรกิจตัวเอง — แดชบอร์ดรวมข้อมูล · บอทออกใบเสนอราคาผ่านแชท · AI Agent รับลูกค้าบน LINE · โรงงานคอนเทนต์ · เรดาร์ส่องตลาดตอนตีสาม พร้อมหลักคิดข้างหลังแต่ละตัว (screenshot จริง เบลอข้อมูลลูกค้า)
 

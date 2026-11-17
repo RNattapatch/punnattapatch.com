@@ -129,7 +129,7 @@ https://punnattapatch.com/agent-builder-kit/prompts/<slug>
 
 ถ้ายังไม่แน่ใจว่า Workshop หรือ AI Agent 101 For Sale Team เหมาะกับธุรกิจคุณกว่ากัน จองคุยกับผม 30 นาที ผม audit ธุรกิจคุณ + แนะ wedge แรก ฟรี ไม่มี hard sell
 
-[จอง Discovery Call → punnattapatch.com/intake-form?source=kit-manual](https://punnattapatch.com/intake-form?source=kit-manual)
+[จอง Discovery Call → punnattapatch.com/booking?source=kit-manual](https://punnattapatch.com/booking?source=kit-manual)
 
 ---
 

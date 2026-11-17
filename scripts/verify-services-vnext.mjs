@@ -110,7 +110,6 @@ function assertFloatingLineBuildOutput() {
   const hiddenRoutes = [
     '/booking',
     '/thank-you',
-    '/intake-form',
     '/bosi-dna-quiz',
     '/ebook-sales-interview',
     '/agent-builder-kit/thank-you',

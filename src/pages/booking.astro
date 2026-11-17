@@ -329,6 +329,8 @@ const TOTAL = 6;
   const productCode = productContext ? requestedProduct as keyof typeof PRODUCT_CONTEXT : null;
   const requestedIntent = params.get('intent') || '';
   const productIntent = Object.prototype.hasOwnProperty.call(INTENT_LABELS, requestedIntent) ? requestedIntent : '';
+  // ?source= จากลิงก์ภายใน (kit · bosi-quiz · คู่มือ) — เดิมส่งเข้า /intake-form ซึ่งตอนนี้ 301 มาที่นี่ · source หลักยังเป็น website-booking
+  const entrySource = (params.get('source') || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 40);
 
   if (productContext && productCode) {
     if (packageInput) packageInput.value = `${productCode} · ${productContext.name.replace(/^\w+\s*·\s*/, '')}`;
@@ -488,6 +490,7 @@ const TOTAL = 6;
         `เรื่องหลัก: ${checked('track')?.dataset.label ?? '-'}`,
         `อยากเริ่ม: ${checked('start_path')?.dataset.label ?? '-'}${startPath !== recommend() ? ` (ระบบแนะนำ ${recommend()})` : ''}`,
         productNote,
+        entrySource ? `ที่มา: ${entrySource}` : '',
       ].filter(Boolean).join(' / '),
       // canonical คือ submittedAt (camelCase) · คง submitted_at ไว้ด้วยเพื่อ backward-compat
       submittedAt: new Date().toISOString(),
@@ -496,6 +499,7 @@ const TOTAL = 6;
       // recommended_path = หน้า Product ต้นทาง (ถ้ามา) ไม่งั้นทางที่ฟอร์มแนะนำ · start_path = ทางที่ลูกค้าเลือกเอง
       recommended_path: productContext?.route || recommend(),
       start_path: startPath,
+      entry_source: entrySource,
       _meta: {
         reference,
         page: window.location.pathname,
@@ -579,6 +583,7 @@ const TOTAL = 6;
     const thankYouUrl = new URL('/thank-you', window.location.origin);
     thankYouUrl.searchParams.set('type', 'booking');
     thankYouUrl.searchParams.set('ref', reference);
+    thankYouUrl.searchParams.set('start', startPath);
     // พก product code ไป /thank-you เพื่อให้ Lead pixel มี content_name รายคลาส
     if (productCode) thankYouUrl.searchParams.set('package', productCode);
     ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'ttclid'].forEach((k) => {

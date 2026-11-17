@@ -145,4 +145,4 @@ anonymized: true
 - [บริการวางระบบฝ่ายขาย แบบครบรอบ 2 วัน](/services/daily-consulting) — วางระบบแบบเดียวกับเคสนี้ทีละเรื่อง (เหมาะทีม 10-15 คน)
 - [Advance AI & Business Automation {{price:ai-workshop-advance}}](/services/t1-sales-skills) — Starting point ของลูกค้ารายนี้
 - [คลาสอบรมทักษะการขาย + Follow-up + AI {{price:inhouse-a}}](/services#offer-t1) — สำหรับทีมที่ต้องการฝึกบทสนทนาและการตามดีลด้วยมาตรฐานเดียวกัน
-- [กรอกฟอร์ม 3 นาที](/intake-form) — ผมอ่านแล้วบอกว่าเคสคุณ match กับลูกค้ารายนี้แค่ไหน + ควร start ตรงไหน
+- [กรอกฟอร์ม 3 นาที](/booking) — ผมอ่านแล้วบอกว่าเคสคุณ match กับลูกค้ารายนี้แค่ไหน + ควร start ตรงไหน
