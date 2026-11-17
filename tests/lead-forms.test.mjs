@@ -57,6 +57,25 @@ async function fillAllRequired(page, formSel, values = {}) {
 }
 
 // ═══════════════════════════════════════════════ /booking — ท่อหลัก (CTA ทุกปุ่มหน้าแรก)
+
+/**
+ * /booking = ถามทีละข้อ (2026-11-17) — เดิน 5 ข้อแรกแบบที่ลูกค้าเดินจริง แล้วค่อยถึงช่องติดต่อ
+ * track: team | ai | both | solo · ข้อ 1 แตะแล้วไปต่อเอง (pointerup) จึงห้ามกด "ต่อไป" ซ้ำ
+ */
+async function walkBooking(page, { track = 'team', goal = 'ทีมมีเซลล์ 6 คน ยอดมาจากคนเดียว', size = '5-10', timeline = 0 } = {}) {
+  await page.locator(`#booking-form input[name="track"][value="${track}"]`).locator('xpath=..').click();
+  await page.waitForSelector('[data-step="2"]:not([hidden])', { timeout: 3000 });
+  await page.locator('[data-step="2"] [data-symptom-group]:not([hidden]) label').first().click();
+  await page.locator('[data-step="2"] [data-next]').click();
+  await page.fill('#booking-form textarea[name="goal"]', goal);
+  await page.locator('[data-step="3"] [data-next]').first().click();
+  if (size) await page.locator(`#booking-form input[name="team_size"][value="${size}"]`).locator('xpath=..').click();
+  await page.locator('#booking-form input[name="timeline"]').nth(timeline).locator('xpath=..').click();
+  await page.locator('[data-step="4"] [data-next]').click();
+  await page.locator('[data-step="5"] [data-next]').click();
+  await page.waitForSelector('[data-step="6"]:not([hidden])', { timeout: 3000 });
+}
+
 {
   console.log('\n[1] /booking — ส่งสำเร็จ · payload ครบ');
   const ctx = await browser.newContext();
@@ -66,8 +85,11 @@ async function fillAllRequired(page, formSel, values = {}) {
   await page.route(N8N, async (r) => { sent = JSON.parse(r.request().postData() || '{}'); await r.fulfill({ status: 200, body: '{"ok":true}' }); });
 
   await page.goto(`${BASE}/booking`, { waitUntil: 'domcontentloaded' });
+  // ⭐ ช่องติดต่อต้องยังไม่โผล่ตอนเปิดหน้า — ถามโจทย์ก่อน ขอเบอร์ทีหลังสุด
+  check(!(await page.locator('#booking-form [name="phone"]').isVisible()), 'เปิดหน้ามายังไม่เห็นช่องเบอร์โทร (contact-last)');
+  await walkBooking(page);
   const invalid1 = await fillAllRequired(page, '#booking-form', {
-    name: 'ทดสอบ ระบบ', phone: '081-234 5678', line: '@punline', company: 'บจก. ทดสอบ', business: 'ขายเครื่องจักร B2B',
+    name: 'ทดสอบ ระบบ', phone: '081-234 5678', company: 'บจก. ทดสอบ',
   });
   check(invalid1.length === 0, `กรอก required ครบทุกช่อง${invalid1.length ? ` (ค้าง: ${invalid1})` : ''}`);
   await page.click('#booking-submit');
@@ -77,14 +99,19 @@ async function fillAllRequired(page, formSel, values = {}) {
   if (sent) {
     // key ที่ INTAKE-DATA-CONTRACT.md + n8n Flatten Body1 ต้องเจอ
     // (2026-08-12: แยก contact ช่องเดียว → phone บังคับ + line optional)
-    for (const k of ['name', 'phone', 'line', 'company', 'industry', 'problems', 'source', 'source_page', 'booking_type', 'submitted_at', 'path', 'recommended_path', 'consent']) {
+    for (const k of ['name', 'phone', 'company', 'position', 'problems', 'team_size', 'timeline', 'tier', 'comment', 'source', 'source_page', 'booking_type', 'submitted_at', 'path', 'recommended_path', 'start_path', 'consent', 'after_hours_ok']) {
       check(k in sent, `payload มี key "${k}"`);
     }
     check(sent.name === 'ทดสอบ ระบบ', 'ค่าไทยไม่เพี้ยน (UTF-8)');
     check(sent.phone === '0812345678', `⭐ เบอร์ normalize เป็นตัวเลขล้วน (ได้ "${sent.phone}")`);
-    check(sent.line === '@punline', 'LINE ID ติดไปด้วย');
-    check(sent.company === 'บจก. ทดสอบ', 'company ส่งค่าที่กรอก ไม่ใช่ fallback business');
-    check(sent.industry === 'ขายเครื่องจักร B2B', 'industry alias ผูกกับ business');
+    check(sent.company === 'บจก. ทดสอบ', 'company ส่งค่าที่กรอก');
+    check(Array.isArray(sent.problems) && sent.problems[0] === 'เซลล์ปิดการขายด้วยการลดราคาเป็นหลัก', `⭐ problems = อาการที่กดเลือก (ได้ ${JSON.stringify(sent.problems)})`);
+    check((sent.comment || '').includes('โจทย์ที่เล่า: ทีมมีเซลล์ 6 คน ยอดมาจากคนเดียว'), '⭐ โจทย์ที่ลูกค้าพิมพ์เองอยู่ใน comment (→ crm_notes)');
+    check(!('goal' in sent), 'ไม่ส่ง goal ซ้ำ (การ์ดจะขึ้นสองที่)');
+    check(sent.team_size === '5-10' && sent.timeline === 'ภายใน 2 สัปดาห์', 'team_size + timeline ถึง payload');
+    check(sent.tier === 'HOT', `tier คำนวณจาก timeline (ได้ "${sent.tier}")`);
+    check(sent.start_path === 'class' && sent.recommended_path === 'class', 'track ทีมขาย → แนะนำคลาส และลูกค้ากดตาม');
+    check(/เรื่องหลัก: ทีมขายไม่วิ่งตามเป้า/.test(sent.comment) && /อยากเริ่ม: ให้ทีมเรียนในคลาส/.test(sent.comment), 'comment สรุปเรื่องหลัก + ทางเริ่มให้เห็นในการ์ด Telegram');
     check(sent.source === 'website-booking', 'source tag ถูก');
     check(!('honeypot-name' in sent) || !sent['honeypot-name'], 'honeypot ว่าง (ไม่ใช่บอท)');
   }
@@ -108,8 +135,9 @@ async function fillAllRequired(page, formSel, values = {}) {
   check((await page.locator('[data-booking-product-name]').textContent() || '').includes('T2'), 'แสดงชื่อ T2 ให้ลูกค้ารู้ว่ากำลังส่งโจทย์เรื่องอะไร');
   check(await page.locator('[name="package"]').inputValue() === 'T2 · คลาสเพิ่มยอดขายจากออนไลน์', 'hidden package ใช้ canonical key และชื่อที่คนอ่านรู้เรื่อง');
 
+  await walkBooking(page);
   await fillAllRequired(page, '#booking-form', {
-    name: 'ทดสอบ ระบบ', phone: '0812345678', company: 'บจก. ทดสอบ', business: 'ขายเครื่องจักร B2B',
+    name: 'ทดสอบ ระบบ', phone: '0812345678', company: 'บจก. ทดสอบ',
   });
   await page.click('#booking-submit');
   await page.waitForTimeout(1200);
@@ -132,8 +160,9 @@ async function fillAllRequired(page, formSel, values = {}) {
   await page.route(SUPABASE, (r) => r.fulfill({ status: 500, body: 'boom' }));
 
   await page.goto(`${BASE}/booking`, { waitUntil: 'domcontentloaded' });
+  await walkBooking(page);
   await fillAllRequired(page, '#booking-form', {
-    name: 'ทดสอบ ระบบ', phone: '0812345678', company: 'บจก. ทดสอบ', business: 'ขายเครื่องจักร',
+    name: 'ทดสอบ ระบบ', phone: '0812345678', company: 'บจก. ทดสอบ',
   });
   await page.click('#booking-submit');
   await page.waitForTimeout(1200);
@@ -148,9 +177,9 @@ async function fillAllRequired(page, formSel, values = {}) {
 }
 
 // ═════════════════════ /booking — Supabase fallback (เพิ่ม 2026-08-09 · แยกช่อง 2026-08-12) ═════════════════════
-for (const [label, phoneValue, lineValue, expectPhone, expectLine] of [
-  ['เบอร์อย่างเดียว', '081-234-5678', '', '0812345678', ''],
-  ['เบอร์ + LINE',    '0812345678', '@punnattapatch', '0812345678', '@punnattapatch'],
+for (const [label, phoneValue, expectPhone] of [
+  ['เบอร์มีขีด', '081-234-5678', '0812345678'],
+  ['เบอร์ +66',   '+66 81 234 5678', '+66812345678'],
 ]) {
   console.log(`\n[2b] /booking — n8n ล่ม → Supabase fallback (${label})`);
   const ctx = await browser.newContext();
@@ -164,8 +193,9 @@ for (const [label, phoneValue, lineValue, expectPhone, expectLine] of [
   });
 
   await page.goto(`${BASE}/booking`, { waitUntil: 'domcontentloaded' });
+  await walkBooking(page);
   await fillAllRequired(page, '#booking-form', {
-    name: 'ทดสอบ ระบบ', phone: phoneValue, line: lineValue, company: 'บจก. ทดสอบ', business: 'ขายเครื่องจักร B2B',
+    name: 'ทดสอบ ระบบ', phone: phoneValue, company: 'บจก. ทดสอบ',
   });
   await page.click('#booking-submit');
   await page.waitForTimeout(1500);
@@ -177,13 +207,12 @@ for (const [label, phoneValue, lineValue, expectPhone, expectLine] of [
     check(!!sb.headers.apikey && (sb.headers.authorization || '').startsWith('Bearer '), 'ส่ง apikey + Bearer');
     // ⭐ ข้อสำคัญสุด: fallback ข้าม Flatten Body1 → ต้อง canonical เองครบ
     check(p.phone === expectPhone, `⭐ phone = "${p.phone}" (คาดหวัง "${expectPhone}")`);
-    check(p.line === expectLine, `⭐ line = "${p.line}" (คาดหวัง "${expectLine}")`);
     check(p.company === 'บจก. ทดสอบ', 'company canonical');
-    check(p.industry === 'ขายเครื่องจักร B2B', 'industry canonical');
-    check(!!p.problems, 'problems canonical (ไม่ว่าง)');
+    check(p.problems === 'เซลล์ปิดการขายด้วยการลดราคาเป็นหลัก', `⭐ problems เป็นข้อความ ไม่ใช่ JSON (ได้ ${JSON.stringify(p.problems)})`);
+    check(/โจทย์ที่เล่า:/.test(p.comment || '') && !!p.tier, 'โจทย์ใน comment + tier ไปถึง RPC ด้วย');
     check(!!p.submittedAt, 'submittedAt (camelCase) — key ที่ RPC อ่านจริง');
     check(/^PN-\d{12}-[A-Z0-9]{4}$/.test(p.reference || ''), `มี reference (${p.reference})`);
-    check(p.fallback_reason === 'n8n-unreachable', 'ติดธงว่ามาจาก fallback (ไล่ย้อนได้ว่า n8n ล่มตอนไหน)');
+    check(p.fallback_reason === 'form-hook-unreachable', 'ติดธง fallback_reason ค่าเดียวกับ helper กลาง (สวิตช์การ์ด Telegram ของ DB trigger)');
     check(p.consent === 'on' || p.consent === 'yes', 'consent ติดมาด้วย (หลักฐาน PDPA)');
   }
   // 2026-08-31: สำเร็จแล้วต้องเด้งไป /thank-you — Lead pixel ยิงที่หน้านั้นที่เดียว
@@ -212,8 +241,9 @@ for (const [label, landing, hop] of [
 
   await page.goto(`${BASE}${landing}`, { waitUntil: 'domcontentloaded' });
   if (hop) await page.goto(`${BASE}${hop}`, { waitUntil: 'domcontentloaded' });
+  await walkBooking(page);
   await fillAllRequired(page, '#booking-form', {
-    name: 'ทดสอบ ระบบ', phone: '0812345678', company: 'บจก. ทดสอบ', business: 'ขายเครื่องจักร B2B',
+    name: 'ทดสอบ ระบบ', phone: '0812345678', company: 'บจก. ทดสอบ',
   });
   await page.click('#booking-submit');
   await page.waitForTimeout(1200);
@@ -264,6 +294,70 @@ for (const [label, landing, hop] of [
   await ctx.close();
 }
 
+
+// ═════════════ /booking — ถามทีละข้อ: เส้นทางแนะนำ + กันกดข้าม (เพิ่ม 2026-11-17) ═════════════
+{
+  console.log('\n[1d] /booking — ยังไม่มีทีมขาย → แนะนำคลาสฟรี · ข้อบังคับกดข้ามไม่ได้');
+  const ctx = await browser.newContext({ ...devices['iPhone 15 Pro'] });
+  await sealContext(ctx);
+  const page = await ctx.newPage();
+  let sent = null;
+  await page.route(N8N, async (r) => { sent = JSON.parse(r.request().postData() || '{}'); await r.fulfill({ status: 200, body: '{"ok":true}' }); });
+  await page.goto(`${BASE}/booking`, { waitUntil: 'domcontentloaded' });
+
+  await page.locator('[data-step="1"] [data-next]').click();
+  check(await page.locator('[data-step="1"] .step-error').isVisible(), 'ไม่เลือกข้อ 1 แล้วกดต่อไป → ขึ้นข้อความเตือน ไม่ไปต่อ');
+  await page.focus('#booking-form input[name="track"]');
+  await page.keyboard.press('Enter');
+  check(sent === null && await page.locator('[data-step="1"]').isVisible(), 'กด Enter กลางทางไม่ส่งฟอร์ม');
+
+  await walkBooking(page, { track: 'solo', size: '', timeline: 1 });
+  check(await page.locator('#booking-form input[name="team_size"][value="0"]').isChecked(), 'track ยังไม่มีทีม → ขนาดทีมเลือก "ยังไม่มีทีมขาย" ให้เอง');
+  await fillAllRequired(page, '#booking-form', { name: 'ทดสอบ ระบบ', phone: '0812345678', company: 'บจก. ทดสอบ' });
+  await page.click('#booking-submit');
+  await page.waitForTimeout(1200);
+  check(sent?.start_path === 'free', `ยังไม่มีทีมขาย → ทางเริ่ม = คลาสฟรี (ได้ "${sent?.start_path}")`);
+  check(sent?.tier === 'COLD', 'เลือกคลาสฟรี → tier COLD (ไม่แย่งคิวโทรของคนพร้อมจ่าย)');
+  check(sent?.problems?.[0] === 'ตอนนี้อยากหาลูกค้าเพิ่มจากออนไลน์', 'อาการมาจากกลุ่ม solo เท่านั้น');
+  await ctx.close();
+}
+
+{
+  console.log('\n[1e] /booking — AI + อาการน้อย + เริ่มเร็ว → แนะนำวางระบบ · เลือกทางอื่นเองได้');
+  const ctx = await browser.newContext();
+  await sealContext(ctx);
+  const page = await ctx.newPage();
+  let sent = null;
+  await page.route(N8N, async (r) => { sent = JSON.parse(r.request().postData() || '{}'); await r.fulfill({ status: 200, body: '{"ok":true}' }); });
+  await page.goto(`${BASE}/booking`, { waitUntil: 'domcontentloaded' });
+  // เลือกทีมขาย + ติ๊กอาการ แล้วย้อนกลับไปเปลี่ยนเป็น AI → อาการกลุ่มทีมขายต้องไม่ติดไปใน payload
+  await page.locator('#booking-form input[name="track"][value="team"]').locator('xpath=..').click();
+  await page.waitForSelector('[data-step="2"]:not([hidden])');
+  await page.locator('[data-step="2"] [data-symptom-group="team"] label').first().click();
+  await page.click('#booking-form [data-back]');
+  check(await page.locator('[data-step="1"]').isVisible(), 'ปุ่มย้อนกลับพากลับข้อ 1');
+  await page.locator('#booking-form input[name="track"][value="ai"]').locator('xpath=..').click();
+  await page.waitForSelector('[data-step="2"]:not([hidden])');
+  await page.locator('[data-step="2"] [data-symptom-group="ai"] label').first().click();
+  await page.locator('[data-step="2"] [data-next]').click();
+  await page.locator('[data-step="3"] .skip-btn').click();
+  await page.locator('#booking-form input[name="team_size"][value="1-4"]').locator('xpath=..').click();
+  await page.locator('#booking-form input[name="timeline"]').first().locator('xpath=..').click();
+  await page.locator('[data-step="4"] [data-next]').click();
+  check(await page.locator('[data-rec-badge="system"]').isVisible(), 'ป้าย "ผมแนะนำ" อยู่ที่วางระบบ 1 วัน');
+  check(await page.locator('#booking-form input[name="start_path"][value="system"]').isChecked(), 'เลือกทางที่แนะนำไว้ให้ก่อน (กดต่อไปได้ทันที)');
+  check(/1 ถึง 4 คน/.test(await page.locator('[data-echo]').textContent() || ''), 'ข้อความสรุปพูดถึงคำตอบของลูกค้าเอง');
+  await page.locator('#booking-form input[name="start_path"][value="help"]').locator('xpath=..').click();
+  await page.locator('[data-step="5"] [data-next]').click();
+  await fillAllRequired(page, '#booking-form', { name: 'ทดสอบ ระบบ', phone: '0812345678', company: 'บจก. ทดสอบ' });
+  await page.click('#booking-submit');
+  await page.waitForTimeout(1200);
+  check(sent?.start_path === 'help' && sent?.recommended_path === 'system', 'ลูกค้าเลือกทางเอง → start_path ตามลูกค้า แต่ยังเก็บทางที่แนะนำไว้');
+  check(!/โจทย์ที่เล่า/.test(sent?.comment || ''), 'ข้ามข้อเล่าโจทย์ได้ (comment ไม่มีบรรทัดโจทย์ว่าง)');
+  check(JSON.stringify(sent?.problems) === JSON.stringify(['แอดมินตอบแชทช้า จนลูกค้าหลุดไปหาเจ้าอื่น']), `⭐ เปลี่ยนเรื่องหลักแล้ว อาการกลุ่มเก่าไม่ติดไป (ได้ ${JSON.stringify(sent?.problems)})`);
+  await ctx.close();
+}
+
 // ═══════════════════════════════════════════════════ iOS attributes + press feedback
 {
   console.log('\n[4] iOS keyboard hints + press feedback (iPhone 15 Pro)');
@@ -278,8 +372,6 @@ for (const [label, landing, hop] of [
   check((await at('[name="company"]', 'autocomplete')) === 'organization', 'booking: company → organization');
   check((await at('#booking-form [name="phone"]', 'inputmode')) === 'tel', 'booking: phone → inputmode=tel (แป้นตัวเลข)');
   check((await at('#booking-form [name="phone"]', 'required')) !== null, 'booking: phone บังคับกรอก');
-  check((await at('#booking-form [name="line"]', 'autocorrect')) === 'off', 'booking: LINE ID → ปิด autocorrect (ไม่โดนแก้คำ)');
-  check((await at('#booking-form [name="line"]', 'required')) === null, 'booking: LINE ID ไม่บังคับ');
 
   await page.goto(`${BASE}/intake-form`, { waitUntil: 'domcontentloaded' });
   check((await at('#phone', 'inputmode')) === 'tel', 'intake: phone → inputmode=tel');

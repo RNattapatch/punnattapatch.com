@@ -156,7 +156,26 @@ body ดิบของ webhook มาเติม `after_hours_ok` (yes/no/'') 
 - เบอร์เช็คเฉพาะ payload ที่มี key `phone` — หน้าเก่าค้าง cache ที่ส่ง `contact` ช่องเดียว ผ่านแบบเดิม
 - `line` optional ไม่เช็ค
 
-## 📞 ฟอร์ม /booking แยกช่องเบอร์/LINE แล้ว (2026-08-12)
+## 🪜 ฟอร์ม /booking ถามทีละข้อ · โจทย์ก่อน ติดต่อท้ายสุด (2026-11-17)
+
+ฟอร์มยาวหน้าเดียวถูกแทนด้วย 6 ขั้น: เรื่องหลัก → อาการ → เล่าโจทย์ (ข้ามได้) → ขนาดทีม + เวลา → คำแนะนำเฉพาะตัว + เลือกทางเริ่ม → ชื่อ บริษัท ตำแหน่ง เบอร์
+ทางเริ่มแนะนำตามตาราง §3.3 ของ `claude-code-pun-nattapatch/wiki/pages/strategy-one-to-many-ladder-menu-free-class-2026-11.md`
+
+| key | ค่า | ลงที่ |
+|---|---|---|
+| `problems` | **array** ของอาการที่กด (เฉพาะกลุ่มของเรื่องหลักที่เลือก) · fallback ต่อเป็นข้อความ ` \| ` ก่อนยิง RPC | `pain_points` + 🎯 |
+| `comment` | `โจทย์ที่เล่า: … / เรื่องหลัก: … / อยากเริ่ม: …` (+ บริการที่สนใจ + ⏰) | `crm_notes` + 💭 |
+| `team_size` · `timeline` | ค่าเดิม (`0` `1-4` `5-10` `11-20` `20+` · ข้อความช่วงเวลา) | raw_payload + การ์ด |
+| `tier` | `HOT` (≤1 เดือน) · `WARM` (2–3 เดือน) · `COLD` (ยังศึกษา หรือเลือกคลาสฟรี) | `temperature` |
+| `start_path` | ทางที่ลูกค้าเลือก: `class` · `system` · `free` · `help` | raw_payload |
+| `recommended_path` | หน้า Product ต้นทาง (ถ้ามาจาก `?package=`) ไม่งั้นทางที่ฟอร์มแนะนำ | raw_payload |
+
+- โจทย์ที่ลูกค้าพิมพ์**ต้องอยู่ใน `comment`** — `submit_lead` ลง `crm_notes` จาก `comment`/`message` เท่านั้น ส่งเป็น `goal` = ขึ้นแค่การ์ด Telegram ไม่ลง CRM
+- ตัดออกจากฟอร์ม: `line` · `business`/`industry` · `budget` (คุณปันสั่งเก็บแค่ชื่อ บริษัท ตำแหน่ง เบอร์)
+- `required` มีได้เฉพาะขั้นสุดท้าย ขั้นอื่นเช็คด้วย JS (ช่อง required ที่ซ่อนอยู่ทำให้ `reportValidity()` ล้มเงียบ)
+- fallback ใช้ `submitLeadFallback` จาก `src/scripts/lead-fallback.ts` แล้ว (เดิม booking มีสำเนาของตัวเอง + `fallback_reason: 'n8n-unreachable'`)
+
+## 📞 ฟอร์ม /booking แยกช่องเบอร์/LINE แล้ว (2026-08-12) · ⚠️ LINE ถูกตัดออก 2026-11-17 ดูหัวข้อบน
 
 เดิมช่อง `contact` ช่องเดียวรับ "เบอร์โทร หรือ LINE ID" → LINE ID ไหลลง column `phone`
 (Flatten อ่าน `b.phone || b.yourPhone || b.contact` และ RPC ก็ fallback แบบเดียวกัน)

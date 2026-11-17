@@ -5,16 +5,82 @@ import AfterHoursField from '../components/AfterHoursField.astro';
 import ProofRail from '../components/proof/ProofRail.astro';
 import { SITE } from '../data/site';
 
+/**
+ * /booking = ท่อรับลูกค้าหลัก (CTA ทุกปุ่มหน้าแรก)
+ *
+ * 2026-11-17 เปลี่ยนจากฟอร์มยาวหน้าเดียวเป็น "ถามทีละข้อ" — โจทย์ก่อน ข้อมูลติดต่อทีหลังสุด
+ * เหตุผล: คนชินกับการพิมพ์ปัญหาบอก AI และอยากได้คำตอบเฉพาะตัว · ทุกช่องที่เพิ่มคือเหตุผลให้ออก
+ * ขั้นที่ 5 เลือกทางเริ่มให้ตามตาราง "ใครควรไปคลาส ใครควรไปวางระบบ" ของกลยุทธ์ 1-to-many
+ * (wiki/pages/strategy-one-to-many-ladder-menu-free-class-2026-11.md §3.3)
+ *
+ * ⚠️ payload / endpoint / fallback / pixel ยังเป็นสัญญาเดิม — ดู docs/INTAKE-DATA-CONTRACT.md
+ * ⚠️ ช่อง required มีได้เฉพาะขั้นสุดท้าย (ช่องที่ซ่อนอยู่ทำให้ reportValidity ล้มเงียบ) ขั้นอื่นเช็คด้วย JS
+ */
+
 const title = 'จองคิวรับบริการ';
-const description = 'เล่าโจทย์ของทีมสั้น ๆ แล้วรับคำแนะนำว่าควรเริ่มจากคลาส บริการวางระบบ หรือกลับไปแก้เองก่อน';
-const issues = [
-  'ข้อมูลลูกค้ากระจาย อยู่ในไลน์กับหัวคน',
-  'เซลล์หมดเวลาไปกับงานเอกสารและงานซ้ำ',
-  'ยอดขึ้นๆ ลงๆ เดาไม่ได้ว่าเดือนหน้าจะเป็นยังไง',
-  'ทีมพึ่งคนเก่งคนเดียว คนอื่นตามไม่ทัน',
-  'วัดผลทีมไม่ได้ ประชุมด้วยความรู้สึก',
-  'ลงทุนเรียนหรือซื้อเครื่องมือมาแล้ว แต่ทีมไม่ได้ใช้จริง',
+const description = 'คุณกดเลือกโจทย์ทีมขายทีละข้อ ใช้เวลาไม่ถึง 2 นาที แล้วผมจะแนะนำว่าทีมควรเริ่มจากคลาส ให้ผมวางระบบ หรือดูคลาสฟรีก่อนครับ';
+
+const tracks = [
+  { value: 'team', title: 'ทีมขายไม่วิ่งตามเป้า', sub: 'ทีมคัดคนไม่ได้ ตั้งเป้าและค่าคอมแล้วก็ยังไม่วิ่ง หรือหัวหน้าคุมทีมไม่อยู่',
+    example: 'เช่น เราขายเครื่องจักรให้โรงงาน มีเซลล์ 6 คน แต่ยอดมาจากคนเก่งคนเดียว อยากให้อีก 5 คนปิดการขายได้ด้วย' },
+  { value: 'ai', title: 'ทีมจมอยู่กับงานซ้ำ', sub: 'คุณอยากให้ AI รับงานตอบแชท ทำเอกสาร และสรุปรายงานแทนทีม',
+    example: 'เช่น แอดมิน 2 คนตอบแชท LINE วันละ 200 ข้อความ เพราะลูกค้าถามราคาเดิมซ้ำทุกวัน เลยอยากให้ AI ตอบเรื่องซ้ำแทน' },
+  { value: 'both', title: 'เจอทั้งสองเรื่อง', sub: 'ทีมขายก็ต้องปั้น งานซ้ำก็ต้องลด',
+    example: 'เช่น เรามีเซลล์ 8 คน ยอดขึ้นลงทุกเดือน และเซลล์ต้องทำใบเสนอราคาเองทุกใบ จนไม่มีเวลาไปหาลูกค้าใหม่' },
+  { value: 'solo', title: 'ยังไม่มีทีมขาย', sub: 'ตอนนี้เจ้าของยังขายเองอยู่',
+    example: 'เช่น ผมรับติดตั้งแอร์และทำเองคนเดียว เลยอยากให้ AI ช่วยตอบแชทกับทำใบเสนอราคา จะได้มีเวลาออกไปหางาน' },
 ];
+
+// ภาษาที่เจ้าของพูดเอง (อ้างอิง pain ใน CRM + เมนูระบบ §3.1) · group ผูกกับ track ด้านบน
+const symptoms = [
+  { group: 'team', items: [
+    'เซลล์ปิดการขายด้วยการลดราคาเป็นหลัก',
+    'ทีมพึ่งคนเก่งคนเดียว ส่วนคนอื่นตามไม่ทัน',
+    'เจ้าของยังต้องแบกยอดขายเอง',
+    'เซลล์ใหม่เข้ามาแล้วอยู่ไม่รอด จนต้องรับใหม่บ่อย',
+    'ตั้งเป้าและค่าคอมแล้ว ทีมก็ยังไม่วิ่ง',
+    'เจ้าของวัดผลทีมไม่ได้ เลยประชุมกันด้วยความรู้สึก',
+  ] },
+  { group: 'ai', items: [
+    'แอดมินตอบแชทช้า จนลูกค้าหลุดไปหาเจ้าอื่น',
+    'ข้อมูลลูกค้ากระจายอยู่ในไลน์กับในหัวเซลล์',
+    'เซลล์ต้องทำใบเสนอราคาเองทุกใบ จนไม่มีเวลาไปหาลูกค้าใหม่',
+    'เจ้าของไม่รู้ว่าคู่แข่งยิงแอดหรือขายอะไรอยู่',
+    'เจ้าของต้องไล่ถามยอดทีมเองทุกสัปดาห์',
+    'บริษัทเคยซื้อเครื่องมือหรือส่งทีมไปเรียน AI แล้ว แต่ทีมไม่ได้ใช้จริง',
+  ] },
+  { group: 'solo', items: [
+    'ตอนนี้อยากหาลูกค้าเพิ่มจากออนไลน์',
+    'เจ้าของทำเองทุกอย่าง เลยอยากให้ AI ช่วยแบ่งงาน',
+    'บริษัทกำลังจะรับเซลล์คนแรก',
+  ] },
+];
+
+const teamSizes = [
+  { value: '0', label: 'ยังไม่มีทีมขาย' },
+  { value: '1-4', label: '1 ถึง 4 คน' },
+  { value: '5-10', label: '5 ถึง 10 คน' },
+  { value: '11-20', label: '11 ถึง 20 คน' },
+  { value: '20+', label: 'มากกว่า 20 คน' },
+];
+
+// data-tier = อุณหภูมิลูกค้าที่ส่งเข้า CRM (canonical `tier`)
+const timelines = [
+  { label: 'ภายใน 2 สัปดาห์', tier: 'HOT' },
+  { label: 'ภายใน 1 เดือน', tier: 'HOT' },
+  { label: 'ภายใน 2 ถึง 3 เดือน', tier: 'WARM' },
+  { label: 'ยังศึกษาข้อมูลอยู่', tier: 'COLD' },
+];
+
+const paths = [
+  { value: 'class', title: 'ให้ทีมเรียนในคลาส', sub: 'ทุกคนในทีมเรียนวิธีเดียวกันในวันเดียว โดยคุณรู้ราคาชัดตั้งแต่ต้น และเห็นผลตั้งแต่วันเรียน' },
+  { value: 'system', title: 'ให้ผมวางระบบให้ 1 วัน', sub: 'คุณเลือกระบบได้ไม่เกิน 2 เรื่อง แล้วทีมได้ใช้จริงตั้งแต่วันนั้น' },
+  { value: 'free', title: 'ขอดูคลาสฟรีออนไลน์ก่อน', sub: 'ผมกำลังเปิดคลาสฟรีออนไลน์รอบแรก คุณลงชื่อไว้ แล้วผมจะแจ้งวันให้ทันทีที่เปิดครับ' },
+  { value: 'help', title: 'ยังไม่แน่ใจ ให้ผมช่วยเลือก', sub: 'ผมโทรคุยกับคุณ 15 นาที แล้วบอกตรงๆ ว่าทางไหนคุ้มที่สุด' },
+];
+
+const positions = ['CEO / เจ้าของกิจการ', 'Managing Director', 'Sales Director', 'Sales Manager', 'Marketing Manager', 'Operations Manager', 'อื่นๆ'];
+const TOTAL = 6;
 ---
 
 <BaseLayout
@@ -22,13 +88,17 @@ const issues = [
   description={description}
   schema={{ types: ['WebPage', 'BreadcrumbList'], title, description, breadcrumbs: [{ name: 'หน้าแรก', url: SITE.url }, { name: 'จองคิวรับบริการ', url: `${SITE.url}/booking` }] }}
 >
-  <section class="border-b border-[#c9c2b2] bg-ivory px-6 py-16 md:py-20">
-    <div class="mx-auto max-w-6xl"><p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">สำหรับเจ้าของธุรกิจและหัวหน้าทีมขาย</p><h1 class="mt-3 max-w-4xl font-display text-4xl font-bold text-navy md:text-6xl">จองคิวรับบริการ</h1><p class="mt-5 max-w-3xl text-lg leading-relaxed text-warm-ink/75">กรอกข้อมูลไม่ถึง 2 นาที ผมจะอ่านก่อนติดต่อกลับ แล้วบอกตรง ๆ ว่าคลาสหรือบริการไหนเหมาะกับโจทย์นี้ แม้คำตอบคือยังไม่ต้องจ้างผมครับ</p></div>
+  <section class="border-b border-[#c9c2b2] bg-ivory px-6 py-14 md:py-20">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan">สำหรับเจ้าของธุรกิจและหัวหน้าทีมขาย</p>
+      <h1 class="mt-3 max-w-4xl font-display text-4xl font-bold text-navy md:text-6xl">ฝ่ายขายของคุณติดปัญหาเรื่องไหน?</h1>
+      <p class="mt-5 max-w-3xl text-lg leading-relaxed text-warm-ink/75">คุณแค่กดเลือกอาการที่ทีมเจอทีละข้อ ใช้เวลาไม่ถึง 2 นาที แล้วผมจะบอกตรงๆ ว่าควรเริ่มจากคลาส ให้ผมวางระบบ หรือดูคลาสฟรีก่อน ส่วนชื่อกับเบอร์โทร ผมขอไว้เป็นข้อสุดท้ายครับ</p>
+    </div>
   </section>
 
-  <section class="px-6 py-12 md:py-20">
+  <section class="px-4 py-10 sm:px-6 md:py-20">
     <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-12">
-      <form id="booking-form" class="rounded-2xl border border-[#c9c2b2] bg-surface p-6 lg:col-span-7 md:p-9" novalidate>
+      <form id="booking-form" class="scroll-mt-24 rounded-2xl border border-[#c9c2b2] bg-surface p-5 sm:p-7 lg:col-span-7 md:p-9" novalidate>
         <input name="honeypot-name" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true" />
         <input name="package" type="hidden" value="" />
         <!--
@@ -43,31 +113,129 @@ const issues = [
         <input type="hidden" id="utm_term" name="utm_term" value="" />
         <input type="hidden" id="fbclid" name="fbclid" value="" />
         <input type="hidden" id="ttclid" name="ttclid" value="" />
+
         <div data-booking-product-context hidden class="mb-6 rounded-2xl border border-coral/35 bg-coral/8 p-4 text-sm leading-6 text-warm-ink/80">
           <p class="font-semibold text-coral">โจทย์ที่คุณกำลังส่ง</p>
-          <p class="mt-1">สนใจ <strong data-booking-product-name class="text-navy"></strong> — กรอกข้อมูลด้านล่างได้เลย ผมจะอ่านโดยยึดบริการนี้เป็นจุดตั้งต้นครับ</p>
+          <p class="mt-1">คุณสนใจ <strong data-booking-product-name class="text-navy"></strong> ผมจะอ่านคำตอบของคุณโดยยึดบริการนี้เป็นจุดตั้งต้นครับ</p>
         </div>
-        <div class="flex items-start justify-between gap-5"><div><h2 class="font-display text-2xl font-bold text-navy">เล่าโจทย์ของคุณสั้นๆ</h2><p class="mt-1 text-sm text-warm-ink/65">กรอกไม่ถึง 2 นาที แล้วผมจะอ่านข้อมูลเพื่อเตรียมคุยให้ตรงเรื่อง</p></div></div>
-        <div class="mt-8 space-y-5">
-          <div class="grid gap-5 sm:grid-cols-2"><label class="field-label">ชื่อของคุณ<input name="name" required autocomplete="name" autocapitalize="words" enterkeyhint="next" class="field" /></label><label class="field-label">เบอร์โทรติดต่อกลับ<input name="phone" required type="tel" inputmode="tel" autocomplete="tel" pattern={"(\\+66|0)[0-9\\s\\-]{8,12}"} title="กรอกเบอร์โทร เช่น 0812345678" enterkeyhint="next" placeholder="เช่น 0812345678" class="field" /></label></div>
-          <label class="field-label">LINE ID <span class="font-normal opacity-60">(ถ้าสะดวกให้ทักไลน์)</span><input name="line" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next" placeholder="เช่น @yourline (ไม่บังคับ)" class="field" /></label>
-          <div class="grid gap-5 sm:grid-cols-2"><label class="field-label">ชื่อบริษัท<input name="company" required autocomplete="organization" enterkeyhint="next" placeholder="เช่น บจก. สยามเครื่องจักรกล" class="field" /></label><label class="field-label">ตำแหน่งของคุณ<select name="position" required class="field"><option value="">เลือกตำแหน่ง</option><option>CEO / เจ้าของกิจการ</option><option>Managing Director</option><option>Sales Director</option><option>Sales Manager</option><option>Marketing Manager</option><option>Operations Manager</option><option>อื่นๆ</option></select></label></div>
-          <label class="field-label">ธุรกิจของคุณทำเกี่ยวกับอะไร<input name="business" required placeholder="เช่น ขายเครื่องจักร B2B, ตัวแทนจำหน่ายอะไหล่" class="field" /></label>
-          <div class="grid gap-5 sm:grid-cols-2"><label class="field-label">ทีมขายกี่คน<select name="team_size" required class="field"><option value="">เลือกขนาดทีม</option><option value="0">ยังไม่มีทีมขาย</option><option value="1-4">1–4 คน</option><option value="5-10">5–10 คน</option><option value="11-20">11–20 คน</option><option value="20+">มากกว่า 20 คน</option></select></label><label class="field-label">งบที่พร้อมลงทุน<select name="budget" required class="field"><option value="">เลือกช่วงงบ</option><option>ยังไม่ได้ตั้งงบ — อยากเห็นโจทย์ก่อน</option><option>ต่ำกว่า ฿50,000</option><option>฿50,000–฿100,000</option><option>฿100,000–฿300,000</option><option>มากกว่า ฿300,000</option></select></label></div>
-          <label class="field-label">ตอนนี้เรื่องไหนติดสุด<select name="issue" required class="field"><option value="">เลือกเรื่องที่ตรงที่สุด</option>{issues.map((issue) => <option value={issue}>{issue}</option>)}</select></label>
-          <AfterHoursField variant="warm" />
-          <label class="flex cursor-pointer items-start gap-3 pt-1"><input name="consent" type="checkbox" required class="checkbox mt-0.5" /><span class="text-sm leading-relaxed text-warm-ink/75">ยินยอมให้ติดต่อกลับตาม <a href="/privacy" class="font-semibold text-cyan underline">นโยบายความเป็นส่วนตัว</a></span></label>
-          <p id="booking-error" class="hidden rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error" role="alert"></p>
-          <!-- ตั้งความคาดหวังก่อนกดส่ง — ลดแรงต้านของคนที่กลัวโดนยัดขาย -->
-          <p class="text-center text-sm leading-relaxed text-warm-ink/65">15 นาที · ไม่มีการขายในสาย · ถ้าธุรกิจคุณยังไม่ถึงเวลาใช้ AI ผมจะบอกตรง ๆ</p>
-          <button id="booking-submit" type="submit" class="btn w-full border-0 bg-[#c43245] py-4 text-base text-white hover:bg-[#ad293a] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral">ส่งข้อมูล — ผมติดต่อกลับภายใน 1 วันทำการ</button>
-          <div class="flex items-center gap-3 text-sm text-warm-ink/60"><span class="h-px flex-1 bg-[#c9c2b2]"></span>หรือสะดวกแชทมากกว่า<span class="h-px flex-1 bg-[#c9c2b2]"></span></div>
-          <a href={SITE.social.line} target="_blank" rel="noopener" data-line-cta class="btn w-full border-0 bg-[#06C755] text-[#072B4E] hover:bg-[#05ad49]">ทัก LINE ได้เลย</a>
-          <a href={SITE.social.whatsapp} target="_blank" rel="noopener" class="btn w-full border border-[#25D366] bg-transparent text-[#072B4E] hover:bg-[#25D366]/10">หรือแชท WhatsApp</a>
+
+        <div class="flex items-center justify-between gap-4 text-sm font-semibold text-warm-ink/60">
+          <p id="booking-progress" aria-live="polite">ข้อ <span data-progress-num>1</span> จาก {TOTAL}</p>
+          <button type="button" data-back class="back-btn" hidden>ย้อนกลับ</button>
         </div>
+        <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-sand" aria-hidden="true"><div data-progress-bar class="progress-bar h-full rounded-full bg-coral" style={`width:${100 / TOTAL}%`}></div></div>
+
+        <!-- ── 1 · เรื่องหลัก ─────────────────────────────────────────── -->
+        <fieldset data-step="1" class="step">
+          <legend class="step-q" tabindex="-1">ตอนนี้เรื่องไหนหนักที่สุด</legend>
+          <p class="step-hint">เลือก 1 ข้อที่ตรงที่สุด</p>
+          <div class="mt-5 grid gap-3 sm:grid-cols-2">
+            {tracks.map((t) => (
+              <label class="choice">
+                <input type="radio" name="track" value={t.value} data-label={t.title} data-example={t.example} data-autonext class="sr-only" />
+                <span class="choice-title">{t.title}</span>
+                <span class="choice-sub">{t.sub}</span>
+              </label>
+            ))}
+          </div>
+          <p class="step-error" role="alert" hidden></p>
+          <button type="button" data-next class="next-btn">ต่อไป</button>
+        </fieldset>
+
+        <!-- ── 2 · อาการ ──────────────────────────────────────────────── -->
+        <fieldset data-step="2" class="step" hidden>
+          <legend class="step-q" tabindex="-1">อาการไหนตรงกับทีมคุณบ้าง</legend>
+          <p class="step-hint">เลือกได้หลายข้อ ถ้าไม่ตรงสักข้อ กดต่อไปแล้วเล่าเองในข้อถัดไปได้ครับ</p>
+          {symptoms.map((g) => (
+            <div data-symptom-group={g.group} class="mt-5 grid gap-3" hidden>
+              {g.items.map((item) => (
+                <label class="choice choice-row">
+                  <input type="checkbox" name="problems" value={item} class="sr-only" />
+                  <span class="choice-check" aria-hidden="true"></span>
+                  <span class="choice-title">{item}</span>
+                </label>
+              ))}
+            </div>
+          ))}
+          <button type="button" data-next class="next-btn">ต่อไป</button>
+        </fieldset>
+
+        <!-- ── 3 · เล่าเหมือนพิมพ์บอก AI ──────────────────────────────── -->
+        <fieldset data-step="3" class="step" hidden>
+          <legend class="step-q" tabindex="-1">เล่าโจทย์ให้ผมฟัง แบบที่คุณพิมพ์บอก AI</legend>
+          <p class="step-hint">คุณเล่าได้เลยว่าธุรกิจขายอะไร ติดอยู่ตรงไหน และอยากให้ดีขึ้นแค่ไหน พิมพ์เป็นภาษาพูดก็ได้ ข้อนี้ข้ามได้ แต่ยิ่งคุณเล่าละเอียด ผมก็ยิ่งเตรียมคำตอบได้ตรงขึ้นครับ</p>
+          <label for="booking-goal" class="sr-only">เล่าโจทย์ของคุณ</label>
+          <textarea id="booking-goal" name="goal" rows="5" maxlength="1500" class="field mt-5 text-base leading-relaxed" enterkeyhint="enter"></textarea>
+          <div class="mt-6 flex flex-wrap items-center gap-3">
+            <button type="button" data-next class="next-btn mt-0">ต่อไป</button>
+            <button type="button" data-next class="skip-btn">ข้ามข้อนี้</button>
+          </div>
+        </fieldset>
+
+        <!-- ── 4 · ขนาดทีม + เวลา ─────────────────────────────────────── -->
+        <fieldset data-step="4" class="step" hidden>
+          <legend class="step-q" tabindex="-1">ทีมของคุณตอนนี้เป็นแบบไหน</legend>
+          <p class="mt-5 font-semibold text-navy" id="team-size-q">ทีมขายมีกี่คน</p>
+          <div class="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-labelledby="team-size-q">
+            {teamSizes.map((s) => (
+              <label class="chip"><input type="radio" name="team_size" value={s.value} data-label={s.label} class="sr-only" />{s.label}</label>
+            ))}
+          </div>
+          <p class="mt-6 font-semibold text-navy" id="timeline-q">อยากเริ่มแก้เมื่อไหร่</p>
+          <div class="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-labelledby="timeline-q">
+            {timelines.map((t) => (
+              <label class="chip"><input type="radio" name="timeline" value={t.label} data-tier={t.tier} class="sr-only" />{t.label}</label>
+            ))}
+          </div>
+          <p class="step-error" role="alert" hidden></p>
+          <button type="button" data-next class="next-btn">ดูคำแนะนำ</button>
+        </fieldset>
+
+        <!-- ── 5 · คำแนะนำเฉพาะตัว + เลือกทางเริ่ม (1-to-many) ─────────── -->
+        <fieldset data-step="5" class="step" hidden>
+          <legend class="step-q" tabindex="-1">จากที่คุณเล่า ผมแนะนำให้เริ่มตรงนี้</legend>
+          <div class="mt-4 rounded-2xl border-l-4 border-cyan bg-sand p-4 text-sm leading-relaxed text-warm-ink/80">
+            <p data-echo></p>
+            <p data-reason class="mt-2 font-semibold text-navy"></p>
+          </div>
+          <p class="mt-6 font-semibold text-navy">คุณอยากเริ่มแบบไหน</p>
+          <div class="mt-3 grid gap-3">
+            {paths.map((p) => (
+              <label class="choice">
+                <input type="radio" name="start_path" value={p.value} data-label={p.title} class="sr-only" />
+                <span class="flex flex-wrap items-center gap-2"><span class="choice-title">{p.title}</span><span data-rec-badge={p.value} class="rec-badge" hidden>ผมแนะนำ</span></span>
+                <span class="choice-sub">{p.sub}</span>
+              </label>
+            ))}
+          </div>
+          <p class="step-error" role="alert" hidden></p>
+          <button type="button" data-next class="next-btn">ต่อไป</button>
+        </fieldset>
+
+        <!-- ── 6 · ข้อมูลติดต่อ (ท้ายสุด) ─────────────────────────────── -->
+        <fieldset data-step="6" class="step" hidden>
+          <legend class="step-q" tabindex="-1">ผมจะโทรกลับพร้อมแผนนี้ เลยขอข้อมูลติดต่ออีก 4 ช่องครับ</legend>
+          <div class="mt-6 space-y-5">
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="field-label">ชื่อผู้ติดต่อ<input name="name" required autocomplete="name" autocapitalize="words" enterkeyhint="next" class="field" /></label>
+              <label class="field-label">ชื่อบริษัท<input name="company" required autocomplete="organization" enterkeyhint="next" placeholder="เช่น บจก. สยามเครื่องจักรกล" class="field" /></label>
+            </div>
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="field-label">ตำแหน่งของคุณ<select name="position" required class="field"><option value="">เลือกตำแหน่ง</option>{positions.map((p) => <option>{p}</option>)}</select></label>
+              <label class="field-label">เบอร์โทรติดต่อกลับ<input name="phone" required type="tel" inputmode="tel" autocomplete="tel" pattern={"(\\+66|0)[0-9\\s\\-]{8,12}"} title="กรอกเบอร์โทร เช่น 0812345678" enterkeyhint="done" placeholder="เช่น 0812345678" class="field" /></label>
+            </div>
+            <AfterHoursField variant="warm" hint={false} />
+            <label class="flex cursor-pointer items-start gap-3 pt-1"><input name="consent" type="checkbox" required class="checkbox mt-0.5" /><span class="text-sm leading-relaxed text-warm-ink/75">ยินยอมให้ติดต่อกลับตาม <a href="/privacy" class="font-semibold text-cyan underline">นโยบายความเป็นส่วนตัว</a></span></label>
+            <p id="booking-error" class="hidden rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error" role="alert"></p>
+            <button id="booking-submit" type="submit" class="btn w-full border-0 bg-[#c43245] py-4 text-base text-white hover:bg-[#ad293a] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral">ส่งโจทย์ให้ผม</button>
+            <p class="text-center text-sm leading-relaxed text-warm-ink/65">ผมโทรกลับภายใน 1 วันทำการ และในสายไม่มีการขายครับ</p>
+          </div>
+        </fieldset>
+
+        <p class="mt-8 border-t border-[#c9c2b2] pt-5 text-center text-sm text-warm-ink/65">สะดวกแชทมากกว่า ทัก <a href={SITE.social.line} target="_blank" rel="noopener" data-line-cta class="font-semibold text-[#05a945] underline">LINE</a> หรือ <a href={SITE.social.whatsapp} target="_blank" rel="noopener" class="font-semibold text-navy underline">WhatsApp</a> ได้เลยครับ</p>
       </form>
 
-      <aside class="lg:col-span-5"><h2 class="font-display text-3xl font-bold text-navy">หลังจากกดส่ง เกิดอะไรต่อ</h2><ol class="mt-6 space-y-4">{['ผมทักกลับเพื่อนัดเวลา ภายใน 1 วันทำการ', 'คุยโจทย์ของคุณ 15 นาที ผมฟังมากกว่าพูด', 'ได้คำแนะนำเส้นทางที่คุ้มสุด — เริ่มเล็กก็ได้ ยังไม่เริ่มก็ได้'].map((item, index) => <li class="flex gap-4 rounded-2xl border border-[#c9c2b2] bg-surface p-5"><span class="font-display text-4xl font-bold text-coral">{index + 1}</span><p class="pt-1 leading-relaxed text-warm-ink/75">{item}</p></li>)}</ol><p class="mt-6 rounded-2xl border-l-4 border-cyan bg-sand p-5 text-sm leading-relaxed text-warm-ink/80"><strong class="text-navy">คุยก่อนได้ ไม่โดนขาย</strong><br />ถ้าโจทย์ของคุณแก้ได้ด้วยตัวเอง ผมจะบอกวิธีให้กลับไปทำต่อได้เลย ไม่ต้องเสียเงินกับผม</p><ProofRail class="mt-6" /></aside>
+      <aside class="lg:col-span-5"><h2 class="font-display text-3xl font-bold text-navy">หลังจากกดส่ง เกิดอะไรต่อ</h2><ol class="mt-6 space-y-4">{['ผมทักกลับเพื่อนัดเวลาภายใน 1 วันทำการ', 'เราคุยโจทย์ของคุณ 15 นาที โดยผมฟังมากกว่าพูด', 'คุณได้ทางเริ่มที่คุ้มที่สุด จะเริ่มเล็กหรือยังไม่เริ่มก็ได้ครับ'].map((item, index) => <li class="flex gap-4 rounded-2xl border border-[#c9c2b2] bg-surface p-5"><span class="font-display text-4xl font-bold text-coral">{index + 1}</span><p class="pt-1 leading-relaxed text-warm-ink/75">{item}</p></li>)}</ol><p class="mt-6 rounded-2xl border-l-4 border-cyan bg-sand p-5 text-sm leading-relaxed text-warm-ink/80"><strong class="text-navy">คุยก่อนได้ ไม่โดนขาย</strong><br />ถ้าโจทย์ของคุณแก้ได้ด้วยตัวเอง ผมจะบอกวิธีให้กลับไปทำต่อได้เลย โดยคุณไม่ต้องเสียเงินกับผมเลย</p><ProofRail class="mt-6" /></aside>
     </div>
     <div id="booking-success" class="mx-auto mt-10 hidden max-w-2xl rounded-2xl border border-coral/40 bg-surface p-8 text-center"><SuccessMark class="mx-auto size-16" /><h2 class="mt-5 font-display text-3xl font-bold text-navy">รับเรื่องแล้ว ขอบคุณครับ</h2><p id="booking-recommendation" class="mt-3 leading-relaxed text-warm-ink/75"></p><a href={SITE.social.line} target="_blank" rel="noopener" class="btn mt-6 border-0 bg-[#06C755] text-white hover:bg-[#05a945]">ทัก LINE OA ต่อ</a><p class="mt-6 border-t border-[#c9c2b2] pt-5 text-sm leading-relaxed text-warm-ink/75">ระหว่างรอผมติดต่อกลับ อ่านหน้านี้ 3 นาทีครับ จะได้รู้จักกันก่อนคุยจริง แล้วคอลแรกของเราจะสั้นลงครึ่งหนึ่ง<br /><a href="/start" class="font-semibold text-cyan underline">รู้จักผมใน 3 นาที →</a></p></div>
   </section>
@@ -75,12 +243,52 @@ const issues = [
 
 <style>
   .field-label { display: grid; gap: .45rem; color: var(--pun-navy); font-size: .95rem; font-weight: 600; }
-  .field { width: 100%; border: 1px solid var(--pun-border); border-radius: .75rem; background: var(--pun-ivory); color: var(--pun-ink); padding: .75rem 1rem; }
+  .field { width: 100%; border: 1px solid var(--pun-border); border-radius: .75rem; background: var(--pun-ivory); color: var(--pun-ink); padding: .75rem 1rem; font-size: 1rem; }
   .field:focus { border-color: var(--pun-coral); outline: 2px solid color-mix(in oklch, var(--pun-coral) 25%, transparent); outline-offset: 2px; }
+
+  .step { margin-top: 1.75rem; min-width: 0; }
+  .step-q { display: block; color: var(--pun-navy); font-family: var(--font-display, inherit); font-size: clamp(1.4rem, 1.1rem + 1.2vw, 1.9rem); font-weight: 700; line-height: 1.35; }
+  .step-q:focus { outline: none; }
+  .step-hint { margin-top: .5rem; color: color-mix(in oklch, var(--pun-ink) 65%, transparent); font-size: .95rem; line-height: 1.6; }
+  .step-error { margin-top: 1rem; border-radius: .75rem; border: 1px solid color-mix(in oklch, var(--pun-coral) 45%, transparent); background: color-mix(in oklch, var(--pun-coral) 8%, transparent); padding: .75rem 1rem; color: #ad293a; font-size: .9rem; font-weight: 600; }
+
+  /* การ์ดตัวเลือก — input ซ่อนแบบ sr-only ยังโฟกัสด้วยคีย์บอร์ดได้ จึงวาด focus ring ที่การ์ดแทน */
+  .choice { display: grid; gap: .3rem; cursor: pointer; border: 1.5px solid var(--pun-border); border-radius: 1rem; background: var(--pun-ivory); padding: 1rem 1.1rem; min-height: 3.25rem; transition: border-color .15s, background-color .15s, transform .1s; -webkit-tap-highlight-color: transparent; }
+  .choice:hover { border-color: color-mix(in oklch, var(--pun-coral) 55%, var(--pun-border)); }
+  .choice:active { transform: scale(.985); }
+  .choice:has(input:checked) { border-color: var(--pun-coral); background: color-mix(in oklch, var(--pun-coral) 9%, var(--pun-ivory)); }
+  .choice:has(input:focus-visible), .chip:has(input:focus-visible) { outline: 3px solid color-mix(in oklch, var(--pun-coral) 45%, transparent); outline-offset: 2px; }
+  .choice-title { color: var(--pun-navy); font-weight: 700; line-height: 1.45; }
+  .choice-sub { color: color-mix(in oklch, var(--pun-ink) 68%, transparent); font-size: .9rem; line-height: 1.55; }
+  .choice-row { grid-template-columns: auto 1fr; align-items: center; gap: .85rem; }
+  .choice-row .choice-title { font-weight: 600; }
+  .choice-check { width: 1.35rem; height: 1.35rem; border: 1.5px solid var(--pun-border); border-radius: .4rem; background: var(--pun-surface, #fff); display: grid; place-items: center; }
+  .choice:has(input:checked) .choice-check { border-color: var(--pun-coral); background: var(--pun-coral); }
+  .choice:has(input:checked) .choice-check::after { content: ''; width: .4rem; height: .7rem; border: solid #fff; border-width: 0 2px 2px 0; transform: translateY(-1px) rotate(45deg); }
+
+  .chip { cursor: pointer; border: 1.5px solid var(--pun-border); border-radius: 999px; background: var(--pun-ivory); padding: .6rem 1.05rem; color: var(--pun-navy); font-weight: 600; font-size: .95rem; min-height: 2.75rem; display: inline-flex; align-items: center; -webkit-tap-highlight-color: transparent; transition: border-color .15s, background-color .15s; }
+  .chip:has(input:checked) { border-color: var(--pun-coral); background: var(--pun-coral); color: #fff; }
+
+  .rec-badge { border-radius: 999px; background: var(--pun-coral); color: #fff; font-size: .75rem; font-weight: 700; padding: .15rem .6rem; }
+
+  .next-btn { margin-top: 1.5rem; min-height: 3rem; border-radius: .75rem; background: #c43245; color: #fff; font-weight: 700; padding: .75rem 2rem; transition: background-color .15s, transform .1s; }
+  .next-btn:hover { background: #ad293a; }
+  .next-btn:active, .skip-btn:active, .back-btn:active { transform: scale(.97); }
+  .next-btn:focus-visible, .skip-btn:focus-visible, .back-btn:focus-visible { outline: 3px solid color-mix(in oklch, var(--pun-coral) 45%, transparent); outline-offset: 2px; }
+  .skip-btn { min-height: 3rem; padding: .75rem 1rem; color: color-mix(in oklch, var(--pun-ink) 65%, transparent); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+  .back-btn { min-height: 2.75rem; padding: .25rem .5rem; color: var(--pun-navy); font-weight: 600; }
+  .back-btn::before { content: '‹ '; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .step:not([hidden]) { animation: step-in .24s cubic-bezier(.2, .8, .2, 1); }
+    .progress-bar { transition: width .3s cubic-bezier(.2, .8, .2, 1); }
+  }
+  @keyframes step-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 </style>
 
 <script>
   import { foldAfterHours } from '../scripts/after-hours';
+  import { makeReference, submitLeadFallback } from '../scripts/lead-fallback';
 
   const form = document.getElementById('booking-form') as HTMLFormElement | null;
   const success = document.getElementById('booking-success');
@@ -91,6 +299,7 @@ const issues = [
   const productContextName = document.querySelector<HTMLElement>('[data-booking-product-name]');
   const packageInput = form?.elements.namedItem('package') as HTMLInputElement | null;
   const WEBHOOK = 'https://form-hook.punnattapatch.com/webhook/intake-form-v2';
+  const SUBMIT_LABEL = submit?.textContent ?? '';
 
   const PRODUCT_CONTEXT = {
     T1: { name: 'T1 · Sales Psychology : ขายดีด้วยจิตวิทยาการขายแบบที่ปรึกษา', route: '/services/t1-sales-skills' },
@@ -127,12 +336,111 @@ const issues = [
     if (productContextPanel) productContextPanel.hidden = false;
   }
 
-  // Fallback เมื่อ n8n ล่ม → เขียน lead เข้า Supabase ตรงผ่าน RPC submit_lead
-  // (SECURITY DEFINER, anon-callable) — datastore เดียวกับที่ dashboard อ่าน
-  // anon key เป็น public by design · แบบเดียวกับ intake-form.astro
-  const SUPABASE_FALLBACK_RPC = 'https://yykocvhorgcgzaluuldn.supabase.co/rest/v1/rpc/submit_lead';
-  const SUPABASE_ANON_KEY =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5a29jdmhvcmdjZ3phbHV1bGRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjYwNTYsImV4cCI6MjA5NTgwMjA1Nn0.04ya1crnMRK6SgLfwhhxIp14DQ1n_ZkY5Fj-urTsv1E';
+  // ── ฟอร์มถามทีละข้อ ─────────────────────────────────────────────────────
+  type StartPath = 'class' | 'system' | 'free' | 'help';
+  const steps = [...(form?.querySelectorAll<HTMLElement>('[data-step]') ?? [])];
+  const progressNum = form?.querySelector<HTMLElement>('[data-progress-num]');
+  const progressBar = form?.querySelector<HTMLElement>('[data-progress-bar]');
+  const backBtn = form?.querySelector<HTMLButtonElement>('[data-back]');
+  const goal = form?.querySelector<HTMLTextAreaElement>('textarea[name="goal"]');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let current = 0;
+  let pathTouched = false;
+
+  const checked = (name: string) => form?.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`) ?? null;
+  const val = (name: string) => checked(name)?.value ?? '';
+  // เฉพาะอาการในกลุ่มที่มองเห็น — เปลี่ยน track แล้วของกลุ่มเก่าไม่ติดไป
+  const picked = () =>
+    [...(form?.querySelectorAll<HTMLInputElement>('[data-symptom-group]:not([hidden]) input[name="problems"]:checked') ?? [])].map((i) => i.value);
+
+  const GROUPS: Record<string, string[]> = { team: ['team'], ai: ['ai'], both: ['team', 'ai'], solo: ['solo'] };
+
+  function recommend(): StartPath {
+    if (productCode) return productCode === 'C1' ? 'system' : 'class';
+    const track = val('track');
+    if (track === 'solo' || checked('timeline')?.dataset.tier === 'COLD') return 'free';
+    if (track === 'ai') return picked().length <= 2 && checked('timeline')?.dataset.tier === 'HOT' ? 'system' : 'class';
+    return 'class';
+  }
+
+  function reasonFor(path: StartPath): string {
+    const track = val('track');
+    if (path === 'system') return 'โจทย์ของคุณชัดพอให้ผมวางระบบจบในวันเดียว แล้วทีมได้ใช้จริงตั้งแต่วันนั้นเลยครับ';
+    if (path === 'free') return 'คุณจะเห็นภาพทั้งหมดจากคลาสฟรีก่อน แล้วค่อยตัดสินใจลงเงินทีหลังครับ';
+    if (track === 'ai') return 'ทีมได้ลองสร้างระบบด้วยมือตัวเองในคลาสก่อน แล้วค่อยเลือกว่าจะให้ผมวางเพิ่มตรงไหนครับ';
+    if (track === 'both') return 'ผมแนะนำให้เริ่มที่ทีมขายก่อน เพราะพอทีมเข้าเส้นแล้ว AI จะช่วยงานซ้ำได้เต็มที่ครับ';
+    return 'ทีมขายจะเปลี่ยนเร็วที่สุดเมื่อทุกคนในทีมเรียนวิธีเดียวกันในวันเดียวครับ';
+  }
+
+  function syncSymptoms() {
+    const show = GROUPS[val('track')] ?? [];
+    form?.querySelectorAll<HTMLElement>('[data-symptom-group]').forEach((g) => {
+      g.hidden = !show.includes(g.dataset.symptomGroup ?? '');
+    });
+  }
+
+  function syncRecommendation() {
+    const rec = recommend();
+    const size = checked('team_size')?.dataset.label ?? '';
+    const timeline = val('timeline');
+    const p = picked();
+    const echo = form?.querySelector<HTMLElement>('[data-echo]');
+    const reason = form?.querySelector<HTMLElement>('[data-reason]');
+    if (echo) {
+      const team = size === 'ยังไม่มีทีมขาย' || !size ? 'ตอนนี้คุณยังไม่มีทีมขาย' : `ทีมคุณมีเซลล์ ${size}`;
+      const pain = p.length ? ` เจออยู่ ${p.length} อาการ โดยอาการแรกคือ “${p[0]}”` : '';
+      const when = timeline === 'ยังศึกษาข้อมูลอยู่' ? ' และคุณยังศึกษาข้อมูลอยู่' : ` และอยากเริ่มแก้${timeline}`;
+      echo.textContent = team + pain + when; // textContent — คำตอบลูกค้าห้ามเข้า innerHTML
+    }
+    if (reason) reason.textContent = reasonFor(rec);
+    form?.querySelectorAll<HTMLElement>('[data-rec-badge]').forEach((b) => { b.hidden = b.dataset.recBadge !== rec; });
+    if (!pathTouched) {
+      const target = form?.querySelector<HTMLInputElement>(`input[name="start_path"][value="${rec}"]`);
+      if (target) target.checked = true;
+    }
+  }
+
+  function show(i: number, focus = true) {
+    current = Math.max(0, Math.min(i, steps.length - 1));
+    steps.forEach((s, n) => { s.hidden = n !== current; });
+    if (progressNum) progressNum.textContent = String(current + 1);
+    if (progressBar) progressBar.style.width = `${((current + 1) / steps.length) * 100}%`;
+    if (backBtn) backBtn.hidden = current === 0;
+    if (current === 1) syncSymptoms();
+    if (current === 2 && goal) goal.placeholder = checked('track')?.dataset.example ?? '';
+    if (current === 3 && val('track') === 'solo' && !val('team_size')) {
+      const none = form?.querySelector<HTMLInputElement>('input[name="team_size"][value="0"]');
+      if (none) none.checked = true;
+    }
+    if (current === 4) syncRecommendation();
+    if (!focus || !form) return;
+    // ขั้นยาวบนมือถือ — เลื่อนหัวฟอร์มกลับเข้าจอก่อน แล้วย้ายโฟกัสไปที่คำถาม (screen reader อ่านคำถามใหม่)
+    if (form.getBoundingClientRect().top < 0) form.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
+    steps[current].querySelector<HTMLElement>('legend')?.focus({ preventScroll: true });
+    (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.('Booking Step', { props: { step: String(current + 1) } });
+  }
+
+  function stepError(i: number): string {
+    if (i === 0 && !val('track')) return 'เลือก 1 ข้อที่ตรงที่สุดก่อนครับ';
+    if (i === 3 && (!val('team_size') || !val('timeline'))) return 'เลือกขนาดทีมและเวลาที่อยากเริ่มก่อนครับ';
+    if (i === 4 && !val('start_path')) return 'เลือกทางที่อยากเริ่มก่อนครับ';
+    return '';
+  }
+
+  function next() {
+    const msg = stepError(current);
+    const box = steps[current]?.querySelector<HTMLElement>('.step-error');
+    if (box) { box.textContent = msg; box.hidden = !msg; }
+    if (!msg) show(current + 1);
+  }
+
+  form?.querySelectorAll<HTMLButtonElement>('[data-next]').forEach((b) => b.addEventListener('click', next));
+  backBtn?.addEventListener('click', () => show(current - 1));
+  form?.querySelectorAll<HTMLInputElement>('input[name="start_path"]').forEach((r) => r.addEventListener('change', () => { pathTouched = true; }));
+  // ข้อ 1 แตะแล้วไปต่อเอง — ผูกกับ pointer เท่านั้น เพราะกดลูกศรบนคีย์บอร์ดก็ยิง change/click ทุกครั้งที่เลื่อน
+  form?.querySelectorAll<HTMLInputElement>('input[data-autonext]').forEach((r) => {
+    r.closest('label')?.addEventListener('pointerup', () => setTimeout(() => { if (r.checked && steps[current]?.contains(r)) next(); }, 180));
+  });
 
   /** อ่านคุกกี้ที่ Meta Pixel วางไว้ (_fbp / _fbc) — ส่งไปให้ server ใช้กับ Conversions API */
   function fbCookie(name: string): string {
@@ -140,82 +448,54 @@ const issues = [
     return hit ? decodeURIComponent(hit[1]) : '';
   }
 
-  function makeReference(): string {
-    const stamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 12);
-    return `PN-${stamp}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
-  }
-
-  /**
-   * ⚠️ Fallback ข้าม node "Flatten Body1" + "Normalize Aliases" ของ n8n ไปเลย
-   * แปลว่า **ไม่มีใครแปลง alias ให้** — payload ที่ยิงเข้า RPC ตรงๆ ต้อง canonical ครบเอง
-   * ไม่งั้น lead จะลงตาราง leads แบบไม่มีเบอร์ = ติดต่อกลับไม่ได้
-   * (ดู docs/INTAKE-DATA-CONTRACT.md ตารางแม่)
-   */
-  function toCanonical(payload: Record<string, unknown>, reference: string) {
-    return {
-      ...payload,
-      // canonical คือ submittedAt (camelCase) ไม่ใช่ submitted_at
-      submittedAt: payload.submitted_at ?? new Date().toISOString(),
-      comment: [payload.comment, payload.business ? `ธุรกิจ: ${payload.business}` : '']
-        .filter(Boolean)
-        .join(' · '),
-      reference,
-      fallback_reason: 'n8n-unreachable',
-    };
-  }
-
-  async function postSupabaseLead(payload: Record<string, unknown>, reference: string, timeoutMs: number): Promise<boolean> {
-    const ctrl = new AbortController();
-    const kill = setTimeout(() => ctrl.abort(), timeoutMs);
-    try {
-      const res = await fetch(SUPABASE_FALLBACK_RPC, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-        },
-        body: JSON.stringify({ payload: toCanonical(payload, reference) }),
-        signal: ctrl.signal,
-        keepalive: true,
-      });
-      clearTimeout(kill);
-      return res.ok;
-    } catch (err) {
-      clearTimeout(kill);
-      console.error('[booking] supabase fallback failed', err);
-      return false;
-    }
-  }
+  const SUCCESS_LINE: Record<StartPath, string> = {
+    class: 'ผมจะอ่านโจทย์ของคุณก่อน แล้วโทรไปบอกว่าคลาสไหนตรงกับทีมคุณที่สุด และรอบไหนเรียนได้ครับ',
+    system: 'ผมจะอ่านโจทย์ของคุณก่อน แล้วโทรไปช่วยเลือกระบบไม่เกิน 2 เรื่องที่ควรวางในวันแรกครับ',
+    free: 'ผมลงชื่อคุณไว้แล้ว พอเปิดคลาสฟรีออนไลน์รอบแรก ผมจะแจ้งวันให้ทันทีครับ',
+    help: 'ผมจะอ่านโจทย์ของคุณก่อน แล้วโทรคุย 15 นาทีเพื่อบอกตรงๆ ว่าทางไหนคุ้มที่สุดครับ',
+  };
 
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
+    // กด Enter ระหว่างทาง (เช่นบน radio) = ไปข้อถัดไป ไม่ใช่ส่งฟอร์ม
+    if (current !== steps.length - 1) { next(); return; }
     if (!form.reportValidity()) return;
     if ((new FormData(form).get('honeypot-name') as string)?.trim()) return;
     const data = new FormData(form);
-    const payload = Object.fromEntries(data.entries());
-    // ออกรหัสอ้างอิงตั้งแต่ตรงนี้ (เดิมออกทีหลังตอน fallback) เพราะมันคือ event_id ที่ทั้ง
-    // pixel ในเบราว์เซอร์และ Conversions API ฝั่ง server ต้องใช้ตัวเดียวกัน Meta ถึงจะ dedupe ได้
+    const payload: Record<string, unknown> = Object.fromEntries(data.entries());
+    // ออกรหัสอ้างอิงตั้งแต่ตรงนี้ เพราะมันคือ event_id ที่ทั้ง pixel ในเบราว์เซอร์และ
+    // Conversions API ฝั่ง server ต้องใช้ตัวเดียวกัน Meta ถึงจะ dedupe ได้
     const reference = makeReference();
     // เบอร์เก็บเป็นตัวเลขล้วน (คง +66 ไว้) — เว้นวรรค/ขีดที่คนพิมพ์มาไม่ต้องไปถึง CRM
     payload.phone = String(payload.phone || '').replace(/[\s()-]/g, '');
+    const startPath = (val('start_path') || recommend()) as StartPath;
+    const story = String(payload.goal || '').trim();
+    delete payload.goal;
     const productNote = productContext && productCode
       ? `สนใจ ${productContext.name}${productIntent ? ` · ${INTENT_LABELS[productIntent]}` : ''}`
       : '';
     Object.assign(payload, {
-      // Canonical aliases — shared intake flow reads company/problems (see docs/INTAKE-DATA-CONTRACT.md)
-      company: ((payload.company as string) || '').trim() || (payload.business as string) || '',
-      industry: payload.business || '',
-      problems: (payload.issue as string) || '',
+      // Canonical keys — pipeline + submit_lead อ่านชื่อพวกนี้ (docs/INTAKE-DATA-CONTRACT.md)
+      company: String(payload.company || '').trim(),
+      problems: picked(),
+      tier: startPath === 'free' ? 'COLD' : checked('timeline')?.dataset.tier || '',
       source: 'website-booking', source_page: 'website-booking', booking_type: 'daruma-qualification',
       package: packageInput?.value || '',
-      comment: productNote,
-      // canonical คือ submittedAt (camelCase) — Flatten Body1 อ่าน submittedAt → sentAt เท่านั้น
-      // คง submitted_at ไว้ด้วยเพื่อ backward-compat กับอะไรก็ตามที่อ่าน key เดิมอยู่
+      // โจทย์ที่ลูกค้าพิมพ์เองต้องอยู่ใน comment — submit_lead ลง crm_notes จาก comment/message เท่านั้น
+      // (ถ้าส่งเป็น goal จะขึ้นแค่การ์ด Telegram แต่ไม่ลง CRM) · problems ลง pain_points
+      comment: [
+        story ? `โจทย์ที่เล่า: ${story}` : '',
+        `เรื่องหลัก: ${checked('track')?.dataset.label ?? '-'}`,
+        `อยากเริ่ม: ${checked('start_path')?.dataset.label ?? '-'}${startPath !== recommend() ? ` (ระบบแนะนำ ${recommend()})` : ''}`,
+        productNote,
+      ].filter(Boolean).join(' / '),
+      // canonical คือ submittedAt (camelCase) · คง submitted_at ไว้ด้วยเพื่อ backward-compat
       submittedAt: new Date().toISOString(),
       submitted_at: new Date().toISOString(), path: `${window.location.pathname}${window.location.search}`,
       referrer: document.referrer,
-      recommended_path: productContext?.route || 'free-consultation',
+      // recommended_path = หน้า Product ต้นทาง (ถ้ามา) ไม่งั้นทางที่ฟอร์มแนะนำ · start_path = ทางที่ลูกค้าเลือกเอง
+      recommended_path: productContext?.route || recommend(),
+      start_path: startPath,
       _meta: {
         reference,
         page: window.location.pathname,
@@ -225,47 +505,45 @@ const issues = [
         fbc: fbCookie('_fbc'),
       },
     });
-    // ⏰ นอกเวลาทำการ — พ่วงเข้า comment เพราะ n8n Flatten Body1 ยังไม่รู้จัก key นี้
-    foldAfterHours(payload as Record<string, unknown>);
+    // ⏰ นอกเวลาทำการ — พ่วงเข้า comment ด้วย (ดู after-hours.ts)
+    foldAfterHours(payload);
     if (submit) { submit.disabled = true; submit.textContent = 'กำลังส่ง...'; }
     if (error) error.classList.add('hidden');
 
-    // ── ชั้น 1: n8n (primary) — payload ตรงนี้ห้ามแตะ Flatten Body1 อ่านจาก key พวกนี้
+    // ── ชั้น 1: form-hook (primary) — ห้ามเปลี่ยนชื่อ key ที่ pipeline อ่าน
     let status: 'sent-primary' | 'sent-fallback' | 'failed' = 'failed';
     try {
       const response = await fetch(WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), keepalive: true });
       if (response.ok) status = 'sent-primary';
     } catch (err) {
-      console.error('[booking] n8n post failed', err);
+      console.error('[booking] form-hook post failed', err);
     }
 
-    // ── ชั้น 2: Supabase RPC ตรง — ใช้เมื่อ n8n ไม่ตอบเท่านั้น (reference ออกไปแล้วด้านบน)
+    // ── ชั้น 2: Supabase RPC ตรง (helper กลาง) — ใช้เมื่อ form-hook ไม่ตอบเท่านั้น
+    // RPC อ่าน payload->>'problems' เป็น text → array จะลง pain_points เป็นสตริง JSON จึงต่อเป็นข้อความก่อน
     if (status === 'failed') {
-      if (await postSupabaseLead(payload as Record<string, unknown>, reference, 8000)) status = 'sent-fallback';
+      const flat = { ...payload, problems: picked().join(' | ') };
+      if (await submitLeadFallback(flat, reference)) status = 'sent-fallback';
     }
 
     if (status === 'failed') {
       if (error) {
-        error.innerHTML = 'ระบบรับข้อมูลขัดข้องชั่วคราว — <strong>ข้อมูลยังไม่ถึงผม</strong> กรุณาทัก LINE OA เพื่อส่งโจทย์ให้ผมโดยตรง (ข้อมูลที่กรอกไว้ยังอยู่ กดส่งซ้ำได้)';
+        error.textContent = 'ระบบรับข้อมูลขัดข้องชั่วคราว ข้อมูลยังไม่ถึงผม รบกวนทัก LINE OA ส่งโจทย์ให้ผมโดยตรงครับ คำตอบที่กรอกไว้ยังอยู่ กดส่งซ้ำได้';
         error.classList.remove('hidden');
         error.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
-      if (submit) { submit.disabled = false; submit.textContent = 'ส่งข้อมูล — ผมติดต่อกลับภายใน 1 วันทำการ'; }
+      if (submit) { submit.disabled = false; submit.textContent = SUBMIT_LABEL; }
       return;
     }
 
-    (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.('Booking Submit', { props: { source: 'website-booking', status } });
+    (window as unknown as { plausible?: (...args: unknown[]) => void }).plausible?.('Booking Submit', { props: { source: 'website-booking', status, start_path: startPath } });
 
     // แสดง success ในหน้าเดิม — ใช้เป็นตาข่ายเมื่อ redirect ด้านล่างไม่ทำงาน
     const revealInlineSuccess = () => {
       if (form.classList.contains('hidden')) return;
       form.classList.add('hidden');
-      // 2026-09-04: ตาข่ายนี้เคยรับแค่ "ผู้ใช้เห็นหน้าขอบคุณ" แต่ไม่ได้บอก pixel
-      // → lead ที่มาจาก in-app browser ของ IG/LINE (ซึ่งกลืน redirect ไป /thank-you
-      // จนต้องมีตาข่ายนี้ตั้งแต่แรก) กลายเป็น conversion ที่ Meta มองไม่เห็นเลย
-      // ทั้งที่ traffic จากแอดเกือบทั้งหมดมาจากเบราว์เซอร์ในแอปพวกนี้
-      // ใช้ eventID = reference ตัวเดียวกับที่ /thank-you ใช้ → ถ้า redirect ทำงานทีหลัง
-      // Meta จะ dedupe ให้เอง ไม่นับซ้ำ
+      // in-app browser ของ IG/LINE กลืน redirect → ต้องยิง pixel ที่นี่ด้วย
+      // eventID = reference ตัวเดียวกับ /thank-you → Meta dedupe ให้เอง ไม่นับซ้ำ
       const trackWindow = window as unknown as {
         fbq?: (...args: unknown[]) => void;
         ttq?: { track: (...args: unknown[]) => void };
@@ -281,27 +559,27 @@ const issues = [
       if (typeof trackWindow.ttq?.track === 'function') {
         trackWindow.ttq.track('CompleteRegistration', { content_id: reference, currency: 'THB', value: 0 });
       }
-      if (recommendation) recommendation.textContent = 'ผมจะอ่านโจทย์ของคุณก่อน แล้วคุยกันตรงๆ ว่าทีมควรเริ่มจาก In-house, โปรแกรมเต็ม หรือยังมีอะไรที่กลับไปทำเองได้ครับ';
+      if (recommendation) recommendation.textContent = SUCCESS_LINE[startPath];
       success?.classList.remove('hidden');
       // เข้าทาง fallback = Telegram ไม่เด้ง ผมอาจเห็นช้า → ให้ reference ไว้อ้างอิงตอนทัก LINE
       if (status === 'sent-fallback' && success) {
         const note = document.createElement('p');
         note.className = 'mt-3 text-sm';
-        note.innerHTML = `บันทึกข้อมูลไว้แล้วครับ · Reference: <code>${reference}</code><br/>ถ้าอยากให้ผมตอบเร็วขึ้น ทัก LINE OA พร้อมส่งรหัสนี้มาได้เลย`;
+        note.append('ผมบันทึกข้อมูลไว้แล้วครับ รหัสอ้างอิงของคุณคือ ');
+        const code = document.createElement('code');
+        code.textContent = reference;
+        note.append(code, document.createElement('br'), 'ถ้าอยากให้ผมตอบเร็วขึ้น ทัก LINE OA พร้อมส่งรหัสนี้มาได้เลย');
         success.appendChild(note);
       }
       success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     };
 
-    // ── ไป /thank-you เพื่อให้ Lead ยิงบน URL เดียวกับที่ Ads Manager ตั้งเป็น
-    // conversion goal (แบบเดียวกับ intake-form.astro) · พก ref + utm ไปด้วยเพื่อ match
+    // ── ไป /thank-you เพื่อให้ Lead ยิงบน URL เดียวกับที่ Ads Manager ตั้งเป็น conversion goal
     // ⚠️ redirect เฉพาะตอนบันทึกสำเร็จเท่านั้น — status failed คืนค่าไปแล้วด้านบน
-    // ไม่งั้นจะยิง conversion ปลอมให้ pixel ทั้งที่ lead ไม่ถึงเรา
     const thankYouUrl = new URL('/thank-you', window.location.origin);
     thankYouUrl.searchParams.set('type', 'booking');
     thankYouUrl.searchParams.set('ref', reference);
-    // 2026-09-02: พก product code ไป /thank-you เพื่อให้ Lead pixel มี content_name รายคลาส
-    // (Custom Conversion แยก T1/T2/T3/T4 ได้ ตามกติกาใน agent/workstreams/ads-funnel-tracking.md)
+    // พก product code ไป /thank-you เพื่อให้ Lead pixel มี content_name รายคลาส
     if (productCode) thankYouUrl.searchParams.set('package', productCode);
     ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'ttclid'].forEach((k) => {
       const v = String(payload[k] ?? '');
