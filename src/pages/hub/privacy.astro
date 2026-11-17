@@ -55,6 +55,7 @@ const description = `นโยบายความเป็นส่วนต�
         <p>บางข้อความอาจถูกตอบโดยผู้ช่วย AI ที่ทำงานอัตโนมัติ ผู้ช่วยจะแจ้งว่าตัวเองเป็นระบบอัตโนมัติ และจะไม่แอบอ้างเป็นคน หากลูกค้าอยากคุยกับคนจริง พิมพ์บอกในแชทได้ทุกเวลา แล้วทีมธุรกิจจะเข้ามาตอบแทน</p>
         <p>ธุรกิจเลือกได้ว่าจะให้ AI ทำงานแบบไหน คือปิด AI ทั้งหมด ให้ AI เขียนร่างแล้วรอให้คนอนุมัติก่อนส่ง หรือให้ตอบอัตโนมัติ</p>
         <p>สำหรับความคิดเห็นบนโพสต์ของธุรกิจ ผู้ดูแลเพจเลือกได้ว่าจะปิด AI ให้ AI เขียนคำตอบให้ทีมตรวจก่อนส่ง หรือให้ AI ตอบต่อสาธารณะเอง คำตอบจะใช้เฉพาะข้อมูลที่ธุรกิจใส่ไว้ จะไม่ถามหรือเปิดเผยข้อมูลส่วนตัว และจะชวนให้ทักข้อความส่วนตัวเมื่อเป็นเรื่องเฉพาะตัว</p>
+        <p>ผู้ดูแลเพจตั้งกฎคีย์เวิร์ดได้ด้วย เมื่อมีคนแสดงความคิดเห็นที่มีคำที่ธุรกิจเลือกไว้ ระบบจะส่งข้อความส่วนตัวที่ผู้ดูแลเขียนไว้ถึงคนนั้น 1 ครั้งต่อความคิดเห็น ภายใน 7 วันตามที่ Meta กำหนด และอาจตอบใต้ความคิดเห็นด้วยข้อความที่ผู้ดูแลเขียนไว้ ข้อความเหล่านี้ AI ไม่ได้เป็นคนเขียน</p>
         <p>เมื่อ AI ต้องเขียนคำตอบ ข้อความของลูกค้าหรือความคิดเห็นนั้นจะถูกส่งไปยังผู้ให้บริการโมเดล AI ผ่าน OpenRouter เพื่อสร้างคำตอบนั้นเพียงครั้งเดียว ข้อมูลนี้ไม่ถูกนำไปใช้ฝึกโมเดลสาธารณะ</p>
 
         <h2>เราใช้ข้อมูลเพื่ออะไร</h2>
@@ -148,6 +149,7 @@ const description = `นโยบายความเป็นส่วนต�
         <p>Some replies are written by an AI assistant that runs automatically. The assistant tells people that it is automated and does not pretend to be a human. Anyone can ask for a human at any time by saying so in the chat, and the business's staff will take over.</p>
         <p>Each business chooses one mode: AI off, draft only (staff approve each reply before it is sent), or automatic replies.</p>
         <p>For comments on the business's own posts, the Page administrator chooses: AI off, AI suggestions that staff check before sending, or AI public replies. These replies use only the information the business entered, never ask for or reveal personal details, and invite people to send a private message about anything personal.</p>
+        <p>A Page administrator can also set keyword rules. When a comment contains a word the business chose, the service sends that person one private message the administrator wrote, once per comment and within the 7 days Meta allows, and may post a short public reply the administrator wrote. The AI does not write these messages.</p>
         <p>When the AI needs to write a reply, the content of the message or comment is sent to an AI model provider reached through OpenRouter, only to generate that reply. This data is not used to train public AI models.</p>
 
         <h3>How we use the data</h3>
