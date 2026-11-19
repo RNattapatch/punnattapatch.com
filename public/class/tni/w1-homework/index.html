@@ -418,7 +418,7 @@
       { id: "S2", t: "AGENTS.md ครบและปลอดภัย", d: "ครบ 6 กล่อง ไม่เกิน 40 บรรทัด ไม่มีข้อมูลส่วนบุคคล",
         ok: () => boxesAll(boxesState()) && nonEmpty(agentsText()).length <= CONFIG.maxLines && piiFound().length === 0 },
       { id: "S3", t: "บอกสิ่งที่ AI หาเองไม่เจอ", d: "กล่อง 3 มีอย่างน้อย 3 ข้อที่เป็นเรื่องเฉพาะขององค์กร", ok: () => countSpecific(boxesState()[2]) >= 3 },
-      { id: "S4", t: "ใช้จริงแล้ว", d: "ภาพที่ 2 และ 3 คนละวัน และมีคำสั่งอย่างน้อย 1 ครั้งที่เล่าด้วย Story Spine",
+      { id: "S4", t: "ใช้จริงแล้ว", d: "ภาพที่ 2 และ 3 คนละวัน และมีคำสั่งอย่างน้อย 1 ครั้งที่เล่าครบ 5W1H",
         ok: () => !!getShot("img2") && !!getShot("img3") && filled("d2") && filled("d3") && S.d2 !== S.d3 && (!!S.story2 || !!S.story3) },
       { id: "S5", t: "ตรวจแล้วปรับแฟ้ม", d: "ชี้จุดที่ AI พลาด บอกว่าตรวจกับอะไร และบอกบรรทัดที่เพิ่มหรือแก้ใน AGENTS.md",
         ok: () => ["ai_miss", "ai_check", "ai_fix"].every(filled) },
@@ -596,7 +596,7 @@
         <p class="msg" id="msg-${k}" role="status" aria-live="polite"></p>
         ${c.date ? `<div class="field"><label for="d-${k}">${esc(c.dateLabel)}</label><input type="date" id="d-${k}" data-k="${c.date}" /></div>` : ""}
         ${c.dup ? '<p class="warn" id="dwarn" hidden>วันที่นี้ซ้ำกับครั้งที่ 1 ให้เลือกวันอื่นนะครับ</p>' : ""}
-        ${c.story ? `<label class="check"><input type="checkbox" data-k="${c.story}" /><span>คำสั่งครั้งนี้เล่าว่างานนี้ทำให้ใคร และเขาเอาไปทำอะไร (Story Spine)</span></label>` : ""}
+        ${c.story ? `<label class="check"><input type="checkbox" data-k="${c.story}" /><span>คำสั่งครั้งนี้เล่าครบ 5W1H อย่างน้อยบอกว่าใครจะใช้ (Who) และใช้ทำอะไร (Why)</span></label>` : ""}
       </div>`;
     }
     function planHTML() {
@@ -824,7 +824,7 @@
           ? new D.Paragraph({ spacing: { after: 80 }, children: [imgRun(D, o, 520)] })
           : para("ยังไม่มีภาพ", { color: FAINT }));
         if (c.date) ch.push(para(`วันที่: ${thDate(S[c.date]) || "ยังไม่ได้กรอก"}`));
-        if (c.story) ch.push(para(`คำสั่งแบบ Story Spine: ${S[c.story] ? "ติ๊กแล้ว" : "ยังไม่ได้ติ๊ก"}`));
+        if (c.story) ch.push(para(`คำสั่งแบบ 5W1H: ${S[c.story] ? "ติ๊กแล้ว" : "ยังไม่ได้ติ๊ก"}`));
       });
 
       ch.push(h("4 AI พลาดตรงไหน แล้วปรับแฟ้มยังไง"));
