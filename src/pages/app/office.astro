@@ -1,0 +1,301 @@
+---
+// AI Office — read-only operating board for departments, rooms, tasks, alerts and standards.
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
+import AppNav from '../../components/app/AppNav.astro';
+---
+<DashboardLayout title="AI Office — Pun">
+  <script is:inline async src="https://accounts.google.com/gsi/client"></script>
+  <WarRoomGate appId="office-app" title="AI Office" icon="🏢" event="office:authed" />
+
+  <style is:global>
+    #office-app { --of-accent: #0f766e; --of-wash: #ecf8f5; --of-ink: #115e59; }
+    [data-theme="pundark"] #office-app { --of-wash: color-mix(in srgb, var(--of-accent) 22%, transparent); --of-ink: #99f6e4; }
+    .of-section { border: 1px solid color-mix(in srgb, currentColor 10%, transparent); border-radius: 1rem; background: var(--color-base-100); }
+    .of-stat { min-width: 0; border: 1px solid color-mix(in srgb, currentColor 10%, transparent); border-radius: .9rem; padding: .8rem .9rem; background: var(--color-base-100); }
+    .of-stat-value { font-variant-numeric: tabular-nums; line-height: 1; }
+    .of-filter[aria-selected="true"] { background: var(--of-accent); border-color: var(--of-accent); color: white; }
+    .of-task { border: 1px solid color-mix(in srgb, currentColor 10%, transparent); border-radius: .8rem; background: var(--color-base-100); overflow: clip; }
+    .of-task > summary { min-height: 44px; cursor: pointer; list-style: none; padding: .7rem .8rem; }
+    .of-task > summary::-webkit-details-marker { display: none; }
+    .of-task > summary::before { content: '›'; display: inline-block; margin-right: .45rem; color: var(--of-accent); transition: transform 120ms ease; }
+    .of-task[open] > summary::before { transform: rotate(90deg); }
+    .of-task[open] > summary { background: var(--of-wash); }
+    .of-task summary:focus-visible { outline: 2px solid var(--color-brand-coral); outline-offset: -2px; }
+    .of-copy { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .of-metric-progress { height: .4rem; width: 100%; color: var(--of-accent); }
+    .of-metric-progress::-webkit-progress-value { background: var(--of-accent); }
+    .of-child-list { margin-left: .9rem; border-left: 2px solid color-mix(in srgb, var(--of-accent) 24%, transparent); padding-left: .75rem; }
+    @media (min-width: 768px) { .of-stat { padding: 1rem 1.1rem; } }
+  </style>
+
+  <div id="office-app" class="hidden min-h-dvh bg-base-200/40">
+    <AppNav app="office">
+      <span id="of-nav-health" class="badge badge-ghost my-auto hidden sm:inline-flex" role="status">…</span>
+      <button id="of-refresh" class="btn btn-ghost btn-sm tap-44 my-auto" aria-label="รีเฟรช" title="รีเฟรช">⟳</button>
+    </AppNav>
+
+    <main class="mx-auto max-w-7xl space-y-5 p-3 sm:p-4 lg:space-y-6 lg:p-6">
+      <header class="space-y-3">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[.16em] opacity-55">ภาพรวมการทำงาน</p>
+          <h1 class="font-display text-2xl font-bold sm:text-3xl">AI Office</h1>
+          <p class="text-sm opacity-65">ฝ่ายประจำ ห้องโปรเจกต์ งาน และเกณฑ์ตรวจในหน้าเดียว · อ่านอย่างเดียว</p>
+        </div>
+        <div id="of-summary" class="grid grid-cols-2 gap-2 lg:grid-cols-4"></div>
+        <div id="of-desk" class="flex flex-wrap gap-2" aria-label="สถานะ office desk"></div>
+      </header>
+
+      <section aria-labelledby="of-departments-title">
+        <div class="mb-3 flex items-end justify-between gap-3">
+          <div><p class="text-xs opacity-55">4 ฝ่ายประจำ</p><h2 id="of-departments-title" class="font-display text-xl font-bold">ฝ่าย</h2></div>
+          <p class="text-xs opacity-55">ผลงานเดือนนี้ · เวลาไทย</p>
+        </div>
+        <div id="of-departments" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"></div>
+      </section>
+
+      <section class="of-section p-3 sm:p-4" aria-labelledby="of-rooms-title">
+        <div class="mb-3"><p class="text-xs opacity-55">ห้องเปิดขึ้นก่อน</p><h2 id="of-rooms-title" class="font-display text-xl font-bold">ห้องโปรเจกต์</h2></div>
+        <div id="of-rooms" class="grid gap-3 md:grid-cols-2 xl:grid-cols-3"></div>
+      </section>
+
+      <div class="grid items-start gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
+        <section class="of-section min-w-0 p-3 sm:p-4" aria-labelledby="of-tasks-title">
+          <div class="mb-3 flex flex-wrap items-end justify-between gap-3">
+            <div><p class="text-xs opacity-55">งานแม่ก่อน · งานลูกซ้อนใต้แม่</p><h2 id="of-tasks-title" class="font-display text-xl font-bold">งานทั้งหมด</h2></div>
+            <div id="of-task-filters" class="flex flex-wrap gap-1" role="tablist" aria-label="กรองงาน"></div>
+          </div>
+          <ul id="of-tasks" class="m-0 list-none space-y-2 p-0" aria-live="polite"></ul>
+        </section>
+
+        <section class="of-section p-3 sm:p-4" aria-labelledby="of-alerts-title">
+          <div class="mb-3"><p class="text-xs opacity-55">เหตุที่เปิดอยู่ขึ้นก่อน</p><h2 id="of-alerts-title" class="font-display text-xl font-bold">เหตุด่วน</h2></div>
+          <div id="of-alerts" class="space-y-2"></div>
+        </section>
+      </div>
+
+      <section class="of-section p-3 sm:p-4" aria-labelledby="of-rubrics-title">
+        <div class="mb-3"><p class="text-xs opacity-55">หัวหน้าตรวจงานทุกชิ้นตามรายการนี้</p><h2 id="of-rubrics-title" class="font-display text-xl font-bold">เกณฑ์งาน</h2></div>
+        <div id="of-rubrics" class="grid gap-3 lg:grid-cols-2"></div>
+      </section>
+    </main>
+
+    <div class="toast toast-end z-50"><div id="of-toast" class="alert alert-error hidden text-sm shadow-lg" role="alert"></div></div>
+  </div>
+
+  <script>
+    import { onAuthed } from '../../scripts/dashboard/on-authed';
+    import { loadOffice, type OfficeData } from '../../scripts/office/data';
+    import {
+      ALERT_LEVEL_META, ALERT_STATUS_LABEL, GRADE_LABEL, GRADE_TONE, SOURCE_LABEL, TASK_VIEWS,
+      filterTasks, firstPassGoodByDepartment, fmtWhen, groupTasks, heartbeatHealth, isQuietActive,
+      officeCounts, openTaskCountByDepartment, roomDueText, runCountsByDepartment, statusMeta,
+      type DepartmentSlug, type OfficeAlert, type OfficeRoom, type OfficeTask, type TaskView,
+    } from '../../scripts/office/logic';
+
+    const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector(selector) as T;
+    function h<K extends keyof HTMLElementTagNameMap>(tag: K, props: Record<string, string> = {}, ...children: (Node | string | null | false | undefined)[]): HTMLElementTagNameMap[K] {
+      const element = document.createElement(tag);
+      for (const [key, value] of Object.entries(props)) key === 'class' ? (element.className = value) : element.setAttribute(key, value);
+      for (const child of children) if (child !== null && child !== false && child !== undefined) element.append(child);
+      return element;
+    }
+
+    const empty: OfficeData = { tasks: [], alerts: [], departments: [], rooms: [], runs: [], rubrics: [], grades: [], desk: null, quiet: null };
+    const state = { data: empty, view: 'all' as TaskView };
+    let wired = false;
+    let timer: number | undefined;
+
+    const safeUrl = (value: string | null | undefined) => {
+      if (!value) return null;
+      try { const url = new URL(value); return ['https:', 'http:'].includes(url.protocol) ? url.href : null; } catch { return null; }
+    };
+    const deptNames = () => Object.fromEntries(state.data.departments.map((department) => [department.slug, department.name_th])) as Partial<Record<DepartmentSlug, string>>;
+    const deptName = (slug: DepartmentSlug | null) => slug ? deptNames()[slug] || slug : 'ยังไม่เข้าฝ่าย';
+    const isAlertOpen = (alert: OfficeAlert) => ['new', 'notified', 'calling'].includes(alert.status);
+
+    function showError(error: unknown) {
+      const toast = $('#of-toast');
+      toast.textContent = (error as Error)?.message || 'โหลดข้อมูลไม่สำเร็จ';
+      toast.classList.remove('hidden');
+      window.setTimeout(() => toast.classList.add('hidden'), 5000);
+    }
+
+    function stat(label: string, value: string, note: string, tone = '') {
+      return h('article', { class: 'of-stat' },
+        h('p', { class: 'text-xs opacity-60' }, label),
+        h('p', { class: `of-stat-value mt-1 font-display text-2xl font-bold sm:text-3xl ${tone}` }, value),
+        h('p', { class: 'mt-1 truncate text-xs opacity-55' }, note));
+    }
+
+    function renderSummary() {
+      const counts = officeCounts(state.data.tasks, state.data.alerts);
+      const health = heartbeatHealth(state.data.desk);
+      $('#of-summary').replaceChildren(
+        stat('รอคุณปัน', String(counts.review), 'งานสถานะรอตรวจ', counts.review ? 'text-warning' : ''),
+        stat('กำลังทำ', String(counts.working), 'รอคิว + กำลังทำ'),
+        stat('เหตุด่วนเปิดอยู่', String(counts.openAlerts), 'ใหม่ · แจ้งแล้ว · กำลังโทร', counts.openAlerts ? 'text-error' : ''),
+        stat('Desk', health.state === 'normal' ? 'ปกติ' : health.state === 'slow' ? 'ช้า' : 'หยุด', health.label, health.state === 'normal' ? 'text-success' : health.state === 'slow' ? 'text-warning' : 'text-error'),
+      );
+      const desk = state.data.desk;
+      const quiet = isQuietActive(state.data.quiet);
+      $('#of-desk').replaceChildren(
+        h('span', { class: `badge ${health.state === 'normal' ? 'badge-success' : health.state === 'slow' ? 'badge-warning' : 'badge-error'}` }, `Heartbeat ${health.label}`),
+        h('span', { class: `badge ${desk?.whatsapp ? 'badge-success' : 'badge-ghost'}` }, desk?.whatsapp ? 'WhatsApp พร้อม' : 'WhatsApp ยังไม่พร้อม'),
+        h('span', { class: `badge ${desk?.phone ? 'badge-success' : 'badge-ghost'}` }, desk?.phone ? 'เบอร์โทรพร้อม' : 'เบอร์โทรยังไม่พร้อม'),
+        h('span', { class: `badge ${quiet ? 'badge-warning' : 'badge-ghost'}` }, quiet ? `ห้ามรบกวนถึง ${fmtWhen(state.data.quiet?.until)}` : 'ห้ามรบกวนปิด'),
+      );
+      const nav = $('#of-nav-health');
+      nav.className = `badge my-auto hidden sm:inline-flex ${health.state === 'normal' ? 'badge-success' : health.state === 'slow' ? 'badge-warning' : 'badge-error'}`;
+      nav.textContent = health.state === 'normal' ? 'Desk ปกติ' : `Desk ${health.state === 'slow' ? 'ช้า' : 'หยุด'}`;
+    }
+
+    function renderDepartments() {
+      const open = openTaskCountByDepartment(state.data.tasks);
+      const quality = firstPassGoodByDepartment(state.data.tasks);
+      const runs = runCountsByDepartment(state.data.runs);
+      $('#of-departments').replaceChildren(...state.data.departments.map((department) => {
+        const metric = quality[department.slug];
+        const used = runs[department.slug] || 0;
+        const percent = metric.percent == null ? '—' : `${metric.percent}%`;
+        return h('article', { class: 'of-section space-y-3 p-4' },
+          h('div', { class: 'flex items-start justify-between gap-3' },
+            h('div', {}, h('h3', { class: 'font-display text-lg font-bold' }, department.name_th), h('p', { class: 'text-xs opacity-55' }, `หัวหน้า ${department.head_model}`)),
+            h('span', { class: 'badge badge-ghost' }, `เปิด ${open[department.slug] || 0}`)),
+          h('div', { class: 'grid grid-cols-2 gap-3' },
+            h('div', {}, h('p', { class: 'text-xs opacity-55' }, 'ดีตั้งแต่รอบแรก'), h('p', { class: 'font-display text-2xl font-bold' }, percent), h('p', { class: 'text-xs opacity-50' }, metric.total ? `${metric.good}/${metric.total} งาน` : 'ยังไม่มีเกรดเดือนนี้')),
+            h('div', {}, h('p', { class: 'text-xs opacity-55' }, 'Run เดือนนี้'), h('p', { class: 'font-display text-2xl font-bold' }, `${used}/${department.monthly_run_cap}`), h('progress', { class: 'of-metric-progress progress mt-2', value: String(used), max: String(department.monthly_run_cap), 'aria-label': `ใช้ run ${used} จาก ${department.monthly_run_cap}` }))),
+        );
+      }));
+    }
+
+    function roomLink(label: string, value: string | null, icon = '↗') {
+      const url = safeUrl(value);
+      return url ? h('a', { class: 'link link-hover text-sm', href: url, target: '_blank', rel: 'noopener noreferrer' }, `${icon} ${label}`) : null;
+    }
+
+    function renderRooms() {
+      const rooms = [...state.data.rooms].sort((a, b) => Number(b.status === 'open') - Number(a.status === 'open') || b.created_at.localeCompare(a.created_at));
+      $('#of-rooms').replaceChildren(...(rooms.length ? rooms.map((room: OfficeRoom) => h('article', { class: `rounded-box border border-base-300 p-3 ${room.status === 'closed' ? 'opacity-55' : ''}` },
+        h('div', { class: 'flex items-start justify-between gap-2' },
+          h('div', {}, h('h3', { class: 'font-semibold leading-snug' }, room.title), h('p', { class: 'text-xs opacity-55' }, deptName(room.department))),
+          h('span', { class: `badge badge-sm ${room.status === 'open' ? 'badge-success' : 'badge-ghost'}` }, room.status === 'open' ? 'เปิด' : 'ปิด')),
+        room.goal ? h('p', { class: 'mt-2 text-sm opacity-75' }, room.goal) : null,
+        h('div', { class: 'mt-3 flex flex-wrap gap-x-3 gap-y-1' },
+          room.due_date ? h('span', { class: `text-sm ${roomDueText(room.due_date).startsWith('เลย') ? 'text-error' : 'opacity-70'}` }, `ส่ง ${room.due_date} · ${roomDueText(room.due_date)}`) : h('span', { class: 'text-sm opacity-45' }, 'ยังไม่กำหนดวันส่ง'),
+          roomLink('Drive', room.drive_url, '📁'),
+          ...room.links.map((link) => roomLink(link.label, link.url)).filter(Boolean)),
+        room.folder ? h('p', { class: 'mt-2 of-copy font-mono text-xs opacity-45' }, room.folder) : null,
+      )) : [h('p', { class: 'py-6 text-center text-sm opacity-55' }, 'ยังไม่มีห้องโปรเจกต์')]));
+    }
+
+    function resultLine(label: string, value: string | null | undefined) {
+      return value ? h('div', {}, h('p', { class: 'text-xs font-semibold opacity-55' }, label), h('p', { class: 'of-copy text-sm' }, value)) : null;
+    }
+
+    function renderTask(task: OfficeTask, child = false) {
+      const meta = statusMeta(task.status);
+      const history = state.data.grades.filter((grade) => grade.task_id === task.id);
+      const result = task.result || {};
+      const details = h('details', { class: 'of-task' },
+        h('summary', {},
+          h('span', { class: 'inline-flex max-w-[calc(100%-1.5rem)] flex-col align-top sm:flex-row sm:items-center sm:gap-2' },
+            h('span', { class: 'min-w-0 font-semibold leading-snug' }, child ? '↳ ' : '', h('span', { class: 'font-mono text-xs opacity-55' }, task.no), ` ${task.title}`),
+            h('span', { class: 'mt-1 flex flex-wrap items-center gap-1 sm:mt-0' },
+              h('span', { class: `badge badge-sm ${meta.tone}` }, meta.label),
+              task.grade ? h('span', { class: `badge badge-sm ${GRADE_TONE[task.grade]}` }, GRADE_LABEL[task.grade]) : null,
+              h('span', { class: 'text-xs opacity-50' }, `${deptName(task.department)} · ${SOURCE_LABEL[task.source]} · ${fmtWhen(task.updated_at)}`)))),
+        h('div', { class: 'space-y-4 border-t border-base-300 p-3 sm:p-4' },
+          resultLine('Brief', task.brief),
+          resultLine('สรุปสำหรับพูด', result.speak),
+          resultLine('ผลลัพธ์', result.text || result.error),
+          resultLine('ขั้นถัดไป', result.next_step),
+          result.sources?.length ? h('div', {}, h('p', { class: 'text-xs font-semibold opacity-55' }, 'แหล่งข้อมูล'), h('ul', { class: 'list-disc space-y-1 pl-5 text-sm' }, ...result.sources.map((source) => h('li', { class: 'of-copy' }, source)))) : null,
+          task.output_path ? h('div', {}, h('p', { class: 'text-xs font-semibold opacity-55' }, 'ไฟล์ผลลัพธ์'), h('code', { class: 'of-copy text-xs' }, task.output_path)) : null,
+          history.length ? h('div', {}, h('p', { class: 'text-xs font-semibold opacity-55' }, 'ประวัติเกรด'), h('ol', { class: 'mt-1 space-y-1 text-sm' }, ...history.map((grade) => h('li', {},
+            h('span', { class: `badge badge-xs mr-1 ${GRADE_TONE[grade.level]}` }, GRADE_LABEL[grade.level]),
+            `${grade.grader === 'pun' ? 'คุณปัน' : grade.grader === 'head' ? 'หัวหน้าฝ่าย' : 'ด่านระบบ'} · ${fmtWhen(grade.created_at)}`,
+            grade.reasons.length ? h('span', { class: 'opacity-70' }, ` · ${grade.reasons.join(' / ')}`) : null)))) : h('p', { class: 'text-xs opacity-45' }, 'ยังไม่มีประวัติเกรด')),
+      );
+      return h('li', {}, details);
+    }
+
+    function renderTaskFilters() {
+      const tasks = state.data.tasks;
+      const count = (view: TaskView) => filterTasks(tasks, view).length;
+      $('#of-task-filters').replaceChildren(...TASK_VIEWS.map((view) => h('button', {
+        class: 'of-filter btn btn-xs tap-44', type: 'button', role: 'tab', 'data-view': view.id, 'aria-selected': String(state.view === view.id),
+      }, `${view.label} ${count(view.id)}`)));
+    }
+
+    function renderTasks() {
+      const groups = groupTasks(filterTasks(state.data.tasks, state.view));
+      const rows = groups.map((group) => h('li', { class: 'space-y-2' },
+        renderTask(group.task).firstElementChild!,
+        group.children.length ? h('ul', { class: 'of-child-list m-0 list-none space-y-2' }, ...group.children.map((child) => renderTask(child))) : null));
+      $('#of-tasks').replaceChildren(...(rows.length ? rows : [h('li', { class: 'py-8 text-center text-sm opacity-55' }, 'ไม่มีงานในมุมนี้')]));
+    }
+
+    function renderAlerts() {
+      const alerts = [...state.data.alerts].sort((a, b) => Number(isAlertOpen(b)) - Number(isAlertOpen(a)) || b.created_at.localeCompare(a.created_at));
+      $('#of-alerts').replaceChildren(...(alerts.length ? alerts.map((alert) => {
+        const level = ALERT_LEVEL_META[alert.level];
+        return h('article', { class: `rounded-box border border-base-300 p-3 ${isAlertOpen(alert) ? '' : 'opacity-55'}` },
+          h('div', { class: 'flex flex-wrap items-center gap-1' }, h('span', { class: `badge badge-sm ${level.tone}` }, level.label), h('span', { class: 'badge badge-sm badge-ghost' }, ALERT_STATUS_LABEL[alert.status])),
+          h('h3', { class: 'mt-2 font-semibold leading-snug' }, alert.title),
+          alert.detail ? h('p', { class: 'mt-1 of-copy text-sm opacity-70' }, alert.detail) : null,
+          h('p', { class: 'mt-2 text-xs opacity-50' }, `${alert.source} · โทร ${alert.calls} สาย · ${fmtWhen(alert.updated_at)}`));
+      }) : [h('p', { class: 'py-6 text-center text-sm opacity-55' }, 'ไม่มีเหตุด่วน')]));
+    }
+
+    function renderRubrics() {
+      $('#of-rubrics').replaceChildren(...(state.data.rubrics.length ? state.data.rubrics.map((rubric) => h('article', { class: 'rounded-box border border-base-300 p-4' },
+        h('div', { class: 'flex flex-wrap items-start justify-between gap-2' }, h('h3', { class: 'font-display text-lg font-bold' }, rubric.title_th), !rubric.pun_reviewed ? h('span', { class: 'badge badge-warning' }, 'ยังไม่ผ่านตาคุณปัน') : h('span', { class: 'badge badge-success' }, 'คุณปันตรวจแล้ว')),
+        h('ol', { class: 'mt-3 list-decimal space-y-1 pl-5 text-sm' }, ...rubric.criteria.map((criterion) => h('li', {}, criterion))),
+        h('div', { class: 'mt-3 flex flex-wrap items-center gap-1 text-xs' }, h('span', { class: 'opacity-55' }, 'ด่านบังคับ'), ...(rubric.gates.length ? rubric.gates.map((gate) => h('span', { class: 'badge badge-sm badge-ghost' }, gate)) : [h('span', { class: 'opacity-45' }, 'ไม่มี')]))
+      )) : [h('p', { class: 'py-6 text-center text-sm opacity-55' }, 'ยังไม่มีเกณฑ์งาน')]));
+    }
+
+    function renderAll() {
+      renderSummary(); renderDepartments(); renderRooms(); renderTaskFilters(); renderTasks(); renderAlerts(); renderRubrics();
+    }
+
+    function wire() {
+      if (wired) return;
+      wired = true;
+      $('#of-task-filters').addEventListener('click', (event) => {
+        const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-view]');
+        if (!button) return;
+        state.view = button.dataset.view as TaskView;
+        renderTaskFilters(); renderTasks();
+      });
+      $('#of-refresh').addEventListener('click', () => void refresh().catch(showError));
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) void refresh().catch(() => {}); });
+    }
+
+    async function refresh() {
+      state.data = await loadOffice();
+      renderAll();
+    }
+
+    async function boot() {
+      if (import.meta.env.DEV && new URLSearchParams(location.search).has('demo')) return;
+      wire();
+      try { await refresh(); } catch (error) { showError(error); }
+      window.clearInterval(timer);
+      timer = window.setInterval(() => void refresh().catch(() => {}), 15_000);
+    }
+    onAuthed('office-app', 'office:authed', boot);
+
+    // DEV ONLY: fixture without signing in. The guarded import is removed from production builds.
+    if (import.meta.env.DEV && new URLSearchParams(location.search).has('demo')) {
+      void import('../../scripts/office/demo').then(({ DEMO_OFFICE }) => {
+        document.getElementById('wr-gate')?.classList.add('hidden');
+        $('#office-app').classList.remove('hidden');
+        wire();
+        state.data = DEMO_OFFICE;
+        renderAll();
+      }).catch(showError);
+    }
+  </script>
+</DashboardLayout>
