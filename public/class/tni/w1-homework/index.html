@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex" />
+  <title>การบ้านสัปดาห์ที่ 1 AI Pro Office</title>
+  <meta name="description" content="การบ้านสัปดาห์ที่ 1 AGENTS.md ฉบับเต็ม สำหรับคลาส AI Pro Office" />
+  <meta name="theme-color" content="#072B4E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Prompt:wght@600;700;800&display=swap" rel="stylesheet" />
+  <!--
+    การบ้าน W1 คลาส AI Pro Office (TNI × FutureSkill 2569)
+    ผู้เรียนเปิดจาก QR กรอกบนมือถือหรือแล็ปท็อป ข้อมูลอยู่ในเบราว์เซอร์เครื่องนั้นเท่านั้น (localStorage) ไม่มี backend และไม่ส่งข้อมูลไปที่ไหน
+    ไฟล์ Word สร้างในเบราว์เซอร์ด้วย docx@9.5.1 (CDN ตัวเดียว) ไม่ใช้ Tailwind runtime (CSP ไม่มี unsafe-eval)
+    ปรับวันส่ง/ลิงก์ FutureSkill ได้ที่ CONFIG ด้านล่างใน script
+  -->
+  <style>
+    :root {
+      --navy: #072B4E; --coral: #DD4155; --bg: #F7F5F0; --ink: #1B2430; --muted: #5B6573;
+      --line: #DDD8CC; --field: #BAC3CF; --ok: #1E7A4C; --okbg: #E4F3EA;
+      --warn: #6B4500; --warnbg: #FFF1CC; --bad: #A3122A;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Sukhumvit Set", "Noto Sans Thai", sans-serif; font-size: 18px; line-height: 1.6; min-height: 100vh; }
+    h1, h2, h3 { font-family: "Prompt", "Sukhumvit Set", "Noto Sans Thai", sans-serif; color: var(--navy); line-height: 1.3; margin: 0; }
+    button, input, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    [hidden] { display: none !important; }
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; opacity: 0; pointer-events: none; }
+    :focus-visible { outline: 3px solid var(--navy); outline-offset: 2px; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+
+    .hero { background: var(--navy); color: #fff; padding: 26px 0 24px; }
+    .hero .kicker { margin: 0 0 6px; font-weight: 600; color: #C9D8E8; font-size: 16px; }
+    .hero h1 { color: #fff; font-size: 26px; }
+    .hero .due { margin: 10px 0 0; color: #E9F0F7; font-size: 17px; }
+    .hero .due b { color: #fff; }
+    @media (min-width: 600px) { .hero h1 { font-size: 32px; } }
+    main { padding: 18px 0 40px; }
+
+    .card { background: #fff; border: 1.5px solid var(--line); border-radius: 18px; padding: 18px 16px; margin: 0 0 16px; position: relative; }
+    .sh { display: flex; align-items: center; gap: 10px 12px; flex-wrap: wrap; margin: 0 0 10px; }
+    .num { width: 40px; height: 40px; border-radius: 50%; background: var(--navy); color: #fff; font-family: "Prompt", sans-serif; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center; flex: none; }
+    .sh h2 { font-size: 22px; flex: 1 1 200px; }
+    .tick { background: var(--okbg); color: var(--ok); border-radius: 999px; padding: 4px 12px; font-size: 15px; font-weight: 700; }
+    .tag { background: #ECEFF4; color: var(--navy); border-radius: 999px; padding: 4px 12px; font-size: 15px; font-weight: 700; }
+    .intro h2 { font-size: 21px; margin: 0 0 8px; }
+    .intro h3 { font-size: 19px; margin: 14px 0 4px; }
+    .how { margin: 6px 0 10px; padding-left: 24px; }
+    .how li { margin: 4px 0; }
+    .muted { color: var(--muted); margin: 0; }
+    .pTxt { font-weight: 700; color: var(--navy); margin: 16px 0 6px; }
+    .bar { height: 14px; background: #E8E4DA; border-radius: 999px; overflow: hidden; }
+    .bar i { display: block; height: 100%; width: 0; background: var(--coral); border-radius: 999px; transition: width .2s ease-out; }
+
+    .hint { font-size: 16px; color: var(--muted); margin: 0 0 8px; }
+    .field { margin: 0 0 14px; }
+    label { display: block; font-weight: 600; color: var(--navy); margin: 0 0 4px; font-size: 18px; }
+    input[type="text"], input[type="date"], textarea { width: 100%; min-width: 0; background: #fff; border: 1.5px solid var(--field); border-radius: 12px; padding: 12px 14px; min-height: 52px; font-size: 18px; line-height: 1.5; color: var(--ink); }
+    input[type="date"] { -webkit-appearance: none; appearance: none; }
+    textarea { display: block; resize: none; overflow: hidden; }
+    input::placeholder, textarea::placeholder { color: #6B7485; opacity: 1; }
+    input:focus, textarea:focus { outline: 3px solid #A9C4DE; outline-offset: 1px; border-color: var(--navy); }
+
+    .seg { display: flex; gap: 6px; background: #EFECE4; padding: 4px; border-radius: 14px; margin: 0 0 14px; }
+    .seg button { flex: 1; min-height: 48px; border: 0; background: transparent; border-radius: 11px; font-size: 17px; font-weight: 700; color: var(--muted); }
+    .seg button[aria-pressed="true"] { background: #fff; color: var(--navy); box-shadow: 0 1px 3px rgba(7, 43, 78, .2); }
+    .box { border-left: 5px solid var(--navy); padding: 2px 0 2px 14px; margin: 0 0 20px; }
+    .box label { font-size: 19px; }
+    .bc { display: flex; gap: 8px 10px; align-items: center; flex-wrap: wrap; margin: 6px 0 0; font-size: 16px; color: var(--muted); }
+    .pill { display: inline-block; border-radius: 999px; padding: 3px 12px; font-size: 15px; font-weight: 700; background: #ECEFF4; color: var(--navy); }
+    .pill.good { background: var(--okbg); color: var(--ok); }
+    .cnt { font-size: 16px; color: var(--muted); margin: 8px 0 6px; font-weight: 600; }
+    .cnt.over { color: var(--bad); }
+    .prev { border: 1.5px solid var(--line); border-radius: 14px; background: #FBFAF7; padding: 12px 14px; margin: 6px 0 12px; }
+    .prevHd { font-weight: 700; color: var(--navy); margin: 0 0 6px; }
+    .prev pre { margin: 0; white-space: pre-wrap; word-break: break-word; font: inherit; font-size: 16px; line-height: 1.6; max-height: 380px; overflow: auto; color: var(--ink); }
+    .warn { background: var(--warnbg); color: var(--warn); border: 1.5px solid #E7C15C; border-radius: 14px; padding: 12px 14px; font-size: 17px; margin: 10px 0; }
+    .msg { min-height: 24px; margin: 10px 0 0; font-weight: 700; color: var(--ok); font-size: 17px; }
+    .msg.bad { color: var(--bad); }
+    .btns { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0 0; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; text-align: center; min-height: 52px; padding: 10px 18px; border-radius: 14px; border: 2px solid var(--navy); background: #fff; color: var(--navy); font-size: 18px; font-weight: 700; flex: 1 1 200px; margin: 0; }
+    .btn-primary { background: var(--navy); color: #fff; }
+    .btn-danger { border-color: var(--bad); color: var(--bad); }
+    .btn-big { min-height: 60px; font-size: 20px; flex: 1 1 100%; }
+    .btn:disabled { opacity: .6; cursor: wait; }
+
+    .shot { position: relative; border: 1.5px dashed #AEB9C8; border-radius: 16px; padding: 14px; margin: 0 0 16px; background: #FCFCFA; }
+    .shh { font-size: 18px; margin: 0 0 8px; }
+    .shotprev { background: #EEF2F7; border-radius: 12px; min-height: 110px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 0 0 12px; }
+    .shotprev img { display: block; max-width: 100%; height: auto; max-height: 420px; }
+    .empty { color: var(--muted); margin: 0; }
+    .sr:focus-visible ~ .btns .fileBtn { outline: 3px solid var(--navy); outline-offset: 2px; }
+    .check { display: flex; gap: 10px; align-items: flex-start; font-size: 17px; margin: 12px 0 0; cursor: pointer; font-weight: 500; color: var(--ink); }
+    .check input { width: 24px; height: 24px; margin: 2px 0 0; flex: none; accent-color: var(--navy); }
+
+    .col { border-radius: 18px; padding: 14px 12px 6px; margin: 0 0 14px; border: 1.5px solid transparent; }
+    .colHd { display: flex; align-items: center; gap: 10px; margin: 0 0 6px; }
+    .colHd h3 { font-size: 20px; }
+    .colHd svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+    .nb { width: 44px; height: 44px; border-radius: 50%; color: #fff; font-family: "Prompt", sans-serif; font-weight: 800; font-size: 17px; display: flex; align-items: center; justify-content: center; flex: none; }
+    .en { font-family: "Prompt", sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .6px; }
+    .sub { font-size: 16px; margin: 0 0 10px; }
+    .slot { margin: 0 0 12px; }
+    .slot.num { display: flex; gap: 8px; align-items: flex-start; }
+    .slot.num .sn { width: 28px; height: 28px; margin-top: 12px; border-radius: 50%; color: #fff; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; flex: none; }
+    .slot.num > div { flex: 1; min-width: 0; }
+    .pl { display: inline-block; border-radius: 8px; padding: 3px 10px; font-weight: 700; font-size: 15px; margin: 0 0 6px; }
+    .timebox { display: inline-block; background: #fff; border-radius: 999px; padding: 3px 12px; font-size: 15px; font-weight: 700; color: var(--navy); margin: 0 0 10px; }
+    .commit { background: #FDECEC; border: 1.5px solid #F5C6C8; border-radius: 18px; padding: 16px 14px; margin: 4px 0 6px; }
+    .commit h3 { color: #9E0007; font-size: 20px; }
+    .commit .sub { color: #5A2A2C; margin: 0 0 8px; }
+    .commit textarea { border-color: #F0B3B6; background: #fff; }
+    .rk { width: 52px; height: 52px; border-radius: 50%; background: #C80008; color: #fff; display: flex; align-items: center; justify-content: center; flex: none; }
+    .rk svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .rub { list-style: none; margin: 0; padding: 0; }
+    .rrow { display: flex; gap: 10px 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; padding: 12px 0; border-bottom: 1px solid #ECE8DF; }
+    .rrow:last-child { border-bottom: 0; }
+    .rtxt { flex: 1 1 220px; min-width: 0; }
+    .rtxt b { color: var(--navy); }
+    .rd { display: block; font-size: 16px; color: var(--muted); }
+    .ladder { list-style: none; margin: 0; padding: 0; }
+    .ladder li { display: flex; gap: 10px; align-items: center; padding: 8px 12px; border-radius: 12px; margin: 0 0 6px; background: #F3F5F8; font-size: 17px; }
+    .ladder li b { min-width: 24px; font-family: "Prompt", sans-serif; }
+    .ladder li.on { background: var(--navy); color: #fff; }
+    .lvl { background: #FBFAF7; border: 1.5px solid var(--line); border-radius: 16px; padding: 14px; margin: 14px 0 0; }
+    .lvlNow { font-size: 19px; color: var(--navy); margin: 0 0 10px; font-weight: 600; }
+    .lvlNow b { font-family: "Prompt", sans-serif; font-size: 26px; margin-right: 6px; }
+    .note { font-size: 16px; color: var(--muted); margin: 10px 0 0; }
+    .danger { border-top: 1.5px dashed var(--line); margin-top: 18px; padding-top: 14px; }
+    .nextbox { background: #F3F5F8; border-radius: 14px; padding: 14px; margin: 14px 0 0; }
+    .nextbox p { margin: 0 0 8px; }
+    .nextbox a { color: var(--navy); font-weight: 700; word-break: break-all; }
+    footer { text-align: center; color: var(--muted); font-size: 15px; padding: 0 16px 40px; }
+
+    #print { display: none; }
+    @media print {
+      @page { size: A4; margin: 16mm; }
+      body * { visibility: hidden; }
+      #print, #print * { visibility: visible; }
+      #print { display: block !important; position: absolute; left: 0; top: 0; width: 100%; color: #000; background: #fff; font-size: 12pt; line-height: 1.5; }
+      #print h1 { font-size: 18pt; color: #072B4E; margin: 0 0 4px; }
+      #print h2 { font-size: 14pt; color: #072B4E; margin: 14px 0 6px; break-after: avoid; }
+      #print p { margin: 0 0 4px; }
+      #print .pe { color: #666; }
+      #print pre { white-space: pre-wrap; word-break: break-word; margin: 0 0 8px; padding: 8px; border: 1px solid #bbb; font: inherit; font-size: 11pt; }
+      #print .fig { break-inside: avoid; margin: 6px 0 4px; }
+      #print img { display: block; width: 100%; height: auto; }
+      #print .cap { font-size: 11pt; color: #333; }
+      #print table { width: 100%; border-collapse: collapse; margin: 6px 0; }
+      #print td, #print th { border: 1px solid #bbb; padding: 4px 6px; vertical-align: top; font-size: 11pt; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <p class="kicker">AI Pro Office สัปดาห์ที่ 1</p>
+      <h1>การบ้านสัปดาห์ที่ 1 : AGENTS.md ฉบับเต็ม + ใช้กับงานจริง</h1>
+      <p class="due">ส่งในระบบ FutureSkill ภายใน <b id="due"></b></p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div id="storeNote" class="warn" role="status" hidden>เบราว์เซอร์นี้ไม่ให้เก็บข้อมูลในเครื่อง ข้อมูลจะหายเมื่อปิดหน้านี้ ดาวน์โหลดไฟล์ Word ไว้ก่อนปิดนะครับ</div>
+
+    <section class="card intro" aria-labelledby="intro-h">
+      <h2 id="intro-h">ก่อนเริ่มทำ</h2>
+      <p>ผมให้คุณทำการบ้านนี้ระหว่างสัปดาห์ ทำทีละขั้นได้เลย ระบบจะบันทึกสิ่งที่คุณกรอกไว้ในเครื่องนี้ให้เองทุกครั้ง</p>
+      <h3>ทำยังไง</h3>
+      <ol class="how">
+        <li>คุณกรอกทีละขั้น ระบบบันทึกให้เองในเครื่องนี้</li>
+        <li>คุณกดดาวน์โหลดไฟล์ Word ในขั้นที่ 9</li>
+        <li>คุณอัปโหลดไฟล์นั้นในระบบส่งการบ้านของ FutureSkill</li>
+        <li>คุณลบชื่อคน เบอร์โทร และเลขบัตรออกก่อนส่ง</li>
+      </ol>
+      <p class="muted">เวลาที่ใช้รวมราว 45 นาทีตลอดสัปดาห์</p>
+      <p class="pTxt" id="pTxt" aria-live="polite"></p>
+      <div class="bar" id="pBar" role="progressbar" aria-label="ความคืบหน้าการบ้าน" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0"><i id="pFill"></i></div>
+    </section>
+
+    <!-- 1 -->
+    <section class="card" id="st1" aria-labelledby="h1">
+      <div class="sh"><span class="num" aria-hidden="true">1</span><h2 id="h1">ข้อมูลผู้เรียน</h2><span class="tick" id="tick1" hidden>เสร็จแล้ว</span></div>
+      <p class="hint">ใส่ชื่อเล่นหรือรหัสก็พอ ไม่ต้องใส่ชื่อจริงและนามสกุล ไม่ต้องใส่ชื่อบริษัท</p>
+      <div class="field">
+        <label for="f-nick">ชื่อเล่นหรือรหัสผู้เรียน</label>
+        <input type="text" id="f-nick" data-k="nick" autocomplete="off" placeholder="เช่น เอ" />
+      </div>
+      <div class="field">
+        <label for="f-dept">แผนกและตำแหน่ง</label>
+        <input type="text" id="f-dept" data-k="dept" autocomplete="off" placeholder="เช่น ธุรการ HR การตลาด" />
+      </div>
+      <div class="field">
+        <label for="f-biz">ประเภทธุรกิจขององค์กร</label>
+        <input type="text" id="f-biz" data-k="biz" autocomplete="off" placeholder="เช่น ผลิตชิ้นส่วนยานยนต์ ร้านค้าปลีก" />
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="card" id="st2" aria-labelledby="h2">
+      <div class="sh"><span class="num" aria-hidden="true">2</span><h2 id="h2">AGENTS.md 6 กล่อง</h2><span class="tick" id="tick2" hidden>เสร็จแล้ว</span></div>
+      <p class="hint">ตอบทีละกล่องตามคำถามที่บอกไว้ใต้หัวข้อ ตัวหนังสือสีเทาในช่องคือตัวอย่างของคุณเอ ธุรการฝ่ายบริหาร ลบแล้วพิมพ์ของคุณเองได้เลย</p>
+      <div class="seg" role="group" aria-label="รูปแบบการกรอก">
+        <button type="button" data-mode="boxes" aria-pressed="true">กรอกทีละกล่อง</button>
+        <button type="button" data-mode="full" aria-pressed="false">วางทั้งไฟล์</button>
+      </div>
+      <div id="boxesWrap"></div>
+      <div id="fullWrap" hidden>
+        <div class="field">
+          <label for="f-full">วางไฟล์ AGENTS.md ที่คุณเขียนไว้แล้วทั้งไฟล์</label>
+          <p class="hint">ต้องมีหัวข้อ ## 1 ถึง ## 6 เรียงตามลำดับ ระบบจะแยกเนื้อหาให้เอง</p>
+          <textarea id="f-full" data-k="full" rows="10" placeholder="วางข้อความ AGENTS.md ตรงนี้"></textarea>
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-updated">อัปเดตล่าสุด</label>
+        <input type="date" id="f-updated" data-k="updated" />
+      </div>
+      <p class="cnt" id="lineCnt" aria-live="polite"></p>
+      <div class="prev">
+        <p class="prevHd" id="prevHd">ตัวอย่างไฟล์ AGENTS.md</p>
+        <pre id="agPrev" aria-labelledby="prevHd"></pre>
+      </div>
+      <div id="piiBox" class="warn" role="status" hidden></div>
+      <div class="btns">
+        <button type="button" class="btn" id="bCopy">คัดลอก AGENTS.md</button>
+        <button type="button" class="btn" id="bMd">ดาวน์โหลด AGENTS.md</button>
+      </div>
+      <p class="msg" id="msg2" role="status" aria-live="polite"></p>
+    </section>
+
+    <!-- 3 -->
+    <section class="card" id="st3" aria-labelledby="h3">
+      <div class="sh"><span class="num" aria-hidden="true">3</span><h2 id="h3">ภาพหน้าจอ 3 ภาพ</h2><span class="tick" id="tick3" hidden>เสร็จแล้ว</span></div>
+      <p class="hint">ถ่ายหน้าจอแล้วเลือกภาพจากเครื่อง ระบบย่อภาพให้เล็กลงเอง ภาพเก็บไว้ในเครื่องนี้เท่านั้น</p>
+      <p class="hint">วิธีถ่ายหน้าจอ บน Windows กด Windows + Shift + S บน Mac กด Command + Shift + 4 บน iPad กดปุ่มด้านข้างพร้อมปุ่มเพิ่มเสียง ก่อนส่งให้ครอบตัดหรือปิดชื่อคน รูปถ่าย อีเมล เบอร์โทร และรหัสพนักงานในภาพก่อนนะครับ</p>
+      <div id="shots"></div>
+    </section>
+
+    <!-- 4 -->
+    <section class="card" id="st4" aria-labelledby="h4">
+      <div class="sh"><span class="num" aria-hidden="true">4</span><h2 id="h4">AI พลาดตรงไหน แล้วคุณปรับแฟ้มยังไง</h2><span class="tick" id="tick4" hidden>เสร็จแล้ว</span></div>
+      <div class="field">
+        <label for="f-ai_miss">AI พลาดตรงไหน</label>
+        <p class="hint">เล่าจุดที่ผลลัพธ์ไม่ตรงกับงานจริง</p>
+        <textarea id="f-ai_miss" data-k="ai_miss" rows="3" placeholder="เช่น ร่างสรุปใส่ตัวเลขที่ไม่มีในโน้ต"></textarea>
+      </div>
+      <div class="field">
+        <label for="f-ai_check">ตรวจกับอะไร</label>
+        <p class="hint">ต้นฉบับ เอกสาร หรือคนที่รู้งานนี้</p>
+        <textarea id="f-ai_check" data-k="ai_check" rows="2" placeholder="เช่น เทียบกับโน้ตประชุมต้นฉบับทีละบรรทัด"></textarea>
+      </div>
+      <div class="field">
+        <label for="f-ai_fix">บรรทัดที่เพิ่มหรือแก้ใน AGENTS.md</label>
+        <p class="hint">เขียนบรรทัดที่คุณเพิ่มหรือแก้ไปแล้ว</p>
+        <textarea id="f-ai_fix" data-k="ai_fix" rows="2" placeholder="เช่น เพิ่มในกล่อง 6 ว่าห้ามใส่ตัวเลขที่ไม่มีในโน้ต"></textarea>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="card" id="st5" aria-labelledby="h5">
+      <div class="sh"><span class="num" aria-hidden="true">5</span><h2 id="h5">คำถามสะท้อน 3 ข้อ</h2><span class="tick" id="tick5" hidden>เสร็จแล้ว</span></div>
+      <p class="hint">ตอบสั้นๆ ตามที่คุณคิด ไม่ต้องสวยก็ได้</p>
+      <div class="field">
+        <label for="f-q1">สัปดาห์นี้คุณเอา AI ไปใช้กับงานอะไรบ้าง</label>
+        <textarea id="f-q1" data-k="q1" rows="2" placeholder="เช่น ร่างบันทึกข้อความแจ้งพนักงาน"></textarea>
+      </div>
+      <div class="field">
+        <label for="f-q2">ตรงไหนที่ AI พลาด แล้วคุณแก้ยังไง</label>
+        <textarea id="f-q2" data-k="q2" rows="2" placeholder="เช่น ให้ AI ตรวจตัวเลขกับโน้ตก่อนส่ง"></textarea>
+      </div>
+      <div class="field">
+        <label for="f-q3">สัปดาห์หน้าคุณจะลองกับงานไหน</label>
+        <textarea id="f-q3" data-k="q3" rows="2" placeholder="เช่น รายงานยอดขายรายสัปดาห์"></textarea>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section class="card" id="st6" aria-labelledby="h6">
+      <div class="sh"><span class="num" aria-hidden="true">6</span><h2 id="h6">แผนลงมือของฉัน</h2><span class="tag">My Learning Action Plan</span><span class="tick" id="tick6" hidden>เสร็จแล้ว</span></div>
+      <p class="hint">กรอกให้ครบทุกช่อง ใช้คำพูดของคุณเอง</p>
+      <div id="planWrap"></div>
+    </section>
+
+    <!-- 7 -->
+    <section class="card" id="st7" aria-labelledby="h7">
+      <div class="sh"><span class="num" aria-hidden="true">7</span><h2 id="h7">คนอื่นใช้ต่อ</h2><span class="tag">ไม่บังคับ</span></div>
+      <p class="hint">ถ้าเพื่อนร่วมงานหรือหัวหน้าเริ่มใช้ AGENTS.md หรือ Project นี้ต่อ ให้เล่าสั้นๆ และเพิ่มภาพได้</p>
+      <div class="field">
+        <label for="f-other">เล่าว่าใครใช้ต่อ และใช้กับงานอะไร</label>
+        <textarea id="f-other" data-k="other" rows="3" placeholder="เช่น เพื่อนในทีมเอาไปร่างบันทึกข้อความแจ้งพนักงาน"></textarea>
+      </div>
+      <div id="shot7"></div>
+    </section>
+
+    <!-- 8 -->
+    <section class="card" id="st8" aria-labelledby="h8">
+      <div class="sh"><span class="num" aria-hidden="true">8</span><h2 id="h8">เช็คตัวเองก่อนส่ง</h2></div>
+      <p class="hint">ระบบเช็คให้เองในข้อที่ตรวจได้ ส่วน S1 คุณติ๊กเอง</p>
+      <ul class="rub" id="rub"></ul>
+      <div class="lvl" aria-live="polite">
+        <p class="lvlNow">ระดับที่คาด <b id="lvlNum">1</b><span id="lvlTxt"></span></p>
+        <ul class="ladder" id="ladder"></ul>
+        <p class="note" id="lvlNote">ดาวน์โหลดไฟล์ Word ในขั้นที่ 9 ก่อน ระบบจึงนับว่าส่งแล้ว</p>
+        <p class="note" id="missing"></p>
+      </div>
+      <p class="note">ผู้สอนเป็นคนให้ระดับจริง หน้านี้ช่วยให้คุณเห็นว่ายังขาดอะไร ไม่ผ่านแก้งานเดิมส่งใหม่ได้ภายใน 7 วัน</p>
+    </section>
+
+    <!-- 9 -->
+    <section class="card" id="st9" aria-labelledby="h9">
+      <div class="sh"><span class="num" aria-hidden="true">9</span><h2 id="h9">ส่งงาน</h2></div>
+      <p>กดดาวน์โหลดไฟล์ Word ไฟล์เดียวนี้มีทั้ง AGENTS.md ภาพหน้าจอ และคำตอบทุกข้อ</p>
+      <div class="btns">
+        <button type="button" class="btn btn-primary btn-big" id="bDocx">ดาวน์โหลดไฟล์ Word (.docx)</button>
+      </div>
+      <div class="btns">
+        <button type="button" class="btn" id="bPdf">บันทึกเป็น PDF</button>
+        <button type="button" class="btn" id="bMd2">ดาวน์โหลด AGENTS.md</button>
+      </div>
+      <p class="msg" id="msg9" role="status" aria-live="polite"></p>
+      <div class="nextbox">
+        <p><b>จากนั้นเข้าระบบส่งการบ้านของ FutureSkill แล้วอัปโหลดไฟล์นี้</b></p>
+        <p id="fsWrap"></p>
+        <p class="muted">ถ้าระบบให้แนบไฟล์แยก ให้แนบ AGENTS.md และภาพหน้าจอเพิ่มได้</p>
+      </div>
+      <div class="danger">
+        <div class="btns"><button type="button" class="btn btn-danger" id="bClear">ล้างข้อมูลทั้งหมด</button></div>
+        <p class="note">ข้อมูลทั้งหมดในเครื่องนี้จะหาย ดาวน์โหลดไฟล์ Word ไว้ก่อนล้างนะครับ</p>
+      </div>
+    </section>
+  </main>
+
+  <footer><p id="footer"></p></footer>
+  <div id="print" aria-hidden="true"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/docx@9.5.1/dist/index.iife.js"></script>
+  <script>
+  (function () {
+    "use strict";
+
+    // ===== CONFIG =====
+    const CONFIG = {
+      title: "การบ้านสัปดาห์ที่ 1 : AGENTS.md ฉบับเต็ม + ใช้กับงานจริง",
+      course: "AI Pro Office สัปดาห์ที่ 1",
+      due: "พฤหัสบดี 26 พ.ย. 2569 20:00 (รอยืนยัน)",
+      fsUrl: "#",
+      fsNote: "ลิงก์ระบบส่งการบ้าน (ทีม FutureSkill จะแจ้งในห้อง)",
+      maxLines: 40,
+      maxImgPx: 1600,
+      jpegQuality: 0.8,
+      footer: "ข้อมูลทั้งหมดอยู่ในเครื่องของคุณ ไม่ได้ส่งไปที่ไหน",
+      docxPrefix: "TNI-W1-การบ้าน",
+    };
+    // ===== END CONFIG =====
+
+    // Palette: brand navy + coral on warm paper; plan[] = FutureSkill Action Plan column colours
+    const PAL = {
+      navy: "#072B4E", coral: "#DD4155", bg: "#F7F5F0", ink: "#1B2430", muted: "#5B6573", white: "#FFFFFF",
+      plan: [
+        { m: "#0060B0", d: "#0A4A8A", t: "#E8F1FA", b: "#C7DCF0", p: "#D3E4F5" },
+        { m: "#1E8FD6", d: "#11679E", t: "#E8F5FC", b: "#C3E3F5", p: "#D1EAF8" },
+        { m: "#C80008", d: "#9E0007", t: "#FDECEC", b: "#F5C6C8", p: "#F9D6D7" },
+        { m: "#E08A00", d: "#9C5F00", t: "#FEF4E3", b: "#F6DCAE", p: "#FAE6C2" },
+        { m: "#1E8A5A", d: "#146140", t: "#E8F6EF", b: "#C2E5D3", p: "#D2ECDF" },
+      ],
+    };
+
+    const ICON = {
+      bulb: '<path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/><path d="M12 6v1M7.5 8.5l.7.7M16.5 8.5l-.7.7"/>',
+      target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/><path d="M17 7l4-4M18 3h3v3"/>',
+      calendar: '<rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/>',
+      chart: '<path d="M4 20V14M9 20V10M14 20V12M19 20V6"/><path d="M4 10l5-4 4 3 7-6M16 3h4v4"/>',
+      userstar: '<circle cx="10" cy="7" r="4"/><path d="M2.5 21v-1.5A6.5 6.5 0 0 1 12 14"/><path d="M18 13.5l1.4 2.9 3.1.4-2.3 2.2.6 3.1-2.8-1.5-2.8 1.5.6-3.1-2.3-2.2 3.1-.4z"/>',
+      rocket: '<path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.1-.1-2.9a2.2 2.2 0 0 0-2.9-.1z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.9A12.9 12.9 0 0 1 22 2c0 2.7-.8 7.5-6 11a22.4 22.4 0 0 1-4 2z"/><path d="M9 12H4s.6-3 2-4c1.6-1.1 5 0 5 0M12 15v5s3-.6 4-2c1.1-1.6 0-5 0-5"/>',
+    };
+
+    const BOXES = [
+      { t: "ฉันคือใคร ทำงานให้ใคร", h: "ตำแหน่ง แผนก องค์กรทำอะไร และงานส่วนใหญ่ส่งต่อให้ใคร",
+        ph: "ธุรการฝ่ายบริหาร บริษัทผลิตชิ้นส่วนรถยนต์ พนักงาน 300 คน\nงานส่วนใหญ่ทำให้ผู้จัดการฝ่าย 2 ท่าน และพนักงานทุกแผนก" },
+      { t: "งานที่ทำซ้ำทุกสัปดาห์", h: "เขียนงานที่ทำซ้ำทุกสัปดาห์ 1 งานขึ้นก่อน แล้วบรรทัดถัดไปขึ้นต้นว่า เป้าหมาย: ตามด้วยผลที่อยากได้",
+        ph: "สรุปรายงานประชุมผู้บริหารทุกวันจันทร์\nเป้าหมาย: ผู้จัดการอ่านจบใน 2 นาที และรู้ว่าใครต้องทำอะไรภายในวันไหน" },
+      { t: "เรื่องที่ AI หาเองไม่เจอ", h: "ข้อตกลงในห้องประชุม ข้อยกเว้นของแผนก คำเรียกเฉพาะในองค์กร ต้องมีอย่างน้อย 3 ข้อ คำว่า ตอบสุภาพ หรือ ถูกต้อง ไม่นับ",
+        ph: "รายงานประชุมใช้แบบฟอร์ม FM ADM 03 หัวข้อเรียงตามวาระ\nผู้จัดการไม่อ่านรายงานที่ยาวเกิน 1 หน้า\nเรียกผู้บริหารว่า คุณ ตามด้วยชื่อ ไม่ใช้ ท่าน" },
+      { t: "งานแบบไหนเรียกว่าดี", h: "ตัวอย่างงานดี 3 ชิ้น ตัวอย่างที่ไม่ผ่าน 1 ชิ้นพร้อมเหตุผล และเกณฑ์ตรวจ 1 ถึง 3 ข้อ",
+        ph: "ดูตัวอย่างดี 3 ไฟล์ที่แนบไว้ใน Project\nตัวอย่างที่ไม่ผ่าน: ไฟล์ยาว 3 หน้าและไม่มีชื่อผู้รับผิดชอบ ผู้จัดการจึงไม่อ่าน\nทุกมติต้องมีชื่อผู้รับผิดชอบและวันกำหนดเสร็จ" },
+      { t: "ภาษาและรูปแบบ", h: "ทางการแค่ไหน ยาวเท่าไร ใช้คำอะไร และห้ามใช้คำอะไร",
+        ph: "ภาษาทางการ ข้อละไม่เกิน 2 บรรทัด\nวันที่ทุกจุดเขียนเป็น พ.ศ." },
+      { t: "ห้ามทำ และต้องถามก่อน", h: "ข้อมูลที่ห้ามใส่ และงานที่ต้องให้คนอนุมัติก่อน",
+        ph: "ห้ามแต่งมติหรือตัวเลขที่ไม่มีในโน้ต ถ้าไม่แน่ใจให้เขียนว่า ต้องยืนยัน\nฉันเป็นคนส่งรายงานเอง AI ห้ามส่งต่อ\nไม่ใส่ชื่อเต็มและเบอร์โทรของพนักงาน" },
+    ];
+
+    const SHOTS = {
+      img1: { title: "ภาพที่ 1 หน้า Project ที่เห็น AGENTS.md และตัวอย่างงานดี" },
+      img2: { title: "ภาพที่ 2 ใช้กับงานจริง ครั้งที่ 1 (เห็นวันที่บนจอ)", date: "d2", dateLabel: "วันที่ใช้งานครั้งที่ 1 (ตรงกับวันบนจอ)", story: "story2" },
+      img3: { title: "ภาพที่ 3 ใช้กับงานจริง ครั้งที่ 2 คนละวันกับครั้งแรก", date: "d3", dateLabel: "วันที่ใช้งานครั้งที่ 2", story: "story3", dup: true },
+      img7: { title: "ภาพหลักฐานที่คนอื่นใช้ต่อ (ไม่บังคับ)" },
+    };
+    const SHOT_KEYS = Object.keys(SHOTS);
+
+    const PLAN = [
+      { t: "สิ่งที่ได้เรียนรู้", en: "MY KEY LEARNINGS", sub: "3 อย่างที่ได้จากสัปดาห์นี้", icon: "bulb", slots: ["1", "2", "3"],
+        ph: ["เช่น AI ตอบผิดเพราะไม่รู้ข้อมูลของแผนกเรา"] },
+      { t: "สิ่งที่จะนำไปใช้", en: "MY APPLICATION", sub: "3 อย่างที่จะเอาไปใช้กับงานของฉัน", icon: "target", slots: ["1", "2", "3"],
+        ph: ["เช่น ร่างบันทึกข้อความแจ้งพนักงานจากแม่แบบ"] },
+      { t: "7 วันแรก", en: "MY FIRST 7 DAYS", sub: "ลงมือเล็กๆ ให้เห็นผลก่อนถึงคลาสสัปดาห์ที่ 2", icon: "calendar", slots: ["สิ่งที่จะทำ", "ใช้ที่ไหน ใช้อย่างไร"],
+        tf: "ถึงคลาสสัปดาห์ที่ 2 (28 พ.ย.)" },
+      { t: "แผน 30 วัน", en: "MY 30-DAY PLAN", sub: "ครบเดือน ชี้ให้หัวหน้าดูได้ว่าได้ผลอะไร", icon: "chart", slots: ["เป้าหมาย", "สิ่งที่จะทำ", "รู้ได้อย่างไรว่าได้ผล"] },
+      { t: "สิ่งที่จะเปลี่ยน", en: "MY EXPECTED CHANGE", sub: "ถ้าทำครบ งานของฉันจะต่างจากวันนี้ยังไง", icon: "userstar", slots: ["ในตัวฉัน", "ในงานของฉัน"] },
+    ];
+
+    const RUB = [
+      { id: "S1", t: "งานจริงของตัวเอง", d: "งานในกล่อง 2 เป็นงานซ้ำจริงของคุณ ไม่ใช่โจทย์ตัวอย่างในห้อง", ok: () => !!S.s1self },
+      { id: "S2", t: "AGENTS.md ครบและปลอดภัย", d: "ครบ 6 กล่อง ไม่เกิน 40 บรรทัด ไม่มีข้อมูลส่วนบุคคล",
+        ok: () => boxesAll(boxesState()) && nonEmpty(agentsText()).length <= CONFIG.maxLines && piiFound().length === 0 },
+      { id: "S3", t: "บอกสิ่งที่ AI หาเองไม่เจอ", d: "กล่อง 3 มีอย่างน้อย 3 ข้อที่เป็นเรื่องเฉพาะขององค์กร", ok: () => countSpecific(boxesState()[2]) >= 3 },
+      { id: "S4", t: "ใช้จริงแล้ว", d: "ภาพที่ 2 และ 3 คนละวัน และมีคำสั่งอย่างน้อย 1 ครั้งที่เล่าด้วย Story Spine",
+        ok: () => !!getShot("img2") && !!getShot("img3") && filled("d2") && filled("d3") && S.d2 !== S.d3 && (!!S.story2 || !!S.story3) },
+      { id: "S5", t: "ตรวจแล้วปรับแฟ้ม", d: "ชี้จุดที่ AI พลาด บอกว่าตรวจกับอะไร และบอกบรรทัดที่เพิ่มหรือแก้ใน AGENTS.md",
+        ok: () => ["ai_miss", "ai_check", "ai_fix"].every(filled) },
+      { id: "S6", t: "คนอื่นใช้ต่อ", d: "มีคำอธิบายหรือภาพว่าเพื่อนร่วมงานหรือหัวหน้าใช้ต่อ", ok: () => filled("other") || !!getShot("img7") },
+    ];
+
+    const STEPS = [
+      () => filled("nick") && filled("dept"),
+      () => boxesAll(boxesState()),
+      () => !!getShot("img1") && !!getShot("img2") && !!getShot("img3"),
+      () => ["ai_miss", "ai_check", "ai_fix"].every(filled),
+      () => ["q1", "q2", "q3"].every(filled),
+      () => filled("commit"),
+    ];
+
+    const LEVEL_TXT = {
+      1: "ไม่ส่งงาน", 2: "ผลงานยังใช้ไม่ได้", 3: "ทำได้ตามตัวอย่าง ยังไม่ได้ใช้จริง",
+      4: "ทำงานจริงได้เอง แก้นิดหน่อย", 5: "ทำงานจริงได้เอง ช่วยคนอื่นได้",
+    };
+
+    const PII = [
+      { name: "เบอร์โทรศัพท์", re: /0[689]\d(?:[- ]?\d){7}(?!\d)/ },
+      { name: "เลขบัตรประชาชน", re: /(?<!\d)(?:\d[- ]?){12}\d(?!\d)/ },
+      { name: "อีเมล", re: /[\w.+-]+@[\w-]+\.[\w.-]+/ },
+      { name: "ตัวเลขเงินเดือน", re: /เงินเดือน\D{0,20}\d/ },
+    ];
+    const GENERIC = /^(ตอบสุภาพ|ถูกต้อง)\s*[.!]?$/;
+    const TH_M = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+    const KEY = "w1hw:v1";
+    const IMG_KEY = (k) => "w1hw:img:" + k;
+
+    // ===== STATE =====
+    let S = {};
+    const MEM = {};
+    let storeOk = true;
+
+    // ===== helpers =====
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[ch]);
+    const svg = (k) => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
+    const nonEmpty = (s) => String(s || "").split(/\r?\n/).map((x) => x.trim()).filter(Boolean);
+    const countSpecific = (s) => nonEmpty(s).filter((l) => !GENERIC.test(l)).length;
+    const filled = (k) => String(S[k] == null ? "" : S[k]).trim() !== "";
+    const boxesAll = (arr) => arr.every((b) => String(b).trim() !== "");
+    const say = (id, text, bad) => { const el = $(id); el.textContent = text; el.classList.toggle("bad", !!bad); };
+    const grow = (el) => { if (el.tagName === "TEXTAREA" && el.offsetParent !== null) { el.style.height = "auto"; el.style.height = el.scrollHeight + 2 + "px"; } };
+    const growAll = () => document.querySelectorAll("textarea").forEach(grow);
+
+    function todayISO() {
+      const t = new Date();
+      return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+    }
+    function thDate(iso) {
+      const [y, m, d] = String(iso || "").split("-").map(Number);
+      if (!y || !m || !d) return "";
+      return `${d} ${TH_M[m - 1]} ${y + 543}`;
+    }
+    function safeName(s) {
+      return String(s || "").trim().replace(/[\\/:*?"<>|\r\n\t]+/g, "").replace(/\s+/g, "-").slice(0, 30);
+    }
+    function download(blob, name) {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    }
+    async function copyText(t) {
+      try { await navigator.clipboard.writeText(t); return true; } catch (e) { /* fall through */ }
+      const ta = document.createElement("textarea");
+      ta.value = t; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.left = "-9999px";
+      document.body.appendChild(ta); ta.select();
+      let ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      ta.remove();
+      return ok;
+    }
+
+    // ===== storage (every access guarded) =====
+    function storageWorks() {
+      try { localStorage.setItem("w1hw:probe", "1"); localStorage.removeItem("w1hw:probe"); return true; } catch (e) { return false; }
+    }
+    function readStore() {
+      try { return JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { return {}; }
+    }
+    function persist() {
+      try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { storeOk = false; }
+    }
+    function readShotRaw(k) {
+      try { const raw = localStorage.getItem(IMG_KEY(k)); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
+    }
+    function getShot(k) { return MEM[k] || null; }
+    function putShot(k, obj) {
+      MEM[k] = obj;
+      try { localStorage.setItem(IMG_KEY(k), JSON.stringify(obj)); return true; } catch (e) {
+        try { localStorage.removeItem(IMG_KEY(k)); } catch (e2) { /* blocked */ }
+        return false;
+      }
+    }
+    function dropShot(k) {
+      delete MEM[k];
+      try { localStorage.removeItem(IMG_KEY(k)); } catch (e) { /* blocked */ }
+    }
+
+    // ===== derived content =====
+    function boxesState() {
+      if (S.mode === "full") return parseFull(S.full || "");
+      return [1, 2, 3, 4, 5, 6].map((n) => String(S["box" + n] || "").replace(/\r/g, "").trim());
+    }
+    function parseFull(text) {
+      const out = ["", "", "", "", "", ""];
+      let cur = -1;
+      String(text).split(/\r?\n/).forEach((line) => {
+        const m = line.match(/^##\s*([1-6])\b/);
+        if (m) { cur = Number(m[1]) - 1; return; }
+        if (cur >= 0) out[cur] += line + "\n";
+      });
+      return out.map((s) => s.trim());
+    }
+    function agentsText() {
+      if (S.mode === "full") return String(S.full || "").replace(/\r/g, "").trim();
+      const nick = String(S.nick || "").trim(), dept = String(S.dept || "").trim();
+      const out = [nick ? `# AGENTS.md ของ ${nick}${dept ? " " + dept : ""}` : "# AGENTS.md"];
+      if (S.updated) out.push(`อัปเดตล่าสุด ${thDate(S.updated)}`);
+      out.push("");
+      boxesState().forEach((body, i) => {
+        out.push(`## ${i + 1} ${BOXES[i].t}`);
+        if (body) out.push(body);
+        out.push("");
+      });
+      return out.join("\n").trim();
+    }
+    function piiFound() {
+      const all = [...document.querySelectorAll("[data-k]")]
+        .filter((el) => el.type !== "checkbox" && el.type !== "date")
+        .map((el) => el.value).join("\n");
+      return PII.filter((p) => p.re.test(all)).map((p) => p.name);
+    }
+    // Ladder: 1 = nothing filled in yet (= nothing to submit); otherwise the highest rung whose S1..Sn all pass
+    function level(res) {
+      if (!STEPS.some((f) => f())) return 1;
+      let k = 0;
+      while (k < 6 && res[k]) k++;
+      if (k === 6) return 5;
+      if (k >= 5) return 4;
+      if (k >= 3) return 3;
+      return 2;
+    }
+
+    // ===== DOM builders =====
+    function boxesHTML() {
+      return BOXES.map((b, i) => {
+        const n = i + 1;
+        const extra = n === 3 ? '<span class="pill" id="bdg3"></span>' : "";
+        return `<div class="box">
+          <label for="b${n}">${n} ${esc(b.t)}</label>
+          <p class="hint">${esc(b.h)}</p>
+          <textarea id="b${n}" data-k="box${n}" rows="3" placeholder="${esc(b.ph)}"></textarea>
+          <p class="bc"><span id="bc${n}">ใส่แล้ว 0 บรรทัด</span>${extra}</p>
+        </div>`;
+      }).join("");
+    }
+    function shotHTML(k) {
+      const c = SHOTS[k];
+      return `<div class="shot">
+        <h3 class="shh">${esc(c.title)}</h3>
+        <div class="shotprev" id="sp-${k}"></div>
+        <input class="sr" type="file" accept="image/*" id="file-${k}" data-shot="${k}" aria-label="${esc(c.title)}" />
+        <div class="btns">
+          <label class="btn fileBtn" for="file-${k}">เลือกภาพจากเครื่อง</label>
+          <button type="button" class="btn" id="rm-${k}" hidden>เอาภาพนี้ออก</button>
+        </div>
+        <p class="msg" id="msg-${k}" role="status" aria-live="polite"></p>
+        ${c.date ? `<div class="field"><label for="d-${k}">${esc(c.dateLabel)}</label><input type="date" id="d-${k}" data-k="${c.date}" /></div>` : ""}
+        ${c.dup ? '<p class="warn" id="dwarn" hidden>วันที่นี้ซ้ำกับครั้งที่ 1 ให้เลือกวันอื่นนะครับ</p>' : ""}
+        ${c.story ? `<label class="check"><input type="checkbox" data-k="${c.story}" /><span>คำสั่งครั้งนี้เล่าว่างานนี้ทำให้ใคร และเขาเอาไปทำอะไร (Story Spine)</span></label>` : ""}
+      </div>`;
+    }
+    function planHTML() {
+      const cols = PLAN.map((c, i) => {
+        const p = PAL.plan[i];
+        const slots = c.slots.map((s, j) => {
+          const k = `c${i}s${j}`, id = `f-${k}`;
+          const ph = c.ph && c.ph[j] ? ` placeholder="${esc(c.ph[j])}"` : "";
+          return /^\d+$/.test(s)
+            ? `<div class="slot num"><span class="sn" style="background:${p.m}" aria-hidden="true">${s}</span><div><label class="sr" for="${id}">${esc(c.t)} อย่างที่ ${s}</label><textarea id="${id}" data-k="${k}" rows="1" style="border-color:${p.b}"${ph}></textarea></div></div>`
+            : `<div class="slot"><label for="${id}" class="pl" style="background:${p.p};color:${p.d}">${esc(s)}</label><textarea id="${id}" data-k="${k}" rows="2" style="border-color:${p.b}"></textarea></div>`;
+        }).join("");
+        return `<section class="col" style="background:${p.t};border-color:${p.b}" aria-label="${esc(c.t)}">
+          <div class="colHd"><span class="nb" style="background:${p.m}" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span><span style="color:${p.m}">${svg(c.icon)}</span><div><div class="en" style="color:${p.d}">${esc(c.en)}</div><h3 style="color:${p.d}">${esc(c.t)}</h3></div></div>
+          <p class="sub">${esc(c.sub)}</p>${c.tf ? `<span class="timebox">กรอบเวลา ${esc(c.tf)}</span>` : ""}${slots}
+        </section>`;
+      }).join("");
+      return cols + `<section class="commit" aria-labelledby="h-commit">
+        <div class="colHd"><span class="rk" aria-hidden="true">${svg("rocket")}</span><div><h3 id="h-commit">คำมั่นของฉัน</h3><p class="sub">1 อย่างที่จะเริ่มพรุ่งนี้</p></div></div>
+        <label class="sr" for="f-commit">คำมั่นของฉัน 1 อย่างที่จะเริ่มพรุ่งนี้</label>
+        <textarea id="f-commit" data-k="commit" rows="2" placeholder="เช่น พรุ่งนี้เช้าจะเปิด AGENTS.md ให้ AI อ่านก่อนเริ่มงานรายงานประชุม"></textarea>
+      </section>`;
+    }
+    function rubHTML() {
+      return RUB.map((r) => {
+        const right = r.id === "S1"
+          ? '<label class="check"><input type="checkbox" data-k="s1self" /><span>กล่อง 2 เป็นงานซ้ำจริงของฉัน ไม่ใช่โจทย์ตัวอย่าง</span></label>'
+          : `<span class="pill" id="rp-${r.id}">ยังไม่ครบ</span>`;
+        return `<li class="rrow"><div class="rtxt"><b>${r.id} ${esc(r.t)}</b><span class="rd">${esc(r.d)}</span></div><div>${right}</div></li>`;
+      }).join("");
+    }
+
+    // ===== binding and render =====
+    function bindFields() {
+      document.querySelectorAll("[data-k]").forEach((el) => {
+        const k = el.dataset.k;
+        if (el.type === "checkbox") el.checked = !!S[k];
+        else el.value = S[k] == null ? "" : S[k];
+        const onChange = () => {
+          S[k] = el.type === "checkbox" ? (el.checked ? 1 : 0) : el.value;
+          persist(); grow(el); refresh();
+        };
+        el.addEventListener("input", onChange);
+        el.addEventListener("change", onChange);
+      });
+    }
+    function applyMode() {
+      const full = S.mode === "full";
+      $("boxesWrap").hidden = full;
+      $("fullWrap").hidden = !full;
+      document.querySelectorAll("[data-mode]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === S.mode)));
+    }
+    function renderShot(k) {
+      const o = getShot(k), box = $("sp-" + k);
+      box.innerHTML = "";
+      if (o) {
+        const im = document.createElement("img");
+        im.src = o.d; im.alt = SHOTS[k].title;
+        box.appendChild(im);
+      } else {
+        const p = document.createElement("p");
+        p.className = "empty"; p.textContent = "ยังไม่มีภาพ";
+        box.appendChild(p);
+      }
+      $("rm-" + k).hidden = !o;
+    }
+    function onPick(k, file) {
+      if (!file) return;
+      say("msg-" + k, "กำลังย่อภาพ รอสักครู่นะครับ");
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        const sc = Math.min(1, CONFIG.maxImgPx / Math.max(img.naturalWidth, img.naturalHeight));
+        const w = Math.max(1, Math.round(img.naturalWidth * sc));
+        const h = Math.max(1, Math.round(img.naturalHeight * sc));
+        const c = document.createElement("canvas");
+        c.width = w; c.height = h;
+        const x = c.getContext("2d");
+        x.fillStyle = "#FFFFFF"; x.fillRect(0, 0, w, h);
+        x.drawImage(img, 0, 0, w, h);
+        const d = c.toDataURL("image/jpeg", CONFIG.jpegQuality);
+        URL.revokeObjectURL(url);
+        const ok = putShot(k, { d, w, h });
+        renderShot(k); refresh();
+        say("msg-" + k, ok ? "เก็บภาพแล้ว" : "เก็บภาพไว้ในเครื่องไม่ได้ ภาพนี้จะอยู่จนกว่าจะรีเฟรชหน้า ดาวน์โหลดไฟล์ Word ก่อนรีเฟรช", !ok);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        say("msg-" + k, "ใช้ภาพนี้ไม่ได้ ลองเลือกภาพ JPG หรือ PNG อีกครั้ง", true);
+      };
+      img.src = url;
+    }
+    function bindShots() {
+      document.querySelectorAll("input[data-shot]").forEach((inp) => {
+        inp.addEventListener("change", () => {
+          const f = inp.files && inp.files[0];
+          inp.value = "";
+          onPick(inp.dataset.shot, f);
+        });
+      });
+      SHOT_KEYS.forEach((k) => {
+        $("rm-" + k).addEventListener("click", () => {
+          dropShot(k); renderShot(k); refresh();
+          say("msg-" + k, "เอาภาพออกแล้ว");
+        });
+      });
+    }
+    function setMode(m) {
+      S.mode = m; persist(); applyMode(); refresh(); requestAnimationFrame(growAll);
+    }
+
+    // ===== the one refresh: counts, PII, progress, self-check =====
+    function refresh() {
+      const boxes = boxesState();
+      const text = agentsText();
+      const lines = nonEmpty(text).length;
+      $("agPrev").textContent = text || "ยังไม่มีข้อความ เริ่มกรอกจากกล่องที่ 1 ได้เลย";
+      const cnt = $("lineCnt");
+      cnt.textContent = `ใช้ไป ${lines} จาก ${CONFIG.maxLines} บรรทัด`;
+      cnt.classList.toggle("over", lines > CONFIG.maxLines);
+
+      boxes.forEach((b, i) => {
+        const n = i + 1;
+        const c = i === 2 ? countSpecific(b) : nonEmpty(b).length;
+        $("bc" + n).textContent = `ใส่แล้ว ${c} บรรทัด`;
+      });
+      const b3 = countSpecific(boxes[2]) >= 3;
+      const bdg = $("bdg3");
+      if (bdg) { bdg.textContent = b3 ? "ครบ 3 ข้อแล้ว" : "ต้องมีอย่างน้อย 3 ข้อ"; bdg.classList.toggle("good", b3); }
+
+      const found = piiFound();
+      $("piiBox").hidden = !found.length;
+      $("piiBox").textContent = found.length
+        ? `พบข้อมูลส่วนตัวที่อาจอยู่ในไฟล์: ${found.join(" และ ")} ลบออกก่อนส่งงานนะครับ ระบบยังไม่บล็อกการดาวน์โหลด`
+        : "";
+      const dw = $("dwarn");
+      if (dw) dw.hidden = !(filled("d2") && filled("d3") && S.d2 === S.d3);
+
+      const oks = STEPS.map((f) => !!f());
+      oks.forEach((ok, i) => { $("tick" + (i + 1)).hidden = !ok; });
+      const done = oks.filter(Boolean).length;
+      $("pTxt").textContent = `ทำแล้ว ${done} จาก ${STEPS.length} ส่วน`;
+      $("pFill").style.width = (done / STEPS.length * 100) + "%";
+      $("pBar").setAttribute("aria-valuenow", String(done));
+
+      const res = RUB.map((r) => !!r.ok());
+      RUB.forEach((r, i) => {
+        if (r.id === "S1") return;
+        const p = $("rp-" + r.id);
+        p.textContent = res[i] ? "ผ่าน" : "ยังไม่ครบ";
+        p.className = "pill" + (res[i] ? " good" : "");
+      });
+      const lv = level(res);
+      $("lvlNum").textContent = String(lv);
+      $("lvlTxt").textContent = LEVEL_TXT[lv];
+      document.querySelectorAll("#ladder li").forEach((li) => li.classList.toggle("on", Number(li.dataset.lv) === lv));
+      const missing = RUB.filter((r, i) => !res[i]).map((r) => r.id);
+      $("missing").textContent = missing.length
+        ? `ยังขาด ${missing.join(" ")} ดูรายละเอียดในข้อที่ตรงกันด้านบนได้เลย`
+        : "ครบทุกข้อแล้ว รอผู้สอนให้ระดับจริงได้เลย";
+      $("lvlNote").hidden = !!S.sent;
+    }
+
+    // ===== downloads =====
+    function mdDownload(msgId) {
+      const t = agentsText();
+      if (!t) return say(msgId, "ยังไม่มีข้อความให้ดาวน์โหลดนะครับ", true);
+      download(new Blob([t + "\n"], { type: "text/markdown;charset=utf-8" }), "AGENTS.md");
+      say(msgId, "ดาวน์โหลด AGENTS.md แล้ว");
+    }
+
+    function imgRun(D, o, maxW) {
+      const bytes = Uint8Array.from(atob(o.d.split(",")[1]), (c) => c.charCodeAt(0));
+      const r = Math.min(1, maxW / o.w);
+      return new D.ImageRun({ type: "jpg", data: bytes, transformation: { width: Math.round(o.w * r), height: Math.round(o.h * r) } });
+    }
+
+    async function makeDocx() {
+      const D = window.docx;
+      if (!D) throw new Error("nolib");
+      const F = "Sukhumvit Set", INK = "1B2430", NAVY = "072B4E", MUTED = "5B6573", FAINT = "8A93A1";
+      const para = (text, o = {}) => new D.Paragraph({
+        heading: o.heading,
+        alignment: o.align,
+        spacing: { before: o.before || 0, after: o.after == null ? 100 : o.after, line: 330 },
+        shading: o.fill ? { type: D.ShadingType.CLEAR, color: "auto", fill: o.fill } : undefined,
+        indent: o.indent ? { left: o.indent } : undefined,
+        children: [new D.TextRun({ text: String(text), font: F, size: o.size || 26, bold: !!o.bold, color: o.color || INK })],
+      });
+      const lines = (text, o = {}) => {
+        const arr = String(text || "").split(/\r?\n/).filter((x) => x.trim() !== "");
+        return arr.length ? arr.map((x) => para(x, o)) : [para("ยังไม่ได้กรอก", { ...o, color: FAINT })];
+      };
+      const h = (t) => para(t, { heading: D.HeadingLevel.HEADING_2, size: 30, bold: true, color: NAVY, before: 260, after: 120 });
+      const cell = (children, o = {}) => new D.TableCell({
+        width: { size: o.w || 50, type: D.WidthType.PERCENTAGE },
+        columnSpan: o.span,
+        shading: o.fill ? { type: D.ShadingType.CLEAR, color: "auto", fill: o.fill } : undefined,
+        margins: { top: 70, bottom: 70, left: 110, right: 110 },
+        children,
+      });
+      const table = (rows) => new D.Table({ width: { size: 100, type: D.WidthType.PERCENTAGE }, rows });
+      const res = RUB.map((r) => !!r.ok());
+      const lv = level(res);
+      const ch = [];
+
+      ch.push(para(CONFIG.title, { heading: D.HeadingLevel.TITLE, size: 34, bold: true, color: NAVY, after: 120 }));
+      ch.push(para(`${CONFIG.course} ส่งภายใน ${CONFIG.due}`, { size: 22, color: MUTED, after: 240 }));
+
+      ch.push(h("1 ข้อมูลผู้เรียน"));
+      ch.push(para(`ชื่อเล่นหรือรหัส: ${S.nick || "ยังไม่ได้กรอก"}`));
+      ch.push(para(`แผนกและตำแหน่ง: ${S.dept || "ยังไม่ได้กรอก"}`));
+      ch.push(para(`ประเภทธุรกิจขององค์กร: ${S.biz || "ยังไม่ได้กรอก"}`));
+      ch.push(para(`อัปเดตล่าสุด: ${thDate(S.updated) || "ยังไม่ได้กรอก"}`));
+
+      ch.push(h("2 AGENTS.md ฉบับเต็ม"));
+      lines(agentsText(), { fill: "F1F3F6", size: 24, after: 0 }).forEach((p) => ch.push(p));
+      ch.push(para("", { after: 60 }));
+
+      ch.push(h("3 ภาพหน้าจอ"));
+      ["img1", "img2", "img3"].forEach((k) => {
+        const o = getShot(k), c = SHOTS[k];
+        ch.push(para(c.title, { bold: true, before: 160, after: 80 }));
+        ch.push(o
+          ? new D.Paragraph({ spacing: { after: 80 }, children: [imgRun(D, o, 520)] })
+          : para("ยังไม่มีภาพ", { color: FAINT }));
+        if (c.date) ch.push(para(`วันที่: ${thDate(S[c.date]) || "ยังไม่ได้กรอก"}`));
+        if (c.story) ch.push(para(`คำสั่งแบบ Story Spine: ${S[c.story] ? "ติ๊กแล้ว" : "ยังไม่ได้ติ๊ก"}`));
+      });
+
+      ch.push(h("4 AI พลาดตรงไหน แล้วปรับแฟ้มยังไง"));
+      [["AI พลาดตรงไหน", "ai_miss"], ["ตรวจกับอะไร", "ai_check"], ["บรรทัดที่เพิ่มหรือแก้ใน AGENTS.md", "ai_fix"]].forEach(([l, k]) => {
+        ch.push(para(l, { bold: true, before: 120 }));
+        lines(S[k]).forEach((p) => ch.push(p));
+      });
+
+      ch.push(h("5 คำถามสะท้อน 3 ข้อ"));
+      [["สัปดาห์นี้คุณเอา AI ไปใช้กับงานอะไรบ้าง", "q1"], ["ตรงไหนที่ AI พลาด แล้วคุณแก้ยังไง", "q2"], ["สัปดาห์หน้าคุณจะลองกับงานไหน", "q3"]].forEach(([l, k]) => {
+        ch.push(para(l, { bold: true, before: 120 }));
+        lines(S[k]).forEach((p) => ch.push(p));
+      });
+
+      ch.push(h("6 แผนลงมือของฉัน"));
+      const rows = [];
+      PLAN.forEach((c, i) => {
+        const p = PAL.plan[i];
+        rows.push(new D.TableRow({ children: [cell([para(`${String(i + 1).padStart(2, "0")} ${c.t}`, { bold: true, color: p.d })], { span: 2, w: 100, fill: p.t })] }));
+        c.slots.forEach((s, j) => {
+          const label = /^\d+$/.test(s) ? `อย่างที่ ${s}` : s;
+          rows.push(new D.TableRow({ children: [cell([para(label, { bold: true })], { w: 32, fill: p.t }), cell(lines(S[`c${i}s${j}`]), { w: 68 })] }));
+        });
+      });
+      rows.push(new D.TableRow({ children: [cell([para("คำมั่นของฉัน 1 อย่างที่จะเริ่มพรุ่งนี้", { bold: true, color: "9E0007" })], { w: 32, fill: "FDECEC" }), cell(lines(S.commit), { w: 68 })] }));
+      ch.push(table(rows));
+
+      ch.push(h("7 คนอื่นใช้ต่อ"));
+      lines(S.other).forEach((p) => ch.push(p));
+      if (getShot("img7")) ch.push(new D.Paragraph({ spacing: { before: 80, after: 80 }, children: [imgRun(D, getShot("img7"), 520)] }));
+
+      ch.push(h("8 เช็คตัวเองก่อนส่ง"));
+      const rrows = [new D.TableRow({
+        tableHeader: true,
+        children: [
+          cell([para("รหัส", { bold: true, color: "FFFFFF" })], { w: 14, fill: NAVY }),
+          cell([para("เกณฑ์", { bold: true, color: "FFFFFF" })], { w: 58, fill: NAVY }),
+          cell([para("ผล", { bold: true, color: "FFFFFF" })], { w: 28, fill: NAVY }),
+        ],
+      })];
+      RUB.forEach((r, i) => rrows.push(new D.TableRow({
+        children: [
+          cell([para(r.id, { bold: true })], { w: 14 }),
+          cell([para(`${r.t}: ${r.d}`)], { w: 58 }),
+          cell([para(res[i] ? "ผ่าน" : "ยังไม่ครบ", { bold: res[i] })], { w: 28 }),
+        ],
+      })));
+      ch.push(table(rrows));
+      ch.push(para(`ระดับที่คาด ${lv} ${LEVEL_TXT[lv]}`, { bold: true, before: 200, color: NAVY }));
+      ch.push(para("ผู้สอนเป็นคนให้ระดับจริง", { color: MUTED }));
+
+      const doc = new D.Document({
+        creator: "AI Pro Office",
+        title: CONFIG.title,
+        styles: { default: { document: { run: { font: F, size: 26 } } } },
+        sections: [{ properties: { page: { margin: { top: 1134, bottom: 1134, left: 1134, right: 1134 } } }, children: ch }],
+      });
+      return D.Packer.toBlob(doc);
+    }
+
+    function buildPrint() {
+      const res = RUB.map((r) => !!r.ok());
+      const lv = level(res);
+      const T = (t) => String(t || "").trim()
+        ? String(t).split(/\r?\n/).filter((x) => x.trim()).map((x) => `<p>${esc(x)}</p>`).join("")
+        : '<p class="pe">ยังไม่ได้กรอก</p>';
+      const IMG = (k) => getShot(k) ? `<div class="fig"><img src="${getShot(k).d}" alt="${esc(SHOTS[k].title)}"></div>` : '<p class="pe">ยังไม่มีภาพ</p>';
+      const parts = [];
+      parts.push(`<h1>${esc(CONFIG.title)}</h1>`, `<p>${esc(CONFIG.course)} ส่งภายใน ${esc(CONFIG.due)}</p>`);
+      parts.push("<h2>1 ข้อมูลผู้เรียน</h2>", `<p>ชื่อเล่นหรือรหัส: ${esc(S.nick || "ยังไม่ได้กรอก")}</p>`,
+        `<p>แผนกและตำแหน่ง: ${esc(S.dept || "ยังไม่ได้กรอก")}</p>`, `<p>ประเภทธุรกิจขององค์กร: ${esc(S.biz || "ยังไม่ได้กรอก")}</p>`);
+      parts.push("<h2>2 AGENTS.md ฉบับเต็ม</h2>", agentsText() ? `<pre>${esc(agentsText())}</pre>` : '<p class="pe">ยังไม่ได้กรอก</p>');
+      parts.push("<h2>3 ภาพหน้าจอ</h2>");
+      ["img1", "img2", "img3"].forEach((k) => {
+        const d = SHOTS[k].date ? ` วันที่ ${esc(thDate(S[SHOTS[k].date]) || "ยังไม่ได้กรอก")}` : "";
+        parts.push(IMG(k), `<p class="cap"><b>${esc(SHOTS[k].title)}</b>${d}</p>`);
+      });
+      parts.push("<h2>4 AI พลาดตรงไหน แล้วปรับแฟ้มยังไง</h2>", `<p><b>AI พลาดตรงไหน</b></p>${T(S.ai_miss)}`,
+        `<p><b>ตรวจกับอะไร</b></p>${T(S.ai_check)}`, `<p><b>บรรทัดที่เพิ่มหรือแก้ใน AGENTS.md</b></p>${T(S.ai_fix)}`);
+      parts.push("<h2>5 คำถามสะท้อน 3 ข้อ</h2>", `<p><b>สัปดาห์นี้คุณเอา AI ไปใช้กับงานอะไรบ้าง</b></p>${T(S.q1)}`,
+        `<p><b>ตรงไหนที่ AI พลาด แล้วคุณแก้ยังไง</b></p>${T(S.q2)}`, `<p><b>สัปดาห์หน้าคุณจะลองกับงานไหน</b></p>${T(S.q3)}`);
+      parts.push("<h2>6 แผนลงมือของฉัน</h2>");
+      PLAN.forEach((c, i) => {
+        parts.push(`<p><b>${String(i + 1).padStart(2, "0")} ${esc(c.t)}</b></p>`);
+        c.slots.forEach((s, j) => parts.push(`<p><i>${/^\d+$/.test(s) ? "อย่างที่ " + s : esc(s)}</i></p>${T(S[`c${i}s${j}`])}`));
+      });
+      parts.push(`<p><b>คำมั่นของฉัน 1 อย่างที่จะเริ่มพรุ่งนี้</b></p>${T(S.commit)}`);
+      parts.push("<h2>7 คนอื่นใช้ต่อ</h2>", T(S.other), getShot("img7") ? IMG("img7") : "");
+      parts.push("<h2>8 เช็คตัวเองก่อนส่ง</h2>");
+      RUB.forEach((r, i) => parts.push(`<p><b>${r.id} ${esc(r.t)}</b>: ${res[i] ? "ผ่าน" : "ยังไม่ครบ"}</p>`));
+      parts.push(`<p><b>ระดับที่คาด ${lv}</b> ${esc(LEVEL_TXT[lv])}</p>`, "<p>ผู้สอนเป็นคนให้ระดับจริง</p>");
+      $("print").innerHTML = parts.join("");
+    }
+
+    // ===== buttons =====
+    function bindButtons() {
+      document.querySelectorAll("[data-mode]").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
+
+      $("bCopy").addEventListener("click", async () => {
+        const t = agentsText();
+        if (!t) return say("msg2", "ยังไม่มีข้อความให้คัดลอกนะครับ", true);
+        const ok = await copyText(t);
+        say("msg2", ok ? "คัดลอกแล้ว วางในแชทหรือในไฟล์ได้เลย" : "คัดลอกไม่สำเร็จ ลองเลือกข้อความในกรอบตัวอย่างแล้วคัดลอกเองนะครับ", !ok);
+      });
+      $("bMd").addEventListener("click", () => mdDownload("msg2"));
+      $("bMd2").addEventListener("click", () => mdDownload("msg9"));
+
+      $("bDocx").addEventListener("click", async () => {
+        const b = $("bDocx");
+        b.disabled = true;
+        say("msg9", "กำลังทำไฟล์ Word รอสักครู่นะครับ");
+        try {
+          const blob = await makeDocx();
+          download(blob, `${CONFIG.docxPrefix}-${safeName(S.nick) || "ผู้เรียน"}.docx`);
+          S.sent = 1; persist(); refresh();
+          say("msg9", "ดาวน์โหลดไฟล์ Word แล้ว อัปโหลดไฟล์นี้ในระบบส่งการบ้าน FutureSkill");
+        } catch (e) {
+          say("msg9", e && e.message === "nolib"
+            ? "ดาวน์โหลดไฟล์ Word ต้องใช้อินเทอร์เน็ต ลองกดบันทึกเป็น PDF หรือดาวน์โหลด AGENTS.md แทนนะครับ"
+            : "ทำไฟล์ Word ไม่สำเร็จ ลองอีกครั้ง หรือกดบันทึกเป็น PDF แทนนะครับ", true);
+        }
+        b.disabled = false;
+      });
+
+      $("bPdf").addEventListener("click", () => {
+        buildPrint();
+        say("msg9", "เลือก บันทึกเป็น PDF ในหน้าพิมพ์ แล้วกดบันทึก");
+        setTimeout(() => window.print(), 80);
+      });
+
+      $("bClear").addEventListener("click", () => {
+        if (!confirm("ล้างข้อมูลทั้งหมดในเครื่องนี้ใช่ไหม ล้างแล้วกู้คืนไม่ได้")) return;
+        try { localStorage.removeItem(KEY); } catch (e) { /* blocked */ }
+        SHOT_KEYS.forEach((k) => { try { localStorage.removeItem(IMG_KEY(k)); } catch (e) { /* blocked */ } });
+        location.reload();
+      });
+    }
+
+    // ===== init =====
+    function init() {
+      $("due").textContent = CONFIG.due;
+      $("footer").textContent = CONFIG.footer;
+      const fsWrap = $("fsWrap");
+      if (CONFIG.fsUrl && CONFIG.fsUrl !== "#") {
+        const a = document.createElement("a");
+        a.href = CONFIG.fsUrl; a.target = "_blank"; a.rel = "noopener";
+        a.textContent = "ลิงก์ระบบส่งการบ้าน FutureSkill";
+        fsWrap.appendChild(a);
+      } else {
+        fsWrap.textContent = CONFIG.fsNote;
+      }
+
+      storeOk = storageWorks();
+      $("storeNote").hidden = storeOk;
+      S = readStore();
+      if (S.mode !== "full") S.mode = "boxes";
+      if (!S.updated) S.updated = todayISO();
+      SHOT_KEYS.forEach((k) => { const o = readShotRaw(k); if (o) MEM[k] = o; });
+
+      $("boxesWrap").innerHTML = boxesHTML();
+      $("shots").innerHTML = ["img1", "img2", "img3"].map(shotHTML).join("");
+      $("shot7").innerHTML = shotHTML("img7");
+      $("planWrap").innerHTML = planHTML();
+      $("rub").innerHTML = rubHTML();
+      $("ladder").innerHTML = [5, 4, 3, 2, 1].map((n) => `<li data-lv="${n}"><b>${n}</b><span>${LEVEL_TXT[n]}</span></li>`).join("");
+
+      bindFields();
+      bindShots();
+      bindButtons();
+      applyMode();
+      SHOT_KEYS.forEach(renderShot);
+      persist();
+      refresh();
+      growAll();
+      window.addEventListener("resize", growAll);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(growAll);
+    }
+
+    init();
+  })();
+  </script>
+</body>
+</html>
