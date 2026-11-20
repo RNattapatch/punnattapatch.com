@@ -1,16 +1,19 @@
-// AI Office — Supabase read-only data layer for /app/office.
+// AI Office — Supabase data layer for /app/office · อ่านทุกตาราง · เขียนได้อย่างเดียวคือเพิ่มคำขอส่งไฟล์ (of_sends: file_id + channel)
 import { supabase, getSupabaseSession } from '../dashboard/supabase';
 import { bangkokMonthStartIso } from './logic';
 import type {
   DeskStatus,
   OfficeAlert,
   OfficeDepartment,
+  OfficeFile,
   OfficeGrade,
   OfficeRoom,
   OfficeRubric,
   OfficeRun,
+  OfficeSend,
   OfficeTask,
   QuietStatus,
+  SendChannel,
   StatusRow,
 } from './logic';
 
@@ -22,6 +25,8 @@ export interface OfficeData {
   runs: OfficeRun[];
   rubrics: OfficeRubric[];
   grades: OfficeGrade[];
+  files: OfficeFile[];
+  sends: OfficeSend[];
   desk: DeskStatus | null;
   quiet: QuietStatus | null;
 }
@@ -32,10 +37,13 @@ async function requireOwner(): Promise<void> {
 
 const fail = (error: { message: string } | null) => { if (error) throw new Error(error.message); };
 
+const FILE_COLS = 'id,task_id,rel_path,name,mime,size_bytes,drive_url,drive_kind,missing,uploaded_at,updated_at';
+const SEND_COLS = 'id,file_id,channel,status,error,share_expires_at,created_at,sent_at';
+
 export async function loadOffice(): Promise<OfficeData> {
   await requireOwner();
   const monthStart = bangkokMonthStartIso();
-  const [tasks, alerts, status, departments, rooms, runs, rubrics, grades] = await Promise.all([
+  const [tasks, alerts, status, departments, rooms, runs, rubrics, grades, files, sends] = await Promise.all([
     supabase.from('of_tasks')
       .select('id,no,parent_id,title,brief,department,room,kind,priority,status,source,result,review_rounds,grade,output_path,created_at,updated_at,done_at')
       .order('created_at', { ascending: false }).limit(500),
@@ -55,8 +63,12 @@ export async function loadOffice(): Promise<OfficeData> {
       .select('key,title_th,criteria,gates,set_by,pun_reviewed,updated_at').order('key'),
     supabase.from('of_grades')
       .select('id,task_id,grader,level,reasons,created_at').order('created_at', { ascending: false }).limit(1000),
+    supabase.from('of_files')
+      .select(FILE_COLS).eq('missing', false).order('updated_at', { ascending: false }).limit(2000),
+    supabase.from('of_sends')
+      .select(SEND_COLS).order('created_at', { ascending: false }).limit(500),
   ]);
-  for (const result of [tasks, alerts, status, departments, rooms, runs, rubrics, grades]) fail(result.error);
+  for (const result of [tasks, alerts, status, departments, rooms, runs, rubrics, grades, files, sends]) fail(result.error);
 
   const statuses = Object.fromEntries(((status.data || []) as StatusRow[]).map((row) => [row.key, row.data]));
   return {
@@ -67,7 +79,24 @@ export async function loadOffice(): Promise<OfficeData> {
     runs: (runs.data || []) as OfficeRun[],
     rubrics: (rubrics.data || []) as OfficeRubric[],
     grades: (grades.data || []) as OfficeGrade[],
+    files: (files.data || []) as OfficeFile[],
+    sends: (sends.data || []) as OfficeSend[],
     desk: (statuses.desk as DeskStatus) || null,
     quiet: (statuses.quiet as QuietStatus) || null,
   };
+}
+
+/** ปุ่มส่งไฟล์ · desk บนมินิหยิบคิวภายในราว 5 วินาที */
+export async function queueSend(fileId: number, channel: SendChannel): Promise<OfficeSend> {
+  await requireOwner();
+  const { data, error } = await supabase.from('of_sends').insert({ file_id: fileId, channel }).select(SEND_COLS).single();
+  fail(error);
+  return data as OfficeSend;
+}
+
+/** ดึงสถานะส่งล่าสุดอย่างเดียว (ตอนมีงานรอส่ง) */
+export async function loadSends(): Promise<OfficeSend[]> {
+  const { data, error } = await supabase.from('of_sends').select(SEND_COLS).order('created_at', { ascending: false }).limit(500);
+  fail(error);
+  return (data || []) as OfficeSend[];
 }

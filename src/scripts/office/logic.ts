@@ -279,3 +279,81 @@ export function fmtWhen(iso: string | null | undefined, now = Date.now()): strin
   if (day === today) return time;
   return `${value.toLocaleDateString('th-TH', { timeZone: BANGKOK, day: 'numeric', month: 'short' })} ${time}`;
 }
+
+// ---------------------------------------------------------------- ไฟล์ผลงาน (of_files) + ปุ่มส่ง (of_sends)
+export type SendChannel = 'telegram' | 'line';
+export type SendStatus = 'queued' | 'sending' | 'sent' | 'failed';
+
+export interface OfficeFile {
+  id: number;
+  task_id: number;
+  rel_path: string;
+  name: string;
+  mime: string | null;
+  size_bytes: number;
+  drive_url: string | null;
+  drive_kind: 'file' | 'gdoc';
+  missing: boolean;
+  uploaded_at: string | null;
+  updated_at: string;
+}
+
+export interface OfficeSend {
+  id: number;
+  file_id: number;
+  channel: SendChannel;
+  status: SendStatus;
+  error: string | null;
+  share_expires_at: string | null;
+  created_at: string;
+  sent_at: string | null;
+}
+
+export const SEND_CHANNEL_LABEL: Record<SendChannel, string> = { telegram: 'ส่ง Telegram', line: 'ส่ง LINE' };
+
+const FILE_KINDS: [RegExp, string, string][] = [
+  [/\.(md|txt|docx?|rtf)$/i, '📝', 'เอกสาร'],
+  [/\.pdf$/i, '📕', 'PDF'],
+  [/\.(pptx?|key)$/i, '📊', 'สไลด์'],
+  [/\.(xlsx?|csv)$/i, '📈', 'ตาราง'],
+  [/\.(png|jpe?g|gif|webp|svg)$/i, '🖼️', 'รูป'],
+  [/\.(mp4|mov|webm)$/i, '🎬', 'วิดีโอ'],
+  [/\.(mp3|m4a|wav)$/i, '🎧', 'เสียง'],
+];
+export function fileKind(name: string): { icon: string; label: string } {
+  const hit = FILE_KINDS.find(([re]) => re.test(name));
+  return hit ? { icon: hit[1], label: hit[2] } : { icon: '📄', label: 'ไฟล์' };
+}
+
+export function fmtBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  const [value, unit] = bytes < 1024 ** 2 ? [bytes / 1024, 'KB'] : [bytes / 1024 ** 2, 'MB'];
+  return `${Number(value.toFixed(1))} ${unit}`;
+}
+
+export const filesForTask = (files: OfficeFile[], taskId: number) =>
+  files.filter((file) => file.task_id === taskId && !file.missing).sort((a, b) => a.rel_path.localeCompare(b.rel_path));
+
+/** แถวส่งล่าสุดต่อ "ไฟล์:ช่องทาง" */
+export function latestSends(sends: OfficeSend[]): Map<string, OfficeSend> {
+  const out = new Map<string, OfficeSend>();
+  for (const send of sends) {
+    const key = `${send.file_id}:${send.channel}`;
+    const seen = out.get(key);
+    if (!seen || send.created_at > seen.created_at || (send.created_at === seen.created_at && send.id > seen.id)) out.set(key, send);
+  }
+  return out;
+}
+
+export const hasPendingSend = (sends: Pick<OfficeSend, 'status'>[]) => sends.some((send) => send.status === 'queued' || send.status === 'sending');
+
+const shortDate = (iso: string) => new Date(iso).toLocaleDateString('th-TH', { timeZone: BANGKOK, day: 'numeric', month: 'short' });
+
+export function sendStatusText(send: OfficeSend, now = Date.now()): string {
+  if (send.status === 'queued') return 'รอส่ง';
+  if (send.status === 'sending') return 'กำลังส่ง';
+  if (send.status === 'failed') return `ส่งไม่สำเร็จ: ${send.error || 'ไม่ทราบสาเหตุ'}`;
+  const sent = `ส่งแล้ว ${fmtWhen(send.sent_at, now)}`.trim();
+  if (send.channel !== 'line' || !send.share_expires_at) return sent;
+  return Date.parse(send.share_expires_at) > now ? `${sent} · ลูกค้าเปิดได้ถึง ${shortDate(send.share_expires_at)}` : `${sent} · ลิงก์หมดอายุแล้ว`;
+}

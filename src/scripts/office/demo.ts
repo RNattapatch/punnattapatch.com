@@ -1,9 +1,15 @@
 // DEV ONLY fixture for `astro dev` + /app/office?demo.
 import type { OfficeData } from './data';
-import type { DepartmentSlug, OfficeTask } from './logic';
+import type { DepartmentSlug, OfficeFile, OfficeTask } from './logic';
 
 const ago = (minutes: number) => new Date(Date.now() - minutes * 60_000).toISOString();
 const due = (days: number) => new Date(Date.now() + days * 86_400_000).toLocaleDateString('en-CA', { timeZone: 'Asia/Bangkok' });
+const demoFile = (id: number, task_id: number, name: string, size_bytes: number, minutes: number): OfficeFile => ({
+  id, task_id, name, size_bytes, rel_path: `${task_id}/work/${name}`, mime: null, missing: false,
+  drive_kind: name.endsWith('.md') ? 'gdoc' : 'file',
+  drive_url: name.endsWith('.md') ? 'https://docs.google.com/document/d/demo/edit' : 'https://drive.google.com/file/d/demo/view',
+  uploaded_at: ago(minutes), updated_at: ago(minutes),
+});
 const task = (overrides: Partial<OfficeTask> & Pick<OfficeTask, 'id' | 'no' | 'title'>): OfficeTask => ({
   id: overrides.id,
   no: overrides.no,
@@ -72,6 +78,18 @@ export const DEMO_OFFICE: OfficeData = {
     { id: 3, task_id: 109, grader: 'head', level: 'good', reasons: ['ตรงกับ SSOT'], created_at: ago(28) },
     { id: 4, task_id: 110, grader: 'head', level: 'good', reasons: ['ข้อความมีขั้นถัดไปชัด'], created_at: ago(20) },
     { id: 5, task_id: 113, grader: 'pun', level: 'good', reasons: ['สรุปตรงประเด็น'], created_at: ago(1400) },
+  ],
+  files: [
+    demoFile(1, 108, 'customer-response.md', 4644, 14),
+    demoFile(2, 108, 'scope-table.xlsx', 18_430, 20),
+    demoFile(3, 108, 'ตัวอย่างหน้าจอ.png', 1_258_291, 25),
+    demoFile(4, 111, 'class-poster-v2.pdf', 2_097_152, 40),
+  ],
+  sends: [
+    { id: 1, file_id: 1, channel: 'line', status: 'sent', error: null, share_expires_at: new Date(Date.now() + 6 * 86_400_000).toISOString(), created_at: ago(10), sent_at: ago(10) },
+    { id: 2, file_id: 1, channel: 'telegram', status: 'sending', error: null, share_expires_at: null, created_at: ago(0), sent_at: null },
+    { id: 3, file_id: 2, channel: 'telegram', status: 'failed', error: 'ไฟล์ใหญ่เกิน 50MB เปิดจาก Drive แทน', share_expires_at: null, created_at: ago(30), sent_at: null },
+    { id: 4, file_id: 3, channel: 'line', status: 'queued', error: null, share_expires_at: null, created_at: ago(0), sent_at: null },
   ],
   desk: { at: ago(1), worker: 'office-desk:demo', off: false, agent_id: 'demo-agent', whatsapp: true, phone: false, quiet: true },
   quiet: { until: new Date(Date.now() + 45 * 60_000).toISOString() },
