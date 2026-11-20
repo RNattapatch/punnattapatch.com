@@ -104,9 +104,10 @@
     .en { font-family: "Prompt", sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .6px; }
     .sub { font-size: 16px; margin: 0 0 10px; }
     .slot { margin: 0 0 12px; }
-    .slot.num { display: flex; gap: 8px; align-items: flex-start; }
-    .slot.num .sn { width: 28px; height: 28px; margin-top: 12px; border-radius: 50%; color: #fff; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; flex: none; }
-    .slot.num > div { flex: 1; min-width: 0; }
+    /* was .slot.num: collided with the 40px .num section badge and squeezed each row to 40px */
+    .slot.nrow { display: flex; gap: 8px; align-items: flex-start; }
+    .slot.nrow .sn { width: 28px; height: 28px; margin-top: 12px; border-radius: 50%; color: #fff; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; flex: none; }
+    .slot.nrow > div { flex: 1; min-width: 0; }
     .pl { display: inline-block; border-radius: 8px; padding: 3px 10px; font-weight: 700; font-size: 15px; margin: 0 0 6px; }
     .timebox { display: inline-block; background: #fff; border-radius: 999px; padding: 3px 12px; font-size: 15px; font-weight: 700; color: var(--navy); margin: 0 0 10px; }
     .commit { background: #FDECEC; border: 1.5px solid #F5C6C8; border-radius: 18px; padding: 16px 14px; margin: 4px 0 6px; }
@@ -134,6 +135,7 @@
     .nextbox { background: #F3F5F8; border-radius: 14px; padding: 14px; margin: 14px 0 0; }
     .nextbox p { margin: 0 0 8px; }
     .nextbox a { color: var(--navy); font-weight: 700; word-break: break-all; }
+    .back { display: inline-flex; align-items: center; min-height: 48px; padding: 6px 2px; color: #fff; font-weight: 700; font-size: 18px; text-decoration: underline; text-underline-offset: 4px; margin: 0 0 6px; }
     footer { text-align: center; color: var(--muted); font-size: 15px; padding: 0 16px 40px; }
 
     #print { display: none; }
@@ -158,6 +160,7 @@
 <body>
   <header class="hero">
     <div class="wrap">
+      <a class="back" href="/class/tni/w1/">← กลับเมนูสัปดาห์ 1</a>
       <p class="kicker">AI Pro Office สัปดาห์ที่ 1</p>
       <h1>การบ้านสัปดาห์ที่ 1 : AGENTS.md ฉบับเต็ม + ใช้กับงานจริง</h1>
       <p class="due">ส่งในระบบ FutureSkill ภายใน <b id="due"></b></p>
@@ -608,7 +611,7 @@
           const k = `c${i}s${j}`, id = `f-${k}`;
           const ph = c.ph && c.ph[j] ? ` placeholder="${esc(c.ph[j])}"` : "";
           return /^\d+$/.test(s)
-            ? `<div class="slot num"><span class="sn" style="background:${p.m}" aria-hidden="true">${s}</span><div><label class="sr" for="${id}">${esc(c.t)} อย่างที่ ${s}</label><textarea id="${id}" data-k="${k}" rows="1" style="border-color:${p.b}"${ph}></textarea></div></div>`
+            ? `<div class="slot nrow"><span class="sn" style="background:${p.m}" aria-hidden="true">${s}</span><div><label class="sr" for="${id}">${esc(c.t)} อย่างที่ ${s}</label><textarea id="${id}" data-k="${k}" rows="1" style="border-color:${p.b}"${ph}></textarea></div></div>`
             : `<div class="slot"><label for="${id}" class="pl" style="background:${p.p};color:${p.d}">${esc(s)}</label><textarea id="${id}" data-k="${k}" rows="2" style="border-color:${p.b}"></textarea></div>`;
         }).join("");
         return `<section class="col" style="background:${p.t};border-color:${p.b}" aria-label="${esc(c.t)}">

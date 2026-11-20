@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex" />
+  <title>สัปดาห์ที่ 1 AI Pro Office</title>
+  <meta name="description" content="เมนูสัปดาห์ที่ 1 แบบทดสอบ สไลด์ prompt การบ้าน และการ์ดศัพท์" />
+  <meta name="theme-color" content="#072B4E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Prompt:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/class/tni/kit.css" />
+  <!-- TNI × FutureSkill AI Pro Office 2569 · source: knowledge repo material/training/futureskill-tni-office-ai-2569/w1-class-page/ (mirrors public/class/tni/) -->
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="back" href="/class/tni/">← หน้ารวมทุกสัปดาห์</a>
+      <p class="brand">AI Pro Office สัปดาห์ที่ 1  เสาร์ 21 พ.ย. 2569</p>
+      <h1>สัปดาห์นี้คุณทำ 3 อย่าง<br />แตะทีละปุ่ม</h1>
+      <p class="lead">ในคลาส ทำแบบทดสอบก่อนเรียนและหลังเรียน ที่บ้าน ทำการบ้านแล้วส่งใน FutureSkill</p>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="progress" aria-live="polite">
+      <p id="pTxt">ทำแล้ว 0 จาก 3 อย่าง</p>
+      <div class="bar" role="progressbar" aria-label="ความคืบหน้าสัปดาห์ 1" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0" id="pBar"><i id="pFill"></i></div>
+    </div>
+    <h2 class="group">ในคลาส ตามลำดับวันนี้</h2>
+    <ul class="tiles">
+      <li><a class="tile must" id="t-1" href="/class/tni/w1/pre-quiz/"><span class="n" aria-hidden="true">1</span><span class="tx"><span class="t">แบบทดสอบก่อนเรียน</span><span class="s">ทำตอนเริ่มคลาส 5 ข้อ</span><span class="chip need" data-chip>ต้องทำ</span></span><span class="go" aria-hidden="true">›</span></a></li>
+      <li><a class="tile" id="t-2" href="https://drive.google.com/file/d/16RDTPM7u_an2Eg7d5BKB1ZJZ2cVrw3ua/view" target="_blank" rel="noopener"><span class="n" aria-hidden="true">2</span><span class="tx"><span class="t">เปิดสไลด์วันนี้</span><span class="s">เปิดใน Google Drive</span><span class="chip done" data-chip hidden></span></span><span class="go" aria-hidden="true">›</span></a></li>
+      <li><a class="tile" id="t-3" href="/class/tni/w1/prompts/"><span class="n" aria-hidden="true">3</span><span class="tx"><span class="t">Prompt ที่ใช้ในคลาส</span><span class="s">2 prompt พร้อมปุ่มคัดลอก</span><span class="chip done" data-chip hidden></span></span><span class="go" aria-hidden="true">›</span></a></li>
+      <li><a class="tile must" id="t-4" href="/class/tni/w1/post-quiz/"><span class="n" aria-hidden="true">4</span><span class="tx"><span class="t">แบบทดสอบหลังเรียน</span><span class="s">ทำตอนท้ายคลาส 9 ข้อ</span><span class="chip need" data-chip>ต้องทำ</span></span><span class="go" aria-hidden="true">›</span></a></li>
+    </ul>
+    <h2 class="group">ที่บ้าน</h2>
+    <ul class="tiles">
+      <li><a class="tile must" id="t-5" href="/class/tni/w1-homework/"><span class="n" aria-hidden="true">5</span><span class="tx"><span class="t">การบ้านสัปดาห์ 1</span><span class="s">ส่งภายใน พฤ. 26 พ.ย. 20:00</span><span class="chip need" data-chip>ต้องทำ</span></span><span class="go" aria-hidden="true">›</span></a></li>
+    </ul>
+    <h2 class="group">ทบทวน</h2>
+    <ul class="tiles">
+      <li><a class="tile" id="t-6" href="/class/tni/w1/vocab/"><span class="n" aria-hidden="true">6</span><span class="tx"><span class="t">การ์ดศัพท์ทั้งหลักสูตร</span><span class="s">ศัพท์ที่จะเจอและสัปดาห์ที่สอน</span><span class="chip done" data-chip hidden></span></span><span class="go" aria-hidden="true">›</span></a></li>
+    </ul>
+    <div class="card" style="margin-top:18px">
+      <p class="muted">เพื่อนหาหน้านี้ไม่เจอ คุณส่งลิงก์ให้เพื่อนได้เลย</p>
+      <button type="button" class="btn" id="copyLink">คัดลอกลิงก์หน้านี้</button>
+      <p class="msg" id="copyMsg" aria-live="polite"></p>
+    </div>
+  </main>
+  <footer class="wrap">
+    <div class="rules">
+      <p><b>กติกาข้อมูลวันนี้</b> ห้ามใส่ ชื่อคน เบอร์โทร เลขบัตรประชาชน เงินเดือน และความลับองค์กร</p>
+      <p>ถ้าติด ยกมือแจ้ง TA ในคลาสได้เลย</p>
+    </div>
+    <p class="foot-brand">AI Pro Office  TNI × FutureSkill</p>
+  </footer>
+  <script>
+  (function () {
+    "use strict";
+    function get(k) { try { return JSON.parse(localStorage.getItem(k) || "{}") || {}; } catch (e) { return {}; } }
+    var quiz = get("tniw1quiz:v1"), hw = get("w1hw:v1"), seen = get("tniw1:v1");
+    var hwStarted = Object.keys(hw).some(function (k) { return k !== "nick" && k !== "dept" && k !== "sent" && hw[k]; });
+    // [tile, state] state: done | wip | seen | ""
+    var st = {
+      1: quiz.pre && quiz.pre.picks ? "done" : "",
+      2: seen.slides ? "seen" : "",
+      3: seen.prompts ? "seen" : "",
+      4: quiz.post && quiz.post.picks ? "done" : "",
+      5: hw.sent ? "done" : (hwStarted ? "wip" : ""),
+      6: seen.vocab ? "seen" : ""
+    };
+    var done = 0;
+    Object.keys(st).forEach(function (n) {
+      var t = document.getElementById("t-" + n), chip = t.querySelector("[data-chip]"), s = st[n];
+      if (s === "done") { done++; t.classList.add("is-done"); chip.className = "chip done"; chip.textContent = "✓ ทำแล้ว"; chip.hidden = false; }
+      else if (s === "seen") { chip.className = "chip done"; chip.textContent = "✓ เปิดแล้ว"; chip.hidden = false; }
+      else if (s === "wip") { chip.className = "chip wip"; chip.textContent = "เริ่มแล้ว ยังไม่ได้ดาวน์โหลดไฟล์ Word"; chip.hidden = false; }
+    });
+    document.getElementById("pTxt").textContent = done === 3 ? "ครบ 3 อย่างแล้ว เก่งมากครับ" : "ทำแล้ว " + done + " จาก 3 อย่าง";
+    document.getElementById("pFill").style.width = (done / 3 * 100) + "%";
+    document.getElementById("pBar").setAttribute("aria-valuenow", String(done));
+    document.getElementById("t-2").addEventListener("click", function () {
+      try { seen.slides = 1; localStorage.setItem("tniw1:v1", JSON.stringify(seen)); } catch (e) {}
+    });
+    // copy link: Clipboard API first, textarea + execCommand for older Safari / LINE in-app browser
+    document.getElementById("copyLink").addEventListener("click", function () {
+      var url = location.origin + location.pathname, msg = document.getElementById("copyMsg");
+      function legacy() {
+        var ta = document.createElement("textarea"); ta.value = url; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.top = "-1000px";
+        document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, url.length);
+        var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+        document.body.removeChild(ta); return ok;
+      }
+      var p = navigator.clipboard && window.isSecureContext ? navigator.clipboard.writeText(url).then(function () { return true; }, legacy) : Promise.resolve(legacy());
+      p.then(function (ok) {
+        msg.className = ok ? "msg" : "msg bad";
+        msg.textContent = ok ? "คัดลอกแล้ว วางในแชทส่งให้เพื่อนได้เลย" : "คัดลอกไม่ได้ ลิงก์คือ " + url;
+      });
+    });
+  })();
+  </script>
+</body>
+</html>
