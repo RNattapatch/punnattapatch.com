@@ -9,6 +9,13 @@ import {
   SOURCE_LABEL,
   TASK_VIEWS,
   bangkokMonthStartIso,
+  filesForTask,
+  fileKind,
+  fmtBytes,
+  hasPendingSend,
+  isSendBusy,
+  latestSends,
+  sendStatusText,
   firstPassGoodByDepartment,
   filterTasks,
   groupTasks,
@@ -128,6 +135,30 @@ check(roomDueText('2026-11-18', healthNow) === 'เลยกำหนด 2 ว�
 check(roomDueText(null, healthNow) === '', 'ห้องไม่มีวันส่งไม่แสดงข้อความ');
 check(isQuietActive({ until: '2026-11-20T05:00:01.000Z' }, healthNow), 'ห้ามรบกวนที่ยังไม่หมดเวลาเปิดอยู่');
 check(!isQuietActive({ until: '2026-11-20T05:00:00.000Z' }, healthNow) && !isQuietActive(null, healthNow), 'หมดเวลาแล้วหรือไม่มีข้อมูล = ปิด');
+
+console.log('ไฟล์และปุ่มส่ง');
+const file = (overrides = {}) => ({ id: 1, task_id: 5, rel_path: '0004/1-tni/a.md', name: 'a.md', mime: 'text/markdown', size_bytes: 10, drive_url: 'https://docs.google.com/document/d/x/edit', drive_kind: 'gdoc', missing: false, uploaded_at: '2026-11-20T05:00:00.000Z', updated_at: '2026-11-20T05:00:00.000Z', ...overrides });
+check(fmtBytes(512) === '512 B' && fmtBytes(1536) === '1.5 KB' && fmtBytes(52428800) === '50 MB', 'ขนาดไฟล์อ่านง่าย');
+check(fileKind('x.md').label === 'เอกสาร' && fileKind('deck.pptx').label === 'สไลด์' && fileKind('a.PDF').label === 'PDF' && fileKind('pic.jpg').label === 'รูป' && fileKind('x.bin').label === 'ไฟล์', 'ชนิดไฟล์เป็นภาษาไทย');
+const files = [file({ id: 2, rel_path: '0004/1-tni/b.md' }), file({ id: 1 }), file({ id: 3, missing: true }), file({ id: 4, task_id: 6 })];
+check(filesForTask(files, 5).map((f) => f.id).join(',') === '1,2', 'ไฟล์ของงาน เรียงตาม path ไม่เอาไฟล์ที่หาย');
+const sends = [
+  { id: 1, file_id: 1, channel: 'line', status: 'failed', error: 'x', share_expires_at: null, created_at: '2026-11-20T05:00:00.000Z', sent_at: null },
+  { id: 2, file_id: 1, channel: 'line', status: 'sent', error: null, share_expires_at: '2026-11-27T05:00:00.000Z', created_at: '2026-11-20T05:01:00.000Z', sent_at: '2026-11-20T05:01:10.000Z' },
+  { id: 3, file_id: 1, channel: 'telegram', status: 'queued', error: null, share_expires_at: null, created_at: '2026-11-20T05:02:00.000Z', sent_at: null },
+];
+const latest = latestSends(sends);
+check(latest.get('1:line').id === 2 && latest.get('1:telegram').id === 3 && !latest.has('2:line'), 'สถานะล่าสุดต่อไฟล์ต่อช่องทาง');
+const sendNow = Date.parse('2026-11-20T05:03:00.000Z');
+check(sendStatusText(latest.get('1:line'), sendNow).includes('ลูกค้าเปิดได้ถึง 27 พ.ย.'), 'LINE ส่งแล้วบอกวันหมดอายุลิงก์');
+check(sendStatusText(latest.get('1:telegram'), sendNow) === 'รอส่ง', 'รอคิว');
+check(sendStatusText({ ...sends[0], error: 'ไฟล์ใหญ่เกิน 50MB เปิดจาก Drive แทน' }, sendNow) === 'ส่งไม่สำเร็จ: ไฟล์ใหญ่เกิน 50MB เปิดจาก Drive แทน', 'ส่งไม่สำเร็จบอกเหตุ');
+check(sendStatusText({ ...sends[1], share_expires_at: '2026-11-20T05:00:00.000Z' }, sendNow).includes('ลิงก์หมดอายุแล้ว'), 'ลิงก์ที่หมดอายุแล้ว');
+check(hasPendingSend(sends, sendNow) && !hasPendingSend(sends.slice(0, 2), sendNow), 'มีงานรอส่ง = ต้องดึงสถานะถี่ขึ้น');
+const staleNow = Date.parse('2026-11-20T05:04:01.000Z');
+check(!isSendBusy(sends[2], staleNow) && !hasPendingSend(sends, staleNow), 'คิวค้างเกิน 2 นาที = ปลดปุ่ม เลิกดึงถี่');
+check(sendStatusText(sends[2], staleNow).includes('desk อาจหยุดอยู่'), 'คิวค้างบอกว่า desk อาจหยุด');
+check(isSendBusy({ status: 'sending', created_at: '2026-11-20T00:00:00.000Z' }, staleNow), 'กำลังส่งยังล็อกปุ่มแม้นาน');
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
