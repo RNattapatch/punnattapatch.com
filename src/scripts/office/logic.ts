@@ -345,12 +345,18 @@ export function latestSends(sends: OfficeSend[]): Map<string, OfficeSend> {
   return out;
 }
 
-export const hasPendingSend = (sends: Pick<OfficeSend, 'status'>[]) => sends.some((send) => send.status === 'queued' || send.status === 'sending');
+// desk หยิบคิวทุก 5 วิ · คิวที่ยังไม่ถูกหยิบเกิน 2 นาที = desk หยุดอยู่ ปลดปุ่มให้กดใหม่ และเลิกดึงสถานะถี่
+const STALE_QUEUE_MS = 2 * 60_000;
+export const isStaleQueued = (send: Pick<OfficeSend, 'status' | 'created_at'>, now = Date.now()) =>
+  send.status === 'queued' && Date.parse(send.created_at) < now - STALE_QUEUE_MS;
+export const isSendBusy = (send: Pick<OfficeSend, 'status' | 'created_at'> | undefined, now = Date.now()) =>
+  !!send && (send.status === 'sending' || (send.status === 'queued' && !isStaleQueued(send, now)));
+export const hasPendingSend = (sends: Pick<OfficeSend, 'status' | 'created_at'>[], now = Date.now()) => sends.some((send) => isSendBusy(send, now));
 
 const shortDate = (iso: string) => new Date(iso).toLocaleDateString('th-TH', { timeZone: BANGKOK, day: 'numeric', month: 'short' });
 
 export function sendStatusText(send: OfficeSend, now = Date.now()): string {
-  if (send.status === 'queued') return 'รอส่ง';
+  if (send.status === 'queued') return isStaleQueued(send, now) ? 'ยังไม่ถูกส่ง desk อาจหยุดอยู่ กดส่งใหม่ได้' : 'รอส่ง';
   if (send.status === 'sending') return 'กำลังส่ง';
   if (send.status === 'failed') return `ส่งไม่สำเร็จ: ${send.error || 'ไม่ทราบสาเหตุ'}`;
   const sent = `ส่งแล้ว ${fmtWhen(send.sent_at, now)}`.trim();

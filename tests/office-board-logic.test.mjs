@@ -13,6 +13,7 @@ import {
   fileKind,
   fmtBytes,
   hasPendingSend,
+  isSendBusy,
   latestSends,
   sendStatusText,
   firstPassGoodByDepartment,
@@ -148,12 +149,16 @@ const sends = [
 ];
 const latest = latestSends(sends);
 check(latest.get('1:line').id === 2 && latest.get('1:telegram').id === 3 && !latest.has('2:line'), 'สถานะล่าสุดต่อไฟล์ต่อช่องทาง');
-const sendNow = Date.parse('2026-11-20T05:05:00.000Z');
+const sendNow = Date.parse('2026-11-20T05:03:00.000Z');
 check(sendStatusText(latest.get('1:line'), sendNow).includes('ลูกค้าเปิดได้ถึง 27 พ.ย.'), 'LINE ส่งแล้วบอกวันหมดอายุลิงก์');
 check(sendStatusText(latest.get('1:telegram'), sendNow) === 'รอส่ง', 'รอคิว');
 check(sendStatusText({ ...sends[0], error: 'ไฟล์ใหญ่เกิน 50MB เปิดจาก Drive แทน' }, sendNow) === 'ส่งไม่สำเร็จ: ไฟล์ใหญ่เกิน 50MB เปิดจาก Drive แทน', 'ส่งไม่สำเร็จบอกเหตุ');
 check(sendStatusText({ ...sends[1], share_expires_at: '2026-11-20T05:00:00.000Z' }, sendNow).includes('ลิงก์หมดอายุแล้ว'), 'ลิงก์ที่หมดอายุแล้ว');
-check(hasPendingSend(sends) && !hasPendingSend(sends.slice(0, 2)), 'มีงานรอส่ง = ต้องดึงสถานะถี่ขึ้น');
+check(hasPendingSend(sends, sendNow) && !hasPendingSend(sends.slice(0, 2), sendNow), 'มีงานรอส่ง = ต้องดึงสถานะถี่ขึ้น');
+const staleNow = Date.parse('2026-11-20T05:04:01.000Z');
+check(!isSendBusy(sends[2], staleNow) && !hasPendingSend(sends, staleNow), 'คิวค้างเกิน 2 นาที = ปลดปุ่ม เลิกดึงถี่');
+check(sendStatusText(sends[2], staleNow).includes('desk อาจหยุดอยู่'), 'คิวค้างบอกว่า desk อาจหยุด');
+check(isSendBusy({ status: 'sending', created_at: '2026-11-20T00:00:00.000Z' }, staleNow), 'กำลังส่งยังล็อกปุ่มแม้นาน');
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

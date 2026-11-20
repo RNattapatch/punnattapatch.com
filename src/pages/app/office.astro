@@ -90,7 +90,7 @@ import AppNav from '../../components/app/AppNav.astro';
     import {
       ALERT_LEVEL_META, ALERT_STATUS_LABEL, GRADE_LABEL, GRADE_TONE, SEND_CHANNEL_LABEL, SOURCE_LABEL, TASK_VIEWS,
       fileKind, filesForTask, filterTasks, firstPassGoodByDepartment, fmtBytes, fmtWhen, groupTasks, hasPendingSend,
-      heartbeatHealth, isQuietActive, latestSends, officeCounts, openTaskCountByDepartment, roomDueText,
+      heartbeatHealth, isQuietActive, isSendBusy, latestSends, officeCounts, openTaskCountByDepartment, roomDueText,
       runCountsByDepartment, sendStatusText, statusMeta,
       type DepartmentSlug, type OfficeAlert, type OfficeFile, type OfficeRoom, type OfficeSend, type OfficeTask,
       type SendChannel, type TaskView,
@@ -233,7 +233,7 @@ import AppNav from '../../components/app/AppNav.astro';
       const url = safeUrl(file.drive_url);
       const channels = (['telegram', 'line'] as SendChannel[]).map((channel) => {
         const send = latest.get(`${file.id}:${channel}`);
-        return { channel, send, busy: send?.status === 'queued' || send?.status === 'sending' };
+        return { channel, send, busy: isSendBusy(send) };
       });
       const buttons = channels.map(({ channel, send, busy }) => h('button', {
         class: 'of-send btn btn-sm min-h-11 sm:min-h-0', type: 'button', 'data-file': String(file.id), 'data-channel': channel,
