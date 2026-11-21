@@ -191,11 +191,90 @@
     }
     h += '<p class="send wait" id="send" role="status">กำลังส่งผลถึงผู้สอน</p>' +
       '<button type="button" class="btn" id="retry" hidden>ส่งผลอีกครั้ง</button>' +
-      '<p class="shotnote">ถ่ายภาพหน้าจอผลนี้เก็บไว้ได้ครับ ถ้าระบบส่งไม่สำเร็จ คุณยื่นภาพนี้ให้ TA ได้เลย</p>' +
+      '<div class="savebox"><p class="lb">เก็บผลนี้ไว้กับตัว</p>' +
+      '<button type="button" class="btn btn-primary" id="saveimg">บันทึกผลเป็นรูปภาพ</button>' +
+      '<button type="button" class="btn" id="savepdf">บันทึกผลเป็น PDF</button>' +
+      '<p class="msg bad" id="savemsg" role="status"></p>' +
+      '<div id="shot" hidden><img id="shotimg" alt="ภาพผลแบบทดสอบ" /><a class="btn" id="shotdl" download>ดาวน์โหลดรูป</a>' +
+      '<p class="shotnote">ถ้ากดดาวน์โหลดไม่ได้ ให้กดค้างที่รูปแล้วเลือกบันทึกรูปภาพ</p></div></div>' +
+      '<p class="shotnote">ถ้าระบบส่งผลไม่สำเร็จ ยื่นรูปหรือ PDF นี้ให้ TA ได้เลย</p>' +
       '<a class="btn btn-primary" href="' + CFG.menu + '">กลับเมนูสัปดาห์ 1</a></div>';
     $("res").innerHTML = h;
     $("retry").addEventListener("click", send);
+    $("saveimg").addEventListener("click", function () { (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(function () { saveImage(d); }); });
+    $("savepdf").addEventListener("click", savePdf);
   }
+
+  // in-app browsers (LINE, Facebook, Instagram) ignore window.print(), so PDF needs Chrome/Safari; the image works everywhere
+  var INAPP = /\bLine\/|FBAN|FBAV|Instagram/i.test(navigator.userAgent);
+  function savePdf() {
+    var m = $("savemsg");
+    if (INAPP || typeof window.print !== "function") {
+      m.textContent = "เบราว์เซอร์ในแอปนี้บันทึก PDF ไม่ได้ ให้กดบันทึกผลเป็นรูปภาพแทน หรือเปิดลิงก์นี้ใน Chrome หรือ Safari";
+      return;
+    }
+    m.textContent = "";
+    window.print(); // print sheet → "Save as PDF" (kit.css @media print keeps the answers + result only)
+  }
+
+  // Thai has no spaces between words: break on Intl.Segmenter words, else per character
+  function wrap(ctx, text, max) {
+    var parts = [];
+    if (typeof Intl !== "undefined" && Intl.Segmenter) {
+      var it = new Intl.Segmenter("th", { granularity: "word" }).segment(text);
+      for (var seg of it) parts.push(seg.segment);
+    } else parts = Array.from(text);
+    var lines = [], cur = "";
+    parts.forEach(function (p) {
+      if (ctx.measureText(cur + p).width > max && cur) { lines.push(cur); cur = p.replace(/^\s+/, ""); }
+      else cur += p;
+    });
+    if (cur) lines.push(cur);
+    return lines;
+  }
+
+  function resultLines(d) {
+    var cfg = QUIZ[key], L = [];
+    L.push(["h", "ผล" + cfg.name + " สัปดาห์ 1"]);
+    L.push(["m", "AI Pro Office  TNI × FutureSkill"]);
+    L.push(["t", "ชื่อเล่น " + d.nick + (d.dept ? "  แผนก " + d.dept : "")]);
+    L.push(["t", "ส่งเมื่อ " + new Date(d.at).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" }) + "  รหัสส่ง " + d.attempt.slice(-6).toUpperCase()]);
+    L.push(["big", "ได้ " + d.score + " จาก " + d.total + " ข้อ"]);
+    if (key === "post") L.push(["b", "คะแนนความรู้ (K) ระดับ " + d.level]);
+    var row = [];
+    for (var i = 0; i < d.total; i++) row.push("ข้อ " + (i + 1) + " " + LT[d.picks[i]] + (d.picks[i] === Q[i].a ? " ถูก" : " ผิด"));
+    L.push(["t", row.join("   ")]);
+    for (i = 0; i < d.total; i++) if (d.picks[i] !== Q[i].a)
+      L.push(["t", "ข้อ " + (i + 1) + " คำตอบที่ถูกคือ " + LT[Q[i].a] + " " + Q[i].o[Q[i].a]]);
+    return L;
+  }
+
+  function saveImage(d) {
+    var W = 1080, P = 64, max = W - P * 2, F = '"Noto Sans Thai", "Prompt", sans-serif';
+    var ST = { h: [700, 46, 64, "#072B4E"], m: [500, 28, 46, "#5A6B7B"], t: [400, 30, 46, "#1B2733"], b: [700, 34, 52, "#072B4E"], big: [800, 64, 88, "#072B4E"] };
+    var c = document.createElement("canvas"), ctx = c.getContext("2d");
+    var L = resultLines(d), out = [];
+    L.forEach(function (l) {
+      var st = ST[l[0]]; ctx.font = st[0] + " " + st[1] + "px " + F;
+      wrap(ctx, l[1], max).forEach(function (t) { out.push([st, t]); });
+    });
+    var H = P * 2 + out.reduce(function (a, o) { return a + o[0][2]; }, 0);
+    c.width = W; c.height = H;
+    ctx.fillStyle = "#FBFAF7"; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "#072B4E"; ctx.fillRect(0, 0, W, 14);
+    var y = P;
+    ctx.textBaseline = "top";
+    out.forEach(function (o) {
+      var st = o[0]; ctx.font = st[0] + " " + st[1] + "px " + F; ctx.fillStyle = st[3];
+      ctx.fillText(o[1], P, y); y += st[2];
+    });
+    var url = c.toDataURL("image/png"), name = "tni-w1-" + key + "-quiz-" + (d.nick || "result").replace(/[^\w\u0E00-\u0E7F-]+/g, "") + ".png";
+    $("shotimg").src = url; $("shotdl").href = url; $("shotdl").setAttribute("download", name);
+    $("shot").hidden = false; $("savemsg").textContent = "";
+    if (!INAPP) $("shotdl").click();
+    $("shot").scrollIntoView({ block: "center" });
+  }
+  console.assert(typeof Array.from === "function", "Array.from");
 
   function send() {
     var d = S[key], box = $("send"), retry = $("retry");

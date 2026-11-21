@@ -139,3 +139,15 @@ footer { padding: 4px 0 40px; }
 .rules p { margin: 0 0 6px; }
 .rules p:last-child { margin: 0; }
 .foot-brand { text-align: center; color: var(--muted); font-size: 14px; margin: 12px 0 0; }
+
+/* quiz: keep-your-result box (image + PDF) */
+.savebox { margin: 14px 0 0; padding: 12px; border: 1px dashed var(--navy); border-radius: 14px; background: #fff; }
+#shot img { display: block; width: 100%; height: auto; margin: 10px 0 0; border: 1px solid #ddd; border-radius: 10px; }
+@media print {
+  .top .back, .btn, .savebox, #send, #retry, .shotnote, footer .rules { display: none !important; }
+  body { background: #fff; }
+  .top, .top * { background: none !important; color: #072B4E !important; }
+  #quiz { display: flex; flex-direction: column; }
+  #res { order: -1; } /* result first, answers after */
+  .q { break-inside: avoid; }
+}

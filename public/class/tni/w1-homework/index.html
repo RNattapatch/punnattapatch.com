@@ -484,6 +484,9 @@
     function safeName(s) {
       return String(s || "").trim().replace(/[\\/:*?"<>|\r\n\t]+/g, "").replace(/\s+/g, "-").slice(0, 30);
     }
+    // LINE / Facebook / Instagram in-app browsers drop blob downloads and ignore window.print()
+    const INAPP = /\bLine\/|FBAN|FBAV|Instagram/i.test(navigator.userAgent);
+    const INAPP_MSG = "เบราว์เซอร์ในแอป LINE หรือ Facebook บันทึกไฟล์ไม่ได้ กดเมนู ⋯ แล้วเลือกเปิดใน Chrome หรือ Safari ข้อความที่พิมพ์ในแอปจะไม่ตามไป จึงกดคัดลอก AGENTS.md เก็บไว้ก่อนแล้วค่อยเปิดใหม่";
     function download(blob, name) {
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
@@ -938,6 +941,7 @@
       $("bMd2").addEventListener("click", () => mdDownload("msg9"));
 
       $("bDocx").addEventListener("click", async () => {
+        if (INAPP) return say("msg9", INAPP_MSG, true);
         const b = $("bDocx");
         b.disabled = true;
         say("msg9", "กำลังทำไฟล์ Word รอสักครู่นะครับ");
@@ -955,6 +959,7 @@
       });
 
       $("bPdf").addEventListener("click", () => {
+        if (INAPP) return say("msg9", INAPP_MSG, true);
         buildPrint();
         say("msg9", "เลือก บันทึกเป็น PDF ในหน้าพิมพ์ แล้วกดบันทึก");
         setTimeout(() => window.print(), 80);
@@ -970,6 +975,7 @@
 
     // ===== init =====
     function init() {
+      if (INAPP) { const n = document.createElement("p"); n.className = "msg bad"; n.setAttribute("role", "alert"); n.textContent = "ตอนนี้เปิดอยู่ในแอป LINE หรือ Facebook ซึ่งบันทึกไฟล์ Word และ PDF ไม่ได้ กดเมนู ⋯ แล้วเลือกเปิดใน Chrome หรือ Safari ก่อนเริ่มพิมพ์"; document.querySelector("main").prepend(n); }
       $("due").textContent = CONFIG.due;
       $("footer").textContent = CONFIG.footer;
       const fsWrap = $("fsWrap");
