@@ -188,10 +188,18 @@
     <!-- 1 -->
     <section class="card" id="st1" aria-labelledby="h1">
       <div class="sh"><span class="num" aria-hidden="true">1</span><h2 id="h1">ข้อมูลผู้เรียน</h2><span class="tick" id="tick1" hidden>เสร็จแล้ว</span></div>
-      <p class="hint">ใส่ชื่อเล่นหรือรหัสก็พอ ไม่ต้องใส่ชื่อจริงและนามสกุล ไม่ต้องใส่ชื่อบริษัท</p>
+      <p class="hint">ใส่ชื่อจริง นามสกุล และชื่อเล่นให้ตรงกับที่ลงทะเบียนคลาสไว้ ทีมงานใช้ชื่อนี้เช็คว่าใครส่งการบ้านแล้ว ชื่อจะอยู่ในไฟล์ Word และ PDF ที่ส่ง แต่ไม่ใส่ในไฟล์ AGENTS.md ไม่ต้องใส่ชื่อบริษัท</p>
       <div class="field">
-        <label for="f-nick">ชื่อเล่นหรือรหัสผู้เรียน</label>
-        <input type="text" id="f-nick" data-k="nick" autocomplete="off" placeholder="เช่น เอ" />
+        <label for="f-fname">ชื่อจริง</label>
+        <input type="text" id="f-fname" data-k="fname" autocomplete="given-name" placeholder="เช่น สมชาย" />
+      </div>
+      <div class="field">
+        <label for="f-lname">นามสกุล</label>
+        <input type="text" id="f-lname" data-k="lname" autocomplete="family-name" placeholder="เช่น ใจดี" />
+      </div>
+      <div class="field">
+        <label for="f-nick">ชื่อเล่น</label>
+        <input type="text" id="f-nick" data-k="nick" autocomplete="nickname" placeholder="เช่น เอ" />
       </div>
       <div class="field">
         <label for="f-dept">แผนกและตำแหน่ง</label>
@@ -431,7 +439,7 @@
     ];
 
     const STEPS = [
-      () => filled("nick") && filled("dept"),
+      () => ["fname", "lname", "nick", "dept"].every(filled),
       () => boxesAll(boxesState()),
       () => !!getShot("img1") && !!getShot("img2") && !!getShot("img3"),
       () => ["ai_miss", "ai_check", "ai_fix"].every(filled),
@@ -482,7 +490,7 @@
       return `${d} ${TH_M[m - 1]} ${y + 543}`;
     }
     function safeName(s) {
-      return String(s || "").trim().replace(/[\\/:*?"<>|\r\n\t]+/g, "").replace(/\s+/g, "-").slice(0, 30);
+      return String(s || "").trim().replace(/[\\/:*?"<>|\r\n\t]+/g, "").replace(/\s+/g, "-").slice(0, 60);
     }
     // LINE / Facebook / Instagram in-app browsers drop blob downloads and ignore window.print()
     const INAPP = /\bLine\/|FBAN|FBAV|Instagram/i.test(navigator.userAgent);
@@ -712,6 +720,7 @@
         });
       });
     }
+    function fullName() { return [S.fname, S.lname].map((x) => String(x || "").trim()).filter(Boolean).join(" "); }
     function setMode(m) {
       S.mode = m; persist(); applyMode(); refresh(); requestAnimationFrame(growAll);
     }
@@ -815,7 +824,8 @@
       ch.push(para(`${CONFIG.course} ส่งภายใน ${CONFIG.due}`, { size: 22, color: MUTED, after: 240 }));
 
       ch.push(h("1 ข้อมูลผู้เรียน"));
-      ch.push(para(`ชื่อเล่นหรือรหัส: ${S.nick || "ยังไม่ได้กรอก"}`));
+      ch.push(para(`ชื่อ นามสกุล: ${fullName() || "ยังไม่ได้กรอก"}`));
+      ch.push(para(`ชื่อเล่น: ${S.nick || "ยังไม่ได้กรอก"}`));
       ch.push(para(`แผนกและตำแหน่ง: ${S.dept || "ยังไม่ได้กรอก"}`));
       ch.push(para(`ประเภทธุรกิจขององค์กร: ${S.biz || "ยังไม่ได้กรอก"}`));
       ch.push(para(`อัปเดตล่าสุด: ${thDate(S.updated) || "ยังไม่ได้กรอก"}`));
@@ -902,7 +912,7 @@
       const IMG = (k) => getShot(k) ? `<div class="fig"><img src="${getShot(k).d}" alt="${esc(SHOTS[k].title)}"></div>` : '<p class="pe">ยังไม่มีภาพ</p>';
       const parts = [];
       parts.push(`<h1>${esc(CONFIG.title)}</h1>`, `<p>${esc(CONFIG.course)} ส่งภายใน ${esc(CONFIG.due)}</p>`);
-      parts.push("<h2>1 ข้อมูลผู้เรียน</h2>", `<p>ชื่อเล่นหรือรหัส: ${esc(S.nick || "ยังไม่ได้กรอก")}</p>`,
+      parts.push("<h2>1 ข้อมูลผู้เรียน</h2>", `<p>ชื่อ นามสกุล: ${esc(fullName() || "ยังไม่ได้กรอก")}</p>`, `<p>ชื่อเล่น: ${esc(S.nick || "ยังไม่ได้กรอก")}</p>`,
         `<p>แผนกและตำแหน่ง: ${esc(S.dept || "ยังไม่ได้กรอก")}</p>`, `<p>ประเภทธุรกิจขององค์กร: ${esc(S.biz || "ยังไม่ได้กรอก")}</p>`);
       parts.push("<h2>2 AGENTS.md ฉบับเต็ม</h2>", agentsText() ? `<pre>${esc(agentsText())}</pre>` : '<p class="pe">ยังไม่ได้กรอก</p>');
       parts.push("<h2>3 ภาพหน้าจอ</h2>");
@@ -947,7 +957,7 @@
         say("msg9", "กำลังทำไฟล์ Word รอสักครู่นะครับ");
         try {
           const blob = await makeDocx();
-          download(blob, `${CONFIG.docxPrefix}-${safeName(S.nick) || "ผู้เรียน"}.docx`);
+          download(blob, `${CONFIG.docxPrefix}-${safeName([fullName(), S.nick].filter((x) => String(x || "").trim()).join(" ")) || "ผู้เรียน"}.docx`);
           S.sent = 1; persist(); refresh();
           say("msg9", "ดาวน์โหลดไฟล์ Word แล้ว อัปโหลดไฟล์นี้ในระบบส่งการบ้าน FutureSkill");
         } catch (e) {
