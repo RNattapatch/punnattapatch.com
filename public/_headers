@@ -12,9 +12,12 @@
 #   · yykocvhorgcgzaluuldn.supabase.co = fallback ชั้นสองที่โค้ดฟอร์มเรียกอยู่แล้ว
 #     แต่ CSP บล็อกมาตลอด → เวลา primary ล่ม lead หายทั้งที่โค้ด fallback มีอยู่
 #   คง rnat.app.n8n.cloud ไว้ก่อนเผื่อ rollback (หน้าที่ค้าง cache ยังยิงเข้า n8n อยู่)
+#
+# 2026-11-22: img-src เพิ่ม blob: เพราะหน้าการบ้านคลาสย่อภาพที่ผู้เรียนเลือกผ่าน URL.createObjectURL
+#   ไม่มี blob: = ทุกภาพขึ้น "ใช้ภาพนี้ไม่ได้" (TNI W1 homework)
 
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://pl.punnattapatch.com https://analytics.tiktok.com https://accounts.google.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://accounts.google.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://form-hook.punnattapatch.com https://yykocvhorgcgzaluuldn.supabase.co https://rnat.app.n8n.cloud https://pl.punnattapatch.com https://analytics.tiktok.com https://accounts.google.com https://oauth2.googleapis.com https://script.google.com https://script.googleusercontent.com https://www.facebook.com https://connect.facebook.net; frame-src https:; object-src 'none'; base-uri 'self'; form-action 'self' https://form-hook.punnattapatch.com https://rnat.app.n8n.cloud; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://pl.punnattapatch.com https://analytics.tiktok.com https://accounts.google.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://accounts.google.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://form-hook.punnattapatch.com https://yykocvhorgcgzaluuldn.supabase.co https://rnat.app.n8n.cloud https://pl.punnattapatch.com https://analytics.tiktok.com https://accounts.google.com https://oauth2.googleapis.com https://script.google.com https://script.googleusercontent.com https://www.facebook.com https://connect.facebook.net; frame-src https:; object-src 'none'; base-uri 'self'; form-action 'self' https://form-hook.punnattapatch.com https://rnat.app.n8n.cloud; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
