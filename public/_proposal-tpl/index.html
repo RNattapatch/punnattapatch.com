@@ -174,7 +174,7 @@
             return "<label class=\"opt\"><input type=\"" + type + "\" name=\"g_" + esc(g.key) + "\" value=\"" + esc(o.key) + "\"" +
               (o.default ? " checked" : "") + (live ? "" : " disabled") + ">" +
               "<div class=\"row\"><span class=\"name\">" + esc(o.label) + "</span><span class=\"price\">" +
-              (o.list_price_thb ? "<span class=\"list\">" + thb(o.list_price_thb) + "</span>" : "") + thb(o.price_thb) + "</span></div>" +
+              (o.list_price_thb ? "<span class=\"list\">" + thb(o.list_price_thb) + "</span>" : "") + (Number(o.price_thb) ? thb(o.price_thb) : "ไม่มีค่าใช้จ่ายเพิ่ม") + "</span></div>" +
               (o.desc ? "<div class=\"desc\">" + esc(o.desc) + "</div>" : "") +
               (o.includes && o.includes.length ? list(o.includes).replace("plain", "") : "") + "</label>";
           }).join("") + "</div>";
