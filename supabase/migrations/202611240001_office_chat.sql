@@ -117,7 +117,8 @@ begin
   if not public.office_can_write() then raise exception 'not allowed' using errcode = '42501'; end if;
   select * into t from public.of_tasks where id = p_task for update;
   if not found then raise exception 'task not found'; end if;
-  if t.room is null then raise exception 'task has no room'; end if;
+  -- Legacy research/action tasks predate rooms. Route their review messages to the department room.
+  if t.room is null then t.room := coalesce(t.department, 'system'); end if;
 
   if p_action = 'reset_context' then
     delete from public.of_sessions where key = 'head:chat:' || t.id;

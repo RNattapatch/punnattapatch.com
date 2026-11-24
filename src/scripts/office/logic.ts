@@ -24,7 +24,7 @@ export interface OfficeTask {
   brief: string;
   department: DepartmentSlug | null;
   room: string | null;
-  kind: 'research' | 'action' | 'work';
+  kind: 'research' | 'action' | 'work' | 'chat';
   priority: 'urgent' | 'normal';
   status: TaskStatus;
   source: TaskSource;
@@ -32,6 +32,10 @@ export interface OfficeTask {
   review_rounds: number;
   grade: TaskGrade | null;
   output_path: string | null;
+  notify: 'final' | 'all' | 'off';
+  handed_to: number | null;
+  archived_at: string | null;
+  pending_action: { action?: string; room?: string; note?: string } | null;
   created_at: string;
   updated_at: string;
   done_at: string | null;
@@ -65,6 +69,8 @@ export interface OfficeRoom {
   slug: string;
   title: string;
   department: DepartmentSlug;
+  kind: 'dept' | 'project' | 'client' | 'system';
+  report_mode: 'head' | 'all';
   status: 'open' | 'closed';
   goal: string | null;
   due_date: string | null;
@@ -84,8 +90,27 @@ export interface OfficeRun {
   model?: string | null;
   ok?: boolean | null;
   ms?: number | null;
+  input_tokens?: number | null;
+  cached_tokens?: number | null;
+  output_tokens?: number | null;
   started_at: string;
   ended_at?: string | null;
+}
+
+export type MessageType = 'progress' | 'result' | 'decision' | 'question' | 'alert' | 'note' | 'file' | 'system' | 'handoff' | 'context_reset';
+export interface OfficeMessage {
+  id: number;
+  room_slug: string;
+  task_id: number | null;
+  run_id: number | null;
+  file_id: number | null;
+  actor_role: 'owner' | 'head' | 'worker' | 'system';
+  actor_id: string;
+  source_machine: 'macbook' | 'mini' | 'web' | 'telegram' | 'cloud' | null;
+  message_type: MessageType;
+  body: string;
+  payload: Record<string, unknown>;
+  created_at: string;
 }
 
 export interface OfficeRubric {
@@ -130,6 +155,109 @@ export const TASK_STATUS_META: Record<TaskStatus, { label: string; tone: string 
 };
 
 export const statusMeta = (status: string) => TASK_STATUS_META[status as TaskStatus] || { label: status, tone: 'badge-ghost' };
+
+const CHAT_STATUS_META: Record<TaskStatus, { label: string; tone: string }> = {
+  todo: { label: 'รอหัวหน้า', tone: 'badge-ghost' },
+  in_progress: { label: 'กำลังทำ', tone: 'badge-info' },
+  in_review: { label: 'รอคุณปัน', tone: 'badge-warning' },
+  done: { label: 'ปิด', tone: 'badge-success' },
+  blocked: { label: 'ติดขัด', tone: 'badge-error' },
+  cancelled: { label: 'ปิด', tone: 'badge-ghost' },
+};
+
+export const chatStatusMeta = (status: string) => CHAT_STATUS_META[status as TaskStatus] || { label: status, tone: 'badge-ghost' };
+
+export interface MessageGroup { actorId: string; taskId: number | null; messages: OfficeMessage[] }
+export function groupConsecutiveMessages(messages: OfficeMessage[]): MessageGroup[] {
+  const groups: MessageGroup[] = [];
+  for (const message of messages) {
+    const previous = groups.at(-1);
+    const canJoin = previous
+      && previous.actorId === message.actor_id
+      && previous.taskId === message.task_id
+      && !['context_reset', 'handoff'].includes(message.message_type)
+      && !['context_reset', 'handoff'].includes(previous.messages.at(-1)!.message_type);
+    if (canJoin) previous.messages.push(message);
+    else groups.push({ actorId: message.actor_id, taskId: message.task_id, messages: [message] });
+  }
+  return groups;
+}
+
+export type RoomFeedItem =
+  | { kind: 'message'; message: OfficeMessage }
+  | { kind: 'workers'; taskId: number | null; messages: OfficeMessage[] };
+
+export function collapseWorkerMessages(messages: OfficeMessage[], reportMode: 'head' | 'all'): RoomFeedItem[] {
+  if (reportMode === 'all') return messages.map((message) => ({ kind: 'message', message }));
+  // ยุบเฉพาะไม้ลูกน้องที่ผูกงาน · รายงานที่ไม่ผูกงาน (office-report จาก session บน MacBook) ต้องขึ้นฟีดตามเวลา
+  const collapsible = (message: OfficeMessage) => message.actor_role === 'worker' && message.task_id != null;
+  const visible = messages.filter((message) => !collapsible(message));
+  const workerGroups = new Map<number | null, OfficeMessage[]>();
+  for (const message of messages.filter(collapsible)) {
+    const group = workerGroups.get(message.task_id) || [];
+    group.push(message);
+    workerGroups.set(message.task_id, group);
+  }
+  const after = new Map<number, RoomFeedItem[]>();
+  const trailing: RoomFeedItem[] = [];
+  for (const [taskId, workers] of workerGroups) {
+    const firstWorker = workers[0];
+    let anchor = -1;
+    for (let index = 0; index < visible.length; index += 1) {
+      const candidate = visible[index];
+      if (candidate.id >= firstWorker.id) break;
+      if (candidate.actor_role === 'head' && candidate.task_id === taskId) anchor = index;
+    }
+    const item: RoomFeedItem = { kind: 'workers', taskId, messages: workers };
+    if (anchor < 0) trailing.push(item);
+    else after.set(anchor, [...(after.get(anchor) || []), item]);
+  }
+  const items: RoomFeedItem[] = [];
+  visible.forEach((message, index) => {
+    items.push({ kind: 'message', message });
+    items.push(...(after.get(index) || []));
+  });
+  items.push(...trailing);
+  return items;
+}
+
+export interface ContextMeter { tokens: number; percent: number; level: 'neutral' | 'warning' | 'danger'; recommendHandoff: boolean }
+export function contextMeter(value: number | null | undefined): ContextMeter {
+  const tokens = Math.max(0, Math.round(value || 0));
+  return {
+    tokens,
+    percent: Math.min(100, Math.round((tokens / 200_000) * 100)),
+    level: tokens > 150_000 ? 'danger' : tokens >= 100_000 ? 'warning' : 'neutral',
+    recommendHandoff: tokens > 150_000,
+  };
+}
+
+export const draftAfterAcknowledgement = (current: string, submitted: string) => current === submitted ? '' : current;
+
+export function waitingForPunCount(
+  tasks: Pick<OfficeTask, 'status'>[],
+  alerts: Pick<OfficeAlert, 'status'>[],
+): number {
+  return tasks.filter((task) => task.status === 'in_review').length
+    + alerts.filter((alert) => OPEN_ALERTS.has(alert.status)).length;
+}
+
+export function roomUnreadCounts(messages: Pick<OfficeMessage, 'id' | 'room_slug'>[], lastSeen: Record<string, number>): Record<string, number> {
+  const counts: Record<string, number> = {};
+  for (const message of messages) {
+    if (message.id <= (lastSeen[message.room_slug] || 0)) continue;
+    counts[message.room_slug] = (counts[message.room_slug] || 0) + 1;
+  }
+  return counts;
+}
+
+export function latestMessageByRoom<T extends Pick<OfficeMessage, 'id' | 'room_slug'>>(messages: T[]): Record<string, T> {
+  const latest: Record<string, T> = {};
+  for (const message of messages) {
+    if (!latest[message.room_slug] || message.id > latest[message.room_slug].id) latest[message.room_slug] = message;
+  }
+  return latest;
+}
 
 export const GRADE_LABEL: Record<TaskGrade, string> = { good: 'ดี', fair: 'พอใช้', redo: 'ปรับปรุง' };
 export const GRADE_TONE: Record<TaskGrade, string> = { good: 'badge-success', fair: 'badge-warning', redo: 'badge-error' };
@@ -182,7 +310,7 @@ export function groupTasks(tasks: OfficeTask[]): TaskGroup[] {
 }
 
 const OPEN_TASKS = new Set<TaskStatus>(['todo', 'in_progress', 'in_review', 'blocked']);
-const OPEN_ALERTS = new Set<OfficeAlert['status']>(['new', 'notified', 'calling']);
+const OPEN_ALERTS = new Set<OfficeAlert['status']>(['new', 'notified', 'calling', 'gave_up']);
 
 export function officeCounts(tasks: Pick<OfficeTask, 'status'>[], alerts: Pick<OfficeAlert, 'status'>[]) {
   return {
@@ -240,9 +368,9 @@ export function heartbeatHealth(desk: Pick<DeskStatus, 'at'> | null, now = Date.
   const stamp = desk?.at ? Date.parse(desk.at) : Number.NaN;
   if (!Number.isFinite(stamp)) return { state: 'stopped', ageMinutes: null, label: 'ยังไม่พบ heartbeat' };
   const ageMinutes = Math.max(0, Math.floor((now - stamp) / 60_000));
-  if (now - stamp > 10 * 60_000) return { state: 'stopped', ageMinutes, label: `หยุด · ${ageMinutes} นาที` };
-  if (now - stamp > 2 * 60_000) return { state: 'slow', ageMinutes, label: `ช้า · ${ageMinutes} นาที` };
-  return { state: 'normal', ageMinutes, label: ageMinutes ? `ปกติ · ${ageMinutes} นาที` : 'ปกติ · เมื่อครู่' };
+  if (now - stamp > 10 * 60_000) return { state: 'stopped', ageMinutes, label: `หยุด ${ageMinutes} นาที` };
+  if (now - stamp > 2 * 60_000) return { state: 'slow', ageMinutes, label: `ช้า ${ageMinutes} นาที` };
+  return { state: 'normal', ageMinutes, label: ageMinutes ? `ปกติ ${ageMinutes} นาที` : 'ปกติ เมื่อครู่' };
 }
 
 const dateParts = (value: string | number | Date) => {
@@ -361,5 +489,5 @@ export function sendStatusText(send: OfficeSend, now = Date.now()): string {
   if (send.status === 'failed') return `ส่งไม่สำเร็จ: ${send.error || 'ไม่ทราบสาเหตุ'}`;
   const sent = `ส่งแล้ว ${fmtWhen(send.sent_at, now)}`.trim();
   if (send.channel !== 'line' || !send.share_expires_at) return sent;
-  return Date.parse(send.share_expires_at) > now ? `${sent} · ลูกค้าเปิดได้ถึง ${shortDate(send.share_expires_at)}` : `${sent} · ลิงก์หมดอายุแล้ว`;
+  return Date.parse(send.share_expires_at) > now ? `${sent} ลูกค้าเปิดได้ถึง ${shortDate(send.share_expires_at)}` : `${sent} ลิงก์หมดอายุแล้ว`;
 }

@@ -1,383 +1,172 @@
 ---
-// AI Office — read-only operating board for departments, rooms, tasks, alerts and standards.
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import WarRoomGate from '../../components/war-room/WarRoomGate.astro';
 import AppNav from '../../components/app/AppNav.astro';
 ---
-<DashboardLayout title="AI Office — Pun">
+<DashboardLayout title="AI Office | Pun">
   <script is:inline async src="https://accounts.google.com/gsi/client"></script>
   <WarRoomGate appId="office-app" title="AI Office" icon="🏢" event="office:authed" />
 
   <style is:global>
-    #office-app { --of-accent: #0f766e; --of-wash: #ecf8f5; --of-ink: #115e59; }
-    [data-theme="pundark"] #office-app { --of-wash: color-mix(in srgb, var(--of-accent) 22%, transparent); --of-ink: #99f6e4; }
-    .of-section { border: 1px solid color-mix(in srgb, currentColor 10%, transparent); border-radius: 1rem; background: var(--color-base-100); }
-    .of-stat { min-width: 0; border: 1px solid color-mix(in srgb, currentColor 10%, transparent); border-radius: .9rem; padding: .8rem .9rem; background: var(--color-base-100); }
-    .of-stat-value { font-variant-numeric: tabular-nums; line-height: 1; }
-    .of-filter[aria-selected="true"] { background: var(--of-accent); border-color: var(--of-accent); color: white; }
-    .of-task { border: 1px solid color-mix(in srgb, currentColor 10%, transparent); border-radius: .8rem; background: var(--color-base-100); overflow: clip; }
-    .of-task > summary { min-height: 44px; cursor: pointer; list-style: none; padding: .7rem .8rem; }
-    .of-task > summary::-webkit-details-marker { display: none; }
-    .of-task > summary::before { content: '›'; display: inline-block; margin-right: .45rem; color: var(--of-accent); transition: transform 120ms ease; }
-    .of-task[open] > summary::before { transform: rotate(90deg); }
-    .of-task[open] > summary { background: var(--of-wash); }
-    .of-task summary:focus-visible { outline: 2px solid var(--color-brand-coral); outline-offset: -2px; }
+    #office-app {
+      --of-accent: #0f766e;
+      --of-wash: #ecf8f5;
+      --of-border: color-mix(in srgb, currentColor 11%, transparent);
+    }
+    [data-theme="pundark"] #office-app { --of-wash: color-mix(in srgb, #14b8a6 18%, transparent); }
+    .of-shell { height: calc(100dvh - 4rem); min-height: 0; overflow: hidden; }
+    .of-pane { min-width: 0; min-height: 0; background: var(--color-base-100); }
+    .of-scroll { min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; }
+    .of-room[aria-current="true"], .of-chat[aria-current="true"] { background: var(--of-wash); border-color: var(--of-accent); }
+    .of-room, .of-chat, .of-action { min-height: 44px; border: 1px solid transparent; border-radius: .85rem; }
+    .of-bubble { max-width: min(42rem, 88%); border: 1px solid var(--of-border); border-radius: 1rem; padding: .7rem .8rem; overflow-wrap: anywhere; }
+    .of-bubble-owner { margin-left: auto; background: var(--of-accent); border-color: var(--of-accent); color: white; }
     .of-copy { white-space: pre-wrap; overflow-wrap: anywhere; }
-    .of-metric-progress { height: .4rem; width: 100%; color: var(--of-accent); }
-    .of-metric-progress::-webkit-progress-value { background: var(--of-accent); }
-    .of-file { border: 1px solid color-mix(in srgb, currentColor 10%, transparent); border-radius: .7rem; padding: .55rem .65rem; }
-    .of-child-list { margin-left: .9rem; border-left: 2px solid color-mix(in srgb, var(--of-accent) 24%, transparent); padding-left: .75rem; }
-    @media (min-width: 768px) { .of-stat { padding: 1rem 1.1rem; } }
+    .of-separator { display: flex; align-items: center; gap: .65rem; color: color-mix(in srgb, currentColor 58%, transparent); font-size: .75rem; }
+    .of-separator::before, .of-separator::after { content: ''; height: 1px; flex: 1; background: var(--of-border); }
+    .of-context::-webkit-progress-value { background: var(--of-meter, #64748b); }
+    .of-context::-moz-progress-bar { background: var(--of-meter, #64748b); }
+    .of-compose { padding-bottom: max(.75rem, env(safe-area-inset-bottom)); }
+    .of-message-stack > * + * { margin-top: .22rem; }
+    .of-file { border: 1px solid var(--of-border); border-radius: .7rem; padding: .55rem; }
+    .of-status-sheet { width: min(48rem, calc(100vw - 1.5rem)); max-width: none; }
+    .tap-44 { min-width: 44px; min-height: 44px; }
+    .menu button, .menu summary { min-height: 44px; }
+    button:focus-visible, a:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--color-brand-coral); outline-offset: 2px; }
+    @media (min-width: 1024px) {
+      .of-grid { display: grid; grid-template-columns: minmax(14rem, .78fr) minmax(18rem, 1fr) minmax(24rem, 1.45fr); }
+      .of-pane + .of-pane { border-left: 1px solid var(--of-border); }
+    }
+    @media (max-width: 1023px) {
+      .of-grid { display: block; }
+      .of-pane { display: none; height: 100%; }
+      #office-app[data-mobile-stage="rooms"] #of-rooms-pane,
+      #office-app[data-mobile-stage="room"] #of-room-pane,
+      #office-app[data-mobile-stage="chat"] #of-chat-pane { display: flex; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #office-app *, #office-app *::before, #office-app *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+    /* iOS Safari ซูมทั้งหน้าเมื่อแตะช่องที่ตัวอักษรต่ำกว่า 16px · iPhone คือจอหลักของหน้านี้ */
+    #office-app textarea, #office-app input, #office-app select { font-size: max(16px, 1rem); }
   </style>
 
-  <div id="office-app" class="hidden min-h-dvh bg-base-200/40">
+  <div id="office-app" data-mobile-stage="rooms" class="hidden min-h-dvh bg-base-200/50">
     <AppNav app="office">
       <span id="of-nav-health" class="badge badge-ghost my-auto hidden sm:inline-flex" role="status">…</span>
-      <button id="of-refresh" class="btn btn-ghost btn-sm tap-44 my-auto" aria-label="รีเฟรช" title="รีเฟรช">⟳</button>
+      <button id="of-office-status" class="btn btn-ghost btn-sm my-auto min-h-11" type="button">สถานะออฟฟิศ</button>
+      <button id="of-refresh" class="btn btn-ghost btn-sm tap-44 my-auto" type="button" aria-label="รีเฟรช" title="รีเฟรช">⟳</button>
     </AppNav>
 
-    <main class="mx-auto max-w-7xl space-y-5 p-3 sm:p-4 lg:space-y-6 lg:p-6">
-      <header class="space-y-3">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-[.16em] opacity-55">ภาพรวมการทำงาน</p>
-          <h1 class="font-display text-2xl font-bold sm:text-3xl">AI Office</h1>
-          <p class="text-sm opacity-65">ฝ่ายประจำ ห้องโปรเจกต์ งาน ไฟล์ และเกณฑ์ตรวจในหน้าเดียว</p>
-        </div>
-        <div id="of-summary" class="grid grid-cols-2 gap-2 lg:grid-cols-4"></div>
-        <div id="of-desk" class="flex flex-wrap gap-2" aria-label="สถานะ office desk"></div>
-      </header>
+    <main class="of-shell mx-auto w-full max-w-[100rem] p-0 md:p-3">
+      <div class="of-grid h-full overflow-hidden border-base-300 bg-base-100 md:rounded-2xl md:border md:shadow-sm">
+        <aside id="of-rooms-pane" class="of-pane flex h-full flex-col" aria-label="รายการห้อง">
+          <header class="border-b border-base-300 p-3">
+            <p class="text-xs font-semibold uppercase tracking-[.16em] opacity-55">AI Office</p>
+            <h1 class="font-display text-2xl font-bold">ห้องทำงาน</h1>
+            <div id="of-waiting" class="mt-3 rounded-xl bg-warning/15 p-3 text-sm font-semibold" role="status"></div>
+          </header>
+          <nav id="of-room-list" class="of-scroll flex-1 space-y-4 p-2" aria-label="ห้องทั้งหมด"></nav>
+        </aside>
 
-      <section aria-labelledby="of-departments-title">
-        <div class="mb-3 flex items-end justify-between gap-3">
-          <div><p class="text-xs opacity-55">4 ฝ่ายประจำ</p><h2 id="of-departments-title" class="font-display text-xl font-bold">ฝ่าย</h2></div>
-          <p class="text-xs opacity-55">ผลงานเดือนนี้ · เวลาไทย</p>
-        </div>
-        <div id="of-departments" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"></div>
-      </section>
-
-      <section class="of-section p-3 sm:p-4" aria-labelledby="of-rooms-title">
-        <div class="mb-3"><p class="text-xs opacity-55">ห้องเปิดขึ้นก่อน</p><h2 id="of-rooms-title" class="font-display text-xl font-bold">ห้องโปรเจกต์</h2></div>
-        <div id="of-rooms" class="grid gap-3 md:grid-cols-2 xl:grid-cols-3"></div>
-      </section>
-
-      <div class="grid items-start gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
-        <section class="of-section min-w-0 p-3 sm:p-4" aria-labelledby="of-tasks-title">
-          <div class="mb-3 flex flex-wrap items-end justify-between gap-3">
-            <div><p class="text-xs opacity-55">งานแม่ก่อน · งานลูกซ้อนใต้แม่</p><h2 id="of-tasks-title" class="font-display text-xl font-bold">งานทั้งหมด</h2></div>
-            <div id="of-task-filters" class="flex flex-wrap gap-1" role="tablist" aria-label="กรองงาน"></div>
+        <section id="of-room-pane" class="of-pane flex h-full flex-col" aria-labelledby="of-room-title">
+          <header class="flex min-h-16 items-center gap-2 border-b border-base-300 px-3 py-2">
+            <button class="of-back-rooms btn btn-ghost btn-sm tap-44 lg:hidden" type="button" aria-label="กลับไปรายการห้อง">‹</button>
+            <div class="min-w-0 flex-1">
+              <h2 id="of-room-title" class="truncate font-display text-lg font-bold">เลือกห้อง</h2>
+              <p id="of-room-subtitle" class="truncate text-xs opacity-55"></p>
+            </div>
+            <button id="of-new-chat" class="btn btn-primary btn-sm min-h-11" type="button">+ แชทใหม่</button>
+          </header>
+          <div class="of-scroll flex-1 p-3">
+            <section aria-labelledby="of-chats-title">
+              <h3 id="of-chats-title" class="mb-2 text-xs font-semibold uppercase tracking-[.12em] opacity-55">แชท</h3>
+              <div id="of-chat-list" class="space-y-1"></div>
+            </section>
+            <section id="of-review-section" class="mt-5 hidden" aria-labelledby="of-review-title">
+              <h3 id="of-review-title" class="mb-2 text-xs font-semibold uppercase tracking-[.12em] opacity-55">งานรอคุณปัน</h3>
+              <div id="of-review-list" class="space-y-2"></div>
+            </section>
+            <section id="of-alert-section" class="mt-5 hidden" aria-labelledby="of-alert-title">
+              <h3 id="of-alert-title" class="mb-2 text-xs font-semibold uppercase tracking-[.12em] opacity-55">เหตุทั้งหมด</h3>
+              <div id="of-alert-list" class="space-y-2"></div>
+            </section>
+            <section class="mt-5" aria-labelledby="of-feed-title">
+              <h3 id="of-feed-title" class="mb-2 text-xs font-semibold uppercase tracking-[.12em] opacity-55">ฟีดของห้อง</h3>
+              <div id="of-room-feed" class="space-y-2"></div>
+            </section>
           </div>
-          <ul id="of-tasks" class="m-0 list-none space-y-2 p-0" aria-live="polite"></ul>
+          <form id="of-incident-form" class="of-compose hidden border-t border-base-300 bg-base-100 p-3">
+            <label for="of-incident-input" class="mb-1 block text-xs font-semibold">แจ้งเหตุให้ฝ่ายเทค</label>
+            <div class="flex items-end gap-2">
+              <textarea id="of-incident-input" class="textarea textarea-bordered min-h-11 flex-1 resize-none" rows="1" maxlength="2000" enterkeyhint="send" placeholder="เกิดอะไรขึ้น"></textarea>
+              <button class="btn btn-error min-h-11" type="submit">แจ้งเหตุ</button>
+            </div>
+            <p id="of-incident-error" class="mt-1 hidden text-sm text-error" role="alert"></p>
+          </form>
         </section>
 
-        <section class="of-section p-3 sm:p-4" aria-labelledby="of-alerts-title">
-          <div class="mb-3"><p class="text-xs opacity-55">เหตุที่เปิดอยู่ขึ้นก่อน</p><h2 id="of-alerts-title" class="font-display text-xl font-bold">เหตุด่วน</h2></div>
-          <div id="of-alerts" class="space-y-2"></div>
+        <section id="of-chat-pane" class="of-pane flex h-full flex-col" aria-labelledby="of-chat-title">
+          <header class="border-b border-base-300 px-3 py-2">
+            <div class="flex min-h-11 items-center gap-2">
+              <button class="of-back-room btn btn-ghost btn-sm tap-44 lg:hidden" type="button" aria-label="กลับไปที่ห้อง">‹</button>
+              <div class="min-w-0 flex-1">
+                <h2 id="of-chat-title" class="truncate font-display text-lg font-bold">เลือกแชท</h2>
+                <div class="mt-0.5 flex flex-wrap items-center gap-2"><span id="of-chat-status" class="badge badge-sm badge-ghost">ยังไม่เลือก</span><span id="of-readonly" class="hidden text-xs text-warning">แชทนี้อ่านได้อย่างเดียว</span></div>
+              </div>
+              <details id="of-chat-menu" class="dropdown dropdown-end hidden">
+                <summary class="btn btn-ghost btn-sm tap-44 list-none" aria-label="เมนูแชท">⋯</summary>
+                <ul class="menu dropdown-content z-30 mt-2 w-72 rounded-box border border-base-300 bg-base-100 p-2 shadow-xl">
+                  <li><button type="button" data-chat-action="reset_context">เริ่มบริบทใหม่</button></li>
+                  <li><button type="button" data-chat-action="handoff">สรุปส่งต่อแชทใหม่</button></li>
+                  <li><button type="button" data-chat-action="handoff_other">ส่งต่อไปห้องอื่น</button></li>
+                  <li><details><summary>แจ้งเตือน Telegram</summary><ul><li><button type="button" data-notify="final">เฉพาะจบและรอคุณปัน</button></li><li><button type="button" data-notify="all">ทุกขั้น</button></li><li><button type="button" data-notify="off">ปิด</button></li></ul></details></li>
+                  <li><button type="button" data-chat-action="close" class="text-warning">ปิดแชท</button></li>
+                  <li><button type="button" data-chat-action="archive" class="text-error">เก็บแชท</button></li>
+                </ul>
+              </details>
+            </div>
+            <div id="of-context-wrap" class="mt-2 hidden">
+              <div class="mb-1 flex justify-between gap-3 text-xs"><span>บริบทของหัวหน้า</span><span id="of-context-label"></span></div>
+              <progress id="of-context" class="of-context progress h-1.5 w-full" max="100" value="0" aria-label="การใช้บริบทของหัวหน้า"></progress>
+              <p id="of-context-warning" class="mt-1 hidden text-xs font-semibold text-error">แนะนำสรุปส่งต่อแชทใหม่</p>
+            </div>
+          </header>
+          <div id="of-message-list" class="of-scroll flex-1 space-y-3 p-3" aria-live="polite"></div>
+          <form id="of-compose" class="of-compose border-t border-base-300 bg-base-100 p-3">
+            <label id="of-compose-label" for="of-compose-input" class="mb-1 block text-xs font-semibold">เริ่มแชทใหม่</label>
+            <div class="flex items-end gap-2">
+              <textarea id="of-compose-input" class="textarea textarea-bordered min-h-11 flex-1 resize-none" rows="1" maxlength="4000" enterkeyhint="send" placeholder="พิมพ์หาหัวหน้าฝ่าย"></textarea>
+              <button id="of-compose-send" class="btn btn-primary min-h-11" type="submit">ส่ง</button>
+            </div>
+            <p id="of-compose-error" class="mt-1 hidden text-sm text-error" role="alert"></p>
+          </form>
         </section>
       </div>
-
-      <section class="of-section p-3 sm:p-4" aria-labelledby="of-rubrics-title">
-        <div class="mb-3"><p class="text-xs opacity-55">หัวหน้าตรวจงานทุกชิ้นตามรายการนี้</p><h2 id="of-rubrics-title" class="font-display text-xl font-bold">เกณฑ์งาน</h2></div>
-        <div id="of-rubrics" class="grid gap-3 lg:grid-cols-2"></div>
-      </section>
     </main>
 
-    <div class="toast toast-end z-50"><div id="of-toast" class="alert alert-error hidden text-sm shadow-lg" role="alert"></div></div>
+    <dialog id="of-status-dialog" class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box of-status-sheet max-h-[90dvh]">
+        <form method="dialog"><button class="btn btn-circle btn-ghost btn-sm absolute right-3 top-3" aria-label="ปิด">✕</button></form>
+        <h2 class="font-display text-2xl font-bold">สถานะออฟฟิศ</h2>
+        <div id="of-status-content" class="mt-4 space-y-5"></div>
+      </div>
+      <form method="dialog" class="modal-backdrop"><button>ปิด</button></form>
+    </dialog>
+
+    <dialog id="of-confirm-dialog" class="modal">
+      <form id="of-confirm-form" method="dialog" class="modal-box">
+        <h2 id="of-confirm-title" class="font-display text-xl font-bold">ยืนยัน</h2>
+        <p id="of-confirm-copy" class="mt-2 text-sm opacity-70"></p>
+        <label id="of-confirm-room-wrap" class="mt-4 hidden text-sm font-semibold">ห้องปลายทาง<select id="of-confirm-room" class="select select-bordered mt-1 min-h-11 w-full"></select></label>
+        <label id="of-confirm-note-wrap" class="mt-4 hidden text-sm font-semibold">จุดที่อยากให้แก้<textarea id="of-confirm-note" class="textarea textarea-bordered mt-1 w-full" rows="3" maxlength="4000"></textarea></label>
+        <p id="of-confirm-error" class="mt-2 hidden text-sm text-error" role="alert"></p>
+        <div class="modal-action"><button value="cancel" class="btn min-h-11" type="button" id="of-confirm-cancel">ยังไม่ทำ</button><button value="confirm" class="btn btn-primary min-h-11" type="submit" id="of-confirm-submit">ยืนยัน</button></div>
+      </form>
+    </dialog>
+
+    <div class="toast toast-end z-50"><div id="of-toast" class="alert alert-error hidden max-w-sm text-sm shadow-lg" role="alert"></div></div>
   </div>
 
-  <script>
-    import { onAuthed } from '../../scripts/dashboard/on-authed';
-    import { loadOffice, loadSends, queueSend, type OfficeData } from '../../scripts/office/data';
-    import {
-      ALERT_LEVEL_META, ALERT_STATUS_LABEL, GRADE_LABEL, GRADE_TONE, SEND_CHANNEL_LABEL, SOURCE_LABEL, TASK_VIEWS,
-      fileKind, filesForTask, filterTasks, firstPassGoodByDepartment, fmtBytes, fmtWhen, groupTasks, hasPendingSend,
-      heartbeatHealth, isQuietActive, isSendBusy, latestSends, officeCounts, openTaskCountByDepartment, roomDueText,
-      runCountsByDepartment, sendStatusText, statusMeta,
-      type DepartmentSlug, type OfficeAlert, type OfficeFile, type OfficeRoom, type OfficeSend, type OfficeTask,
-      type SendChannel, type TaskView,
-    } from '../../scripts/office/logic';
-
-    const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector(selector) as T;
-    function h<K extends keyof HTMLElementTagNameMap>(tag: K, props: Record<string, string> = {}, ...children: (Node | string | null | false | undefined)[]): HTMLElementTagNameMap[K] {
-      const element = document.createElement(tag);
-      for (const [key, value] of Object.entries(props)) key === 'class' ? (element.className = value) : element.setAttribute(key, value);
-      for (const child of children) if (child !== null && child !== false && child !== undefined) element.append(child);
-      return element;
-    }
-
-    const empty: OfficeData = { tasks: [], alerts: [], departments: [], rooms: [], runs: [], rubrics: [], grades: [], files: [], sends: [], desk: null, quiet: null };
-    // open = การ์ดงานที่กางอยู่ · หน้ารีเฟรชทุก 15 วิ ต้องไม่หุบการ์ดที่คุณปันเปิดดูไฟล์อยู่
-    const state = { data: empty, view: 'all' as TaskView, open: new Set<number>() };
-    const DEMO = import.meta.env.DEV && new URLSearchParams(location.search).has('demo');
-    let wired = false;
-    let timer: number | undefined;
-    let sendPoll: number | undefined;
-
-    const safeUrl = (value: string | null | undefined) => {
-      if (!value) return null;
-      try { const url = new URL(value); return ['https:', 'http:'].includes(url.protocol) ? url.href : null; } catch { return null; }
-    };
-    const deptNames = () => Object.fromEntries(state.data.departments.map((department) => [department.slug, department.name_th])) as Partial<Record<DepartmentSlug, string>>;
-    const deptName = (slug: DepartmentSlug | null) => slug ? deptNames()[slug] || slug : 'ยังไม่เข้าฝ่าย';
-    const isAlertOpen = (alert: OfficeAlert) => ['new', 'notified', 'calling'].includes(alert.status);
-
-    function showError(error: unknown) {
-      const toast = $('#of-toast');
-      toast.textContent = (error as Error)?.message || 'โหลดข้อมูลไม่สำเร็จ';
-      toast.classList.remove('hidden');
-      window.setTimeout(() => toast.classList.add('hidden'), 5000);
-    }
-
-    function stat(label: string, value: string, note: string, tone = '') {
-      return h('article', { class: 'of-stat' },
-        h('p', { class: 'text-xs opacity-60' }, label),
-        h('p', { class: `of-stat-value mt-1 font-display text-2xl font-bold sm:text-3xl ${tone}` }, value),
-        h('p', { class: 'mt-1 truncate text-xs opacity-55' }, note));
-    }
-
-    function renderSummary() {
-      const counts = officeCounts(state.data.tasks, state.data.alerts);
-      const health = heartbeatHealth(state.data.desk);
-      $('#of-summary').replaceChildren(
-        stat('รอคุณปัน', String(counts.review), 'งานสถานะรอตรวจ', counts.review ? 'text-warning' : ''),
-        stat('กำลังทำ', String(counts.working), 'รอคิว + กำลังทำ'),
-        stat('เหตุด่วนเปิดอยู่', String(counts.openAlerts), 'ใหม่ · แจ้งแล้ว · กำลังโทร', counts.openAlerts ? 'text-error' : ''),
-        stat('Desk', health.state === 'normal' ? 'ปกติ' : health.state === 'slow' ? 'ช้า' : 'หยุด', health.label, health.state === 'normal' ? 'text-success' : health.state === 'slow' ? 'text-warning' : 'text-error'),
-      );
-      const desk = state.data.desk;
-      const quiet = isQuietActive(state.data.quiet);
-      $('#of-desk').replaceChildren(
-        h('span', { class: `badge ${health.state === 'normal' ? 'badge-success' : health.state === 'slow' ? 'badge-warning' : 'badge-error'}` }, `Heartbeat ${health.label}`),
-        h('span', { class: `badge ${desk?.whatsapp ? 'badge-success' : 'badge-ghost'}` }, desk?.whatsapp ? 'WhatsApp พร้อม' : 'WhatsApp ยังไม่พร้อม'),
-        h('span', { class: `badge ${desk?.phone ? 'badge-success' : 'badge-ghost'}` }, desk?.phone ? 'เบอร์โทรพร้อม' : 'เบอร์โทรยังไม่พร้อม'),
-        h('span', { class: `badge ${quiet ? 'badge-warning' : 'badge-ghost'}` }, quiet ? `ห้ามรบกวนถึง ${fmtWhen(state.data.quiet?.until)}` : 'ห้ามรบกวนปิด'),
-      );
-      const nav = $('#of-nav-health');
-      nav.className = `badge my-auto hidden sm:inline-flex ${health.state === 'normal' ? 'badge-success' : health.state === 'slow' ? 'badge-warning' : 'badge-error'}`;
-      nav.textContent = health.state === 'normal' ? 'Desk ปกติ' : `Desk ${health.state === 'slow' ? 'ช้า' : 'หยุด'}`;
-    }
-
-    function renderDepartments() {
-      const open = openTaskCountByDepartment(state.data.tasks);
-      const quality = firstPassGoodByDepartment(state.data.tasks);
-      const runs = runCountsByDepartment(state.data.runs);
-      $('#of-departments').replaceChildren(...state.data.departments.map((department) => {
-        const metric = quality[department.slug];
-        const used = runs[department.slug] || 0;
-        const percent = metric.percent == null ? '—' : `${metric.percent}%`;
-        return h('article', { class: 'of-section space-y-3 p-4' },
-          h('div', { class: 'flex items-start justify-between gap-3' },
-            h('div', {}, h('h3', { class: 'font-display text-lg font-bold' }, department.name_th), h('p', { class: 'text-xs opacity-55' }, `หัวหน้า ${department.head_model}`)),
-            h('span', { class: 'badge badge-ghost' }, `เปิด ${open[department.slug] || 0}`)),
-          h('div', { class: 'grid grid-cols-2 gap-3' },
-            h('div', {}, h('p', { class: 'text-xs opacity-55' }, 'ดีตั้งแต่รอบแรก'), h('p', { class: 'font-display text-2xl font-bold' }, percent), h('p', { class: 'text-xs opacity-50' }, metric.total ? `${metric.good}/${metric.total} งาน` : 'ยังไม่มีเกรดเดือนนี้')),
-            h('div', {}, h('p', { class: 'text-xs opacity-55' }, 'Run เดือนนี้'), h('p', { class: 'font-display text-2xl font-bold' }, `${used}/${department.monthly_run_cap}`), h('progress', { class: 'of-metric-progress progress mt-2', value: String(used), max: String(department.monthly_run_cap), 'aria-label': `ใช้ run ${used} จาก ${department.monthly_run_cap}` }))),
-        );
-      }));
-    }
-
-    function roomLink(label: string, value: string | null, icon = '↗') {
-      const url = safeUrl(value);
-      return url ? h('a', { class: 'link link-hover text-sm', href: url, target: '_blank', rel: 'noopener noreferrer' }, `${icon} ${label}`) : null;
-    }
-
-    function renderRooms() {
-      const rooms = [...state.data.rooms].sort((a, b) => Number(b.status === 'open') - Number(a.status === 'open') || b.created_at.localeCompare(a.created_at));
-      $('#of-rooms').replaceChildren(...(rooms.length ? rooms.map((room: OfficeRoom) => h('article', { class: `rounded-box border border-base-300 p-3 ${room.status === 'closed' ? 'opacity-55' : ''}` },
-        h('div', { class: 'flex items-start justify-between gap-2' },
-          h('div', {}, h('h3', { class: 'font-semibold leading-snug' }, room.title), h('p', { class: 'text-xs opacity-55' }, deptName(room.department))),
-          h('span', { class: `badge badge-sm ${room.status === 'open' ? 'badge-success' : 'badge-ghost'}` }, room.status === 'open' ? 'เปิด' : 'ปิด')),
-        room.goal ? h('p', { class: 'mt-2 text-sm opacity-75' }, room.goal) : null,
-        h('div', { class: 'mt-3 flex flex-wrap gap-x-3 gap-y-1' },
-          room.due_date ? h('span', { class: `text-sm ${roomDueText(room.due_date).startsWith('เลย') ? 'text-error' : 'opacity-70'}` }, `ส่ง ${room.due_date} · ${roomDueText(room.due_date)}`) : h('span', { class: 'text-sm opacity-45' }, 'ยังไม่กำหนดวันส่ง'),
-          roomLink('Drive', room.drive_url, '📁'),
-          ...room.links.map((link) => roomLink(link.label, link.url)).filter(Boolean)),
-        room.folder ? h('p', { class: 'mt-2 of-copy font-mono text-xs opacity-45' }, room.folder) : null,
-      )) : [h('p', { class: 'py-6 text-center text-sm opacity-55' }, 'ยังไม่มีห้องโปรเจกต์')]));
-    }
-
-    function resultLine(label: string, value: string | null | undefined) {
-      return value ? h('div', {}, h('p', { class: 'text-xs font-semibold opacity-55' }, label), h('p', { class: 'of-copy text-sm' }, value)) : null;
-    }
-
-    function renderTask(task: OfficeTask, child = false) {
-      const meta = statusMeta(task.status);
-      const history = state.data.grades.filter((grade) => grade.task_id === task.id);
-      const result = task.result || {};
-      const details = h('details', { class: 'of-task' },
-        h('summary', {},
-          h('span', { class: 'inline-flex max-w-[calc(100%-1.5rem)] flex-col align-top sm:flex-row sm:items-center sm:gap-2' },
-            h('span', { class: 'min-w-0 font-semibold leading-snug' }, child ? '↳ ' : '', h('span', { class: 'font-mono text-xs opacity-55' }, task.no), ` ${task.title}`),
-            h('span', { class: 'mt-1 flex flex-wrap items-center gap-1 sm:mt-0' },
-              h('span', { class: `badge badge-sm ${meta.tone}` }, meta.label),
-              task.grade ? h('span', { class: `badge badge-sm ${GRADE_TONE[task.grade]}` }, GRADE_LABEL[task.grade]) : null,
-              h('span', { class: 'text-xs opacity-50' }, `${deptName(task.department)} · ${SOURCE_LABEL[task.source]} · ${fmtWhen(task.updated_at)}`)))),
-        h('div', { class: 'space-y-4 border-t border-base-300 p-3 sm:p-4' },
-          resultLine('Brief', task.brief),
-          resultLine('สรุปสำหรับพูด', result.speak),
-          resultLine('ผลลัพธ์', result.text || result.error),
-          resultLine('ขั้นถัดไป', result.next_step),
-          result.sources?.length ? h('div', {}, h('p', { class: 'text-xs font-semibold opacity-55' }, 'แหล่งข้อมูล'), h('ul', { class: 'list-disc space-y-1 pl-5 text-sm' }, ...result.sources.map((source) => h('li', { class: 'of-copy' }, source)))) : null,
-          renderFiles(task),
-          history.length ? h('div', {}, h('p', { class: 'text-xs font-semibold opacity-55' }, 'ประวัติเกรด'), h('ol', { class: 'mt-1 space-y-1 text-sm' }, ...history.map((grade) => h('li', {},
-            h('span', { class: `badge badge-xs mr-1 ${GRADE_TONE[grade.level]}` }, GRADE_LABEL[grade.level]),
-            `${grade.grader === 'pun' ? 'คุณปัน' : grade.grader === 'head' ? 'หัวหน้าฝ่าย' : 'ด่านระบบ'} · ${fmtWhen(grade.created_at)}`,
-            grade.reasons.length ? h('span', { class: 'opacity-70' }, ` · ${grade.reasons.join(' / ')}`) : null)))) : h('p', { class: 'text-xs opacity-45' }, 'ยังไม่มีประวัติเกรด')),
-      );
-      if (state.open.has(task.id)) details.open = true;
-      details.addEventListener('toggle', () => { if (details.open) state.open.add(task.id); else state.open.delete(task.id); });
-      return h('li', {}, details);
-    }
-
-    function fileRow(file: OfficeFile, latest: Map<string, OfficeSend>) {
-      const kind = fileKind(file.name);
-      const url = safeUrl(file.drive_url);
-      const channels = (['telegram', 'line'] as SendChannel[]).map((channel) => {
-        const send = latest.get(`${file.id}:${channel}`);
-        return { channel, send, busy: isSendBusy(send) };
-      });
-      const buttons = channels.map(({ channel, send, busy }) => h('button', {
-        class: 'of-send btn btn-sm min-h-11 sm:min-h-0', type: 'button', 'data-file': String(file.id), 'data-channel': channel,
-        'aria-label': `${SEND_CHANNEL_LABEL[channel]}: ${file.name}`, ...(busy ? { disabled: '' } : {}),
-      }, busy ? `${send!.status === 'queued' ? 'รอส่ง' : 'กำลังส่ง'}…` : SEND_CHANNEL_LABEL[channel]));
-      const statuses = channels.filter(({ send, busy }) => send && !busy).map(({ channel, send }) =>
-        h('li', { class: send!.status === 'failed' ? 'text-error' : 'opacity-60' }, `${channel === 'line' ? 'LINE' : 'Telegram'}: ${sendStatusText(send!)}`));
-      return h('li', { class: 'of-file' },
-        h('div', { class: 'flex items-start gap-2' },
-          h('span', { 'aria-hidden': 'true' }, kind.icon),
-          h('div', { class: 'min-w-0 flex-1' },
-            url
-              ? h('a', { class: 'link link-hover break-all font-medium', href: url, target: '_blank', rel: 'noopener noreferrer' }, file.name)
-              : h('span', { class: 'break-all font-medium opacity-70' }, file.name),
-            h('p', { class: 'text-xs opacity-55' }, `${kind.label} · ${fmtBytes(file.size_bytes)} · ${url ? `ขึ้น Drive ${fmtWhen(file.uploaded_at)}` : 'กำลังขึ้น Drive'}`))),
-        h('div', { class: 'mt-2 flex flex-wrap gap-2' }, ...buttons),
-        statuses.length ? h('ul', { class: 'mt-1 space-y-0.5 text-xs', role: 'status' }, ...statuses) : null);
-    }
-
-    function renderFiles(task: OfficeTask) {
-      const files = filesForTask(state.data.files, task.id);
-      if (!files.length && !task.output_path) return null;
-      const latest = latestSends(state.data.sends);
-      return h('div', {},
-        h('p', { class: 'text-xs font-semibold opacity-55' }, files.length ? `ไฟล์ ${files.length} ไฟล์ · กดชื่อเพื่อเปิดใน Google Drive` : 'ไฟล์'),
-        files.length
-          ? h('ul', { class: 'mt-1 space-y-2' }, ...files.map((file) => fileRow(file, latest)))
-          : h('p', { class: 'text-sm opacity-55' }, 'agent ยังไม่ได้เขียนไฟล์ หรือไฟล์กำลังขึ้น Drive'),
-        h('p', { class: 'mt-2 text-xs opacity-45' }, 'ส่ง LINE = ลิงก์เข้า LINE ของคุณปัน ลูกค้าเปิดได้ 7 วัน · ไฟล์ .md ส่งเป็น PDF'),
-        task.output_path ? h('p', { class: 'text-xs opacity-40' }, 'โฟลเดอร์บนมินิ ', h('code', { class: 'of-copy font-mono' }, task.output_path)) : null);
-    }
-
-    // มีงานรอส่ง = ดึงสถานะทุก 3 วิ จนส่งเสร็จ
-    function pollSends() {
-      window.clearTimeout(sendPoll);
-      if (DEMO || !hasPendingSend(state.data.sends)) return;
-      sendPoll = window.setTimeout(async () => {
-        try { state.data.sends = await loadSends(); renderTasks(); } catch { /* รอบหน้าลองใหม่ */ }
-        pollSends();
-      }, 3000);
-    }
-
-    async function onSend(button: HTMLButtonElement) {
-      const fileId = Number(button.dataset.file);
-      const channel = button.dataset.channel as SendChannel;
-      button.disabled = true;
-      try {
-        const send: OfficeSend = DEMO
-          ? { id: Date.now(), file_id: fileId, channel, status: 'queued', error: null, share_expires_at: null, created_at: new Date().toISOString(), sent_at: null }
-          : await queueSend(fileId, channel);
-        state.data.sends = [send, ...state.data.sends];
-        renderTasks();
-        pollSends();
-        if (DEMO) window.setTimeout(() => {
-          Object.assign(send, { status: 'sent', sent_at: new Date().toISOString(), share_expires_at: channel === 'line' ? new Date(Date.now() + 7 * 86_400_000).toISOString() : null });
-          renderTasks();
-        }, 1500);
-      } catch (error) {
-        showError(error);
-        button.disabled = false;
-      }
-    }
-
-    function renderTaskFilters() {
-      const tasks = state.data.tasks;
-      const count = (view: TaskView) => filterTasks(tasks, view).length;
-      $('#of-task-filters').replaceChildren(...TASK_VIEWS.map((view) => h('button', {
-        class: 'of-filter btn btn-xs tap-44', type: 'button', role: 'tab', 'data-view': view.id, 'aria-selected': String(state.view === view.id),
-      }, `${view.label} ${count(view.id)}`)));
-    }
-
-    function renderTasks() {
-      const groups = groupTasks(filterTasks(state.data.tasks, state.view));
-      const rows = groups.map((group) => h('li', { class: 'space-y-2' },
-        renderTask(group.task).firstElementChild!,
-        group.children.length ? h('ul', { class: 'of-child-list m-0 list-none space-y-2' }, ...group.children.map((child) => renderTask(child))) : null));
-      $('#of-tasks').replaceChildren(...(rows.length ? rows : [h('li', { class: 'py-8 text-center text-sm opacity-55' }, 'ไม่มีงานในมุมนี้')]));
-    }
-
-    function renderAlerts() {
-      const alerts = [...state.data.alerts].sort((a, b) => Number(isAlertOpen(b)) - Number(isAlertOpen(a)) || b.created_at.localeCompare(a.created_at));
-      $('#of-alerts').replaceChildren(...(alerts.length ? alerts.map((alert) => {
-        const level = ALERT_LEVEL_META[alert.level];
-        return h('article', { class: `rounded-box border border-base-300 p-3 ${isAlertOpen(alert) ? '' : 'opacity-55'}` },
-          h('div', { class: 'flex flex-wrap items-center gap-1' }, h('span', { class: `badge badge-sm ${level.tone}` }, level.label), h('span', { class: 'badge badge-sm badge-ghost' }, ALERT_STATUS_LABEL[alert.status])),
-          h('h3', { class: 'mt-2 font-semibold leading-snug' }, alert.title),
-          alert.detail ? h('p', { class: 'mt-1 of-copy text-sm opacity-70' }, alert.detail) : null,
-          h('p', { class: 'mt-2 text-xs opacity-50' }, `${alert.source} · โทร ${alert.calls} สาย · ${fmtWhen(alert.updated_at)}`));
-      }) : [h('p', { class: 'py-6 text-center text-sm opacity-55' }, 'ไม่มีเหตุด่วน')]));
-    }
-
-    function renderRubrics() {
-      $('#of-rubrics').replaceChildren(...(state.data.rubrics.length ? state.data.rubrics.map((rubric) => h('article', { class: 'rounded-box border border-base-300 p-4' },
-        h('div', { class: 'flex flex-wrap items-start justify-between gap-2' }, h('h3', { class: 'font-display text-lg font-bold' }, rubric.title_th), !rubric.pun_reviewed ? h('span', { class: 'badge badge-warning' }, 'ยังไม่ผ่านตาคุณปัน') : h('span', { class: 'badge badge-success' }, 'คุณปันตรวจแล้ว')),
-        h('ol', { class: 'mt-3 list-decimal space-y-1 pl-5 text-sm' }, ...rubric.criteria.map((criterion) => h('li', {}, criterion))),
-        h('div', { class: 'mt-3 flex flex-wrap items-center gap-1 text-xs' }, h('span', { class: 'opacity-55' }, 'ด่านบังคับ'), ...(rubric.gates.length ? rubric.gates.map((gate) => h('span', { class: 'badge badge-sm badge-ghost' }, gate)) : [h('span', { class: 'opacity-45' }, 'ไม่มี')]))
-      )) : [h('p', { class: 'py-6 text-center text-sm opacity-55' }, 'ยังไม่มีเกณฑ์งาน')]));
-    }
-
-    function renderAll() {
-      renderSummary(); renderDepartments(); renderRooms(); renderTaskFilters(); renderTasks(); renderAlerts(); renderRubrics();
-    }
-
-    function wire() {
-      if (wired) return;
-      wired = true;
-      $('#of-task-filters').addEventListener('click', (event) => {
-        const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-view]');
-        if (!button) return;
-        state.view = button.dataset.view as TaskView;
-        renderTaskFilters(); renderTasks();
-      });
-      $('#of-tasks').addEventListener('click', (event) => {
-        const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button.of-send');
-        if (button && !button.disabled) void onSend(button);
-      });
-      $('#of-refresh').addEventListener('click', () => void refresh().catch(showError));
-      document.addEventListener('visibilitychange', () => { if (!document.hidden) void refresh().catch(() => {}); });
-    }
-
-    async function refresh() {
-      state.data = await loadOffice();
-      renderAll();
-      pollSends();
-    }
-
-    async function boot() {
-      if (import.meta.env.DEV && new URLSearchParams(location.search).has('demo')) return;
-      wire();
-      try { await refresh(); } catch (error) { showError(error); }
-      window.clearInterval(timer);
-      timer = window.setInterval(() => void refresh().catch(() => {}), 15_000);
-    }
-    onAuthed('office-app', 'office:authed', boot);
-
-    // DEV ONLY: fixture without signing in. The guarded import is removed from production builds.
-    if (import.meta.env.DEV && new URLSearchParams(location.search).has('demo')) {
-      void import('../../scripts/office/demo').then(({ DEMO_OFFICE }) => {
-        document.getElementById('wr-gate')?.classList.add('hidden');
-        $('#office-app').classList.remove('hidden');
-        wire();
-        state.data = DEMO_OFFICE;
-        renderAll();
-      }).catch(showError);
-    }
-  </script>
+  <script src="../../scripts/office/app.ts"></script>
 </DashboardLayout>
