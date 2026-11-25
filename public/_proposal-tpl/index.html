@@ -165,8 +165,9 @@
     var gs = groups();
     if (!gs.length) return "";
     var live = data.state === "live";
-    return "<section id=\"choose\"><h2>ตัวเลือกและค่าบริการ</h2>" +
-      (gs.length && live ? "<p class=\"note noprint\" style=\"margin-top:0\">ผู้ว่าจ้างเลือกได้เองตามที่เหมาะกับทีม ยอดรวมจะปรับตามตัวเลือก</p>" : "") +
+    var one = (data.options || []).length === 1; // แพ็กเดียว: ไม่มีอะไรให้เลือก จึงไม่พูดถึงการเลือก
+    return "<section id=\"choose\"><h2>" + (one ? "ค่าบริการ" : "ตัวเลือกและค่าบริการ") + "</h2>" +
+      (gs.length && live && !one ? "<p class=\"note noprint\" style=\"margin-top:0\">ผู้ว่าจ้างเลือกได้เองตามที่เหมาะกับทีม ยอดรวมจะปรับตามตัวเลือก</p>" : "") +
       gs.map(function (g) {
         return "<div class=\"group\">" + (g.label ? "<div class=\"glabel\">" + esc(g.label) + "</div>" : "") +
           g.opts.map(function (o) {
@@ -179,7 +180,7 @@
               (o.includes && o.includes.length ? list(o.includes).replace("plain", "") : "") + "</label>";
           }).join("") + "</div>";
       }).join("") +
-      "<div class=\"total\"><span>ยอดรวมตามที่เลือก</span><b data-total></b></div>" +
+      "<div class=\"total\"><span>" + (one ? "ยอดรวม" : "ยอดรวมตามที่เลือก") + "</span><b data-total></b></div>" +
       (data.content.price_note ? "<p class=\"note\">" + esc(data.content.price_note) + "</p>" : "") + "</section>";
   }
 
@@ -210,14 +211,14 @@
       "<p style=\"margin:0\">" + esc(c.next_step || "เมื่อผู้ว่าจ้างส่งตัวเลือก ผู้ให้บริการจะติดต่อยืนยันรายละเอียดทาง LINE แล้วจึงออกใบเสนอราคาและแจ้งช่องทางชำระเงิน") + "</p>" +
       (data.decision_date ? "<p style=\"margin:8px 0 0\"><span class=\"lbl\">นัดตัดสินใจ </span>" + esc(thDate(data.decision_date)) + "</p>" : "") +
       "<div class=\"btns\">" +
-      (live && (data.options || []).length ? "<button class=\"primary\" id=\"bChoose\">ส่งตัวเลือกนี้ให้ผู้ให้บริการ</button>" : "") +
+      (live && (data.options || []).length ? "<button class=\"primary\" id=\"bChoose\">" + ((data.options || []).length === 1 ? "แจ้งผู้ให้บริการว่าสนใจข้อเสนอนี้" : "ส่งตัวเลือกนี้ให้ผู้ให้บริการ") + "</button>" : "") +
       "<button class=\"ghost\" id=\"bPdf\">บันทึกเป็น PDF</button>" +
       (data.qo_pdf_url ? "<a class=\"btn ghost\" href=\"" + esc(data.qo_pdf_url) + "\" target=\"_blank\" rel=\"noopener noreferrer\">ดาวน์โหลดใบเสนอราคา (PDF)</a>" : "") +
       "<a class=\"btn line\" id=\"bLine\" href=\"" + esc(data.line_url) + "\">คุยกับผู้ให้บริการทาง LINE</a></div>" +
       "<div class=\"msg\" id=\"msg\" role=\"status\" aria-live=\"polite\"></div>" +
-      "<p class=\"note\">การส่งตัวเลือกยังไม่ถือเป็นการตกลงว่าจ้าง ผู้ให้บริการจะยืนยันกับผู้ว่าจ้างก่อนทุกครั้ง</p></section>";
+      "<p class=\"note\">" + ((data.options || []).length === 1 ? "การแจ้งความสนใจ" : "การส่งตัวเลือก") + "ยังไม่ถือเป็นการตกลงว่าจ้าง ผู้ให้บริการจะยืนยันกับผู้ว่าจ้างก่อนทุกครั้ง</p></section>";
     h += "</div>";
-    if (live && (data.options || []).length) h += "<div class=\"bar noprint\"><div class=\"in\"><div class=\"sum\">ยอดรวม<b data-total></b></div><button class=\"primary\" id=\"bChoose2\">ส่งตัวเลือก</button></div></div>";
+    if (live && (data.options || []).length) h += "<div class=\"bar noprint\"><div class=\"in\"><div class=\"sum\">ยอดรวม<b data-total></b></div><button class=\"primary\" id=\"bChoose2\">" + ((data.options || []).length === 1 ? "สนใจข้อเสนอนี้" : "ส่งตัวเลือก") + "</button></div></div>";
     app.innerHTML = h;
 
     restore();
@@ -243,8 +244,9 @@
     var b = document.getElementById("bChoose");
     b.disabled = true;
     send("choose", { selection: selected() }).then(function () {
-      say("ok", "ผู้ให้บริการได้รับตัวเลือกแล้ว และจะติดต่อยืนยันกับท่านทาง LINE");
-      b.textContent = "ส่งตัวเลือกแล้ว (ส่งใหม่ได้ถ้าเปลี่ยนตัวเลือก)";
+      var one = (data.options || []).length === 1;
+      say("ok", one ? "ผู้ให้บริการได้รับแจ้งแล้ว และจะติดต่อยืนยันกับท่านทาง LINE" : "ผู้ให้บริการได้รับตัวเลือกแล้ว และจะติดต่อยืนยันกับท่านทาง LINE");
+      b.textContent = one ? "แจ้งผู้ให้บริการแล้ว" : "ส่งตัวเลือกแล้ว (ส่งใหม่ได้ถ้าเปลี่ยนตัวเลือก)";
     }).catch(function () {
       say("err", "ส่งไม่สำเร็จ กรุณาลองอีกครั้ง หรือแจ้งตัวเลือกกับผู้ให้บริการทาง LINE");
     }).then(function () { sending = false; b.disabled = false; });
