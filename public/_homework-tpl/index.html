@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>การบ้านก่อนเริ่มโครงการ</title>
+<meta property="og:title" content="การบ้านก่อนเริ่มโครงการ">
+<meta property="og:description" content="กรอกคำตอบในหน้านี้ได้เลย ระบบบันทึกให้อัตโนมัติ">
+<meta property="og:image" content="https://punnattapatch.com/og-image.jpg">
+<link rel="icon" href="/favicon-32x32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Client homework template. Served by Worker offer-api at /homework/<slug> (knowledge repo mac-mini-ops/offer-api/homework.mjs).
+     Answers autosave per question to Supabase through the Worker. No third-party scripts: the URL carries a secret slug. -->
+<style>
+  :root{--navy:#072b4e;--coral:#dd4155;--ink:#1d2733;--muted:#5b6673;--line:#e3e7ec;--bg:#f6f7f9;--card:#fff;--ok:#1f7a4d;--warn:#8a5a00;--r:14px}
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Sarabun",sans-serif}
+  h1,h2,h3{font-family:"Prompt",sans-serif;line-height:1.3;margin:0}
+  .wrap{max-width:760px;margin:0 auto;padding:20px 16px 150px}
+  header.top{background:var(--navy);color:#fff}
+  header.top .wrap{padding:28px 16px 24px}
+  .eyebrow{font-size:14px;opacity:.85}
+  h1{font-size:25px;margin:6px 0 10px}
+  .meta{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;opacity:.92}
+  section{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-top:16px}
+  h2{font-size:19px;color:var(--navy)}
+  .snote{color:var(--muted);font-size:15px;margin:6px 0 0}
+  .tldr{border:2px solid var(--navy)}
+  ol.tl-num{margin:8px 0 0;padding-left:22px}
+  ol.tl-num li{margin:0 0 8px}
+  .who{display:block;margin-top:14px}
+  .who label{font-weight:700;display:block;margin-bottom:6px}
+  input[type=text],textarea{width:100%;font:16px/1.6 "Sarabun",sans-serif;color:var(--ink);border:1.5px solid #c9d1da;border-radius:10px;padding:10px 12px;background:#fff;transition:border-color .15s,box-shadow .15s}
+  input[type=text]:focus,textarea:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(7,43,78,.12)}
+  textarea{min-height:76px;resize:vertical}
+  .q{padding:16px 0;border-top:1px solid var(--line)}
+  .q:first-of-type{border-top:0}
+  .qhead{display:flex;gap:10px;align-items:flex-start}
+  .qn{font:600 14px "Prompt",sans-serif;color:var(--muted);min-width:42px;padding-top:2px}
+  .qt{font-weight:600}
+  .qwho{display:inline-block;font-size:13px;color:var(--navy);background:#eaf0f6;border-radius:999px;padding:1px 10px;margin-top:4px}
+  .qbody{margin:10px 0 0 52px}
+  @media (max-width:520px){.qbody{margin-left:0}}
+  .qstat{font-size:13px;color:var(--muted);margin-top:6px;min-height:18px}
+  .qstat.ok{color:var(--ok)}
+  .qstat.err{color:#a3192b}
+  .files{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .file{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fafbfc;width:96px}
+  .file a{display:block;color:var(--ink);text-decoration:none}
+  .file img{display:block;width:96px;height:96px;object-fit:cover}
+  .file .pdf{height:96px;display:flex;align-items:center;justify-content:center;font:700 15px "Prompt",sans-serif;color:var(--coral)}
+  .file .fn{font-size:11px;padding:3px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .file button{position:absolute;top:4px;right:4px;width:28px;height:28px;min-height:0;padding:0;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font:700 16px/28px sans-serif}
+  .attach{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font:600 14px "Prompt",sans-serif;color:var(--navy);background:#fff;border:1.5px dashed #9fb0c2;border-radius:10px;padding:8px 12px;cursor:pointer;min-height:44px}
+  .attach input{display:none}
+  .later ol{margin:8px 0 0;padding-left:22px}
+  .later li{margin-bottom:6px}
+  button,.btn{font:600 16px "Prompt",sans-serif;border-radius:12px;padding:14px 16px;border:0;cursor:pointer;text-align:center;text-decoration:none;display:block;width:100%;min-height:48px;transition:transform .08s,opacity .15s}
+  button:active,.btn:active{transform:scale(.98)}
+  button:disabled{opacity:.6;cursor:wait}
+  .primary{background:var(--coral);color:#fff}
+  .ghost{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+  .btns{display:grid;gap:10px;margin-top:14px}
+  .msg{margin-top:12px;padding:12px 14px;border-radius:10px;font-weight:600;display:none}
+  .msg.show{display:block}
+  .msg.ok{background:#e8f6ee;color:var(--ok)}
+  .msg.err{background:#fdecee;color:#a3192b}
+  .banner{background:#fff4d6;border:1px solid #f0d27a;border-radius:var(--r);padding:14px 16px;margin-top:16px;font-weight:600}
+  .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 16px rgba(0,0,0,.06);padding:10px 16px calc(10px + env(safe-area-inset-bottom));z-index:5}
+  .bar .in{max-width:760px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .bar .prog{font-weight:700;color:var(--navy)}
+  .bar .save{font-size:14px;color:var(--muted);text-align:right}
+  .bar .save.ok{color:var(--ok)}
+  .bar .save.err{color:#a3192b}
+  .center{text-align:center;padding:60px 16px;color:var(--muted)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media print{.bar,.attach,.btns,.file button,.qstat{display:none!important}body{background:#fff}section{break-inside:avoid;border-color:#ccc}textarea{border:0;padding:0;min-height:0;resize:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="eyebrow" id="eyebrow">การบ้านก่อนเริ่มโครงการ</div>
+  <h1 id="title">กำลังเปิด</h1>
+  <div class="meta" id="meta"></div>
+</div></header>
+<main class="wrap" id="app"><p class="center">กำลังโหลดคำถาม</p></main>
+<div class="bar" id="bar" hidden><div class="in"><div class="prog" id="prog"></div><div class="save" id="save">ระบบบันทึกให้อัตโนมัติ</div></div></div>
+<script>
+(function () {
+  "use strict";
+  var slug = location.pathname.split("/").filter(Boolean)[1] || "";
+  var API = "/api/homework/" + slug;
+  var BACKUP = "hw:" + slug;
+  var WHO = "hw:who";
+  var S = null;                 // server payload
+  var pending = {};             // qid -> {text, by} waiting to be sent
+  var dirty = {};               // qid typed since last successful save
+  var timer = null, retryMs = 2000, saving = false, readOnly = false;
+  var $ = function (id) { return document.getElementById(id); };
+
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function lsGet(k, d) { try { var v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* private mode: server copy is the real one */ } }
+  function hhmm(iso) { var d = new Date(iso); return isNaN(d) ? "" : d.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" }); }
+  function thDate(iso) { if (!iso) return ""; var d = new Date(iso + "T00:00:00+07:00"); return d.toLocaleDateString("th-TH", { day: "numeric", month: "long", year: "numeric" }); }
+  function who() { return ($("who") && $("who").value.trim()) || lsGet(WHO, ""); }
+
+  function setSave(text, cls) { var el = $("save"); el.textContent = text; el.className = "save" + (cls ? " " + cls : ""); }
+  function setQStat(qid, text, cls) { var el = document.querySelector('[data-stat="' + qid + '"]'); if (el) { el.textContent = text; el.className = "qstat" + (cls ? " " + cls : ""); } }
+
+  function progress() {
+    var ids = [], n = 0;
+    (S.content.sections || []).forEach(function (s) { (s.items || []).forEach(function (it) { ids.push(it.id); }); });
+    ids.forEach(function (id) {
+      var ta = document.querySelector('textarea[data-q="' + id + '"]');
+      var hasText = ta && ta.value.trim();
+      var hasFile = (S.files || []).some(function (f) { return f.qid === id; });
+      if (hasText || hasFile) n++;
+    });
+    $("prog").textContent = "ตอบแล้ว " + n + " จาก " + ids.length + " ข้อ";
+    return { n: n, total: ids.length };
+  }
+
+  function backupPending() { lsSet(BACKUP, JSON.stringify(pending)); }
+
+  function queue(qid) {
+    var ta = document.querySelector('textarea[data-q="' + qid + '"]');
+    pending[qid] = { text: ta.value, by: who() };
+    dirty[qid] = true;
+    backupPending();
+    setQStat(qid, "ยังไม่ได้บันทึก", "");
+    setSave("กำลังรอบันทึก", "");
+    progress();
+    clearTimeout(timer);
+    timer = setTimeout(flush, 900);
+  }
+
+  function flush(keepalive) {
+    if (saving || readOnly) return Promise.resolve();
+    var ids = Object.keys(pending);
+    if (!ids.length) return Promise.resolve();
+    var batch = {}; ids.forEach(function (k) { batch[k] = pending[k]; });
+    saving = true;
+    setSave("กำลังบันทึก", "");
+    return fetch(API + "/save", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ answers: batch }), keepalive: !!keepalive })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok || !j.ok) throw new Error(j.error || r.status); return j; }); })
+      .then(function (j) {
+        ids.forEach(function (k) {
+          if (pending[k] && pending[k].text === batch[k].text) { delete pending[k]; delete dirty[k]; }
+          S.answers[k] = { text: batch[k].text, by: batch[k].by, at: j.at };
+          setQStat(k, "บันทึกแล้ว " + hhmm(j.at) + (batch[k].by ? " โดย " + batch[k].by : ""), "ok");
+        });
+        backupPending();
+        retryMs = 2000;
+        setSave("บันทึกแล้ว " + hhmm(j.at), "ok");
+        // typed again while this batch was in flight
+        if (Object.keys(pending).length) { clearTimeout(timer); timer = setTimeout(flush, 900); }
+      })
+      .catch(function () {
+        setSave("ยังบันทึกไม่ได้ ระบบจะลองใหม่อัตโนมัติ", "err");
+        ids.forEach(function (k) { setQStat(k, "ยังบันทึกไม่ได้ เก็บไว้ในเครื่องนี้ก่อน", "err"); });
+        clearTimeout(timer); timer = setTimeout(flush, retryMs); retryMs = Math.min(retryMs * 2, 60000);
+      })
+      .then(function () { saving = false; });
+  }
+  function idle() { return new Promise(function (res) { var t = 0; (function w() { if (!saving || t++ > 50) res(); else setTimeout(w, 200); })(); }); }
+
+  // ---------------------------------------------------------------- files
+  function fileTile(f) {
+    var url = API + "/file/" + f.id;
+    var inner = /^image\//.test(f.mime) ? '<img src="' + url + '" alt="' + esc(f.name) + '" loading="lazy">' : '<div class="pdf">PDF</div>';
+    return '<div class="file" data-file="' + f.id + '"><a href="' + url + '" target="_blank" rel="noopener">' + inner + '<div class="fn">' + esc(f.name) + "</div></a>" +
+      (readOnly ? "" : '<button type="button" aria-label="ลบไฟล์ ' + esc(f.name) + '" data-del="' + f.id + '">×</button>') + "</div>";
+  }
+  function renderFiles(qid) {
+    var box = document.querySelector('[data-files="' + qid + '"]');
+    if (box) box.innerHTML = (S.files || []).filter(function (f) { return f.qid === qid; }).map(fileTile).join("");
+    progress();
+  }
+  function shrink(file) {
+    // phone photos are 3 to 8 MB; resize to 1600 px JPEG so uploads work on slow factory wifi
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type) || !window.createImageBitmap) return Promise.resolve(file);
+    return createImageBitmap(file).then(function (bmp) {
+      var k = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+      if (k === 1 && file.size < 1.5e6) return file;
+      var c = document.createElement("canvas"); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+      c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+      return new Promise(function (res) { c.toBlob(function (b) { res(b ? new File([b], file.name.replace(/\.\w+$/, "") + ".jpg", { type: "image/jpeg" }) : file); }, "image/jpeg", 0.82); });
+    }).catch(function () { return file; });
+  }
+  function upload(qid, list) {
+    var files = Array.prototype.slice.call(list || []);
+    var chain = Promise.resolve();
+    files.forEach(function (raw) {
+      chain = chain.then(function () {
+        setQStat(qid, "กำลังอัปโหลด " + raw.name, "");
+        return shrink(raw).then(function (f) {
+          if (f.size > 10 * 1024 * 1024) throw new Error("ไฟล์ใหญ่เกิน 10 MB");
+          if (!/^(image\/(jpeg|png|webp)|application\/pdf)$/.test(f.type)) throw new Error("รองรับรูปภาพและ PDF เท่านั้น");
+          return fetch(API + "/file?q=" + encodeURIComponent(qid) + "&name=" + encodeURIComponent(f.name), { method: "POST", headers: { "content-type": f.type }, body: f });
+        }).then(function (r) { return r.json().then(function (j) { if (!r.ok || !j.ok) throw new Error(j.error === "too_many_files" ? "แนบได้สูงสุด 20 ไฟล์ต่อข้อ" : "อัปโหลดไม่สำเร็จ"); return j; }); })
+          .then(function (j) { S.files.push(j.file); renderFiles(qid); setQStat(qid, "แนบไฟล์แล้ว " + raw.name, "ok"); setSave("บันทึกแล้ว " + hhmm(new Date().toISOString()), "ok"); })
+          .catch(function (e) { setQStat(qid, e.message || "อัปโหลดไม่สำเร็จ", "err"); });
+      });
+    });
+    return chain;
+  }
+  function removeFile(id) {
+    var f = (S.files || []).find(function (x) { return x.id === id; });
+    if (!f || !confirm("ลบไฟล์ " + f.name + " ใช่ไหม")) return;
+    fetch(API + "/file/" + id, { method: "DELETE" }).then(function (r) {
+      if (!r.ok) throw new Error();
+      S.files = S.files.filter(function (x) { return x.id !== id; }); renderFiles(f.qid);
+    }).catch(function () { setQStat(f.qid, "ลบไฟล์ไม่สำเร็จ ลองใหม่อีกครั้ง", "err"); });
+  }
+
+  // ---------------------------------------------------------------- render
+  function itemHtml(it) {
+    var a = S.answers[it.id] || {};
+    var stat = a.at ? "บันทึกแล้ว " + hhmm(a.at) + (a.by ? " โดย " + esc(a.by) : "") : "";
+    return '<div class="q" id="q-' + esc(it.id) + '"><div class="qhead"><div class="qn">' + esc(it.id) + '</div><div><label class="qt" for="ta-' + esc(it.id) + '">' + esc(it.q) + "</label>" +
+      (it.who ? '<div><span class="qwho">' + esc(it.who) + "</span></div>" : "") + "</div></div>" +
+      '<div class="qbody"><textarea id="ta-' + esc(it.id) + '" data-q="' + esc(it.id) + '" rows="3" placeholder="พิมพ์คำตอบ"' + (readOnly ? " readonly" : "") + ">" + esc(a.text || "") + "</textarea>" +
+      '<div class="files" data-files="' + esc(it.id) + '"></div>' +
+      (readOnly ? "" : '<label class="attach">＋ แนบรูปหรือไฟล์ PDF<input type="file" accept="image/*,application/pdf" multiple data-up="' + esc(it.id) + '"></label>') +
+      '<div class="qstat ok" data-stat="' + esc(it.id) + '" aria-live="polite">' + stat + "</div></div></div>";
+  }
+
+  function render() {
+    var c = S.content || {};
+    document.title = S.title;
+    $("title").textContent = S.title;
+    $("meta").innerHTML = "<span>" + esc(S.client) + "</span>" + (S.due_date ? "<span>ส่งภายใน " + esc(thDate(S.due_date)) + "</span>" : "");
+    var h = "";
+    if (S.state === "closed") h += '<div class="banner">การบ้านชุดนี้ปิดรับคำตอบแล้ว หน้านี้เปิดดูได้อย่างเดียว</div>';
+    else if (S.submitted_at) h += '<div class="banner">ส่งการบ้านแล้วเมื่อ ' + esc(new Date(S.submitted_at).toLocaleString("th-TH")) + " ยังแก้ไขคำตอบต่อได้ ระบบบันทึกให้อัตโนมัติ</div>";
+    if (c.tldr && c.tldr.length) h += '<section class="tldr"><h2>สรุปสั้น (TL;DR)</h2><ol class="tl-num">' + c.tldr.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ol>" +
+      (readOnly ? "" : '<div class="who"><label for="who">ชื่อผู้กรอก (แสดงข้างคำตอบที่บันทึก)</label><input type="text" id="who" maxlength="60" autocomplete="name" placeholder="เช่น แพรว ฝ่ายบัญชี"></div>') + "</section>";
+    (c.sections || []).forEach(function (s) {
+      h += '<section id="s-' + esc(s.id) + '"><h2>' + esc(s.title) + "</h2>" + (s.note ? '<p class="snote">' + esc(s.note) + "</p>" : "") + (s.items || []).map(itemHtml).join("") + "</section>";
+    });
+    if (c.later && c.later.length) h += '<section class="later"><h2>' + esc(c.later_title || "รายการที่ส่งหลังเริ่มโครงการ") + '</h2><p class="snote">ไม่ต้องส่งตอนนี้ ผู้ให้บริการจะแจ้งอีกครั้งตามกำหนด</p><ol>' + c.later.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ol></section>";
+    if (!readOnly) h += '<section><h2>ส่งการบ้าน</h2><p class="snote">คำตอบบันทึกอัตโนมัติทุกครั้งที่พิมพ์ กดส่งเมื่อตอบครบแล้ว เพื่อแจ้งผู้ให้บริการ ข้อใดไม่แน่ใจ ระบุว่าไม่แน่ใจได้</p>' +
+      '<div class="btns"><button type="button" class="primary" id="submit">ส่งการบ้านให้ผู้ให้บริการ</button><button type="button" class="ghost" id="print">บันทึกเป็น PDF หรือพิมพ์</button></div><div class="msg" id="msg" role="status"></div></section>';
+    $("app").innerHTML = h;
+    (S.files || []).forEach(function (f) { renderFiles(f.qid); });
+    var whoEl = $("who"); if (whoEl) { whoEl.value = lsGet(WHO, ""); whoEl.addEventListener("input", function () { lsSet(WHO, whoEl.value.trim()); }); }
+    document.querySelectorAll("textarea[data-q]").forEach(function (ta) {
+      grow(ta);
+      ta.addEventListener("input", function () { grow(ta); queue(ta.dataset.q); });
+      ta.addEventListener("blur", function () { if (pending[ta.dataset.q]) { clearTimeout(timer); flush(); } });
+    });
+    document.querySelectorAll("input[data-up]").forEach(function (inp) { inp.addEventListener("change", function () { upload(inp.dataset.up, inp.files).then(function () { inp.value = ""; }); }); });
+    $("app").addEventListener("click", function (e) { var b = e.target.closest("[data-del]"); if (b) { e.preventDefault(); removeFile(b.dataset.del); } });
+    if ($("submit")) $("submit").addEventListener("click", submit);
+    if ($("print")) $("print").addEventListener("click", function () { window.print(); });
+    $("bar").hidden = false;
+    progress();
+  }
+  function grow(ta) { ta.style.height = "auto"; ta.style.height = Math.max(76, ta.scrollHeight + 2) + "px"; }
+
+  function submit() {
+    var btn = $("submit"), msg = $("msg");
+    btn.disabled = true;
+    clearTimeout(timer);
+    idle().then(function () { return flush(); }).then(function () {
+      if (Object.keys(pending).length) throw new Error("unsaved");
+      return fetch(API + "/submit", { method: "POST" });
+    }).then(function (r) { return r.json().then(function (j) { if (!r.ok || !j.ok) throw new Error(j.error); return j; }); })
+      .then(function (j) {
+        msg.className = "msg show ok";
+        msg.textContent = "ส่งการบ้านแล้ว ตอบ " + j.answered + " จาก " + j.total + " ข้อ ผู้ให้บริการได้รับแจ้งแล้ว ยังแก้ไขคำตอบต่อได้";
+        S.submitted_at = new Date().toISOString();
+      })
+      .catch(function (e) {
+        msg.className = "msg show err";
+        msg.textContent = e.message === "unsaved" ? "ยังมีคำตอบที่บันทึกไม่ได้ ตรวจสอบอินเทอร์เน็ตแล้วกดส่งอีกครั้ง" : "ส่งไม่สำเร็จ ลองใหม่อีกครั้ง";
+      })
+      .then(function () { btn.disabled = false; });
+  }
+
+  // Bring back answers typed while offline or before the tab closed, then send them.
+  function restoreBackup() {
+    var saved = {}; try { saved = JSON.parse(lsGet(BACKUP, "{}")) || {}; } catch (e) { saved = {}; }
+    Object.keys(saved).forEach(function (qid) {
+      var ta = document.querySelector('textarea[data-q="' + qid + '"]');
+      if (!ta || readOnly) return;
+      ta.value = saved[qid].text; grow(ta);
+      pending[qid] = saved[qid]; dirty[qid] = true;
+      setQStat(qid, "กู้คำตอบที่ยังไม่ได้ส่งจากเครื่องนี้ กำลังบันทึก", "");
+    });
+    if (Object.keys(pending).length) flush();
+  }
+
+  // Others may answer other questions on their own phones: refresh fields this person is not editing.
+  function refresh() {
+    fetch(API, { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (!j || !j.answers) return;
+      Object.keys(j.answers).forEach(function (qid) {
+        var ta = document.querySelector('textarea[data-q="' + qid + '"]');
+        if (!ta || dirty[qid] || document.activeElement === ta) return;
+        if (ta.value !== j.answers[qid].text) { ta.value = j.answers[qid].text; grow(ta); }
+        var a = j.answers[qid]; setQStat(qid, "บันทึกแล้ว " + hhmm(a.at) + (a.by ? " โดย " + a.by : ""), "ok");
+      });
+      S.answers = j.answers; S.files = j.files || S.files;
+      Object.keys(j.answers).concat((j.files || []).map(function (f) { return f.qid; })).forEach(renderFiles);
+    }).catch(function () {});
+  }
+
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "hidden") { clearTimeout(timer); flush(true); } else if (S) refresh();
+  });
+  window.addEventListener("pagehide", function () { flush(true); });
+  window.addEventListener("online", function () { clearTimeout(timer); flush(); });
+
+  fetch(API, { cache: "no-store" }).then(function (r) { return r.json().then(function (j) { return { r: r, j: j }; }); }).then(function (x) {
+    if (x.j.state === "missing" || x.j.state === "void") {
+      $("title").textContent = x.j.state === "void" ? "ลิงก์นี้ถูกยกเลิกแล้ว" : "ไม่พบการบ้านชุดนี้";
+      $("app").innerHTML = '<p class="center">กรุณาติดต่อผู้ให้บริการทาง LINE เพื่อขอลิงก์ใหม่</p>';
+      return;
+    }
+    S = x.j; S.answers = S.answers || {}; S.files = S.files || [];
+    readOnly = S.state === "closed";
+    render();
+    restoreBackup();
+  }).catch(function () {
+    $("title").textContent = "เปิดหน้าไม่สำเร็จ";
+    $("app").innerHTML = '<p class="center">ตรวจสอบอินเทอร์เน็ตแล้วลองเปิดใหม่อีกครั้ง</p>';
+  });
+})();
+</script>
+</body>
+</html>
