@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Hallnara Stripe Test Report</title>
+<title>Hallnara Center Report</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -83,6 +83,23 @@ summary:focus-visible, button:focus-visible { outline: 2px solid var(--matcha); 
 pre { margin: 0; padding: 0 16px 16px; overflow-x: auto; font: 400 12px/1.5 var(--mono); max-height: 520px }
 button { font: 500 13px/1 var(--body); padding: 10px 14px; border-radius: 999px; border: 0; background: var(--matcha); color: var(--card); cursor: pointer; margin: 0 16px 14px }
 button:active { transform: scale(.97) }
+/* step-by-step tour */
+.tour { display: grid; gap: 14px }
+.tour-stage { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 20px; align-items: start; background: var(--card); border-radius: 18px; box-shadow: 0 0 0 1px var(--line); padding: 16px }
+.tour figure { margin: 0; border-radius: 12px; overflow: hidden; box-shadow: 0 0 0 1px var(--line); background: var(--paper); display: flex; gap: 10px; justify-content: center }
+.tour figure img { display: block; width: 100%; height: auto; transition: opacity .2s ease }
+.tour figure a { display: block; flex: 1 1 0; min-width: 0 }
+.tour figure.phones a { max-width: 260px }
+.tour-text { display: grid; gap: 10px; align-content: start; min-width: 0 }
+.tour-nav { display: flex; gap: 8px; margin-top: 6px }
+.tour-nav button { margin: 0 }
+.tour-nav #tour-prev { background: var(--matcha-soft); color: var(--matcha) }
+.tour-nav button:disabled { opacity: .4; cursor: default }
+.tour-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px }
+.tour-list button { margin: 0; background: transparent; color: var(--muted); box-shadow: inset 0 0 0 1px var(--line); font-size: 12px; padding: 8px 10px }
+.tour-list button[aria-current="step"] { background: var(--matcha); color: var(--card); box-shadow: none }
+@media (max-width: 760px) { .tour-stage { grid-template-columns: 1fr } }
+@media (prefers-reduced-motion: reduce) { .tour figure img { transition: none } }
 footer { font-size: 13px; color: var(--muted); display: grid; gap: 4px }
 @media (prefers-reduced-motion: reduce) { button:active { transform: none } }
 </style>
@@ -92,20 +109,64 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 4px }
 <main>
 <header>
   <svg class="logo" viewBox="0 0 195.18 42.7" role="img" aria-label="hallnara"><path d="M63.88,29.98c0-4.55.07-9.76.07-9.760h-.03c-.02-1.82-.5-5.34-4.77-6.45-4.29-1.12-8.83,2.19-10.88,3.96.01-2.3.02-3.96.02-3.96V1.43l-.75-.35-4.970,2.1v.67c1.82,0,1.58,2.15,1.58,2.15v7.77h0v16.21s.2,4.57-2.29,4.57v.67h8.71v-.67c-2.49,0-2.36-4.57-2.36-4.570,0-2.35.02-6.59.04-10.15,1.93-1.31,5.9-3.85,8.1-3.64.03,0,.06,0,.09,0,1.96.22,3.43,1.95,3.43,3.92v.1h0v9.76s.13,4.57-2.36,4.57v.67h8.71v-.67c-2.49,0-2.36-4.57-2.36-4.57Z"/><path d="M132.6,29.98c0-4.55.07-9.76.07-9.76h-.03c-.02-1.82-.5-5.34-4.77-6.45-4.27-1.11-8.8,2.17-10.85,3.94v-3.48l-.75-.35-4.97,2.1v.67c1.82,0,1.58,2.15,1.58,2.15v6.13h0v5.06s.2,4.57-2.29,4.57v.67h8.71v-.67c-2.49,0-2.29-4.57-2.29-4.57v-10.17c1.94-1.32,5.88-3.82,8.07-3.62.03,0,.06,0,.09,0,1.96.22,3.43,1.95,3.43,3.92v.1h0v9.76s.13,4.57-2.36,4.57v.67h8.71v-.67c-2.49,0-2.36-4.57-2.36-4.57Z"/><path d="M95.86,29.98c0-4.55.07-16.21.07-16.21V1.43l-.75-.35-4.97,2.1v.67c1.82,0,1.58,2.15,1.58,2.15v7.77h0v16.21s.2,4.57-2.29,4.57v.67h8.71v-.67c-2.49,0-2.36-4.57-2.36-4.57Z"/><path d="M106.72,29.98c0-4.55.07-16.21.07-16.21V1.43l-.75-.35-4.97,2.1v.67c1.82,0,1.58,2.15,1.58,2.15v7.77h0v16.21s.2,4.57-2.29,4.57v.67h8.71v-.67c-2.49,0-2.36-4.57-2.36-4.57Z"/><path d="M169.16,14.43l-.03.03c-2.14.81-3.54,2.52-4.41,4.13v-4.36l-.75-.35-4.97,2.1v.67c1.82,0,1.58,2.15,1.58,2.15v6.13h0v5.06s.2,4.57-2.29,4.57v.67h8.71v-.67c-2.49,0-2.29-4.57-2.29-4.57v-9.35c.43-1.13,1.18-2.68,2.41-3.89,4.19-1.69,6.03,1.63,6.03,1.63l2.4-3.72c-2.75-1.94-6.4-.22-6.4-.22Z"/><path d="M86.28,29.98c0-4.55.07-9.76.07-9.76.23-5.16-4.39-6.290-4.39-6.29-8.32-1.92-12.84,4.56-12.84,4.56l1.13.9s1.87-4.66,7.06-4.21c5.19.45,4.98,5.04,4.98,5.04v.18c-1.11.12-3.13.41-5.36,1.1-1.980.61-9.27,3.03-9.18,8.35.09,5.32,4.83,7.6,9.44,4.56,2.86-1.89,4.37-3.67,5.11-4.76v3.57c0,1.1.9,2,2,2h4.36v-.67c-2.49,0-2.36-4.57-2.36-4.57ZM71.44,29.36c.76-6.13,10.75-7.2,10.75-7.2-.58,12.26-11.51,13.33-10.75,7.2Z"/><path d="M154.74,29.98c0-4.55.07-9.76.07-9.76.23-5.16-4.39-6.29-4.39-6.29-8.32-1.92-12.84,4.56-12.84,4.56l1.13.9s1.87-4.66,7.06-4.21c5.19.45,4.98,5.04,4.98,5.04v.18c-1.11.12-3.13.41-5.36,1.1-1.98.61-9.27,3.03-9.18,8.35.09,5.32,4.83,7.6,9.44,4.56,2.86-1.89,4.37-3.67,5.11-4.76v3.57c0,1.1.9,2,2,2h4.36v-.67c-2.49,0-2.36-4.57-2.36-4.57ZM139.91,29.36c.76-6.13,10.75-7.2,10.75-7.2-.58,12.26-11.51,13.330-10.75,7.2Z"/><path d="M192.83,29.98c0-4.55.07-9.76.07-9.76.23-5.16-4.39-6.29-4.39-6.29-8.32-1.92-12.84,4.56-12.84,4.56l1.13.9s1.87-4.66,7.06-4.21c5.19.45,4.98,5.04,4.98,5.04v.18c-1.11.12-3.13.41-5.36,1.1-1.98.61-9.27,3.03-9.18,8.35.09,5.32,4.83,7.6,9.44,4.56,2.86-1.89,4.37-3.67,5.11-4.76v3.57c0,1.1.9,2,2,2h4.36v-.67c-2.49,0-2.36-4.57-2.36-4.57ZM177.99,29.36c.76-6.13,10.75-7.2,10.75-7.2-.58,12.26-11.51,13.33-10.75,7.2Z"/><path d="M33.11,17.81c-1.4.93-3.79,2.02-7.16,1.91-2.79-.09-5.15-1.9-6.66-4.21-1.07-1.64-1.6-3.56-1.77-5.51-.28-3.33-.22-6.68.2-9.99-.66,0-1.33,0-1.99,0,.49,3.86.5,6.31.04,10.17-.63,3.77-3.54,4.64-6.96,6.14-4.93,2.16-7.63,5.46-7.630,5.46,0,0,1.22-1.01,3.14-1.96h0s9.01-4.6,14.96-1.1c.44.26-2.4.77-2.43,1.48-.04.73,1.6,1.67,3.36,2.11.88.19,1.87.31,3.04.31,5.24,0,8.53-2.68,10.15-4.47.18-.2-.07-.49-.3-.34Z"/><path d="M29.14,22.88s-9.01,4.6-14.96,1.1c-.44-.26,2.4-.77,2.43-1.48.04-.73-1.6-1.67-3.36-2.11-.88-.19-1.87-.31-3.04-.31C4.98,20.080,1.68,22.76.06,24.55c-.18.2.07.49.3.34,1.4-.93,3.79-2.02,7.16-1.91,2.79.09,5.15,1.9,6.66,4.21,1.07,1.64,1.6,3.56,1.77,5.51.28,3.33.22,6.68-.2,9.99.66,0,1.33,0,1.99,0-.49-3.86-.5-6.31-.04-10.17.63-3.77,3.54-4.64,6.96-6.14,4.93-2.16,7.63-5.46,7.63-5.46,0,0-1.22,1.01-3.14,1.96h0Z"/></svg>
-  <span class="eyebrow">Hallnara Center, payment test</span>
-  <h1>Stripe payment test report</h1>
-  <p class="muted">25 November 2026. Every payment ran in Stripe test mode with test cards, so no real money moved.</p>
+  <span class="eyebrow">Hallnara Center, progress report</span>
+  <h1>Where Hallnara Center stands</h1>
+  <p class="muted">25 November 2026. What is built, what waits for access, how the Center is used day to day, and the results of the Stripe payment tests. Every payment ran in Stripe test mode with test cards, so no real money moved.</p>
 </header>
 
 <section aria-labelledby="sum">
   <h2 id="sum">Summary</h2>
   <ul class="summary">
+    <li><span>The Center is built: daily queue, orders and pricing, approval by email, Data Center, shipments and customers, in Thai and English, on desktop and phone. 97 automatic tests pass.</span></li>
     <li><span>A real Stripe test payment went through from start to finish: approval, invoice email, payment page, card payment, paid, ready to ship.</span></li>
     <li><span>We then simulated 10 customers paying within the same minute and ran it 4 times. Every order was charged once, stock stayed exact and each order got one shipment. Stripe returned no errors.</span></li>
     <li><span>The busy minute exposed 6 weak spots in our own system. All 6 are fixed and covered by automatic tests.</span></li>
-    <li class="todo"><span>Still to test once accounts are ready: the live key, Stripe's real payment notification (needs the Cloudflare account), Zoho Books and Aramex (waiting for credentials).</span></li>
+    <li class="todo"><span>Waiting for Hallnara: the real spreadsheets, the Cloudflare and Supabase accounts, and access for Zoho Books, Aramex and Microsoft 365. Each one switches a finished part from test mode to live.</span></li>
   </ul>
   <div class="stats" id="stats"></div>
+</section>
+
+<section aria-labelledby="center">
+  <span class="eyebrow">Part 1</span>
+  <h2 id="center">What the Center does today</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Part</th><th>What it does</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Today page</td><td>Money paid today and still owed, then everything that needs someone: approvals, parcels to pack, stuck orders, unanswered emails, low stock, follow-ups</td><td><span class="pill ok">ready</span></td></tr>
+      <tr><td>Orders and pricing</td><td>B2B and wholesale prices per customer, shipping rules, price edits before approval, a next-step box on every order</td><td><span class="pill ok">ready</span></td></tr>
+      <tr><td>Approval by email</td><td>The approver gets the order by email and confirms on a second page, so email scanners cannot approve anything</td><td><span class="pill ok">ready</span></td></tr>
+      <tr><td>Data Center</td><td>Import and export products, prices, stock and customers from spreadsheets, with every change shown before it is saved</td><td><span class="pill sim">needs real sheets</span></td></tr>
+      <tr><td>Card payment (Stripe)</td><td>Payment link in the invoice email that never expires; paid orders move on by themselves</td><td><span class="pill sim">tested, needs live key</span></td></tr>
+      <tr><td>Invoices in Zoho Books</td><td>Invoice on approval, payment recorded when the customer pays</td><td><span class="pill sim">built, needs Zoho access</span></td></tr>
+      <tr><td>Aramex shipping</td><td>Shipping rate on the quote, label after payment, daily tracking</td><td><span class="pill sim">built, needs Aramex access</span></td></tr>
+      <tr><td>Team@ email intake</td><td>New emails become customer records with a Thai summary</td><td><span class="pill sim">built, needs Microsoft 365</span></td></tr>
+      <tr><td>Daily report</td><td>Email at 09:00 Dubai time: approvals, parcels to pack, stuck orders</td><td><span class="pill sim">built, needs Microsoft 365</span></td></tr>
+      <tr><td>Thai and English</td><td>Switch language at the bottom of the menu; approval pages follow the choice</td><td><span class="pill ok">ready</span></td></tr>
+      <tr><td>Login and hosting</td><td>Company email login through Cloudflare Access, running in Hallnara's own Cloudflare account</td><td><span class="pill sim">built, needs Cloudflare account</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section aria-labelledby="demo">
+  <span class="eyebrow">Part 2</span>
+  <h2 id="demo">How the team uses it, step by step</h2>
+  <p class="muted">Screens from the demo version with made-up customers. Use the buttons, the step list or your keyboard's arrow keys, and tap a screen to open it full size.</p>
+  <div class="tour">
+    <div class="tour-stage">
+      <figure id="tour-fig"><img id="tour-img" src="img/d01-today.jpg" width="1600" height="1016" alt=""></figure>
+      <div class="tour-text">
+        <span class="eyebrow" id="tour-count">Step 1 of 12</span>
+        <h3 id="tour-title"></h3>
+        <p id="tour-body"></p>
+        <div class="tour-nav"><button type="button" id="tour-prev" aria-label="Previous step">Back</button><button type="button" id="tour-next" aria-label="Next step">Next</button></div>
+      </div>
+    </div>
+    <ol class="tour-list" id="tour-list"></ol>
+  </div>
+  <div class="note" style="background:var(--matcha-soft)">
+    <h3 style="margin-bottom:6px">Try it yourself</h3>
+    <p>Open <a href="https://hallnara-center-demo.nattabadi.workers.dev" target="_blank" rel="noopener">hallnara-center-demo.nattabadi.workers.dev</a> on a computer or phone. Things to try: switch between ไทย and EN at the bottom of the menu, open order HN-2026-0001 and press "Open approval email", then create a new order, approve it and press "Simulate customer payment". The data is made up and shared by everyone who opens the link, no email leaves and no money moves.</p>
+  </div>
 </section>
 
 <section aria-labelledby="flow">
@@ -126,7 +187,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 4px }
 </section>
 
 <section aria-labelledby="t1">
-  <span class="eyebrow">Test 1</span>
+  <span class="eyebrow">Part 3, Stripe test 1</span>
   <h2 id="t1">One real payment with a test card</h2>
   <div class="scroll"><table>
     <thead><tr><th>Step</th><th>Result</th><th></th></tr></thead>
@@ -142,7 +203,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 4px }
 </section>
 
 <section aria-labelledby="t2">
-  <span class="eyebrow">Test 2</span>
+  <span class="eyebrow">Part 3, Stripe test 2</span>
   <h2 id="t2">The busiest minute, run 4 times</h2>
   <p>In one minute: 10 customers order and get approved together, each opens the payment link twice, Stripe sends every payment notice twice, one customer pays a second time from an old browser tab, and the mailbox refuses mail above 30 a minute, the way Microsoft 365 does.</p>
   <div class="scroll"><table id="runs"></table></div>
@@ -254,6 +315,47 @@ $('copy').addEventListener('click', async () => {
   try { await navigator.clipboard.writeText(raw); $('copy').textContent = 'Copied'; }
   catch { const r = document.createRange(); r.selectNodeContents($('json')); getSelection().removeAllRanges(); getSelection().addRange(r); $('copy').textContent = 'Selected, press copy'; }
 });
+const STEPS = [
+  ['d01-today', 1016, 'Every morning starts on Today', 'The top line shows money paid today and money still owed. Below it, each tile is a queue that needs someone: orders to approve, payments to chase, parcels to pack and stuck orders, plus unanswered emails, low stock and follow-ups due.'],
+  ['d06-data-center', 1478, 'Load products and customers from a spreadsheet', 'The team uploads the sheet it already uses. The Center lists every new item and every changed price or stock figure before anything is saved, and exports back to a spreadsheet at any time.'],
+  ['d05-new-order', 1000, 'Create an order in under a minute', 'Pick the customer and the products. Prices follow the customer\'s price tier and shipping follows Hallnara\'s rules, so the total is ready for approval straight away.'],
+  ['d03-order-awaiting-approval', 1000, 'Every order shows its next step', 'The bar shows where the order is, from pricing to shipping, and the box says who acts next. Prices can still be changed here before the approver says yes.'],
+  ['d09-approval-email', 1000, 'The approver decides from the email', 'Natty receives the order summary by email, in Thai or English, with one button to approve and send the invoice and a link to reject.'],
+  ['d10-approve-confirm', 1000, 'One more tap to confirm', 'Opening the email link only shows this page. Email security scanners open links on their own, so nothing is approved until the approver taps confirm.'],
+  ['d11-approve-done', 1000, 'Invoice and payment link go out', 'Once confirmed, the invoice is issued and the customer receives a card payment link that keeps working until they pay.'],
+  ['d12-order-paid-label', 1000, 'The customer pays and the parcel is created', 'When Stripe confirms the payment, the Center records it, takes the items off stock and creates the Aramex label without anyone pressing a button. The order moves to To pack.'],
+  ['d08-shipments', 1000, 'Every parcel in one list', 'Labels to print, parcels in transit and delivered ones, with tracking updated from Aramex every day.'],
+  ['d04-order-stuck', 1000, 'Problems arrive with a plain reason', 'If Aramex or Zoho refuses something, the order moves to Stuck with the reason in plain words and a Retry button that continues from the step that failed.'],
+  ['d07-customers', 1000, 'One customer register', 'Every customer with price tier, stage and next follow-up, including the ones created from incoming emails to Team@.'],
+  [['m01-today', 'm03-order-awaiting-approval'], 1200, 'The same Center on a phone', 'Today and every order work on a phone, so approving or checking a parcel does not need a computer.'],
+];
+let at = 0;
+const fig = $('tour-fig'), list = $('tour-list');
+const SHORT = ['Today', 'Data Center', 'New order', 'Next step', 'Approval email', 'Confirm', 'Invoice sent', 'Paid and shipped', 'Shipments', 'Stuck orders', 'Customers', 'Phone'];
+list.innerHTML = STEPS.map((st, i) => `<li><button type="button" data-step="${i}">${i + 1}. ${SHORT[i]}</button></li>`).join('');
+function show(i) {
+  at = Math.max(0, Math.min(STEPS.length - 1, i));
+  const [img, h, title, body] = STEPS[at];
+  const imgs = [].concat(img);
+  fig.className = imgs.length > 1 ? 'phones' : '';
+  fig.innerHTML = imgs.map((n) => `<a href="img/${n}.jpg" target="_blank" rel="noopener" title="Open full size"><img src="img/${n}.jpg" width="${imgs.length > 1 ? 554 : 1600}" height="${h}" alt="${esc(title)}"></a>`).join('');
+  $('tour-count').textContent = `Step ${at + 1} of ${STEPS.length}`;
+  $('tour-title').textContent = title;
+  $('tour-body').textContent = body;
+  $('tour-prev').disabled = at === 0;
+  $('tour-next').disabled = at === STEPS.length - 1;
+  list.querySelectorAll('button').forEach((b, j) => (j === at ? b.setAttribute('aria-current', 'step') : b.removeAttribute('aria-current')));
+}
+$('tour-prev').addEventListener('click', () => show(at - 1));
+$('tour-next').addEventListener('click', () => show(at + 1));
+list.addEventListener('click', (e) => { const b = e.target.closest('button[data-step]'); if (b) show(Number(b.dataset.step)); });
+document.addEventListener('keydown', (e) => {
+  if (e.target.closest('input, textarea, select')) return;
+  if (e.key === 'ArrowRight') show(at + 1);
+  if (e.key === 'ArrowLeft') show(at - 1);
+});
+STEPS.flatMap((s) => [].concat(s[0])).forEach((n) => { const im = new Image(); im.src = `img/${n}.jpg`; });
+show(0);
 </script>
 </body>
 </html>
