@@ -33,8 +33,6 @@
   .tldr{border:2px solid var(--navy)}
   ol.tl-num{margin:8px 0 0;padding-left:22px}
   ol.tl-num li{margin:0 0 8px}
-  .who{display:block;margin-top:14px}
-  .who label{font-weight:700;display:block;margin-bottom:6px}
   input[type=text],textarea{width:100%;font:16px/1.6 "Sarabun",sans-serif;color:var(--ink);border:1.5px solid #c9d1da;border-radius:10px;padding:10px 12px;background:#fff;transition:border-color .15s,box-shadow .15s}
   input[type=text]:focus,textarea:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(7,43,78,.12)}
   textarea{min-height:76px;resize:vertical}
@@ -96,7 +94,6 @@
   var slug = location.pathname.split("/").filter(Boolean)[1] || "";
   var API = "/api/homework/" + slug;
   var BACKUP = "hw:" + slug;
-  var WHO = "hw:who";
   var S = null;                 // server payload
   var pending = {};             // qid -> {text, by} waiting to be sent
   var dirty = {};               // qid typed since last successful save
@@ -108,7 +105,6 @@
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* private mode: server copy is the real one */ } }
   function hhmm(iso) { var d = new Date(iso); return isNaN(d) ? "" : d.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" }); }
   function thDate(iso) { if (!iso) return ""; var d = new Date(iso + "T00:00:00+07:00"); return d.toLocaleDateString("th-TH", { day: "numeric", month: "long", year: "numeric" }); }
-  function who() { return ($("who") && $("who").value.trim()) || lsGet(WHO, ""); }
 
   function setSave(text, cls) { var el = $("save"); el.textContent = text; el.className = "save" + (cls ? " " + cls : ""); }
   function setQStat(qid, text, cls) { var el = document.querySelector('[data-stat="' + qid + '"]'); if (el) { el.textContent = text; el.className = "qstat" + (cls ? " " + cls : ""); } }
@@ -130,7 +126,7 @@
 
   function queue(qid) {
     var ta = document.querySelector('textarea[data-q="' + qid + '"]');
-    pending[qid] = { text: ta.value, by: who() };
+    pending[qid] = { text: ta.value, by: "" };
     dirty[qid] = true;
     backupPending();
     setQStat(qid, "ยังไม่ได้บันทึก", "");
@@ -153,7 +149,7 @@
         ids.forEach(function (k) {
           if (pending[k] && pending[k].text === batch[k].text) { delete pending[k]; delete dirty[k]; }
           S.answers[k] = { text: batch[k].text, by: batch[k].by, at: j.at };
-          setQStat(k, "บันทึกแล้ว " + hhmm(j.at) + (batch[k].by ? " โดย " + batch[k].by : ""), "ok");
+          setQStat(k, "บันทึกแล้ว " + hhmm(j.at), "ok");
         });
         backupPending();
         retryMs = 2000;
@@ -173,7 +169,8 @@
   // ---------------------------------------------------------------- files
   function fileTile(f) {
     var url = API + "/file/" + f.id;
-    var inner = /^image\//.test(f.mime) ? '<img src="' + url + '" alt="' + esc(f.name) + '" loading="lazy">' : '<div class="pdf">PDF</div>';
+    var ext = (/\.([a-z0-9]{1,8})$/i.exec(f.name) || [, "ไฟล์"])[1].toUpperCase();
+    var inner = /^image\/(png|jpeg|webp|gif)$/.test(f.mime) ? '<img src="' + url + '" alt="' + esc(f.name) + '" loading="lazy">' : '<div class="pdf">' + esc(ext) + "</div>";
     return '<div class="file" data-file="' + f.id + '"><a href="' + url + '" target="_blank" rel="noopener">' + inner + '<div class="fn">' + esc(f.name) + "</div></a>" +
       (readOnly ? "" : '<button type="button" aria-label="ลบไฟล์ ' + esc(f.name) + '" data-del="' + f.id + '">×</button>') + "</div>";
   }
@@ -182,31 +179,52 @@
     if (box) box.innerHTML = (S.files || []).filter(function (f) { return f.qid === qid; }).map(fileTile).join("");
     progress();
   }
-  function shrink(file) {
-    // phone photos are 3 to 8 MB; resize to 1600 px JPEG so uploads work on slow factory wifi
-    if (!/^image\/(jpeg|png|webp)$/.test(file.type) || !window.createImageBitmap) return Promise.resolve(file);
-    return createImageBitmap(file).then(function (bmp) {
-      var k = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
-      if (k === 1 && file.size < 1.5e6) return file;
-      var c = document.createElement("canvas"); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
-      c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
-      return new Promise(function (res) { c.toBlob(function (b) { res(b ? new File([b], file.name.replace(/\.\w+$/, "") + ".jpg", { type: "image/jpeg" }) : file); }, "image/jpeg", 0.82); });
-    }).catch(function () { return file; });
+  // Upload with progress. Files under 95 MB go in one request; bigger ones in 50 MB parts (Cloudflare caps a request at 100 MB).
+  var ONE_SHOT = 95 * 1024 * 1024, PART = 50 * 1024 * 1024;
+  var BLOCKED = /\.(exe|msi|bat|cmd|com|scr|ps1|vbs|js|mjs|jar|sh|app|dmg|apk|html?|svg|xhtml|hta|lnk|reg)$/i;
+  function send(method, url, body, onProg) {
+    return new Promise(function (res, rej) {
+      var x = new XMLHttpRequest();
+      x.open(method, url);
+      x.setRequestHeader("content-type", "application/octet-stream");
+      if (x.upload && onProg) x.upload.onprogress = function (e) { if (e.lengthComputable) onProg(e.loaded); };
+      x.onload = function () { var j = {}; try { j = JSON.parse(x.responseText); } catch (e) { /* not json */ } if (x.status < 300 && j.ok) res(j); else rej(new Error(j.error || x.status)); };
+      x.onerror = function () { rej(new Error("network")); };
+      x.send(body);
+    });
+  }
+  function postJson(url, obj) {
+    return fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(obj) })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok || !j.ok) throw new Error(j.error || r.status); return j; }); });
+  }
+  function errText(e) {
+    return { too_many_files: "แนบได้สูงสุด 50 ไฟล์ต่อข้อ", blocked_type: "ไฟล์ชนิดนี้แนบไม่ได้ เพราะเป็นไฟล์ที่สั่งงานเครื่องได้", network: "อินเทอร์เน็ตหลุดระหว่างอัปโหลด ลองแนบใหม่อีกครั้ง" }[e.message] || "อัปโหลดไม่สำเร็จ ลองแนบใหม่อีกครั้ง";
+  }
+  function uploadOne(qid, f) {
+    var q = "q=" + encodeURIComponent(qid) + "&name=" + encodeURIComponent(f.name);
+    var pct = function (done) { setQStat(qid, "กำลังอัปโหลด " + f.name + " " + Math.min(100, Math.floor(done * 100 / Math.max(f.size, 1))) + "%", ""); };
+    pct(0);
+    if (f.size <= ONE_SHOT) return send("POST", API + "/file?" + q, f, pct);
+    return postJson(API + "/file-mp/start?" + q, {}).then(function (m) {
+      var parts = [], n = 0, base = 0;
+      function next() {
+        if (base >= f.size) return postJson(API + "/file-mp/done", { path: m.path, uploadId: m.uploadId, parts: parts, q: qid, name: f.name });
+        n++; var start = base, blob = f.slice(start, start + PART);
+        return send("PUT", API + "/file-mp/part?path=" + encodeURIComponent(m.path) + "&uploadId=" + encodeURIComponent(m.uploadId) + "&n=" + n, blob, function (l) { pct(start + l); })
+          .then(function (p) { parts.push({ partNumber: p.partNumber, etag: p.etag }); base = start + blob.size; return next(); });
+      }
+      return next().catch(function (e) { postJson(API + "/file-mp/abort", { path: m.path, uploadId: m.uploadId }).catch(function () {}); throw e; });
+    });
   }
   function upload(qid, list) {
-    var files = Array.prototype.slice.call(list || []);
     var chain = Promise.resolve();
-    files.forEach(function (raw) {
+    Array.prototype.slice.call(list || []).forEach(function (f) {
       chain = chain.then(function () {
-        setQStat(qid, "กำลังอัปโหลด " + raw.name, "");
-        return shrink(raw).then(function (f) {
-          if (f.size > 10 * 1024 * 1024) throw new Error("ไฟล์ใหญ่เกิน 10 MB");
-          if (!/^(image\/(jpeg|png|webp)|application\/pdf)$/.test(f.type)) throw new Error("รองรับรูปภาพและ PDF เท่านั้น");
-          return fetch(API + "/file?q=" + encodeURIComponent(qid) + "&name=" + encodeURIComponent(f.name), { method: "POST", headers: { "content-type": f.type }, body: f });
-        }).then(function (r) { return r.json().then(function (j) { if (!r.ok || !j.ok) throw new Error(j.error === "too_many_files" ? "แนบได้สูงสุด 20 ไฟล์ต่อข้อ" : "อัปโหลดไม่สำเร็จ"); return j; }); })
-          .then(function (j) { S.files.push(j.file); renderFiles(qid); setQStat(qid, "แนบไฟล์แล้ว " + raw.name, "ok"); setSave("บันทึกแล้ว " + hhmm(new Date().toISOString()), "ok"); })
-          .catch(function (e) { setQStat(qid, e.message || "อัปโหลดไม่สำเร็จ", "err"); });
-      });
+        if (BLOCKED.test(f.name)) throw new Error("blocked_type");
+        if (!f.size) throw new Error("empty");
+        return uploadOne(qid, f);
+      }).then(function (j) { S.files.push(j.file); renderFiles(qid); setQStat(qid, "แนบไฟล์แล้ว " + f.name, "ok"); setSave("บันทึกแล้ว " + hhmm(new Date().toISOString()), "ok"); })
+        .catch(function (e) { setQStat(qid, f.name + ": " + errText(e), "err"); });
     });
     return chain;
   }
@@ -222,12 +240,12 @@
   // ---------------------------------------------------------------- render
   function itemHtml(it) {
     var a = S.answers[it.id] || {};
-    var stat = a.at ? "บันทึกแล้ว " + hhmm(a.at) + (a.by ? " โดย " + esc(a.by) : "") : "";
+    var stat = a.at ? "บันทึกแล้ว " + hhmm(a.at) : "";
     return '<div class="q" id="q-' + esc(it.id) + '"><div class="qhead"><div class="qn">' + esc(it.id) + '</div><div><label class="qt" for="ta-' + esc(it.id) + '">' + esc(it.q) + "</label>" +
       (it.who ? '<div><span class="qwho">' + esc(it.who) + "</span></div>" : "") + "</div></div>" +
       '<div class="qbody"><textarea id="ta-' + esc(it.id) + '" data-q="' + esc(it.id) + '" rows="3" placeholder="พิมพ์คำตอบ"' + (readOnly ? " readonly" : "") + ">" + esc(a.text || "") + "</textarea>" +
       '<div class="files" data-files="' + esc(it.id) + '"></div>' +
-      (readOnly ? "" : '<label class="attach">＋ แนบรูปหรือไฟล์ PDF<input type="file" accept="image/*,application/pdf" multiple data-up="' + esc(it.id) + '"></label>') +
+      (readOnly ? "" : '<label class="attach">＋ แนบไฟล์ตัวอย่าง<input type="file" multiple data-up="' + esc(it.id) + '"></label>') +
       '<div class="qstat ok" data-stat="' + esc(it.id) + '" aria-live="polite">' + stat + "</div></div></div>";
   }
 
@@ -239,8 +257,7 @@
     var h = "";
     if (S.state === "closed") h += '<div class="banner">การบ้านชุดนี้ปิดรับคำตอบแล้ว หน้านี้เปิดดูได้อย่างเดียว</div>';
     else if (S.submitted_at) h += '<div class="banner">ส่งการบ้านแล้วเมื่อ ' + esc(new Date(S.submitted_at).toLocaleString("th-TH")) + " ยังแก้ไขคำตอบต่อได้ ระบบบันทึกให้อัตโนมัติ</div>";
-    if (c.tldr && c.tldr.length) h += '<section class="tldr"><h2>สรุปสั้น (TL;DR)</h2><ol class="tl-num">' + c.tldr.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ol>" +
-      (readOnly ? "" : '<div class="who"><label for="who">ชื่อผู้กรอก (แสดงข้างคำตอบที่บันทึก)</label><input type="text" id="who" maxlength="60" autocomplete="name" placeholder="เช่น แพรว ฝ่ายบัญชี"></div>') + "</section>";
+    if (c.tldr && c.tldr.length) h += '<section class="tldr"><h2>สรุปสั้น (TL;DR)</h2><ol class="tl-num">' + c.tldr.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ol></section>";
     (c.sections || []).forEach(function (s) {
       h += '<section id="s-' + esc(s.id) + '"><h2>' + esc(s.title) + "</h2>" + (s.note ? '<p class="snote">' + esc(s.note) + "</p>" : "") + (s.items || []).map(itemHtml).join("") + "</section>";
     });
@@ -249,7 +266,6 @@
       '<div class="btns"><button type="button" class="primary" id="submit">ส่งการบ้านให้ผู้ให้บริการ</button><button type="button" class="ghost" id="print">บันทึกเป็น PDF หรือพิมพ์</button></div><div class="msg" id="msg" role="status"></div></section>';
     $("app").innerHTML = h;
     (S.files || []).forEach(function (f) { renderFiles(f.qid); });
-    var whoEl = $("who"); if (whoEl) { whoEl.value = lsGet(WHO, ""); whoEl.addEventListener("input", function () { lsSet(WHO, whoEl.value.trim()); }); }
     document.querySelectorAll("textarea[data-q]").forEach(function (ta) {
       grow(ta);
       ta.addEventListener("input", function () { grow(ta); queue(ta.dataset.q); });
@@ -305,7 +321,7 @@
         var ta = document.querySelector('textarea[data-q="' + qid + '"]');
         if (!ta || dirty[qid] || document.activeElement === ta) return;
         if (ta.value !== j.answers[qid].text) { ta.value = j.answers[qid].text; grow(ta); }
-        var a = j.answers[qid]; setQStat(qid, "บันทึกแล้ว " + hhmm(a.at) + (a.by ? " โดย " + a.by : ""), "ok");
+        setQStat(qid, "บันทึกแล้ว " + hhmm(j.answers[qid].at), "ok");
       });
       S.answers = j.answers; S.files = j.files || S.files;
       Object.keys(j.answers).concat((j.files || []).map(function (f) { return f.qid; })).forEach(renderFiles);
