@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hallnara Stripe Test Report</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column on Hallnara paper; colour carries who acts (matcha = our system, sky = Stripe, sand = simulated) */
+:root {
+  --paper: #F8F6F1; --card: #FFFFFF; --ink: #1D2421; --muted: #59635E; --line: rgba(29,36,33,.12);
+  --matcha: #1F5E54; --matcha-soft: #E3EEEA; --sky: #2B6A96; --sky-soft: #E2EDF5; --sand: #9A7650; --sand-soft: #F3ECE2;
+  --red: #A3302A; --red-soft: #F6E4E2;
+  --display: 'Alexandria', 'IBM Plex Sans', sans-serif; --body: 'IBM Plex Sans', 'Sukhumvit Set', sans-serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #111614; --card: #19201D; --ink: #E7ECE9; --muted: #9DA8A2; --line: rgba(231,236,233,.14);
+  --matcha: #74C2AC; --matcha-soft: #1D3631; --sky: #86BCE2; --sky-soft: #1B2D3A; --sand: #D2AE85; --sand-soft: #33291E; --red: #E58A82; --red-soft: #3A2220; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --paper: #111614; --card: #19201D; --ink: #E7ECE9; --muted: #9DA8A2; --line: rgba(231,236,233,.14);
+  --matcha: #74C2AC; --matcha-soft: #1D3631; --sky: #86BCE2; --sky-soft: #1B2D3A; --sand: #D2AE85; --sand-soft: #33291E; --red: #E58A82; --red-soft: #3A2220; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--paper); color: var(--ink); font: 400 16px/1.6 var(--body); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 64px }
+main { max-width: 920px; margin: 0 auto; display: grid; gap: 56px }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; text-wrap: balance; margin: 0; letter-spacing: -0.01em }
+h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.1 }
+h2 { font-size: 24px; line-height: 1.25 }
+h3 { font-size: 17px }
+p { margin: 0; max-width: 68ch }
+.muted { color: var(--muted) }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+section { display: grid; gap: 18px; min-width: 0 }
+header { display: grid; gap: 14px }
+.logo { width: 132px; height: auto; color: var(--sand); fill: currentColor }
+.summary { display: grid; gap: 10px; margin: 0; padding: 20px 22px; list-style: none; background: var(--card); border-radius: 18px; box-shadow: 0 0 0 1px var(--line) }
+.summary li { display: grid; grid-template-columns: 22px 1fr; gap: 10px }
+.summary li::before { content: ""; width: 10px; height: 10px; border-radius: 50%; margin-top: 8px; background: var(--matcha) }
+.summary li.todo::before { background: transparent; box-shadow: inset 0 0 0 2px var(--sand) }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px }
+.stat { padding: 16px; border-radius: 16px; background: var(--matcha-soft); display: grid; gap: 4px }
+.stat b { font: 600 28px/1.1 var(--display); color: var(--matcha); font-variant-numeric: tabular-nums }
+.stat span { font-size: 13px; color: var(--ink) }
+@media (max-width: 640px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+/* flow diagram */
+.legend { display: flex; flex-wrap: wrap; gap: 8px }
+.chip { font: 500 12px/1 var(--mono); padding: 7px 10px; border-radius: 999px }
+.c-ours { background: var(--matcha-soft); color: var(--matcha) }
+.c-stripe { background: var(--sky-soft); color: var(--sky) }
+.c-sim { background: var(--sand-soft); color: var(--sand) }
+.flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 26px 22px; counter-reset: step }
+.flow li { position: relative; padding: 14px; border-radius: 14px; display: grid; gap: 4px; align-content: start; counter-increment: step; min-width: 0 }
+.flow li::before { content: counter(step); font: 500 11px/1 var(--mono); opacity: .8 }
+.flow li strong { font-size: 14px; line-height: 1.3 }
+.flow li small { font-size: 12px; line-height: 1.35; color: var(--muted) }
+.flow li:not(:nth-child(5n)):not(:last-child)::after { content: "→"; position: absolute; right: -18px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 15px }
+@media (max-width: 760px) { .flow { grid-template-columns: 1fr; gap: 10px } .flow li::after { display: none } .flow li { grid-template-columns: 22px 1fr; column-gap: 8px } .flow li strong, .flow li small { grid-column: 2 } }
+/* tables */
+.scroll { overflow-x: auto; border-radius: 16px; box-shadow: 0 0 0 1px var(--line); background: var(--card) }
+table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 560px }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top }
+th { font: 500 12px/1.3 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); white-space: nowrap }
+tr:last-child td { border-bottom: 0 }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap }
+td.code { font: 400 13px/1.4 var(--mono) }
+.pill { display: inline-block; font: 500 12px/1 var(--mono); padding: 5px 8px; border-radius: 999px; white-space: nowrap }
+.ok { background: var(--matcha-soft); color: var(--matcha) }
+.bad { background: var(--red-soft); color: var(--red) }
+.sim { background: var(--sand-soft); color: var(--sand) }
+/* charts */
+.chart { background: var(--card); border-radius: 16px; box-shadow: 0 0 0 1px var(--line); padding: 16px; overflow-x: auto }
+.chart svg { display: block; width: 100%; min-width: 520px; height: auto }
+.chart text { font-family: var(--mono); font-size: 11px; fill: var(--muted) }
+.chart .lbl { fill: var(--ink); font-family: var(--body); font-size: 13px }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px }
+@media (max-width: 760px) { .two { grid-template-columns: 1fr } }
+.note { padding: 14px 16px; border-radius: 14px; background: var(--sand-soft); font-size: 14px }
+details { background: var(--card); border-radius: 16px; box-shadow: 0 0 0 1px var(--line) }
+summary { cursor: pointer; padding: 14px 16px; font-weight: 500 }
+summary:focus-visible, button:focus-visible { outline: 2px solid var(--matcha); outline-offset: 2px }
+pre { margin: 0; padding: 0 16px 16px; overflow-x: auto; font: 400 12px/1.5 var(--mono); max-height: 520px }
+button { font: 500 13px/1 var(--body); padding: 10px 14px; border-radius: 999px; border: 0; background: var(--matcha); color: var(--card); cursor: pointer; margin: 0 16px 14px }
+button:active { transform: scale(.97) }
+footer { font-size: 13px; color: var(--muted); display: grid; gap: 4px }
+@media (prefers-reduced-motion: reduce) { button:active { transform: none } }
+</style>
+
+</head>
+<body>
+<main>
+<header>
+  <svg class="logo" viewBox="0 0 195.18 42.7" role="img" aria-label="hallnara"><path d="M63.88,29.98c0-4.55.07-9.76.07-9.760h-.03c-.02-1.82-.5-5.34-4.77-6.45-4.29-1.12-8.83,2.19-10.88,3.96.01-2.3.02-3.96.02-3.96V1.43l-.75-.35-4.970,2.1v.67c1.82,0,1.58,2.15,1.58,2.15v7.77h0v16.21s.2,4.57-2.29,4.57v.67h8.71v-.67c-2.49,0-2.36-4.57-2.36-4.570,0-2.35.02-6.59.04-10.15,1.93-1.31,5.9-3.85,8.1-3.64.03,0,.06,0,.09,0,1.96.22,3.43,1.95,3.43,3.92v.1h0v9.76s.13,4.57-2.36,4.57v.67h8.71v-.67c-2.49,0-2.36-4.57-2.36-4.57Z"/><path d="M132.6,29.98c0-4.55.07-9.76.07-9.76h-.03c-.02-1.82-.5-5.34-4.77-6.45-4.27-1.11-8.8,2.17-10.85,3.94v-3.48l-.75-.35-4.97,2.1v.67c1.82,0,1.58,2.15,1.58,2.15v6.13h0v5.06s.2,4.57-2.29,4.57v.67h8.71v-.67c-2.49,0-2.29-4.57-2.29-4.57v-10.17c1.94-1.32,5.88-3.82,8.07-3.62.03,0,.06,0,.09,0,1.96.22,3.43,1.95,3.43,3.92v.1h0v9.76s.13,4.57-2.36,4.57v.67h8.71v-.67c-2.49,0-2.36-4.57-2.36-4.57Z"/><path d="M95.86,29.98c0-4.55.07-16.21.07-16.21V1.43l-.75-.35-4.97,2.1v.67c1.82,0,1.58,2.15,1.58,2.15v7.77h0v16.21s.2,4.57-2.29,4.57v.67h8.71v-.67c-2.49,0-2.36-4.57-2.36-4.57Z"/><path d="M106.72,29.98c0-4.55.07-16.21.07-16.21V1.43l-.75-.35-4.97,2.1v.67c1.82,0,1.58,2.15,1.58,2.15v7.77h0v16.21s.2,4.57-2.29,4.57v.67h8.71v-.67c-2.49,0-2.36-4.57-2.36-4.57Z"/><path d="M169.16,14.43l-.03.03c-2.14.81-3.54,2.52-4.41,4.13v-4.36l-.75-.35-4.97,2.1v.67c1.82,0,1.58,2.15,1.58,2.15v6.13h0v5.06s.2,4.57-2.29,4.57v.67h8.71v-.67c-2.49,0-2.29-4.57-2.29-4.57v-9.35c.43-1.13,1.18-2.68,2.41-3.89,4.19-1.69,6.03,1.63,6.03,1.63l2.4-3.72c-2.75-1.94-6.4-.22-6.4-.22Z"/><path d="M86.28,29.98c0-4.55.07-9.76.07-9.76.23-5.16-4.39-6.290-4.39-6.29-8.32-1.92-12.84,4.56-12.84,4.56l1.13.9s1.87-4.66,7.06-4.21c5.19.45,4.98,5.04,4.98,5.04v.18c-1.11.12-3.13.41-5.36,1.1-1.980.61-9.27,3.03-9.18,8.35.09,5.32,4.83,7.6,9.44,4.56,2.86-1.89,4.37-3.67,5.11-4.76v3.57c0,1.1.9,2,2,2h4.36v-.67c-2.49,0-2.36-4.57-2.36-4.57ZM71.44,29.36c.76-6.13,10.75-7.2,10.75-7.2-.58,12.26-11.51,13.33-10.75,7.2Z"/><path d="M154.74,29.98c0-4.55.07-9.76.07-9.76.23-5.16-4.39-6.29-4.39-6.29-8.32-1.92-12.84,4.56-12.84,4.56l1.13.9s1.87-4.66,7.06-4.21c5.19.45,4.98,5.04,4.98,5.04v.18c-1.11.12-3.13.41-5.36,1.1-1.98.61-9.27,3.03-9.18,8.35.09,5.32,4.83,7.6,9.44,4.56,2.86-1.89,4.37-3.67,5.11-4.76v3.57c0,1.1.9,2,2,2h4.36v-.67c-2.49,0-2.36-4.57-2.36-4.57ZM139.91,29.36c.76-6.13,10.75-7.2,10.75-7.2-.58,12.26-11.51,13.330-10.75,7.2Z"/><path d="M192.83,29.98c0-4.55.07-9.76.07-9.76.23-5.16-4.39-6.29-4.39-6.29-8.32-1.92-12.84,4.56-12.84,4.56l1.13.9s1.87-4.66,7.06-4.21c5.19.45,4.98,5.04,4.98,5.04v.18c-1.11.12-3.13.41-5.36,1.1-1.98.61-9.27,3.03-9.18,8.35.09,5.32,4.83,7.6,9.44,4.56,2.86-1.89,4.37-3.67,5.11-4.76v3.57c0,1.1.9,2,2,2h4.36v-.67c-2.49,0-2.36-4.57-2.36-4.57ZM177.99,29.36c.76-6.13,10.75-7.2,10.75-7.2-.58,12.26-11.51,13.33-10.75,7.2Z"/><path d="M33.11,17.81c-1.4.93-3.79,2.02-7.16,1.91-2.79-.09-5.15-1.9-6.66-4.21-1.07-1.64-1.6-3.56-1.77-5.51-.28-3.33-.22-6.68.2-9.99-.66,0-1.33,0-1.99,0,.49,3.86.5,6.31.04,10.17-.63,3.77-3.54,4.64-6.96,6.14-4.93,2.16-7.63,5.46-7.630,5.46,0,0,1.22-1.01,3.14-1.96h0s9.01-4.6,14.96-1.1c.44.26-2.4.77-2.43,1.48-.04.73,1.6,1.67,3.36,2.11.88.19,1.87.31,3.04.31,5.24,0,8.53-2.68,10.15-4.47.18-.2-.07-.49-.3-.34Z"/><path d="M29.14,22.88s-9.01,4.6-14.96,1.1c-.44-.26,2.4-.77,2.43-1.48.04-.73-1.6-1.67-3.36-2.11-.88-.19-1.87-.31-3.04-.31C4.98,20.080,1.68,22.76.06,24.55c-.18.2.07.49.3.34,1.4-.93,3.79-2.02,7.16-1.91,2.79.09,5.15,1.9,6.66,4.21,1.07,1.64,1.6,3.56,1.77,5.51.28,3.33.22,6.68-.2,9.99.66,0,1.33,0,1.99,0-.49-3.86-.5-6.31-.04-10.17.63-3.77,3.54-4.64,6.96-6.14,4.93-2.16,7.63-5.46,7.63-5.46,0,0-1.22,1.01-3.14,1.96h0Z"/></svg>
+  <span class="eyebrow">Hallnara Center, payment test</span>
+  <h1>Stripe payment test report</h1>
+  <p class="muted">25 November 2026. Every payment ran in Stripe test mode with test cards, so no real money moved.</p>
+</header>
+
+<section aria-labelledby="sum">
+  <h2 id="sum">Summary</h2>
+  <ul class="summary">
+    <li><span>A real Stripe test payment went through from start to finish: approval, invoice email, payment page, card payment, paid, ready to ship.</span></li>
+    <li><span>We then simulated 10 customers paying within the same minute and ran it 4 times. Every order was charged once, stock stayed exact and each order got one shipment. Stripe returned no errors.</span></li>
+    <li><span>The busy minute exposed 6 weak spots in our own system. All 6 are fixed and covered by automatic tests.</span></li>
+    <li class="todo"><span>Still to test once accounts are ready: the live key, Stripe's real payment notification (needs the Cloudflare account), Zoho Books and Aramex (waiting for credentials).</span></li>
+  </ul>
+  <div class="stats" id="stats"></div>
+</section>
+
+<section aria-labelledby="flow">
+  <h2 id="flow">How a payment moves</h2>
+  <div class="legend"><span class="chip c-ours">Hallnara Center</span><span class="chip c-stripe">Stripe test mode (real)</span><span class="chip c-sim">Simulated in this test</span></div>
+  <ol class="flow">
+    <li class="c-ours"><strong>Order approved</strong><small>Natty approves from the email</small></li>
+    <li class="c-ours"><strong>Invoice email</strong><small>Carries our payment link, which never expires</small></li>
+    <li class="c-stripe"><strong>Stripe payment page</strong><small>Opened fresh if the old one expired</small></li>
+    <li class="c-stripe"><strong>Customer pays</strong><small>Card or Link, in AED or their own currency</small></li>
+    <li class="c-sim"><strong>Stripe tells us</strong><small>Built from the real Stripe session until the Cloudflare address exists</small></li>
+    <li class="c-ours"><strong>Order marked paid</strong><small>Amount and currency checked against the order</small></li>
+    <li class="c-sim"><strong>Payment in Zoho Books</strong><small>Dry run until Zoho access arrives</small></li>
+    <li class="c-ours"><strong>Stock deducted</strong><small>Safe when many orders pay at once</small></li>
+    <li class="c-sim"><strong>Aramex label</strong><small>Dry run until Aramex access arrives</small></li>
+    <li class="c-ours"><strong>Emails go out</strong><small>Team, warehouse and customer</small></li>
+  </ol>
+</section>
+
+<section aria-labelledby="t1">
+  <span class="eyebrow">Test 1</span>
+  <h2 id="t1">One real payment with a test card</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Step</th><th>Result</th><th></th></tr></thead>
+    <tbody>
+      <tr><td>Order created and approved</td><td>HN-2026-0001, AED 570.00, invoice email sent with our payment link</td><td><span class="pill ok">pass</span></td></tr>
+      <tr><td>Customer opens the link</td><td>Sent straight to Stripe's payment page</td><td><span class="pill ok">pass</span></td></tr>
+      <tr><td>Card payment (4242 test card)</td><td>Buyer chose Thai baht on the page; Stripe still reported AED 570.00 paid, so the amount check passed</td><td><span class="pill ok">pass</span></td></tr>
+      <tr><td>After payment</td><td>Order moved to paid, then ready to ship; 6 emails went out (approval, invoice, paid, payment received, pack, on its way)</td><td><span class="pill ok">pass</span></td></tr>
+      <tr><td>Opening the link again</td><td>Shows "Order HN-2026-0001 is paid", no second charge possible</td><td><span class="pill ok">pass</span></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Two things to set in Stripe: the payment page shows the legal name "THAI HUB INTERNATIONAL GENERAL TRADING L.L.C" (Hallnara's name and logo can be set in Stripe's business settings), and buyers abroad can choose their own currency while Hallnara still receives AED (this can be switched off).</p>
+</section>
+
+<section aria-labelledby="t2">
+  <span class="eyebrow">Test 2</span>
+  <h2 id="t2">The busiest minute, run 4 times</h2>
+  <p>In one minute: 10 customers order and get approved together, each opens the payment link twice, Stripe sends every payment notice twice, one customer pays a second time from an old browser tab, and the mailbox refuses mail above 30 a minute, the way Microsoft 365 does.</p>
+  <div class="scroll"><table id="runs"></table></div>
+  <div class="chart"><h3 style="margin:0 0 10px">Time per step, each run</h3><div id="timing"></div></div>
+</section>
+
+<section aria-labelledby="fix">
+  <h2 id="fix">What the busy minute found</h2>
+  <div class="two">
+    <div class="chart"><h3 style="margin:0 0 10px">Stock taken off for 105 units sold</h3><div id="c-stock"></div></div>
+    <div class="chart"><h3 style="margin:0 0 10px">Orders that reached "ready to ship"</h3><div id="c-ship"></div></div>
+  </div>
+  <div class="scroll"><table>
+    <thead><tr><th>Situation</th><th>Before the fix</th><th>Now</th></tr></thead>
+    <tbody>
+      <tr><td>Several orders saved at the same moment</td><td>Order numbers collide and some saves fail</td><td>Takes the next free number, up to 10 tries</td></tr>
+      <tr><td>Orders for the same product paid together</td><td>Stock deductions overwrite each other: 105 sold, stock went down by 15</td><td>Each deduction waits for the previous one: stock went down by exactly 105</td></tr>
+      <tr><td>Database hiccup while a payment is recorded</td><td>Stripe's retry is ignored and the paid order never moves</td><td>Stripe's retry is processed normally</td></tr>
+      <tr><td>Customer pays twice in two tabs</td><td>Second payment goes unnoticed</td><td>Natty gets a refund alert email and the order history shows it</td></tr>
+      <tr><td>Mailbox limit reached</td><td>Orders stop before the Aramex label</td><td>Mail waits and retries; a mail that still fails is noted on the order and shipping carries on</td></tr>
+      <tr><td>Server stops halfway through an order</td><td>Order sits at "paid" with no warning</td><td>Picked up again automatically within 10 to 15 minutes</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section aria-labelledby="wc">
+  <h2 id="wc">Worst cases and what happens</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>If this happens</th><th>What the customer and team see</th><th>Safeguard</th></tr></thead>
+    <tbody>
+      <tr><td>Stripe is down or slow</td><td>Customer sees "The payment page could not open, nothing was charged" with a button to try again</td><td>No order changes until Stripe confirms payment</td></tr>
+      <tr><td>Customer pays days after the invoice</td><td>Link still works</td><td>A new Stripe page opens when the old one has expired (Stripe closes them after 24 hours)</td></tr>
+      <tr><td>Stripe's payment notice arrives twice</td><td>Nothing extra</td><td>Each notice is processed once</td></tr>
+      <tr><td>Stripe's payment notice fails to arrive</td><td>Order shows unpaid for a while</td><td>Stripe keeps retrying for up to 3 days</td></tr>
+      <tr><td>Amount paid differs from the order</td><td>Order appears under Stuck on the Today page</td><td>Nothing ships until the team checks it</td></tr>
+      <tr><td>Customer pays twice</td><td>Natty receives a refund alert</td><td>Refund from the Stripe dashboard</td></tr>
+      <tr><td>Zoho or Aramex is down</td><td>Order appears under Stuck with a Retry button</td><td>The payment is already recorded; Retry continues from the step that failed</td></tr>
+      <tr><td>Many orders at once on Cloudflare's free plan</td><td>Server could stop halfway on large orders</td><td>Use the Workers Paid plan (USD 5 a month, already in the cost estimate)</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section aria-labelledby="raw">
+  <h2 id="raw">Raw data</h2>
+  <p class="muted">Run 1 of the busy minute. Shipment numbers start with DRY because Aramex ran as a dry run. "Mails held back" counts mails the simulated mailbox refused after its limit; in the real system these retry first.</p>
+  <div class="scroll"><table id="orders"></table></div>
+  <details>
+    <summary>Full test output (JSON, run 1)</summary>
+    <button type="button" id="copy">Copy JSON</button>
+    <pre id="json"></pre>
+  </details>
+</section>
+
+<section aria-labelledby="next">
+  <h2 id="next">Before going live</h2>
+  <div class="two">
+    <div class="note" style="background:var(--sky-soft)"><h3 style="margin-bottom:6px">Hallnara</h3><p>Set the public business name and logo in Stripe. Decide whether buyers may pay in their own currency. Open the Cloudflare and Supabase accounts. Send the Zoho Books, Aramex and Microsoft 365 access.</p></div>
+    <div class="note" style="background:var(--matcha-soft)"><h3 style="margin-bottom:6px">Pun</h3><p>Connect the live key and Stripe's payment notification, switch Cloudflare to the paid plan, then repeat both tests with the real Zoho and Aramex connections.</p></div>
+  </div>
+</section>
+
+<footer>
+  <span>Prepared by Pun Nattapatch for Hallnara, 25 November 2026.</span>
+  <span>Test scripts: scripts/stripe-e2e.mjs and scripts/stripe-burst.mjs in the Hallnara Center code.</span>
+</footer>
+</main>
+
+<script>
+const DATA = {"runs": [{"ran_at": "2026-11-25T05:25:13.850Z", "timings_ms": {"create": 93, "approve": 601, "open_links": 414, "webhooks": 10}, "stripe_calls": {"POST": 10, "GET": 30}, "stripe_errors": 0, "mails_throttled": 31, "stock": {"start": 1000, "sold": 105, "end": 895}, "webhooks": {"sent": 20, "duplicates_skipped": 10}, "shipped": 10, "checks_passed": 8, "checks_total": 8}, {"ran_at": "2026-11-25T05:25:15.340Z", "timings_ms": {"create": 50, "approve": 557, "open_links": 787, "webhooks": 5}, "stripe_calls": {"POST": 10, "GET": 30}, "stripe_errors": 0, "mails_throttled": 31, "stock": {"start": 1000, "sold": 105, "end": 895}, "webhooks": {"sent": 20, "duplicates_skipped": 10}, "shipped": 10, "checks_passed": 8, "checks_total": 8}, {"ran_at": "2026-11-25T05:25:17.122Z", "timings_ms": {"create": 63, "approve": 554, "open_links": 742, "webhooks": 18}, "stripe_calls": {"POST": 10, "GET": 30}, "stripe_errors": 0, "mails_throttled": 31, "stock": {"start": 1000, "sold": 105, "end": 895}, "webhooks": {"sent": 20, "duplicates_skipped": 10}, "shipped": 10, "checks_passed": 8, "checks_total": 8}, {"ran_at": "2026-11-25T05:25:19.301Z", "timings_ms": {"create": 52, "approve": 951, "open_links": 442, "webhooks": 5}, "stripe_calls": {"POST": 10, "GET": 30}, "stripe_errors": 0, "mails_throttled": 31, "stock": {"start": 1000, "sold": 105, "end": 895}, "webhooks": {"sent": 20, "duplicates_skipped": 10}, "shipped": 10, "checks_passed": 8, "checks_total": 8}], "orders": [{"order_no": "HN-2026-0001", "qty": 6, "total_aed": 570, "stripe_session": "cs_test_a0NJXC\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-6210", "mails_not_sent": 3}, {"order_no": "HN-2026-0002", "qty": 7, "total_aed": 665, "stripe_session": "cs_test_a0FQYl\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-3175", "mails_not_sent": 2}, {"order_no": "HN-2026-0003", "qty": 8, "total_aed": 760, "stripe_session": "cs_test_a0E2me\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-3892", "mails_not_sent": 2}, {"order_no": "HN-2026-0009", "qty": 9, "total_aed": 855, "stripe_session": "cs_test_a0kQc7\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-8195", "mails_not_sent": 2}, {"order_no": "HN-2026-0010", "qty": 10, "total_aed": 820, "stripe_session": "cs_test_a0lIaO\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-9663", "mails_not_sent": 2}, {"order_no": "HN-2026-0005", "qty": 11, "total_aed": 902, "stripe_session": "cs_test_a0rNth\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-5102", "mails_not_sent": 4}, {"order_no": "HN-2026-0008", "qty": 12, "total_aed": 984, "stripe_session": "cs_test_a0ODTt\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-7273", "mails_not_sent": 4}, {"order_no": "HN-2026-0006", "qty": 13, "total_aed": 1066, "stripe_session": "cs_test_a0087x\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-9106", "mails_not_sent": 4}, {"order_no": "HN-2026-0007", "qty": 14, "total_aed": 1148, "stripe_session": "cs_test_a05xqc\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-6830", "mails_not_sent": 4}, {"order_no": "HN-2026-0004", "qty": 15, "total_aed": 1230, "stripe_session": "cs_test_a0E0RN\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-4099", "mails_not_sent": 4}], "raw": {"ran_at": "2026-11-25T05:25:13.850Z", "customers": 10, "checks": [{"ok": true, "text": "10 orders created together in 93 ms, order numbers unique: 10/10"}, {"ok": true, "text": "10/10 approved and invoiced in 601 ms, Stripe POSTs 10, Stripe errors 0"}, {"ok": true, "text": "20 link opens in 414 ms: 20 sent to Stripe, new Checkout pages made 0 (open pages reused)"}, {"ok": true, "text": "20 webhooks in 10 ms: duplicates skipped 10"}, {"ok": true, "text": "shipments created 10 (expected 10)"}, {"ok": true, "text": "stock after 105 units sold: 895 (expected 895)"}, {"ok": true, "text": "orders ready to ship 10/10, mailbox throttled 30 sends"}, {"ok": true, "text": "second payment for HN-2026-0001: {\"ok\":true,\"refund_needed\":true,\"ref\":\"cs_second_tab\"} \u2192 owner told to refund"}], "timings_ms": {"create": 93, "approve": 601, "open_links": 414, "webhooks": 10}, "stripe_calls": {"POST": 10, "GET": 30}, "stripe_errors": 0, "mails_throttled": 31, "stock": {"start": 1000, "sold": 105, "end": 895}, "webhooks": {"sent": 20, "duplicates_skipped": 10}, "orders": [{"order_no": "HN-2026-0001", "qty": 6, "total_aed": 570, "stripe_session": "cs_test_a0NJXC\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-6210", "mails_not_sent": 3}, {"order_no": "HN-2026-0002", "qty": 7, "total_aed": 665, "stripe_session": "cs_test_a0FQYl\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-3175", "mails_not_sent": 2}, {"order_no": "HN-2026-0003", "qty": 8, "total_aed": 760, "stripe_session": "cs_test_a0E2me\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-3892", "mails_not_sent": 2}, {"order_no": "HN-2026-0009", "qty": 9, "total_aed": 855, "stripe_session": "cs_test_a0kQc7\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-8195", "mails_not_sent": 2}, {"order_no": "HN-2026-0010", "qty": 10, "total_aed": 820, "stripe_session": "cs_test_a0lIaO\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-9663", "mails_not_sent": 2}, {"order_no": "HN-2026-0005", "qty": 11, "total_aed": 902, "stripe_session": "cs_test_a0rNth\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-5102", "mails_not_sent": 4}, {"order_no": "HN-2026-0008", "qty": 12, "total_aed": 984, "stripe_session": "cs_test_a0ODTt\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-7273", "mails_not_sent": 4}, {"order_no": "HN-2026-0006", "qty": 13, "total_aed": 1066, "stripe_session": "cs_test_a0087x\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-9106", "mails_not_sent": 4}, {"order_no": "HN-2026-0007", "qty": 14, "total_aed": 1148, "stripe_session": "cs_test_a05xqc\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-6830", "mails_not_sent": 4}, {"order_no": "HN-2026-0004", "qty": 15, "total_aed": 1230, "stripe_session": "cs_test_a0E0RN\u2026", "status": "label_ready", "awb": "DRY-BOS-20261125052515-4099", "mails_not_sent": 4}], "second_payment": {"ok": true, "refund_needed": true, "ref": "cs_second_tab"}}};
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const r0 = DATA.runs[0], all = DATA.runs;
+const passed = all.filter((r) => r.checks_passed === r.checks_total).length;
+$('stats').innerHTML = [
+  [`${passed}/${all.length}`, 'busy-minute runs passed every check'],
+  [String(r0.webhooks.sent / 2), 'customers paying in one minute'],
+  [String(all.reduce((n, r) => n + r.stripe_errors, 0)), 'Stripe errors across all runs'],
+  [String(r0.stock.end), `units left of ${r0.stock.start}, exactly ${r0.stock.sold} sold`],
+].map(([b, s]) => `<div class="stat"><b>${b}</b><span>${s}</span></div>`).join('');
+
+$('runs').innerHTML = `<thead><tr><th>Run</th><th class="num">Checks</th><th class="num">Save 10 orders</th><th class="num">Approve 10</th><th class="num">Open 20 links</th><th class="num">20 notices</th><th class="num">Stripe calls</th><th class="num">Shipped</th><th class="num">Stock left</th><th class="num">Mails held back</th></tr></thead><tbody>` +
+  all.map((r, i) => `<tr><td>${i + 1}</td><td class="num"><span class="pill ${r.checks_passed === r.checks_total ? 'ok' : 'bad'}">${r.checks_passed}/${r.checks_total}</span></td>
+  <td class="num">${r.timings_ms.create} ms</td><td class="num">${r.timings_ms.approve} ms</td><td class="num">${r.timings_ms.open_links} ms</td><td class="num">${r.timings_ms.webhooks} ms</td>
+  <td class="num">${r.stripe_calls.POST} new, ${r.stripe_calls.GET} reads</td><td class="num">${r.shipped}/10</td><td class="num">${r.stock.end}</td><td class="num">${r.mails_throttled}</td></tr>`).join('') + '</tbody>';
+
+const NS = 'http://www.w3.org/2000/svg';
+function bars(el, rows, { max, unit = '', width = 640, label = 150, colors }) {
+  const rowH = 26, gap = 10, h = rows.length * (rowH + gap) + 24, plot = width - label - 70;
+  let s = `<svg viewBox="0 0 ${width} ${h}" xmlns="${NS}" role="img">`;
+  for (let t = 0; t <= 4; t++) { const x = label + plot * t / 4; s += `<line x1="${x}" x2="${x}" y1="0" y2="${h - 18}" stroke="var(--line)" /><text x="${x}" y="${h - 4}" text-anchor="middle">${Math.round(max * t / 4)}${unit}</text>`; }
+  rows.forEach((r, i) => { const y = i * (rowH + gap), w = Math.max(2, plot * r.v / max);
+    s += `<text class="lbl" x="${label - 10}" y="${y + rowH * .68}" text-anchor="end">${esc(r.k)}</text><rect x="${label}" y="${y}" width="${w}" height="${rowH}" rx="6" fill="${r.c ?? colors}" />
+    <text x="${label + w + 8}" y="${y + rowH * .68}" style="fill:var(--ink)">${r.v}${unit}</text>`; });
+  el.innerHTML = s + '</svg>';
+}
+const phases = [['create', 'Save 10 orders'], ['approve', 'Approve 10'], ['open_links', 'Open 20 links'], ['webhooks', 'Process 20 notices']];
+const tmax = Math.ceil(Math.max(...all.flatMap((r) => Object.values(r.timings_ms))) / 250) * 250;
+bars($('timing'), phases.flatMap(([k, name]) => all.map((r, i) => ({ k: `${name}, run ${i + 1}`, v: r.timings_ms[k], c: i % 2 ? 'var(--sky)' : 'var(--matcha)' }))), { max: tmax, unit: ' ms', label: 190 });
+bars($('c-stock'), [{ k: 'Should be', v: 105, c: 'var(--muted)' }, { k: 'Before fix', v: 15, c: 'var(--red)' }, { k: 'After fix', v: r0.stock.start - r0.stock.end, c: 'var(--matcha)' }], { max: 120, width: 420, label: 90 });
+bars($('c-ship'), [{ k: 'Should be', v: 10, c: 'var(--muted)' }, { k: 'Before fix', v: 0, c: 'var(--red)' }, { k: 'After fix', v: r0.shipped, c: 'var(--matcha)' }], { max: 10, width: 420, label: 90 });
+
+$('orders').innerHTML = `<thead><tr><th>Order</th><th class="num">Qty</th><th class="num">Total (AED)</th><th>Stripe session</th><th>Status</th><th>Shipment</th><th class="num">Mails held back</th></tr></thead><tbody>` +
+  DATA.orders.map((o) => `<tr><td class="code">${esc(o.order_no)}</td><td class="num">${o.qty}</td><td class="num">${o.total_aed.toLocaleString('en-GB', { minimumFractionDigits: 2 })}</td><td class="code">${esc(o.stripe_session)}</td>
+  <td><span class="pill ${o.status === 'label_ready' ? 'ok' : 'bad'}">${o.status === 'label_ready' ? 'ready to ship' : esc(o.status)}</span></td><td class="code">${esc(o.awb)}</td><td class="num">${o.mails_not_sent}</td></tr>`).join('') + '</tbody>';
+
+const raw = JSON.stringify(DATA.raw, null, 2);
+$('json').textContent = raw;
+$('copy').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(raw); $('copy').textContent = 'Copied'; }
+  catch { const r = document.createRange(); r.selectNodeContents($('json')); getSelection().removeAllRanges(); getSelection().addRange(r); $('copy').textContent = 'Selected, press copy'; }
+});
+</script>
+</body>
+</html>
