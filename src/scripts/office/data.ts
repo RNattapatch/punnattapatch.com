@@ -175,6 +175,20 @@ export const taskAction = (task: number, action: string, arg: string | null = nu
 export const ackAlert = (alert: number) => rpc<void>('office_ack_alert', { p_alert: alert, p_source: 'web' });
 export const reportIncident = (text: string) => rpc<number>('office_report_incident', { p_text: text, p_source: 'web' });
 
+/** ปุ่มไมค์: ส่งเสียงไป edge function office-transcribe (ถือคีย์ ElevenLabs · เช็คเจ้าของเอง) แล้วได้ข้อความกลับ */
+export async function transcribe(audio: Blob, filename: string): Promise<string> {
+  await requireOwner();
+  const form = new FormData();
+  form.append('file', audio, filename);
+  const { data, error } = await supabase.functions.invoke('office-transcribe', { body: form });
+  if (error) {
+    // FunctionsHttpError เก็บ response ไว้ใน context · ใช้ข้อความภาษาไทยจากฟังก์ชันถ้ามี
+    const detail = await (error as { context?: Response }).context?.json?.().catch(() => null);
+    throw new Error(detail?.error || 'ถอดเสียงไม่สำเร็จ ลองใหม่อีกครั้ง');
+  }
+  return String((data as { text?: string } | null)?.text ?? '');
+}
+
 /** Existing file-delivery queue used by Telegram and LINE buttons. */
 export async function queueSend(fileId: number, channel: SendChannel): Promise<OfficeSend> {
   await requireOwner();

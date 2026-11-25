@@ -49,6 +49,8 @@ import AppNav from '../../components/app/AppNav.astro';
     }
     /* iOS Safari ซูมทั้งหน้าเมื่อแตะช่องที่ตัวอักษรต่ำกว่า 16px · iPhone คือจอหลักของหน้านี้ */
     #office-app textarea, #office-app input, #office-app select { font-size: max(16px, 1rem); }
+    .of-mic[data-mode="recording"] svg { animation: of-mic-pulse 1.2s ease-in-out infinite; }
+    @keyframes of-mic-pulse { 50% { opacity: .45; } }
   </style>
 
   <div id="office-app" data-mobile-stage="rooms" class="hidden min-h-dvh bg-base-200/50">
@@ -100,8 +102,10 @@ import AppNav from '../../components/app/AppNav.astro';
             <label for="of-incident-input" class="mb-1 block text-xs font-semibold">แจ้งเหตุให้ฝ่ายเทค</label>
             <div class="flex items-end gap-2">
               <textarea id="of-incident-input" class="textarea textarea-bordered min-h-11 flex-1 resize-none" rows="1" maxlength="2000" enterkeyhint="send" placeholder="เกิดอะไรขึ้น"></textarea>
+              <button id="of-incident-mic" class="of-mic btn btn-ghost btn-square min-h-11 min-w-11" type="button" aria-label="พูดแทนพิมพ์" aria-pressed="false"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v4"/></svg></button>
               <button class="btn btn-error min-h-11" type="submit">แจ้งเหตุ</button>
             </div>
+            <p id="of-incident-mic-status" class="mt-1 text-xs text-error" aria-live="polite" hidden></p>
             <p id="of-incident-error" class="mt-1 hidden text-sm text-error" role="alert"></p>
           </form>
         </section>
@@ -136,9 +140,11 @@ import AppNav from '../../components/app/AppNav.astro';
           <form id="of-compose" class="of-compose border-t border-base-300 bg-base-100 p-3">
             <label id="of-compose-label" for="of-compose-input" class="mb-1 block text-xs font-semibold">เริ่มแชทใหม่</label>
             <div class="flex items-end gap-2">
-              <textarea id="of-compose-input" class="textarea textarea-bordered min-h-11 flex-1 resize-none" rows="1" maxlength="4000" enterkeyhint="send" placeholder="พิมพ์หาหัวหน้าฝ่าย"></textarea>
+              <textarea id="of-compose-input" class="textarea textarea-bordered min-h-11 flex-1 resize-none" rows="1" maxlength="4000" enterkeyhint="send" placeholder="พิมพ์หรือกดไมค์พูดหาหัวหน้าฝ่าย"></textarea>
+              <button id="of-compose-mic" class="of-mic btn btn-ghost btn-square min-h-11 min-w-11" type="button" aria-label="พูดแทนพิมพ์" aria-pressed="false"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v4"/></svg></button>
               <button id="of-compose-send" class="btn btn-primary min-h-11" type="submit">ส่ง</button>
             </div>
+            <p id="of-compose-mic-status" class="mt-1 text-xs text-error" aria-live="polite" hidden></p>
             <p id="of-compose-error" class="mt-1 hidden text-sm text-error" role="alert"></p>
           </form>
         </section>

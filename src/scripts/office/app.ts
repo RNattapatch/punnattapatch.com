@@ -10,8 +10,10 @@ import {
   queueSend,
   reportIncident,
   taskAction,
+  transcribe,
   type OfficeData,
 } from './data';
+import { attachDictation, fitTextarea } from './dictate';
 import {
   ALERT_LEVEL_META,
   ALERT_STATUS_LABEL,
@@ -125,6 +127,7 @@ function restoreDraft() {
   const key = draftKey();
   const input = $('#of-compose-input') as HTMLTextAreaElement;
   input.value = state.drafts[key] || '';
+  fitTextarea(input);
   const error = state.draftErrors[key] || '';
   $('#of-compose-error').textContent = error;
   $('#of-compose-error').classList.toggle('hidden', !error);
@@ -607,7 +610,7 @@ async function submitCompose() {
     const current = state.drafts[key] ?? submittedDraft;
     state.drafts[key] = draftAfterAcknowledgement(current, submittedDraft);
     state.draftErrors[key] = '';
-    if (draftKey() === key) input.value = state.drafts[key];
+    if (draftKey() === key) { input.value = state.drafts[key]; fitTextarea(input); }
     if (!DEMO) await fullRefresh().catch(() => showError(new Error('ส่งแล้ว แต่ยังโหลดข้อความล่าสุดไม่ได้')));
   } catch (error) { state.draftErrors[key] = (error as Error).message; errorBox.textContent = state.draftErrors[key]; errorBox.classList.remove('hidden'); }
   finally { state.busy = false; button.disabled = false; }
@@ -626,6 +629,7 @@ async function submitIncident() {
       state.data.alerts.unshift({ id, level: 'urgent', title: body.slice(0, 200), detail: body, source: 'pun:web', status: 'notified', calls: 0, last_call_at: null, created_at: now, updated_at: now }); renderAll();
     } else { await reportIncident(body); }
     input.value = '';
+    fitTextarea(input);
     if (!DEMO) await fullRefresh().catch(() => showError(new Error('แจ้งเหตุแล้ว แต่ยังโหลดสถานะล่าสุดไม่ได้')));
   } catch (error) { errorBox.textContent = (error as Error).message; errorBox.classList.remove('hidden'); }
   finally { button.disabled = false; }
@@ -650,10 +654,14 @@ function wire() {
   $('#of-office-status').addEventListener('click', () => ($('#of-status-dialog') as HTMLDialogElement).showModal());
   $('#of-refresh').addEventListener('click', () => fullRefresh().catch(showError));
   $('#of-compose').addEventListener('submit', (event) => { event.preventDefault(); void submitCompose(); });
-  $('#of-compose-input').addEventListener('input', (event) => { state.drafts[draftKey()] = (event.target as HTMLTextAreaElement).value; state.draftErrors[draftKey()] = ''; $('#of-compose-error').classList.add('hidden'); });
+  $('#of-compose-input').addEventListener('input', (event) => { fitTextarea(event.target as HTMLTextAreaElement); state.drafts[draftKey()] = (event.target as HTMLTextAreaElement).value; state.draftErrors[draftKey()] = ''; $('#of-compose-error').classList.add('hidden'); });
   $('#of-compose-input').addEventListener('keydown', (event) => { if (event.key === 'Enter' && !event.shiftKey && matchMedia('(min-width: 768px)').matches) { event.preventDefault(); void submitCompose(); } });
   $('#of-incident-form').addEventListener('submit', (event) => { event.preventDefault(); void submitIncident(); });
-  $('#of-incident-input').addEventListener('input', () => $('#of-incident-error').classList.add('hidden'));
+  $('#of-incident-input').addEventListener('input', (event) => { fitTextarea(event.target as HTMLTextAreaElement); $('#of-incident-error').classList.add('hidden'); });
+  // demo ไม่มี session จึงจำลองคำที่ถอดได้ · ของจริงไป office-transcribe (ElevenLabs Scribe)
+  const dictateText = DEMO ? async () => { await new Promise((resolve) => setTimeout(resolve, 600)); return 'ข้อความทดสอบจากเสียงพูด'; } : transcribe;
+  attachDictation({ button: $('#of-compose-mic') as HTMLButtonElement, input: $('#of-compose-input') as HTMLTextAreaElement, status: $('#of-compose-mic-status'), errorBox: $('#of-compose-error'), transcribe: dictateText });
+  attachDictation({ button: $('#of-incident-mic') as HTMLButtonElement, input: $('#of-incident-input') as HTMLTextAreaElement, status: $('#of-incident-mic-status'), errorBox: $('#of-incident-error'), transcribe: dictateText });
   $('#of-review-list').addEventListener('click', (event) => {
     const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-review]'); if (!button) return;
     const id = Number(button.dataset.task);

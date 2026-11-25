@@ -12,6 +12,7 @@
 # redirect to www.facebook.com, so no Facebook SDK script/frame origins are needed.
 # 2026-10-12: added media-src for the Supabase storage origin — Funnel Lab previews uploaded videos via a
 # short-lived signed URL from the private funnel-lab-media bucket (images already pass img-src https:).
+# 2026-11-25: microphone=(self) — ปุ่มไมค์ใน /office อัดเสียงส่ง office-transcribe (ElevenLabs Scribe) · ยังต้องให้ผู้ใช้กดอนุญาตไมค์เองทุกเบราว์เซอร์
 # Cloudflare Access sits in front of this at the edge (Google login before any
 # HTML loads) — these headers are defense-in-depth behind that gate.
 #
@@ -25,7 +26,7 @@
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Permissions-Policy: camera=(), microphone=(self), geolocation=(), payment=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   Cross-Origin-Opener-Policy: same-origin-allow-popups
   X-Robots-Tag: noindex, nofollow
