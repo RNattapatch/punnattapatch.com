@@ -342,9 +342,9 @@
       </div>
       <p class="msg" id="msg9" role="status" aria-live="polite"></p>
       <div class="nextbox">
-        <p><b>จากนั้นเข้าระบบส่งการบ้านของ FutureSkill แล้วอัปโหลดไฟล์นี้</b></p>
+        <p><b>จากนั้นส่งไฟล์ Word นี้ในระบบ FutureSkill</b></p>
         <p id="fsWrap"></p>
-        <p class="muted">ถ้าระบบให้แนบไฟล์แยก ให้แนบ AGENTS.md และภาพหน้าจอเพิ่มได้</p>
+        <p class="muted">ล็อกอินแล้วเมนูซ้ายกด การมอบหมาย แล้วกด ไปที่การมอบหมาย กด เรียนต่อ ทางขวาเลือก Module 1 แล้วกดลิงก์สีน้ำเงิน Link ส่งผลงาน จะเปิดโฟลเดอร์ Google Drive ให้อัปโหลดไฟล์ ชื่อไฟล์ Word มีชื่อของคุณอยู่แล้ว อัปโหลดไฟล์นี้ไฟล์เดียวก็พอ ภาพทีละขั้นอยู่ในโน้ตของกลุ่ม LINE</p>
       </div>
       <div class="danger">
         <div class="btns"><button type="button" class="btn btn-danger" id="bClear">ล้างข้อมูลในเครื่องนี้</button></div>
@@ -367,7 +367,7 @@
       title: "การบ้านสัปดาห์ที่ 1 : AGENTS.md ฉบับเต็ม + ใช้กับงานจริง",
       course: "AI Pro Office สัปดาห์ที่ 1",
       due: "ศุกร์ 4 ธ.ค. 2569 เวลา 20:00 น. (ขยายแล้ว)",
-      fsUrl: "#",
+      fsUrl: "https://business.futureskill.co/login",
       fsNote: "ลิงก์ระบบส่งการบ้าน (ทีม FutureSkill จะแจ้งในห้อง)",
       maxLines: 40,
       maxImgPx: 1600,
@@ -1036,7 +1036,7 @@
       if (CONFIG.fsUrl && CONFIG.fsUrl !== "#") {
         const a = document.createElement("a");
         a.href = CONFIG.fsUrl; a.target = "_blank"; a.rel = "noopener";
-        a.textContent = "ลิงก์ระบบส่งการบ้าน FutureSkill";
+        a.textContent = "เปิดระบบ FutureSkill (ล็อกอิน)";
         fsWrap.appendChild(a);
       } else {
         fsWrap.textContent = CONFIG.fsNote;
