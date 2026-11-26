@@ -135,7 +135,8 @@
     return new Promise(function (resolve) {
       var g = el("form", { "class": "cc-gate", novalidate: "" });
       g.innerHTML = '<h2>เริ่มด้วยชื่อของคุณ</h2>' +
-        '<p>กรอกชื่อจริงกับนามสกุลครั้งเดียว ระบบบันทึกให้ทุกครั้งที่พิมพ์ เปลี่ยนไปใช้มือถือหรือคอมเครื่องอื่น ก็กรอกชื่อเดิมแล้วทำต่อได้เลย</p>' +
+        '<p>กรอกชื่อจริงกับนามสกุลของคุณเองครั้งเดียว ระบบบันทึกให้ทุกครั้งที่พิมพ์ เปลี่ยนไปใช้มือถือหรือคอมเครื่องอื่น ก็กรอกชื่อเดิมแล้วทำต่อได้เลย</p>' +
+        '<p style="font-size:17px;color:#5B6573">ชื่อของคุณใช้บันทึกผลให้ผู้สอนเท่านั้น ส่วนกติกาห้ามใส่ชื่อคน หมายถึงชื่อคนอื่นที่อยู่ในเอกสารงาน ห้ามใส่ลงแชท AI</p>' +
         '<label for="cc-first">ชื่อจริง</label><input id="cc-first" autocomplete="given-name" enterkeyhint="next" placeholder="เช่น สมชาย" required>' +
         '<label for="cc-last">นามสกุล</label><input id="cc-last" autocomplete="family-name" enterkeyhint="next" placeholder="เช่น ใจดี" required>' +
         '<label for="cc-nick">ชื่อเล่น (ไม่บังคับ)</label><input id="cc-nick" autocomplete="nickname" enterkeyhint="go" placeholder="เช่น ต้น">' +

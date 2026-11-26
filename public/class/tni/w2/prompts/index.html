@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex" />
+  <title>Prompt และแม่แบบที่ใช้ในคลาส สัปดาห์ 2</title>
+  <meta name="description" content="Prompt และแม่แบบของคลาส AI Pro Office สัปดาห์ที่ 2 พร้อมปุ่มคัดลอก" />
+  <meta name="theme-color" content="#072B4E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Prompt:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/class/tni/kit.css?v=ac4ffc0a" />
+  <!-- TNI × FutureSkill AI Pro Office 2569 · source: knowledge repo material/training/futureskill-tni-office-ai-2569/w1-class-page/ (mirrors public/class/tni/) -->
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="back" href="/class/tni/w2/">← กลับเมนูสัปดาห์ 2</a>
+      <p class="brand">สัปดาห์ที่ 2  ใช้ระหว่างคลาส</p>
+      <h1>Prompt และแม่แบบที่ใช้ในคลาส</h1>
+      <p class="lead">กดปุ่มคัดลอก แล้ววางในแชทใหม่ของ ChatGPT หรือ Claude</p>
+   <main class="wrap">
+    <section class="card" aria-labelledby="h-tpl">
+      <h2 id="h-tpl">1 แปลงเอกสารเป็นแม่แบบ (เวิร์กช็อปขั้น 2)</h2>
+      <p class="muted">คุณแนบเอกสารตัวอย่างของแผนก 1 ชิ้น แล้ววางคำสั่งนี้</p>
+      <div class="prompt" id="txt-tpl">
+        <p>ฉันแนบเอกสารที่แผนกใช้อยู่ 1 ชิ้น ช่วยแปลงเอกสารนี้เป็นแม่แบบ</p>
+        <p>ถ้าส่วนไหนเปลี่ยนทุกครั้งเมื่อออกเอกสารใหม่ ให้แทนส่วนนั้นด้วยช่องในวงเล็บแบบนี้ «ชื่อช่อง»</p>
+        <p>ถ้าส่วนไหนเหมือนเดิมทุกครั้ง เช่น หัวกระดาษ ข้อความมาตรฐาน หรือลำดับหัวข้อ ให้คงข้อความตามต้นฉบับทุกตัวอักษร</p>
+        <p>ให้ใช้ช่อง «ชื่อลูกค้า» แทนชื่อลูกค้า และเพิ่มช่อง «รหัสลูกค้า» ไว้ด้วย</p>
+        <p>เมื่อทำเสร็จแล้ว ให้แสดงผล 2 อย่าง คือ 1 แม่แบบทั้งฉบับ และ 2 ตารางรายชื่อช่องทั้งหมด พร้อมตัวอย่างข้อมูลที่ต้องใส่ในแต่ละช่อง</p>
+      </div>
+      <button type="button" class="btn btn-primary" data-copy="txt-tpl">คัดลอก Prompt นี้</button>
+      <p class="msg" aria-live="polite"></p>
+    </section>
+    <section class="card" aria-labelledby="h-data">
+      <h2 id="h-data">2 ให้ AI ส่งข้อมูลเป็นตาราง (เวิร์กช็อปขั้น 3)</h2>
+      <p class="muted">คุณแนบโน้ตงานที่ใช้รหัสแทนชื่อ แล้วแก้ข้อความในวงเล็บเหลี่ยมเป็นรายชื่อช่องจากขั้น 2</p>
+      <div class="prompt" id="txt-data">
+        <p>นี่คือโน้ตงานของฉัน โดยลูกค้าทุกรายในโน้ตใช้รหัสแทนชื่อ ห้ามเดาว่ารหัสไหนเป็นใคร</p>
+        <p>ช่วยทำตารางข้อมูลสำหรับหยอดลงแม่แบบ โดยใช้หัวตารางตามรายชื่อช่องนี้ [วางรายชื่อช่องจากขั้น 2]</p>
+        <p>ให้ใช้ 1 แถวต่อ 1 เอกสาร และเว้นช่อง «ชื่อลูกค้า» ไว้ เพราะฉันจะเติมชื่อเอง</p>
+        <p>ถ้าข้อมูลไหนไม่มีในโน้ต ให้เขียนว่า "ต้องยืนยัน" และห้ามแต่งข้อมูลเพิ่ม</p>
+        <p>ให้ส่งผลเป็นตารางที่ฉันคัดลอกไปวางใน Excel ได้</p>
+      </div>
+      <button type="button" class="btn btn-primary" data-copy="txt-data">คัดลอก Prompt นี้</button>
+      <p class="msg" aria-live="polite"></p>
+    </section>
+    <section class="card" aria-labelledby="h-spec">
+      <h2 id="h-spec">3 แม่แบบ SPEC.md (เขียนก่อนเริ่มงาน)</h2>
+      <p class="muted">คุณคัดลอกไปวางในโน้ตหรือให้ AI ช่วยกรอก แล้วแก้ข้อความในวงเล็บเหลี่ยมเป็นงานของคุณ</p>
+      <div class="prompt" id="txt-spec">
+        <p># SPEC งาน: [ชื่องาน]</p>
+        <p>## 1 งานนี้ทำอะไร<br />[เช่น สรุปบันทึกประชุมฝ่ายบริหารประจำสัปดาห์]</p>
+        <p>## 2 ทำให้ใคร และเขาเอาไปใช้ทำอะไร<br />[เช่น ผู้จัดการฝ่าย อ่านก่อนประชุมกับลูกค้า มีเวลาอ่าน 2 นาที]</p>
+        <p>## 3 เป้าหมาย<br />[เช่น ผู้จัดการตอบลูกค้าได้ทันทีว่าเรื่องไหนตกลงแล้ว เรื่องไหนยังค้าง]</p>
+        <p>## 4 วัดผลยังไง (ผ่านเมื่อครบทุกข้อ)<br />[เช่น ไม่เกิน 1 หน้า]<br />[เช่น ทุกมติมีผู้รับผิดชอบและวันกำหนดเสร็จ]<br />[เช่น ทุกข้อมีอยู่ในโน้ตต้นฉบับ]</p>
+        <p>## 5 ขอบเขต<br />ทำ: [เช่น สรุปเฉพาะมติและงานที่มอบหมาย]<br />ไม่ต้องทำ: [เช่น ไม่ต้องเขียนข้อเสนอแนะ]<br />ห้ามเพิ่มเรื่องที่ไม่มีในต้นฉบับ ถ้าไม่แน่ใจให้เขียนว่า "ต้องยืนยัน"</p>
+      </div>
+      <button type="button" class="btn btn-primary" data-copy="txt-spec">คัดลอกแม่แบบนี้</button>
+      <p class="msg" aria-live="polite"></p>
+    </section>
+    <section class="card" aria-labelledby="h-check">
+      <h2 id="h-check">4 ให้ AI ตรวจงานเทียบกับ SPEC.md</h2>
+      <p class="muted">คุณเปิดแชทใหม่ แนบ SPEC.md กับงานที่ได้ แล้ววางคำสั่งนี้ อ่านผลตรวจ แล้วสุ่มเช็คกับต้นฉบับเองอีก 1 จุด</p>
+      <div class="prompt" id="txt-check">
+        <p>ฉันแนบ SPEC.md และงานที่ AI ทำมา 1 ชิ้น ช่วยตรวจงานเทียบกับ SPEC.md อย่างเดียว ห้ามแก้งาน</p>
+        <p>1 ตรวจหัวข้อ 4 ทีละข้อ บอกว่าผ่านหรือไม่ผ่าน และยกข้อความจากงานมาเป็นหลักฐาน</p>
+        <p>2 ชี้ส่วนที่งานทำเกินหัวข้อ 5 หรือเพิ่มเรื่องที่ SPEC.md ไม่ได้ขอ</p>
+        <p>3 ชี้ข้อมูลที่ไม่มีในต้นฉบับ ถ้าฉันแนบต้นฉบับมาด้วย</p>
+        <p>4 สรุปท้ายว่าส่งได้เลย หรือต้องแก้ข้อไหนก่อน</p>
+      </div>
+      <button type="button" class="btn btn-primary" data-copy="txt-check">คัดลอก Prompt นี้</button>
+      <p class="msg" aria-live="polite"></p>
+    </section>
+    <section class="card">
+      <h2>คำสั่งเขียน AI-RULES.md อยู่ในหน้าการบ้าน</h2>
+      <p class="muted">ช่วงคลินิกการบ้าน เปิดหน้าการบ้านแล้วทำชิ้น 1 ไปพร้อมกันในห้องได้เลยครับ</p>
+      <a class="btn btn-primary" href="/class/tni/w2/homework/">เปิดหน้าการบ้านสัปดาห์ 2</a>
+    </section>
+"></p>
+    </section>
+  </main>
+  <footer class="wrap">
+    <div class="rules">
+      <p><b>กติกาข้อมูลวันนี้</b> ห้ามใส่ชื่อคนอื่น เบอร์โทร เลขบัตรประชาชน เงินเดือน และความลับองค์กร ลงในแชท AI</p>
+      <p>ถ้าติด ยกมือแจ้ง TA ในคลาสได้เลย</p>
+    </div>
+    <p class="foot-brand">AI Pro Office  TNI × FutureSkill</p>
+  </footer>
+  <script>
+    try { var v = JSON.parse(localStorage.getItem("tniw2:v1") || "{}") || {}; v.prompts = 1; localStorage.setItem("tniw2:v1", JSON.stringify(v)); } catch (e) {}
+  </script>
+  <script>
+  (function () {
+    "use strict";
+    function legacy(text) {
+      var ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.top = "-1000px";
+      document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, text.length);
+      var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta); return ok;
+    }
+    Array.prototype.forEach.call(document.querySelectorAll("[data-copy]"), function (btn) {
+      btn.addEventListener("click", function () {
+        var box = document.getElementById(btn.getAttribute("data-copy")), msg = btn.nextElementSibling;
+        var text = Array.prototype.map.call(box.querySelectorAll("p"), function (p) { return p.innerHTML.replace(/<br\s*\/?>/gi, "\n").replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").trim(); }).join("\n\n");
+        var p = navigator.clipboard && window.isSecureContext ? navigator.clipboard.writeText(text).then(function () { return true; }, function () { return legacy(text); }) : Promise.resolve(legacy(text));
+        p.then(function (ok) {
+          msg.className = ok ? "msg" : "msg bad";
+          msg.textContent = ok ? "คัดลอกแล้ว ไปวางในแชทใหม่ได้เลยครับ" : "คัดลอกอัตโนมัติไม่ได้ กดค้างที่ข้อความด้านบนแล้วเลือกคัดลอกครับ";
+        });
+      });
+    });
+  })();
+  </script>
+</body>
+</html>
