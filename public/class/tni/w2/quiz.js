@@ -98,10 +98,32 @@
     } catch (e) {}
   }
 
+  // Stored results (localStorage or the learner's cloud row) are untrusted: anyone who knows a learner's name can write that row.
+  // Rebuild from picks only (ints 0-3); score/total/level are recomputed, never read back. Bad shape → null.
+  function clean(v, n) {
+    if (!v || typeof v !== "object" || !Array.isArray(v.picks) || v.picks.length !== n) return null;
+    if (!v.picks.every(function (p) { return p === (p | 0) && p >= 0 && p <= 3; })) return null;
+    var score = 0; for (var i = 0; i < n; i++) if (v.picks[i] === Q[i].a) score++;
+    var str = function (x, max) { return typeof x === "string" ? x.slice(0, max) : ""; };
+    var at = str(v.at, 40); if (isNaN(Date.parse(at))) at = new Date().toISOString();
+    return { nick: str(v.nick, 120), dept: str(v.dept, 80), picks: v.picks.slice(), score: score, total: n,
+      level: v.level === null || key === "pre" ? null : levelOf(score), at: at,
+      attempt: str(v.attempt, 60) || "x-" + Date.now().toString(36), sent: v.sent === true };
+  }
+
+  (function () {
+    var key0 = key; key = "post";
+    var good = clean({ picks: Q.slice(0, QUIZ.post.n).map(function (q) { return q.a; }), score: "<img src=x onerror=alert(1)>", total: "<b>", level: "<i>", nick: "a", at: "2026-11-28T09:00:00Z", attempt: "post-1" }, QUIZ.post.n);
+    console.assert(good && good.score === QUIZ.post.n && good.total === QUIZ.post.n && typeof good.level === "number", "clean: recompute, ignore stored score");
+    console.assert(clean({ picks: ["<b>"] }, QUIZ.post.n) === null && clean({ picks: Q.slice(0, QUIZ.post.n).map(function () { return 7; }) }, QUIZ.post.n) === null, "clean: bad picks dropped");
+    key = key0;
+  })();
+
   var root = $("quiz");
   var key = root && root.getAttribute("data-quiz");
   if (!QUIZ[key]) return;
   var S = load();
+  ["pre", "post"].forEach(function (k) { if (S[k]) S[k] = QUIZ[k] ? clean(S[k], QUIZ[k].n) : null; });
   var CLOUD = null;   // ClassCloud session (/class/tni/cloud.js): name login so the result follows the learner to any device
 
   function render() {
@@ -180,9 +202,9 @@
     var cfg = QUIZ[key], when = new Date(d.at).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" });
     var h = '<div class="result" id="result"><h2>ผล' + cfg.name + '</h2>' +
       '<p class="who">ชื่อเล่น ' + esc(d.nick) + (d.dept ? '  แผนก ' + esc(d.dept) : '') + '<br>ส่งเมื่อ ' + esc(when) + '  รหัสส่ง ' + esc(d.attempt.slice(-6).toUpperCase()) + '</p>' +
-      '<p class="big">ได้ ' + d.score + ' จาก ' + d.total + ' ข้อ</p>';
+      '<p class="big">ได้ ' + Number(d.score) + ' จาก ' + Number(d.total) + ' ข้อ</p>';
     if (key === "post") {
-      h += '<p class="lvl">คะแนนความรู้ (K) ระดับ ' + d.level + '</p><ul class="ladder">';
+      h += '<p class="lvl">คะแนนความรู้ (K) ระดับ ' + Number(d.level) + '</p><ul class="ladder">';
       for (var k = 0; k < LADDER.length; k++) h += '<li' + (LADDER[k][2] === d.level ? ' class="on"' : '') + '>' + LADDER[k][3] + '</li>';
       h += '</ul>';
     } else {
@@ -320,7 +342,7 @@
     ClassCloud.start({ cls: CFG.classSlug, mount: root.parentNode }).then(function (sess) {
       CLOUD = sess;
       return sess.load().then(function (r) {
-        var v = r.values["quiz" + key];
+        var v = clean(r.values["quiz" + key], QUIZ[key].n);
         // done on another device: show that result here instead of a second attempt
         if (v && v.picks && !(S[key] && S[key].picks && S[key].attempt === v.attempt)) { S[key] = v; save(); }
         if (S[key] && S[key].picks && !(v && v.picks)) { var up = {}; up["quiz" + key] = S[key]; sess.save(up); }
