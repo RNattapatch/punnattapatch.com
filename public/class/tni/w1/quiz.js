@@ -96,12 +96,15 @@
   var key = root && root.getAttribute("data-quiz");
   if (!QUIZ[key]) return;
   var S = load();
+  var CLOUD = null;   // ClassCloud session (/class/tni/cloud.js): name login so the result follows the learner to any device
 
   function render() {
     var cfg = QUIZ[key], hw = hwIdentity(), id = S.id || {};
-    var h = '<div class="field"><p class="hint">ใส่ชื่อเล่นหรือรหัสก็พอ ไม่ต้องใส่ชื่อจริงและนามสกุล ไม่ต้องใส่ชื่อบริษัท</p>' +
+    var who = CLOUD ? CLOUD.fullName + (CLOUD.nick ? " (" + CLOUD.nick + ")" : "") : "";
+    var h = (CLOUD ? '<input type="hidden" id="nick" value="' + esc(who) + '" />' :
+      '<div class="field"><p class="hint">ใส่ชื่อเล่นหรือรหัสก็พอ ไม่ต้องใส่ชื่อจริงและนามสกุล ไม่ต้องใส่ชื่อบริษัท</p>' +
       '<label class="lb" for="nick">ชื่อเล่นหรือรหัสผู้เรียน</label>' +
-      '<input type="text" id="nick" maxlength="60" autocomplete="off" enterkeyhint="next" placeholder="เช่น เอ" value="' + esc(id.nick || hw.nick) + '" /></div>' +
+      '<input type="text" id="nick" maxlength="60" autocomplete="off" enterkeyhint="next" placeholder="เช่น เอ" value="' + esc(id.nick || hw.nick) + '" /></div>') +
       '<div class="field"><label class="lb" for="dept">แผนกและตำแหน่ง</label>' +
       '<input type="text" id="dept" maxlength="80" autocomplete="off" enterkeyhint="done" placeholder="เช่น ธุรการ HR การตลาด" value="' + esc(id.dept || hw.dept) + '" /></div>';
     for (var i = 0; i < cfg.n; i++) {
@@ -161,7 +164,8 @@
       attempt: key + "-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8),
       sent: false
     };
-    S.id = { nick: nick, dept: dept }; S[key] = d; save(); shareIdentity(nick, dept);
+    S.id = { nick: nick, dept: dept }; S[key] = d; save(); if (!CLOUD) shareIdentity(nick, dept);
+    if (CLOUD) { var up = { dept: dept }; up["quiz" + key] = d; CLOUD.save(up); CLOUD.flush(); }
     lock(d); showResult(d); send();
     $("result").scrollIntoView({ block: "start" });
   }
@@ -297,6 +301,7 @@
     }).then(function (r) {
       if (!r.ok) throw new Error("HTTP " + r.status);
       d.sent = true; save();
+      if (CLOUD) { var up = {}; up["quiz" + key] = d; CLOUD.save(up); }
       box.className = "send ok"; box.textContent = "ส่งผลถึงผู้สอนแล้ว";
     }).catch(function () {
       box.className = "send bad"; box.textContent = "ยังส่งไม่สำเร็จ ลองกดส่งอีกครั้ง หรือถ่ายภาพหน้าจอนี้ให้ TA";
@@ -304,5 +309,17 @@
     }).then(function () { clearTimeout(kill); retry.disabled = false; });
   }
 
-  render();
+  if (window.ClassCloud) {
+    root.classList.add("cc-hide");
+    ClassCloud.start({ cls: CFG.classSlug, mount: root.parentNode }).then(function (sess) {
+      CLOUD = sess;
+      return sess.load().then(function (r) {
+        var v = r.values["quiz" + key];
+        // done on another device: show that result here instead of a second attempt
+        if (v && v.picks && !(S[key] && S[key].picks && S[key].attempt === v.attempt)) { S[key] = v; save(); }
+        if (S[key] && S[key].picks && !(v && v.picks)) { var up = {}; up["quiz" + key] = S[key]; sess.save(up); }
+        if (r.values.dept && !(S.id && S.id.dept)) S.id = { nick: "", dept: r.values.dept };
+      }).catch(function () {});
+    }).then(function () { root.classList.remove("cc-hide"); render(); });
+  } else render();
 })();
