@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex" />
-  <title>การบ้านสัปดาห์ 2 แบบทดสอบและงานสั่ง AI</title>
+  <title>การบ้านสัปดาห์ 2 แบบทดสอบ แม่แบบ และ Action Plan</title>
   <meta name="description" content="การบ้านคลาส AI Pro Office สัปดาห์ที่ 2 แบบทดสอบ 15 ข้อ และแม่แบบใบเสนอราคา 1 ชิ้น ดาวน์โหลดไฟล์ Word ไฟล์เดียวแล้วส่งในระบบ FutureSkill" />
   <meta name="theme-color" content="#072B4E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -69,7 +69,7 @@
     <div class="wrap">
       <a class="back" href="/class/tni/w2/">← กลับเมนูสัปดาห์ 2</a>
       <p class="brand">สัปดาห์ที่ 2  การบ้าน</p>
-      <h1>การบ้านสัปดาห์ 2<br />แบบทดสอบ และงานสั่ง AI</h1>
+      <h1>การบ้านสัปดาห์ 2<br />แบบทดสอบ แม่แบบ และ Action Plan</h1>
       <p class="lead">ทำ 2 ส่วนในหน้านี้ แล้วกดดาวน์โหลดไฟล์ Word ไฟล์เดียว ไปส่งในระบบ FutureSkill ครับ</p>
     </div>
   </header>
@@ -80,7 +80,8 @@
         <dt>ทำอะไร</dt>
         <dd><ol>
           <li><b>แบบทดสอบ 15 ข้อ</b> โจทย์จากงานจริง ส่งได้ครั้งเดียว</li>
-          <li><b>แม่แบบใบเสนอราคา 1 ชิ้น</b> ให้ AI ทำแม่แบบจากใบเสนอราคาจริง วาง prompt ที่ใช้สั่ง และแนบแม่แบบที่ได้</li>
+          <li><b>แม่แบบใบเสนอราคา HTML 1 ชิ้น</b> ให้ AI สร้างแม่แบบจากใบเสนอราคาจริง วาง prompt ที่ใช้สั่ง และแนบภาพแม่แบบ</li>
+          <li><b>My Learning Action Plan</b> 5 ช่อง และคำมั่น 1 ข้อ</li>
         </ol></dd>
         <dt>ส่งอะไร</dt>
         <dd>ไฟล์ Word ไฟล์เดียวจากปุ่มท้ายหน้า</dd>
@@ -112,8 +113,8 @@
     </section>
 
     <section class="card piece" id="p2" aria-labelledby="h-p2">
-      <h2 id="h-p2"><span class="no" aria-hidden="true">2</span>แม่แบบใบเสนอราคา 1 ชิ้น <span class="pill">ต้องทำ</span></h2>
-      <p class="muted">โจทย์เดียวกันทั้งห้อง คือทำแม่แบบจากใบเสนอราคาที่ใช้จริง เปิดแชทใหม่ใน ChatGPT หรือ Claude แล้วเขียน prompt สั่งงานเอง จากนั้นวาง prompt กับแม่แบบที่ได้ในหน้านี้</p>
+      <h2 id="h-p2"><span class="no" aria-hidden="true">2</span>แม่แบบใบเสนอราคา HTML <span class="pill">ต้องทำ</span></h2>
+      <p class="muted">โจทย์เดียวกันทั้งห้อง คือให้ AI สร้างแม่แบบใบเสนอราคาเป็นไฟล์ HTML จากใบที่ใช้จริง เปิดแชทใหม่ใน ChatGPT หรือ Claude แล้วเขียน prompt สั่งงานเอง จากนั้นวาง prompt กับแม่แบบที่ได้ในหน้านี้</p>
       <div class="brief" id="briefBox"></div>
       <div class="field" style="margin-top:14px">
         <label class="lb" for="prompt">prompt ที่ใช้สั่ง AI <span class="pill">ต้องกรอก</span></label>
@@ -121,11 +122,12 @@
         <textarea id="prompt" data-k="prompt"></textarea>
       </div>
       <div class="field">
-        <label class="lb" for="output">แม่แบบที่ AI ทำ (วางข้อความ)</label>
+        <label class="lb" for="output">แม่แบบที่ AI ทำ (วางโค้ด HTML หรือข้อความ)</label>
         <p class="hint">วางข้อความ หรือแนบภาพหน้าจอด้านล่าง หรือทำทั้ง 2 อย่าง ต้องมีอย่างน้อย 1 อย่าง</p>
         <textarea id="output" data-k="output"></textarea>
       </div>
-      <p class="lb" style="margin:0 0 4px">ภาพหน้าจอผลงาน 1 ถึง 3 ภาพ</p>
+      <p class="lb" style="margin:0 0 4px">ภาพหน้าจอแม่แบบ 1 ถึง 3 ภาพ</p>
+      <p class="hint">เปิดไฟล์ HTML ที่ได้ในเบราว์เซอร์ แล้วแคปหน้าจอ</p>
       <p class="hint">ใช้ไฟล์ JPG หรือ PNG ภาพจาก iPhone ที่เป็น HEIC ให้แคปหน้าจอใหม่</p>
       <input class="sr" type="file" accept="image/png,image/jpeg" multiple id="file" aria-label="เลือกภาพหน้าจอผลงาน" />
       <label class="btn" for="file" id="pick">เลือกภาพจากเครื่อง</label>
@@ -136,8 +138,19 @@
       <div id="rub"></div>
     </section>
 
+    <section class="card piece" id="ap" aria-labelledby="h-ap">
+      <h2 id="h-ap"><span class="no" aria-hidden="true">3</span>My Learning Action Plan <span class="pill">ต้องทำ</span></h2>
+      <p class="muted">ตอบช่องละ 1 ถึง 3 ประโยคก็พอครับ ใช้งานจริงของคุณ ห้ามใส่ชื่อคนอื่นหรือข้อมูลลับขององค์กร</p>
+      <div class="field"><label class="lb" for="ap1">01 สิ่งที่ได้เรียนรู้ 3 ข้อ</label><textarea id="ap1" data-k="ap1" rows="3"></textarea></div>
+      <div class="field"><label class="lb" for="ap2">02 สิ่งที่จะนำไปใช้ 3 ข้อ</label><textarea id="ap2" data-k="ap2" rows="3"></textarea></div>
+      <div class="field"><label class="lb" for="ap3">03 ถึงคลาส 12 ธ.ค. จะทำอะไร ใช้ที่ไหน และใช้อย่างไร</label><p class="hint">เช่น กติกาข้อไหนที่เพิ่มใน AGENTS.md จะเอาไปบอกหัวหน้าวันจันทร์</p><textarea id="ap3" data-k="ap3" rows="3"></textarea></div>
+      <div class="field"><label class="lb" for="ap4">04 แผน 30 วัน เป้าหมาย สิ่งที่จะทำ และวิธีดูผล</label><textarea id="ap4" data-k="ap4" rows="3"></textarea></div>
+      <div class="field"><label class="lb" for="ap5">05 สิ่งที่จะเปลี่ยน ในตัวฉัน และในงานของฉัน</label><textarea id="ap5" data-k="ap5" rows="3"></textarea></div>
+      <div class="field"><label class="lb" for="apc">คำมั่นของฉัน 1 อย่างที่จะเริ่มวันจันทร์</label><textarea id="apc" data-k="apc" rows="2"></textarea></div>
+    </section>
+
     <section class="card piece" id="word" aria-labelledby="h-word">
-      <h2 id="h-word"><span class="no" aria-hidden="true">3</span>ดาวน์โหลดไฟล์ Word</h2>
+      <h2 id="h-word"><span class="no" aria-hidden="true">4</span>ดาวน์โหลดไฟล์ Word</h2>
       <ul class="steps" id="todo" style="list-style:none;padding:0"></ul>
       <button type="button" class="btn btn-primary" id="bDocx">ดาวน์โหลดไฟล์ Word (.docx)</button>
       <p class="msg" id="pMsg" aria-live="polite"></p>
@@ -268,10 +281,11 @@
 
     // Pun 28 Nov: one task for the whole room, a template made from a real quotation; sample quotation for learners without one (made-up data)
     var BRIEFS = {
-      quote: { t: "แม่แบบใบเสนอราคาจากใบจริง",
-        h: "<p><b>งาน</b> เอาใบเสนอราคาที่ใช้จริงในงานของคุณ 1 ใบ ให้ AI แปลงเป็นแม่แบบ ส่วนที่เปลี่ยนทุกครั้งให้เป็นช่อง «ชื่อช่อง» ส่วนที่เหมือนเดิมให้คงไว้ทุกตัวอักษร</p>" +
+      quote: { t: "แม่แบบใบเสนอราคา HTML จากใบจริง",
+        h: "<p><b>โจทย์</b> ให้ AI สร้างแม่แบบเอกสารสำหรับออกใบเสนอราคาเป็นไฟล์ HTML จากใบเสนอราคาจริงของคุณ 1 ใบ เราจะได้ไม่ต้องให้ AI เจนภาพใหม่ที่เพี้ยนทุกครั้ง ส่วนที่เหมือนเดิมทุกใบ เช่น หัวกระดาษและเงื่อนไข ให้คงไว้ ส่วนที่เปลี่ยนทุกครั้งให้เป็นช่อง</p>" +
           "<p class=\"warnbox\" style=\"margin:0 0 8px\">ก่อนแนบใบจริงให้ AI ปิดชื่อลูกค้า เบอร์โทร อีเมล ที่อยู่ และเลขผู้เสียภาษีก่อน เปลี่ยนเป็นรหัสแทน ถ้าราคาเป็นความลับ เปลี่ยนเป็นตัวเลขสมมุติ</p>" +
-          "<p><b>ผลที่ต้องได้</b> แม่แบบใบเสนอราคา 1 ใบ และรายชื่อช่องทั้งหมด</p>" +
+          "<p><b>ขั้นตอน</b> 1 ปิดชื่อในใบจริง 2 สั่ง ChatGPT Claude หรือ AI Agent ให้สร้างไฟล์ .html หน้าตาเหมือนใบเดิม prompt เขียนเองตามเช็ค 5 ข้อด้านล่าง 3 เปิดไฟล์ในเบราว์เซอร์ แคปหน้าจอ 4 วาง prompt กับแม่แบบในหน้านี้</p>" +
+          "<p><b>ดูตัวอย่าง</b> <a href=\"/class/tni/w2/files/quote-template-example.html\" target=\"_blank\" rel=\"noopener\">แม่แบบใบเสนอราคา HTML ที่ระบบของผมใช้จริง (ข้อมูลสมมุติ)</a></p>" +
           "<p><b>ไม่มีใบเสนอราคา</b> ใช้ใบตัวอย่างนี้ได้เลย (ข้อมูลสมมุติ) คัดลอกไปวางในแชทได้</p>" +
           "<div style=\"border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 12px;font-size:16px\">" +
           "<p style=\"margin:0 0 4px\"><b>ใบเสนอราคา</b> เลขที่ QT-2569-0142 วันที่ 28 พ.ย. 2569</p>" +
@@ -285,6 +299,7 @@
           "<p style=\"margin:8px 0 0;text-align:right\">รวม 18,600 บาท ภาษีมูลค่าเพิ่ม 7% 1,302 บาท <b>รวมทั้งสิ้น 19,902 บาท</b></p>" +
           "<p style=\"margin:6px 0 0\">เงื่อนไข ยืนราคา 30 วัน ส่งของภายใน 7 วันหลังได้รับใบสั่งซื้อ ชำระเงินภายใน 30 วัน</p></div>" }
     };
+    var AP = [["ap1", "01 สิ่งที่ได้เรียนรู้ 3 ข้อ"], ["ap2", "02 สิ่งที่จะนำไปใช้ 3 ข้อ"], ["ap3", "03 ถึงคลาส 12 ธ.ค. จะทำอะไร ใช้ที่ไหน และใช้อย่างไร"], ["ap4", "04 แผน 30 วัน เป้าหมาย สิ่งที่จะทำ และวิธีดูผล"], ["ap5", "05 สิ่งที่จะเปลี่ยน ในตัวฉัน และในงานของฉัน"], ["apc", "คำมั่นของฉัน 1 อย่างที่จะเริ่มวันจันทร์"]];
     var RUB = [
       "บอกบทบาทและบริบท ว่า AI เป็นใคร งานนี้ทำให้ใคร",
       "ให้ข้อมูลครบ AI ไม่ต้องเดาเอง",
@@ -305,6 +320,7 @@
       var rub = Array.isArray(v.rub) ? RUB.map(function (_, i) { return v.rub[i] === true; }) : RUB.map(function () { return false; });
       return { fname: str(v.fname, 40), lname: str(v.lname, 40), nick: str(v.nick, 30), brief: "quote",
         prompt: str(v.prompt, 20000), output: str(v.output, 40000), picks: picks, rub: rub,
+        ap1: str(v.ap1, 3000), ap2: str(v.ap2, 3000), ap3: str(v.ap3, 3000), ap4: str(v.ap4, 3000), ap5: str(v.ap5, 3000), apc: str(v.apc, 1000),
         locked: v.locked === true && picks.every(function (p) { return p !== null; }), at: str(v.at, 40),
         attempt: str(v.attempt, 60), sentDb: v.sentDb === true, sent: v.sent === true };
     }
@@ -447,7 +463,8 @@
         [!!fullName(), "กรอกชื่อจริงและนามสกุล"],
         [S.locked, "ส่งคำตอบแบบทดสอบ 15 ข้อ"],
         [!!S.prompt.trim(), "วาง prompt ที่ใช้สั่ง AI"],
-        [!!S.output.trim() || SHOTS.length > 0, "วางแม่แบบที่ได้ หรือแนบภาพอย่างน้อย 1 ภาพ"]
+        [!!S.output.trim() || SHOTS.length > 0, "วางแม่แบบที่ได้ หรือแนบภาพอย่างน้อย 1 ภาพ"],
+        [AP.every(function (f) { return !!String(S[f[0]] || "").trim(); }), "กรอก My Learning Action Plan ครบ 5 ช่องและคำมั่น"]
       ];
     }
     function refresh() {
@@ -467,6 +484,8 @@
       P.push("<h2>3 แม่แบบใบเสนอราคา</h2>", "<p><b>โจทย์:</b> " + esc(BRIEFS[S.brief].t) + "</p>", "<p><b>prompt ที่ใช้สั่ง AI</b></p>", T(S.prompt));
       P.push("<p><b>แม่แบบที่ AI ทำ</b></p>", S.output.trim() ? T(S.output) : "");
       SHOTS.forEach(function (o, i) { P.push('<div class="fig"><img src="' + o.d + '" alt="ภาพผลงานที่ ' + (i + 1) + '" /></div>'); });
+      P.push("<h2>My Learning Action Plan</h2>");
+      AP.forEach(function (f) { P.push("<p><b>" + esc(f[1]) + "</b></p>", T(S[f[0]])); });
       P.push("<h2>4 เช็ค prompt ตัวเอง 5 ข้อ</h2>");
       RUB.forEach(function (t, i) { P.push("<p>" + (S.rub[i] ? "☑" : "☐") + " " + (i + 1) + " " + esc(t) + "</p>"); });
       P.push("<p>ผู้สอนเป็นคนให้ระดับจริง</p>");
@@ -527,7 +546,8 @@
       ch.push(table([
         { cells: ["ผู้เรียน", fullName() + (S.nick ? " (" + S.nick + ")" : "")] },
         { cells: ["แบบทดสอบ 15 ข้อ (ระบบตรวจแล้ว)", s + " จาก " + N + " ระดับ " + levelOf(s) + " จาก 5" + (wrong.length ? " ผิดข้อ " + wrong.join(" ") : " ถูกทุกข้อ")] },
-        { cells: ["แม่แบบใบเสนอราคา", "prompt " + S.prompt.split(/\r?\n/).filter(function (x) { return x.trim(); }).length + " บรรทัด แม่แบบแบบข้อความ " + (S.output.trim() ? "มี" : "ไม่มี") + " ภาพแนบ " + SHOTS.length + " ภาพ ผู้เรียนเช็คตัวเอง " + ticked + " จาก 5 ข้อ"] }
+        { cells: ["แม่แบบใบเสนอราคา", "prompt " + S.prompt.split(/\r?\n/).filter(function (x) { return x.trim(); }).length + " บรรทัด แม่แบบแบบข้อความ " + (S.output.trim() ? "มี" : "ไม่มี") + " ภาพแนบ " + SHOTS.length + " ภาพ ผู้เรียนเช็คตัวเอง " + ticked + " จาก 5 ข้อ"] },
+        { cells: ["My Learning Action Plan", AP.filter(function (f) { return String(S[f[0]] || "").trim(); }).length + " จาก " + AP.length + " ช่อง อยู่ในหัวข้อ 2"] }
       ], [40, 60]));
       ch.push(para("ผู้ตรวจกรอก ตรวจ prompt และแม่แบบในหัวข้อ 1 ด้วยเกณฑ์ 5 ข้อ", { bold: true, before: 200 }));
       ch.push(table([{ head: true, cells: ["เกณฑ์", "ผู้เรียนเช็ค", "ผลจากผู้ตรวจ"] }].concat(RUB.map(function (t, i) {
@@ -543,7 +563,9 @@
       if (S.output.trim()) lines(S.output, { fill: "F1F3F6", size: 24, after: 0 }).forEach(function (x) { ch.push(x); });
       else if (!SHOTS.length) ch.push(para("ไม่ได้แนบ", { color: FAINT }));
       SHOTS.forEach(function (o) { ch.push(new D.Paragraph({ spacing: { before: 120, after: 80 }, children: [imgRun(D, o, 520)] })); });
-      ch.push(h("2 แบบทดสอบ 15 ข้อ"), para("คะแนน " + s + " จาก " + N + " (ระดับ " + levelOf(s) + " จาก 5) ส่งเมื่อ " + new Date(S.at).toLocaleString("th-TH"), { bold: true }));
+      ch.push(h("2 My Learning Action Plan"));
+      AP.forEach(function (f) { ch.push(para(f[1], { bold: true, before: 120 })); lines(S[f[0]], { fill: "F1F3F6", size: 24, after: 0 }).forEach(function (x) { ch.push(x); }); });
+      ch.push(h("3 แบบทดสอบ 15 ข้อ"), para("คะแนน " + s + " จาก " + N + " (ระดับ " + levelOf(s) + " จาก 5) ส่งเมื่อ " + new Date(S.at).toLocaleString("th-TH"), { bold: true }));
       // compact grid: one column per question so the quiz fits in a few lines
       var nums = [], picks = [], keys = [], marks = [];
       S.picks.forEach(function (p, i) { nums.push(String(i + 1)); picks.push(LT[p]); keys.push(LT[Q[i].a]); marks.push(p === Q[i].a ? "✓" : "✗"); });

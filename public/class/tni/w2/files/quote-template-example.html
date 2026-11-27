@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>QT-2569-0142 ลูกค้ารหัส C-014</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --navy:#072b4e; --navy-mid:#0d3a5c; --coral:#dd4155; --coral-dark:#c43245;
+    --ink:#1f2937; --muted:#6b7280; --line:#cfd4dc; --line-soft:#e5e8ee;
+  }
+  html, body { background:#eef1f5; }
+  body {
+    font-family:'Sarabun', sans-serif; color:var(--ink); font-size:9pt;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .font-display { font-family:'Prompt', sans-serif; }
+  .sheet {
+    width:210mm; min-height:297mm; margin:0 auto; background:#fff;
+    padding:11mm 12mm 9mm; display:flex; flex-direction:column;
+  }
+
+  /* ---------- Header ---------- */
+  .header { display:flex; gap:6mm; align-items:center; }
+  .logo { width:26mm; height:26mm; border-radius:50%; object-fit:cover;
+          border:1.5px solid var(--navy); flex:0 0 auto; }
+  .seller .name-th { font-family:'Prompt'; font-size:16pt; font-weight:600; color:var(--navy); line-height:1.15; }
+  .seller .name-en { font-family:'Prompt'; font-size:12.5pt; font-weight:700; color:var(--ink); line-height:1.2; }
+  .seller .meta { font-size:7.8pt; color:var(--muted); margin-top:1.6mm; line-height:1.55; }
+  /* QR LINE OA มุมขวาบน — ช่องทางถามข้อมูลของฝ่ายจัดซื้อ */
+  .qr-box { margin-left:auto; flex:0 0 auto; text-align:center; width:24mm; }
+  .qr-box img { width:22mm; height:22mm; display:block; margin:0 auto; }
+  .qr-box .qr-lbl { font-size:6.4pt; color:var(--muted); margin-top:0.6mm; line-height:1.3; }
+  .qr-box .qr-sub { font-size:6.4pt; color:var(--coral-dark); font-weight:600; line-height:1.3; }
+
+  /* ---------- Title box ---------- */
+  .title-box { align-self:center; border:1.5px solid var(--coral); border-radius:6mm;
+               padding:2mm 16mm; text-align:center; margin:3.5mm 0 3mm; }
+  .title-box .th { font-family:'Prompt'; font-size:14pt; font-weight:600; color:var(--ink); line-height:1.2; }
+  .title-box .en { font-size:8.5pt; letter-spacing:1.5px; color:var(--muted); text-transform:uppercase; }
+  /* ทางเลือก A/B/C — ใบเทียบ service ของลูกค้าเดียวกัน */
+  .variation { align-self:center; margin:-1.5mm 0 3mm; max-width:150mm; text-align:center;
+               font-family:'Prompt'; font-size:9.5pt; font-weight:600; color:var(--coral-dark); }
+
+  /* ---------- Customer / doc meta ---------- */
+  .meta-row { display:flex; justify-content:space-between; gap:8mm; margin-bottom:2.2mm; }
+  .cust { flex:1; }
+  .cust .line { display:flex; gap:3mm; margin-bottom:1mm; }
+  .cust .lbl { color:var(--muted); white-space:nowrap; min-width:18mm; }
+  .cust .val { color:var(--navy); font-weight:500; }
+  .doc-meta { text-align:right; min-width:46mm; }
+  .doc-meta .line { display:flex; justify-content:flex-end; gap:3mm; margin-bottom:1.2mm; }
+  .doc-meta .lbl { color:var(--muted); }
+  .doc-meta .num { color:var(--coral); font-weight:700; font-family:'Prompt'; }
+  .branch { display:flex; gap:6mm; margin-top:1.4mm; align-items:center; }
+  .chk { display:inline-flex; align-items:center; gap:1.6mm; color:var(--ink); }
+  .box { width:3.4mm; height:3.4mm; border:1px solid var(--ink); display:inline-flex;
+         align-items:center; justify-content:center; font-size:8pt; font-weight:700; line-height:1; }
+
+  /* ---------- Items table ---------- */
+  .items { width:100%; border-collapse:collapse; margin-top:1mm; }
+  .items thead th { background:var(--navy); color:#fff; font-family:'Prompt'; font-weight:500;
+                    font-size:8.5pt; padding:2mm 2mm; border:0.5pt solid var(--navy); }
+  .items tbody td { border:0.5pt solid var(--line); padding:1.5mm 2mm; vertical-align:top; height:6.4mm; }
+  .items tbody tr.filler td { height:6.4mm; }
+  .col-no   { width:9%;   text-align:center; }
+  .col-desc { width:44.5%; }
+  .col-qty  { width:11%;  text-align:right; }
+  .col-unit { width:10%;  text-align:center; }
+  .col-price{ width:12.5%; text-align:right; }
+  .col-amt  { width:13%;  text-align:right; }
+  .num-cell { font-variant-numeric:tabular-nums; }
+  .desc-name { font-weight:500; }
+  /* รายละเอียดบริการ — เคาะลงบรรทัดใหม่ใต้ชื่อ ขนาดเท่ากันเพื่อให้ลูกค้าอ่านจริง */
+  .desc-detail { margin-top:1.1mm; color:var(--ink); line-height:1.45; }
+  .desc-en  { font-size:7.8pt; color:var(--muted); margin-top:0.8mm; }
+
+  /* ---------- Summary (words + totals) ---------- */
+  .summary { display:flex; align-items:stretch; }
+  .summary-left { flex:1; border:0.5pt solid var(--line); border-top:0; border-right:0;
+                  display:flex; flex-direction:column; }
+  .words { background:var(--navy); color:#fff; padding:1.8mm 2.5mm; display:flex; gap:2.5mm; align-items:baseline; }
+  .words .words-lbl { font-family:'Prompt'; font-weight:500; font-size:8.5pt; opacity:.9; }
+  .words .words-val { font-weight:500; }
+  .notes { padding:2.2mm 2.5mm; flex:1; }
+  .notes .notes-title { color:var(--muted); margin-bottom:1mm; }
+  .note-line { color:var(--coral-dark); font-weight:700; font-style:italic; margin-bottom:1.6mm; }
+  .prepay { color:var(--coral-dark); font-weight:700; font-size:9.5pt; margin-bottom:0.6mm; }
+  .prepay-sub { color:var(--coral-dark); font-weight:500; font-size:7.8pt; line-height:1.4; margin-bottom:1.4mm; }
+  .bank { font-size:8pt; color:var(--ink); line-height:1.6; }
+
+  .totals { width:64mm; border-collapse:collapse; }
+  .totals td { border:0.5pt solid var(--line); padding:1.5mm 2.5mm; vertical-align:middle; }
+  .totals .t-lbl { background:#f6f8fb; }
+  .totals .t-lbl .lbl-th { font-weight:600; color:var(--navy); font-size:8.5pt; }
+  .totals .t-lbl .lbl-en { font-size:6.8pt; color:var(--muted); text-transform:uppercase; letter-spacing:.3px; }
+  .totals .t-lbl .rate { color:var(--coral); font-weight:700; }
+  .totals .t-val { text-align:right; font-variant-numeric:tabular-nums; width:24mm; }
+  .totals tr.grand td { background:var(--coral); color:#fff; border-color:var(--coral); }
+  .totals tr.grand .lbl-th { color:#fff; }
+  .totals tr.grand .lbl-en { color:rgba(255,255,255,.8); }
+  .totals tr.grand .t-val { font-family:'Prompt'; font-weight:700; font-size:11pt; }
+
+  /* ---------- Signatures ---------- */
+  .signs { display:flex; justify-content:space-between; gap:10mm; margin-top:auto; padding-top:10mm; }
+  .sign { flex:1 1 0; text-align:center; font-size:8pt; }
+  .sign-sig { height:13mm; display:flex; align-items:flex-end; justify-content:center; }
+  .sign-img { max-height:13mm; max-width:75%; object-fit:contain; }
+  .sign-line { border-top:0.6pt dotted var(--ink); margin:0 0 1.2mm; }
+  .sign-name { color:var(--ink); font-weight:500; line-height:1.4; }
+  .sign-title { font-size:7pt; color:var(--muted); line-height:1.3; min-height:3.2mm; }
+  .sign-lbl { color:var(--ink); font-weight:500; margin-top:1mm; }
+  .sign-date { color:var(--muted); margin-top:0.4mm; }
+
+  .doc-footer { margin-top:4mm; text-align:center; font-size:6.8pt; color:var(--muted); letter-spacing:.3px; }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <!-- Header -->
+    <div class="header">
+      <img class="logo" src="" alt="logo">
+      <div class="seller">
+        <div class="name-th">บริษัท ตัวอย่างเทรดดิ้ง จำกัด</div>
+        <div class="name-en">Example Trading Co., Ltd.</div>
+        <div class="meta">
+          ที่อยู่ติดต่อ : 99 ถนนตัวอย่าง แขวงตัวอย่าง เขตตัวอย่าง กรุงเทพฯ 10000<br>
+          โทร. 02-000-0000　email sales@example.com<br>
+          เลขประจำตัวผู้เสียภาษี 0000000000000
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Title -->
+    <div class="title-box">
+      <div class="th">ใบเสนอราคา</div>
+      <div class="en">Quotation</div>
+    </div>
+    
+
+    <!-- Customer + doc meta -->
+    <div class="meta-row">
+      <div class="cust">
+        <div class="line"><span class="lbl">นามลูกค้า</span><span class="val">ลูกค้ารหัส C-014</span></div>
+        <div class="line"><span class="lbl">ที่อยู่</span><span class="val"></span></div>
+        
+        <div class="line">
+          <span class="lbl">เลขประจำตัวผู้เสียภาษี</span>
+          <span class="val"></span>
+          <span class="branch">
+            <span class="chk"><span class="box"></span> สำนักงานใหญ่</span>
+            <span class="chk"><span class="box"></span> สาขาที่ </span>
+          </span>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div class="line"><span class="lbl">เลขที่</span><span class="num">QT-2569-0142</span></div>
+        <div class="line"><span class="lbl">วันที่</span><span class="val">28 พฤศจิกายน 2569</span></div>
+        <div class="line"><span class="lbl">ยืนราคาถึง</span><span class="val">28 ธันวาคม 2569</span></div>
+      </div>
+    </div>
+
+    <!-- Items -->
+    <table class="items">
+      <thead>
+        <tr>
+          <th class="col-no">ลำดับ</th>
+          <th class="col-desc">ชื่อสินค้า / บริการ</th>
+          <th class="col-qty">จำนวน</th>
+          <th class="col-unit">หน่วย</th>
+          <th class="col-price">ราคา/หน่วย</th>
+          <th class="col-amt">จำนวนเงิน</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="col-no num-cell">1</td>
+          <td class="col-desc"><div class="desc-name">กระดาษ A4 80 แกรม</div></td>
+          <td class="col-qty num-cell">50.00</td>
+          <td class="col-unit">รีม</td>
+          <td class="col-price num-cell">125.00</td>
+          <td class="col-amt num-cell">6,250.00</td>
+        </tr>
+        <tr>
+          <td class="col-no num-cell">2</td>
+          <td class="col-desc"><div class="desc-name">หมึกพิมพ์เลเซอร์</div></td>
+          <td class="col-qty num-cell">4.00</td>
+          <td class="col-unit">กล่อง</td>
+          <td class="col-price num-cell">2,450.00</td>
+          <td class="col-amt num-cell">9,800.00</td>
+        </tr>
+        <tr>
+          <td class="col-no num-cell">3</td>
+          <td class="col-desc"><div class="desc-name">แฟ้มสันกว้าง 3 นิ้ว</div></td>
+          <td class="col-qty num-cell">30.00</td>
+          <td class="col-unit">แฟ้ม</td>
+          <td class="col-price num-cell">85.00</td>
+          <td class="col-amt num-cell">2,550.00</td>
+        </tr>
+        <tr class="filler">
+          <td class="col-no"></td><td class="col-desc"></td><td class="col-qty"></td>
+          <td class="col-unit"></td><td class="col-price"></td><td class="col-amt"></td>
+        </tr>
+        <tr class="filler">
+          <td class="col-no"></td><td class="col-desc"></td><td class="col-qty"></td>
+          <td class="col-unit"></td><td class="col-price"></td><td class="col-amt"></td>
+        </tr>
+        <tr class="filler">
+          <td class="col-no"></td><td class="col-desc"></td><td class="col-qty"></td>
+          <td class="col-unit"></td><td class="col-price"></td><td class="col-amt"></td>
+        </tr>
+        <tr class="filler">
+          <td class="col-no"></td><td class="col-desc"></td><td class="col-qty"></td>
+          <td class="col-unit"></td><td class="col-price"></td><td class="col-amt"></td>
+        </tr>
+        <tr class="filler">
+          <td class="col-no"></td><td class="col-desc"></td><td class="col-qty"></td>
+          <td class="col-unit"></td><td class="col-price"></td><td class="col-amt"></td>
+        </tr>
+        <tr class="filler">
+          <td class="col-no"></td><td class="col-desc"></td><td class="col-qty"></td>
+          <td class="col-unit"></td><td class="col-price"></td><td class="col-amt"></td>
+        </tr>
+        <tr class="filler">
+          <td class="col-no"></td><td class="col-desc"></td><td class="col-qty"></td>
+          <td class="col-unit"></td><td class="col-price"></td><td class="col-amt"></td>
+        </tr>
+        <tr class="filler">
+          <td class="col-no"></td><td class="col-desc"></td><td class="col-qty"></td>
+          <td class="col-unit"></td><td class="col-price"></td><td class="col-amt"></td>
+        </tr>
+        <tr class="filler">
+          <td class="col-no"></td><td class="col-desc"></td><td class="col-qty"></td>
+          <td class="col-unit"></td><td class="col-price"></td><td class="col-amt"></td>
+        </tr>
+        <tr class="filler">
+          <td class="col-no"></td><td class="col-desc"></td><td class="col-qty"></td>
+          <td class="col-unit"></td><td class="col-price"></td><td class="col-amt"></td>
+        </tr>
+        <tr class="filler">
+          <td class="col-no"></td><td class="col-desc"></td><td class="col-qty"></td>
+          <td class="col-unit"></td><td class="col-price"></td><td class="col-amt"></td>
+        </tr></tbody>
+    </table>
+
+    <!-- Summary -->
+    <div class="summary">
+      <div class="summary-left">
+        <div class="words">
+          <span class="words-lbl">ตัวอักษร.</span>
+          <span class="words-val">(หนึ่งหมื่นเก้าพันเก้าร้อยสองบาทถ้วน)</span>
+        </div>
+        <div class="notes">
+          <div class="notes-title">หมายเหตุ :</div>
+          <div class="note-line">ยืนราคา 30 วัน ส่งของภายใน 7 วันหลังได้รับใบสั่งซื้อ ชำระเงินภายใน 30 วัน</div>
+          
+          <div class="prepay">ชำระก่อนการรับบริการ 100%</div>
+          <div class="prepay-sub">กรุณาชำระค่าบริการก่อนวันนัดหมาย 7 วันเพื่อยืนยันการจองสิทธิ</div>
+          
+          <div class="bank">
+            <div>โอนเงินชำระเข้า บัญชีธนาคาร ธนาคารตัวอย่าง</div>
+            <div>ชื่อบัญชี บริษัท ตัวอย่างเทรดดิ้ง จำกัด</div>
+            <div>เลขที่บัญชี 000-0-00000-0</div>
+          </div>
+        </div>
+      </div>
+      <table class="totals">
+        <tr>
+          <td class="t-lbl"><div class="lbl-th">รวมเงิน</div><div class="lbl-en">Total Amount</div></td>
+          <td class="t-val">18,600.00</td>
+        </tr>
+        <tr>
+          <td class="t-lbl"><div class="lbl-th">ยอดเงินมัดจำ</div><div class="lbl-en">Deposit</div></td>
+          <td class="t-val">-</td>
+        </tr>
+        <tr>
+          <td class="t-lbl"><div class="lbl-th">มูลค่าหลังหักเงินมัดจำ</div><div class="lbl-en">After Deposit</div></td>
+          <td class="t-val">18,600.00</td>
+        </tr>
+          <tr>
+            <td class="t-lbl">
+              <div class="lbl-th">ภาษีมูลค่าเพิ่ม <span class="rate">7%</span></div>
+              <div class="lbl-en">VAT</div>
+            </td>
+            <td class="t-val">1,302.00</td>
+          </tr>
+        <tr class="grand">
+          <td class="t-lbl"><div class="lbl-th">ยอดโอนชำระสุทธิ</div><div class="lbl-en">Grand Total</div></td>
+          <td class="t-val">19,902.00</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Signatures -->
+    <div class="signs">
+        <div class="sign">
+          <div class="sign-sig"></div>
+          <div class="sign-line"></div>
+          <div class="sign-name">บริษัท ตัวอย่างเทรดดิ้ง จำกัด</div>
+          <div class="sign-title">ฝ่ายขาย</div>
+          <div class="sign-lbl">ผู้จัดทำ</div>
+          <div class="sign-date">วันที่ 28 พฤศจิกายน 2569</div>
+        </div>
+        <div class="sign">
+          <div class="sign-sig"></div>
+          <div class="sign-line"></div>
+          <div class="sign-name">&nbsp;</div>
+          <div class="sign-title">&nbsp;</div>
+          <div class="sign-lbl">ผู้สั่งซื้อ</div>
+          <div class="sign-date">วันที่ ........................</div>
+        </div></div>
+
+    <div class="doc-footer">เอกสารนี้จัดทำโดยระบบอัตโนมัติ Pun Doc Bot (LINE @pun_nattapatch)</div>
+  </div>
+</body>
+</html>
