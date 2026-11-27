@@ -464,8 +464,8 @@
       P.push("<table><tr><th>ข้อ</th><th>ตอบ</th><th>เฉลย</th><th>ผล</th></tr>" + S.picks.map(function (p, i) {
         return "<tr><td>" + (i + 1) + "</td><td>" + LT[p] + "</td><td>" + LT[Q[i].a] + "</td><td>" + (p === Q[i].a ? "ถูก" : "ผิด") + "</td></tr>";
       }).join("") + "</table>");
-      P.push("<h2>3 งานสั่ง AI</h2>", "<p><b>โจทย์:</b> " + esc(BRIEFS[S.brief].t) + "</p>", "<p><b>prompt ที่ใช้สั่ง AI</b></p>", T(S.prompt));
-      P.push("<p><b>ผลงานที่ AI ทำ</b></p>", S.output.trim() ? T(S.output) : "");
+      P.push("<h2>3 แม่แบบใบเสนอราคา</h2>", "<p><b>โจทย์:</b> " + esc(BRIEFS[S.brief].t) + "</p>", "<p><b>prompt ที่ใช้สั่ง AI</b></p>", T(S.prompt));
+      P.push("<p><b>แม่แบบที่ AI ทำ</b></p>", S.output.trim() ? T(S.output) : "");
       SHOTS.forEach(function (o, i) { P.push('<div class="fig"><img src="' + o.d + '" alt="ภาพผลงานที่ ' + (i + 1) + '" /></div>'); });
       P.push("<h2>4 เช็ค prompt ตัวเอง 5 ข้อ</h2>");
       RUB.forEach(function (t, i) { P.push("<p>" + (S.rub[i] ? "☑" : "☐") + " " + (i + 1) + " " + esc(t) + "</p>"); });
@@ -505,27 +505,55 @@
       var h = function (t) { return para(t, { heading: D.HeadingLevel.HEADING_2, size: 30, bold: true, color: NAVY, before: 260, after: 120 }); };
       var cell = function (t, o) {
         o = o || {};
-        return new D.TableCell({ width: { size: o.w || 25, type: D.WidthType.PERCENTAGE },
+        return new D.TableCell({ width: o.dxa ? { size: o.dxa, type: D.WidthType.DXA } : { size: o.w || 25, type: D.WidthType.PERCENTAGE },
           shading: o.fill ? { type: D.ShadingType.CLEAR, color: "auto", fill: o.fill } : undefined,
-          margins: { top: 50, bottom: 50, left: 100, right: 100 }, children: [para(t, { bold: o.bold, color: o.color, after: 0, size: 24 })] });
+          margins: { top: 50, bottom: 50, left: 80, right: 80 }, children: [para(t, { bold: o.bold, color: o.color, after: 0, size: o.size || 24 })] });
       };
-      var s = score(), ch = [];
+      // grader-first layout (Pun 28 Nov): summary + a box the grader fills, then the quotation work, then the auto-scored quiz
+      var s = score(), ch = [], wrong = [], ticked = S.rub.filter(Boolean).length;
+      S.picks.forEach(function (p, i) { if (p !== Q[i].a) wrong.push(i + 1); });
+      var table = function (rows, widths) {
+        // fixed column widths in twips (A4 text width 9638): LibreOffice and some Word versions ignore percentage cell widths
+        var tw = widths.map(function (w) { return Math.round(9638 * w / 100); });
+        return new D.Table({ width: { size: 9638, type: D.WidthType.DXA }, columnWidths: tw, layout: D.TableLayoutType.FIXED, rows: rows.map(function (r, ri) {
+          return new D.TableRow({ tableHeader: ri === 0 && r.head, children: r.cells.map(function (t, ci) {
+            return cell(t, { dxa: tw[ci], bold: r.head || ci === 0, color: r.head ? "FFFFFF" : r.color && ci > 0 ? r.color : undefined, fill: r.head ? NAVY : r.fill });
+          }) });
+        }) });
+      };
       ch.push(para("การบ้านสัปดาห์ 2 AI Pro Office TNI × FutureSkill", { heading: D.HeadingLevel.TITLE, size: 34, bold: true, color: NAVY, after: 120 }));
-      ch.push(para("Module 2 ส่งภายใน " + CONFIG.due, { size: 22, color: MUTED, after: 240 }));
-      ch.push(h("1 ผู้เรียน"), para("ชื่อ นามสกุล: " + fullName()), para("ชื่อเล่น: " + (S.nick || "ไม่ได้กรอก")));
-      ch.push(h("2 แบบทดสอบ 15 ข้อ"), para("คะแนน " + s + " จาก " + N + " (ระดับ " + levelOf(s) + " จาก 5) ส่งเมื่อ " + new Date(S.at).toLocaleString("th-TH"), { bold: true }));
-      var rows = [new D.TableRow({ tableHeader: true, children: ["ข้อ", "ตอบ", "เฉลย", "ผล"].map(function (t) { return cell(t, { bold: true, color: "FFFFFF", fill: NAVY }); }) })];
-      S.picks.forEach(function (p, i) { rows.push(new D.TableRow({ children: [cell(String(i + 1)), cell(LT[p]), cell(LT[Q[i].a]), cell(p === Q[i].a ? "ถูก" : "ผิด", { bold: p !== Q[i].a })] })); });
-      ch.push(new D.Table({ width: { size: 100, type: D.WidthType.PERCENTAGE }, rows: rows }));
-      ch.push(h("3 งานสั่ง AI"), para("โจทย์: " + BRIEFS[S.brief].t, { bold: true }));
+      ch.push(para("Module 2 ส่งภายใน " + CONFIG.due, { size: 22, color: MUTED, after: 200 }));
+      ch.push(h("สรุปสำหรับผู้ตรวจ"));
+      ch.push(table([
+        { cells: ["ผู้เรียน", fullName() + (S.nick ? " (" + S.nick + ")" : "")] },
+        { cells: ["แบบทดสอบ 15 ข้อ (ระบบตรวจแล้ว)", s + " จาก " + N + " ระดับ " + levelOf(s) + " จาก 5" + (wrong.length ? " ผิดข้อ " + wrong.join(" ") : " ถูกทุกข้อ")] },
+        { cells: ["แม่แบบใบเสนอราคา", "prompt " + S.prompt.split(/\r?\n/).filter(function (x) { return x.trim(); }).length + " บรรทัด แม่แบบแบบข้อความ " + (S.output.trim() ? "มี" : "ไม่มี") + " ภาพแนบ " + SHOTS.length + " ภาพ ผู้เรียนเช็คตัวเอง " + ticked + " จาก 5 ข้อ"] }
+      ], [40, 60]));
+      ch.push(para("ผู้ตรวจกรอก ตรวจ prompt และแม่แบบในหัวข้อ 1 ด้วยเกณฑ์ 5 ข้อ", { bold: true, before: 200 }));
+      ch.push(table([{ head: true, cells: ["เกณฑ์", "ผู้เรียนเช็ค", "ผลจากผู้ตรวจ"] }].concat(RUB.map(function (t, i) {
+        return { cells: [(i + 1) + " " + t + (i === 3 ? " (ต้องผ่านทุกครั้ง)" : ""), S.rub[i] ? "☑" : "☐", ""], fill: i === 3 ? "FFF4D6" : undefined };
+      })), [62, 14, 24]));
+      ["ครบ 3 ข้อ ได้ระดับ 3", "ครบ 4 ข้อ ได้ระดับ 4", "ครบ 5 ข้อ และแม่แบบใช้กับงานจริงได้ ได้ระดับ 5", "ข้อ 4 ไม่ผ่าน หรือไม่แนบแม่แบบ ได้ระดับ 2"].forEach(function (t, i) { ch.push(para(t, { size: 22, color: MUTED, before: i ? 0 : 100, after: 20 })); });
+      ch.push(para("ระดับงานส่วนที่ 2 ที่ผู้ตรวจให้: ________", { bold: true, before: 160 }));
+      ch.push(para("ความเห็นผู้ตรวจ: ____________________________________________", { before: 80 }));
+      ch.push(h("1 แม่แบบใบเสนอราคา"), para("โจทย์: " + BRIEFS[S.brief].t, { bold: true }));
       ch.push(para("prompt ที่ใช้สั่ง AI", { bold: true, before: 120 }));
       lines(S.prompt, { fill: "F1F3F6", size: 24, after: 0 }).forEach(function (x) { ch.push(x); });
-      ch.push(para("ผลงานที่ AI ทำ", { bold: true, before: 200 }));
+      ch.push(para("แม่แบบที่ AI ทำ", { bold: true, before: 200 }));
       if (S.output.trim()) lines(S.output, { fill: "F1F3F6", size: 24, after: 0 }).forEach(function (x) { ch.push(x); });
+      else if (!SHOTS.length) ch.push(para("ไม่ได้แนบ", { color: FAINT }));
       SHOTS.forEach(function (o) { ch.push(new D.Paragraph({ spacing: { before: 120, after: 80 }, children: [imgRun(D, o, 520)] })); });
-      ch.push(h("4 เช็ค prompt ตัวเอง 5 ข้อ"));
-      RUB.forEach(function (t, i) { ch.push(para((S.rub[i] ? "☑" : "☐") + " " + (i + 1) + " " + t)); });
-      ch.push(para("ผู้สอนเป็นคนให้ระดับจริง", { color: MUTED, before: 120 }));
+      ch.push(h("2 แบบทดสอบ 15 ข้อ"), para("คะแนน " + s + " จาก " + N + " (ระดับ " + levelOf(s) + " จาก 5) ส่งเมื่อ " + new Date(S.at).toLocaleString("th-TH"), { bold: true }));
+      // compact grid: one column per question so the quiz fits in a few lines
+      var nums = [], picks = [], keys = [], marks = [];
+      S.picks.forEach(function (p, i) { nums.push(String(i + 1)); picks.push(LT[p]); keys.push(LT[Q[i].a]); marks.push(p === Q[i].a ? "✓" : "✗"); });
+      var qw = [10].concat(nums.map(function () { return 90 / N; }));
+      ch.push(table([
+        { head: true, cells: ["ข้อ"].concat(nums) },
+        { cells: ["ตอบ"].concat(picks) },
+        { cells: ["เฉลย"].concat(keys) },
+        { cells: ["ผล"].concat(marks) }
+      ], qw));
       var doc = new D.Document({ creator: "AI Pro Office", title: "การบ้านสัปดาห์ 2",
         styles: { default: { document: { run: { font: F, size: 26 } } } },
         sections: [{ properties: { page: { margin: { top: 1134, bottom: 1134, left: 1134, right: 1134 } } }, children: ch }] });
