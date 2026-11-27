@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex" />
   <title>การบ้านสัปดาห์ 2 แบบทดสอบและงานสั่ง AI</title>
-  <meta name="description" content="การบ้านคลาส AI Pro Office สัปดาห์ที่ 2 แบบทดสอบ 15 ข้อ และงานสั่ง AI 1 ชิ้น ดาวน์โหลด PDF ไฟล์เดียวแล้วส่งในระบบ FutureSkill" />
+  <meta name="description" content="การบ้านคลาส AI Pro Office สัปดาห์ที่ 2 แบบทดสอบ 15 ข้อ และงานสั่ง AI 1 ชิ้น ดาวน์โหลดไฟล์ Word ไฟล์เดียวแล้วส่งในระบบ FutureSkill" />
   <meta name="theme-color" content="#072B4E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Prompt:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/class/tni/kit.css?v=ac4ffc0a" />
   <!-- TNI × FutureSkill AI Pro Office 2569 · W2 homework v2 (Pun 27 Nov): part 1 post-test 15 at home (score → RPC submit_class_quiz, class_slug tni-w2-home),
-       part 2 prompt task, one PDF via print → learner uploads to FutureSkill Module 2. Question source: knowledge repo w2-homework/posttest-home-15.md
+       part 2 prompt task, one Word file (docx@9.5.1 in the browser, print-to-PDF fallback) → learner uploads to FutureSkill Module 2 (FS meeting 27 Nov: one docx per week). Question source: knowledge repo w2-homework/posttest-home-15.md
        source: knowledge repo material/training/futureskill-tni-office-ai-2569/w2-class-page/ (mirrors public/class/tni/w2/) -->
   <style>
     .sum { border: 2px solid var(--navy); }
@@ -70,7 +70,7 @@
       <a class="back" href="/class/tni/w2/">← กลับเมนูสัปดาห์ 2</a>
       <p class="brand">สัปดาห์ที่ 2  การบ้าน</p>
       <h1>การบ้านสัปดาห์ 2<br />แบบทดสอบ และงานสั่ง AI</h1>
-      <p class="lead">ทำ 2 ส่วนในหน้านี้ แล้วกดดาวน์โหลด PDF ไฟล์เดียว ไปส่งในระบบ FutureSkill ครับ</p>
+      <p class="lead">ทำ 2 ส่วนในหน้านี้ แล้วกดดาวน์โหลดไฟล์ Word ไฟล์เดียว ไปส่งในระบบ FutureSkill ครับ</p>
     </div>
   </header>
   <main class="wrap">
@@ -83,7 +83,7 @@
           <li><b>งานสั่ง AI 1 ชิ้น</b> วาง prompt ที่ใช้สั่ง และแนบผลงานที่ AI ทำ</li>
         </ol></dd>
         <dt>ส่งอะไร</dt>
-        <dd>ไฟล์ PDF ไฟล์เดียวจากปุ่มท้ายหน้า</dd>
+        <dd>ไฟล์ Word ไฟล์เดียวจากปุ่มท้ายหน้า</dd>
         <dt>ส่งที่ไหน</dt>
         <dd><b>ระบบ FutureSkill</b> Module 2</dd>
         <dt>ส่งภายใน</dt>
@@ -91,12 +91,12 @@
         <dt>ใช้เวลา</dt>
         <dd>ราว 40 นาที ทำบนคอมจะง่ายที่สุด</dd>
       </dl>
-      <p class="warnbox" id="inapp" hidden>คุณเปิดหน้านี้ในแอป LINE หรือ Facebook ซึ่งดาวน์โหลด PDF ไม่ได้ กดเมนู ⋯ แล้วเลือกเปิดใน Chrome หรือ Safari ก่อนเริ่มครับ</p>
+      <p class="warnbox" id="inapp" hidden>คุณเปิดหน้านี้ในแอป LINE หรือ Facebook ซึ่งดาวน์โหลดไฟล์ไม่ได้ กดเมนู ⋯ แล้วเลือกเปิดใน Chrome หรือ Safari ก่อนเริ่มครับ</p>
     </section>
 
     <section class="card" aria-labelledby="h-who">
       <h2 id="h-who" style="font-size:22px;margin:0 0 10px">ชื่อของคุณ</h2>
-      <p class="hint">ชื่อนี้ขึ้นในไฟล์ PDF และในชื่อไฟล์ ผู้สอนจะได้รู้ว่างานเป็นของใคร</p>
+      <p class="hint">ชื่อนี้ขึ้นในไฟล์ Word และในชื่อไฟล์ ผู้สอนจะได้รู้ว่างานเป็นของใคร</p>
       <div class="field"><label class="lb" for="fname">ชื่อจริง</label><input type="text" id="fname" maxlength="40" autocomplete="given-name" data-k="fname" /></div>
       <div class="field"><label class="lb" for="lname">นามสกุล</label><input type="text" id="lname" maxlength="40" autocomplete="family-name" data-k="lname" /></div>
       <div class="field"><label class="lb" for="nick">ชื่อเล่น</label><input type="text" id="nick" maxlength="30" autocomplete="nickname" data-k="nick" /></div>
@@ -146,25 +146,26 @@
       <div id="rub"></div>
     </section>
 
-    <section class="card piece" id="pdf" aria-labelledby="h-pdf">
-      <h2 id="h-pdf"><span class="no" aria-hidden="true">3</span>ดาวน์โหลด PDF ไฟล์เดียว</h2>
+    <section class="card piece" id="word" aria-labelledby="h-word">
+      <h2 id="h-word"><span class="no" aria-hidden="true">3</span>ดาวน์โหลดไฟล์ Word</h2>
       <ul class="steps" id="todo" style="list-style:none;padding:0"></ul>
-      <button type="button" class="btn btn-primary" id="bPdf">ดาวน์โหลด PDF ไฟล์เดียว</button>
+      <button type="button" class="btn btn-primary" id="bDocx">ดาวน์โหลดไฟล์ Word (.docx)</button>
       <p class="msg" id="pMsg" aria-live="polite"></p>
-      <p class="hint">บนคอม หน้าต่างพิมพ์จะเปิดขึ้น ให้เลือก <b>บันทึกเป็น PDF</b> แล้วกดบันทึก บน iPhone กดปุ่มแชร์ แล้วเลือก <b>บันทึกไปยังไฟล์</b></p>
+      <p class="hint">ไฟล์จะอยู่ในโฟลเดอร์ <b>ดาวน์โหลด</b> ของเครื่อง ชื่อไฟล์มีชื่อของคุณแล้ว คะแนนแบบทดสอบ prompt ผลงาน และภาพ อยู่ในไฟล์นี้ไฟล์เดียว</p>
+      <p class="hint">ถ้าดาวน์โหลดไม่ได้ กด <button type="button" class="btn-link" id="bPdf" style="font:inherit;padding:0;min-height:0">บันทึกเป็น PDF</button> แทน</p>
     </section>
 
     <section class="card fs" id="send" aria-labelledby="h-fs">
-      <h2 id="h-fs">ส่งไฟล์ PDF ในระบบ FutureSkill</h2>
+      <h2 id="h-fs">ส่งไฟล์ Word ในระบบ FutureSkill</h2>
       <a class="btn btn-fs" id="fsBtn" target="_blank" rel="noopener">เปิดระบบ FutureSkill (ล็อกอิน)</a>
       <ol class="steps">
         <li>คุณกดปุ่มด้านบนแล้วล็อกอิน เมนูซ้ายกด <b>การมอบหมาย</b> แล้วกด <b>ไปที่การมอบหมาย</b></li>
         <li>คุณกด <b>เริ่มการมอบหมาย</b> (ครั้งแรก) หรือ <b>เรียนต่อ</b> แล้วในหน้าถัดไปกด <b>เรียนต่อ</b> อีกครั้ง</li>
-        <li>ทางขวาคุณเลือก <b>Module 2</b> แล้วกดลิงก์สีน้ำเงินข้างคำว่า <b>Link ส่งผลงาน</b> ลิงก์จะเปิดโฟลเดอร์ Google Drive</li>
-        <li>คุณอัปโหลดไฟล์ PDF บนคอมกดปุ่ม <b>+ ใหม่</b> แล้วเลือก <b>อัปโหลดไฟล์</b> บนมือถือใช้แอป Google Drive กดปุ่ม <b>+</b> แล้วเลือก <b>อัปโหลด</b> ต้องล็อกอินบัญชี Google ก่อน</li>
-        <li>ทุกคนส่งในโฟลเดอร์เดียวกัน ชื่อไฟล์จึงต้องมีชื่อจริงของคุณ ปุ่มด้านบนตั้งชื่อให้แล้ว ถ้าชื่อหาย กด ⋮ ข้างไฟล์ แล้วเลือก <b>เปลี่ยนชื่อ</b></li>
+        <li>ทางขวาคุณเลือก <b>Module 2</b> แล้วกดลิงก์สีน้ำเงินข้างคำว่า <b>Link ส่งผลงาน</b></li>
+        <li>หน้าส่งงานเปิดขึ้น คุณอัปโหลดไฟล์ Word ไฟล์เดียวจากข้อ 3 ถ้าหน้าจอให้ล็อกอินบัญชี Google ให้ล็อกอินก่อน</li>
+        <li>ส่งไฟล์เดียวพอ ไม่ต้องแยกหลายไฟล์ ชื่อไฟล์มีชื่อจริงของคุณแล้ว ไม่ต้องเปลี่ยน</li>
       </ol>
-      <label class="tick"><input type="checkbox" id="sent" /> <span>ส่งไฟล์ PDF ในระบบ FutureSkill แล้ว (ติ๊กไว้เตือนตัวเอง)</span></label>
+      <label class="tick"><input type="checkbox" id="sent" /> <span>ส่งไฟล์ Word ในระบบ FutureSkill แล้ว (ติ๊กไว้เตือนตัวเอง)</span></label>
       <p class="warnbox">งานจะถึงผู้สอนเมื่อคุณอัปโหลดไฟล์ใน FutureSkill เท่านั้น ส่งแล้วอยากแก้ อัปโหลดไฟล์ใหม่ได้ ผมตรวจไฟล์ล่าสุดครับ</p>
     </section>
 
@@ -182,6 +183,7 @@
     <p class="foot-brand">AI Pro Office  TNI × FutureSkill</p>
   </footer>
   <div id="print" aria-hidden="true"></div>
+  <script src="https://cdn.jsdelivr.net/npm/docx@9.5.1/dist/index.iife.js"></script>
   <script>
   (function () {
     "use strict";
@@ -336,7 +338,7 @@
       if (S.locked) {
         var s = score();
         $("qRes").innerHTML = '<div class="result"><p class="score">ได้ ' + s + ' จาก ' + N + ' ข้อ</p><p class="lvl">ระดับ ' + levelOf(s) + ' จาก 5</p>' +
-          '<p class="hint">' + (S.sentDb ? "ส่งคะแนนถึงผู้สอนแล้ว" : "คะแนนยังไม่ถึงผู้สอน เน็ตหลุด") + ' คะแนนกับคำตอบอยู่ในไฟล์ PDF ด้วย ทำส่วนที่ 2 ต่อได้เลยครับ</p>' +
+          '<p class="hint">' + (S.sentDb ? "ส่งคะแนนถึงผู้สอนแล้ว" : "คะแนนยังไม่ถึงผู้สอน เน็ตหลุด") + ' คะแนนกับคำตอบอยู่ในไฟล์ Word ด้วย ทำส่วนที่ 2 ต่อได้เลยครับ</p>' +
           (S.sentDb ? "" : '<button type="button" class="btn" id="qRetry">ส่งคะแนนอีกครั้ง</button>') + '</div>';
         if (!S.sentDb) $("qRetry").addEventListener("click", sendScore);
       } else $("qRes").innerHTML = "";
@@ -426,7 +428,7 @@
       var ok = saveShots();
       renderShots(); refresh();
       if (bad) say("sMsg", "ใช้ภาพนี้ไม่ได้ ลองเลือกภาพ JPG หรือ PNG อีกครั้ง", true);
-      else if (!ok) say("sMsg", "เก็บภาพไว้ในเครื่องไม่ได้ ภาพจะอยู่จนกว่าจะรีเฟรชหน้า ดาวน์โหลด PDF ก่อนปิดหน้านะครับ", true);
+      else if (!ok) say("sMsg", "เก็บภาพไว้ในเครื่องไม่ได้ ภาพจะอยู่จนกว่าจะรีเฟรชหน้า ดาวน์โหลดไฟล์ Word ก่อนปิดหน้านะครับ", true);
       else say("sMsg", files.length > room ? "ใส่ได้ " + CONFIG.maxShots + " ภาพ ระบบเก็บไว้ " + SHOTS.length + " ภาพแรก" : "เก็บภาพแล้ว " + SHOTS.length + " ภาพ", files.length > room);
     });
 
@@ -472,14 +474,88 @@
       P.push("<p>ผู้สอนเป็นคนให้ระดับจริง</p>");
       $("print").innerHTML = P.join("");
     }
-    $("bPdf").addEventListener("click", function () {
-      if (INAPP) return say("pMsg", "เบราว์เซอร์ในแอป LINE หรือ Facebook บันทึก PDF ไม่ได้ กดเมนู ⋯ แล้วเลือกเปิดใน Chrome หรือ Safari ครับ", true);
+    function fileBase() { return "TNI-W2-การบ้าน-" + (safeName(fullName() + (S.nick.trim() ? " " + S.nick.trim() : "")) || "ผู้เรียน"); }
+    function missing() {
+      if (INAPP) { say("pMsg", "เบราว์เซอร์ในแอป LINE หรือ Facebook บันทึกไฟล์ไม่ได้ กดเมนู ⋯ แล้วเลือกเปิดใน Chrome หรือ Safari ครับ", true); return true; }
       var left = todo().filter(function (t) { return !t[0]; });
-      if (left.length) return say("pMsg", "ยังขาด: " + left.map(function (t) { return t[1]; }).join(" และ "), true);
+      if (left.length) { say("pMsg", "ยังขาด: " + left.map(function (t) { return t[1]; }).join(" และ "), true); return true; }
+      return false;
+    }
+    function imgRun(D, o, maxW) {
+      var bytes = Uint8Array.from(atob(o.d.split(",")[1]), function (c) { return c.charCodeAt(0); });
+      var r = Math.min(1, maxW / o.w);
+      return new D.ImageRun({ type: "jpg", data: bytes, transformation: { width: Math.round(o.w * r), height: Math.round(o.h * r) } });
+    }
+    // same layout as the PDF fallback (buildPrint), built with docx@9.5.1 like w1-homework
+    function makeDocx() {
+      var D = window.docx;
+      if (!D) return Promise.reject(new Error("nolib"));
+      var F = "Sukhumvit Set", INK = "1B2430", NAVY = "072B4E", MUTED = "5B6573", FAINT = "8A93A1";
+      var para = function (text, o) {
+        o = o || {};
+        return new D.Paragraph({
+          heading: o.heading,
+          spacing: { before: o.before || 0, after: o.after == null ? 100 : o.after, line: 330 },
+          shading: o.fill ? { type: D.ShadingType.CLEAR, color: "auto", fill: o.fill } : undefined,
+          children: [new D.TextRun({ text: String(text), font: F, size: o.size || 26, bold: !!o.bold, color: o.color || INK })]
+        });
+      };
+      var lines = function (text, o) {
+        var arr = String(text || "").split(/\r?\n/).filter(function (x) { return x.trim() !== ""; });
+        return arr.length ? arr.map(function (x) { return para(x, o); }) : [para("ยังไม่ได้กรอก", Object.assign({}, o, { color: FAINT }))];
+      };
+      var h = function (t) { return para(t, { heading: D.HeadingLevel.HEADING_2, size: 30, bold: true, color: NAVY, before: 260, after: 120 }); };
+      var cell = function (t, o) {
+        o = o || {};
+        return new D.TableCell({ width: { size: o.w || 25, type: D.WidthType.PERCENTAGE },
+          shading: o.fill ? { type: D.ShadingType.CLEAR, color: "auto", fill: o.fill } : undefined,
+          margins: { top: 50, bottom: 50, left: 100, right: 100 }, children: [para(t, { bold: o.bold, color: o.color, after: 0, size: 24 })] });
+      };
+      var s = score(), ch = [];
+      ch.push(para("การบ้านสัปดาห์ 2 AI Pro Office TNI × FutureSkill", { heading: D.HeadingLevel.TITLE, size: 34, bold: true, color: NAVY, after: 120 }));
+      ch.push(para("Module 2 ส่งภายใน " + CONFIG.due, { size: 22, color: MUTED, after: 240 }));
+      ch.push(h("1 ผู้เรียน"), para("ชื่อ นามสกุล: " + fullName()), para("ชื่อเล่น: " + (S.nick || "ไม่ได้กรอก")));
+      ch.push(h("2 แบบทดสอบ 15 ข้อ"), para("คะแนน " + s + " จาก " + N + " (ระดับ " + levelOf(s) + " จาก 5) ส่งเมื่อ " + new Date(S.at).toLocaleString("th-TH"), { bold: true }));
+      var rows = [new D.TableRow({ tableHeader: true, children: ["ข้อ", "ตอบ", "เฉลย", "ผล"].map(function (t) { return cell(t, { bold: true, color: "FFFFFF", fill: NAVY }); }) })];
+      S.picks.forEach(function (p, i) { rows.push(new D.TableRow({ children: [cell(String(i + 1)), cell(LT[p]), cell(LT[Q[i].a]), cell(p === Q[i].a ? "ถูก" : "ผิด", { bold: p !== Q[i].a })] })); });
+      ch.push(new D.Table({ width: { size: 100, type: D.WidthType.PERCENTAGE }, rows: rows }));
+      ch.push(h("3 งานสั่ง AI"), para("โจทย์: " + BRIEFS[S.brief].t, { bold: true }));
+      ch.push(para("prompt ที่ใช้สั่ง AI", { bold: true, before: 120 }));
+      lines(S.prompt, { fill: "F1F3F6", size: 24, after: 0 }).forEach(function (x) { ch.push(x); });
+      ch.push(para("ผลงานที่ AI ทำ", { bold: true, before: 200 }));
+      if (S.output.trim()) lines(S.output, { fill: "F1F3F6", size: 24, after: 0 }).forEach(function (x) { ch.push(x); });
+      SHOTS.forEach(function (o) { ch.push(new D.Paragraph({ spacing: { before: 120, after: 80 }, children: [imgRun(D, o, 520)] })); });
+      ch.push(h("4 เช็ค prompt ตัวเอง 5 ข้อ"));
+      RUB.forEach(function (t, i) { ch.push(para((S.rub[i] ? "☑" : "☐") + " " + (i + 1) + " " + t)); });
+      ch.push(para("ผู้สอนเป็นคนให้ระดับจริง", { color: MUTED, before: 120 }));
+      var doc = new D.Document({ creator: "AI Pro Office", title: "การบ้านสัปดาห์ 2",
+        styles: { default: { document: { run: { font: F, size: 26 } } } },
+        sections: [{ properties: { page: { margin: { top: 1134, bottom: 1134, left: 1134, right: 1134 } } }, children: ch }] });
+      return D.Packer.toBlob(doc);
+    }
+    function download(blob, name) {
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+    }
+    $("bDocx").addEventListener("click", function () {
+      if (missing()) return;
+      var b = $("bDocx"); b.disabled = true;
+      say("pMsg", "กำลังทำไฟล์ Word รอสักครู่นะครับ");
+      makeDocx().then(function (blob) {
+        download(blob, fileBase() + ".docx");
+        say("pMsg", "ดาวน์โหลดไฟล์ Word แล้ว อัปโหลดไฟล์นี้ในระบบ FutureSkill ตามขั้นด้านล่าง");
+      }).catch(function (e) {
+        say("pMsg", e && e.message === "nolib" ? "ทำไฟล์ Word ต้องใช้อินเทอร์เน็ต ลองอีกครั้ง หรือกดบันทึกเป็น PDF แทนนะครับ" : "ทำไฟล์ Word ไม่สำเร็จ ลองอีกครั้ง หรือกดบันทึกเป็น PDF แทนนะครับ", true);
+      }).then(function () { b.disabled = false; });
+    });
+    $("bPdf").addEventListener("click", function () {
+      if (missing()) return;
       buildPrint();
       // print dialog uses document.title as the default PDF file name
       var old = document.title;
-      document.title = "TNI-W2-การบ้าน-" + safeName(fullName() + (S.nick.trim() ? " " + S.nick.trim() : ""));
+      document.title = fileBase();
       say("pMsg", "เลือก บันทึกเป็น PDF แล้วกดบันทึก จากนั้นอัปโหลดไฟล์ใน FutureSkill ตามขั้นด้านล่าง");
       var back = function () { document.title = old; window.removeEventListener("afterprint", back); };
       window.addEventListener("afterprint", back);
