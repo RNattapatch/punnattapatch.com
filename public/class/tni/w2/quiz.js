@@ -10,7 +10,7 @@
     rpc: "https://yykocvhorgcgzaluuldn.supabase.co/rest/v1/rpc/submit_class_quiz",
     // anon key is public by design (same as src/scripts/lead-fallback.ts)
     anon: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5a29jdmhvcmdjZ3phbHV1bGRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjYwNTYsImV4cCI6MjA5NTgwMjA1Nn0.04ya1crnMRK6SgLfwhhxIp14DQ1n_ZkY5Fj-urTsv1E",
-    store: "tniw2quiz:v1",
+    store: "tniw2quiz:v3",   // v3 = 28 Nov question banks; older results are ignored
     menu: "/class/tni/w2/"
   };
   var LT = ["ก", "ข", "ค", "ง"];
@@ -100,18 +100,19 @@
     var B = bankOf(k || key);
     if (!v || typeof v !== "object" || !Array.isArray(v.picks) || v.picks.length !== n) return null;
     if (!v.picks.every(function (p) { return p === (p | 0) && p >= 0 && p <= 3; })) return null;
-    if (n !== B.length) return null;
+    if (n !== B.length || v.v !== 3) return null;   // results from the old question bank are not re-marked
     var score = 0; for (var i = 0; i < n; i++) if (v.picks[i] === B[i].a) score++;
     var str = function (x, max) { return typeof x === "string" ? x.slice(0, max) : ""; };
     var at = str(v.at, 40); if (isNaN(Date.parse(at))) at = new Date().toISOString();
     return { nick: str(v.nick, 120), dept: str(v.dept, 80), picks: v.picks.slice(), score: score, total: n,
       level: (k || key) === "pre" ? null : levelOf(score), at: at,
-      attempt: str(v.attempt, 60) || "x-" + Date.now().toString(36), sent: v.sent === true };
+      attempt: str(v.attempt, 60) || "x-" + Date.now().toString(36), sent: v.sent === true, v: 3, who: str(v.who, 80) };
   }
 
   (function () {
     var key0 = key; key = "post";
-    var good = clean({ picks: POST.map(function (q) { return q.a; }), score: "<img src=x onerror=alert(1)>", total: "<b>", level: "<i>", nick: "a", at: "2026-11-28T09:00:00Z", attempt: "post-1" }, QUIZ.post.n, "post");
+    var good = clean({ picks: POST.map(function (q) { return q.a; }), score: "<img src=x onerror=alert(1)>", total: "<b>", level: "<i>", nick: "a", at: "2026-11-28T09:00:00Z", attempt: "post-1", v: 3 }, QUIZ.post.n, "post");
+    console.assert(clean({ picks: POST.map(function (q) { return q.a; }), at: "2026-11-28T09:00:00Z" }, QUIZ.post.n, "post") === null, "clean: old-bank result (no v) dropped");
     console.assert(good && good.score === QUIZ.post.n && good.total === QUIZ.post.n && typeof good.level === "number", "clean: recompute, ignore stored score");
     console.assert(clean({ picks: ["<b>"] }, QUIZ.post.n, "post") === null && clean({ picks: POST.map(function () { return 7; }) }, QUIZ.post.n, "post") === null, "clean: bad picks dropped");
     console.assert(PRE.length === QUIZ.pre.n && POST.length === QUIZ.post.n && PRE.concat(POST).every(function (x) { return x.a >= 0 && x.a < x.o.length && x.why; }), "banks: sizes and answers");
@@ -190,7 +191,7 @@
       level: key === "post" ? levelOf(score) : null,
       at: new Date().toISOString(),
       attempt: key + "-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8),
-      sent: false
+      sent: false, v: 3, who: CLOUD ? CLOUD.slug : ""
     };
     S.id = { nick: nick, dept: dept }; S[key] = d; save(); if (!CLOUD) shareIdentity(nick, dept);
     if (CLOUD) { var up = { dept: dept }; up["quiz" + key] = d; CLOUD.save(up); CLOUD.flush(); }
@@ -340,7 +341,10 @@
   if (window.ClassCloud) {
     root.classList.add("cc-hide");
     ClassCloud.start({ cls: CFG.classSlug, mount: root.parentNode }).then(function (sess) {
+      if (!sess) return;   // login server down: quiz works with a nickname on this device
       CLOUD = sess;
+      // a result saved on this phone by someone else (shared phone, re-login after a typo) is not this learner's
+      ["pre", "post"].forEach(function (k) { if (S[k] && S[k].who !== sess.slug) S[k] = null; });
       return sess.load().then(function (r) {
         var v = clean(r.values["quiz" + key], QUIZ[key].n, key);
         // done on another device: show that result here instead of a second attempt

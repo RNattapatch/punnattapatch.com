@@ -334,6 +334,7 @@
   if (window.ClassCloud) {
     root.classList.add("cc-hide");
     ClassCloud.start({ cls: CFG.classSlug, mount: root.parentNode }).then(function (sess) {
+      if (!sess) return;   // login server down: quiz works with a nickname on this device
       CLOUD = sess;
       return sess.load().then(function (r) {
         var v = clean(r.values["quiz" + key], QUIZ[key].n);

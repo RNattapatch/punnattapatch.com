@@ -30,15 +30,15 @@
     <ul class="tiles">
       <li><a class="tile must" id="t-1" href="/class/tni/w2/pre-quiz/"><span class="n" aria-hidden="true">1</span><span class="tx"><span class="t">แบบทดสอบก่อนเรียน</span><span class="s">ทำตอนเริ่มคลาส 5 ข้อ</span><span class="chip need" data-chip>ต้องทำ</span></span><span class="go" aria-hidden="true">›</span></a></li>
       <li><a class="tile" id="t-2" href="https://drive.google.com/file/d/1F_r3CtNIjWVJ9NABLnq_gTShJh1btQZs/view" target="_blank" rel="noopener"><span class="n" aria-hidden="true">2</span><span class="tx"><span class="t">เปิดสไลด์วันนี้</span><span class="s">เปิดใน Google Drive</span><span class="chip done" data-chip hidden></span></span><span class="go" aria-hidden="true">›</span></a></li>
-      <li><a class="tile" id="t-3" href="/class/tni/w2/prompts/"><span class="n" aria-hidden="true">3</span><span class="tx"><span class="t">Prompt และแม่แบบที่ใช้ในคลาส</span><span class="s">เวิร์กช็อปแม่แบบ และตรวจงานด้วย SPEC.md</span><span class="chip done" data-chip hidden></span></span><span class="go" aria-hidden="true">›</span></a></li>
+      <li><a class="tile" id="t-3" href="/class/tni/w2/prompts/"><span class="n" aria-hidden="true">3</span><span class="tx"><span class="t">Prompt และแม่แบบที่ใช้ในคลาส</span><span class="s">ไฟล์ data-groups.md ไฟล์ Excel 2 แท็บ และ Prompt ของวันนี้</span><span class="chip done" data-chip hidden></span></span><span class="go" aria-hidden="true">›</span></a></li>
+      <li><a class="tile" id="t-5" href="/class/tni/w2/post-quiz/"><span class="n" aria-hidden="true">4</span><span class="tx"><span class="t">แบบทดสอบหลังเรียน 5 ข้อ</span><span class="s">ทำท้ายคลาส ไม่นับคะแนน</span><span class="chip done" data-chip hidden></span></span><span class="go" aria-hidden="true">›</span></a></li>
     </ul>
     <h2 class="group">ที่บ้าน</h2>
     <ul class="tiles">
-      <li><a class="tile must" id="t-4" href="/class/tni/w2/homework/"><span class="n" aria-hidden="true">4</span><span class="tx"><span class="t">การบ้านสัปดาห์ 2</span><span class="s">แบบทดสอบ 15 ข้อ และแม่แบบใบเสนอราคา 1 ชิ้น ส่งไฟล์ Word ในระบบ FutureSkill ภายใน ศ. 4 ธ.ค. 20:00</span><span class="chip need" data-chip>ต้องทำ</span></span><span class="go" aria-hidden="true">›</span></a></li>
+      <li><a class="tile must" id="t-4" href="/class/tni/w2/homework/"><span class="n" aria-hidden="true">5</span><span class="tx"><span class="t">การบ้านสัปดาห์ 2</span><span class="s">แบบทดสอบ 15 ข้อ แม่แบบใบเสนอราคา HTML และ Action Plan ส่งไฟล์ Word ในระบบ FutureSkill ภายใน ศ. 4 ธ.ค. 20:00</span><span class="chip need" data-chip>ต้องทำ</span></span><span class="go" aria-hidden="true">›</span></a></li>
     </ul>
     <h2 class="group">ทบทวน</h2>
     <ul class="tiles">
-      <li><a class="tile" id="t-5" href="/class/tni/w2/post-quiz/"><span class="n" aria-hidden="true">5</span><span class="tx"><span class="t">แบบทดสอบหลังเรียน 5 ข้อ</span><span class="s">ทำท้ายคลาส ไม่นับคะแนน</span><span class="chip done" data-chip hidden></span></span><span class="go" aria-hidden="true">›</span></a></li>
       <li><a class="tile" id="t-6" href="/class/tni/w1/vocab/"><span class="n" aria-hidden="true">6</span><span class="tx"><span class="t">การ์ดศัพท์ทั้งหลักสูตร</span><span class="s">ศัพท์ที่จะเจอและสัปดาห์ที่สอน</span><span class="chip done" data-chip hidden></span></span><span class="go" aria-hidden="true">›</span></a></li>
     </ul>
     <div class="card" style="margin-top:18px">
@@ -58,7 +58,7 @@
   (function () {
     "use strict";
     function get(k) { try { return JSON.parse(localStorage.getItem(k) || "{}") || {}; } catch (e) { return {}; } }
-    var quiz = get("tniw2quiz:v1"), hw = get("w2hw:v2"), seen = get("tniw2:v1");
+    var quiz = get("tniw2quiz:v3"), hw = get("w2hw:v2"), seen = get("tniw2:v1");
     var hwStarted = !!(hw.locked || hw.prompt || seen.homework);
     // [tile, state] state: done | wip | seen | ""
     var st = {

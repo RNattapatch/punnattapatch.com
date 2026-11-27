@@ -11,9 +11,9 @@
     ".cc-gate h2{margin:0 0 6px;font-size:24px;color:#072B4E}.cc-gate p{margin:0 0 14px}.cc-gate label{display:block;font-weight:700;margin:12px 0 4px}" +
     ".cc-gate input{width:100%;box-sizing:border-box;font-size:20px;min-height:56px;padding:10px 14px;border:2px solid #9FB0C4;border-radius:12px;font-family:inherit}" +
     ".cc-gate input:focus{outline:3px solid #DD4155;border-color:#DD4155}.cc-gate button{width:100%;min-height:58px;margin-top:18px;font-size:21px;font-weight:700;border:0;border-radius:14px;background:#DD4155;color:#fff;font-family:inherit;cursor:pointer}" +
-    ".cc-gate button:active{transform:scale(.98)}.cc-gate button[disabled]{opacity:.6}.cc-err{color:#B00020;font-weight:700;margin-top:10px}" +
+    ".cc-gate button:active{transform:scale(.98)}.cc-gate button[disabled]{opacity:.6}.cc-gate .cc-skip{background:#fff;color:#072B4E;border:2px solid #072B4E;font-size:18px;min-height:52px}.cc-err{color:#B00020;font-weight:700;margin-top:10px}" +
     ".cc-bar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:space-between;background:#072B4E;color:#fff;padding:10px 16px;border-radius:12px;margin:0 0 16px;font-size:17px;line-height:1.4}" +
-    ".cc-bar b{font-size:18px}.cc-bar .cc-st{font-weight:700}.cc-bar .cc-st.bad{color:#FFD166}.cc-bar button{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.6);border-radius:10px;padding:6px 12px;font-size:15px;font-family:inherit;cursor:pointer}" +
+    ".cc-bar b{font-size:18px}.cc-bar .cc-st{font-weight:700}.cc-bar .cc-st.bad{color:#FFD166}.cc-bar button{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.6);border-radius:10px;padding:6px 12px;min-height:44px;font-size:15px;font-family:inherit;cursor:pointer}" +
     "body.cc-locked .cc-hide{display:none!important}";
 
   function readWho(cls) { try { return JSON.parse(localStorage.getItem(WHO(cls)) || "null"); } catch (e) { return null; } }
@@ -21,8 +21,8 @@
   function el(tag, attrs, html) { var e = document.createElement(tag); for (var k in attrs || {}) e.setAttribute(k, attrs[k]); if (html != null) e.innerHTML = html; return e; }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function hhmm(d) { return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); }
-  function post(url, body) {
-    return fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
+  function post(url, body, keep) {
+    return fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body), keepalive: !!keep })
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j._status = r.status; return j; }); });
   }
   var ERR = {
@@ -63,12 +63,12 @@
       setState("saving");
       clearTimeout(timer); timer = setTimeout(flush, 900);
     };
-    function flush() {
+    function flush(keep) {
       if (inflight) { clearTimeout(timer); timer = setTimeout(flush, 600); return Promise.resolve(); }
       var batch = pending; pending = {};
       if (!Object.keys(batch).length) { if (state === "saving") setState("ok"); return Promise.resolve(); }
       inflight = true;
-      return post(API + self.slug + "/save", { answers: batch }).then(function (j) {
+      return post(API + self.slug + "/save", { answers: batch }, keep === true && JSON.stringify(batch).length < 60000).then(function (j) {
         inflight = false;
         if (!j.ok && j.error !== "nothing_to_save") throw new Error(j.error || "save");   // unknown-only fields are dropped, not retried
         Object.keys(batch).forEach(function (q) { mirror.a[q] = batch[q].text; });
@@ -108,7 +108,9 @@
         }).catch(function () {});
       });
     };
-    window.addEventListener("beforeunload", function (e) { if (self.hasPending()) { flush(); e.preventDefault(); e.returnValue = ""; } });
+    // leaving the page: send what is queued with keepalive (survives navigation, iPhone included); only warn when the network is down
+    window.addEventListener("pagehide", function () { if (Object.keys(pending).length) { clearTimeout(timer); flush(true); } });
+    window.addEventListener("beforeunload", function (e) { if (self.hasPending()) flush(true); if (state === "offline") { e.preventDefault(); e.returnValue = ""; } });
   }
 
   function bar(mount, sess, cls) {
@@ -162,7 +164,16 @@
           mount.insertBefore(hi, mount.children[1] || null);
           setTimeout(function () { hi.remove(); }, 9000);
           resolve(s);
-        }).catch(function (x) { btn.disabled = false; btn.textContent = "เริ่มทำ หรือทำต่อจากที่ค้างไว้"; err.textContent = x.message.length < 80 ? x.message : "เปิดไม่ได้ ลองอีกครั้งครับ"; });
+        }).catch(function (x) {
+          btn.disabled = false; btn.textContent = "เริ่มทำ หรือทำต่อจากที่ค้างไว้";
+          err.textContent = x instanceof TypeError ? "เน็ตหลุด ลองกดอีกครั้งครับ" : (x.message.length < 80 ? x.message : "เปิดไม่ได้ ลองอีกครั้งครับ");
+          // after a failed login the class must not be stuck: offer to continue on this device only
+          if (!g.querySelector(".cc-skip")) {
+            var skip = el("button", { type: "button", "class": "cc-skip" }, "ทำต่อในเครื่องนี้ โดยไม่ใช้ชื่อ");
+            skip.addEventListener("click", function () { g.remove(); document.body.classList.remove("cc-locked"); resolve(null); });
+            g.appendChild(skip);
+          }
+        });
       });
     });
   }

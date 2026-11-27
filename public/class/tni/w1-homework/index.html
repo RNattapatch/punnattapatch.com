@@ -356,7 +356,7 @@
   <footer><p id="footer"></p></footer>
   <div id="print" aria-hidden="true"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/docx@9.5.1/dist/index.iife.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/docx@9.5.1/dist/index.iife.js"></script>
   <script src="/class/tni/cloud.js?v=2"></script>
   <script>
   (function () {
@@ -511,7 +511,7 @@
       document.body.appendChild(a);
       a.click();
       a.remove();
-      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      setTimeout(() => URL.revokeObjectURL(a.href), 60000);
     }
     async function copyText(t) {
       try { await navigator.clipboard.writeText(t); return true; } catch (e) { /* fall through */ }
@@ -845,7 +845,7 @@
         spacing: { before: o.before || 0, after: o.after == null ? 100 : o.after, line: 330 },
         shading: o.fill ? { type: D.ShadingType.CLEAR, color: "auto", fill: o.fill } : undefined,
         indent: o.indent ? { left: o.indent } : undefined,
-        children: [new D.TextRun({ text: String(text), font: F, size: o.size || 26, bold: !!o.bold, color: o.color || INK })],
+        children: [new D.TextRun({ text: String(text).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]/g, " "), font: F, size: o.size || 26, bold: !!o.bold, color: o.color || INK })],
       });
       const lines = (text, o = {}) => {
         const arr = String(text || "").split(/\r?\n/).filter((x) => x.trim() !== "");
@@ -1048,6 +1048,7 @@
       if (!window.ClassCloud) { S = readStore(); SHOT_KEYS.forEach((k) => { const o = readShotRaw(k); if (o) MEM[k] = o; }); boot(); return; }
       main.querySelectorAll(":scope > section").forEach((sec) => sec.classList.add("cc-hide"));
       ClassCloud.start({ cls: "tni-w1", mount: main }).then(async (sess) => {
+        if (!sess) { S = readStore(); SHOT_KEYS.forEach((k) => { const o = readShotRaw(k); if (o) MEM[k] = o; }); main.querySelectorAll(":scope > section").forEach((sec) => sec.classList.remove("cc-hide")); boot(); return; }   // login server down: work on this device only
         CLOUD = sess;
         const local = readStore();
         SHOT_KEYS.forEach((k) => { const o = readShotRaw(k); if (o) MEM[k] = o; });

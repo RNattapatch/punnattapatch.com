@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex" />
   <title>การบ้านสัปดาห์ 2 แบบทดสอบ แม่แบบ และ Action Plan</title>
-  <meta name="description" content="การบ้านคลาส AI Pro Office สัปดาห์ที่ 2 แบบทดสอบ 15 ข้อ และแม่แบบใบเสนอราคา 1 ชิ้น ดาวน์โหลดไฟล์ Word ไฟล์เดียวแล้วส่งในระบบ FutureSkill" />
+  <meta name="description" content="การบ้านคลาส AI Pro Office สัปดาห์ที่ 2 แบบทดสอบ 15 ข้อ แม่แบบใบเสนอราคา HTML 1 ชิ้น และ Action Plan ดาวน์โหลดไฟล์ Word ไฟล์เดียวแล้วส่งในระบบ FutureSkill" />
   <meta name="theme-color" content="#072B4E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Prompt:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -49,9 +49,8 @@
     #print { display: none; }
     @media print {
       @page { size: A4; margin: 16mm; }
-      body * { visibility: hidden; }
-      #print, #print * { visibility: visible; }
-      #print { display: block !important; position: absolute; left: 0; top: 0; width: 100%; color: #000; background: #fff; font-size: 12pt; line-height: 1.5; }
+      body > :not(#print) { display: none !important; }
+      #print { display: block !important; position: static; width: 100%; color: #000; background: #fff; font-size: 12pt; line-height: 1.5; }
       #print h1 { font-size: 18pt; color: #072B4E; margin: 0 0 4px; }
       #print h2 { font-size: 14pt; color: #072B4E; margin: 14px 0 6px; break-after: avoid; }
       #print p { margin: 0 0 4px; }
@@ -70,7 +69,7 @@
       <a class="back" href="/class/tni/w2/">← กลับเมนูสัปดาห์ 2</a>
       <p class="brand">สัปดาห์ที่ 2  การบ้าน</p>
       <h1>การบ้านสัปดาห์ 2<br />แบบทดสอบ แม่แบบ และ Action Plan</h1>
-      <p class="lead">ทำ 2 ส่วนในหน้านี้ แล้วกดดาวน์โหลดไฟล์ Word ไฟล์เดียว ไปส่งในระบบ FutureSkill ครับ</p>
+      <p class="lead">ทำ 3 ส่วนในหน้านี้ แล้วกดดาวน์โหลดไฟล์ Word ไฟล์เดียว ไปส่งในระบบ FutureSkill ครับ</p>
     </div>
   </header>
   <main class="wrap">
@@ -92,6 +91,8 @@
         <dt>ใช้เวลา</dt>
         <dd>ราว 40 นาที ทำบนคอมจะง่ายที่สุด</dd>
       </dl>
+      <p class="hint" style="margin:10px 0 0">งานที่กรอกเก็บไว้ในเครื่องนี้และเบราว์เซอร์นี้เท่านั้น เริ่มเครื่องไหน ทำให้จบที่เครื่องนั้นครับ</p>
+      <p class="msg bad" id="storeNote" role="alert" hidden>บันทึกงานในเครื่องนี้ไม่ได้ ห้ามปิดหน้านี้ ทำให้จบแล้วกดดาวน์โหลดไฟล์ Word ก่อนปิดหน้านะครับ</p>
       <p class="warnbox" id="inapp" hidden>คุณเปิดหน้านี้ในแอป LINE หรือ Facebook ซึ่งดาวน์โหลดไฟล์ไม่ได้ กดเมนู ⋯ แล้วเลือกเปิดใน Chrome หรือ Safari ก่อนเริ่มครับ</p>
     </section>
 
@@ -155,7 +156,7 @@
       <button type="button" class="btn btn-primary" id="bDocx">ดาวน์โหลดไฟล์ Word (.docx)</button>
       <p class="msg" id="pMsg" aria-live="polite"></p>
       <p class="hint">ไฟล์จะอยู่ในโฟลเดอร์ <b>ดาวน์โหลด</b> ของเครื่อง ชื่อไฟล์มีชื่อของคุณแล้ว คะแนนแบบทดสอบ prompt ผลงาน และภาพ อยู่ในไฟล์นี้ไฟล์เดียว</p>
-      <p class="hint">ถ้าดาวน์โหลดไม่ได้ กด <button type="button" class="btn-link" id="bPdf" style="font:inherit;padding:0;min-height:0">บันทึกเป็น PDF</button> แทน</p>
+      <p class="hint">ถ้าดาวน์โหลดไม่ได้ กด <button type="button" class="btn-link" id="bPdf" style="font:inherit;padding:8px 0;min-height:44px">บันทึกเป็น PDF</button> แทน</p>
     </section>
 
     <section class="card fs" id="send" aria-labelledby="h-fs">
@@ -186,7 +187,7 @@
     <p class="foot-brand">AI Pro Office  TNI × FutureSkill</p>
   </footer>
   <div id="print" aria-hidden="true"></div>
-  <script src="https://cdn.jsdelivr.net/npm/docx@9.5.1/dist/index.iife.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/docx@9.5.1/dist/index.iife.js"></script>
   <script>
   (function () {
     "use strict";
@@ -265,7 +266,7 @@
         why: "AI เหมือนน้องฝึกงานที่รู้ทุกอย่างแต่ไม่รู้จักบริษัทคุณ ถ้าไม่ให้บริบทกับรูปแบบที่ต้องการ AI ก็ได้แค่ประกาศกลางๆ" },
       { q: "งานการตลาด AI เขียนแคปชันยาวเกินและใส่อีโมจิเยอะทุกครั้ง ทั้งที่คุณบอกในแชทแล้ว วิธีไหนทำให้ AI จำได้ทุกแชท",
         o: ["พิมพ์บอกใหม่ทุกแชท",
-            "เขียนเป็นกติกาสั้นๆ ไว้ในกล่อง 6 ของ AGENTS.md ใน Project เช่น แคปชันไม่เกิน 60 คำ อีโมจิไม่เกิน 2 ตัว",
+            "เขียนเป็นกติกาสั้นๆ ไว้ในหัวข้อ กติกาที่เพิ่ม ของ AGENTS.md ใน Project เช่น แคปชันไม่เกิน 60 คำ อีโมจิไม่เกิน 2 ตัว",
             "ดุ AI แรงๆ ในแชท",
             "เปลี่ยนไปใช้ AI ตัวอื่น"], a: 1,
         why: "คำสั่งในแชทหายไปเมื่อเปิดแชทใหม่ ส่วน AGENTS.md ใน Project ถูกอ่านทุกครั้งก่อนเริ่มงาน กติกาที่ใช้ซ้ำจึงควรอยู่ในไฟล์นั้น" },
@@ -326,7 +327,7 @@
     }
     var S = load(), SHOTS = [];
     try { var raw = JSON.parse(localStorage.getItem(IMG_KEY) || "[]"); if (Array.isArray(raw)) SHOTS = raw.filter(function (o) { return o && typeof o.d === "string" && o.d.indexOf("data:image/jpeg;base64,") === 0; }).slice(0, CONFIG.maxShots); } catch (e) {}
-    function persist() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+    function persist() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { var n = document.getElementById("storeNote"); if (n) n.hidden = false; } }
     function saveShots() { try { localStorage.setItem(IMG_KEY, JSON.stringify(SHOTS)); return true; } catch (e) { return false; } }
     function score() { var s = 0; for (var i = 0; i < N; i++) if (S.picks[i] === Q[i].a) s++; return s; }
     function levelOf(s) { return s >= 14 ? 5 : s >= 12 ? 4 : s >= 9 ? 3 : s >= 6 ? 2 : 1; }
@@ -500,7 +501,7 @@
     }
     function imgRun(D, o, maxW) {
       var bytes = Uint8Array.from(atob(o.d.split(",")[1]), function (c) { return c.charCodeAt(0); });
-      var r = Math.min(1, maxW / o.w);
+      var r = Math.min(1, maxW / o.w, 880 / o.h);   // 880 px ≈ A4 text height, so a phone screenshot is not cut off
       return new D.ImageRun({ type: "jpg", data: bytes, transformation: { width: Math.round(o.w * r), height: Math.round(o.h * r) } });
     }
     // same layout as the PDF fallback (buildPrint), built with docx@9.5.1 like w1-homework
@@ -514,7 +515,7 @@
           heading: o.heading,
           spacing: { before: o.before || 0, after: o.after == null ? 100 : o.after, line: 330 },
           shading: o.fill ? { type: D.ShadingType.CLEAR, color: "auto", fill: o.fill } : undefined,
-          children: [new D.TextRun({ text: String(text), font: F, size: o.size || 26, bold: !!o.bold, color: o.color || INK })]
+          children: [new D.TextRun({ text: String(text).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]/g, " "), font: F, size: o.size || 26, bold: !!o.bold, color: o.color || INK })]
         });
       };
       var lines = function (text, o) {
@@ -554,7 +555,7 @@
         return { cells: [(i + 1) + " " + t + (i === 3 ? " (ต้องผ่านทุกครั้ง)" : ""), S.rub[i] ? "☑" : "☐", ""], fill: i === 3 ? "FFF4D6" : undefined };
       })), [62, 14, 24]));
       ["ครบ 3 ข้อ ได้ระดับ 3", "ครบ 4 ข้อ ได้ระดับ 4", "ครบ 5 ข้อ และแม่แบบใช้กับงานจริงได้ ได้ระดับ 5", "ข้อ 4 ไม่ผ่าน หรือไม่แนบแม่แบบ ได้ระดับ 2"].forEach(function (t, i) { ch.push(para(t, { size: 22, color: MUTED, before: i ? 0 : 100, after: 20 })); });
-      ch.push(para("ระดับงานส่วนที่ 2 ที่ผู้ตรวจให้: ________", { bold: true, before: 160 }));
+      ch.push(para("ระดับงานแม่แบบใบเสนอราคา (หัวข้อ 1) ที่ผู้ตรวจให้: ________", { bold: true, before: 160 }));
       ch.push(para("ความเห็นผู้ตรวจ: ____________________________________________", { before: 80 }));
       ch.push(h("1 แม่แบบใบเสนอราคา"), para("โจทย์: " + BRIEFS[S.brief].t, { bold: true }));
       ch.push(para("prompt ที่ใช้สั่ง AI", { bold: true, before: 120 }));
@@ -585,7 +586,7 @@
       var a = document.createElement("a");
       a.href = URL.createObjectURL(blob); a.download = name;
       document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 60000);
     }
     $("bDocx").addEventListener("click", function () {
       if (missing()) return;
