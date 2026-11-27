@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex" />
   <title>การบ้านสัปดาห์ 2 แบบทดสอบและงานสั่ง AI</title>
-  <meta name="description" content="การบ้านคลาส AI Pro Office สัปดาห์ที่ 2 แบบทดสอบ 15 ข้อ และงานสั่ง AI 1 ชิ้น ดาวน์โหลดไฟล์ Word ไฟล์เดียวแล้วส่งในระบบ FutureSkill" />
+  <meta name="description" content="การบ้านคลาส AI Pro Office สัปดาห์ที่ 2 แบบทดสอบ 15 ข้อ และแม่แบบใบเสนอราคา 1 ชิ้น ดาวน์โหลดไฟล์ Word ไฟล์เดียวแล้วส่งในระบบ FutureSkill" />
   <meta name="theme-color" content="#072B4E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Prompt:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -80,7 +80,7 @@
         <dt>ทำอะไร</dt>
         <dd><ol>
           <li><b>แบบทดสอบ 15 ข้อ</b> โจทย์จากงานจริง ส่งได้ครั้งเดียว</li>
-          <li><b>งานสั่ง AI 1 ชิ้น</b> วาง prompt ที่ใช้สั่ง และแนบผลงานที่ AI ทำ</li>
+          <li><b>แม่แบบใบเสนอราคา 1 ชิ้น</b> ให้ AI ทำแม่แบบจากใบเสนอราคาจริง วาง prompt ที่ใช้สั่ง และแนบแม่แบบที่ได้</li>
         </ol></dd>
         <dt>ส่งอะไร</dt>
         <dd>ไฟล์ Word ไฟล์เดียวจากปุ่มท้ายหน้า</dd>
@@ -112,26 +112,16 @@
     </section>
 
     <section class="card piece" id="p2" aria-labelledby="h-p2">
-      <h2 id="h-p2"><span class="no" aria-hidden="true">2</span>งานสั่ง AI 1 ชิ้น <span class="pill">ต้องทำ</span></h2>
-      <p class="muted">เลือกโจทย์ 1 ข้อ เปิดแชทใหม่ใน ChatGPT หรือ Claude แล้วเขียน prompt สั่งงานเอง จากนั้นวาง prompt กับผลงานในหน้านี้</p>
-      <div class="field">
-        <label class="lb" for="brief">เลือกโจทย์</label>
-        <select id="brief" data-k="brief" style="width:100%;min-height:54px;border:1.5px solid var(--field);border-radius:12px;padding:10px 12px;font:inherit;background:#fff;color:var(--ink)">
-          <option value="">เลือกโจทย์ 1 ข้อ</option>
-          <option value="admin">ธุรการ หนังสือเวียนปิดปรับปรุงลิฟต์</option>
-          <option value="hr">HR สรุปผลสัมภาษณ์ผู้สมัคร 3 คน</option>
-          <option value="mkt">การตลาด โพสต์ Facebook 3 แบบ</option>
-          <option value="own">งานจริงของฉัน</option>
-        </select>
-      </div>
-      <div class="brief" id="briefBox" hidden></div>
+      <h2 id="h-p2"><span class="no" aria-hidden="true">2</span>แม่แบบใบเสนอราคา 1 ชิ้น <span class="pill">ต้องทำ</span></h2>
+      <p class="muted">โจทย์เดียวกันทั้งห้อง คือทำแม่แบบจากใบเสนอราคาที่ใช้จริง เปิดแชทใหม่ใน ChatGPT หรือ Claude แล้วเขียน prompt สั่งงานเอง จากนั้นวาง prompt กับแม่แบบที่ได้ในหน้านี้</p>
+      <div class="brief" id="briefBox"></div>
       <div class="field" style="margin-top:14px">
         <label class="lb" for="prompt">prompt ที่ใช้สั่ง AI <span class="pill">ต้องกรอก</span></label>
         <p class="hint">วางข้อความที่คุณพิมพ์สั่ง AI ทั้งหมด ถ้าสั่งหลายรอบ วางทุกรอบเรียงกัน</p>
         <textarea id="prompt" data-k="prompt"></textarea>
       </div>
       <div class="field">
-        <label class="lb" for="output">ผลงานที่ AI ทำ (วางข้อความ)</label>
+        <label class="lb" for="output">แม่แบบที่ AI ทำ (วางข้อความ)</label>
         <p class="hint">วางข้อความ หรือแนบภาพหน้าจอด้านล่าง หรือทำทั้ง 2 อย่าง ต้องมีอย่างน้อย 1 อย่าง</p>
         <textarea id="output" data-k="output"></textarea>
       </div>
@@ -276,15 +266,24 @@
     var N = Q.length;
     console.assert(N === 15 && Q.every(function (x) { return x.a >= 0 && x.a < x.o.length; }), "Q: 15 questions with valid answers");
 
+    // Pun 28 Nov: one task for the whole room, a template made from a real quotation; sample quotation for learners without one (made-up data)
     var BRIEFS = {
-      admin: { t: "ธุรการ หนังสือเวียนปิดปรับปรุงลิฟต์",
-        h: "<p><b>งาน</b> ร่างหนังสือเวียนถึงพนักงาน 1 หน้า และข้อความสั้นสำหรับกลุ่ม LINE ของบริษัท</p><p><b>ข้อมูลสมมุติ</b></p><ul><li>ลิฟต์ตัวที่ 2 อาคาร B ปิดปรับปรุง 8 ถึง 10 ธ.ค. 2569</li><li>ระหว่างนั้นใช้ลิฟต์ตัวที่ 1 หรือบันไดหนีไฟฝั่งตะวันออก</li><li>ผู้ประสานงานรหัส ADM07 โทรภายใน 115</li><li>ขนของหนักให้แจ้งล่วงหน้า 1 วัน</li></ul><p><b>ผลที่ต้องได้</b> หนังสือเวียนภาษาทางการ และข้อความ LINE ไม่เกิน 5 บรรทัด</p>" },
-      hr: { t: "HR สรุปผลสัมภาษณ์ผู้สมัคร 3 คน",
-        h: "<p><b>งาน</b> ทำตารางเทียบผู้สมัคร 3 คน ตำแหน่งเจ้าหน้าที่ประสานงานขาย และคำถามสำหรับสัมภาษณ์รอบ 2 โดย AI ห้ามตัดสินว่าจ้างใคร</p><p><b>ข้อมูลสมมุติ (ใช้รหัส ไม่มีชื่อ)</b></p><ul><li>C01 ประสบการณ์ประสานงาน 4 ปี ใช้ Excel คล่อง ตอบเรื่องรับมือลูกค้าโกรธได้ไม่ชัด</li><li>C02 จบใหม่ ฝึกงานฝ่ายขาย 6 เดือน พูดอังกฤษได้ดี ยังไม่เคยทำใบเสนอราคา</li><li>C03 ประสบการณ์ 2 ปี เคยดูแลลูกค้า 30 ราย ขอเงินเดือนสูงกว่างบ 10%</li></ul><p><b>ผลที่ต้องได้</b> ตารางจุดเด่น จุดที่ต้องถามเพิ่ม และคำถามรอบ 2 คนละ 2 ข้อ</p>" },
-      mkt: { t: "การตลาด โพสต์ Facebook 3 แบบ",
-        h: "<p><b>งาน</b> ร่างโพสต์ Facebook 3 แบบ เปิดตัวบริการจัดเบรกประชุม</p><p><b>ข้อมูลสมมุติ</b></p><ul><li>ชุดละ 89 บาท ขั้นต่ำ 20 ชุด สั่งล่วงหน้า 2 วัน</li><li>คนที่อยากให้เห็นคือฝ่ายธุรการของบริษัทแถวบางนา</li><li>รีวิวลูกค้ารหัส R12 ว่า “ส่งตรงเวลา ไม่ต้องตามเลย”</li></ul><p><b>ผลที่ต้องได้</b> 3 แบบ แบบละไม่เกิน 80 คำ บอกราคาและวิธีสั่งให้ถูก</p>" },
-      own: { t: "งานจริงของฉัน",
-        h: "<p><b>งาน</b> เลือกงานจริง 1 งานที่คุณทำซ้ำบ่อย แล้วสั่ง AI ช่วย พิมพ์บอกในช่อง prompt ว่างานนี้คืออะไร</p><p class=\"warnbox\" style=\"margin:0\">ห้ามใช้ข้อมูลกลุ่มห้ามออกนอกองค์กร เช่น เงินเดือนรายคน ประวัติสุขภาพ รหัสผ่าน และฐานข้อมูลลูกค้า ถ้ามีชื่อคน เปลี่ยนเป็นรหัสก่อนทุกครั้ง</p>" }
+      quote: { t: "แม่แบบใบเสนอราคาจากใบจริง",
+        h: "<p><b>งาน</b> เอาใบเสนอราคาที่ใช้จริงในงานของคุณ 1 ใบ ให้ AI แปลงเป็นแม่แบบ ส่วนที่เปลี่ยนทุกครั้งให้เป็นช่อง «ชื่อช่อง» ส่วนที่เหมือนเดิมให้คงไว้ทุกตัวอักษร</p>" +
+          "<p class=\"warnbox\" style=\"margin:0 0 8px\">ก่อนแนบใบจริงให้ AI ปิดชื่อลูกค้า เบอร์โทร อีเมล ที่อยู่ และเลขผู้เสียภาษีก่อน เปลี่ยนเป็นรหัสแทน ถ้าราคาเป็นความลับ เปลี่ยนเป็นตัวเลขสมมุติ</p>" +
+          "<p><b>ผลที่ต้องได้</b> แม่แบบใบเสนอราคา 1 ใบ และรายชื่อช่องทั้งหมด</p>" +
+          "<p><b>ไม่มีใบเสนอราคา</b> ใช้ใบตัวอย่างนี้ได้เลย (ข้อมูลสมมุติ) คัดลอกไปวางในแชทได้</p>" +
+          "<div style=\"border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 12px;font-size:16px\">" +
+          "<p style=\"margin:0 0 4px\"><b>ใบเสนอราคา</b> เลขที่ QT-2569-0142 วันที่ 28 พ.ย. 2569</p>" +
+          "<p style=\"margin:0 0 4px\">ผู้เสนอราคา บริษัท ตัวอย่างเทรดดิ้ง จำกัด</p>" +
+          "<p style=\"margin:0 0 8px\">เรียน ลูกค้ารหัส C-014 ฝ่ายจัดซื้อ</p>" +
+          "<table style=\"width:100%;border-collapse:collapse;font-size:15px\"><thead><tr><th style=\"text-align:left;border-bottom:1px solid var(--line)\">รายการ</th><th style=\"text-align:right;border-bottom:1px solid var(--line)\">จำนวน</th><th style=\"text-align:right;border-bottom:1px solid var(--line);padding-left:10px\">ต่อหน่วย</th><th style=\"text-align:right;border-bottom:1px solid var(--line)\">รวม</th></tr></thead><tbody>" +
+          "<tr><td>กระดาษ A4 80 แกรม</td><td style=\"text-align:right;white-space:nowrap;padding:3px 0 3px 10px\">50 รีม</td><td style=\"text-align:right;white-space:nowrap;padding:3px 0 3px 10px\">125</td><td style=\"text-align:right;white-space:nowrap;padding:3px 0 3px 10px\">6,250</td></tr>" +
+          "<tr><td>หมึกพิมพ์เลเซอร์</td><td style=\"text-align:right;white-space:nowrap;padding:3px 0 3px 10px\">4 กล่อง</td><td style=\"text-align:right;white-space:nowrap;padding:3px 0 3px 10px\">2,450</td><td style=\"text-align:right;white-space:nowrap;padding:3px 0 3px 10px\">9,800</td></tr>" +
+          "<tr><td>แฟ้มสันกว้าง 3 นิ้ว</td><td style=\"text-align:right;white-space:nowrap;padding:3px 0 3px 10px\">30 แฟ้ม</td><td style=\"text-align:right;white-space:nowrap;padding:3px 0 3px 10px\">85</td><td style=\"text-align:right;white-space:nowrap;padding:3px 0 3px 10px\">2,550</td></tr>" +
+          "</tbody></table>" +
+          "<p style=\"margin:8px 0 0;text-align:right\">รวม 18,600 บาท ภาษีมูลค่าเพิ่ม 7% 1,302 บาท <b>รวมทั้งสิ้น 19,902 บาท</b></p>" +
+          "<p style=\"margin:6px 0 0\">เงื่อนไข ยืนราคา 30 วัน ส่งของภายใน 7 วันหลังได้รับใบสั่งซื้อ ชำระเงินภายใน 30 วัน</p></div>" }
     };
     var RUB = [
       "บอกบทบาทและบริบท ว่า AI เป็นใคร งานนี้ทำให้ใคร",
@@ -304,7 +303,7 @@
       var v = {}; try { v = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) {}
       var picks = Array.isArray(v.picks) && v.picks.length === N ? v.picks.map(function (p, i) { return p === (p | 0) && p >= 0 && p < Q[i].o.length ? p : null; }) : Q.map(function () { return null; });
       var rub = Array.isArray(v.rub) ? RUB.map(function (_, i) { return v.rub[i] === true; }) : RUB.map(function () { return false; });
-      return { fname: str(v.fname, 40), lname: str(v.lname, 40), nick: str(v.nick, 30), brief: BRIEFS[v.brief] ? v.brief : "",
+      return { fname: str(v.fname, 40), lname: str(v.lname, 40), nick: str(v.nick, 30), brief: "quote",
         prompt: str(v.prompt, 20000), output: str(v.output, 40000), picks: picks, rub: rub,
         locked: v.locked === true && picks.every(function (p) { return p !== null; }), at: str(v.at, 40),
         attempt: str(v.attempt, 60), sentDb: v.sentDb === true, sent: v.sent === true };
@@ -447,9 +446,8 @@
       return [
         [!!fullName(), "กรอกชื่อจริงและนามสกุล"],
         [S.locked, "ส่งคำตอบแบบทดสอบ 15 ข้อ"],
-        [!!S.brief, "เลือกโจทย์งานสั่ง AI"],
         [!!S.prompt.trim(), "วาง prompt ที่ใช้สั่ง AI"],
-        [!!S.output.trim() || SHOTS.length > 0, "วางผลงาน หรือแนบภาพผลงานอย่างน้อย 1 ภาพ"]
+        [!!S.output.trim() || SHOTS.length > 0, "วางแม่แบบที่ได้ หรือแนบภาพอย่างน้อย 1 ภาพ"]
       ];
     }
     function refresh() {
