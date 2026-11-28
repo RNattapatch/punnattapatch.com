@@ -58,7 +58,7 @@
   (function () {
     "use strict";
     function get(k) { try { return JSON.parse(localStorage.getItem(k) || "{}") || {}; } catch (e) { return {}; } }
-    var quiz = get("tniw2quiz:v3"), hw = get("w2hw:v2"), seen = get("tniw2:v1");
+    var quiz = get("tniw2quiz:v4"), hw = get("w2hw:v2"), seen = get("tniw2:v1");
     var hwStarted = !!(hw.locked || hw.prompt || seen.homework);
     // [tile, state] state: done | wip | seen | ""
     var st = {
