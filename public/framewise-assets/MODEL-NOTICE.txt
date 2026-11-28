@@ -1,0 +1,14 @@
+Places365 ResNet-18 scene classifier
+Bolei Zhou, Agata Lapedriza, Aditya Khosla, Aude Oliva and Antonio Torralba.
+Places: A 10 Million Image Database for Scene Recognition, TPAMI, 2017.
+Source and license: https://github.com/CSAILVision/places365
+Pretrained model license: Creative Commons Attribution (CC BY).
+Modification: converted from PyTorch to ONNX opset 15 and compressed using
+per-output-channel symmetric int8 weights with FP32 activations.
+Source weight SHA-256:
+2f4759217d470da2b803f8f66cd4488a066406b555a5fb95ee9a4663f9f05588
+Distributed model SHA-256:
+5a41eb575712745a9196da4cc9930f22686dda2c895b5eafa0f2558f98c37fe7
+
+Inference runtime: ONNX Runtime Web 1.22.0 (MIT).
+See ONNX-Runtime-LICENSE.txt and ONNX-Runtime-ThirdPartyNotices.txt.
