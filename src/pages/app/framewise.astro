@@ -1,0 +1,180 @@
+---
+import { moods, props, scenes, samples, poseTypes, poses } from '../../scripts/framewise/playbook.mjs';
+import '../../styles/framewise.css';
+
+const icons = {
+  frame: 'M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m8 0h3a2 2 0 0 0 2-2v-3M12 8v8m-4-4h8',
+  camera: 'M4 6h4l2-2h4l2 2h4a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Zm12 6a4 4 0 1 0-8 0 4 4 0 0 0 8 0Z',
+  upload: 'M12 16V3m-5 5 5-5 5 5M4 15v5h16v-5',
+  pin: 'M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Zm-5 0a3 3 0 1 0-6 0 3 3 0 0 0 6 0Z',
+  sun: 'M12 2v2m0 16v2m10-10h-2M4 12H2m17-7-1.5 1.5m-11 11L5 19m14 0-1.5-1.5m-11-11L5 5m11 7a4 4 0 1 0-8 0 4 4 0 0 0 8 0Z',
+  bookmark: 'M6 4h12v17l-6-4-6 4V4Z',
+  book: 'M4 4h6l2 2 2-2h6v15h-6l-2 2-2-2H4V4Zm8 2v15',
+  chevron: 'm6 9 6 6 6-6',
+  close: 'm6 6 12 12M18 6 6 18',
+};
+---
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#f6f5fa" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="description" content="Framewise ช่วยเลือกท่าโพสและจัดเฟรมตามฉาก แสง และอารมณ์ภาพ" />
+    <title>Framewise | ผู้ช่วยถ่ายภาพ</title>
+    <link rel="icon" href="/framewise-assets/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <svg width="0" height="0" class="symbol-bank" aria-hidden="true">
+      {Object.entries(icons).map(([id, path]) => <symbol id={id} viewBox="0 0 24 24"><path d={path}/></symbol>)}
+    </svg>
+    <header class="site-header">
+      <div class="header-inner">
+        <button id="home" class="brand" type="button" aria-label="Framewise หน้าจัดช็อต">
+          <span class="brand-icon"><svg><use href="#frame"/></svg></span>
+          <b>framewise<span>.</span></b>
+        </button>
+        <nav aria-label="มุมมอง" class="workspace-nav">
+          <button id="studio-tab" class="nav-tab" type="button" aria-pressed="true">จัดช็อต</button>
+          <button id="library-tab" class="nav-tab" type="button" aria-pressed="false">คลังท่า</button>
+        </nav>
+        <button id="notes-open" class="notes-button" type="button"><svg><use href="#book"/></svg><span>คู่มือถ่ายภาพ</span></button>
+      </div>
+    </header>
+    <main class="main">
+      <section id="studio" aria-labelledby="studio-heading">
+        <div class="intro">
+          <h1 id="studio-heading">จัดช็อต<span>ให้เข้ากับฉาก</span></h1>
+          <p>คุณถ่ายหรือเลือกรูปสถานที่ แล้ว Framewise ช่วยเลือกท่า แสง และมุมกล้องให้</p>
+        </div>
+        <div class="studio-grid">
+          <section class="scene-panel" aria-labelledby="scene-heading">
+            <div class="panel-title"><span class="panel-icon"><svg><use href="#frame"/></svg></span><h2 id="scene-heading">ฉากของคุณ</h2></div>
+            <div class="scene-stage">
+              <img id="scene-image" src={samples[0].image} width="640" height="640" alt="ฉากตัวอย่างคาเฟ่ที่มีหน้าต่างบานใหญ่" />
+              <div class="scene-grid" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+              <span id="scene-badge" class="scene-badge"><i></i><span>ฉากตัวอย่าง</span></span>
+              <div class="stage-caption"><svg><use href="#pin"/></svg><span id="stage-label">{scenes.cafe.label}</span></div>
+            </div>
+            <div class="scene-actions">
+              <button class="button primary" id="camera-scene" type="button"><svg><use href="#camera"/></svg> เปิดกล้อง</button>
+              <button class="button secondary" id="file-button" type="button"><svg><use href="#upload"/></svg> เลือกรูป</button>
+              <input id="scene-file" type="file" accept="image/*" hidden />
+            </div>
+            <p id="scene-status" class="status" role="status" hidden></p>
+            <div class="sample-row" aria-label="ฉากตัวอย่าง">
+              <span>ลองฉาก</span>
+              {samples.map(sample => <button type="button" class="sample" data-sample={sample.scene} aria-pressed={sample.scene === 'cafe'}><img src={sample.image} alt="" />{sample.name}</button>)}
+            </div>
+            <div class="scene-settings">
+              <label for="scene-select"><svg><use href="#pin"/></svg> ประเภทฉาก</label>
+              <div class="select-wrap"><select id="scene-select">{Object.entries(scenes).map(([id, scene]) => <option value={id}>{scene.label}</option>)}</select><svg aria-hidden="true"><use href="#chevron"/></svg></div>
+              <p id="light-tag" class="light-tag"><svg><use href="#sun"/></svg><span>แสงจากด้านข้าง</span></p>
+              <details>
+                <summary>ของที่มีในฉาก <span id="props-count">3</span></summary>
+                <div class="props">{Object.entries(props).map(([id, label]) => <button class="chip" type="button" data-prop={id} aria-pressed={samples[0].props.includes(id)}>{label}</button>)}</div>
+              </details>
+              <p id="scene-tip" class="scene-tip">{scenes.cafe.tip}</p>
+            </div>
+          </section>
+          <div class="output-panel">
+            <section class="filters" aria-label="ตัวเลือกท่าและอารมณ์ภาพ">
+              <div class="filter-row">
+                <h2>ตัวอย่างท่าสำหรับ</h2>
+                <div class="segmented" aria-label="ตัวอย่างท่าสำหรับ">
+                  <button data-profile="men" type="button" aria-pressed="true">ผู้ชาย</button>
+                  <button data-profile="women" type="button" aria-pressed="false">ผู้หญิง</button>
+                </div>
+              </div>
+              <div class="filter-row mood-row">
+                <h2>อารมณ์ภาพ</h2>
+                <div class="moods" aria-label="อารมณ์ภาพ">
+                  {Object.entries(moods).map(([id, mood]) => <button type="button" class="chip mood" style={`--swatch:${mood.color}`} data-mood={id} aria-pressed={id === 'natural'}><i></i>{mood.label}</button>)}
+                </div>
+              </div>
+            </section>
+            <section class="recommendations" aria-labelledby="recommendations-heading">
+              <div class="results-header">
+                <div><h2 id="recommendations-heading">ท่าที่เข้ากับฉาก</h2><p id="result-context" aria-live="polite">{scenes.cafe.label} / {moods.natural.label}</p></div>
+                <button id="browse-library" type="button" class="text-button">ดูคลังท่าทั้งหมด</button>
+              </div>
+              <div id="recommendations" class="pose-grid"></div>
+            </section>
+            <section class="light-note" aria-labelledby="light-title"><span class="panel-icon"><svg><use href="#sun"/></svg></span><div><h2 id="light-title">แสงและมุมกล้อง</h2><p id="light-note-copy"></p></div></section>
+          </div>
+        </div>
+      </section>
+      <section id="library" aria-labelledby="library-heading" hidden>
+        <div class="intro"><h1 id="library-heading">คลัง<span>ท่าโพส</span></h1><p>คุณเลือกท่าตามประเภท หรือเปิดท่าที่บันทึกไว้ก่อนออกไปถ่าย</p></div>
+        <div class="library-tools">
+          <div class="library-chips" aria-label="ประเภทท่า">
+            <button type="button" class="chip" data-filter="all" aria-pressed="true">ทั้งหมด</button>
+            {Object.entries(poseTypes).map(([id,name]) => <button type="button" class="chip" data-filter={id} aria-pressed="false">{name}</button>)}
+            <button type="button" class="chip" data-filter="saved" aria-pressed="false"><svg><use href="#bookmark"/></svg> ที่บันทึกไว้</button>
+          </div>
+          <div class="segmented" aria-label="ตัวอย่างท่าสำหรับ">
+            <button data-profile="men" type="button" aria-pressed="true">ผู้ชาย</button>
+            <button data-profile="women" type="button" aria-pressed="false">ผู้หญิง</button>
+          </div>
+        </div>
+        <p id="library-count" class="library-count" aria-live="polite">{poses.length} ท่า</p>
+        <div id="library-grid" class="pose-grid library-grid"></div>
+      </section>
+    </main>
+    <footer class="site-footer"><span>Framewise</span><span>รูปของคุณอยู่ในเบราว์เซอร์นี้</span></footer>
+
+    <dialog id="pose-dialog" aria-labelledby="pose-title">
+      <div class="dialog-card">
+        <button type="button" class="icon-button close" data-close aria-label="ปิดรายละเอียด"><svg><use href="#close"/></svg></button>
+        <div id="pose-visual" class="dialog-visual"></div>
+        <div class="dialog-body">
+          <p id="pose-type" class="pose-type"></p>
+          <h2 id="pose-title"></h2>
+          <dl class="cue-list"><dt>คนโพส</dt><dd id="subject-cue"></dd><dt>คนถือกล้อง</dt><dd id="camera-cue"></dd></dl>
+          <p id="pose-needs" class="scene-tip" hidden></p>
+          <div class="dialog-actions"><button id="use-pose" class="button primary" type="button"><svg><use href="#camera"/></svg> เปิดกรอบท่าในกล้อง</button><button id="save-pose" class="button secondary" type="button" aria-pressed="false"><svg><use href="#bookmark"/></svg><span>บันทึกท่า</span></button></div>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="camera-dialog" aria-labelledby="camera-title">
+      <div class="dialog-card camera-card">
+        <button type="button" class="icon-button close" data-close aria-label="ปิดกล้อง"><svg><use href="#close"/></svg></button>
+        <div class="camera-top"><h2 id="camera-title">กล้องดูฉาก</h2><span id="camera-mode"></span></div>
+        <div class="camera-stage">
+          <video id="live-video" playsinline muted></video>
+          <img id="shot-preview" alt="รูปที่ถ่าย" hidden />
+          <div class="scene-grid" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <canvas id="camera-guide" width="300" height="400" hidden aria-hidden="true"></canvas>
+          <output id="countdown" aria-live="assertive"></output>
+        </div>
+        <p id="camera-status" class="status" role="status"></p>
+        <div class="camera-controls">
+          <button id="flip-camera" class="button secondary" type="button" disabled>สลับกล้อง</button>
+          <label id="timer-label" for="timer">ตั้งเวลา <select id="timer"><option value="0">ปิด</option><option value="3">3 วิ</option><option value="5">5 วิ</option><option value="10">10 วิ</option></select></label>
+          <button id="shutter" class="button primary" type="button" disabled><svg><use href="#camera"/></svg><span>วิเคราะห์ฉาก</span></button>
+          <button id="camera-retry" class="button secondary" type="button" hidden>ลองเปิดกล้องอีกครั้ง</button>
+          <button id="retake" class="button secondary" type="button" hidden>ถ่ายใหม่</button>
+          <a id="download" class="button primary" download="framewise.jpg" hidden>บันทึกรูป</a>
+        </div>
+        <p id="camera-cue-line" class="camera-cue" hidden></p>
+      </div>
+    </dialog>
+
+    <dialog id="notes-dialog" aria-labelledby="notes-title">
+      <div class="dialog-card dialog-body notes">
+        <button type="button" class="icon-button close" data-close aria-label="ปิดคู่มือ"><svg><use href="#close"/></svg></button>
+        <h2 id="notes-title">คู่มือถ่ายภาพ</h2>
+        <dl class="cue-list">
+          <dt>ท่าที่คนโพสทำตามได้</dt><dd>คุณบอกให้แบบลงน้ำหนักที่ขาข้างหนึ่ง ผ่อนหัวไหล่ แล้วให้มือแตะกระเป๋า ปกเสื้อ หรือของที่อยู่ในฉาก</dd>
+          <dt>อารมณ์ภาพ</dt><dd id="notes-mood">{moods.natural.direction}</dd>
+          <dt>แสงและฉาก</dt><dd>คุณลองหันแบบเข้าหาหน้าต่างหรือขอบร่ม แล้วขยับมุมจนไม่มีเส้นจากฉากหลังพาดผ่านศีรษะ</dd>
+        </dl>
+        <p class="sources">อ่านเพิ่ม <a href="https://www.usa.canon.com/learning/training-articles/training-articles-list/posing-tips-for-successful-portraits" target="_blank" rel="noopener">Canon</a> <a href="https://www.nikon.co.uk/en_GB/learn-and-explore/magazine/nikon-quickstart/improve-your-portrait-photography-with-your-nikon-quickstart-cheat-sheet" target="_blank" rel="noopener">Nikon</a> <a href="https://www.adobe.com/creativecloud/photography/discover/sitting-poses-and-hand-poses.html" target="_blank" rel="noopener">Adobe</a></p>
+        <p class="sources">โมเดลจำแนกฉาก <a href="https://github.com/CSAILVision/places365" target="_blank" rel="noopener">Places365</a> โดย Bolei Zhou และคณะ / <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY</a></p>
+      </div>
+    </dialog>
+    <script>import '../../scripts/framewise/studio.mjs';</script>
+  </body>
+</html>

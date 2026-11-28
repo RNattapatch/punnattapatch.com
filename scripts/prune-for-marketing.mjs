@@ -13,6 +13,8 @@ const DIST = 'dist';
 // Remove the entire private app hub (dashboard + any future private apps).
 await rm(`${DIST}/app`, { recursive: true, force: true });
 
+await rm(`${DIST}/framewise-assets`, { recursive: true, force: true });
+
 // The strict app-only headers file has no business on the marketing origin.
 await rm(`${DIST}/_headers.app`, { force: true });
 

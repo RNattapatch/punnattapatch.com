@@ -30,3 +30,11 @@
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   Cross-Origin-Opener-Policy: same-origin-allow-popups
   X-Robots-Tag: noindex, nofollow
+
+# Framewise is the only app that needs the camera and the local WASM model.
+# Cloudflare joins duplicate values unless the broad rule is detached first.
+/framewise
+  ! Content-Security-Policy
+  ! Permissions-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' blob: data:; connect-src 'self'; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=()
