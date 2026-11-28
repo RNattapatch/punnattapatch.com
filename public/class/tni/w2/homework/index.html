@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex" />
   <title>การบ้านสัปดาห์ 2 แบบทดสอบ แม่แบบ และ Action Plan</title>
-  <meta name="description" content="การบ้านคลาส AI Pro Office สัปดาห์ที่ 2 แบบทดสอบ 15 ข้อ แม่แบบใบเสนอราคา HTML 1 ชิ้น และ Action Plan ดาวน์โหลดไฟล์ Word ไฟล์เดียวแล้วส่งในระบบ FutureSkill" />
+  <meta name="description" content="การบ้านคลาส AI Pro Office สัปดาห์ที่ 2 แบบทดสอบ 15 ข้อ แม่แบบใบเสนอราคา 1 ชิ้น แนบเป็นรูป PDF หรือ HTML และ Action Plan ดาวน์โหลดไฟล์ Word ไฟล์เดียวแล้วส่งในระบบ FutureSkill" />
   <meta name="theme-color" content="#072B4E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Prompt:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -79,7 +79,7 @@
         <dt>ทำอะไร</dt>
         <dd><ol>
           <li><b>แบบทดสอบ 15 ข้อ</b> โจทย์จากงานจริง ส่งได้ครั้งเดียว</li>
-          <li><b>แม่แบบใบเสนอราคา HTML 1 ชิ้น</b> ให้ AI สร้างแม่แบบจากใบเสนอราคาจริง วาง prompt ที่ใช้สั่ง และแนบภาพแม่แบบ</li>
+          <li><b>แม่แบบใบเสนอราคา HTML 1 ชิ้น</b> ให้ AI สร้างแม่แบบจากใบเสนอราคาจริง วาง prompt ที่ใช้สั่ง และแนบแม่แบบเป็นรูป PDF หรือ HTML</li>
           <li><b>My Learning Action Plan</b> 5 ช่อง และคำมั่น 1 ข้อ</li>
         </ol></dd>
         <dt>ส่งอะไร</dt>
@@ -115,23 +115,19 @@
 
     <section class="card piece" id="p2" aria-labelledby="h-p2">
       <h2 id="h-p2"><span class="no" aria-hidden="true">2</span>แม่แบบใบเสนอราคา HTML <span class="pill">ต้องทำ</span></h2>
-      <p class="muted">โจทย์เดียวกันทั้งห้อง คือให้ AI สร้างแม่แบบใบเสนอราคาเป็นไฟล์ HTML จากใบที่ใช้จริง เปิดแชทใหม่ใน ChatGPT หรือ Claude แล้วเขียน prompt สั่งงานเอง จากนั้นวาง prompt กับแม่แบบที่ได้ในหน้านี้</p>
+      <p class="muted">โจทย์เดียวกันทั้งห้อง คือให้ AI สร้างแม่แบบใบเสนอราคาเป็นไฟล์ HTML จากใบที่ใช้จริง เปิดแชทใหม่ใน ChatGPT หรือ Claude แล้วเขียน prompt สั่งงานเอง จากนั้นวาง prompt และแนบแม่แบบที่ได้ในหน้านี้ จะแนบเป็นรูป PDF หรือไฟล์ HTML ก็ได้</p>
       <div class="brief" id="briefBox"></div>
       <div class="field" style="margin-top:14px">
         <label class="lb" for="prompt">prompt ที่ใช้สั่ง AI <span class="pill">ต้องกรอก</span></label>
         <p class="hint">วางข้อความที่คุณพิมพ์สั่ง AI ทั้งหมด ถ้าสั่งหลายรอบ วางทุกรอบเรียงกัน</p>
         <textarea id="prompt" data-k="prompt"></textarea>
       </div>
-      <div class="field">
-        <label class="lb" for="output">แม่แบบที่ AI ทำ (วางโค้ด HTML หรือข้อความ)</label>
-        <p class="hint">วางข้อความ หรือแนบภาพหน้าจอด้านล่าง หรือทำทั้ง 2 อย่าง ต้องมีอย่างน้อย 1 อย่าง</p>
-        <textarea id="output" data-k="output"></textarea>
-      </div>
-      <p class="lb" style="margin:0 0 4px">ภาพหน้าจอแม่แบบ 1 ถึง 3 ภาพ</p>
-      <p class="hint">เปิดไฟล์ HTML ที่ได้ในเบราว์เซอร์ แล้วแคปหน้าจอ</p>
-      <p class="hint">ใช้ไฟล์ JPG หรือ PNG ภาพจาก iPhone ที่เป็น HEIC ให้แคปหน้าจอใหม่</p>
-      <input class="sr" type="file" accept="image/png,image/jpeg" multiple id="file" aria-label="เลือกภาพหน้าจอผลงาน" />
-      <label class="btn" for="file" id="pick">เลือกภาพจากเครื่อง</label>
+      <p class="lb" style="margin:0 0 4px">แนบแม่แบบที่ AI ทำ <span class="pill">ต้องแนบ</span></p>
+      <p class="hint">แนบเป็นรูป ไฟล์ PDF หรือไฟล์ HTML ก็ได้เลยครับ แนบหลายไฟล์ได้ รูปรวมได้ถึง 5 ภาพ ไฟล์ PDF ระบบแปลงแต่ละหน้าเป็นภาพให้เอง</p>
+      <p class="hint">ถ้าแนบไฟล์ HTML ระบบเก็บโค้ดไว้ในไฟล์ Word ให้ผมเปิดดู จะแนบภาพหน้าจอคู่ด้วยก็ได้ ผมจะเห็นหน้าตาแม่แบบชัดขึ้น</p>
+      <input class="sr" type="file" accept="image/*,application/pdf,.pdf,text/html,.html,.htm" multiple id="file" aria-label="เลือกไฟล์ผลงาน รูป PDF หรือ HTML" />
+      <label class="btn" for="file" id="pick">เลือกไฟล์จากเครื่อง</label>
+      <div id="htmlBox"></div>
       <div class="shots" id="shots"></div>
       <p class="msg" id="sMsg" aria-live="polite"></p>
       <h3 style="font-size:20px;margin:16px 0 8px">เช็ค prompt ของคุณ 5 ข้อ</h3>
@@ -200,7 +196,7 @@
       rpc: "https://yykocvhorgcgzaluuldn.supabase.co/rest/v1/rpc/submit_class_quiz",
       // anon key is public by design (same as w2/quiz.js)
       anon: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5a29jdmhvcmdjZ3phbHV1bGRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjYwNTYsImV4cCI6MjA5NTgwMjA1Nn0.04ya1crnMRK6SgLfwhhxIp14DQ1n_ZkY5Fj-urTsv1E",
-      maxImgPx: 1600, maxShots: 3, jpegQuality: 0.8
+      maxImgPx: 1600, maxShots: 5, jpegQuality: 0.8
     };
     var KEY = "w2hw:v2", IMG_KEY = "w2hw:v2:img", LT = ["ก", "ข", "ค", "ง"];
     var INAPP = /\bLine\/|FBAN|FBAV|Instagram/i.test(navigator.userAgent);
@@ -287,7 +283,7 @@
       quote: { t: "แม่แบบใบเสนอราคา HTML จากใบจริง",
         h: "<p><b>โจทย์</b> ให้ AI สร้างแม่แบบเอกสารสำหรับออกใบเสนอราคาเป็นไฟล์ HTML จากใบเสนอราคาจริงของคุณ 1 ใบ เราจะได้ไม่ต้องให้ AI เจนภาพใหม่ที่เพี้ยนทุกครั้ง ส่วนที่เหมือนเดิมทุกใบ เช่น หัวกระดาษและเงื่อนไข ให้คงไว้ ส่วนที่เปลี่ยนทุกครั้งให้เป็นช่อง</p>" +
           "<p class=\"warnbox\" style=\"margin:0 0 8px\">ก่อนแนบใบจริงให้ AI ปิดชื่อลูกค้า เบอร์โทร อีเมล ที่อยู่ และเลขผู้เสียภาษีก่อน เปลี่ยนเป็นรหัสแทน ถ้าราคาเป็นความลับ เปลี่ยนเป็นตัวเลขสมมุติ</p>" +
-          "<p><b>ขั้นตอน</b> 1 ปิดชื่อในใบจริง 2 สั่ง ChatGPT Claude หรือ AI Agent ให้สร้างไฟล์ .html หน้าตาเหมือนใบเดิม prompt เขียนเองตามเช็ค 5 ข้อด้านล่าง 3 เปิดไฟล์ในเบราว์เซอร์ แคปหน้าจอ 4 วาง prompt กับแม่แบบในหน้านี้</p>" +
+          "<p><b>ขั้นตอน</b> 1 ปิดชื่อในใบจริง 2 สั่ง ChatGPT Claude หรือ AI Agent ให้สร้างไฟล์ .html หน้าตาเหมือนใบเดิม prompt เขียนเองตามเช็ค 5 ข้อด้านล่าง 3 วาง prompt ในหน้านี้ 4 แนบแม่แบบที่ได้ เป็นไฟล์ HTML ไฟล์ PDF หรือภาพหน้าจอก็ได้</p>" +
           "<p><b>ดูตัวอย่าง</b> <a href=\"/class/tni/w2/files/quote-template-example.html\" target=\"_blank\" rel=\"noopener\">แม่แบบใบเสนอราคา HTML ที่ระบบของผมใช้จริง (ข้อมูลสมมุติ)</a></p>" +
           "<p><b>ไม่มีใบเสนอราคา</b> ใช้ใบตัวอย่างนี้ได้เลย (ข้อมูลสมมุติ) คัดลอกไปวางในแชทได้</p>" +
           "<div style=\"border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 12px;font-size:16px\">" +
@@ -449,9 +445,49 @@
         rm.addEventListener("click", function () { SHOTS.splice(i, 1); saveShots(); renderShots(); refresh(); say("sMsg", "เอาภาพออกแล้ว"); });
         d.append(im, rm); $("shots").appendChild(d);
       });
-      var full = SHOTS.length >= CONFIG.maxShots;
-      $("pick").textContent = full ? "ครบ " + CONFIG.maxShots + " ภาพแล้ว" : SHOTS.length ? "เพิ่มภาพ" : "เลือกภาพจากเครื่อง";
-      $("pick").classList.toggle("off", full); $("file").disabled = full;
+      $("pick").textContent = SHOTS.length || S.output.trim() ? "เพิ่มไฟล์" : "เลือกไฟล์จากเครื่อง";
+      var hb = $("htmlBox"); hb.innerHTML = "";
+      if (S.output.trim()) {
+        var p = document.createElement("p"), rb = document.createElement("button");
+        p.className = "hint"; p.textContent = "แนบแล้ว " + S.output.split("\n")[0].replace(/^ไฟล์ /, "") + " (" + S.output.length.toLocaleString() + " ตัวอักษร)";
+        rb.type = "button"; rb.className = "btn"; rb.textContent = "ลบไฟล์ HTML";
+        rb.addEventListener("click", function () { S.output = ""; persist(); renderShots(); refresh(); say("sMsg", "เอาไฟล์ HTML ออกแล้ว"); });
+        hb.append(p, rb);
+      }
+    }
+    // HTML template: keep the code as text in the Word file; inline base64 images (logos) would blow the size limit
+    async function addHtml(file) {
+      var t = (await file.text()).replace(/data:[a-z]+\/[a-z0-9.+-]+;base64,[A-Za-z0-9+\/=]{200,}/gi, "[ภาพฝังในไฟล์]");
+      var head = "ไฟล์ " + file.name + "\n", max = 40000 - head.length;
+      S.output = head + (t.length > max ? t.slice(0, max - 40) + "\n[ตัดท้ายไฟล์ เพราะยาวเกิน]" : t);
+      persist(); return true;
+    }
+    // PDF: render each page to a JPEG shot with pdf.js, loaded only when a PDF is picked
+    var pdfLib = null;
+    function loadPdfJs() {
+      if (pdfLib) return pdfLib;
+      pdfLib = new Promise(function (ok, no) {
+        var sc = document.createElement("script");
+        sc.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+        sc.onload = function () { window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"; ok(window.pdfjsLib); };
+        sc.onerror = function () { pdfLib = null; no(new Error("pdf.js")); };
+        document.head.appendChild(sc);
+      });
+      return pdfLib;
+    }
+    async function addPdf(file) {
+      try {
+        var lib = await loadPdfJs(), doc = await lib.getDocument({ data: await file.arrayBuffer() }).promise;
+        for (var i = 1; i <= doc.numPages && SHOTS.length < CONFIG.maxShots; i++) {
+          var pg = await doc.getPage(i), v0 = pg.getViewport({ scale: 1 });
+          var vp = pg.getViewport({ scale: CONFIG.maxImgPx / Math.max(v0.width, v0.height) });
+          var c = document.createElement("canvas"); c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+          var x = c.getContext("2d"); x.fillStyle = "#FFFFFF"; x.fillRect(0, 0, c.width, c.height);
+          await pg.render({ canvasContext: x, viewport: vp }).promise;
+          SHOTS.push({ d: c.toDataURL("image/jpeg", CONFIG.jpegQuality), w: c.width, h: c.height });
+        }
+        return true;
+      } catch (e) { return false; }
     }
     function addShot(file) {
       return new Promise(function (done) {
@@ -470,15 +506,21 @@
       });
     }
     $("file").addEventListener("change", async function () {
-      var files = Array.from(this.files || []), room = CONFIG.maxShots - SHOTS.length, bad = 0;
+      var files = Array.from(this.files || []), bad = [], skipped = 0;
       this.value = "";
-      say("sMsg", "กำลังย่อภาพ รอสักครู่นะครับ");
-      for (var f of files.slice(0, Math.max(0, room))) if (!(await addShot(f))) bad++;
+      say("sMsg", "กำลังเตรียมไฟล์ รอสักครู่นะครับ");
+      for (var f of files) {
+        var nm = f.name.toLowerCase();
+        if (/\.html?$/.test(nm) || f.type === "text/html") { if (!(await addHtml(f))) bad.push(f.name); continue; }
+        if (SHOTS.length >= CONFIG.maxShots) { skipped++; continue; }
+        if (/\.pdf$/.test(nm) || f.type === "application/pdf") { if (!(await addPdf(f))) bad.push(f.name); }
+        else if (!(await addShot(f))) bad.push(f.name);
+      }
       var ok = saveShots();
       renderShots(); refresh();
-      if (bad) say("sMsg", "ใช้ภาพนี้ไม่ได้ ลองเลือกภาพ JPG หรือ PNG อีกครั้ง", true);
+      if (bad.length) say("sMsg", "เปิดไฟล์ " + bad.join(" ") + " ไม่ได้ ลองแนบเป็นรูป JPG PNG ไฟล์ PDF หรือ HTML อีกครั้ง หรือแคปหน้าจอแทนก็ได้ครับ", true);
       else if (!ok) say("sMsg", "เก็บภาพไว้ในเครื่องไม่ได้ ภาพจะอยู่จนกว่าจะรีเฟรชหน้า ดาวน์โหลดไฟล์ Word ก่อนปิดหน้านะครับ", true);
-      else say("sMsg", files.length > room ? "ใส่ได้ " + CONFIG.maxShots + " ภาพ ระบบเก็บไว้ " + SHOTS.length + " ภาพแรก" : "เก็บภาพแล้ว " + SHOTS.length + " ภาพ", files.length > room);
+      else say("sMsg", skipped ? "รูปรวมได้ " + CONFIG.maxShots + " ภาพ ระบบเก็บไว้ " + SHOTS.length + " ภาพแรก" : "แนบแล้ว รูป " + SHOTS.length + " ภาพ" + (S.output.trim() ? " และไฟล์ HTML 1 ไฟล์" : ""), skipped > 0);
     });
 
     // ===== fields =====
@@ -497,7 +539,7 @@
         [!!fullName(), "กรอกชื่อจริงและนามสกุล"],
         [S.locked, "ส่งคำตอบแบบทดสอบ 15 ข้อ"],
         [!!S.prompt.trim(), "วาง prompt ที่ใช้สั่ง AI"],
-        [!!S.output.trim() || SHOTS.length > 0, "วางแม่แบบที่ได้ หรือแนบภาพอย่างน้อย 1 ภาพ"],
+        [!!S.output.trim() || SHOTS.length > 0, "แนบแม่แบบที่ได้ เป็นรูป PDF หรือ HTML อย่างน้อย 1 ไฟล์"],
         [AP.every(function (f) { return !!String(S[f[0]] || "").trim(); }), "กรอก My Learning Action Plan ครบ 5 ช่องและคำมั่น"]
       ];
     }
@@ -584,7 +626,7 @@
         { cells: ["ผู้เรียน", fullName() + (S.nick ? " (" + S.nick + ")" : "")] },
         { cells: ["แบบทดสอบ 15 ข้อ (ระบบตรวจแล้ว)", s + " จาก " + N + " ระดับ " + levelOf(s) + " จาก 5" + (wrong.length ? " ผิดข้อ " + wrong.join(" ") : " ถูกทุกข้อ")] },
         { cells: ["แบบทดสอบหลังเรียนในห้อง 5 ข้อ (ระบบตรวจแล้ว)", PR ? PR.score + " จาก " + POSTQ.length + (PR.score === POSTQ.length ? " ถูกทุกข้อ" : " ผิดข้อ " + PR.picks.map(function (p, i) { return p === POSTQ[i].a ? 0 : i + 1; }).filter(Boolean).join(" ")) + " อยู่ในหัวข้อ 4" : "ไม่พบผล ผู้เรียนยังไม่ได้ทำ หรือทำด้วยชื่ออื่น"] },
-        { cells: ["แม่แบบใบเสนอราคา", "prompt " + S.prompt.split(/\r?\n/).filter(function (x) { return x.trim(); }).length + " บรรทัด แม่แบบแบบข้อความ " + (S.output.trim() ? "มี" : "ไม่มี") + " ภาพแนบ " + SHOTS.length + " ภาพ ผู้เรียนเช็คตัวเอง " + ticked + " จาก 5 ข้อ"] },
+        { cells: ["แม่แบบใบเสนอราคา", "prompt " + S.prompt.split(/\r?\n/).filter(function (x) { return x.trim(); }).length + " บรรทัด ไฟล์ HTML " + (S.output.trim() ? "มี" : "ไม่มี") + " ภาพแนบ " + SHOTS.length + " ภาพ ผู้เรียนเช็คตัวเอง " + ticked + " จาก 5 ข้อ"] },
         { cells: ["My Learning Action Plan", AP.filter(function (f) { return String(S[f[0]] || "").trim(); }).length + " จาก " + AP.length + " ช่อง อยู่ในหัวข้อ 2"] }
       ], [40, 60]));
       ch.push(para("ผู้ตรวจกรอก ตรวจ prompt และแม่แบบในหัวข้อ 1 ด้วยเกณฑ์ 5 ข้อ", { bold: true, before: 200 }));
