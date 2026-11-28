@@ -155,6 +155,7 @@
       <ul class="steps" id="todo" style="list-style:none;padding:0"></ul>
       <button type="button" class="btn btn-primary" id="bDocx">ดาวน์โหลดไฟล์ Word (.docx)</button>
       <p class="msg" id="pMsg" aria-live="polite"></p>
+      <p class="hint" id="postNote" aria-live="polite"></p>
       <p class="hint">ไฟล์จะอยู่ในโฟลเดอร์ <b>ดาวน์โหลด</b> ของเครื่อง ชื่อไฟล์มีชื่อของคุณแล้ว คะแนนแบบทดสอบ prompt ผลงาน และภาพ อยู่ในไฟล์นี้ไฟล์เดียว</p>
       <p class="hint">ถ้าดาวน์โหลดไม่ได้ กด <button type="button" class="btn-link" id="bPdf" style="font:inherit;padding:8px 0;min-height:44px">บันทึกเป็น PDF</button> แทน</p>
     </section>
@@ -188,6 +189,7 @@
   </footer>
   <div id="print" aria-hidden="true"></div>
   <script defer src="https://cdn.jsdelivr.net/npm/docx@9.5.1/dist/index.iife.js"></script>
+  <script src="/class/tni/w2/quiz-banks.js?v=1"></script>
   <script>
   (function () {
     "use strict";
@@ -332,6 +334,36 @@
     function saveShots() { try { localStorage.setItem(IMG_KEY, JSON.stringify(SHOTS)); return true; } catch (e) { return false; } }
     function score() { var s = 0; for (var i = 0; i < N; i++) if (S.picks[i] === Q[i].a) s++; return s; }
     function levelOf(s) { return s >= 14 ? 5 : s >= 12 ? 4 : s >= 9 ? 3 : s >= 6 ? 2 : 1; }
+    // Pun 28 Nov: the in-class post-test (5) goes into this Word file too. This device first, then the learner's class row
+    // (same name login as the quiz page, so a phone in class + laptop at home still works). Answers are re-marked here, never trusted.
+    var POSTQ = (window.TNIW2_QUIZ || {}).POST || [], PR = null;
+    function cleanPost(v) {
+      if (!v || v.v !== 4 || !Array.isArray(v.picks) || v.picks.length !== POSTQ.length || !POSTQ.length) return null;
+      if (!v.picks.every(function (p, i) { return p === (p | 0) && p >= 0 && p < POSTQ[i].o.length; })) return null;
+      var sc = 0; v.picks.forEach(function (p, i) { if (p === POSTQ[i].a) sc++; });
+      return { picks: v.picks.slice(), score: sc, at: isNaN(Date.parse(v.at)) ? "" : String(v.at) };
+    }
+    function findPost() {
+      try { PR = cleanPost((JSON.parse(localStorage.getItem("tniw2quiz:v4") || "{}") || {}).post); } catch (e) { PR = null; }
+      if (PR) { postNote(); return Promise.resolve(PR); }
+      var who = null; try { who = JSON.parse(localStorage.getItem("tni:who:tni-w2") || "null"); } catch (e) {}
+      var first = String(S.fname || "").trim(), last = String(S.lname || "").trim();
+      var slug = who && who.slug ? Promise.resolve(who.slug) : !first || !last ? Promise.resolve(null) :
+        fetch("/api/homework/class-login", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ cls: "tni-w2", first: first, last: last, nick: String(S.nick || "").trim() }) })
+          .then(function (r) { return r.json(); }).then(function (j) { return j && j.ok && j.slug ? j.slug : null; });
+      return slug.then(function (sl) {
+        if (!sl) return null;
+        return fetch("/api/homework/" + encodeURIComponent(sl), { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : {}; }).then(function (d) {
+          try { PR = cleanPost(JSON.parse(((d.answers || {}).quizpost || {}).text)); } catch (e) { PR = null; }
+          return PR;
+        });
+      }).catch(function () { return null; }).then(function (r) { postNote(); return r; });
+    }
+    function postNote() {
+      var n = $("postNote"); if (!n) return;
+      n.innerHTML = PR ? "แบบทดสอบหลังเรียนในห้อง 5 ข้อ ได้ " + PR.score + " จาก " + POSTQ.length + " ผลนี้อยู่ในไฟล์ Word ด้วยครับ"
+        : 'ยังไม่พบผลแบบทดสอบหลังเรียนในห้อง 5 ข้อ ทำได้ที่ <a href="/class/tni/w2/post-quiz/">หน้าแบบทดสอบหลังเรียน</a> โดยใช้ชื่อจริงและนามสกุลเดียวกับหน้านี้ แล้วกลับมาดาวน์โหลดใหม่ครับ';
+    }
     function fullName() { return [S.fname, S.lname].map(function (x) { return String(x || "").trim(); }).filter(Boolean).join(" "); }
     function safeName(s) { return String(s || "").trim().replace(/[\\/:*?"<>|\r\n\t]+/g, "").replace(/\s+/g, "-").slice(0, 60); }
     try { var seen = JSON.parse(localStorage.getItem("tniw2:v1") || "{}") || {}; seen.homework = 1; localStorage.setItem("tniw2:v1", JSON.stringify(seen)); } catch (e) {}
@@ -483,6 +515,9 @@
       P.push("<table><tr><th>ข้อ</th><th>ตอบ</th><th>เฉลย</th><th>ผล</th></tr>" + S.picks.map(function (p, i) {
         return "<tr><td>" + (i + 1) + "</td><td>" + LT[p] + "</td><td>" + LT[Q[i].a] + "</td><td>" + (p === Q[i].a ? "ถูก" : "ผิด") + "</td></tr>";
       }).join("") + "</table>");
+      P.push("<h2>แบบทดสอบหลังเรียนในห้อง 5 ข้อ</h2>", PR ? "<p><b>คะแนน " + PR.score + " จาก " + POSTQ.length + "</b>" + (PR.at ? " ส่งเมื่อ " + esc(new Date(PR.at).toLocaleString("th-TH")) : "") + "</p><table><tr><th>ข้อ</th><th>ตอบ</th><th>เฉลย</th><th>ผล</th></tr>" + PR.picks.map(function (p, i) {
+        return "<tr><td>" + (i + 1) + "</td><td>" + LT[p] + "</td><td>" + LT[POSTQ[i].a] + "</td><td>" + (p === POSTQ[i].a ? "ถูก" : "ผิด") + "</td></tr>";
+      }).join("") + "</table>" : '<p class="pe">ไม่พบผล ผู้เรียนยังไม่ได้ทำ หรือทำด้วยชื่ออื่น</p>');
       P.push("<h2>3 แม่แบบใบเสนอราคา</h2>", "<p><b>โจทย์:</b> " + esc(BRIEFS[S.brief].t) + "</p>", "<p><b>prompt ที่ใช้สั่ง AI</b></p>", T(S.prompt));
       P.push("<p><b>แม่แบบที่ AI ทำ</b></p>", S.output.trim() ? T(S.output) : "");
       SHOTS.forEach(function (o, i) { P.push('<div class="fig"><img src="' + o.d + '" alt="ภาพผลงานที่ ' + (i + 1) + '" /></div>'); });
@@ -548,6 +583,7 @@
       ch.push(table([
         { cells: ["ผู้เรียน", fullName() + (S.nick ? " (" + S.nick + ")" : "")] },
         { cells: ["แบบทดสอบ 15 ข้อ (ระบบตรวจแล้ว)", s + " จาก " + N + " ระดับ " + levelOf(s) + " จาก 5" + (wrong.length ? " ผิดข้อ " + wrong.join(" ") : " ถูกทุกข้อ")] },
+        { cells: ["แบบทดสอบหลังเรียนในห้อง 5 ข้อ (ระบบตรวจแล้ว)", PR ? PR.score + " จาก " + POSTQ.length + (PR.score === POSTQ.length ? " ถูกทุกข้อ" : " ผิดข้อ " + PR.picks.map(function (p, i) { return p === POSTQ[i].a ? 0 : i + 1; }).filter(Boolean).join(" ")) + " อยู่ในหัวข้อ 4" : "ไม่พบผล ผู้เรียนยังไม่ได้ทำ หรือทำด้วยชื่ออื่น"] },
         { cells: ["แม่แบบใบเสนอราคา", "prompt " + S.prompt.split(/\r?\n/).filter(function (x) { return x.trim(); }).length + " บรรทัด แม่แบบแบบข้อความ " + (S.output.trim() ? "มี" : "ไม่มี") + " ภาพแนบ " + SHOTS.length + " ภาพ ผู้เรียนเช็คตัวเอง " + ticked + " จาก 5 ข้อ"] },
         { cells: ["My Learning Action Plan", AP.filter(function (f) { return String(S[f[0]] || "").trim(); }).length + " จาก " + AP.length + " ช่อง อยู่ในหัวข้อ 2"] }
       ], [40, 60]));
@@ -569,15 +605,20 @@
       AP.forEach(function (f) { ch.push(para(f[1], { bold: true, before: 120 })); lines(S[f[0]], { fill: "F1F3F6", size: 24, after: 0 }).forEach(function (x) { ch.push(x); }); });
       ch.push(h("3 แบบทดสอบ 15 ข้อ"), para("คะแนน " + s + " จาก " + N + " (ระดับ " + levelOf(s) + " จาก 5) ส่งเมื่อ " + new Date(S.at).toLocaleString("th-TH"), { bold: true }));
       // compact grid: one column per question so the quiz fits in a few lines
-      var nums = [], picks = [], keys = [], marks = [];
-      S.picks.forEach(function (p, i) { nums.push(String(i + 1)); picks.push(LT[p]); keys.push(LT[Q[i].a]); marks.push(p === Q[i].a ? "✓" : "✗"); });
-      var qw = [10].concat(nums.map(function () { return 90 / N; }));
-      ch.push(table([
-        { head: true, cells: ["ข้อ"].concat(nums) },
-        { cells: ["ตอบ"].concat(picks) },
-        { cells: ["เฉลย"].concat(keys) },
-        { cells: ["ผล"].concat(marks) }
-      ], qw));
+      var grid = function (pk, bank) {
+        var nums = [], picks = [], keys = [], marks = [];
+        pk.forEach(function (p, i) { nums.push(String(i + 1)); picks.push(LT[p]); keys.push(LT[bank[i].a]); marks.push(p === bank[i].a ? "✓" : "✗"); });
+        return table([
+          { head: true, cells: ["ข้อ"].concat(nums) },
+          { cells: ["ตอบ"].concat(picks) },
+          { cells: ["เฉลย"].concat(keys) },
+          { cells: ["ผล"].concat(marks) }
+        ], [10].concat(nums.map(function () { return 90 / pk.length; })));
+      };
+      ch.push(grid(S.picks, Q));
+      ch.push(h("4 แบบทดสอบหลังเรียนในห้อง 5 ข้อ"));
+      if (PR) { ch.push(para("คะแนน " + PR.score + " จาก " + POSTQ.length + (PR.at ? " ส่งเมื่อ " + new Date(PR.at).toLocaleString("th-TH") : ""), { bold: true })); ch.push(grid(PR.picks, POSTQ)); }
+      else ch.push(para("ไม่พบผล ผู้เรียนยังไม่ได้ทำ หรือทำด้วยชื่ออื่น", { color: FAINT }));
       var doc = new D.Document({ creator: "AI Pro Office", title: "การบ้านสัปดาห์ 2",
         styles: { default: { document: { run: { font: F, size: 26 } } } },
         sections: [{ properties: { page: { margin: { top: 1134, bottom: 1134, left: 1134, right: 1134 } } }, children: ch }] });
@@ -593,7 +634,7 @@
       if (missing()) return;
       var b = $("bDocx"); b.disabled = true;
       say("pMsg", "กำลังทำไฟล์ Word รอสักครู่นะครับ");
-      makeDocx().then(function (blob) {
+      findPost().then(function () { return makeDocx(); }).then(function (blob) {
         download(blob, fileBase() + ".docx");
         say("pMsg", "ดาวน์โหลดไฟล์ Word แล้ว อัปโหลดไฟล์นี้ในระบบ FutureSkill ตามขั้นด้านล่าง");
       }).catch(function (e) {
@@ -621,6 +662,8 @@
     $("fsBtn").href = CONFIG.fsUrl;
     $("inapp").hidden = !INAPP;
     renderQuiz(); renderBrief(); renderRub(); renderShots(); refresh();
+    findPost();
+    document.addEventListener("visibilitychange", function () { if (!document.hidden && !PR) findPost(); });
     if (S.locked && !S.sentDb) sendScore();
   })();
   </script>
